@@ -1,5 +1,6 @@
 package test.vectors;
 
+import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -11,7 +12,6 @@ public class VectorSet {
     public VectorSet(int dimension) {
         this.dimension = dimension;
         this.vectors = new ArrayList<>();
-        this.numVectors = vectors.size();
     }
 
     public void addVector(Vector vector) {
@@ -19,6 +19,7 @@ public class VectorSet {
             throw new IllegalArgumentException("El vector debe tener la misma dimensión que los demás vectores en el conjunto.");
         }
         this.vectors.add(vector);
+        numVectors++;
     }
 
     public void addVectorsFromConsole() {
@@ -30,11 +31,20 @@ public class VectorSet {
             vector.setComponentsFromConsole();
             addVector(vector);
         }
+        this.numVectors = vectors.size();
     }
 
     public void print() {
+        System.out.print("{ ");
+        int count = 0;
         for (Vector vector : this.vectors) {
             vector.print();
+            count++;
+            if (count != this.numVectors){
+                System.out.print(",\n  ");
+            }else{
+                System.out.println(" }");
+            }
         }
     }
 
@@ -168,12 +178,6 @@ public class VectorSet {
     }
 
     public static void main(String[] args) {
-        VectorSet vectorSet = new VectorSet(3);
-        vectorSet.addVectorsFromConsole();
-        vectorSet.print();
-        System.out.println("¿el conjunto es linearmente independiente? (0/1): " + vectorSet.isLinearlyIndependent());
-        Vector vector = new Vector(3);
-        vectorSet.addVector(vector);
-        vectorSet.print();
+
     }
 }

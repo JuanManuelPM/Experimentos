@@ -1,6 +1,7 @@
 package test.vectors;
 
 import java.util.Scanner;
+import java.text.DecimalFormat;
 
 public class Vector {
     private final int dimension;
@@ -27,13 +28,22 @@ public class Vector {
     }
 
     public void print() {
-        System.out.print("[ ");
+        System.out.print("(");
+
+        DecimalFormat df = new DecimalFormat("#.###");
+
         for (int i = 0; i < this.dimension; i++) {
-            System.out.print("(" + this.components[i] + ")");
+            double component = this.components[i];
+            if (component % 1 == 0) { // Verifica si el número es entero
+                System.out.print((int)component); // Si es entero, se imprime sin decimales
+            } else {
+                System.out.print(df.format(component)); // Si no es entero, se imprime con tres decimales
+            }
+
             if(i+1 < this.dimension){
-                System.out.print(" ; ");
-            }else{
-                System.out.println(" ]");
+                System.out.print("; ");
+            } else {
+                System.out.print(")");
             }
         }
     }
