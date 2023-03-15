@@ -15,6 +15,8 @@ public class Vector {
         this.components[index] = value;
     }
 
+    public double getComponent(int index){ return this.components[index];}
+
     public void setComponentsFromConsole() {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Ingrese las componentes del vector separadas por espacios:");
