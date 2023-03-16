@@ -1,7 +1,7 @@
 package test.vectors;
 
-import java.sql.SQLOutput;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class VectorSet {
@@ -34,6 +34,37 @@ public class VectorSet {
         this.numVectors = vectors.size();
     }
 
+    public void removeVector(Vector v) {
+        vectors.remove(v);
+        numVectors = vectors.size();
+    }
+
+    public void removeVector(int i) {
+        vectors.remove(i);
+        numVectors = vectors.size();
+    }
+
+    private Vector getVector(int i) {
+        return vectors.get(i);
+    }
+
+    public VectorSet copy() {
+        VectorSet copy = new VectorSet(this.dimension);
+        for (int i = 0; i < this.vectors.size(); i++) {
+            Vector vector = this.vectors.get(i);
+            copy.addVector(new Vector(vector));
+        }
+        return copy;
+    }
+
+    public void fillWithGenericSet3d(){
+        this.addVector(new Vector(new double[]{1, 5, 0}));
+        this.addVector(new Vector(new double[]{6, 7, 1}));
+        this.addVector(new Vector(new double[]{2, 10, 0}));
+        this.addVector(new Vector(new double[]{0, 1, 0}));
+        this.addVector(new Vector(new double[]{6, 0, 0}));
+    }
+
     public void print() {
         System.out.print("{ ");
         int count = 0;
@@ -47,6 +78,9 @@ public class VectorSet {
             }
         }
     }
+
+
+    //_________________________________________________________
 
     public boolean isLinearlyIndependent() {
         /*
@@ -117,67 +151,65 @@ public class VectorSet {
         return true;
     }
 
-    public VectorSet getLinearlyDependentVectors() {
-
-        /*
-        Este metodo devuelve un conjunto de vectores que son combinación lineal del resto en el conjunto original.
-        Este método utiliza la eliminación gaussiana para encontrar los vectores que son combinación lineal,
-        y luego los elimina del conjunto original para convertirlo en un conjunto linealmente independiente.
-         */
-        VectorSet dependentVectors = new VectorSet(this.dimension);
-
-        // Si el conjunto es linealmente independiente, no hay vectores que sean combinación lineal del resto
-        if (isLinearlyIndependent()) {
-            return dependentVectors;
+    public boolean isLinearCombination(Vector vector) {
+        if (vector.getDimension() != this.dimension) {
+            throw new IllegalArgumentException("El vector debe tener la misma dimensión que los demás vectores en el conjunto.");
         }
 
-        // Crear una matriz de vectores
-        double[][] matrix = new double[this.numVectors][this.dimension];
-        for (int i = 0; i < this.numVectors; i++) {
-            Vector vector = this.vectors.get(i);
+        // Creamos una matriz con los componentes de los vectores en el conjunto
+        double[][] matrix = new double[this.vectors.size()][this.dimension];
+        for (int i = 0; i < this.vectors.size(); i++) {
+            Vector v = this.vectors.get(i);
             for (int j = 0; j < this.dimension; j++) {
-                matrix[i][j] = vector.getComponent(j);
+                matrix[i][j] = v.getComponent(j);
             }
         }
 
-        // Buscar vectores que son combinación lineal del resto
-        boolean foundDependentVector = true;
-        while (foundDependentVector) {
-            foundDependentVector = false;
-            for (int i = 0; i < this.numVectors; i++) {
-                // Buscar una fila con un único elemento no nulo
-                int numNonZeroElements = 0;
-                int nonZeroColumn = -1;
-                for (int j = 0; j < this.dimension; j++) {
-                    if (matrix[i][j] != 0) {
-                        numNonZeroElements++;
-                        nonZeroColumn = j;
-                    }
+        // Creamos un vector columna con los componentes del vector dado
+        double[] b = new double[this.dimension];
+        for (int i = 0; i < this.dimension; i++) {
+            b[i] = vector.getComponent(i);
+        }
+
+        // Resolvemos el sistema de ecuaciones lineales usando eliminación Gaussiana
+        for (int i = 0; i < this.dimension; i++) {
+            int maxRow = i;
+            for (int j = i + 1; j < this.vectors.size(); j++) {
+                if (Math.abs(matrix[j][i]) > Math.abs(matrix[maxRow][i])) {
+                    maxRow = j;
                 }
-                // Si se encontró una fila con un único elemento no nulo, el vector es combinación lineal del resto
-                if (numNonZeroElements == 1) {
-                    foundDependentVector = true;
-                    dependentVectors.addVector(this.vectors.get(i));
-                    // Eliminar el vector correspondiente y la columna correspondiente de la matriz
-                    for (int j = 0; j < this.numVectors; j++) {
-                        if (j != i && matrix[j][nonZeroColumn] != 0) {
-                            double factor = matrix[j][nonZeroColumn] / matrix[i][nonZeroColumn];
-                            for (int k = nonZeroColumn; k < this.dimension; k++) {
-                                matrix[j][k] -= factor * matrix[i][k];
-                            }
-                        }
-                    }
-                    this.vectors.remove(i);
-                    this.numVectors--;
-                    break;
+            }
+
+            double[] temp = matrix[i];
+            matrix[i] = matrix[maxRow];
+            matrix[maxRow] = temp;
+            double t = b[i];
+            b[i] = b[maxRow];
+            b[maxRow] = t;
+
+            if (matrix[i][i] == 0.0) {
+                return false;
+            }
+
+            for (int j = i + 1; j < this.vectors.size(); j++) {
+                double factor = matrix[j][i] / matrix[i][i];
+                for (int k = i; k < this.dimension; k++) {
+                    matrix[j][k] -= factor * matrix[i][k];
                 }
+                b[j] -= factor * b[i];
             }
         }
 
-        return dependentVectors;
-    }
-
-    public static void main(String[] args) {
-
+        // Verificamos si la última fila de la matriz reducida es consistente
+        for (int i = this.vectors.size() - 1; i >= 0; i--) {
+            double sum = 0.0;
+            for (int j = i + 1; j < this.dimension; j++) {
+                sum += matrix[i][j] * b[j];
+            }
+            if (sum != -matrix[i][i] * b[i]) {
+                return false;
+            }
+        }
+        return true;
     }
 }

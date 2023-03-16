@@ -11,6 +11,17 @@ public class Vector {
         this.dimension = dimension;
         this.components = new double[dimension];
     }
+    public Vector(Vector other) {
+        this.dimension = other.dimension;
+        this.components = new double[this.dimension];
+        for (int i = 0; i < this.dimension; i++) {
+            this.components[i] = other.components[i];
+        }
+    }
+    public Vector(double[] components) {
+        this.dimension = components.length;
+        this.components = components;
+    }
 
     public void setComponent(int index, double value) {
         this.components[index] = value;
@@ -48,6 +59,16 @@ public class Vector {
         }
     }
 
+    public boolean isZero() {
+        for (int i = 0; i < components.length; i++) {
+            if (components[i] != 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+
     public static void main(String[] args) {
         Vector vector = new Vector(3);
         vector.setComponentsFromConsole();
@@ -57,5 +78,44 @@ public class Vector {
     public int getDimension() {
         return dimension;
     }
+
+    public boolean isLinearCombinationOf(Vector other) {
+        if (this.dimension != other.dimension) {
+            throw new IllegalArgumentException("Vectors must have the same dimension.");
+        }
+        if (this.equals(other)) {
+            return true;
+        }
+        if (this.isZero() || other.isZero()) {
+            return false;
+        }
+        double[] thisComponents = this.components;
+        double[] otherComponents = other.components;
+        double scalar = 0.0;
+        for (int i = 0; i < thisComponents.length; i++) {
+            if (otherComponents[i] != 0.0) {
+                scalar = thisComponents[i] / otherComponents[i];
+                break;
+            }
+        }
+        for (int i = 0; i < thisComponents.length; i++) {
+            if (otherComponents[i] == 0.0 && thisComponents[i] != 0.0 ||
+                    otherComponents[i] != 0.0 && Math.abs(thisComponents[i] / otherComponents[i] - scalar) > 1e-9) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public Vector scalarMultiply(double scalar) {
+        // Creamos una copia del vector para no modificarlo directamente
+        Vector result = new Vector(dimension);
+        for (int i = 0; i < dimension; i++) {
+            result.setComponent(i, this.getComponent(i)* scalar);
+        }
+        return result;
+    }
+
+
 }
 
