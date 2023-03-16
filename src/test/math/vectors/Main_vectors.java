@@ -1,6 +1,4 @@
-package test.vectors;
-
-import java.util.Scanner;
+package test.math.vectors;
 
 public class Main_vectors {
     public static void main(String[] args) {
@@ -16,8 +14,6 @@ public class Main_vectors {
         System.out.println("¿el conjunto es linearmente independiente? --> " + conjuntoDeVectores.isLinearlyIndependent());
 
         vectorExtra.print();
-        System.out.println(conjuntoDeVectores.isLinearCombination(vectorExtra));
-        //System.out.println(conjuntoDeVectores.isLinearCombination(vectorExtra));
 
         //System.out.println("el conjunto de vectores extraibles es: ");
         //vectoresExtraibles.print();

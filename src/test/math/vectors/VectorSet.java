@@ -1,7 +1,6 @@
-package test.vectors;
+package test.math.vectors;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Scanner;
 
 public class VectorSet {
@@ -148,63 +147,6 @@ public class VectorSet {
         }
 
         // Si no se encontró ninguna fila cero, el conjunto es linealmente independiente
-        return true;
-    }
-
-    public boolean isLinearCombination(Vector vector) {
-        if (vector.getDimension() != this.dimension) {
-            throw new IllegalArgumentException("El vector debe tener la misma dimensión que los demás vectores en el conjunto.");
-        }
-
-        // Crear una matriz ampliada con los componentes de los vectores del conjunto
-        double[][] augmentedMatrix = new double[this.vectors.size()][this.dimension + 1];
-        for (int i = 0; i < this.vectors.size(); i++) {
-            Vector v = this.vectors.get(i);
-            for (int j = 0; j < this.dimension; j++) {
-                augmentedMatrix[i][j] = v.getComponent(j);
-            }
-            augmentedMatrix[i][this.dimension] = vector.getComponent(i);
-        }
-
-        // Aplicar eliminación de Gauss-Jordan a la matriz ampliada
-        for (int i = 0; i < this.vectors.size(); i++) {
-            // Encontrar la fila con el pivote más grande en la columna actual
-            int maxPivotRowIndex = i;
-            double maxPivotValue = Math.abs(augmentedMatrix[i][i]);
-            for (int j = i + 1; j < this.vectors.size(); j++) {
-                double absValue = Math.abs(augmentedMatrix[j][i]);
-                if (absValue > maxPivotValue) {
-                    maxPivotRowIndex = j;
-                    maxPivotValue = absValue;
-                }
-            }
-
-            // Intercambiar la fila actual con la fila del pivote más grande
-            if (maxPivotRowIndex != i) {
-                double[] tempRow = augmentedMatrix[i];
-                augmentedMatrix[i] = augmentedMatrix[maxPivotRowIndex];
-                augmentedMatrix[maxPivotRowIndex] = tempRow;
-            }
-
-            // Hacer ceros debajo y encima del pivote en la columna actual
-            for (int j = 0; j < this.vectors.size(); j++) {
-                if (j != i) {
-                    double factor = augmentedMatrix[j][i] / augmentedMatrix[i][i];
-                    for (int k = i + 1; k < this.dimension + 1; k++) {
-                        augmentedMatrix[j][k] -= factor * augmentedMatrix[i][k];
-                    }
-                    augmentedMatrix[j][i] = 0;
-                }
-            }
-        }
-
-        // Verificar si el vector se puede generar como una combinación lineal de los demás vectores
-        for (int i = 0; i < this.vectors.size(); i++) {
-            double ratio = augmentedMatrix[i][this.dimension] / augmentedMatrix[i][i];
-            if (ratio != 0) {
-                return false;
-            }
-        }
         return true;
     }
 

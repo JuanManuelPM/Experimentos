@@ -1,4 +1,4 @@
-package test.vectors;
+package test.math.vectors;
 
 import java.util.Scanner;
 import java.text.DecimalFormat;
