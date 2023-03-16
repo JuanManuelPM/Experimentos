@@ -59,7 +59,7 @@ public class VectorSet {
 
     public void fillWithGenericSet3d(){
         this.addVector(new Vector(new double[]{1, 5, 0}));
-        this.addVector(new Vector(new double[]{6, 7, 1}));
+        this.addVector(new Vector(new double[]{6, 7, 0}));
         this.addVector(new Vector(new double[]{2, 10, 0}));
         this.addVector(new Vector(new double[]{0, 1, 0}));
         this.addVector(new Vector(new double[]{6, 0, 0}));
@@ -156,60 +156,56 @@ public class VectorSet {
             throw new IllegalArgumentException("El vector debe tener la misma dimensión que los demás vectores en el conjunto.");
         }
 
-        // Creamos una matriz con los componentes de los vectores en el conjunto
-        double[][] matrix = new double[this.vectors.size()][this.dimension];
+        // Crear una matriz ampliada con los componentes de los vectores del conjunto
+        double[][] augmentedMatrix = new double[this.vectors.size()][this.dimension + 1];
         for (int i = 0; i < this.vectors.size(); i++) {
             Vector v = this.vectors.get(i);
             for (int j = 0; j < this.dimension; j++) {
-                matrix[i][j] = v.getComponent(j);
+                augmentedMatrix[i][j] = v.getComponent(j);
             }
+            augmentedMatrix[i][this.dimension] = vector.getComponent(i);
         }
 
-        // Creamos un vector columna con los componentes del vector dado
-        double[] b = new double[this.dimension];
-        for (int i = 0; i < this.dimension; i++) {
-            b[i] = vector.getComponent(i);
-        }
-
-        // Resolvemos el sistema de ecuaciones lineales usando eliminación Gaussiana
-        for (int i = 0; i < this.dimension; i++) {
-            int maxRow = i;
+        // Aplicar eliminación de Gauss-Jordan a la matriz ampliada
+        for (int i = 0; i < this.vectors.size(); i++) {
+            // Encontrar la fila con el pivote más grande en la columna actual
+            int maxPivotRowIndex = i;
+            double maxPivotValue = Math.abs(augmentedMatrix[i][i]);
             for (int j = i + 1; j < this.vectors.size(); j++) {
-                if (Math.abs(matrix[j][i]) > Math.abs(matrix[maxRow][i])) {
-                    maxRow = j;
+                double absValue = Math.abs(augmentedMatrix[j][i]);
+                if (absValue > maxPivotValue) {
+                    maxPivotRowIndex = j;
+                    maxPivotValue = absValue;
                 }
             }
 
-            double[] temp = matrix[i];
-            matrix[i] = matrix[maxRow];
-            matrix[maxRow] = temp;
-            double t = b[i];
-            b[i] = b[maxRow];
-            b[maxRow] = t;
-
-            if (matrix[i][i] == 0.0) {
-                return false;
+            // Intercambiar la fila actual con la fila del pivote más grande
+            if (maxPivotRowIndex != i) {
+                double[] tempRow = augmentedMatrix[i];
+                augmentedMatrix[i] = augmentedMatrix[maxPivotRowIndex];
+                augmentedMatrix[maxPivotRowIndex] = tempRow;
             }
 
-            for (int j = i + 1; j < this.vectors.size(); j++) {
-                double factor = matrix[j][i] / matrix[i][i];
-                for (int k = i; k < this.dimension; k++) {
-                    matrix[j][k] -= factor * matrix[i][k];
+            // Hacer ceros debajo y encima del pivote en la columna actual
+            for (int j = 0; j < this.vectors.size(); j++) {
+                if (j != i) {
+                    double factor = augmentedMatrix[j][i] / augmentedMatrix[i][i];
+                    for (int k = i + 1; k < this.dimension + 1; k++) {
+                        augmentedMatrix[j][k] -= factor * augmentedMatrix[i][k];
+                    }
+                    augmentedMatrix[j][i] = 0;
                 }
-                b[j] -= factor * b[i];
             }
         }
 
-        // Verificamos si la última fila de la matriz reducida es consistente
-        for (int i = this.vectors.size() - 1; i >= 0; i--) {
-            double sum = 0.0;
-            for (int j = i + 1; j < this.dimension; j++) {
-                sum += matrix[i][j] * b[j];
-            }
-            if (sum != -matrix[i][i] * b[i]) {
+        // Verificar si el vector se puede generar como una combinación lineal de los demás vectores
+        for (int i = 0; i < this.vectors.size(); i++) {
+            double ratio = augmentedMatrix[i][this.dimension] / augmentedMatrix[i][i];
+            if (ratio != 0) {
                 return false;
             }
         }
         return true;
     }
+
 }

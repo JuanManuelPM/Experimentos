@@ -8,10 +8,17 @@ public class Main_vectors {
         VectorSet conjuntoDeVectores = new VectorSet(3);
         conjuntoDeVectores.fillWithGenericSet3d();
 
+        Vector vectorExtra = new Vector(new double[]{1,2,3});
+        //conjuntoDeVectores.addVector(vectorExtra);
+
         conjuntoDeVectores.print();
+
         System.out.println("¿el conjunto es linearmente independiente? --> " + conjuntoDeVectores.isLinearlyIndependent());
-        conjuntoDeVectores.removeVector(2);
-        conjuntoDeVectores.print();
+
+        vectorExtra.print();
+        System.out.println(conjuntoDeVectores.isLinearCombination(vectorExtra));
+        //System.out.println(conjuntoDeVectores.isLinearCombination(vectorExtra));
+
         //System.out.println("el conjunto de vectores extraibles es: ");
         //vectoresExtraibles.print();
         //Vector vector = new Vector(3);
