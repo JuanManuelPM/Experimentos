@@ -1,4 +1,4 @@
-package test.ui;
+package test.extras.ui;
 
 import javax.swing.*;
 import java.io.File;

@@ -1,6 +1,5 @@
-package test.ui;
+package test.extras.ui;
 
-import java.io.IOException;
 import java.util.Scanner;
 
 public class ConsoleUI {
