@@ -52,7 +52,6 @@ public class JuegoClicks extends JFrame implements ActionListener {
         // Iniciar el temporizador
         temporizador.start();
     }
-
     @Override
     public void actionPerformed(ActionEvent e) {
         contadorClicks++;

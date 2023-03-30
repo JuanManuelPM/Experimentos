@@ -159,9 +159,9 @@ public class AudioPlayer {
     }
     public static void main(String[] args) throws LineUnavailableException {
         // Ejemplos de uso
-        AudioPlayer.playVictory();
-        AudioPlayer.playIncorrect();
-        AudioPlayer.playCorrect();
+        AudioPlayer.playHappyBirthday();
+        //AudioPlayer.playIncorrect();
+        //AudioPlayer.playCorrect();
     }
 
 }
