@@ -1,18 +1,19 @@
 package test.games.jframe.canvas.turorial;
 
 import test.games.jframe.canvas.AbstractCanvas;
+import test.games.jframe.shapes.Shapes;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
-
 public class Test3_Transformations extends AbstractCanvas {
-    public Test3_Transformations(int w, int h, Color c) {
-        super(w, h, c);
+    public Test3_Transformations(JFrame f,int w, int h, Color c) {
+        super(f,w, h, c);
     }
 
-    public Test3_Transformations() {
-        super(1250, 750, Color.white);
+    public Test3_Transformations(JFrame f) {
+        super(f,1250, 750, Color.black);
     }
 
     @Override
