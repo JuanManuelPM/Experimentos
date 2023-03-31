@@ -1,4 +1,4 @@
-package test.games.ChatGPT;
+package test.games.chatGPT;
 
 import java.awt.Color;
 import java.awt.Graphics;

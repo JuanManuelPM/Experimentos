@@ -1,4 +1,4 @@
-package test.games.ChatGPT;
+package test.games.chatGPT;
 
 /*
 Este código crea un lienzo (un JPanel) y lo agrega a un marco (un JFrame).

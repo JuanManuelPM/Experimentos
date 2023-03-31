@@ -1,4 +1,4 @@
-package test.games.ChatGPT;
+package test.games.chatGPT;
 
 import javax.swing.*;
 import java.awt.*;
