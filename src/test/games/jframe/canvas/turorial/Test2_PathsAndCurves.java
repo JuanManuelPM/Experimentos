@@ -2,13 +2,14 @@ package test.games.jframe.canvas.turorial;
 
 import test.games.jframe.canvas.AbstractCanvas;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.Path2D;
 
 public class Test2_PathsAndCurves extends AbstractCanvas {
 
-    public Test2_PathsAndCurves(int w, int h, Color c) {
-        super(w, h, c);
+    public Test2_PathsAndCurves(JFrame f, int w, int h, Color c) {
+        super(f,w, h, c);
     }
 
     @Override
