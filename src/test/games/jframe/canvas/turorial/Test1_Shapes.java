@@ -3,7 +3,6 @@ package test.games.jframe.canvas.turorial;
 import test.games.jframe.canvas.AbstractCanvas;
 import test.games.jframe.shapes.Shapes;
 
-import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
@@ -11,17 +10,9 @@ import java.awt.geom.Rectangle2D;
 
 public class Test1_Shapes extends AbstractCanvas {
 
-    private Cloud c1;
-    private Cloud c2;
-    private Cloud c3;
-    public Test1_Shapes(JFrame f, int w, int h, Color c) {
-        super(f,w,h,c);
-        c1 = new Cloud(10,350, 50, new Color(100,149,237));
-        c2 = new Cloud(150,300, 75, new Color(200,50,100));
-        c3 = new Cloud(325,100, 120, new Color(50,100,80));
-    }
-    public Test1_Shapes(JFrame f) {
-        super(f);
+    private Cloud c1,c2,c3;
+    public Test1_Shapes() {
+        super();
         c1 = new Cloud(10,350, 50, new Color(100,149,237));
         c2 = new Cloud(150,300, 75, new Color(200,50,100));
         c3 = new Cloud(325,100, 120, new Color(50,100,80));
@@ -56,8 +47,8 @@ public class Test1_Shapes extends AbstractCanvas {
 
         //paints
         g.drawLine(0,0,100,300);
-        Shapes.drawArrowLine(g,0,0,400,300);
+        Shapes.drawArrowLine(g2d,0,0,400,300);
         //g2d.translate(400, 300);
-        Shapes.drawArrowLine(g,0,0,100, 300);
+        Shapes.drawArrowLine(g2d,0,0,100, 300);
     }
 }

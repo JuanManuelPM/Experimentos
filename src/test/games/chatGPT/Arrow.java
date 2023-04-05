@@ -48,12 +48,12 @@ public class Arrow extends JPanel {
         int arrowLength = 20;
         int arrowWidth = 8;
 
-        int x1 = (int) (mouseX - arrowLength * Math.cos(angle - Math.PI / 6));
-        int y1 = (int) (mouseY - arrowLength * Math.sin(angle - Math.PI / 6));
+        int x1 = (int) (mouseX - arrowLength * Math.cos(angle - Math.PI / arrowWidth));
+        int y1 = (int) (mouseY - arrowLength * Math.sin(angle - Math.PI / arrowWidth));
         int x2 = mouseX;
         int y2 = mouseY;
-        int x3 = (int) (mouseX - arrowLength * Math.cos(angle + Math.PI / 6));
-        int y3 = (int) (mouseY - arrowLength * Math.sin(angle + Math.PI / 6));
+        int x3 = (int) (mouseX - arrowLength * Math.cos(angle + Math.PI / arrowWidth));
+        int y3 = (int) (mouseY - arrowLength * Math.sin(angle + Math.PI / arrowWidth));
 
         if (isClicked) {
             g2d.setColor(Color.RED);

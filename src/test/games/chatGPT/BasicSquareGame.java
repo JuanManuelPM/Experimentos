@@ -39,7 +39,7 @@ public class BasicSquareGame implements KeyListener {
             }
         };
         canvas.setPreferredSize(new Dimension(500, 500));
-        canvas.setBackground(Color.WHITE);
+        canvas.setBackground(Color.LIGHT_GRAY);
         canvas.setFocusable(true);
         canvas.requestFocus();
         canvas.addKeyListener(this);
@@ -52,13 +52,13 @@ public class BasicSquareGame implements KeyListener {
     public void keyPressed(KeyEvent e) {
         int key = e.getKeyCode();
         if (key == KeyEvent.VK_LEFT) {
-            rectX -= 10;
+            rectX -= 20;
         } else if (key == KeyEvent.VK_RIGHT) {
-            rectX += 10;
+            rectX += 20;
         } else if (key == KeyEvent.VK_UP) {
-            rectY -= 10;
+            rectY -= 20;
         } else if (key == KeyEvent.VK_DOWN) {
-            rectY += 10;
+            rectY += 20;
         }
         canvas.repaint();
     }
