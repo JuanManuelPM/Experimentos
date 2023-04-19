@@ -7,25 +7,30 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-public class Random_3 extends AbstractCanvas {
+public class Flechas_v4 extends AbstractCanvas {
     // a medida que moves el mouse una cierta distancia, se genera una flecha como si fuese una huella de tu direccion.
     //si las flechas son mas "largas/lejanas" pasar de color verde a uno mas rojo;
     // color rojo++ color verde-- segun la distancia
-    private int mouseX, mouseY, posX, posY, xCounter, yCounter, red, green;
-    private int lastDistance = 1;
+    private int mouseX;
+    private int mouseY;
+    private double posX;
+    private double posY;
+    private int counter;
+    private int red;
+    private int green;
     private char key;
     private Color color;
     private boolean clicked = false;
-    public Random_3(){
+    public Flechas_v4(){
         super();
         color = Color.black;
         red = 250;
         addMouseMotionListener(new MouseAdapter() {
             public void mouseMoved(MouseEvent e) {
-                mouseX = e.getX();
-                mouseY = e.getY();
-                xCounter++;
-                yCounter++;
+                //mouseX = e.getX();
+                //mouseY = e.getY();
+                //xCounter++;
+                //yCounter++;
                 repaint();
             }
         });
@@ -56,28 +61,30 @@ public class Random_3 extends AbstractCanvas {
     public void paint(Graphics g) {
         setup(g);
         //paintBackground();
-        if (xCounter == 10 && yCounter == 10){
-            final int Xdistance = mouseX - posX;
-            final int Ydistance = mouseY - posY;
-            int distance =10*(Xdistance + Ydistance)/2;
+        counter++;
+        double newPosX = posX + (Math.random() * 2) - 1;
+        double newPosY = posY + (Math.random() * 2) - 1;
+
+        if (counter == 10){
+            final double Xdistance = posX + newPosX;
+            final double Ydistance = posY + newPosY;
+            double distance = 10*(Xdistance + Ydistance)/2;
             if (distance<0) distance*=-1;
             int red = Math.max(0, Math.min(255, (int)((255 * (distance + 100) / (distance + 500)))));
             if (distance < 1){distance = 1;}
             color = new Color(red,250-red,0);
-            lastDistance = distance;
             System.out.println(distance);
             g2d.setColor(color);
-            Shapes.drawArrowLine(g2d,posX,posY,mouseX,mouseY);
-            posX = mouseX;
-            posY = mouseY;
+            Shapes.drawArrowLine(g2d, (int) posX, (int) posY, (int) newPosX, (int) newPosX);
+            posX = newPosX;
+            posY = newPosY;
             clicked = false;
-            xCounter = 0;
-            yCounter = 0;
-
+            counter= 0;
         }
+        //repaint();
     }
 
     public static void main(String[] args) {
-        AbstractCanvas c = new Random_3();
+        AbstractCanvas c = new Flechas_v4();
     }
 }

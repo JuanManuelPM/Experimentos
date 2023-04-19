@@ -1,15 +1,17 @@
 package test.games.jframe.canvas.random;
 
 import test.games.jframe.canvas.AbstractCanvas;
+import test.games.jframe.shapes.Shapes;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-public class Random_1 extends AbstractCanvas {
+
+public class Flechas_v2 extends AbstractCanvas{
     private int mouseX, mouseY, posX, posY;
-    private boolean keyPressed = false;
     private char key;
     private Color color;
-    public Random_1(){
+    private boolean clicked = false;
+    public Flechas_v2(){
         super();
         color = Color.black;
         addMouseMotionListener(new MouseAdapter() {
@@ -26,6 +28,7 @@ public class Random_1 extends AbstractCanvas {
                     leftClick();
                 } else if (e.getButton() == MouseEvent.BUTTON3) {
                     rigthClick();
+                }else{
                 }
                 repaint();
             }
@@ -33,7 +36,9 @@ public class Random_1 extends AbstractCanvas {
     }
 
     private void leftClick() {
-        color = Color.black;
+        clicked = true;
+        color = new Color((int)(Math.random()*250),(int)(Math.random()*250),(int)(Math.random()*250));
+
     }
     private void rigthClick() {
         color = new Color((int)(Math.random()*250),(int)(Math.random()*250),(int)(Math.random()*250));
@@ -42,32 +47,18 @@ public class Random_1 extends AbstractCanvas {
     @Override
     public void paint(Graphics g) {
         setup(g);
-        paintBackground();
-        //Shapes.fillArrowLine(g2d,centerX,centerY, mouseX, mouseY);
-        int centerX = getWidth() / 2;
-        int centerY = getHeight() / 2;
-
-        g2d.setColor(color);
-        g2d.drawLine(centerX, centerY, mouseX, mouseY);
-
-        double dx = mouseX - centerX;
-        double dy = mouseY - centerY;
-        double angle = Math.atan2(dy, dx);
-
-        int arrowLength = 20;
-        int arrowWidth = 8;
-
-        int x1 = (int) (mouseX - arrowLength * Math.cos(angle - Math.PI / arrowWidth));
-        int y1 = (int) (mouseY - arrowLength * Math.sin(angle - Math.PI / arrowWidth));
-        int x2 = mouseX;
-        int y2 = mouseY;
-        int x3 = (int) (mouseX - arrowLength * Math.cos(angle + Math.PI / arrowWidth));
-        int y3 = (int) (mouseY - arrowLength * Math.sin(angle + Math.PI / arrowWidth));
-
-        g2d.fillPolygon(new int[] { x1, x2, x3 }, new int[] { y1, y2, y3 }, 3);
+        //paintBackground();
+        if (clicked){
+            g2d.setColor(color);
+            Shapes.drawArrowLine(g2d,posX,posY,mouseX,mouseY);
+            posX = mouseX;
+            posY = mouseY;
+            clicked = false;
+        }
     }
 
     public static void main(String[] args) {
-        AbstractCanvas c = new Random_1();
+        AbstractCanvas c = new Flechas_v2();
     }
+
 }
