@@ -13,11 +13,10 @@ public class Flechas_v4 extends AbstractCanvas {
     // color rojo++ color verde-- segun la distancia
     private int mouseX;
     private int mouseY;
-    private double posX;
-    private double posY;
+    private double posX = (double) width /2;
+    private double posY = (double) height /2;
     private int counter;
-    private int red;
-    private int green;
+    private int red, green;
     private char key;
     private Color color;
     private boolean clicked = false;
@@ -31,7 +30,7 @@ public class Flechas_v4 extends AbstractCanvas {
                 //mouseY = e.getY();
                 //xCounter++;
                 //yCounter++;
-                repaint();
+                //repaint();
             }
         });
         addMouseListener(new MouseAdapter() {
@@ -41,7 +40,6 @@ public class Flechas_v4 extends AbstractCanvas {
                     leftClick();
                 } else if (e.getButton() == MouseEvent.BUTTON3) {
                     rigthClick();
-                }else{
                 }
                 repaint();
             }
@@ -65,23 +63,16 @@ public class Flechas_v4 extends AbstractCanvas {
         double newPosX = posX + (Math.random() * 2) - 1;
         double newPosY = posY + (Math.random() * 2) - 1;
 
-        if (counter == 10){
-            final double Xdistance = posX + newPosX;
-            final double Ydistance = posY + newPosY;
-            double distance = 10*(Xdistance + Ydistance)/2;
-            if (distance<0) distance*=-1;
-            int red = Math.max(0, Math.min(255, (int)((255 * (distance + 100) / (distance + 500)))));
-            if (distance < 1){distance = 1;}
-            color = new Color(red,250-red,0);
-            System.out.println(distance);
+        int distance = (int) (10*((posX-newPosX) + (posY-newPosY))/2);
+        if (distance<0) distance *= -1;
+
+        if (distance > 10){
             g2d.setColor(color);
-            Shapes.drawArrowLine(g2d, (int) posX, (int) posY, (int) newPosX, (int) newPosX);
+            Shapes.drawArrowLine(g2d, (int) posX, (int) posY, (int) newPosX, (int) newPosY);
             posX = newPosX;
             posY = newPosY;
-            clicked = false;
-            counter= 0;
+            counter = 0;
         }
-        //repaint();
     }
 
     public static void main(String[] args) {
