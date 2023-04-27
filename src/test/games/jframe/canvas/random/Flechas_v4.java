@@ -13,8 +13,10 @@ public class Flechas_v4 extends AbstractCanvas {
     // color rojo++ color verde-- segun la distancia
     private int mouseX;
     private int mouseY;
-    private double posX = (double) width /2;
-    private double posY = (double) height /2;
+    private int lastPosX = width /2;
+    private int lastPosY = height /2;
+    private int posY = height /2;
+    private int posX = height /2;
     private int counter;
     private int red, green;
     private char key;
@@ -30,7 +32,7 @@ public class Flechas_v4 extends AbstractCanvas {
                 //mouseY = e.getY();
                 //xCounter++;
                 //yCounter++;
-                //repaint();
+                repaint();
             }
         });
         addMouseListener(new MouseAdapter() {
@@ -59,19 +61,21 @@ public class Flechas_v4 extends AbstractCanvas {
     public void paint(Graphics g) {
         setup(g);
         //paintBackground();
-        counter++;
-        double newPosX = posX + (Math.random() * 2) - 1;
-        double newPosY = posY + (Math.random() * 2) - 1;
+        int newPosX = (int) (posX + Math.random()*2-1);
+        int newPosY = (int) (posY + Math.random()*2-1);
+        posX = newPosX;
+        posY = newPosY;
 
-        int distance = (int) (10*((posX-newPosX) + (posY-newPosY))/2);
+        int distance = (((lastPosX-newPosX) + (lastPosY-newPosY))/2);
         if (distance<0) distance *= -1;
+        System.out.println(distance);
 
-        if (distance > 10){
+        if (distance > 20){
             g2d.setColor(color);
-            Shapes.drawArrowLine(g2d, (int) posX, (int) posY, (int) newPosX, (int) newPosY);
-            posX = newPosX;
-            posY = newPosY;
-            counter = 0;
+            Shapes.drawArrowLine(g2d, lastPosX, lastPosY, newPosX, newPosY);
+            lastPosX = newPosX;
+            lastPosY = newPosY;
+            repaint();
         }
     }
 
