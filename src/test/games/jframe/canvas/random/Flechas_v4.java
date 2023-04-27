@@ -6,6 +6,7 @@ import test.games.jframe.shapes.Shapes;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.Random;
 
 public class Flechas_v4 extends AbstractCanvas {
     // a medida que moves el mouse una cierta distancia, se genera una flecha como si fuese una huella de tu direccion.
@@ -26,6 +27,7 @@ public class Flechas_v4 extends AbstractCanvas {
         super();
         color = Color.black;
         red = 250;
+        repaint();
         addMouseMotionListener(new MouseAdapter() {
             public void mouseMoved(MouseEvent e) {
                 //mouseX = e.getX();
@@ -61,16 +63,23 @@ public class Flechas_v4 extends AbstractCanvas {
     public void paint(Graphics g) {
         setup(g);
         //paintBackground();
-        int newPosX = (int) (posX + Math.random()*2-1);
-        int newPosY = (int) (posY + Math.random()*2-1);
-        posX = newPosX;
-        posY = newPosY;
+        int newPosX = (posX + new Random().nextInt(101) - 50);
+        int newPosY = (posY + new Random().nextInt(101) - 50);
+        posX = Math.min(Math.max(newPosX,0), width);
+        posY = Math.min(Math.max(newPosY,0), height);
+
+        if (posX < 0){
+            posX = 0;
+        }
 
         int distance = (((lastPosX-newPosX) + (lastPosY-newPosY))/2);
         if (distance<0) distance *= -1;
         System.out.println(distance);
 
         if (distance > 20){
+            int red = Math.max(0, Math.min(255, (int)((255 * (10*distance + 100) / (10*distance + 500)))));
+            if (distance < 1){distance = 1;}
+            color = new Color(red,250-red,0);
             g2d.setColor(color);
             Shapes.drawArrowLine(g2d, lastPosX, lastPosY, newPosX, newPosY);
             lastPosX = newPosX;
