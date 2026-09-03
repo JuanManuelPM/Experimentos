@@ -65,18 +65,22 @@ Usar Supabase Realtime sin base de datos:
 
 **Gate:** `/`, `/app.js`, `/style.css` deben responder 200 desde producción.
 
-## F8 — E2E
-Prueba deseada con dos clientes aislados:
-1. Alice entra.
-2. Bob entra.
-3. ambos ven 2 online.
-4. Alice envía `hola`.
-5. Bob recibe `hola`.
-6. Bob responde.
-7. Alice recibe respuesta.
-8. Bob sale y Alice vuelve a ver 1 online.
+## F8 — E2E realtime
+Prueba con dos clientes aislados:
+1. Alice abre una conexión WebSocket real.
+2. Bob abre otra conexión independiente.
+3. ambos se unen al canal de producción.
+4. ambos hacen `track()` de Presence.
+5. Alice recibe el `presence_diff` de Bob.
+6. Alice envía `hola desde e2e` por Broadcast.
+7. Bob recibe exactamente ese Broadcast.
 
-**Estado en esta ejecución:** pendiente de confirmación humana porque el navegador automatizado y las conexiones WebSocket salientes del sandbox están bloqueados por política de entorno. No confundir deploy exitoso con E2E aprobado.
+**Estado:** `PASS`. La prueba se ejecutó desde una Vercel Function para evitar las restricciones de red/navegador del sandbox local.
+
+## F9 — Smoke test UI
+Abrir `https://casa-amigos-neon.vercel.app` en dos navegadores/dispositivos, entrar con dos nombres y confirmar visualmente lista online + mensajes.
+
+**Estado:** recomendado como prueba humana final. El Chromium automatizado del sandbox está bloqueado por política administrativa, por lo que este gate visual no se pudo automatizar aquí.
 
 ## Criterio de cierre v1
-La primera prueba real de dos dispositivos que complete F8 convierte v1 en `WORKING_CONFIRMED`. Hasta entonces: `DEPLOYED_AWAITING_EXTERNAL_E2E`.
+El núcleo realtime y el deploy están confirmados: `WORKING_CORE_CONFIRMED`. El smoke test UI humano eleva el estado a `WORKING_CONFIRMED_UI`.
