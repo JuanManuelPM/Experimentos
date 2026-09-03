@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#dfe8c8">
+  <title>CASA — chat con amigos</title>
+  <meta name="description" content="Entrá con un nombre y hablá con tus amigos en tiempo real.">
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <main class="shell">
+    <section class="join" id="joinView">
+      <div class="brand"><i class="gem"></i><b>CASA</b></div>
+      <h1>Entrá y hablá.</h1>
+      <p>Una sola sala. Sin cuenta, sin contraseña, sin vueltas.</p>
+      <form id="nameForm">
+        <input id="nameInput" maxlength="24" autocomplete="nickname" placeholder="Tu nombre" aria-label="Tu nombre" required>
+        <button class="primary" type="submit">Entrar a la casa</button>
+        <small id="joinError" role="alert"></small>
+      </form>
+    </section>
+
+    <section class="app hidden" id="chatView">
+      <div class="chat">
+        <header>
+          <div class="room"><i class="gem mini"></i><b>Casa de los pibes</b></div>
+          <div class="headerRight">
+            <button class="mobileCount" id="mobileCount" type="button"></button>
+            <span class="status" id="status"><i></i><span>Conectando…</span></span>
+          </div>
+        </header>
+        <div class="messages" id="messages" aria-live="polite">
+          <div class="empty" id="empty"><b>La casa está tranquila.</b><span>Mandá el primer mensaje.</span></div>
+        </div>
+        <form class="composer" id="messageForm">
+          <input id="messageInput" maxlength="500" autocomplete="off" placeholder="Escribí algo…" aria-label="Mensaje" disabled>
+          <button class="primary send" id="sendButton" type="submit" disabled>Enviar</button>
+        </form>
+      </div>
+      <aside>
+        <div class="asideTitle"><b>En la casa</b><span id="onlineCount">0 online</span></div>
+        <div class="people" id="people"></div>
+        <button class="leave" id="leaveButton" type="button">Cambiar nombre / salir</button>
+      </aside>
+    </section>
+  </main>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
