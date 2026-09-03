@@ -1,0 +1,7 @@
+# Prompt de reconstrucción en una sola pasada
+
+Construí y publicá una micro-sala social web llamada CASA. El objetivo no es hacer una app completa sino cerrar un loop multijugador mínimo que funcione de verdad: cualquier persona con el link abre la página, escribe un nombre sin registrarse, entra a una única sala, ve quién está conectado y puede mandar/recibir mensajes en tiempo real.
+
+Restricciones: sin login, sin contraseña, sin servidor propio, sin framework si no es necesario, mobile + desktop, navegación cero, una sola sala. Usá Supabase Realtime Broadcast para mensajes y Presence para usuarios online; usá una publishable key, nunca service_role/secret. Configurá Broadcast con self=true y ack=true. Identidad efímera única por pestaña/sesión usando crypto.randomUUID + sessionStorage. Recordá el nombre con localStorage. No persistir mensajes en v1. Limitar nombre a 24 caracteres y mensajes a 500. Renderizar texto únicamente con textContent para evitar inyección HTML. Rate limit básico del cliente. Mostrar estado Conectando/Conectado/Error. Enter debe enviar. Debe poder salir/cambiar nombre. UI minimalista con leve vibra Sims/social: fondo cálido, verde, pequeño rombo/plumbob, avatares de iniciales, lista online; no copiar assets de Los Sims.
+
+La implementación final tiene que ser una página estática muy simple, con SDK fijado a versión exacta, README con arquitectura y límites, verificación real en navegador y publicación a una URL pública. No detenerse en planes: implementar, probar, corregir y desplegar.
