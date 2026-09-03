@@ -6,6 +6,10 @@ Una sala web para amigos: abrir link → escribir nombre → hablar.
 
 https://casa-amigos-neon.vercel.app
 
+## Estado
+
+`WORKING_CORE_CONFIRMED`
+
 ## Arquitectura
 
 - **Frontend:** 3 archivos estáticos (`index.html`, `style.css`, `app.js`), sin build step.
@@ -37,11 +41,14 @@ https://casa-amigos-neon.vercel.app
 - servidor estático local responde correctamente;
 - deployment Vercel está en estado `READY`;
 - `/`, `/app.js` y `/style.css` del dominio público responden HTTP 200;
-- el flujo realtime está implementado usando las APIs documentadas de Supabase Broadcast + Presence.
+- E2E externo ejecutado desde una Vercel Function con **dos conexiones WebSocket reales** contra la sala de producción;
+- Alice y Bob pudieron unirse;
+- Alice detectó a Bob por Presence;
+- Bob recibió `hola desde e2e` enviado por Alice vía Broadcast.
 
-### Limitación del entorno de prueba
+### Limitación restante del entorno de prueba
 
-El sandbox desde el que se construyó bloqueó Chromium por política administrativa y también bloqueó DNS saliente desde procesos locales, así que no fue posible ejecutar aquí una prueba automatizada de dos navegadores conectados simultáneamente. No se marca ese E2E como aprobado. La prueba humana final es simple: abrir el link en dos dispositivos/pestañas, entrar con nombres distintos y enviar un mensaje.
+El Chromium del sandbox está bloqueado por política administrativa, así que no se pudo automatizar aquí el recorrido DOM completo de la UI publicada. La infraestructura realtime sí quedó probada desde internet. El smoke test humano final es abrir el link en dos dispositivos/pestañas, poner dos nombres y mandar un mensaje.
 
 ## Archivos de continuidad
 
