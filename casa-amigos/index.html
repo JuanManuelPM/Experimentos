@@ -4,8 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#dfe8c8">
-  <title>CASA — chat con voz</title>
-  <meta name="description" content="Entrá con un nombre, hablá con tus amigos y hacé que los mensajes se lean en voz alta.">
+  <title>CASA — walkie de texto</title>
+  <meta name="description" content="Chat realtime que lee los mensajes en voz alta en todos los dispositivos conectados.">
   <link rel="stylesheet" href="./style.css">
 </head>
 <body>
@@ -13,10 +13,10 @@
     <section class="join" id="joinView">
       <div class="brand"><i class="gem"></i><b>CASA</b></div>
       <h1>Entrá y hablá.</h1>
-      <p>Una sola sala. Sin cuenta, sin contraseña, ahora también con voz.</p>
+      <p>Escribís. Mandás. Suena en todos los celulares conectados.</p>
       <form id="nameForm">
         <input id="nameInput" maxlength="24" autocomplete="nickname" placeholder="Tu nombre" aria-label="Tu nombre" required>
-        <button class="primary" type="submit">Entrar a la casa</button>
+        <button class="primary" type="submit">Entrar al walkie</button>
         <small id="joinError" role="alert"></small>
       </form>
     </section>
@@ -26,30 +26,49 @@
         <header>
           <div class="room"><i class="gem mini"></i><b>Casa de los pibes</b></div>
           <div class="headerRight">
-            <button class="voiceToggle" id="voiceToggle" type="button" aria-pressed="false" title="Activar lectura automática de mensajes recibidos">
-              <span class="voiceIcon" aria-hidden="true">🔇</span><b>Voz</b>
+            <button class="walkieToggle active" id="walkieToggle" type="button" aria-pressed="true" title="Silenciar el walkie">
+              <span aria-hidden="true">🔊</span><b>Walkie</b>
             </button>
             <button class="mobileCount" id="mobileCount" type="button"></button>
             <span class="status" id="status"><i></i><span>Conectando…</span></span>
           </div>
         </header>
+
         <div class="messages" id="messages" aria-live="polite">
-          <div class="empty" id="empty"><b>La casa está tranquila.</b><span>Mandá el primer mensaje.</span></div>
+          <div class="empty" id="empty"><b>Canal abierto.</b><span>El próximo mensaje se va a escuchar acá.</span></div>
         </div>
+
+        <div class="voiceBar" aria-label="Estilo de voz">
+          <span>Voz</span>
+          <div class="voicePresets" id="voicePresets">
+            <button type="button" data-preset="normal" class="selected">Normal</button>
+            <button type="button" data-preset="grave">Grave</button>
+            <button type="button" data-preset="aguda">Aguda</button>
+            <button type="button" data-preset="robot">Robot</button>
+            <button type="button" data-preset="rapida">Rápida</button>
+            <button type="button" data-preset="lenta">Lenta</button>
+          </div>
+        </div>
+
         <form class="composer" id="messageForm">
-          <input id="messageInput" maxlength="500" autocomplete="off" placeholder="Escribí algo…" aria-label="Mensaje" disabled>
-          <button class="speakDraft" id="speakDraft" type="button" aria-label="Leer este mensaje" title="Leer este mensaje" disabled>▶</button>
-          <button class="primary send" id="sendButton" type="submit" disabled>Enviar</button>
+          <input id="messageInput" maxlength="500" autocomplete="off" placeholder="Escribí para hablar…" aria-label="Mensaje" disabled>
+          <button class="speakDraft" id="speakDraft" type="button" aria-label="Probar esta voz" title="Probar esta voz" disabled>▶</button>
+          <button class="primary send" id="sendButton" type="submit" disabled>Hablar</button>
         </form>
       </div>
+
       <aside>
-        <div class="asideTitle"><b>En la casa</b><span id="onlineCount">0 online</span></div>
+        <div class="asideTitle"><b>En el canal</b><span id="onlineCount">0 online</span></div>
         <div class="people" id="people"></div>
-        <div class="voiceHint"><b>Voz</b><span>▶ reproduce cualquier mensaje. “Voz” lee automáticamente lo que te manden.</span></div>
+        <div class="voiceHint">
+          <b>Walkie encendido</b>
+          <span>Cada mensaje nuevo se reproduce automáticamente. Si llegan varios seguidos, se escuchan en orden.</span>
+        </div>
         <button class="leave" id="leaveButton" type="button">Cambiar nombre / salir</button>
       </aside>
     </section>
   </main>
+
   <script type="module" src="./app.js"></script>
 </body>
 </html>
