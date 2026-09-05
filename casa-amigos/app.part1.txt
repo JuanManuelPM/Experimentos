@@ -1,0 +1,72 @@
+
+const SB_URL='https://catnohyouxqjjtseaueb.supabase.co';
+const KEY='sb_publishable_eqh3PngXs4UjLLWiY3pz1w_nhHtf7X-';
+const ROOM='casa-amigos-v3-retro';
+const TTS_URL=`${SB_URL}/functions/v1/casa-tts`;
+const PUSH_URL=`${SB_URL}/functions/v1/casa-push`;
+const VAPID_PUBLIC_KEY='BHLMYq-HDi7O_iG9z7zXG4SZydThS-iQictsh-fSEgVKdg4Kysfcv-iX5ZoffiMOFVogDGbt9NR-t8kMtBaK2lE';
+const DB_NAME='casa-push',DB_STORE='pending';
+const MAX_EMBED_AUDIO_B64=175000;
+
+const VOICES={
+'es-AR-TomasNeural':{name:'Tomás',region:'Argentina',kind:'grave',sample:'Habla Tomás. Che, ¿dónde están? Probando canal.'},
+'es-AR-ElenaNeural':{name:'Elena',region:'Argentina',kind:'clara',sample:'Habla Elena. Che, ¿dónde están? Probando canal.'},
+'es-MX-MarinaNeural':{name:'Marina',region:'México',kind:'infantil',sample:'Soy Marina. Esta es una voz infantil para CASA.'},
+'es-MX-JorgeNeural':{name:'Jorge',region:'México',kind:'profunda',sample:'Comando Jorge. Transmisión de prueba desde México.'},
+'es-MX-CarlotaNeural':{name:'Carlota',region:'México',kind:'brillante',sample:'Soy Carlota. Transmisión de prueba desde México.'},
+'es-MX-YagoNeural':{name:'Yago',region:'México',kind:'masculina',sample:'Habla Yago. Esta es mi señal de prueba.'},
+'es-CU-ManuelNeural':{name:'Manuel',region:'Cuba',kind:'caribe',sample:'Habla Manuel. Probando frecuencia desde Cuba.'},
+'es-DO-EmilioNeural':{name:'Emilio',region:'R. Dominicana',kind:'caribe',sample:'Habla Emilio. Probando frecuencia dominicana.'},
+'es-DO-RamonaNeural':{name:'Ramona',region:'R. Dominicana',kind:'caribe',sample:'Habla Ramona. Probando frecuencia dominicana.'},
+'es-PR-VictorNeural':{name:'Víctor',region:'Puerto Rico',kind:'caribe',sample:'Habla Víctor. Canal de Puerto Rico listo.'},
+'es-PR-KarinaNeural':{name:'Karina',region:'Puerto Rico',kind:'caribe',sample:'Habla Karina. Canal de Puerto Rico listo.'},
+'es-PE-AlexNeural':{name:'Alex',region:'Perú',kind:'masculina',sample:'Habla Alex. Transmisión de prueba desde Perú.'},
+'es-PY-MarioNeural':{name:'Mario',region:'Paraguay',kind:'masculina',sample:'Habla Mario. Transmisión de prueba desde Paraguay.'},
+'es-UY-MateoNeural':{name:'Mateo',region:'Uruguay',kind:'rioplatense',sample:'Habla Mateo. Probando el canal desde Uruguay.'},
+'es-UY-ValentinaNeural':{name:'Valentina',region:'Uruguay',kind:'rioplatense',sample:'Habla Valentina. Probando el canal desde Uruguay.'},
+'es-VE-SebastianNeural':{name:'Sebastián',region:'Venezuela',kind:'masculina',sample:'Habla Sebastián. Señal de prueba desde Venezuela.'},
+'es-VE-PaolaNeural':{name:'Paola',region:'Venezuela',kind:'femenina',sample:'Habla Paola. Señal de prueba desde Venezuela.'},
+'es-ES-TeoNeural':{name:'Teo',region:'España',kind:'masculina',sample:'Habla Teo. Probando esta frecuencia desde España.'},
+'es-ES-TrianaNeural':{name:'Triana',region:'España',kind:'femenina',sample:'Habla Triana. Probando esta frecuencia desde España.'}
+};
+
+const supabase=createClient(SB_URL,KEY,{auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false}});
+const $=s=>document.querySelector(s);
+const el={
+join:$('#joinView'),chat:$('#chatView'),nameForm:$('#nameForm'),name:$('#nameInput'),intro:$('#introInput'),joinError:$('#joinError'),joinAvatarButton:$('#joinAvatarButton'),joinAvatarPreview:$('#joinAvatarPreview'),joinAvatarFallback:$('#joinAvatarFallback'),avatarInput:$('#avatarInput'),
+messages:$('#messages'),empty:$('#empty'),form:$('#messageForm'),input:$('#messageInput'),send:$('#sendButton'),txNormal:$('.txNormal'),txBusy:$('.txBusy'),voiceButton:$('#voiceButton'),walkie:$('#walkieToggle'),count:$('#mobileCount'),settings:$('#settingsButton'),joinSettings:$('#joinSettings'),channelStatus:$('#channelStatus'),voiceStatus:$('#voiceStatus'),profileButton:$('#profileButton'),profileMiniFallback:$('#profileMiniFallback'),profileMiniImage:$('#profileMiniImage'),
+voiceSheet:$('#voiceSheet'),voiceClose:$('#voiceClose'),voiceList:$('#voiceList'),profileSheet:$('#profileSheet'),profileClose:$('#profileClose'),profileAvatarButton:$('#profileAvatarButton'),profileAvatarPreview:$('#profileAvatarPreview'),profileAvatarFallback:$('#profileAvatarFallback'),profileAvatarInput:$('#profileAvatarInput'),profileNameInput:$('#profileNameInput'),profileIntroInput:$('#profileIntroInput'),profileVoiceButton:$('#profileVoiceButton'),profileVoiceState:$('#profileVoiceState'),saveProfile:$('#saveProfileButton'),peopleSheet:$('#peopleSheet'),peopleClose:$('#peopleClose'),peopleList:$('#peopleList'),
+settingsSheet:$('#settingsSheet'),settingsClose:$('#settingsClose'),settingsStatus:$('#settingsStatus'),editProfile:$('#editProfileButton'),install:$('#installButton'),installState:$('#installState'),notify:$('#notifyButton'),notifyState:$('#notifyState'),testNotify:$('#testNotifyButton'),wake:$('#wakeButton'),wakeState:$('#wakeState'),settingsHelp:$('#settingsHelp'),leave:$('#leaveButton'),pendingPush:$('#pendingPush'),toast:$('#toast')};
+
+const clientId=sessionStorage.getItem('casa_client_id')||crypto.randomUUID();
+sessionStorage.setItem('casa_client_id',clientId);
+const installId=localStorage.getItem('casa_install_id')||crypto.randomUUID();
+localStorage.setItem('casa_install_id',installId);
+
+let currentName=localStorage.getItem('casa_name')||'';
+let currentIntro=localStorage.getItem('casa_intro')||'';
+let currentAvatar=localStorage.getItem('casa_avatar')||'';
+let currentVoice=VOICES[localStorage.getItem('casa_voice_id')]?localStorage.getItem('casa_voice_id'):'';
+let voiceClaimAt=currentVoice?Date.now():0;
+let channel=null,connected=false,lastSend=0,walkieEnabled=true,resolvingConflict=false,sending=false,introTouched=!!currentIntro;
+let audioContext=null,currentSource=null,speechQueue=Promise.resolve();
+let swRegistration=null,pushSubscription=null,deferredInstallPrompt=null,wakeLock=null,wakeWanted=false,heartbeatTimer=null,pendingPayload=null;
+const pushSupported='serviceWorker'in navigator&&'PushManager'in window&&'Notification'in window;
+const isIOS=/iPad|iPhone|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+const isStandalone=()=>window.matchMedia('(display-mode: standalone)').matches||window.navigator.standalone===true;
+
+el.name.value=currentName;
+el.intro.value=currentIntro||defaultIntro(currentName);
+
+function clean(v,max=24){return(v||'').replace(/\s+/g,' ').trim().slice(0,max)}
+function defaultIntro(name){const n=clean(name,18);return n?`Habla ${n}`:''}
+function initials(n){return clean(n,18).split(/\s+/).filter(Boolean).slice(0,2).map(x=>x[0]).join('').toUpperCase()||'?'}
+function time(iso){return new Intl.DateTimeFormat('es-AR',{hour:'2-digit',minute:'2-digit'}).format(new Date(iso))}
+function voiceInfo(id){return VOICES[id]||null}
+function spokenText(text,intro,name){const prefix=clean(intro,42)||defaultIntro(name)||clean(name,18);return `${prefix?prefix+'. ':''}${clean(text,220)}`.slice(0,300)}
+function toast(text){el.toast.textContent=text;el.toast.classList.remove('hidden');clearTimeout(toast.t);toast.t=setTimeout(()=>el.toast.classList.add('hidden'),2600)}
+function openDialog(dialog){if(!dialog||dialog.open)return;if(typeof dialog.showModal==='function')dialog.showModal();else dialog.setAttribute('open','')}
+function closeDialog(dialog){if(!dialog||!dialog.open)return;if(typeof dialog.close==='function')dialog.close();else dialog.removeAttribute('open')}
+
+function setImage(img,fallback,data,name){if(data){img.src=data;img.classList.remove('hidden');fallback.classList.add('hidden')}else{img.removeAttribute('src');img.classList.add('hidden');fallback.classList.remove('hidden');fallback.textContent=initials(name)}}
+function refreshProfileUI(){setImage(el.joinAvatarPreview,el.joinAvatarFallback,currentAvatar,el.name.value||currentName);setImage
