@@ -1,114 +1,94 @@
 <!doctype html>
-<html lang="es-AR">
+<html lang="es">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#c9d4ad">
-  <meta name="description" content="CASA: walkie de texto realtime con perfiles y voces en español.">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="apple-mobile-web-app-title" content="CASA">
-  <title>CASA // CH-01</title>
-  <link rel="manifest" href="./manifest.webmanifest">
-  <link rel="icon" href="./icon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="./style.css">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#F5DABF">
+<meta name="description" content="CASA — walkie de texto con voces absurdas para grupos.">
+<title>CASA</title>
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="stylesheet" href="./style.css?v=4">
 </head>
 <body>
-  <main class="shell">
-    <section class="join panel" id="joinView">
-      <div class="lcdTop"><span>CASA // CH-01</span><i>READY</i></div>
-      <button class="iconButton corner" id="joinSettings" type="button" aria-label="Configuración">•••</button>
-      <div class="logoBlock"><div class="mark" aria-hidden="true"></div><h1>CASA</h1><p>TEXT WALKIE // ONLINE</p></div>
+<section class="shell" id="joinScreen">
+  <div class="join card">
+    <div class="joinTop"><span><i class="liveDot"></i>CASA</span><span>ENTRAR</span></div>
+    <div class="logo"><h1>CASA.</h1><p>ESCRIBÍ · PREPARÁ · SOLTÁ LA VOZ</p></div>
+    <form class="joinForm" id="joinForm">
+      <div class="joinProfile">
+        <button class="avatarPick" id="joinAvatarButton" type="button" aria-label="Elegir foto"><span id="joinAvatarPreview"><b>?</b></span></button>
+        <div class="field">
+          <label for="joinName">TU NOMBRE</label>
+          <input id="joinName" maxlength="28" autocomplete="nickname" placeholder="Juan" required>
+          <div class="optional">Foto opcional · el nombre es lo único obligatorio</div>
+        </div>
+      </div>
+      <input class="hiddenFile" id="joinAvatarFile" type="file" accept="image/*">
+      <button class="primary" id="joinButton" type="submit">ENTRAR</button>
+      <div class="tiny">Sin cuenta · sin contraseña · abrís el link y listo.</div>
+    </form>
+  </div>
+</section>
 
-      <form id="nameForm" class="joinForm">
-        <div class="profileLine">
-          <button class="avatarPick" id="joinAvatarButton" type="button" aria-label="Elegir foto de perfil">
-            <span class="avatarFallback" id="joinAvatarFallback">+</span>
-            <img id="joinAvatarPreview" alt="" class="hidden">
-          </button>
-          <div class="fieldStack grow">
-            <label for="nameInput">NOMBRE</label>
-            <input id="nameInput" maxlength="18" autocomplete="nickname" placeholder="JUAN" required>
+<section class="shell hidden" id="appScreen">
+  <main class="app">
+    <header class="topbar">
+      <div class="brand"><b>CASA</b><span>ROOM / <i id="roomLabel">CLASE</i></span></div>
+      <div class="topActions">
+        <button class="shareButton" id="shareButton" type="button" title="Compartir">↗</button>
+        <button class="peopleButton" id="peopleButton" type="button" title="Personas conectadas"><b id="onlineCount">1</b><small>ONLINE</small></button>
+        <div class="themeWrap">
+          <button class="iconButton" id="themeButton" type="button" title="Tema">◐</button>
+          <div class="themePopover hidden" id="themePopover">
+            <div class="themeKicker">TEMA · DOS COLORES</div>
+            <div class="themeSwitch">
+              <button id="themePrev" type="button">←</button>
+              <div class="themeSample"><i id="swatchA"></i><i id="swatchB"></i></div>
+              <button id="themeNext" type="button">→</button>
+            </div>
+            <div class="themeName" id="themeName"></div>
           </div>
         </div>
-        <input id="avatarInput" type="file" accept="image/*" class="hiddenFile">
-
-        <div class="fieldStack">
-          <label for="introInput">IDENTIFICADOR HABLADO</label>
-          <input id="introInput" maxlength="42" autocomplete="off" placeholder="HABLA JUAN">
-          <small>Se dice antes de cada mensaje para saber quién está hablando.</small>
-        </div>
-
-        <button class="primary" type="submit"><span>▶</span> CONECTAR</button>
-        <small id="joinError" class="error" role="alert"></small>
-      </form>
-    </section>
-
-    <section class="app panel hidden" id="chatView">
-      <header class="topbar">
-        <div class="brand"><i class="signalDot"></i><b>CASA</b><span>CH-01</span></div>
-        <button class="onlineButton" id="mobileCount" type="button"><b>0</b><span>ONLINE</span></button>
-        <div class="topActions">
-          <button class="iconButton active" id="walkieToggle" type="button" aria-pressed="true" aria-label="Silenciar walkie">VOL</button>
-          <button class="iconButton" id="settingsButton" type="button" aria-label="Configuración">•••</button>
-        </div>
-      </header>
-
-      <div class="channelStrip"><span id="channelStatus">● CONECTANDO</span><span id="voiceStatus">VOICE: --</span></div>
-
-      <div class="messages" id="messages" aria-live="polite">
-        <div class="empty" id="empty"><b>CANAL ABIERTO</b><span>Esperando transmisión...</span></div>
+        <button class="meButton" id="meButton" type="button" title="Perfil"><b>?</b></button>
       </div>
+    </header>
 
-      <button class="pendingPush hidden" id="pendingPush" type="button"><span>▶</span><b>REPRODUCIR MENSAJE PENDIENTE</b></button>
-
-      <form class="composer" id="messageForm">
-        <button class="profileMini" id="profileButton" type="button" aria-label="Editar perfil">
-          <span id="profileMiniFallback">?</span><img id="profileMiniImage" alt="" class="hidden">
-        </button>
-        <button class="voicePill emptyVoice" id="voiceButton" type="button" aria-label="Elegir voz"><span>V:</span><b>--</b></button>
-        <input id="messageInput" maxlength="220" autocomplete="off" placeholder="ESCRIBIR TRANSMISIÓN..." aria-label="Mensaje" disabled>
-        <button class="sendButton" id="sendButton" type="submit" disabled aria-label="Transmitir"><span class="txNormal">TX</span><span class="txBusy hidden">...</span></button>
-      </form>
+    <section class="messages" id="messages" aria-live="polite">
+      <div class="empty" id="emptyState"><b>Silencio por ahora.</b><span>Escribí abajo y prepará la primera voz.</span></div>
     </section>
+
+    <div class="draftBar" id="draftStatus" data-mode="idle">ESCRIBÍ Y TOCÁ ↑ PARA PREPARAR</div>
+
+    <form class="composer" id="composer">
+      <button class="voiceButton" id="voiceButton" type="button">Voz</button>
+      <input id="messageInput" maxlength="180" autocomplete="off" placeholder="Escribí algo…">
+      <button class="previewPrepared hidden" id="previewPrepared" type="button" title="Escuchar antes de enviar">▶</button>
+      <button class="sendButton" id="sendButton" type="submit" aria-label="Preparar o enviar" disabled>↑</button>
+    </form>
   </main>
+</section>
 
-  <dialog class="sheet" id="voiceSheet">
-    <div class="sheetHead"><div><b>VOICE SELECT</b><span>Una voz por persona // las ocupadas quedan bloqueadas</span></div><button class="closeButton" id="voiceClose" type="button" aria-label="Cerrar">×</button></div>
-    <div class="voiceList" id="voiceList"></div>
-  </dialog>
+<dialog class="sheet" id="voiceSheet">
+  <div class="sheetHead"><div><b>VOCES</b><span>Una por persona mientras esté conectada</span></div><button class="closeButton" id="voiceClose" type="button">×</button></div>
+  <div class="voiceList" id="voiceList"></div>
+</dialog>
 
-  <dialog class="sheet compact" id="profileSheet">
-    <div class="sheetHead"><div><b>PROFILE</b><span>Tu identidad dentro del canal</span></div><button class="closeButton" id="profileClose" type="button" aria-label="Cerrar">×</button></div>
-    <div class="profileEditor">
-      <button class="avatarPick large" id="profileAvatarButton" type="button" aria-label="Cambiar foto de perfil"><span id="profileAvatarFallback">+</span><img id="profileAvatarPreview" alt="" class="hidden"></button>
-      <input id="profileAvatarInput" type="file" accept="image/*" class="hiddenFile">
-      <div class="fieldStack"><label for="profileNameInput">NOMBRE</label><input id="profileNameInput" maxlength="18"></div>
-      <div class="fieldStack"><label for="profileIntroInput">IDENTIFICADOR HABLADO</label><input id="profileIntroInput" maxlength="42"><small>Ejemplo: “Habla Juan” / “Soy Delfi” / “Comando Nacho”.</small></div>
-      <button class="settingRow" id="profileVoiceButton" type="button"><span>VOZ</span><small id="profileVoiceState">ELEGIR</small></button>
-      <button class="primary saveProfile" id="saveProfileButton" type="button">GUARDAR PERFIL</button>
-    </div>
-  </dialog>
+<dialog class="sheet" id="profileSheet">
+  <div class="sheetHead"><div><b>PERFIL</b><span>La foto sigue siendo opcional</span></div><button class="closeButton" id="profileClose" type="button">×</button></div>
+  <form class="profileEditor" id="profileForm">
+    <div class="profileAvatarWrap"><button class="avatarPick" id="profileAvatarButton" type="button"><span id="profileAvatarPreview"><b>?</b></span></button></div>
+    <input class="hiddenFile" id="profileAvatarFile" type="file" accept="image/*">
+    <div class="field"><label for="profileName">NOMBRE</label><input id="profileName" maxlength="28" required></div>
+    <button class="primary" type="submit">GUARDAR</button>
+  </form>
+</dialog>
 
-  <dialog class="sheet compact" id="peopleSheet">
-    <div class="sheetHead"><div><b>ONLINE</b><span>Usuarios conectados ahora</span></div><button class="closeButton" id="peopleClose" type="button" aria-label="Cerrar">×</button></div>
-    <div class="peopleList" id="peopleList"></div>
-  </dialog>
+<dialog class="sheet" id="peopleSheet">
+  <div class="sheetHead"><div><b>ONLINE</b><span>Quienes están en esta sala ahora</span></div><button class="closeButton" id="peopleClose" type="button">×</button></div>
+  <div id="peopleList"></div>
+</dialog>
 
-  <dialog class="sheet compact" id="settingsSheet">
-    <div class="sheetHead"><div><b>SYSTEM</b><span id="settingsStatus">Configuración de este dispositivo</span></div><button class="closeButton" id="settingsClose" type="button" aria-label="Cerrar">×</button></div>
-    <div class="settingsList">
-      <button class="settingRow" id="editProfileButton" type="button"><span>EDITAR PERFIL</span><small>USER</small></button>
-      <button class="settingRow" id="installButton" type="button"><span>INSTALAR CASA</span><small id="installState">PWA</small></button>
-      <button class="settingRow" id="notifyButton" type="button"><span>NOTIFICACIONES</span><small id="notifyState">CONFIG</small></button>
-      <button class="settingRow" id="testNotifyButton" type="button"><span>PROBAR AVISO</span><small>PUSH</small></button>
-      <button class="settingRow" id="wakeButton" type="button"><span>PANTALLA ACTIVA</span><small id="wakeState">OFF</small></button>
-      <button class="settingRow danger" id="leaveButton" type="button"><span>DESCONECTAR</span><small>EXIT</small></button>
-    </div>
-    <p class="settingsHelp" id="settingsHelp"></p>
-  </dialog>
-
-  <div class="toast hidden" id="toast" role="status"></div>
-  <script type="module" src="./app.js"></script>
+<div class="toast hidden" id="toast"></div>
+<script type="module" src="./app.js?v=4"></script>
 </body>
 </html>
