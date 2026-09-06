@@ -20,7 +20,7 @@
         <div class="field">
           <label for="joinName">TU NOMBRE</label>
           <input id="joinName" maxlength="28" autocomplete="nickname" placeholder="Juan" required>
-          <div class="optional">Foto opcional · el nombre es lo único obligatorio</div>
+          <div class="optional">Foto opcional · la intro se prepara sola mientras entrás</div>
         </div>
       </div>
       <input class="hiddenFile" id="joinAvatarFile" type="file" accept="image/*">
@@ -82,7 +82,7 @@
     <div class="profileAvatarWrap"><button class="avatarPick" id="profileAvatarButton" type="button"><span id="profileAvatarPreview"><b>?</b></span></button></div>
     <input class="hiddenFile" id="profileAvatarFile" type="file" accept="image/*">
     <div class="field"><label for="profileName">NOMBRE</label><input id="profileName" maxlength="28" required></div>
-    <div class="field"><label for="profileIntro">INTRO RÁPIDA</label><input id="profileIntro" maxlength="36" placeholder="Juan dice"><div class="optional" id="introHint">Vacío = “Juan dice”. Se reproduce antes del mensaje sin esperar otra generación.</div></div>
+    <div class="field"><label for="profileIntro">INTRO RÁPIDA</label><input id="profileIntro" maxlength="36" placeholder="Juan dice"><div class="optional" id="introHint">Vacío = “Juan dice”. Se precarga y después sale instantánea.</div></div>
     <button class="primary" type="submit">GUARDAR</button>
   </form>
 </dialog>
@@ -93,6 +93,6 @@
 </dialog>
 
 <div class="toast hidden" id="toast"></div>
-<script type="module" src="./app.js?v=5"></script>
+<script type="module" src="./app.js?v=6"></script>
 </body>
 </html>
