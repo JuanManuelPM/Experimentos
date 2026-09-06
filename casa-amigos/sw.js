@@ -1,5 +1,5 @@
-const CACHE='room-v7';
-const APP_SHELL=['./','./index.html','./style.css','./app.js','./manifest.webmanifest','./icon.svg'];
+const CACHE='room-v8-intro-preload';
+const APP_SHELL=['./','./index.html','./style.css?v=5','./app.js?v=6','./manifest.webmanifest','./icon.svg'];
 self.addEventListener('install',e=>{self.skipWaiting();e.waitUntil(caches.open(CACHE).then(c=>c.addAll(APP_SHELL)).catch(()=>{}))});
 self.addEventListener('activate',e=>{e.waitUntil(Promise.all([self.clients.claim(),caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k))))]))});
 self.addEventListener('fetch',e=>{if(e.request.method!=='GET')return;const u=new URL(e.request.url);if(u.origin!==self.location.origin)return;if(e.request.mode==='navigate'){e.respondWith(fetch(e.request).then(r=>{const x=r.clone();caches.open(CACHE).then(c=>c.put('./index.html',x)).catch(()=>{});return r}).catch(()=>caches.match('./index.html').then(r=>r||caches.match('./'))));return}e.respondWith(caches.match(e.request).then(c=>c||fetch(e.request).then(r=>{if(r.ok)caches.open(CACHE).then(x=>x.put(e.request,r.clone())).catch(()=>{});return r})))});
