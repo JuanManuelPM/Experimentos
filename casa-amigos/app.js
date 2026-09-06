@@ -1,196 +1,30 @@
 import{createClient}from'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.114.0/+esm';
-
-const S='https://catnohyouxqjjtseaueb.supabase.co';
-const K='sb_publishable_eqh3PngXs4UjLLWiY3pz1w_nhHtf7X-';
-const AUDIO_API=`${S}/functions/v1/casa-room-audio`;
-const supabase=createClient(S,K,{auth:{persistSession:false,autoRefreshToken:false}});
-const $=s=>document.querySelector(s);
-const esc=s=>String(s??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
-const initials=n=>(String(n||'?').trim().split(/\s+/).slice(0,2).map(x=>x[0]).join('')||'?').toUpperCase();
-const roomCode=(new URLSearchParams(location.search).get('r')||'clase').replace(/[^a-z0-9_-]/gi,'').slice(0,24)||'clase';
-const ROOM=`casa-class-v5-${roomCode}`;
-const clientId=sessionStorage.getItem('casa_client_id')||crypto.randomUUID();sessionStorage.setItem('casa_client_id',clientId);
-
-const VOICES=[
-['sergeant','Sargento fósil','90+ · militar · destruido'],
-['otaku','Otaku turbo','agudísima · anime · caos'],
-['grandma','Abuela furiosa','anciana · ronca · indignada'],
-['goblin','Duende nervioso','nasal · mini · rapidísimo'],
-['giant','Gigante tonto','gravísimo · lento · feliz'],
-['evilkid','Nene malvado','agudo · dulce · siniestro'],
-['apocalypse','Apocalipsis','épico · enorme · absurdo'],
-['novela','Telenovela','melodrama · traición total'],
-['witch','Bruja seca','vieja · chillona · torcida'],
-['gamer','Gamer 2007','nasal · gritón · cafeína'],
-['barman','Viejo de bar','cascado · lento · risitas'],
-['fairy','Hada tóxica','ultra aguda · dulce · venenosa']
-];
-const PALETTES=[
-['bordo-crema','Bordó / Crema','#F5DABF','#6C151E'],
-['verde-crema','Verde / Crema','#F5DABF','#0F3D3A'],
-['lima-carbon','Lima / Carbón','#C7F464','#202124'],
-['cobalto-crema','Cobalto / Crema','#F5DABF','#1546A0'],
-['menta-bosque','Menta / Bosque','#B8E0D2','#174A3A'],
-['rosa-ciruela','Rosa / Ciruela','#F4B6C2','#5B2448'],
-['mandarina-noche','Mandarina / Noche','#F28C28','#102A43'],
-['hueso-tinta','Hueso / Tinta','#EADFCB','#1B1B1A']
-];
-
-let name=localStorage.getItem('casa_name')||'';
-let avatar=localStorage.getItem('casa_avatar')||'';
-let introCustom=localStorage.getItem('casa_intro_custom')||'';
-let voiceId=localStorage.getItem('casa_qwen_voice')||'';
-let voiceClaimAt=Number(localStorage.getItem('casa_voice_claim_at'))||0;
-let channel=null,presences=[];
-let audioCtx=null,audioChain=Promise.resolve();
-let prepared=null,prepController=null,draftVersion=0;
-let paletteIndex=Math.max(0,PALETTES.findIndex(p=>p[0]===(localStorage.getItem('casa_palette')||'verde-crema')));
-let introVoice=null;
-
-function currentIntro(who=name,custom=introCustom){const c=String(custom||'').trim().slice(0,36);return c||`${who||'Alguien'} dice`}
-function refreshIntroVoice(){
- if(!('speechSynthesis'in window))return null;
- const vs=window.speechSynthesis.getVoices();
- introVoice=vs.find(v=>/^es-AR$/i.test(v.lang))||vs.find(v=>/^es-(UY|MX|ES)/i.test(v.lang))||vs.find(v=>/^es/i.test(v.lang))||vs[0]||null;
- return introVoice;
+const S='https://catnohyouxqjjtseaueb.supabase.co';const K='sb_publishable_eqh3PngXs4UjLLWiY3pz1w_nhHtf7X-';const AUDIO_API=`${S}/functions/v1/casa-room-audio`;const supabase=createClient(S,K,{auth:{persistSession:false,autoRefreshToken:false}});const $=s=>document.querySelector(s);const esc=s=>String(s??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));const initials=n=>(String(n||'?').trim().split(/\s+/).slice(0,2).map(x=>x[0]).join('')||'?').toUpperCase();const roomCode=(new URLSearchParams(location.search).get('r')||'clase').replace(/[^a-z0-9_-]/gi,'').slice(0,24)||'clase';const ROOM=`casa-class-v6-${roomCode}`;const clientId=sessionStorage.getItem('casa_client_id')||crypto.randomUUID();sessionStorage.setItem('casa_client_id',clientId);
+const VOICES=[['sergeant','Sargento fósil','90+ · militar · destruido'],['otaku','Otaku turbo','agudísima · anime · caos'],['grandma','Abuela furiosa','anciana · ronca · indignada'],['goblin','Duende nervioso','nasal · mini · rapidísimo'],['giant','Gigante tonto','gravísimo · lento · feliz'],['evilkid','Nene malvado','agudo · dulce · siniestro'],['apocalypse','Apocalipsis','épico · enorme · absurdo'],['novela','Telenovela','melodrama · traición total'],['witch','Bruja seca','vieja · chillona · torcida'],['gamer','Gamer 2007','nasal · gritón · cafeína'],['barman','Viejo de bar','cascado · lento · risitas'],['fairy','Hada tóxica','ultra aguda · dulce · venenosa']];const PALETTES=[['bordo-crema','Bordó / Crema','#F5DABF','#6C151E'],['verde-crema','Verde / Crema','#F5DABF','#0F3D3A'],['lima-carbon','Lima / Carbón','#C7F464','#202124'],['cobalto-crema','Cobalto / Crema','#F5DABF','#1546A0'],['menta-bosque','Menta / Bosque','#B8E0D2','#174A3A'],['rosa-ciruela','Rosa / Ciruela','#F4B6C2','#5B2448'],['mandarina-noche','Mandarina / Noche','#F28C28','#102A43'],['hueso-tinta','Hueso / Tinta','#EADFCB','#1B1B1A']];
+let name=localStorage.getItem('casa_name')||'',avatar=localStorage.getItem('casa_avatar')||'',introCustom=localStorage.getItem('casa_intro_custom')||'',voiceId=localStorage.getItem('casa_qwen_voice')||'',voiceClaimAt=Number(localStorage.getItem('casa_voice_claim_at'))||0,channel=null,presences=[],audioCtx=null,audioChain=Promise.resolve(),prepared=null,prepController=null,draftVersion=0,paletteIndex=Math.max(0,PALETTES.findIndex(p=>p[0]===(localStorage.getItem('casa_palette')||'verde-crema'))),joinIntroTimer=null;
+const audioBlobCache=new Map(),introCache=new Map();
+function currentIntro(who=name,custom=introCustom){const c=String(custom||'').replace(/\s+/g,' ').trim().slice(0,36);return c||`${who||'Alguien'} dice`}
+function hashText(s){let h=2166136261;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)}return(h>>>0).toString(36)}
+function introKey(text){return String(text||'').replace(/\s+/g,' ').trim().slice(0,36)}
+function introId(text){return`intro-v2-${hashText(introKey(text).toLocaleLowerCase('es'))}`}
+async function blobFromUrl(url){if(!url)throw 0;if(!audioBlobCache.has(url))audioBlobCache.set(url,fetch(url).then(r=>{if(!r.ok)throw 0;return r.blob()}).catch(e=>{audioBlobCache.delete(url);throw e}));return audioBlobCache.get(url)}
+async function prepareIntro(text=currentIntro()){
+ const clean=introKey(text);if(!clean)return null;const existing=introCache.get(clean);if(existing?.blob)return existing;if(existing?.promise)return existing.promise;
+ const item={text:clean,id:introId(clean),url:'',blob:null,promise:null};introCache.set(clean,item);
+ item.promise=(async()=>{const r=await fetch(AUDIO_API,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({voice:'relay',text:clean,messageId:item.id})});if(!r.ok)throw 0;item.blob=await r.blob();item.url=r.headers.get('x-casa-audio-url')||`${AUDIO_API}?id=${encodeURIComponent(item.id)}`;audioBlobCache.set(item.url,Promise.resolve(item.blob));item.promise=null;if(channel&&introKey(currentIntro())===clean)trackPresence().catch(()=>{});return item})().catch(e=>{introCache.delete(clean);throw e});return item.promise
 }
-if('speechSynthesis'in window){refreshIntroVoice();window.speechSynthesis.addEventListener?.('voiceschanged',refreshIntroVoice)}
-
-function applyPalette(i=paletteIndex){
- paletteIndex=(i+PALETTES.length)%PALETTES.length;const p=PALETTES[paletteIndex];
- document.documentElement.style.setProperty('--paper',p[2]);document.documentElement.style.setProperty('--ink',p[3]);
- localStorage.setItem('casa_palette',p[0]);$('#themeName').textContent=p[1];$('#swatchA').style.background=p[2];$('#swatchB').style.background=p[3];
- const meta=document.querySelector('meta[name=theme-color]');if(meta)meta.content=p[2];
-}
-applyPalette();
-$('#joinRoomLabel').textContent=roomCode.toUpperCase();
-
-function avatarMarkup(src,n,cls='avatar'){return src?`<span class="${cls}"><img src="${src}" alt=""></span>`:`<span class="${cls} fallback">${esc(initials(n))}</span>`}
-function setProfilePreview(){
- const el=$('#joinAvatarPreview');el.innerHTML=avatar?`<img src="${avatar}" alt="">`:`<b>${esc(initials($('#joinName').value||name||'?'))}</b>`;
- const mini=$('#meButton');if(mini)mini.innerHTML=avatar?`<img src="${avatar}" alt="">`:`<b>${esc(initials(name))}</b>`;
- const p=$('#profileAvatarPreview');if(p)p.innerHTML=avatar?`<img src="${avatar}" alt="">`:`<b>${esc(initials(name))}</b>`;
- const hint=$('#introHint');if(hint)hint.textContent=`Vacío = “${currentIntro(name,'')}”. Se reproduce antes del mensaje sin esperar otra generación.`;
-}
-$('#joinName').value=name;setProfilePreview();
-$('#joinName').addEventListener('input',setProfilePreview);
-
-async function imageToAvatar(file){
- const img=await createImageBitmap(file);const size=Math.min(img.width,img.height),sx=(img.width-size)/2,sy=(img.height-size)/2;
- const c=document.createElement('canvas');c.width=c.height=88;const x=c.getContext('2d');x.drawImage(img,sx,sy,size,size,0,0,88,88);
- let out=c.toDataURL('image/webp',.68);if(out.length>24000)out=c.toDataURL('image/jpeg',.62);return out;
-}
-async function pickAvatar(file){if(!file)return;try{avatar=await imageToAvatar(file);localStorage.setItem('casa_avatar',avatar);setProfilePreview();if(channel)await trackPresence()}catch{toast('No pude leer esa foto')}}
-$('#joinAvatarFile').onchange=e=>pickAvatar(e.target.files?.[0]);
-$('#profileAvatarFile').onchange=e=>pickAvatar(e.target.files?.[0]);
-$('#joinAvatarButton').onclick=()=>$('#joinAvatarFile').click();
-$('#profileAvatarButton').onclick=()=>$('#profileAvatarFile').click();
-
-function toast(t){const x=$('#toast');x.textContent=t;x.classList.remove('hidden');clearTimeout(toast.t);toast.t=setTimeout(()=>x.classList.add('hidden'),1800)}
-async function unlockAudio(){try{audioCtx=audioCtx||new (window.AudioContext||window.webkitAudioContext)();if(audioCtx.state==='suspended')await audioCtx.resume();refreshIntroVoice()}catch{}}
-async function playBlob(blob){
- await unlockAudio();const ab=await blob.arrayBuffer();const buffer=await audioCtx.decodeAudioData(ab.slice(0));
- return new Promise(resolve=>{const src=audioCtx.createBufferSource();src.buffer=buffer;src.connect(audioCtx.destination);src.onended=resolve;src.start()});
-}
-function speakIntro(text){
- const line=String(text||'').trim();if(!line||!('speechSynthesis'in window))return Promise.resolve();
- return new Promise(resolve=>{
-  const u=new SpeechSynthesisUtterance(line.replace(/[.!?]+$/,''));u.lang=introVoice?.lang||'es-AR';if(introVoice)u.voice=introVoice;u.rate=1.42;u.pitch=1;u.volume=.58;
-  let done=false;const finish=()=>{if(done)return;done=true;resolve()};u.onend=finish;u.onerror=finish;
-  try{window.speechSynthesis.speak(u);setTimeout(finish,Math.min(2200,650+line.length*70))}catch{finish()}
- });
-}
-async function playUrl(url){const r=await fetch(url);if(!r.ok)throw 0;await playBlob(await r.blob())}
-function enqueueTransmission(intro,url,row){
- if(!url)return;audioChain=audioChain.then(async()=>{try{row?.classList.add('speaking');await speakIntro(intro);await playUrl(url)}catch{}finally{row?.classList.remove('speaking')}});
-}
-function enqueuePreparedPreview(p){
- if(!p?.blob)return;audioChain=audioChain.then(async()=>{try{await speakIntro(p.intro);await playBlob(p.blob)}catch{}});
-}
-
-function presenceFlat(){return Object.values(channel?.presenceState?.()||{}).flat().filter(Boolean)}
-function voiceOwner(id){
- const a=presences.filter(p=>p.voiceId===id).sort((x,y)=>(Number(x.voiceClaimAt)||9e15)-(Number(y.voiceClaimAt)||9e15)||String(x.clientId).localeCompare(String(y.clientId)));
- return a[0]||null;
-}
-function firstFreeVoice(){return VOICES.find(v=>!voiceOwner(v[0])||voiceOwner(v[0])?.clientId===clientId)?.[0]||VOICES[Math.floor(Math.random()*VOICES.length)][0]}
-async function ensureVoice(){
- if(voiceId){const own=voiceOwner(voiceId);if(!own||own.clientId===clientId)return voiceId}
- voiceId=firstFreeVoice();voiceClaimAt=Date.now();localStorage.setItem('casa_qwen_voice',voiceId);localStorage.setItem('casa_voice_claim_at',String(voiceClaimAt));await trackPresence();updateVoiceUI();return voiceId;
-}
-async function resolveVoiceCollision(){
- if(!voiceId)return ensureVoice();const own=voiceOwner(voiceId);if(own&&own.clientId!==clientId){voiceId='';voiceClaimAt=0;await ensureVoice();toast('Te asigné otra voz libre')}
-}
-function voiceName(id){return VOICES.find(v=>v[0]===id)?.[1]||'Voz'}
-function updateVoiceUI(){const b=$('#voiceButton');b.textContent=voiceId?voiceName(voiceId):'Voz';renderVoiceList()}
-async function trackPresence(){if(!channel||!name)return;await channel.track({clientId,name,avatar,intro:currentIntro(),voiceId,voiceClaimAt,joinedAt:Date.now()})}
-function syncPresence(){
- presences=presenceFlat();const unique=new Map();presences.forEach(p=>unique.set(p.clientId,p));presences=[...unique.values()];
- $('#onlineCount').textContent=String(presences.length||1);renderPeople();renderVoiceList();resolveVoiceCollision();
-}
-
-function renderVoiceList(){
- const list=$('#voiceList');if(!list)return;list.innerHTML='';
- VOICES.forEach(([id,label,desc],i)=>{const owner=voiceOwner(id),mine=id===voiceId,taken=owner&&owner.clientId!==clientId;const row=document.createElement('div');row.className='voiceRow'+(mine?' selected':'')+(taken?' taken':'');row.innerHTML=`<span class="voiceNum">${String(i+1).padStart(2,'0')}</span><div class="voiceInfo"><b>${esc(label)}</b><span>${esc(desc)}${taken?` · ${esc(owner.name)}`:''}</span></div><button class="previewVoice" type="button">▶</button><button class="claimVoice" type="button" ${taken?'disabled':''}>${mine?'TUYA':taken?'OCUPADA':'ELEGIR'}</button>`;
- row.querySelector('.previewVoice').onclick=()=>previewVoice(id,row.querySelector('.previewVoice'));
- row.querySelector('.claimVoice').onclick=async()=>{if(taken||mine)return;voiceId=id;voiceClaimAt=Date.now();localStorage.setItem('casa_qwen_voice',id);localStorage.setItem('casa_voice_claim_at',String(voiceClaimAt));await trackPresence();updateVoiceUI();$('#voiceSheet').close()};list.append(row)});
-}
-async function previewVoice(id,btn){
- if(btn.dataset.busy)return;btn.dataset.busy='1';btn.classList.add('busy');btn.textContent='▶';try{const mid=crypto.randomUUID();const r=await fetch(AUDIO_API,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({voice:id,text:`Esta es mi voz.`,messageId:mid})});if(!r.ok)throw 0;await playBlob(await r.blob())}catch{toast('Esa voz no respondió')}finally{btn.dataset.busy='';btn.classList.remove('busy');btn.textContent='▶'}
-}
-
-function renderPeople(){const list=$('#peopleList');if(!list)return;list.innerHTML=presences.map(p=>`<div class="personRow">${avatarMarkup(p.avatar,p.name,'personAvatar')}<div><b>${esc(p.name)}</b><small>${esc(voiceName(p.voiceId))}</small></div><span>●</span></div>`).join('')||'<div class="quiet">Sólo vos por ahora.</div>'}
-function renderMessage(m){
- if(!m?.id||document.querySelector(`[data-mid="${CSS.escape(m.id)}"]`))return;$('#emptyState')?.remove();const mine=m.clientId===clientId,row=document.createElement('article');row.className='message'+(mine?' mine':'');row.dataset.mid=m.id;
- const av=avatarMarkup(m.avatar,m.name);const body=`<div class="body"><div class="meta"><b>${esc(m.name)}</b><button class="replay" type="button">▶ ${esc(voiceName(m.voiceId))}</button></div><div class="bubble">${esc(m.text)}</div></div>`;
- row.innerHTML=mine?body+av:av+body;row.querySelector('.replay').onclick=()=>enqueueTransmission(m.intro||`${m.name} dice`,m.audioUrl,row);$('#messages').append(row);$('#messages').scrollTop=$('#messages').scrollHeight;enqueueTransmission(m.intro||`${m.name} dice`,m.audioUrl,row);
-}
-
-async function connect(){
- if(channel)return;channel=supabase.channel(ROOM,{config:{broadcast:{self:true,ack:true},presence:{key:clientId}}});
- channel.on('broadcast',{event:'message'},({payload})=>renderMessage(payload));
- channel.on('presence',{event:'sync'},syncPresence);
- await new Promise((resolve,reject)=>channel.subscribe(status=>{if(status==='SUBSCRIBED')resolve();if(status==='CHANNEL_ERROR'||status==='TIMED_OUT')reject(new Error(status))}));
- await trackPresence();setTimeout(ensureVoice,250);
-}
-
-$('#joinForm').onsubmit=async e=>{e.preventDefault();const n=$('#joinName').value.trim().slice(0,28);if(!n){$('#joinName').focus();return}name=n;localStorage.setItem('casa_name',name);await unlockAudio();$('#joinButton').disabled=true;$('#joinButton').textContent='ENTRANDO…';try{await connect();$('#joinScreen').classList.add('hidden');$('#appScreen').classList.remove('hidden');$('#roomLabel').textContent=roomCode.toUpperCase();setProfilePreview();updateVoiceUI();$('#messageInput').focus()}catch{$('#joinButton').disabled=false;$('#joinButton').textContent='ENTRAR';toast('No pude conectar. Probá de nuevo')}};
-
-function setDraftStatus(text,mode=''){const s=$('#draftStatus');$('#draftStatusText').textContent=text;s.dataset.mode=mode}
-function resetPrepared(reason='ESCRIBÍ Y TOCÁ ↑ PARA PREPARAR'){
- draftVersion++;if(prepController){prepController.abort();prepController=null}prepared=null;$('#previewPrepared').classList.add('hidden');$('#sendButton').className='sendButton';$('#sendButton').textContent='↑';$('#sendButton').disabled=!$('#messageInput').value.trim();setDraftStatus(reason,'idle');
-}
-$('#messageInput').addEventListener('input',()=>resetPrepared());
-
-async function prepareAudio(){
- const text=$('#messageInput').value.trim().slice(0,180);if(!text)return;await ensureVoice();const version=++draftVersion,mid=crypto.randomUUID();prepController=new AbortController();prepared={state:'loading',text,voiceId,messageId:mid,intro:currentIntro(),sendWhenReady:false};
- $('#sendButton').className='sendButton loading';$('#sendButton').textContent='↑';setDraftStatus('PREPARANDO VOZ · ↑ OTRA VEZ = ENVIAR AL TERMINAR','loading');
- try{
-  const r=await fetch(AUDIO_API,{method:'POST',headers:{'content-type':'application/json'},signal:prepController.signal,body:JSON.stringify({voice:voiceId,text,messageId:mid})});if(version!==draftVersion)return;if(!r.ok){let j={};try{j=await r.json()}catch{}throw new Error(j.error||'audio')}
-  const blob=await r.blob();if(version!==draftVersion)return;const audioId=r.headers.get('x-casa-audio-id')||mid;const audioUrl=r.headers.get('x-casa-audio-url')||`${AUDIO_API}?id=${encodeURIComponent(audioId)}`;prepared={...prepared,state:'ready',blob,audioId,audioUrl};prepController=null;$('#previewPrepared').classList.remove('hidden');$('#sendButton').className='sendButton ready';$('#sendButton').textContent='↑';
-  if(prepared.sendWhenReady){setDraftStatus('LISTO · ENVIANDO…','ready');await transmitPrepared()}else setDraftStatus('LISTO · ▶ ESCUCHÁ O ↑ ENVIÁ','ready');
- }catch(err){if(err.name==='AbortError')return;prepared=null;prepController=null;$('#sendButton').className='sendButton errorPulse';$('#sendButton').textContent='!';setDraftStatus('NO SE PUDO PREPARAR · TOCÁ ! PARA REINTENTAR','error')}
-}
-async function transmitPrepared(){
- if(!prepared||prepared.state!=='ready')return;const p=prepared;$('#sendButton').disabled=true;setDraftStatus('ENVIANDO…','ready');const payload={id:p.messageId,clientId,name,avatar,intro:p.intro,text:p.text,voiceId:p.voiceId,audioId:p.audioId,audioUrl:p.audioUrl,sentAt:Date.now()};
- try{await channel.send({type:'broadcast',event:'message',payload});$('#messageInput').value='';prepared=null;draftVersion++;$('#previewPrepared').classList.add('hidden');$('#sendButton').className='sendButton';$('#sendButton').textContent='↑';$('#sendButton').disabled=true;setDraftStatus('ESCRIBÍ Y TOCÁ ↑ PARA PREPARAR','idle')}catch{$('#sendButton').disabled=false;setDraftStatus('NO SE ENVIÓ · TOCÁ ↑','error')}
-}
-$('#composer').onsubmit=async e=>{e.preventDefault();const t=$('#messageInput').value.trim();if(!t)return;if(!prepared){await prepareAudio();return}if(prepared.state==='loading'){prepared.sendWhenReady=!prepared.sendWhenReady;$('#sendButton').className='sendButton loading'+(prepared.sendWhenReady?' armed':'');$('#sendButton').textContent='↑';setDraftStatus(prepared.sendWhenReady?'EN COLA · SE ENVÍA APENAS TERMINE':'PREPARANDO VOZ · ↑ OTRA VEZ = ENVIAR AL TERMINAR','loading');return}if(prepared.state==='ready')await transmitPrepared()};
-$('#previewPrepared').onclick=()=>enqueuePreparedPreview(prepared);
-
-$('#voiceButton').onclick=()=>{$('#voiceSheet').showModal();renderVoiceList()};
-$('#voiceClose').onclick=()=>$('#voiceSheet').close();
-$('#peopleButton').onclick=()=>{$('#peopleSheet').showModal();renderPeople()};
-$('#peopleClose').onclick=()=>$('#peopleSheet').close();
-$('#meButton').onclick=()=>{$('#profileName').value=name;$('#profileIntro').value=introCustom;setProfilePreview();$('#profileSheet').showModal()};
-$('#profileClose').onclick=()=>$('#profileSheet').close();
-$('#profileForm').onsubmit=async e=>{e.preventDefault();const n=$('#profileName').value.trim().slice(0,28);if(!n)return;name=n;introCustom=$('#profileIntro').value.trim().slice(0,36);localStorage.setItem('casa_name',name);localStorage.setItem('casa_intro_custom',introCustom);await trackPresence();setProfilePreview();$('#profileSheet').close();toast(`Intro: ${currentIntro()}`)};
-
-$('#themeButton').onclick=e=>{e.stopPropagation();$('#themePopover').classList.toggle('hidden')};
-$('#themePrev').onclick=()=>applyPalette(paletteIndex-1);$('#themeNext').onclick=()=>applyPalette(paletteIndex+1);
-document.addEventListener('click',e=>{if(!$('#themePopover').contains(e.target)&&e.target!==$('#themeButton'))$('#themePopover').classList.add('hidden')});
-$('#shareButton').onclick=async()=>{const url=new URL(location.href);url.searchParams.set('r',roomCode);try{if(navigator.share)await navigator.share({title:'Sala de voz',text:'Entrá a la sala',url:url.href});else{await navigator.clipboard.writeText(url.href);toast('LINK COPIADO')}}catch{}};
-
-window.addEventListener('beforeunload',()=>channel?.untrack());
-if('serviceWorker'in navigator)navigator.serviceWorker.register('./sw.js').catch(()=>{});
-resetPrepared();
+function readyIntro(text=currentIntro()){const x=introCache.get(introKey(text));return x?.blob?x:null}
+function scheduleJoinIntro(){setProfilePreview();clearTimeout(joinIntroTimer);const n=$('#joinName').value.trim().slice(0,28);if(n.length<2)return;joinIntroTimer=setTimeout(()=>prepareIntro(currentIntro(n,introCustom)).catch(()=>{}),650)}
+function applyPalette(i=paletteIndex){paletteIndex=(i+PALETTES.length)%PALETTES.length;const p=PALETTES[paletteIndex];document.documentElement.style.setProperty('--paper',p[2]);document.documentElement.style.setProperty('--ink',p[3]);localStorage.setItem('casa_palette',p[0]);$('#themeName').textContent=p[1];$('#swatchA').style.background=p[2];$('#swatchB').style.background=p[3];const meta=document.querySelector('meta[name=theme-color]');if(meta)meta.content=p[2]}applyPalette();$('#joinRoomLabel').textContent=roomCode.toUpperCase();
+function avatarMarkup(src,n,cls='avatar'){return src?`<span class="${cls}"><img src="${src}" alt=""></span>`:`<span class="${cls} fallback">${esc(initials(n))}</span>`}function setProfilePreview(){const el=$('#joinAvatarPreview');el.innerHTML=avatar?`<img src="${avatar}" alt="">`:`<b>${esc(initials($('#joinName').value||name||'?'))}</b>`;const mini=$('#meButton');if(mini)mini.innerHTML=avatar?`<img src="${avatar}" alt="">`:`<b>${esc(initials(name))}</b>`;const p=$('#profileAvatarPreview');if(p)p.innerHTML=avatar?`<img src="${avatar}" alt="">`:`<b>${esc(initials(name))}</b>`;const hint=$('#introHint');if(hint)hint.textContent=`Vacío = “${currentIntro(name,'')}”. Se precarga y después sale instantánea.`}$('#joinName').value=name;setProfilePreview();$('#joinName').addEventListener('input',scheduleJoinIntro);if(name)setTimeout(scheduleJoinIntro,250);
+async function imageToAvatar(file){const img=await createImageBitmap(file),size=Math.min(img.width,img.height),sx=(img.width-size)/2,sy=(img.height-size)/2,c=document.createElement('canvas');c.width=c.height=88;const x=c.getContext('2d');x.drawImage(img,sx,sy,size,size,0,0,88,88);let out=c.toDataURL('image/webp',.68);if(out.length>24000)out=c.toDataURL('image/jpeg',.62);return out}async function pickAvatar(file){if(!file)return;try{avatar=await imageToAvatar(file);localStorage.setItem('casa_avatar',avatar);setProfilePreview();if(channel)await trackPresence()}catch{toast('No pude leer esa foto')}}$('#joinAvatarFile').onchange=e=>pickAvatar(e.target.files?.[0]);$('#profileAvatarFile').onchange=e=>pickAvatar(e.target.files?.[0]);$('#joinAvatarButton').onclick=()=>$('#joinAvatarFile').click();$('#profileAvatarButton').onclick=()=>$('#profileAvatarFile').click();
+function toast(t){const x=$('#toast');x.textContent=t;x.classList.remove('hidden');clearTimeout(toast.t);toast.t=setTimeout(()=>x.classList.add('hidden'),1800)}async function unlockAudio(){try{audioCtx=audioCtx||new(window.AudioContext||window.webkitAudioContext)();if(audioCtx.state==='suspended')await audioCtx.resume()}catch{}}async function playBlob(blob){await unlockAudio();const ab=await blob.arrayBuffer(),buffer=await audioCtx.decodeAudioData(ab.slice(0));return new Promise(resolve=>{const src=audioCtx.createBufferSource();src.buffer=buffer;src.connect(audioCtx.destination);src.onended=resolve;src.start()})}async function playUrl(url){await playBlob(await blobFromUrl(url))}function enqueueTransmission(introUrl,url,row){if(!url)return;audioChain=audioChain.then(async()=>{try{row?.classList.add('speaking');if(introUrl)try{await playUrl(introUrl)}catch{}await playUrl(url)}catch{}finally{row?.classList.remove('speaking')}})}function enqueuePreparedPreview(p){if(!p?.blob)return;audioChain=audioChain.then(async()=>{try{if(p.introBlob)await playBlob(p.introBlob);else if(p.introAudioUrl)await playUrl(p.introAudioUrl);await playBlob(p.blob)}catch{}})}
+function presenceFlat(){return Object.values(channel?.presenceState?.()||{}).flat().filter(Boolean)}function voiceOwner(id){const a=presences.filter(p=>p.voiceId===id).sort((x,y)=>(Number(x.voiceClaimAt)||9e15)-(Number(y.voiceClaimAt)||9e15)||String(x.clientId).localeCompare(String(y.clientId)));return a[0]||null}function firstFreeVoice(){return VOICES.find(v=>!voiceOwner(v[0])||voiceOwner(v[0])?.clientId===clientId)?.[0]||VOICES[Math.floor(Math.random()*VOICES.length)][0]}async function ensureVoice(){if(voiceId){const own=voiceOwner(voiceId);if(!own||own.clientId===clientId)return voiceId}voiceId=firstFreeVoice();voiceClaimAt=Date.now();localStorage.setItem('casa_qwen_voice',voiceId);localStorage.setItem('casa_voice_claim_at',String(voiceClaimAt));await trackPresence();updateVoiceUI();return voiceId}async function resolveVoiceCollision(){if(!voiceId)return ensureVoice();const own=voiceOwner(voiceId);if(own&&own.clientId!==clientId){voiceId='';voiceClaimAt=0;await ensureVoice();toast('Te asigné otra voz libre')}}function voiceName(id){return VOICES.find(v=>v[0]===id)?.[1]||'Voz'}function updateVoiceUI(){const b=$('#voiceButton');b.textContent=voiceId?voiceName(voiceId):'Voz';renderVoiceList()}async function trackPresence(){if(!channel||!name)return;const intro=readyIntro();await channel.track({clientId,name,avatar,intro:currentIntro(),introAudioUrl:intro?.url||'',voiceId,voiceClaimAt,joinedAt:Date.now()})}function syncPresence(){presences=presenceFlat();const unique=new Map();presences.forEach(p=>unique.set(p.clientId,p));presences=[...unique.values()];presences.forEach(p=>{if(p.introAudioUrl)blobFromUrl(p.introAudioUrl).catch(()=>{})});$('#onlineCount').textContent=String(presences.length||1);renderPeople();renderVoiceList();resolveVoiceCollision()}
+function renderVoiceList(){const list=$('#voiceList');if(!list)return;list.innerHTML='';VOICES.forEach(([id,label,desc],i)=>{const owner=voiceOwner(id),mine=id===voiceId,taken=owner&&owner.clientId!==clientId,row=document.createElement('div');row.className='voiceRow'+(mine?' selected':'')+(taken?' taken':'');row.innerHTML=`<span class="voiceNum">${String(i+1).padStart(2,'0')}</span><div class="voiceInfo"><b>${esc(label)}</b><span>${esc(desc)}${taken?` · ${esc(owner.name)}`:''}</span></div><button class="previewVoice" type="button">▶</button><button class="claimVoice" type="button" ${taken?'disabled':''}>${mine?'TUYA':taken?'OCUPADA':'ELEGIR'}</button>`;row.querySelector('.previewVoice').onclick=()=>previewVoice(id,row.querySelector('.previewVoice'));row.querySelector('.claimVoice').onclick=async()=>{if(taken||mine)return;voiceId=id;voiceClaimAt=Date.now();localStorage.setItem('casa_qwen_voice',id);localStorage.setItem('casa_voice_claim_at',String(voiceClaimAt));await trackPresence();updateVoiceUI();$('#voiceSheet').close()};list.append(row)})}async function previewVoice(id,btn){if(btn.dataset.busy)return;btn.dataset.busy='1';btn.classList.add('busy');try{const mid=crypto.randomUUID(),r=await fetch(AUDIO_API,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({voice:id,text:'Esta es mi voz.',messageId:mid})});if(!r.ok)throw 0;await playBlob(await r.blob())}catch{toast('Esa voz no respondió')}finally{btn.dataset.busy='';btn.classList.remove('busy');btn.textContent='▶'}}
+function renderPeople(){const list=$('#peopleList');if(!list)return;list.innerHTML=presences.map(p=>`<div class="personRow">${avatarMarkup(p.avatar,p.name,'personAvatar')}<div><b>${esc(p.name)}</b><small>${esc(voiceName(p.voiceId))}</small></div><span>●</span></div>`).join('')||'<div class="quiet">Sólo vos por ahora.</div>'}function renderMessage(m){if(!m?.id||document.querySelector(`[data-mid="${CSS.escape(m.id)}"]`))return;$('#emptyState')?.remove();const mine=m.clientId===clientId,row=document.createElement('article');row.className='message'+(mine?' mine':'');row.dataset.mid=m.id;const av=avatarMarkup(m.avatar,m.name),body=`<div class="body"><div class="meta"><b>${esc(m.name)}</b><button class="replay" type="button">▶ ${esc(voiceName(m.voiceId))}</button></div><div class="bubble">${esc(m.text)}</div></div>`;row.innerHTML=mine?body+av:av+body;row.querySelector('.replay').onclick=()=>enqueueTransmission(m.introAudioUrl,m.audioUrl,row);$('#messages').append(row);$('#messages').scrollTop=$('#messages').scrollHeight;enqueueTransmission(m.introAudioUrl,m.audioUrl,row)}
+async function connect(){if(channel)return;channel=supabase.channel(ROOM,{config:{broadcast:{self:true,ack:true},presence:{key:clientId}}});channel.on('broadcast',{event:'message'},({payload})=>renderMessage(payload));channel.on('presence',{event:'sync'},syncPresence);await new Promise((resolve,reject)=>channel.subscribe(status=>{if(status==='SUBSCRIBED')resolve();if(status==='CHANNEL_ERROR'||status==='TIMED_OUT')reject(new Error(status))}));await trackPresence();setTimeout(ensureVoice,250)}
+$('#joinForm').onsubmit=async e=>{e.preventDefault();const n=$('#joinName').value.trim().slice(0,28);if(!n){$('#joinName').focus();return}name=n;localStorage.setItem('casa_name',name);await unlockAudio();$('#joinButton').disabled=true;$('#joinButton').textContent='ENTRANDO…';const introPromise=prepareIntro(currentIntro()).catch(()=>null);try{await connect();$('#joinScreen').classList.add('hidden');$('#appScreen').classList.remove('hidden');$('#roomLabel').textContent=roomCode.toUpperCase();setProfilePreview();updateVoiceUI();$('#messageInput').focus();introPromise.then(()=>trackPresence().catch(()=>{}))}catch{$('#joinButton').disabled=false;$('#joinButton').textContent='ENTRAR';toast('No pude conectar. Probá de nuevo')}};
+function setDraftStatus(text,mode=''){const s=$('#draftStatus');$('#draftStatusText').textContent=text;s.dataset.mode=mode}function resetPrepared(reason='ESCRIBÍ Y TOCÁ ↑ PARA PREPARAR'){draftVersion++;if(prepController){prepController.abort();prepController=null}prepared=null;$('#previewPrepared').classList.add('hidden');$('#sendButton').className='sendButton';$('#sendButton').textContent='↑';$('#sendButton').disabled=!$('#messageInput').value.trim();setDraftStatus(reason,'idle')}$('#messageInput').addEventListener('input',()=>resetPrepared());
+async function prepareAudio(){const text=$('#messageInput').value.trim().slice(0,180);if(!text)return;await ensureVoice();const version=++draftVersion,mid=crypto.randomUUID(),introText=currentIntro(),introPromise=prepareIntro(introText).catch(()=>null);prepController=new AbortController();prepared={state:'loading',text,voiceId,messageId:mid,intro:introText,introAudioUrl:'',introBlob:null,sendWhenReady:false};$('#sendButton').className='sendButton loading';$('#sendButton').textContent='↑';setDraftStatus('PREPARANDO VOZ · ↑ OTRA VEZ = ENVIAR AL TERMINAR','loading');try{const r=await fetch(AUDIO_API,{method:'POST',headers:{'content-type':'application/json'},signal:prepController.signal,body:JSON.stringify({voice:voiceId,text,messageId:mid})});if(version!==draftVersion)return;if(!r.ok)throw 0;const blob=await r.blob();if(version!==draftVersion)return;const audioId=r.headers.get('x-casa-audio-id')||mid,audioUrl=r.headers.get('x-casa-audio-url')||`${AUDIO_API}?id=${encodeURIComponent(audioId)}`,intro=await introPromise;if(version!==draftVersion)return;prepared={...prepared,state:'ready',blob,audioId,audioUrl,introAudioUrl:intro?.url||'',introBlob:intro?.blob||null};prepController=null;$('#previewPrepared').classList.remove('hidden');$('#sendButton').className='sendButton ready';if(prepared.sendWhenReady){setDraftStatus('LISTO · ENVIANDO…','ready');await transmitPrepared()}else setDraftStatus('LISTO · ▶ ESCUCHÁ O ↑ ENVIÁ','ready')}catch(err){if(err?.name==='AbortError')return;prepared=null;prepController=null;$('#sendButton').className='sendButton errorPulse';$('#sendButton').textContent='!';setDraftStatus('NO SE PUDO PREPARAR · TOCÁ ! PARA REINTENTAR','error')}}async function transmitPrepared(){if(!prepared||prepared.state!=='ready')return;const p=prepared;$('#sendButton').disabled=true;setDraftStatus('ENVIANDO…','ready');const payload={id:p.messageId,clientId,name,avatar,intro:p.intro,introAudioUrl:p.introAudioUrl,text:p.text,voiceId:p.voiceId,audioId:p.audioId,audioUrl:p.audioUrl,sentAt:Date.now()};try{await channel.send({type:'broadcast',event:'message',payload});$('#messageInput').value='';prepared=null;draftVersion++;$('#previewPrepared').classList.add('hidden');$('#sendButton').className='sendButton';$('#sendButton').textContent='↑';$('#sendButton').disabled=true;setDraftStatus('ESCRIBÍ Y TOCÁ ↑ PARA PREPARAR','idle')}catch{$('#sendButton').disabled=false;setDraftStatus('NO SE ENVIÓ · TOCÁ ↑','error')}}$('#composer').onsubmit=async e=>{e.preventDefault();if(!$('#messageInput').value.trim())return;if(!prepared){await prepareAudio();return}if(prepared.state==='loading'){prepared.sendWhenReady=!prepared.sendWhenReady;$('#sendButton').className='sendButton loading'+(prepared.sendWhenReady?' armed':'');setDraftStatus(prepared.sendWhenReady?'EN COLA · SE ENVÍA APENAS TERMINE':'PREPARANDO VOZ · ↑ OTRA VEZ = ENVIAR AL TERMINAR','loading');return}if(prepared.state==='ready')await transmitPrepared()};$('#previewPrepared').onclick=()=>enqueuePreparedPreview(prepared);
+$('#voiceButton').onclick=()=>{$('#voiceSheet').showModal();renderVoiceList()};$('#voiceClose').onclick=()=>$('#voiceSheet').close();$('#peopleButton').onclick=()=>{$('#peopleSheet').showModal();renderPeople()};$('#peopleClose').onclick=()=>$('#peopleSheet').close();$('#meButton').onclick=()=>{$('#profileName').value=name;$('#profileIntro').value=introCustom;setProfilePreview();$('#profileSheet').showModal()};$('#profileClose').onclick=()=>$('#profileSheet').close();$('#profileForm').onsubmit=async e=>{e.preventDefault();const n=$('#profileName').value.trim().slice(0,28);if(!n)return;name=n;introCustom=$('#profileIntro').value.trim().slice(0,36);localStorage.setItem('casa_name',name);localStorage.setItem('casa_intro_custom',introCustom);setProfilePreview();$('#profileSheet').close();toast('Preparando intro…');const p=prepareIntro(currentIntro()).catch(()=>null);await trackPresence();p.then(async x=>{if(x){await trackPresence();toast('Intro lista')}})};
+$('#themeButton').onclick=e=>{e.stopPropagation();$('#themePopover').classList.toggle('hidden')};$('#themePrev').onclick=()=>applyPalette(paletteIndex-1);$('#themeNext').onclick=()=>applyPalette(paletteIndex+1);document.addEventListener('click',e=>{if(!$('#themePopover').contains(e.target)&&e.target!==$('#themeButton'))$('#themePopover').classList.add('hidden')});$('#shareButton').onclick=async()=>{const url=new URL(location.href);url.searchParams.set('r',roomCode);try{if(navigator.share)await navigator.share({title:'Sala de voz',text:'Entrá a la sala',url:url.href});else{await navigator.clipboard.writeText(url.href);toast('LINK COPIADO')}}catch{}};window.addEventListener('beforeunload',()=>channel?.untrack());if('serviceWorker'in navigator)navigator.serviceWorker.register('./sw.js').catch(()=>{});resetPrepared();
