@@ -1,26 +1,172 @@
 import{createClient}from'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.114.0/+esm';
-const S='https://catnohyouxqjjtseaueb.supabase.co',K='sb_publishable_eqh3PngXs4UjLLWiY3pz1w_nhHtf7X-',T=`${S}/functions/v1/casa-tts`,P=`${S}/functions/v1/casa-push`,ROOM='casa-amigos-v3-retro',VAPID='BHLMYq-HDi7O_iG9z7zXG4SZydThS-iQictsh-fSEgVKdg4Kysfcv-iX5ZoffiMOFVogDGbt9NR-t8kMtBaK2lE';
-const V={
-'es-AR-TomasNeural':['Tomás','Argentina','grave'],'es-AR-ElenaNeural':['Elena','Argentina','clara'],'es-MX-MarinaNeural':['Marina','México','infantil'],'es-MX-JorgeNeural':['Jorge','México','profunda'],'es-MX-CarlotaNeural':['Carlota','México','brillante'],'es-CU-ManuelNeural':['Manuel','Cuba','caribe'],'es-DO-EmilioNeural':['Emilio','R. Dominicana','caribe'],'es-PR-KarinaNeural':['Karina','Puerto Rico','caribe'],'es-PE-AlexNeural':['Alex','Perú','masculina'],'es-UY-MateoNeural':['Mateo','Uruguay','rioplatense'],'es-UY-ValentinaNeural':['Valentina','Uruguay','rioplatense'],'es-VE-SebastianNeural':['Sebastián','Venezuela','masculina'],'es-ES-TeoNeural':['Teo','España','masculina'],'es-ES-TrianaNeural':['Triana','España','femenina']};
-const q=s=>document.querySelector(s),db=createClient(S,K,{auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false}}),id=sessionStorage.casa_client_id||crypto.randomUUID();sessionStorage.casa_client_id=id;const install=localStorage.casa_install_id||crypto.randomUUID();localStorage.casa_install_id=install;
-const E={join:q('#joinView'),chat:q('#chatView'),nf:q('#nameForm'),name:q('#nameInput'),intro:q('#introInput'),err:q('#joinError'),jab:q('#joinAvatarButton'),jap:q('#joinAvatarPreview'),jaf:q('#joinAvatarFallback'),afi:q('#avatarInput'),msgs:q('#messages'),form:q('#messageForm'),input:q('#messageInput'),send:q('#sendButton'),tx:q('.txNormal'),busy:q('.txBusy'),vb:q('#voiceButton'),walk:q('#walkieToggle'),count:q('#mobileCount'),settings:q('#settingsButton'),joinSettings:q('#joinSettings'),cs:q('#channelStatus'),vs:q('#voiceStatus'),pb:q('#profileButton'),pmf:q('#profileMiniFallback'),pmi:q('#profileMiniImage'),voiceSheet:q('#voiceSheet'),voiceClose:q('#voiceClose'),voiceList:q('#voiceList'),profileSheet:q('#profileSheet'),profileClose:q('#profileClose'),pab:q('#profileAvatarButton'),pap:q('#profileAvatarPreview'),paf:q('#profileAvatarFallback'),pfi:q('#profileAvatarInput'),pn:q('#profileNameInput'),pi:q('#profileIntroInput'),pv:q('#profileVoiceButton'),pvs:q('#profileVoiceState'),save:q('#saveProfileButton'),peopleSheet:q('#peopleSheet'),peopleClose:q('#peopleClose'),people:q('#peopleList'),settingsSheet:q('#settingsSheet'),settingsClose:q('#settingsClose'),edit:q('#editProfileButton'),install:q('#installButton'),installState:q('#installState'),notify:q('#notifyButton'),notifyState:q('#notifyState'),test:q('#testNotifyButton'),wake:q('#wakeButton'),wakeState:q('#wakeState'),help:q('#settingsHelp'),leave:q('#leaveButton'),pending:q('#pendingPush'),toast:q('#toast')};
-let name=localStorage.casa_name||'',intro=localStorage.casa_intro||'',avatar=localStorage.casa_avatar||'',voice=V[localStorage.casa_voice_id]?localStorage.casa_voice_id:'',claim=voice?Date.now():0,ch=null,on=false,sending=false,walk=true,ctx=null,source=null,queue=Promise.resolve(),sub=null,sw=null,installPrompt=null,wakelock=null,pending=null,introTouched=!!intro;
-const clean=(x,n=24)=>(x||'').replace(/\s+/g,' ').trim().slice(0,n),def=n=>clean(n,18)?`Habla ${clean(n,18)}`:'',ini=n=>clean(n,18).split(/\s+/).map(x=>x[0]).join('').slice(0,2).toUpperCase()||'?',spoken=(t,i,n)=>{const p=clean(i,42)||def(n);return`${p?p+'. ':''}${clean(t,220)}`.slice(0,300)},standalone=()=>matchMedia('(display-mode: standalone)').matches||navigator.standalone===true,isIOS=()=>/iPad|iPhone|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
-function toast(t){E.toast.textContent=t;E.toast.classList.remove('hidden');clearTimeout(toast.t);toast.t=setTimeout(()=>E.toast.classList.add('hidden'),2200)}function open(d){if(!d.open)d.showModal?.()}function close(d){if(d?.open)d.close?.()}function setImg(img,f,data,n){if(data){img.src=data;img.classList.remove('hidden');f.classList.add('hidden')}else{img.classList.add('hidden');f.classList.remove('hidden');f.textContent=ini(n)}}
-function profileUI(){E.name.value=name||E.name.value;E.intro.value=intro||def(E.name.value);E.pn.value=name;E.pi.value=intro||def(name);setImg(E.jap,E.jaf,avatar,E.name.value);setImg(E.pmi,E.pmf,avatar,name);setImg(E.pap,E.paf,avatar,name);E.pvs.textContent=V[voice]?.[0]?.toUpperCase()||'ELEGIR';E.vb.classList.toggle('emptyVoice',!voice);E.vb.innerHTML=voice?`<span>V:</span><b>${V[voice][0]}</b>`:'<span>V:</span><b>--</b>';E.vs.textContent=`VOICE: ${voice?V[voice][0].toUpperCase():'--'}`}
-async function avatarFile(f){if(!f?.type.startsWith('image/'))return toast('IMAGEN NO VÁLIDA');try{const url=await new Promise((r,j)=>{const x=new FileReader;x.onload=()=>r(x.result);x.onerror=j;x.readAsDataURL(f)}),im=await new Promise((r,j)=>{const x=new Image;x.onload=()=>r(x);x.onerror=j;x.src=url}),s=Math.min(im.width,im.height),sx=(im.width-s)/2,sy=(im.height-s)/2,c=document.createElement('canvas');c.width=c.height=72;const z=c.getContext('2d',{alpha:false});z.fillStyle='#c8d6a7';z.fillRect(0,0,72,72);z.drawImage(im,sx,sy,s,s,0,0,72,72);avatar=c.toDataURL('image/webp',.65);if(avatar.length>20000)avatar=c.toDataURL('image/jpeg',.5);localStorage.casa_avatar=avatar;profileUI();await track();toast('FOTO // OK')}catch{toast('FOTO // ERROR')}}
-async function audioUnlock(){try{ctx||=new(window.AudioContext||window.webkitAudioContext)();if(ctx.state!=='running')await ctx.resume()}catch{}}function stop(){try{source?.stop()}catch{}source=null;queue=Promise.resolve()}async function tts(text,v){const r=await fetch(T,{method:'POST',headers:{'content-type':'application/json',apikey:K},body:JSON.stringify({text,voice:v})});if(!r.ok)throw Error(r.status);return r.arrayBuffer()}function b64(a){let s='',u=new Uint8Array(a);for(let i=0;i<u.length;i+=8192)s+=String.fromCharCode(...u.subarray(i,i+8192));return btoa(s)}function unb64(s){const x=atob(s),u=new Uint8Array(x.length);for(let i=0;i<x.length;i++)u[i]=x.charCodeAt(i);return u.buffer}
-async function playBuf(a){await audioUnlock();if(ctx){const b=await ctx.decodeAudioData(a.slice(0));await new Promise(r=>{const x=ctx.createBufferSource();source=x;x.buffer=b;x.connect(ctx.destination);x.onended=r;x.start()});return}const u=URL.createObjectURL(new Blob([a],{type:'audio/mpeg'}));try{const x=new Audio(u);await x.play();await new Promise(r=>x.onended=r)}finally{URL.revokeObjectURL(u)}}async function say(m,row,interrupt=false){if(interrupt)stop();queue=queue.catch(()=>{}).then(async()=>{row?.classList.add('speaking');try{let a=m.audioB64?unb64(m.audioB64):await tts(spoken(m.text,m.intro,m.name),m.voiceId);await playBuf(a)}catch{if('speechSynthesis'in window){const u=new SpeechSynthesisUtterance(spoken(m.text,m.intro,m.name));u.lang='es-AR';speechSynthesis.speak(u)}}finally{row?.classList.remove('speaking')}});return queue}
-function users(){if(!ch)return[];const m=new Map;for(const xs of Object.values(ch.presenceState()))for(const p of xs||[])if(p.clientId)m.set(p.clientId,p);return[...m.values()]}function owners(){const m=new Map;for(const p of users())if(p.voiceId&&V[p.voiceId]){const a=m.get(p.voiceId)||[];a.push(p);m.set(p.voiceId,a)}return m}function owner(v){return(owners().get(v)||[]).sort((a,b)=>(+a.voiceClaimAt-+b.voiceClaimAt)||String(a.clientId).localeCompare(String(b.clientId)))[0]||null}async function track(){if(ch)await ch.track({clientId:id,name,intro,avatar,voiceId:voice||null,voiceClaimAt:claim||0})}
-function renderVoices(){const os=owners();E.voiceList.replaceChildren();let n=1;for(const[k,v]of Object.entries(V)){const o=(os.get(k)||[]).sort((a,b)=>(+a.voiceClaimAt-+b.voiceClaimAt)||String(a.clientId).localeCompare(String(b.clientId)))[0],mine=o?.clientId===id||voice===k,taken=o&&o.clientId!==id,r=document.createElement('div');r.className='voiceRow'+(mine?' selected':'')+(taken?' taken':'');r.innerHTML=`<span class="voiceNum">${String(n++).padStart(2,'0')}</span><div class="voiceInfo"><b>${v[0].toUpperCase()}</b><span>${v[1]} // ${v[2]}${taken?' // LOCK '+clean(o.name,18).toUpperCase():''}</span></div>`;const p=document.createElement('button');p.className='previewVoice';p.textContent='▶';p.onclick=()=>say({text:`Probando ${v[0]}. Esta es mi voz en CASA.`,intro:'',name:'',voiceId:k},null,true);const c=document.createElement('button');c.className='claimVoice';c.textContent=mine?'YOU':taken?'LOCK':'TAKE';c.disabled=mine||taken;c.onclick=async()=>{voice=k;claim=Date.now();localStorage.casa_voice_id=k;await track();profileUI();renderVoices();close(E.voiceSheet);toast('VOICE LOCK // '+v[0].toUpperCase())};r.append(p,c);E.voiceList.append(r)}}
-function renderPeople(){const us=users();E.count.querySelector('b').textContent=us.length;E.people.replaceChildren();for(const p of us){const r=document.createElement('div');r.className='personRow',a=document.createElement('div');a.className='personAvatar';if(p.avatar){const i=new Image;i.src=p.avatar;a.append(i)}else a.textContent=ini(p.name);const t=document.createElement('div');t.className='personInfo';t.innerHTML=`<b>${clean(p.name,18).toUpperCase()}</b><span>${clean(p.intro,42)||def(p.name)}</span>`;const vv=document.createElement('span');vv.className='personVoice';vv.textContent=V[p.voiceId]?.[0]?.toUpperCase()||'--';r.append(a,t,vv);E.people.append(r)}if(voice){const o=owner(voice);if(o&&o.clientId!==id){voice='';claim=0;localStorage.removeItem('casa_voice_id');profileUI();renderVoices();toast('VOICE CONFLICT // RESELECT');open(E.voiceSheet)}}}
-function av(data,n){const a=document.createElement('div');a.className='avatar';if(data){const i=new Image;i.src=data;a.append(i)}else a.textContent=ini(n);return a}function add(m){if(!m?.text||!m?.name)return;q('#empty')?.remove();const mine=m.clientId===id,r=document.createElement('article');r.className='message'+(mine?' mine':'');const a=av(m.avatar,m.name),b=document.createElement('div');b.className='body';const meta=document.createElement('div');meta.className='meta';const who=document.createElement('b');who.textContent=(mine?'YOU':m.name).toUpperCase();const tm=document.createElement('span');tm.textContent=new Date(m.sentAt||Date.now()).toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'});const rp=document.createElement('button');rp.className='voiceMini';rp.textContent='▶ '+(V[m.voiceId]?.[0]||'VOICE');rp.onclick=()=>say(m,r,true);meta.append(who,tm,rp);const bubble=document.createElement('div');bubble.className='bubble';bubble.textContent=clean(m.text,220);b.append(meta,bubble);mine?r.append(b,a):r.append(a,b);E.msgs.append(r);while(E.msgs.querySelectorAll('.message').length>100)E.msgs.querySelector('.message').remove();E.msgs.scrollTop=E.msgs.scrollHeight;if(walk&&document.visibilityState==='visible')say(m,r)}
-function state(){E.input.disabled=!on;E.send.disabled=!on||!voice||sending;E.send.classList.toggle('busy',sending);E.tx.classList.toggle('hidden',sending);E.busy.classList.toggle('hidden',!sending)}async function enter(n){name=clean(n,18);intro=clean(E.intro.value,42)||def(name);localStorage.casa_name=name;localStorage.casa_intro=intro;E.join.classList.add('hidden');E.chat.classList.remove('hidden');E.cs.textContent='● CONECTANDO';profileUI();await audioUnlock();ch=db.channel(ROOM,{config:{broadcast:{self:true,ack:true},presence:{key:id}}});ch.on('broadcast',{event:'message'},({payload})=>add(payload)).on('presence',{event:'sync'},()=>{renderPeople();renderVoices()}).subscribe(async s=>{on=s==='SUBSCRIBED';E.cs.textContent=on?'● ONLINE':'● '+s;state();if(on){claim=voice?Date.now():0;await track();renderPeople();if(!voice)setTimeout(()=>open(E.voiceSheet),100)}})}
-function profileOpen(){E.pn.value=name;E.pi.value=intro||def(name);profileUI();open(E.profileSheet)}async function profileSave(){const n=clean(E.pn.value,18);if(!n)return toast('FALTA NOMBRE');name=n;intro=clean(E.pi.value,42)||def(n);localStorage.casa_name=name;localStorage.casa_intro=intro;await track();profileUI();renderPeople();close(E.profileSheet);toast('PROFILE // SAVED')}
-async function pushCall(action,x={}){const r=await fetch(P,{method:'POST',headers:{'content-type':'application/json',apikey:K},body:JSON.stringify({action,...x})});const j=await r.json().catch(()=>({}));if(!r.ok||!j.ok)throw Error(j.error||r.status);return j}function key(s){const p='='.repeat((4-s.length%4)%4),raw=atob((s+p).replace(/-/g,'+').replace(/_/g,'/'));return Uint8Array.from(raw,c=>c.charCodeAt(0))}async function reg(){if(!('serviceWorker'in navigator))return null;sw||=await navigator.serviceWorker.register('./sw.js',{scope:'./'}).then(()=>navigator.serviceWorker.ready);return sw}async function enablePush(){if(!('PushManager'in window)||!('Notification'in window))return toast('PUSH // N/A');if(isIOS()&&!standalone())return toast('iPHONE: AGREGÁ CASA A INICIO');const r=await reg();let p=Notification.permission;if(p==='default')p=await Notification.requestPermission();if(p!=='granted')return;sub=await r.pushManager.getSubscription()||await r.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:key(VAPID)});await pushCall('subscribe',{installId:install,name:name||'Amigo',subscription:sub.toJSON()});settingsUI();toast('PUSH // ON')}async function heartbeat(v){if(!sub)return;pushCall('heartbeat',{installId:install,visible:v}).catch(()=>{})}async function notify(m){pushCall('notify',{installId:install,messageId:m.id,name:m.name,text:m.text,intro:m.intro,voiceId:m.voiceId}).catch(()=>{})}
-function settingsUI(){E.installState.textContent=standalone()?'ON':installPrompt?'READY':isIOS()?'HOME':'MENU';E.notifyState.textContent=sub?'ON':Notification?.permission==='denied'?'BLOCK':'OFF';E.wakeState.textContent=wakelock?'ON':'OFF'}
-E.nf.onsubmit=e=>{e.preventDefault();const n=clean(E.name.value,18);if(!n)return E.err.textContent='FALTA NOMBRE';enter(n)};E.form.onsubmit=async e=>{e.preventDefault();if(!on||!voice||sending)return;const text=clean(E.input.value,220);if(!text)return;sending=true;state();const m={id:crypto.randomUUID(),clientId:id,name,intro,avatar,text,voiceId:voice,sentAt:new Date().toISOString()};E.input.value='';try{const a=await tts(spoken(text,intro,name),voice);const x=b64(a);if(x.length<175000)m.audioB64=x}catch{}const ok=await ch.send({type:'broadcast',event:'message',payload:m});sending=false;state();if(ok!=='ok'){E.input.value=text;toast('TX // ERROR')}else notify(m)};
-E.name.oninput=()=>{if(!introTouched)E.intro.value=def(E.name.value);name=clean(E.name.value,18);profileUI()};E.intro.oninput=()=>introTouched=true;E.jab.onclick=()=>E.afi.click();E.afi.onchange=()=>{avatarFile(E.afi.files?.[0]);E.afi.value=''};E.pab.onclick=()=>E.pfi.click();E.pfi.onchange=()=>{avatarFile(E.pfi.files?.[0]);E.pfi.value=''};E.vb.onclick=()=>{renderVoices();open(E.voiceSheet)};E.voiceClose.onclick=()=>close(E.voiceSheet);E.pv.onclick=()=>{close(E.profileSheet);renderVoices();open(E.voiceSheet)};E.pb.onclick=profileOpen;E.profileClose.onclick=()=>close(E.profileSheet);E.save.onclick=profileSave;E.count.onclick=()=>{renderPeople();open(E.peopleSheet)};E.peopleClose.onclick=()=>close(E.peopleSheet);E.walk.onclick=()=>{walk=!walk;E.walk.textContent=walk?'VOL':'MUTE';E.walk.classList.toggle('active',walk);if(!walk)stop()};
-function showSettings(){settingsUI();open(E.settingsSheet)}E.settings.onclick=showSettings;E.joinSettings.onclick=showSettings;E.settingsClose.onclick=()=>close(E.settingsSheet);E.edit.onclick=()=>{close(E.settingsSheet);profileOpen()};E.notify.onclick=enablePush;E.test.onclick=()=>pushCall('test',{installId:install}).then(()=>toast('PUSH TEST // SENT')).catch(()=>toast('PUSH TEST // ERROR'));E.install.onclick=async()=>{if(installPrompt){installPrompt.prompt();await installPrompt.userChoice;installPrompt=null}else toast(isIOS()?'COMPARTIR → AGREGAR A INICIO':'MENÚ → INSTALAR APP')};E.wake.onclick=async()=>{if(!navigator.wakeLock)return toast('WAKE // N/A');if(wakelock){await wakelock.release();wakelock=null}else wakelock=await navigator.wakeLock.request('screen');settingsUI()};E.leave.onclick=async()=>{try{await ch?.untrack();await db.removeChannel(ch)}catch{}location.reload()};
-window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();installPrompt=e;settingsUI()});document.addEventListener('visibilitychange',()=>heartbeat(document.visibilityState==='visible'));navigator.serviceWorker?.addEventListener('message',e=>{if(e.data?.payload){pending=e.data.payload;E.pending.classList.remove('hidden');E.pending.querySelector('b').textContent='REPRODUCIR // '+(pending.name||'MENSAJE').toUpperCase()}});E.pending.onclick=()=>{if(pending)say(pending,null,true);pending=null;E.pending.classList.add('hidden')};
-(async()=>{profileUI();state();await reg().catch(()=>{});if(Notification?.permission==='granted'&&sw){sub=await sw.pushManager.getSubscription();if(sub)await pushCall('subscribe',{installId:install,name:name||'Amigo',subscription:sub.toJSON()}).catch(()=>{});}settingsUI();setInterval(()=>heartbeat(document.visibilityState==='visible'),12000);E.name.focus()})();
+
+const S='https://catnohyouxqjjtseaueb.supabase.co';
+const K='sb_publishable_eqh3PngXs4UjLLWiY3pz1w_nhHtf7X-';
+const AUDIO_API=`${S}/functions/v1/casa-room-audio`;
+const supabase=createClient(S,K,{auth:{persistSession:false,autoRefreshToken:false}});
+const $=s=>document.querySelector(s);
+const $$=s=>[...document.querySelectorAll(s)];
+const esc=s=>String(s??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+const initials=n=>(String(n||'?').trim().split(/\s+/).slice(0,2).map(x=>x[0]).join('')||'?').toUpperCase();
+const roomCode=(new URLSearchParams(location.search).get('r')||'clase').replace(/[^a-z0-9_-]/gi,'').slice(0,24)||'clase';
+const ROOM=`casa-class-v4-${roomCode}`;
+const clientId=sessionStorage.getItem('casa_client_id')||crypto.randomUUID();sessionStorage.setItem('casa_client_id',clientId);
+
+const VOICES=[
+['sergeant','Sargento fósil','90+ · militar · destruido'],
+['otaku','Otaku turbo','agudísima · anime · caos'],
+['grandma','Abuela furiosa','anciana · ronca · indignada'],
+['goblin','Duende nervioso','nasal · mini · rapidísimo'],
+['giant','Gigante tonto','gravísimo · lento · feliz'],
+['evilkid','Nene malvado','agudo · dulce · siniestro'],
+['apocalypse','Apocalipsis','épico · enorme · absurdo'],
+['novela','Telenovela','melodrama · traición total'],
+['witch','Bruja seca','vieja · chillona · torcida'],
+['gamer','Gamer 2007','nasal · gritón · cafeína'],
+['barman','Viejo de bar','cascado · lento · risitas'],
+['fairy','Hada tóxica','ultra aguda · dulce · venenosa']
+];
+const PALETTES=[
+['bordo-crema','Bordó / Crema','#F5DABF','#6C151E'],
+['verde-crema','Verde / Crema','#F5DABF','#0F3D3A'],
+['lima-carbon','Lima / Carbón','#C7F464','#202124'],
+['cobalto-crema','Cobalto / Crema','#F5DABF','#1546A0'],
+['menta-bosque','Menta / Bosque','#B8E0D2','#174A3A'],
+['rosa-ciruela','Rosa / Ciruela','#F4B6C2','#5B2448'],
+['mandarina-noche','Mandarina / Noche','#F28C28','#102A43'],
+['hueso-tinta','Hueso / Tinta','#EADFCB','#1B1B1A']
+];
+
+let name=localStorage.getItem('casa_name')||'';
+let avatar=localStorage.getItem('casa_avatar')||'';
+let voiceId=localStorage.getItem('casa_qwen_voice')||'';
+let voiceClaimAt=Number(localStorage.getItem('casa_voice_claim_at'))||0;
+let channel=null,presences=[];
+let audioCtx=null,audioChain=Promise.resolve();
+let prepared=null,prepController=null,draftVersion=0;
+let paletteIndex=Math.max(0,PALETTES.findIndex(p=>p[0]===(localStorage.getItem('casa_palette')||'verde-crema')));
+
+function applyPalette(i=paletteIndex){
+ paletteIndex=(i+PALETTES.length)%PALETTES.length;const p=PALETTES[paletteIndex];
+ document.documentElement.style.setProperty('--paper',p[2]);document.documentElement.style.setProperty('--ink',p[3]);
+ localStorage.setItem('casa_palette',p[0]);$('#themeName').textContent=p[1];$('#swatchA').style.background=p[2];$('#swatchB').style.background=p[3];
+ const meta=document.querySelector('meta[name=theme-color]');if(meta)meta.content=p[2];
+}
+applyPalette();
+
+function avatarMarkup(src,n,cls='avatar'){return src?`<span class="${cls}"><img src="${src}" alt=""></span>`:`<span class="${cls} fallback">${esc(initials(n))}</span>`}
+function setProfilePreview(){
+ const el=$('#joinAvatarPreview');el.innerHTML=avatar?`<img src="${avatar}" alt="">`:`<b>${esc(initials($('#joinName').value||name||'?'))}</b>`;
+ const mini=$('#meButton');if(mini)mini.innerHTML=avatar?`<img src="${avatar}" alt="">`:`<b>${esc(initials(name))}</b>`;
+ const p=$('#profileAvatarPreview');if(p)p.innerHTML=avatar?`<img src="${avatar}" alt="">`:`<b>${esc(initials(name))}</b>`;
+}
+$('#joinName').value=name;setProfilePreview();
+$('#joinName').addEventListener('input',setProfilePreview);
+
+async function imageToAvatar(file){
+ const img=await createImageBitmap(file);const size=Math.min(img.width,img.height),sx=(img.width-size)/2,sy=(img.height-size)/2;
+ const c=document.createElement('canvas');c.width=c.height=88;const x=c.getContext('2d');x.drawImage(img,sx,sy,size,size,0,0,88,88);
+ let out=c.toDataURL('image/webp',.68);if(out.length>24000)out=c.toDataURL('image/jpeg',.62);return out;
+}
+async function pickAvatar(file){if(!file)return;try{avatar=await imageToAvatar(file);localStorage.setItem('casa_avatar',avatar);setProfilePreview();if(channel)await trackPresence()}catch{toast('No pude leer esa foto')};}
+$('#joinAvatarFile').onchange=e=>pickAvatar(e.target.files?.[0]);
+$('#profileAvatarFile').onchange=e=>pickAvatar(e.target.files?.[0]);
+$('#joinAvatarButton').onclick=()=>$('#joinAvatarFile').click();
+$('#profileAvatarButton').onclick=()=>$('#profileAvatarFile').click();
+
+function toast(t){const x=$('#toast');x.textContent=t;x.classList.remove('hidden');clearTimeout(toast.t);toast.t=setTimeout(()=>x.classList.add('hidden'),1800)}
+async function unlockAudio(){try{audioCtx=audioCtx||new (window.AudioContext||window.webkitAudioContext)();if(audioCtx.state==='suspended')await audioCtx.resume()}catch{}}
+async function playBlob(blob){
+ await unlockAudio();const ab=await blob.arrayBuffer();const buffer=await audioCtx.decodeAudioData(ab.slice(0));
+ return new Promise(resolve=>{const src=audioCtx.createBufferSource();src.buffer=buffer;src.connect(audioCtx.destination);src.onended=resolve;src.start()});
+}
+function enqueueUrl(url,row){
+ if(!url)return;audioChain=audioChain.then(async()=>{try{row?.classList.add('speaking');const r=await fetch(url);if(!r.ok)throw 0;await playBlob(await r.blob())}catch{}finally{row?.classList.remove('speaking')}});
+}
+
+function presenceFlat(){return Object.values(channel?.presenceState?.()||{}).flat().filter(Boolean)}
+function voiceOwner(id){
+ const a=presences.filter(p=>p.voiceId===id).sort((x,y)=>(Number(x.voiceClaimAt)||9e15)-(Number(y.voiceClaimAt)||9e15)||String(x.clientId).localeCompare(String(y.clientId)));
+ return a[0]||null;
+}
+function firstFreeVoice(){return VOICES.find(v=>!voiceOwner(v[0])||voiceOwner(v[0])?.clientId===clientId)?.[0]||VOICES[Math.floor(Math.random()*VOICES.length)][0]}
+async function ensureVoice(){
+ if(voiceId){const own=voiceOwner(voiceId);if(!own||own.clientId===clientId)return voiceId}
+ voiceId=firstFreeVoice();voiceClaimAt=Date.now();localStorage.setItem('casa_qwen_voice',voiceId);localStorage.setItem('casa_voice_claim_at',String(voiceClaimAt));await trackPresence();updateVoiceUI();return voiceId;
+}
+async function resolveVoiceCollision(){
+ if(!voiceId)return ensureVoice();const own=voiceOwner(voiceId);if(own&&own.clientId!==clientId){voiceId='';voiceClaimAt=0;await ensureVoice();toast('Te asigné otra voz libre')}
+}
+function voiceName(id){return VOICES.find(v=>v[0]===id)?.[1]||'Voz'}
+function updateVoiceUI(){const b=$('#voiceButton');b.textContent=voiceId?voiceName(voiceId):'Voz';renderVoiceList()}
+async function trackPresence(){if(!channel||!name)return;await channel.track({clientId,name,avatar,voiceId,voiceClaimAt,joinedAt:Date.now()})}
+function syncPresence(){
+ presences=presenceFlat();const unique=new Map();presences.forEach(p=>unique.set(p.clientId,p));presences=[...unique.values()];
+ $('#onlineCount').textContent=String(presences.length||1);renderPeople();renderVoiceList();resolveVoiceCollision();
+}
+
+function renderVoiceList(){
+ const list=$('#voiceList');if(!list)return;list.innerHTML='';
+ VOICES.forEach(([id,label,desc],i)=>{const owner=voiceOwner(id),mine=id===voiceId,taken=owner&&owner.clientId!==clientId;const row=document.createElement('div');row.className='voiceRow'+(mine?' selected':'')+(taken?' taken':'');row.innerHTML=`<span class="voiceNum">${String(i+1).padStart(2,'0')}</span><div class="voiceInfo"><b>${esc(label)}</b><span>${esc(desc)}${taken?` · ${esc(owner.name)}`:''}</span></div><button class="previewVoice" type="button">▶</button><button class="claimVoice" type="button" ${taken?'disabled':''}>${mine?'TUYA':taken?'OCUPADA':'ELEGIR'}</button>`;
+ row.querySelector('.previewVoice').onclick=()=>previewVoice(id,label,row.querySelector('.previewVoice'));
+ row.querySelector('.claimVoice').onclick=async()=>{if(taken||mine)return;voiceId=id;voiceClaimAt=Date.now();localStorage.setItem('casa_qwen_voice',id);localStorage.setItem('casa_voice_claim_at',String(voiceClaimAt));await trackPresence();updateVoiceUI();$('#voiceSheet').close()};list.append(row)});
+}
+async function previewVoice(id,label,btn){
+ if(btn.dataset.busy)return;btn.dataset.busy='1';btn.textContent='…';try{const mid=crypto.randomUUID();const r=await fetch(AUDIO_API,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({voice:id,text:`Soy ${name||'CASA'}. Esta es mi voz.`,messageId:mid})});if(!r.ok)throw 0;await playBlob(await r.blob())}catch{toast('Esa voz no respondió')}finally{btn.dataset.busy='';btn.textContent='▶'}
+}
+
+function renderPeople(){const list=$('#peopleList');if(!list)return;list.innerHTML=presences.map(p=>`<div class="personRow">${avatarMarkup(p.avatar,p.name,'personAvatar')}<div><b>${esc(p.name)}</b><small>${esc(voiceName(p.voiceId))}</small></div><span>●</span></div>`).join('')||'<div class="quiet">Sólo vos por ahora.</div>'}
+function renderMessage(m){
+ if(!m?.id||document.querySelector(`[data-mid="${CSS.escape(m.id)}"]`))return;$('#emptyState')?.remove();const mine=m.clientId===clientId,row=document.createElement('article');row.className='message'+(mine?' mine':'');row.dataset.mid=m.id;
+ const av=avatarMarkup(m.avatar,m.name);const body=`<div class="body"><div class="meta"><b>${esc(m.name)}</b><button class="replay" type="button">▶ ${esc(voiceName(m.voiceId))}</button></div><div class="bubble">${esc(m.text)}</div></div>`;
+ row.innerHTML=mine?body+av:av+body;row.querySelector('.replay').onclick=()=>enqueueUrl(m.audioUrl,row);$('#messages').append(row);$('#messages').scrollTop=$('#messages').scrollHeight;if(!mine)enqueueUrl(m.audioUrl,row);
+}
+
+async function connect(){
+ if(channel)return;channel=supabase.channel(ROOM,{config:{broadcast:{self:true,ack:true},presence:{key:clientId}}});
+ channel.on('broadcast',{event:'message'},({payload})=>renderMessage(payload));
+ channel.on('presence',{event:'sync'},syncPresence);
+ await new Promise((resolve,reject)=>channel.subscribe(status=>{if(status==='SUBSCRIBED')resolve();if(status==='CHANNEL_ERROR'||status==='TIMED_OUT')reject(new Error(status))}));
+ await trackPresence();setTimeout(ensureVoice,250);
+}
+
+$('#joinForm').onsubmit=async e=>{e.preventDefault();const n=$('#joinName').value.trim().slice(0,28);if(!n){$('#joinName').focus();return}name=n;localStorage.setItem('casa_name',name);await unlockAudio();$('#joinButton').disabled=true;$('#joinButton').textContent='ENTRANDO…';try{await connect();$('#joinScreen').classList.add('hidden');$('#appScreen').classList.remove('hidden');$('#roomLabel').textContent=roomCode.toUpperCase();setProfilePreview();updateVoiceUI();$('#messageInput').focus()}catch{$('#joinButton').disabled=false;$('#joinButton').textContent='ENTRAR';toast('No pude conectar. Probá de nuevo')}};
+
+function setDraftStatus(text,mode=''){const s=$('#draftStatus');s.textContent=text;s.dataset.mode=mode}
+function resetPrepared(reason='ESCRIBÍ Y TOCÁ ↑ PARA PREPARAR'){
+ draftVersion++;if(prepController){prepController.abort();prepController=null}prepared=null;$('#previewPrepared').classList.add('hidden');$('#sendButton').className='sendButton';$('#sendButton').textContent='↑';$('#sendButton').disabled=!$('#messageInput').value.trim();setDraftStatus(reason,'idle');
+}
+$('#messageInput').addEventListener('input',()=>resetPrepared());
+
+async function prepareAudio(){
+ const text=$('#messageInput').value.trim().slice(0,180);if(!text)return;await ensureVoice();const version=++draftVersion,mid=crypto.randomUUID();prepController=new AbortController();prepared={state:'loading',text,voiceId,messageId:mid,sendWhenReady:false};
+ $('#sendButton').className='sendButton loading';$('#sendButton').textContent='…';setDraftStatus('PREPARANDO VOZ · TOCÁ ↑ OTRA VEZ PARA ENVIAR APENAS TERMINE','loading');
+ try{
+  const spoken=`Habla ${name}. ${text}`;const r=await fetch(AUDIO_API,{method:'POST',headers:{'content-type':'application/json'},signal:prepController.signal,body:JSON.stringify({voice:voiceId,text:spoken,messageId:mid})});if(version!==draftVersion)return;if(!r.ok){let j={};try{j=await r.json()}catch{}throw new Error(j.error||'audio')}
+  const blob=await r.blob();if(version!==draftVersion)return;const audioId=r.headers.get('x-casa-audio-id')||mid;const audioUrl=r.headers.get('x-casa-audio-url')||`${AUDIO_API}?id=${encodeURIComponent(audioId)}`;prepared={...prepared,state:'ready',blob,audioId,audioUrl};prepController=null;$('#previewPrepared').classList.remove('hidden');$('#sendButton').className='sendButton ready';$('#sendButton').textContent='↑';
+  if(prepared.sendWhenReady){setDraftStatus('LISTO · ENVIANDO…','ready');await transmitPrepared()}else setDraftStatus('LISTO · ▶ ESCUCHÁ O ↑ ENVIÁ','ready');
+ }catch(err){if(err.name==='AbortError')return;prepared=null;prepController=null;$('#sendButton').className='sendButton errorPulse';$('#sendButton').textContent='!';setDraftStatus('NO SE PUDO PREPARAR · TOCÁ ! PARA REINTENTAR','error')}
+}
+async function transmitPrepared(){
+ if(!prepared||prepared.state!=='ready')return;const p=prepared;$('#sendButton').disabled=true;setDraftStatus('ENVIANDO…','ready');const payload={id:p.messageId,clientId,name,avatar,text:p.text,voiceId:p.voiceId,audioId:p.audioId,audioUrl:p.audioUrl,sentAt:Date.now()};
+ try{await channel.send({type:'broadcast',event:'message',payload});$('#messageInput').value='';prepared=null;draftVersion++;$('#previewPrepared').classList.add('hidden');$('#sendButton').className='sendButton';$('#sendButton').textContent='↑';$('#sendButton').disabled=true;setDraftStatus('ESCRIBÍ Y TOCÁ ↑ PARA PREPARAR','idle')}catch{$('#sendButton').disabled=false;setDraftStatus('NO SE ENVIÓ · TOCÁ ↑','error')}
+}
+$('#composer').onsubmit=async e=>{e.preventDefault();const t=$('#messageInput').value.trim();if(!t)return;if(!prepared){await prepareAudio();return}if(prepared.state==='loading'){prepared.sendWhenReady=!prepared.sendWhenReady;$('#sendButton').className='sendButton loading'+(prepared.sendWhenReady?' armed':'');$('#sendButton').textContent=prepared.sendWhenReady?'↑':'…';setDraftStatus(prepared.sendWhenReady?'EN COLA · SE ENVÍA APENAS TERMINE':'PREPARANDO · NO SE ENVIARÁ SOLO','loading');return}if(prepared.state==='ready')await transmitPrepared();};
+$('#previewPrepared').onclick=async()=>{if(prepared?.blob)await playBlob(prepared.blob)};
+
+$('#voiceButton').onclick=()=>{$('#voiceSheet').showModal();renderVoiceList()};
+$('#voiceClose').onclick=()=>$('#voiceSheet').close();
+$('#peopleButton').onclick=()=>{$('#peopleSheet').showModal();renderPeople()};
+$('#peopleClose').onclick=()=>$('#peopleSheet').close();
+$('#meButton').onclick=()=>{$('#profileName').value=name;setProfilePreview();$('#profileSheet').showModal()};
+$('#profileClose').onclick=()=>$('#profileSheet').close();
+$('#profileForm').onsubmit=async e=>{e.preventDefault();const n=$('#profileName').value.trim().slice(0,28);if(!n)return;name=n;localStorage.setItem('casa_name',name);await trackPresence();setProfilePreview();$('#profileSheet').close();toast('Perfil guardado')};
+
+$('#themeButton').onclick=e=>{e.stopPropagation();$('#themePopover').classList.toggle('hidden')};
+$('#themePrev').onclick=()=>applyPalette(paletteIndex-1);$('#themeNext').onclick=()=>applyPalette(paletteIndex+1);
+document.addEventListener('click',e=>{if(!$('#themePopover').contains(e.target)&&e.target!==$('#themeButton'))$('#themePopover').classList.add('hidden')});
+$('#shareButton').onclick=async()=>{const url=new URL(location.href);url.searchParams.set('r',roomCode);try{if(navigator.share)await navigator.share({title:'CASA',text:'Entrá a CASA',url:url.href});else{await navigator.clipboard.writeText(url.href);toast('LINK COPIADO')}}catch{}};
+
+window.addEventListener('beforeunload',()=>channel?.untrack());
+if('serviceWorker'in navigator)navigator.serviceWorker.register('./sw.js').catch(()=>{});
+resetPrepared();
