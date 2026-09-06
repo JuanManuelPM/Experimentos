@@ -4,16 +4,16 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#F5DABF">
-<meta name="description" content="CASA — walkie de texto con voces absurdas para grupos.">
-<title>CASA</title>
+<meta name="description" content="Sala de voz en tiempo real para grupos.">
+<title>room</title>
 <link rel="manifest" href="./manifest.webmanifest">
-<link rel="stylesheet" href="./style.css?v=4">
+<link rel="stylesheet" href="./style.css?v=5">
 </head>
 <body>
 <section class="shell" id="joinScreen">
   <div class="join card">
-    <div class="joinTop"><span><i class="liveDot"></i>CASA</span><span>ENTRAR</span></div>
-    <div class="logo"><h1>CASA.</h1><p>ESCRIBÍ · PREPARÁ · SOLTÁ LA VOZ</p></div>
+    <div class="joinTop"><span><i class="liveDot"></i>ROOM / <i id="joinRoomLabel">CLASE</i></span><span>ENTRAR</span></div>
+    <div class="logo"><h1>ENTRÁ.</h1><p>ESCRIBÍ · PREPARÁ · SOLTÁ LA VOZ</p></div>
     <form class="joinForm" id="joinForm">
       <div class="joinProfile">
         <button class="avatarPick" id="joinAvatarButton" type="button" aria-label="Elegir foto"><span id="joinAvatarPreview"><b>?</b></span></button>
@@ -33,7 +33,7 @@
 <section class="shell hidden" id="appScreen">
   <main class="app">
     <header class="topbar">
-      <div class="brand"><b>CASA</b><span>ROOM / <i id="roomLabel">CLASE</i></span></div>
+      <div class="brand"><i class="liveDot"></i><b>ROOM</b><span>/ <i id="roomLabel">CLASE</i></span></div>
       <div class="topActions">
         <button class="shareButton" id="shareButton" type="button" title="Compartir">↗</button>
         <button class="peopleButton" id="peopleButton" type="button" title="Personas conectadas"><b id="onlineCount">1</b><small>ONLINE</small></button>
@@ -57,7 +57,10 @@
       <div class="empty" id="emptyState"><b>Silencio por ahora.</b><span>Escribí abajo y prepará la primera voz.</span></div>
     </section>
 
-    <div class="draftBar" id="draftStatus" data-mode="idle">ESCRIBÍ Y TOCÁ ↑ PARA PREPARAR</div>
+    <div class="draftBar" id="draftStatus" data-mode="idle">
+      <span id="draftStatusText">ESCRIBÍ Y TOCÁ ↑ PARA PREPARAR</span>
+      <i class="progressRail" aria-hidden="true"></i>
+    </div>
 
     <form class="composer" id="composer">
       <button class="voiceButton" id="voiceButton" type="button">Voz</button>
@@ -74,11 +77,12 @@
 </dialog>
 
 <dialog class="sheet" id="profileSheet">
-  <div class="sheetHead"><div><b>PERFIL</b><span>La foto sigue siendo opcional</span></div><button class="closeButton" id="profileClose" type="button">×</button></div>
+  <div class="sheetHead"><div><b>PERFIL</b><span>Nombre, foto e intro rápida</span></div><button class="closeButton" id="profileClose" type="button">×</button></div>
   <form class="profileEditor" id="profileForm">
     <div class="profileAvatarWrap"><button class="avatarPick" id="profileAvatarButton" type="button"><span id="profileAvatarPreview"><b>?</b></span></button></div>
     <input class="hiddenFile" id="profileAvatarFile" type="file" accept="image/*">
     <div class="field"><label for="profileName">NOMBRE</label><input id="profileName" maxlength="28" required></div>
+    <div class="field"><label for="profileIntro">INTRO RÁPIDA</label><input id="profileIntro" maxlength="36" placeholder="Juan dice"><div class="optional" id="introHint">Vacío = “Juan dice”. Se reproduce antes del mensaje sin esperar otra generación.</div></div>
     <button class="primary" type="submit">GUARDAR</button>
   </form>
 </dialog>
@@ -89,6 +93,6 @@
 </dialog>
 
 <div class="toast hidden" id="toast"></div>
-<script type="module" src="./app.js?v=4"></script>
+<script type="module" src="./app.js?v=5"></script>
 </body>
 </html>
