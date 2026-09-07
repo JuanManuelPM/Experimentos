@@ -4,17 +4,16 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#F5DABF">
-<meta name="description" content="Walkie Chat: sala pública o chats por link, con voces en tiempo real.">
+<meta name="description" content="Walkie Chat">
 <title>Walkie Chat</title>
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="stylesheet" href="./style.css?v=5">
 <link rel="stylesheet" href="./shelf-v8.css?v=1">
-<link rel="stylesheet" href="./walkie-v11.css?v=1">
+<link rel="stylesheet" href="./walkie-v12.css?v=1">
 </head>
 <body>
 <section class="walkieLandingShell" id="joinScreen">
   <main class="walkieLanding">
-    <header class="landingTop"><span><i class="liveDot"></i>WALKIE CHAT</span><span class="landingMode" id="landingMode">ABIERTO</span></header>
     <div class="landingGrid">
       <section class="radioStage" aria-label="Walkie Chat">
         <svg class="landingRadio" viewBox="0 0 430 760" role="img" aria-label="Walkie talkie">
@@ -48,17 +47,10 @@
           </g>
         </svg>
         <div class="radioWordmark"><b>WALKIE</b><span>CHAT</span></div>
-        <span class="radioWhisper">TEXTO → VOZ → TODOS</span>
       </section>
 
       <form class="landingForm" id="joinForm" novalidate>
-        <i class="landingRoomLabel" id="joinRoomLabel">PUBLICO</i>
-        <div class="landingIntro"><b>ENTRÁ CON UN NOMBRE.</b><span>Al público, o armá un chat aparte y mandá el link.</span></div>
-        <div class="landingNameLine">
-          <input id="joinName" maxlength="28" autocomplete="nickname" placeholder="Tu nombre" aria-label="Tu nombre" required>
-          <button class="landingPhoto" id="joinAvatarButton" type="button" aria-label="Agregar foto"><span id="joinAvatarPreview"><b>?</b></span></button>
-        </div>
-        <input class="hiddenFile" id="joinAvatarFile" type="file" accept="image/*">
+        <div class="landingNameLine"><input id="joinName" maxlength="28" autocomplete="nickname" placeholder="Tu nombre" aria-label="Tu nombre" required></div>
 
         <div class="landingActions" id="landingChoice">
           <button class="landingAction primaryChoice" id="publicJoinButton" type="button">ENTRAR AL PÚBLICO</button>
@@ -66,24 +58,25 @@
         </div>
 
         <div class="inviteActions hidden" id="inviteChoice">
-          <div class="inviteTag">TE PASARON UN WALKIE</div>
-          <button class="landingAction primaryChoice" id="inviteJoinButton" type="button">ENTRAR AL CHAT</button>
-          <button class="landingAction" id="invitePublicButton" type="button">IR AL PÚBLICO</button>
+          <button class="landingAction primaryChoice" id="inviteJoinButton" type="button">ENTRAR</button>
         </div>
 
         <div class="privateReady hidden" id="privateReady">
-          <div class="privateReadyHead"><b>LINK LISTO</b><span>SIN CONTRASEÑA</span></div>
           <div class="privateLink" id="privateLink"></div>
           <div class="privateReadyActions">
             <button id="copyPrivateButton" type="button">COPIAR</button>
             <button id="sharePrivateButton" type="button">COMPARTIR</button>
-            <button class="enterPrivate" id="enterPrivateButton" type="button">ENTRAR AL CHAT</button>
+            <button class="enterPrivate" id="enterPrivateButton" type="button">ENTRAR</button>
             <button id="cancelPrivateButton" type="button">VOLVER</button>
           </div>
         </div>
 
+        <button class="utilityGhost" id="joinAvatarButton" type="button" tabindex="-1" aria-hidden="true"><span id="joinAvatarPreview"><b>?</b></span></button>
+        <input class="hiddenFile utilityGhost" id="joinAvatarFile" type="file" accept="image/*" tabindex="-1" aria-hidden="true">
+        <i class="landingRoomLabel" id="joinRoomLabel">PUBLICO</i>
+        <span class="landingMode" id="landingMode"></span>
         <button class="joinSubmitGhost" id="joinButton" type="submit" tabindex="-1">ENTRAR</button>
-        <div class="landingStatus" id="landingStatus">PÚBLICO ABIERTO · O CREÁ UN LINK APARTE</div>
+        <div class="landingStatus" id="landingStatus"></div>
       </form>
     </div>
   </main>
@@ -108,7 +101,7 @@
       </div>
     </header>
 
-    <section class="messages" id="messages" aria-live="polite"><div class="empty" id="emptyState"><b>Silencio por ahora.</b><span>Escribí abajo y mandá la primera voz.</span></div></section>
+    <section class="messages" id="messages" aria-live="polite"><div class="empty" id="emptyState"><b>Silencio por ahora.</b><span></span></div></section>
     <div class="draftBar" id="draftStatus" data-mode="idle"><span id="draftStatusText">LISTO</span><i class="progressRail" aria-hidden="true"></i></div>
     <form class="composer" id="composer">
       <button class="voiceButton" id="voiceButton" type="button">Voz</button>
@@ -123,6 +116,6 @@
 <dialog class="sheet" id="profileSheet"><div class="sheetHead"><div><b>PERFIL</b><span>Nombre, foto e intro rápida</span></div><button class="closeButton" id="profileClose" type="button">×</button></div><form class="profileEditor" id="profileForm"><div class="profileAvatarWrap"><button class="avatarPick" id="profileAvatarButton" type="button"><span id="profileAvatarPreview"><b>?</b></span></button></div><input class="hiddenFile" id="profileAvatarFile" type="file" accept="image/*"><div class="field"><label for="profileName">NOMBRE</label><input id="profileName" maxlength="28" required></div><div class="field"><label for="profileIntro">INTRO RÁPIDA</label><input id="profileIntro" maxlength="36" placeholder="Juan dice"><div class="optional" id="introHint">Vacío = “Juan dice”.</div></div><button class="primary" type="submit">GUARDAR</button></form></dialog>
 <dialog class="sheet" id="peopleSheet"><div class="sheetHead"><div><b>ONLINE</b><span>Quienes están acá ahora</span></div><button class="closeButton" id="peopleClose" type="button">×</button></div><div id="peopleList"></div></dialog>
 <div class="toast hidden" id="toast"></div>
-<script type="module" src="./bootstrap-v11.js?v=1"></script>
+<script type="module" src="./bootstrap-v12.js?v=1"></script>
 </body>
 </html>
