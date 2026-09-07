@@ -11,8 +11,10 @@ const THEMES={
 function applySavedTheme(){const t=THEMES[localStorage.getItem('casa_palette')||'verde-crema']||THEMES['verde-crema'];document.documentElement.style.setProperty('--paper',t[0]);document.documentElement.style.setProperty('--ink',t[1]);const m=document.querySelector('meta[name="theme-color"]');if(m)m.content=t[0]}
 applySavedTheme();
 
-const sanitizeRoom=s=>String(s||'').replace(/^#\/?/,'').replace(/[^a-z0-9_-]/gi,'').slice(0,24);
-const incomingRoom=sanitizeRoom(location.hash)||null;
+const sanitizeRoom=s=>String(s||'').replace(/^#\/?/,'').replace(/^\/+|\/+$/g,'').replace(/[^a-z0-9_-]/gi,'').slice(0,24);
+const pathRoom=sanitizeRoom(location.pathname.split('/').filter(Boolean)[0]);
+const hashRoom=sanitizeRoom(location.hash);
+const incomingRoom=pathRoom||hashRoom||null;
 let createdRoom=null,loading=null;
 
 form?.addEventListener('submit',e=>e.preventDefault(),true);
@@ -26,14 +28,14 @@ photoButton.onclick=()=>photoInput.click();photoInput.onchange=async e=>{const f
 
 function setStatus(t){status.textContent=t||''}
 function validName(){const n=nameInput.value.trim().slice(0,28);if(!n){nameInput.focus();setStatus('PONÉ TU NOMBRE PARA ENTRAR');return null}localStorage.setItem('casa_name',n);return n}
-function roomLink(room){const u=new URL(location.origin+'/');if(room!=='publico')u.hash=room;return u.href}
+function roomLink(room){return room==='publico'?location.origin+'/':location.origin+'/'+encodeURIComponent(room)}
 function randomRoom(){const a=new Uint32Array(2);crypto.getRandomValues(a);return 'w'+((BigInt(a[0])<<32n)|BigInt(a[1])).toString(36).slice(0,7)}
-function visibleUrl(room){return room==='publico'?location.origin+'/':roomLink(room)}
+function visiblePath(room){return room==='publico'?'/':'/'+encodeURIComponent(room)}
 function setBusy(on){[publicButton,createButton,inviteJoin,invitePublic,enterPrivate].filter(Boolean).forEach(b=>b.disabled=on);if(on)setStatus('ENTRANDO…')}
 
 async function loadCore(room){
  if(loading)return loading;
- const finalUrl=visibleUrl(room);
+ const finalPath=visiblePath(room);
  history.replaceState(null,'','/?r='+encodeURIComponent(room));
  loading=(async()=>{
   await import('./app.js?v=6');
@@ -42,7 +44,7 @@ async function loadCore(room){
   await import('./ui-v11.js?v=1');
   await import('./share-v11.js?v=1');
   await import('./dark-themes-v10.js?v=1');
-  history.replaceState(null,'',finalUrl.replace(location.origin,''));
+  history.replaceState(null,'',finalPath);
  })();
  return loading;
 }
@@ -54,11 +56,11 @@ async function enter(room){
 
 publicButton.onclick=()=>{history.replaceState(null,'','/');enter('publico')};
 inviteJoin.onclick=()=>enter(incomingRoom||'publico');
-invitePublic.onclick=()=>{history.replaceState(null,'','/');location.reload()};
+invitePublic.onclick=()=>{history.replaceState(null,'','/');enter('publico')};
 
 createButton.onclick=()=>{
  if(!validName())return;
- createdRoom=randomRoom();history.replaceState(null,'','/#'+createdRoom);
+ createdRoom=randomRoom();history.replaceState(null,'','/'+createdRoom);
  privateLink.textContent=roomLink(createdRoom).replace(/^https?:\/\//,'');choice.classList.add('hidden');ready.classList.remove('hidden');setStatus('LINK CREADO · CUALQUIERA CON EL LINK PUEDE ENTRAR');
 };
 cancelPrivate.onclick=()=>{createdRoom=null;history.replaceState(null,'','/');ready.classList.add('hidden');choice.classList.remove('hidden');setStatus('PÚBLICO ABIERTO · O CREÁ UN LINK APARTE')};
