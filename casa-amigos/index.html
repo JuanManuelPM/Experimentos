@@ -8,12 +8,13 @@
 <title>room</title>
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="stylesheet" href="./style.css?v=5">
+<link rel="stylesheet" href="./outbox-v7.css?v=1">
 </head>
 <body>
 <section class="shell" id="joinScreen">
   <div class="join card">
     <div class="joinTop"><span><i class="liveDot"></i>ROOM / <i id="joinRoomLabel">CLASE</i></span><span>ENTRAR</span></div>
-    <div class="logo"><h1>ENTRÁ.</h1><p>ESCRIBÍ · PREPARÁ · SOLTÁ LA VOZ</p></div>
+    <div class="logo"><h1>ENTRÁ.</h1><p>ESCRIBÍ · ENVIÁ · ESCUCHÁ</p></div>
     <form class="joinForm" id="joinForm">
       <div class="joinProfile">
         <button class="avatarPick" id="joinAvatarButton" type="button" aria-label="Elegir foto"><span id="joinAvatarPreview"><b>?</b></span></button>
@@ -54,7 +55,7 @@
     </header>
 
     <section class="messages" id="messages" aria-live="polite">
-      <div class="empty" id="emptyState"><b>Silencio por ahora.</b><span>Escribí abajo y prepará la primera voz.</span></div>
+      <div class="empty" id="emptyState"><b>Silencio por ahora.</b><span>↑ envía cuando la voz esté lista · PREP la deja lista para después.</span></div>
     </section>
 
     <div class="draftBar" id="draftStatus" data-mode="idle">
@@ -64,9 +65,9 @@
 
     <form class="composer" id="composer">
       <button class="voiceButton" id="voiceButton" type="button">Voz</button>
-      <input id="messageInput" maxlength="180" autocomplete="off" placeholder="Escribí algo…">
+      <input id="messageInput" maxlength="180" autocomplete="off" enterkeyhint="send" placeholder="Escribí un mensaje…">
       <button class="previewPrepared hidden" id="previewPrepared" type="button" title="Escuchar antes de enviar">▶</button>
-      <button class="sendButton" id="sendButton" type="submit" aria-label="Preparar o enviar" disabled>↑</button>
+      <button class="sendButton" id="sendButton" type="submit" aria-label="Enviar" disabled>↑</button>
     </form>
   </main>
 </section>
@@ -95,5 +96,6 @@
 <div class="toast hidden" id="toast"></div>
 <script type="module" src="./app.js?v=6"></script>
 <script type="module" src="./preview-preload.js?v=1"></script>
+<script type="module" src="./outbox-v7.js?v=1"></script>
 </body>
 </html>
