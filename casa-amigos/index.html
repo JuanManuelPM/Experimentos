@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#F5DABF">
 <meta name="description" content="Sala de voz en tiempo real para grupos.">
-<title>room</title>
+<title>Walkie</title>
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="stylesheet" href="./style.css?v=5">
 <link rel="stylesheet" href="./shelf-v8.css?v=1">
@@ -13,7 +13,7 @@
 <body>
 <section class="shell" id="joinScreen">
   <div class="join card">
-    <div class="joinTop"><span><i class="liveDot"></i>ROOM / <i id="joinRoomLabel">CLASE</i></span><span>ENTRAR</span></div>
+    <div class="joinTop"><span><i class="liveDot"></i>WALKIE</span><span>ENTRAR</span></div>
     <div class="logo"><h1>ENTRÁ.</h1><p>ESCRIBÍ · ENVIÁ · ESCUCHÁ</p></div>
     <form class="joinForm" id="joinForm">
       <div class="joinProfile">
@@ -34,7 +34,7 @@
 <section class="shell hidden" id="appScreen">
   <main class="app">
     <header class="topbar">
-      <div class="brand"><i class="liveDot"></i><b>ROOM</b><span>/ <i id="roomLabel">CLASE</i></span></div>
+      <div class="brand"><i class="liveDot"></i><b>WALKIE</b><span class="hidden">/ <i id="roomLabel">CLASE</i></span></div>
       <div class="topActions">
         <button class="shareButton" id="shareButton" type="button" title="Compartir">↗</button>
         <button class="peopleButton" id="peopleButton" type="button" title="Personas conectadas"><b id="onlineCount">1</b><small>ONLINE</small></button>
@@ -97,5 +97,6 @@
 <script type="module" src="./app.js?v=6"></script>
 <script type="module" src="./preview-preload.js?v=1"></script>
 <script type="module" src="./shelf-v8.js?v=1"></script>
+<script type="module" src="./clean-share-v9.js?v=1"></script>
 </body>
 </html>
