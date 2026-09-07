@@ -1,0 +1,4 @@
+const share=document.querySelector('#shareButton');
+function currentRoom(){const h=location.hash.replace(/^#\/?/,'').replace(/[^a-z0-9_-]/gi,'').slice(0,24);return h||'publico'}
+function cleanUrl(){const room=currentRoom(),u=new URL(location.origin+'/');if(room!=='publico')u.hash=room;return u.href}
+if(share){share.addEventListener('click',async e=>{e.preventDefault();e.stopImmediatePropagation();const url=cleanUrl(),privateRoom=currentRoom()!=='publico';try{if(navigator.share)await navigator.share({title:'Walkie',text:privateRoom?'Entrá a mi Walkie':'Entrá al Walkie público',url});else{await navigator.clipboard.writeText(url);const t=document.querySelector('#toast');if(t){t.textContent='LINK COPIADO';t.classList.remove('hidden');setTimeout(()=>t.classList.add('hidden'),1600)}}}catch{}},true)}
