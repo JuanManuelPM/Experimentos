@@ -1,0 +1,36 @@
+.outboxOldHidden,#previewPrepared{display:none!important}
+.app{grid-template-rows:auto minmax(0,1fr) auto!important}
+.composer{grid-template-columns:auto minmax(0,1fr) 148px 86px!important;grid-template-areas:"voice input prep send";gap:8px!important}
+.voiceButton{grid-area:voice}.composer input{grid-area:input}.prepareButton{grid-area:prep}.sendButton{grid-area:send}
+.prepareButton{height:40px;border:2px solid var(--ink);background:transparent;padding:0 10px;font-size:8px;letter-spacing:.06em;font-weight:900;white-space:nowrap}
+.prepareButton:disabled{opacity:.24;cursor:default}.prepareButton:active:not(:disabled){transform:translateY(1px)}
+.sendButton{width:86px!important;height:40px!important;font-size:9px!important;letter-spacing:.07em;font-weight:900!important;padding:0 10px!important;animation:none!important}
+.sendButton:disabled{opacity:.24!important}
+
+.pendingV8 .body{justify-items:end}.pendingV8 .bubble{background:color-mix(in srgb,var(--ink) 4%,var(--paper))!important;color:var(--ink)!important;position:relative;overflow:hidden}
+.pendingV8 .meta span{font-size:8px;opacity:.55}.pendingStatusV8{font-size:7px;letter-spacing:.08em;font-weight:900;opacity:.62;text-align:right;margin-top:2px}
+.pendingRailV8{position:absolute;left:0;right:0;bottom:0;height:2px;overflow:hidden;opacity:0}.pendingRailV8:after{content:"";position:absolute;top:0;bottom:0;width:36%;background:var(--ink);transform:translateX(-120%)}
+.pendingV8[data-state="loading"] .pendingRailV8,.pendingV8[data-state="queued"] .pendingRailV8,.pendingV8[data-state="sending"] .pendingRailV8{opacity:1}
+.pendingV8[data-state="loading"] .pendingRailV8:after,.pendingV8[data-state="queued"] .pendingRailV8:after,.pendingV8[data-state="sending"] .pendingRailV8:after{animation:shelfSweep 1.15s cubic-bezier(.62,0,.38,1) infinite}
+.pendingV8[data-state="error"] .bubble{outline:1px solid var(--ink);outline-offset:2px}.pendingErrorActions{display:flex;gap:6px;justify-content:flex-end;margin-top:5px}.pendingErrorActions button{height:28px;border:1px solid currentColor;background:transparent;padding:0 8px;font-size:7px;font-weight:900;letter-spacing:.04em}.pendingErrorActions button:first-child{background:var(--ink);color:var(--paper)}
+@keyframes shelfSweep{0%{transform:translateX(-120%) scaleX(.55)}48%{transform:translateX(150%) scaleX(1.1)}100%{transform:translateX(360%) scaleX(.7)}}
+
+.shelfToggle{position:fixed;z-index:45;right:12px;bottom:14px;min-height:38px;border:2px solid var(--ink);background:var(--paper);color:var(--ink);padding:0 12px;font-size:9px;font-weight:900;letter-spacing:.07em;box-shadow:3px 3px 0 var(--ink)}
+.shelfToggle b{display:inline-grid;place-items:center;min-width:19px;height:19px;margin-left:5px;background:var(--ink);color:var(--paper);font-size:8px}.shelfToggle.pulse{animation:shelfPulse .8s ease}
+@keyframes shelfPulse{50%{transform:translateY(-5px)}}
+.preparedShelf{position:fixed;z-index:60;top:14px;right:14px;bottom:14px;width:min(338px,calc(100vw - 28px));border:2px solid var(--ink);background:var(--paper);color:var(--ink);box-shadow:6px 6px 0 var(--ink);transform:translateX(calc(100% + 28px));transition:transform .2s cubic-bezier(.22,1,.36,1);display:grid;grid-template-rows:auto minmax(0,1fr)}
+.preparedShelf.open{transform:translateX(0)}
+.shelfHead{min-height:66px;border-bottom:2px solid var(--ink);display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;padding:10px}.shelfHead>div{display:grid;gap:4px}.shelfHead b{font-size:11px;letter-spacing:.08em}.shelfHead span{font-size:8px;line-height:1.35;opacity:.62}.shelfClose{height:32px;border:1px solid currentColor;background:transparent;padding:0 8px;font-size:7px;font-weight:900}
+.shelfList{min-height:0;overflow:auto;padding:8px;display:grid;align-content:start;gap:8px}.shelfEmpty{min-height:180px;border:1px dashed color-mix(in srgb,var(--ink) 45%,transparent);display:grid;place-content:center;text-align:center;gap:6px;padding:20px}.shelfEmpty b{font-size:11px}.shelfEmpty span{font-size:8px;line-height:1.4;opacity:.62}
+.preparedCard{position:relative;border:2px solid var(--ink);padding:10px;display:grid;gap:8px;overflow:hidden}.preparedTop{display:flex;align-items:center;justify-content:space-between;gap:10px}.preparedTop span{font-size:8px;font-weight:800;opacity:.65}.preparedTop b{font-size:7px;letter-spacing:.08em}.preparedText{font-size:14px;line-height:1.35;font-weight:650;overflow-wrap:anywhere}.preparedMeta{font-size:7px;letter-spacing:.07em;opacity:.55}.preparedActions{display:grid;grid-template-columns:1fr 1fr auto;gap:6px}.preparedActions button{height:34px;border:1px solid currentColor;background:transparent;padding:0 8px;font-size:8px;font-weight:900;letter-spacing:.04em}.preparedActions .primarySend{background:var(--ink);color:var(--paper);border-color:var(--ink)}.preparedActions .quietDelete{padding:0 7px}.preparedCard[data-state="queued"],.preparedCard[data-state="loading"]{opacity:.78}.preparedCard[data-state="queued"] .preparedRail,.preparedCard[data-state="loading"] .preparedRail{opacity:1}.preparedRail{position:absolute;left:0;right:0;bottom:0;height:2px;overflow:hidden;opacity:0}.preparedRail:after{content:"";position:absolute;top:0;bottom:0;width:36%;background:var(--ink);animation:shelfSweep 1.15s cubic-bezier(.62,0,.38,1) infinite}
+
+@media(prefers-reduced-motion:reduce){.pendingRailV8:after,.preparedRail:after,.shelfToggle.pulse{animation-duration:2.8s!important}.preparedShelf{transition:none}}
+@media(max-width:700px){
+ .composer{grid-template-columns:66px minmax(0,1fr) 76px!important;grid-template-areas:"voice input send" "prep prep prep"!important;gap:6px!important;padding-bottom:max(7px,env(safe-area-inset-bottom))!important}
+ .voiceButton{width:66px!important;max-width:66px!important}.sendButton{width:76px!important;height:40px!important}.prepareButton{height:29px!important;font-size:7px!important;letter-spacing:.08em!important}
+ .shelfToggle{right:7px;bottom:96px;min-height:34px;padding:0 9px;font-size:8px;box-shadow:2px 2px 0 var(--ink)}
+ .preparedShelf{top:auto;left:4px;right:4px;bottom:4px;width:auto;height:min(64dvh,560px);transform:translateY(calc(100% + 12px));box-shadow:none;border-width:2px}
+ .preparedShelf.open{transform:translateY(0)}
+ .shelfHead{min-height:58px}.preparedText{font-size:13px}.preparedActions{grid-template-columns:1fr 1fr auto}.pendingStatusV8{font-size:6.5px}.body{max-width:82%}
+}
+@media(max-width:390px){.composer{grid-template-columns:58px minmax(0,1fr) 70px!important}.voiceButton{width:58px!important;max-width:58px!important}.sendButton{width:70px!important;font-size:8px!important}.shelfToggle{font-size:7px}}
