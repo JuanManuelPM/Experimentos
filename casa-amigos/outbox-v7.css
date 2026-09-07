@@ -1,0 +1,26 @@
+.outboxOldHidden,#previewPrepared{display:none!important}
+.app{grid-template-rows:auto minmax(0,1fr) auto!important}
+.composer{grid-template-columns:auto minmax(0,1fr) 54px 48px!important}
+.prepareButton{height:40px;border:2px solid var(--ink);background:transparent;padding:0 7px;font-size:8px;letter-spacing:.08em;font-weight:900}
+.prepareButton:disabled{opacity:.25;cursor:default}
+.prepareButton:active:not(:disabled){transform:translateY(1px)}
+.message.pending .body{justify-items:end}
+.message.pending .bubble{background:color-mix(in srgb,var(--ink) 4%,var(--paper))!important;color:var(--ink)!important;position:relative;overflow:hidden}
+.pendingVoice{font-size:8px;opacity:.58}
+.pendingFoot{width:100%;display:flex;justify-content:flex-end;align-items:center;gap:8px;min-height:26px}
+.pendingState{font-size:7px;line-height:1.2;letter-spacing:.08em;font-weight:850;opacity:.62;text-align:right;flex:1}
+.pendingActions{display:flex;gap:4px}
+.pendingActions button{height:25px;min-width:28px;border:1px solid currentColor;background:transparent;padding:0 7px;font-size:8px;font-weight:900}
+.pendingActions .pendingSend{background:var(--ink);color:var(--paper);font-size:15px}
+.pendingActions .pendingRetry{min-width:auto;padding:0 8px}
+.pendingRail{position:absolute;left:0;right:0;bottom:0;height:2px;opacity:0;overflow:hidden}
+.pendingRail::after{content:"";position:absolute;inset:0 auto 0 0;width:36%;background:var(--ink);transform:translateX(-120%)}
+.message.pending[data-state="loading"] .pendingRail{opacity:1}
+.message.pending[data-state="loading"] .pendingRail::after{animation:pendingSweep 1.2s cubic-bezier(.62,0,.38,1) infinite}
+.message.pending[data-state="queued"] .pendingBubble{opacity:.76}
+.message.pending[data-state="ready"] .pendingBubble{box-shadow:inset 0 -2px 0 var(--ink)}
+.message.pending[data-state="error"] .pendingBubble{outline:1px solid var(--ink);outline-offset:2px}
+@keyframes pendingSweep{0%{transform:translateX(-120%) scaleX(.55)}48%{transform:translateX(150%) scaleX(1.1)}100%{transform:translateX(360%) scaleX(.7)}}
+@media(prefers-reduced-motion:reduce){.message.pending[data-state="loading"] .pendingRail::after{animation-duration:2.8s!important}}
+@media(max-width:700px){.composer{grid-template-columns:72px minmax(0,1fr) 49px 45px!important}.prepareButton{width:49px;padding:0 4px;font-size:7px}.pendingState{font-size:6.5px}.body{max-width:82%}}
+@media(max-width:380px){.composer{grid-template-columns:60px minmax(0,1fr) 44px 42px!important;gap:5px}.prepareButton{width:44px}}
