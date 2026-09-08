@@ -1,0 +1,43 @@
+/* WALKIE v16 — larger hero, compact controls, no wasted vertical space */
+.walkieLanding{width:min(1240px,100%)!important;min-height:100dvh!important;padding:max(12px,env(safe-area-inset-top)) clamp(16px,3vw,38px) max(12px,env(safe-area-inset-bottom))!important;display:grid!important;place-items:center!important;overflow:hidden!important}
+.landingGrid{width:100%!important;display:grid!important;grid-template-columns:minmax(430px,1.18fr) minmax(290px,390px)!important;align-items:center!important;gap:clamp(24px,4vw,64px)!important}
+.radioStage{min-width:0!important;display:flex!important;align-items:center!important;justify-content:flex-start!important;padding-left:clamp(0px,1.5vw,18px)!important}
+.radioLockup{position:relative!important;height:min(78dvh,760px)!important;width:auto!important;max-width:min(41vw,430px)!important;aspect-ratio:303/720!important;overflow:visible!important;container-type:inline-size!important;flex:none!important}
+.landingRadioArt{inset:0!important}
+.radioWordmark{left:35.5%!important;top:3.7%!important}
+
+/* The form is deliberately dense: the radio is the hero, not the controls. */
+.landingForm{width:100%!important;max-width:390px!important;justify-self:end!important;display:grid!important;gap:6px!important;align-content:center!important}
+.landingNameLine input{height:46px!important;min-height:46px!important;padding:0 12px!important;font-size:15px!important;line-height:1!important;border-width:2px!important}
+.landingActions,.inviteActions{gap:6px!important}
+.landingAction{min-height:44px!important;height:44px!important;padding:0 10px!important;font-size:9px!important;line-height:1!important;border-width:2px!important}
+.privateLinkRow{min-height:44px!important;height:44px!important}
+.privateLink{font-size:10px!important;padding:0 10px!important}
+.privateLinkRow button{min-width:74px!important;font-size:7.5px!important}
+.privateReady>.enterPrivate{min-height:44px!important;height:44px!important;font-size:9px!important}
+
+@media(max-width:760px){
+ .walkieLanding{padding:10px 16px max(10px,env(safe-area-inset-bottom))!important;place-items:stretch!important}
+ .landingGrid{min-height:calc(100dvh - 20px)!important;grid-template-columns:1fr!important;grid-template-rows:minmax(0,1fr) auto!important;align-items:stretch!important;align-content:stretch!important;gap:8px!important}
+ .radioStage{min-height:0!important;height:100%!important;justify-content:flex-start!important;align-items:center!important;padding-left:clamp(4px,4vw,18px)!important;overflow:visible!important}
+ .radioLockup{height:min(63dvh,calc(100dvh - 164px),560px)!important;min-height:340px!important;width:auto!important;max-width:78vw!important;margin:0!important}
+ .landingForm{max-width:none!important;justify-self:stretch!important;align-self:end!important;gap:5px!important}
+ .landingNameLine input{height:42px!important;min-height:42px!important;font-size:14px!important;padding:0 11px!important}
+ .landingAction{height:40px!important;min-height:40px!important;font-size:8.5px!important}
+ .landingActions,.inviteActions{gap:5px!important}
+ .privateLinkRow{height:40px!important;min-height:40px!important}
+ .privateReady>.enterPrivate{height:40px!important;min-height:40px!important}
+}
+
+@media(max-width:380px){
+ .walkieLanding{padding-left:12px!important;padding-right:12px!important}
+ .radioLockup{height:min(61dvh,calc(100dvh - 156px),500px)!important;min-height:300px!important}
+ .landingGrid{gap:6px!important}
+ .landingNameLine input{height:40px!important;min-height:40px!important}
+ .landingAction{height:38px!important;min-height:38px!important}
+}
+
+@media(min-width:1100px){
+ .radioStage{justify-content:flex-start!important}
+ .radioLockup{height:min(80dvh,780px)!important;max-width:430px!important}
+}
