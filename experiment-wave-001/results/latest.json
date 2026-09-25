@@ -1,0 +1,64 @@
+{
+  "experiment": "EXPERIMENT_WAVE_001",
+  "generated_at": "2026-09-25T21:48:58.092Z",
+  "verdict": "CHECK",
+  "auto_verified": {
+    "page_load": true,
+    "worker_done_event": true,
+    "worker_blocked_event": true,
+    "browser_notification_path": true,
+    "audio_assets": [
+      {
+        "src": "generated/bell.wav",
+        "ok": true,
+        "duration": 0.3
+      },
+      {
+        "src": "generated/voice-dry.wav",
+        "ok": true,
+        "duration": 4.900998
+      },
+      {
+        "src": "generated/voice-fast.wav",
+        "ok": true,
+        "duration": 4.267438
+      },
+      {
+        "src": "generated/voice-low.wav",
+        "ok": true,
+        "duration": 5.375057
+      }
+    ],
+    "console_errors": [
+      "Failed to load resource: the server responded with a status of 404 (File not found)",
+      "Failed to load resource: the server responded with a status of 404 (File not found)"
+    ],
+    "video": {
+      "duration": 5.375011,
+      "size": 109144,
+      "streams": [
+        {
+          "codec_name": "h264",
+          "codec_type": "video",
+          "width": 1280,
+          "height": 720
+        },
+        {
+          "codec_name": "aac",
+          "codec_type": "audio"
+        }
+      ]
+    }
+  },
+  "human_checks": [
+    "¿El bell es útil o molesto?",
+    "¿Alguna de las 3 voces es aceptable para TV?",
+    "¿El video se ve y se escucha bien en tu dispositivo?",
+    "¿Querés que BLOCKED hable y DONE sólo haga sonido, o al revés?"
+  ],
+  "intentionally_not_tested": [
+    "Prometeo real: todos los eventos son sintéticos.",
+    "Telegram/WhatsApp: no conectados.",
+    "Provider tournament: las keys siguen sólo en el navegador del usuario."
+  ]
+}
