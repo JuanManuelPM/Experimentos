@@ -7,11 +7,11 @@
 <textarea id="deviceText">Mirá, terminó una corrida. Encontré dos cosas útiles y una que no vale la pena. Te muestro primero lo importante.</textarea>
 <div class="row"><select id="voiceSelect"></select><button id="speakDevice" class="primary">ESCUCHAR</button><button id="stopDevice">PARAR</button></div><div id="deviceStatus" class="status">buscando voces…</div></section>
 
-<section class="engine"><div class="tag">B · PIPER es_AR · LOCAL EN BROWSER</div><h3>Daniela · high quality</h3><div class="desc">Modelo Piper <code>es_AR-daniela-high</code>. Es una voz argentina de alta calidad; el modelo pesa ~114 MB y corre con WASM en el navegador. No manda el texto a una API de TTS.</div>
+<section class="engine"><div class="tag">B · PIPER NEURAL · LOCAL EN BROWSER</div><h3>Claude · high quality</h3><div class="desc">Modelo Piper <code>es_MX-claude-high</code>, soportado por el wrapper actual. Es una prueba de naturalidad local, no una candidata porteña: corre con WASM en el navegador y no manda el texto a una API de TTS.</div>
 <textarea id="piperText">Mirá, terminó una corrida. Encontré dos cosas útiles y una que no vale la pena. Te muestro primero lo importante.</textarea>
 <div class="row"><button id="piperBtn" class="primary">CARGAR Y GENERAR</button><button id="piperAgain" disabled>GENERAR OTRA VEZ</button></div><div id="piperStatus" class="status">todavía no cargado</div><div id="piperOut"></div></section>
 </div>
-<div class="note">Esto es un experimento de calidad y latencia, no un reemplazo automático de la voz que ya te gustaba. Si suena peor, queda descartado. La humanidad sobrevivirá al hecho de que no todo modelo merece producción.</div>
+<div class="note">Esto es un experimento de calidad y latencia, no un reemplazo automático de la voz que ya te gustaba. El intento es_AR Daniela quedó descartado técnicamente: el wrapper browser actual no la incluye en su mapa de modelos. <a href="https://juanmanuelpm.github.io/prometeo/demos/prometeo-voice-e-tones-v1/" style="color:#fff">Abrir baseline de voces que ya veníamos probando →</a></div>
 <script type="module">
 const qs=s=>document.querySelector(s);
 let synthVoices=[],piper=null,piperModule=null,lastUrl=null;
@@ -39,7 +39,7 @@ async function generatePiper(){
  try{
   const tts=await loadPiper();
   qs('#piperStatus').textContent='generando localmente…';
-  const wav=await tts.predict({text:qs('#piperText').value.trim(),voiceId:'es_AR-daniela-high'});
+  const wav=await tts.predict({text:qs('#piperText').value.trim(),voiceId:'es_MX-claude-high'});
   if(lastUrl)URL.revokeObjectURL(lastUrl);lastUrl=URL.createObjectURL(wav);
   qs('#piperOut').innerHTML='<audio controls autoplay src="'+lastUrl+'"></audio>';
   qs('#piperStatus').textContent='listo · '+Math.round(performance.now()-started)+' ms · '+Math.round(wav.size/1024)+' KB';
