@@ -1,0 +1,82 @@
+name: Experiment Wave 001
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - "worker-lab/experiment-wave-001/TRIGGER"
+
+permissions:
+  contents: write
+
+jobs:
+  autonomous-tech-suite:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install browser and media tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg espeak-ng
+          npm install --no-save playwright
+          npx playwright install --with-deps chromium
+
+      - name: Generate bell and three voice candidates
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p worker-lab/experiment-wave-001/generated worker-lab/experiment-wave-001/out
+          ffmpeg -y -f lavfi -i "sine=frequency=880:duration=0.12" -f lavfi -i "sine=frequency=1320:duration=0.18"             -filter_complex "[0:a][1:a]concat=n=2:v=0:a=1,volume=0.22[a]" -map "[a]" worker-lab/experiment-wave-001/generated/bell.wav
+          TXT="Prometeo. Terminó un experimento visual. Hay una versión nueva para revisar."
+          espeak-ng -v es -s 178 -p 28 -a 145 -w worker-lab/experiment-wave-001/generated/voice-dry.wav "$TXT"
+          espeak-ng -v es -s 205 -p 22 -a 145 -w worker-lab/experiment-wave-001/generated/voice-fast.wav "$TXT"
+          espeak-ng -v es -s 164 -p 12 -a 145 -w worker-lab/experiment-wave-001/generated/voice-low.wav "$TXT"
+
+      - name: Run browser interaction suite
+        run: node worker-lab/experiment-wave-001/run.mjs
+
+      - name: Build zero-cost TV announcer video
+        shell: bash
+        run: |
+          set -euo pipefail
+          DUR=$(ffprobe -v error -show_entries format=duration -of default=nw=1:nk=1 worker-lab/experiment-wave-001/generated/voice-low.wav)
+          ffmpeg -y -loop 1 -i worker-lab/experiment-wave-001/out/tv-screen.png             -i worker-lab/experiment-wave-001/generated/voice-low.wav             -vf "scale=1280:720,format=yuv420p" -c:v libx264 -tune stillimage -c:a aac -b:a 128k             -shortest -movflags +faststart worker-lab/experiment-wave-001/generated/tv-announcer.mp4
+          ffprobe -v error -show_entries format=duration,size -show_entries stream=codec_name,codec_type,width,height             -of json worker-lab/experiment-wave-001/generated/tv-announcer.mp4 > worker-lab/experiment-wave-001/out/video-probe.json
+          echo "voice_duration=$DUR"
+
+      - name: Finalize technical report
+        run: node worker-lab/experiment-wave-001/finalize.mjs
+
+      - name: Upload raw evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: experiment-wave-001-evidence
+          path: |
+            worker-lab/experiment-wave-001/out/
+            worker-lab/experiment-wave-001/generated/
+          retention-days: 7
+
+      - name: Publish evidence and viewer to GitHub Pages
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin gh-pages
+          git worktree add /tmp/exp-pages origin/gh-pages
+          mkdir -p /tmp/exp-pages/experiment-wave-001/results
+          cp worker-lab/experiment-wave-001/index.html /tmp/exp-pages/experiment-wave-001/index.html
+          cp -R worker-lab/experiment-wave-001/generated /tmp/exp-pages/experiment-wave-001/
+          cp -R worker-lab/experiment-wave-001/out/. /tmp/exp-pages/experiment-wave-001/results/
+          cd /tmp/exp-pages
+          git config user.name "worker-lab-bot"
+          git config user.email "worker-lab-bot@users.noreply.github.com"
+          git add experiment-wave-001
+          git commit -m "Publish Experiment Wave 001 evidence"
+          git push origin HEAD:gh-pages
