@@ -1,0 +1,47 @@
+{
+  "schema": "worker-lab.browser-backend-contract/v1",
+  "purpose": "Minimal secure boundary for future cloud-browser credentials and provider tests.",
+  "endpoints": [
+    {
+      "method": "POST",
+      "path": "/api/secrets/:provider",
+      "purpose": "Accept a credential once and store it server-side. Never echo it back."
+    },
+    {
+      "method": "POST",
+      "path": "/api/browser/:adapter/session",
+      "purpose": "Create a remote browser session and return non-secret session metadata/live-view URL."
+    },
+    {
+      "method": "POST",
+      "path": "/api/browser/:adapter/health",
+      "purpose": "Verify account/credential and browser-session creation."
+    },
+    {
+      "method": "POST",
+      "path": "/api/provider/:provider/health",
+      "purpose": "Verify model provider credential."
+    },
+    {
+      "method": "GET",
+      "path": "/api/provider/:provider/models",
+      "purpose": "Discover models after health passes."
+    },
+    {
+      "method": "POST",
+      "path": "/api/provider/:provider/message",
+      "purpose": "One prompt -> one real response."
+    },
+    {
+      "method": "POST",
+      "path": "/api/provider/:provider/worker-test",
+      "purpose": "Run READY -> ACTIVE -> VERIFY -> DONE using the existing Worker Lab packet."
+    }
+  ],
+  "rules": [
+    "No secret in GitHub Pages, localStorage, query strings, screenshots, logs, or workflow artifacts.",
+    "Human interaction is only for identity, CAPTCHA/2FA, terms, or a sensitive final confirmation.",
+    "A provider is READY only after health + model discovery + message test + worker test.",
+    "A browser adapter is READY only after session create + navigation + evidence + optional human takeover test."
+  ]
+}
