@@ -5,7 +5,7 @@
 const cv=document.querySelector('#c'),ctx=cv.getContext('2d',{alpha:false});let W=480,H=270,mode='trail',px=90,py=145,vx=1.65,vy=.92,trail=[],pulse=0,ready=0;cv.width=W;cv.height=H;
 const flea=new Image(),hand=new Image(),eye=new Image();[flea,hand,eye].forEach(i=>{i.crossOrigin='anonymous';i.onload=()=>ready++});
 flea.src='https://upload.wikimedia.org/wikipedia/commons/9/96/Flea_Micrographia_Hooke.png';
-hand.src='https://commons.wikimedia.org/wiki/Special:Redirect/file/Typographic_Ornaments_-_Pointing_Hand.svg';
+hand.src='https://upload.wikimedia.org/wikipedia/commons/0/0d/Typographic_Ornaments_-_Pointing_Hand.svg';
 eye.src='https://upload.wikimedia.org/wikipedia/commons/1/18/Blue_cat_eye_close_up.jpg';
 function stamp(){trail.push({x:px,y:py,a:1});if(trail.length>16)trail.shift()}
 function eventBell(){pulse=1;document.querySelector('#msg').textContent='ARTIFACT READY · visual signal';try{const ac=new (AudioContext||webkitAudioContext)(),o=ac.createOscillator(),g=ac.createGain();o.frequency.value=660;g.gain.setValueAtTime(.0001,ac.currentTime);g.gain.exponentialRampToValueAtTime(.12,ac.currentTime+.01);g.gain.exponentialRampToValueAtTime(.0001,ac.currentTime+.16);o.connect(g);g.connect(ac.destination);o.start();o.stop(ac.currentTime+.18)}catch{}}
