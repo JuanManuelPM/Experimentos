@@ -1,10 +1,10 @@
 {
-  "generated_at": "2026-09-25T22:18:22.079Z",
+  "generated_at": "2026-09-25T22:22:21.555Z",
   "verdict": "CHECK",
   "results": [
     {
       "name": "index-mobile",
-      "ms": 550,
+      "ms": 558,
       "errors": [],
       "title": "Capability Gauntlet",
       "size": {
@@ -14,7 +14,7 @@
     },
     {
       "name": "visual-desktop",
-      "ms": 3928,
+      "ms": 3572,
       "errors": [],
       "title": "Visual World Lab",
       "size": {
@@ -24,7 +24,7 @@
     },
     {
       "name": "visual-mobile",
-      "ms": 3061,
+      "ms": 2907,
       "errors": [],
       "title": "Visual World Lab",
       "size": {
@@ -34,7 +34,7 @@
     },
     {
       "name": "voice-mobile",
-      "ms": 553,
+      "ms": 538,
       "errors": [],
       "title": "Local Voice Lab",
       "size": {
@@ -44,7 +44,7 @@
     },
     {
       "name": "provider-mobile",
-      "ms": 548,
+      "ms": 543,
       "errors": [],
       "title": "Model Gauntlet",
       "size": {
@@ -54,17 +54,17 @@
     },
     {
       "name": "piper-local-smoke",
-      "ms": 1034,
+      "ms": 2734,
       "errors": [
         "Failed to load resource: the server responded with a status of 404 ()",
-        "SyntaxError: Unexpected token 'E', \"Entry not found\" is not valid JSON\n    at JSON.parse (<anonymous>)\n    at X.init (https://esm.sh/@mintplex-labs/piper-tts-web@1.0.5/es2022/piper-tts-web.bundle.mjs:8:113107)\n    at async X.predict (https://esm.sh/@mintplex-labs/piper-tts-web@1.0.5/es2022/piper-tts-web.bundle.mjs:8:113298)\n    at async HTMLButtonElement.generatePiper (http://127.0.0.1:4182/voice-local.html:42:13)"
+        "Error: no available backend found. ERR: [wasm] TypeError: Failed to fetch dynamically imported module: https://cdnjs.cloudflare.com/ajax/libs/onnxruntime-web/1.18.0/ort-wasm-simd-threaded.mjs\n    at $a (https://esm.sh/onnxruntime-web@1.30.0/es2022/wasm.mjs:2:2067)\n    at async Ka.create (https://esm.sh/onnxruntime-web@1.30.0/es2022/wasm.mjs:2:20044)\n    at async X.init (https://esm.sh/@mintplex-labs/piper-tts-web@1.0.5/es2022/piper-tts-web.bundle.mjs:8:113181)\n    at async X.predict (https://esm.sh/@mintplex-labs/piper-tts-web@1.0.5/es2022/piper-tts-web.bundle.mjs:8:113298)\n    at async HTMLButtonElement.generatePiper (http://127.0.0.1:4182/voice-local.html:42:13)"
       ],
       "title": "Local Voice Lab",
       "size": {
         "width": 390,
         "height": 844
       },
-      "status": "ERROR · Unexpected token 'E', \"Entry not found\" is not valid JSON"
+      "status": "ERROR · no available backend found. ERR: [wasm] TypeError: Failed to fetch dynamically imported module: https://cdnjs.cloudflare.com/ajax/libs/onnxruntime-web/1.18.0/ort-wasm-simd-threaded.mjs"
     }
   ]
 }
