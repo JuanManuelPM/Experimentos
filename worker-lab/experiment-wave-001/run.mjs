@@ -6,6 +6,8 @@ import path from 'node:path';
 const root=path.resolve('worker-lab/experiment-wave-001');
 const out=path.join(root,'out');
 await fs.mkdir(out,{recursive:true});
+await fs.mkdir(path.join(root,'results'),{recursive:true});
+await fs.writeFile(path.join(root,'results','latest.json'),JSON.stringify({status:'RUNNING'},null,2));
 const server=spawn('python3',['-m','http.server','4173','--bind','127.0.0.1'],{cwd:root,stdio:'ignore'});
 await new Promise(r=>setTimeout(r,900));
 const browser=await chromium.launch({headless:true});
