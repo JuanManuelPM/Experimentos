@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<title>Worker Lab · Zero Friction</title>
+<style>
+:root{--bg:#080a0c;--panel:#111519;--line:#29323a;--ink:#f3f5f0;--muted:#96a1aa;--lime:#d8ff5b;--green:#75df93;--blue:#73b9ff;--yellow:#efc45d;--red:#ff7b7b}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,sans-serif}a{color:inherit;text-decoration:none}button{font:inherit}
+.app{max-width:1000px;margin:auto;min-height:100vh;padding-bottom:60px}
+header{position:sticky;top:0;z-index:10;background:#080a0cf2;border-bottom:1px solid var(--line);padding:12px 14px}.brand{display:flex;justify-content:space-between;align-items:center;gap:10px}.ey{font-size:9px;letter-spacing:.15em;color:var(--muted);font-weight:800}.brand h1{font-size:19px;margin:3px 0 0}.pill{font-size:8px;border:1px solid #40562d;color:var(--lime);padding:5px 7px;border-radius:999px}
+main{padding:14px}.hero{border:1px solid var(--line);background:linear-gradient(180deg,#14191d,#0d1114);border-radius:16px;padding:14px}.hero h2{font-size:30px;line-height:.98;letter-spacing:-.05em;margin:0 0 8px}.hero p{font-size:11px;color:var(--muted);line-height:1.45;margin:0;max-width:720px}.actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px}.btn{border:1px solid var(--line);border-radius:10px;background:#171c21;padding:10px 12px;font-size:10px;font-weight:850;cursor:pointer}.primary{background:var(--lime);color:#080a0c;border-color:var(--lime)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:10px}.stat{border:1px solid var(--line);border-radius:10px;background:#0d1114;padding:8px}.stat strong{display:block;font-size:16px}.stat span{font-size:8px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+.section{display:flex;justify-content:space-between;align-items:end;gap:10px;margin:17px 2px 8px}.section h2{font-size:17px;margin:0}.section span{font-size:9px;color:var(--muted)}
+.cards{display:grid;gap:8px}.card{border:1px solid var(--line);border-radius:14px;background:var(--panel);padding:11px}.top{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:start}.title{font-size:13px;font-weight:850}.sub{font-size:9px;color:var(--muted);line-height:1.4;margin-top:3px}.badge{font-size:8px;border:1px solid var(--line);border-radius:99px;padding:5px 6px;font-weight:800}.pass{color:var(--green);border-color:#315f3d}.partial{color:var(--yellow);border-color:#625127}.fail{color:var(--red);border-color:#663434}.run{color:var(--blue);border-color:#315171}
+.mini{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-top:9px}.m{border-top:1px solid var(--line);padding-top:6px}.m span{display:block;font-size:7px;color:var(--muted);text-transform:uppercase}.m strong{font-size:10px}.tests{display:grid;gap:4px;margin-top:9px}.test{display:grid;grid-template-columns:38px 48px minmax(0,1fr);gap:7px;align-items:center;border-top:1px solid #20262c;padding-top:5px;font-size:8px}.test .o{color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.timeline{border:1px solid var(--line);border-radius:12px;background:#07090b;overflow:hidden}.event{display:grid;grid-template-columns:62px 90px minmax(0,1fr);gap:6px;padding:6px 8px;border-bottom:1px solid #1c2227;font:8px ui-monospace,monospace}.event:last-child{border-bottom:0}.event span:first-child,.event span:nth-child(2){color:var(--muted)}
+.path{border:1px solid var(--line);border-radius:14px;background:#0e1215;padding:11px}.pathrow{display:grid;grid-template-columns:24px minmax(0,1fr) auto;gap:8px;align-items:center;padding:7px 0;border-bottom:1px solid #20262c}.pathrow:last-child{border-bottom:0}.n{width:24px;height:24px;border:1px solid var(--line);border-radius:50%;display:grid;place-items:center;font-size:8px;color:var(--muted)}.pathrow strong{font-size:10px}.pathrow p{font-size:8px;color:var(--muted);margin:2px 0 0}.empty{border:1px dashed var(--line);border-radius:12px;padding:18px;text-align:center;color:var(--muted);font-size:10px}
+.note{border-left:3px solid var(--yellow);background:#17130b;border-radius:8px;padding:9px 10px;font-size:9px;color:#d6cca9;line-height:1.4;margin-top:10px}
+@media(min-width:760px){main{padding:20px}.hero{padding:20px}.hero h2{font-size:42px}.cards{grid-template-columns:1fr 1fr}.path{display:grid;grid-template-columns:1fr 1fr;gap:0 18px}.pathrow:nth-last-child(2){border-bottom:0}}
+</style>
+</head>
+<body>
+<div class="app">
+<header><div class="brand"><div><div class="ey">EXPERIMENTO · WORKER LAB</div><h1>Zero-Friction Lane</h1></div><div class="pill">0 LOGIN · 0 KEYS · $0</div></div></header>
+<main>
+<section class="hero">
+<h2>Workers reales antes de crear una sola cuenta.</h2>
+<p>Esta pista evita por completo el cuello de botella humano: GitHub pone la computadora, Ollama corre modelos locales en esa VM y AI Horde aporta inferencia comunitaria anónima. Mismos packets, resultados verificables, cero credenciales personales.</p>
+<div class="actions">
+<a class="btn primary" href="../">CONNECTION HUB</a>
+<a class="btn" href="../browser-lab/">BROWSER LAB</a>
+<a class="btn" href="https://github.com/JuanManuelPM/Experimentos/actions/workflows/zero-friction-llm.yml" target="_blank">WORKFLOW ↗</a>
+<button class="btn" id="refresh">ACTUALIZAR</button>
+</div>
+<div class="stats">
+<div class="stat"><strong id="state">—</strong><span>run</span></div>
+<div class="stat"><strong id="engines">—</strong><span>engines</span></div>
+<div class="stat"><strong id="best">—</strong><span>best score</span></div>
+<div class="stat"><strong id="human">0</strong><span>acciones humanas</span></div>
+</div>
+</section>
+
+<div class="section"><h2>Camino sin fricción</h2><span>lo que ya podemos automatizar</span></div>
+<div class="path">
+<div class="pathrow"><div class="n">1</div><div><strong>GitHub crea VM</strong><p>Runner público estándar, sin tu PC.</p></div><span class="badge pass">AUTO</span></div>
+<div class="pathrow"><div class="n">2</div><div><strong>Instala Ollama</strong><p>Sin cuenta, sin token.</p></div><span class="badge pass">AUTO</span></div>
+<div class="pathrow"><div class="n">3</div><div><strong>Descarga 3 modelos</strong><p>Qwen 0.5B · Gemma 270M · Llama 1B.</p></div><span class="badge pass">AUTO</span></div>
+<div class="pathrow"><div class="n">4</div><div><strong>Corre benchmark</strong><p>Mismos 5 packets deterministas por modelo.</p></div><span class="badge pass">AUTO</span></div>
+<div class="pathrow"><div class="n">5</div><div><strong>AI Horde anónimo</strong><p>Descubre un modelo activo y pide una generación con la identidad pública anónima.</p></div><span class="badge pass">AUTO</span></div>
+<div class="pathrow"><div class="n">6</div><div><strong>Publica evidencia</strong><p>Scores, outputs, latencia y eventos vuelven a GitHub Pages.</p></div><span class="badge pass">AUTO</span></div>
+</div>
+
+<div class="section"><h2>Modelos / engines</h2><span id="runid">esperando primer run</span></div>
+<div id="cards" class="cards"><div class="empty">El benchmark se está preparando.</div></div>
+
+<div class="section"><h2>Eventos</h2><span>evidencia durable del run</span></div>
+<div id="events" class="timeline"><div class="empty">Sin resultados publicados todavía.</div></div>
+
+<div class="note">Puter/OpenRouter/Hugging Face y providers directos quedan como expansión opcional. No bloquean esta pista. Si más adelante queremos frontier models, una única sesión Puter puede quitar API keys, pero puede requerir autenticación del usuario y por eso no la cuento como “cero fricción”.</div>
+</main>
+</div>
+<script>
+const RESULT='./results/latest.json';
+const ACTIONS='https://api.github.com/repos/JuanManuelPM/Experimentos/actions/runs?per_page=20';
+const $=s=>document.querySelector(s);
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function cls(s){s=String(s||'').toUpperCase();return s==='DONE'||s==='PASS'?'pass':s==='PARTIAL'||s==='TIMEOUT'?'partial':s==='UNAVAILABLE'||s==='FAIL'?'fail':'run'}
+async function loadAction(){
+ try{const r=await fetch(ACTIONS,{cache:'no-store'});const d=await r.json();const run=(d.workflow_runs||[]).find(x=>x.name==='Zero Friction LLM Lab');if(!run)return;$('#state').textContent=run.status==='completed'?(run.conclusion||'DONE').toUpperCase():run.status.toUpperCase()}catch{}
+}
+async function load(){
+ await loadAction();
+ try{
+  const r=await fetch(RESULT+'?t='+Date.now(),{cache:'no-store'});if(!r.ok)throw 0;
+  const d=await r.json(),rows=d.results||[];
+  $('#state').textContent='PASS';
+  $('#engines').textContent=rows.length;
+  $('#best').textContent=d.summary&&d.summary.best_local_score!=null?Math.round(d.summary.best_local_score*100)+'%':'—';
+  $('#human').textContent=d.human_actions??0;
+  $('#runid').textContent=d.run_id||'—';
+  $('#cards').innerHTML=rows.map(x=>{
+    const score=x.score==null?'—':Math.round(x.score*100)+'%';
+    const tests=(x.tests||[]).map(t=>'<div class="test"><span>'+esc(t.id)+'</span><span class="badge '+cls(t.status)+'">'+esc(t.status)+'</span><span class="o">'+esc(t.output||t.error||'—')+'</span></div>').join('');
+    return '<div class="card"><div class="top"><div><div class="title">'+esc(x.model||x.provider)+'</div><div class="sub">'+esc(x.provider)+' · '+esc(x.engine)+'</div></div><span class="badge '+cls(x.status)+'">'+esc(x.status)+'</span></div><div class="mini"><div class="m"><span>score</span><strong>'+score+'</strong></div><div class="m"><span>cost</span><strong>$0</strong></div><div class="m"><span>login</span><strong>NO</strong></div><div class="m"><span>duration</span><strong>'+Math.round((x.duration_ms||0)/1000)+'s</strong></div></div><div class="tests">'+tests+'</div></div>'
+  }).join('')||'<div class="empty">Sin engines.</div>';
+  $('#events').innerHTML=(d.events||[]).slice(-120).reverse().map(e=>'<div class="event"><span>'+esc((e.ts||'').slice(11,19))+'</span><span>'+esc(e.type)+'</span><span>'+esc(e.detail||'')+'</span></div>').join('')||'<div class="empty">Sin eventos.</div>';
+ }catch{}
+}
+$('#refresh').onclick=load;load();setInterval(load,30000);
+</script>
+</body>
+</html>
