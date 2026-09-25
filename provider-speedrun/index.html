@@ -4,18 +4,18 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="color-scheme" content="dark">
-<title>Provider Speedrun · Wizard</title>
+<title>Provider Speedrun</title>
 <style>
-:root{--bg:#080a0c;--panel:#111519;--line:#2a333b;--ink:#f5f6f1;--muted:#97a1a9;--lime:#d8ff5b;--green:#75df94;--yellow:#efc45d}
-*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,-apple-system,sans-serif}button,a{font:inherit}
-.app{max-width:760px;margin:auto;min-height:100vh;padding:14px 14px 72px}
-.top{position:sticky;top:0;z-index:10;background:#080a0cf4;padding:8px 0 12px;border-bottom:1px solid var(--line)}
+:root{--bg:#080a0c;--panel:#111519;--line:#2a333b;--ink:#f5f6f1;--muted:#97a1a9;--lime:#d8ff5b;--green:#75df94;--yellow:#efc45d;--red:#ff7d7d}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,-apple-system,sans-serif}button,a,input{font:inherit}
+.app{max-width:760px;margin:auto;min-height:100vh;padding:14px 14px 72px}.top{position:sticky;top:0;z-index:10;background:#080a0cf4;padding:8px 0 12px;border-bottom:1px solid var(--line)}
 .kicker{font-size:8px;letter-spacing:.14em;color:var(--muted);font-weight:900}.head{display:flex;justify-content:space-between;align-items:end;gap:8px}.head h1{font-size:20px;margin:3px 0 0}.counter{font-size:10px;color:var(--lime);font-weight:900}.bar{height:3px;background:#171c20;margin-top:9px}.fill{height:100%;background:var(--lime);width:0;transition:.25s}
 .doneStrip{margin-top:12px;border:1px solid #315f3e;background:#0d1710;border-radius:12px;padding:10px 11px;display:flex;justify-content:space-between;gap:8px;align-items:center}.doneStrip strong{font-size:11px}.doneStrip span{font-size:8px;color:var(--green)}
 .card{margin-top:12px;border:1px solid var(--line);background:var(--panel);border-radius:16px;padding:14px}.stepNo{font-size:8px;color:var(--lime);font-weight:900;letter-spacing:.12em}.card h2{font-size:28px;line-height:1;margin:5px 0 6px}.why{font-size:9px;color:var(--muted);line-height:1.45;margin-bottom:12px}
 .todo{display:grid;gap:8px}.row{display:grid;grid-template-columns:28px minmax(0,1fr);gap:9px;align-items:start;border-top:1px solid #20262c;padding-top:8px}.row:first-child{border-top:0;padding-top:0}.n{width:28px;height:28px;border:1px solid var(--line);border-radius:50%;display:grid;place-items:center;font-size:8px;font-weight:900;color:var(--muted)}.row strong{display:block;font-size:10px}.row p{font-size:9px;line-height:1.45;color:var(--muted);margin:2px 0 0}
+.secretBox{margin-top:12px;border:1px solid #314c64;background:#0c1116;border-radius:11px;padding:10px}.secretBox b{display:block;font-size:9px;color:#8bc7ff;margin-bottom:6px}.secretRow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px}.secretRow.two{grid-template-columns:minmax(0,1fr) minmax(0,1fr) auto}input{width:100%;min-width:0;background:#080a0c;color:var(--ink);border:1px solid var(--line);border-radius:9px;padding:10px;font-size:10px}.saved{margin-top:6px;font-size:8px;color:var(--green)}
 .finish{margin-top:12px;border:1px solid #625128;background:#17130b;border-radius:11px;padding:10px}.finish b{display:block;font-size:9px;color:var(--yellow);margin-bottom:3px}.finish p{font-size:9px;line-height:1.4;margin:0;color:#ddd2ad}
-.actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px}.btn{border:1px solid var(--line);border-radius:10px;background:#171c21;color:var(--ink);padding:11px 12px;font-size:10px;font-weight:900;text-decoration:none;cursor:pointer}.primary{background:var(--lime);border-color:var(--lime);color:#080a0c}.secondary{color:#cfd6dc}
+.actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px}.btn{border:1px solid var(--line);border-radius:10px;background:#171c21;color:var(--ink);padding:11px 12px;font-size:10px;font-weight:900;text-decoration:none;cursor:pointer}.primary{background:var(--lime);border-color:var(--lime);color:#080a0c}.secondary{color:#cfd6dc}.danger{color:var(--red)}
 .note{margin-top:11px;font-size:8px;line-height:1.45;color:var(--muted)}.doneView{text-align:center;padding:24px 8px}.doneView h2{font-size:28px;margin:0 0 8px}.doneView p{font-size:10px;color:var(--muted);line-height:1.5}
 @media(min-width:700px){.app{padding-top:18px}.card{padding:18px}.card h2{font-size:36px}}
 </style>
@@ -23,115 +23,102 @@
 <body>
 <div class="app">
   <div class="top">
-    <div class="head"><div><div class="kicker">WORKER LAB · PROVIDER SPEEDRUN</div><h1>Wizard de conexión</h1></div><div id="counter" class="counter">0 / 6</div></div>
+    <div class="head"><div><div class="kicker">WORKER LAB · PROVIDER SPEEDRUN</div><h1>Conectar pools</h1></div><div id="counter" class="counter">0 / 6</div></div>
     <div class="bar"><div id="fill" class="fill"></div></div>
   </div>
 
   <div class="doneStrip"><strong>OpenRouter</strong><span>YA ESTÁ · NO TOCAR</span></div>
-
   <main id="main"></main>
 </div>
 
 <script>
 const providers=[
- {
-  id:'gemini', name:'Gemini API', url:'https://aistudio.google.com/apikey',
-  why:'Primero Google porque ya tenés tu cuenta activa y debería ser el paso más corto.',
-  steps:[
-   ['Tocá el botón de abajo','Te lleva DIRECTO a la página de API keys de Google AI Studio. Si pide login, usá tu cuenta Google y vuelve solo.'],
-   ['En esa pantalla, tocá “Create API key”','Si ya ves una key existente que quieras usar, no necesitás crear otra.'],
-   ['Copiá la key y guardala en una nota privada o gestor de contraseñas','No la pegues en esta página. La conectamos después en una capa privada.']
-  ],
-  finish:'Terminaste cuando ves una API key de Gemini y ya la guardaste en un lugar privado.'
- },
- {
-  id:'groq', name:'Groq', url:'https://console.groq.com/keys',
-  why:'Después Groq, porque es de los pools gratuitos más útiles para workers largos.',
-  steps:[
-   ['Tocá el botón de abajo','Te lleva DIRECTO a Groq → API Keys. Si pide login, elegí Google o GitHub.'],
-   ['Tocá “Create API Key”','Podés llamarla “Worker Lab”.'],
-   ['Copiá la key y guardala','La key suele mostrarse una sola vez, así que no cierres antes de copiarla.']
-  ],
-  finish:'Terminaste cuando Groq muestra la nueva key y ya la guardaste.'
- },
- {
-  id:'cohere', name:'Cohere', url:'https://dashboard.cohere.com/api-keys',
-  why:'Cohere suma otra familia de modelos y una cuota independiente.',
-  steps:[
-   ['Tocá el botón de abajo','Te lleva DIRECTO a Cohere → API Keys. Si pide login, Google o GitHub sirven.'],
-   ['Usá la trial key o creá una nueva','No navegues por otros menús. Esta pantalla ya es la correcta.'],
-   ['Copiala y guardala','No hace falta probar nada todavía.']
-  ],
-  finish:'Terminaste cuando tenés una key de Cohere guardada.'
- },
- {
-  id:'mistral', name:'Mistral', url:'https://console.mistral.ai/api-keys',
-  why:'Mistral tiene su propio free mode, así que nos conviene sumar esa bolsa aparte.',
-  steps:[
-   ['Tocá el botón de abajo','Te lleva DIRECTO a Mistral → API Keys. Si pide login, completalo y vuelve a esa página.'],
-   ['Creá una API key','Si aparece una elección de plan, mantenete en el modo gratuito y no cargues billing.'],
-   ['Creá una key y guardala','Guardala antes de cerrar la pantalla.']
-  ],
-  finish:'Terminaste cuando tenés una API key de Mistral guardada y no activaste un plan pago.'
- },
- {
-  id:'cerebras', name:'Cerebras', url:'https://cloud.cerebras.ai/',
-  why:'Cerebras nos interesa por velocidad y porque tiene su propia cuota gratuita.',
-  steps:[
-   ['Abrí Cerebras Cloud','Iniciá sesión con la opción más rápida disponible.'],
-   ['Buscá “API Keys”','Creá una nueva key para el laboratorio.'],
-   ['Copiala y guardala','Después la vamos a validar automáticamente desde el Worker Lab.']
-  ],
-  finish:'Terminaste cuando tenés una key de Cerebras guardada.'
- },
- {
-  id:'cloudflare', name:'Cloudflare Workers AI', url:'https://dash.cloudflare.com/?to=/:account/ai/workers-ai',
-  why:'Lo dejamos último porque requiere dos datos y es el paso más pesado.',
-  steps:[
-   ['Tocá el botón de abajo','Te lleva DIRECTO a Workers AI dentro de Cloudflare. Si pide login, completalo.'],
-   ['En Workers AI tocá “Use REST API”','Ahí Cloudflare muestra el flujo para crear el token correcto y el Account ID.'],
-   ['Guardá el API token y también el Account ID','El Account ID aparece en el dashboard de tu cuenta/proyecto. Guardá ambos.']
-  ],
-  finish:'Terminaste cuando tenés dos cosas guardadas: API token + Account ID.'
- }
+ {id:'gemini',name:'Gemini API',url:'https://aistudio.google.com/apikey',placeholder:'Pegá la key de Gemini',
+  why:'Ya tenés Google activo. Este debería ser el paso más rápido.',
+  steps:[['Abrí la pantalla exacta','El botón va directo a API Keys de Google AI Studio.'],['Usá una key existente o creá una','No hace falta crear otra si ya tenés una que quieras reutilizar.'],['Copiala y volvé acá','Pegala abajo una sola vez.']]},
+ {id:'groq',name:'Groq',url:'https://console.groq.com/keys',placeholder:'Pegá la key de Groq',
+  why:'Nos interesa especialmente para gpt-oss-120b y bastante cuota gratuita.',
+  steps:[['Abrí API Keys directamente','Si pide login, Google o GitHub.'],['Usá una key existente o creá Worker Lab','Si la crea, copiá el valor antes de cerrar.'],['Volvé y pegala abajo','Después pasa automáticamente al siguiente.']]},
+ {id:'cohere',name:'Cohere',url:'https://dashboard.cohere.com/api-keys',placeholder:'Pegá la key de Cohere',
+  why:'Otra familia de modelos y otra cuota separada.',
+  steps:[['Abrí API Keys directamente','Completá login si aparece.'],['Usá la trial key o una existente','No hace falta crear otra si ya tenés una utilizable.'],['Copiala y volvé','Pegala una sola vez abajo.']]},
+ {id:'mistral',name:'Mistral',url:'https://console.mistral.ai/api-keys',placeholder:'Pegá la key de Mistral',
+  why:'Suma una bolsa gratuita independiente.',
+  steps:[['Abrí API Keys directamente','Si pide login, completalo.'],['Usá una existente o creá una','Mantené el modo gratuito; no hace falta billing.'],['Copiala antes de cerrar','Volvé y pegala abajo.']]},
+ {id:'cerebras',name:'Cerebras',url:'https://cloud.cerebras.ai/',placeholder:'Pegá la key de Cerebras',
+  why:'Nos interesa por velocidad y free tier.',
+  steps:[['Abrí Cerebras Cloud','Completá login.'],['Entrá a API Keys','Si ya tenés una utilizable, usala. Si no, creá una.'],['Copiala y volvé','Pegala abajo.']]},
+ {id:'cloudflare',name:'Cloudflare Workers AI',url:'https://dash.cloudflare.com/?to=/:account/ai/workers-ai',placeholder:'Pegá el API token',account:true,
+  why:'Último porque necesita dos datos.',
+  steps:[['Abrí Workers AI directamente','Completá login si hace falta.'],['Tocá Use REST API','Creá o reutilizá un API token con acceso a Workers AI.'],['Copiá token + Account ID','Vas a pegar ambos abajo.']]}
 ];
 
 const $=s=>document.querySelector(s);
-const key=id=>'speedrun_done_'+id;
-const done=id=>localStorage.getItem(key(id))==='1';
+const stateKey=id=>'speedrun_done_'+id;
+const done=id=>localStorage.getItem(stateKey(id))==='1';
+
+function openDB(){return new Promise((resolve,reject)=>{const r=indexedDB.open('worker-lab-fast-vault',1);r.onupgradeneeded=()=>{if(!r.result.objectStoreNames.contains('provider_tokens'))r.result.createObjectStore('provider_tokens')};r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error)})}
+async function saveToken(id,data){const db=await openDB();return new Promise((resolve,reject)=>{const tx=db.transaction('provider_tokens','readwrite');tx.objectStore('provider_tokens').put(data,id);tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error)})}
+async function getToken(id){const db=await openDB();return new Promise((resolve,reject)=>{const q=db.transaction('provider_tokens').objectStore('provider_tokens').get(id);q.onsuccess=()=>resolve(q.result||null);q.onerror=()=>reject(q.error)})}
+async function deleteToken(id){const db=await openDB();return new Promise((resolve,reject)=>{const tx=db.transaction('provider_tokens','readwrite');tx.objectStore('provider_tokens').delete(id);tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error)})}
+
 function completed(){return providers.filter(p=>done(p.id)).length}
 function current(){return providers.find(p=>!done(p.id))||null}
-function markDone(id){localStorage.setItem(key(id),'1');render();window.scrollTo({top:0,behavior:'smooth'})}
-function goBack(){
+
+async function storeAndNext(id){
+ const p=providers.find(x=>x.id===id);
+ const token=$('#token')?.value.trim();
+ const account=p.account?$('#account')?.value.trim():'';
+ if(!token){$('#saveMsg').textContent='Falta pegar la key/token.';return}
+ if(p.account&&!account){$('#saveMsg').textContent='Falta el Account ID.';return}
+ await saveToken(id,{token,account:account||null,saved_at:new Date().toISOString()});
+ localStorage.setItem(stateKey(id),'1');
+ await render();
+ window.scrollTo({top:0,behavior:'smooth'});
+}
+async function goBack(){
  const doneList=providers.filter(p=>done(p.id));
  const last=doneList[doneList.length-1];
- if(last){localStorage.removeItem(key(last.id));render();window.scrollTo({top:0,behavior:'smooth'})}
+ if(last){localStorage.removeItem(stateKey(last.id));await render();window.scrollTo({top:0,behavior:'smooth'})}
 }
-function resetAll(){providers.forEach(p=>localStorage.removeItem(key(p.id)));render();window.scrollTo({top:0,behavior:'smooth'})}
+async function clearCurrent(id){
+ await deleteToken(id);localStorage.removeItem(stateKey(id));await render();
+}
+async function resetAll(){
+ for(const p of providers){await deleteToken(p.id);localStorage.removeItem(stateKey(p.id))}
+ await render();window.scrollTo({top:0,behavior:'smooth'});
+}
 
-function render(){
- const n=completed(), p=current();
+async function render(){
+ const n=completed(),p=current();
  $('#counter').textContent=n+' / '+providers.length;
  $('#fill').style.width=(n/providers.length*100)+'%';
 
  if(!p){
-   $('#main').innerHTML='<section class="card doneView"><h2>Speedrun terminado</h2><p>OpenRouter + Gemini + Groq + Cohere + Mistral + Cerebras + Cloudflare quedaron preparados. El próximo paso ya no es otro login: es conectar y validar esas credenciales desde una capa privada del Worker Lab.</p><div class="actions" style="justify-content:center"><button class="btn secondary" id="back">VOLVER UN PASO</button><button class="btn secondary" id="reset">RESET</button></div></section>';
-   $('#back').onclick=goBack; $('#reset').onclick=resetAll; return;
+   $('#main').innerHTML='<section class="card doneView"><h2>Speedrun terminado</h2><p>OpenRouter + seis pools preparados. Las credenciales quedaron guardadas sólo en este navegador para el laboratorio rápido.</p><div class="actions" style="justify-content:center"><button class="btn secondary" id="back">VOLVER UN PASO</button><button class="btn danger" id="reset">BORRAR TODO</button></div></section>';
+   $('#back').onclick=goBack;$('#reset').onclick=resetAll;return;
  }
 
  const idx=providers.indexOf(p)+1;
+ const existing=await getToken(p.id);
  $('#main').innerHTML='<section class="card">'+
-  '<div class="stepNo">PASO '+idx+' DE '+providers.length+'</div>'+
-  '<h2>'+p.name+'</h2>'+
-  '<div class="why">'+p.why+'</div>'+
-  '<div class="todo">'+p.steps.map((s,i)=>'<div class="row"><div class="n">'+(i+1)+'</div><div><strong>'+s[0]+'</strong><p>'+s[1]+'</p></div></div>').join('')+'</div>'+
-  '<div class="finish"><b>CÓMO SABÉS QUE TERMINASTE</b><p>'+p.finish+'</p></div>'+
-  '<div class="actions"><a class="btn primary" href="'+p.url+'" target="_blank" rel="noopener">1 · ABRIR PANTALLA EXACTA ↗</a><button class="btn secondary" id="doneBtn">2 · YA LO HICE · SIGUIENTE</button>'+(n?'<button class="btn secondary" id="backBtn">← ATRÁS</button>':'')+'</div>'+
-  '<div class="note">No pegues secretos en esta página. Este wizard sólo te guía y recuerda el progreso.</div>'+
-  '</section>';
-
- $('#doneBtn').onclick=()=>markDone(p.id);
+ '<div class="stepNo">PASO '+idx+' DE '+providers.length+'</div>'+
+ '<h2>'+p.name+'</h2>'+
+ '<div class="why">'+p.why+'</div>'+
+ '<div class="todo">'+p.steps.map((s,i)=>'<div class="row"><div class="n">'+(i+1)+'</div><div><strong>'+s[0]+'</strong><p>'+s[1]+'</p></div></div>').join('')+'</div>'+
+ '<div class="actions"><a class="btn primary" href="'+p.url+'" target="_blank" rel="noopener">1 · ABRIR PANTALLA EXACTA ↗</a></div>'+
+ '<div class="secretBox"><b>2 · VOLVÉ Y PEGÁ ACÁ</b>'+
+ (p.account?
+ '<div class="secretRow two"><input id="token" type="password" autocomplete="off" placeholder="'+p.placeholder+'"><input id="account" autocomplete="off" placeholder="Account ID"><button class="btn primary" id="save">GUARDAR + NEXT</button></div>':
+ '<div class="secretRow"><input id="token" type="password" autocomplete="off" placeholder="'+p.placeholder+'"><button class="btn primary" id="save">GUARDAR + NEXT</button></div>')+
+ '<div id="saveMsg" class="saved">'+(existing?'Ya había un valor guardado localmente para este provider.':'Se guarda sólo en este navegador, no en GitHub.')+'</div></div>'+
+ '<div class="finish"><b>CÓMO SABÉS QUE TERMINASTE</b><p>Cuando pegaste la key/token acá y tocaste GUARDAR + NEXT. El wizard marca este provider como listo y te muestra el siguiente.</p></div>'+
+ '<div class="actions">'+(n?'<button class="btn secondary" id="backBtn">← ATRÁS</button>':'')+(existing?'<button class="btn danger" id="clearBtn">BORRAR ESTE VALOR</button>':'')+'</div>'+
+ '<div class="note">Modo rápido temporal: esto prioriza velocidad. Más adelante rotamos claves y migramos a un vault privado serio.</div>'+
+ '</section>';
+ $('#save').onclick=()=>storeAndNext(p.id);
  if($('#backBtn'))$('#backBtn').onclick=goBack;
+ if($('#clearBtn'))$('#clearBtn').onclick=()=>clearCurrent(p.id);
 }
 render();
 </script>
