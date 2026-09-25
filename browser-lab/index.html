@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<title>Worker Lab · Browser Fabric</title>
+<style>
+:root{--bg:#090b0d;--panel:#111519;--panel2:#171c21;--line:#2a3138;--ink:#f4f5f0;--muted:#929ca6;--lime:#d8ff5b;--green:#73df93;--blue:#72b7ff;--yellow:#f2c35b;--red:#ff7b7b;--r:16px}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}button{font:inherit}a{color:inherit;text-decoration:none}.app{max-width:1050px;margin:auto;min-height:100vh;padding-bottom:80px}
+.top{position:sticky;top:0;z-index:20;background:rgba(9,11,13,.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);padding:12px 14px}.brand{display:flex;justify-content:space-between;gap:10px;align-items:center}.eyebrow{font-size:9px;letter-spacing:.16em;color:var(--muted);font-weight:800}.brand h1{font-size:19px;margin:3px 0 0}.live{font-size:9px;border:1px solid var(--line);border-radius:999px;padding:6px 8px;color:var(--muted)}.live.running{color:var(--blue);border-color:#315171}.live.pass{color:var(--green);border-color:#325c3d}.live.partial{color:var(--yellow);border-color:#645228}.live.fail{color:var(--red);border-color:#6a3838}
+main{padding:14px}.hero{border:1px solid var(--line);border-radius:var(--r);padding:14px;background:linear-gradient(180deg,#14191d,#0e1114);margin-bottom:12px}.hero h2{font-size:28px;line-height:1;letter-spacing:-.05em;margin:0 0 7px}.hero p{font-size:11px;color:var(--muted);line-height:1.45;margin:0;max-width:740px}.actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px}.btn{border:1px solid var(--line);background:var(--panel2);border-radius:10px;padding:10px 12px;font-size:10px;font-weight:850;cursor:pointer}.btn.primary{background:var(--lime);color:#090b0d;border-color:var(--lime)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:10px 0 0}.stat{border:1px solid var(--line);background:#0d1013;border-radius:10px;padding:8px}.stat strong{display:block;font-size:15px}.stat span{font-size:8px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase}
+.sectionhead{display:flex;justify-content:space-between;align-items:end;gap:10px;margin:17px 2px 8px}.sectionhead h2{font-size:17px;margin:0}.sectionhead span{font-size:9px;color:var(--muted)}
+.ladder{display:grid;gap:8px}.card{border:1px solid var(--line);border-radius:var(--r);background:var(--panel);padding:12px}.card-top{display:grid;grid-template-columns:34px minmax(0,1fr) auto;gap:10px;align-items:center}.num{width:34px;height:34px;border:1px solid var(--line);border-radius:10px;display:grid;place-items:center;font-size:10px;color:var(--muted);font-weight:900}.ctitle{font-size:13px;font-weight:800}.csub{font-size:9px;color:var(--muted);line-height:1.4;margin-top:3px}.badge{font-size:8px;font-weight:850;border:1px solid var(--line);border-radius:99px;padding:5px 6px;white-space:nowrap}.badge.active,.badge.pass{color:var(--green);border-color:#315f3d}.badge.run{color:var(--blue);border-color:#315171}.badge.need{color:var(--yellow);border-color:#645228}.badge.wait{color:var(--muted)}.badge.fail{color:var(--red);border-color:#6a3838}
+.steps{display:flex;gap:5px;flex-wrap:wrap;margin-top:9px}.step{font-size:8px;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:4px 6px}.step.ok{color:var(--green);border-color:#315f3d}.step.bad{color:var(--red);border-color:#6a3838}
+.testlist{display:grid;gap:7px}.test{border:1px solid var(--line);border-radius:12px;background:var(--panel);padding:10px}.testtop{display:flex;justify-content:space-between;gap:8px}.test strong{font-size:11px}.test p{font-size:9px;color:var(--muted);line-height:1.4;margin:5px 0 0}.shots{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-top:9px}.shot{border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#060708}.shot img{display:block;width:100%;aspect-ratio:16/10;object-fit:cover}.shot div{font-size:8px;color:var(--muted);padding:6px}
+.events{border:1px solid var(--line);border-radius:12px;background:#080a0c;overflow:hidden}.event{display:grid;grid-template-columns:62px 86px minmax(0,1fr);gap:7px;padding:7px 9px;border-bottom:1px solid #1c2227;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:8px}.event:last-child{border-bottom:0}.event .t,.event .k{color:var(--muted)}.empty{border:1px dashed var(--line);border-radius:12px;padding:18px;text-align:center;color:var(--muted);font-size:10px}.warn{border-left:3px solid var(--yellow);background:#17130b;border-radius:8px;padding:9px 10px;font-size:9px;color:#d5cba8;line-height:1.45;margin-top:9px}
+@media(min-width:760px){main{padding:20px}.hero{padding:20px}.hero h2{font-size:40px}.ladder{grid-template-columns:1fr 1fr}.card:first-child{grid-column:1/-1}.shots{grid-template-columns:repeat(3,1fr)}}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="top"><div class="brand"><div><div class="eyebrow">EXPERIMENTO · WORKER LAB</div><h1>Browser Fabric Lab</h1></div><div id="runState" class="live">CARGANDO</div></div></header>
+<main>
+<section class="hero">
+<h2>Una computadora cloud, sin tu computadora.</h2>
+<p>Primero probamos un Chromium real en GitHub Actions sin cuentas nuevas ni claves. Después comparamos Browserbase, Browserless, Cloudflare y Steel. El laboratorio avanza solo hasta que una frontera real de identidad exige una única acción humana.</p>
+<div class="actions">
+<a class="btn primary" href="../">CONNECTION HUB</a>
+<a class="btn" href="https://github.com/JuanManuelPM/Experimentos/actions/workflows/browser-lab.yml" target="_blank" rel="noopener">WORKFLOW / RUN AGAIN ↗</a>
+<button class="btn" id="refresh">ACTUALIZAR</button>
+</div>
+<div class="stats">
+<div class="stat"><strong id="overall">—</strong><span>último run</span></div>
+<div class="stat"><strong id="passed">—</strong><span>tests pass</span></div>
+<div class="stat"><strong id="duration">—</strong><span>duración</span></div>
+<div class="stat"><strong id="humans">1</strong><span>máx. acción humana</span></div>
+</div>
+</section>
+
+<div class="sectionhead"><h2>Escalera de experimentos</h2><span>cada opción tiene un objetivo distinto</span></div>
+<div class="ladder" id="ladder">
+<div class="card">
+ <div class="card-top"><div class="num">01</div><div><div class="ctitle">GitHub Actions + Playwright</div><div class="csub">Cero setup: runner Linux real, Chromium, navegación, clicks y screenshots.</div></div><span id="ghaBadge" class="badge run">RUNNING / WAITING</span></div>
+ <div class="steps"><span class="step" id="sRunner">runner</span><span class="step" id="sChrome">chromium</span><span class="step" id="sNav">navigate</span><span class="step" id="sClick">click</span><span class="step" id="sShot">evidence</span></div>
+</div>
+<div class="card">
+ <div class="card-top"><div class="num">02</div><div><div class="ctitle">Browserbase</div><div class="csub">Objetivo: live browser + login/2FA una vez + contexto autenticado reutilizable.</div></div><span class="badge need">NEEDS 1 SETUP</span></div>
+ <div class="steps"><span class="step">session</span><span class="step">live view</span><span class="step">human takeover</span><span class="step">context restore</span></div>
+ <div class="actions"><a class="btn" href="https://www.browserbase.com/sign-up" target="_blank" rel="noopener">CREAR CUENTA ↗</a><a class="btn" href="https://www.browserbase.com/overview" target="_blank" rel="noopener">DASHBOARD ↗</a></div>
+</div>
+<div class="card">
+ <div class="card-top"><div class="num">03</div><div><div class="ctitle">Browserless</div><div class="csub">Objetivo: Live URL interactiva, handoff desde celular y persistencia/reconnect.</div></div><span class="badge need">NEEDS TOKEN</span></div>
+ <div class="steps"><span class="step">CDP</span><span class="step">live URL</span><span class="step">interactive</span><span class="step">persist auth</span></div>
+ <div class="actions"><a class="btn" href="https://www.browserless.io/sign-up" target="_blank" rel="noopener">CREAR CUENTA ↗</a><a class="btn" href="https://docs.browserless.io/examples/playwright-connection" target="_blank" rel="noopener">DOCS ↗</a></div>
+</div>
+<div class="card">
+ <div class="card-top"><div class="num">04</div><div><div class="ctitle">Cloudflare Browser Run</div><div class="csub">Objetivo: automatización corta recurrente y barata/gratuita sin browser local.</div></div><span class="badge need">NEEDS TOKEN</span></div>
+ <div class="steps"><span class="step">remote browser</span><span class="step">scheduled</span><span class="step">daily quota</span></div>
+ <div class="actions"><a class="btn" href="https://dash.cloudflare.com/" target="_blank" rel="noopener">DASHBOARD ↗</a><a class="btn" href="https://developers.cloudflare.com/browser-rendering/" target="_blank" rel="noopener">DOCS ↗</a></div>
+</div>
+<div class="card">
+ <div class="card-top"><div class="num">05</div><div><div class="ctitle">Steel</div><div class="csub">Objetivo: comparar live viewer, takeover y ergonomía del browser cloud.</div></div><span class="badge need">NEEDS KEY</span></div>
+ <div class="steps"><span class="step">session</span><span class="step">viewer</span><span class="step">CDP</span><span class="step">profiles</span></div>
+ <div class="actions"><a class="btn" href="https://app.steel.dev/" target="_blank" rel="noopener">ABRIR STEEL ↗</a><a class="btn" href="https://app.steel.dev/settings/api-keys" target="_blank" rel="noopener">API KEYS ↗</a></div>
+</div>
+</div>
+
+<div class="sectionhead"><h2>Evidencia del browser real</h2><span id="runId">sin run todavía</span></div>
+<div id="tests" class="testlist"><div class="empty">El primer workflow todavía no publicó resultados. Esta página se actualiza cuando termina.</div></div>
+
+<div class="sectionhead"><h2>Screenshots</h2><span>bytes producidos por el runner</span></div>
+<div id="shots" class="shots"><div class="empty">Esperando evidencia.</div></div>
+
+<div class="sectionhead"><h2>Eventos</h2><span>qué hizo realmente el browser</span></div>
+<div id="events" class="events"><div class="empty">Sin eventos publicados todavía.</div></div>
+
+<div class="warn">Seguridad: este experimento todavía no recibe secretos. Las próximas credenciales se guardarán detrás de un backend/Vault; nunca en GitHub Pages, localStorage, query strings, logs o screenshots.</div>
+</main>
+</div>
+<script>
+const RESULT='./results/latest.json';
+const ACTIONS='https://api.github.com/repos/JuanManuelPM/Experimentos/actions/workflows/browser-lab.yml/runs?per_page=1';
+const $=s=>document.querySelector(s);
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function badgeStatus(s){s=(s||'').toUpperCase();return s==='PASS'?'pass':s==='PARTIAL'?'partial':s==='FAIL'?'fail':'running'}
+async function loadActions(){
+ try{
+  const r=await fetch(ACTIONS,{cache:'no-store'});if(!r.ok)return;
+  const d=await r.json(),run=d.workflow_runs&&d.workflow_runs[0];if(!run)return;
+  const txt=run.status==='completed'?(run.conclusion||'completed'):run.status;
+  $('#runState').textContent='ACTION '+txt.toUpperCase();
+  $('#runState').className='live '+(run.conclusion==='success'?'pass':run.conclusion==='failure'?'fail':'running');
+ }catch(e){}
+}
+async function loadResult(){
+ try{
+  const r=await fetch(RESULT+'?t='+Date.now(),{cache:'no-store'});if(!r.ok)throw new Error('no result');
+  const d=await r.json(),tests=d.tests||[],events=d.events||[],shots=d.screenshots||[];
+  $('#overall').textContent=d.overall||'—';
+  $('#passed').textContent=tests.filter(x=>x.status==='PASS').length+'/'+tests.length;
+  $('#duration').textContent=d.duration_ms?Math.round(d.duration_ms/1000)+'s':'—';
+  $('#runId').textContent=d.run_id||'—';
+  $('#ghaBadge').textContent=d.overall||'DONE';$('#ghaBadge').className='badge '+badgeStatus(d.overall);
+  ['sRunner','sChrome','sNav','sClick','sShot'].forEach(id=>$('#'+id).classList.add(d.overall==='FAIL'?'bad':'ok'));
+  $('#tests').innerHTML=tests.map(t=>'<div class="test"><div class="testtop"><strong>'+esc(t.name)+'</strong><span class="badge '+badgeStatus(t.status)+'">'+esc(t.status)+'</span></div><p>'+esc(t.detail||'')+'</p></div>').join('')||'<div class="empty">Sin tests.</div>';
+  $('#shots').innerHTML=shots.map(s=>'<a class="shot" href="./results/'+encodeURIComponent(s.file)+'" target="_blank"><img src="./results/'+encodeURIComponent(s.file)+'?t='+Date.now()+'" alt=""><div>'+esc(s.label)+'</div></a>').join('')||'<div class="empty">Sin screenshots.</div>';
+  $('#events').innerHTML=events.slice(-80).reverse().map(e=>'<div class="event"><div class="t">'+esc((e.ts||'').slice(11,19))+'</div><div class="k">'+esc(e.type)+'</div><div>'+esc(e.detail||'')+'</div></div>').join('')||'<div class="empty">Sin eventos.</div>';
+ }catch(e){}
+}
+async function refresh(){await Promise.all([loadActions(),loadResult()])}
+$('#refresh').onclick=refresh;
+refresh();
+setInterval(refresh,30000);
+</script>
+</body>
+</html>
