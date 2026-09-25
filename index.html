@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<title>Worker Lab · Connection Hub</title>
+<style>
+:root{--bg:#090b0d;--panel:#111519;--panel2:#171c21;--line:#293139;--ink:#f5f6f2;--muted:#94a0aa;--lime:#d8ff5b;--green:#75df93;--blue:#72b7ff;--yellow:#ffcc61;--red:#ff7b7b;--r:16px}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+button{font:inherit}a{color:inherit;text-decoration:none}.app{max-width:980px;margin:auto;min-height:100vh;padding-bottom:80px}
+header{position:sticky;top:0;z-index:20;background:rgba(9,11,13,.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);padding:14px 14px 10px}
+.eyebrow{font-size:10px;letter-spacing:.16em;color:var(--muted);font-weight:850}.brand{display:flex;justify-content:space-between;gap:12px;align-items:end}.brand h1{margin:4px 0 0;font-size:22px;letter-spacing:-.03em}.mode{font-size:9px;border:1px solid #4f5d28;color:var(--lime);border-radius:999px;padding:6px 8px;white-space:nowrap}
+main{padding:14px}.hero{padding:14px;border:1px solid var(--line);border-radius:var(--r);background:linear-gradient(180deg,#14191d,#0e1114);margin-bottom:12px}
+.hero h2{font-size:30px;line-height:.98;letter-spacing:-.055em;margin:0 0 8px;max-width:620px}.hero p{margin:0;color:var(--muted);font-size:12px;line-height:1.45;max-width:700px}
+.progress{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;margin-top:14px}.bar{height:8px;background:#20262c;border-radius:99px;overflow:hidden}.bar>i{display:block;height:100%;width:0;background:var(--lime);transition:.25s}.count{font-size:11px;color:var(--muted)}
+.tools{display:flex;gap:7px;overflow:auto;padding-bottom:4px;margin:0 -2px 14px;scrollbar-width:none}.tools::-webkit-scrollbar{display:none}
+.tool{flex:0 0 130px;border:1px solid var(--line);background:var(--panel);border-radius:12px;padding:10px;text-align:left;cursor:pointer;min-height:82px}.tool strong{display:block;font-size:12px}.tool span{display:block;color:var(--muted);font-size:9px;margin-top:5px;line-height:1.3}.tool.ready{border-color:#345e40}.tool.active{outline:2px solid var(--lime);outline-offset:1px}.tool.locked{opacity:.55}
+.toolpanel{border:1px solid var(--line);background:#0e1215;border-radius:12px;padding:11px 12px;margin-bottom:14px}.toolpanel .k{font-size:9px;letter-spacing:.12em;color:var(--muted)}.toolpanel h3{font-size:15px;margin:4px 0 5px}.toolpanel p{font-size:11px;color:var(--muted);line-height:1.45;margin:0}
+.sectionhead{display:flex;justify-content:space-between;align-items:end;gap:10px;margin:18px 2px 9px}.sectionhead h2{margin:0;font-size:19px}.sectionhead span{font-size:10px;color:var(--muted)}
+.providers{display:grid;gap:9px}.provider{border:1px solid var(--line);border-radius:var(--r);background:var(--panel);overflow:hidden}.phead{display:grid;grid-template-columns:48px minmax(0,1fr) auto;gap:11px;align-items:center;padding:12px;cursor:pointer}.logo{width:48px;height:48px;background:white;border-radius:12px;display:grid;place-items:center;overflow:hidden}.logo img{width:34px;height:34px;object-fit:contain}.pname{font-size:16px;font-weight:800}.psub{font-size:10px;color:var(--muted);margin-top:3px}.status{font-size:9px;font-weight:800;border:1px solid var(--line);border-radius:99px;padding:5px 7px;white-space:nowrap}.status.todo{color:var(--muted)}.status.key{color:var(--yellow);border-color:#665328}.status.ready{color:var(--green);border-color:#315f3d}.details{display:none;border-top:1px solid var(--line);padding:12px;background:#0d1114}.provider.open .details{display:block}
+.steps{display:grid;gap:8px}.step{display:grid;grid-template-columns:28px minmax(0,1fr);gap:10px;border:1px solid var(--line);border-radius:12px;padding:10px;background:#11161a}.n{width:28px;height:28px;border:1px solid var(--line);border-radius:50%;display:grid;place-items:center;color:var(--muted);font-size:10px;font-weight:900}.step.done .n{background:var(--green);color:#08100b;border-color:var(--green)}.step h4{font-size:12px;margin:0}.step p{font-size:10px;color:var(--muted);line-height:1.4;margin:4px 0 0}.actions{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:9px}.btn{border:1px solid var(--line);background:var(--panel2);color:var(--ink);border-radius:10px;padding:11px 12px;font-weight:850;font-size:11px;cursor:pointer}.btn.primary{background:var(--lime);color:#0b0d0f;border-color:var(--lime)}.btn:disabled{opacity:.38;cursor:not-allowed}.wide{grid-column:1/-1}
+.note{border-left:3px solid var(--yellow);background:#18150d;color:#d5ccb0;padding:9px 10px;border-radius:7px;font-size:10px;line-height:1.4;margin-top:9px}
+.preview{display:flex;gap:7px;align-items:center;margin-top:12px}.preview button{border:1px solid var(--line);background:transparent;color:var(--muted);border-radius:999px;padding:7px 9px;font-size:9px;cursor:pointer}.preview button.on{color:var(--lime);border-color:#536326}.preview small{color:var(--muted);font-size:9px;line-height:1.35}
+footer{padding:14px;color:var(--muted);font-size:9px;line-height:1.5}
+@media(min-width:760px){main{padding:20px}.providers{grid-template-columns:1fr 1fr}.hero{padding:20px}.hero h2{font-size:42px}.provider.open{grid-column:span 2}.tools{overflow:visible;display:grid;grid-template-columns:repeat(7,1fr)}.tool{min-width:0;flex:auto}}
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+  <div class="brand">
+    <div><div class="eyebrow">EXPERIMENTO · WORKER LAB</div><h1>Connection Hub</h1></div>
+    <div class="mode">UI PREVIEW · NO SECRETS</div>
+  </div>
+</header>
+<main>
+  <section class="hero">
+    <h2>Conectá todos los cerebros desde un solo lugar.</h2>
+    <p>La meta es que cada provider pase por la misma ruta: crear credencial → guardar seguro → ping → mensaje → worker test → READY. Esta V0 muestra la experiencia completa sin guardar ni enviar claves.</p>
+    <div class="progress"><div class="bar"><i id="bar"></i></div><div class="count" id="count">0 / 7 preparados</div></div>
+    <div class="preview"><button id="previewBtn">VER ESTADO READY · PREVIEW</button><small>Sirve sólo para visualizar el “después”. Nunca se presenta como conexión real.</small></div>
+  </section>
+
+  <div class="tools" id="tools"></div>
+  <div class="toolpanel" id="toolpanel"></div>
+
+  <div class="sectionhead"><div><h2>Providers</h2><span>tocá uno y seguí los pasos</span></div><span id="summary">0 con key · 7 pendientes</span></div>
+  <div class="providers" id="providers"></div>
+</main>
+<footer>Connection Hub V0 · GitHub Pages · No se almacena ninguna API key en esta página. El próximo paso es conectar un vault/backend real y reemplazar los pasos visuales por health checks auténticos.</footer>
+</div>
+
+<script>
+const tools=[
+ {id:'connect',name:'01 · Connect',desc:'Cuenta, key y vault seguro.',state:'active'},
+ {id:'ping',name:'02 · Ping',desc:'Auth + endpoint + health.',state:'locked'},
+ {id:'console',name:'03 · Message',desc:'Prompt simple → respuesta real.',state:'locked'},
+ {id:'worker',name:'04 · Worker test',desc:'READY → ACTIVE → VERIFY → DONE.',state:'locked'},
+ {id:'all',name:'05 · Test all',desc:'Prueba todos automáticamente.',state:'locked'},
+ {id:'router',name:'06 · Router',desc:'Elige provider según tarea/cuota.',state:'locked'},
+ {id:'autopilot',name:'07 · Autopilot',desc:'Mantiene workers sin intervención.',state:'locked'}
+];
+const providerData=[
+ {id:'groq',name:'Groq',domain:'groq.com',sub:'rápido · OpenAI-compatible',key:'https://console.groq.com/keys',hint:'Create API Key → copiar una vez.'},
+ {id:'mistral',name:'Mistral',domain:'mistral.ai',sub:'Free mode disponible',key:'https://console.mistral.ai/api-keys',hint:'Studio → API keys → Create new key.'},
+ {id:'gemini',name:'Gemini',domain:'google.com',sub:'Google AI Studio',key:'https://aistudio.google.com/apikey',hint:'Create API key en AI Studio.'},
+ {id:'cerebras',name:'Cerebras',domain:'cerebras.ai',sub:'inferencia muy rápida',key:'https://cloud.cerebras.ai',hint:'Cloud Console → API Keys.'},
+ {id:'cloudflare',name:'Cloudflare Workers AI',domain:'cloudflare.com',sub:'requiere token + Account ID',key:'https://developers.cloudflare.com/workers-ai/get-started/rest-api/',hint:'Workers AI → Use REST API → crear token + copiar Account ID.'},
+ {id:'openrouter',name:'OpenRouter',domain:'openrouter.ai',sub:'muchos modelos · una API',key:'https://openrouter.ai/settings/keys',hint:'Settings → Keys → Create key.'},
+ {id:'local',name:'Local / OpenAI-compatible',domain:'localhost',sub:'sin cuenta si corre localmente',key:'#local',hint:'Definir base URL + modelo. No necesita login.'}
+];
+let preview=false;
+const state=JSON.parse(localStorage.getItem('workerLabConnectV0')||'{}');
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function save(){localStorage.setItem('workerLabConnectV0',JSON.stringify(state))}
+function img(domain){return domain==='localhost'?'':('https://www.google.com/s2/favicons?domain='+encodeURIComponent(domain)+'&sz=128')}
+function renderTools(active='connect'){
+ $('#tools').innerHTML=tools.map(t=>'<button class="tool '+(t.id===active?'active ':'')+t.state+'" data-tool="'+t.id+'"><strong>'+esc(t.name)+'</strong><span>'+esc(t.desc)+'</span></button>').join('');
+ document.querySelectorAll('[data-tool]').forEach(b=>b.onclick=()=>showTool(b.dataset.tool));
+ showTool(active,false);
+}
+function showTool(id,repaint=true){
+ const t=tools.find(x=>x.id===id); if(!t)return;
+ if(repaint)renderTools(id);
+ const unlocked=id==='connect'||preview;
+ $('#toolpanel').innerHTML='<div class="k">'+(unlocked?'VISIBLE':'LOCKED UNTIL CONNECTIONS')+'</div><h3>'+esc(t.name)+'</h3><p>'+esc(t.desc)+' '+(id==='connect'?'Esta es la herramienta que implementamos primero.':unlocked?'En PREVIEW podés ver cómo encaja; todavía no ejecuta llamadas reales.':'Se desbloquea cuando exista al menos un provider validado por backend.')+'</p>';
+}
+function providerStatus(p){
+ if(preview)return 'ready';
+ if(state[p.id]&&state[p.id].keyReady)return 'key';
+ return 'todo';
+}
+function renderProviders(){
+ let keys=0,ready=0;
+ $('#providers').innerHTML=providerData.map((p,i)=>{
+   const s=providerStatus(p); if(s==='key')keys++; if(s==='ready')ready++;
+   const done=s==='key'||s==='ready';
+   const logo=p.id==='local'?'<div style="font-size:20px;font-weight:900">⌘</div>':'<img src="'+img(p.domain)+'" alt="">';
+   return '<article class="provider" data-provider="'+p.id+'">'+
+    '<div class="phead"><div class="logo">'+logo+'</div><div><div class="pname">'+esc(p.name)+'</div><div class="psub">'+esc(p.sub)+'</div></div><div class="status '+s+'">'+(s==='ready'?'READY · PREVIEW':s==='key'?'KEY LISTA':'POR CONECTAR')+'</div></div>'+
+    '<div class="details"><div class="steps">'+
+      '<div class="step '+(done?'done':'')+'"><div class="n">1</div><div><h4>Crear / abrir credencial</h4><p>'+esc(p.hint)+'</p><div class="actions"><a class="btn primary wide" href="'+esc(p.key)+'" target="_blank" rel="noopener">'+(p.id==='local'?'CONFIGURAR ENDPOINT':'ABRIR '+esc(p.name).toUpperCase())+' ↗</a></div></div></div>'+
+      '<div class="step '+(done?'done':'')+'"><div class="n">2</div><div><h4>Confirmar que ya la tenés</h4><p>No pegues la key todavía. Esta V0 sólo registra que completaste el paso; nunca guarda el secreto.</p><div class="actions"><button class="btn wide haveKey" data-id="'+p.id+'">'+(done?'✓ KEY LISTA':'YA TENGO LA KEY')+'</button></div></div></div>'+
+      '<div class="step '+(s==='ready'?'done':'')+'"><div class="n">3</div><div><h4>Guardar en Vault</h4><p>Próxima fase: el secreto viaja una sola vez al backend y desaparece del cliente.</p><div class="actions"><button class="btn wide" disabled>BACKEND / VAULT PENDIENTE</button></div></div></div>'+
+      '<div class="step '+(s==='ready'?'done':'')+'"><div class="n">4</div><div><h4>Ping + descubrir modelos</h4><p>Health real, lista de modelos, latencia y rate limit. Sólo después pasa a CONNECTED.</p><div class="actions"><button class="btn" disabled>PING</button><button class="btn" disabled>LIST MODELS</button></div></div></div>'+
+      '<div class="step '+(s==='ready'?'done':'')+'"><div class="n">5</div><div><h4>Worker test</h4><p>Mensaje estándar y luego un packet real: READY → ACTIVE → VERIFY → DONE.</p><div class="actions"><button class="btn wide" disabled>RUN WORKER TEST</button></div></div></div>'+
+    '</div><div class="note">'+(preview?'PREVIEW READY: esto muestra el estado final esperado; no existe conexión real.':'Estado honesto: todavía no hay backend conectado. Ningún botón de test pretende funcionar.')+'</div></div>'+
+   '</article>';
+ }).join('');
+ document.querySelectorAll('.phead').forEach(h=>h.onclick=()=>h.parentElement.classList.toggle('open'));
+ document.querySelectorAll('.haveKey').forEach(b=>b.onclick=e=>{e.stopPropagation(); const id=b.dataset.id; state[id]=state[id]||{}; state[id].keyReady=!state[id].keyReady; save(); renderProviders();});
+ $('#summary').textContent=preview?'7 READY · PREVIEW':keys+' con key · '+(7-keys)+' pendientes';
+ $('#bar').style.width=(preview?100:Math.round(keys/7*100))+'%';
+ $('#count').textContent=(preview?7:keys)+' / 7 preparados';
+}
+$('#previewBtn').onclick=()=>{preview=!preview; $('#previewBtn').classList.toggle('on',preview); $('#previewBtn').textContent=preview?'SALIR DE READY PREVIEW':'VER ESTADO READY · PREVIEW'; tools.forEach(t=>{if(t.id!=='connect')t.state=preview?'ready':'locked'}); renderTools(); renderProviders();}
+renderTools();
+renderProviders();
+</script>
+</body>
+</html>
