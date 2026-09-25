@@ -3,7 +3,7 @@ on:
   push:
     branches: [master]
     paths:
-      - "worker-lab/visual-snapshot/run.mjs"
+      - "worker-lab/visual-snapshot/**"
       - ".github/workflows/visual-snapshot.yml"
 permissions:
   contents: write
@@ -32,6 +32,7 @@ jobs:
           git worktree add /tmp/vs-pages origin/gh-pages
           rm -rf /tmp/vs-pages/visual-snapshot
           mkdir -p /tmp/vs-pages/visual-snapshot/results
+          cp worker-lab/visual-snapshot/index.html /tmp/vs-pages/visual-snapshot/index.html
           cp -R worker-lab/visual-snapshot/out/. /tmp/vs-pages/visual-snapshot/results/
           cd /tmp/vs-pages
           git config user.name "worker-lab-bot"
