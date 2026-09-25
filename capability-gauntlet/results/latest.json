@@ -1,10 +1,10 @@
 {
-  "generated_at": "2026-09-25T22:30:04.836Z",
-  "verdict": "TECHNICAL_PASS",
+  "generated_at": "2026-09-25T22:30:59.742Z",
+  "verdict": "CHECK",
   "results": [
     {
       "name": "index-mobile",
-      "ms": 554,
+      "ms": 553,
       "errors": [],
       "title": "Capability Gauntlet",
       "size": {
@@ -14,7 +14,7 @@
     },
     {
       "name": "visual-desktop",
-      "ms": 3776,
+      "ms": 3580,
       "errors": [],
       "title": "Visual World Lab",
       "size": {
@@ -24,7 +24,7 @@
     },
     {
       "name": "visual-mobile",
-      "ms": 2871,
+      "ms": 2912,
       "errors": [],
       "title": "Visual World Lab",
       "size": {
@@ -34,7 +34,7 @@
     },
     {
       "name": "voice-mobile",
-      "ms": 540,
+      "ms": 554,
       "errors": [],
       "title": "Local Voice Lab",
       "size": {
@@ -44,7 +44,7 @@
     },
     {
       "name": "provider-mobile",
-      "ms": 536,
+      "ms": 550,
       "errors": [],
       "title": "Model Gauntlet",
       "size": {
@@ -54,14 +54,16 @@
     },
     {
       "name": "piper-local-smoke",
-      "ms": 6056,
-      "errors": [],
+      "ms": 180656,
+      "errors": [
+        "Error: [unenv] fs.readFile is not implemented yet!"
+      ],
       "title": "Local Voice Lab",
       "size": {
         "width": 390,
         "height": 844
       },
-      "status": "listo · 5437 ms · 361 KB"
+      "status": "TIMEOUT · page.waitForFunction: Timeout 180000ms exceeded."
     }
   ]
 }
