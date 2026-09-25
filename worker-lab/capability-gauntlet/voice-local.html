@@ -1,0 +1,51 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="color-scheme" content="dark"><title>Local Voice Lab</title><style>
+:root{--bg:#000;--fg:#fff;--dim:#8d8d88;--line:#282828;--acid:#d8ff5b;--bad:#ff7d7d}*{box-sizing:border-box}html,body{margin:0;background:#000;color:#fff;font-family:system-ui,-apple-system,sans-serif}.app{max-width:880px;margin:auto;padding:14px 14px 70px}header{border-bottom:1px solid var(--line);padding:6px 0 13px}.ey{font:900 8px/1 ui-monospace,monospace;letter-spacing:.14em;color:var(--dim)}h1{font-size:23px;margin:4px 0}.hero{padding:25px 0 18px}.hero h2{font-size:clamp(38px,9vw,80px);line-height:.88;letter-spacing:-.06em;margin:0 0 14px}.hero p{font-size:11px;line-height:1.5;color:var(--dim);max-width:720px}.lab{border-top:1px solid var(--line)}.engine{padding:17px 0;border-bottom:1px solid var(--line)}.engine h3{font-size:22px;margin:3px 0 7px}.tag{font:900 8px/1 ui-monospace,monospace;color:var(--acid);letter-spacing:.11em}.desc{font-size:10px;line-height:1.5;color:var(--dim)}textarea{width:100%;min-height:105px;background:#070707;color:#fff;border:1px solid #353535;padding:12px;margin-top:12px;font:14px/1.45 system-ui}.row{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}button,select{min-height:42px;border:1px solid #444;background:#080808;color:#fff;padding:0 12px;font:800 10px system-ui}button.primary{background:#fff;color:#000;border-color:#fff}button:disabled{opacity:.35}.status{margin-top:9px;font:800 9px/1.4 ui-monospace,monospace;color:var(--dim);white-space:pre-wrap}.voices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-top:10px}.v{border:1px solid var(--line);padding:10px}.v b{font-size:11px}.v span{display:block;font-size:8px;color:var(--dim);margin-top:3px}audio{width:100%;margin-top:9px}.note{margin-top:13px;border-left:3px solid var(--acid);padding:10px 12px;background:#0b0d08;font-size:9px;line-height:1.5;color:#cbd2b1}@media(max-width:600px){.voices{grid-template-columns:1fr}.hero h2{font-size:48px}}</style></head><body><div class="app">
+<header><div class="ey">CAPABILITY GAUNTLET · LOCAL AUDIO</div><h1>Voice Lab</h1></header>
+<section class="hero"><h2>Sin voz de robot de estación.</h2><p>Dos caminos que no cobran por frase: las voces instaladas en tu dispositivo y Piper ejecutando un modelo neuronal argentino dentro del navegador. La primera carga de Piper descarga el modelo y después queda cacheado.</p></section>
+<div class="lab">
+<section class="engine"><div class="tag">A · DEVICE / CERO DESCARGA</div><h3>Voces del dispositivo</h3><div class="desc">Usa <code>speechSynthesis</code>. La calidad depende del teléfono/TV y de las voces instaladas. Acá sí tiene sentido escucharlas en TU dispositivo.</div>
+<textarea id="deviceText">Mirá, terminó una corrida. Encontré dos cosas útiles y una que no vale la pena. Te muestro primero lo importante.</textarea>
+<div class="row"><select id="voiceSelect"></select><button id="speakDevice" class="primary">ESCUCHAR</button><button id="stopDevice">PARAR</button></div><div id="deviceStatus" class="status">buscando voces…</div></section>
+
+<section class="engine"><div class="tag">B · PIPER es_AR · LOCAL EN BROWSER</div><h3>Daniela · high quality</h3><div class="desc">Modelo Piper <code>es_AR-daniela-high</code>. Es una voz argentina de alta calidad; el modelo pesa ~114 MB y corre con WASM en el navegador. No manda el texto a una API de TTS.</div>
+<textarea id="piperText">Mirá, terminó una corrida. Encontré dos cosas útiles y una que no vale la pena. Te muestro primero lo importante.</textarea>
+<div class="row"><button id="piperBtn" class="primary">CARGAR Y GENERAR</button><button id="piperAgain" disabled>GENERAR OTRA VEZ</button></div><div id="piperStatus" class="status">todavía no cargado</div><div id="piperOut"></div></section>
+</div>
+<div class="note">Esto es un experimento de calidad y latencia, no un reemplazo automático de la voz que ya te gustaba. Si suena peor, queda descartado. La humanidad sobrevivirá al hecho de que no todo modelo merece producción.</div>
+<script type="module">
+const qs=s=>document.querySelector(s);
+let synthVoices=[],piper=null,piperModule=null,lastUrl=null;
+function refreshVoices(){
+ synthVoices=speechSynthesis.getVoices().filter(v=>/^es([_-]|$)/i.test(v.lang||''));
+ const preferred=synthVoices.slice().sort((a,b)=>{const score=v=>/arg|es-ar|spanish.*arg/i.test((v.name||'')+' '+(v.lang||''))?3:/google|microsoft|neural|natural/i.test(v.name||'')?2:1;return score(b)-score(a)});
+ qs('#voiceSelect').innerHTML=(preferred.length?preferred:speechSynthesis.getVoices()).map((v,i)=>'<option value="'+i+'">'+(v.name||'voz')+' · '+(v.lang||'?')+(v.localService?' · local':'')+'</option>').join('');
+ synthVoices=preferred.length?preferred:speechSynthesis.getVoices();
+ qs('#deviceStatus').textContent=synthVoices.length?synthVoices.length+' voces disponibles · '+synthVoices.filter(v=>/^es/i.test(v.lang||'')).length+' en español':'sin voces visibles todavía';
+}
+if('speechSynthesis'in window){refreshVoices();speechSynthesis.onvoiceschanged=refreshVoices}else qs('#deviceStatus').textContent='speechSynthesis no disponible';
+qs('#speakDevice').onclick=()=>{if(!('speechSynthesis'in window))return;speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(qs('#deviceText').value);u.voice=synthVoices[Number(qs('#voiceSelect').value)||0]||null;u.lang=u.voice?.lang||'es-AR';u.rate=1.08;u.pitch=.9;u.onstart=()=>qs('#deviceStatus').textContent='reproduciendo · '+(u.voice?.name||'voz por defecto');u.onend=()=>qs('#deviceStatus').textContent='terminó';speechSynthesis.speak(u)};
+qs('#stopDevice').onclick=()=>speechSynthesis?.cancel();
+
+async function loadPiper(){
+ if(piper)return piper;
+ qs('#piperStatus').textContent='cargando librería…';
+ piperModule=await import('https://esm.sh/@mintplex-labs/piper-tts-web@1.0.2?bundle');
+ qs('#piperStatus').textContent='librería lista · descargando/cargando modelo argentino…';
+ piper=piperModule;
+ return piper;
+}
+async function generatePiper(){
+ const started=performance.now();qs('#piperBtn').disabled=true;qs('#piperAgain').disabled=true;
+ try{
+  const tts=await loadPiper();
+  qs('#piperStatus').textContent='generando localmente…';
+  const wav=await tts.predict({text:qs('#piperText').value.trim(),voiceId:'es_AR-daniela-high'});
+  if(lastUrl)URL.revokeObjectURL(lastUrl);lastUrl=URL.createObjectURL(wav);
+  qs('#piperOut').innerHTML='<audio controls autoplay src="'+lastUrl+'"></audio>';
+  qs('#piperStatus').textContent='listo · '+Math.round(performance.now()-started)+' ms · '+Math.round(wav.size/1024)+' KB';
+  qs('#piperAgain').disabled=false;
+ }catch(e){console.error(e);qs('#piperStatus').textContent='ERROR · '+(e?.message||e)}
+ finally{qs('#piperBtn').disabled=false}
+}
+qs('#piperBtn').onclick=generatePiper;qs('#piperAgain').onclick=generatePiper;
+</script></body></html>
