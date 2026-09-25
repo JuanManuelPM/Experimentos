@@ -1,0 +1,41 @@
+name: Visual Snapshot Read Only
+on:
+  push:
+    branches: [master]
+    paths:
+      - "worker-lab/visual-snapshot/run.mjs"
+      - ".github/workflows/visual-snapshot.yml"
+permissions:
+  contents: write
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: "22"}
+      - run: |
+          npm install --no-save playwright
+          npx playwright install --with-deps chromium
+      - run: node worker-lab/visual-snapshot/run.mjs
+      - uses: actions/upload-artifact@v4
+        with:
+          name: prometeo-visual-readonly-snapshot
+          path: worker-lab/visual-snapshot/out/
+          retention-days: 7
+      - name: Publish evidence only
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin gh-pages
+          git worktree add /tmp/vs-pages origin/gh-pages
+          rm -rf /tmp/vs-pages/visual-snapshot
+          mkdir -p /tmp/vs-pages/visual-snapshot/results
+          cp -R worker-lab/visual-snapshot/out/. /tmp/vs-pages/visual-snapshot/results/
+          cd /tmp/vs-pages
+          git config user.name "worker-lab-bot"
+          git config user.email "worker-lab-bot@users.noreply.github.com"
+          git add visual-snapshot
+          git commit -m "Publish read-only visual snapshot"
+          git push origin HEAD:gh-pages
