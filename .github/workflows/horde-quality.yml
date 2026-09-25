@@ -1,0 +1,37 @@
+name: Horde Quality Probe
+on:
+  push:
+    branches: [master]
+    paths:
+      - "worker-lab/horde-quality/run.mjs"
+      - ".github/workflows/horde-quality.yml"
+permissions:
+  contents: write
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: "22"}
+      - run: node worker-lab/horde-quality/run.mjs
+      - uses: actions/upload-artifact@v4
+        with:
+          name: horde-quality-evidence
+          path: worker-lab/horde-quality/out/
+          retention-days: 7
+      - name: Publish sanitized result
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin gh-pages
+          git worktree add /tmp/hq-pages origin/gh-pages
+          mkdir -p /tmp/hq-pages/horde-quality/results
+          cp worker-lab/horde-quality/out/latest.json /tmp/hq-pages/horde-quality/results/latest.json
+          cd /tmp/hq-pages
+          git config user.name "worker-lab-bot"
+          git config user.email "worker-lab-bot@users.noreply.github.com"
+          git add horde-quality/results/latest.json
+          git commit -m "Publish Horde quality probe"
+          git push origin HEAD:gh-pages
