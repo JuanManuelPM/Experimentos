@@ -104,7 +104,7 @@ async function render(){
  $('#fill').style.width=(n/providers.length*100)+'%';
 
  if(!p){
-   $('#main').innerHTML='<section class="card doneView"><h2>Speedrun terminado</h2><p>OpenRouter + '+ready+' providers READY. '+skip+' fueron salteados porque pedían tarjeta, billing o no valían la fricción para este experimento $0.</p><div class="actions" style="justify-content:center"><button class="btn secondary" id="back">VOLVER UN PASO</button><button class="btn danger" id="reset">BORRAR TODO</button></div></section>';
+   $('#main').innerHTML='<section class="card doneView"><h2>Speedrun terminado</h2><p>OpenRouter + '+ready+' providers READY. '+skip+' fueron salteados porque pedían tarjeta, billing o no valían la fricción para este experimento $0.</p><div class="actions" style="justify-content:center"><a class="btn primary" href="../provider-test/">TEST ALL →</a><button class="btn secondary" id="back">VOLVER UN PASO</button><button class="btn danger" id="reset">BORRAR TODO</button></div></section>';
    $('#back').onclick=goBack;$('#reset').onclick=resetAll;return;
  }
 
