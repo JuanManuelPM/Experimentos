@@ -1,0 +1,514 @@
+WORKER LAB · RESEARCH ARCHIVE
+Fecha: 2026-09-25
+Repo: JuanManuelPM/Experimentos
+Objetivo: preservar el hilo completo de investigación sobre workers, cloud browsers, conexión de providers, zero-friction execution y la definición correcta de "worker".
+
+==================================================
+0. DEFINICIÓN CORRECTA DE WORKER
+==================================================
+
+La definición que debe gobernar este experimento:
+
+Un worker NO es simplemente un modelo que responde una prompt.
+Un worker es una shell/chat/agente inteligente, suficientemente capaz como ChatGPT, al que se le entrega un prompt fijo y que luego trabaja de forma autónoma durante una tarea larga, usando herramientas y completando un objetivo sin necesidad de intervención humana constante.
+
+Problema de fricción a resolver primero:
+HOY:
+humano -> nuevo chat -> pegar prompt -> enviar -> worker trabaja
+
+OBJETIVO:
+sistema -> crear/lanzar worker -> inyectar prompt -> ejecutar autónomamente
+
+El problema principal NO es todavía optimizar con modelos locales pequeños.
+Los modelos locales/baratos quedan preservados como herramientas futuras para tareas simples.
+
+==================================================
+1. WORKER LAB V1
+==================================================
+
+Se creó un laboratorio aislado de Prometeo en:
+Repo: JuanManuelPM/Experimentos
+Ruta fuente: worker-lab/
+Publicación histórica Vercel: https://worker-lab.vercel.app
+Posteriormente se migró la experimentación pública principal a GitHub Pages.
+
+Arquitectura base:
+Experiment -> Graph -> Jobs -> Scheduler -> Workers -> Provider Adapter -> Result -> Verification -> State transition
+
+Estados:
+BLOCKED
+READY
+ACTIVE
+VERIFY
+DONE
+FAILED
+RETRY
+
+Diez experimentos definidos sobre el mismo Engine:
+01 EXAM CHAIN
+02 PARALLEL QUESTIONS
+03 RESEARCH -> SYNTHESIS
+04 BUILDER -> VERIFIER
+05 FAILURE / RECOVERY
+06 RATE LIMIT
+07 100 TASK GRID
+08 MODEL TOURNAMENT
+09 MIXED PROVIDERS
+10 UNIVERSAL WORKER
+
+El Engine DEMO comprobó:
+- dependencias reales;
+- claim;
+- ACTIVE/VERIFY/DONE;
+- retries;
+- timeout;
+- rate limit sintético;
+- crash sintético;
+- stale worker;
+- verifier reject;
+- 100 tareas reales en el grafo.
+
+Limitación importante:
+todo era single-process browser JS.
+Sirve para semántica del scheduler, no demuestra fencing distribuido entre procesos.
+
+==================================================
+2. CONNECTION HUB
+==================================================
+
+Se publicó en GitHub Pages:
+https://juanmanuelpm.github.io/Experimentos/
+
+Objetivo:
+reducir al mínimo la fricción de conectar providers.
+
+Providers contemplados:
+- Groq
+- Mistral
+- Gemini
+- Cerebras
+- Cloudflare Workers AI
+- OpenRouter
+- Local / OpenAI-compatible
+
+Flujo conceptual correcto:
+DISCONNECTED
+-> CREDENTIAL SAVED
+-> HEALTHY
+-> TESTED
+-> WORKER READY
+
+Herramientas consideradas:
+1 Connection Hub
+2 Secret Vault
+3 Provider Registry
+4 Universal Provider Adapter
+5 Health / Ping
+6 Model Discovery
+7 Prompt Console
+8 Canonical Test Packet
+9 Worker Harness
+10 Dispatcher / Scheduler
+11 Retry + Fallback Engine
+12 Quota / Rate Monitor
+13 Experiment Runner
+14 Verifier
+15 Evidence Log
+16 Provider Benchmark
+17 Router
+18 Autopilot / Worker Pool
+19 Login Helper
+20 Minimal Mobile UI
+
+Regla de READY:
+CONNECTED
++ HEALTHY
++ MODEL DISCOVERED
++ PROMPT TEST PASSED
++ WORKER TEST PASSED
+= WORKER READY
+
+La UI fue simplificada para no mostrar datos internos innecesarios.
+Pantalla inicial debe responder solamente:
+¿Está conectado?
+¿Funciona?
+¿Puede trabajar?
+
+==================================================
+3. REDUCCIÓN DE FRICCIÓN PARA API KEYS
+==================================================
+
+La Connection Hub fue endurecida para mostrar:
+
+1 INICIAR SESIÓN
+2 ABRIR API KEYS DIRECTO
+3 COPIAR UNA VEZ
+4 GUARDAR + VERIFICAR AUTOMÁTICAMENTE
+5 WORKER READY
+
+Links directos investigados y agregados:
+Groq:
+https://console.groq.com/
+https://console.groq.com/keys
+
+Mistral:
+https://console.mistral.ai/
+https://console.mistral.ai/api-keys
+
+Gemini:
+https://aistudio.google.com/
+https://aistudio.google.com/apikey
+
+Cerebras:
+https://cloud.cerebras.ai/
+
+Cloudflare:
+https://dash.cloudflare.com/
+https://dash.cloudflare.com/?to=/:account/ai/workers-ai
+
+OpenRouter:
+https://openrouter.ai/
+https://openrouter.ai/settings/keys
+
+Local:
+sin login; base URL + modelo.
+
+Principio:
+el usuario nunca debería tener que recibir instrucciones del tipo:
+"andá a Settings"
+"buscá Developer"
+"buscá API"
+
+La automatización debe navegar eso.
+
+==================================================
+4. CLOUD BROWSERS / COMPUTER USE REMOTO
+==================================================
+
+Se investigaron opciones para controlar un browser/computadora sin PC local:
+
+Browserless:
+- cloud browser
+- Live URL interactiva
+- human-in-loop
+- puede persistir estado
+- free tier recurrente limitado
+
+Browserbase:
+- cloud browser
+- Live View
+- Contexts para persistir cookies/storage/login
+- permite login/MFA una vez y reutilizar contexto
+- especialmente útil para auth persistente
+
+Steel:
+- browser remoto
+- WebRTC/live viewer
+- interactive control
+- profiles persistentes
+- créditos iniciales, no free recurrente permanente
+
+Cloudflare Browser Run:
+- Chromium remoto
+- Playwright/Puppeteer/CDP/Stagehand
+- free daily runtime limitado
+- bueno para automación corta recurrente
+
+Hyperbrowser:
+- opción alternativa de cloud browser
+
+Anchor Browser:
+- opción para browser agents/authenticated sessions
+
+Oracle Always Free:
+- posible VM permanente gratuita
+- podría alojar Chrome + Playwright + Browserless/noVNC
+- más DevOps, más control
+
+GitHub Actions:
+- runners gratuitos en repos públicos
+- útil para ejecución autónoma
+- no es buen human-in-loop live desktop
+- excelente para smoke tests y jobs automáticos
+
+Arquitectura conceptual:
+CELULAR
+-> Worker Lab
+-> crear CLOUD BROWSER
+-> bot navega/clickea/escribe
+-> si necesita identidad:
+   mostrar LIVE VIEW
+   humano login/2FA
+-> bot continúa
+-> sesión puede persistirse
+
+==================================================
+5. BROWSER FABRIC LAB REAL
+==================================================
+
+Publicado:
+https://juanmanuelpm.github.io/Experimentos/browser-lab/
+
+Se implementó:
+GitHub Actions + Playwright + Chromium real.
+
+Primer experimento probado:
+- GitHub crea Ubuntu runner
+- instala Playwright + Chromium
+- abre example.com
+- hace click real
+- toma screenshots
+- abre YouTube
+- busca Veritasium
+- abre un video real
+- detecta elemento <video>
+- publica evidencia en GitHub Pages
+
+Resultado real:
+PASS
+duration ~13.7 s
+human_actions = 0
+
+Evidencia publicada:
+browser-lab/results/latest.json
+screenshots:
+01-example.png
+02-after-click.png
+03-youtube-search.png
+04-youtube-video.png
+
+Conclusión demostrada:
+se puede controlar un navegador en una computadora cloud completamente online, sin PC local y sin instalación humana.
+
+También se prepararon adapters/contracts para:
+- Browserbase
+- Browserless
+- Cloudflare Browser Run
+- Steel
+
+==================================================
+6. ZERO-FRICTION LANE
+==================================================
+
+Publicado:
+https://juanmanuelpm.github.io/Experimentos/zero-friction/
+
+Objetivo:
+probar inferencia real con:
+- $0
+- 0 logins
+- 0 API keys personales
+- 0 acciones humanas
+
+Infraestructura:
+GitHub Actions public repo runner
++ Ollama local en runner CPU
++ AI Horde anónimo
+
+Modelos probados:
+- qwen2.5:0.5b-instruct
+- gemma3:270m
+- llama3.2:1b
+- AI Horde anonymous -> aphrodite/TheDrummer/Behemoth-X-123B-v2.1
+
+Primer resultado:
+Qwen 0.5B: 4/5
+Gemma 270M: 2/5
+Llama 1B: 4/5
+AI Horde 123B: 1/1
+total run inference ~14.6 s
+human_actions = 0
+cost_usd = 0
+accounts_created = 0
+secrets_used = 0
+
+Conclusión:
+es posible crear una pista completamente autónoma y gratuita.
+
+PERO:
+esta pista NO sustituye a los workers principales deseados.
+Los modelos locales/gratis de baja capacidad pueden servir después para:
+- clasificación;
+- routing;
+- extracción;
+- verificaciones simples;
+- preprocesamiento;
+- housekeeping;
+- tareas mecánicas.
+
+No deben confundirse con el worker principal estilo ChatGPT.
+
+==================================================
+7. AI HORDE
+==================================================
+
+AI Horde permite uso anónimo mediante la identidad pública documentada:
+0000000000
+
+Ventajas:
+- cero registro
+- cero API key personal
+- puede asignar modelos grandes comunitarios
+
+Limitaciones:
+- cola/prioridad variable;
+- disponibilidad no garantizada;
+- no representa una shell agentic equivalente a ChatGPT;
+- sirve como herramienta/inferencia, no como worker principal.
+
+==================================================
+8. GATEWAYS / UNA CUENTA PARA MUCHOS PROVIDERS
+==================================================
+
+Hugging Face Inference Providers:
+una cuenta/token puede actuar como gateway para distintos inference providers.
+Potencial para reducir múltiples cuentas.
+Free credits muy pequeños, útil más para smoke tests.
+
+OpenRouter:
+una cuenta/API key cubre muchos modelos.
+Tiene modelos/rutas gratuitas.
+Útil para reducir cuentas individuales.
+Sigue existiendo una intervención inicial humana.
+
+Pollinations:
+la investigación inicial asumió acceso sin key, pero documentación actual cambió.
+Ya NO se considera ruta zero-friction confiable para generación.
+
+Puter.js:
+puede dar acceso a muchos modelos sin API keys del desarrollador.
+Modelo user-pays / usuario con cuota.
+Puede requerir autenticación del usuario.
+Por eso se considera casi-zero-friction, no zero-friction estricto.
+
+==================================================
+9. CUENTAS, SSO Y SESIONES PERSISTENTES
+==================================================
+
+Idea investigada:
+crear una única identidad LAB y reutilizarla con:
+Google / GitHub SSO
++ cloud browser persistent context
+
+Flujo:
+login una vez
+-> persistir cookies/storage
+-> abrir provider
+-> Continue with Google/GitHub
+-> crear API key
+-> mandar secret directo a Vault
+-> tests automáticos
+-> READY
+
+La automatización puede eliminar:
+- navegación;
+- búsqueda de Settings/API;
+- clicks;
+- formularios no sensibles;
+- copiar valores intermedios;
+- health tests;
+- model discovery;
+- worker test.
+
+Fricción humana que normalmente no puede eliminarse legítimamente:
+- CAPTCHA;
+- login inicial;
+- 2FA/MFA;
+- aceptar términos;
+- confirmación sensible cuando el proveedor la exige.
+
+Principio:
+AUTO para todo lo automatizable.
+HUMAN_REQUIRED sólo para identidad/consentimiento real.
+
+==================================================
+10. VAULT / SEGURIDAD
+==================================================
+
+Reglas acordadas:
+ningún secreto debe aparecer en:
+- GitHub Pages;
+- localStorage;
+- query strings;
+- screenshots;
+- logs;
+- artifacts públicos.
+
+Contrato backend preparado:
+POST /api/secrets/:provider
+POST /api/browser/:adapter/session
+POST /api/browser/:adapter/health
+POST /api/provider/:provider/health
+GET  /api/provider/:provider/models
+POST /api/provider/:provider/message
+POST /api/provider/:provider/worker-test
+
+Provider READY sólo después de:
+health
++ model discovery
++ message test
++ worker test
+
+==================================================
+11. DEFINICIÓN FINAL DEL PROBLEMA ACTUAL
+==================================================
+
+NO estamos buscando todavía:
+- el mejor modelo local;
+- el mejor router;
+- el mejor benchmark;
+- máxima cantidad de provider APIs.
+
+Estamos buscando:
+"¿Cómo lanzar automáticamente una shell/chat/agente suficientemente inteligente como ChatGPT, darle el prompt universal de worker y dejarla trabajar autónomamente, sin que el humano tenga que abrir y enviar 50 chats manualmente?"
+
+ChatGPT UI:
+técnicamente automatizable con browser automation, pero no se debe construir la arquitectura principal alrededor de UI automation si viola términos, es frágil o arriesga la cuenta.
+
+ChatGPT Work:
+parece conceptualmente cercano a un worker autónomo largo.
+Debe investigarse cuidadosamente:
+- límites;
+- consumo;
+- si puede lanzar chats normales;
+- si puede actuar como launcher/orchestrator;
+- si cada mensaje/acción consume su propia cuota;
+- si puede durar 24 h;
+- cómo preservar cuota Work;
+- diferencia entre Work y chats normales.
+
+Codex:
+se investigó como opción oficial programable, pero el usuario NO quiere usar Codex para este experimento actual.
+
+==================================================
+12. RUTAS PÚBLICAS ACTUALES
+==================================================
+
+Connection Hub:
+https://juanmanuelpm.github.io/Experimentos/
+
+Browser Fabric Lab:
+https://juanmanuelpm.github.io/Experimentos/browser-lab/
+
+Zero-Friction Lane:
+https://juanmanuelpm.github.io/Experimentos/zero-friction/
+
+Repo:
+https://github.com/JuanManuelPM/Experimentos
+
+==================================================
+13. PRINCIPIOS QUE NO HAY QUE PERDER
+==================================================
+
+- Prometeo production NO se toca desde este laboratorio.
+- Worker != model.
+- Modelos locales pequeños son herramientas auxiliares futuras.
+- El worker principal deseado es una shell/chat agentic de alta inteligencia.
+- Human friction debe caer con el tiempo, no acumularse.
+- Un sistema debe detenerse sólo ante una verdadera frontera humana.
+- Nunca presentar DEMO/simulación como LIVE.
+- Nunca decir READY si no hubo health + real test.
+- Nunca filtrar secretos.
+- Evidence/logs/screenshots deben demostrar el comportamiento real.
+- Browser automation es infraestructura útil, no necesariamente el worker.
+- La prioridad inmediata es eliminar el acto manual de "abrir chat + pegar prompt + enviar".
