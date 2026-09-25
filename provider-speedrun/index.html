@@ -38,7 +38,7 @@ const providers=[
   steps:[['Abrí la pantalla exacta','El botón va directo a API Keys de Google AI Studio.'],['Usá una key existente o creá una','No hace falta crear otra si ya tenés una que quieras reutilizar.'],['Copiala y volvé acá','Pegala abajo una sola vez.']]},
  {id:'groq',name:'Groq',url:'https://console.groq.com/keys',placeholder:'Pegá la key de Groq',
   why:'Nos interesa especialmente para gpt-oss-120b y bastante cuota gratuita.',
-  steps:[['Abrí API Keys directamente','Si pide login, Google o GitHub.'],['Usá una key existente o creá Worker Lab','Si la crea, copiá el valor antes de cerrar.'],['Volvé y pegala abajo','Después pasa automáticamente al siguiente.']]},
+  steps:[['Abrí API Keys directamente','Si estás en un navegador embebido y GitHub entra en loop, tocá ⋮ → Abrir en Chrome.'],['Si vuelve a pedir login, usá Google','En Chrome normal, Google suele evitar el loop de sesión que acabás de ver con GitHub.'],['Cuando veas API Keys, usá una existente o creá “Worker Lab”','Copiá la key y volvé al wizard para pegarla abajo.']]},
  {id:'cohere',name:'Cohere',url:'https://dashboard.cohere.com/api-keys',placeholder:'Pegá la key de Cohere',
   why:'Otra familia de modelos y otra cuota separada.',
   steps:[['Abrí API Keys directamente','Completá login si aparece.'],['Usá la trial key o una existente','No hace falta crear otra si ya tenés una utilizable.'],['Copiala y volvé','Pegala una sola vez abajo.']]},
