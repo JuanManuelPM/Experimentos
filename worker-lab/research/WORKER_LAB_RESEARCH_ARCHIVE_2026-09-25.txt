@@ -663,3 +663,107 @@ sin:
 - depender de modelos locales pequeños;
 - hacer 50 acciones humanas.
 
+
+
+==================================================
+15. OPENROUTER OAUTH FAST START · 2026-09-25
+==================================================
+
+Hallazgo principal:
+No hace falta crear/copiar una API key manualmente para OpenRouter.
+
+OpenRouter documenta OAuth PKCE para conectar usuarios en un click:
+https://openrouter.ai/docs/guides/overview/auth/oauth
+
+Flujo oficial:
+1. nuestra página genera code_verifier + code_challenge;
+2. abre https://openrouter.ai/auth con callback_url;
+3. el usuario hace login/autoriza;
+4. OpenRouter redirige a nuestra página con un code;
+5. nuestra página intercambia ese code por una API key en:
+   POST https://openrouter.ai/api/v1/auth/keys
+6. la key puede guardarse dentro del browser o backend;
+7. ya se puede usar /api/v1/chat/completions.
+
+Esto elimina:
+- buscar Settings;
+- buscar API Keys;
+- crear/copiar key manual;
+- pegarla en Worker Lab;
+- conectar providers individuales para el primer experimento.
+
+Fricción humana mínima restante:
+LOGIN/AUTHORIZE OpenRouter una vez.
+OpenRouter permite login con Google o GitHub según su documentación/tutoriales actuales.
+
+Free tier OpenRouter actual:
+- 25+ modelos gratis según pricing;
+- 50 requests/day en cuenta Free;
+- 20 requests/min según docs/tutoriales;
+- sin tarjeta para empezar;
+- free models usan slugs :free;
+- openrouter/free elige automáticamente un modelo gratuito compatible.
+
+Modelos gratuitos serios confirmados en septiembre 2026:
+- openai/gpt-oss-120b:free
+- nvidia/nemotron-3.5-lightning:free
+- google/gemma-4-31b-it:free
+Además el roster cambia y debe consultarse dinámicamente.
+
+Se publicó:
+https://juanmanuelpm.github.io/Experimentos/openrouter-lab/
+
+La página implementa:
+- OAuth PKCE;
+- callback + exchange automático;
+- almacenamiento local de la key en IndexedDB;
+- model discovery desde /api/v1/models;
+- filtrado de modelos $0;
+- smoke test con openrouter/free;
+- mismo WORKER system prompt para todos;
+- RUN 4 WORKERS concurrente;
+- task de prueba de respuesta universitaria en español;
+- resultados con requested model, actual model, latencia, cantidad de palabras y checks deterministas;
+- botón para borrar la conexión.
+
+Arquitectura recomendada a partir de ahora:
+
+PRIMERA CAPA / ALTA CAPACIDAD Y BAJA FRICCIÓN:
+OpenRouter OAuth
+-> una identidad
+-> muchos modelos gratuitos
+-> mismos worker packets
+-> benchmark real
+
+SEGUNDA CAPA / GANADORES DIRECTOS:
+Sólo si un modelo/provider demuestra valor:
+- Groq directo
+- Cerebras directo
+- Gemini directo
+etc.
+
+Para estos direct providers se puede reutilizar Browser Fabric:
+cloud browser
+-> login/SSO humano una vez
+-> navegar automáticamente a API keys
+-> crear key
+-> Vault
+-> health/test
+-> READY
+
+Esto evita crear 7 cuentas por adelantado.
+
+Puter.js queda como lane experimental opcional:
+- no developer API key;
+- acceso frontend a cientos de modelos;
+- user-pays/auth model;
+- no asumir $0 ilimitado para el usuario hasta verificar allowance real.
+
+Hugging Face Inference Providers:
+- una cuenta/token puede rutear a 200+ models/providers;
+- no requiere cuentas separadas en providers cuando usa HF routing;
+- Free user credits actuales: $0.10/mes;
+- útil como smoke/fallback, no como ejército gratuito principal.
+
+Conclusión de producto:
+Para activar el laboratorio de workers inteligentes hoy, OpenRouter OAuth es el punto de entrada con menos fricción verificable.
