@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Provider Speedrun</title>
+<style>
+body{margin:0;background:#080a0c;color:#f4f6f0;font-family:system-ui,sans-serif}.app{max-width:820px;margin:auto;padding:14px 14px 70px}.top{position:sticky;top:0;background:#080a0cf2;padding:10px 0;border-bottom:1px solid #2a333b}.bar{height:3px;background:#171c20}.fill{height:100%;background:#d8ff5b;width:0}.hero,.card,.next{border:1px solid #2a333b;border-radius:14px;background:#111519;padding:12px}.hero{margin-top:12px}.hero h1{font-size:31px;line-height:1;margin:0 0 7px}.hero p,.desc{font-size:9px;color:#939ea7;line-height:1.45}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:10px}.stat{border:1px solid #2a333b;border-radius:9px;padding:8px}.stat strong{display:block}.stat span{font-size:7px;color:#939ea7}.next{margin-top:10px;border-color:#4d612c;background:#11160c}.next small{color:#d8ff5b;font-weight:800}.next h2{margin:4px 0;font-size:20px}.cards{display:grid;gap:7px;margin-top:10px}.card.done{opacity:.65}.row{display:flex;justify-content:space-between;gap:8px}.name{font-size:12px;font-weight:800}.badge{font-size:7px;border:1px solid #2a333b;border-radius:999px;padding:5px 7px;height:max-content}.ok{color:#75df94;border-color:#315f3e}.actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.btn{display:inline-block;border:1px solid #2a333b;border-radius:9px;background:#171c21;color:#f4f6f0;padding:10px 11px;font-size:9px;font-weight:800;text-decoration:none}.primary{background:#d8ff5b;color:#080a0c;border-color:#d8ff5b}@media(min-width:720px){.cards{grid-template-columns:1fr 1fr}.hero{padding:18px}}
+</style></head><body><div class="app">
+<div class="top"><b>WORKER LAB · PROVIDER SPEEDRUN</b><div class="bar"><div id="fill" class="fill"></div></div></div>
+<section class="hero"><h1>Una vuelta. Seis providers.</h1><p>OpenRouter ya está. Esta pantalla recuerda dónde quedaste y te muestra sólo qué provider preparar ahora.</p><div class="stats"><div class="stat"><strong id="done">0</strong><span>LISTOS</span></div><div class="stat"><strong id="left">6</strong><span>FALTAN</span></div><div class="stat"><strong id="timer">00:00</strong><span>TIEMPO</span></div></div></section>
+<section class="next"><small>NEXT REQUIRED</small><h2 id="nextName"></h2><div class="desc" id="nextText"></div><div id="nextActions" class="actions"></div></section>
+<div id="cards" class="cards"></div>
+</div>
+<script>
+const P=[['gemini','Gemini'],['groq','Groq'],['cohere','Cohere'],['mistral','Mistral'],['cerebras','Cerebras'],['cloudflare','Cloudflare']];
+const $=s=>document.querySelector(s);let start=Number(localStorage.getItem('ps_start')||0);
+const k=id=>'ps_'+id,done=id=>localStorage.getItem(k(id))==='1';
+function begin(){if(!start){start=Date.now();localStorage.setItem('ps_start',start)}}
+function tick(){if(!start)return;const s=Math.floor((Date.now()-start)/1000);$('#timer').textContent=String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0')}
+function mark(id){begin();localStorage.setItem(k(id),'1');render()}function undo(id){localStorage.removeItem(k(id));render()}
+function render(){const n=P.filter(x=>done(x[0])).length,nx=P.find(x=>!done(x[0]));$('#done').textContent=n;$('#left').textContent=P.length-n;$('#fill').style.width=(n/P.length*100)+'%';
+$('#cards').innerHTML=P.map((x,i)=>'<div class="card '+(done(x[0])?'done':'')+'"><div class="row"><div><div class="name">'+(i+1)+'. '+x[1]+'</div><div class="desc">Preparar acceso del provider</div></div><span class="badge '+(done(x[0])?'ok':'')+'">'+(done(x[0])?'DONE':'TODO')+'</span></div><div class="actions">'+(done(x[0])?'<button class="btn" onclick="undo(\''+x[0]+'\')">UNDO</button>':'<button class="btn primary" onclick="mark(\''+x[0]+'\')">DONE · NEXT</button>')+'</div></div>').join('');
+if(!nx){$('#nextName').textContent='Speedrun completo';$('#nextText').textContent='Los seis providers están preparados.';$('#nextActions').innerHTML='<a class="btn primary" href="../">VOLVER AL HUB</a>';return}
+$('#nextName').textContent=nx[1];$('#nextText').textContent='Abrí el Connection Hub, entrá al bloque '+nx[1]+' y completá el acceso. Después volvés acá y tocás DONE · NEXT.';$('#nextActions').innerHTML='<a class="btn primary" href="../" target="_blank" onclick="begin()">ABRIR CONNECTION HUB ↗</a><button class="btn" onclick="mark(\''+nx[0]+'\')">DONE · NEXT</button>'}
+render();setInterval(tick,1000);tick();
+</script></body></html>
