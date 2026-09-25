@@ -1,0 +1,43 @@
+name: Capability Gauntlet
+on:
+  push:
+    branches: [master]
+    paths:
+      - "worker-lab/capability-gauntlet/**"
+      - ".github/workflows/capability-gauntlet.yml"
+permissions:
+  contents: write
+jobs:
+  browser-qa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: "22"}
+      - run: |
+          npm install --no-save playwright
+          npx playwright install --with-deps chromium
+      - run: node worker-lab/capability-gauntlet/qa.mjs
+      - uses: actions/upload-artifact@v4
+        with:
+          name: capability-gauntlet-evidence
+          path: worker-lab/capability-gauntlet/out/
+          retention-days: 7
+      - name: Publish to GitHub Pages
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin gh-pages
+          git worktree add /tmp/cg-pages origin/gh-pages
+          rm -rf /tmp/cg-pages/capability-gauntlet
+          mkdir -p /tmp/cg-pages/capability-gauntlet
+          cp worker-lab/capability-gauntlet/*.html /tmp/cg-pages/capability-gauntlet/
+          mkdir -p /tmp/cg-pages/capability-gauntlet/results
+          cp -R worker-lab/capability-gauntlet/out/. /tmp/cg-pages/capability-gauntlet/results/
+          cd /tmp/cg-pages
+          git config user.name "worker-lab-bot"
+          git config user.email "worker-lab-bot@users.noreply.github.com"
+          git add capability-gauntlet
+          git commit -m "Publish Capability Gauntlet"
+          git push origin HEAD:gh-pages
