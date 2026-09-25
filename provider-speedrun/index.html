@@ -45,8 +45,8 @@ const providers=[
  {id:'mistral',name:'Mistral',url:'https://console.mistral.ai/api-keys',placeholder:'Pegá la key de Mistral',
   why:'Suma una bolsa gratuita independiente.',
   steps:[['Abrí API Keys directamente','Si pide login, completalo.'],['Usá una existente o creá una','Mantené el modo gratuito; no hace falta billing.'],['Copiala antes de cerrar','Volvé y pegala abajo.']]},
- {id:'cerebras',name:'Cerebras',url:'https://cloud.cerebras.ai/',placeholder:'Pegá la key de Cerebras',
-  why:'Nos interesa por velocidad y free tier.',
+ {id:'cerebras',name:'Cerebras',url:'https://cloud.cerebras.ai/',placeholder:'Pegá la key de Cerebras',skipDefault:true,
+  why:'Tiene free tier documentado, pero en tu flujo real pidió tarjeta. Para este speedrun $0 lo salteamos.',
   steps:[['Abrí Cerebras Cloud','Completá login.'],['Entrá a API Keys','Si ya tenés una utilizable, usala. Si no, creá una.'],['Copiala y volvé','Pegala abajo.']]},
  {id:'cloudflare',name:'Cloudflare Workers AI',url:'https://dash.cloudflare.com/?to=/:account/ai/workers-ai',placeholder:'Pegá el API token',account:true,
   why:'Último porque necesita dos datos.',
@@ -55,15 +55,20 @@ const providers=[
 
 const $=s=>document.querySelector(s);
 const stateKey=id=>'speedrun_done_'+id;
+const skipKey=id=>'speedrun_skip_'+id;
 const done=id=>localStorage.getItem(stateKey(id))==='1';
+const skipped=id=>localStorage.getItem(skipKey(id))==='1';
+for(const p of providers){if(p.skipDefault&&!done(p.id)&&!skipped(p.id))localStorage.setItem(skipKey(p.id),'1')}
 
 function openDB(){return new Promise((resolve,reject)=>{const r=indexedDB.open('worker-lab-fast-vault',1);r.onupgradeneeded=()=>{if(!r.result.objectStoreNames.contains('provider_tokens'))r.result.createObjectStore('provider_tokens')};r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error)})}
 async function saveToken(id,data){const db=await openDB();return new Promise((resolve,reject)=>{const tx=db.transaction('provider_tokens','readwrite');tx.objectStore('provider_tokens').put(data,id);tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error)})}
 async function getToken(id){const db=await openDB();return new Promise((resolve,reject)=>{const q=db.transaction('provider_tokens').objectStore('provider_tokens').get(id);q.onsuccess=()=>resolve(q.result||null);q.onerror=()=>reject(q.error)})}
 async function deleteToken(id){const db=await openDB();return new Promise((resolve,reject)=>{const tx=db.transaction('provider_tokens','readwrite');tx.objectStore('provider_tokens').delete(id);tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error)})}
 
-function completed(){return providers.filter(p=>done(p.id)).length}
-function current(){return providers.find(p=>!done(p.id))||null}
+function readyCount(){return providers.filter(p=>done(p.id)).length}
+function skippedCount(){return providers.filter(p=>skipped(p.id)).length}
+function resolvedCount(){return providers.filter(p=>done(p.id)||skipped(p.id)).length}
+function current(){return providers.find(p=>!done(p.id)&&!skipped(p.id))||null}
 
 async function storeAndNext(id){
  const p=providers.find(x=>x.id===id);
@@ -76,26 +81,30 @@ async function storeAndNext(id){
  await render();
  window.scrollTo({top:0,behavior:'smooth'});
 }
+async function skipAndNext(id,reason='NO_CARD'){
+ localStorage.setItem(skipKey(id),reason);
+ await render();window.scrollTo({top:0,behavior:'smooth'});
+}
 async function goBack(){
- const doneList=providers.filter(p=>done(p.id));
- const last=doneList[doneList.length-1];
- if(last){localStorage.removeItem(stateKey(last.id));await render();window.scrollTo({top:0,behavior:'smooth'})}
+ const resolved=providers.filter(p=>done(p.id)||skipped(p.id));
+ const last=resolved[resolved.length-1];
+ if(last){localStorage.removeItem(stateKey(last.id));localStorage.removeItem(skipKey(last.id));await render();window.scrollTo({top:0,behavior:'smooth'})}
 }
 async function clearCurrent(id){
  await deleteToken(id);localStorage.removeItem(stateKey(id));await render();
 }
 async function resetAll(){
- for(const p of providers){await deleteToken(p.id);localStorage.removeItem(stateKey(p.id))}
+ for(const p of providers){await deleteToken(p.id);localStorage.removeItem(stateKey(p.id));localStorage.removeItem(skipKey(p.id))}
  await render();window.scrollTo({top:0,behavior:'smooth'});
 }
 
 async function render(){
- const n=completed(),p=current();
- $('#counter').textContent=n+' / '+providers.length;
+ const ready=readyCount(),skip=skippedCount(),n=resolvedCount(),p=current();
+ $('#counter').textContent=ready+' READY · '+skip+' SKIP';
  $('#fill').style.width=(n/providers.length*100)+'%';
 
  if(!p){
-   $('#main').innerHTML='<section class="card doneView"><h2>Speedrun terminado</h2><p>OpenRouter + seis pools preparados. Las credenciales quedaron guardadas sólo en este navegador para el laboratorio rápido.</p><div class="actions" style="justify-content:center"><button class="btn secondary" id="back">VOLVER UN PASO</button><button class="btn danger" id="reset">BORRAR TODO</button></div></section>';
+   $('#main').innerHTML='<section class="card doneView"><h2>Speedrun terminado</h2><p>OpenRouter + '+ready+' providers READY. '+skip+' fueron salteados porque pedían tarjeta, billing o no valían la fricción para este experimento $0.</p><div class="actions" style="justify-content:center"><button class="btn secondary" id="back">VOLVER UN PASO</button><button class="btn danger" id="reset">BORRAR TODO</button></div></section>';
    $('#back').onclick=goBack;$('#reset').onclick=resetAll;return;
  }
 
@@ -113,10 +122,11 @@ async function render(){
  '<div class="secretRow"><input id="token" type="password" autocomplete="off" placeholder="'+p.placeholder+'"><button class="btn primary" id="save">GUARDAR + NEXT</button></div>')+
  '<div id="saveMsg" class="saved">'+(existing?'Ya había un valor guardado localmente para este provider.':'Se guarda sólo en este navegador, no en GitHub.')+'</div></div>'+
  '<div class="finish"><b>CÓMO SABÉS QUE TERMINASTE</b><p>Cuando pegaste la key/token acá y tocaste GUARDAR + NEXT. El wizard marca este provider como listo y te muestra el siguiente.</p></div>'+
- '<div class="actions">'+(n?'<button class="btn secondary" id="backBtn">← ATRÁS</button>':'')+(existing?'<button class="btn danger" id="clearBtn">BORRAR ESTE VALOR</button>':'')+'</div>'+
- '<div class="note">Modo rápido temporal: esto prioriza velocidad. Más adelante rotamos claves y migramos a un vault privado serio.</div>'+
+ '<div class="actions"><button class="btn danger" id="skipBtn">SALTEAR · PIDE TARJETA / NO QUIERO</button>'+(n?'<button class="btn secondary" id="backBtn">← ATRÁS</button>':'')+(existing?'<button class="btn danger" id="clearBtn">BORRAR ESTE VALOR</button>':'')+'</div>'+
+ '<div class="note">Regla del laboratorio: si aparece tarjeta, billing obligatorio o un trial que no vale la pena, SALTEAR. Seguimos sólo con capacidad realmente útil a $0. Más adelante rotamos claves y migramos a un vault privado serio.</div>'+
  '</section>';
  $('#save').onclick=()=>storeAndNext(p.id);
+ $('#skipBtn').onclick=()=>skipAndNext(p.id,'USER_SKIP');
  if($('#backBtn'))$('#backBtn').onclick=goBack;
  if($('#clearBtn'))$('#clearBtn').onclick=()=>clearCurrent(p.id);
 }
