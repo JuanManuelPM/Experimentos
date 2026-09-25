@@ -29,7 +29,7 @@ qs('#stopDevice').onclick=()=>speechSynthesis?.cancel();
 async function loadPiper(){
  if(piper)return piper;
  qs('#piperStatus').textContent='cargando librería…';
- piperModule=await import('https://esm.sh/@mintplex-labs/piper-tts-web@1.0.2?bundle');
+ piperModule=await import('https://esm.sh/@mintplex-labs/piper-tts-web@1.0.5?bundle');
  qs('#piperStatus').textContent='librería lista · descargando/cargando modelo argentino…';
  piper=piperModule;
  return piper;
