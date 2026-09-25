@@ -35,41 +35,41 @@
 <script>
 const providers=[
  {
-  id:'gemini', name:'Gemini API', url:'https://aistudio.google.com/',
+  id:'gemini', name:'Gemini API', url:'https://aistudio.google.com/apikey',
   why:'Primero Google porque ya tenés tu cuenta activa y debería ser el paso más corto.',
   steps:[
-   ['Abrí Google AI Studio','Usá la misma cuenta Google que ya usás para Gemini.'],
-   ['Buscá “Get API key” o “API keys”','Si ya existe una key, podés usarla. Si no, creá una para un proyecto de AI Studio.'],
+   ['Tocá el botón de abajo','Te lleva DIRECTO a la página de API keys de Google AI Studio. Si pide login, usá tu cuenta Google y vuelve solo.'],
+   ['En esa pantalla, tocá “Create API key”','Si ya ves una key existente que quieras usar, no necesitás crear otra.'],
    ['Copiá la key y guardala en una nota privada o gestor de contraseñas','No la pegues en esta página. La conectamos después en una capa privada.']
   ],
   finish:'Terminaste cuando ves una API key de Gemini y ya la guardaste en un lugar privado.'
  },
  {
-  id:'groq', name:'Groq', url:'https://console.groq.com/',
+  id:'groq', name:'Groq', url:'https://console.groq.com/keys',
   why:'Después Groq, porque es de los pools gratuitos más útiles para workers largos.',
   steps:[
-   ['Abrí GroqCloud','Iniciá sesión con Google o GitHub si te lo pide.'],
-   ['Entrá a “API Keys”','Creá una nueva key. Podés llamarla “Worker Lab”.'],
+   ['Tocá el botón de abajo','Te lleva DIRECTO a Groq → API Keys. Si pide login, elegí Google o GitHub.'],
+   ['Tocá “Create API Key”','Podés llamarla “Worker Lab”.'],
    ['Copiá la key y guardala','La key suele mostrarse una sola vez, así que no cierres antes de copiarla.']
   ],
   finish:'Terminaste cuando Groq muestra la nueva key y ya la guardaste.'
  },
  {
-  id:'cohere', name:'Cohere', url:'https://dashboard.cohere.com/',
+  id:'cohere', name:'Cohere', url:'https://dashboard.cohere.com/api-keys',
   why:'Cohere suma otra familia de modelos y una cuota independiente.',
   steps:[
-   ['Abrí el dashboard de Cohere','Entrá con Google/GitHub o la cuenta que te ofrezca el sitio.'],
-   ['Abrí “API Keys”','Buscá la trial key o creá una key si el dashboard te lo pide.'],
+   ['Tocá el botón de abajo','Te lleva DIRECTO a Cohere → API Keys. Si pide login, Google o GitHub sirven.'],
+   ['Usá la trial key o creá una nueva','No navegues por otros menús. Esta pantalla ya es la correcta.'],
    ['Copiala y guardala','No hace falta probar nada todavía.']
   ],
   finish:'Terminaste cuando tenés una key de Cohere guardada.'
  },
  {
-  id:'mistral', name:'Mistral', url:'https://console.mistral.ai/',
+  id:'mistral', name:'Mistral', url:'https://console.mistral.ai/api-keys',
   why:'Mistral tiene su propio free mode, así que nos conviene sumar esa bolsa aparte.',
   steps:[
-   ['Abrí Mistral Console','Iniciá sesión.'],
-   ['Buscá la sección “API Keys”','Si aparece un paso para activar el modo gratuito, elegí la opción free y no cargues billing.'],
+   ['Tocá el botón de abajo','Te lleva DIRECTO a Mistral → API Keys. Si pide login, completalo y vuelve a esa página.'],
+   ['Creá una API key','Si aparece una elección de plan, mantenete en el modo gratuito y no cargues billing.'],
    ['Creá una key y guardala','Guardala antes de cerrar la pantalla.']
   ],
   finish:'Terminaste cuando tenés una API key de Mistral guardada y no activaste un plan pago.'
@@ -85,11 +85,11 @@ const providers=[
   finish:'Terminaste cuando tenés una key de Cerebras guardada.'
  },
  {
-  id:'cloudflare', name:'Cloudflare Workers AI', url:'https://dash.cloudflare.com/',
+  id:'cloudflare', name:'Cloudflare Workers AI', url:'https://dash.cloudflare.com/?to=/:account/ai/workers-ai',
   why:'Lo dejamos último porque requiere dos datos y es el paso más pesado.',
   steps:[
-   ['Abrí Cloudflare','Iniciá sesión y elegí tu cuenta.'],
-   ['Entrá a Workers AI y buscá la opción de uso por REST API','Necesitamos un API token con permisos para Workers AI.'],
+   ['Tocá el botón de abajo','Te lleva DIRECTO a Workers AI dentro de Cloudflare. Si pide login, completalo.'],
+   ['En Workers AI tocá “Use REST API”','Ahí Cloudflare muestra el flujo para crear el token correcto y el Account ID.'],
    ['Guardá el API token y también el Account ID','El Account ID aparece en el dashboard de tu cuenta/proyecto. Guardá ambos.']
   ],
   finish:'Terminaste cuando tenés dos cosas guardadas: API token + Account ID.'
@@ -126,7 +126,7 @@ function render(){
   '<div class="why">'+p.why+'</div>'+
   '<div class="todo">'+p.steps.map((s,i)=>'<div class="row"><div class="n">'+(i+1)+'</div><div><strong>'+s[0]+'</strong><p>'+s[1]+'</p></div></div>').join('')+'</div>'+
   '<div class="finish"><b>CÓMO SABÉS QUE TERMINASTE</b><p>'+p.finish+'</p></div>'+
-  '<div class="actions"><a class="btn primary" href="'+p.url+'" target="_blank" rel="noopener">1 · ABRIR '+p.name.toUpperCase()+' ↗</a><button class="btn secondary" id="doneBtn">2 · YA LO HICE · SIGUIENTE</button>'+(n?'<button class="btn secondary" id="backBtn">← ATRÁS</button>':'')+'</div>'+
+  '<div class="actions"><a class="btn primary" href="'+p.url+'" target="_blank" rel="noopener">1 · ABRIR PANTALLA EXACTA ↗</a><button class="btn secondary" id="doneBtn">2 · YA LO HICE · SIGUIENTE</button>'+(n?'<button class="btn secondary" id="backBtn">← ATRÁS</button>':'')+'</div>'+
   '<div class="note">No pegues secretos en esta página. Este wizard sólo te guía y recuerda el progreso.</div>'+
   '</section>';
 
