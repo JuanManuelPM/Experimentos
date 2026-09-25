@@ -9,6 +9,7 @@ Worker Lab is a zero-cost, mobile-first worker-scheduler laboratory isolated fro
 - Explicit DEMO / LIVE / MIXED modes. DEMO runs now. LIVE and MIXED remain disabled until a real backend provider binding exists.
 - MockProvider supports success, bad answer, slow answer, timeout, rate limit, worker crash, verifier reject, retry, and stale worker behavior.
 - Job states: BLOCKED, READY, ACTIVE, VERIFY, DONE, FAILED, RETRY.
+- Verification paths in DEMO: deterministic, synthetic model verification, synthetic cross-model verification, and explicit manual review. Synthetic decisions are labeled as synthetic; manual review requires a human approve/reject action.
 - Dependency gating: BLOCKED becomes READY only when every dependency is verified DONE.
 - Ten experiments use the same scheduler: Exam Chain, Parallel Questions, Research→Synthesis, Builder→Verifier, Failure/Recovery, Rate Limit, 100 Task Grid, Model Tournament, Mixed Providers, Universal Worker.
 - Gold benchmark levels L0–L6 are represented in Model Tournament and job detail.
