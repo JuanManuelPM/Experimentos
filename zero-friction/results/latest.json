@@ -1,8 +1,469 @@
 {
   "schema": "worker-lab.zero-friction/v1",
-  "run_id": "pending",
+  "run_id": "zf-36155351217",
+  "started_at": "2026-09-25T15:37:50.990Z",
+  "finished_at": "2026-09-25T15:38:05.612Z",
+  "duration_ms": 14622,
   "human_actions": 0,
   "cost_usd": 0,
-  "results": [],
-  "events": []
+  "fully_zero_friction": true,
+  "infrastructure": {
+    "runner": "GitHub Actions standard public-repo runner",
+    "inference": [
+      "Ollama local models on runner CPU",
+      "AI Horde anonymous community inference"
+    ],
+    "secrets_used": 0,
+    "accounts_created": 0
+  },
+  "summary": {
+    "engines": 4,
+    "local_models": 3,
+    "best_local_model": "qwen2.5:0.5b-instruct",
+    "best_local_score": 0.8,
+    "horde_status": "DONE"
+  },
+  "tasks": [
+    {
+      "id": "T01",
+      "level": "L0",
+      "prompt": "Return exactly this token and nothing else: WORKER_LAB_OK",
+      "expected": "WORKER_LAB_OK"
+    },
+    {
+      "id": "T02",
+      "level": "L1",
+      "prompt": "Compute 17 * 23. Return only the integer.",
+      "expected": "391"
+    },
+    {
+      "id": "T03",
+      "level": "L0",
+      "prompt": "Classify BANANA as FRUIT or VEHICLE. Return only FRUIT or VEHICLE.",
+      "expected": "FRUIT"
+    },
+    {
+      "id": "T04",
+      "level": "L1",
+      "prompt": "Extract only the ticket ID from this text: 'Please investigate ticket ZX-4821 before noon.'",
+      "expected": "ZX-4821"
+    },
+    {
+      "id": "T05",
+      "level": "L2",
+      "prompt": "All bloops are razzies. Kiki is a bloop. Is Kiki a razzy? Return only YES or NO.",
+      "expected": "YES"
+    }
+  ],
+  "results": [
+    {
+      "engine": "github-actions-ollama",
+      "provider": "LOCAL_ON_GITHUB_RUNNER",
+      "model": "qwen2.5:0.5b-instruct",
+      "human_actions": 0,
+      "account_required": false,
+      "api_key_required": false,
+      "cost_usd": 0,
+      "status": "DONE",
+      "tests": [
+        {
+          "id": "T01",
+          "level": "L0",
+          "prompt": "Return exactly this token and nothing else: WORKER_LAB_OK",
+          "expected": "WORKER_LAB_OK",
+          "status": "PASS",
+          "output": "WORKER_LAB_OK",
+          "latency_ms": 1298,
+          "eval_count": 6,
+          "prompt_eval_count": 38
+        },
+        {
+          "id": "T02",
+          "level": "L1",
+          "prompt": "Compute 17 * 23. Return only the integer.",
+          "expected": "391",
+          "status": "PASS",
+          "output": "391",
+          "latency_ms": 215,
+          "eval_count": 4,
+          "prompt_eval_count": 39
+        },
+        {
+          "id": "T03",
+          "level": "L0",
+          "prompt": "Classify BANANA as FRUIT or VEHICLE. Return only FRUIT or VEHICLE.",
+          "expected": "FRUIT",
+          "status": "FAIL",
+          "output": "VEHICLE",
+          "latency_ms": 260,
+          "eval_count": 4,
+          "prompt_eval_count": 45
+        },
+        {
+          "id": "T04",
+          "level": "L1",
+          "prompt": "Extract only the ticket ID from this text: 'Please investigate ticket ZX-4821 before noon.'",
+          "expected": "ZX-4821",
+          "status": "PASS",
+          "output": "ZX-4821",
+          "latency_ms": 328,
+          "eval_count": 7,
+          "prompt_eval_count": 47
+        },
+        {
+          "id": "T05",
+          "level": "L2",
+          "prompt": "All bloops are razzies. Kiki is a bloop. Is Kiki a razzy? Return only YES or NO.",
+          "expected": "YES",
+          "status": "PASS",
+          "output": "YES",
+          "latency_ms": 305,
+          "eval_count": 2,
+          "prompt_eval_count": 53
+        }
+      ],
+      "score": 0.8,
+      "passed": 4,
+      "total": 5,
+      "duration_ms": 2422
+    },
+    {
+      "engine": "github-actions-ollama",
+      "provider": "LOCAL_ON_GITHUB_RUNNER",
+      "model": "gemma3:270m",
+      "human_actions": 0,
+      "account_required": false,
+      "api_key_required": false,
+      "cost_usd": 0,
+      "status": "DONE",
+      "tests": [
+        {
+          "id": "T01",
+          "level": "L0",
+          "prompt": "Return exactly this token and nothing else: WORKER_LAB_OK",
+          "expected": "WORKER_LAB_OK",
+          "status": "PASS",
+          "output": "WORKER_LAB_OK\n",
+          "latency_ms": 982,
+          "eval_count": 8,
+          "prompt_eval_count": 38
+        },
+        {
+          "id": "T02",
+          "level": "L1",
+          "prompt": "Compute 17 * 23. Return only the integer.",
+          "expected": "391",
+          "status": "FAIL",
+          "output": "17 * 23 = 391",
+          "latency_ms": 202,
+          "eval_count": 12,
+          "prompt_eval_count": 38
+        },
+        {
+          "id": "T03",
+          "level": "L0",
+          "prompt": "Classify BANANA as FRUIT or VEHICLE. Return only FRUIT or VEHICLE.",
+          "expected": "FRUIT",
+          "status": "PASS",
+          "output": "FRUIT\n",
+          "latency_ms": 125,
+          "eval_count": 4,
+          "prompt_eval_count": 43
+        },
+        {
+          "id": "T04",
+          "level": "L1",
+          "prompt": "Extract only the ticket ID from this text: 'Please investigate ticket ZX-4821 before noon.'",
+          "expected": "ZX-4821",
+          "status": "FAIL",
+          "output": "Ticket ID: ZX-4821\n",
+          "latency_ms": 205,
+          "eval_count": 11,
+          "prompt_eval_count": 46
+        },
+        {
+          "id": "T05",
+          "level": "L2",
+          "prompt": "All bloops are razzies. Kiki is a bloop. Is Kiki a razzy? Return only YES or NO.",
+          "expected": "YES",
+          "status": "FAIL",
+          "output": "NO\n",
+          "latency_ms": 130,
+          "eval_count": 3,
+          "prompt_eval_count": 52
+        }
+      ],
+      "score": 0.4,
+      "passed": 2,
+      "total": 5,
+      "duration_ms": 1644
+    },
+    {
+      "engine": "github-actions-ollama",
+      "provider": "LOCAL_ON_GITHUB_RUNNER",
+      "model": "llama3.2:1b",
+      "human_actions": 0,
+      "account_required": false,
+      "api_key_required": false,
+      "cost_usd": 0,
+      "status": "DONE",
+      "tests": [
+        {
+          "id": "T01",
+          "level": "L0",
+          "prompt": "Return exactly this token and nothing else: WORKER_LAB_OK",
+          "expected": "WORKER_LAB_OK",
+          "status": "PASS",
+          "output": "WORKER_LAB_OK",
+          "latency_ms": 1997,
+          "eval_count": 6,
+          "prompt_eval_count": 50
+        },
+        {
+          "id": "T02",
+          "level": "L1",
+          "prompt": "Compute 17 * 23. Return only the integer.",
+          "expected": "391",
+          "status": "FAIL",
+          "output": "432",
+          "latency_ms": 304,
+          "eval_count": 2,
+          "prompt_eval_count": 49
+        },
+        {
+          "id": "T03",
+          "level": "L0",
+          "prompt": "Classify BANANA as FRUIT or VEHICLE. Return only FRUIT or VEHICLE.",
+          "expected": "FRUIT",
+          "status": "PASS",
+          "output": "FRUIT",
+          "latency_ms": 446,
+          "eval_count": 3,
+          "prompt_eval_count": 57
+        },
+        {
+          "id": "T04",
+          "level": "L1",
+          "prompt": "Extract only the ticket ID from this text: 'Please investigate ticket ZX-4821 before noon.'",
+          "expected": "ZX-4821",
+          "status": "PASS",
+          "output": "ZX-4821",
+          "latency_ms": 517,
+          "eval_count": 5,
+          "prompt_eval_count": 57
+        },
+        {
+          "id": "T05",
+          "level": "L2",
+          "prompt": "All bloops are razzies. Kiki is a bloop. Is Kiki a razzy? Return only YES or NO.",
+          "expected": "YES",
+          "status": "PASS",
+          "output": "YES",
+          "latency_ms": 509,
+          "eval_count": 2,
+          "prompt_eval_count": 65
+        }
+      ],
+      "score": 0.8,
+      "passed": 4,
+      "total": 5,
+      "duration_ms": 3774
+    },
+    {
+      "engine": "ai-horde-anonymous",
+      "provider": "AI_HORDE",
+      "model": "aphrodite/TheDrummer/Behemoth-X-123B-v2.1",
+      "human_actions": 0,
+      "account_required": false,
+      "api_key_required": false,
+      "credential": "anonymous public key",
+      "cost_usd": 0,
+      "status": "DONE",
+      "tests": [
+        {
+          "id": "H01",
+          "level": "L0",
+          "expected": "WORKER_LAB_OK",
+          "output": "WORKER_LAB_OK",
+          "status": "PASS"
+        }
+      ],
+      "active_threads": 16,
+      "request_id": "ccebfcc5-2692-46a0-8b75-d569736e6c00",
+      "queue_position": 0,
+      "wait_time": 0,
+      "score": 1,
+      "passed": 1,
+      "total": 1,
+      "duration_ms": 6781
+    }
+  ],
+  "events": [
+    {
+      "ts": "2026-09-25T15:37:50.991Z",
+      "type": "model_start",
+      "detail": "qwen2.5:0.5b-instruct",
+      "model": "qwen2.5:0.5b-instruct"
+    },
+    {
+      "ts": "2026-09-25T15:37:52.302Z",
+      "type": "task_result",
+      "detail": "qwen2.5:0.5b-instruct T01 PASS",
+      "model": "qwen2.5:0.5b-instruct",
+      "task_id": "T01"
+    },
+    {
+      "ts": "2026-09-25T15:37:52.517Z",
+      "type": "task_result",
+      "detail": "qwen2.5:0.5b-instruct T02 PASS",
+      "model": "qwen2.5:0.5b-instruct",
+      "task_id": "T02"
+    },
+    {
+      "ts": "2026-09-25T15:37:52.777Z",
+      "type": "task_result",
+      "detail": "qwen2.5:0.5b-instruct T03 FAIL",
+      "model": "qwen2.5:0.5b-instruct",
+      "task_id": "T03"
+    },
+    {
+      "ts": "2026-09-25T15:37:53.106Z",
+      "type": "task_result",
+      "detail": "qwen2.5:0.5b-instruct T04 PASS",
+      "model": "qwen2.5:0.5b-instruct",
+      "task_id": "T04"
+    },
+    {
+      "ts": "2026-09-25T15:37:53.412Z",
+      "type": "task_result",
+      "detail": "qwen2.5:0.5b-instruct T05 PASS",
+      "model": "qwen2.5:0.5b-instruct",
+      "task_id": "T05"
+    },
+    {
+      "ts": "2026-09-25T15:37:53.412Z",
+      "type": "model_done",
+      "detail": "qwen2.5:0.5b-instruct: 4/5",
+      "model": "qwen2.5:0.5b-instruct"
+    },
+    {
+      "ts": "2026-09-25T15:37:53.412Z",
+      "type": "model_start",
+      "detail": "gemma3:270m",
+      "model": "gemma3:270m"
+    },
+    {
+      "ts": "2026-09-25T15:37:54.394Z",
+      "type": "task_result",
+      "detail": "gemma3:270m T01 PASS",
+      "model": "gemma3:270m",
+      "task_id": "T01"
+    },
+    {
+      "ts": "2026-09-25T15:37:54.596Z",
+      "type": "task_result",
+      "detail": "gemma3:270m T02 FAIL",
+      "model": "gemma3:270m",
+      "task_id": "T02"
+    },
+    {
+      "ts": "2026-09-25T15:37:54.721Z",
+      "type": "task_result",
+      "detail": "gemma3:270m T03 PASS",
+      "model": "gemma3:270m",
+      "task_id": "T03"
+    },
+    {
+      "ts": "2026-09-25T15:37:54.926Z",
+      "type": "task_result",
+      "detail": "gemma3:270m T04 FAIL",
+      "model": "gemma3:270m",
+      "task_id": "T04"
+    },
+    {
+      "ts": "2026-09-25T15:37:55.056Z",
+      "type": "task_result",
+      "detail": "gemma3:270m T05 FAIL",
+      "model": "gemma3:270m",
+      "task_id": "T05"
+    },
+    {
+      "ts": "2026-09-25T15:37:55.056Z",
+      "type": "model_done",
+      "detail": "gemma3:270m: 2/5",
+      "model": "gemma3:270m"
+    },
+    {
+      "ts": "2026-09-25T15:37:55.056Z",
+      "type": "model_start",
+      "detail": "llama3.2:1b",
+      "model": "llama3.2:1b"
+    },
+    {
+      "ts": "2026-09-25T15:37:57.053Z",
+      "type": "task_result",
+      "detail": "llama3.2:1b T01 PASS",
+      "model": "llama3.2:1b",
+      "task_id": "T01"
+    },
+    {
+      "ts": "2026-09-25T15:37:57.357Z",
+      "type": "task_result",
+      "detail": "llama3.2:1b T02 FAIL",
+      "model": "llama3.2:1b",
+      "task_id": "T02"
+    },
+    {
+      "ts": "2026-09-25T15:37:57.803Z",
+      "type": "task_result",
+      "detail": "llama3.2:1b T03 PASS",
+      "model": "llama3.2:1b",
+      "task_id": "T03"
+    },
+    {
+      "ts": "2026-09-25T15:37:58.321Z",
+      "type": "task_result",
+      "detail": "llama3.2:1b T04 PASS",
+      "model": "llama3.2:1b",
+      "task_id": "T04"
+    },
+    {
+      "ts": "2026-09-25T15:37:58.830Z",
+      "type": "task_result",
+      "detail": "llama3.2:1b T05 PASS",
+      "model": "llama3.2:1b",
+      "task_id": "T05"
+    },
+    {
+      "ts": "2026-09-25T15:37:58.830Z",
+      "type": "model_done",
+      "detail": "llama3.2:1b: 4/5",
+      "model": "llama3.2:1b"
+    },
+    {
+      "ts": "2026-09-25T15:37:58.831Z",
+      "type": "horde_discover",
+      "detail": "Discovering active anonymous text models"
+    },
+    {
+      "ts": "2026-09-25T15:37:59.163Z",
+      "type": "horde_model",
+      "detail": "aphrodite/TheDrummer/Behemoth-X-123B-v2.1 · threads=16"
+    },
+    {
+      "ts": "2026-09-25T15:38:00.397Z",
+      "type": "horde_submit",
+      "detail": "ccebfcc5-2692-46a0-8b75-d569736e6c00"
+    },
+    {
+      "ts": "2026-09-25T15:38:05.612Z",
+      "type": "horde_poll",
+      "detail": "done=true queue=0"
+    },
+    {
+      "ts": "2026-09-25T15:38:05.612Z",
+      "type": "horde_done",
+      "detail": "aphrodite/TheDrummer/Behemoth-X-123B-v2.1 · PASS"
+    }
+  ]
 }
