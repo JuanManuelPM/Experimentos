@@ -86,7 +86,7 @@ try {
       event("navigate", searchUrl);
       await page.goto(searchUrl, {
         waitUntil: "domcontentloaded",
-        timeout: 45000
+        timeout: 25000
       });
 
       // Best-effort consent handling. Never fabricate success.
@@ -133,7 +133,7 @@ try {
       event("click", `first YouTube result · ${href || "no href"}`);
       await link.click({ timeout: 10000 });
       await page.waitForLoadState("domcontentloaded", { timeout: 30000 });
-      await page.waitForTimeout(4500);
+      await page.waitForTimeout(2500);
 
       let played = false;
       let hasVideo = false;
@@ -144,9 +144,14 @@ try {
           played = await video.evaluate(async (v) => {
             try {
               v.muted = true;
-              await v.play();
-              await new Promise(r => setTimeout(r, 800));
-              return !v.paused;
+              const result = await Promise.race([
+                v.play().then(async () => {
+                  await new Promise(resolve => setTimeout(resolve, 800));
+                  return !v.paused;
+                }).catch(() => false),
+                new Promise(resolve => setTimeout(() => resolve(false), 3000))
+              ]);
+              return Boolean(result);
             } catch {
               return false;
             }
