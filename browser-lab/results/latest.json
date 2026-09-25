@@ -1,11 +1,113 @@
 {
   "schema": "worker-lab.browser-result/v1",
-  "run_id": "pending-first-run",
-  "overall": "PENDING",
-  "tests": [],
-  "events": [],
-  "screenshots": [],
-  "started_at": null,
-  "finished_at": null,
-  "duration_ms": null
+  "run_id": "gha-36153432037",
+  "runner": "github-actions-playwright",
+  "cloud": true,
+  "human_actions": 0,
+  "started_at": "2026-09-25T15:20:29.054Z",
+  "finished_at": "2026-09-25T15:20:42.705Z",
+  "duration_ms": 13651,
+  "overall": "PASS",
+  "tests": [
+    {
+      "name": "Cloud browser navigation + click",
+      "status": "PASS",
+      "detail": "heading=\"Example Domain\" · final_url=https://www.iana.org/help/example-domains"
+    },
+    {
+      "name": "YouTube search → open video",
+      "status": "PASS",
+      "detail": "final_url=https://www.youtube.com/watch?v=JsBZOcqZerk · video_element=true · playing=false"
+    }
+  ],
+  "screenshots": [
+    {
+      "file": "01-example.png",
+      "label": "Example.com loaded in cloud Chromium"
+    },
+    {
+      "file": "02-after-click.png",
+      "label": "Result after a real browser click"
+    },
+    {
+      "file": "03-youtube-search.png",
+      "label": "YouTube search for Veritasium"
+    },
+    {
+      "file": "04-youtube-video.png",
+      "label": "YouTube video page after automated click"
+    }
+  ],
+  "events": [
+    {
+      "ts": "2026-09-25T15:20:29.055Z",
+      "type": "runner_start",
+      "detail": "GitHub Actions · Node v22.23.2"
+    },
+    {
+      "ts": "2026-09-25T15:20:30.166Z",
+      "type": "chromium_launch",
+      "detail": "153.0.8010.12"
+    },
+    {
+      "ts": "2026-09-25T15:20:30.215Z",
+      "type": "navigate",
+      "detail": "https://example.com"
+    },
+    {
+      "ts": "2026-09-25T15:20:30.575Z",
+      "type": "screenshot",
+      "detail": "01-example.png"
+    },
+    {
+      "ts": "2026-09-25T15:20:30.575Z",
+      "type": "click",
+      "detail": "Example Domain → More information"
+    },
+    {
+      "ts": "2026-09-25T15:20:31.234Z",
+      "type": "screenshot",
+      "detail": "02-after-click.png"
+    },
+    {
+      "ts": "2026-09-25T15:20:31.234Z",
+      "type": "test",
+      "detail": "Cloud browser navigation + click: PASS · heading=\"Example Domain\" · final_url=https://www.iana.org/help/example-domains"
+    },
+    {
+      "ts": "2026-09-25T15:20:31.269Z",
+      "type": "navigate",
+      "detail": "https://www.youtube.com/results?search_query=Veritasium"
+    },
+    {
+      "ts": "2026-09-25T15:20:36.503Z",
+      "type": "screenshot",
+      "detail": "03-youtube-search.png"
+    },
+    {
+      "ts": "2026-09-25T15:20:36.521Z",
+      "type": "selector",
+      "detail": "ytd-video-renderer a#video-title"
+    },
+    {
+      "ts": "2026-09-25T15:20:36.527Z",
+      "type": "click",
+      "detail": "first YouTube result · /watch?v=JsBZOcqZerk&pp=ygUKVmVyaXRhc2l1bQ%3D%3D"
+    },
+    {
+      "ts": "2026-09-25T15:20:42.634Z",
+      "type": "screenshot",
+      "detail": "04-youtube-video.png"
+    },
+    {
+      "ts": "2026-09-25T15:20:42.634Z",
+      "type": "test",
+      "detail": "YouTube search → open video: PASS · final_url=https://www.youtube.com/watch?v=JsBZOcqZerk · video_element=true · playing=false"
+    },
+    {
+      "ts": "2026-09-25T15:20:42.705Z",
+      "type": "browser_close",
+      "detail": "Chromium released"
+    }
+  ]
 }
