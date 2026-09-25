@@ -39,7 +39,15 @@ async function generatePiper(){
  try{
   const tts=await loadPiper();
   qs('#piperStatus').textContent='generando localmente…';
-  const wav=await tts.predict({text:qs('#piperText').value.trim(),voiceId:'es_MX-claude-high'});
+  const session=await tts.TtsSession.create({
+    voiceId:'es_MX-claude-high',
+    wasmPaths:{
+      onnxWasm:'https://cdn.jsdelivr.net/npm/onnxruntime-web@1.18.0/dist/',
+      piperData:'https://cdn.jsdelivr.net/npm/@diffusionstudio/piper-wasm@1.0.0/build/piper_phonemize.data',
+      piperWasm:'https://cdn.jsdelivr.net/npm/@diffusionstudio/piper-wasm@1.0.0/build/piper_phonemize.wasm'
+    }
+  });
+  const wav=await session.predict(qs('#piperText').value.trim());
   if(lastUrl)URL.revokeObjectURL(lastUrl);lastUrl=URL.createObjectURL(wav);
   qs('#piperOut').innerHTML='<audio controls autoplay src="'+lastUrl+'"></audio>';
   qs('#piperStatus').textContent='listo · '+Math.round(performance.now()-started)+' ms · '+Math.round(wav.size/1024)+' KB';
