@@ -512,3 +512,154 @@ https://github.com/JuanManuelPM/Experimentos
 - Evidence/logs/screenshots deben demostrar el comportamiento real.
 - Browser automation es infraestructura útil, no necesariamente el worker.
 - La prioridad inmediata es eliminar el acto manual de "abrir chat + pegar prompt + enviar".
+
+
+==================================================
+14. INVESTIGACIÓN CHATGPT WORK · 2026-09-25
+==================================================
+
+Fuentes oficiales consultadas:
+- https://help.openai.com/en/articles/20001275-chatgpt-work-and-codex
+- https://help.openai.com/en/articles/20001516-managing-usage-with-gpt-6-astra-in-work-and-codex
+- https://help.openai.com/en/articles/20001478-reviewing-work-and-codex-usage-and-using-personal-analytics-in-chatgpt-desktop
+- https://help.openai.com/en/articles/20001280-using-cloud-browser-in-chatgpt
+- https://help.openai.com/en/articles/20001354-gpt-56-and-gpt-6-pro-in-chatgpt
+- https://help.openai.com/en/articles/12642688-using-credits-for-flexible-usage-in-chatgpt-freegopluspro-sora
+- https://help.openai.com/en/articles/10291617-scheduled-tasks-in-chatgpt
+
+Hallazgos:
+
+A. CHAT Y WORK SON EXPERIENCIAS SEPARADAS
+Chat = conversación normal/rápida.
+Work = agente para tareas largas y multi-step.
+Codex = desarrollo/software.
+
+OpenAI documenta que el uso de Chat es separado de la asignación agentic de Work/Codex.
+Work y Codex COMPARTEN una misma asignación incluida.
+Por lo tanto, quemar Work también reduce lo disponible para Codex y viceversa.
+El uso regular de Chat no aparece en las vistas de consumo Work/Codex.
+
+B. WORK NO ES "CHAT GRATIS EN BACKGROUND"
+Work consume una asignación token-based/agentic.
+El consumo depende de:
+- modelo;
+- input;
+- cached input;
+- output;
+- razonamiento;
+- Fast mode;
+- cantidad de pasos;
+- longitud de la tarea.
+
+No hay un número fijo fiable de mensajes porque una tarea larga puede consumir mucho más que una corta.
+
+C. VENTANAS DE USO
+Según plan/cuenta pueden coexistir:
+- ventana de 5 horas;
+- límite semanal.
+
+Para continuar cuando ambos aplican, debe quedar cuota en ambos.
+La ventana de 5 horas se inicia con el primer uso de Work/Codex después de la ventana anterior.
+Settings -> Usage muestra cuota y reset concretos de la cuenta.
+
+D. ESTIMACIONES OFICIALES PARA PLUS POR 5 HORAS
+No son límites fijos; dependen del trabajo.
+
+GPT-6 Astra: aprox. 5-45 mensajes locales
+GPT-5.6 Sol: aprox. 10-100
+GPT-5.6 Terra: aprox. 25-200
+GPT-5.6 Luna: aprox. 250-2000
+
+Conclusión:
+Luna puede rendir órdenes de magnitud más que Sol/Astra para coordinación simple.
+Astra/Sol deben reservarse para trabajo que realmente necesita capacidad.
+
+E. CÓMO ESTIRAR WORK
+Las recomendaciones oficiales coinciden con:
+- usar modelo más económico cuando alcance;
+- reasoning bajo para tareas simples;
+- evitar Fast mode si no hace falta;
+- reducir input repetido;
+- reducir outputs innecesariamente largos;
+- evitar multi-step innecesario dentro de Work;
+- aprovechar cached input;
+- revisar Settings -> Usage.
+
+Rates relativos publicados refuerzan la diferencia:
+GPT-5.6 Luna es muchísimo más barato en tokens que Sol/Astra.
+El output suele costar bastante más que cached input.
+
+F. LUNA RESERVE
+Algunas cuentas Plus/Pro tienen Luna Reserve.
+Es una reserva separada que puede aparecer cuando se agota la cuota normal.
+No está garantizada para todas las cuentas.
+No es ilimitada.
+
+G. WORK PUEDE CORRER EN BACKGROUND
+Work en web/mobile puede seguir trabajando aunque el usuario cierre la conversación/computadora.
+Puede usar Cloud Browser y pausar sólo cuando necesita:
+- input humano;
+- login;
+- confirmación.
+
+También soporta Scheduled Tasks para:
+- una ejecución;
+- recurrencia;
+- trigger/monitoring.
+
+H. SCHEDULED TASKS NO RESUELVE EL PROBLEMA DE SPAWN MASIVO
+Las tareas programadas tienen límites de tareas activas por plan.
+Actualmente:
+Free/Go 3
+Plus 5
+Business/Edu 10
+Pro/Enterprise 15
+
+No hay documentación oficial que diga que una tarea Work pueda "crear 50 chats normales" y transferirles trabajo sin consumir la asignación de Work.
+No debe asumirse.
+
+I. HALLAZGO CLAVE PARA PROMETEO
+No conviene ejecutar todos los workers dentro de Work.
+
+Mejor arquitectura conceptual, si alguna vez usamos Work:
+
+WORK (poco uso)
+= ORQUESTADOR / HUMAN-BRIDGE / COMPUTER-USE
+- inspecciona estado;
+- abre browser si hace falta;
+- realiza una acción de coordinación;
+- deja evidencia;
+- duerme/termina.
+
+CHAT NORMAL (bolsa separada)
+= WORKER PRINCIPAL DE ALTA INTELIGENCIA
+si encontramos una forma oficial/permisible de iniciarlo automáticamente.
+
+Esto preservaría Work para tareas que realmente requieren computer use o background agentic behavior.
+
+J. PREGUNTA AÚN ABIERTA
+No se encontró una interfaz oficial documentada donde ChatGPT Work pueda:
+1. crear un nuevo Chat normal;
+2. inyectarle un prompt;
+3. hacer que ese Chat corra como worker independiente;
+4. repetirlo programáticamente;
+5. sin consumir Work por esos chats.
+
+La UI podría técnicamente automatizarse con un browser, pero eso debe evaluarse contra términos de uso y fragilidad antes de considerarlo arquitectura.
+
+K. CHAT NORMAL TIENE ALLOWANCES SEPARADAS
+La documentación actual confirma:
+- Chat tiene límites propios por modelo/plan.
+- Work/Codex tienen asignación agentic aparte.
+- En algunos esquemas Instant Chat es ilimitado o virtualmente ilimitado sujeto a guardrails; modelos fuertes tienen allowances propios.
+- Por lo tanto, el objetivo de "usar Work sólo para lanzar Chat" tendría sentido económico si existiera un mecanismo oficial, pero hoy no está documentado.
+
+L. OBJETIVO DE LA SIGUIENTE INVESTIGACIÓN
+Buscar un mecanismo permitido y durable para:
+"sistema -> lanzar Chat normal -> pegar prompt universal -> enviar -> dejarlo trabajar"
+sin:
+- usar Codex;
+- convertir cada worker en Work;
+- depender de modelos locales pequeños;
+- hacer 50 acciones humanas.
+
