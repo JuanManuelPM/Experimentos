@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<title>Worker Lab · OpenRouter</title>
+<style>
+:root{--bg:#090b0d;--panel:#111519;--panel2:#171c21;--line:#2a323a;--ink:#f4f5f0;--muted:#96a1aa;--lime:#d8ff5b;--green:#73df93;--blue:#72b8ff;--yellow:#f2c45e;--red:#ff7b7b}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,-apple-system,sans-serif}a{color:inherit;text-decoration:none}button,textarea{font:inherit}
+.app{max-width:980px;margin:auto;min-height:100vh;padding-bottom:70px}
+header{position:sticky;top:0;z-index:10;background:#090b0df2;border-bottom:1px solid var(--line);padding:12px 14px}.brand{display:flex;justify-content:space-between;align-items:center;gap:10px}.ey{font-size:9px;letter-spacing:.15em;color:var(--muted);font-weight:800}.brand h1{font-size:19px;margin:3px 0 0}.pill{font-size:8px;border:1px solid var(--line);border-radius:999px;padding:5px 7px;color:var(--muted)}.pill.ready{color:var(--green);border-color:#315d3d}.pill.work{color:var(--blue);border-color:#31516e}.pill.err{color:var(--red);border-color:#683737}
+main{padding:14px}.hero{border:1px solid var(--line);border-radius:16px;background:linear-gradient(180deg,#14191d,#0e1114);padding:14px}.hero h2{font-size:30px;line-height:.98;letter-spacing:-.05em;margin:0 0 8px}.hero p{font-size:11px;line-height:1.48;color:var(--muted);margin:0;max-width:720px}.actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px}.btn{border:1px solid var(--line);background:var(--panel2);color:var(--ink);border-radius:10px;padding:11px 12px;font-size:10px;font-weight:850;cursor:pointer}.btn.primary{background:var(--lime);color:#080a0c;border-color:var(--lime)}.btn.danger{color:var(--red)}.btn:disabled{opacity:.38;cursor:not-allowed}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:10px}.stat{border:1px solid var(--line);border-radius:10px;background:#0d1114;padding:8px}.stat strong{display:block;font-size:15px}.stat span{font-size:7px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.section{display:flex;justify-content:space-between;align-items:end;gap:10px;margin:17px 2px 8px}.section h2{font-size:17px;margin:0}.section span{font-size:9px;color:var(--muted)}
+.flow{border:1px solid var(--line);border-radius:14px;background:var(--panel);padding:10px}.step{display:grid;grid-template-columns:28px minmax(0,1fr) auto;gap:9px;align-items:center;padding:8px 0;border-bottom:1px solid #20262c}.step:last-child{border-bottom:0}.n{width:28px;height:28px;border:1px solid var(--line);border-radius:50%;display:grid;place-items:center;font-size:8px;font-weight:900;color:var(--muted)}.step.done .n{background:var(--green);color:#08100b;border-color:var(--green)}.step strong{display:block;font-size:10px}.step small{font-size:8px;color:var(--muted);line-height:1.35}.tag{font-size:8px;border:1px solid var(--line);border-radius:99px;padding:5px 6px;color:var(--muted)}.tag.ok{color:var(--green);border-color:#315d3d}.tag.wait{color:var(--yellow);border-color:#635128}
+.workerbox{border:1px solid var(--line);border-radius:14px;background:#0e1215;padding:11px}textarea{width:100%;min-height:135px;resize:vertical;background:#080a0c;color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:10px;font-size:10px;line-height:1.5}.hint{font-size:8px;color:var(--muted);line-height:1.4;margin-top:7px}
+.models{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px}.modeltag{font-size:8px;padding:5px 6px;border:1px solid var(--line);border-radius:999px;color:var(--muted)}
+.cards{display:grid;gap:8px}.card{border:1px solid var(--line);border-radius:14px;background:var(--panel);padding:11px}.cardtop{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px}.title{font-size:11px;font-weight:850;overflow-wrap:anywhere}.sub{font-size:8px;color:var(--muted);margin-top:3px}.badge{font-size:8px;border:1px solid var(--line);border-radius:99px;padding:5px 6px;white-space:nowrap}.badge.pass{color:var(--green);border-color:#315d3d}.badge.run{color:var(--blue);border-color:#31516e}.badge.fail{color:var(--red);border-color:#683737}.output{font-size:10px;line-height:1.48;white-space:pre-wrap;margin-top:9px;padding-top:9px;border-top:1px solid #20262c;color:#dfe3dd}.meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;color:var(--muted);font-size:8px}
+.note{border-left:3px solid var(--yellow);background:#18140b;border-radius:8px;padding:9px 10px;color:#d8cfad;font-size:9px;line-height:1.45;margin-top:10px}
+.empty{border:1px dashed var(--line);border-radius:12px;padding:18px;text-align:center;color:var(--muted);font-size:10px}
+@media(min-width:760px){main{padding:20px}.hero{padding:20px}.hero h2{font-size:42px}.cards{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<div class="app">
+<header><div class="brand"><div><div class="ey">EXPERIMENTO · WORKER LAB</div><h1>OpenRouter Worker Lane</h1></div><div id="statePill" class="pill">DISCONNECTED</div></div></header>
+<main>
+<section class="hero">
+<h2>Un login. Muchos workers.</h2>
+<p>OpenRouter nos deja reemplazar “crear una cuenta y copiar una key por proveedor” por un único OAuth. Después esta página recibe la key automáticamente, descubre los modelos gratuitos disponibles y puede lanzar el mismo worker prompt contra varios modelos en paralelo.</p>
+<div class="actions">
+<button id="connect" class="btn primary">CONNECT OPENROUTER</button>
+<button id="disconnect" class="btn danger" style="display:none">BORRAR CONEXIÓN</button>
+<a class="btn" href="../">CONNECTION HUB</a>
+<a class="btn" href="../browser-lab/">BROWSER LAB</a>
+</div>
+<div class="stats">
+<div class="stat"><strong id="authStat">NO</strong><span>oauth</span></div>
+<div class="stat"><strong id="freeCount">—</strong><span>modelos $0</span></div>
+<div class="stat"><strong id="smokeStat">—</strong><span>smoke test</span></div>
+<div class="stat"><strong>50/d</strong><span>free requests</span></div>
+</div>
+</section>
+
+<div class="section"><h2>Fricción humana</h2><span>reducida a una frontera real de identidad</span></div>
+<div class="flow">
+<div class="step" id="step1"><div class="n">1</div><div><strong>Tocar CONNECT</strong><small>Generamos PKCE en este dispositivo y abrimos el OAuth oficial.</small></div><span class="tag">AUTO</span></div>
+<div class="step" id="step2"><div class="n">2</div><div><strong>Login / autorizar OpenRouter</strong><small>Única parte humana. OpenRouter permite iniciar con Google o GitHub.</small></div><span class="tag wait">HUMANO</span></div>
+<div class="step" id="step3"><div class="n">3</div><div><strong>Crear key automáticamente</strong><small>El callback intercambia el código PKCE por una API key. No copiás nada.</small></div><span class="tag">AUTO</span></div>
+<div class="step" id="step4"><div class="n">4</div><div><strong>Descubrir modelos gratis</strong><small>Consultamos el catálogo vivo y filtramos endpoints $0.</small></div><span class="tag">AUTO</span></div>
+<div class="step" id="step5"><div class="n">5</div><div><strong>Smoke test</strong><small>openrouter/free debe responder WORKER_LAB_OK antes de marcar READY.</small></div><span class="tag">AUTO</span></div>
+<div class="step" id="step6"><div class="n">6</div><div><strong>Lanzar workers</strong><small>Mismo prompt, varios modelos gratuitos, ejecución concurrente.</small></div><span class="tag">AUTO</span></div>
+</div>
+
+<div class="section"><h2>Worker prompt</h2><span>una tarea suficientemente parecida al trabajo real</span></div>
+<div class="workerbox">
+<textarea id="task">Respondé como si estuvieras resolviendo una pregunta de examen universitario de Psicología.
+
+Objetivo: explicá la diferencia entre correlación y causalidad.
+
+Tu respuesta debe:
+- tener entre 350 y 500 palabras;
+- definir ambos conceptos con precisión;
+- incluir un ejemplo psicológico concreto;
+- explicar al menos una variable de confusión;
+- explicar por qué un experimento controlado mejora la inferencia causal;
+- terminar con una conclusión breve.
+
+No pidas aclaraciones. Entregá directamente la respuesta final lista para usar.</textarea>
+<div class="models" id="chosenModels"></div>
+<div class="actions"><button id="runWorkers" class="btn primary" disabled>RUN 4 WORKERS</button><button id="smoke" class="btn" disabled>REPETIR SMOKE TEST</button></div>
+<div class="hint">El harness usa el mismo system prompt para todos. Si un modelo desaparece del free tier, se omite y usamos los que el catálogo vivo confirma como gratuitos.</div>
+</div>
+
+<div class="section"><h2>Resultados</h2><span id="runSummary">todavía no corrimos workers</span></div>
+<div id="results" class="cards"><div class="empty">Conectá OpenRouter. Después todo lo demás puede correr sin copiar keys ni entrar a más dashboards.</div></div>
+
+<div class="note">La key queda sólo en este navegador, en IndexedDB del origen de este laboratorio. No se publica en GitHub ni se manda a nuestro repo. “Gratis” acá significa modelos que OpenRouter expone a $0; el free tier actual de una cuenta sin créditos es 50 requests/día y 20 RPM.</div>
+</main>
+</div>
+<script>
+const OR='https://openrouter.ai';
+const CALLBACK=location.origin+location.pathname;
+const PREFERRED=[
+ 'openai/gpt-oss-120b:free',
+ 'nvidia/nemotron-3.5-lightning:free',
+ 'google/gemma-4-31b-it:free'
+];
+const SYSTEM=`Sos un worker autónomo de alta capacidad. Recibís un objetivo y producís el entregable final sin pedir aclaraciones ni delegar trabajo al humano. Seguí exactamente las restricciones del objetivo. No describas tu proceso interno. No inventes que usaste herramientas que no tenés. Priorizá calidad, precisión y utilidad.`;
+const $=s=>document.querySelector(s);
+let freeModels=[];
+let running=false;
+
+function b64url(bytes){return btoa(String.fromCharCode(...bytes)).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'')}
+function randomVerifier(){const a=new Uint8Array(64);crypto.getRandomValues(a);return b64url(a)}
+async function challenge(v){const h=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(v));return b64url(new Uint8Array(h))}
+function setPill(t,c=''){const p=$('#statePill');p.textContent=t;p.className='pill '+c}
+function stepDone(n){$('#step'+n).classList.add('done');const t=$('#step'+n).querySelector('.tag');t.textContent='DONE';t.className='tag ok'}
+
+function openDB(){return new Promise((resolve,reject)=>{const req=indexedDB.open('worker-lab-vault',1);req.onupgradeneeded=()=>{if(!req.result.objectStoreNames.contains('secrets'))req.result.createObjectStore('secrets')};req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error)})}
+async function vaultSet(k,v){const db=await openDB();return new Promise((resolve,reject)=>{const tx=db.transaction('secrets','readwrite');tx.objectStore('secrets').put(v,k);tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error)})}
+async function vaultGet(k){const db=await openDB();return new Promise((resolve,reject)=>{const req=db.transaction('secrets').objectStore('secrets').get(k);req.onsuccess=()=>resolve(req.result||null);req.onerror=()=>reject(req.error)})}
+async function vaultDelete(k){const db=await openDB();return new Promise((resolve,reject)=>{const tx=db.transaction('secrets','readwrite');tx.objectStore('secrets').delete(k);tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error)})}
+
+async function connect(){
+ const verifier=randomVerifier(),ch=await challenge(verifier);
+ sessionStorage.setItem('or_pkce_verifier',verifier);
+ const u=new URL(OR+'/auth');
+ u.searchParams.set('callback_url',CALLBACK);
+ u.searchParams.set('code_challenge',ch);
+ u.searchParams.set('code_challenge_method','S256');
+ u.searchParams.set('key_label','Worker Lab');
+ location.href=u.toString();
+}
+
+async function exchangeIfNeeded(){
+ const q=new URLSearchParams(location.search),code=q.get('code');
+ if(!code)return false;
+ setPill('AUTHORIZING','work');
+ stepDone(1);stepDone(2);
+ const verifier=sessionStorage.getItem('or_pkce_verifier');
+ if(!verifier)throw new Error('Falta el PKCE verifier local. Repetí CONNECT.');
+ const r=await fetch(OR+'/api/v1/auth/keys',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({code,code_verifier:verifier,code_challenge_method:'S256'})});
+ const body=await r.json().catch(()=>({}));
+ if(!r.ok||!body.key)throw new Error(body.error?.message||body.message||('OAuth exchange HTTP '+r.status));
+ await vaultSet('openrouter',body.key);
+ sessionStorage.removeItem('or_pkce_verifier');
+ history.replaceState({},'',location.pathname);
+ stepDone(3);
+ return true;
+}
+
+async function api(path,opts={}){
+ const key=await vaultGet('openrouter');if(!key)throw new Error('OpenRouter no conectado');
+ const h=new Headers(opts.headers||{});h.set('Authorization','Bearer '+key);h.set('Content-Type','application/json');h.set('HTTP-Referer',location.origin+location.pathname);h.set('X-Title','Worker Lab');
+ const r=await fetch(OR+path,{...opts,headers:h});
+ const txt=await r.text();let body;try{body=JSON.parse(txt)}catch{body={raw:txt}}
+ if(!r.ok)throw new Error(body?.error?.message||body?.message||('HTTP '+r.status+' '+txt.slice(0,180)));
+ return {body,headers:r.headers};
+}
+
+async function discover(){
+ setPill('DISCOVERING','work');
+ const {body}=await api('/api/v1/models',{method:'GET'});
+ const arr=Array.isArray(body?.data)?body.data:[];
+ freeModels=arr.filter(m=>{
+   const p=m.pricing||{};
+   const zero=Number(p.prompt||0)===0&&Number(p.completion||0)===0;
+   return zero&&(String(m.id||'').endsWith(':free')||zero);
+ });
+ $('#freeCount').textContent=freeModels.length;
+ stepDone(4);
+ renderChosen();
+ return freeModels;
+}
+
+function chooseModels(){
+ const ids=new Set(freeModels.map(m=>m.id));
+ const chosen=PREFERRED.filter(x=>ids.has(x));
+ if(chosen.length<3){
+   const fallback=freeModels.filter(m=>!chosen.includes(m.id)&&!String(m.id).includes('guard')&&!String(m.id).includes('embed')).sort((a,b)=>(b.context_length||0)-(a.context_length||0)).slice(0,3-chosen.length).map(m=>m.id);
+   chosen.push(...fallback);
+ }
+ return [...chosen,'openrouter/free'].slice(0,4);
+}
+function renderChosen(){
+ const chosen=chooseModels();
+ $('#chosenModels').innerHTML=chosen.map(x=>'<span class="modeltag">'+esc(x)+'</span>').join('');
+}
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+
+async function smoke(){
+ $('#smokeStat').textContent='...';setPill('SMOKE TEST','work');
+ const t0=performance.now();
+ const {body}=await api('/api/v1/chat/completions',{method:'POST',body:JSON.stringify({model:'openrouter/free',messages:[{role:'user',content:'Return exactly WORKER_LAB_OK and nothing else.'}],temperature:0,max_tokens:20})});
+ const out=body?.choices?.[0]?.message?.content?.trim()||'';
+ const ok=out==='WORKER_LAB_OK';
+ $('#smokeStat').textContent=ok?'PASS':'FAIL';
+ if(!ok)throw new Error('Smoke respondió: '+out);
+ stepDone(5);setPill('READY','ready');
+ return {ok,latency:Math.round(performance.now()-t0),model:body.model||'openrouter/free'};
+}
+
+async function callWorker(model,task){
+ const t0=performance.now();
+ try{
+   const {body}=await api('/api/v1/chat/completions',{method:'POST',body:JSON.stringify({model,messages:[{role:'system',content:SYSTEM},{role:'user',content:task}],temperature:0.25,max_tokens:900})});
+   const text=body?.choices?.[0]?.message?.content||'';
+   const words=text.trim()?text.trim().split(/\s+/).length:0;
+   const checks={
+     length:words>=300&&words<=560,
+     correlation:/correlaci/i.test(text),
+     causality:/causal/i.test(text),
+     confound:/confus|tercera variable|variable extra/i.test(text),
+     experiment:/experiment/i.test(text)
+   };
+   return {requested:model,actual:body.model||model,status:'PASS',latency:Math.round(performance.now()-t0),words,text,checks,usage:body.usage||null};
+ }catch(e){return {requested:model,actual:model,status:'FAIL',latency:Math.round(performance.now()-t0),error:String(e.message||e)}}
+}
+
+function renderResults(rows){
+ $('#results').innerHTML=rows.map(r=>{
+  const ok=r.status==='PASS';
+  const checks=r.checks?Object.entries(r.checks).map(([k,v])=>k+':'+(v?'✓':'×')).join(' · '):'';
+  return '<article class="card"><div class="cardtop"><div><div class="title">'+esc(r.requested)+'</div><div class="sub">actual: '+esc(r.actual)+'</div></div><span class="badge '+(ok?'pass':'fail')+'">'+esc(r.status)+'</span></div>'+(ok?'<div class="meta"><span>'+r.latency+' ms</span><span>'+r.words+' palabras</span><span>'+esc(checks)+'</span></div><div class="output">'+esc(r.text)+'</div>':'<div class="output">'+esc(r.error)+'</div>')+'</article>'
+ }).join('');
+}
+
+async function runWorkers(){
+ if(running)return;running=true;$('#runWorkers').disabled=true;setPill('4 WORKERS RUNNING','work');stepDone(6);
+ const chosen=chooseModels(),task=$('#task').value.trim();
+ $('#results').innerHTML=chosen.map(m=>'<article class="card"><div class="cardtop"><div class="title">'+esc(m)+'</div><span class="badge run">RUNNING</span></div></article>').join('');
+ const t0=performance.now();
+ const rows=await Promise.all(chosen.map(m=>callWorker(m,task)));
+ renderResults(rows);
+ const good=rows.filter(x=>x.status==='PASS').length;
+ $('#runSummary').textContent=good+'/'+rows.length+' respondieron · '+Math.round(performance.now()-t0)+' ms wall-clock';
+ setPill('READY','ready');running=false;$('#runWorkers').disabled=false;
+}
+
+async function boot(){
+ try{
+   const exchanged=await exchangeIfNeeded();
+   const key=await vaultGet('openrouter');
+   if(!key){setPill('DISCONNECTED');return}
+   $('#connect').style.display='none';$('#disconnect').style.display='inline-block';$('#authStat').textContent='YES';
+   stepDone(1);stepDone(2);stepDone(3);
+   await discover();
+   $('#runWorkers').disabled=false;$('#smoke').disabled=false;
+   if(exchanged)await smoke(); else {$('#smokeStat').textContent='READY';setPill('CONNECTED','ready')}
+ }catch(e){
+   setPill('ERROR','err');$('#results').innerHTML='<div class="empty">'+esc(e.message||e)+'</div>';
+ }
+}
+$('#connect').onclick=connect;
+$('#disconnect').onclick=async()=>{await vaultDelete('openrouter');location.reload()};
+$('#smoke').onclick=async()=>{try{await smoke()}catch(e){setPill('ERROR','err');$('#smokeStat').textContent='FAIL';alert(e.message||e)}};
+$('#runWorkers').onclick=runWorkers;
+boot();
+</script>
+</body>
+</html>
