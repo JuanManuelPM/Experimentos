@@ -82,10 +82,10 @@ No pidas aclaraciones. Entregá directamente la respuesta final lista para usar.
 <script>
 const OR='https://openrouter.ai';
 const CALLBACK=location.origin+location.pathname;
-const PREFERRED=[
- 'openai/gpt-oss-120b:free',
- 'nvidia/nemotron-3.5-lightning:free',
- 'google/gemma-4-31b-it:free'
+const PREFERRED_MATCHERS=[
+ m=>/nemotron-3-ultra/i.test((m.id||'')+' '+(m.name||'')),
+ m=>/gemma.?4.*31b/i.test((m.id||'')+' '+(m.name||'')),
+ m=>/dots3|inkling|ling.?3/i.test((m.id||'')+' '+(m.name||''))
 ];
 const SYSTEM=`Sos un worker autónomo de alta capacidad. Recibís un objetivo y producís el entregable final sin pedir aclaraciones ni delegar trabajo al humano. Seguí exactamente las restricciones del objetivo. No describas tu proceso interno. No inventes que usaste herramientas que no tenés. Priorizá calidad, precisión y utilidad.`;
 const $=s=>document.querySelector(s);
@@ -155,11 +155,23 @@ async function discover(){
  return freeModels;
 }
 
+function usableFreeModels(){
+ return freeModels.filter(m=>{
+   const s=((m.id||'')+' '+(m.name||'')).toLowerCase();
+   return !s.includes('guard')&&!s.includes('embed')&&!s.includes('rerank')&&!s.includes('image generation')&&!s.includes('audio');
+ });
+}
 function chooseModels(){
- const ids=new Set(freeModels.map(m=>m.id));
- const chosen=PREFERRED.filter(x=>ids.has(x));
+ const pool=usableFreeModels();
+ const chosen=[];
+ for(const match of PREFERRED_MATCHERS){
+   const hit=pool.find(m=>match(m)&&!chosen.includes(m.id));
+   if(hit)chosen.push(hit.id);
+ }
  if(chosen.length<3){
-   const fallback=freeModels.filter(m=>!chosen.includes(m.id)&&!String(m.id).includes('guard')&&!String(m.id).includes('embed')).sort((a,b)=>(b.context_length||0)-(a.context_length||0)).slice(0,3-chosen.length).map(m=>m.id);
+   const fallback=pool.filter(m=>!chosen.includes(m.id))
+     .sort((a,b)=>(b.context_length||0)-(a.context_length||0))
+     .slice(0,3-chosen.length).map(m=>m.id);
    chosen.push(...fallback);
  }
  return [...chosen,'openrouter/free'].slice(0,4);
@@ -170,22 +182,62 @@ function renderChosen(){
 }
 function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
 
+function contentText(content){
+ if(typeof content==='string')return content;
+ if(Array.isArray(content))return content.map(x=>typeof x==='string'?x:(x?.text||'')).join(' ');
+ return '';
+}
 async function smoke(){
  $('#smokeStat').textContent='...';setPill('SMOKE TEST','work');
- const t0=performance.now();
- const {body}=await api('/api/v1/chat/completions',{method:'POST',body:JSON.stringify({model:'openrouter/free',messages:[{role:'user',content:'Return exactly WORKER_LAB_OK and nothing else.'}],temperature:0,max_tokens:20})});
- const out=body?.choices?.[0]?.message?.content?.trim()||'';
- const ok=out==='WORKER_LAB_OK';
- $('#smokeStat').textContent=ok?'PASS':'FAIL';
- if(!ok)throw new Error('Smoke respondió: '+out);
- stepDone(5);setPill('READY','ready');
- return {ok,latency:Math.round(performance.now()-t0),model:body.model||'openrouter/free'};
+ const started=performance.now();
+ const pool=usableFreeModels();
+ const preferred=[
+   pool.find(m=>/gemma.?4.*31b/i.test((m.id||'')+' '+(m.name||''))),
+   pool.find(m=>/nemotron-3-ultra/i.test((m.id||'')+' '+(m.name||''))),
+   ...pool
+ ].filter(Boolean);
+ const candidates=[...new Set(preferred.map(m=>m.id))].slice(0,4);
+ const attempts=[];
+ for(const model of candidates){
+   const t0=performance.now();
+   try{
+     const {body}=await api('/api/v1/chat/completions',{
+       method:'POST',
+       body:JSON.stringify({
+         model,
+         messages:[
+           {role:'system',content:'Respond only with the exact token requested by the user. No explanation.'},
+           {role:'user',content:'Return this exact token: WORKER_LAB_OK'}
+         ],
+         max_tokens:128
+       })
+     });
+     const out=contentText(body?.choices?.[0]?.message?.content).trim();
+     const ok=/\bWORKER_LAB_OK\b/i.test(out);
+     attempts.push({model,actual:body?.model||model,status:ok?'PASS':'BAD_OUTPUT',out,latency:Math.round(performance.now()-t0)});
+     if(ok){
+       $('#smokeStat').textContent='PASS';
+       stepDone(5);setPill('READY','ready');
+       localStorage.setItem('or_smoke_v2_pass','1');
+       $('#runSummary').textContent='Smoke PASS · '+(body?.model||model)+' · '+Math.round(performance.now()-started)+' ms';
+       $('#results').innerHTML='<article class="card"><div class="cardtop"><div><div class="title">Smoke test</div><div class="sub">'+esc(model)+'</div></div><span class="badge pass">PASS</span></div><div class="meta"><span>'+Math.round(performance.now()-started)+' ms</span><span>'+attempts.length+' intento(s)</span></div><div class="output">'+esc(out)+'</div></article>';
+       return {ok:true,model:body?.model||model,attempts};
+     }
+   }catch(e){
+     attempts.push({model,status:'ERROR',error:String(e.message||e),latency:Math.round(performance.now()-t0)});
+   }
+ }
+ $('#smokeStat').textContent='FAIL';
+ setPill('CONNECTED · SMOKE FAIL','err');
+ $('#runSummary').textContent='OAuth y catálogo OK. Falló sólo la generación.';
+ $('#results').innerHTML=attempts.map(a=>'<article class="card"><div class="cardtop"><div><div class="title">'+esc(a.model)+'</div></div><span class="badge fail">'+esc(a.status)+'</span></div><div class="meta"><span>'+a.latency+' ms</span></div><div class="output">'+esc(a.error||a.out||'Sin contenido')+'</div></article>').join('');
+ throw new Error('Los '+attempts.length+' modelos de smoke fallaron. Los detalles quedaron visibles abajo.');
 }
 
 async function callWorker(model,task){
  const t0=performance.now();
  try{
-   const {body}=await api('/api/v1/chat/completions',{method:'POST',body:JSON.stringify({model,messages:[{role:'system',content:SYSTEM},{role:'user',content:task}],temperature:0.25,max_tokens:900})});
+   const {body}=await api('/api/v1/chat/completions',{method:'POST',body:JSON.stringify({model,messages:[{role:'system',content:SYSTEM},{role:'user',content:task}],temperature:0.25,max_tokens:1800})});
    const text=body?.choices?.[0]?.message?.content||'';
    const words=text.trim()?text.trim().split(/\s+/).length:0;
    const checks={
@@ -228,13 +280,15 @@ async function boot(){
    stepDone(1);stepDone(2);stepDone(3);
    await discover();
    $('#runWorkers').disabled=false;$('#smoke').disabled=false;
-   if(exchanged)await smoke(); else {$('#smokeStat').textContent='READY';setPill('CONNECTED','ready')}
+   const smokeDone=localStorage.getItem('or_smoke_v2_pass')==='1';
+   if(exchanged||!smokeDone)await smoke();
+   else {$('#smokeStat').textContent='PASS';stepDone(5);setPill('READY','ready')}
  }catch(e){
    setPill('ERROR','err');$('#results').innerHTML='<div class="empty">'+esc(e.message||e)+'</div>';
  }
 }
 $('#connect').onclick=connect;
-$('#disconnect').onclick=async()=>{await vaultDelete('openrouter');location.reload()};
+$('#disconnect').onclick=async()=>{await vaultDelete('openrouter');localStorage.removeItem('or_smoke_v2_pass');location.reload()};
 $('#smoke').onclick=async()=>{try{await smoke()}catch(e){setPill('ERROR','err');$('#smokeStat').textContent='FAIL';alert(e.message||e)}};
 $('#runWorkers').onclick=runWorkers;
 boot();
