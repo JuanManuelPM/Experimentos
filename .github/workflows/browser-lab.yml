@@ -1,0 +1,65 @@
+name: Browser Lab
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [master]
+    paths:
+      - "worker-lab/browser-lab/run-browser.mjs"
+      - ".github/workflows/browser-lab.yml"
+  schedule:
+    - cron: "17 9 * * *"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: browser-lab
+  cancel-in-progress: false
+
+jobs:
+  cloud-browser-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install Playwright
+        run: |
+          npm install --no-save playwright
+          npx playwright install --with-deps chromium
+
+      - name: Run cloud browser experiments
+        run: node worker-lab/browser-lab/run-browser.mjs
+
+      - name: Upload raw evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: browser-lab-evidence
+          path: worker-lab/browser-lab/out/
+          retention-days: 7
+
+      - name: Publish evidence to GitHub Pages
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin gh-pages
+          git worktree add /tmp/browser-lab-pages origin/gh-pages
+          mkdir -p /tmp/browser-lab-pages/browser-lab/results
+          cp -R worker-lab/browser-lab/out/. /tmp/browser-lab-pages/browser-lab/results/
+          cd /tmp/browser-lab-pages
+          git config user.name "worker-lab-bot"
+          git config user.email "worker-lab-bot@users.noreply.github.com"
+          git add browser-lab/results
+          if git diff --cached --quiet; then
+            echo "No evidence changes to publish"
+            exit 0
+          fi
+          git commit -m "Publish Browser Lab evidence"
+          git push origin HEAD:gh-pages
