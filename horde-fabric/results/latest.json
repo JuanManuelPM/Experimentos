@@ -1,6 +1,6 @@
 {
-  "run_id": "horde-fabric-36206470969",
-  "generated_at": "2026-09-26T00:53:40.963Z",
+  "run_id": "horde-fabric-36206626292",
+  "generated_at": "2026-09-26T00:56:27.628Z",
   "cost_usd": 0,
   "account_required": false,
   "human_actions": 0,
@@ -82,16 +82,19 @@
       "status": "PASS",
       "spaces": {
         "title": "Kolmårdsmarmor Stadshuset.jpg",
+        "file": "assets/spaces-replacement.jpg",
         "kind": "image",
         "license": "CC BY-SA 3.0",
         "browser": "PASS"
       },
       "eye": {
         "title": "Smooth pursuit eye movements.webm",
+        "file": "assets/eye-replacement.webm",
         "kind": "video",
         "license": "CC BY-SA 4.0",
         "browser": "PASS"
-      }
+      },
+      "browser": "PASS"
     }
   },
   "anonymous_constraints": {
@@ -132,73 +135,69 @@
       "count": 5
     }
   ],
-  "parallel_wall_ms": 9725,
+  "parallel_wall_ms": 18461,
   "workers": [
     {
       "label": "asset-reviewer",
       "model_requested": "aphrodite/TheDrummer/Behemoth-X-123B-v2.1",
       "active_threads": 16,
       "max_length": 360,
-      "started_at": "2026-09-26T00:53:20.686Z",
-      "request_id": "537d5ec0-cf41-4d72-8347-2e14fd19e3cc",
+      "started_at": "2026-09-26T00:55:53.854Z",
+      "request_id": "e0d4207e-6ebf-4bfe-b24a-9c341fe41d54",
       "queue_position": 0,
       "wait_time": 0,
       "model": "aphrodite/TheDrummer/Behemoth-X-123B-v2.1",
-      "output": "{\"spaces\":{\"cause\":\"Server rejected bad request\",\"fix\":\"Correct URL or parameters\",\"verify\":[\"Check server logs\",\"Test with valid URL\"]},\"eye\":{\"cause\":\"Resource blocked by ORB\",\"fix\":\"Whitelist domain in ORB\",\"verify\":[\"Confirm video loads\",\"Check ORB rules\"]}}",
+      "output": "{\"spaces\":{\"file\":\"assets/spaces-replacement.jpg\",\"action\":\"replace\",\"proof\":\"browser PASS\"},\"eye\":{\"file\":\"assets/eye-replacement.webm\",\"action\":\"replace\",\"proof\":\"browser PASS\"}}",
       "parsed": {
         "spaces": {
-          "cause": "Server rejected bad request",
-          "fix": "Correct URL or parameters",
-          "verify": [
-            "Check server logs",
-            "Test with valid URL"
-          ]
+          "file": "assets/spaces-replacement.jpg",
+          "action": "replace",
+          "proof": "browser PASS"
         },
         "eye": {
-          "cause": "Resource blocked by ORB",
-          "fix": "Whitelist domain in ORB",
-          "verify": [
-            "Confirm video loads",
-            "Check ORB rules"
-          ]
+          "file": "assets/eye-replacement.webm",
+          "action": "replace",
+          "proof": "browser PASS"
         }
       },
       "status": "PASS",
-      "duration_ms": 5463,
-      "finished_at": "2026-09-26T00:53:26.149Z"
+      "duration_ms": 9491,
+      "finished_at": "2026-09-26T00:56:03.345Z"
     },
     {
       "label": "causal-critic",
       "model_requested": "aphrodite/TheDrummer/Cydonia-24B-v4.3",
       "active_threads": 8,
       "max_length": 360,
-      "started_at": "2026-09-26T00:53:20.688Z",
-      "request_id": "286beb9f-0e56-4dd3-9544-20d9d0a1951b",
+      "started_at": "2026-09-26T00:55:53.856Z",
+      "request_id": "4c65be2a-c9fc-44b8-94de-557ec6020379",
       "queue_position": 0,
       "wait_time": 0,
       "model": "aphrodite/TheDrummer/Cydonia-24B-v4.3",
-      "output": "```json\n{\n  \"events\": [\"load\", \"error\"],\n  \"states\": [\"pending\", \"failed\"],\n  \"checks\": [\"validate_url\", \"verify_content\"],\n  \"replay\": [\"retry_on_desktop\", \"skip_on_mobile\"]\n}\n```",
+      "output": "```json\n{\n  \"events\": [\n    \"artifact_created\",\n    \"dependency_unblocked\",\n    \"worker_started\"\n  ],\n  \"states\": [\n    \"worker_idle\",\n    \"worker_active\",\n    \"worker_completed\"\n  ],\n  \"checks\": [\n    \"check_dependencies_met\",\n    \"check_artifact_available\"\n  ],\n  \"replay\": [\n    \"event_log_replay\",\n    \"state_consistency_check\"\n  ]\n}\n```",
       "parsed": {
         "events": [
-          "load",
-          "error"
+          "artifact_created",
+          "dependency_unblocked",
+          "worker_started"
         ],
         "states": [
-          "pending",
-          "failed"
+          "worker_idle",
+          "worker_active",
+          "worker_completed"
         ],
         "checks": [
-          "validate_url",
-          "verify_content"
+          "check_dependencies_met",
+          "check_artifact_available"
         ],
         "replay": [
-          "retry_on_desktop",
-          "skip_on_mobile"
+          "event_log_replay",
+          "state_consistency_check"
         ]
       },
       "status": "PASS",
-      "duration_ms": 9723,
-      "finished_at": "2026-09-26T00:53:30.411Z"
+      "duration_ms": 18459,
+      "finished_at": "2026-09-26T00:56:12.315Z"
     }
   ],
   "synthesis": {
@@ -206,39 +205,44 @@
     "model_requested": "aphrodite/TheDrummer/Behemoth-X-123B-v2.1",
     "active_threads": 16,
     "max_length": 420,
-    "started_at": "2026-09-26T00:53:31.912Z",
-    "request_id": "5d262371-3198-4c08-a44d-b09dece752aa",
+    "started_at": "2026-09-26T00:56:13.816Z",
+    "request_id": "bfe5ae8b-5f64-4f8b-b768-bf44ee0bf35b",
     "queue_position": 0,
     "wait_time": 0,
     "model": "aphrodite/TheDrummer/Behemoth-X-123B-v2.1",
-    "output": "{\"decision\":\"Repair server and ORB issues\",\"repairs\":[\"Correct URL or parameters\",\"Whitelist domain in ORB\"],\"flow\":[\"Check server logs\",\"Confirm video loads\",\"Retry on desktop\"],\"checks\":[\"Validate URL\",\"Verify content\",\"Test with valid URL\"],\"rejected\":[\"Skip on mobile\"]}",
+    "output": "```json\n{\"decision\":\"APPROVED\",\"repairs\":[\"assets/spaces-replacement.jpg\",\"assets/eye-replacement.webm\"],\"flow\":[\"artifact_created\",\"dependency_unblocked\",\"worker_started\"],\"checks\":[\"desktop PASS\",\"mobile PASS\",\"same-origin\"],\"rejected\":[\"ORB whitelist\"]}\n```",
     "parsed": {
-      "decision": "Repair server and ORB issues",
+      "decision": "APPROVED",
       "repairs": [
-        "Correct URL or parameters",
-        "Whitelist domain in ORB"
+        "assets/spaces-replacement.jpg",
+        "assets/eye-replacement.webm"
       ],
       "flow": [
-        "Check server logs",
-        "Confirm video loads",
-        "Retry on desktop"
+        "artifact_created",
+        "dependency_unblocked",
+        "worker_started"
       ],
       "checks": [
-        "Validate URL",
-        "Verify content",
-        "Test with valid URL"
+        "desktop PASS",
+        "mobile PASS",
+        "same-origin"
       ],
       "rejected": [
-        "Skip on mobile"
+        "ORB whitelist"
       ]
     },
     "status": "PASS",
-    "duration_ms": 9051,
-    "finished_at": "2026-09-26T00:53:40.963Z"
+    "duration_ms": 13811,
+    "finished_at": "2026-09-26T00:56:27.627Z"
   },
   "independent_worker_models": true,
   "synthesis_reuses_best_model": true,
   "schema_valid": true,
+  "grounding_validation": {
+    "status": "PASS",
+    "failures": []
+  },
+  "technical_status": "PASS",
   "status": "PASS",
   "browser_verification": {
     "status": "PASS",
@@ -248,14 +252,14 @@
         "ms": 646,
         "errors": [],
         "boxes": 3,
-        "status_text": "PASS · parallel 9725 ms · independent_workers=true · schema_valid=true"
+        "status_text": "PASS · parallel 18461 ms · independent_workers=true · schema_valid=true"
       },
       {
         "name": "mobile",
-        "ms": 592,
+        "ms": 579,
         "errors": [],
         "boxes": 3,
-        "status_text": "PASS · parallel 9725 ms · independent_workers=true · schema_valid=true"
+        "status_text": "PASS · parallel 18461 ms · independent_workers=true · schema_valid=true"
       }
     ]
   }
