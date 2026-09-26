@@ -1,6 +1,6 @@
 {
-  "run_id": "horde-fabric-36206081613",
-  "generated_at": "2026-09-26T00:46:53.746Z",
+  "run_id": "horde-fabric-36206204463",
+  "generated_at": "2026-09-26T00:50:12.388Z",
   "cost_usd": 0,
   "account_required": false,
   "human_actions": 0,
@@ -113,40 +113,98 @@
       "count": 5
     }
   ],
-  "parallel_wall_ms": 976,
+  "parallel_wall_ms": 31100,
   "workers": [
     {
       "label": "asset-worker",
       "model_requested": "aphrodite/TheDrummer/Behemoth-X-123B-v2.1",
       "active_threads": 16,
-      "started_at": "2026-09-26T00:46:52.514Z",
+      "started_at": "2026-09-26T00:48:47.441Z",
+      "request_id": "2e4e931c-9fc9-46cf-a497-c1d947bab4f8",
+      "queue_position": 0,
+      "wait_time": 0,
+      "model": "aphrodite/TheDrummer/Behemoth-X-123B-v2.1",
+      "output": "```json\n{\n  \"findings\": [\n    \"Fallo en 'spaces': La imagen de fondo no se carga debido a un error 400, lo que viola la regla de correspondencia entre el objeto visible y el estado durable real.\",\n    \"Fallo en 'mask-eye': El video no se reproduce debido a errores de red (ERR_ABORTED y ERR_BLOCKED_BY_ORB), violando la regla de que el objeto visible debe corresponder a un estado durable real.\"\n  ],\n  \"repair_packet\": {\n    \"spaces\": {\n      \"requirements\": [\n        \"Verificar que la URL de la imagen de fondo es correcta y accesible.\",\n        \"Asegurar que el servidor responde con un 200 para la imagen de fondo.\",\n        \"Confirmar que la imagen de fondo se renderiza correctamente en modo desktop y mobile.\"\n      ],\n      \"verification\": [\n        \"Realizar una petición a la URL de la imagen y confirmar que el status es 200.\",\n        \"Capturar una imagen de la página y verificar visualmente que el fondo se muestra correctamente.\",\n        \"Probar en dispositivos móviles y de escritorio para asegurar que el fallo no se reproduce.\"\n      ]\n    },\n    \"mask_eye\": {\n      \"requirements\": [\n        \"Investigar por qué el video es bloqueado (ERR_BLOCKED_BY_ORB) y abortado (ERR_ABORTED).\",\n        \"Asegurar que el video es accesible y no está bloqueado por políticas de seguridad o ad-blockers.\",\n        \"Confirmar que el video puede reproducirse completamente sin errores de red.\"\n      ],\n      \"verification\": [\n        \"Reproducir el video y verificar que no se aborta ni se bloquea.\",\n        \"Revisar las políticas de",
       "status": "FAIL",
-      "error": "HTTP 403 {\"message\":\"Due to heavy demand, for requests over 512 tokens, the client needs to already have the required kudos. This request requires 3807.14 kudos to fulfil.\",\"rc\":\"KudosUpfront\"}\n",
-      "duration_ms": 255,
-      "finished_at": "2026-09-26T00:46:52.769Z"
+      "error": "Unterminated string in JSON at position 1531 (line 27 column 34)",
+      "duration_ms": 21603,
+      "finished_at": "2026-09-26T00:49:09.044Z"
     },
     {
       "label": "causal-critic",
       "model_requested": "aphrodite/TheDrummer/Cydonia-24B-v4.3",
       "active_threads": 8,
-      "started_at": "2026-09-26T00:46:52.516Z",
-      "status": "FAIL",
-      "error": "HTTP 403 {\"message\":\"Due to heavy demand, for requests over 512 tokens, the client needs to already have the required kudos. This request requires 742.86 kudos to fulfil.\",\"rc\":\"KudosUpfront\"}\n",
-      "duration_ms": 974,
-      "finished_at": "2026-09-26T00:46:53.490Z"
+      "started_at": "2026-09-26T00:48:47.443Z",
+      "request_id": "bf388809-144d-446b-9e4c-37281f966545",
+      "queue_position": 0,
+      "wait_time": 0,
+      "model": "aphrodite/TheDrummer/Cydonia-24B-v4.3",
+      "output": "```json\n{\n  \"risks\": [\n    \"Worker B puede fallar al cargar recursos externos debido a bloqueos de seguridad (CORS, permisos)\",\n    \"Artifacts pueden ser corruptos o no disponibles si el servidor responde con errores 400/404\",\n    \"Dependencias entre workers pueden romperse si no hay sincronización adecuada de estados\",\n    \"Falsos positivos en validación si no se verifica la causalidad real vs. animación sintética\"\n  ],\n  \"fabric_spec\": {\n    \"events\": [\n      \"worker_start\",\n      \"asset_load_attempt\",\n      \"asset_load_success\",\n      \"asset_load_failure\",\n      \"state_transition\",\n      \"artifact_received\",\n      \"artifact_processed\",\n      \"next_worker_trigger\"\n    ],\n    \"states\": [\n      \"IDLE\",\n      \"LOADING_ASSETS\",\n      \"PROCESSING\",\n      \"WAITING_FOR_ARTIFACT\",\n      \"ERROR_STATE\"\n    ],\n    \"replay\": [\n      \"timestamp\",\n      \"event_type\",\n      \"worker_id\",\n      \"asset_url\",\n      \"status_code\",\n      \"previous_state\",\n      \"next_state\",\n      \"error_message\"\n    ]\n  },\n  \"acceptance\": [\n    \"Todos los assets deben cargarse con status 200 OK o manejar errores explícitamente\",\n    \"Artifacts generados deben ser accesibles por el siguiente worker\",\n    \"Transiciones de estado deben ser causadas por eventos reales, no animaciones falsas\",\n    \"Mobile y desktop deben pasar las mismas validaciones\",\n    \"No debe haber recursos duplicados fallando simultáneamente\"\n  ]\n}\n```",
+      "parsed": {
+        "risks": [
+          "Worker B puede fallar al cargar recursos externos debido a bloqueos de seguridad (CORS, permisos)",
+          "Artifacts pueden ser corruptos o no disponibles si el servidor responde con errores 400/404",
+          "Dependencias entre workers pueden romperse si no hay sincronización adecuada de estados",
+          "Falsos positivos en validación si no se verifica la causalidad real vs. animación sintética"
+        ],
+        "fabric_spec": {
+          "events": [
+            "worker_start",
+            "asset_load_attempt",
+            "asset_load_success",
+            "asset_load_failure",
+            "state_transition",
+            "artifact_received",
+            "artifact_processed",
+            "next_worker_trigger"
+          ],
+          "states": [
+            "IDLE",
+            "LOADING_ASSETS",
+            "PROCESSING",
+            "WAITING_FOR_ARTIFACT",
+            "ERROR_STATE"
+          ],
+          "replay": [
+            "timestamp",
+            "event_type",
+            "worker_id",
+            "asset_url",
+            "status_code",
+            "previous_state",
+            "next_state",
+            "error_message"
+          ]
+        },
+        "acceptance": [
+          "Todos los assets deben cargarse con status 200 OK o manejar errores explícitamente",
+          "Artifacts generados deben ser accesibles por el siguiente worker",
+          "Transiciones de estado deben ser causadas por eventos reales, no animaciones falsas",
+          "Mobile y desktop deben pasar las mismas validaciones",
+          "No debe haber recursos duplicados fallando simultáneamente"
+        ]
+      },
+      "status": "PASS",
+      "duration_ms": 31098,
+      "finished_at": "2026-09-26T00:49:18.541Z"
     }
   ],
   "synthesis": {
     "label": "synthesizer",
     "model_requested": "koboldcpp/Qwen3.8-27B-Uncensored",
     "active_threads": 4,
-    "started_at": "2026-09-26T00:46:53.490Z",
+    "started_at": "2026-09-26T00:49:19.742Z",
+    "request_id": "3ad9f454-129d-4ae8-af76-a321553bb7f9",
+    "queue_position": 0,
+    "wait_time": 0,
+    "model": "koboldcpp/Qwen3.8-27B-Uncensored",
+    "output": "{\"decision\":\"...\",\"asset_repair\":{\"spaces\":[\"...\"],\" risks\":[\"...\"],\"mask_eye\":[\"...\"]},\"causal_flow\":{\"events\":[\"...\"],\"render_rules\":[\"...\"],\"reboth\":[\"...\"]},\"experiment\":{\"input\":\"...\",\"artifact\":\"...\",\"browser_checks\":[\"...\"]},\"acceptance criteria\":[\"...\"],\"acceptance\":[\"...\"],\"acceptance criteria\":[\"...\"]},\"acceptance\":[\"...\"],\"rejected\":[\"...\"]}\n### Response:\n{\"decision\":\"...\",\"asset_repair\":{\"spaces\":[\"...\"],\" risks\":[\"...\"],\"mask_eye\":[\"...\"]},\"causal_flow\":{\"events\":[\"...\"],\"render_rules\":[\"...\"],\"reboth\":[\"...\"]},\"experiment\":{\"input\":\"...\",\"artifact\":\"...\",\"browser_parse\":[\"...\"]},\"experiment\":{\"input\":\"...\",\"artifact\":\"...\",\"browser_checks\":[\"...\"]},\"acceptance\":[\"...\"],\"rejected\":[\"...\"]}\n### Response:\n{\"decision\":\"...\",\"asset_repositioning\":{\"spaces\":[\"...\"],\" risks\":[\"B\",\"...\"],\"mask_eye\":[\"...\"]\"},\"causal_flow\":{\"interpretation\":[\"...\"],\"render_rules\":[\"\",\"...\"],\"reboth\":[\"...\"]},\"experiment\":{\"input\":\"...\",\"artifact\":\"...\",\"browser_checks\":[\"...\"]},\"accept### Response:\n{\"decision\":\"...\",\"asset_repair\":{\"spaces\":[\"...\"],\" risks\":[\"...\"],\"mask_eye\":[\"...\"],\"mask_eye\":[\"...\"]},\"causal_flow\":{\"events\":[\"...\"],\"render_rules\":[\"...\"],\"reboth\":[\"...\"]},\"experiment\":{\"_spec\":{\"input\":\"...\",\"artifact\":\"...\",\"browser_checks\":[\"...\"]},\"spec\":{\"input\":\"...\",\"",
     "status": "FAIL",
-    "error": "HTTP 429 {\"message\":\"2 per 1 second\"}\n",
-    "duration_ms": 255,
-    "finished_at": "2026-09-26T00:46:53.745Z"
+    "error": "Unexpected non-whitespace character after JSON at position 313 (line 1 column 314)",
+    "duration_ms": 52646,
+    "finished_at": "2026-09-26T00:50:12.388Z"
   },
-  "independent_models": false,
+  "independent_models": true,
   "schema_valid": false,
   "status": "CHECK",
   "browser_verification": {
@@ -154,7 +212,7 @@
     "results": [
       {
         "name": "desktop",
-        "ms": 621,
+        "ms": 627,
         "errors": [
           "Failed to load resource: the server responded with a status of 404 (File not found)",
           "SyntaxError: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"
@@ -164,7 +222,7 @@
       },
       {
         "name": "mobile",
-        "ms": 594,
+        "ms": 593,
         "errors": [
           "Failed to load resource: the server responded with a status of 404 (File not found)",
           "SyntaxError: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"
