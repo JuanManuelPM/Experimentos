@@ -24,7 +24,7 @@ Devolvé JSON válido y nada más:
 {"risks":["..."],"fabric_spec":{"events":["..."],"states":["..."],"replay":["..."]},"acceptance":["..."]}
 ### Response:
 `;
-const parallelStart=Date.now();const [a,b]=await Promise.all([runOne("asset-worker",pA,mA),runOne("causal-critic",pB,mB)]);const parallel_wall_ms=Date.now()-parallelStart;
+const parallelStart=Date.now();const [a,b]=await Promise.all([runOne("asset-worker",pA,mA,480),runOne("causal-critic",pB,mB,480)]);const parallel_wall_ms=Date.now()-parallelStart;
 const synthPrompt=`### Instruction:
 Sos el synthesizer/judge. Tenés dos artifacts candidate de workers independientes.
 A=${JSON.stringify(a.parsed||{error:a.error})}
@@ -34,7 +34,7 @@ JSON válido y nada más:
 {"decision":"...","asset_repair":{"spaces":["..."],"mask_eye":["..."]},"causal_flow":{"events":["..."],"render_rules":["..."],"replay":["..."]},"experiment":{"input":"...","artifact":"...","browser_checks":["..."]},"acceptance":["..."],"rejected":["..."]}
 ### Response:
 `;
-const synth=await runOne("synthesizer",synthPrompt,mS,900);
+await new Promise(r=>setTimeout(r,1200));const synth=await runOne("synthesizer",synthPrompt,mS,500);
 let schema_valid=false;try{const j=synth.parsed;schema_valid=typeof j?.decision==="string"&&Array.isArray(j?.acceptance)&&Array.isArray(j?.rejected)&&j?.asset_repair&&j?.causal_flow&&j?.experiment}catch{}
 const report={run_id:"horde-fabric-"+(process.env.GITHUB_RUN_ID||Date.now()),generated_at:new Date().toISOString(),cost_usd:0,account_required:false,human_actions:0,input:{visual_snapshot_generated_at:snapshot.generated_at,failures},models_considered:models.slice(0,8).map(x=>({name:x.name,count:x.count})),parallel_wall_ms,workers:[a,b],synthesis:synth,independent_models:new Set([a.model,b.model,synth.model].filter(Boolean)).size>=2,schema_valid,status:a.status==="PASS"&&b.status==="PASS"&&synth.status==="PASS"&&schema_valid?"PASS":"CHECK"};
 await fs.writeFile(path.join(out,"latest.json"),JSON.stringify(report,null,2));console.log(JSON.stringify({status:report.status,parallel_wall_ms,models:[a.model,b.model,synth.model],schema_valid},null,2));
