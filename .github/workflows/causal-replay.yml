@@ -1,0 +1,45 @@
+name: Causal Replay Lab
+on:
+  push:
+    branches: [master]
+    paths:
+      - "worker-lab/causal-replay/**"
+      - ".github/workflows/causal-replay.yml"
+permissions:
+  contents: write
+jobs:
+  replay:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: "22"}
+      - run: |
+          npm install --no-save playwright
+          npx playwright install --with-deps chromium
+      - run: node worker-lab/causal-replay/qa.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: causal-replay-evidence
+          path: worker-lab/causal-replay/out/
+          retention-days: 7
+      - name: Publish evidence
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin gh-pages
+          git worktree add /tmp/cr-pages origin/gh-pages
+          rm -rf /tmp/cr-pages/causal-replay
+          mkdir -p /tmp/cr-pages/causal-replay/results
+          cp worker-lab/causal-replay/index.html /tmp/cr-pages/causal-replay/index.html
+          test -d worker-lab/causal-replay/out && cp -R worker-lab/causal-replay/out/. /tmp/cr-pages/causal-replay/results/ || true
+          cd /tmp/cr-pages
+          git config user.name "worker-lab-bot"
+          git config user.email "worker-lab-bot@users.noreply.github.com"
+          git add causal-replay
+          git commit -m "Publish causal replay evidence" || exit 0
+          git pull --rebase origin gh-pages
+          git push origin HEAD:gh-pages
