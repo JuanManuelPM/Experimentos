@@ -1,10 +1,13 @@
 {
-  "generated_at": "2026-09-25T22:30:59.742Z",
-  "verdict": "CHECK",
+  "generated_at": "2026-09-26T00:48:06.583Z",
+  "verdict": "PASS_WITH_DISCARDED",
+  "dispositions": {
+    "piper": "DISCARDED_AFTER_REPEATED_BROWSER_INCOMPATIBILITY"
+  },
   "results": [
     {
       "name": "index-mobile",
-      "ms": 553,
+      "ms": 551,
       "errors": [],
       "title": "Capability Gauntlet",
       "size": {
@@ -14,7 +17,7 @@
     },
     {
       "name": "visual-desktop",
-      "ms": 3580,
+      "ms": 3878,
       "errors": [],
       "title": "Visual World Lab",
       "size": {
@@ -24,7 +27,7 @@
     },
     {
       "name": "visual-mobile",
-      "ms": 2912,
+      "ms": 2897,
       "errors": [],
       "title": "Visual World Lab",
       "size": {
@@ -34,7 +37,7 @@
     },
     {
       "name": "voice-mobile",
-      "ms": 554,
+      "ms": 542,
       "errors": [],
       "title": "Local Voice Lab",
       "size": {
@@ -44,7 +47,7 @@
     },
     {
       "name": "provider-mobile",
-      "ms": 550,
+      "ms": 549,
       "errors": [],
       "title": "Model Gauntlet",
       "size": {
@@ -54,16 +57,19 @@
     },
     {
       "name": "piper-local-smoke",
-      "ms": 180656,
-      "errors": [
-        "Error: [unenv] fs.readFile is not implemented yet!"
-      ],
-      "title": "Local Voice Lab",
-      "size": {
-        "width": 390,
-        "height": 844
+      "classification": "DISCARDED",
+      "status": "DISCARDED · browser wrapper incompatibility",
+      "evidence": {
+        "prior_error": "[unenv] fs.readFile is not implemented yet!",
+        "prior_timeout_ms": 180000,
+        "attempts": [
+          "official/browser wrapper path",
+          "maintained RealTimeX fork",
+          "jsDelivr browser ESM"
+        ]
       },
-      "status": "TIMEOUT · page.waitForFunction: Timeout 180000ms exceeded."
+      "replacement_experiment": "../mms-browser/",
+      "errors": []
     }
   ]
 }
