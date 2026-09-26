@@ -1,0 +1,45 @@
+name: MMS Browser TTS
+on:
+  push:
+    branches: [master]
+    paths:
+      - "worker-lab/mms-browser/**"
+      - ".github/workflows/mms-browser.yml"
+permissions:
+  contents: write
+jobs:
+  tts:
+    runs-on: ubuntu-latest
+    timeout-minutes: 9
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: "22"}
+      - run: |
+          npm install --no-save playwright
+          npx playwright install --with-deps chromium
+      - run: node worker-lab/mms-browser/qa.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: mms-browser-evidence
+          path: worker-lab/mms-browser/out/
+          retention-days: 7
+      - name: Publish evidence
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin gh-pages
+          git worktree add /tmp/mms-pages origin/gh-pages
+          rm -rf /tmp/mms-pages/mms-browser
+          mkdir -p /tmp/mms-pages/mms-browser/results
+          cp worker-lab/mms-browser/index.html /tmp/mms-pages/mms-browser/index.html
+          test -f worker-lab/mms-browser/out/latest.json && cp -R worker-lab/mms-browser/out/. /tmp/mms-pages/mms-browser/results/ || true
+          cd /tmp/mms-pages
+          git config user.name "worker-lab-bot"
+          git config user.email "worker-lab-bot@users.noreply.github.com"
+          git add mms-browser
+          git commit -m "Publish MMS browser TTS evidence" || exit 0
+          git pull --rebase origin gh-pages
+          git push origin HEAD:gh-pages
