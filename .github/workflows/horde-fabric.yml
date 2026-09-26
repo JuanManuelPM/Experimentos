@@ -1,0 +1,46 @@
+name: Horde Fabric
+on:
+  push:
+    branches: [master]
+    paths:
+      - "worker-lab/horde-fabric/**"
+      - ".github/workflows/horde-fabric.yml"
+permissions:
+  contents: write
+jobs:
+  fabric:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: "22"}
+      - run: node worker-lab/horde-fabric/run.mjs
+      - run: |
+          npm install --no-save playwright
+          npx playwright install --with-deps chromium
+      - run: node worker-lab/horde-fabric/qa.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: horde-fabric-evidence
+          path: worker-lab/horde-fabric/out/
+          retention-days: 7
+      - name: Publish evidence
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin gh-pages
+          git worktree add /tmp/hf-pages origin/gh-pages
+          rm -rf /tmp/hf-pages/horde-fabric
+          mkdir -p /tmp/hf-pages/horde-fabric/results
+          cp worker-lab/horde-fabric/index.html /tmp/hf-pages/horde-fabric/index.html
+          test -d worker-lab/horde-fabric/out && cp -R worker-lab/horde-fabric/out/. /tmp/hf-pages/horde-fabric/results/ || true
+          cd /tmp/hf-pages
+          git config user.name "worker-lab-bot"
+          git config user.email "worker-lab-bot@users.noreply.github.com"
+          git add horde-fabric
+          git commit -m "Publish Horde fabric evidence" || exit 0
+          git pull --rebase origin gh-pages
+          git push origin HEAD:gh-pages
