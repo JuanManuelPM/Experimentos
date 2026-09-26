@@ -1,0 +1,46 @@
+name: Asset Repair Proof
+on:
+  push:
+    branches: [master]
+    paths:
+      - "worker-lab/asset-repair/**"
+      - ".github/workflows/asset-repair.yml"
+permissions:
+  contents: write
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: "22"}
+      - run: node worker-lab/asset-repair/run.mjs
+      - run: |
+          npm install --no-save playwright
+          npx playwright install --with-deps chromium
+      - run: node worker-lab/asset-repair/qa.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: asset-repair-evidence
+          path: worker-lab/asset-repair/out/
+          retention-days: 7
+      - name: Publish evidence
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin gh-pages
+          git worktree add /tmp/ar-pages origin/gh-pages
+          rm -rf /tmp/ar-pages/asset-repair
+          mkdir -p /tmp/ar-pages/asset-repair/results
+          cp worker-lab/asset-repair/index.html /tmp/ar-pages/asset-repair/index.html
+          test -d worker-lab/asset-repair/out && cp -R worker-lab/asset-repair/out/. /tmp/ar-pages/asset-repair/results/ || true
+          cd /tmp/ar-pages
+          git config user.name "worker-lab-bot"
+          git config user.email "worker-lab-bot@users.noreply.github.com"
+          git add asset-repair
+          git commit -m "Publish asset repair proof" || exit 0
+          git pull --rebase origin gh-pages
+          git push origin HEAD:gh-pages
