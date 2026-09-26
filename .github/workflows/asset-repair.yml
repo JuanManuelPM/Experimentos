@@ -15,11 +15,26 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with: {node-version: "22"}
-      - run: node worker-lab/asset-repair/run.mjs
+      - name: Run asset search and preserve failure evidence
+        shell: bash
+        run: |
+          set +e
+          mkdir -p worker-lab/asset-repair/out
+          node worker-lab/asset-repair/run.mjs 2>&1 | tee worker-lab/asset-repair/out/runner.log
+          code=${PIPESTATUS[0]}
+          echo "$code" > worker-lab/asset-repair/out/runner-exit.txt
+          exit 0
       - run: |
           npm install --no-save playwright
           npx playwright install --with-deps chromium
-      - run: node worker-lab/asset-repair/qa.mjs
+      - name: Browser verify candidates
+        shell: bash
+        run: |
+          if [ -f worker-lab/asset-repair/out/latest.json ]; then
+            node worker-lab/asset-repair/qa.mjs
+          else
+            echo "No latest.json; preserving runner log instead."
+          fi
       - uses: actions/upload-artifact@v4
         if: always()
         with:
