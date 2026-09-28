@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<title>Transcriptor largo · Experimentos</title>
+<style>
+:root{--bg:#080a0d;--panel:#101419;--panel2:#151a20;--line:#2a333d;--ink:#f5f7f8;--muted:#98a5b0;--good:#7ce399;--warn:#ffd166;--bad:#ff7979;--accent:#d9ff5a;--r:18px}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}body{min-height:100vh}.app{max-width:900px;margin:auto;padding:18px 14px 90px}h1,h2,p{margin:0}.ey{font:900 10px/1 ui-monospace,monospace;color:var(--muted);letter-spacing:.14em}.hero{padding:8px 0 18px}.hero h1{font-size:clamp(38px,8vw,72px);line-height:.9;letter-spacing:-.055em;max-width:780px;margin:8px 0 14px}.hero p{font-size:13px;line-height:1.55;color:var(--muted);max-width:760px}.panel{border:1px solid var(--line);background:var(--panel);border-radius:var(--r);padding:15px;margin-top:12px}.drop{border:1px dashed #52606d;background:#0c1014;border-radius:16px;min-height:170px;display:grid;place-items:center;text-align:center;padding:22px;cursor:pointer}.drop.drag{border-color:var(--accent);background:#11160d}.drop strong{display:block;font-size:20px}.drop span{display:block;color:var(--muted);font-size:12px;margin-top:7px}.meta{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:10px}.m{border:1px solid #232b33;background:#0b0f13;border-radius:12px;padding:10px}.m b{display:block;font-size:14px}.m span{display:block;color:var(--muted);font-size:9px;margin-top:3px;text-transform:uppercase}.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:12px}button,select{font:inherit;border:1px solid var(--line);background:var(--panel2);color:var(--ink);border-radius:12px;min-height:44px;padding:0 13px;font-weight:800}button{cursor:pointer}.primary{background:var(--accent);border-color:var(--accent);color:#0b0d0f}.primary:disabled,button:disabled{opacity:.4;cursor:not-allowed}.status{margin-top:12px;border-left:3px solid var(--line);background:#0b0e11;border-radius:8px;padding:11px 12px;font-size:12px;line-height:1.45;color:var(--muted)}.status.good{border-left-color:var(--good);color:#ccefd5}.status.warn{border-left-color:var(--warn);color:#efe2b7}.status.bad{border-left-color:var(--bad);color:#f3b9b9}.progress{height:7px;background:#20262d;border-radius:999px;overflow:hidden;margin-top:12px}.progress i{display:block;height:100%;width:0;background:var(--accent);transition:.2s}.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-top:10px}.step{border:1px solid #242d35;border-radius:11px;padding:9px;background:#0b0f12}.step b{font-size:10px;display:block}.step span{font-size:9px;color:var(--muted);display:block;margin-top:4px}.step.on{border-color:#5d7130}.step.done{border-color:#2f6440}.out{width:100%;min-height:320px;resize:vertical;border:1px solid var(--line);background:#07090c;color:var(--ink);border-radius:14px;padding:14px;font:14px/1.55 ui-monospace,SFMono-Regular,Menlo,monospace;margin-top:10px}.note{font-size:10px;color:var(--muted);line-height:1.5;margin-top:10px}.hidden{display:none!important}.small{font-size:11px;color:var(--muted)}@media(max-width:650px){.meta{grid-template-columns:1fr 1fr}.steps{grid-template-columns:1fr 1fr}.hero h1{font-size:46px}.app{padding:12px 10px 70px}}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="hero">
+    <div class="ey">JUANMANUELPM / EXPERIMENTOS · GROQ WHISPER</div>
+    <h1>Audio largo → texto.</h1>
+    <p>Subís una reunión, clase o nota de voz. Si entra en el límite gratuito de Groq se manda directo; si pesa demasiado, se comprime y, sólo si todavía hace falta, se parte localmente en el navegador antes de transcribir. La credencial Groq se reutiliza desde el vault que ya existe en este mismo origen y nunca se imprime en pantalla.</p>
+  </div>
+
+  <section class="panel">
+    <input id="file" type="file" accept="audio/*,video/*" class="hidden">
+    <div id="drop" class="drop" tabindex="0" role="button">
+      <div><strong>Elegir audio</strong><span>MP3, M4A, WAV, OGG, WebM, MP4 y similares. También podés arrastrarlo acá.</span></div>
+    </div>
+    <div class="meta">
+      <div class="m"><b id="name">—</b><span>archivo</span></div>
+      <div class="m"><b id="size">—</b><span>tamaño</span></div>
+      <div class="m"><b id="duration">—</b><span>duración</span></div>
+    </div>
+    <div class="row">
+      <select id="model" aria-label="Modelo">
+        <option value="whisper-large-v3">Máxima precisión · Whisper Large V3</option>
+        <option value="whisper-large-v3-turbo">Más rápido · Large V3 Turbo</option>
+      </select>
+      <button id="run" class="primary" disabled>TRANSCRIBIR</button>
+      <button id="cancel" disabled>CANCELAR</button>
+    </div>
+    <div id="cred" class="status">Buscando la credencial Groq guardada en este navegador…</div>
+    <div id="status" class="status hidden"></div>
+    <div class="progress hidden" id="progress"><i></i></div>
+    <div class="steps hidden" id="steps">
+      <div class="step" data-step="inspect"><b>1 · INSPECCIONAR</b><span>duración y tamaño</span></div>
+      <div class="step" data-step="prepare"><b>2 · PREPARAR</b><span>directo o chunks</span></div>
+      <div class="step" data-step="send"><b>3 · TRANSCRIBIR</b><span>Groq Whisper</span></div>
+      <div class="step" data-step="merge"><b>4 · UNIR</b><span>quitar solapes</span></div>
+    </div>
+    <div class="note">Privacidad: el preprocesado de archivos grandes ocurre en tu navegador, pero el audio final sí se envía a Groq para transcribir. Esta página no sube el audio a GitHub ni lo guarda en el repo.</div>
+  </section>
+
+  <section class="panel">
+    <div class="row" style="margin-top:0;justify-content:space-between"><h2>Transcripción</h2><span id="resultMeta" class="small">sin resultado</span></div>
+    <textarea id="out" class="out" placeholder="Acá va a aparecer la transcripción completa…"></textarea>
+    <div class="row">
+      <button id="copy" disabled>COPIAR</button>
+      <button id="download" disabled>DESCARGAR .TXT</button>
+      <button id="clear">LIMPIAR</button>
+    </div>
+  </section>
+</div>
+<script type="module">
+const $=s=>document.querySelector(s);
+const MAX_DIRECT_BYTES=24*1024*1024;
+const TARGET_BITRATE='32k';
+const CHUNK_SECONDS=10*60;
+const OVERLAP_SECONDS=4;
+const state={file:null,duration:null,token:null,abort:null,busy:false,ffmpeg:null,ffmpegReady:false};
+
+function fmtBytes(n){if(!Number.isFinite(n))return '—';const u=['B','KB','MB','GB'];let i=0;while(n>=1024&&i<u.length-1){n/=1024;i++}return (i?n.toFixed(1):Math.round(n))+' '+u[i]}
+function fmtTime(sec){if(!Number.isFinite(sec))return '—';const h=Math.floor(sec/3600),m=Math.floor((sec%3600)/60),s=Math.round(sec%60);return (h?h+':':'')+String(m).padStart(h?2:1,'0')+':'+String(s).padStart(2,'0')}
+function setStatus(text,kind=''){const el=$('#status');el.className='status '+kind;el.textContent=text}
+function setProgress(p){$('#progress').classList.remove('hidden');$('#progress i').style.width=Math.max(0,Math.min(100,p))+'%'}
+function step(name,mode){const el=document.querySelector('[data-step="'+name+'"]');if(!el)return;el.classList.remove('on','done');if(mode)el.classList.add(mode)}
+function resetSteps(){for(const x of document.querySelectorAll('.step'))x.classList.remove('on','done');$('#steps').classList.remove('hidden')}
+function setBusy(v){state.busy=v;$('#run').disabled=v||!state.file||!state.token;$('#cancel').disabled=!v;$('#file').disabled=v;$('#model').disabled=v}
+function cleanName(s){return String(s||'transcripcion').replace(/.[^.]+$/,'').replace(/[^p{L}p{N}_ -]+/gu,'').trim()||'transcripcion'}
+
+function openDB(name,version){return new Promise((res,rej)=>{const q=indexedDB.open(name,version);q.onsuccess=()=>res(q.result);q.onerror=()=>rej(q.error);q.onupgradeneeded=()=>{try{q.transaction.abort()}catch{}}})}
+async function dbGet(dbn,store,key){try{const db=await openDB(dbn);if(!db.objectStoreNames.contains(store))return null;return await new Promise((res,rej)=>{const q=db.transaction(store).objectStore(store).get(key);q.onsuccess=()=>res(q.result||null);q.onerror=()=>rej(q.error)})}catch{return null}}
+async function loadGroqToken(){
+  let c=await dbGet('worker-lab-fast-vault','provider_tokens','groq');
+  if(!c){const legacy=await dbGet('worker-lab-vault','secrets','groq');if(legacy)c=legacy}
+  const token=typeof c==='string'?c:c?.token;
+  if(token){state.token=token;$('#cred').className='status good';$('#cred').textContent='Groq conectado: se encontró la credencial guardada en este navegador.'}
+  else{$('#cred').className='status warn';$('#cred').textContent='No encontré la credencial Groq en este navegador. El código está listo, pero acá no podría llamar a la API hasta que exista esa credencial en el vault de este origen.'}
+  setBusy(false);
+}
+
+async function mediaDuration(file){return new Promise((res,rej)=>{const media=document.createElement(file.type.startsWith('video/')?'video':'audio');const url=URL.createObjectURL(file);media.preload='metadata';media.onloadedmetadata=()=>{const d=media.duration;URL.revokeObjectURL(url);res(Number.isFinite(d)?d:null)};media.onerror=()=>{URL.revokeObjectURL(url);rej(new Error('No pude leer la duración del archivo'))};media.src=url})}
+async function choose(file){if(!file)return;state.file=file;state.duration=null;$('#name').textContent=file.name;$('#size').textContent=fmtBytes(file.size);$('#duration').textContent='leyendo…';$('#out').value='';$('#resultMeta').textContent='sin resultado';$('#copy').disabled=$('#download').disabled=true;try{state.duration=await mediaDuration(file);$('#duration').textContent=fmtTime(state.duration)}catch{$('#duration').textContent='desconocida'}setBusy(false)}
+
+$('#drop').onclick=()=>!state.busy&&$('#file').click();
+$('#drop').onkeydown=e=>{if((e.key==='Enter'||e.key===' ')&&!state.busy){e.preventDefault();$('#file').click()}};
+$('#file').onchange=e=>choose(e.target.files?.[0]);
+for(const ev of ['dragenter','dragover'])$('#drop').addEventListener(ev,e=>{e.preventDefault();$('#drop').classList.add('drag')});
+for(const ev of ['dragleave','drop'])$('#drop').addEventListener(ev,e=>{e.preventDefault();$('#drop').classList.remove('drag')});
+$('#drop').addEventListener('drop',e=>choose(e.dataTransfer?.files?.[0]));
+
+async function loadFFmpeg(){
+  if(state.ffmpegReady)return state.ffmpeg;
+  setStatus('Archivo grande: cargando FFmpeg local para comprimir y partir el audio…','warn');
+  const [{FFmpeg},{fetchFile,toBlobURL}]=await Promise.all([
+    import('https://unpkg.com/@ffmpeg/ffmpeg@0.12.15/dist/esm/index.js'),
+    import('https://unpkg.com/@ffmpeg/util@0.12.2/dist/esm/index.js')
+  ]);
+  const ffmpeg=new FFmpeg();
+  const base='https://unpkg.com/@ffmpeg/core@0.12.10/dist/esm';
+  ffmpeg.on('progress',({progress})=>{if(state.busy)setProgress(8+Math.min(.92,Math.max(0,progress))*27)});
+  await ffmpeg.load({
+    coreURL:await toBlobURL(base+'/ffmpeg-core.js','text/javascript'),
+    wasmURL:await toBlobURL(base+'/ffmpeg-core.wasm','application/wasm')
+  });
+  ffmpeg.__fetchFile=fetchFile;
+  state.ffmpeg=ffmpeg;state.ffmpegReady=true;
+  return ffmpeg;
+}
+
+async function prepareChunks(file,duration){
+  if(file.size<=MAX_DIRECT_BYTES)return[{blob:file,name:file.name,start:0,end:duration||null}];
+  const ff=await loadFFmpeg();
+  const ext=(file.name.match(/.([a-z0-9]+)$/i)?.[1]||'bin').toLowerCase();
+  const input='input.'+ext,prepared='prepared.m4a';
+  setStatus('Archivo grande: comprimiendo el audio completo localmente antes de decidir si hace falta partirlo…','warn');
+  await ff.writeFile(input,await ff.__fetchFile(file));
+  await ff.exec(['-i',input,'-vn','-ac','1','-ar','16000','-c:a','aac','-b:a',TARGET_BITRATE,'-y',prepared]);
+  const compactData=await ff.readFile(prepared);
+  const compactBlob=new Blob([compactData.buffer],{type:'audio/mp4'});
+  setProgress(34);
+  if(compactBlob.size<=MAX_DIRECT_BYTES){
+    try{await ff.deleteFile(input)}catch{}
+    try{await ff.deleteFile(prepared)}catch{}
+    return[{blob:compactBlob,name:'audio-preparado.m4a',start:0,end:duration||null}];
+  }
+  if(!Number.isFinite(duration)||duration<=0){
+    try{await ff.deleteFile(input)}catch{}
+    try{await ff.deleteFile(prepared)}catch{}
+    throw new Error('El audio sigue superando 24 MiB después de comprimir y el navegador no informó su duración; no voy a recortarlo a ciegas.');
+  }
+  const count=Math.max(1,Math.ceil(duration/CHUNK_SECONDS));
+  const chunks=[];
+  for(let i=0;i<count;i++){
+    if(state.abort?.signal.aborted)throw new DOMException('Cancelado','AbortError');
+    const start=Math.max(0,i*CHUNK_SECONDS-(i?OVERLAP_SECONDS:0));
+    const end=Math.min(duration,(i+1)*CHUNK_SECONDS+(i<count-1?OVERLAP_SECONDS:0));
+    const len=Math.max(1,end-start);
+    const out='chunk-'+String(i).padStart(3,'0')+'.m4a';
+    setStatus('Partiendo tramo '+(i+1)+'/'+count+' · '+fmtTime(start)+' → '+fmtTime(end),'warn');
+    await ff.exec(['-ss',String(start),'-i',prepared,'-t',String(len),'-vn','-ac','1','-ar','16000','-c:a','aac','-b:a',TARGET_BITRATE,'-y',out]);
+    const data=await ff.readFile(out);
+    const blob=new Blob([data.buffer],{type:'audio/mp4'});
+    if(blob.size>MAX_DIRECT_BYTES)throw new Error('Un tramo comprimido todavía supera el límite de 25 MB.');
+    chunks.push({blob,name:out,start,end});
+    try{await ff.deleteFile(out)}catch{}
+    setProgress(34+((i+1)/count)*6);
+  }
+  try{await ff.deleteFile(input)}catch{}
+  try{await ff.deleteFile(prepared)}catch{}
+  return chunks;
+}
+
+function normalizeWord(w){return w.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9ñ]+/gi,'')}
+function mergeWithOverlap(base,next){
+  base=(base||'').trim();next=(next||'').trim();if(!base)return next;if(!next)return base;
+  const a=base.split(/s+/),b=next.split(/s+/),max=Math.min(50,a.length,b.length);let best=0;
+  for(let n=max;n>=4;n--){let ok=true;for(let i=0;i<n;i++){if(normalizeWord(a[a.length-n+i])!==normalizeWord(b[i])){ok=false;break}}if(ok){best=n;break}}
+  return base+' '+b.slice(best).join(' ');
+}
+
+async function groqTranscribe(chunk,index,total,previousTail){
+  const form=new FormData();
+  form.append('file',chunk.blob,chunk.name);
+  form.append('model',$('#model').value);
+  form.append('language','es');
+  form.append('response_format','verbose_json');
+  form.append('timestamp_granularities[]','segment');
+  form.append('temperature','0');
+  if(previousTail)form.append('prompt',previousTail.slice(-500));
+  let lastErr;
+  for(let attempt=1;attempt<=4;attempt++){
+    if(state.abort?.signal.aborted)throw new DOMException('Cancelado','AbortError');
+    setStatus('Transcribiendo tramo '+(index+1)+'/'+total+(attempt>1?' · reintento '+attempt:''),'');
+    const r=await fetch('https://api.groq.com/openai/v1/audio/transcriptions',{method:'POST',headers:{Authorization:'Bearer '+state.token},body:form,signal:state.abort.signal});
+    const raw=await r.text();let body;try{body=JSON.parse(raw)}catch{body={raw}}
+    if(r.ok)return body;
+    lastErr=new Error(body?.error?.message||body?.message||('HTTP '+r.status));
+    if(r.status!==429&&r.status<500)throw lastErr;
+    const retry=Number(r.headers.get('retry-after'))||Math.min(12,Math.pow(2,attempt));
+    await new Promise((res,rej)=>{const t=setTimeout(res,retry*1000);state.abort.signal.addEventListener('abort',()=>{clearTimeout(t);rej(new DOMException('Cancelado','AbortError'))},{once:true})});
+  }
+  throw lastErr||new Error('Falló la transcripción');
+}
+
+async function run(){
+  if(state.busy||!state.file||!state.token)return;
+  state.abort=new AbortController();setBusy(true);resetSteps();$('#progress').classList.remove('hidden');setProgress(2);$('#out').value='';
+  const started=performance.now();
+  try{
+    step('inspect','on');setStatus('Inspeccionando archivo…');
+    if(state.duration==null){try{state.duration=await mediaDuration(state.file);$('#duration').textContent=fmtTime(state.duration)}catch{}}
+    step('inspect','done');step('prepare','on');setProgress(7);
+    const chunks=await prepareChunks(state.file,state.duration);
+    step('prepare','done');step('send','on');
+    let merged='';
+    for(let i=0;i<chunks.length;i++){
+      const body=await groqTranscribe(chunks[i],i,chunks.length,merged.slice(-500));
+      merged=mergeWithOverlap(merged,body.text||'');
+      $('#out').value=merged;
+      setProgress(40+((i+1)/chunks.length)*50);
+    }
+    step('send','done');step('merge','on');setStatus('Uniendo texto y limpiando duplicados de los solapes…');
+    $('#out').value=merged.replace(/[ 	]+
+/g,'
+').replace(/
+{3,}/g,'
+
+').trim();
+    step('merge','done');setProgress(100);
+    const elapsed=(performance.now()-started)/1000;
+    setStatus('Listo. El audio fue transcripto completo.','good');
+    $('#resultMeta').textContent=(state.duration?fmtTime(state.duration)+' de audio · ':'')+fmtTime(elapsed)+' de proceso · '+chunks.length+' petición'+(chunks.length===1?'':'es');
+    $('#copy').disabled=$('#download').disabled=!$('#out').value;
+  }catch(e){
+    if(e?.name==='AbortError')setStatus('Cancelado. No se continúa enviando audio.','warn');
+    else{console.error(e);setStatus('Error: '+(e?.message||e),'bad')}
+  }finally{setBusy(false);state.abort=null}
+}
+
+$('#run').onclick=run;
+$('#cancel').onclick=()=>state.abort?.abort();
+$('#copy').onclick=async()=>{await navigator.clipboard.writeText($('#out').value);$('#copy').textContent='COPIADO';setTimeout(()=>$('#copy').textContent='COPIAR',1000)};
+$('#download').onclick=()=>{const blob=new Blob([$('#out').value],{type:'text/plain;charset=utf-8'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=cleanName(state.file?.name)+'.txt';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1500)};
+$('#clear').onclick=()=>{if(state.busy)return;state.file=null;state.duration=null;$('#file').value='';$('#name').textContent=$('#size').textContent=$('#duration').textContent='—';$('#out').value='';$('#resultMeta').textContent='sin resultado';$('#status').classList.add('hidden');$('#progress').classList.add('hidden');$('#steps').classList.add('hidden');$('#copy').disabled=$('#download').disabled=true;setBusy(false)};
+
+loadGroqToken();
+</script>
+</body>
+</html>
