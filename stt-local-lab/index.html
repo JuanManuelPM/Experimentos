@@ -4,7 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="color-scheme" content="dark">
-<title>STT Local Lab · Experimentos</title>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<title>STT Local Lab V3 · Experimentos</title>
 <style>
 :root{--bg:#090b0d;--panel:#11151a;--panel2:#171c22;--line:#2a333c;--ink:#f4f6f8;--muted:#98a5b1;--good:#78e08f;--warn:#ffd166;--bad:#ff7676;--blue:#79b8ff;--cyan:#6ee7f9;--r:18px}
 *{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
@@ -43,7 +46,7 @@ a{color:#9ecbff}
 <body>
 <div class="app">
 <header>
-  <div class="eyebrow">JuanManuelPM / Experimentos</div>
+  <div class="eyebrow">JuanManuelPM / Experimentos · BUILD STT-LAB-V3-20260928</div>
   <h1>Laboratorio de voz → texto local</h1>
   <p class="lead">Probá varios motores con tu propia voz y mirá latencia, parciales, resultado final y compatibilidad. Ningún resultado está inventado: si un motor no carga, queda marcado como error con el motivo.</p>
 </header>
@@ -476,7 +479,7 @@ async function stopMoonshine(){try{await engines.moonshine.mic?.stop()}catch{};i
 function startParakeet(){
   if(engines.parakeet.ready&&engines.parakeet.model){
     // Un transcriber finalizado no debe reutilizarse entre sesiones.
-    engines.parakeet.transcriber=engines.parakeet.model.createStreamingTranscriber();
+    engines.parakeet.transcriber=engines.parakeet.model.createStreamingTranscriber({sampleRate:16000});
     engines.parakeet.queue=Promise.resolve();parakeetChunks=[];parakeetSamples=0;
     setState('parakeet','listening','escuchando · chunks 400 ms · mismo stream');
   }
@@ -537,6 +540,7 @@ async function stopExperiment(){
 function clearAll(){if(running)stopExperiment();resetRun();$('log').textContent='';$('sessionTitle').textContent='Listo para otra prueba';$('sessionSub').textContent='Los modelos ya cargados permanecen en memoria hasta que cierres o recargues la página.'}
 
 function detect(){
+  log('BUILD activo',{build:'STT-LAB-V3-20260928'});
   $('ua').textContent=navigator.userAgent;
   $('capWasm').textContent=typeof WebAssembly==='object'?'Sí':'No';
   $('capGpu').textContent=navigator.gpu?'Sí':'No';
