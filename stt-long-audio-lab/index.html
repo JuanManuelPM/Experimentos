@@ -1,0 +1,344 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta name="color-scheme" content="dark">
+<title>STT Long Audio Lab</title>
+<style>
+:root{--bg:#080a0c;--p:#11161b;--p2:#0b0f13;--line:#29333c;--fg:#f4f7f9;--mut:#8b98a3;--ok:#77e49b;--warn:#ffd166;--bad:#ff7b7b}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--fg);font:14px/1.4 system-ui,-apple-system,Segoe UI,sans-serif}
+.app{max-width:920px;margin:auto;padding:14px 12px 70px}.top{position:sticky;top:0;z-index:5;background:rgba(8,10,12,.96);backdrop-filter:blur(12px);padding:7px 0 10px;border-bottom:1px solid #1d252c}
+h1{font-size:22px;margin:0}.sub{color:var(--mut);font-size:11px;margin-top:3px}.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.grow{flex:1;min-width:180px}
+.card{border:1px solid var(--line);background:var(--p);border-radius:14px;padding:12px;margin-top:10px}.label{font-size:9px;font-weight:850;letter-spacing:.12em;color:var(--mut);margin-bottom:6px}
+.drop{display:block;border:1px dashed #46525d;border-radius:12px;padding:18px;text-align:center;cursor:pointer;background:#0c1115}.drop:hover{border-color:#788894}.drop input{display:none}
+.btn{border:1px solid var(--line);background:#171e24;color:var(--fg);padding:8px 11px;border-radius:10px;font:inherit;cursor:pointer}.btn.primary{background:#eef5ff;color:#081018;border-color:#eef5ff;font-weight:850}.btn.danger{border-color:#704048;color:#ffb7bd}.btn:disabled{opacity:.4;cursor:default}
+select{background:#10161b;color:var(--fg);border:1px solid var(--line);border-radius:9px;padding:8px 9px}.meta{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;margin-top:9px}.m{background:var(--p2);border:1px solid #222c34;border-radius:9px;padding:8px}.m span{display:block;color:var(--mut);font-size:9px}.m b{font-size:12px}
+audio{width:100%;margin-top:9px;height:36px}.status{font-size:15px;font-weight:850}.status.ok{color:var(--ok)}.status.bad{color:var(--bad)}.status.warn{color:var(--warn)}
+.bar{height:10px;border:1px solid #26313a;background:#0b1014;border-radius:99px;overflow:hidden;margin-top:8px}.bar i{display:block;height:100%;width:0;background:var(--ok);transition:width .12s linear}
+.stats{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;margin-top:8px}.stat{border:1px solid #222c34;background:var(--p2);border-radius:9px;padding:7px}.stat span{display:block;color:var(--mut);font-size:8px}.stat b{font-size:11px}
+.live{min-height:92px;max-height:320px;overflow:auto;background:#080b0e;border:1px solid #222c34;border-radius:10px;padding:10px;white-space:pre-wrap;overflow-wrap:anywhere;font-size:14px}.partial{color:#77848e}.segments{display:grid;gap:6px;margin-top:8px}.seg{border:1px solid #222c34;background:#0b0f13;border-radius:9px;padding:8px}.seg time{font-size:9px;color:var(--mut)}.seg div{margin-top:3px}
+details{margin-top:10px;border:1px solid var(--line);border-radius:11px;background:#0d1115;padding:8px 10px}summary{cursor:pointer;color:var(--mut);font-size:11px}pre{white-space:pre-wrap;max-height:230px;overflow:auto;background:#07090b;border:1px solid #202830;border-radius:9px;padding:8px;font-size:9px}
+.note{font-size:10px;color:var(--mut);margin-top:7px}.warnbox{display:none;color:var(--warn);font-size:10px;margin-top:7px}.warnbox.show{display:block}
+@media(max-width:680px){.meta{grid-template-columns:1fr 1fr}.stats{grid-template-columns:1fr 1fr}.stats .stat:last-child{grid-column:1/-1}}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="top">
+    <div class="row">
+      <div class="grow">
+        <h1>STT · Audio largo</h1>
+        <div class="sub">Vosk español 0.3 · local · mismo modelo que ganó el benchmark live</div>
+      </div>
+      <div id="modelStatus" class="status warn">modelo: cargando…</div>
+    </div>
+  </div>
+
+  <section class="card">
+    <div class="label">1 · AUDIO</div>
+    <label class="drop">Elegí un audio largo
+      <input id="file" type="file" accept="audio/*">
+    </label>
+    <audio id="player" controls hidden></audio>
+    <div id="fileStatus" class="note">No se sube a ningún servidor. Se procesa en este navegador.</div>
+    <div id="fileMeta" class="meta" hidden>
+      <div class="m"><span>archivo</span><b id="name">—</b></div>
+      <div class="m"><span>duración</span><b id="duration">—</b></div>
+      <div class="m"><span>tamaño</span><b id="size">—</b></div>
+      <div class="m"><span>formato</span><b id="type">—</b></div>
+    </div>
+    <div id="memoryWarn" class="warnbox"></div>
+  </section>
+
+  <section class="card">
+    <div class="label">2 · ESTRATEGIA</div>
+    <div class="row">
+      <select id="strategy">
+        <option value="continuous">Continuo · un recognizer</option>
+        <option value="seg10">Segmentos de 10 s</option>
+        <option value="seg30">Segmentos de 30 s</option>
+      </select>
+      <button id="quick" class="btn" disabled>Probar 60 s</button>
+      <button id="full" class="btn primary" disabled>Transcribir completo</button>
+      <button id="cancel" class="btn danger" disabled>Cancelar</button>
+    </div>
+    <div class="note">Primero conviene probar 60 s. Si eso funciona, recién ahí castigamos al navegador con una clase entera, porque al parecer también merece derechos humanos.</div>
+  </section>
+
+  <section class="card">
+    <div class="label">3 · PROGRESO</div>
+    <div id="runStatus" class="status">esperando audio</div>
+    <div class="bar"><i id="bar"></i></div>
+    <div class="stats">
+      <div class="stat"><span>audio procesado</span><b id="processed">0:00</b></div>
+      <div class="stat"><span>tiempo real</span><b id="elapsed">0.0 s</b></div>
+      <div class="stat"><span>velocidad</span><b id="speed">—</b></div>
+      <div class="stat"><span>ETA</span><b id="eta">—</b></div>
+      <div class="stat"><span>resultados</span><b id="resultCount">0</b></div>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="label">TRANSCRIPCIÓN</div>
+    <div id="transcript" class="live">Todavía no hay transcripción.</div>
+    <div id="segments" class="segments"></div>
+    <div class="row" style="margin-top:9px">
+      <button id="downloadTxt" class="btn" disabled>Descargar TXT</button>
+      <button id="downloadJson" class="btn" disabled>Descargar JSON</button>
+    </div>
+  </section>
+
+  <details>
+    <summary>diagnóstico</summary>
+    <pre id="log"></pre>
+  </details>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/vosk-browser@0.0.8/dist/vosk.js"></script>
+<script>
+const BUILD='STT-LONG-AUDIO-V1-20260928';
+const MODEL='https://raw.githubusercontent.com/allorenter/vosk-browser-example/main/vosk-model-small-es-0.3.tar.gz';
+const CHUNK_SEC=.75;
+const $=id=>document.getElementById(id);
+const state={
+  model:null,file:null,fileUrl:null,audioBuffer:null,decodeCtx:null,
+  running:false,cancel:false,run:null
+};
+
+function log(msg,data){
+  $('log').textContent+='['+new Date().toLocaleTimeString()+'] '+msg+(data?' '+JSON.stringify(data):'')+'\n';
+  console.log('[LONG-STT]',msg,data||'');
+}
+function fmtSec(s){
+  if(!Number.isFinite(s))return '—';
+  s=Math.max(0,s);const h=Math.floor(s/3600),m=Math.floor((s%3600)/60),x=Math.floor(s%60);
+  return h?String(h)+':'+String(m).padStart(2,'0')+':'+String(x).padStart(2,'0'):String(m)+':'+String(x).padStart(2,'0');
+}
+function fmtBytes(n){
+  const u=['B','KB','MB','GB'];let i=0,x=n;while(x>=1024&&i<u.length-1){x/=1024;i++}return x.toFixed(i<2?0:1)+' '+u[i];
+}
+function setReady(){
+  const ready=!!(state.model&&state.file);
+  $('quick').disabled=!ready||state.running;
+  $('full').disabled=!ready||state.running;
+}
+function updateTranscript(text,partial=''){
+  const final=(text||'').trim();
+  if(!final&&!partial){$('transcript').textContent='Todavía no hay transcripción.';return}
+  $('transcript').innerHTML='';
+  const a=document.createTextNode(final+(final&&partial?' ':''));
+  $('transcript').appendChild(a);
+  if(partial){const s=document.createElement('span');s.className='partial';s.textContent=partial;$('transcript').appendChild(s)}
+  $('transcript').scrollTop=$('transcript').scrollHeight;
+}
+function renderSegments(){
+  if(!state.run)return;
+  $('segments').innerHTML=state.run.segments.slice(-30).map(s=>'<div class="seg"><time>'+fmtSec(s.start)+' → '+fmtSec(s.end)+'</time><div>'+escapeHtml(s.text||'—')+'</div></div>').join('');
+}
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+async function loadModel(){
+  const t=performance.now();
+  try{
+    state.model=await Vosk.createModel(MODEL);
+    $('modelStatus').textContent='modelo: listo';
+    $('modelStatus').className='status ok';
+    log('model ready',{ms:Math.round(performance.now()-t)});
+    setReady();
+  }catch(e){
+    $('modelStatus').textContent='modelo: error';
+    $('modelStatus').className='status bad';
+    log('model error',{error:String(e)});
+  }
+}
+async function probeMetadata(file){
+  return new Promise((resolve,reject)=>{
+    const u=URL.createObjectURL(file),a=document.createElement('audio');
+    a.preload='metadata';a.src=u;
+    a.onloadedmetadata=()=>{const d=a.duration;URL.revokeObjectURL(u);resolve(d)};
+    a.onerror=()=>{URL.revokeObjectURL(u);reject(new Error('El navegador no pudo leer los metadatos del audio.'))};
+  });
+}
+$('file').onchange=async e=>{
+  const file=e.target.files?.[0];if(!file)return;
+  if(state.running)return;
+  state.file=file;state.audioBuffer=null;
+  if(state.fileUrl)URL.revokeObjectURL(state.fileUrl);
+  state.fileUrl=URL.createObjectURL(file);
+  $('player').src=state.fileUrl;$('player').hidden=false;
+  $('fileMeta').hidden=false;$('name').textContent=file.name;$('size').textContent=fmtBytes(file.size);$('type').textContent=file.type||'desconocido';
+  $('fileStatus').textContent='Leyendo metadatos…';
+  try{
+    const d=await probeMetadata(file);$('duration').textContent=fmtSec(d);
+    const est=d*48000*4*2;
+    $('memoryWarn').classList.toggle('show',est>700*1024*1024);
+    $('memoryWarn').textContent=est>700*1024*1024?'Audio largo: la decodificación completa podría usar cerca de '+fmtBytes(est)+' si llega como estéreo a 48 kHz. Probemos primero 60 segundos.':'';
+    $('fileStatus').textContent='Listo para decodificar localmente.';
+    log('file selected',{name:file.name,size:file.size,type:file.type,duration:d});
+  }catch(err){$('duration').textContent='—';$('fileStatus').textContent=String(err);log('metadata error',{error:String(err)})}
+  setReady();
+};
+async function ensureDecoded(){
+  if(state.audioBuffer)return state.audioBuffer;
+  if(!state.file)throw new Error('Falta archivo');
+  $('runStatus').textContent='decodificando audio…';
+  const t=performance.now();
+  state.decodeCtx=state.decodeCtx||new (window.AudioContext||window.webkitAudioContext)();
+  const bytes=await state.file.arrayBuffer();
+  const decoded=await state.decodeCtx.decodeAudioData(bytes);
+  state.audioBuffer=decoded;
+  $('duration').textContent=fmtSec(decoded.duration);
+  log('decoded',{ms:Math.round(performance.now()-t),duration:decoded.duration,sampleRate:decoded.sampleRate,channels:decoded.numberOfChannels,frames:decoded.length});
+  return decoded;
+}
+function monoChunk(buffer,start,end){
+  const n=end-start,out=new Float32Array(n),ch=buffer.numberOfChannels;
+  if(ch===1){out.set(buffer.getChannelData(0).subarray(start,end));return out}
+  const channels=[];for(let c=0;c<ch;c++)channels.push(buffer.getChannelData(c));
+  for(let i=0;i<n;i++){let v=0;for(let c=0;c<ch;c++)v+=channels[c][start+i];out[i]=v/ch}
+  return out;
+}
+function makeHarness(sampleRate,offsetSec=0){
+  const rec=new state.model.KaldiRecognizer(sampleRate);rec.setWords(true);
+  const pending=[];
+  const results=[];
+  let committed='',partial='',closed=false;
+  function settle(message,isResult){
+    const p=pending.shift();if(p){clearTimeout(p.timer);p.resolve(message)}
+    if(isResult){
+      const t=(message?.result?.text||'').trim();
+      if(t){
+        committed=(committed+' '+t).trim();
+        const words=(message?.result?.result||[]).map(w=>({...w,start:(w.start||0)+offsetSec,end:(w.end||0)+offsetSec}));
+        results.push({text:t,words});
+      }
+      partial='';
+    }else{
+      partial=(message?.result?.partial||'').trim();
+    }
+    if(state.run)updateTranscript(state.run.textPrefix+committed,partial);
+  }
+  rec.on('result',m=>settle(m,true));
+  rec.on('partialresult',m=>settle(m,false));
+  rec.on('error',m=>{
+    const p=pending.shift();if(p){clearTimeout(p.timer);p.reject(new Error(m?.error||'Vosk error'))}
+  });
+  function action(fn,label,timeout=30000){
+    return new Promise((resolve,reject)=>{
+      const timer=setTimeout(()=>{reject(new Error(label+' timeout'));},timeout);
+      pending.push({resolve,reject,timer,label});
+      try{fn()}catch(e){pending.pop();clearTimeout(timer);reject(e)}
+    });
+  }
+  return {
+    rec,results,
+    get committed(){return committed},
+    async feed(data,sr){return action(()=>rec.acceptWaveformFloat(data,sr),'chunk',30000)},
+    async finalize(){return action(()=>rec.retrieveFinalResult(),'final',30000)},
+    remove(){if(closed)return;closed=true;try{rec.remove()}catch{}}
+  };
+}
+function setProgress(processed,total,startPerf,resultCount){
+  const pct=total?100*processed/total:0;$('bar').style.width=Math.min(100,pct)+'%';
+  const sr=state.audioBuffer?.sampleRate||1,audioSec=processed/sr,totalSec=total/sr,elapsed=(performance.now()-startPerf)/1000,speed=elapsed?audioSec/elapsed:0;
+  $('processed').textContent=fmtSec(audioSec)+' / '+fmtSec(totalSec);
+  $('elapsed').textContent=elapsed.toFixed(1)+' s';
+  $('speed').textContent=speed?speed.toFixed(2)+'×':'—';
+  $('eta').textContent=speed?fmtSec((totalSec-audioSec)/speed):'—';
+  $('resultCount').textContent=String(resultCount||0);
+}
+async function transcribeContinuous(buffer,endFrame){
+  const sr=buffer.sampleRate,chunk=Math.max(4096,Math.round(CHUNK_SEC*sr)),h=makeHarness(sr,0);
+  state.run.textPrefix='';
+  let processed=0;
+  try{
+    for(let s=0;s<endFrame;s+=chunk){
+      if(state.cancel)throw new Error('__CANCEL__');
+      const e=Math.min(endFrame,s+chunk),data=monoChunk(buffer,s,e);
+      await h.feed(data,sr);processed=e;
+      setProgress(processed,endFrame,state.run.started,h.results.length);
+      state.run.events=h.results.slice();
+    }
+    await h.finalize();
+    state.run.events=h.results.slice();
+    state.run.transcript=h.committed;
+    state.run.segments=h.results.map(r=>{
+      const ws=r.words||[],start=ws.length?ws[0].start:null,end=ws.length?ws[ws.length-1].end:null;
+      return {start:start??0,end:end??0,text:r.text,words:ws};
+    });
+    updateTranscript(state.run.transcript,'');renderSegments();
+  }finally{h.remove()}
+}
+function strategySpec(id){
+  if(id==='seg10')return {segmentSec:10};
+  if(id==='seg30')return {segmentSec:30};
+  return null;
+}
+async function transcribeSegmented(buffer,endFrame,spec){
+  const sr=buffer.sampleRate,segFrames=Math.round(spec.segmentSec*sr),feedFrames=Math.max(4096,Math.round(CHUNK_SEC*sr));
+  let globalText='',processed=0,index=0;
+  for(let segStart=0;segStart<endFrame;segStart+=segFrames){
+    if(state.cancel)throw new Error('__CANCEL__');
+    const segEnd=Math.min(endFrame,segStart+segFrames),offset=segStart/sr,h=makeHarness(sr,offset);
+    state.run.textPrefix=globalText+(globalText?' ':'');
+    try{
+      for(let s=segStart;s<segEnd;s+=feedFrames){
+        if(state.cancel)throw new Error('__CANCEL__');
+        const e=Math.min(segEnd,s+feedFrames);
+        await h.feed(monoChunk(buffer,s,e),sr);processed=e;
+        setProgress(processed,endFrame,state.run.started,state.run.segments.length+h.results.length);
+      }
+      await h.finalize();
+      const txt=h.committed.trim();if(txt)globalText=(globalText+' '+txt).trim();
+      const words=h.results.flatMap(r=>r.words||[]);
+      state.run.segments.push({index,start:offset,end:segEnd/sr,text:txt,words});
+      state.run.events.push(...h.results);
+      state.run.transcript=globalText;
+      state.run.textPrefix='';
+      updateTranscript(globalText,'');renderSegments();index++;
+    }finally{h.remove()}
+  }
+}
+async function run(scope){
+  if(state.running||!state.file||!state.model)return;
+  state.running=true;state.cancel=false;setReady();$('cancel').disabled=false;$('downloadTxt').disabled=true;$('downloadJson').disabled=true;
+  $('segments').innerHTML='';$('transcript').textContent='Preparando audio…';$('bar').style.width='0%';
+  try{
+    const buffer=await ensureDecoded(),strategy=$('strategy').value;
+    const endFrame=scope==='quick'?Math.min(buffer.length,Math.round(60*buffer.sampleRate)):buffer.length;
+    state.run={build:BUILD,file:{name:state.file.name,size:state.file.size,type:state.file.type,duration:buffer.duration,sampleRate:buffer.sampleRate,channels:buffer.numberOfChannels},strategy,scope,started:performance.now(),started_iso:new Date().toISOString(),segments:[],events:[],transcript:'',textPrefix:''};
+    $('runStatus').textContent=(scope==='quick'?'prueba 60 s':'archivo completo')+' · '+strategy;
+    log('run start',{strategy,scope,endSec:endFrame/buffer.sampleRate,sampleRate:buffer.sampleRate,channels:buffer.numberOfChannels});
+    const spec=strategySpec(strategy);
+    if(spec)await transcribeSegmented(buffer,endFrame,spec);else await transcribeContinuous(buffer,endFrame);
+    const elapsed=(performance.now()-state.run.started)/1000,audioSec=endFrame/buffer.sampleRate;
+    state.run.finished_iso=new Date().toISOString();state.run.elapsed_sec=elapsed;state.run.audio_sec=audioSec;state.run.speed_x=audioSec/elapsed;state.run.cancelled=false;
+    $('runStatus').textContent='terminado · '+state.run.speed_x.toFixed(2)+'× tiempo real';
+    $('runStatus').className='status ok';
+    $('downloadTxt').disabled=false;$('downloadJson').disabled=false;
+    log('run done',{elapsedSec:Number(elapsed.toFixed(2)),audioSec:Number(audioSec.toFixed(2)),speedX:Number(state.run.speed_x.toFixed(3)),chars:state.run.transcript.length,segments:state.run.segments.length});
+  }catch(e){
+    const cancelled=String(e?.message||e)==='__CANCEL__';
+    $('runStatus').textContent=cancelled?'cancelado':'error: '+String(e?.message||e);
+    $('runStatus').className='status '+(cancelled?'warn':'bad');
+    if(state.run){state.run.cancelled=cancelled;state.run.error=cancelled?null:String(e?.message||e);state.run.finished_iso=new Date().toISOString()}
+    log(cancelled?'run cancelled':'run error',{error:String(e)});
+    if(state.run?.transcript){$('downloadTxt').disabled=false;$('downloadJson').disabled=false}
+  }finally{
+    state.running=false;$('cancel').disabled=true;setReady();
+  }
+}
+$('quick').onclick=()=>run('quick');$('full').onclick=()=>run('full');$('cancel').onclick=()=>{state.cancel=true;$('cancel').disabled=true;$('runStatus').textContent='cancelando…'};
+$('downloadTxt').onclick=()=>{
+  if(!state.run)return;const b=new Blob([state.run.transcript||''],{type:'text/plain;charset=utf-8'}),u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download=(state.file?.name||'audio').replace(/\.[^.]+$/,'')+'-'+state.run.strategy+'.txt';a.click();setTimeout(()=>URL.revokeObjectURL(u),1000)
+};
+$('downloadJson').onclick=()=>{
+  if(!state.run)return;const safe={...state.run,started:undefined,textPrefix:undefined};const b=new Blob([JSON.stringify(safe,null,2)],{type:'application/json'}),u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download=(state.file?.name||'audio').replace(/\.[^.]+$/,'')+'-'+state.run.strategy+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(u),1000)
+};
+window.addEventListener('error',e=>log('window error',{message:e.message,line:e.lineno,source:e.filename}));
+window.addEventListener('unhandledrejection',e=>log('unhandled rejection',{reason:String(e.reason)}));
+log('build',{BUILD,userAgent:navigator.userAgent});loadModel();
+</script>
+</body>
+</html>
