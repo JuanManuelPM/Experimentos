@@ -152,33 +152,141 @@ for(const ev of ['dragenter','dragover'])$('#drop').addEventListener(ev,e=>{$('#
 $('#drop').addEventListener('dragleave',e=>{if(!$('#drop').contains(e.relatedTarget))$('#drop').classList.remove('drag')});
 $('#drop').addEventListener('drop',e=>{e.preventDefault();e.stopPropagation();$('#drop').classList.remove('drag');const f=e.dataTransfer?.files?.[0];if(f)choose(f);else setStatus('Firefox no entregó un archivo en ese arrastre. Usá “ABRIR BUSCADOR DE ARCHIVOS”.','warn')});
 
-function isMp3Header(a,i){
-  if(i+4>a.length||a[i]!==0xff||(a[i+1]&0xe0)!==0xe0)return false;
-  const version=(a[i+1]>>3)&3,layer=(a[i+1]>>1)&3,bitrate=(a[i+2]>>4)&15,sample=(a[i+2]>>2)&3;
-  return version!==1&&layer!==0&&bitrate!==0&&bitrate!==15&&sample!==3;
+function parseMp3FrameHeader(a,i){
+  if(i+4>a.length||a[i]!==0xff||(a[i+1]&0xe0)!==0xe0)return null;
+  const versionBits=(a[i+1]>>3)&3,layerBits=(a[i+1]>>1)&3;
+  if(versionBits===1||layerBits!==1)return null; // Layer III only
+  const bitrateIndex=(a[i+2]>>4)&15,sampleIndex=(a[i+2]>>2)&3,padding=(a[i+2]>>1)&1;
+  if(bitrateIndex===0||bitrateIndex===15||sampleIndex===3)return null;
+  const version=versionBits===3?1:(versionBits===2?2:2.5);
+  const br1=[0,32,40,48,56,64,80,96,112,128,160,192,224,256,320];
+  const br2=[0,8,16,24,32,40,48,56,64,80,96,112,128,144,160];
+  const bitrate=(version===1?br1:br2)[bitrateIndex];
+  const baseRate=[44100,48000,32000][sampleIndex];
+  const sampleRate=version===1?baseRate:(version===2?baseRate/2:baseRate/4);
+  const frameLength=Math.floor(((version===1?144000:72000)*bitrate)/sampleRate)+padding;
+  if(frameLength<24)return null;
+  const samplesPerFrame=version===1?1152:576;
+  const channels=((a[i+3]>>6)&3)===3?1:2;
+  return{version,bitrate,sampleRate,frameLength,samplesPerFrame,channels};
 }
-async function findMp3Sync(file,offset){
-  const from=Math.max(0,Math.floor(offset)),span=512*1024;
-  const buf=new Uint8Array(await file.slice(from,Math.min(file.size,from+span)).arrayBuffer());
-  for(let i=0;i<buf.length-4;i++)if(isMp3Header(buf,i))return from+i;
-  throw new Error('No pude encontrar un frame MP3 cerca de '+fmtBytes(from)+'.');
+function findFirstMp3Frame(a){
+  let start=0;
+  if(a.length>=10&&a[0]===0x49&&a[1]===0x44&&a[2]===0x33){
+    const size=((a[6]&0x7f)<<21)|((a[7]&0x7f)<<14)|((a[8]&0x7f)<<7)|(a[9]&0x7f);
+    start=10+size+((a[5]&0x10)?10:0);
+  }
+  const end=Math.min(a.length-8,start+2*1024*1024);
+  for(let i=start;i<end;i++){
+    const h=parseMp3FrameHeader(a,i);
+    if(!h)continue;
+    const next=i+h.frameLength;
+    const h2=parseMp3FrameHeader(a,next);
+    if(h2&&h2.sampleRate===h.sampleRate)return{offset:i,header:h};
+  }
+  throw new Error('No pude encontrar frames MP3 válidos al comienzo del archivo.');
+}
+function wavBlob16k(samples){
+  const ab=new ArrayBuffer(44+samples.length*2),v=new DataView(ab);
+  const ws=(o,t)=>{for(let i=0;i<t.length;i++)v.setUint8(o+i,t.charCodeAt(i))};
+  ws(0,'RIFF');v.setUint32(4,36+samples.length*2,true);ws(8,'WAVE');ws(12,'fmt ');
+  v.setUint32(16,16,true);v.setUint16(20,1,true);v.setUint16(22,1,true);
+  v.setUint32(24,16000,true);v.setUint32(28,32000,true);v.setUint16(32,2,true);v.setUint16(34,16,true);
+  ws(36,'data');v.setUint32(40,samples.length*2,true);
+  let o=44;for(let i=0;i<samples.length;i++,o+=2)v.setInt16(o,samples[i],true);
+  return new Blob([ab],{type:'audio/wav'});
+}
+function makeWavChunkCollector(){
+  const TARGET=8*60*16000,OVERLAP=4*16000;
+  let parts=[],count=0;const chunks=[];
+  function assemble(){const all=new Int16Array(count);let o=0;for(const p of parts){all.set(p,o);o+=p.length}return all}
+  function flush(final=false){
+    if(count===0)return;
+    if(final&&chunks.length&&count<=OVERLAP+1600)return;
+    const all=assemble();
+    chunks.push({blob:wavBlob16k(all),name:'chunk-'+String(chunks.length).padStart(3,'0')+'.wav',start:null,end:null});
+    if(final){parts=[];count=0;return}
+    const tail=all.slice(Math.max(0,all.length-OVERLAP));
+    parts=[tail];count=tail.length;
+  }
+  return{
+    add(arr){
+      let pos=0;
+      while(pos<arr.length){
+        const room=TARGET-count,take=Math.min(room,arr.length-pos);
+        parts.push(arr.slice(pos,pos+take));count+=take;pos+=take;
+        if(count>=TARGET)flush(false);
+      }
+    },
+    finish(){flush(true);return chunks}
+  };
+}
+function makeStreamingResampler(collector){
+  let inRate=null,totalIn=0,nextPos=0,prev=0,hasPrev=false;
+  return{
+    push(audio){
+      const n=audio.numberOfFrames,ch=audio.numberOfChannels,rate=audio.sampleRate;
+      if(!inRate)inRate=rate;
+      if(rate!==inRate)throw new Error('El MP3 cambió de sample rate a mitad del archivo.');
+      const left=new Float32Array(n);audio.copyTo(left,{planeIndex:0,format:'f32-planar'});
+      let right=null;if(ch>1){right=new Float32Array(n);audio.copyTo(right,{planeIndex:1,format:'f32-planar'})}
+      const mono=new Float32Array(n);
+      for(let i=0;i<n;i++)mono[i]=right?(left[i]+right[i])*.5:left[i];
+      const start=totalIn,end=start+n,step=inRate/16000;
+      const out=new Int16Array(Math.ceil((n+2)/step)+4);let k=0;
+      while(nextPos<end-1){
+        const i0=Math.floor(nextPos),frac=nextPos-i0,i1=i0+1;
+        const s0=i0<start?(hasPrev?prev:mono[0]):mono[i0-start];
+        const s1=mono[i1-start];
+        const x=Math.max(-1,Math.min(1,s0+(s1-s0)*frac));
+        out[k++]=x<0?Math.round(x*32768):Math.round(x*32767);
+        nextPos+=step;
+      }
+      prev=mono[n-1]||prev;hasPrev=true;totalIn=end;
+      if(k)collector.add(out.subarray(0,k));
+      audio.close();
+    }
+  };
 }
 async function splitLargeMp3(file,duration){
-  const TARGET=19_000_000;
-  const overlapBytes=Number.isFinite(duration)&&duration>0?Math.min(256*1024,Math.max(48*1024,Math.round((file.size/duration)*4))):96*1024;
-  const chunks=[];let logicalStart=0,index=0;
-  setStatus('MP3 grande: partiéndolo en tramos seguros sin recomprimir. Esto evita cargar FFmpeg en Firefox…','warn');
-  while(logicalStart<file.size){
-    if(state.abort?.signal.aborted)throw new DOMException('Cancelado','AbortError');
-    const actualStart=index===0?0:await findMp3Sync(file,Math.max(0,logicalStart-overlapBytes));
-    const targetEnd=logicalStart+TARGET;
-    const end=targetEnd>=file.size?file.size:await findMp3Sync(file,targetEnd);
-    const blob=file.slice(actualStart,end,'audio/mpeg');
-    if(blob.size>MAX_DIRECT_BYTES)throw new Error('Un tramo MP3 quedó demasiado grande para Groq.');
-    chunks.push({blob,name:'chunk-'+String(index).padStart(3,'0')+'.mp3',start:null,end:null});
-    logicalStart=end;index++;
-    setProgress(8+Math.min(30,(logicalStart/file.size)*30));
-  }
+  if(typeof AudioDecoder==='undefined'||typeof EncodedAudioChunk==='undefined')throw new Error('Este navegador no expone WebCodecs AudioDecoder para preparar MP3 grandes.');
+  setStatus('MP3 grande: decodificando localmente y creando WAVs de 8 minutos compatibles con Groq…','warn');
+  setProgress(8);
+  const bytes=new Uint8Array(await file.arrayBuffer());
+  const first=findFirstMp3Frame(bytes),config={codec:'mp3',sampleRate:first.header.sampleRate,numberOfChannels:first.header.channels};
+  const support=await AudioDecoder.isConfigSupported(config);
+  if(!support.supported)throw new Error('Este navegador tiene WebCodecs pero no puede decodificar MP3.');
+  const collector=makeWavChunkCollector(),resampler=makeStreamingResampler(collector);
+  let decoderError=null;
+  const decoder=new AudioDecoder({output:a=>{try{resampler.push(a)}catch(e){decoderError=e;try{a.close()}catch{}}},error:e=>{decoderError=e}});
+  decoder.configure(config);
+  let pos=first.offset,totalSamples=0,frames=0,lastProgress=0;
+  try{
+    while(pos+4<=bytes.length){
+      if(state.abort?.signal.aborted)throw new DOMException('Cancelado','AbortError');
+      if(decoderError)throw decoderError;
+      const h=parseMp3FrameHeader(bytes,pos);
+      if(!h||pos+h.frameLength>bytes.length){pos++;continue}
+      if(h.sampleRate!==config.sampleRate||h.channels!==config.numberOfChannels){pos++;continue}
+      const frame=bytes.subarray(pos,pos+h.frameLength);
+      decoder.decode(new EncodedAudioChunk({
+        type:'key',
+        timestamp:Math.round(totalSamples*1e6/config.sampleRate),
+        duration:Math.round(h.samplesPerFrame*1e6/config.sampleRate),
+        data:frame
+      }));
+      totalSamples+=h.samplesPerFrame;pos+=h.frameLength;frames++;
+      if(decoder.decodeQueueSize>120)await new Promise(r=>setTimeout(r,0));
+      if(pos-lastProgress>1024*1024){lastProgress=pos;setProgress(8+Math.min(30,(pos/bytes.length)*30))}
+    }
+    await decoder.flush();
+    if(decoderError)throw decoderError;
+  }finally{try{decoder.close()}catch{}}
+  const chunks=collector.finish();
+  if(!frames||!chunks.length)throw new Error('No pude decodificar audio MP3 utilizable.');
+  for(const c of chunks)if(c.blob.size>MAX_DIRECT_BYTES)throw new Error('Un WAV preparado superó el límite de subida.');
+  setProgress(38);
+  setStatus('MP3 preparado correctamente: '+chunks.length+' WAV'+(chunks.length===1?'':'s')+' válidos.','good');
   return chunks;
 }
 
@@ -208,7 +316,7 @@ async function loadFFmpeg(){
 async function prepareChunks(file,duration){
   if(canUploadDirect(file))return[{blob:file,name:file.name,start:0,end:duration||null}];
   const ext=(file.name.match(/\.([a-z0-9]+)$/i)?.[1]||'bin').toLowerCase();
-  if(['mp3','mpeg','mpga'].includes(ext))return splitLargeMp3(file,duration);
+  if(['mp3','mpeg','mpga'].includes(ext)&&typeof AudioDecoder!=='undefined')return splitLargeMp3(file,duration);
   const ff=await loadFFmpeg();
   const input='input.'+ext,prepared='prepared.m4a';
   setStatus('Convirtiendo a audio compatible y liviano antes de enviarlo…','warn');
