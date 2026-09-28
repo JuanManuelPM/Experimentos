@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta name="color-scheme" content="dark">
+<title>STT Gauntlet V4</title>
+<style>
+:root{--bg:#080a0c;--p:#11161b;--p2:#0c1014;--line:#29333c;--fg:#f3f6f8;--mut:#86939f;--ok:#76e39a;--bad:#ff7b7b;--wait:#ffd166}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--fg);font:14px/1.35 system-ui,-apple-system,Segoe UI,sans-serif}
+.app{max-width:900px;margin:auto;padding:14px 12px 70px}
+.top{position:sticky;top:0;z-index:5;background:rgba(8,10,12,.94);backdrop-filter:blur(12px);padding:8px 0 12px;border-bottom:1px solid #1e252b}
+h1{font-size:24px;margin:0 0 10px}.controls{display:flex;align-items:center;gap:10px}.mic{width:62px;height:62px;border-radius:50%;border:1px solid var(--line);background:#171e24;color:white;font-size:28px}.mic.live{background:#67252d;border-color:#ff8181}.info{flex:1;min-width:0}.status{font-weight:800}.sub{font-size:11px;color:var(--mut);margin-top:3px}.meter{height:7px;background:#111820;border:1px solid #26313a;border-radius:99px;overflow:hidden;margin-top:8px}.meter i{display:block;height:100%;width:0;background:var(--ok);transition:width .06s linear}
+.toolbar{display:flex;gap:7px;margin-top:10px;flex-wrap:wrap}button{font:inherit}.btn{border:1px solid var(--line);background:#171e24;color:var(--fg);padding:8px 11px;border-radius:10px}.btn:disabled{opacity:.4}.btn.primary{background:#eef5ff;color:#081018;border-color:#eef5ff;font-weight:800}
+.grid{display:grid;gap:8px;margin-top:12px}.row{border:1px solid var(--line);background:var(--p);border-radius:14px;padding:11px}.head{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:start}.name{font-size:16px;font-weight:850}.meta{color:var(--mut);font-size:10px;margin-top:2px}.actions{display:flex;gap:6px}.small{padding:6px 8px;font-size:11px;border:1px solid var(--line);border-radius:9px;background:#171e24;color:var(--fg)}.run{background:#eef5ff;color:#081018;border-color:#eef5ff;font-weight:800}.run.active{background:#7d2a32;color:#fff;border-color:#a84b54}.engineStatus{font-size:10px;margin:7px 0;color:var(--mut)}.engineStatus.ready{color:var(--ok)}.engineStatus.loading{color:var(--wait)}.engineStatus.fail{color:var(--bad)}
+.out{min-height:62px;border:1px solid #222c34;background:var(--p2);border-radius:10px;padding:9px;font-size:15px;white-space:pre-wrap;overflow-wrap:anywhere}.out.empty{color:#4f5c66}.metrics{display:flex;gap:12px;margin-top:7px;color:var(--mut);font-size:10px}.metrics b{color:var(--fg);font-weight:750}
+.badge{display:inline-block;border:1px solid #32563d;color:var(--ok);border-radius:999px;padding:2px 5px;font-size:8px;margin-left:5px;vertical-align:2px}.warn{border-color:#695528;color:var(--wait)}
+details{margin-top:12px;color:var(--mut);font-size:10px}pre{white-space:pre-wrap;background:#07090b;border:1px solid #202830;border-radius:10px;padding:9px;max-height:220px;overflow:auto}
+@media(max-width:600px){.app{padding:9px 8px 55px}.head{grid-template-columns:1fr}.actions{justify-content:flex-start}.mic{width:58px;height:58px}.row{padding:10px}}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="top">
+    <h1>STT Gauntlet · V4</h1>
+    <div class="controls">
+      <button id="mic" class="mic">🎙️</button>
+      <div class="info">
+        <div id="globalStatus" class="status">Elegí un motor y tocá Probar</div>
+        <div id="globalSub" class="sub">BUILD V4-20260928 · local-first</div>
+        <div class="meter"><i id="meter"></i></div>
+      </div>
+    </div>
+    <div class="toolbar">
+      <button id="loadLite" class="btn primary">Cargar rápidos</button>
+      <button id="stop" class="btn" disabled>Detener</button>
+      <button id="clear" class="btn">Limpiar</button>
+    </div>
+  </div>
+
+  <div id="grid" class="grid"></div>
+
+  <details><summary>diagnóstico</summary><pre id="log"></pre></details>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/vosk-browser@0.0.8/dist/vosk.js"></script>
+<script type="module">
+const BUILD='V4-20260928';
+const VOSK_03='https://raw.githubusercontent.com/allorenter/vosk-browser-example/main/vosk-model-small-es-0.3.tar.gz';
+const VOSK_042='https://w-okada.github.io/vosk-browser-ts/vosk-browser-ts/assets/models/vosk-model-small-es-0.42.tar.gz';
+const COMMANDS=['prometeo','che prometeo','pausa','poner pausa','play','reproducir','escuchar','dejá de escuchar','prender la tele','apagar la tele','subir volumen','bajar volumen','silencio','siguiente','anterior','[unk]'];
+
+const state={
+  stream:null,ctx:null,src:null,proc:null,active:null,started:0,
+  ring:[],ringSamples:0,maxRing:16*16000,
+  hf:null,parakeetModule:null,moonshineModule:null,
+  shared:{},
+};
+const engines=[
+  {id:'vosk42',name:'Vosk 0.42',meta:'streaming · ~39 MB',kind:'vosk',modelKey:'vosk42'},
+  {id:'vosk03',name:'Vosk 0.3',meta:'streaming · referencia anterior',kind:'vosk',modelKey:'vosk03'},
+  {id:'commands',name:'Vosk comandos',meta:'wake words / TV / controles',kind:'voskGrammar',modelKey:'vosk42'},
+  {id:'whisperTiny3',name:'Whisper Tiny · 3 s',meta:'WASM · ventana corta',kind:'whisper',modelKey:'whisperTiny',window:3,hop:1.5},
+  {id:'whisperTiny6',name:'Whisper Tiny · 6 s',meta:'WASM · más contexto',kind:'whisper',modelKey:'whisperTiny',window:6,hop:2.5},
+  {id:'whisperBase6',name:'Whisper Base · 6 s',meta:'WASM · más pesado',kind:'whisper',modelKey:'whisperBase',window:6,hop:3},
+  {id:'moonshine4',name:'Moonshine ES · 4 s',meta:'WASM · español',kind:'moonshine',modelKey:'moonshine',window:4,hop:2},
+  {id:'parakeet4',name:'Parakeet · 4 s',meta:'WASM · ventana',kind:'parakeet',modelKey:'parakeet',window:4,hop:2},
+  {id:'parakeet8',name:'Parakeet · 8 s',meta:'WASM · más contexto',kind:'parakeet',modelKey:'parakeet',window:8,hop:4},
+];
+const byId=Object.fromEntries(engines.map(x=>[x.id,x]));
+for(const e of engines)Object.assign(e,{loaded:false,loading:false,busy:false,text:'',first:null,last:null,lastInferAt:0,error:null,recognizer:null});
+
+const $=id=>document.getElementById(id);
+function log(msg,data){const s='['+new Date().toLocaleTimeString()+'] '+msg+(data?' '+JSON.stringify(data):'');$('log').textContent+=s+'\n';console.log('[STT]',msg,data||'')}
+function esc(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+function render(){
+  $('grid').innerHTML=engines.map(e=>`
+  <section class="row" id="row-${e.id}">
+    <div class="head">
+      <div><div class="name">${esc(e.name)}<span class="badge">LOCAL</span></div><div class="meta">${esc(e.meta)}</div></div>
+      <div class="actions">
+        <button class="small" data-load="${e.id}" ${e.loading?'disabled':''}>${e.loaded?'Listo':e.loading?'Cargando…':'Cargar'}</button>
+        <button class="small run ${state.active===e.id?'active':''}" data-run="${e.id}">${state.active===e.id?'Parar':'Probar'}</button>
+      </div>
+    </div>
+    <div class="engineStatus ${e.error?'fail':e.loading?'loading':e.loaded?'ready':''}" id="status-${e.id}">${esc(e.error?e.error:e.loading?'cargando…':e.loaded?'listo':'sin cargar')}</div>
+    <div class="out ${e.text?'':'empty'}" id="out-${e.id}">${esc(e.text||'…')}</div>
+    <div class="metrics"><span>primera <b id="first-${e.id}">${e.first==null?'—':Math.round(e.first)+' ms'}</b></span><span>inferencia <b id="last-${e.id}">${e.last==null?'—':Math.round(e.last)+' ms'}</b></span></div>
+  </section>`).join('');
+  document.querySelectorAll('[data-load]').forEach(b=>b.onclick=()=>loadEngine(b.dataset.load));
+  document.querySelectorAll('[data-run]').forEach(b=>b.onclick=()=>toggleEngine(b.dataset.run));
+}
+function setEngineStatus(e,msg,cls){e.error=cls==='fail'?msg:null;const el=$('status-'+e.id);if(el){el.textContent=msg;el.className='engineStatus '+(cls||'')}}
+function showText(e,text,latency){
+  text=(text||'').trim();if(!text)return;
+  e.text=text;
+  if(e.first==null&&state.started)e.first=performance.now()-state.started;
+  if(latency!=null)e.last=latency;
+  const out=$('out-'+e.id);if(out){out.textContent=text;out.classList.remove('empty')}
+  const f=$('first-'+e.id),l=$('last-'+e.id);if(f)f.textContent=e.first==null?'—':Math.round(e.first)+' ms';if(l)l.textContent=e.last==null?'—':Math.round(e.last)+' ms';
+}
+function progressStatus(e,p){
+  if(!p)return;let v='';
+  if(Number.isFinite(p.progress))v=Math.round(p.progress)+'%';
+  else if(Number.isFinite(p.loaded)&&Number.isFinite(p.total)&&p.total)v=Math.round(100*p.loaded/p.total)+'%';
+  setEngineStatus(e,'cargando '+v,'loading');
+}
+async function withTimeout(p,ms,label){let t;try{return await Promise.race([p,new Promise((_,rej)=>t=setTimeout(()=>rej(new Error(label+' timeout')),ms))])}finally{clearTimeout(t)}}
+
+async function loadEngine(id){
+  const e=byId[id];if(!e||e.loaded||e.loading)return;e.loading=true;e.error=null;render();log('load start',{id});
+  const t=performance.now();
+  try{
+    if(e.modelKey==='vosk03'){
+      if(!state.shared.vosk03)state.shared.vosk03=await withTimeout(Vosk.createModel(VOSK_03),90000,'Vosk 0.3');
+    }else if(e.modelKey==='vosk42'){
+      if(!state.shared.vosk42){
+        try{state.shared.vosk42=await withTimeout(Vosk.createModel(VOSK_042),120000,'Vosk 0.42')}
+        catch(err){log('Vosk 0.42 host falló, uso 0.3',{error:String(err)});state.shared.vosk42=state.shared.vosk03||await withTimeout(Vosk.createModel(VOSK_03),90000,'Vosk fallback');e.meta+=' · fallback 0.3'}
+      }
+    }else if(e.modelKey==='whisperTiny'||e.modelKey==='whisperBase'){
+      if(!state.hf)state.hf=await import('https://cdn.jsdelivr.net/npm/@huggingface/transformers@4.2.0/+esm');
+      const key=e.modelKey;
+      if(!state.shared[key]){
+        const model=key==='whisperTiny'?'onnx-community/whisper-tiny':'onnx-community/whisper-base';
+        state.shared[key]=await withTimeout(state.hf.pipeline('automatic-speech-recognition',model,{
+          device:'wasm',
+          dtype:{encoder_model:'q8',decoder_model_merged:'q8'},
+          progress_callback:p=>progressStatus(e,p)
+        }),key==='whisperTiny'?180000:300000,e.name);
+      }
+    }else if(e.modelKey==='moonshine'){
+      if(!state.moonshineModule)state.moonshineModule=await import('https://cdn.jsdelivr.net/npm/@moonshine-ai/moonshine-wasm@0.1.5/dist/index.js');
+      if(!state.shared.moonshine){
+        const T=state.moonshineModule.Transcriber;
+        state.shared.moonshine=await withTimeout(T.load({language:'es',onProgress:(fraction)=>setEngineStatus(e,'cargando '+Math.round(fraction*100)+'%','loading')}),240000,'Moonshine');
+      }
+    }else if(e.modelKey==='parakeet'){
+      if(!state.parakeetModule)state.parakeetModule=await import('https://cdn.jsdelivr.net/npm/parakeet.js@1.4.4/+esm');
+      if(!state.shared.parakeet){
+        state.shared.parakeet=await withTimeout(state.parakeetModule.fromHub('parakeet-tdt-0.6b-v3',{backend:'wasm',encoderQuant:'int8',decoderQuant:'int8',preprocessorBackend:'js'}),240000,'Parakeet');
+      }
+    }
+    e.loaded=true;e.loading=false;setEngineStatus(e,'listo','ready');log('load done',{id,ms:Math.round(performance.now()-t)});render();
+  }catch(err){e.loading=false;e.error=String(err?.message||err);log('load fail',{id,error:e.error});render()}
+}
+async function loadLite(){
+  $('loadLite').disabled=true;
+  await loadEngine('vosk42');
+  await loadEngine('vosk03');
+  byId.commands.loaded=true;
+  render();$('loadLite').disabled=false;
+}
+function resample16(input,rate){
+  if(rate===16000)return new Float32Array(input);
+  const ratio=rate/16000,n=Math.max(1,Math.round(input.length/ratio)),out=new Float32Array(n);
+  for(let i=0;i<n;i++){const p=i*ratio,a=Math.floor(p),b=Math.min(a+1,input.length-1),f=p-a;out[i]=input[a]*(1-f)+input[b]*f}
+  return out;
+}
+function ringPush(x){
+  state.ring.push(x);state.ringSamples+=x.length;
+  while(state.ringSamples>state.maxRing&&state.ring.length>1){state.ringSamples-=state.ring[0].length;state.ring.shift()}
+}
+function snapshot(sec){
+  const need=Math.min(state.ringSamples,Math.round(sec*16000));const out=new Float32Array(need);let pos=need;
+  for(let i=state.ring.length-1;i>=0&&pos>0;i--){const c=state.ring[i],take=Math.min(pos,c.length);pos-=take;out.set(c.subarray(c.length-take),pos)}
+  return out;
+}
+async function setupMic(){
+  state.stream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true,channelCount:1},video:false});
+  state.ctx=new (window.AudioContext||window.webkitAudioContext)();
+  if(state.ctx.state==='suspended')await state.ctx.resume();
+  state.src=state.ctx.createMediaStreamSource(state.stream);
+  state.proc=state.ctx.createScriptProcessor(4096,1,1);
+  const zero=state.ctx.createGain();zero.gain.value=0;
+  state.proc.onaudioprocess=ev=>{
+    if(!state.active)return;
+    const buf=ev.inputBuffer,pcm=buf.getChannelData(0);
+    let sum=0,peak=0;for(let i=0;i<pcm.length;i++){sum+=pcm[i]*pcm[i];peak=Math.max(peak,Math.abs(pcm[i]))}
+    const rms=Math.sqrt(sum/pcm.length),pct=Math.min(100,Math.round(Math.max(rms*380,peak*100)));$('meter').style.width=pct+'%';
+    const e=byId[state.active];
+    if(e?.recognizer){try{e.recognizer.acceptWaveform(buf)}catch(err){setEngineStatus(e,String(err),'fail')}}
+    ringPush(resample16(pcm,state.ctx.sampleRate));
+  };
+  state.src.connect(state.proc);state.proc.connect(zero);zero.connect(state.ctx.destination);
+  log('mic start',{rate:state.ctx.sampleRate});
+}
+async function cleanupMic(){
+  try{state.proc?.disconnect()}catch{};try{state.src?.disconnect()}catch{};try{state.stream?.getTracks().forEach(t=>t.stop())}catch{};try{await state.ctx?.close()}catch{}
+  state.proc=state.src=state.stream=state.ctx=null;$('meter').style.width='0%';
+}
+async function toggleEngine(id){
+  if(state.active===id)return stopActive();
+  if(state.active)await stopActive();
+  const e=byId[id];
+  if(!e.loaded){
+    if(e.kind==='voskGrammar'){await loadEngine('vosk42');e.loaded=!!state.shared.vosk42}
+    else await loadEngine(id);
+  }
+  if(!e.loaded)return;
+  e.text='';e.first=null;e.last=null;e.lastInferAt=0;e.busy=false;render();
+  state.active=id;state.started=performance.now();state.ring=[];state.ringSamples=0;
+  await setupMic();
+  if(e.kind==='vosk'||e.kind==='voskGrammar'){
+    const model=state.shared[e.modelKey];
+    const grammar=e.kind==='voskGrammar'?JSON.stringify(COMMANDS):undefined;
+    e.recognizer=new model.KaldiRecognizer(state.ctx.sampleRate,grammar);
+    e.recognizer.on('partialresult',m=>showText(e,m?.result?.partial||''));
+    e.recognizer.on('result',m=>showText(e,m?.result?.text||''));
+  }
+  $('mic').classList.add('live');$('globalStatus').textContent=e.name;$('globalSub').textContent='escuchando';$('stop').disabled=false;
+  render();loopBuffered();
+}
+async function stopActive(){
+  const id=state.active;if(!id)return;const e=byId[id];state.active=null;
+  if(e?.recognizer){try{e.recognizer.retrieveFinalResult?.();await new Promise(r=>setTimeout(r,120))}catch{};try{e.recognizer.remove()}catch{};e.recognizer=null}
+  await cleanupMic();
+  $('mic').classList.remove('live');$('globalStatus').textContent='Elegí otro motor o repetí';$('globalSub').textContent='BUILD '+BUILD;$('stop').disabled=true;render();log('stop',{id});
+}
+async function runBuffered(e){
+  if(!state.active||state.active!==e.id||e.busy)return;
+  const min=Math.max(2.2,e.window*.65);if(state.ringSamples<min*16000)return;
+  e.busy=true;e.lastInferAt=performance.now();const audio=snapshot(e.window);const t=performance.now();
+  try{
+    let text='';
+    if(e.kind==='whisper'){
+      const pipe=state.shared[e.modelKey];
+      const r=await pipe(audio,{language:'spanish',task:'transcribe'});
+      text=r?.text||'';
+    }else if(e.kind==='moonshine'){
+      const r=state.shared.moonshine.transcribe(audio,{sampleRate:16000});
+      const rr=await Promise.resolve(r);
+      text=rr?.text||rr?.lines?.map(x=>x.text).join(' ')||String(rr||'');
+    }else if(e.kind==='parakeet'){
+      const r=await state.shared.parakeet.transcribe(audio,16000,{returnTimestamps:false});
+      text=r?.text||'';
+    }
+    const ms=performance.now()-t;showText(e,text,ms);log('infer',{id:e.id,ms:Math.round(ms),chars:text.length});
+  }catch(err){setEngineStatus(e,String(err?.message||err),'fail');log('infer fail',{id:e.id,error:String(err)})}
+  finally{e.busy=false}
+}
+function loopBuffered(){
+  const id=state.active;if(!id)return;const e=byId[id];
+  if(['whisper','moonshine','parakeet'].includes(e.kind)){
+    const now=performance.now();if(!e.busy&&now-e.lastInferAt>=e.hop*1000)runBuffered(e);
+  }
+  requestAnimationFrame(loopBuffered);
+}
+$('loadLite').onclick=loadLite;$('stop').onclick=stopActive;$('mic').onclick=()=>state.active?stopActive():null;
+$('clear').onclick=()=>{for(const e of engines){e.text='';e.first=null;e.last=null}render();$('log').textContent=''};
+log('build',{BUILD,userAgent:navigator.userAgent,wasm:!!window.WebAssembly,webgpu:!!navigator.gpu,crossOriginIsolated:self.crossOriginIsolated});
+render();
+</script>
+</body>
+</html>
