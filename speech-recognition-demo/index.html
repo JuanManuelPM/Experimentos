@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SpeechRecognition · demo</title>
+<style>
+body{font-family:system-ui,sans-serif;max-width:760px;margin:40px auto;padding:0 20px;background:#111;color:#eee}
+button{font:inherit;padding:14px 18px;border:0;border-radius:12px;cursor:pointer}
+#text{margin-top:22px;min-height:180px;padding:18px;border:1px solid #444;border-radius:14px;white-space:pre-wrap;font-size:1.25rem;line-height:1.5}
+small{color:#aaa}.live{color:#8f8}
+</style>
+</head>
+<body>
+<h1>Voz → texto en vivo</h1>
+<p>Demo mínima de <code>SpeechRecognition</code> / Web Speech API, sin API key.</p>
+<button id="toggle">🎙️ Empezar</button>
+<p id="status"><small>Listo.</small></p>
+<div id="text"></div>
+<script>
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+const btn = document.getElementById('toggle');
+const out = document.getElementById('text');
+const status = document.getElementById('status');
+let rec, running=false, finalText='';
+if(!SR){
+  status.innerHTML='<small>Este navegador no expone SpeechRecognition. Probá Chrome/Edge.</small>';
+  btn.disabled=true;
+}else{
+  rec=new SR();
+  rec.lang='es-AR';
+  rec.continuous=true;
+  rec.interimResults=true;
+  rec.onstart=()=>{running=true;btn.textContent='⏹️ Detener';status.innerHTML='<span class="live">● escuchando</span>'};
+  rec.onend=()=>{running=false;btn.textContent='🎙️ Empezar';status.innerHTML='<small>Detenido.</small>'};
+  rec.onerror=e=>status.innerHTML='<small>Error: '+e.error+'</small>';
+  rec.onresult=e=>{
+    let interim='';
+    for(let i=e.resultIndex;i<e.results.length;i++){
+      const t=e.results[i][0].transcript;
+      if(e.results[i].isFinal) finalText+=t+' ';
+      else interim+=t;
+    }
+    out.textContent=finalText+interim;
+  };
+  btn.onclick=()=>{
+    if(running) rec.stop();
+    else { finalText=''; out.textContent=''; rec.start(); }
+  };
+}
+</script>
+</body>
+</html>
