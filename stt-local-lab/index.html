@@ -16,6 +16,7 @@ h1{font-size:clamp(30px,6vw,58px);line-height:.96;letter-spacing:-.055em;margin:
 .panel{border:1px solid var(--line);background:var(--panel);border-radius:var(--r);padding:15px}
 .micbox{display:flex;align-items:center;gap:14px}.mic{width:78px;height:78px;border-radius:50%;border:1px solid #3b4651;background:#151b20;color:white;font-size:34px;display:grid;place-items:center;transition:.18s}
 .mic.live{background:#5c1c24;border-color:#ff7272;box-shadow:0 0 0 7px rgba(255,114,114,.10)}
+.audiolevel{display:grid;grid-template-columns:84px 1fr auto;gap:8px;align-items:center;margin-top:12px}.audiolevel span{font-size:10px;color:var(--muted)}.leveltrack{height:8px;border:1px solid var(--line);background:#090c0f;border-radius:999px;overflow:hidden}.leveltrack i{display:block;width:0;height:100%;background:var(--good);transition:width .08s linear}.levelvalue{min-width:48px;text-align:right;font-variant-numeric:tabular-nums}
 .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.primary,.secondary,.tiny{border:1px solid var(--line);border-radius:12px;padding:11px 13px;background:#202830;color:var(--ink)}
 .primary{background:#eef5ff;color:#081018;border-color:#eef5ff;font-weight:800}.primary:disabled,.secondary:disabled,.tiny:disabled{opacity:.42;cursor:not-allowed}
 .secondary{background:#151b20}.tiny{padding:8px 10px;font-size:12px}.danger{border-color:#593237;color:#ff9a9a}
@@ -56,6 +57,7 @@ a{color:#9ecbff}
         <div class="session-sub" id="sessionSub">Web Speech queda disponible automáticamente si tu navegador lo soporta. Vosk, Moonshine y Parakeet se cargan sólo cuando vos lo pedís.</div>
       </div>
     </div>
+    <div class="audiolevel"><span>Entrada de audio</span><div class="leveltrack"><i id="levelBar"></i></div><span class="levelvalue" id="levelValue">0%</span></div>
     <div class="actions">
       <button class="primary" id="start">🎙️ Iniciar experimento</button>
       <button class="secondary" id="loadLight">Preparar Vosk + Moonshine</button>
@@ -182,7 +184,7 @@ a{color:#9ecbff}
 </section>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/vosk-browser@0.0.5/dist/vosk.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vosk-browser@0.0.8/dist/vosk.js"></script>
 <script>
 const $ = id => document.getElementById(id);
 const engines = {
@@ -265,11 +267,22 @@ function updateSummary(){
   const sims=Object.entries(engines).map(([n,e])=>[n,similarity(e.text)]).filter(x=>x[1]!=null).sort((a,b)=>b[1]-a[1]);
   $('sumSimilar').textContent=sims.length?sims[0][0]+' · '+Math.round(sims[0][1]*100)+'%':'—';
 }
+function refreshSessionHeader(){
+  if(running)return;
+  const ready=Object.entries(engines).filter(([,e])=>e.ready).map(([n])=>n);
+  if(ready.length){
+    $('sessionTitle').textContent=ready.length+' motor'+(ready.length===1?'':'es')+' listo'+(ready.length===1?'':'s')+' · podés empezar';
+    $('sessionSub').textContent='Listos: '+ready.join(', ')+'. Tocá el micrófono: la transcripción debe aparecer mientras hablás.';
+  }else{
+    $('sessionTitle').textContent='Prepará al menos un motor local';
+    $('sessionSub').textContent='Si tocás Iniciar sin preparar nada, cargo Vosk automáticamente como prueba rápida.';
+  }
+}
 function markReady(name,label='listo'){
-  engines[name].ready=true;setState(name,'ready',label);updateSummary();
+  engines[name].ready=true;setState(name,'ready',label);updateSummary();refreshSessionHeader();
 }
 function markFail(name,err){
-  engines[name].ready=false;setState(name,'failed','error: '+(err?.message||err));log(name+' falló',String(err));
+  engines[name].ready=false;setState(name,'failed','error: '+(err?.message||err));log(name+' falló',String(err));refreshSessionHeader();
 }
 async function loadVosk(){
   const e=engines.vosk;if(e.ready||e.loading)return;e.loading=true;
@@ -293,7 +306,7 @@ async function loadMoonshine(){
   $('progress-moonshine').classList.remove('hidden');$('progress-moonshine').querySelector('i').style.width='25%';
   const t=performance.now();
   try{
-    const mod=await import('https://cdn.jsdelivr.net/npm/@moonshine-ai/moonshine-wasm/dist/index.js');
+    const mod=await import('https://cdn.jsdelivr.net/npm/@moonshine-ai/moonshine-wasm@0.1.5/dist/index.js');
     e.module=mod;$('progress-moonshine').querySelector('i').style.width='45%';
     let mic=new mod.MicTranscriber();
     if(typeof mic.language==='function')mic=mic.language('es')||mic;
@@ -321,7 +334,7 @@ async function loadParakeet(){
   $('progress-parakeet').classList.remove('hidden');$('progress-parakeet').querySelector('i').style.width='15%';
   const t=performance.now();
   try{
-    const mod=await import('https://cdn.jsdelivr.net/npm/parakeet.js/+esm');
+    const mod=await import('https://cdn.jsdelivr.net/npm/parakeet.js@1.4.4/+esm');
     $('progress-parakeet').querySelector('i').style.width='30%';
     e.model=await mod.fromHub('parakeet-tdt-0.6b-v3',{
       backend,
@@ -329,7 +342,7 @@ async function loadParakeet(){
       decoderQuant:'int8',
       preprocessorBackend:'js'
     });
-    e.transcriber=e.model.createStreamingTranscriber();
+    e.transcriber=null;
     $('progress-parakeet').querySelector('i').style.width='100%';
     $('load-parakeet').textContent=((performance.now()-t)/1000).toFixed(1)+' s';
     markReady('parakeet','listo · '+backend+' · local');
@@ -385,19 +398,22 @@ function resampleTo16k(input,rate){
   }
   return out;
 }
-function feedParakeet(float32,rate){
-  if(!running||!engines.parakeet.ready||!engines.parakeet.transcriber)return;
+function feedParakeet(float32,rate,force=false){
+  if(!engines.parakeet.ready||!engines.parakeet.transcriber)return;
   const c=resampleTo16k(float32,rate);parakeetChunks.push(c);parakeetSamples+=c.length;
-  if(parakeetSamples<12800)return;
+  // 0.4 s: suficientemente corto para sentirse en vivo, pero con contexto útil.
+  if(!force&&parakeetSamples<6400)return;
+  if(!parakeetSamples)return;
   const merged=new Float32Array(parakeetSamples);let o=0;for(const part of parakeetChunks){merged.set(part,o);o+=part.length}
   parakeetChunks=[];parakeetSamples=0;
   const e=engines.parakeet;
   e.queue=e.queue.then(async()=>{
-    if(!running)return;
     try{
-      const r=await e.transcriber.pushAudioChunk(merged,16000);
-      const text=(typeof r==='string'?r:(r?.utterance_text||r?.text||r?.partial||'')).trim();
+      // parakeet.js 1.4.4: StatefulStreamingTranscriber usa processChunk(audio).
+      const r=await e.transcriber.processChunk(merged);
+      const text=(typeof r==='string'?r:(r?.text||r?.chunkText||'')).trim();
       if(text)partialHit('parakeet',text);
+      if(r?.metrics?.total_ms!=null)log('Parakeet chunk',{ms:Math.round(r.metrics.total_ms),rtf:r.metrics.rtf,text:text.slice(0,80)});
     }catch(err){log('Parakeet chunk error',String(err))}
   });
 }
@@ -407,13 +423,21 @@ async function setupSharedAudio(){
   if(audioContext.state==='suspended')await audioContext.resume();
   sourceNode=audioContext.createMediaStreamSource(mediaStream);
   processor=audioContext.createScriptProcessor(4096,1,1);
+  let audioFrames=0;
   processor.onaudioprocess=ev=>{
     if(!running)return;
     const buf=ev.inputBuffer;
+    const pcm=buf.getChannelData(0);
+    let sum=0,peak=0;
+    for(let i=0;i<pcm.length;i++){const a=Math.abs(pcm[i]);sum+=pcm[i]*pcm[i];if(a>peak)peak=a}
+    const rms=Math.sqrt(sum/Math.max(1,pcm.length));
+    const pct=Math.min(100,Math.round(Math.max(rms*420,peak*105)));
+    $('levelBar').style.width=pct+'%';$('levelValue').textContent=pct+'%';
+    if(++audioFrames%25===0)log('Audio entrando',{sampleRate:audioContext.sampleRate,rms:Number(rms.toFixed(4)),peak:Number(peak.toFixed(4))});
     if(engines.vosk.ready&&engines.vosk.recognizer){
-      try{engines.vosk.recognizer.acceptWaveform(buf)}catch(err){log('Vosk acceptWaveform',String(err))}
+      try{engines.vosk.recognizer.acceptWaveform(buf)}catch(err){log('Vosk acceptWaveform',String(err));markFail('vosk',err)}
     }
-    if(engines.parakeet.ready)feedParakeet(buf.getChannelData(0),audioContext.sampleRate);
+    if(engines.parakeet.ready)feedParakeet(pcm,audioContext.sampleRate);
   };
   sourceNode.connect(processor);
   const zero=audioContext.createGain();zero.gain.value=0;processor.connect(zero);zero.connect(audioContext.destination);
@@ -421,34 +445,69 @@ async function setupSharedAudio(){
 function startVosk(){
   const e=engines.vosk;if(!e.ready||!e.model)return;
   try{
-    e.recognizer=new e.model.KaldiRecognizer();
+    // BUG anterior: KaldiRecognizer requiere sampleRate. Sin esto el worker recibe undefined y nunca reconoce.
+    const sr=audioContext?.sampleRate||16000;
+    e.recognizer=new e.model.KaldiRecognizer(sr);
     e.recognizer.on('partialresult',m=>{const t=m?.result?.partial||'';if(t)partialHit('vosk',t)});
     e.recognizer.on('result',m=>{const t=m?.result?.text||'';if(t){firstHit('vosk',t);finalHit('vosk',t)}});
-    setState('vosk','listening','escuchando · mismo stream');
+    setState('vosk','listening','escuchando · '+sr+' Hz · mismo stream');
+    log('Vosk recognizer iniciado',{sampleRate:sr});
   }catch(err){markFail('vosk',err)}
 }
-function stopVosk(){try{engines.vosk.recognizer?.remove()}catch{};engines.vosk.recognizer=null;if(engines.vosk.ready)setState('vosk','ready','listo · local WASM')}
+async function stopVosk(){
+  const r=engines.vosk.recognizer;
+  if(r){
+    try{
+      if(typeof r.retrieveFinalResult==='function'){
+        await Promise.resolve(r.retrieveFinalResult());
+        await new Promise(res=>setTimeout(res,120));
+      }
+    }catch(err){log('Vosk final flush',String(err))}
+    try{r.remove()}catch{}
+  }
+  engines.vosk.recognizer=null;
+  if(engines.vosk.ready)setState('vosk','ready','listo · local WASM');
+}
 async function startMoonshine(){
   const e=engines.moonshine;if(!e.ready||!e.mic)return;
   try{await e.mic.start();setState('moonshine','listening','escuchando · stream propio')}catch(err){markFail('moonshine',err)}
 }
 async function stopMoonshine(){try{await engines.moonshine.mic?.stop()}catch{};if(engines.moonshine.ready)setState('moonshine','ready','listo · español · local')}
-function startParakeet(){if(engines.parakeet.ready){parakeetChunks=[];parakeetSamples=0;setState('parakeet','listening','escuchando · mismo stream')}}
+function startParakeet(){
+  if(engines.parakeet.ready&&engines.parakeet.model){
+    // Un transcriber finalizado no debe reutilizarse entre sesiones.
+    engines.parakeet.transcriber=engines.parakeet.model.createStreamingTranscriber();
+    engines.parakeet.queue=Promise.resolve();parakeetChunks=[];parakeetSamples=0;
+    setState('parakeet','listening','escuchando · chunks 400 ms · mismo stream');
+  }
+}
 async function stopParakeet(){
   try{
-    const t=engines.parakeet.transcriber;
-    if(t&&typeof t.finish==='function'){
-      const r=await t.finish();const txt=(typeof r==='string'?r:(r?.utterance_text||r?.text||'')).trim();if(txt)finalHit('parakeet',txt)
+    if(engines.parakeet.transcriber){
+      if(parakeetSamples&&audioContext)feedParakeet(new Float32Array(0),audioContext.sampleRate,true);
+      await engines.parakeet.queue;
+      const t=engines.parakeet.transcriber;
+      if(typeof t.finalize==='function'){
+        const r=t.finalize();
+        const txt=(typeof r==='string'?r:(r?.text||'')).trim();
+        if(txt)finalHit('parakeet',txt);
+      }
     }
-  }catch(err){log('Parakeet finish',String(err))}
+  }catch(err){log('Parakeet finalize',String(err))}
+  engines.parakeet.transcriber=null;
   if(engines.parakeet.ready)setState('parakeet','ready','listo · local');
 }
 
 async function startExperiment(){
   if(running)return stopExperiment();
   resetRun();
+  if(!Object.values(engines).some(e=>e.ready)){
+    $('sessionTitle').textContent='Preparando Vosk...';
+    $('sessionSub').textContent='Primera vez: descargo el modelo local y después empiezo a escuchar automáticamente.';
+    await loadVosk();
+  }
   const localShared=engines.vosk.ready||engines.parakeet.ready;
-  if(!localShared&&!engines.webspeech.ready&&!engines.moonshine.ready){$('sessionSub').textContent='No hay ningún motor listo. Cargá Vosk o Moonshine primero.';return}
+  if(!localShared&&!engines.webspeech.ready&&!engines.moonshine.ready){$('sessionSub').textContent='No quedó ningún motor listo. Abrí Diagnóstico técnico para ver el error.';return}
   try{
     if(localShared)await setupSharedAudio();
     running=true;t0=performance.now();
@@ -465,11 +524,12 @@ async function cleanupAudio(){
   try{mediaStream?.getTracks().forEach(t=>t.stop())}catch{};
   try{await audioContext?.close()}catch{};
   processor=sourceNode=mediaStream=audioContext=null;
+  $('levelBar').style.width='0%';$('levelValue').textContent='0%';
 }
 async function stopExperiment(){
   if(!running)return;
   const duration=performance.now()-t0;running=false;
-  stopWebSpeech();stopVosk();await Promise.allSettled([stopMoonshine(),stopParakeet()]);await cleanupAudio();
+  stopWebSpeech();await Promise.allSettled([stopVosk(),stopMoonshine(),stopParakeet()]);await cleanupAudio();
   $('mic').classList.remove('live');$('start').textContent='🎙️ Iniciar experimento';$('sessionTitle').textContent='Sesión terminada';$('sessionSub').textContent='Podés comparar textos y métricas abajo, o iniciar otra ronda.';$('sumDuration').textContent=(duration/1000).toFixed(1)+' s';
   for(const n of ['webspeech','vosk','moonshine','parakeet'])updateSimilarity(n);
   updateSummary();log('Experimento detenido',{durationMs:Math.round(duration)});
@@ -484,7 +544,7 @@ function detect(){
   $('capIso').textContent=self.crossOriginIsolated?'Sí':'No';
   $('capCores').textContent=navigator.hardwareConcurrency||'No expuesto';
   $('capMem').textContent=navigator.deviceMemory?navigator.deviceMemory+' GB aprox.':'No expuesta';
-  detectWebSpeech();updateSummary();
+  detectWebSpeech();updateSummary();refreshSessionHeader();
   log('Capacidades',{wasm:typeof WebAssembly==='object',webgpu:!!navigator.gpu,mic:!!navigator.mediaDevices?.getUserMedia,crossOriginIsolated:self.crossOriginIsolated,cores:navigator.hardwareConcurrency,memory:navigator.deviceMemory,userAgent:navigator.userAgent});
 }
 document.querySelectorAll('[data-load]').forEach(b=>b.addEventListener('click',()=>({vosk:loadVosk,moonshine:loadMoonshine,parakeet:loadParakeet}[b.dataset.load]())));
