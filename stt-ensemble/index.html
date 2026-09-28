@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta name="color-scheme" content="dark">
+<title>STT Ensemble V7</title>
+<style>
+:root{--bg:#080a0c;--p:#11161b;--p2:#0c1014;--line:#29333c;--fg:#f4f6f8;--mut:#8c99a4;--ok:#77e49b;--warn:#ffd166;--bad:#ff7b7b}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--fg);font:14px/1.4 system-ui,-apple-system,Segoe UI,sans-serif}
+.app{max-width:880px;margin:auto;padding:12px 10px 70px}.top{position:sticky;top:0;z-index:5;background:rgba(8,10,12,.95);backdrop-filter:blur(12px);padding:8px 0 10px;border-bottom:1px solid #1d242a}
+.head{display:flex;align-items:center;gap:11px}.mic{width:68px;height:68px;border-radius:50%;border:1px solid var(--line);background:#171e24;color:white;font-size:30px}.mic.live{background:#68262e;border-color:#ff8181}.info{flex:1;min-width:0}.status{font-size:18px;font-weight:850}.sub{color:var(--mut);font-size:11px;margin-top:3px}.meter{height:7px;background:#10161b;border:1px solid #27313a;border-radius:99px;overflow:hidden;margin-top:7px}.meter i{display:block;height:100%;width:0;background:var(--ok);transition:width .05s linear}
+.main{display:grid;gap:8px;margin-top:11px}.box{border:1px solid var(--line);background:var(--p);border-radius:14px;padding:11px}.k{font-size:9px;font-weight:850;letter-spacing:.12em;color:var(--mut)}.k.good{color:var(--ok)}.text{min-height:64px;margin-top:5px;font-size:17px;line-height:1.45;white-space:pre-wrap;overflow-wrap:anywhere}.text.empty{color:#4f5c66}
+.pills{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.pill{font-size:9px;border:1px solid var(--line);border-radius:999px;padding:4px 6px;color:var(--mut)}.pill.good{border-color:#355f42;color:var(--ok)}.pill.warn{border-color:#655329;color:var(--warn)}
+details{margin-top:8px;border:1px solid var(--line);border-radius:12px;background:#0d1115;padding:8px 10px}summary{cursor:pointer;color:var(--mut);font-size:11px}.rows{display:grid;gap:7px;margin-top:8px}.row{border:1px solid #222c34;background:var(--p2);border-radius:10px;padding:8px}.rhead{display:flex;justify-content:space-between;gap:8px}.rname{font-size:12px;font-weight:800}.rmeta{font-size:9px;color:var(--mut)}.rtext{margin-top:5px;white-space:pre-wrap;overflow-wrap:anywhere;font-size:13px}.stats{display:flex;gap:10px;margin-top:5px;color:var(--mut);font-size:9px}.stats b{color:var(--fg)}
+pre{white-space:pre-wrap;max-height:220px;overflow:auto;background:#07090b;border:1px solid #202830;border-radius:9px;padding:8px;font-size:9px}
+@media(min-width:760px){.main{grid-template-columns:1fr 1fr}.box.consensus{grid-column:1/-1}}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="top">
+    <div class="head">
+      <button id="mic" class="mic" aria-label="Iniciar o detener">🎙️</button>
+      <div class="info">
+        <div id="status" class="status">Listo para cargar</div>
+        <div id="sub" class="sub">V7 · 3 workers · 4 hipótesis · consenso por palabras</div>
+        <div class="meter"><i id="meter"></i></div>
+      </div>
+    </div>
+  </div>
+
+  <main class="main">
+    <section class="box">
+      <div class="k">EN VIVO</div>
+      <div id="live" class="text empty">…</div>
+      <div class="pills"><span id="firstPill" class="pill">primera palabra —</span><span id="workerPill" class="pill">workers 0/3</span></div>
+    </section>
+
+    <section class="box consensus">
+      <div class="k good">CONSENSO</div>
+      <div id="consensus" class="text empty">…</div>
+      <div class="pills"><span id="sourcesPill" class="pill good">0 fuentes</span><span id="reviewPill" class="pill">revisión pendiente</span></div>
+    </section>
+  </main>
+
+  <details>
+    <summary>ver hipótesis individuales</summary>
+    <div id="rows" class="rows"></div>
+  </details>
+
+  <details>
+    <summary>diagnóstico</summary>
+    <pre id="log"></pre>
+  </details>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/vosk-browser@0.0.8/dist/vosk.js"></script>
+<script>
+const BUILD='STT-ENSEMBLE-V7-20260928';
+const MODEL='https://raw.githubusercontent.com/allorenter/vosk-browser-example/main/vosk-model-small-es-0.3.tar.gz';
+const $=id=>document.getElementById(id);
+const state={
+  modelA:null,modelB:null,modelR:null,loading:false,loaded:false,running:false,
+  stream:null,ctx:null,src:null,proc:null,startAt:0,total16:0,ring:[],ringSamples:0,maxRing:20*16000,
+  reviewQueue:Promise.resolve(),review8Next:8*16000,review15Next:15*16000,
+  consensusHistory:[]
+};
+const lanes={
+  a:{id:'a',name:'Live A · nativo',meta:'worker propio · sample rate real',committed:'',partial:'',first:null,segments:0,rec:null},
+  b:{id:'b',name:'Live B · 16 kHz',meta:'worker propio · resample explícito',committed:'',partial:'',first:null,segments:0,rec:null},
+  r8:{id:'r8',name:'Revisor · 8 s',meta:'ventanas con 2 s de overlap',committed:'',partial:'',first:null,segments:0,rec:null},
+  r15:{id:'r15',name:'Revisor · 15 s',meta:'ventanas con 5 s de overlap',committed:'',partial:'',first:null,segments:0,rec:null},
+};
+const laneList=Object.values(lanes);
+
+function log(msg,data){$('log').textContent+='['+new Date().toLocaleTimeString()+'] '+msg+(data?' '+JSON.stringify(data):'')+'\n'}
+function esc(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+function full(l){return (l.committed+(l.partial?' '+l.partial:'')).trim()}
+function renderRows(){
+  $('rows').innerHTML=laneList.map(l=>`<div class="row"><div class="rhead"><div class="rname">${esc(l.name)}</div><div class="rmeta">${esc(l.meta)}</div></div><div class="rtext">${esc(full(l)||'…')}</div><div class="stats"><span>primera <b>${l.first==null?'—':Math.round(l.first)+' ms'}</b></span><span>segmentos <b>${l.segments}</b></span></div></div>`).join('');
+}
+function normalizeWord(w){return String(w||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9ñ]/gi,'')}
+function words(s){return String(s||'').trim().split(/\s+/).filter(Boolean)}
+function wordEdit(a,b){
+  a=words(a).map(normalizeWord);b=words(b).map(normalizeWord);
+  const m=b.length,d=Array.from({length:m+1},(_,i)=>i);
+  for(let i=1;i<=a.length;i++){let p=d[0];d[0]=i;for(let j=1;j<=m;j++){const t=d[j];d[j]=Math.min(d[j]+1,d[j-1]+1,p+(a[i-1]===b[j-1]?0:1));p=t}}
+  return d[m];
+}
+function alignToBase(base,cand){
+  const A=words(base),B=words(cand),an=A.map(normalizeWord),bn=B.map(normalizeWord),n=A.length,m=B.length;
+  const dp=Array.from({length:n+1},()=>new Array(m+1).fill(0));
+  for(let i=0;i<=n;i++)dp[i][0]=i;for(let j=0;j<=m;j++)dp[0][j]=j;
+  for(let i=1;i<=n;i++)for(let j=1;j<=m;j++)dp[i][j]=Math.min(dp[i-1][j]+1,dp[i][j-1]+1,dp[i-1][j-1]+(an[i-1]===bn[j-1]?0:1));
+  const out=new Array(n).fill(null);let i=n,j=m;
+  while(i>0||j>0){
+    if(i>0&&j>0&&dp[i][j]===dp[i-1][j-1]+(an[i-1]===bn[j-1]?0:1)){out[i-1]=B[j-1];i--;j--}
+    else if(i>0&&dp[i][j]===dp[i-1][j]+1)i--;
+    else j--;
+  }
+  return out;
+}
+function consensusText(){
+  const hyps=laneList.map(l=>full(l)).filter(t=>words(t).length>=2);
+  if(!hyps.length)return '';
+  if(hyps.length===1)return hyps[0];
+  let base=hyps[0],best=Infinity;
+  for(const a of hyps){
+    let s=0;for(const b of hyps)if(a!==b)s+=wordEdit(a,b)/Math.max(1,words(a).length,words(b).length);
+    if(s<best||(s===best&&words(a).length>words(base).length)){best=s;base=a}
+  }
+  const bt=words(base),alignments=hyps.filter(h=>h!==base).map(h=>alignToBase(base,h));
+  const out=bt.map((token,i)=>{
+    const votes=[token,...alignments.map(a=>a[i]).filter(Boolean)];
+    const buckets=new Map();
+    for(const v of votes){const k=normalizeWord(v);if(!k)continue;const x=buckets.get(k)||{n:0,forms:[]};x.n++;x.forms.push(v);buckets.set(k,x)}
+    let win=null;for(const [k,x] of buckets)if(!win||x.n>win.x.n)win={k,x};
+    return win?.x.forms[0]||token;
+  });
+  return out.join(' ');
+}
+function updateMain(){
+  const live=full(lanes.a)||full(lanes.b);$('live').textContent=live||'…';$('live').classList.toggle('empty',!live);
+  const c=consensusText();$('consensus').textContent=c||'…';$('consensus').classList.toggle('empty',!c);
+  const sources=laneList.filter(l=>words(full(l)).length>=2).length;$('sourcesPill').textContent=sources+' fuente'+(sources===1?'':'s');
+  const reviewed=!!(lanes.r8.committed||lanes.r15.committed);$('reviewPill').textContent=reviewed?'revisión activa':'revisión pendiente';$('reviewPill').className='pill '+(reviewed?'good':'');
+  const firsts=[lanes.a.first,lanes.b.first].filter(x=>x!=null);$('firstPill').textContent='primera palabra '+(firsts.length?Math.round(Math.min(...firsts))+' ms':'—');
+  renderRows();
+}
+function appendResult(l,t){
+  t=String(t||'').trim();if(!t)return;
+  l.committed=(l.committed+' '+t).trim();l.partial='';l.segments++;if(l.first==null)l.first=performance.now()-state.startAt;updateMain();
+}
+function setPartial(l,t){l.partial=String(t||'').trim();if(l.partial&&l.first==null)l.first=performance.now()-state.startAt;updateMain()}
+function bind(l,rec){
+  rec.on('partialresult',m=>setPartial(l,m?.result?.partial||''));
+  rec.on('result',m=>appendResult(l,m?.result?.text||''));
+}
+function resample16(input,rate){
+  if(rate===16000)return new Float32Array(input);
+  const ratio=rate/16000,n=Math.max(1,Math.round(input.length/ratio)),out=new Float32Array(n);
+  for(let i=0;i<n;i++){const p=i*ratio,a=Math.floor(p),b=Math.min(a+1,input.length-1),f=p-a;out[i]=input[a]*(1-f)+input[b]*f}
+  return out;
+}
+function ringPush(x){
+  state.ring.push(x);state.ringSamples+=x.length;state.total16+=x.length;
+  while(state.ringSamples>state.maxRing&&state.ring.length>1){state.ringSamples-=state.ring[0].length;state.ring.shift()}
+}
+function snapshot(sec){
+  const need=Math.min(state.ringSamples,Math.round(sec*16000)),out=new Float32Array(need);let p=need;
+  for(let i=state.ring.length-1;i>=0&&p>0;i--){const c=state.ring[i],take=Math.min(p,c.length);p-=take;out.set(c.subarray(c.length-take),p)}
+  return out;
+}
+function mergeOverlap(prev,next){
+  const A=words(prev),B=words(next);if(!A.length)return B.join(' ');if(!B.length)return A.join(' ');
+  const max=Math.min(12,A.length,B.length);let best=0,bestScore=0;
+  for(let k=1;k<=max;k++){
+    const a=A.slice(-k).join(' '),b=B.slice(0,k).join(' '),score=1-wordEdit(a,b)/Math.max(1,k);
+    if(score>=.72&&score>=bestScore){best=k;bestScore=score}
+  }
+  return [...A,...B.slice(best)].join(' ');
+}
+async function transcribeWindow(sec){
+  const audio=snapshot(sec);if(audio.length<16000*2)return '';
+  const rec=new state.modelR.KaldiRecognizer(16000);const parts=[];
+  rec.on('result',m=>{const t=(m?.result?.text||'').trim();if(t)parts.push(t)});
+  try{rec.acceptWaveformFloat(audio,16000);rec.retrieveFinalResult();await new Promise(r=>setTimeout(r,160))}catch(e){log('review fail',{sec,error:String(e)})}
+  try{rec.remove()}catch{}
+  return parts.join(' ').trim();
+}
+function queueReview(lane,sec){
+  state.reviewQueue=state.reviewQueue.then(async()=>{
+    if(!state.running)return;
+    const t0=performance.now(),txt=await transcribeWindow(sec);
+    if(txt){lane.committed=mergeOverlap(lane.committed,txt);lane.partial='';lane.segments++;if(lane.first==null)lane.first=performance.now()-state.startAt;updateMain();log('review',{sec,ms:Math.round(performance.now()-t0),chars:txt.length})}
+  });
+}
+function maybeReviews(){
+  if(!state.modelR)return;
+  if(state.total16>=state.review8Next){state.review8Next+=6*16000;queueReview(lanes.r8,8)}
+  if(state.total16>=state.review15Next){state.review15Next+=10*16000;queueReview(lanes.r15,15)}
+}
+async function loadModels(){
+  if(state.loaded||state.loading)return;state.loading=true;$('status').textContent='Cargando worker 1/3…';$('sub').textContent='modelo rápido · 0.0 s';
+  const t0=performance.now();let tick=setInterval(()=>{$('sub').textContent='modelo rápido · '+((performance.now()-t0)/1000).toFixed(1)+' s'},200);
+  try{
+    state.modelA=await Vosk.createModel(MODEL);$('workerPill').textContent='workers 1/3';$('status').textContent='Cargando workers 2/3 y 3/3…';
+    const [b,r]=await Promise.all([Vosk.createModel(MODEL),Vosk.createModel(MODEL)]);state.modelB=b;state.modelR=r;
+    state.loaded=true;$('workerPill').textContent='workers 3/3';$('workerPill').className='pill good';$('status').textContent='Listo';$('sub').textContent='tocá el micrófono otra vez para empezar';log('models ready',{ms:Math.round(performance.now()-t0)});
+  }catch(e){$('status').textContent='Error cargando modelo';$('sub').textContent=String(e);log('load fail',{error:String(e)})}
+  finally{clearInterval(tick);state.loading=false}
+}
+function resetRun(){
+  for(const l of laneList)Object.assign(l,{committed:'',partial:'',first:null,segments:0,rec:null});
+  state.ring=[];state.ringSamples=0;state.total16=0;state.review8Next=8*16000;state.review15Next=15*16000;state.reviewQueue=Promise.resolve();updateMain();
+}
+async function start(){
+  if(state.running)return stop();
+  if(!state.loaded){await loadModels();return}
+  resetRun();
+  try{
+    state.stream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true,channelCount:1},video:false});
+    state.ctx=new (window.AudioContext||window.webkitAudioContext)();if(state.ctx.state==='suspended')await state.ctx.resume();
+    state.src=state.ctx.createMediaStreamSource(state.stream);state.proc=state.ctx.createScriptProcessor(4096,1,1);const zero=state.ctx.createGain();zero.gain.value=0;
+    lanes.a.rec=new state.modelA.KaldiRecognizer(state.ctx.sampleRate);bind(lanes.a,lanes.a.rec);
+    lanes.b.rec=new state.modelB.KaldiRecognizer(16000);bind(lanes.b,lanes.b.rec);
+    state.startAt=performance.now();state.running=true;
+    state.proc.onaudioprocess=ev=>{
+      if(!state.running)return;
+      const buf=ev.inputBuffer,pcm=buf.getChannelData(0),r16=resample16(pcm,state.ctx.sampleRate);
+      let sum=0,peak=0;for(let i=0;i<pcm.length;i++){sum+=pcm[i]*pcm[i];peak=Math.max(peak,Math.abs(pcm[i]))}
+      const rms=Math.sqrt(sum/pcm.length),pct=Math.min(100,Math.round(Math.max(rms*380,peak*100)));$('meter').style.width=pct+'%';
+      try{lanes.a.rec.acceptWaveform(buf)}catch(e){log('lane A',{error:String(e)})}
+      try{lanes.b.rec.acceptWaveformFloat(r16,16000)}catch(e){log('lane B',{error:String(e)})}
+      ringPush(r16);maybeReviews();
+    };
+    state.src.connect(state.proc);state.proc.connect(zero);zero.connect(state.ctx.destination);
+    $('mic').classList.add('live');$('status').textContent='Escuchando';$('sub').textContent='mismo audio → 2 live + revisiones 8 s / 15 s';log('start',{sampleRate:state.ctx.sampleRate});
+  }catch(e){$('status').textContent='No pude abrir el micrófono';$('sub').textContent=String(e);log('mic fail',{error:String(e)})}
+}
+async function stop(){
+  if(!state.running)return;state.running=false;
+  for(const l of [lanes.a,lanes.b]){const r=l.rec;l.rec=null;if(r){try{r.retrieveFinalResult()}catch{};setTimeout(()=>{try{r.remove()}catch{}},220)}}
+  if(state.ringSamples>=3*16000){queueReview(lanes.r8,Math.min(8,state.ringSamples/16000));if(state.ringSamples>=8*16000)queueReview(lanes.r15,Math.min(15,state.ringSamples/16000))}
+  await state.reviewQueue;await new Promise(r=>setTimeout(r,220));
+  try{state.proc?.disconnect()}catch{};try{state.src?.disconnect()}catch{};try{state.stream?.getTracks().forEach(t=>t.stop())}catch{};try{await state.ctx?.close()}catch{}
+  state.proc=state.src=state.stream=state.ctx=null;$('meter').style.width='0%';$('mic').classList.remove('live');$('status').textContent='Terminado';$('sub').textContent='consenso actualizado';updateMain();log('stop');
+}
+$('mic').onclick=()=>state.running?stop():start();
+window.addEventListener('error',e=>log('window error',{message:e.message,source:e.filename,line:e.lineno}));
+window.addEventListener('unhandledrejection',e=>log('unhandled rejection',{reason:String(e.reason)}));
+log('build',{BUILD,userAgent:navigator.userAgent});renderRows();updateMain();
+</script>
+</body>
+</html>
