@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta name="color-scheme" content="dark">
+<title>STT Mass Benchmark V2</title>
+<style>
+:root{--bg:#080a0c;--p:#11161b;--p2:#0b0f13;--line:#29333c;--fg:#f4f6f8;--mut:#8c99a4;--ok:#77e49b;--warn:#ffd166;--bad:#ff7b7b}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.45 system-ui,-apple-system,Segoe UI,sans-serif}
+.app{max-width:900px;margin:auto;padding:14px 12px 80px}.top{position:sticky;top:0;z-index:5;background:rgba(8,10,12,.96);backdrop-filter:blur(12px);padding:8px 0 10px;border-bottom:1px solid #1d242a}
+.head{display:flex;align-items:center;gap:12px}.mic{width:74px;height:74px;border-radius:50%;border:1px solid var(--line);background:#171e24;color:white;font-size:31px}.mic.live{background:#68262e;border-color:#ff8181}.mic:disabled{opacity:.4}.info{flex:1;min-width:0}
+.status{font-size:18px;font-weight:850}.sub{color:var(--mut);font-size:11px;margin-top:3px}.meter{height:7px;background:#10161b;border:1px solid #27313a;border-radius:99px;overflow:hidden;margin-top:8px}.meter i{display:block;height:100%;width:0;background:var(--ok)}
+.progress{display:flex;gap:5px;margin-top:9px}.dot{height:5px;flex:1;border-radius:99px;background:#202830}.dot.done{background:var(--ok)}.dot.now{background:var(--warn)}
+.card{border:1px solid var(--line);background:var(--p);border-radius:16px;padding:14px;margin-top:13px}.label{font-size:9px;font-weight:850;letter-spacing:.12em;color:var(--mut)}.reference{font-size:22px;line-height:1.45;margin-top:8px}.hint{font-size:11px;color:var(--mut);margin-top:8px}
+.pills{display:flex;gap:6px;flex-wrap:wrap;margin-top:9px}.pill{font-size:9px;border:1px solid var(--line);border-radius:999px;padding:4px 7px;color:var(--mut)}.pill.good{border-color:#355f42;color:var(--ok)}.pill.warn{border-color:#655329;color:var(--warn)}.pill.bad{border-color:#6b3030;color:var(--bad)}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.btn{border:1px solid var(--line);background:#171e24;color:var(--fg);padding:9px 12px;border-radius:10px;font:inherit}.btn.primary{background:#eef5ff;color:#081018;border-color:#eef5ff;font-weight:800}.btn:disabled{opacity:.4}
+.proc{margin-top:12px}.bar{height:9px;background:#10161b;border:1px solid #27313a;border-radius:99px;overflow:hidden}.bar i{display:block;height:100%;width:0;background:var(--ok)}.procLine{display:flex;justify-content:space-between;gap:10px;margin-top:7px;font-size:11px;color:var(--mut)}
+.rank{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:10px;padding:8px 0;border-top:1px solid #222a31;align-items:center}.rank:first-child{border-top:0}.rank b{font-size:12px}.rank span{font-size:11px;color:var(--mut)}
+details{margin-top:10px;border:1px solid var(--line);border-radius:12px;background:#0d1115;padding:8px 10px}summary{cursor:pointer;color:var(--mut);font-size:11px}.rows{display:grid;gap:7px;margin-top:8px}.row{border:1px solid #222c34;background:var(--p2);border-radius:10px;padding:8px}.rhead{display:flex;justify-content:space-between;gap:8px}.rname{font-size:12px;font-weight:800}.rscore{font-size:11px;color:var(--mut)}.rtext{font-size:13px;margin-top:5px;white-space:pre-wrap;overflow-wrap:anywhere}.err{color:var(--bad)}
+pre{white-space:pre-wrap;max-height:240px;overflow:auto;background:#07090b;border:1px solid #202830;border-radius:9px;padding:8px;font-size:9px}
+</style>
+</head>
+<body>
+<div class="app">
+<div class="top">
+  <div class="head">
+    <button id="mic" class="mic">🎙️</button>
+    <div class="info"><div id="status" class="status">Texto 1 de 8</div><div id="sub" class="sub">grabá primero; el torneo pesado corre después</div><div class="meter"><i id="meter"></i></div></div>
+  </div>
+  <div id="progress" class="progress"></div>
+</div>
+
+<section class="card">
+  <div class="label">LEÉ ESTE TEXTO</div>
+  <div id="reference" class="reference"></div>
+  <div class="hint">Leelo normal. Tocá el micrófono al empezar y otra vez al terminar.</div>
+  <div class="pills"><span id="capturePill" class="pill">0/8 grabados</span><span id="remotePill" class="pill">publicación remota preparada</span><span id="sessionPill" class="pill"></span></div>
+</section>
+
+<section id="processingCard" class="card" hidden>
+  <div class="label">TORNEO EN SEGUNDO PLANO</div>
+  <div id="procTitle" style="font-size:16px;font-weight:800;margin-top:7px">Preparando…</div>
+  <div class="proc"><div class="bar"><i id="procBar"></i></div><div class="procLine"><span id="procCount">0/0</span><span id="procTime">0 s</span></div></div>
+  <div class="actions"><button id="copyBtn" class="btn primary" disabled>Copiar todos los resultados</button></div>
+</section>
+
+<section id="summaryCard" class="card" hidden>
+  <div class="label">RANKING PROVISIONAL</div>
+  <div id="ranking" style="margin-top:6px"></div>
+</section>
+
+<details><summary>ver resultados individuales</summary><div id="rows" class="rows"></div></details>
+<details><summary>diagnóstico</summary><pre id="log"></pre></details>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/vosk-browser@0.0.8/dist/vosk.js"></script>
+<script type="module">
+const BUILD='STT-MASS-V2-20260928';
+const VOSK03='https://raw.githubusercontent.com/allorenter/vosk-browser-example/main/vosk-model-small-es-0.3.tar.gz';
+const VOSK42='https://w-okada.github.io/vosk-browser-ts/vosk-browser-ts/assets/models/vosk-model-small-es-0.42.tar.gz';
+const NTFY_TOPIC='stt-bench-83f229610c5fac67ba6918772670642e';
+const NTFY_URL='https://ntfy.sh/'+NTFY_TOPIC;
+const TEXTS=[
+{id:'natural',text:'Hoy quiero probar qué tan bien funciona esta transcripción cuando hablo a una velocidad normal y sin exagerar la pronunciación.'},
+{id:'rioplatense',text:'Che, fijate si podés entenderme aunque hable rápido, junte algunas palabras y no marque demasiado cada sílaba.'},
+{id:'prometeo',text:'Prometeo debería escuchar una frase, comparar varias hipótesis y conservar las palabras que aparecen con mayor consistencia.'},
+{id:'confusiones',text:'Quiero comprobar si distingue entre esto, efecto, Héctor y texto cuando las palabras aparecen dentro de una frase completa.'},
+{id:'numeros',text:'El martes catorce de octubre a las siete y media tengo que revisar treinta y dos archivos antes de las nueve.'},
+{id:'tecnico',text:'Después voy a abrir GitHub, ejecutar el proceso y revisar si el build de Firefox coincide con el resultado publicado.'},
+{id:'contexto',text:'Si una palabra sale mal al principio, no me importa que se corrija un segundo después, siempre que la frase final quede mejor y no pierda el contexto.'},
+{id:'comandos',text:'Che Prometeo, poné pausa, bajá el volumen y después seguí escuchando cuando yo diga continuar.'}
+];
+const $=id=>document.getElementById(id);
+const session='mass-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,8);
+const S={idx:0,running:false,stream:null,ctx:null,src:null,proc:null,native:[],pcm16:[],sampleRate:0,recordings:[],results:[],models:{},processing:false,started:0,totalJobs:0,doneJobs:0};
+function log(m,d){$('log').textContent+='['+new Date().toLocaleTimeString()+'] '+m+(d?' '+JSON.stringify(d):'')+'\n'}
+function esc(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+function norm(s){return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9ñ\s]/gi,' ').replace(/\s+/g,' ').trim()}
+function toks(s){const n=norm(s);return n?n.split(' '):[]}
+function lev(a,b){const d=Array.from({length:b.length+1},(_,i)=>i);for(let i=1;i<=a.length;i++){let p=d[0];d[0]=i;for(let j=1;j<=b.length;j++){const t=d[j];d[j]=Math.min(d[j]+1,d[j-1]+1,p+(a[i-1]===b[j-1]?0:1));p=t}}return d[b.length]}
+function wer(r,h){const a=toks(r),b=toks(h);return a.length?100*lev(a,b)/a.length:0}
+function cer(r,h){const a=[...norm(r).replace(/\s/g,'')],b=[...norm(h).replace(/\s/g,'')];return a.length?100*lev(a,b)/a.length:0}
+function concat(chunks){const n=chunks.reduce((s,c)=>s+c.length,0),o=new Float32Array(n);let p=0;for(const c of chunks){o.set(c,p);p+=c.length}return o}
+function resample16(input,rate){if(rate===16000)return new Float32Array(input);const ratio=rate/16000,n=Math.max(1,Math.round(input.length/ratio)),o=new Float32Array(n);for(let i=0;i<n;i++){const p=i*ratio,a=Math.floor(p),b=Math.min(a+1,input.length-1),f=p-a;o[i]=input[a]*(1-f)+input[b]*f}return o}
+function cleanAudio(a){if(!a.length)return a;let peak=0;for(const x of a)peak=Math.max(peak,Math.abs(x));const th=Math.max(.004,peak*.025);let s=0,e=a.length-1;while(s<e&&Math.abs(a[s])<th)s++;while(e>s&&Math.abs(a[e])<th)e--;s=Math.max(0,s-2400);e=Math.min(a.length-1,e+2400);const o=new Float32Array(e-s+1);let p=0;for(let i=s;i<=e;i++)p=Math.max(p,Math.abs(a[i]));const g=p?Math.min(2.0,.82/p):1;for(let i=0;i<o.length;i++)o[i]=Math.max(-1,Math.min(1,a[s+i]*g));return o}
+function renderCapture(){ $('progress').innerHTML=TEXTS.map((_,i)=>'<span class="dot '+(i<S.idx?'done':i===S.idx?'now':'')+'"></span>').join('');$('capturePill').textContent=S.recordings.length+'/8 grabados';$('sessionPill').textContent=session;if(S.idx<TEXTS.length){$('status').textContent='Texto '+(S.idx+1)+' de '+TEXTS.length;$('reference').textContent=TEXTS[S.idx].text}else{$('status').textContent='Grabación terminada';$('reference').textContent='Listo. Ahora procesa la computadora.'}}
+async function startCapture(){if(S.processing||S.idx>=TEXTS.length)return;S.native=[];S.pcm16=[];S.stream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true,channelCount:1},video:false});S.ctx=new (window.AudioContext||window.webkitAudioContext)();if(S.ctx.state==='suspended')await S.ctx.resume();S.sampleRate=S.ctx.sampleRate;S.src=S.ctx.createMediaStreamSource(S.stream);S.proc=S.ctx.createScriptProcessor(4096,1,1);const z=S.ctx.createGain();z.gain.value=0;S.proc.onaudioprocess=e=>{if(!S.running)return;const pcm=e.inputBuffer.getChannelData(0),n=new Float32Array(pcm);S.native.push(n);S.pcm16.push(resample16(n,S.sampleRate));let sum=0,peak=0;for(const x of pcm){sum+=x*x;peak=Math.max(peak,Math.abs(x))}const rms=Math.sqrt(sum/pcm.length);$('meter').style.width=Math.min(100,Math.round(Math.max(rms*380,peak*100)))+'%'};S.src.connect(S.proc);S.proc.connect(z);z.connect(S.ctx.destination);S.running=true;S.started=performance.now();$('mic').classList.add('live');$('status').textContent='Grabando texto '+(S.idx+1);$('sub').textContent='tocá otra vez cuando termines';log('capture start',{idx:S.idx,sampleRate:S.sampleRate})}
+async function stopCapture(){if(!S.running)return;S.running=false;const dur=performance.now()-S.started;try{S.proc.disconnect()}catch{};try{S.src.disconnect()}catch{};try{S.stream.getTracks().forEach(t=>t.stop())}catch{};try{await S.ctx.close()}catch{};$('meter').style.width='0%';$('mic').classList.remove('live');const rec={idx:S.idx,id:TEXTS[S.idx].id,reference:TEXTS[S.idx].text,native:concat(S.native),pcm16:concat(S.pcm16),sampleRate:S.sampleRate,duration_ms:Math.round(dur)};S.recordings.push(rec);log('capture done',{idx:S.idx,duration_ms:rec.duration_ms,samples16:rec.pcm16.length});S.idx++;renderCapture();if(S.idx<TEXTS.length){$('sub').textContent='tocá para grabar el siguiente texto'}else{$('mic').disabled=true;$('sub').textContent='iniciando torneo masivo…';setTimeout(runTournament,80)}}
+function timeout(p,ms,label){return Promise.race([p,new Promise((_,rej)=>setTimeout(()=>rej(new Error(label+' timeout')),ms))])}
+async function voskOne(model,audio,rate){
+  const rec=new model.KaldiRecognizer(rate),parts=[];let finalRequested=false;
+  let resolveFinal;const finalP=new Promise(r=>resolveFinal=r);
+  rec.on('result',m=>{const t=(m?.result?.text||'').trim();if(t)parts.push(t);if(finalRequested)resolveFinal()});
+  for(let i=0;i<audio.length;i+=4096){rec.acceptWaveformFloat(audio.subarray(i,Math.min(audio.length,i+4096)),rate);if((i/4096)%20===0)await new Promise(r=>setTimeout(r,0))}
+  finalRequested=true;rec.retrieveFinalResult();
+  await Promise.race([finalP,new Promise(r=>setTimeout(r,2200))]);
+  try{rec.remove()}catch{}
+  return parts.join(' ').trim();
+}
+function mergeOverlap(prev,next){const A=String(prev||'').trim().split(/\s+/).filter(Boolean),B=String(next||'').trim().split(/\s+/).filter(Boolean);if(!A.length)return B.join(' ');if(!B.length)return A.join(' ');let best=0,bscore=0;for(let k=1;k<=Math.min(12,A.length,B.length);k++){const a=A.slice(-k),b=B.slice(0,k),s=1-lev(a.map(norm),b.map(norm))/k;if(s>=.65&&s>=bscore){best=k;bscore=s}}return [...A,...B.slice(best)].join(' ')}
+async function voskWindowed(model,audio,sec,overlap){const size=Math.round(sec*16000),step=Math.max(16000,Math.round((sec-overlap)*16000));let out='';for(let s=0;s<audio.length;s+=step){const chunk=audio.subarray(s,Math.min(audio.length,s+size));if(chunk.length<8000)break;const t=await voskOne(model,chunk,16000);out=mergeOverlap(out,t);if(s+size>=audio.length)break}return out}
+async function addResult(rec,modelId,config,fn,loadMs=0){
+  const t0=performance.now();let text='',status='ok',error=null;
+  try{text=await fn()}catch(e){status='error';error=String(e?.message||e)}
+  const infer=performance.now()-t0, r={session,test_index:rec.idx,test_id:rec.id,reference:rec.reference,model:modelId,config,text,status,error,wer:status==='ok'?wer(rec.reference,text):null,cer:status==='ok'?cer(rec.reference,text):null,load_ms:Math.round(loadMs),infer_ms:Math.round(infer),rtf:Number((infer/Math.max(1,rec.duration_ms)).toFixed(3)),duration_ms:rec.duration_ms,build:BUILD};
+  S.results.push(r);S.doneJobs++;updateProcessing(modelId+' · '+config);renderResults();await publishResult(r);return r
+}
+function updateProcessing(name){const pct=S.totalJobs?100*S.doneJobs/S.totalJobs:0;$('procBar').style.width=pct+'%';$('procCount').textContent=S.doneJobs+'/'+S.totalJobs;$('procTitle').textContent=name;const sec=(performance.now()-S.tournamentStart)/1000;$('procTime').textContent=sec.toFixed(1)+' s'}
+function renderResults(){
+  const ok=S.results.filter(r=>r.status==='ok'&&Number.isFinite(r.wer));const groups=new Map();
+  for(const r of ok){const k=r.model+' · '+r.config,z=groups.get(k)||{k,wers:[],cers:[],times:[]};z.wers.push(r.wer);z.cers.push(r.cer);z.times.push(r.infer_ms);groups.set(k,z)}
+  const rank=[...groups.values()].map(g=>({name:g.k,n:g.wers.length,wer:g.wers.reduce((a,b)=>a+b,0)/g.wers.length,cer:g.cers.reduce((a,b)=>a+b,0)/g.cers.length,ms:g.times.reduce((a,b)=>a+b,0)/g.times.length})).sort((a,b)=>a.wer-b.wer||a.ms-b.ms);
+  $('summaryCard').hidden=!rank.length;$('ranking').innerHTML=rank.slice(0,20).map((x,i)=>'<div class="rank"><b>'+(i+1)+'. '+esc(x.name)+'</b><span>WER '+x.wer.toFixed(1)+'%</span><span>'+Math.round(x.ms)+' ms · '+x.n+'/8</span></div>').join('');
+  const last=S.results.slice(-40).reverse();$('rows').innerHTML=last.map(r=>'<div class="row"><div class="rhead"><div class="rname">'+esc(r.model+' · '+r.config+' · '+r.test_id)+'</div><div class="rscore '+(r.status==='error'?'err':'')+'">'+(r.status==='ok'?'WER '+r.wer.toFixed(1)+'% · '+r.infer_ms+' ms':'ERROR')+'</div></div><div class="rtext">'+esc(r.status==='ok'?(r.text||'—'):r.error)+'</div></div>').join('');
+}
+async function publishResult(r){
+  const compact={kind:'stt_result',session:r.session,test:r.test_id,model:r.model,config:r.config,text:r.text,wer:r.wer,cer:r.cer,infer_ms:r.infer_ms,load_ms:r.load_ms,rtf:r.rtf,status:r.status,error:r.error,build:r.build};
+  try{const res=await fetch(NTFY_URL,{method:'POST',body:JSON.stringify(compact)});if(!res.ok)throw new Error('HTTP '+res.status);$('remotePill').textContent='publicando remoto ✓';$('remotePill').className='pill good'}catch(e){$('remotePill').textContent='remoto falló · copia disponible';$('remotePill').className='pill warn';log('remote fail',{error:String(e)})}
+}
+async function publishSummary(){
+  const ok=S.results.filter(r=>r.status==='ok'&&Number.isFinite(r.wer)),groups={};
+  for(const r of ok){const k=r.model+' · '+r.config;(groups[k]??=[]).push(r.wer)}
+  const ranking=Object.entries(groups).map(([name,v])=>({name,wer:v.reduce((a,b)=>a+b,0)/v.length,n:v.length})).sort((a,b)=>a.wer-b.wer).slice(0,15);
+  const msg={kind:'stt_summary',session,build:BUILD,tests:S.recordings.length,results:S.results.length,ranking};
+  try{await fetch(NTFY_URL,{method:'POST',body:JSON.stringify(msg)})}catch(e){log('summary remote fail',{error:String(e)})}
+}
+async function runVoskFamily(url,label,configs){
+  let model,loadMs=0;const t=performance.now();try{model=await timeout(Vosk.createModel(url),label==='Vosk 0.42'?60000:45000,label);loadMs=performance.now()-t;log('model ready',{label,load_ms:Math.round(loadMs)})}catch(e){log('model load fail',{label,error:String(e)});for(const rec of S.recordings)for(const cfg of configs)await addResult(rec,label,cfg,async()=>{throw e},performance.now()-t);return}
+  for(const rec of S.recordings){
+    for(const cfg of configs){
+      if(cfg==='native')await addResult(rec,label,cfg,()=>voskOne(model,rec.native,rec.sampleRate),loadMs);
+      else if(cfg==='16k')await addResult(rec,label,cfg,()=>voskOne(model,rec.pcm16,16000),loadMs);
+      else if(cfg==='clean')await addResult(rec,label,cfg,()=>voskOne(model,cleanAudio(rec.pcm16),16000),loadMs);
+      else if(cfg==='win4')await addResult(rec,label,cfg,()=>voskWindowed(model,rec.pcm16,4,2),loadMs);
+      else if(cfg==='win8')await addResult(rec,label,cfg,()=>voskWindowed(model,rec.pcm16,8,3),loadMs);
+      else if(cfg==='win15')await addResult(rec,label,cfg,()=>voskWindowed(model,rec.pcm16,15,5),loadMs);
+    }
+  }
+  try{model.terminate?.()}catch{}
+}
+async function runWhisper(modelName,label){
+  let hf,pipe,loadMs=0;const t=performance.now();
+  try{hf=await import('https://cdn.jsdelivr.net/npm/@huggingface/transformers@4.2.0/+esm');pipe=await timeout(hf.pipeline('automatic-speech-recognition',modelName,{device:'wasm',dtype:'q8'}),300000,label);loadMs=performance.now()-t;log('model ready',{label,load_ms:Math.round(loadMs)})}
+  catch(e){for(const rec of S.recordings)await addResult(rec,label,'full',async()=>{throw e},performance.now()-t);return}
+  for(const rec of S.recordings)await addResult(rec,label,'full',async()=>{const x=await pipe(rec.pcm16,{language:'spanish',task:'transcribe'});return String(x?.text||'').trim()},loadMs);
+  try{await pipe.dispose?.()}catch{}
+}
+async function runParakeet(){
+  let mod,model,loadMs=0;const t=performance.now(),label='Parakeet 0.6B v3 INT8';
+  try{mod=await import('https://cdn.jsdelivr.net/npm/parakeet.js@1.4.4/+esm');model=await timeout(mod.fromHub('parakeet-tdt-0.6b-v3',{backend:'wasm',encoderQuant:'int8',decoderQuant:'int8',preprocessorBackend:'js'}),300000,label);loadMs=performance.now()-t;log('model ready',{label,load_ms:Math.round(loadMs)})}
+  catch(e){for(const rec of S.recordings)await addResult(rec,label,'full',async()=>{throw e},performance.now()-t);return}
+  for(const rec of S.recordings)await addResult(rec,label,'full',async()=>{const x=await model.transcribe(rec.pcm16,16000,{returnTimestamps:false});return String(x?.text||x?.utterance_text||'').trim()},loadMs);
+  try{await model.dispose?.()}catch{}
+}
+async function runMoonshine(){
+  let mod,model,loadMs=0;const t=performance.now(),label='Moonshine ES Medium Streaming';
+  try{mod=await import('https://cdn.jsdelivr.net/npm/@moonshine-ai/moonshine-wasm@0.1.5/dist/index.js');model=await timeout(mod.Transcriber.load({language:'es',modelArch:mod.ModelArch.MediumStreaming}),300000,label);loadMs=performance.now()-t;log('model ready',{label,load_ms:Math.round(loadMs)})}
+  catch(e){for(const rec of S.recordings)await addResult(rec,label,'full',async()=>{throw e},performance.now()-t);return}
+  for(const rec of S.recordings)await addResult(rec,label,'full',async()=>{const x=model.transcribe(rec.pcm16,{sampleRate:16000});return (x?.lines||[]).map(z=>z.text).join(' ').trim()},loadMs);
+  try{model.close?.()}catch{}
+}
+async function runTournament(){
+  if(S.processing)return;S.processing=true;S.tournamentStart=performance.now();$('processingCard').hidden=false;$('summaryCard').hidden=true;$('copyBtn').disabled=true;
+  const cfg03=['native','16k','clean','win4','win8','win15'],cfg42=['native','16k','clean'];
+  S.totalJobs=S.recordings.length*(cfg03.length+cfg42.length+3+1+1);S.doneJobs=0;updateProcessing('Vosk 0.3');
+  await runVoskFamily(VOSK03,'Vosk 0.3',cfg03);
+  await runVoskFamily(VOSK42,'Vosk 0.42',cfg42);
+  await runWhisper('onnx-community/whisper-tiny','Whisper Tiny Q8');
+  await runWhisper('onnx-community/whisper-base','Whisper Base Q8');
+  await runWhisper('onnx-community/whisper-small','Whisper Small Q8');
+  await runParakeet();
+  await runMoonshine();
+  await publishSummary();
+  S.processing=false;updateProcessing('Terminado');$('procTitle').textContent='Torneo terminado';$('copyBtn').disabled=false;$('sub').textContent='resultados listos';$('remotePill').textContent+=' · sesión '+session;renderResults();log('tournament done',{session,results:S.results.length,seconds:Math.round((performance.now()-S.tournamentStart)/1000)});
+}
+async function copyAll(){
+  const payload={build:BUILD,session,created_at:new Date().toISOString(),recordings:S.recordings.map(r=>({test_id:r.id,reference:r.reference,duration_ms:r.duration_ms,sample_rate:r.sampleRate})),results:S.results};
+  const text=JSON.stringify(payload,null,2);try{await navigator.clipboard.writeText(text);$('copyBtn').textContent='Copiado ✓'}catch(e){const ta=document.createElement('textarea');ta.value=text;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();$('copyBtn').textContent='Copiado ✓'}
+}
+$('mic').onclick=()=>S.running?stopCapture():startCapture();$('copyBtn').onclick=copyAll;
+window.addEventListener('error',e=>log('window error',{message:e.message,line:e.lineno}));window.addEventListener('unhandledrejection',e=>log('unhandled',{reason:String(e.reason)}));
+log('build',{BUILD,session,userAgent:navigator.userAgent});renderCapture();$('sessionPill').textContent=session;
+</script>
+</body></html>
