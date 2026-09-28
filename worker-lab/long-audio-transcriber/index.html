@@ -7,7 +7,7 @@
 <title>Transcriptor largo · Experimentos</title>
 <style>
 :root{--bg:#080a0d;--panel:#101419;--panel2:#151a20;--line:#2a333d;--ink:#f5f7f8;--muted:#98a5b0;--good:#7ce399;--warn:#ffd166;--bad:#ff7979;--accent:#d9ff5a;--r:18px}
-*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}body{min-height:100vh}.app{max-width:900px;margin:auto;padding:18px 14px 90px}h1,h2,p{margin:0}.ey{font:900 10px/1 ui-monospace,monospace;color:var(--muted);letter-spacing:.14em}.hero{padding:8px 0 18px}.hero h1{font-size:clamp(38px,8vw,72px);line-height:.9;letter-spacing:-.055em;max-width:780px;margin:8px 0 14px}.hero p{font-size:13px;line-height:1.55;color:var(--muted);max-width:760px}.panel{border:1px solid var(--line);background:var(--panel);border-radius:var(--r);padding:15px;margin-top:12px}.drop{border:1px dashed #52606d;background:#0c1014;border-radius:16px;min-height:170px;display:grid;place-items:center;text-align:center;padding:22px;cursor:pointer}.drop.drag{border-color:var(--accent);background:#11160d}.drop strong{display:block;font-size:20px}.drop span{display:block;color:var(--muted);font-size:12px;margin-top:7px}.meta{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:10px}.m{border:1px solid #232b33;background:#0b0f13;border-radius:12px;padding:10px}.m b{display:block;font-size:14px}.m span{display:block;color:var(--muted);font-size:9px;margin-top:3px;text-transform:uppercase}.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:12px}button,select{font:inherit;border:1px solid var(--line);background:var(--panel2);color:var(--ink);border-radius:12px;min-height:44px;padding:0 13px;font-weight:800}button{cursor:pointer}.primary{background:var(--accent);border-color:var(--accent);color:#0b0d0f}.primary:disabled,button:disabled{opacity:.4;cursor:not-allowed}.status{margin-top:12px;border-left:3px solid var(--line);background:#0b0e11;border-radius:8px;padding:11px 12px;font-size:12px;line-height:1.45;color:var(--muted)}.status.good{border-left-color:var(--good);color:#ccefd5}.status.warn{border-left-color:var(--warn);color:#efe2b7}.status.bad{border-left-color:var(--bad);color:#f3b9b9}.progress{height:7px;background:#20262d;border-radius:999px;overflow:hidden;margin-top:12px}.progress i{display:block;height:100%;width:0;background:var(--accent);transition:.2s}.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-top:10px}.step{border:1px solid #242d35;border-radius:11px;padding:9px;background:#0b0f12}.step b{font-size:10px;display:block}.step span{font-size:9px;color:var(--muted);display:block;margin-top:4px}.step.on{border-color:#5d7130}.step.done{border-color:#2f6440}.out{width:100%;min-height:320px;resize:vertical;border:1px solid var(--line);background:#07090c;color:var(--ink);border-radius:14px;padding:14px;font:14px/1.55 ui-monospace,SFMono-Regular,Menlo,monospace;margin-top:10px}.note{font-size:10px;color:var(--muted);line-height:1.5;margin-top:10px}.hidden{display:none!important}.small{font-size:11px;color:var(--muted)}@media(max-width:650px){.meta{grid-template-columns:1fr 1fr}.steps{grid-template-columns:1fr 1fr}.hero h1{font-size:46px}.app{padding:12px 10px 70px}}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}body{min-height:100vh}.app{max-width:900px;margin:auto;padding:18px 14px 90px}h1,h2,p{margin:0}.ey{font:900 10px/1 ui-monospace,monospace;color:var(--muted);letter-spacing:.14em}.hero{padding:8px 0 18px}.hero h1{font-size:clamp(38px,8vw,72px);line-height:.9;letter-spacing:-.055em;max-width:780px;margin:8px 0 14px}.hero p{font-size:13px;line-height:1.55;color:var(--muted);max-width:760px}.panel{border:1px solid var(--line);background:var(--panel);border-radius:var(--r);padding:15px;margin-top:12px}.drop{border:1px dashed #52606d;background:#0c1014;border-radius:16px;min-height:170px;display:grid;place-items:center;text-align:center;padding:22px;cursor:pointer}.drop.drag{border-color:var(--accent);background:#11160d}.drop strong{display:block;font-size:20px}.drop span{display:block;color:var(--muted);font-size:12px;margin-top:7px}.meta{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:10px}.m{border:1px solid #232b33;background:#0b0f13;border-radius:12px;padding:10px}.m b{display:block;font-size:14px}.m span{display:block;color:var(--muted);font-size:9px;margin-top:3px;text-transform:uppercase}.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:12px}button,select,.filepick{font:inherit;border:1px solid var(--line);background:var(--panel2);color:var(--ink);border-radius:12px;min-height:44px;padding:0 13px;font-weight:800}button,.filepick{cursor:pointer}.filepick{display:inline-flex;align-items:center;justify-content:center;text-decoration:none}.filepick.primary{background:var(--accent);border-color:var(--accent);color:#0b0d0f}.visually-hidden{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}.primary{background:var(--accent);border-color:var(--accent);color:#0b0d0f}.primary:disabled,button:disabled{opacity:.4;cursor:not-allowed}.status{margin-top:12px;border-left:3px solid var(--line);background:#0b0e11;border-radius:8px;padding:11px 12px;font-size:12px;line-height:1.45;color:var(--muted)}.status.good{border-left-color:var(--good);color:#ccefd5}.status.warn{border-left-color:var(--warn);color:#efe2b7}.status.bad{border-left-color:var(--bad);color:#f3b9b9}.progress{height:7px;background:#20262d;border-radius:999px;overflow:hidden;margin-top:12px}.progress i{display:block;height:100%;width:0;background:var(--accent);transition:.2s}.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-top:10px}.step{border:1px solid #242d35;border-radius:11px;padding:9px;background:#0b0f12}.step b{font-size:10px;display:block}.step span{font-size:9px;color:var(--muted);display:block;margin-top:4px}.step.on{border-color:#5d7130}.step.done{border-color:#2f6440}.out{width:100%;min-height:320px;resize:vertical;border:1px solid var(--line);background:#07090c;color:var(--ink);border-radius:14px;padding:14px;font:14px/1.55 ui-monospace,SFMono-Regular,Menlo,monospace;margin-top:10px}.note{font-size:10px;color:var(--muted);line-height:1.5;margin-top:10px}.hidden{display:none!important}.small{font-size:11px;color:var(--muted)}@media(max-width:650px){.meta{grid-template-columns:1fr 1fr}.steps{grid-template-columns:1fr 1fr}.hero h1{font-size:46px}.app{padding:12px 10px 70px}}
 </style>
 </head>
 <body>
@@ -19,9 +19,16 @@
   </div>
 
   <section class="panel">
-    <input id="file" type="file" accept="audio/*,video/*" class="hidden">
-    <div id="drop" class="drop" tabindex="0" role="button">
-      <div><strong>Elegir audio</strong><span>MP3, M4A, WAV, OGG, WebM, MP4 y similares. También podés arrastrarlo acá.</span></div>
+    <input id="file" type="file" accept="audio/*,video/*,.mp3,.mp4,.mpeg,.mpga,.m4a,.ogg,.wav,.webm,.flac,.aac,.3gp,.caf" class="visually-hidden">
+    <div id="drop" class="drop" tabindex="0" role="button" aria-label="Soltá un audio acá o abrí el buscador de archivos">
+      <div>
+        <strong>Soltá el audio acá</strong>
+        <span>o elegilo con el selector nativo del navegador</span>
+        <div class="row" style="justify-content:center;margin-top:14px">
+          <label for="file" id="pick" class="filepick primary">ABRIR BUSCADOR DE ARCHIVOS</label>
+        </div>
+        <span>MP3, M4A, WAV, OGG, WebM, MP4, FLAC y otros. Si el formato no lo acepta Groq, se convierte antes.</span>
+      </div>
     </div>
     <div class="meta">
       <div class="m"><b id="name">—</b><span>archivo</span></div>
@@ -60,7 +67,8 @@
 </div>
 <script type="module">
 const $=s=>document.querySelector(s);
-const MAX_DIRECT_BYTES=24*1024*1024;
+const MAX_DIRECT_BYTES=24_000_000;
+const GROQ_DIRECT_EXTS=new Set(['flac','mp3','mp4','mpeg','mpga','m4a','ogg','wav','webm']);
 const TARGET_BITRATE='32k';
 const CHUNK_SECONDS=10*60;
 const OVERLAP_SECONDS=4;
@@ -73,7 +81,9 @@ function setProgress(p){$('#progress').classList.remove('hidden');$('#progress i
 function step(name,mode){const el=document.querySelector('[data-step="'+name+'"]');if(!el)return;el.classList.remove('on','done');if(mode)el.classList.add(mode)}
 function resetSteps(){for(const x of document.querySelectorAll('.step'))x.classList.remove('on','done');$('#steps').classList.remove('hidden')}
 function setBusy(v){state.busy=v;$('#run').disabled=v||!state.file||!state.token;$('#cancel').disabled=!v;$('#file').disabled=v;$('#model').disabled=v}
-function cleanName(s){return String(s||'transcripcion').replace(/.[^.]+$/,'').replace(/[^p{L}p{N}_ -]+/gu,'').trim()||'transcripcion'}
+function cleanName(s){return String(s||'transcripcion').replace(/\.[^.]+$/,'').replace(/[^\p{L}\p{N}_ -]+/gu,'').trim()||'transcripcion'}
+function fileExt(name){return String(name||'').toLowerCase().match(/\.([a-z0-9]+)$/)?.[1]||''}
+function canUploadDirect(file){return file.size<=MAX_DIRECT_BYTES&&GROQ_DIRECT_EXTS.has(fileExt(file.name))}
 
 function openDB(name,version){return new Promise((res,rej)=>{const q=indexedDB.open(name,version);q.onsuccess=()=>res(q.result);q.onerror=()=>rej(q.error);q.onupgradeneeded=()=>{try{q.transaction.abort()}catch{}}})}
 async function dbGet(dbn,store,key){try{const db=await openDB(dbn);if(!db.objectStoreNames.contains(store))return null;return await new Promise((res,rej)=>{const q=db.transaction(store).objectStore(store).get(key);q.onsuccess=()=>res(q.result||null);q.onerror=()=>rej(q.error)})}catch{return null}}
@@ -87,18 +97,19 @@ async function loadGroqToken(){
 }
 
 async function mediaDuration(file){return new Promise((res,rej)=>{const media=document.createElement(file.type.startsWith('video/')?'video':'audio');const url=URL.createObjectURL(file);media.preload='metadata';media.onloadedmetadata=()=>{const d=media.duration;URL.revokeObjectURL(url);res(Number.isFinite(d)?d:null)};media.onerror=()=>{URL.revokeObjectURL(url);rej(new Error('No pude leer la duración del archivo'))};media.src=url})}
-async function choose(file){if(!file)return;state.file=file;state.duration=null;$('#name').textContent=file.name;$('#size').textContent=fmtBytes(file.size);$('#duration').textContent='leyendo…';$('#out').value='';$('#resultMeta').textContent='sin resultado';$('#copy').disabled=$('#download').disabled=true;try{state.duration=await mediaDuration(file);$('#duration').textContent=fmtTime(state.duration)}catch{$('#duration').textContent='desconocida'}setBusy(false)}
+async function choose(file){if(!file||state.busy)return;state.file=file;state.duration=null;$('#name').textContent=file.name;$('#size').textContent=fmtBytes(file.size);$('#duration').textContent='leyendo…';$('#out').value='';$('#resultMeta').textContent='sin resultado';$('#copy').disabled=$('#download').disabled=true;setStatus('Archivo seleccionado. Podés transcribirlo cuando quieras.','good');try{state.duration=await mediaDuration(file);$('#duration').textContent=fmtTime(state.duration)}catch{$('#duration').textContent='desconocida'}setBusy(false)}
 
-$('#drop').onclick=()=>!state.busy&&$('#file').click();
+$('#drop').onclick=e=>{if(state.busy||e.target.closest('label'))return;$('#file').click()};
 $('#drop').onkeydown=e=>{if((e.key==='Enter'||e.key===' ')&&!state.busy){e.preventDefault();$('#file').click()}};
-$('#file').onchange=e=>choose(e.target.files?.[0]);
-for(const ev of ['dragenter','dragover'])$('#drop').addEventListener(ev,e=>{e.preventDefault();$('#drop').classList.add('drag')});
-for(const ev of ['dragleave','drop'])$('#drop').addEventListener(ev,e=>{e.preventDefault();$('#drop').classList.remove('drag')});
-$('#drop').addEventListener('drop',e=>choose(e.dataTransfer?.files?.[0]));
+$('#file').onchange=e=>{const f=e.target.files?.[0];if(f)choose(f);e.target.value=''};
+for(const ev of ['dragenter','dragover','drop'])window.addEventListener(ev,e=>e.preventDefault(),{capture:true});
+for(const ev of ['dragenter','dragover'])$('#drop').addEventListener(ev,e=>{$('#drop').classList.add('drag');if(e.dataTransfer)e.dataTransfer.dropEffect='copy'});
+$('#drop').addEventListener('dragleave',e=>{if(!$('#drop').contains(e.relatedTarget))$('#drop').classList.remove('drag')});
+$('#drop').addEventListener('drop',e=>{e.preventDefault();e.stopPropagation();$('#drop').classList.remove('drag');const f=e.dataTransfer?.files?.[0];if(f)choose(f);else setStatus('Firefox no entregó un archivo en ese arrastre. Usá “ABRIR BUSCADOR DE ARCHIVOS”.','warn')});
 
 async function loadFFmpeg(){
   if(state.ffmpegReady)return state.ffmpeg;
-  setStatus('Archivo grande: cargando FFmpeg local para comprimir y partir el audio…','warn');
+  setStatus('Preparando el audio localmente con FFmpeg…','warn');
   const [{FFmpeg},{fetchFile,toBlobURL}]=await Promise.all([
     import('https://unpkg.com/@ffmpeg/ffmpeg@0.12.15/dist/esm/index.js'),
     import('https://unpkg.com/@ffmpeg/util@0.12.2/dist/esm/index.js')
@@ -116,11 +127,11 @@ async function loadFFmpeg(){
 }
 
 async function prepareChunks(file,duration){
-  if(file.size<=MAX_DIRECT_BYTES)return[{blob:file,name:file.name,start:0,end:duration||null}];
+  if(canUploadDirect(file))return[{blob:file,name:file.name,start:0,end:duration||null}];
   const ff=await loadFFmpeg();
-  const ext=(file.name.match(/.([a-z0-9]+)$/i)?.[1]||'bin').toLowerCase();
+  const ext=(file.name.match(/\.([a-z0-9]+)$/i)?.[1]||'bin').toLowerCase();
   const input='input.'+ext,prepared='prepared.m4a';
-  setStatus('Archivo grande: comprimiendo el audio completo localmente antes de decidir si hace falta partirlo…','warn');
+  setStatus('Convirtiendo a audio compatible y liviano antes de enviarlo…','warn');
   await ff.writeFile(input,await ff.__fetchFile(file));
   await ff.exec(['-i',input,'-vn','-ac','1','-ar','16000','-c:a','aac','-b:a',TARGET_BITRATE,'-y',prepared]);
   const compactData=await ff.readFile(prepared);
@@ -134,7 +145,7 @@ async function prepareChunks(file,duration){
   if(!Number.isFinite(duration)||duration<=0){
     try{await ff.deleteFile(input)}catch{}
     try{await ff.deleteFile(prepared)}catch{}
-    throw new Error('El audio sigue superando 24 MiB después de comprimir y el navegador no informó su duración; no voy a recortarlo a ciegas.');
+    throw new Error('El audio sigue superando 24 MB después de comprimir y el navegador no informó su duración; no voy a recortarlo a ciegas.');
   }
   const count=Math.max(1,Math.ceil(duration/CHUNK_SECONDS));
   const chunks=[];
@@ -161,7 +172,7 @@ async function prepareChunks(file,duration){
 function normalizeWord(w){return w.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9ñ]+/gi,'')}
 function mergeWithOverlap(base,next){
   base=(base||'').trim();next=(next||'').trim();if(!base)return next;if(!next)return base;
-  const a=base.split(/s+/),b=next.split(/s+/),max=Math.min(50,a.length,b.length);let best=0;
+  const a=base.split(/\s+/),b=next.split(/\s+/),max=Math.min(50,a.length,b.length);let best=0;
   for(let n=max;n>=4;n--){let ok=true;for(let i=0;i<n;i++){if(normalizeWord(a[a.length-n+i])!==normalizeWord(b[i])){ok=false;break}}if(ok){best=n;break}}
   return base+' '+b.slice(best).join(' ');
 }
@@ -208,12 +219,7 @@ async function run(){
       setProgress(40+((i+1)/chunks.length)*50);
     }
     step('send','done');step('merge','on');setStatus('Uniendo texto y limpiando duplicados de los solapes…');
-    $('#out').value=merged.replace(/[ 	]+
-/g,'
-').replace(/
-{3,}/g,'
-
-').trim();
+    $('#out').value=merged.replace(/[ \t]+\n/g,'\n').replace(/\n{3,}/g,'\n\n').trim();
     step('merge','done');setProgress(100);
     const elapsed=(performance.now()-started)/1000;
     setStatus('Listo. El audio fue transcripto completo.','good');
@@ -227,7 +233,7 @@ async function run(){
 
 $('#run').onclick=run;
 $('#cancel').onclick=()=>state.abort?.abort();
-$('#copy').onclick=async()=>{await navigator.clipboard.writeText($('#out').value);$('#copy').textContent='COPIADO';setTimeout(()=>$('#copy').textContent='COPIAR',1000)};
+$('#copy').onclick=async()=>{try{await navigator.clipboard.writeText($('#out').value)}catch{$('#out').focus();$('#out').select();document.execCommand('copy')}$('#copy').textContent='COPIADO';setTimeout(()=>$('#copy').textContent='COPIAR',1000)};
 $('#download').onclick=()=>{const blob=new Blob([$('#out').value],{type:'text/plain;charset=utf-8'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=cleanName(state.file?.name)+'.txt';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1500)};
 $('#clear').onclick=()=>{if(state.busy)return;state.file=null;state.duration=null;$('#file').value='';$('#name').textContent=$('#size').textContent=$('#duration').textContent='—';$('#out').value='';$('#resultMeta').textContent='sin resultado';$('#status').classList.add('hidden');$('#progress').classList.add('hidden');$('#steps').classList.add('hidden');$('#copy').disabled=$('#download').disabled=true;setBusy(false)};
 
