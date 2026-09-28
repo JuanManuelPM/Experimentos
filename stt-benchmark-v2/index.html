@@ -78,6 +78,8 @@ function esc(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;',
 function norm(s){return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9ñ\s]/gi,' ').replace(/\s+/g,' ').trim()}
 function toks(s){const n=norm(s);return n?n.split(' '):[]}
 function lev(a,b){const d=Array.from({length:b.length+1},(_,i)=>i);for(let i=1;i<=a.length;i++){let p=d[0];d[0]=i;for(let j=1;j<=b.length;j++){const t=d[j];d[j]=Math.min(d[j]+1,d[j-1]+1,p+(a[i-1]===b[j-1]?0:1));p=t}}return d[b.length]}
+function alignWords(base,cand){const A=toks(base),B=toks(cand),n=A.length,m=B.length,dp=Array.from({length:n+1},()=>new Array(m+1).fill(0));for(let i=0;i<=n;i++)dp[i][0]=i;for(let j=0;j<=m;j++)dp[0][j]=j;for(let i=1;i<=n;i++)for(let j=1;j<=m;j++)dp[i][j]=Math.min(dp[i-1][j]+1,dp[i][j-1]+1,dp[i-1][j-1]+(A[i-1]===B[j-1]?0:1));const raw=String(cand||'').trim().split(/\s+/),out=new Array(n).fill(null);let i=n,j=m;while(i>0||j>0){if(i>0&&j>0&&dp[i][j]===dp[i-1][j-1]+(A[i-1]===B[j-1]?0:1)){out[i-1]=raw[j-1];i--;j--}else if(i>0&&dp[i][j]===dp[i-1][j]+1)i--;else j--}return out}
+function consensusText(h){h=h.filter(x=>toks(x).length);if(!h.length)return'';if(h.length===1)return h[0];let base=h[0],score=Infinity;for(const a of h){let s=0;for(const b of h)if(a!==b)s+=lev(toks(a),toks(b))/Math.max(1,toks(a).length,toks(b).length);if(s<score){score=s;base=a}}const raw=String(base).trim().split(/\s+/),als=h.filter(x=>x!==base).map(x=>alignWords(base,x));return raw.map((w,i)=>{const votes=[w,...als.map(a=>a[i]).filter(Boolean)],m=new Map();for(const v of votes){const k=norm(v);if(!k)continue;const z=m.get(k)||{n:0,v};z.n++;m.set(k,z)}let q=null;for(const z of m.values())if(!q||z.n>q.n)q=z;return q?.v||w}).join(' ')}
 function wer(r,h){const a=toks(r),b=toks(h);return a.length?100*lev(a,b)/a.length:0}
 function cer(r,h){const a=[...norm(r).replace(/\s/g,'')],b=[...norm(h).replace(/\s/g,'')];return a.length?100*lev(a,b)/a.length:0}
 function concat(chunks){const n=chunks.reduce((s,c)=>s+c.length,0),o=new Float32Array(n);let p=0;for(const c of chunks){o.set(c,p);p+=c.length}return o}
@@ -103,7 +105,7 @@ async function addResult(rec,modelId,config,fn,loadMs=0){
   const t0=performance.now();let text='',status='ok',error=null;
   try{text=await fn()}catch(e){status='error';error=String(e?.message||e)}
   const infer=performance.now()-t0, r={session,test_index:rec.idx,test_id:rec.id,reference:rec.reference,model:modelId,config,text,status,error,wer:status==='ok'?wer(rec.reference,text):null,cer:status==='ok'?cer(rec.reference,text):null,load_ms:Math.round(loadMs),infer_ms:Math.round(infer),rtf:Number((infer/Math.max(1,rec.duration_ms)).toFixed(3)),duration_ms:rec.duration_ms,build:BUILD};
-  S.results.push(r);S.doneJobs++;updateProcessing(modelId+' · '+config);renderResults();await publishResult(r);return r
+  S.results.push(r);S.doneJobs++;persistLocal();$('copyBtn').disabled=false;updateProcessing(modelId+' · '+config);renderResults();await publishResult(r);return r
 }
 function updateProcessing(name){const pct=S.totalJobs?100*S.doneJobs/S.totalJobs:0;$('procBar').style.width=pct+'%';$('procCount').textContent=S.doneJobs+'/'+S.totalJobs;$('procTitle').textContent=name;const sec=(performance.now()-S.tournamentStart)/1000;$('procTime').textContent=sec.toFixed(1)+' s'}
 function renderResults(){
@@ -117,6 +119,7 @@ async function publishResult(r){
   const compact={kind:'stt_result',session:r.session,test:r.test_id,model:r.model,config:r.config,text:r.text,wer:r.wer,cer:r.cer,infer_ms:r.infer_ms,load_ms:r.load_ms,rtf:r.rtf,status:r.status,error:r.error,build:r.build};
   try{const res=await fetch(NTFY_URL,{method:'POST',body:JSON.stringify(compact)});if(!res.ok)throw new Error('HTTP '+res.status);$('remotePill').textContent='publicando remoto ✓';$('remotePill').className='pill good'}catch(e){$('remotePill').textContent='remoto falló · copia disponible';$('remotePill').className='pill warn';log('remote fail',{error:String(e)})}
 }
+function persistLocal(){try{localStorage.setItem('stt_mass_latest',JSON.stringify({build:BUILD,session,updated_at:new Date().toISOString(),results:S.results}))}catch(e){log('local persist fail',{error:String(e)})}}
 async function publishSummary(){
   const ok=S.results.filter(r=>r.status==='ok'&&Number.isFinite(r.wer)),groups={};
   for(const r of ok){const k=r.model+' · '+r.config;(groups[k]??=[]).push(r.wer)}
@@ -142,27 +145,36 @@ async function runWhisper(modelName,label){
   let hf,pipe,loadMs=0;const t=performance.now();
   try{hf=await import('https://cdn.jsdelivr.net/npm/@huggingface/transformers@4.2.0/+esm');pipe=await timeout(hf.pipeline('automatic-speech-recognition',modelName,{device:'wasm',dtype:'q8'}),300000,label);loadMs=performance.now()-t;log('model ready',{label,load_ms:Math.round(loadMs)})}
   catch(e){for(const rec of S.recordings)await addResult(rec,label,'full',async()=>{throw e},performance.now()-t);return}
-  for(const rec of S.recordings)await addResult(rec,label,'full',async()=>{const x=await pipe(rec.pcm16,{language:'spanish',task:'transcribe'});return String(x?.text||'').trim()},loadMs);
+  for(const rec of S.recordings){
+    await addResult(rec,label,'full',async()=>{const x=await pipe(rec.pcm16,{language:'spanish',task:'transcribe'});return String(x?.text||'').trim()},loadMs);
+    await addResult(rec,label,'clean',async()=>{const x=await pipe(cleanAudio(rec.pcm16),{language:'spanish',task:'transcribe'});return String(x?.text||'').trim()},loadMs);
+  }
   try{await pipe.dispose?.()}catch{}
 }
 async function runParakeet(){
   let mod,model,loadMs=0;const t=performance.now(),label='Parakeet 0.6B v3 INT8';
   try{mod=await import('https://cdn.jsdelivr.net/npm/parakeet.js@1.4.4/+esm');model=await timeout(mod.fromHub('parakeet-tdt-0.6b-v3',{backend:'wasm',encoderQuant:'int8',decoderQuant:'int8',preprocessorBackend:'js'}),300000,label);loadMs=performance.now()-t;log('model ready',{label,load_ms:Math.round(loadMs)})}
   catch(e){for(const rec of S.recordings)await addResult(rec,label,'full',async()=>{throw e},performance.now()-t);return}
-  for(const rec of S.recordings)await addResult(rec,label,'full',async()=>{const x=await model.transcribe(rec.pcm16,16000,{returnTimestamps:false});return String(x?.text||x?.utterance_text||'').trim()},loadMs);
+  for(const rec of S.recordings){
+    await addResult(rec,label,'full',async()=>{const x=await model.transcribe(rec.pcm16,16000,{returnTimestamps:false});return String(x?.text||x?.utterance_text||'').trim()},loadMs);
+    await addResult(rec,label,'clean',async()=>{const x=await model.transcribe(cleanAudio(rec.pcm16),16000,{returnTimestamps:false});return String(x?.text||x?.utterance_text||'').trim()},loadMs);
+  }
   try{await model.dispose?.()}catch{}
 }
 async function runMoonshine(){
   let mod,model,loadMs=0;const t=performance.now(),label='Moonshine ES Medium Streaming';
   try{mod=await import('https://cdn.jsdelivr.net/npm/@moonshine-ai/moonshine-wasm@0.1.5/dist/index.js');model=await timeout(mod.Transcriber.load({language:'es',modelArch:mod.ModelArch.MediumStreaming}),300000,label);loadMs=performance.now()-t;log('model ready',{label,load_ms:Math.round(loadMs)})}
   catch(e){for(const rec of S.recordings)await addResult(rec,label,'full',async()=>{throw e},performance.now()-t);return}
-  for(const rec of S.recordings)await addResult(rec,label,'full',async()=>{const x=model.transcribe(rec.pcm16,{sampleRate:16000});return (x?.lines||[]).map(z=>z.text).join(' ').trim()},loadMs);
+  for(const rec of S.recordings){
+    await addResult(rec,label,'full',async()=>{const x=model.transcribe(rec.pcm16,{sampleRate:16000});return (x?.lines||[]).map(z=>z.text).join(' ').trim()},loadMs);
+    await addResult(rec,label,'clean',async()=>{const x=model.transcribe(cleanAudio(rec.pcm16),{sampleRate:16000});return (x?.lines||[]).map(z=>z.text).join(' ').trim()},loadMs);
+  }
   try{model.close?.()}catch{}
 }
 async function runTournament(){
-  if(S.processing)return;S.processing=true;S.tournamentStart=performance.now();$('processingCard').hidden=false;$('summaryCard').hidden=true;$('copyBtn').disabled=true;
-  const cfg03=['native','16k','clean','win4','win8','win15'],cfg42=['native','16k','clean'];
-  S.totalJobs=S.recordings.length*(cfg03.length+cfg42.length+3+1+1);S.doneJobs=0;updateProcessing('Vosk 0.3');
+  if(S.processing)return;S.processing=true;S.tournamentStart=performance.now();$('processingCard').hidden=false;$('summaryCard').hidden=true;$('copyBtn').disabled=false;
+  const cfg03=['native','16k','clean','win4','win8','win15'],cfg42=['native','16k','clean','win8','win15'];
+  S.totalJobs=S.recordings.length*(cfg03.length+cfg42.length+6+2+2+2);S.doneJobs=0;updateProcessing('Vosk 0.3');
   await runVoskFamily(VOSK03,'Vosk 0.3',cfg03);
   await runVoskFamily(VOSK42,'Vosk 0.42',cfg42);
   await runWhisper('onnx-community/whisper-tiny','Whisper Tiny Q8');
@@ -170,6 +182,13 @@ async function runTournament(){
   await runWhisper('onnx-community/whisper-small','Whisper Small Q8');
   await runParakeet();
   await runMoonshine();
+  for(const rec of S.recordings){
+    const successful=S.results.filter(r=>r.test_id===rec.id&&r.status==='ok'&&r.text);
+    await addResult(rec,'Ensemble','consenso-all',async()=>consensusText(successful.map(r=>r.text)),0);
+    const diverseNames=new Set(['Vosk 0.3 · native','Vosk 0.42 · native','Whisper Tiny Q8 · full','Whisper Base Q8 · full','Whisper Small Q8 · full','Parakeet 0.6B v3 INT8 · full','Moonshine ES Medium Streaming · full']);
+    const diverse=successful.filter(r=>diverseNames.has(r.model+' · '+r.config));
+    await addResult(rec,'Ensemble','consenso-diverso',async()=>consensusText(diverse.map(r=>r.text)),0);
+  }
   await publishSummary();
   S.processing=false;updateProcessing('Terminado');$('procTitle').textContent='Torneo terminado';$('copyBtn').disabled=false;$('sub').textContent='resultados listos';$('remotePill').textContent+=' · sesión '+session;renderResults();log('tournament done',{session,results:S.results.length,seconds:Math.round((performance.now()-S.tournamentStart)/1000)});
 }
