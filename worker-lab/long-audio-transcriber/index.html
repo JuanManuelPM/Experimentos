@@ -44,6 +44,21 @@
       <button id="cancel" disabled>CANCELAR</button>
     </div>
     <div id="cred" class="status">Buscando la credencial Groq guardada en este navegador…</div>
+    <div id="connectBox" class="status warn hidden">
+      <strong style="display:block;margin-bottom:7px;color:var(--ink)">Conectar Groq en este navegador</strong>
+      <div class="small" style="line-height:1.5">Las credenciales viejas eran locales al navegador. Si las guardaste en Chrome, Firefox no puede verlas. No están en GitHub.</div>
+      <div class="row">
+        <a class="filepick" href="https://console.groq.com/playground" target="_blank" rel="noopener">1 · ABRIR GROQ / LOGIN</a>
+        <a class="filepick" href="https://console.groq.com/keys" target="_blank" rel="noopener">2 · ABRIR API KEYS</a>
+        <a class="filepick" href="../../provider-speedrun/" target="_blank" rel="noopener">WIZARD COMPLETO</a>
+      </div>
+      <div class="small" style="margin-top:9px">En Groq podés entrar con Google o GitHub. Después abrí API Keys, copiá una key existente o creá una, y pegala una sola vez acá.</div>
+      <div class="row">
+        <input id="groqKey" type="password" autocomplete="off" spellcheck="false" placeholder="Pegá acá la API key de Groq" style="flex:1 1 320px;min-height:44px;background:#080a0c;color:var(--ink);border:1px solid var(--line);border-radius:12px;padding:0 12px">
+        <button id="saveGroq" class="primary">GUARDAR + PROBAR</button>
+      </div>
+      <div id="groqSaveMsg" class="small" style="margin-top:7px"></div>
+    </div>
     <div id="status" class="status hidden"></div>
     <div class="progress hidden" id="progress"><i></i></div>
     <div class="steps hidden" id="steps">
@@ -87,13 +102,43 @@ function canUploadDirect(file){return file.size<=MAX_DIRECT_BYTES&&GROQ_DIRECT_E
 
 function openDB(name,version){return new Promise((res,rej)=>{const q=indexedDB.open(name,version);q.onsuccess=()=>res(q.result);q.onerror=()=>rej(q.error);q.onupgradeneeded=()=>{try{q.transaction.abort()}catch{}}})}
 async function dbGet(dbn,store,key){try{const db=await openDB(dbn);if(!db.objectStoreNames.contains(store))return null;return await new Promise((res,rej)=>{const q=db.transaction(store).objectStore(store).get(key);q.onsuccess=()=>res(q.result||null);q.onerror=()=>rej(q.error)})}catch{return null}}
+async function openFastVault(){return new Promise((resolve,reject)=>{const r=indexedDB.open('worker-lab-fast-vault',1);r.onupgradeneeded=()=>{if(!r.result.objectStoreNames.contains('provider_tokens'))r.result.createObjectStore('provider_tokens')};r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error)})}
+async function saveGroqToken(token){const db=await openFastVault();return new Promise((resolve,reject)=>{const tx=db.transaction('provider_tokens','readwrite');tx.objectStore('provider_tokens').put({token,saved_at:new Date().toISOString()},'groq');tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error)})}
+async function testGroqToken(token){
+  const r=await fetch('https://api.groq.com/openai/v1/models',{headers:{Authorization:'Bearer '+token}});
+  const raw=await r.text();let body;try{body=JSON.parse(raw)}catch{body={raw}}
+  if(!r.ok)throw new Error(body?.error?.message||body?.message||('Groq respondió HTTP '+r.status));
+  return Array.isArray(body?.data)?body.data.length:null;
+}
+function showConnectBox(show){$('#connectBox').classList.toggle('hidden',!show)}
 async function loadGroqToken(){
   let c=await dbGet('worker-lab-fast-vault','provider_tokens','groq');
   if(!c){const legacy=await dbGet('worker-lab-vault','secrets','groq');if(legacy)c=legacy}
   const token=typeof c==='string'?c:c?.token;
-  if(token){state.token=token;$('#cred').className='status good';$('#cred').textContent='Groq conectado: se encontró la credencial guardada en este navegador.'}
-  else{$('#cred').className='status warn';$('#cred').textContent='No encontré la credencial Groq en este navegador. El código está listo, pero acá no podría llamar a la API hasta que exista esa credencial en el vault de este origen.'}
+  if(token){
+    state.token=token;showConnectBox(false);
+    $('#cred').className='status good';$('#cred').textContent='Groq conectado: se encontró la credencial guardada en este navegador.';
+  }else{
+    state.token=null;showConnectBox(true);
+    $('#cred').className='status warn';$('#cred').textContent='No encontré Groq en este navegador. Esto suele pasar al cambiar de Chrome a Firefox porque IndexedDB no se comparte entre navegadores.';
+  }
   setBusy(false);
+}
+async function connectGroq(){
+  const input=$('#groqKey'),msg=$('#groqSaveMsg'),btn=$('#saveGroq');
+  const token=input.value.trim();
+  if(!token){msg.textContent='Pegá la key primero.';return}
+  btn.disabled=true;msg.textContent='Probando la key con Groq…';
+  try{
+    const count=await testGroqToken(token);
+    await saveGroqToken(token);
+    state.token=token;
+    input.value='';
+    msg.textContent='READY'+(count!=null?' · '+count+' modelos visibles':'')+'. Quedó guardada sólo en este navegador.';
+    $('#cred').className='status good';$('#cred').textContent='Groq conectado y probado correctamente.';
+    setTimeout(()=>showConnectBox(false),700);
+  }catch(e){msg.textContent='No la guardé: '+(e?.message||e)}
+  finally{btn.disabled=false;setBusy(false)}
 }
 
 async function mediaDuration(file){return new Promise((res,rej)=>{const media=document.createElement(file.type.startsWith('video/')?'video':'audio');const url=URL.createObjectURL(file);media.preload='metadata';media.onloadedmetadata=()=>{const d=media.duration;URL.revokeObjectURL(url);res(Number.isFinite(d)?d:null)};media.onerror=()=>{URL.revokeObjectURL(url);rej(new Error('No pude leer la duración del archivo'))};media.src=url})}
@@ -231,6 +276,7 @@ async function run(){
   }finally{setBusy(false);state.abort=null}
 }
 
+$('#saveGroq').onclick=connectGroq;
 $('#run').onclick=run;
 $('#cancel').onclick=()=>state.abort?.abort();
 $('#copy').onclick=async()=>{try{await navigator.clipboard.writeText($('#out').value)}catch{$('#out').focus();$('#out').select();document.execCommand('copy')}$('#copy').textContent='COPIADO';setTimeout(()=>$('#copy').textContent='COPIAR',1000)};
