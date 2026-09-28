@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta name="color-scheme" content="dark">
+<title>STT Ensemble V6</title>
+<style>
+:root{--bg:#080a0c;--p:#11161b;--p2:#0c1014;--line:#29333c;--fg:#f3f6f8;--mut:#87949f;--ok:#76e39a;--bad:#ff7b7b;--wait:#ffd166}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--fg);font:14px/1.35 system-ui,-apple-system,Segoe UI,sans-serif}
+.app{max-width:900px;margin:auto;padding:12px 10px 70px}
+.top{position:sticky;top:0;z-index:5;background:rgba(8,10,12,.95);backdrop-filter:blur(12px);padding:8px 0 11px;border-bottom:1px solid #1d242a}
+.head{display:flex;align-items:center;gap:10px}.mic{width:64px;height:64px;border-radius:50%;border:1px solid var(--line);background:#171e24;color:white;font-size:29px}.mic.live{background:#68262e;border-color:#ff8181}
+.info{flex:1;min-width:0}.status{font-size:17px;font-weight:850}.sub{color:var(--mut);font-size:10px;margin-top:3px}.meter{height:7px;background:#10161b;border:1px solid #27313a;border-radius:99px;overflow:hidden;margin-top:7px}.meter i{display:block;height:100%;width:0;background:var(--ok);transition:width .05s linear}
+.toolbar{display:flex;gap:7px;margin-top:9px}.btn{border:1px solid var(--line);background:#171e24;color:var(--fg);padding:8px 11px;border-radius:10px;font:inherit}.btn.primary{background:#eef5ff;color:#081018;border-color:#eef5ff;font-weight:800}.btn:disabled{opacity:.45}
+.consensus{border:1px solid #355c41;background:#0d1711;border-radius:14px;padding:11px;margin-top:12px}.ctitle{font-size:11px;color:var(--ok);font-weight:800}.cout{min-height:54px;font-size:17px;line-height:1.45;margin-top:5px;white-space:pre-wrap}
+.grid{display:grid;gap:8px;margin-top:8px}.card{border:1px solid var(--line);background:var(--p);border-radius:14px;padding:10px}.title{display:flex;justify-content:space-between;gap:10px;align-items:start}.name{font-weight:850;font-size:15px}.meta{font-size:10px;color:var(--mut);margin-top:2px}.badge{font-size:8px;border:1px solid #365c40;color:var(--ok);padding:3px 5px;border-radius:999px;white-space:nowrap}.out{min-height:55px;border:1px solid #222c34;background:var(--p2);border-radius:10px;padding:9px;font-size:15px;white-space:pre-wrap;overflow-wrap:anywhere;margin-top:8px}.out.empty{color:#4d5963}.stats{display:flex;gap:12px;color:var(--mut);font-size:9px;margin-top:6px}.stats b{color:var(--fg)}
+details{margin-top:10px;color:var(--mut);font-size:10px}pre{white-space:pre-wrap;background:#07090b;border:1px solid #202830;border-radius:10px;padding:9px;max-height:220px;overflow:auto}
+@media(min-width:760px){.grid{grid-template-columns:1fr 1fr}.consensus{grid-column:1/-1}}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="top">
+    <div class="head">
+      <button id="mic" class="mic">🎙️</button>
+      <div class="info">
+        <div id="status" class="status">Cargar modelos</div>
+        <div id="sub" class="sub">V6 · carga progresiva · mismo audio</div>
+        <div class="meter"><i id="meter"></i></div>
+      </div>
+    </div>
+    <div class="toolbar">
+      <button id="load" class="btn primary">Cargar modelos</button>
+      <button id="stop" class="btn" disabled>Detener</button>
+      <button id="clear" class="btn">Limpiar</button>
+    </div>
+  </div>
+
+  <section class="consensus">
+    <div class="ctitle">CONSENSO</div>
+    <div id="consensus" class="cout">…</div>
+  </section>
+
+  <div id="grid" class="grid"></div>
+  <details><summary>diagnóstico</summary><pre id="log"></pre></details>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/vosk-browser@0.0.8/dist/vosk.js"></script>
+<script>
+const BUILD='STT-ENSEMBLE-V6-20260928';
+const URL42='https://w-okada.github.io/vosk-browser-ts/vosk-browser-ts/assets/models/vosk-model-small-es-0.42.tar.gz';
+const URL03='https://raw.githubusercontent.com/allorenter/vosk-browser-example/main/vosk-model-small-es-0.3.tar.gz';
+const COMMANDS=['prometeo','che prometeo','pausa','poner pausa','reproducir','play','escuchar','dejá de escuchar','prender la tele','apagar la tele','subir volumen','bajar volumen','silencio','siguiente','anterior','[unk]'];
+
+const variants=[
+{id:'v42native',name:'Vosk 0.42 · nativo',meta:'audio original · continuo',model:'42',mode:'native',horizon:0},
+{id:'v4216',name:'Vosk 0.42 · 16 kHz',meta:'resample explícito · continuo',model:'42',mode:'16k',horizon:0},
+{id:'v423',name:'Vosk 0.42 · 3 s',meta:'reinicia contexto cada 3 s',model:'42',mode:'16k',horizon:3},
+{id:'v427',name:'Vosk 0.42 · 7 s',meta:'reinicia contexto cada 7 s',model:'42',mode:'16k',horizon:7},
+{id:'v4215',name:'Vosk 0.42 · 15 s',meta:'reinicia contexto cada 15 s',model:'42',mode:'16k',horizon:15},
+{id:'v0316',name:'Vosk 0.3 · 16 kHz',meta:'modelo anterior · continuo',model:'03',mode:'16k',horizon:0},
+{id:'cmd',name:'Vosk 0.42 · comandos',meta:'vocabulario limitado',model:'42',mode:'16k',horizon:0,grammar:true},
+];
+for(const v of variants)Object.assign(v,{rec:null,committed:'',partial:'',first:null,segments:0,startedAt:0,nextReset:0});
+const byId=Object.fromEntries(variants.map(v=>[v.id,v]));
+const state={m42:null,m03:null,loaded:false,loading:false,loading42:false,running:false,stream:null,ctx:null,src:null,proc:null,start:0,loadStarted:0,loadTicker:null};
+const $=id=>document.getElementById(id);
+
+function log(msg,data){$('log').textContent+='['+new Date().toLocaleTimeString()+'] '+msg+(data?' '+JSON.stringify(data):'')+'\n'}
+function esc(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+function render(){
+ $('grid').innerHTML=variants.map(v=>`
+ <section class="card">
+   <div class="title"><div><div class="name">${esc(v.name)}</div><div class="meta">${esc(v.meta)}</div></div><span class="badge">${v.model==='42'?'0.42':'0.3'}</span></div>
+   <div id="out-${v.id}" class="out ${(v.committed||v.partial)?'':'empty'}">${esc((v.committed+(v.partial?' '+v.partial:'')).trim()||'…')}</div>
+   <div class="stats"><span>primera <b id="first-${v.id}">${v.first==null?'—':Math.round(v.first)+' ms'}</b></span><span>segmentos <b id="seg-${v.id}">${v.segments}</b></span></div>
+ </section>`).join('');
+}
+function normalize(s){return (s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9ñ\s]/gi,' ').replace(/\s+/g,' ').trim()}
+function lev(a,b){a=normalize(a);b=normalize(b);const m=b.length,d=Array.from({length:m+1},(_,i)=>i);for(let i=1;i<=a.length;i++){let p=d[0];d[0]=i;for(let j=1;j<=m;j++){const t=d[j];d[j]=Math.min(d[j]+1,d[j-1]+1,p+(a[i-1]===b[j-1]?0:1));p=t}}return d[m]}
+function full(v){return (v.committed+(v.partial?' '+v.partial:'')).trim()}
+function updateConsensus(){
+ const ids=['v42native','v4216','v0316'];const xs=ids.map(id=>full(byId[id])).filter(Boolean);
+ if(!xs.length){$('consensus').textContent='…';return}
+ if(xs.length===1){$('consensus').textContent=xs[0];return}
+ let best=xs[0],score=Infinity;
+ for(const a of xs){let s=0;for(const b of xs)if(a!==b)s+=lev(a,b)/Math.max(1,normalize(a).length,normalize(b).length);if(s<score){score=s;best=a}}
+ $('consensus').textContent=best;
+}
+function update(v){
+ const el=$('out-'+v.id);if(el){const t=full(v);el.textContent=t||'…';el.classList.toggle('empty',!t)}
+ const f=$('first-'+v.id),s=$('seg-'+v.id);if(f)f.textContent=v.first==null?'—':Math.round(v.first)+' ms';if(s)s.textContent=v.segments;
+ updateConsensus();
+}
+function resample16(input,rate){
+ if(rate===16000)return new Float32Array(input);
+ const ratio=rate/16000,n=Math.max(1,Math.round(input.length/ratio)),out=new Float32Array(n);
+ for(let i=0;i<n;i++){const p=i*ratio,a=Math.floor(p),b=Math.min(a+1,input.length-1),f=p-a;out[i]=input[a]*(1-f)+input[b]*f}
+ return out;
+}
+function bindRecognizer(v,rec){
+ rec.on('partialresult',m=>{const t=m?.result?.partial||'';v.partial=t;if(t&&v.first==null)v.first=performance.now()-state.start;update(v)});
+ rec.on('result',m=>{const t=(m?.result?.text||'').trim();if(t){v.committed=(v.committed+' '+t).trim();v.partial='';v.segments++;if(v.first==null)v.first=performance.now()-state.start;update(v)}});
+}
+function makeRec(v){
+ const model=v.model==='42'?(state.m42||state.m03):(state.m03||state.m42);
+ const sr=v.mode==='native'?state.ctx.sampleRate:16000;
+ const grammar=v.grammar?JSON.stringify(COMMANDS):undefined;
+ const rec=new model.KaldiRecognizer(sr,grammar);bindRecognizer(v,rec);return rec;
+}
+function rotate(v){
+ if(!v.horizon||!v.rec)return;
+ const old=v.rec;v.rec=makeRec(v);v.nextReset=performance.now()+v.horizon*1000;
+ try{old.retrieveFinalResult()}catch{}
+ setTimeout(()=>{try{old.remove()}catch{}},220);
+}
+function setLoadUi(main,sub){
+  $('status').textContent=main;
+  $('sub').textContent=sub||'';
+}
+function startLoadTicker(){
+  clearInterval(state.loadTicker);
+  state.loadStarted=performance.now();
+  state.loadTicker=setInterval(()=>{
+    if(!state.loading&&!state.loading42){clearInterval(state.loadTicker);state.loadTicker=null;return}
+    const s=((performance.now()-state.loadStarted)/1000).toFixed(1);
+    const parts=[];
+    parts.push(state.m03?'0.3 listo':'0.3 cargando');
+    parts.push(state.m42?'0.42 listo':state.loading42?'0.42 cargando':'0.42 pendiente');
+    setLoadUi(state.loaded?'Ya podés grabar':'Cargando modelo rápido…',parts.join(' · ')+' · '+s+' s');
+  },250);
+}
+function timeout(p,ms,label){
+  return Promise.race([p,new Promise((_,rej)=>setTimeout(()=>rej(new Error(label+' timeout')),ms))]);
+}
+async function load42Background(){
+  if(state.m42||state.loading42)return;
+  state.loading42=true;log('load 0.42 start');
+  try{
+    state.m42=await timeout(Vosk.createModel(URL42),45000,'Vosk 0.42');
+    log('load 0.42 ready');
+    if(!state.running)setLoadUi('Listo','0.3 listo · 0.42 listo · tocá el micrófono');
+  }catch(e){
+    log('load 0.42 fail',{error:String(e)});
+    if(!state.running)setLoadUi('Listo','0.3 listo · 0.42 no cargó; las variantes usan 0.3 como fallback');
+  }finally{
+    state.loading42=false;$('load').disabled=false;
+  }
+}
+async function loadModels(){
+  if(state.loaded){
+    if(!state.m42&&!state.loading42)load42Background();
+    return;
+  }
+  if(state.loading)return;
+  state.loading=true;$('load').disabled=true;startLoadTicker();setLoadUi('Cargando modelo rápido…','primero 0.3; 0.42 va después en segundo plano');
+  try{
+    log('load 0.3 start');
+    state.m03=await timeout(Vosk.createModel(URL03),30000,'Vosk 0.3');
+    state.loaded=true;
+    log('load 0.3 ready');
+    setLoadUi('Ya podés grabar','0.3 listo · 0.42 cargando en segundo plano');
+    $('load').disabled=false;
+    load42Background();
+  }catch(e){
+    log('load 0.3 fail',{error:String(e)});
+    setLoadUi('Falló el modelo rápido',String(e));
+    // Intento 0.42 como último recurso, sin dejar la UI muda.
+    try{
+      state.m42=await timeout(Vosk.createModel(URL42),45000,'Vosk 0.42');
+      state.m03=state.m42;state.loaded=true;
+      setLoadUi('Ya podés grabar','0.42 listo · usando 0.42 para todas las variantes');
+      log('0.42 rescue ready');
+    }catch(e2){setLoadUi('No cargó ningún modelo',String(e2));log('all load fail',{error:String(e2)})}
+  }finally{
+    state.loading=false;$('load').disabled=false;
+  }
+}
+async function start(){
+ if(state.running)return stop();
+ if(!state.loaded){
+   await loadModels();
+   if(!state.loaded)return;
+ }
+ // Si 0.42 todavía está descargándose no bloqueamos la grabación.
+ if(!state.m42)log('start with 0.3 fallback while 0.42 loads');
+
+ for(const v of variants){v.committed='';v.partial='';v.first=null;v.segments=0;v.nextReset=0}
+ render();$('consensus').textContent='…';
+ state.stream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true,channelCount:1},video:false});
+ state.ctx=new (window.AudioContext||window.webkitAudioContext)();if(state.ctx.state==='suspended')await state.ctx.resume();
+ state.src=state.ctx.createMediaStreamSource(state.stream);state.proc=state.ctx.createScriptProcessor(4096,1,1);
+ const zero=state.ctx.createGain();zero.gain.value=0;
+ state.start=performance.now();state.running=true;
+ for(const v of variants){v.rec=makeRec(v);if(v.horizon)v.nextReset=performance.now()+v.horizon*1000}
+ state.proc.onaudioprocess=ev=>{
+   if(!state.running)return;
+   const buf=ev.inputBuffer,pcm=buf.getChannelData(0),r16=resample16(pcm,state.ctx.sampleRate);
+   let sum=0,peak=0;for(let i=0;i<pcm.length;i++){sum+=pcm[i]*pcm[i];peak=Math.max(peak,Math.abs(pcm[i]))}
+   const rms=Math.sqrt(sum/pcm.length),pct=Math.min(100,Math.round(Math.max(rms*380,peak*100)));$('meter').style.width=pct+'%';
+   const now=performance.now();
+   for(const v of variants){
+     try{
+       if(v.mode==='native')v.rec.acceptWaveform(buf);else v.rec.acceptWaveformFloat(r16,16000);
+       if(v.horizon&&now>=v.nextReset)rotate(v);
+     }catch(e){log('feed fail',{id:v.id,error:String(e)})}
+   }
+ };
+ state.src.connect(state.proc);state.proc.connect(zero);zero.connect(state.ctx.destination);
+ $('mic').classList.add('live');$('status').textContent='Escuchando';$('sub').textContent=(state.m42?'0.42 + 0.3':'0.3 activo · 0.42 sigue cargando')+' · mismo audio → 7 estrategias';$('stop').disabled=false;log('start',{sampleRate:state.ctx.sampleRate,m42:!!state.m42,m03:!!state.m03});
+}
+async function stop(){
+ if(!state.running)return;state.running=false;
+ for(const v of variants){const r=v.rec;v.rec=null;if(r){try{r.retrieveFinalResult()}catch{};setTimeout(()=>{try{r.remove()}catch{}},220)}}
+ await new Promise(r=>setTimeout(r,250));
+ try{state.proc?.disconnect()}catch{};try{state.src?.disconnect()}catch{};try{state.stream?.getTracks().forEach(t=>t.stop())}catch{};try{await state.ctx?.close()}catch{}
+ state.proc=state.src=state.stream=state.ctx=null;$('meter').style.width='0%';$('mic').classList.remove('live');$('status').textContent='Terminado';$('sub').textContent='compará abajo';$('stop').disabled=true;updateConsensus();log('stop');
+}
+$('load').onclick=loadModels;$('mic').onclick=()=>state.running?stop():start();$('stop').onclick=stop;$('clear').onclick=()=>{for(const v of variants){v.committed='';v.partial='';v.first=null;v.segments=0}render();$('consensus').textContent='…';$('log').textContent=''};
+window.addEventListener('error',e=>log('window error',{message:e.message,source:e.filename,line:e.lineno}));
+window.addEventListener('unhandledrejection',e=>log('unhandled rejection',{reason:String(e.reason)}));
+log('build',{BUILD,userAgent:navigator.userAgent});render();
+</script>
+</body>
+</html>
