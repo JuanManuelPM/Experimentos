@@ -13,7 +13,7 @@
 <body>
 <div class="app">
   <div class="hero">
-    <div class="ey">JUANMANUELPM / EXPERIMENTOS · GROQ WHISPER</div>
+    <div class="ey">JUANMANUELPM / EXPERIMENTOS · GROQ WHISPER · BUILD 2026-09-28-B64</div>
     <h1>Audio largo → texto.</h1>
     <p>Subís una reunión, clase o nota de voz. Si entra en el límite gratuito de Groq se manda directo; si pesa demasiado, se comprime y, sólo si todavía hace falta, se parte localmente en el navegador antes de transcribir. La credencial Groq se reutiliza desde el vault que ya existe en este mismo origen y nunca se imprime en pantalla.</p>
   </div>
@@ -197,14 +197,14 @@ function wavBlob16k(samples){
   return new Blob([ab],{type:'audio/wav'});
 }
 function makeWavChunkCollector(){
-  const TARGET=8*60*16000,OVERLAP=4*16000;
+  const TARGET=6*60*16000,OVERLAP=4*16000;
   let parts=[],count=0;const chunks=[];
   function assemble(){const all=new Int16Array(count);let o=0;for(const p of parts){all.set(p,o);o+=p.length}return all}
   function flush(final=false){
     if(count===0)return;
     if(final&&chunks.length&&count<=OVERLAP+1600)return;
     const all=assemble();
-    chunks.push({blob:wavBlob16k(all),name:'chunk-'+String(chunks.length).padStart(3,'0')+'.wav',start:null,end:null});
+    chunks.push({blob:wavBlob16k(all),name:'chunk-'+String(chunks.length).padStart(3,'0')+'.wav',start:null,end:null,generatedWav:true});
     if(final){parts=[];count=0;return}
     const tail=all.slice(Math.max(0,all.length-OVERLAP));
     parts=[tail];count=tail.length;
@@ -365,23 +365,61 @@ function mergeWithOverlap(base,next){
   return base+' '+b.slice(best).join(' ');
 }
 
+function validateGeneratedWav(blob){
+  if(blob.size<44)throw new Error('El WAV generado quedó vacío o truncado.');
+  return blob.slice(0,44).arrayBuffer().then(buf=>{
+    const a=new Uint8Array(buf),txt=(o,n)=>String.fromCharCode(...a.slice(o,o+n)),v=new DataView(buf);
+    if(txt(0,4)!=='RIFF'||txt(8,4)!=='WAVE'||txt(12,4)!=='fmt '||txt(36,4)!=='data')throw new Error('El encabezado WAV generado no es válido.');
+    const channels=v.getUint16(22,true),rate=v.getUint32(24,true),bits=v.getUint16(34,true),declared=v.getUint32(40,true);
+    if(channels!==1||rate!==16000||bits!==16)throw new Error('WAV inesperado: '+channels+'ch · '+rate+'Hz · '+bits+'bit');
+    if(declared+44!==blob.size)throw new Error('WAV truncado: header '+declared+' bytes, archivo '+blob.size+' bytes.');
+    return true;
+  });
+}
+function blobToDataURL(blob){
+  return new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(r.result);r.onerror=()=>reject(r.error||new Error('No pude codificar el audio'));r.readAsDataURL(blob)});
+}
 async function groqTranscribe(chunk,index,total,previousTail){
-  const form=new FormData();
-  form.append('file',chunk.blob,chunk.name);
-  form.append('model',$('#model').value);
-  form.append('language','es');
-  form.append('response_format','verbose_json');
-  form.append('timestamp_granularities[]','segment');
-  form.append('temperature','0');
-  if(previousTail)form.append('prompt',previousTail.slice(-500));
   let lastErr;
   for(let attempt=1;attempt<=4;attempt++){
     if(state.abort?.signal.aborted)throw new DOMException('Cancelado','AbortError');
-    setStatus('Transcribiendo tramo '+(index+1)+'/'+total+(attempt>1?' · reintento '+attempt:''),'');
-    const r=await fetch('https://api.groq.com/openai/v1/audio/transcriptions',{method:'POST',headers:{Authorization:'Bearer '+state.token},body:form,signal:state.abort.signal});
+    const mode=chunk.generatedWav?'Base64URL':'archivo';
+    setStatus('Transcribiendo tramo '+(index+1)+'/'+total+' · '+mode+(attempt>1?' · reintento '+attempt:''),'');
+    let options;
+    if(chunk.generatedWav){
+      await validateGeneratedWav(chunk.blob);
+      const dataUrl=await blobToDataURL(chunk.blob);
+      const body={
+        model:$('#model').value,
+        language:'es',
+        response_format:'verbose_json',
+        timestamp_granularities:['segment'],
+        temperature:0,
+        url:dataUrl
+      };
+      if(previousTail)body.prompt=previousTail.slice(-500);
+      options={
+        method:'POST',
+        headers:{Authorization:'Bearer '+state.token,'content-type':'application/json'},
+        body:JSON.stringify(body),
+        signal:state.abort.signal
+      };
+    }else{
+      const form=new FormData();
+      form.append('file',chunk.blob,chunk.name);
+      form.append('model',$('#model').value);
+      form.append('language','es');
+      form.append('response_format','verbose_json');
+      form.append('timestamp_granularities[]','segment');
+      form.append('temperature','0');
+      if(previousTail)form.append('prompt',previousTail.slice(-500));
+      options={method:'POST',headers:{Authorization:'Bearer '+state.token},body:form,signal:state.abort.signal};
+    }
+    const r=await fetch('https://api.groq.com/openai/v1/audio/transcriptions',options);
     const raw=await r.text();let body;try{body=JSON.parse(raw)}catch{body={raw}}
     if(r.ok)return body;
-    lastErr=new Error(body?.error?.message||body?.message||('HTTP '+r.status));
+    const detail=body?.error?.message||body?.message||body?.raw||('HTTP '+r.status);
+    lastErr=new Error('Groq '+r.status+' · tramo '+(index+1)+'/'+total+' · '+mode+' · '+detail);
     if(r.status!==429&&r.status<500)throw lastErr;
     const retry=Number(r.headers.get('retry-after'))||Math.min(12,Math.pow(2,attempt));
     await new Promise((res,rej)=>{const t=setTimeout(res,retry*1000);state.abort.signal.addEventListener('abort',()=>{clearTimeout(t);rej(new DOMException('Cancelado','AbortError'))},{once:true})});
