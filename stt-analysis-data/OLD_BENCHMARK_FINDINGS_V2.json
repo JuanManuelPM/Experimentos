@@ -1,0 +1,84 @@
+{
+  "build": "STT-OLD-BENCHMARK-FINDINGS-V2",
+  "source_session": "mass-mulwmyw9-ehxp51",
+  "generated_from": [
+    "stt-results/sessions/mass-mulwmyw9-ehxp51.json",
+    "stt-analysis-data/mass-mulwmyw9-ehxp51.json"
+  ],
+  "totals": {
+    "results": 150,
+    "failures": 72,
+    "failure_rate": 0.48,
+    "successful_hypotheses_after_analysis_filter": 62
+  },
+  "source_reliability": {
+    "Parakeet 0.6B v3 INT8": {
+      "runs": 14,
+      "successes": 14,
+      "failures": 0,
+      "mean_infer_ms_all_successes": 3735.1428571428573
+    },
+    "Vosk 0.3": {
+      "runs": 48,
+      "successes": 48,
+      "failures": 0,
+      "mean_infer_ms_all_successes": 3323.375
+    },
+    "Vosk 0.42": {
+      "runs": 40,
+      "successes": 0,
+      "failures": 40
+    },
+    "Whisper Tiny Q8": {
+      "runs": 8,
+      "successes": 0,
+      "failures": 8
+    },
+    "Whisper Base Q8": {
+      "runs": 8,
+      "successes": 0,
+      "failures": 8
+    },
+    "Whisper Small Q8": {
+      "runs": 8,
+      "successes": 0,
+      "failures": 8
+    },
+    "Moonshine ES Medium Streaming": {
+      "runs": 8,
+      "successes": 0,
+      "failures": 8
+    }
+  },
+  "accuracy": {
+    "parakeet_full": {
+      "n": 8,
+      "raw_macro_wer": 0.07184873949579831,
+      "semantic_macro_wer": 0.04208683473389356,
+      "mean_infer_ms": 3661.625
+    },
+    "vosk_03_native": {
+      "n": 8,
+      "raw_macro_wer": 0.22204131652661066,
+      "mean_infer_ms": 4419.5
+    },
+    "vosk_03_16k": {
+      "n": 8,
+      "raw_macro_wer": 0.2235294117647059,
+      "mean_infer_ms": 2186.375
+    },
+    "oracle_word_availability_wer": 0.03821656050955414
+  },
+  "derived": {
+    "fastest_vosk16k_vs_parakeet_speed_ratio": 1.674747012749414,
+    "vosk16k_raw_wer_vs_parakeet_semantic_wer_ratio": 5.311148086522462,
+    "oracle_gap_vs_parakeet_semantic_percentage_points": 0.38702742243394217
+  },
+  "conclusions": [
+    "Parakeet was the only tested high-accuracy family that completed reliably in this browser benchmark.",
+    "Vosk 0.3 was reliable but substantially less accurate; its faster 16k variant bought only about 1.67x inference speed for much worse error rate.",
+    "Most Vosk variants were highly redundant, so multiplying similar Vosk passes is poor use of compute.",
+    "The old mass benchmark failure rate was 48%, so model-loading/runtime robustness is a first-class metric, not a footnote.",
+    "The 3.82% oracle and 4.21% Parakeet semantic WER are from only eight phrases and must not be generalized to long-class accuracy."
+  ]
+}
