@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<meta http-equiv="Cache-Control" content="no-cache,no-store,must-revalidate">
+<title>STT Observatory</title>
+<style>
+:root{--bg:#07090b;--p:#0e1317;--p2:#121a20;--line:#26343e;--fg:#f3f6f8;--mut:#8d9aa5;--ok:#75e39a;--warn:#ffd166;--bad:#ff7b7b;--blue:#85b7ff}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--fg);font:14px/1.45 system-ui,-apple-system,Segoe UI,sans-serif}
+main{max-width:1180px;margin:auto;padding:12px 12px 70px}
+header{position:sticky;top:0;z-index:20;padding:10px 0;background:rgba(7,9,11,.96);backdrop-filter:blur(12px);border-bottom:1px solid #171f25}
+h1{margin:0;font-size:25px}.sub{font-size:10px;color:var(--mut);margin-top:3px}
+.panel{background:var(--p);border:1px solid var(--line);border-radius:14px;padding:13px;margin-top:10px}
+.hero{display:grid;grid-template-columns:1.5fr 1fr;gap:10px}.big{font-size:22px;font-weight:850;line-height:1.15}
+.bar{height:13px;border:1px solid var(--line);background:#080c0f;border-radius:99px;overflow:hidden;margin-top:10px}.bar i{display:block;height:100%;width:0;background:var(--ok);transition:width .2s}
+.meta,.actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.pill{border:1px solid var(--line);border-radius:99px;padding:4px 7px;font-size:9px;color:var(--mut)}.pill.ok{color:var(--ok)}.pill.warn{color:var(--warn)}.pill.bad{color:var(--bad)}
+button,label.btn{border:1px solid var(--line);background:#172027;color:var(--fg);padding:9px 11px;border-radius:9px;font:inherit;cursor:pointer}.primary{background:#eef5ff!important;color:#081018!important;border-color:#eef5ff!important;font-weight:850}input[type=file]{display:none}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}.stat{background:#090d10;border:1px solid #202c34;border-radius:10px;padding:9px}.stat b{display:block;font-size:19px}.stat span{font-size:9px;color:var(--mut)}
+.map{display:grid;grid-template-columns:repeat(20,1fr);gap:4px;margin-top:10px}.cell{height:13px;border-radius:3px;background:#151d23;border:1px solid #202b33}.cell.active{background:var(--warn);animation:pulse 1s ease-in-out infinite}.cell.done{background:var(--ok)}.cell.error{background:var(--bad)}
+@keyframes pulse{50%{opacity:.35}}@keyframes dots{0%{content:""}33%{content:"."}66%{content:".."}100%{content:"..."}}
+.lanes{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:7px;margin-top:9px}.lane{background:#090d10;border:1px solid #202c34;border-radius:11px;padding:10px;min-height:90px}.lane .title{font-size:10px;color:var(--mut)}.lane .job{font-size:16px;font-weight:800;margin-top:5px}.lane .anim:after{content:"";animation:dots 1s steps(1,end) infinite}.lane .speed{font-size:10px;color:var(--blue);margin-top:5px}
+.timeline{display:grid;gap:6px;margin-top:10px}.block{border:1px solid #202c34;border-radius:10px;padding:9px;background:#090d10}.block.active{border-color:#665426}.block.done{border-color:#315940}.block .head{display:flex;justify-content:space-between;gap:8px;font-size:9px;color:var(--mut)}.block .body{margin-top:5px;font-size:13px}.block .waiting{color:#56636d}.block .working{color:var(--warn)}.block .working:after{content:"";animation:dots 1s steps(1,end) infinite}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}.rows{margin-top:7px}.row{display:grid;grid-template-columns:1fr auto auto auto;gap:8px;padding:6px 0;border-top:1px solid #202830;font-size:10px}.row:first-child{border-top:0}.row span{color:var(--mut)}
+.meter{display:grid;grid-template-columns:130px 1fr 60px;gap:8px;align-items:center;margin-top:6px;font-size:10px}.track{height:8px;background:#080c0f;border-radius:99px;overflow:hidden}.track i{display:block;height:100%;background:#65727c}
+textarea{width:100%;min-height:280px;background:#080c0f;color:var(--fg);border:1px solid var(--line);border-radius:10px;padding:11px;font:14px/1.55 system-ui;margin-top:9px}
+.note{font-size:10px;color:var(--mut);margin-top:7px}
+@media(max-width:760px){.hero,.two{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}.map{grid-template-columns:repeat(12,1fr)}}
+</style>
+</head>
+<body><main>
+<header><h1>STT Observatory</h1><div class="sub">V2 experimental · mide cuellos de botella, optimiza cortes y paralelismo, y muestra cada bloque como trabajo independiente.</div></header>
+
+<section class="panel hero">
+<div>
+  <div id="status" class="big">Buscando el audio guardado…</div>
+  <div class="bar"><i id="progress"></i></div>
+  <div class="meta"><span id="pct" class="pill">0%</span><span id="phase" class="pill">inicio</span><span id="eta" class="pill">—</span><span id="hardware" class="pill">hardware</span></div>
+  <div class="actions"><label class="btn primary" for="file">Elegir audio si no aparece solo</label><input id="file" type="file" accept="audio/*,.wav,.mp3,.m4a,.ogg,.webm"><button id="export">Exportar métricas JSON</button><button id="copy" disabled>Copiar texto</button></div>
+  <div id="detail" class="note">Si STT Fast ya guardó el audio en este navegador, no tenés que elegirlo otra vez.</div>
+</div>
+<div class="stats">
+  <div class="stat"><b id="speed">—</b><span>audio × tiempo real</span></div>
+  <div class="stat"><b id="wpm">—</b><span>palabras transcritas/min real</span></div>
+  <div class="stat"><b id="util">—</b><span>utilización workers</span></div>
+  <div class="stat"><b id="lag">—</b><span>event-loop lag p95</span></div>
+  <div class="stat"><b id="speech">—</b><span>audio con voz aprox.</span></div>
+  <div class="stat"><b id="overlap">—</b><span>trabajo duplicado overlap</span></div>
+  <div class="stat"><b id="queuewait">—</b><span>queue wait p95</span></div>
+  <div class="stat"><b id="workersN">0</b><span>workers elegidos</span></div>
+</div>
+</section>
+
+<section class="panel">
+  <b>Mapa de cobertura</b>
+  <div id="map" class="map"></div>
+  <div class="note">Verde = terminado · amarillo = transcribiendo · oscuro = pendiente. Los bloques pueden terminar fuera de orden.</div>
+</section>
+
+<section class="panel">
+  <b>Workers en vivo</b>
+  <div id="lanes" class="lanes"></div>
+</section>
+
+<section class="panel">
+  <b>Transcripción por bloques</b>
+  <div id="timeline" class="timeline"></div>
+</section>
+
+<section class="two">
+  <div class="panel"><b>Experimento de tamaño de corte</b><div id="chunkRows" class="rows"><div class="note">Pendiente.</div></div></div>
+  <div class="panel"><b>Experimento de concurrencia</b><div id="concRows" class="rows"><div class="note">Pendiente.</div></div></div>
+</section>
+
+<section class="panel">
+  <b>¿Dónde se va el tiempo?</b>
+  <div id="bottlenecks"></div>
+  <div class="note">Los porcentajes de inferencia son worker-time; el resto son costos observados del pipeline. También registramos tiempos de fase y el timeline completo en el JSON.</div>
+</section>
+
+<section class="panel">
+  <b>Texto combinado</b>
+  <textarea id="out" placeholder="El texto completo se arma cronológicamente mientras los workers trabajan en paralelo."></textarea>
+</section>
+
+<script type="module">
+const $=id=>document.getElementById(id);
+const FAST_DB='stt-fast-v1',FAST_STORE='jobs',OBS_DB='stt-observatory-v2',OBS_STORE='runs',BUILD='STT-OBSERVATORY-V2-20260928';
+let file=null,pcm=null,duration=0,blockS=60,stepS=57,totalBlocks=0,workers=[],blocks=[],running=false,fullStart=0,lastRender=0,lastPersist=0,completed=0,totalWords=0;
+let phases={},phaseCurrent=null,phaseStarted=0;
+const events=[],jobs=[],lagSamples=[],cost={decode:0,vad:0,copy:0,infer:0,merge:0,persist:0,render:0,queueIdle:0,workerInit:0};
+const chunkResults=[],concResults=[];
+let lastLoopTick=performance.now();
+setInterval(()=>{const now=performance.now(),lag=Math.max(0,now-lastLoopTick-250);lagSamples.push(lag);if(lagSamples.length>1000)lagSamples.shift();lastLoopTick=now;updateStats()},250);
+
+function now(){return performance.now()}
+function phase(name){const t=now();if(phaseCurrent){phases[phaseCurrent]=(phases[phaseCurrent]||0)+(t-phaseStarted)}phaseCurrent=name;phaseStarted=t;$('phase').textContent=name;events.push({t,name:'phase',value:name})}
+function pctile(a,p){if(!a.length)return 0;const s=[...a].sort((x,y)=>x-y);return s[Math.min(s.length-1,Math.floor((s.length-1)*p))]}
+function fmtS(s){if(!Number.isFinite(s))return'—';if(s<60)return Math.round(s)+' s';return Math.floor(s/60)+'m '+String(Math.round(s%60)).padStart(2,'0')+'s'}
+function words(s){return String(s||'').trim().split(/\s+/).filter(Boolean).length}
+function norm(s){return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9ñ\s]/gi,' ').replace(/\s+/g,' ').trim().split(' ').filter(Boolean)}
+function similarity(a,b){const A=norm(a),B=norm(b);if(!A.length&&!B.length)return 1;const d=Array.from({length:B.length+1},(_,i)=>i);for(let i=1;i<=A.length;i++){let prev=d[0];d[0]=i;for(let j=1;j<=B.length;j++){const tmp=d[j];d[j]=Math.min(d[j]+1,d[j-1]+1,prev+(A[i-1]===B[j-1]?0:1));prev=tmp}}return 1-d[B.length]/Math.max(1,A.length,B.length)}
+function mergeText(a,b){const t=now();if(!a){cost.merge+=now()-t;return b}if(!b){cost.merge+=now()-t;return a}const A=a.split(/\s+/),B=b.split(/\s+/),na=norm(a),nb=norm(b);let best=0;for(let k=1;k<=Math.min(30,na.length,nb.length);k++){let ok=0;for(let i=0;i<k;i++)if(na[na.length-k+i]===nb[i])ok++;if(ok/k>=.8)best=k}const out=(A.join(' ')+' '+B.slice(best).join(' ')).trim();cost.merge+=now()-t;return out}
+function setProgress(p,status,detail){p=Math.max(0,Math.min(100,p));$('progress').style.width=p+'%';$('pct').textContent=Math.round(p)+'%';document.title=(p>0&&p<100?Math.round(p)+'% · ':'')+'STT Observatory';if(status)$('status').textContent=status;if(detail)$('detail').textContent=detail}
+function openDB(name,store){return new Promise((res,rej)=>{const q=indexedDB.open(name,1);q.onupgradeneeded=()=>{if(!q.result.objectStoreNames.contains(store))q.result.createObjectStore(store,{keyPath:'key'})};q.onsuccess=()=>res(q.result);q.onerror=()=>rej(q.error)})}
+async function getFast(){try{const db=await openDB(FAST_DB,FAST_STORE),v=await new Promise((res,rej)=>{const q=db.transaction(FAST_STORE,'readonly').objectStore(FAST_STORE).get('current');q.onsuccess=()=>res(q.result||null);q.onerror=()=>rej(q.error)});db.close();return v}catch{return null}}
+async function persist(force=false){if(!force&&now()-lastPersist<3000)return;lastPersist=now();const t=now();try{const db=await openDB(OBS_DB,OBS_STORE),payload={key:'current',build:BUILD,fileMeta:file?{name:file.name,size:file.size,lastModified:file.lastModified}:null,duration,blockS,stepS,blocks:blocks.map(b=>({i:b.i,start:b.start,end:b.end,status:b.status,text:b.text||'',worker:b.worker||null,infer_ms:b.infer_ms||null})),jobs,events,phases,cost,chunkResults,concResults,updated_at:new Date().toISOString()};await new Promise((res,rej)=>{const tx=db.transaction(OBS_STORE,'readwrite');tx.objectStore(OBS_STORE).put(payload);tx.oncomplete=res;tx.onerror=()=>rej(tx.error)});db.close()}catch{}cost.persist+=now()-t}
+function estimateMemory(){if(performance.memory)return Math.round(performance.memory.usedJSHeapSize/1048576)+' MB JS';return navigator.deviceMemory?navigator.deviceMemory+' GB device':'memoria no expuesta'}
+function analyzeVAD(x){const t=now(),frame=1600,vals=[];for(let o=0;o<x.length;o+=frame){let e=0,n=Math.min(frame,x.length-o);for(let i=0;i<n;i++){const v=x[o+i];e+=v*v}vals.push(Math.sqrt(e/Math.max(1,n)))}const s=[...vals].sort((a,b)=>a-b),floor=s[Math.floor(s.length*.2)]||0,thr=Math.max(.006,floor*3.2),active=vals.filter(v=>v>thr).length;cost.vad+=now()-t;return {ratio:active/Math.max(1,vals.length),threshold:thr,frames:vals.length}}
+function buildBlocks(){blocks=[];for(let i=0,start=0;start<duration;i++,start+=stepS){blocks.push({i,start,end:Math.min(duration,start+blockS),status:'queued',queuedAt:now(),text:''})}totalBlocks=blocks.length;renderAll(true)}
+function renderMap(){const t=now();$('map').innerHTML=blocks.map(b=>'<div class="cell '+(b.status==='done'?'done':b.status==='active'?'active':b.status==='error'?'error':'')+'" title="#'+(b.i+1)+' '+fmtS(b.start)+' → '+fmtS(b.end)+'"></div>').join('');cost.render+=now()-t}
+function renderLanes(){const t=now();$('lanes').innerHTML=workers.map(w=>{const b=w.current==null?null:blocks[w.current];const avg=w.history.length?w.history.reduce((a,x)=>a+x.speed,0)/w.history.length:0;return '<div class="lane"><div class="title">Worker '+(w.id+1)+' · '+w.backend+'</div><div class="job">'+(b?('#'+(b.i+1)+' · '+fmtS(b.start)+'–'+fmtS(b.end)):'libre')+'</div><div class="'+(b?'anim':'')+'">'+(b?'Transcribiendo':'Esperando trabajo')+'</div><div class="speed">'+(avg?avg.toFixed(2)+'× realtime promedio':'sin muestra todavía')+'</div></div>'}).join('');cost.render+=now()-t}
+function renderTimeline(){const t=now();const show=blocks.filter(b=>b.status!=='queued').slice(-40);$('timeline').innerHTML=show.map(b=>'<div class="block '+b.status+'"><div class="head"><span>Bloque '+(b.i+1)+' · '+fmtS(b.start)+' → '+fmtS(b.end)+'</span><span>'+(b.worker!=null?'W'+(b.worker+1):'')+(b.infer_ms?' · '+(b.infer_ms/1000).toFixed(1)+'s':'')+'</span></div><div class="body">'+(b.status==='active'?'<span class="working">Transcribiendo</span>':b.status==='done'?(b.text||'<span class="waiting">sin texto</span>'):'<span class="waiting">Falta transcribir esta parte</span>')+'</div></div>').join('');cost.render+=now()-t}
+function renderText(){const t=now();let out='';for(const b of blocks)if(b.status==='done'&&b.text)out=mergeText(out,b.text);$('out').value=out;$('copy').disabled=!out;cost.render+=now()-t}
+function renderBottlenecks(){const vals={inferencia:cost.infer,copiar_PCM:cost.copy,persistencia:cost.persist,merge:cost.merge,render_UI:cost.render,worker_idle:cost.queueIdle,decode:cost.decode,VAD:cost.vad,carga_workers:cost.workerInit};const total=Object.values(vals).reduce((a,b)=>a+b,0)||1;$('bottlenecks').innerHTML=Object.entries(vals).sort((a,b)=>b[1]-a[1]).map(([k,v])=>'<div class="meter"><span>'+k.replaceAll('_',' ')+'</span><div class="track"><i style="width:'+Math.min(100,v/total*100).toFixed(1)+'%"></i></div><span>'+((v/total)*100).toFixed(1)+'%</span></div>').join('')}
+function updateStats(){const elapsed=fullStart?Math.max(.001,(now()-fullStart)/1000):0,doneAudio=blocks.filter(b=>b.status==='done').reduce((a,b)=>a+(b.end-b.start),0),sp=elapsed?doneAudio/elapsed:0;$('speed').textContent=sp?sp.toFixed(2)+'×':'—';$('wpm').textContent=elapsed?Math.round(totalWords/(elapsed/60)):'—';const busy=workers.reduce((a,w)=>a+w.busyMs,0),life=workers.reduce((a,w)=>a+(w.readyAt?Math.max(0,now()-w.readyAt):0),0);$('util').textContent=life?Math.round(100*busy/life)+'%':'—';$('lag').textContent=lagSamples.length?Math.round(pctile(lagSamples,.95))+' ms':'—';$('queuewait').textContent=jobs.length?Math.round(pctile(jobs.map(j=>j.queue_wait_ms||0),.95))+' ms':'—';$('workersN').textContent=workers.length;renderBottlenecks()}
+function throttleRender(){if(now()-lastRender<350)return;lastRender=now();renderMap();renderLanes();renderTimeline();renderText();updateStats()}
+async function makeWorker(id,backend='wasm'){const t=now(),w=new Worker('./worker.js',{type:'module'}),obj={id,w,backend,current:null,readyAt:0,busyMs:0,lastEnd:now(),history:[]};workers.push(obj);await new Promise((res,rej)=>{const timer=setTimeout(()=>rej(new Error('timeout worker '+(id+1))),180000);const h=e=>{if(e.data.kind==='ready'){clearTimeout(timer);w.removeEventListener('message',h);obj.readyAt=now();cost.workerInit+=e.data.init_ms||now()-t;res()}else if(e.data.kind==='error'){clearTimeout(timer);w.removeEventListener('message',h);rej(new Error(e.data.error))}};w.addEventListener('message',h);w.postMessage({kind:'init',workerId:id,backend})});return obj}
+async function runOne(w,part,start,end,innerChunkS,blockIndex=-1,queueAt=now()){const copyT=now(),buf=part.slice();cost.copy+=now()-copyT;const dispatch=now(),idle=Math.max(0,dispatch-w.lastEnd);cost.queueIdle+=idle;w.current=blockIndex>=0?blockIndex:null;if(blockIndex>=0){blocks[blockIndex].status='active';blocks[blockIndex].worker=w.id}throttleRender();const id=Math.random().toString(36).slice(2),audioS=end-start;const result=await new Promise((res,rej)=>{const h=e=>{const m=e.data;if(m.id!==id)return;if(m.kind==='result'){w.w.removeEventListener('message',h);res(m)}else if(m.kind==='joberror'){w.w.removeEventListener('message',h);rej(new Error(m.error))}};w.w.addEventListener('message',h);w.w.postMessage({kind:'job',id,blockIndex,start,end,innerChunkS,audioSeconds:audioS,pcm:buf.buffer},[buf.buffer])});const ended=now(),infer=result.infer_ms||ended-dispatch;cost.infer+=infer;w.busyMs+=ended-dispatch;w.lastEnd=ended;w.current=null;const speed=audioS/Math.max(.001,infer/1000);w.history.push({speed,infer_ms:infer});jobs.push({blockIndex,worker:w.id,start,end,audio_s:audioS,queue_wait_ms:dispatch-queueAt,idle_gap_ms:idle,dispatch_ms:dispatch,infer_ms:infer,wall_ms:ended-dispatch,words:result.words||0,speed});return result}
+async function decodeAudio(f){phase('leer_archivo');const t0=now(),ab=await f.arrayBuffer();events.push({t:now(),name:'file_read_ms',value:now()-t0});phase('decode_audio');const td=now(),ctx=new AudioContext({sampleRate:16000}),d=await ctx.decodeAudioData(ab);pcm=new Float32Array(d.getChannelData(0));duration=pcm.length/16000;await ctx.close();cost.decode+=now()-td;events.push({t:now(),name:'decode_ms',value:cost.decode})}
+async function warmup(){phase('warmup');setProgress(12,'Calentando modelo…','La primera inferencia no entra en las estadísticas.');const s=Math.max(0,Math.min(duration-10,duration*.25)),part=pcm.subarray(Math.floor(s*16000),Math.floor(Math.min(duration,s+10)*16000));await runOne(workers[0],part,s,Math.min(duration,s+10),30,-1,now());jobs.length=0;cost.infer=0;cost.copy=0;cost.queueIdle=0;workers.forEach(w=>{w.busyMs=0;w.history=[];w.lastEnd=now()})}
+async function benchmarkChunks(){phase('benchmark_cortes');$('chunkRows').innerHTML='';const candidates=[30,60,90,120,180],sampleS=Math.min(180,Math.max(60,duration*.18)),start=Math.max(0,Math.min(duration-sampleS,duration*.38)),part=pcm.subarray(Math.floor(start*16000),Math.floor((start+sampleS)*16000));const texts=[];for(let i=0;i<candidates.length;i++){setProgress(14+12*(i/candidates.length),'Probando cortes de '+candidates[i]+' s…');const t=now(),r=await runOne(workers[0],part,start,start+sampleS,candidates[i],-1,now()),wall=now()-t,text=r.text||'';texts.push(text);chunkResults.push({chunk_s:candidates[i],wall_ms:wall,throughput:sampleS/(wall/1000),text});$('chunkRows').innerHTML+= '<div class="row"><b>'+candidates[i]+'s</b><span>'+((wall/1000).toFixed(1))+'s</span><span>'+(sampleS/(wall/1000)).toFixed(2)+'×</span><span>midiendo</span></div>';await new Promise(r=>setTimeout(r,0))}for(let i=0;i<chunkResults.length;i++){const others=texts.filter((_,j)=>j!==i),agree=others.reduce((a,x)=>a+similarity(texts[i],x),0)/Math.max(1,others.length);chunkResults[i].agreement=agree}const eligible=chunkResults.filter(x=>x.agreement>=.90),best=(eligible.length?eligible:chunkResults).sort((a,b)=>a.wall_ms-b.wall_ms)[0];blockS=best.chunk_s;stepS=Math.max(10,blockS-3);$('chunkRows').innerHTML=chunkResults.map(x=>'<div class="row"><b>'+x.chunk_s+'s'+(x===best?' ✓':'')+'</b><span>'+(x.wall_ms/1000).toFixed(1)+'s</span><span>'+x.throughput.toFixed(2)+'×</span><span>'+Math.round(x.agreement*100)+'%</span></div>').join('');const overlapWaste=(blockS-stepS)/blockS;$('overlap').textContent=(overlapWaste*100).toFixed(1)+'%';return best}
+function distributedSegments(n,segS){const a=[];for(let i=0;i<n;i++){const center=duration*(i+.5)/n,start=Math.max(0,Math.min(duration-segS,center-segS/2));a.push({start,end:Math.min(duration,start+segS)})}return a}
+async function runQueue(workerSet,segments,innerChunkS,recordBlocks=false){let cursor=0,done=0;const t0=now();return await new Promise((resolve,reject)=>{const dispatch=async w=>{if(cursor>=segments.length){if(done>=segments.length)resolve({wall_ms:now()-t0});return}const idx=cursor++,seg=segments[idx],part=pcm.subarray(Math.floor(seg.start*16000),Math.floor(seg.end*16000)),q=now();try{const r=await runOne(w,part,seg.start,seg.end,innerChunkS,recordBlocks?seg.blockIndex:-1,q);done++;if(recordBlocks&&seg.blockIndex>=0){const b=blocks[seg.blockIndex];b.status='done';b.text=r.text||'';b.infer_ms=r.infer_ms;b.worker=w.id;completed++;totalWords+=r.words||words(r.text);persist();throttleRender()}dispatch(w)}catch(e){done++;if(recordBlocks&&seg.blockIndex>=0)blocks[seg.blockIndex].status='error';events.push({t:now(),name:'job_error',value:String(e)});dispatch(w)}};workerSet.forEach(dispatch)})}
+async function benchmarkConcurrency(){phase('benchmark_concurrencia');$('concRows').innerHTML='';const cores=navigator.hardwareConcurrency||4,mem=navigator.deviceMemory||null,max=mem>=16?Math.min(8,cores):mem>=8?Math.min(6,cores):Math.min(4,Math.max(1,Math.floor(cores/2)));const levels=[1,2,3,4,6,8].filter(x=>x<=Math.max(1,max));const segs=distributedSegments(6,Math.min(30,Math.max(15,duration/30)));let prev=0,bestLevel=1;for(const level of levels){while(workers.length<level){setProgress(27,'Cargando worker '+(workers.length+1)+'/'+level+'…');try{await makeWorker(workers.length,'wasm')}catch(e){events.push({t:now(),name:'worker_load_error',value:String(e)});break}}if(workers.length<level)break;workers.slice(0,level).forEach(w=>{w.busyMs=0;w.lastEnd=now()});const before=jobs.length,t=now(),r=await runQueue(workers.slice(0,level),segs,blockS,false),wall=now()-t,audio=segs.reduce((a,s)=>a+(s.end-s.start),0),tp=audio/(wall/1000),gain=prev?tp/prev:1,newJobs=jobs.slice(before),util=newJobs.reduce((a,j)=>a+j.wall_ms,0)/(level*Math.max(1,wall));const row={workers:level,wall_ms:wall,throughput:tp,gain,utilization:util};concResults.push(row);$('concRows').innerHTML+= '<div class="row"><b>'+level+' worker'+(level>1?'s':'')+'</b><span>'+tp.toFixed(2)+'×</span><span>'+Math.round(util*100)+'% util</span><span>'+(prev?((gain-1)*100).toFixed(0)+'%':'base')+'</span></div>';if(level===1||gain>=1.08){bestLevel=level;prev=tp}else break;await new Promise(r=>setTimeout(r,0))}while(workers.length>bestLevel){workers.pop().w.terminate()}$('workersN').textContent=workers.length;return bestLevel}
+async function fullRun(){phase('transcripcion_completa');buildBlocks();fullStart=now();completed=0;totalWords=0;setProgress(40,'Transcripción completa en paralelo…','Scheduler continuo: cada worker toma otro bloque apenas termina, sin esperar tandas.');const segs=blocks.map(b=>({start:b.start,end:b.end,blockIndex:b.i}));running=true;await runQueue(workers,segs,blockS,true);running=false;phase('finalizar');renderAll(true);setProgress(100,'Listo · experimento y transcripción terminados','Métricas, transcript y timeline quedaron guardados localmente.');$('eta').textContent='listo';await persist(true);document.title='✅ STT Observatory listo'}
+function renderAll(force=false){if(force){lastRender=0}throttleRender()}
+async function start(f){if(running)return;file=f;$('hardware').textContent=(navigator.hardwareConcurrency||'?')+' cores · '+(navigator.gpu?'WebGPU disponible':'WASM')+' · '+estimateMemory();setProgress(2,'Preparando audio…');await decodeAudio(f);phase('VAD');const vad=analyzeVAD(pcm);$('speech').textContent=Math.round(vad.ratio*100)+'%';events.push({t:now(),name:'vad',value:vad});setProgress(8,'Audio preparado','Duración '+fmtS(duration)+' · voz aproximada '+Math.round(vad.ratio*100)+'%.');phase('cargar_modelo');workers=[];await makeWorker(0,navigator.gpu?'webgpu':'wasm');await warmup();await benchmarkChunks();setProgress(26,'Cortes calibrados · probando paralelismo…');await benchmarkConcurrency();setProgress(38,'Configuración elegida','Bloques '+blockS+'s · '+workers.length+' workers. Arranca corrida completa.');jobs.length=0;cost.infer=0;cost.copy=0;cost.queueIdle=0;cost.merge=0;cost.persist=0;cost.render=0;workers.forEach(w=>{w.busyMs=0;w.history=[];w.lastEnd=now()});await fullRun()}
+async function boot(){phase('buscar_audio');const fast=await getFast();if(fast?.file){setProgress(1,'Audio de STT Fast encontrado','Empieza automáticamente con el mismo archivo.');await start(fast.file)}else{$('status').textContent='No encontré audio guardado';$('detail').textContent='Elegí el audio una vez. Después el experimento es automático.'}}
+$('file').onchange=e=>{const f=e.target.files?.[0];if(f)start(f).catch(err=>$('status').textContent='Error: '+err.message)};
+$('copy').onclick=()=>navigator.clipboard.writeText($('out').value);
+$('export').onclick=()=>{const payload={build:BUILD,hardware:{hardwareConcurrency:navigator.hardwareConcurrency||null,deviceMemory:navigator.deviceMemory||null,webgpu:!!navigator.gpu,ua:navigator.userAgent},file:file?{name:file.name,size:file.size,lastModified:file.lastModified}:null,duration,blockS,stepS,workers:workers.length,phases,cost,chunkResults:chunkResults.map(x=>({...x,text:undefined})),concResults,jobs,events,lag:{p50:pctile(lagSamples,.5),p95:pctile(lagSamples,.95),max:Math.max(0,...lagSamples)},transcript:$('out').value};const u=URL.createObjectURL(new Blob([JSON.stringify(payload,null,2)],{type:'application/json'})),a=document.createElement('a');a.href=u;a.download='stt-observatory-metrics.json';a.click();setTimeout(()=>URL.revokeObjectURL(u),1000)};
+boot().catch(e=>{$('status').textContent='Error: '+e.message;$('detail').textContent='No se perdió el audio original.'});
+</script>
+</main></body></html>
