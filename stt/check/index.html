@@ -1,0 +1,57 @@
+<!doctype html><html lang="es"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="dark"><meta http-equiv="Cache-Control" content="no-cache,no-store,must-revalidate">
+<title>STT Human Check</title>
+<style>
+:root{--bg:#07090b;--p:#10151a;--line:#28343d;--fg:#f4f7f9;--mut:#8d9aa5;--ok:#77e39b;--warn:#ffd166;--bad:#ff7b7b}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.5 system-ui,-apple-system,Segoe UI,sans-serif}main{max-width:900px;margin:auto;padding:14px 12px 70px}
+h1{font-size:27px;margin:0}.sub,.note{color:var(--mut);font-size:11px}.card{background:var(--p);border:1px solid var(--line);border-radius:14px;padding:14px;margin-top:11px}.big{font-size:22px;font-weight:850}
+.actions,.meta{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}button,label.btn{border:1px solid var(--line);background:#172027;color:var(--fg);padding:11px 13px;border-radius:10px;font:inherit;cursor:pointer}.primary{background:#eef5ff;color:#081018;border-color:#eef5ff;font-weight:850}.good{border-color:#355d43;color:var(--ok)}.bad{border-color:#6a3333;color:var(--bad)}.warn{border-color:#6d5927;color:var(--warn)}button:disabled{opacity:.42}input[type=file]{display:none}
+.pill{border:1px solid var(--line);border-radius:99px;padding:4px 7px;color:var(--mut);font-size:9px}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}.stat{background:#090d10;border:1px solid #202c34;border-radius:10px;padding:9px}.stat b{font-size:20px;display:block}.stat span{font-size:9px;color:var(--mut)}
+.transcript{font-size:20px;line-height:1.6;background:#090d10;border:1px solid #202c34;border-radius:11px;padding:12px;margin-top:10px}textarea{width:100%;min-height:90px;background:#080c0f;color:var(--fg);border:1px solid var(--line);border-radius:10px;padding:10px;font:14px/1.5 system-ui;margin-top:8px}
+audio{width:100%;margin-top:10px}.history{display:grid;gap:5px}.h{display:grid;grid-template-columns:70px 55px 1fr;gap:8px;padding:7px;border:1px solid #202c34;border-radius:8px;background:#090d10;font-size:10px}.h span{color:var(--mut)}
+@media(max-width:700px){.stats{grid-template-columns:repeat(2,1fr)}.h{grid-template-columns:60px 45px 1fr}}
+</style></head><body><main>
+<h1>STT Human Check</h1><div class="sub">Escuchás 10 segundos, ves lo que escribió Parakeet y marcás Bien / Mal / Dudoso. Muestreo distribuido para estimar cuánto confiar en la transcripción.</div>
+<section class="card">
+<div id="status" class="big">Buscando audio guardado…</div>
+<div class="actions"><button id="next" class="primary" disabled>▶ Nueva muestra de 10 s</button><label class="btn" for="file">Elegir otro audio</label><input id="file" type="file" accept="audio/*,.mp3,.wav,.m4a,.ogg,.webm"><button id="export" disabled>Exportar evaluación</button></div>
+<div class="meta"><span id="model" class="pill">modelo</span><span id="where" class="pill">—</span><span id="speed" class="pill">—×</span><span id="count" class="pill">0/12 sugeridas</span></div>
+<div class="note">“Bien” = no hay un error que cambie lo que entendés. “Mal” = hay palabras/nombres/ideas relevantes incorrectas. “Dudoso” no entra en el porcentaje.</div>
+</section>
+<section class="card"><div class="stats">
+<div class="stat"><b id="judged">0</b><span>juzgadas</span></div><div class="stat"><b id="trust">—</b><span>bien / (bien+mal)</span></div><div class="stat"><b id="goodN">0</b><span>bien</span></div><div class="stat"><b id="badN">0</b><span>mal</span></div>
+</div></section>
+<section class="card">
+<b>Muestra actual</b><audio id="audio" controls></audio>
+<div id="tx" class="transcript">Todavía no hay muestra.</div>
+<textarea id="correction" placeholder="Opcional: si marcás Mal, podés escribir acá cómo debería decir. Así calculamos WER aproximado."></textarea>
+<div class="actions"><button id="good" class="good" disabled>✅ Bien</button><button id="bad" class="bad" disabled>❌ Mal</button><button id="doubt" class="warn" disabled>❓ Dudoso</button></div>
+</section>
+<section class="card"><b>Historial</b><div id="history" class="history note">Todavía vacío.</div></section>
+<script type="module">
+const $=id=>document.getElementById(id),DB='stt-fast-v1',STORE='jobs',BUILD='STT-HUMAN-CHECK-V1-20260929',TARGET=12,SEG_S=10;
+let file=null,url=null,audio=$('audio'),ctx=null,src=null,proc=null,zero=null,capturing=false,captured=[],model=null,modelReady=false,duration=0,current=null,results=[],order=[],orderPos=0;
+function fmt(s){s=Math.max(0,+s||0);return Math.floor(s/60)+':'+String(Math.floor(s%60)).padStart(2,'0')}
+function openDB(){return new Promise((res,rej)=>{const q=indexedDB.open(DB,1);q.onsuccess=()=>res(q.result);q.onerror=()=>rej(q.error)})}
+async function getFast(){try{const db=await openDB(),v=await new Promise((res,rej)=>{const q=db.transaction(STORE,'readonly').objectStore(STORE).get('current');q.onsuccess=()=>res(q.result||null);q.onerror=()=>rej(q.error)});db.close();return v}catch{return null}}
+function resample(x,from,to=16000){if(from===to)return x;const ratio=from/to,n=Math.max(1,Math.floor(x.length/ratio)),o=new Float32Array(n);for(let i=0;i<n;i++){const p=i*ratio,a=Math.floor(p),b=Math.min(x.length-1,a+1),f=p-a;o[i]=x[a]*(1-f)+x[b]*f}return o}
+function concat(parts){const n=parts.reduce((a,x)=>a+x.length,0),o=new Float32Array(n);let p=0;for(const x of parts){o.set(x,p);p+=x.length}return o}
+function words(s){return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9ñ\s]/gi,' ').trim().split(/\s+/).filter(Boolean)}
+function wer(a,b){const A=words(a),B=words(b),d=Array.from({length:B.length+1},(_,i)=>i);for(let i=1;i<=A.length;i++){let p=d[0];d[0]=i;for(let j=1;j<=B.length;j++){const t=d[j];d[j]=Math.min(d[j]+1,d[j-1]+1,p+(A[i-1]===B[j-1]?0:1));p=t}}return B.length?d[B.length]/B.length:null}
+function buildOrder(){order=[];const usable=Math.max(SEG_S,duration-SEG_S);for(let i=0;i<TARGET;i++){const center=usable*(i+.5)/TARGET,jitter=((Math.sin((i+1)*12.9898)*43758.5453)%1)*Math.min(8,usable/TARGET*.25),start=Math.max(0,Math.min(duration-SEG_S,center-SEG_S/2+jitter));order.push(start)}}
+async function setFile(f){file=f;if(url)URL.revokeObjectURL(url);url=URL.createObjectURL(f);audio.src=url;await new Promise((res,rej)=>{audio.onloadedmetadata=()=>res();audio.onerror=()=>rej(new Error('No pude leer el audio'))});duration=audio.duration;buildOrder();$('status').textContent='Audio listo · '+(duration/60).toFixed(1)+' min';maybeReady()}
+async function setupCapture(){if(ctx)return;ctx=new AudioContext();src=ctx.createMediaElementSource(audio);proc=ctx.createScriptProcessor(4096,1,1);zero=ctx.createGain();zero.gain.value=0;src.connect(ctx.destination);src.connect(proc);proc.connect(zero).connect(ctx.destination);proc.onaudioprocess=e=>{if(capturing)captured.push(new Float32Array(e.inputBuffer.getChannelData(0)))}}
+function maybeReady(){if(file&&modelReady){$('next').disabled=false;$('status').textContent='Listo · escuchá y calificá 12 muestras distribuidas'}}
+async function playCapture(start){await setupCapture();await ctx.resume();captured=[];capturing=false;audio.pause();audio.currentTime=start;await new Promise(res=>{const h=()=>{audio.removeEventListener('seeked',h);res()};audio.addEventListener('seeked',h,{once:true});setTimeout(()=>{audio.removeEventListener('seeked',h);res()},700)});capturing=true;await audio.play();await new Promise(res=>{const timer=setInterval(()=>{if(audio.currentTime>=start+SEG_S||audio.ended){clearInterval(timer);res()}},40)});audio.pause();capturing=false;return concat(captured)}
+async function nextSample(){if(!file||!modelReady)return;$('next').disabled=true;disableGrade(true);$('correction').value='';const start=order[orderPos%order.length];orderPos++;$('where').textContent=fmt(start)+'–'+fmt(start+SEG_S);$('status').textContent='Escuchando 10 s…';const raw=await playCapture(start);$('status').textContent='Transcribiendo esos mismos 10 s…';const pcm=resample(raw,ctx.sampleRate,16000),t=performance.now(),r=await model.transcribeLongAudio(pcm,16000,{returnTimestamps:false,returnConfidences:true,chunkLengthS:SEG_S,timeOffset:start}),ms=performance.now()-t,tx=(r.text||r.utterance_text||'').trim();current={start,end:start+SEG_S,text:tx,infer_ms:ms};$('tx').textContent=tx||'[sin texto]';$('speed').textContent=(SEG_S/(ms/1000)).toFixed(2)+'×';$('status').textContent='Marcá si está bien o mal';disableGrade(false)}
+function disableGrade(v){$('good').disabled=v;$('bad').disabled=v;$('doubt').disabled=v}
+function grade(label){if(!current)return;const correction=$('correction').value.trim(),w=correction?wer(current.text,correction):null;results.push({...current,label,correction:correction||null,wer:w,judged_at:new Date().toISOString()});current=null;disableGrade(true);render();$('next').disabled=false;$('status').textContent=results.length>=TARGET?'Muestra objetivo completa · podés exportar o seguir':'Listo para la siguiente muestra'}
+function render(){const good=results.filter(x=>x.label==='good').length,bad=results.filter(x=>x.label==='bad').length,doubt=results.filter(x=>x.label==='doubt').length,n=good+bad;$('judged').textContent=results.length;$('goodN').textContent=good;$('badN').textContent=bad;$('trust').textContent=n?Math.round(100*good/n)+'%':'—';$('count').textContent=results.length+'/'+TARGET+' sugeridas';$('export').disabled=!results.length;$('history').innerHTML=results.slice().reverse().map(x=>'<div class="h"><span>'+fmt(x.start)+'</span><b>'+(x.label==='good'?'✅ bien':x.label==='bad'?'❌ mal':'❓ duda')+'</b><span>'+escapeHtml(x.text)+(x.wer!=null?' · WER corregido '+Math.round(x.wer*100)+'%':'')+'</span></div>').join('')||'Todavía vacío.'}
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+$('next').onclick=()=>nextSample().catch(e=>{$('status').textContent='Error: '+e.message;$('next').disabled=false});
+$('good').onclick=()=>grade('good');$('bad').onclick=()=>grade('bad');$('doubt').onclick=()=>grade('doubt');
+$('file').onchange=e=>{const f=e.target.files?.[0];if(f)setFile(f).catch(e=>$('status').textContent='Error audio: '+e.message)};
+$('export').onclick=()=>{const data={build:BUILD,file:file?{name:file.name,size:file.size,lastModified:file.lastModified}:null,duration,summary:{judged:results.length,good:results.filter(x=>x.label==='good').length,bad:results.filter(x=>x.label==='bad').length,doubt:results.filter(x=>x.label==='doubt').length,trust_pct:(()=>{const g=results.filter(x=>x.label==='good').length,b=results.filter(x=>x.label==='bad').length;return g+b?100*g/(g+b):null})()},results},u=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'})),a=document.createElement('a');a.href=u;a.download='stt-human-check.json';a.click();setTimeout(()=>URL.revokeObjectURL(u),1000)};
+(async()=>{const fast=await getFast();if(fast?.file)await setFile(fast.file);else $('status').textContent='Elegí un audio para empezar';try{const mod=await import('https://cdn.jsdelivr.net/npm/parakeet.js@1.4.4/+esm'),backend=navigator.gpu?'webgpu':'wasm';$('model').textContent=backend.toUpperCase()+' · Parakeet';model=await mod.fromHub('parakeet-tdt-0.6b-v3',{backend,encoderQuant:backend==='webgpu'?'fp32':'int8',decoderQuant:'int8',preprocessorBackend:'js'});modelReady=true;maybeReady()}catch(e){$('status').textContent='No cargó modelo: '+e.message}})();
+</script></main></body></html>
