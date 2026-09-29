@@ -122,32 +122,77 @@ function sanitizeBench(){
  return before-bench.length;
 }
 function chooseSafeTabs(){
- const quick=bench.filter(x=>x.kind==='tabs-quick'&&!x.unsafe&&x.tabs<=4&&Number.isFinite(+x.throughput)&&+x.throughput>0&&+x.throughput<50).sort((a,b)=>b.throughput-a.throughput);
- const confirmed=bench.filter(x=>x.kind==='tabs-confirm'&&!x.unsafe&&x.tabs<=4&&Number.isFinite(+(x.throughput_median??x.throughput))&&+(x.throughput_median??x.throughput)>0&&+(x.throughput_median??x.throughput)<50).sort((a,b)=>(b.throughput_median??b.throughput)-(a.throughput_median??a.throughput));
- const pick=confirmed[0]||quick[0];
- return pick?Math.max(1,+pick.tabs):Math.min(2,Math.max(1,+lastSafe||1));
+ const tiers=['long','medium','short'];
+ for(const tier of tiers){
+   const xs=bench.filter(x=>x.kind==='tier'&&x.tier===tier&&x.valid&&!x.unsafe&&Number.isFinite(+x.throughput)&&+x.throughput>0&&+x.throughput<50).sort((a,b)=>b.throughput-a.throughput);
+   if(xs.length)return Math.max(1,+xs[0].tabs);
+ }
+ return Math.min(2,Math.max(1,+lastSafe||1));
+}
+async function runTier(tier,levels,n,sec,reps=1){
+ const sm=samples(n,sec),out=[];
+ for(const level of levels){
+   guardSet({running:true,closed_cleanly:false,phase:'benchmark-'+tier,attemptingTabs:level,lastSafe});
+   await putLab({force:true,attemptingTabs:level,searchInProgress:true,benchmarkTier:tier});
+   setp(tier==='short'?18:tier==='medium'?46:70,'Benchmark '+tier+' · '+level+' pestaña'+(level>1?'s':''),'benchmark '+tier,'Mismo audio por topología; se mide cada milisegundo.');
+   try{
+     for(let i=0;i<level;i++){await initSlot(i);if(!states[i].warmed){await warm(i);states[i].warmed=true}}
+     const runs=[];
+     for(let rep=0;rep<reps;rep++){
+       const r=await runQueue(Array.from({length:level},(_,i)=>i),sm,blockS);
+       const row=summarizeRun(tier,level,r.outputs,r.wall_ms);
+       row.rep=rep+1;runs.push(row);
+       if(!row.valid)throw new Error('métrica inválida');
+     }
+     const agg={...runs[0]};
+     if(runs.length>1){
+       const tps=runs.map(x=>x.throughput).sort((a,b)=>a-b);
+       agg.throughput=pct(tps,.5);
+       agg.repetitions=runs.map(x=>({throughput:x.throughput,wall_ms:x.wall_ms,p95_infer_ms:x.p95_infer_ms,p95_overhead_ms:x.p95_overhead_ms}));
+       agg.wall_ms=pct(runs.map(x=>x.wall_ms),.5);
+       agg.utilization=pct(runs.map(x=>x.utilization),.5);
+     }
+     bench.push(agg);out.push(agg);lastSafe=Math.max(lastSafe,level);
+     renderBench();await putLab({force:true,attemptingTabs:null,lastSafe});
+   }catch(e){
+     bench.push({kind:'tier',tier,tabs:level,throughput:0,valid:false,unsafe:true,error:String(e)});
+     suspectedUnsafe=level;renderBench();await putLab({force:true,suspectedUnsafe,lastSafe});
+     break;
+   }
+ }
+ return out.filter(x=>x.valid);
 }
 async function search(){
- if(running)return;running=true;$('start').disabled=true;await decodeOnce();await prepareChunk();
- let levels=completedLevels(),safe=levels.length?Math.max(...levels):1;lastSafe=safe;
- if(suspectedUnsafe){$('guard').textContent='evitando '+suspectedUnsafe+' tabs';$('guard').className='pill warn'}
- const cap=(()=>{const dm=navigator.deviceMemory||0;if(dm&&dm<=8)return 3;if(dm>=16)return 4;return 3})();
- const targetLevels=[1,2,3,4].filter(n=>n<=cap&&(!suspectedUnsafe||n<suspectedUnsafe));
- for(const level of targetLevels){
-   if(bench.some(x=>x.kind==='tabs-quick'&&x.tabs===level))continue;
-   guardSet({running:true,closed_cleanly:false,phase:'tabs',attemptingTabs:level,lastSafe});
-   await putLab({force:true,attemptingTabs:level,searchInProgress:true});
-   setp(15+level*12,'Probando '+level+' pestaña'+(level>1?'s':''),'topología segura','Se abre sólo el motor que realmente hace falta.');
-   try{for(let i=0;i<level;i++){await initSlot(i);if(!states[i].warmed){await warm(i);states[i].warmed=true}}
-     const sm=samples(4,Math.min(8,Math.max(5,duration/400))),active=Array.from({length:level},(_,i)=>i),r=await runQueue(active,sm,blockS),wall=r.wall_ms/1000,audio=sm.reduce((a,s)=>a+(s.end-s.start),0),tp=audio/wall,row={kind:'tabs-quick',tabs:level,throughput:tp,agreement:1,wall_s:wall};bench.push(row);lastSafe=level;guardSet({running:true,closed_cleanly:false,phase:'tabs',attemptingTabs:null,lastSafe});await putLab({force:true,attemptingTabs:null,lastSafe});renderBench();
-   }catch(e){suspectedUnsafe=level;bench.push({kind:'tabs-quick',tabs:level,throughput:0,agreement:0,unsafe:true,error:String(e)});await putLab({force:true,suspectedUnsafe,lastSafe});break}
- }
- const candidates=bench.filter(x=>x.kind==='tabs-quick'&&!x.unsafe&&x.throughput>0).sort((a,b)=>b.throughput-a.throughput).slice(0,2);
- if(candidates.length){
-   setp(72,'Confirmando finalistas…','confirmación');
-   for(const f of candidates){if(bench.some(x=>x.kind==='tabs-confirm'&&x.tabs===f.tabs))continue;const sm=samples(5,Math.min(12,Math.max(8,duration/250))),vals=[];for(let rep=0;rep<2;rep++){const r=await runQueue(Array.from({length:f.tabs},(_,i)=>i),sm,blockS),audio=sm.reduce((a,s)=>a+(s.end-s.start),0);vals.push(audio/(r.wall_ms/1000))}vals.sort((a,b)=>a-b);bench.push({kind:'tabs-confirm',tabs:f.tabs,throughput_median:vals[Math.floor(vals.length/2)],throughput:vals[Math.floor(vals.length/2)],runs:vals,agreement:1});await putLab({force:true});renderBench()}
- }
- const finals=bench.filter(x=>x.kind==='tabs-confirm'&&!x.unsafe).sort((a,b)=>(b.throughput_median||0)-(a.throughput_median||0)),qs=bench.filter(x=>x.kind==='tabs-quick'&&!x.unsafe).sort((a,b)=>b.throughput-a.throughput),best=finals[0]||qs[0]||{tabs:1,throughput:0};bestTabs=best.tabs;searchComplete=true;$('bestTabs').textContent=bestTabs;$('agreement').textContent='—';$('full').disabled=false;$('export').disabled=false;guardClean();await putLab({force:true,bestTabs,searchComplete:true,searchInProgress:false,attemptingTabs:null});setp(100,'Búsqueda recuperada/terminada','listo','Ganador seguro: '+bestTabs+' pestaña(s). No se repitieron las etapas ya guardadas.');running=false
+ if(running)return;
+ running=true;$('start').disabled=true;$('full').disabled=true;await decodeOnce();await prepareChunk();
+
+ // V5 intentionally reruns a small, valid benchmark instead of trusting impossible legacy confirmations.
+ bench=bench.filter(x=>x.kind==='chunk'||x.kind==='chunk-prior');
+ renderBench();
+ const cores=Math.max(1,navigator.hardwareConcurrency||4);
+ const candidates=[1,2,3,4,6].filter(n=>n<=cores&&(!suspectedUnsafe||n<suspectedUnsafe));
+ setp(10,'Ronda corta · explorando 1/2/3/4/6 pestañas','benchmark corto','Cada topología recibe ~30–40 s de audio distribuido.');
+ const short=await runTier('short',candidates,6,6,1);
+ if(!short.length)throw new Error('ninguna topología completó la ronda corta');
+
+ const mediumLevels=[...short].sort((a,b)=>b.throughput-a.throughput).slice(0,3).map(x=>x.tabs);
+ setp(42,'Ronda media · sobreviven las 3 mejores','benchmark medio','~2 minutos de audio por topología.');
+ const medium=await runTier('medium',mediumLevels,8,15,1);
+ if(!medium.length)throw new Error('ninguna topología completó la ronda media');
+
+ const longLevels=[...medium].sort((a,b)=>b.throughput-a.throughput).slice(0,2).map(x=>x.tabs);
+ setp(66,'Ronda larga · finalistas','benchmark largo','~4 minutos de audio por finalista, dos repeticiones.');
+ const long=await runTier('long',longLevels,8,30,2);
+ const validLong=long.filter(x=>x.valid).sort((a,b)=>b.throughput-a.throughput);
+ const fallback=[...medium].sort((a,b)=>b.throughput-a.throughput);
+ const best=validLong[0]||fallback[0]||short.sort((a,b)=>b.throughput-a.throughput)[0];
+
+ bestTabs=best.tabs;searchComplete=true;$('bestTabs').textContent=bestTabs;$('agreement').textContent='mismo modelo';$('full').disabled=false;$('export').disabled=false;
+ renderProfile(best);
+ guardClean();
+ await putLab({force:true,bestTabs,searchComplete:true,searchInProgress:false,attemptingTabs:null,benchmarkTier:'done',winnerProfile:best});
+ setp(100,'Benchmark profundo terminado','listo','Ganador medido: '+bestTabs+' pestaña(s) · '+best.throughput.toFixed(2)+'× realtime. Ahora sí conviene lanzar la hora completa.');
+ running=false
 }
 function makeBlocks(){
  const reusable=Array.isArray(prior?.blocks)&&prior.blocks.length&&Math.abs((+prior.duration||0)-duration)<1&&(+prior.blockS||0)===blockS&&(+prior.stepS||0)===stepS;
@@ -173,7 +218,7 @@ async function fullRun(){
 async function boot(){
  fastState=await getDB(FAST_DB,FAST_STORE);prior=await getDB(LAB_DB,LAB_STORE);
  if(prior?.bench?.length){
-   bench=prior.bench;blockS=+prior.blockS||blockS;stepS=+prior.stepS||stepS;bestTabs=+prior.bestTabs||1;searchComplete=!!prior.searchComplete;lastSafe=+prior.lastSafe||1;
+   bench=prior.bench;blockS=+prior.blockS||blockS;stepS=+prior.stepS||stepS;bestTabs=+prior.bestTabs||1;searchComplete=prior?.build===BUILD&&!!prior.searchComplete&&bench.some(x=>x.kind==='tier'&&x.tier==='long'&&x.valid);lastSafe=+prior.lastSafe||1;
    const dropped=sanitizeBench();
    if(dropped||bestTabs>4){invalidLegacy=true;bestTabs=chooseSafeTabs();searchComplete=bench.some(x=>x.kind==='tabs-quick'&&!x.unsafe&&x.tabs<=4);suspectedUnsafe=6}
    renderBench();$('bestChunk').textContent=blockS+'s';
@@ -200,7 +245,7 @@ async function boot(){
 $('start').onclick=()=>search().catch(e=>{running=false;$('start').disabled=false;setp(0,'Error: '+e.message,'error')});
 $('full').onclick=()=>fullRun().catch(e=>{running=false;$('full').disabled=false;setp(0,'Error corrida completa: '+e.message,'error')});
 $('copy').onclick=()=>navigator.clipboard.writeText($('out').value);
-$('export').onclick=async()=>{const s=await getDB(LAB_DB,LAB_STORE),u=URL.createObjectURL(new Blob([JSON.stringify(s,null,2)],{type:'application/json'})),a=document.createElement('a');a.href=u;a.download='stt-lab-v4-result.json';a.click();setTimeout(()=>URL.revokeObjectURL(u),1000)};
+$('export').onclick=async()=>{const s=await getDB(LAB_DB,LAB_STORE),u=URL.createObjectURL(new Blob([JSON.stringify(s,null,2)],{type:'application/json'})),a=document.createElement('a');a.href=u;a.download='stt-lab-v5-result.json';a.click();setTimeout(()=>URL.revokeObjectURL(u),1000)};
 $('file').onchange=async e=>{const f=e.target.files?.[0];if(!f)return;sourceFile=f;const db=await openDB(FAST_DB,FAST_STORE);await new Promise((res,rej)=>{const tx=db.transaction(FAST_STORE,'readwrite');tx.objectStore(FAST_STORE).put({key:'current',file:f,fileMeta:{name:f.name,size:f.size,lastModified:f.lastModified}});tx.oncomplete=res;tx.onerror=()=>rej(tx.error)});db.close();$('start').disabled=false;setp(0,'Audio guardado','listo')};
 boot();
 </script></main></body></html>
