@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta name="color-scheme" content="dark">
+<title>STT Analysis V3</title>
+<style>
+:root{--bg:#080a0c;--p:#10151a;--line:#26313a;--fg:#f2f5f7;--mut:#8b99a4;--ok:#77e49b;--y:#ffd166;--o:#ff9d52;--r:#ff7373}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.45 system-ui,-apple-system,Segoe UI,sans-serif}
+body{padding-bottom:90px}.app{max-width:980px;margin:auto;padding:12px}.top{position:sticky;top:0;z-index:4;background:rgba(8,10,12,.96);backdrop-filter:blur(12px);padding:9px 0;border-bottom:1px solid #1c242a}
+.title{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.title h1{font-size:20px;margin:0}.sub{font-size:11px;color:var(--mut);margin-top:3px}.pill{display:inline-flex;align-items:center;gap:5px;border:1px solid var(--line);border-radius:999px;padding:4px 7px;color:var(--mut);font-size:9px}.pill.good{color:var(--ok);border-color:#355f42}
+.metrics{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-top:10px}.metric{background:var(--p);border:1px solid var(--line);border-radius:12px;padding:10px}.metric span{display:block;font-size:8px;letter-spacing:.12em;color:var(--mut);text-transform:uppercase}.metric b{display:block;font-size:20px;margin-top:2px}.metric small{color:var(--mut);font-size:9px}
+.card{background:var(--p);border:1px solid var(--line);border-radius:14px;padding:12px;margin-top:10px}.eyebrow{font-size:8px;letter-spacing:.12em;color:var(--mut);font-weight:800}.tabs{display:flex;gap:6px;overflow:auto;margin-top:8px;padding-bottom:2px}.tab{flex:0 0 auto;border:1px solid var(--line);background:#0c1014;color:var(--mut);border-radius:999px;padding:6px 8px;font-size:10px}.tab.active{color:var(--fg);border-color:#6d7b86}
+.ref{font-size:22px;line-height:1.65;margin-top:12px}.w{position:relative;display:inline-block;margin-right:.24em;cursor:pointer;border:0;background:transparent;color:inherit;font:inherit;padding:0 0 .08em}
+.w:after{content:"";position:absolute;left:0;right:0;bottom:.02em;height:3px;border-radius:3px;opacity:0}.w.low:after{background:var(--y);opacity:.25}.w.mid:after{background:var(--y);opacity:.55}.w.high:after{background:var(--o);opacity:.8}.w.wrong:after{background:var(--r);opacity:.9}.w.missing{opacity:.65}.legend{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;color:var(--mut);font-size:9px}.sw{display:inline-block;width:20px;height:3px;border-radius:3px;vertical-align:middle;margin-right:4px}
+.grid{display:grid;gap:8px}.rank{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:9px;padding:7px 0;border-top:1px solid #222a31;align-items:center}.rank:first-child{border-top:0}.rank b{font-size:11px}.rank span{font-size:10px;color:var(--mut)}
+details{margin-top:10px;border:1px solid var(--line);border-radius:12px;background:#0d1115;padding:8px 10px}summary{cursor:pointer;color:var(--mut);font-size:11px}
+.btns{display:flex;gap:7px;flex-wrap:wrap;margin-top:9px}.btn{border:1px solid var(--line);background:#171e24;color:var(--fg);padding:8px 10px;border-radius:9px;font:inherit;font-size:11px}
+.empty{padding:30px 12px;text-align:center;color:var(--mut)}
+.sheet{position:fixed;left:0;right:0;bottom:0;z-index:20;background:#0e1317;border-top:1px solid #394650;box-shadow:0 -14px 50px #000b;transform:translateY(105%);transition:.18s ease;padding:14px 14px calc(14px + env(safe-area-inset-bottom));max-height:58vh;overflow:auto}.sheet.open{transform:translateY(0)}
+.sheetHead{display:flex;justify-content:space-between;gap:10px;align-items:start}.sheetWord{font-size:24px;font-weight:850}.close{border:1px solid var(--line);background:#171e24;color:var(--fg);border-radius:9px;padding:7px 9px}.alts{display:grid;gap:6px;margin-top:10px}.alt{border-top:1px solid #232d34;padding-top:7px}.alt:first-child{border-top:0}.altTop{display:flex;justify-content:space-between;gap:10px}.altTop b{font-size:13px}.altTop span{font-size:10px;color:var(--mut)}.sources{font-size:9px;color:var(--mut);margin-top:3px;line-height:1.55}
+.mini{font-size:10px;color:var(--mut);margin-top:5px}.goodtxt{color:var(--ok)}.badtxt{color:var(--r)}
+@media(min-width:720px){.metrics{grid-template-columns:repeat(5,minmax(0,1fr))}.ref{font-size:26px}.sheet{left:50%;right:auto;width:min(720px,96vw);transform:translate(-50%,105%);border:1px solid #394650;border-bottom:0;border-radius:16px 16px 0 0}.sheet.open{transform:translate(-50%,0)}}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="top">
+    <div class="title"><div><h1>STT · análisis</h1><div id="sessionLine" class="sub">Buscando sesión local…</div></div><span id="livePill" class="pill">auto · 2 s</span></div>
+    <div class="metrics">
+      <div class="metric"><span>resultados</span><b id="mResults">0</b><small id="mExpected">/184</small></div>
+      <div class="metric"><span>mejor individual</span><b id="mBest">—</b><small id="mBestName">—</small></div>
+      <div class="metric"><span>oracle aprox.</span><b id="mOracle">—</b><small>techo de evidencia</small></div>
+      <div class="metric"><span>conflictos</span><b id="mConflict">—</b><small>palabras con desacuerdo</small></div>
+      <div class="metric"><span>acuerdo erróneo</span><b id="mWrong">—</b><small>familias coinciden y fallan</small></div>
+    </div>
+  </div>
+
+  <section id="empty" class="card empty">Todavía no hay resultados locales de STT-MASS-V2 en este navegador.</section>
+
+  <section id="textCard" class="card" hidden>
+    <div class="eyebrow">CONFLICTOS PALABRA POR PALABRA</div>
+    <div id="tabs" class="tabs"></div>
+    <div id="ref" class="ref"></div>
+    <div class="legend">
+      <span><i class="sw" style="background:var(--y);opacity:.25"></i>leve</span>
+      <span><i class="sw" style="background:var(--y);opacity:.55"></i>medio</span>
+      <span><i class="sw" style="background:var(--o);opacity:.8"></i>alto</span>
+      <span><i class="sw" style="background:var(--r);opacity:.9"></i>consenso equivocado</span>
+    </div>
+  </section>
+
+  <section id="rankCard" class="card" hidden>
+    <div class="eyebrow">PRECISIÓN Y COSTO</div>
+    <div id="ranking"></div>
+  </section>
+
+  <details id="marginalBox" hidden><summary>valor marginal y redundancia</summary><div id="marginal" class="grid" style="margin-top:8px"></div></details>
+  <details id="confBox" hidden><summary>confusiones frecuentes</summary><div id="confusions" class="grid" style="margin-top:8px"></div></details>
+
+  <section id="actions" class="card" hidden>
+    <div class="eyebrow">CÁPSULA</div>
+    <div class="btns"><button id="copyAnalysis" class="btn">Copiar análisis</button><button id="copyRaw" class="btn">Copiar resultados crudos</button></div>
+  </section>
+</div>
+
+<div id="sheet" class="sheet">
+  <div class="sheetHead"><div><div class="eyebrow">PALABRA</div><div id="sheetWord" class="sheetWord"></div><div id="sheetMeta" class="mini"></div></div><button id="closeSheet" class="close">Cerrar</button></div>
+  <div id="alts" class="alts"></div>
+</div>
+
+<script>
+const $=id=>document.getElementById(id),EXPECTED=184;
+let DATA=null,activeTest=null,ANALYSIS=null;
+const FAMILY_ORDER=['Vosk','Whisper','Moonshine','Parakeet','Ensemble'];
+function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+function norm(s){return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9ñ\s]/gi,' ').replace(/\s+/g,' ').trim()}
+function toks(s){const n=norm(s);return n?n.split(' '):[]}
+function rawToks(s){return String(s||'').trim().split(/\s+/).filter(Boolean)}
+function lev(a,b){const d=Array.from({length:b.length+1},(_,i)=>i);for(let i=1;i<=a.length;i++){let p=d[0];d[0]=i;for(let j=1;j<=b.length;j++){const t=d[j];d[j]=Math.min(d[j]+1,d[j-1]+1,p+(a[i-1]===b[j-1]?0:1));p=t}}return d[b.length]}
+function wer(r,h){const a=toks(r),b=toks(h);return a.length?100*lev(a,b)/a.length:0}
+function family(r){const s=r.model||'';if(s.startsWith('Vosk'))return'Vosk';if(s.startsWith('Whisper'))return'Whisper';if(s.startsWith('Moonshine'))return'Moonshine';if(s.startsWith('Parakeet'))return'Parakeet';if(s.startsWith('Ensemble'))return'Ensemble';return s.split(' ')[0]||'Otro'}
+function source(r){return (r.model||'?')+' · '+(r.config||'?')}
+function alignToReference(reference,hyp){
+  const A=toks(reference),B=toks(hyp),raw=rawToks(hyp),n=A.length,m=B.length,dp=Array.from({length:n+1},()=>new Array(m+1).fill(0));
+  for(let i=0;i<=n;i++)dp[i][0]=i;for(let j=0;j<=m;j++)dp[0][j]=j;
+  for(let i=1;i<=n;i++)for(let j=1;j<=m;j++)dp[i][j]=Math.min(dp[i-1][j]+1,dp[i][j-1]+1,dp[i-1][j-1]+(A[i-1]===B[j-1]?0:1));
+  const out=new Array(n).fill(null);let i=n,j=m;
+  while(i>0||j>0){if(i>0&&j>0&&dp[i][j]===dp[i-1][j-1]+(A[i-1]===B[j-1]?0:1)){out[i-1]=raw[j-1]||B[j-1];i--;j--}else if(i>0&&dp[i][j]===dp[i-1][j]+1)i--;else j--}
+  return out
+}
+function entropy(counts){const vals=[...counts.values()],sum=vals.reduce((a,b)=>a+b,0);if(sum<=1)return 0;let h=0;for(const n of vals){const p=n/sum;h-=p*Math.log2(p)}return h/Math.log2(Math.max(2,vals.length))}
+function buildTest(testId,rows){
+  const ok=rows.filter(r=>r.status==='ok'&&r.text&&r.reference),reference=ok[0]?.reference||rows[0]?.reference||'',rt=rawToks(reference),rn=toks(reference);
+  const items=rt.map((word,i)=>({i,reference:word,refNorm:rn[i]||norm(word),variants:new Map(),families:new Set(),sources:0,correctAvailable:false,chosen:null,conflict:0,wrongAgreement:false}));
+  for(const r of ok){
+    if(family(r)==='Ensemble')continue;
+    const al=alignToReference(reference,r.text);
+    al.forEach((word,i)=>{if(!word||!items[i])return;const k=norm(word);if(!k)return;let v=items[i].variants.get(k);if(!v){v={key:k,form:word,sources:[],families:new Set()};items[i].variants.set(k,v)}v.sources.push(source(r));v.families.add(family(r));items[i].families.add(family(r));items[i].sources++;if(k===items[i].refNorm)items[i].correctAvailable=true})
+  }
+  for(const it of items){
+    let best=null;for(const v of it.variants.values()){const score=v.families.size*100+v.sources.length;if(!best||score>best.score)best={v,score}}
+    it.chosen=best?.v||null;
+    const famCounts=new Map();for(const v of it.variants.values())for(const f of v.families)famCounts.set(v.key,(famCounts.get(v.key)||0)+1);
+    it.conflict=it.variants.size<=1?0:entropy(famCounts);
+    it.wrongAgreement=!!it.chosen&&it.chosen.key!==it.refNorm&&it.chosen.families.size>=2;
+  }
+  return {testId,reference,items,rows:ok}
+}
+function analyze(data){
+  const results=Array.isArray(data?.results)?data.results:[],byTest=new Map();
+  for(const r of results){if(!r?.test_id)continue;(byTest.get(r.test_id)||byTest.set(r.test_id,[]).get(r.test_id)).push(r)}
+  const tests=[...byTest.entries()].map(([id,rows])=>buildTest(id,rows));
+  const individuals=results.filter(r=>r.status==='ok'&&Number.isFinite(Number(r.wer))&&family(r)!=='Ensemble');
+  const groups=new Map();for(const r of individuals){const k=source(r),g=groups.get(k)||{name:k,wers:[],times:[],n:0};g.wers.push(Number(r.wer));g.times.push(Number(r.infer_ms)||0);g.n++;groups.set(k,g)}
+  const rank=[...groups.values()].map(g=>({...g,wer:g.wers.reduce((a,b)=>a+b,0)/g.wers.length,ms:g.times.reduce((a,b)=>a+b,0)/g.times.length})).sort((a,b)=>a.wer-b.wer||a.ms-b.ms);
+  let totalWords=0,oracleMiss=0,conflicts=0,wrong=0;
+  const confusions=new Map(),uniqueCorrect=new Map();
+  for(const t of tests)for(const it of t.items){totalWords++;if(!it.correctAvailable)oracleMiss++;if(it.variants.size>1)conflicts++;if(it.wrongAgreement)wrong++;
+    for(const v of it.variants.values())if(v.key!==it.refNorm){const k=v.key+' → '+it.refNorm;confusions.set(k,(confusions.get(k)||0)+v.sources.length)}
+    const correct=[...it.variants.values()].find(v=>v.key===it.refNorm);if(correct&&correct.sources.length===1){const k=correct.sources[0];uniqueCorrect.set(k,(uniqueCorrect.get(k)||0)+1)}
+  }
+  const pairStats=new Map(),testRows=tests.map(t=>t.rows.filter(r=>family(r)!=='Ensemble'));
+  for(const rows of testRows){for(let a=0;a<rows.length;a++)for(let b=a+1;b<rows.length;b++){const A=rows[a],B=rows[b],aa=alignToReference(A.reference,A.text),bb=alignToReference(B.reference,B.text);let same=0,both=0;for(let i=0;i<aa.length;i++){if(aa[i]&&bb[i]){both++;if(norm(aa[i])===norm(bb[i]))same++}}if(!both)continue;const x=source(A),y=source(B),k=x<y?x+'|||'+y:y+'|||'+x,z=pairStats.get(k)||{same:0,both:0};z.same+=same;z.both+=both;pairStats.set(k,z)}}
+  const redundant=[...pairStats.entries()].map(([k,z])=>({pair:k.split('|||'),agreement:100*z.same/z.both,n:z.both})).sort((a,b)=>b.agreement-a.agreement).slice(0,10);
+  return {results,tests,rank,oracle:totalWords?100*oracleMiss/totalWords:null,conflicts,wrong,totalWords,confusions:[...confusions.entries()].sort((a,b)=>b[1]-a[1]).slice(0,15),uniqueCorrect:[...uniqueCorrect.entries()].sort((a,b)=>b[1]-a[1]).slice(0,12),redundant}
+}
+function conflictClass(it){if(it.wrongAgreement)return'wrong';if(it.variants.size<=1)return'';if(it.conflict<.34)return'low';if(it.conflict<.67)return'mid';return'high'}
+function render(){
+  if(!DATA||!ANALYSIS||!ANALYSIS.results.length){$('empty').hidden=false;$('textCard').hidden=true;$('rankCard').hidden=true;$('actions').hidden=true;$('marginalBox').hidden=true;$('confBox').hidden=true;return}
+  $('empty').hidden=true;$('textCard').hidden=false;$('rankCard').hidden=false;$('actions').hidden=false;$('marginalBox').hidden=false;$('confBox').hidden=false;
+  $('sessionLine').textContent=(DATA.session||'sesión local')+' · '+(DATA.build||'build desconocido')+' · actualización automática';
+  $('livePill').textContent=(ANALYSIS.results.length<EXPECTED?'procesando':'completo')+' · 2 s';$('livePill').className='pill '+(ANALYSIS.results.length>=EXPECTED?'good':'');
+  $('mResults').textContent=ANALYSIS.results.length;$('mExpected').textContent='/'+EXPECTED;
+  const best=ANALYSIS.rank[0];$('mBest').textContent=best?best.wer.toFixed(1)+'%':'—';$('mBestName').textContent=best?.name||'—';
+  $('mOracle').textContent=ANALYSIS.oracle==null?'—':ANALYSIS.oracle.toFixed(1)+'%';$('mConflict').textContent=ANALYSIS.conflicts;$('mWrong').textContent=ANALYSIS.wrong;
+  if(!activeTest||!ANALYSIS.tests.some(t=>t.testId===activeTest))activeTest=ANALYSIS.tests[0]?.testId;
+  $('tabs').innerHTML=ANALYSIS.tests.map(t=>'<button class="tab '+(t.testId===activeTest?'active':'')+'" data-test="'+esc(t.testId)+'">'+esc(t.testId)+'</button>').join('');
+  $('tabs').querySelectorAll('.tab').forEach(b=>b.onclick=()=>{activeTest=b.dataset.test;renderText()});renderText();
+  $('ranking').innerHTML=ANALYSIS.rank.slice(0,20).map((x,i)=>'<div class="rank"><b>'+(i+1)+'. '+esc(x.name)+'</b><span>WER '+x.wer.toFixed(1)+'%</span><span>'+Math.round(x.ms)+' ms · '+x.n+'/8</span></div>').join('');
+  let marginal='<div class="eyebrow">CORRECCIONES ÚNICAS DISPONIBLES</div>';
+  marginal+=ANALYSIS.uniqueCorrect.length?ANALYSIS.uniqueCorrect.map(([n,v])=>'<div class="rank"><b>'+esc(n)+'</b><span>+'+v+' palabras únicas</span><span></span></div>').join(''):'<div class="mini">Todavía no hay evidencia suficiente.</div>';
+  marginal+='<div class="eyebrow" style="margin-top:12px">MÁS REDUNDANTES</div>';
+  marginal+=ANALYSIS.redundant.map(x=>'<div class="rank"><b>'+esc(x.pair[0])+' ↔ '+esc(x.pair[1])+'</b><span>'+x.agreement.toFixed(1)+'% acuerdo</span><span>'+x.n+' palabras</span></div>').join('');
+  $('marginal').innerHTML=marginal;
+  $('confusions').innerHTML=ANALYSIS.confusions.length?ANALYSIS.confusions.map(([k,v])=>'<div class="rank"><b>'+esc(k)+'</b><span>'+v+' apariciones</span><span></span></div>').join(''):'<div class="mini">Sin confusiones acumuladas todavía.</div>';
+}
+function renderText(){
+  const t=ANALYSIS?.tests.find(x=>x.testId===activeTest);if(!t)return;
+  $('tabs').querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.test===activeTest));
+  $('ref').innerHTML=t.items.map(it=>'<button class="w '+conflictClass(it)+' '+(!it.chosen?'missing':'')+'" data-i="'+it.i+'" title="'+it.variants.size+' variantes">'+esc(it.reference)+'</button>').join(' ');
+  $('ref').querySelectorAll('.w').forEach(b=>b.onclick=()=>openWord(t,Number(b.dataset.i)));
+}
+function openWord(t,i){
+  const it=t.items[i];if(!it)return;$('sheetWord').textContent=it.reference;
+  const chosen=it.chosen?.form||'sin hipótesis';
+  $('sheetMeta').innerHTML='elegida por evidencia: <b>'+esc(chosen)+'</b> · '+it.variants.size+' variantes · '+it.families.size+' familias'+(it.correctAvailable?' · <span class="goodtxt">la respuesta correcta estaba disponible</span>':' · <span class="badtxt">ninguna hipótesis coincidió exactamente</span>');
+  const vars=[...it.variants.values()].sort((a,b)=>b.families.size-a.families.size||b.sources.length-a.sources.length);
+  $('alts').innerHTML=vars.length?vars.map(v=>'<div class="alt"><div class="altTop"><b class="'+(v.key===it.refNorm?'goodtxt':'')+'">'+esc(v.form)+'</b><span>'+v.families.size+' familias · '+v.sources.length+' pasadas</span></div><div class="sources">'+esc([...v.families].join(' · '))+'<br>'+esc(v.sources.join(' · '))+'</div></div>').join(''):'<div class="mini">Ningún modelo produjo una palabra alineable acá.</div>';
+  $('sheet').classList.add('open')
+}
+function load(){
+  let raw=null;try{raw=localStorage.getItem('stt_mass_latest')}catch{}
+  if(!raw)return;
+  try{const d=JSON.parse(raw);const changed=!DATA||d.session!==DATA.session||d.updated_at!==DATA.updated_at||d.results?.length!==DATA.results?.length;if(changed){DATA=d;ANALYSIS=analyze(d);render()}}catch{}
+}
+function capsule(){return {analysis_build:'STT-ANALYSIS-V3-20260928',session:DATA?.session,source_build:DATA?.build,computed_at:new Date().toISOString(),summary:{result_count:ANALYSIS?.results.length||0,best:ANALYSIS?.rank[0]||null,oracle_approx_wer:ANALYSIS?.oracle,conflicts:ANALYSIS?.conflicts,wrong_agreement:ANALYSIS?.wrong,unique_correct:ANALYSIS?.uniqueCorrect,redundant:ANALYSIS?.redundant,confusions:ANALYSIS?.confusions}}}
+async function copyText(x,btn){const s=typeof x==='string'?x:JSON.stringify(x,null,2);try{await navigator.clipboard.writeText(s)}catch{const ta=document.createElement('textarea');ta.value=s;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove()}const old=btn.textContent;btn.textContent='Copiado ✓';setTimeout(()=>btn.textContent=old,1200)}
+$('copyAnalysis').onclick=e=>copyText(capsule(),e.currentTarget);$('copyRaw').onclick=e=>copyText(DATA,e.currentTarget);$('closeSheet').onclick=()=>$('sheet').classList.remove('open');$('sheet').addEventListener('click',e=>{if(e.target===$('sheet'))$('sheet').classList.remove('open')});
+load();setInterval(load,2000);render();
+</script>
+</body></html>
