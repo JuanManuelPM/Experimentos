@@ -4,17 +4,24 @@ body{margin:0;background:#07090b;color:#f3f6f8;font:14px/1.45 system-ui}main{pad
 const $=id=>document.getElementById(id);
 const qs=new URLSearchParams(location.search),group=qs.get('group')||'default',slot=+(qs.get('slot')||0),FAST_DB='stt-fast-v1',STORE='jobs';
 const ch=new BroadcastChannel('stt-topology-'+group);
-let pcm=null,duration=0,w=null,ready=false,busy=false,backend='wasm';
+let pcm=null,duration=0,sourceFile=null,w=null,ready=false,busy=false,backend='wasm';
 $('slot').textContent='slot '+(slot+1);
 function openDB(){return new Promise((res,rej)=>{const q=indexedDB.open(FAST_DB,1);q.onsuccess=()=>res(q.result);q.onerror=()=>rej(q.error)})}
 async function getFast(){try{const db=await openDB(),v=await new Promise((res,rej)=>{const q=db.transaction(STORE,'readonly').objectStore(STORE).get('current');q.onsuccess=()=>res(q.result||null);q.onerror=()=>rej(q.error)});db.close();return v}catch{return null}}
 async function prepare(){
  const fast=await getFast(); if(!fast?.file) throw new Error('audio no encontrado');
- $('status').textContent='Decodificando audio…'; const ab=await fast.file.arrayBuffer(),ctx=new AudioContext({sampleRate:16000}),d=await ctx.decodeAudioData(ab);pcm=new Float32Array(d.getChannelData(0));duration=pcm.length/16000;await ctx.close();
+ sourceFile=fast.file;duration=+fast.duration||0;
  $('status').textContent='Listo para cargar modelo';ch.postMessage({kind:'tab_ready',slot,duration});
+}
+async function ensureAudio(){
+ if(pcm)return;
+ $('status').textContent='Decodificando audio…';
+ const ab=await sourceFile.arrayBuffer(),ctx=new AudioContext({sampleRate:16000}),d=await ctx.decodeAudioData(ab);
+ pcm=new Float32Array(d.getChannelData(0));duration=pcm.length/16000;await ctx.close();
 }
 async function initModel(msg){
  if(ready)return ch.postMessage({kind:'model_ready',slot});
+ await ensureAudio();
  backend=msg.backend||'wasm'; $('status').textContent='Cargando modelo '+backend.toUpperCase()+'…'; $('state').textContent='loading';
  w=new Worker('./runner-worker.js',{type:'module'});
  w.onmessage=e=>{const m=e.data||{};if(m.kind==='ready'){ready=true;$('status').textContent='Motor listo';$('state').textContent='ready';ch.postMessage({kind:'model_ready',slot,load_ms:m.load_ms,backend})}else if(m.kind==='result'){busy=false;$('status').textContent='Esperando otro bloque';$('state').textContent='ready';ch.postMessage({kind:'result',slot,...m})}else if(m.kind==='error'){busy=false;$('status').textContent='Error: '+m.error;$('state').textContent='error';ch.postMessage({kind:'runner_error',slot,...m})}};
