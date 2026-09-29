@@ -1,7 +1,9 @@
 let model=null;
 let backend='wasm';
 let initPromise=null;
-let chain=Promise.resolve();
+let busy=false;
+let seq=0;
+const queue=[];
 
 async function ensureModel(){
   if(model)return model;
@@ -29,30 +31,45 @@ async function ensureModel(){
   catch(err){initPromise=null;throw err}
 }
 
-async function transcribe(msg){
-  const m=await ensureModel();
-  const pcm=new Float32Array(msg.pcm);
-  const started=performance.now();
-  const r=await m.transcribeLongAudio(pcm,16000,msg.options||{});
-  self.postMessage({
-    type:'result',
-    id:msg.id,
-    text:(r.text||r.utterance_text||'').trim(),
-    ms:performance.now()-started
-  });
+function weight(priority){
+  return priority==='live'?0:priority==='normal'?1:2;
+}
+
+async function processNext(){
+  if(busy||!queue.length)return;
+  busy=true;
+  queue.sort((a,b)=>weight(a.msg.priority)-weight(b.msg.priority)||a.seq-b.seq);
+  const item=queue.shift(),msg=item.msg;
+  try{
+    const m=await ensureModel();
+    const pcm=new Float32Array(msg.pcm);
+    const started=performance.now();
+    const r=await m.transcribeLongAudio(pcm,16000,msg.options||{});
+    self.postMessage({
+      type:'result',
+      id:msg.id,
+      text:(r.text||r.utterance_text||'').trim(),
+      ms:performance.now()-started,
+      priority:msg.priority||'normal'
+    });
+  }catch(err){
+    self.postMessage({type:'error',id:msg.id,message:String(err&&err.message||err)});
+  }finally{
+    busy=false;
+    processNext();
+  }
 }
 
 self.onmessage=e=>{
   const msg=e.data||{};
   if(msg.type==='init'){
-    chain=chain.then(()=>ensureModel()).catch(err=>{
+    ensureModel().catch(err=>{
       self.postMessage({type:'fatal',message:String(err&&err.message||err)});
     });
     return;
   }
   if(msg.type==='transcribe'){
-    chain=chain.then(()=>transcribe(msg)).catch(err=>{
-      self.postMessage({type:'error',id:msg.id,message:String(err&&err.message||err)});
-    });
+    queue.push({msg,seq:++seq});
+    processNext();
   }
 };
