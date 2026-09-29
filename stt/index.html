@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta name="color-scheme" content="dark">
+<title>STT Lab · enlace permanente</title>
+<style>
+:root{--bg:#080a0c;--fg:#f3f6f8;--mut:#8c99a4;--line:#28343d;--ok:#7be49b}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.48 system-ui,-apple-system,Segoe UI,sans-serif}
+main{max-width:850px;margin:auto;padding:22px 14px 80px}.k{font-size:9px;letter-spacing:.13em;color:var(--mut);font-weight:850;text-transform:uppercase}
+h1{font-size:30px;line-height:1.05;margin:8px 0 6px}.sub{color:var(--mut);max-width:650px}.links{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+a,button{appearance:none;border:1px solid var(--line);background:#12181d;color:var(--fg);text-decoration:none;padding:10px 12px;border-radius:10px;font:inherit;cursor:pointer}
+.primary{background:#edf5ff;color:#081018;border-color:#edf5ff;font-weight:850}.state{margin-top:24px;border-top:1px solid var(--line);padding-top:16px}
+.row{display:grid;grid-template-columns:145px minmax(0,1fr);gap:12px;padding:7px 0;border-bottom:1px solid #171e23}.row span:first-child{color:var(--mut);font-size:11px}.row b{font-size:12px;overflow-wrap:anywhere}
+.note{margin-top:18px;color:var(--mut);font-size:11px}.good{color:var(--ok)}
+pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#0c1014;border:1px solid var(--line);border-radius:10px;padding:10px;font-size:10px;max-height:280px;overflow:auto}
+details{margin-top:16px}summary{cursor:pointer;color:var(--mut)}
+</style>
+</head>
+<body><main>
+<div class="k">Experimentos · STT</div>
+<h1>Laboratorio de transcripción</h1>
+<div class="sub">Este es el enlace estable. Las versiones internas pueden cambiar; esta página siempre apunta al benchmark y al análisis CURRENT del experimento.</div>
+
+<div class="links">
+  <a class="primary" href="./benchmark/">Abrir benchmark</a>
+  <a href="./analysis/">Abrir análisis</a>
+  <button id="copy">Copiar prompt de continuidad</button>
+</div>
+
+<section class="state">
+  <div class="k">ESTADO DURABLE</div>
+  <div class="row"><span>benchmark current</span><b>STT-MASS-V4-20260928</b></div>
+  <div class="row"><span>última sesión</span><b id="session">cargando…</b></div>
+  <div class="row"><span>resultados</span><b id="results">—</b></div>
+  <div class="row"><span>oracle aprox.</span><b id="oracle">—</b></div>
+  <div class="row"><span>mejor fuente</span><b id="best">—</b></div>
+  <div class="row"><span>externalización</span><b>GitHub Actions · matriz paralela gratuita</b></div>
+</section>
+
+<div class="note">El benchmark V4 guarda el PCM en IndexedDB, mide interferencia del navegador y puede enviar únicamente los audios de estas frases de benchmark a un transporte temporal para que GitHub Actions pruebe modelos en VMs separadas. El audio temporal no se conserva en GitHub; sí quedan resultados y estadísticas.</div>
+
+<details><summary>ver prompt que se copiará</summary><pre id="preview"></pre></details>
+</main>
+<script>
+const RAW='https://raw.githubusercontent.com/JuanManuelPM/Experimentos/master/';
+let state={session:null,index:null,analysis:null};
+async function load(){
+  try{
+    const r=await fetch(RAW+'stt-results/index.json?t='+Date.now(),{cache:'no-store'});if(r.ok){state.index=await r.json();state.session=state.index.latest_session||null}
+    if(state.session){
+      const a=await fetch(RAW+'stt-analysis-data/'+encodeURIComponent(state.session)+'.json?t='+Date.now(),{cache:'no-store'});if(a.ok)state.analysis=await a.json()
+    }
+  }catch{}
+  render()
+}
+function prompt(){
+  const a=state.analysis||{},best=a.best_sources?.[0],sid=state.session||'UNKNOWN';
+  return `PROMETEO / EXPERIMENTOS · STT CONTINUITY V1
+
+Este chat continúa el laboratorio STT del usuario. No empieces de cero ni rediseñes por intuición.
+
+REPO AISLADO
+- GitHub: JuanManuelPM/Experimentos
+- NO modificar JuanManuelPM/prometeo ni Supabase/Prometeo.
+- Código: master
+- Publicación: gh-pages
+- Hub público permanente: https://juanmanuelpm.github.io/Experimentos/stt/
+- Benchmark estable: https://juanmanuelpm.github.io/Experimentos/stt/benchmark/
+- Análisis estable: https://juanmanuelpm.github.io/Experimentos/stt/analysis/
+
+CURRENT
+- Benchmark: STT-MASS-V4-20260928
+- Última sesión durable conocida: ${sid}
+- Resultados de sesión: stt-results/sessions/${sid}.json
+- Análisis automático: stt-analysis-data/${sid}.json
+- Oracle aproximado conocido: ${a.oracle_word_availability_wer==null?'desconocido':a.oracle_word_availability_wer.toFixed(3)+'%'}
+- Mejor fuente observada: ${best?best.source+' · semantic WER '+best.wer_semantic_macro.toFixed(3)+'%':'desconocida'}
+
+ARQUITECTURA ACTUAL
+1. El navegador graba cada uno de 8 textos una sola vez.
+2. V4 usa AudioWorklet para capturar y registra calidad/contención: sample_ratio, event-loop lag, visibility, gaps, RMS/pico.
+3. PCM y metadatos se guardan localmente en IndexedDB para reutilizar el mismo audio sin volver a leer.
+4. Resultados locales se publican incrementalmente a un canal remoto y un workflow los consolida en GitHub.
+5. Los audios de benchmark V4 se pueden transportar temporalmente a ntfy y GitHub Actions los procesa en VMs separadas.
+6. Workflow .github/workflows/stt-audio-external-matrix.yml corre en paralelo Faster Whisper Tiny/Base/Small con variantes y repeticiones, más Vosk 0.42 Python.
+7. Workflow .github/workflows/stt-result-ingest.yml ingiere resultados de navegador.
+8. Workflow .github/workflows/stt-consensus-search.yml recalcula oracle, redundancia y selección leave-one-test-out.
+9. stt/analysis/ muestra conflictos palabra por palabra, alternativas, oracle aproximado, redundancia y confusiones.
+
+HALLAZGOS QUE NO HAY QUE PERDER
+- Parakeet 0.6B v3 INT8 fue muy superior a Vosk 0.3 en la sesión anterior.
+- WER bruto de Parakeet full ~7.18%; normalizando números ~4.21% en esa sesión.
+- Oracle palabra-a-palabra sobre hipótesis disponibles ~3.82%.
+- Por lo tanto el cuello de botella importante es selección/consenso, no sólo reconocimiento.
+- Vosk 0.3 16k y win15 fueron altamente redundantes.
+- Vosk 0.42 browser falló por timeout en V2; V4 corrigió la URL y además lo prueba externamente en Python.
+- Whisper Q8 browser falló por ONNX; V4 browser prueba FP32.
+- Moonshine MediumStreaming quedó en timeout; V4 cambió a Base.
+- Números deben evaluarse semánticamente: "14" y "catorce" no deben contarse como error funcional.
+
+REGLAS DE CONTINUIDAD
+- Antes de afirmar estado, inspeccionar HEAD real de master/gh-pages y workflows/runs.
+- Leer stt-results/index.json para recuperar la última sesión, no inferirla de este prompt.
+- Leer el JSON de sesión y el análisis correspondiente antes de decidir qué mejorar.
+- Verificar GitHub Pages antes de declarar una URL funcional.
+- No pedir al usuario que vuelva a grabar si el mismo audio ya está persistido y se puede reutilizar.
+- Distinguir medición de exactitud de medición de rendimiento. Otras pestañas pueden contaminar tiempos; usar la telemetría de captura y repeticiones.
+- No contar múltiples variantes casi idénticas del mismo modelo como evidencia independiente.
+- Priorizar experimentos que reutilicen audio existente y produzcan datos durables automáticamente.
+- Mantener botón/copia manual sólo como fallback; objetivo: el usuario no transporta logs.
+- Si se cambia CURRENT, actualizar también este prompt/hub estable.
+
+PRIMERA ACCIÓN EN EL NUEVO CHAT
+Inspeccioná el repo JuanManuelPM/Experimentos y la última sesión real. Después continuá desde el trabajo pendiente de mayor valor sin tocar Prometeo.
+`;
+}
+function render(){
+  document.getElementById('session').textContent=state.session||'todavía no disponible';
+  const meta=state.index?.sessions?.[state.session||''];
+  document.getElementById('results').textContent=meta?.result_count??'—';
+  const a=state.analysis||{},best=a.best_sources?.[0];
+  document.getElementById('oracle').textContent=a.oracle_word_availability_wer==null?'—':a.oracle_word_availability_wer.toFixed(2)+'%';
+  document.getElementById('best').textContent=best?best.source+' · '+best.wer_semantic_macro.toFixed(2)+'%':'—';
+  document.getElementById('preview').textContent=prompt()
+}
+document.getElementById('copy').onclick=async e=>{
+  const t=prompt();try{await navigator.clipboard.writeText(t)}catch{const x=document.createElement('textarea');x.value=t;document.body.appendChild(x);x.select();document.execCommand('copy');x.remove()}
+  const b=e.currentTarget,old=b.textContent;b.textContent='Prompt copiado ✓';setTimeout(()=>b.textContent=old,1400)
+};
+load();
+</script>
+</body></html>
