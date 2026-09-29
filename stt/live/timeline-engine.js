@@ -50,7 +50,8 @@ export class TimelineTurn{
  #windowMs(){
    const lead=this.#lead();
    let target=82;
-   if(lead<this.minLead)target=42;
+   if(!this.draftTarget.length)target=46;
+   else if(lead<this.minLead)target=42;
    else if(lead<this.minLead+8)target=48;
    else if(lead<this.minLead+18)target=58;
    else if(lead<this.minLead+32)target=70;
@@ -144,7 +145,7 @@ export class TimelineTurn{
      if(!this.audioClosed&&lead-slots<this.minLead){
        this.barWindowMs=42;this.draftTimer=setTimeout(()=>this.#draftStep(),22);return
      }
-     const tok=this.#makeToken(text,'draft');this.tokens.push(tok);this.wordLayer.append(tok.el,document.createTextNode(' '));
+     const tok=this.#makeToken(text,'draft');this.tokens.push(tok);this.wordLayer.appendChild(tok.el);
      this.consumedSlots+=tok.slots;this.#notify()
    }
    if(!this.#draftSettled()){
@@ -169,11 +170,13 @@ export class TimelineTurn{
    if(this.qualityCursor<target.length){
      if(this.qualityCursor>=this.tokens.length){
        if(!this.audioClosed){this.qualityTimer=setTimeout(()=>this.#qualityStep(),40);return}
-       const tok=this.#makeToken(target[this.qualityCursor],'draft');this.tokens.push(tok);this.wordLayer.append(tok.el,document.createTextNode(' '));this.consumedSlots+=tok.slots
+       const tok=this.#makeToken(target[this.qualityCursor],'draft');this.tokens.push(tok);this.wordLayer.appendChild(tok.el);this.consumedSlots+=tok.slots
      }
      const tok=this.tokens[this.qualityCursor];this.#growTokenSlots(tok,target[this.qualityCursor]);
      tok.text=target[this.qualityCursor];tok.status='confirmed';this.#syncToken(tok);
-     this.qualityCursor++;this.#notify();this.qualityTimer=setTimeout(()=>this.#qualityStep(),84);return
+     this.qualityCursor++;this.#notify();
+     const backlog=target.length-this.qualityCursor,delay=backlog>20?36:backlog>8?52:72;
+     this.qualityTimer=setTimeout(()=>this.#qualityStep(),delay);return
    }
    const w=this.waitQuality.splice(0);w.forEach(r=>r());
    if(this.finalTarget)this.#settleFinal()
@@ -187,7 +190,7 @@ export class TimelineTurn{
      tok.text=final[i];tok.status='confirmed';this.#syncToken(tok)
    }
    this.wordLayer.replaceChildren();
-   for(const tok of this.tokens)this.wordLayer.append(tok.el,document.createTextNode(' '));
+   for(const tok of this.tokens)this.wordLayer.appendChild(tok.el);
    this.consumedSlots=this.bars.length;this.finalTarget=null;
    this.row.classList.remove('processing');this.row.classList.add('done');
    this.#notify();const w=this.finalWait.splice(0);w.forEach(r=>r())
@@ -209,9 +212,9 @@ export class TimelineTurn{
    if(this.qualityCursor>=this.qualityTarget.length)return Promise.resolve();
    return new Promise(r=>{this.waitQuality.push(r);setTimeout(r,timeout)})
  }
- whenFinal(timeout=10000){
+ whenFinal(){
    if(!this.finalTarget&&this.row.classList.contains('done'))return Promise.resolve();
-   return new Promise(r=>{this.finalWait.push(r);setTimeout(r,timeout)})
+   return new Promise(r=>this.finalWait.push(r))
  }
  getText(){return this.#currentText()}
  destroy(){this.destroyed=true;clearTimeout(this.draftTimer);clearTimeout(this.qualityTimer);this.row.remove()}
