@@ -11,13 +11,25 @@ self.onmessage=async (e)=>{
     try{
       const mod=await import("https://cdn.jsdelivr.net/npm/parakeet.js@1.4.4/+esm");
       const backend=m.backend||"wasm";
-      model=await mod.fromHub("parakeet-tdt-0.6b-v3",{
-        backend,
-        encoderQuant:backend==="webgpu"?"fp32":"int8",
-        decoderQuant:"int8",
-        preprocessorBackend:"js"
-      });
-      postMessage({kind:"ready",workerId,init_ms:performance.now()-t0,backend});
+      let actualBackend=backend;
+      try{
+        model=await mod.fromHub("parakeet-tdt-0.6b-v3",{
+          backend:actualBackend,
+          encoderQuant:actualBackend==="webgpu"?"fp32":"int8",
+          decoderQuant:"int8",
+          preprocessorBackend:"js"
+        });
+      }catch(firstErr){
+        if(actualBackend!=="webgpu")throw firstErr;
+        actualBackend="wasm";
+        model=await mod.fromHub("parakeet-tdt-0.6b-v3",{
+          backend:"wasm",
+          encoderQuant:"int8",
+          decoderQuant:"int8",
+          preprocessorBackend:"js"
+        });
+      }
+      postMessage({kind:"ready",workerId,init_ms:performance.now()-t0,backend:actualBackend});
     }catch(err){
       postMessage({kind:"error",workerId,error:String(err?.message||err)});
     }
