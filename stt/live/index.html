@@ -1,0 +1,52 @@
+<!doctype html><html lang="es"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="dark"><meta http-equiv="Cache-Control" content="no-cache,no-store,must-revalidate">
+<title>STT Live</title>
+<style>
+:root{--bg:#07090b;--p:#10151a;--line:#28343d;--fg:#f4f7f9;--mut:#8d9aa5;--ok:#77e39b;--warn:#ffd166;--bad:#ff7b7b}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.5 system-ui,-apple-system,Segoe UI,sans-serif}main{max-width:920px;margin:auto;padding:14px 12px 70px}
+h1{font-size:27px;margin:0}.sub,.note{color:var(--mut);font-size:11px}.card{background:var(--p);border:1px solid var(--line);border-radius:14px;padding:14px;margin-top:11px}
+.big{font-size:22px;font-weight:850}.actions,.meta{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}button{border:1px solid var(--line);background:#172027;color:var(--fg);padding:11px 13px;border-radius:10px;font:inherit;cursor:pointer}.primary{background:#eef5ff;color:#081018;border-color:#eef5ff;font-weight:850}button:disabled{opacity:.42}
+.pill{border:1px solid var(--line);border-radius:99px;padding:4px 7px;color:var(--mut);font-size:9px}.ok{color:var(--ok)}.warn{color:var(--warn)}.bad{color:var(--bad)}
+.meter{height:12px;background:#080c0f;border:1px solid var(--line);border-radius:99px;overflow:hidden;margin-top:10px}.meter i{display:block;height:100%;width:0;background:var(--ok);transition:width .08s linear}
+textarea{width:100%;min-height:340px;background:#080c0f;color:var(--fg);border:1px solid var(--line);border-radius:10px;padding:12px;font:16px/1.55 system-ui;margin-top:10px}
+.seg{border-top:1px solid #202830;padding:8px 0}.seg:first-child{border-top:0}.time{font-size:9px;color:var(--mut)}
+</style></head><body><main>
+<h1>STT Live</h1><div class="sub">Micrófono local → Parakeet. Una sola pestaña, bloques cortos con solapamiento, silencio omitido y texto continuo.</div>
+<section class="card">
+<div id="status" class="big">Cargando modelo…</div>
+<div class="meter"><i id="meter"></i></div>
+<div class="meta"><span id="backend" class="pill">modelo</span><span id="lat" class="pill">latencia —</span><span id="rt" class="pill">—× realtime</span><span id="queue" class="pill">cola 0 s</span></div>
+<div class="actions"><button id="mic" class="primary" disabled>🎙️ Empezar micrófono</button><button id="stop" disabled>Detener</button><button id="copy" disabled>Copiar</button><button id="clear">Limpiar texto</button></div>
+<div class="note">Local: no usa Web Speech ni sube el audio. Primer texto normalmente aparece después del primer bloque de ~4 s + inferencia. Si hablás más rápido que el modelo, la cola queda visible.</div>
+</section>
+<section class="card"><b>Texto</b><textarea id="out" placeholder="El texto aparece mientras hablás."></textarea></section>
+<section class="card"><b>Últimos bloques</b><div id="segments" class="note">Todavía no hay audio.</div></section>
+<script type="module">
+const $=id=>document.getElementById(id),BUILD='STT-LIVE-V1-20260929';
+let model=null,stream=null,ctx=null,node=null,source=null,running=false,processing=false,nativeRate=48000,parts=[],samples=0,text='',segments=[],capturedS=0;
+const CHUNK_S=4,OVERLAP_S=.7,SILENCE_RMS=.0045;
+function norm(s){return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9ñ\s]/gi,' ').replace(/\s+/g,' ').trim().split(' ').filter(Boolean)}
+function merge(a,b){if(!a)return b;if(!b)return a;const A=a.split(/\s+/),B=b.split(/\s+/),na=norm(a),nb=norm(b);let best=0;for(let k=1;k<=Math.min(20,na.length,nb.length);k++){let same=0;for(let i=0;i<k;i++)if(na[na.length-k+i]===nb[i])same++;if(same/k>=.78)best=k}return(A.join(' ')+' '+B.slice(best).join(' ')).trim()}
+function rms(x){let s=0;for(let i=0;i<x.length;i++)s+=x[i]*x[i];return Math.sqrt(s/Math.max(1,x.length))}
+function resample(x,from,to=16000){if(from===to)return x;const ratio=from/to,n=Math.max(1,Math.floor(x.length/ratio)),o=new Float32Array(n);for(let i=0;i<n;i++){const p=i*ratio,a=Math.floor(p),b=Math.min(x.length-1,a+1),f=p-a;o[i]=x[a]*(1-f)+x[b]*f}return o}
+function takeNative(sec){const need=Math.floor(sec*nativeRate);if(samples<need)return null;const all=new Float32Array(need);let w=0,remain=need;while(remain>0&&parts.length){const p=parts[0],n=Math.min(remain,p.length);all.set(p.subarray(0,n),w);w+=n;remain-=n;if(n===p.length)parts.shift();else parts[0]=p.subarray(n)}samples-=need;const overlap=Math.floor(OVERLAP_S*nativeRate);if(overlap>0){const tail=all.slice(Math.max(0,all.length-overlap));parts.unshift(tail);samples+=tail.length}return all}
+function renderSegments(){$('segments').innerHTML=segments.slice(-8).reverse().map(s=>'<div class="seg"><div class="time">'+s.start.toFixed(1)+'–'+s.end.toFixed(1)+' s · '+s.ms.toFixed(0)+' ms · rms '+s.rms.toFixed(4)+'</div><div>'+escapeHtml(s.text||'[silencio]')+'</div></div>').join('')||'Todavía no hay audio.'}
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+async function pump(){if(processing||!running)return;const raw=takeNative(CHUNK_S);if(!raw){$('queue').textContent='cola '+(samples/nativeRate).toFixed(1)+' s';return}processing=true;const start=capturedS,end=start+CHUNK_S;capturedS+=CHUNK_S-OVERLAP_S;const level=rms(raw);$('meter').style.width=Math.min(100,level*900)+'%';try{
+ if(level<SILENCE_RMS){segments.push({start,end,text:'',ms:0,rms:level});renderSegments()}
+ else{const pcm=resample(raw,nativeRate,16000),t=performance.now(),r=await model.transcribeLongAudio(pcm,16000,{returnTimestamps:false,returnConfidences:true,chunkLengthS:CHUNK_S,timeOffset:start}),ms=performance.now()-t,tx=(r.text||r.utterance_text||'').trim();text=merge(text,tx);$('out').value=text;$('copy').disabled=!text;segments.push({start,end,text:tx,ms,rms:level});$('lat').textContent='último '+(ms/1000).toFixed(2)+' s';$('rt').textContent=(CHUNK_S/(ms/1000)).toFixed(2)+'× realtime';renderSegments()}
+ }catch(e){$('status').textContent='Error ASR: '+e.message;$('status').className='big bad'}
+ processing=false;$('queue').textContent='cola '+(samples/nativeRate).toFixed(1)+' s';if(running)setTimeout(pump,0)
+}
+async function startMic(){
+ if(running)return;stream=await navigator.mediaDevices.getUserMedia({audio:{channelCount:1,echoCancellation:false,noiseSuppression:false,autoGainControl:false}});
+ ctx=new AudioContext();nativeRate=ctx.sampleRate;const code=`class C extends AudioWorkletProcessor{process(i){const x=i[0]?.[0];if(x)this.port.postMessage(x.slice());return true}}registerProcessor('cap',C)`,u=URL.createObjectURL(new Blob([code],{type:'text/javascript'}));await ctx.audioWorklet.addModule(u);URL.revokeObjectURL(u);
+ source=ctx.createMediaStreamSource(stream);node=new AudioWorkletNode(ctx,'cap');const silent=ctx.createGain();silent.gain.value=0;source.connect(node);node.connect(silent).connect(ctx.destination);node.port.onmessage=e=>{if(!running)return;const x=new Float32Array(e.data);parts.push(x);samples+=x.length;const lv=rms(x);$('meter').style.width=Math.min(100,lv*1200)+'%';if(!processing&&samples>=CHUNK_S*nativeRate)pump()};
+ parts=[];samples=0;capturedS=0;running=true;$('mic').disabled=true;$('stop').disabled=false;$('status').textContent='Escuchando…';$('status').className='big ok';pump()
+}
+async function stopMic(){running=false;$('stop').disabled=true;$('mic').disabled=false;try{node?.disconnect();source?.disconnect();stream?.getTracks().forEach(t=>t.stop());await ctx?.close()}catch{};$('status').textContent='Micrófono detenido';$('meter').style.width='0%'}
+$('mic').onclick=()=>startMic().catch(e=>{$('status').textContent='No pude abrir micrófono: '+e.message;$('status').className='big bad'});
+$('stop').onclick=stopMic;$('copy').onclick=()=>navigator.clipboard.writeText(text);$('clear').onclick=()=>{text='';segments=[];$('out').value='';$('copy').disabled=true;renderSegments()};
+(async()=>{try{const mod=await import('https://cdn.jsdelivr.net/npm/parakeet.js@1.4.4/+esm'),backend=navigator.gpu?'webgpu':'wasm';$('backend').textContent=backend.toUpperCase()+' · Parakeet 0.6B';model=await mod.fromHub('parakeet-tdt-0.6b-v3',{backend,encoderQuant:backend==='webgpu'?'fp32':'int8',decoderQuant:'int8',preprocessorBackend:'js'});$('status').textContent='Modelo listo';$('status').className='big ok';$('mic').disabled=false}catch(e){$('status').textContent='No cargó el modelo: '+e.message;$('status').className='big bad'}})();
+</script></main></body></html>
