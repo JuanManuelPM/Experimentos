@@ -43,18 +43,18 @@ main{min-height:100svh;max-width:920px;margin:auto;padding:calc(env(safe-area-in
 .timeline-turn{width:100%;padding:8px 0 13px;opacity:1;transition:opacity .25s ease}
 .flow-stage{position:relative;width:100%;max-width:760px;min-height:40px;margin:0 auto}
 .timeline-turn+.timeline-turn{border-top:1px solid rgba(255,255,255,.035);padding-top:14px}
-.cell-track{display:flex;flex-wrap:wrap;justify-content:flex-start;align-items:center;align-content:flex-start;gap:3px 1px;width:100%;min-height:40px;margin:0;overflow:visible}
-.word-layer{position:absolute;inset:0;width:100%;pointer-events:none;z-index:2;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:clamp(20px,3vw,30px);line-height:34px;font-weight:430;letter-spacing:normal;word-spacing:normal;white-space:normal;overflow-wrap:anywhere}
-.speech-cell{position:relative;display:inline-grid;place-items:center;width:8px;min-width:2px;max-width:8px;height:34px;flex:0 1 8px;contain:layout paint;transform:translateZ(0)}
+.cell-track{position:absolute;inset:0 0 auto 0;display:flex;flex-wrap:wrap;justify-content:flex-start;align-items:center;align-content:flex-start;column-gap:1px;row-gap:0;width:100%;min-height:34px;margin:0;overflow:visible;z-index:0;pointer-events:none}
+.word-layer{position:relative;width:100%;min-height:34px;pointer-events:none;z-index:2;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:clamp(20px,3vw,30px);line-height:34px;font-weight:430;letter-spacing:normal;word-spacing:normal;white-space:normal;overflow-wrap:break-word}
+.speech-cell{position:relative;display:inline-grid;place-items:center;width:8px;min-width:8px;max-width:8px;height:34px;flex:0 0 8px;contain:layout paint;transform:translateZ(0);transition:opacity .12s linear}
 .speech-cell .wave{position:absolute;left:50%;top:50%;width:max(2px,70%);height:calc(3px + var(--level, .1) * 27px);border-radius:99px;background:rgba(255,255,255,.34);transform:translate(-50%,-50%) scaleY(1);transform-origin:50% 50%;transition:height .11s ease,opacity .18s ease,background .18s ease}
 .speech-cell.resolved .wave{opacity:.13;background:#fff}
 .speech-cell.resolved-empty .wave{opacity:.18}
 .speech-cell.frontier .wave{animation:frontierBreath .9s ease-in-out infinite}
 .speech-cell.synthetic .wave{opacity:.15}
-.speech-cell.covered{visibility:hidden}
+.speech-cell.covered{opacity:0}
 .speech-cell.live-head .wave{opacity:.72}
 .text-line{display:none}
-.text-word{position:relative;display:inline;margin-right:.22em;color:#77777f;opacity:0;filter:blur(.25px);font:inherit;line-height:inherit;white-space:nowrap;background:#050506;box-shadow:0 0 0 2px #050506;transition:color .22s ease,opacity .16s ease,filter .18s ease,transform .18s ease}
+.text-word{position:relative;display:inline;margin-right:.22em;color:#77777f;opacity:0;filter:blur(.2px);font:inherit;line-height:inherit;white-space:nowrap;background:transparent;box-shadow:none;transition:color .22s ease,opacity .16s ease,filter .18s ease,transform .18s ease}
 .word-text{position:relative;z-index:1}
 .text-word.visible{opacity:1}
 .text-word.confirmed{color:#fff;filter:none;text-shadow:0 0 10px rgba(255,255,255,.055)}
@@ -229,8 +229,8 @@ main{min-height:100svh;max-width:920px;margin:auto;padding:calc(env(safe-area-in
   </details>
 </main>
 <script type="module">
-import {TimelineTurn} from './timeline-engine.js?v=6.1';
-const $=id=>document.getElementById(id),BUILD='STT-LIVE-V6.1-20260929',LIVE_DB='stt-live-v3',LIVE_STORE='runs',LIVE_KEY='golden';
+import {TimelineTurn} from './timeline-engine.js?v=7.0';
+const $=id=>document.getElementById(id),BUILD='STT-LIVE-V7.0-20260929',LIVE_DB='stt-live-v3',LIVE_STORE='runs',LIVE_KEY='golden';
 const advancedEl=document.querySelector('.advanced');
 let paintFrame=0,pendingPaint='',asrWorker=null,asrInitPromise=null,asrReady=false,asrBackend='—',asrReq=0,asrPending=new Map(),asrRetryTimer=null;
 const TEST_TEXT=$('reference').textContent.trim();
@@ -437,7 +437,7 @@ function gateResult(){
  const promote=winner.name!==base.name&&(winner.wer<base.wer-1e-9||winner.dup<base.dup||winner.first_latency_s<base.first_latency_s-.25);
  return{base,winner,quality,promote}
 }
-function diag(){const g=gateResult();return{build:BUILD,created_at:new Date().toISOString(),reference:TEST_TEXT,environment:{userAgent:navigator.userAgent,cores:navigator.hardwareConcurrency||null,deviceMemory:navigator.deviceMemory||null},golden:{duration_s:goldenPcm?goldenPcm.length/16000:null,sample_rate:16000},runtime:{profile:profileKey,architecture:'capture-first + batched AudioWorklet + ASR DedicatedWorker + independent TimelineTurn engine',asr_backend:asrBackend,provisional:prof().chunk+'s / '+prof().overlap+'s',final:'chunked background quality + independent final settle',performance:{asr_avg_ms:avg(perfStats.asrMs),event_loop_p95_ms:pct(perfStats.loopLagMs,.95),max_queue_s:perfStats.maxQueueS,render_avg_ms:avg(perfStats.renderMs),final_ms:perfStats.finalMs,calls:perfStats.calls,heap_mb:heapMB(),background_jobs:backgroundJobs,tail_sessions:tailSinks.length}},gate:{promote:g.promote,winner:g.winner?.name||null,quality_candidate:g.quality?.name||null,baseline_wer:g.base?.wer??null,winner_wer:g.winner?.wer??null,quality_wer:g.quality?.wer??null},results:testResults}}
+function diag(){const g=gateResult();return{build:BUILD,created_at:new Date().toISOString(),reference:TEST_TEXT,environment:{userAgent:navigator.userAgent,cores:navigator.hardwareConcurrency||null,deviceMemory:navigator.deviceMemory||null},golden:{duration_s:goldenPcm?goldenPcm.length/16000:null,sample_rate:16000},runtime:{profile:profileKey,architecture:'capture-first + batched AudioWorklet + ASR DedicatedWorker + V7 geometric TimelineTurn engine',asr_backend:asrBackend,provisional:prof().chunk+'s / '+prof().overlap+'s',final:'chunked background quality + independent final settle',performance:{asr_avg_ms:avg(perfStats.asrMs),event_loop_p95_ms:pct(perfStats.loopLagMs,.95),max_queue_s:perfStats.maxQueueS,render_avg_ms:avg(perfStats.renderMs),final_ms:perfStats.finalMs,calls:perfStats.calls,heap_mb:heapMB(),background_jobs:backgroundJobs,tail_sessions:tailSinks.length}},gate:{promote:g.promote,winner:g.winner?.name||null,quality_candidate:g.quality?.name||null,baseline_wer:g.base?.wer??null,winner_wer:g.winner?.wer??null,quality_wer:g.quality?.wer??null},results:testResults}}
 function downloadDiag(){const u=URL.createObjectURL(new Blob([JSON.stringify(diag(),null,2)],{type:'application/json'})),a=document.createElement('a');a.href=u;a.download='stt-live-v3-diagnostic.json';a.click();setTimeout(()=>URL.revokeObjectURL(u),1000)}
 function norm(s){return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9ñ\s]/gi,' ').replace(/\s+/g,' ').trim().split(' ').filter(Boolean)}
 function tokenDist(A,B){const d=Array.from({length:B.length+1},(_,i)=>i);for(let i=1;i<=A.length;i++){let p=d[0];d[0]=i;for(let j=1;j<=B.length;j++){const t=d[j];d[j]=Math.min(d[j]+1,d[j-1]+1,p+(A[i-1]===B[j-1]?0:1));p=t}}return d[B.length]}
