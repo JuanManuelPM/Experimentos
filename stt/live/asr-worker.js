@@ -32,7 +32,11 @@ async function ensureModel(){
 }
 
 function weight(priority){
-  return priority==='live'?0:priority==='normal'?1:2;
+  if(priority==='live')return 0;
+  if(priority==='draft')return 1;
+  if(priority==='quality')return 2;
+  if(priority==='normal')return 3;
+  return 4;
 }
 
 async function processNext(){
