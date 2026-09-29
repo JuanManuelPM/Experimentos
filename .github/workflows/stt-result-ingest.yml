@@ -144,6 +144,12 @@ jobs:
               )
           index_path.write_text(json.dumps(index, ensure_ascii=False, indent=2) + "\n")
 
+      - name: Analyze all STT sessions
+        shell: bash
+        run: |
+          set -euo pipefail
+          python stt-tools/analyze_results.py
+
       - name: Commit ingested results
         shell: bash
         run: |
