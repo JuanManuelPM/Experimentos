@@ -1,313 +1,141 @@
 <!doctype html>
 <html lang="es">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<meta name="color-scheme" content="dark">
-<title>STT Long Audio Auto Lab V2</title>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta name="color-scheme" content="dark">
+<title>STT Long Audio Auto Lab V3</title>
 <style>
 :root{--bg:#080a0c;--p:#11161b;--p2:#0b0f13;--line:#29333c;--fg:#f4f7f9;--mut:#8b98a3;--ok:#77e49b;--warn:#ffd166;--bad:#ff7b7b}
-*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--fg);font:14px/1.4 system-ui,-apple-system,Segoe UI,sans-serif}
-.app{max-width:920px;margin:auto;padding:14px 12px 70px}.top{position:sticky;top:0;z-index:5;background:rgba(8,10,12,.96);backdrop-filter:blur(12px);padding:7px 0 10px;border-bottom:1px solid #1d252c}
-h1{font-size:22px;margin:0}.sub{color:var(--mut);font-size:11px;margin-top:3px}.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.grow{flex:1;min-width:180px}
-.card{border:1px solid var(--line);background:var(--p);border-radius:14px;padding:12px;margin-top:10px}.label{font-size:9px;font-weight:850;letter-spacing:.12em;color:var(--mut);margin-bottom:6px}
-.drop{display:block;border:1px dashed #46525d;border-radius:12px;padding:18px;text-align:center;cursor:pointer;background:#0c1115}.drop:hover{border-color:#788894}.drop input{display:none}
-.btn{border:1px solid var(--line);background:#171e24;color:var(--fg);padding:8px 11px;border-radius:10px;font:inherit;cursor:pointer}.btn.primary{background:#eef5ff;color:#081018;border-color:#eef5ff;font-weight:850}.btn:disabled{opacity:.4;cursor:default}
-.meta{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;margin-top:9px}.m{background:var(--p2);border:1px solid #222c34;border-radius:9px;padding:8px}.m span{display:block;color:var(--mut);font-size:9px}.m b{font-size:12px}
-.status{font-size:15px;font-weight:850}.status.ok{color:var(--ok)}.status.bad{color:var(--bad)}.status.warn{color:var(--warn)}
-.bar{height:10px;border:1px solid #26313a;background:#0b1014;border-radius:99px;overflow:hidden;margin-top:8px}.bar i{display:block;height:100%;width:0;background:var(--ok);transition:width .1s linear}
-.stats{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;margin-top:8px}.stat{border:1px solid #222c34;background:var(--p2);border-radius:9px;padding:7px}.stat span{display:block;color:var(--mut);font-size:8px}.stat b{font-size:11px}
-.matrix{display:grid;gap:6px;margin-top:8px}.test{border:1px solid #222c34;background:var(--p2);border-radius:9px;padding:8px}.thead{display:flex;justify-content:space-between;gap:8px}.tname{font-weight:800;font-size:12px}.tstate{font-size:10px;color:var(--mut)}.tstate.ok{color:var(--ok)}.tstate.bad{color:var(--bad)}.tmeta{font-size:9px;color:var(--mut);margin-top:4px}.sample{font-size:11px;margin-top:5px;white-space:pre-wrap;overflow-wrap:anywhere;max-height:58px;overflow:hidden}
-.report{width:100%;min-height:210px;resize:vertical;background:#07090b;color:var(--fg);border:1px solid #202830;border-radius:10px;padding:9px;font:11px/1.45 ui-monospace,SFMono-Regular,Consolas,monospace}
-.note{font-size:10px;color:var(--mut);margin-top:7px}details{margin-top:10px;border:1px solid var(--line);border-radius:11px;background:#0d1115;padding:8px 10px}summary{cursor:pointer;color:var(--mut);font-size:11px}pre{white-space:pre-wrap;max-height:230px;overflow:auto;background:#07090b;border:1px solid #202830;border-radius:9px;padding:8px;font-size:9px}
-@media(max-width:680px){.meta{grid-template-columns:1fr 1fr}.stats{grid-template-columns:1fr 1fr}.stats .stat:last-child{grid-column:1/-1}}
-</style>
-</head>
-<body>
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--fg);font:14px/1.4 system-ui,-apple-system,Segoe UI,sans-serif}.app{max-width:920px;margin:auto;padding:14px 12px 70px}.top{position:sticky;top:0;z-index:5;background:rgba(8,10,12,.96);backdrop-filter:blur(12px);padding:7px 0 10px;border-bottom:1px solid #1d252c}
+h1{font-size:21px;margin:0}.sub{color:var(--mut);font-size:11px;margin-top:3px}.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.grow{flex:1;min-width:180px}.card{border:1px solid var(--line);background:var(--p);border-radius:14px;padding:12px;margin-top:10px}.label{font-size:9px;font-weight:850;letter-spacing:.12em;color:var(--mut);margin-bottom:6px}
+.drop{display:block;border:1px dashed #46525d;border-radius:12px;padding:18px;text-align:center;cursor:pointer;background:#0c1115}.drop input{display:none}.status{font-size:15px;font-weight:850}.status.ok{color:var(--ok)}.status.warn{color:var(--warn)}.status.bad{color:var(--bad)}
+.meta{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;margin-top:9px}.m,.stat{background:var(--p2);border:1px solid #222c34;border-radius:9px;padding:8px}.m span,.stat span{display:block;color:var(--mut);font-size:8px}.m b,.stat b{font-size:11px}
+.bar{height:10px;border:1px solid #26313a;background:#0b1014;border-radius:99px;overflow:hidden;margin-top:8px}.bar i{display:block;height:100%;width:0;background:var(--ok);transition:width .1s linear}.stats{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;margin-top:8px}
+.matrix{display:grid;gap:6px;margin-top:8px}.test{border:1px solid #222c34;background:var(--p2);border-radius:9px;padding:8px}.thead{display:flex;justify-content:space-between;gap:8px}.tname{font-weight:800;font-size:12px}.tstate{font-size:10px;color:var(--mut)}.tstate.ok{color:var(--ok)}.tstate.bad{color:var(--bad)}.tmeta{font-size:9px;color:var(--mut);margin-top:4px}.sample{font-size:11px;margin-top:5px;white-space:pre-wrap;overflow-wrap:anywhere;max-height:65px;overflow:hidden}.flag{display:inline-block;margin:5px 5px 0 0;border:1px solid #4e4225;color:var(--warn);font-size:9px;border-radius:999px;padding:3px 6px}
+.report{width:100%;min-height:240px;resize:vertical;background:#07090b;color:var(--fg);border:1px solid #202830;border-radius:10px;padding:9px;font:11px/1.45 ui-monospace,SFMono-Regular,Consolas,monospace}.btn{border:1px solid var(--line);background:#171e24;color:var(--fg);padding:8px 11px;border-radius:10px;font:inherit;cursor:pointer}.btn.primary{background:#eef5ff;color:#081018;border-color:#eef5ff;font-weight:850}.btn:disabled{opacity:.4}.note{font-size:10px;color:var(--mut);margin-top:7px}details{margin-top:10px;border:1px solid var(--line);border-radius:11px;background:#0d1115;padding:8px 10px}summary{cursor:pointer;color:var(--mut);font-size:11px}pre{white-space:pre-wrap;max-height:240px;overflow:auto;background:#07090b;border:1px solid #202830;border-radius:9px;padding:8px;font-size:9px}
+@media(max-width:680px){.meta,.stats{grid-template-columns:1fr 1fr}.stats .stat:last-child{grid-column:1/-1}}
+</style></head><body>
 <div class="app">
-  <div class="top">
-    <div class="row">
-      <div class="grow"><h1>STT · Audio largo automático</h1><div class="sub">BUILD V2 · cargás un archivo y la página prueba todo sola</div></div>
-      <div id="modelStatus" class="status warn">modelo: cargando…</div>
-    </div>
-  </div>
-
-  <section class="card">
-    <div class="label">AUDIO</div>
-    <label class="drop">Elegí el audio. Después no tenés que elegir estrategias.
-      <input id="file" type="file" accept="audio/*">
-    </label>
-    <div id="fileStatus" class="note">El archivo queda local en este navegador.</div>
-    <div id="fileMeta" class="meta" hidden>
-      <div class="m"><span>archivo</span><b id="name">—</b></div>
-      <div class="m"><span>duración</span><b id="duration">—</b></div>
-      <div class="m"><span>tamaño</span><b id="size">—</b></div>
-      <div class="m"><span>audio</span><b id="audioMeta">—</b></div>
-    </div>
-  </section>
-
-  <section class="card">
-    <div class="label">AUTOPILOTO</div>
-    <div id="runStatus" class="status">esperando archivo</div>
-    <div class="bar"><i id="bar"></i></div>
-    <div class="stats">
-      <div class="stat"><span>fase</span><b id="phase">—</b></div>
-      <div class="stat"><span>tests</span><b id="testCount">0/0</b></div>
-      <div class="stat"><span>tiempo</span><b id="elapsed">0.0 s</b></div>
-      <div class="stat"><span>candidato</span><b id="winner">—</b></div>
-      <div class="stat"><span>full run</span><b id="fullState">—</b></div>
-    </div>
-    <div class="row" style="margin-top:9px"><button id="cancel" class="btn" disabled>Cancelar</button></div>
-  </section>
-
-  <section class="card">
-    <div class="label">MATRIZ AUTOMÁTICA</div>
-    <div id="matrix" class="matrix"></div>
-  </section>
-
-  <section class="card">
-    <div class="label">REPORTE PARA PEGAR EN EL CHAT</div>
-    <textarea id="report" class="report" readonly>Cuando termine el análisis, acá aparece un reporte autocontenido.</textarea>
-    <div class="row" style="margin-top:8px">
-      <button id="copy" class="btn primary" disabled>Copiar reporte</button>
-      <button id="json" class="btn" disabled>Descargar JSON</button>
-      <button id="txt" class="btn" disabled>Descargar TXT final</button>
-    </div>
-  </section>
-
-  <details><summary>diagnóstico técnico</summary><pre id="log"></pre></details>
+<div class="top"><div class="row"><div class="grow"><h1>STT · Audio largo automático V3</h1><div class="sub">mismo fragmento · distintas rutas · 0.3 vs 0.42 · offline vs WebAudio real</div></div><div id="modelStatus" class="status warn">0.3 cargando…</div></div></div>
+<section class="card"><div class="label">AUDIO</div><label class="drop">Elegí el audio. El resto es automático.<input id="file" type="file" accept="audio/*"></label><div id="fileStatus" class="note">No se sube a ningún servidor.</div><div id="fileMeta" class="meta" hidden><div class="m"><span>archivo</span><b id="name">—</b></div><div class="m"><span>duración</span><b id="duration">—</b></div><div class="m"><span>tamaño</span><b id="size">—</b></div><div class="m"><span>audio</span><b id="audioMeta">—</b></div></div></section>
+<section class="card"><div class="label">AUTOPILOTO</div><div id="runStatus" class="status">esperando archivo</div><div class="bar"><i id="bar"></i></div><div class="stats"><div class="stat"><span>fase</span><b id="phase">—</b></div><div class="stat"><span>tests</span><b id="testCount">0/0</b></div><div class="stat"><span>tiempo</span><b id="elapsed">0.0 s</b></div><div class="stat"><span>diagnóstico</span><b id="diagnosis">—</b></div><div class="stat"><span>full run</span><b id="fullState">—</b></div></div></section>
+<section class="card"><div class="label">PRUEBAS AUTOMÁTICAS</div><div id="flags"></div><div id="matrix" class="matrix"></div></section>
+<section class="card"><div class="label">REPORTE PARA PEGAR EN EL CHAT</div><textarea id="report" class="report" readonly>Cuando termine aparece acá.</textarea><div class="row" style="margin-top:8px"><button id="copy" class="btn primary" disabled>Copiar reporte</button><button id="json" class="btn" disabled>Descargar JSON</button><button id="txt" class="btn" disabled>Descargar TXT final</button></div></section>
+<details><summary>diagnóstico técnico</summary><pre id="log"></pre></details>
 </div>
-
 <script src="https://cdn.jsdelivr.net/npm/vosk-browser@0.0.8/dist/vosk.js"></script>
 <script>
-const BUILD='STT-LONG-AUTO-V2-20260928';
-const MODEL='https://raw.githubusercontent.com/allorenter/vosk-browser-example/main/vosk-model-small-es-0.3.tar.gz';
-const $=id=>document.getElementById(id);
-const sleep=ms=>new Promise(r=>setTimeout(r,ms));
-const state={model:null,file:null,buffer:null,ctx:null,running:false,cancel:false,started:0,profile:null,tests:[],full:null,errors:[]};
-
-const STRATEGIES=[
-  {id:'native48_fast',name:'Nativo · continuo',mode:'native',seg:0,norm:false,chunk:.75},
-  {id:'native48_norm',name:'Nativo · normalizado',mode:'native',seg:0,norm:true,chunk:.75},
-  {id:'linear16_fast',name:'16 kHz · continuo',mode:'16k',seg:0,norm:false,chunk:.75},
-  {id:'linear16_norm',name:'16 kHz · normalizado',mode:'16k',seg:0,norm:true,chunk:.75},
-  {id:'seg10_16',name:'16 kHz · segmentos 10 s',mode:'16k',seg:10,norm:false,chunk:.75},
-  {id:'seg30_16',name:'16 kHz · segmentos 30 s',mode:'16k',seg:30,norm:false,chunk:.75}
+const BUILD='STT-LONG-AUTO-V3-20260928';
+const URL03='https://raw.githubusercontent.com/allorenter/vosk-browser-example/main/vosk-model-small-es-0.3.tar.gz';
+const URL42='https://w-okada.github.io/vosk-browser-ts/vosk-browser-ts/assets/models/vosk-model-small-es-0.42.tar.gz';
+const $=id=>document.getElementById(id),sleep=ms=>new Promise(r=>setTimeout(r,ms));
+const state={m03:null,m42:null,file:null,buffer:null,ctx:null,running:false,cancel:false,started:0,window:null,tests:[],flags:[],full:null,errors:[]};
+const TESTS=[
+{id:'v03_native',name:'0.3 · directo nativo',model:'03',route:'direct_native'},
+{id:'v03_16browser',name:'0.3 · resample navegador 16k',model:'03',route:'browser16'},
+{id:'v03_16linear',name:'0.3 · resample lineal 16k',model:'03',route:'linear16'},
+{id:'v03_realtime',name:'0.3 · WebAudio 1×',model:'03',route:'realtime'},
+{id:'v42_native',name:'0.42 · directo nativo',model:'42',route:'direct_native'},
+{id:'v42_16browser',name:'0.42 · resample navegador 16k',model:'42',route:'browser16'}
 ];
-
-function log(msg,data){$('log').textContent+='['+new Date().toLocaleTimeString()+'] '+msg+(data?' '+JSON.stringify(data):'')+'\n';console.log('[AUTO-STT]',msg,data||'')}
+function log(m,d){$('log').textContent+='['+new Date().toLocaleTimeString()+'] '+m+(d?' '+JSON.stringify(d):'')+'\n';console.log('[STT-V3]',m,d||'')}
 function fmtSec(s){if(!Number.isFinite(s))return'—';s=Math.max(0,s);const h=Math.floor(s/3600),m=Math.floor((s%3600)/60),x=Math.floor(s%60);return h?h+':'+String(m).padStart(2,'0')+':'+String(x).padStart(2,'0'):m+':'+String(x).padStart(2,'0')}
 function fmtBytes(n){const u=['B','KB','MB','GB'];let i=0,x=n;while(x>=1024&&i<u.length-1){x/=1024;i++}return x.toFixed(i<2?0:1)+' '+u[i]}
 function words(s){return String(s||'').trim().split(/\s+/).filter(Boolean)}
-function normText(s){return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9ñ\s]/gi,' ').replace(/\s+/g,' ').trim()}
-function jaccard(a,b){const A=new Set(words(normText(a))),B=new Set(words(normText(b)));if(!A.size&&!B.size)return 1;let i=0;for(const x of A)if(B.has(x))i++;return i/Math.max(1,A.size+B.size-i)}
-function escapeHtml(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
-function setProgress(p){$('bar').style.width=Math.max(0,Math.min(100,p))+'%'}
-function renderMatrix(){
-  $('matrix').innerHTML=STRATEGIES.map(s=>{
-    const r=state.tests.find(x=>x.id===s.id),status=r?(r.error?'error':'terminado'):(state.current===s.id?'corriendo':'pendiente');
-    const cls=r?(r.error?'bad':'ok'):'';
-    const meta=r&&!r.error?('palabras '+r.words+' · '+r.wps.toFixed(2)+' pal/s · '+r.speed.toFixed(2)+'× · acuerdo '+Math.round(r.agreement*100)+'%'):(r?.error||'');
-    return '<div class="test"><div class="thead"><div class="tname">'+escapeHtml(s.name)+'</div><div class="tstate '+cls+'">'+status+'</div></div><div class="tmeta">'+escapeHtml(meta)+'</div>'+(r?.sample?'<div class="sample">'+escapeHtml(r.sample)+'</div>':'')+'</div>'
-  }).join('');
+function norm(s){return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9ñ\s]/gi,' ').replace(/\s+/g,' ').trim()}
+function jac(a,b){const A=new Set(words(norm(a))),B=new Set(words(norm(b)));if(!A.size&&!B.size)return 1;let i=0;for(const x of A)if(B.has(x))i++;return i/Math.max(1,A.size+B.size-i)}
+function esc(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+function progress(p){$('bar').style.width=Math.max(0,Math.min(100,p))+'%'}
+function monoSlice(buf,startSec,durSec){const sr=buf.sampleRate,s=Math.max(0,Math.floor(startSec*sr)),e=Math.min(buf.length,Math.floor((startSec+durSec)*sr)),n=Math.max(0,e-s),out=new Float32Array(n),chs=[];for(let c=0;c<buf.numberOfChannels;c++)chs.push(buf.getChannelData(c));if(chs.length===1){out.set(chs[0].subarray(s,e));return out}for(let i=0;i<n;i++){let v=0;for(const ch of chs)v+=ch[s+i];out[i]=v/chs.length}return out}
+function linear16(a,from){if(from===16000)return new Float32Array(a);const ratio=from/16000,n=Math.max(1,Math.round(a.length/ratio)),o=new Float32Array(n);for(let i=0;i<n;i++){const p=i*ratio,x=Math.floor(p),y=Math.min(x+1,a.length-1),f=p-x;o[i]=a[x]*(1-f)+a[y]*f}return o}
+async function browser16(pcm,from){if(from===16000)return new Float32Array(pcm);const inBuf=new AudioBuffer({length:pcm.length,numberOfChannels:1,sampleRate:from});inBuf.copyToChannel(pcm,0);const dur=pcm.length/from,outLen=Math.max(1,Math.ceil(dur*16000)),ctx=new OfflineAudioContext(1,outLen,16000),src=ctx.createBufferSource();src.buffer=inBuf;src.connect(ctx.destination);src.start();const rendered=await ctx.startRendering();return new Float32Array(rendered.getChannelData(0))}
+function profile(buf){
+ const sr=buf.sampleRate,ch=buf.getChannelData(0),step=Math.max(1,Math.floor(sr*.25)),frames=[];
+ for(let s=0;s<ch.length;s+=step){const e=Math.min(ch.length,s+step);let sum=0,peak=0,n=0;for(let i=s;i<e;i+=12){const x=ch[i];sum+=x*x;peak=Math.max(peak,Math.abs(x));n++}frames.push({t:s/sr,rms:Math.sqrt(sum/Math.max(1,n)),peak})}
+ const sorted=frames.map(x=>x.rms).sort((a,b)=>a-b),noise=sorted[Math.floor(sorted.length*.2)]||0,th=Math.max(.0035,noise*3);
+ const dur=18,n=Math.max(1,Math.round(dur/.25));let best={score:-1,start:0,active:0};
+ for(let i=0;i+n<=frames.length;i+=4){let sum=0,act=0;for(let j=i;j<i+n;j++){sum+=Math.min(.3,frames[j].rms);if(frames[j].rms>=th)act++}const active=act/n,score=sum*(.25+.75*active);if(score>best.score)best={score,start:frames[i].t,active}}
+ best.start=Math.max(0,Math.min(buf.duration-dur,best.start));return {noise,threshold:th,start:best.start,dur,active:best.active}
 }
-function monoSlice(buffer,startSec,durSec){
-  const sr=buffer.sampleRate,start=Math.max(0,Math.floor(startSec*sr)),end=Math.min(buffer.length,Math.floor((startSec+durSec)*sr)),n=Math.max(0,end-start),out=new Float32Array(n),chs=[];
-  for(let c=0;c<buffer.numberOfChannels;c++)chs.push(buffer.getChannelData(c));
-  if(chs.length===1){out.set(chs[0].subarray(start,end));return out}
-  for(let i=0;i<n;i++){let v=0;for(const ch of chs)v+=ch[start+i];out[i]=v/chs.length}
-  return out
+function modelFor(id){return id==='42'?state.m42:state.m03}
+function harness(model,sr,offset=0){
+ const rec=new model.KaldiRecognizer(sr);rec.setWords(true);const pending=[],events=[];let text='',closed=false;
+ function settle(m,result){const p=pending.shift();if(p){clearTimeout(p.timer);p.resolve(m)}if(result){const t=(m?.result?.text||'').trim();if(t){const ww=(m?.result?.result||[]).map(w=>({...w,start:(w.start||0)+offset,end:(w.end||0)+offset}));events.push({text:t,words:ww});text=(text+' '+t).trim()}}}
+ rec.on('result',m=>settle(m,true));rec.on('partialresult',m=>settle(m,false));rec.on('error',m=>{const p=pending.shift();if(p){clearTimeout(p.timer);p.reject(new Error(m?.error||'Vosk error'))}});
+ function act(fn,label,timeout=30000){return new Promise((resolve,reject)=>{const timer=setTimeout(()=>reject(new Error(label+' timeout')),timeout);pending.push({resolve,reject,timer});try{fn()}catch(e){pending.pop();clearTimeout(timer);reject(e)}})}
+ return {rec,events,get text(){return text},feed:(a,rate)=>act(()=>rec.acceptWaveformFloat(a,rate),'chunk'),final:()=>act(()=>rec.retrieveFinalResult(),'final'),remove(){if(closed)return;closed=true;try{rec.remove()}catch{}}}
 }
-function resampleLinear(a,from,to=16000){
-  if(from===to)return new Float32Array(a);const ratio=from/to,n=Math.max(1,Math.round(a.length/ratio)),o=new Float32Array(n);
-  for(let i=0;i<n;i++){const p=i*ratio,x=Math.floor(p),y=Math.min(x+1,a.length-1),f=p-x;o[i]=a[x]*(1-f)+a[y]*f}
-  return o
+async function directTest(test){
+ const model=modelFor(test.model);if(!model)throw new Error('modelo '+test.model+' no disponible');
+ const w=state.window,src=monoSlice(state.buffer,w.start,w.dur),orig=state.buffer.sampleRate,t0=performance.now();let pcm=src,rate=orig;
+ if(test.route==='linear16'){pcm=linear16(src,orig);rate=16000}
+ if(test.route==='browser16'){pcm=await browser16(src,orig);rate=16000}
+ const h=harness(model,rate,w.start),chunk=Math.max(1024,Math.round(.5*rate));
+ try{for(let s=0;s<pcm.length;s+=chunk){const e=Math.min(pcm.length,s+chunk);await h.feed(pcm.subarray(s,e),rate)}await h.final();const elapsed=(performance.now()-t0)/1000;return {text:h.text,events:h.events,elapsed,audioSec:pcm.length/rate}}finally{h.remove()}
 }
-function normalizePCM(a){
-  let peak=0,sum=0;for(let i=0;i<a.length;i++){const x=a[i];peak=Math.max(peak,Math.abs(x));sum+=x*x}
-  const rms=Math.sqrt(sum/Math.max(1,a.length)),gain=Math.min(4,peak?0.82/peak:1,rms?0.12/rms:1),o=new Float32Array(a.length);
-  for(let i=0;i<a.length;i++)o[i]=Math.max(-1,Math.min(1,a[i]*gain));return o
+async function realtimeTest(test){
+ const model=modelFor(test.model);if(!model)throw new Error('modelo no disponible');
+ const w=state.window,ctx=state.ctx||new AudioContext();state.ctx=ctx;if(ctx.state==='suspended')await ctx.resume();
+ const rec=new model.KaldiRecognizer(ctx.sampleRate);rec.setWords(true);let text='',events=[],doneFinal=null;const finalP=new Promise(r=>doneFinal=r);
+ rec.on('result',m=>{const t=(m?.result?.text||'').trim();if(t){events.push({text:t,words:m?.result?.result||[]});text=(text+' '+t).trim()}if(doneFinal)doneFinal()});
+ const source=ctx.createBufferSource();source.buffer=state.buffer;const proc=ctx.createScriptProcessor(4096,1,1),gain=ctx.createGain();gain.gain.value=0;
+ proc.onaudioprocess=e=>{try{rec.acceptWaveform(e.inputBuffer)}catch(err){log('realtime feed error',{error:String(err)})}};
+ source.connect(proc);proc.connect(gain);gain.connect(ctx.destination);const t0=performance.now();
+ source.start(0,w.start,w.dur);await new Promise(resolve=>{source.onended=resolve});proc.onaudioprocess=null;try{proc.disconnect();gain.disconnect();source.disconnect()}catch{}
+ try{rec.retrieveFinalResult();await Promise.race([finalP,sleep(1000)])}catch{};try{rec.remove()}catch{}
+ return {text,events,elapsed:(performance.now()-t0)/1000,audioSec:w.dur}
 }
-function profileAudio(buffer){
-  const sr=buffer.sampleRate,frameSec=.5,frame=Math.max(1,Math.floor(sr*frameSec)),ch=buffer.getChannelData(0),energy=[];
-  for(let s=0;s<ch.length;s+=frame){
-    const e=Math.min(ch.length,s+frame),stride=16;let sum=0,n=0,peak=0;
-    for(let i=s;i<e;i+=stride){const x=ch[i];sum+=x*x;peak=Math.max(peak,Math.abs(x));n++}
-    energy.push({rms:Math.sqrt(sum/Math.max(1,n)),peak,start:s/sr})
-  }
-  const sorted=energy.map(x=>x.rms).sort((a,b)=>a-b),noise=sorted[Math.floor(sorted.length*.2)]||0,threshold=Math.max(.004,noise*3);
-  const active=energy.filter(x=>x.rms>=threshold).length/Math.max(1,energy.length);
-  const clip=energy.filter(x=>x.peak>.985).length/Math.max(1,energy.length);
-  const duration=buffer.duration;
-  function bestWindow(lo,hi,dur=30){
-    const loI=Math.max(0,Math.floor(lo/frameSec)),hiI=Math.min(energy.length,Math.floor(hi/frameSec)),n=Math.max(1,Math.floor(dur/frameSec));let best={score:-1,start:lo};
-    for(let i=loI;i+n<=hiI;i+=4){let score=0,act=0;for(let j=i;j<i+n;j++){score+=Math.min(.25,energy[j].rms);if(energy[j].rms>=threshold)act++}score*=.4+.6*(act/n);if(score>best.score)best={score,start:energy[i].start}}
-    return Math.max(0,Math.min(duration-dur,best.start))
-  }
-  const third=duration/3;
-  const windows=[
-    {start:bestWindow(0,Math.max(40,third),30),dur:30},
-    {start:bestWindow(Math.max(0,third),Math.max(third+40,2*third),30),dur:30},
-    {start:bestWindow(Math.max(0,2*third),duration,30),dur:30}
-  ];
-  return {noise,threshold,active,clip,windows,energyFrames:energy.length}
+async function runOne(test){
+ const r=test.route==='realtime'?await realtimeTest(test):await directTest(test),wc=words(r.text).length;
+ return {...test,...r,words:wc,wps:wc/Math.max(.001,r.audioSec),speed:r.audioSec/Math.max(.001,r.elapsed),sample:r.text.slice(0,500)}
 }
-function makeHarness(sr,offset=0){
-  const rec=new state.model.KaldiRecognizer(sr);rec.setWords(true);
-  const pending=[],results=[];let committed='',partial='',closed=false;
-  function settle(m,isResult){
-    const p=pending.shift();if(p){clearTimeout(p.timer);p.resolve(m)}
-    if(isResult){const t=(m?.result?.text||'').trim();if(t){const ww=(m?.result?.result||[]).map(w=>({...w,start:(w.start||0)+offset,end:(w.end||0)+offset}));results.push({text:t,words:ww});committed=(committed+' '+t).trim()}partial=''}
-    else partial=(m?.result?.partial||'').trim()
-  }
-  rec.on('result',m=>settle(m,true));rec.on('partialresult',m=>settle(m,false));rec.on('error',m=>{const p=pending.shift();if(p){clearTimeout(p.timer);p.reject(new Error(m?.error||'Vosk error'))}});
-  function action(fn,label,timeout=30000){return new Promise((resolve,reject)=>{const timer=setTimeout(()=>reject(new Error(label+' timeout')),timeout);pending.push({resolve,reject,timer});try{fn()}catch(e){pending.pop();clearTimeout(timer);reject(e)}})}
-  return {rec,results,get committed(){return committed},feed:(a,rate)=>action(()=>rec.acceptWaveformFloat(a,rate),'chunk'),finalize:()=>action(()=>rec.retrieveFinalResult(),'final'),remove(){if(closed)return;closed=true;try{rec.remove()}catch{}}}
+function agreements(){const good=state.tests.filter(x=>!x.error);for(const a of good){let s=0,n=0;for(const b of good){if(a===b)continue;s+=jac(a.text,b.text);n++}a.agreement=n?s/n:0}}
+function diagnose(){
+ const by=id=>state.tests.find(x=>x.id===id&&!x.error),d03=by('v03_native'),rt=by('v03_realtime'),b16=by('v03_16browser'),l16=by('v03_16linear'),d42=by('v42_native'),flags=[];
+ const best=[...state.tests].filter(x=>!x.error).sort((a,b)=>b.wps-a.wps)[0];
+ if(rt&&d03&&rt.wps>Math.max(.35,d03.wps*1.7))flags.push('DIRECT_FEED_PROBLEM');
+ if(b16&&l16&&b16.wps>Math.max(.35,l16.wps*1.35))flags.push('BROWSER_RESAMPLER_BETTER');
+ if(d42&&d03&&d42.wps>d03.wps*1.3)flags.push('VOSK_042_BETTER');
+ if(best&&best.wps<.65)flags.push('ALL_ROUTES_LOW_DENSITY');
+ if(best&&best.wps>=.65)flags.push('HEALTHY_ROUTE_FOUND');
+ state.flags=flags;state.best=best||null;return flags
 }
-async function transcribePCM(pcm,sr,spec,offset=0,paced=false){
-  let input=spec.mode==='16k'?resampleLinear(pcm,sr,16000):new Float32Array(pcm),rate=spec.mode==='16k'?16000:sr;
-  if(spec.norm)input=normalizePCM(input);
-  const started=performance.now(),all=[],texts=[];
-  const segmentSec=spec.seg||0,segmentFrames=segmentSec?Math.round(segmentSec*rate):input.length;
-  for(let segStart=0;segStart<input.length;segStart+=segmentFrames){
-    if(state.cancel)throw new Error('__CANCEL__');
-    const segEnd=Math.min(input.length,segStart+segmentFrames),h=makeHarness(rate,offset+segStart/rate),chunkFrames=Math.max(1024,Math.round(spec.chunk*rate));
-    try{
-      for(let s=segStart;s<segEnd;s+=chunkFrames){
-        if(state.cancel)throw new Error('__CANCEL__');
-        const e=Math.min(segEnd,s+chunkFrames);await h.feed(input.subarray(s,e),rate);
-        if(paced)await sleep(1000*(e-s)/rate);
-      }
-      await h.finalize();
-      if(h.committed)texts.push(h.committed);all.push(...h.results);
-    }finally{h.remove()}
-  }
-  return {text:texts.join(' ').trim(),events:all,elapsed:(performance.now()-started)/1000,audioSec:input.length/rate}
+function render(){
+ $('matrix').innerHTML=TESTS.map(t=>{const r=state.tests.find(x=>x.id===t.id),running=state.current===t.id,status=r?(r.error?'error':'terminado'):(running?'corriendo':'pendiente'),cls=r?(r.error?'bad':'ok'):'',meta=r&&!r.error?('palabras '+r.words+' · '+r.wps.toFixed(2)+' pal/s · '+r.speed.toFixed(2)+'× · acuerdo '+Math.round((r.agreement||0)*100)+'%'):(r?.error||'');return '<div class="test"><div class="thead"><div class="tname">'+esc(t.name)+'</div><div class="tstate '+cls+'">'+status+'</div></div><div class="tmeta">'+esc(meta)+'</div>'+(r?.sample?'<div class="sample">'+esc(r.sample)+'</div>':'')+'</div>'}).join('');
+ $('flags').innerHTML=state.flags.map(f=>'<span class="flag">'+esc(f)+'</span>').join('')
 }
-async function runStrategy(spec){
-  const outputs=[],t0=performance.now(),windows=state.profile.windows;
-  for(let i=0;i<windows.length;i++){
-    const w=windows[i],pcm=monoSlice(state.buffer,w.start,w.dur),r=await transcribePCM(pcm,state.buffer.sampleRate,spec,w.start,false);
-    outputs.push({...r,window:w});setProgress(15+55*((state.tests.length+(i+1)/windows.length)/STRATEGIES.length));
-  }
-  const text=outputs.map(x=>x.text).join(' ').trim(),audioSec=outputs.reduce((a,b)=>a+b.audioSec,0),elapsed=(performance.now()-t0)/1000,wc=words(text).length;
-  return {id:spec.id,name:spec.name,text,outputs,elapsed,audioSec,words:wc,wps:wc/Math.max(1,audioSec),speed:audioSec/Math.max(.001,elapsed),sample:text.slice(0,420)}
+function report(){
+ const lines=['STT LONG AUDIO AUTO REPORT','build: '+BUILD,'file: '+(state.file?.name||'—'),'duration: '+fmtSec(state.buffer?.duration||0),'sample_rate: '+(state.buffer?.sampleRate||'—'),'channels: '+(state.buffer?.numberOfChannels||'—'),'test_window: '+(state.window?fmtSec(state.window.start)+'-'+fmtSec(state.window.start+state.window.dur)+' active='+Math.round(state.window.active*100)+'%':'—'),'','MATRIX:'];
+ for(const r of state.tests)lines.push(r.error?'- '+r.id+': ERROR '+r.error:'- '+r.id+': words='+r.words+' wps='+r.wps.toFixed(2)+' speed='+r.speed.toFixed(2)+'x agreement='+Math.round((r.agreement||0)*100)+'% sample="'+r.sample.replace(/\s+/g,' ').slice(0,320)+'"');
+ lines.push('','diagnosis: '+(state.flags.join(', ')||'NONE'),'best_density: '+(state.best?state.best.id+' '+state.best.wps.toFixed(2)+' wps':'NONE'));
+ if(state.full)lines.push('full_run: '+state.full.strategy+' | '+state.full.speed.toFixed(2)+'x | words='+state.full.words+' | chars='+state.full.text.length,'full_sample: "'+state.full.text.replace(/\s+/g,' ').slice(0,700)+'"');else lines.push('full_run: NOT_RUN');
+ if(state.errors.length)lines.push('errors: '+state.errors.join(' | '));lines.push('','Pegar este reporte completo en el chat.');return lines.join('\n')
 }
-async function pacedDiagnostic(){
-  const w=state.profile.windows[0],dur=Math.min(12,w.dur),pcm=monoSlice(state.buffer,w.start,dur),spec={id:'paced16',name:'16 kHz paced 1×',mode:'16k',seg:0,norm:false,chunk:.25};
-  const r=await transcribePCM(pcm,state.buffer.sampleRate,spec,w.start,true);const wc=words(r.text).length;
-  return {id:'paced16',name:spec.name,text:r.text,words:wc,wps:wc/Math.max(1,r.audioSec),speed:r.audioSec/Math.max(.001,r.elapsed),sample:r.text.slice(0,420),audioSec:r.audioSec,elapsed:r.elapsed}
+async function fullRun(test){
+ const model=modelFor(test.model);if(!model)throw new Error('modelo no disponible');const sr=state.buffer.sampleRate,dur=state.buffer.duration,block=45,t0=performance.now();let text='',events=[],done=0;
+ for(let start=0;start<dur;start+=block){const d=Math.min(block,dur-start),fake={...test,route:test.route==='realtime'?'direct_native':test.route},old=state.window;state.window={start,dur:d,active:1};const r=await directTest(fake);state.window=old;if(r.text)text=(text+' '+r.text).trim();events.push(...r.events);done+=d;progress(78+22*done/dur);$('fullState').textContent=fmtSec(done)+' / '+fmtSec(dur)}
+ const elapsed=(performance.now()-t0)/1000;return {strategy:test.id,text,events,elapsed,audioSec:dur,speed:dur/Math.max(.001,elapsed),words:words(text).length}
 }
-function scoreTests(){
-  const good=state.tests.filter(x=>!x.error);
-  for(const a of good){
-    let agree=0,n=0;for(const b of good){if(a===b)continue;agree+=jaccard(a.text,b.text);n++}a.agreement=n?agree/n:0;
-    const rate=a.wps;let rateScore=rate<.35?rate/.35:rate<=3.8?1:Math.max(0,1-(rate-3.8)/4);
-    a.health=.72*rateScore+.28*a.agreement;
-  }
-  good.sort((a,b)=>b.health-a.health||b.speed-a.speed);
-  const native=good.find(x=>x.id==='native48_fast'),best=good[0]||null;
-  if(native&&native.health>=.70&&( !best || best.health-native.health<.08))return native;
-  return best
+async function auto(){
+ if(state.running||!state.file||!state.m03)return;state.running=true;state.started=performance.now();state.tests=[];state.flags=[];state.errors=[];state.full=null;state.best=null;$('copy').disabled=true;$('json').disabled=true;$('txt').disabled=true;progress(2);render();
+ try{
+  $('phase').textContent='decodificar';$('runStatus').textContent='decodificando…';const bytes=await state.file.arrayBuffer();state.ctx=state.ctx||new AudioContext();if(state.ctx.state==='suspended')await state.ctx.resume();const t=performance.now();state.buffer=await state.ctx.decodeAudioData(bytes);log('decoded',{ms:Math.round(performance.now()-t),duration:state.buffer.duration,sampleRate:state.buffer.sampleRate,channels:state.buffer.numberOfChannels});$('duration').textContent=fmtSec(state.buffer.duration);$('audioMeta').textContent=state.buffer.sampleRate+' Hz · '+state.buffer.numberOfChannels+' ch';
+  $('phase').textContent='buscar voz';state.window=profile(state.buffer);log('window',state.window);progress(10);
+  $('phase').textContent='matriz';for(let i=0;i<TESTS.length;i++){const test=TESTS[i];state.current=test.id;$('testCount').textContent=i+'/'+TESTS.length;render();try{const r=await runOne(test);state.tests.push(r);log('test done',{id:r.id,words:r.words,wps:r.wps,speed:r.speed})}catch(e){const er={...test,error:String(e.message||e),words:0,wps:0,speed:0,agreement:0,sample:''};state.tests.push(er);state.errors.push(test.id+': '+er.error);log('test error',er)}agreements();progress(10+65*(i+1)/TESTS.length);render()}
+  state.current=null;agreements();const flags=diagnose();render();$('diagnosis').textContent=flags.join(' + ')||'sin bandera';$('testCount').textContent=TESTS.length+'/'+TESTS.length;
+  const candidate=[...state.tests].filter(x=>!x.error&&x.id!=='v03_realtime'&&x.wps>=.65).sort((a,b)=>b.wps-a.wps||b.agreement-a.agreement)[0];
+  if(candidate){$('phase').textContent='full run';$('runStatus').textContent='ruta sana encontrada; transcribiendo archivo completo…';$('fullState').textContent='corriendo';state.full=await fullRun(candidate);$('fullState').textContent='terminado '+state.full.speed.toFixed(2)+'×';$('runStatus').textContent='terminado';$('runStatus').className='status ok'}
+  else{$('fullState').textContent='no ejecutado';$('runStatus').textContent='diagnóstico terminado: todavía no hay una ruta offline suficientemente sana para gastar 77 minutos.';progress(100)}
+ }catch(e){state.errors.push(String(e.message||e));$('runStatus').textContent='error: '+String(e.message||e);$('runStatus').className='status bad';log('auto error',{error:String(e)})}
+ finally{state.running=false;state.current=null;$('elapsed').textContent=((performance.now()-state.started)/1000).toFixed(1)+' s';$('report').value=report();$('copy').disabled=false;$('json').disabled=false;$('txt').disabled=!state.full?.text;render()}
 }
-function applyAgreement(){
-  const good=state.tests.filter(x=>!x.error);
-  for(const a of good){let agree=0,n=0;for(const b of good){if(a===b)continue;agree+=jaccard(a.text,b.text);n++}a.agreement=n?agree/n:0}
+async function loadModels(){
+ try{const t=performance.now();state.m03=await Vosk.createModel(URL03);$('modelStatus').textContent='0.3 listo · 0.42 cargando';$('modelStatus').className='status warn';log('0.3 ready',{ms:Math.round(performance.now()-t)});if(state.file&&!state.running)auto();Vosk.createModel(URL42).then(m=>{state.m42=m;$('modelStatus').textContent='0.3 + 0.42 listos';$('modelStatus').className='status ok';log('0.42 ready')}).catch(e=>{state.m42=null;$('modelStatus').textContent='0.3 listo · 0.42 falló';$('modelStatus').className='status warn';log('0.42 error',{error:String(e)})})}
+ catch(e){$('modelStatus').textContent='modelo 0.3 error';$('modelStatus').className='status bad';log('0.3 error',{error:String(e)})}
 }
-async function runFull(spec){
-  $('phase').textContent='full run';$('fullState').textContent='corriendo';const sr=state.buffer.sampleRate,dur=state.buffer.duration,chunkDur=45;let transcript='',events=[],processed=0,t0=performance.now();
-  for(let start=0;start<dur;start+=chunkDur){
-    if(state.cancel)throw new Error('__CANCEL__');
-    const d=Math.min(chunkDur,dur-start),pcm=monoSlice(state.buffer,start,d),r=await transcribePCM(pcm,sr,spec,start,false);
-    if(r.text)transcript=(transcript+' '+r.text).trim();events.push(...r.events);processed+=d;
-    setProgress(72+28*(processed/dur));$('fullState').textContent=fmtSec(processed)+' / '+fmtSec(dur);
-  }
-  const elapsed=(performance.now()-t0)/1000;return {strategy:spec.id,text:transcript,events,elapsed,audioSec:dur,speed:dur/Math.max(.001,elapsed),words:words(transcript).length}
-}
-function makeReport(){
-  const p=state.profile,f=state.full;
-  const lines=[
-    'STT LONG AUDIO AUTO REPORT',
-    'build: '+BUILD,
-    'file: '+(state.file?.name||'—'),
-    'duration: '+fmtSec(state.buffer?.duration||0),
-    'sample_rate: '+(state.buffer?.sampleRate||'—'),
-    'channels: '+(state.buffer?.numberOfChannels||'—'),
-    'active_audio_estimate: '+(p?Math.round(p.active*100)+'%':'—'),
-    'clipping_frames: '+(p?Math.round(p.clip*100)+'%':'—'),
-    'test_windows: '+(p?p.windows.map(w=>fmtSec(w.start)+'-'+fmtSec(w.start+w.dur)).join(' | '):'—'),
-    '',
-    'MATRIX:'
-  ];
-  for(const r of state.tests){
-    if(r.error)lines.push('- '+r.id+': ERROR '+r.error);
-    else lines.push('- '+r.id+': words='+r.words+' wps='+r.wps.toFixed(2)+' speed='+r.speed.toFixed(2)+'x agreement='+Math.round((r.agreement||0)*100)+'% health='+((r.health||0)*100).toFixed(0)+'% sample="'+r.sample.replace(/\s+/g,' ').slice(0,260)+'"')
-  }
-  if(state.paced)lines.push('- paced16: words='+state.paced.words+' wps='+state.paced.wps.toFixed(2)+' speed='+state.paced.speed.toFixed(2)+'x sample="'+state.paced.sample.replace(/\s+/g,' ').slice(0,260)+'"');
-  lines.push('','candidate: '+(state.winner?.id||'NONE'));
-  if(f)lines.push('full_run: '+f.strategy+' | '+f.speed.toFixed(2)+'x | words='+f.words+' | chars='+f.text.length+' | elapsed='+f.elapsed.toFixed(1)+'s','full_sample: "'+f.text.replace(/\s+/g,' ').slice(0,700)+'"');
-  else lines.push('full_run: NOT_RUN');
-  if(state.errors.length)lines.push('errors: '+state.errors.join(' | '));
-  lines.push('','Pegar este reporte completo en el chat para analizar qué estrategia funcionó y qué falló.');
-  return lines.join('\n')
-}
-async function autoRun(){
-  if(state.running||!state.file||!state.model)return;state.running=true;state.cancel=false;state.started=performance.now();state.tests=[];state.errors=[];state.full=null;state.winner=null;state.paced=null;$('copy').disabled=true;$('json').disabled=true;$('txt').disabled=true;$('cancel').disabled=false;setProgress(1);renderMatrix();
-  try{
-    $('phase').textContent='decodificar';$('runStatus').textContent='decodificando el archivo…';
-    state.ctx=state.ctx||new (window.AudioContext||window.webkitAudioContext)();
-    const bytes=await state.file.arrayBuffer(),t=performance.now();state.buffer=await state.ctx.decodeAudioData(bytes);log('decoded',{ms:Math.round(performance.now()-t),duration:state.buffer.duration,sampleRate:state.buffer.sampleRate,channels:state.buffer.numberOfChannels,frames:state.buffer.length});
-    $('duration').textContent=fmtSec(state.buffer.duration);$('audioMeta').textContent=state.buffer.sampleRate+' Hz · '+state.buffer.numberOfChannels+' ch';setProgress(8);
-
-    $('phase').textContent='perfil';$('runStatus').textContent='buscando zonas con voz…';state.profile=profileAudio(state.buffer);log('profile',{active:state.profile.active,clip:state.profile.clip,windows:state.profile.windows});setProgress(14);
-
-    $('phase').textContent='matriz';$('runStatus').textContent='probando estrategias automáticamente…';
-    for(let i=0;i<STRATEGIES.length;i++){
-      const spec=STRATEGIES[i];state.current=spec.id;renderMatrix();$('testCount').textContent=i+'/'+STRATEGIES.length;
-      try{const r=await runStrategy(spec);state.tests.push(r);log('strategy done',{id:r.id,words:r.words,wps:r.wps,speed:r.speed})}
-      catch(e){if(String(e.message||e)==='__CANCEL__')throw e;const er={id:spec.id,name:spec.name,error:String(e.message||e),words:0,wps:0,speed:0,agreement:0,sample:''};state.tests.push(er);state.errors.push(spec.id+': '+er.error);log('strategy error',er)}
-      applyAgreement();renderMatrix();$('testCount').textContent=(i+1)+'/'+STRATEGIES.length;
-    }
-    state.current=null;applyAgreement();state.winner=scoreTests();renderMatrix();$('winner').textContent=state.winner?.id||'ninguno';setProgress(70);
-
-    const maxWps=Math.max(0,...state.tests.filter(x=>!x.error).map(x=>x.wps));
-    if(maxWps<.45){
-      $('phase').textContent='diagnóstico pacing';$('runStatus').textContent='las pasadas rápidas casi no reconocieron voz; pruebo 12 s a velocidad real…';
-      state.paced=await pacedDiagnostic();log('paced diagnostic',state.paced);
-    }
-
-    const pacedHealthy=state.paced&&state.paced.wps>=.65;
-    const fastHealthy=state.winner&&state.winner.wps>=.45&&state.winner.health>=.55;
-    if(pacedHealthy&&!fastHealthy){
-      $('fullState').textContent='bloqueado';$('runStatus').textContent='detecté que el feed rápido falla pero el pacing funciona; no voy a desperdiciar 77 min con una ruta rota.';state.errors.push('FAST_OFFLINE_FEED_UNHEALTHY_BUT_PACED_HEALTHY');
-      setProgress(100)
-    }else if(fastHealthy){
-      const spec=STRATEGIES.find(x=>x.id===state.winner.id)||STRATEGIES[0];
-      $('runStatus').textContent='la matriz encontró una ruta utilizable; transcribiendo el archivo completo automáticamente…';
-      state.full=await runFull(spec);$('fullState').textContent='terminado '+state.full.speed.toFixed(2)+'×';$('runStatus').textContent='terminado';$('runStatus').className='status ok';log('full done',{strategy:state.full.strategy,speed:state.full.speed,words:state.full.words})
-    }else{
-      $('fullState').textContent='no ejecutado';$('runStatus').textContent='ninguna estrategia produjo suficiente texto como para justificar procesar el archivo completo.';state.errors.push('NO_HEALTHY_FAST_STRATEGY');setProgress(100)
-    }
-  }catch(e){
-    const cancelled=String(e.message||e)==='__CANCEL__';$('runStatus').textContent=cancelled?'cancelado':'error: '+String(e.message||e);$('runStatus').className='status '+(cancelled?'warn':'bad');if(!cancelled)state.errors.push(String(e.message||e));log(cancelled?'cancelled':'auto error',{error:String(e)})
-  }finally{
-    state.running=false;state.current=null;$('cancel').disabled=true;const rep=makeReport();$('report').value=rep;$('copy').disabled=false;$('json').disabled=false;$('txt').disabled=!state.full?.text;renderMatrix();$('elapsed').textContent=((performance.now()-state.started)/1000).toFixed(1)+' s'
-  }
-}
-async function loadModel(){
-  try{const t=performance.now();state.model=await Vosk.createModel(MODEL);$('modelStatus').textContent='modelo: listo';$('modelStatus').className='status ok';log('model ready',{ms:Math.round(performance.now()-t)});if(state.file&&!state.running)autoRun()}
-  catch(e){$('modelStatus').textContent='modelo: error';$('modelStatus').className='status bad';log('model error',{error:String(e)})}
-}
-$('file').onchange=async e=>{
-  const f=e.target.files?.[0];if(!f||state.running)return;state.file=f;$('fileMeta').hidden=false;$('name').textContent=f.name;$('size').textContent=fmtBytes(f.size);$('duration').textContent='leyendo…';$('audioMeta').textContent=f.type||'audio';$('fileStatus').textContent='Archivo cargado. El autopiloto arranca solo cuando el modelo esté listo.';log('file selected',{name:f.name,size:f.size,type:f.type});if(state.model)autoRun()
-};
-$('cancel').onclick=()=>{state.cancel=true;$('cancel').disabled=true;$('runStatus').textContent='cancelando…'};
-$('copy').onclick=async()=>{try{await navigator.clipboard.writeText($('report').value);$('copy').textContent='Copiado ✓';setTimeout(()=>$('copy').textContent='Copiar reporte',1200)}catch{ $('report').focus();$('report').select()}};
-$('json').onclick=()=>{const payload={build:BUILD,file:state.file?{name:state.file.name,size:state.file.size,type:state.file.type}:null,profile:state.profile,tests:state.tests,paced:state.paced,winner:state.winner,full:state.full,errors:state.errors};const b=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'}),u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download='stt-long-auto-report.json';a.click();setTimeout(()=>URL.revokeObjectURL(u),1000)};
-$('txt').onclick=()=>{if(!state.full?.text)return;const b=new Blob([state.full.text],{type:'text/plain;charset=utf-8'}),u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download=(state.file?.name||'audio').replace(/\.[^.]+$/,'')+'-transcript.txt';a.click();setTimeout(()=>URL.revokeObjectURL(u),1000)};
-window.addEventListener('error',e=>log('window error',{message:e.message,line:e.lineno,source:e.filename}));window.addEventListener('unhandledrejection',e=>log('unhandled rejection',{reason:String(e.reason)}));
-renderMatrix();log('build',{BUILD,userAgent:navigator.userAgent});loadModel();
-</script>
-</body>
-</html>
+$('file').onchange=async e=>{const f=e.target.files?.[0];if(!f||state.running)return;state.file=f;$('fileMeta').hidden=false;$('name').textContent=f.name;$('size').textContent=fmtBytes(f.size);$('duration').textContent='leyendo…';$('audioMeta').textContent=f.type||'audio';$('fileStatus').textContent='Archivo cargado. El autopiloto arranca solo.';log('file selected',{name:f.name,size:f.size,type:f.type});state.ctx=state.ctx||new AudioContext();try{await state.ctx.resume()}catch{};if(state.m03)auto()};
+$('copy').onclick=async()=>{try{await navigator.clipboard.writeText($('report').value);$('copy').textContent='Copiado ✓';setTimeout(()=>$('copy').textContent='Copiar reporte',1200)}catch{$('report').focus();$('report').select()}};
+$('json').onclick=()=>{const p={build:BUILD,file:state.file?{name:state.file.name,size:state.file.size,type:state.file.type}:null,window:state.window,tests:state.tests,flags:state.flags,best:state.best,full:state.full,errors:state.errors},b=new Blob([JSON.stringify(p,null,2)],{type:'application/json'}),u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download='stt-long-v3-report.json';a.click();setTimeout(()=>URL.revokeObjectURL(u),1000)};
+$('txt').onclick=()=>{if(!state.full?.text)return;const b=new Blob([state.full.text],{type:'text/plain;charset=utf-8'}),u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download='transcript.txt';a.click();setTimeout(()=>URL.revokeObjectURL(u),1000)};
+window.addEventListener('error',e=>log('window error',{message:e.message,line:e.lineno}));window.addEventListener('unhandledrejection',e=>log('unhandled rejection',{reason:String(e.reason)}));render();log('build',{BUILD,userAgent:navigator.userAgent});loadModels();
+</script></body></html>
