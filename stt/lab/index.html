@@ -1,7 +1,7 @@
 <!doctype html><html lang="es"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="color-scheme" content="dark"><meta http-equiv="Cache-Control" content="no-cache,no-store,must-revalidate">
-<title>STT Lab V5</title>
+<title>STT Lab V6</title>
 <style>
 :root{--bg:#07090b;--p:#10151a;--line:#28343d;--fg:#f3f6f8;--mut:#8d9aa5;--ok:#77e39b;--warn:#ffd166;--bad:#ff7b7b}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:14px/1.45 system-ui,-apple-system,Segoe UI,sans-serif}main{max-width:1080px;margin:auto;padding:12px 12px 70px}
@@ -16,7 +16,7 @@ button,label.btn{border:1px solid var(--line);background:#172027;color:var(--fg)
 textarea{width:100%;min-height:260px;background:#080c0f;color:var(--fg);border:1px solid var(--line);border-radius:10px;padding:11px;font:14px/1.55 system-ui;margin-top:8px}
 @media(max-width:760px){.stats{grid-template-columns:repeat(2,1fr)}.map{grid-template-columns:repeat(12,1fr)}}
 </style></head><body><main>
-<header><h1>STT Lab V5</h1><div class="sub">Benchmark profundo corto→medio→largo, 1/2/3/4/6 motores, perfil milimétrico de tiempos y producción reanudable.</div></header>
+<header><h1>STT Lab V6</h1><div class="sub">Producción sin pausas por UI/checkpoint: cola continua, persistencia coalescida y perfil milimétrico también sobre la transcripción completa.</div></header>
 <section class="panel">
 <div id="status" class="big">Buscando estado anterior…</div><div class="bar"><i id="bar"></i></div>
 <div class="meta"><span id="pct" class="pill">0%</span><span id="phase" class="pill">inicio</span><span id="hw" class="pill">hardware</span><span id="guard" class="pill">crash guard</span></div>
@@ -33,9 +33,9 @@ textarea{width:100%;min-height:260px;background:#080c0f;color:var(--fg);border:1
 <section class="panel"><b>Texto combinado</b><textarea id="out"></textarea></section>
 
 <script type="module">
-const $=id=>document.getElementById(id),FAST_DB='stt-fast-v1',FAST_STORE='jobs',LAB_DB='stt-lab-v1',LAB_STORE='runs',BUILD='STT-LAB-V5-20260929',GUARD='stt_lab_guard_v3';
+const $=id=>document.getElementById(id),FAST_DB='stt-fast-v1',FAST_STORE='jobs',LAB_DB='stt-lab-v1',LAB_STORE='runs',BUILD='STT-LAB-V6-20260929',GUARD='stt_lab_guard_v3';
 const group=Math.random().toString(36).slice(2),ch=new BroadcastChannel('stt-topology-'+group);
-let fastState=null,sourceFile=null,pcm=null,duration=0,tabs=[],states=[],blockS=90,stepS=87,blocks=[],bench=[],bestTabs=1,searchComplete=false,running=false,startWall=0,totalWords=0,pending=new Map(),lastPersist=0,prior=null,suspectedUnsafe=null,lastSafe=1,invalidLegacy=false,lagSamples=[],loopTick=performance.now();
+let fastState=null,sourceFile=null,pcm=null,duration=0,tabs=[],states=[],blockS=90,stepS=87,blocks=[],bench=[],bestTabs=1,searchComplete=false,running=false,startWall=0,totalWords=0,pending=new Map(),lastPersist=0,prior=null,suspectedUnsafe=null,lastSafe=1,invalidLegacy=false,lagSamples=[],loopTick=performance.now(),checkpointTimer=null,renderTimer=null;
 $('hw').textContent=(navigator.hardwareConcurrency||'?')+' cores'+(navigator.deviceMemory?' · '+navigator.deviceMemory+' GB':'')+(navigator.gpu?' · WebGPU':'');
 setInterval(()=>{const n=performance.now();lagSamples.push(Math.max(0,n-loopTick-250));if(lagSamples.length>2000)lagSamples.shift();loopTick=n},250);
 function openDB(name,store){return new Promise((res,rej)=>{const q=indexedDB.open(name,1);q.onupgradeneeded=()=>{if(!q.result.objectStoreNames.contains(store))q.result.createObjectStore(store,{keyPath:'key'})};q.onsuccess=()=>res(q.result);q.onerror=()=>rej(q.error)})}
@@ -64,6 +64,14 @@ function renderMap(){$('map').innerHTML=blocks.map(b=>'<div class="cell '+(b.sta
 function renderText(){let out='';for(const b of blocks)if(b.status==='done'&&b.text)out=merge(out,b.text);$('out').value=out;$('copy').disabled=!out}
 function updateStats(){if(!startWall)return;const elapsed=(performance.now()-startWall)/1000,done=blocks.filter(b=>b.status==='done'),audio=done.reduce((a,b)=>a+(b.end-b.start),0);$('speed').textContent=elapsed?(audio/elapsed).toFixed(2)+'×':'—';$('wordsMin').textContent=elapsed?Math.round(totalWords/(elapsed/60)):'—';const life=states.reduce((a,s)=>a+(s.readyAt?performance.now()-s.readyAt:0),0),busy=states.reduce((a,s)=>a+(s.busyMs||0),0);$('util').textContent=life?Math.round(100*busy/life)+'%':'—'}
 setInterval(updateStats,500);
+function scheduleCheckpoint(){
+ if(checkpointTimer)return;
+ checkpointTimer=setTimeout(()=>{checkpointTimer=null;putLab().catch(()=>{})},750);
+}
+function scheduleProductionRender(){
+ if(renderTimer)return;
+ renderTimer=setTimeout(()=>{renderTimer=null;renderMap();renderText();updateStats()},200);
+}
 async function decodeOnce(){if(pcm)return;setp(3,'Decodificando una sola copia del audio…','preparación');const ab=await sourceFile.arrayBuffer(),ctx=new AudioContext({sampleRate:16000}),d=await ctx.decodeAudioData(ab);pcm=new Float32Array(d.getChannelData(0));duration=pcm.length/16000;await ctx.close();await putLab({force:true})}
 function wait(ms){return new Promise(r=>setTimeout(r,ms))}
 async function openSlot(i){if(states[i]?.tab)return;while(states.length<=i)states.push({ready:false,busy:false,error:null,tabReady:false,busyMs:0,readyAt:0,tab:null,lastResultAt:0});const w=window.open('../topology/runner.html?group='+encodeURIComponent(group)+'&slot='+i,'stt-lab-'+group+'-'+i,'popup=yes,width=430,height=260');if(!w)throw new Error('Firefox bloqueó la pestaña auxiliar. Permití pop-ups y reintentá.');states[i].tab=w;renderLanes();const t=performance.now();while(!states[i].tabReady&&performance.now()-t<15000)await wait(100);if(!states[i].tabReady)throw new Error('motor '+(i+1)+' no respondió')}
@@ -213,8 +221,18 @@ async function fullRun(){
  if(!remaining.length){setp(100,'La transcripción completa ya estaba terminada','listo');$('export').disabled=false;running=false;return}
  guardSet({running:true,closed_cleanly:false,phase:'full',lastSafe:bestTabs});
  setp(5,'Transcribiendo '+remaining.length+' bloques pendientes con '+bestTabs+' motores','corrida completa','Los bloques ya terminados se conservaron.');
- await runQueue(Array.from({length:bestTabs},(_,i)=>i),remaining,blockS,async(job,r,slot)=>{const b=blocks[job.i];if(r.error)b.status='error';else{b.status='done';b.text=r.text||'';b.slot=slot;b.infer_ms=r.infer_ms;totalWords+=words(b.text).length}renderMap();renderText();await putLab()});
- guardClean();await putLab({force:true,complete:true,transcript:$('out').value});setp(100,'Transcripción completa terminada','listo');$('export').disabled=false;running=false
+ const fullResult=await runQueue(Array.from({length:bestTabs},(_,i)=>i),remaining,blockS,(job,r,slot)=>{
+   const b=blocks[job.i];
+   if(r.error)b.status='error';else{b.status='done';b.text=r.text||'';b.slot=slot;b.infer_ms=r.infer_ms;totalWords+=words(b.text).length}
+   scheduleProductionRender();scheduleCheckpoint();
+ });
+ if(renderTimer){clearTimeout(renderTimer);renderTimer=null}renderMap();renderText();
+ if(checkpointTimer){clearTimeout(checkpointTimer);checkpointTimer=null}
+ const productionProfile=summarizeRun('production',bestTabs,fullResult.outputs,fullResult.wall_ms);
+ renderProfile(productionProfile);
+ guardClean();await putLab({force:true,complete:true,transcript:$('out').value,productionProfile});
+ setp(100,'Transcripción completa terminada','listo','Producción real: '+productionProfile.throughput.toFixed(2)+'× · util '+Math.round(productionProfile.utilization*100)+'% · idle p95 '+productionProfile.p95_idle_ms.toFixed(0)+' ms');
+ $('export').disabled=false;running=false
 }
 async function boot(){
  fastState=await getDB(FAST_DB,FAST_STORE);prior=await getDB(LAB_DB,LAB_STORE);
@@ -249,7 +267,7 @@ async function boot(){
 $('start').onclick=()=>search().catch(e=>{running=false;$('start').disabled=false;setp(0,'Error: '+e.message,'error')});
 $('full').onclick=()=>fullRun().catch(e=>{running=false;$('full').disabled=false;setp(0,'Error corrida completa: '+e.message,'error')});
 $('copy').onclick=()=>navigator.clipboard.writeText($('out').value);
-$('export').onclick=async()=>{const s=await getDB(LAB_DB,LAB_STORE),u=URL.createObjectURL(new Blob([JSON.stringify(s,null,2)],{type:'application/json'})),a=document.createElement('a');a.href=u;a.download='stt-lab-v5-result.json';a.click();setTimeout(()=>URL.revokeObjectURL(u),1000)};
+$('export').onclick=async()=>{const s=await getDB(LAB_DB,LAB_STORE),u=URL.createObjectURL(new Blob([JSON.stringify(s,null,2)],{type:'application/json'})),a=document.createElement('a');a.href=u;a.download='stt-lab-v6-result.json';a.click();setTimeout(()=>URL.revokeObjectURL(u),1000)};
 $('file').onchange=async e=>{const f=e.target.files?.[0];if(!f)return;sourceFile=f;const db=await openDB(FAST_DB,FAST_STORE);await new Promise((res,rej)=>{const tx=db.transaction(FAST_STORE,'readwrite');tx.objectStore(FAST_STORE).put({key:'current',file:f,fileMeta:{name:f.name,size:f.size,lastModified:f.lastModified}});tx.oncomplete=res;tx.onerror=()=>rej(tx.error)});db.close();$('start').disabled=false;setp(0,'Audio guardado','listo')};
 boot();
 </script></main></body></html>
