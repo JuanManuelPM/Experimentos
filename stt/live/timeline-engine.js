@@ -166,6 +166,9 @@ export class TimelineTurn{
    const floor=this.confirmedCount,current=this.tokens.slice(floor).map(t=>t.text),target=this.draftTarget.slice(floor);
    const ops=alignOps(current,target),op=ops.find(x=>x.type!=='eq');
    if(!op){const w=this.waitDraft.splice(0);w.forEach(r=>r());this.#kickQuality();return}
+   if(!this.audioClosed&&(op.type==='ins'||op.type==='sub')&&this.#lead()<this.minLead+4){
+     this.barWindowMs=32;this.draftTimer=setTimeout(()=>this.#draftStep(),18);return
+   }
    const index=floor+op.ai;
    if(op.type==='sub'){
      const tok=this.tokens[index];tok.text=target[op.bi];tok.status='draft';this.#syncToken(tok)
@@ -190,6 +193,7 @@ export class TimelineTurn{
    const consumed=sourceConsumedByPrefix(confirmed,this.qualityRaw);
    const qSuffix=this.qualityRaw.slice(consumed);
    const gray=this.tokens.slice(this.confirmedCount).map(t=>t.text);
+   if(!this.finalMode&&!qSuffix.length)return;
    const lag=this.finalMode?0:(this.audioClosed?2:QUALITY_LAG_WORDS);
    if(!this.finalMode&&gray.length<=lag){
      this.qualityTimer=setTimeout(()=>this.#qualityStep(),70);return
@@ -200,6 +204,9 @@ export class TimelineTurn{
      return
    }
    const op=ops[0],index=this.confirmedCount;
+   if(!this.audioClosed&&!this.finalMode&&this.#lead()<this.minLead+2){
+     this.barWindowMs=32;this.qualityTimer=setTimeout(()=>this.#qualityStep(),28);return
+   }
    if(op.type==='del'){
      if(gray.length<=lag&&!this.finalMode){this.qualityTimer=setTimeout(()=>this.#qualityStep(),70);return}
      this.#removeToken(index);this.#notify();this.qualityTimer=setTimeout(()=>this.#qualityStep(),58);return
