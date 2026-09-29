@@ -20,7 +20,7 @@ textarea{width:100%;min-height:260px;background:#080c0f;color:var(--fg);border:1
 <section class="panel">
 <div id="status" class="big">Buscando estado anterior…</div><div class="bar"><i id="bar"></i></div>
 <div class="meta"><span id="pct" class="pill">0%</span><span id="phase" class="pill">inicio</span><span id="hw" class="pill">hardware</span><span id="guard" class="pill">crash guard</span></div>
-<div class="actions"><button id="start" class="primary" disabled>Benchmark profundo 1→6</button><button id="full" disabled>Transcribir completo con ganador medido</button><label class="btn" for="file">Elegir audio</label><input id="file" type="file" accept="audio/*,.wav,.mp3,.m4a,.ogg,.webm"><button id="export" disabled>Exportar métricas</button><button id="copy" disabled>Copiar texto</button></div>
+<div class="actions"><button id="start" class="primary" disabled>Benchmark profundo 1→6 + transcribir</button><button id="full" disabled>Transcribir completo con ganador medido</button><label class="btn" for="file">Elegir audio</label><input id="file" type="file" accept="audio/*,.wav,.mp3,.m4a,.ogg,.webm"><button id="export" disabled>Exportar métricas</button><button id="copy" disabled>Copiar texto</button></div>
 <div id="detail" class="note">Primero usa audio corto para descartar, después audio mediano y finalmente varios minutos sólo con los finalistas. Un crash cuenta como límite de estabilidad.</div>
 </section>
 <section class="panel"><div class="stats">
@@ -191,8 +191,9 @@ async function search(){
  renderProfile(best);
  guardClean();
  await putLab({force:true,bestTabs,searchComplete:true,searchInProgress:false,attemptingTabs:null,benchmarkTier:'done',winnerProfile:best});
- setp(100,'Benchmark profundo terminado','listo','Ganador medido: '+bestTabs+' pestaña(s) · '+best.throughput.toFixed(2)+'× realtime. Ahora sí conviene lanzar la hora completa.');
- running=false
+ setp(100,'Benchmark profundo terminado','listo','Ganador medido: '+bestTabs+' pestaña(s) · '+best.throughput.toFixed(2)+'× realtime. Arrancando automáticamente la transcripción completa.');
+ running=false;
+ setTimeout(()=>fullRun().catch(e=>{running=false;$('full').disabled=false;setp(0,'Error corrida completa: '+e.message,'error')}),500)
 }
 function makeBlocks(){
  const reusable=Array.isArray(prior?.blocks)&&prior.blocks.length&&Math.abs((+prior.duration||0)-duration)<1&&(+prior.blockS||0)===blockS&&(+prior.stepS||0)===stepS;
