@@ -3,8 +3,8 @@
 </style></head><body><main>
 <div class="k">Experimentos · STT</div><h1>Laboratorio de transcripción</h1><div class="sub">Enlace público permanente. Las versiones internas pueden cambiar; este hub siempre apunta al benchmark y al análisis CURRENT.</div>
 <div class="links"><a class="primary" href="./live/">🎙️ Micrófono en vivo</a><a href="./check/">✅ Medir confianza humana</a><a href="./transcribe/">Transcribir clase</a><a href="./review/">Revisar texto</a><a href="./benchmark/">Benchmark histórico</a><a href="./analysis/">Análisis</a><button id="copy">Copiar prompt de continuidad</button></div>
-<section class="state"><div class="k">ESTADO DURABLE</div><div class="row"><span>benchmark current</span><b>STT-MASS-V4-20260928</b></div><div class="row"><span>última sesión</span><b id="session">cargando…</b></div><div class="row"><span>resultados</span><b id="results">—</b></div><div class="row"><span>oracle aprox.</span><b id="oracle">—</b></div><div class="row"><span>mejor fuente</span><b id="best">—</b></div><div class="row"><span>decisión práctica</span><b>Parakeet 0.6B v3 INT8 · transcripción de clase</b></div><div class="row"><span>externalización</span><b>GitHub Actions · matriz paralela</b></div></section>
-<div class="note">V4 usa AudioWorklet, guarda PCM en IndexedDB, registra contención del navegador y puede enviar sólo los audios de estas frases de benchmark a almacenamiento temporal para que GitHub Actions pruebe modelos en VMs separadas.</div>
+<section class="state"><div class="k">ESTADO DURABLE</div><div class="row"><span>live CURRENT</span><b>STT-LIVE-V4-20260929 · 4s/2s provisional + pasada canónica final al detener</b></div><div class="row"><span>golden live</span><b>sin cortes 1.1% WER · 4s/2s 2.2% · 6s/2s, 8s/3s y 10s/4s 1.1% · 0 duplicaciones</b></div><div class="row"><span>cierre</span><b>falta sólo aceptación end-to-end del live V4; VAD/confidence/phrase boosting quedan opcionales, no blockers</b></div><div class="row"><span>benchmark current</span><b>STT-MASS-V4-20260928</b></div><div class="row"><span>última sesión</span><b id="session">cargando…</b></div><div class="row"><span>resultados</span><b id="results">—</b></div><div class="row"><span>oracle aprox.</span><b id="oracle">—</b></div><div class="row"><span>mejor fuente</span><b id="best">—</b></div><div class="row"><span>decisión práctica</span><b>Parakeet 0.6B v3 INT8 · transcripción de clase</b></div><div class="row"><span>externalización</span><b>GitHub Actions · matriz paralela</b></div></section>
+<div class="note">CURRENT práctico: Parakeet 0.6B v3. El live usa una hipótesis provisional rápida y una pasada canónica local al detener; la golden queda en IndexedDB y puede re-ejecutarse sin volver a leer. La investigación sobre Local Agreement, VAD, confidence gating, phrase boosting y denoise queda como mejora opcional: no es requisito para cerrar mientras la aceptación end-to-end de V4 pase.</div>
 <details><summary>ver prompt que se copiará</summary><pre id="preview"></pre></details>
 </main><script>
 const RAW='https://raw.githubusercontent.com/JuanManuelPM/Experimentos/master/';let st={session:null,index:null,analysis:null};
@@ -38,8 +38,11 @@ Arquitectura:
 - stt/analysis/ muestra conflictos por palabra y estadísticas.
 
 Decisión práctica CURRENT:
+- Live: STT-LIVE-V4-20260929, 4s/2s provisional + pasada canónica local completa al detener.
+- Golden controlada: sin cortes 1.1% WER; 4s/2s 2.2%; 6s/2s, 8s/3s y 10s/4s 1.1%; 0 duplicaciones.
 - Para transcribir una clase ahora, usar Parakeet 0.6B v3 INT8 en stt/transcribe/.
-- No bloquear el uso práctico esperando Whisper/Moonshine/Vosk 0.42 experimentales.
+- Local Agreement explícito, VAD de seam, confidence gating, phrase boosting y denoise quedan DEFERRED/OPTIONAL: sólo reabrir si aparece un fallo real que V4 no resuelva.
+- No bloquear el cierre esperando Whisper/Moonshine/Vosk 0.42 experimentales.
 
 Hallazgos a preservar:
 - Parakeet 0.6B v3 INT8 fue muy superior a Vosk 0.3.
