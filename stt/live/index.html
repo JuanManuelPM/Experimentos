@@ -55,6 +55,9 @@ main{min-height:100svh;max-width:920px;margin:auto;padding:calc(env(safe-area-in
 .note,.seg,.time{color:#57575c}
 #segments{max-height:150px;overflow:auto;margin-top:10px}
 .testactions{display:flex;gap:6px;flex-wrap:wrap;margin-top:9px}
+.profiles{display:flex;justify-content:center;gap:6px;margin:4px 0 12px}.profiles button{min-width:76px}.profiles button.active{color:#fff;border-color:#555;background:#111}
+.perfgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin:10px 0}.perfcell{border:1px solid #111;border-radius:10px;padding:8px;background:#040405}.perfcell b{display:block;color:#aaa;font-size:14px;font-weight:600}.perfcell span{color:#4f4f54;font-size:9px;text-transform:uppercase;letter-spacing:.06em}
+@media(min-width:650px){.perfgrid{grid-template-columns:repeat(4,minmax(0,1fr))}}
 @media(max-width:600px){
  main{padding-left:14px;padding-right:14px}
  .stage{min-height:390px}
@@ -113,6 +116,21 @@ main{min-height:100svh;max-width:920px;margin:auto;padding:calc(env(safe-area-in
         <span id="queue" class="pill">cola 0 s</span>
       </div>
 
+      <div class="profiles">
+        <button id="profileLight">ligero</button>
+        <button id="profileNormal" class="active">normal</button>
+        <button id="profileQuality">calidad</button>
+      </div>
+      <div class="perfgrid">
+        <div class="perfcell"><b id="perfAsr">—</b><span>ASR promedio</span></div>
+        <div class="perfcell"><b id="perfLag">—</b><span>lag p95</span></div>
+        <div class="perfcell"><b id="perfQueue">—</b><span>cola máx.</span></div>
+        <div class="perfcell"><b id="perfBusy">—</b><span>tiempo en ASR</span></div>
+        <div class="perfcell"><b id="perfRender">—</b><span>render promedio</span></div>
+        <div class="perfcell"><b id="perfFinal">—</b><span>pasada final</span></div>
+        <div class="perfcell"><b id="perfHeap">—</b><span>heap JS</span></div>
+        <div class="perfcell"><b id="perfCalls">0</b><span>inferencias</span></div>
+      </div>
       <div class="testactions">
         <button id="testStart" disabled>golden</button>
         <button id="testStop" disabled>terminar</button>
@@ -135,11 +153,19 @@ main{min-height:100svh;max-width:920px;margin:auto;padding:calc(env(safe-area-in
   </details>
 </main>
 <script type="module">
-const $=id=>document.getElementById(id),BUILD='STT-LIVE-V4.2-20260929',LIVE_DB='stt-live-v3',LIVE_STORE='runs',LIVE_KEY='golden';
+const $=id=>document.getElementById(id),BUILD='STT-LIVE-V4.3-20260929',LIVE_DB='stt-live-v3',LIVE_STORE='runs',LIVE_KEY='golden';
 const TEST_TEXT=$('reference').textContent.trim();
 let model=null,stream=null,ctx=null,node=null,source=null,running=false,stopping=false,processing=false,nativeRate=48000,parts=[],samples=0,text='',segments=[],capturedS=0,finalNativeParts=[],finalNativeSamples=0,finalPcm16Parts=[],spaceHeld=false,spaceStartPending=false;
 let testStream=null,testCtx=null,testNode=null,testSource=null,testParts=[],testRate=48000,testRunning=false,testResults=[],goldenPcm=null,goldenMeta=null;
-const CHUNK_S=4,OVERLAP_S=2,SILENCE_RMS=.0045,STOP_TAIL_MS=700;
+const SILENCE_RMS=.0045,STOP_TAIL_MS=700;
+const PROFILES={
+ light:{name:'ligero',chunk:6,overlap:2,canonical:true},
+ normal:{name:'normal',chunk:4,overlap:2,canonical:true},
+ quality:{name:'calidad',chunk:8,overlap:3,canonical:true}
+};
+let profileKey=localStorage.getItem('stt-live-profile')||'normal';
+if(!PROFILES[profileKey])profileKey='normal';
+const prof=()=>PROFILES[profileKey];
 const TEST_CONFIGS=[
  {name:'sin cortes',chunk:null,overlap:0,live:false},
  {name:'4s / 1s',chunk:4,overlap:1,live:true},
@@ -148,6 +174,39 @@ const TEST_CONFIGS=[
  {name:'8s / 3s',chunk:8,overlap:3,live:true},
  {name:'10s / 4s',chunk:10,overlap:4,live:true}
 ];
+const perfStats={sessionStart:0,asrMs:[],renderMs:[],loopLagMs:[],maxQueueS:0,finalMs:null,calls:0};
+let loopExpected=performance.now()+250;
+setInterval(()=>{
+ const now=performance.now(),lag=Math.max(0,now-loopExpected);loopExpected=now+250;
+ perfStats.loopLagMs.push(lag);if(perfStats.loopLagMs.length>240)perfStats.loopLagMs.shift();
+ renderPerf()
+},250);
+function avg(a){return a.length?a.reduce((x,y)=>x+y,0)/a.length:0}
+function pct(a,p){if(!a.length)return 0;const b=[...a].sort((x,y)=>x-y);return b[Math.min(b.length-1,Math.floor((b.length-1)*p))]}
+function heapMB(){const m=performance.memory?.usedJSHeapSize;return m?m/1048576:null}
+function renderPerf(){
+ if(!$('perfAsr'))return;
+ $('perfAsr').textContent=perfStats.asrMs.length?(avg(perfStats.asrMs)/1000).toFixed(2)+' s':'—';
+ $('perfLag').textContent=perfStats.loopLagMs.length?pct(perfStats.loopLagMs,.95).toFixed(0)+' ms':'—';
+ $('perfQueue').textContent=perfStats.maxQueueS.toFixed(1)+' s';
+ const elapsed=perfStats.sessionStart?Math.max(1,performance.now()-perfStats.sessionStart):0,busy=elapsed?100*perfStats.asrMs.reduce((a,b)=>a+b,0)/elapsed:0;
+ $('perfBusy').textContent=elapsed?Math.min(999,busy).toFixed(0)+'%':'—';
+ $('perfRender').textContent=perfStats.renderMs.length?avg(perfStats.renderMs).toFixed(1)+' ms':'—';
+ $('perfFinal').textContent=perfStats.finalMs==null?'—':(perfStats.finalMs/1000).toFixed(2)+' s';
+ const h=heapMB();$('perfHeap').textContent=h==null?'n/d':h.toFixed(0)+' MB';
+ $('perfCalls').textContent=String(perfStats.calls)
+}
+function resetPerf(){
+ perfStats.sessionStart=performance.now();perfStats.asrMs=[];perfStats.renderMs=[];perfStats.maxQueueS=0;perfStats.finalMs=null;perfStats.calls=0;renderPerf()
+}
+function setProfile(k){
+ if(running||stopping)return;
+ profileKey=k;localStorage.setItem('stt-live-profile',k);
+ for(const x of ['Light','Normal','Quality'])$('profile'+x)?.classList.remove('active');
+ $('profile'+(k==='light'?'Light':k==='quality'?'Quality':'Normal'))?.classList.add('active');
+ $('gate').textContent='perfil '+prof().name+' · '+prof().chunk+'s/'+prof().overlap+'s'
+}
+
 
 function openLiveDB(){return new Promise((res,rej)=>{const q=indexedDB.open(LIVE_DB,1);q.onupgradeneeded=()=>{if(!q.result.objectStoreNames.contains(LIVE_STORE))q.result.createObjectStore(LIVE_STORE,{keyPath:'key'})};q.onsuccess=()=>res(q.result);q.onerror=()=>rej(q.error)})}
 async function getGolden(){try{const db=await openLiveDB(),v=await new Promise((res,rej)=>{const q=db.transaction(LIVE_STORE,'readonly').objectStore(LIVE_STORE).get(LIVE_KEY);q.onsuccess=()=>res(q.result||null);q.onerror=()=>rej(q.error)});db.close();return v}catch{return null}}
@@ -161,7 +220,7 @@ function gateResult(){
  const promote=winner.name!==base.name&&(winner.wer<base.wer-1e-9||winner.dup<base.dup||winner.first_latency_s<base.first_latency_s-.25);
  return{base,winner,quality,promote}
 }
-function diag(){const g=gateResult();return{build:BUILD,created_at:new Date().toISOString(),reference:TEST_TEXT,environment:{userAgent:navigator.userAgent,cores:navigator.hardwareConcurrency||null,deviceMemory:navigator.deviceMemory||null},golden:{duration_s:goldenPcm?goldenPcm.length/16000:null,sample_rate:16000},runtime:{provisional:'4s / 2s',final:'canonical full-audio pass on stop'},gate:{promote:g.promote,winner:g.winner?.name||null,quality_candidate:g.quality?.name||null,baseline_wer:g.base?.wer??null,winner_wer:g.winner?.wer??null,quality_wer:g.quality?.wer??null},results:testResults}}
+function diag(){const g=gateResult();return{build:BUILD,created_at:new Date().toISOString(),reference:TEST_TEXT,environment:{userAgent:navigator.userAgent,cores:navigator.hardwareConcurrency||null,deviceMemory:navigator.deviceMemory||null},golden:{duration_s:goldenPcm?goldenPcm.length/16000:null,sample_rate:16000},runtime:{profile:profileKey,provisional:prof().chunk+'s / '+prof().overlap+'s',final:'canonical full-audio pass on stop',performance:{asr_avg_ms:avg(perfStats.asrMs),event_loop_p95_ms:pct(perfStats.loopLagMs,.95),max_queue_s:perfStats.maxQueueS,render_avg_ms:avg(perfStats.renderMs),final_ms:perfStats.finalMs,calls:perfStats.calls,heap_mb:heapMB()}},gate:{promote:g.promote,winner:g.winner?.name||null,quality_candidate:g.quality?.name||null,baseline_wer:g.base?.wer??null,winner_wer:g.winner?.wer??null,quality_wer:g.quality?.wer??null},results:testResults}}
 function downloadDiag(){const u=URL.createObjectURL(new Blob([JSON.stringify(diag(),null,2)],{type:'application/json'})),a=document.createElement('a');a.href=u;a.download='stt-live-v3-diagnostic.json';a.click();setTimeout(()=>URL.revokeObjectURL(u),1000)}
 function norm(s){return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9ñ\s]/gi,' ').replace(/\s+/g,' ').trim().split(' ').filter(Boolean)}
 function tokenDist(A,B){const d=Array.from({length:B.length+1},(_,i)=>i);for(let i=1;i<=A.length;i++){let p=d[0];d[0]=i;for(let j=1;j<=B.length;j++){const t=d[j];d[j]=Math.min(d[j]+1,d[j-1]+1,p+(A[i-1]===B[j-1]?0:1));p=t}}return d[B.length]}
@@ -197,7 +256,7 @@ function finalPcm(){
 async function canonicalizeLive(){
  const pcm=finalPcm(),dur=pcm.length/16000;if(dur<.5)return;
  $('status').textContent='corrigiendo';$('status').className='big warn';
- const t=performance.now(),r=await model.transcribeLongAudio(pcm,16000,{returnTimestamps:false,returnConfidences:true,chunkLengthS:Math.max(4,Math.min(60,dur)),timeOffset:0}),ms=performance.now()-t;
+ const t=performance.now(),r=await model.transcribeLongAudio(pcm,16000,{returnTimestamps:false,returnConfidences:true,chunkLengthS:Math.max(4,Math.min(60,dur)),timeOffset:0}),ms=performance.now()-t;perfStats.finalMs=ms;perfStats.asrMs.push(ms);perfStats.calls++;renderPerf();
  const tx=(r.text||r.utterance_text||'').trim();if(tx){text=tx;$('out').value=text;$('copy').disabled=false}
  $('lat').textContent='final '+(ms/1000).toFixed(2)+' s';$('rt').textContent=(dur/(ms/1000)).toFixed(2)+'× final';$('status').textContent='listo';$('status').className='big ok'
 }
@@ -217,13 +276,13 @@ function editStats(hyp,ref){
 function wer(hyp,ref){return editStats(hyp,ref).wer}
 function repeatedWords(s){const t=norm(s);let dup=0;for(let n=6;n>=2;n--)for(let i=0;i+2*n<=t.length;i++){let same=true;for(let j=0;j<n;j++)if(t[i+j]!==t[i+n+j]){same=false;break}if(same){dup+=n;i+=n-1}}return dup}
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
-function takeNative(sec){const need=Math.floor(sec*nativeRate);if(samples<need)return null;const all=new Float32Array(need);let w=0,remain=need;while(remain>0&&parts.length){const p=parts[0],n=Math.min(remain,p.length);all.set(p.subarray(0,n),w);w+=n;remain-=n;if(n===p.length)parts.shift();else parts[0]=p.subarray(n)}samples-=need;const overlap=Math.floor(OVERLAP_S*nativeRate);if(overlap>0){const tail=all.slice(Math.max(0,all.length-overlap));parts.unshift(tail);samples+=tail.length}return all}
-function renderSegments(){$('segments').innerHTML=segments.slice(-8).reverse().map(s=>'<div class="seg"><div class="time">'+s.start.toFixed(1)+'–'+s.end.toFixed(1)+' s · '+s.ms.toFixed(0)+' ms · rms '+s.rms.toFixed(4)+'</div><div>'+escapeHtml(s.text||'[silencio]')+'</div></div>').join('')||'Todavía no hay audio.'}
-async function pump(){if(processing||!running)return;const raw=takeNative(CHUNK_S);if(!raw){$('queue').textContent='cola '+(samples/nativeRate).toFixed(1)+' s';return}processing=true;const start=capturedS,end=start+CHUNK_S;capturedS+=CHUNK_S-OVERLAP_S;const level=rms(raw);$('meter').style.width=Math.min(100,level*900)+'%';try{
+function takeNative(sec){const need=Math.floor(sec*nativeRate);if(samples<need)return null;const all=new Float32Array(need);let w=0,remain=need;while(remain>0&&parts.length){const p=parts[0],n=Math.min(remain,p.length);all.set(p.subarray(0,n),w);w+=n;remain-=n;if(n===p.length)parts.shift();else parts[0]=p.subarray(n)}samples-=need;const overlap=Math.floor(prof().overlap*nativeRate);if(overlap>0){const tail=all.slice(Math.max(0,all.length-overlap));parts.unshift(tail);samples+=tail.length}return all}
+function renderSegments(){const t=performance.now();$('segments').innerHTML=segments.slice(-8).reverse().map(s=>'<div class="seg"><div class="time">'+s.start.toFixed(1)+'–'+s.end.toFixed(1)+' s · '+s.ms.toFixed(0)+' ms · rms '+s.rms.toFixed(4)+'</div><div>'+escapeHtml(s.text||'[silencio]')+'</div></div>').join('')||'Todavía no hay audio.';perfStats.renderMs.push(performance.now()-t);if(perfStats.renderMs.length>100)perfStats.renderMs.shift();renderPerf()}
+async function pump(){if(processing||!running)return;const chunk=prof().chunk,overlap=prof().overlap,raw=takeNative(chunk);if(!raw){const q=samples/nativeRate;perfStats.maxQueueS=Math.max(perfStats.maxQueueS,q);$('queue').textContent='cola '+q.toFixed(1)+' s';renderPerf();return}processing=true;const start=capturedS,end=start+chunk;capturedS+=chunk-overlap;const level=rms(raw);$('meter').style.width=Math.min(100,level*900)+'%';try{
  if(level<SILENCE_RMS){segments.push({start,end,text:'',ms:0,rms:level});renderSegments()}
- else{const pcm=resample(raw,nativeRate,16000),t=performance.now(),r=await model.transcribeLongAudio(pcm,16000,{returnTimestamps:false,returnConfidences:true,chunkLengthS:CHUNK_S,timeOffset:start}),ms=performance.now()-t,tx=(r.text||r.utterance_text||'').trim();text=merge(text,tx);$('out').value=text;$('copy').disabled=!text;segments.push({start,end,text:tx,ms,rms:level});$('lat').textContent='último '+(ms/1000).toFixed(2)+' s';$('rt').textContent=(CHUNK_S/(ms/1000)).toFixed(2)+'× realtime';renderSegments()}
+ else{const pcm=resample(raw,nativeRate,16000),t=performance.now(),r=await model.transcribeLongAudio(pcm,16000,{returnTimestamps:false,returnConfidences:true,chunkLengthS:chunk,timeOffset:start}),ms=performance.now()-t,tx=(r.text||r.utterance_text||'').trim();perfStats.asrMs.push(ms);perfStats.calls++;if(perfStats.asrMs.length>100)perfStats.asrMs.shift();text=merge(text,tx);$('out').value=text;$('copy').disabled=!text;segments.push({start,end,text:tx,ms,rms:level});$('lat').textContent='último '+(ms/1000).toFixed(2)+' s';$('rt').textContent=(chunk/(ms/1000)).toFixed(2)+'× realtime';renderSegments()}
  }catch(e){$('status').textContent='Error ASR: '+e.message;$('status').className='big bad'}
- processing=false;$('queue').textContent='cola '+(samples/nativeRate).toFixed(1)+' s';if(running)setTimeout(pump,0)
+ processing=false;const q=samples/nativeRate;perfStats.maxQueueS=Math.max(perfStats.maxQueueS,q);$('queue').textContent='cola '+q.toFixed(1)+' s';renderPerf();if(running)setTimeout(pump,0)
 }
 async function makeCapture(){
  const st=await navigator.mediaDevices.getUserMedia({audio:{channelCount:1,echoCancellation:false,noiseSuppression:false,autoGainControl:false}});
@@ -232,8 +291,8 @@ async function makeCapture(){
 }
 async function startMic(){
  if(running||stopping||testRunning)return;const c=await makeCapture();stream=c.st;ctx=c.ac;nativeRate=c.rate;source=c.src;node=c.nd;
- node.port.onmessage=e=>{if(!running)return;const x=new Float32Array(e.data);parts.push(x);samples+=x.length;stashFinalNative(x);const lv=rms(x);$('meter').style.width=Math.min(100,lv*1200)+'%';if(!processing&&samples>=CHUNK_S*nativeRate)pump()};
- parts=[];samples=0;capturedS=0;finalNativeParts=[];finalNativeSamples=0;finalPcm16Parts=[];running=true;stopping=false;$('mic').disabled=true;$('testStart').disabled=true;$('stop').disabled=false;$('status').textContent='escuchando';$('status').className='big ok';pump()
+ node.port.onmessage=e=>{if(!running)return;const x=new Float32Array(e.data);parts.push(x);samples+=x.length;stashFinalNative(x);const q=samples/nativeRate;perfStats.maxQueueS=Math.max(perfStats.maxQueueS,q);const lv=rms(x);$('meter').style.width=Math.min(100,lv*1200)+'%';if(!processing&&samples>=prof().chunk*nativeRate)pump()};
+ parts=[];samples=0;capturedS=0;finalNativeParts=[];finalNativeSamples=0;finalPcm16Parts=[];resetPerf();running=true;stopping=false;$('mic').disabled=true;$('testStart').disabled=true;$('stop').disabled=false;$('status').textContent='escuchando';$('status').className='big ok';pump()
 }
 async function stopMic(){
  if(!running||stopping)return;stopping=true;$('stop').disabled=true;$('mic').disabled=true;$('testStart').disabled=true;$('status').textContent='cerrando';$('status').className='big warn';
@@ -274,6 +333,7 @@ $('mic').onclick=()=>startMic().catch(e=>{$('status').textContent='No pude abrir
 $('stop').onclick=()=>stopMic().catch(e=>{$('status').textContent='Error al cerrar micrófono: '+e.message;$('status').className='big bad'});$('copy').onclick=()=>navigator.clipboard.writeText(text);$('clear').onclick=()=>{text='';segments=[];$('out').value='';$('copy').disabled=true;renderSegments()};
 $('testStart').onclick=()=>startTest().catch(e=>$('testState').textContent='Error micrófono: '+e.message);$('testStop').onclick=()=>stopTest().catch(e=>$('testState').textContent='Error prueba: '+e.message);
 $('replay').onclick=()=>{if(!goldenPcm)return;$('replay').disabled=true;runTests(goldenPcm).finally(()=>$('replay').disabled=false)};
+$('profileLight').onclick=()=>setProfile('light');$('profileNormal').onclick=()=>setProfile('normal');$('profileQuality').onclick=()=>setProfile('quality');setProfile(profileKey);
 $('exportDiag').onclick=downloadDiag;
 function typingTarget(el){return !!el&&(el.tagName==='INPUT'||el.tagName==='TEXTAREA'||el.isContentEditable)}
 async function beginSpacePTT(e){
@@ -293,7 +353,7 @@ window.addEventListener('keydown',beginSpacePTT);
 window.addEventListener('keyup',endSpacePTT);
 window.addEventListener('blur',()=>{if(spaceHeld){spaceHeld=false;if(running&&!stopping)stopMic().catch(()=>{})}});
 
-(async()=>{try{const saved=await getGolden();if(saved?.pcm){goldenPcm=saved.pcm instanceof Float32Array?saved.pcm:new Float32Array(saved.pcm);goldenMeta=saved.goldenMeta||{duration_s:goldenPcm.length/16000,sample_rate:16000};testResults=Array.isArray(saved.results)?saved.results:[];$('golden').textContent='golden: '+(goldenMeta.duration_s||0).toFixed(1)+' s';$('testDur').textContent=(goldenMeta.duration_s||0).toFixed(1)+' s';$('replay').disabled=false;if(testResults.length){renderTests();$('exportDiag').disabled=false}}const mod=await import('https://cdn.jsdelivr.net/npm/parakeet.js@1.4.4/+esm'),backend=navigator.gpu?'webgpu':'wasm';$('backend').textContent=backend.toUpperCase()+' · Parakeet 0.6B';model=await mod.fromHub('parakeet-tdt-0.6b-v3',{backend,encoderQuant:backend==='webgpu'?'fp32':'int8',decoderQuant:'int8',preprocessorBackend:'js'});$('status').textContent='listo';$('status').className='big ok';$('mic').disabled=false;$('testStart').disabled=false}catch(e){$('status').textContent='No cargó el modelo: '+e.message;$('status').className='big bad'}})();
+(async()=>{try{const saved=await getGolden();if(saved?.pcm){goldenPcm=saved.pcm instanceof Float32Array?saved.pcm:new Float32Array(saved.pcm);goldenMeta=saved.goldenMeta||{duration_s:goldenPcm.length/16000,sample_rate:16000};testResults=Array.isArray(saved.results)?saved.results:[];$('golden').textContent='golden: '+(goldenMeta.duration_s||0).toFixed(1)+' s';$('testDur').textContent=(goldenMeta.duration_s||0).toFixed(1)+' s';$('replay').disabled=false;if(testResults.length){renderTests();$('exportDiag').disabled=false}}const mod=await import('https://cdn.jsdelivr.net/npm/parakeet.js@1.4.4/+esm'),backend=navigator.gpu?'webgpu':'wasm';$('backend').textContent=backend.toUpperCase()+' · Parakeet 0.6B';setProfile(profileKey);model=await mod.fromHub('parakeet-tdt-0.6b-v3',{backend,encoderQuant:backend==='webgpu'?'fp32':'int8',decoderQuant:'int8',preprocessorBackend:'js'});$('status').textContent='listo';$('status').className='big ok';$('mic').disabled=false;$('testStart').disabled=false}catch(e){$('status').textContent='No cargó el modelo: '+e.message;$('status').className='big bad'}})();
 </script>
 </body>
 </html>
