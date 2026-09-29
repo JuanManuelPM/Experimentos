@@ -138,7 +138,13 @@ async function boot(){
    renderBench();$('bestChunk').textContent=blockS+'s';
    if(searchComplete){$('bestTabs').textContent=bestTabs;$('full').disabled=false;$('export').disabled=false}
  }
- const g=guardGet();if(g?.running&&!g.closed_cleanly&&g.attemptingTabs){suspectedUnsafe=+g.attemptingTabs;$('guard').textContent='crash probable en '+suspectedUnsafe+' tabs';$('guard').className='pill warn'}
+ const g=guardGet();
+ if(g?.running&&!g.closed_cleanly&&g.attemptingTabs){suspectedUnsafe=+g.attemptingTabs;$('guard').textContent='crash probable en '+suspectedUnsafe+' tabs';$('guard').className='pill warn'}
+ if(g?.running&&!g.closed_cleanly&&g.phase==='full'){
+   const crashedAt=Math.max(1,+g.lastSafe||bestTabs||1);
+   bestTabs=Math.max(1,crashedAt-1);searchComplete=true;suspectedUnsafe=crashedAt;
+   $('guard').textContent='full crash: baja '+crashedAt+'→'+bestTabs+' tabs';$('guard').className='pill warn';
+ }
  if(!suspectedUnsafe&&prior?.searchInProgress&&prior?.attemptingTabs)suspectedUnsafe=+prior.attemptingTabs;
  if(!suspectedUnsafe&&prior?.build==='STT-LAB-V2-20260929'&&!prior?.searchComplete){
    const oldLevels=[...new Set((prior?.bench||[]).filter(x=>x.kind==='tabs-quick'&&!x.unsafe&&x.throughput>0).map(x=>+x.tabs).filter(Number.isFinite))].sort((a,b)=>a-b);
