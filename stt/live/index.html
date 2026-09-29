@@ -20,9 +20,9 @@ textarea{width:100%;min-height:300px;background:#080c0f;color:var(--fg);border:1
 <section class="card">
 <div id="status" class="big">Cargando modelo…</div>
 <div class="meter"><i id="meter"></i></div>
-<div class="meta"><span id="backend" class="pill">modelo</span><span id="lat" class="pill">latencia —</span><span id="rt" class="pill">—× realtime</span><span id="queue" class="pill">cola 0 s</span></div>
+<div class="meta"><span id="backend" class="pill">modelo</span><span id="lat" class="pill">latencia —</span><span id="rt" class="pill">—× realtime</span><span id="queue" class="pill">cola 0 s</span><span class="pill">Espacio: mantener para hablar</span></div>
 <div class="actions"><button id="mic" class="primary" disabled>🎙️ Empezar micrófono</button><button id="stop" disabled>Detener</button><button id="copy" disabled>Copiar</button><button id="clear">Limpiar texto</button></div>
-<div class="note">LIVE PROVISIONAL: 4 s / 2 s para mostrar texto rápido. Al detener, una pasada canónica local sobre todo el audio reemplaza la hipótesis provisional por el texto final. El audio no sale del navegador.</div>
+<div class="note">LIVE PROVISIONAL: 4 s / 2 s para mostrar texto rápido. Podés usar el botón o mantener ESPACIO para hablar. Al soltar/detener, el micrófono conserva 700 ms extra para no comerse las últimas palabras y luego hace la pasada canónica local final. El audio no sale del navegador.</div>
 </section>
 
 <section class="card">
@@ -38,11 +38,11 @@ textarea{width:100%;min-height:300px;background:#080c0f;color:var(--fg);border:1
 <section class="card"><b>Últimos bloques</b><div id="segments" class="note">Todavía no hay audio.</div></section>
 
 <script type="module">
-const $=id=>document.getElementById(id),BUILD='STT-LIVE-V4-20260929',LIVE_DB='stt-live-v3',LIVE_STORE='runs',LIVE_KEY='golden';
+const $=id=>document.getElementById(id),BUILD='STT-LIVE-V4.1-20260929',LIVE_DB='stt-live-v3',LIVE_STORE='runs',LIVE_KEY='golden';
 const TEST_TEXT=$('reference').textContent.trim();
-let model=null,stream=null,ctx=null,node=null,source=null,running=false,processing=false,nativeRate=48000,parts=[],samples=0,text='',segments=[],capturedS=0,finalNativeParts=[],finalNativeSamples=0,finalPcm16Parts=[];
+let model=null,stream=null,ctx=null,node=null,source=null,running=false,stopping=false,processing=false,nativeRate=48000,parts=[],samples=0,text='',segments=[],capturedS=0,finalNativeParts=[],finalNativeSamples=0,finalPcm16Parts=[],spaceHeld=false,spaceStartPending=false;
 let testStream=null,testCtx=null,testNode=null,testSource=null,testParts=[],testRate=48000,testRunning=false,testResults=[],goldenPcm=null,goldenMeta=null;
-const CHUNK_S=4,OVERLAP_S=2,SILENCE_RMS=.0045;
+const CHUNK_S=4,OVERLAP_S=2,SILENCE_RMS=.0045,STOP_TAIL_MS=700;
 const TEST_CONFIGS=[
  {name:'sin cortes',chunk:null,overlap:0,live:false},
  {name:'4s / 1s',chunk:4,overlap:1,live:true},
@@ -134,11 +134,17 @@ async function makeCapture(){
  const src=ac.createMediaStreamSource(st),nd=new AudioWorkletNode(ac,'cap'),silent=ac.createGain();silent.gain.value=0;src.connect(nd);nd.connect(silent).connect(ac.destination);return{st,ac,rate,src,nd}
 }
 async function startMic(){
- if(running||testRunning)return;const c=await makeCapture();stream=c.st;ctx=c.ac;nativeRate=c.rate;source=c.src;node=c.nd;
+ if(running||stopping||testRunning)return;const c=await makeCapture();stream=c.st;ctx=c.ac;nativeRate=c.rate;source=c.src;node=c.nd;
  node.port.onmessage=e=>{if(!running)return;const x=new Float32Array(e.data);parts.push(x);samples+=x.length;stashFinalNative(x);const lv=rms(x);$('meter').style.width=Math.min(100,lv*1200)+'%';if(!processing&&samples>=CHUNK_S*nativeRate)pump()};
- parts=[];samples=0;capturedS=0;finalNativeParts=[];finalNativeSamples=0;finalPcm16Parts=[];running=true;$('mic').disabled=true;$('testStart').disabled=true;$('stop').disabled=false;$('status').textContent='Escuchando…';$('status').className='big ok';pump()
+ parts=[];samples=0;capturedS=0;finalNativeParts=[];finalNativeSamples=0;finalPcm16Parts=[];running=true;stopping=false;$('mic').disabled=true;$('testStart').disabled=true;$('stop').disabled=false;$('status').textContent='Escuchando…';$('status').className='big ok';pump()
 }
-async function stopMic(){running=false;$('stop').disabled=true;$('mic').disabled=true;$('testStart').disabled=true;try{node?.disconnect();source?.disconnect();stream?.getTracks().forEach(t=>t.stop());await ctx?.close()}catch{};$('meter').style.width='0%';try{await canonicalizeLive()}catch(e){$('status').textContent='Live guardado; falló pasada final: '+e.message;$('status').className='big warn'}finally{$('mic').disabled=false;$('testStart').disabled=false}}
+async function stopMic(){
+ if(!running||stopping)return;stopping=true;$('stop').disabled=true;$('mic').disabled=true;$('testStart').disabled=true;$('status').textContent='Cerrando… capturando cola final';$('status').className='big warn';
+ await new Promise(r=>setTimeout(r,STOP_TAIL_MS));
+ running=false;try{node?.disconnect();source?.disconnect();stream?.getTracks().forEach(t=>t.stop());await ctx?.close()}catch{};$('meter').style.width='0%';
+ try{await canonicalizeLive()}catch(e){$('status').textContent='Live guardado; falló pasada final: '+e.message;$('status').className='big warn'}
+ finally{stopping=false;$('mic').disabled=false;$('testStart').disabled=false}
+}
 async function startTest(){
  if(testRunning||running)return;const c=await makeCapture();testStream=c.st;testCtx=c.ac;testRate=c.rate;testSource=c.src;testNode=c.nd;testParts=[];testRunning=true;
  testNode.port.onmessage=e=>{if(!testRunning)return;const x=new Float32Array(e.data);testParts.push(x);$('meter').style.width=Math.min(100,rms(x)*1200)+'%'};
@@ -172,5 +178,23 @@ $('stop').onclick=()=>stopMic().catch(e=>{$('status').textContent='Error al cerr
 $('testStart').onclick=()=>startTest().catch(e=>$('testState').textContent='Error micrófono: '+e.message);$('testStop').onclick=()=>stopTest().catch(e=>$('testState').textContent='Error prueba: '+e.message);
 $('replay').onclick=()=>{if(!goldenPcm)return;$('replay').disabled=true;runTests(goldenPcm).finally(()=>$('replay').disabled=false)};
 $('exportDiag').onclick=downloadDiag;
+function typingTarget(el){return !!el&&(el.tagName==='INPUT'||el.tagName==='TEXTAREA'||el.isContentEditable)}
+async function beginSpacePTT(e){
+ if(e.code!=='Space'||e.repeat||typingTarget(e.target)||testRunning)return;
+ e.preventDefault();if(spaceHeld)return;spaceHeld=true;
+ if(running||stopping)return;
+ spaceStartPending=true;
+ try{await startMic()}catch(err){$('status').textContent='No pude abrir micrófono: '+err.message;$('status').className='big bad'}
+ finally{spaceStartPending=false;if(!spaceHeld&&running&&!stopping)stopMic().catch(()=>{})}
+}
+function endSpacePTT(e){
+ if(e.code!=='Space'||typingTarget(e.target))return;
+ if(!spaceHeld&&!spaceStartPending)return;e.preventDefault();spaceHeld=false;
+ if(running&&!stopping)stopMic().catch(err=>{$('status').textContent='Error al cerrar micrófono: '+err.message;$('status').className='big bad'})
+}
+window.addEventListener('keydown',beginSpacePTT);
+window.addEventListener('keyup',endSpacePTT);
+window.addEventListener('blur',()=>{if(spaceHeld){spaceHeld=false;if(running&&!stopping)stopMic().catch(()=>{})}});
+
 (async()=>{try{const saved=await getGolden();if(saved?.pcm){goldenPcm=saved.pcm instanceof Float32Array?saved.pcm:new Float32Array(saved.pcm);goldenMeta=saved.goldenMeta||{duration_s:goldenPcm.length/16000,sample_rate:16000};testResults=Array.isArray(saved.results)?saved.results:[];$('golden').textContent='golden: '+(goldenMeta.duration_s||0).toFixed(1)+' s';$('testDur').textContent=(goldenMeta.duration_s||0).toFixed(1)+' s';$('replay').disabled=false;if(testResults.length){renderTests();$('exportDiag').disabled=false}}const mod=await import('https://cdn.jsdelivr.net/npm/parakeet.js@1.4.4/+esm'),backend=navigator.gpu?'webgpu':'wasm';$('backend').textContent=backend.toUpperCase()+' · Parakeet 0.6B';model=await mod.fromHub('parakeet-tdt-0.6b-v3',{backend,encoderQuant:backend==='webgpu'?'fp32':'int8',decoderQuant:'int8',preprocessorBackend:'js'});$('status').textContent='Modelo listo';$('status').className='big ok';$('mic').disabled=false;$('testStart').disabled=false}catch(e){$('status').textContent='No cargó el modelo: '+e.message;$('status').className='big bad'}})();
 </script></main></body></html>
