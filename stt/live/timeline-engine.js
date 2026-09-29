@@ -16,7 +16,7 @@ export class TimelineTurn{
    this.minLead=minLead;this.tokens=[];this.bars=[];this.consumedSlots=0;
    this.draftTarget=[];this.qualityTarget=[];this.qualityCursor=0;
    this.draftTimer=null;this.qualityTimer=null;this.audioClosed=false;this.finalTarget=null;
-   this.carry=new Float32Array();this.sampleRate=48000;this.barWindowMs=60;this.head=null;
+   this.carry=new Float32Array();this.sampleRate=48000;this.barWindowMs=48;this.head=null;
    this.waitDraft=[];this.waitQuality=[];this.finalWait=[];this.destroyed=false;
    this.#build()
  }
@@ -49,12 +49,12 @@ export class TimelineTurn{
  }
  #windowMs(){
    const lead=this.#lead();
-   let target=105;
-   if(lead<this.minLead)target=52;
-   else if(lead<this.minLead+8)target=62;
-   else if(lead<this.minLead+18)target=76;
-   else if(lead<this.minLead+32)target=90;
-   this.barWindowMs=this.barWindowMs*.55+target*.45;
+   let target=82;
+   if(lead<this.minLead)target=42;
+   else if(lead<this.minLead+8)target=48;
+   else if(lead<this.minLead+18)target=58;
+   else if(lead<this.minLead+32)target=70;
+   this.barWindowMs=this.barWindowMs*.52+target*.48;
    return this.barWindowMs
  }
  pushAudio(x,rate){
@@ -142,7 +142,7 @@ export class TimelineTurn{
      const text=target[this.tokens.length],slots=this.#wordSlots(text);
      const committed=this.bars.length-(this.head?1:0),lead=committed-this.consumedSlots;
      if(!this.audioClosed&&lead-slots<this.minLead){
-       this.barWindowMs=52;this.draftTimer=setTimeout(()=>this.#draftStep(),24);return
+       this.barWindowMs=42;this.draftTimer=setTimeout(()=>this.#draftStep(),22);return
      }
      const tok=this.#makeToken(text,'draft');this.tokens.push(tok);this.wordLayer.append(tok.el,document.createTextNode(' '));
      this.consumedSlots+=tok.slots;this.#notify()
