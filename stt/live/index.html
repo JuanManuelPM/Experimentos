@@ -12,22 +12,36 @@ h1{font-size:27px;margin:0}.sub,.note{color:var(--mut);font-size:11px}.card{back
 textarea{width:100%;min-height:340px;background:#080c0f;color:var(--fg);border:1px solid var(--line);border-radius:10px;padding:12px;font:16px/1.55 system-ui;margin-top:10px}
 .seg{border-top:1px solid #202830;padding:8px 0}.seg:first-child{border-top:0}.time{font-size:9px;color:var(--mut)}
 </style></head><body><main>
-<h1>STT Live</h1><div class="sub">Micrófono local → Parakeet. Una sola pestaña, bloques cortos con solapamiento, silencio omitido y texto continuo.</div>
+<h1>STT Live</h1><div class="sub">Micrófono local → Parakeet. Una sola pestaña, bloques de 4 s con 2 s de solapamiento: el borde viejo se reemplaza por la lectura nueva, donde esa palabra cae cerca del centro.</div>
 <section class="card">
 <div id="status" class="big">Cargando modelo…</div>
 <div class="meter"><i id="meter"></i></div>
 <div class="meta"><span id="backend" class="pill">modelo</span><span id="lat" class="pill">latencia —</span><span id="rt" class="pill">—× realtime</span><span id="queue" class="pill">cola 0 s</span></div>
 <div class="actions"><button id="mic" class="primary" disabled>🎙️ Empezar micrófono</button><button id="stop" disabled>Detener</button><button id="copy" disabled>Copiar</button><button id="clear">Limpiar texto</button></div>
-<div class="note">Local: no usa Web Speech ni sube el audio. Primer texto normalmente aparece después del primer bloque de ~4 s + inferencia. Si hablás más rápido que el modelo, la cola queda visible.</div>
+<div class="note">Local: no usa Web Speech ni sube el audio. Primer texto normalmente aparece después del primer bloque de ~4 s + inferencia. Los últimos ~2 s son provisionales: el bloque siguiente los vuelve a oír lejos del corte y puede corregir ese borde. Si hablás más rápido que el modelo, la cola queda visible.</div>
 </section>
 <section class="card"><b>Texto</b><textarea id="out" placeholder="El texto aparece mientras hablás."></textarea></section>
 <section class="card"><b>Últimos bloques</b><div id="segments" class="note">Todavía no hay audio.</div></section>
 <script type="module">
 const $=id=>document.getElementById(id),BUILD='STT-LIVE-V1-20260929';
 let model=null,stream=null,ctx=null,node=null,source=null,running=false,processing=false,nativeRate=48000,parts=[],samples=0,text='',segments=[],capturedS=0;
-const CHUNK_S=4,OVERLAP_S=.7,SILENCE_RMS=.0045;
+const CHUNK_S=4,OVERLAP_S=2,SILENCE_RMS=.0045;
 function norm(s){return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9ñ\s]/gi,' ').replace(/\s+/g,' ').trim().split(' ').filter(Boolean)}
-function merge(a,b){if(!a)return b;if(!b)return a;const A=a.split(/\s+/),B=b.split(/\s+/),na=norm(a),nb=norm(b);let best=0;for(let k=1;k<=Math.min(20,na.length,nb.length);k++){let same=0;for(let i=0;i<k;i++)if(na[na.length-k+i]===nb[i])same++;if(same/k>=.78)best=k}return(A.join(' ')+' '+B.slice(best).join(' ')).trim()}
+function tokenDist(A,B){const d=Array.from({length:B.length+1},(_,i)=>i);for(let i=1;i<=A.length;i++){let p=d[0];d[0]=i;for(let j=1;j<=B.length;j++){const t=d[j];d[j]=Math.min(d[j]+1,d[j-1]+1,p+(A[i-1]===B[j-1]?0:1));p=t}}return d[B.length]}
+function merge(a,b){
+ if(!a)return b;if(!b)return a;
+ const A=String(a).trim().split(/\s+/),B=String(b).trim().split(/\s+/),na=A.map(x=>norm(x)[0]||''),nb=B.map(x=>norm(x)[0]||'');
+ let best={score:-1,la:0,lb:0};
+ for(let la=2;la<=Math.min(14,na.length);la++)for(let lb=Math.max(2,la-2);lb<=Math.min(14,nb.length,la+2);lb++){
+   const x=na.slice(-la),y=nb.slice(0,lb),score=1-tokenDist(x,y)/Math.max(la,lb);
+   const weighted=score+Math.min(la,lb)*.012;
+   if(weighted>best.score)best={score:weighted,raw:score,la,lb}
+ }
+ if(best.raw>=.38)return A.slice(0,A.length-best.la).concat(B).join(' ').trim();
+ // Si el solapamiento quedó demasiado deformado para alinearlo, sacrificamos sólo
+ // la última palabra vieja: el siguiente bloque la oyó ~2 s lejos de su borde.
+ return A.slice(0,Math.max(0,A.length-1)).concat(B).join(' ').trim()
+}
 function rms(x){let s=0;for(let i=0;i<x.length;i++)s+=x[i]*x[i];return Math.sqrt(s/Math.max(1,x.length))}
 function resample(x,from,to=16000){if(from===to)return x;const ratio=from/to,n=Math.max(1,Math.floor(x.length/ratio)),o=new Float32Array(n);for(let i=0;i<n;i++){const p=i*ratio,a=Math.floor(p),b=Math.min(x.length-1,a+1),f=p-a;o[i]=x[a]*(1-f)+x[b]*f}return o}
 function takeNative(sec){const need=Math.floor(sec*nativeRate);if(samples<need)return null;const all=new Float32Array(need);let w=0,remain=need;while(remain>0&&parts.length){const p=parts[0],n=Math.min(remain,p.length);all.set(p.subarray(0,n),w);w+=n;remain-=n;if(n===p.length)parts.shift();else parts[0]=p.subarray(n)}samples-=need;const overlap=Math.floor(OVERLAP_S*nativeRate);if(overlap>0){const tail=all.slice(Math.max(0,all.length-overlap));parts.unshift(tail);samples+=tail.length}return all}
