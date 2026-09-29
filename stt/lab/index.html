@@ -220,7 +220,10 @@ async function boot(){
  if(prior?.bench?.length){
    bench=prior.bench;blockS=+prior.blockS||blockS;stepS=+prior.stepS||stepS;bestTabs=+prior.bestTabs||1;searchComplete=prior?.build===BUILD&&!!prior.searchComplete&&bench.some(x=>x.kind==='tier'&&x.tier==='long'&&x.valid);lastSafe=+prior.lastSafe||1;
    const dropped=sanitizeBench();
-   if(dropped||bestTabs>4){invalidLegacy=true;bestTabs=chooseSafeTabs();searchComplete=bench.some(x=>x.kind==='tabs-quick'&&!x.unsafe&&x.tabs<=4);suspectedUnsafe=6}
+   if(dropped){invalidLegacy=true}
+   if(+prior.suspectedUnsafe>0)suspectedUnsafe=+prior.suspectedUnsafe;
+   searchComplete=prior?.build===BUILD&&bench.some(x=>x.kind==='tier'&&x.tier==='long'&&x.valid);
+   if(searchComplete)bestTabs=chooseSafeTabs();
    renderBench();$('bestChunk').textContent=blockS+'s';
    if(searchComplete){$('bestTabs').textContent=bestTabs;$('full').disabled=false;$('export').disabled=false}
  }
@@ -238,7 +241,7 @@ async function boot(){
  }
  if(fastState?.file){
    sourceFile=fastState.file;duration=+fastState.duration||0;$('start').disabled=false;
-   const msg=invalidLegacy?'Se descartaron métricas imposibles de confirmación. Producción fijada al mejor nivel estable ≤4 pestañas. ':prior?.bench?.length?'No empezamos de cero. ':'';
+   const msg=invalidLegacy?'Se descartaron métricas imposibles viejas; V5 volverá a medir 1/2/3/4/6 con rondas válidas. ':prior?.bench?.length?'Hay datos previos, pero V5 hará la comparación corto→medio→largo. ':'';
    setp(0,searchComplete?'Listo para transcribir con configuración segura':prior?.bench?.length?'Estado parcial recuperado':'Audio encontrado','listo para continuar',msg+(suspectedUnsafe?'Se evita la escalada sospechosa de '+suspectedUnsafe+' pestañas.':''));
  }else setp(0,'No encontré el audio','elegir audio')
 }
