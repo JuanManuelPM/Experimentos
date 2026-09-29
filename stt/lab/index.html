@@ -18,14 +18,14 @@ button,label.btn{border:1px solid var(--line);background:#172027;color:var(--fg)
 textarea{width:100%;min-height:280px;background:#080c0f;color:var(--fg);border:1px solid var(--line);border-radius:10px;padding:11px;font:14px/1.55 system-ui;margin-top:8px}
 @media(max-width:760px){.stats{grid-template-columns:repeat(2,1fr)}.map{grid-template-columns:repeat(12,1fr)}}
 </style></head><body><main>
-<header><h1>STT Lab</h1><div class="sub">Una sola entrada: calibra tamaño de bloque, prueba 1→2→3→4 pestañas, elige la topología ganadora y transcribe todo con cola continua.</div></header>
+<header><h1>STT Lab</h1><div class="sub">V2 · búsqueda rápida por muestras: usa minutos representativos para explorar más configuraciones y recién después permite lanzar la hora completa.</div></header>
 
 <section class="panel">
 <div id="status" class="big">Buscando audio guardado…</div>
 <div class="bar"><i id="bar"></i></div>
 <div class="meta"><span id="pct" class="pill">0%</span><span id="phase" class="pill">inicio</span><span id="hw" class="pill">hardware</span><span id="eta" class="pill">—</span></div>
-<div class="actions"><button id="start" class="primary" disabled>Arrancar experimento completo</button><label class="btn" for="file">Elegir audio si no aparece</label><input id="file" type="file" accept="audio/*,.wav,.mp3,.m4a,.ogg,.webm"><button id="export" disabled>Exportar métricas</button><button id="copy" disabled>Copiar texto</button></div>
-<div id="detail" class="note">No hace falta abrir Fast, Booster, Observatory ni Topology por separado.</div>
+<div class="actions"><button id="start" class="primary" disabled>Buscar configuración rápida</button><button id="full" disabled>Transcribir audio completo con ganador</button><label class="btn" for="file">Elegir audio si no aparece</label><input id="file" type="file" accept="audio/*,.wav,.mp3,.m4a,.ogg,.webm"><button id="export" disabled>Exportar métricas</button><button id="copy" disabled>Copiar texto</button></div>
+<div id="detail" class="note">La búsqueda rápida NO procesa la hora completa. Usa muestras distribuidas y successive halving. Después decidís si lanzar la transcripción completa.</div>
 </section>
 
 <section class="panel"><div class="stats">
@@ -44,9 +44,9 @@ textarea{width:100%;min-height:280px;background:#080c0f;color:var(--fg);border:1
 <section class="panel"><b>Texto combinado</b><textarea id="out" placeholder="Va apareciendo en orden aunque los bloques terminen fuera de orden."></textarea></section>
 
 <script type="module">
-const $=id=>document.getElementById(id),FAST_DB='stt-fast-v1',FAST_STORE='jobs',LAB_DB='stt-lab-v1',LAB_STORE='runs',BUILD='STT-LAB-V1-20260929';
+const $=id=>document.getElementById(id),FAST_DB='stt-fast-v1',FAST_STORE='jobs',LAB_DB='stt-lab-v1',LAB_STORE='runs',BUILD='STT-LAB-V2-20260929';
 const group=Math.random().toString(36).slice(2),ch=new BroadcastChannel('stt-topology-'+group);
-let sourceFile=null,duration=0,tabs=[],states=[],maxTabs=4,blockS=60,stepS=57,blocks=[],results=[],running=false,startWall=0,totalWords=0,bench=[],pendingJobs=new Map(),labState=null;
+let sourceFile=null,duration=0,tabs=[],states=[],maxTabs=Math.min(6,Math.max(4,navigator.hardwareConcurrency||4)),blockS=90,stepS=87,blocks=[],results=[],running=false,startWall=0,totalWords=0,bench=[],pendingJobs=new Map(),labState=null,fastState=null,bestTabs=1,searchComplete=false;
 $('hw').textContent=(navigator.hardwareConcurrency||'?')+' cores'+(navigator.deviceMemory?' · '+navigator.deviceMemory+' GB':'')+(navigator.gpu?' · WebGPU disponible':'');
 function openDB(name,store){return new Promise((res,rej)=>{const q=indexedDB.open(name,1);q.onupgradeneeded=()=>{if(!q.result.objectStoreNames.contains(store))q.result.createObjectStore(store,{keyPath:'key'})};q.onsuccess=()=>res(q.result);q.onerror=()=>rej(q.error)})}
 async function getDB(name,store,key='current'){try{const db=await openDB(name,store),v=await new Promise((res,rej)=>{const q=db.transaction(store,'readonly').objectStore(store).get(key);q.onsuccess=()=>res(q.result||null);q.onerror=()=>rej(q.error)});db.close();return v}catch{return null}}
@@ -83,11 +83,21 @@ ch.onmessage=e=>{const m=e.data||{};if(m.slot==null||!states[m.slot])return;cons
 function sampleSet(n=6,sec=20){const a=[];for(let i=0;i<n;i++){const center=duration*(i+.5)/n,start=Math.max(0,Math.min(duration-sec,center-sec/2));a.push({idx:i,start,end:Math.min(duration,start+sec)})}return a}
 async function warm(i){const s=Math.max(0,Math.min(duration-5,duration*.12));await requestJob(i,{idx:'warm',start:s,end:s+5},30)}
 async function benchChunks(){
- setp(5,'Probando tamaños de bloque…','cortes');await initSlot(0);await warm(0);
- const candidates=[30,60,90,120,180],sample=Math.min(120,Math.max(45,duration*.12)),start=Math.max(0,Math.min(duration-sample,duration*.35)),job={idx:0,start,end:start+sample},texts=[];
- for(let i=0;i<candidates.length;i++){const t=performance.now(),r=await requestJob(0,job,candidates[i]),wall=performance.now()-t,txt=r.text||'';texts.push(txt);bench.push({kind:'chunk',chunk:candidates[i],wall_ms:wall,throughput:sample/(wall/1000),text:txt});setp(5+15*(i+1)/candidates.length,'Probando bloques '+candidates[i]+'s…','cortes');await putLab()}
+ await initSlot(0);await warm(0);
+ const prior=+fastState?.winner||0;
+ if(prior){
+   blockS=prior;stepS=Math.max(10,blockS-3);
+   bench.push({kind:'chunk-prior',chunk:blockS,source:'stt-fast'});
+   $('bestChunk').textContent=blockS+'s';
+   $('benchRows').innerHTML='<div class="row"><b>bloque '+blockS+'s ✓</b><span>reutilizado</span><span>STT Fast</span><span>sin repetir benchmark</span></div>';
+   setp(10,'Reutilizando calibración anterior de bloques','cortes','Ahorramos repetir una prueba ya hecha sobre este mismo audio y navegador.');
+   await putLab();return {chunk:blockS,agreement:1}
+ }
+ setp(5,'Calibración corta de bloques…','cortes');
+ const candidates=[30,60,90],sample=Math.min(45,Math.max(30,duration*.02)),start=Math.max(0,Math.min(duration-sample,duration*.35)),job={idx:0,start,end:start+sample},texts=[];
+ for(let i=0;i<candidates.length;i++){const t=performance.now(),r=await requestJob(0,job,candidates[i]),wall=performance.now()-t,txt=r.text||'';texts.push(txt);bench.push({kind:'chunk',chunk:candidates[i],wall_ms:wall,throughput:sample/(wall/1000),text:txt});setp(5+10*(i+1)/candidates.length,'Probando bloque '+candidates[i]+'s…','cortes');await putLab()}
  const rows=bench.filter(x=>x.kind==='chunk');for(let i=0;i<rows.length;i++){const others=texts.filter((_,j)=>j!==i),ag=others.reduce((a,t)=>a+sim(texts[i],t),0)/Math.max(1,others.length);rows[i].agreement=ag}
- const eligible=rows.filter(x=>x.agreement>=.90),best=[...(eligible.length?eligible:rows)].sort((a,b)=>b.throughput-a.throughput)[0];blockS=best.chunk;stepS=Math.max(10,blockS-3);$('bestChunk').textContent=blockS+'s';$('agreement').textContent=Math.round(best.agreement*100)+'%';$('benchRows').innerHTML=rows.map(x=>'<div class="row"><b>bloque '+x.chunk+'s'+(x===best?' ✓':'')+'</b><span>'+x.throughput.toFixed(2)+'×</span><span>'+Math.round(x.agreement*100)+'% acuerdo</span><span>'+(x.wall_ms/1000).toFixed(1)+'s</span></div>').join('');await putLab();return best
+ const eligible=rows.filter(x=>x.agreement>=.88),best=[...(eligible.length?eligible:rows)].sort((a,b)=>b.throughput-a.throughput)[0];blockS=best.chunk;stepS=Math.max(10,blockS-3);$('bestChunk').textContent=blockS+'s';$('agreement').textContent=Math.round(best.agreement*100)+'%';$('benchRows').innerHTML=rows.map(x=>'<div class="row"><b>bloque '+x.chunk+'s'+(x===best?' ✓':'')+'</b><span>'+x.throughput.toFixed(2)+'×</span><span>'+Math.round(x.agreement*100)+'%</span><span>'+(x.wall_ms/1000).toFixed(1)+'s</span></div>').join('');await putLab();return best
 }
 async function runQueue(active,jobs,chunk,onResult=null){
  let cursor=0,done=0;const started=performance.now(),outputs=[];
@@ -99,15 +109,28 @@ async function runQueue(active,jobs,chunk,onResult=null){
  })
 }
 async function benchTabs(){
- setp(22,'Probando topologías de pestañas…','topología');const samples=sampleSet(8,Math.min(20,Math.max(10,duration/100))),rows=[];let baseTp=0,baseline=null,best=null,prevTp=0;
- for(let level=1;level<=maxTabs;level++){await initSlot(level-1);await warm(level-1);const active=Array.from({length:level},(_,i)=>i),t=performance.now(),r=await runQueue(active,samples,blockS),wall=(performance.now()-t)/1000,audio=samples.reduce((a,s)=>a+(s.end-s.start),0),tp=audio/wall;
-  const texts=r.outputs.sort((a,b)=>a.job.idx-b.job.idx).map(x=>x.text||'');if(level===1){baseTp=tp;baseline=texts}
-  const ag=baseline?texts.reduce((a,x,i)=>a+sim(baseline[i]||'',x),0)/Math.max(1,texts.length):1,row={kind:'tabs',tabs:level,throughput:tp,speedup:tp/baseTp,efficiency:(tp/baseTp)/level,agreement:ag,wall_s:wall};bench.push(row);rows.push(row);
-  if(!best||((ag>=.90)&&(tp>best.throughput)))best=row;
-  $('benchRows').innerHTML+= '<div class="row"><b>'+level+' pestaña'+(level>1?'s':'')+(best===row?' ✓':'')+'</b><span>'+tp.toFixed(2)+'×</span><span>speedup '+row.speedup.toFixed(2)+'×</span><span>'+Math.round(ag*100)+'%</span></div>';
-  setp(22+18*level/maxTabs,'Probando '+level+' pestaña'+(level>1?'s':'')+'…','topología');await putLab();if(level>1&&prevTp&&tp<prevTp*.97)break;prevTp=tp
+ setp(16,'Barrido rápido de topologías…','topología');
+ const quick=sampleSet(4,Math.min(8,Math.max(5,duration/300))),levels=[1,2,3,4,6].filter(x=>x<=maxTabs),rows=[];let baseTp=0,baseline=null;
+ for(const level of levels){
+   while(states.filter(s=>s.ready).length<level){const i=states.findIndex(s=>!s.ready&&!s.error);if(i<0)break;await initSlot(i);await warm(i)}
+   const active=Array.from({length:level},(_,i)=>i),t=performance.now(),r=await runQueue(active,quick,blockS),wall=(performance.now()-t)/1000,audio=quick.reduce((a,s)=>a+(s.end-s.start),0),tp=audio/wall;
+   const texts=r.outputs.sort((a,b)=>a.job.idx-b.job.idx).map(x=>x.text||'');if(level===1){baseTp=tp;baseline=texts}
+   const ag=baseline?texts.reduce((a,x,i)=>a+sim(baseline[i]||'',x),0)/Math.max(1,texts.length):1,row={kind:'tabs-quick',tabs:level,throughput:tp,speedup:tp/baseTp,efficiency:(tp/baseTp)/level,agreement:ag,wall_s:wall};bench.push(row);rows.push(row);
+   $('benchRows').innerHTML+= '<div class="row"><b>'+level+' tabs · ronda rápida</b><span>'+tp.toFixed(2)+'×</span><span>'+row.speedup.toFixed(2)+'× speedup</span><span>'+Math.round(ag*100)+'%</span></div>';
+   setp(16+18*(levels.indexOf(level)+1)/levels.length,'Ronda rápida · '+level+' pestañas','topología');await putLab()
  }
- if(!best)best=rows[0];$('bestTabs').textContent=best.tabs;await putLab({bestTabs:best.tabs});return best.tabs
+ const finalists=[...rows].filter(x=>x.agreement>=.88).sort((a,b)=>b.throughput-a.throughput).slice(0,2);
+ if(finalists.length<2)finalists.splice(0,finalists.length,...[...rows].sort((a,b)=>b.throughput-a.throughput).slice(0,2));
+ setp(35,'Confirmando las 2 topologías finalistas…','finalistas');
+ const confirm=sampleSet(6,Math.min(15,Math.max(10,duration/180))),confirmRows=[];
+ for(const f of finalists){
+   const active=Array.from({length:f.tabs},(_,i)=>i),vals=[];
+   for(let rep=0;rep<2;rep++){const t=performance.now(),r=await runQueue(active,confirm,blockS),wall=(performance.now()-t)/1000,audio=confirm.reduce((a,s)=>a+(s.end-s.start),0),tp=audio/wall;vals.push(tp)}
+   vals.sort((a,b)=>a-b);const med=vals[Math.floor(vals.length/2)],row={kind:'tabs-confirm',tabs:f.tabs,throughput_median:med,runs:vals,agreement:f.agreement};bench.push(row);confirmRows.push(row);
+   $('benchRows').innerHTML+= '<div class="row"><b>'+f.tabs+' tabs · finalista</b><span>med '+med.toFixed(2)+'×</span><span>'+vals.map(x=>x.toFixed(2)+'×').join(' / ')+'</span><span>'+Math.round(f.agreement*100)+'%</span></div>';await putLab()
+ }
+ const best=[...confirmRows].sort((a,b)=>b.throughput_median-a.throughput_median)[0]||{tabs:1,throughput_median:baseTp,agreement:1};
+ $('bestTabs').textContent=best.tabs;$('agreement').textContent=Math.round((best.agreement||1)*100)+'%';await putLab({bestTabs:best.tabs,searchComplete:true});return best.tabs
 }
 function makeBlocks(){blocks=[];for(let i=0,start=0;start<duration;i++,start+=stepS)blocks.push({i,start,end:Math.min(duration,start+blockS),status:'queued',text:''});renderAll()}
 async function fullRun(nTabs){
@@ -116,11 +139,15 @@ async function fullRun(nTabs){
  const wall=(performance.now()-t0)/1000,audio=blocks.reduce((a,b)=>a+(b.end-b.start),0);setp(100,'Listo · transcripción y experimento completos','listo','Ya podés cerrar los motores auxiliares.');$('eta').textContent='listo';$('export').disabled=false;renderAll();await putLab({bestTabs:nTabs,complete:true,wall_s:wall,throughput:audio/wall,transcript:$('out').value});for(let i=0;i<maxTabs;i++)ch.postMessage({kind:'close',slot:i})
 }
 async function start(){
- if(running)return;running=true;$('start').disabled=true;await ensureTabs();await benchChunks();const bestTabs=await benchTabs();await fullRun(bestTabs);running=false
+ if(running)return;running=true;$('start').disabled=true;$('full').disabled=true;
+ await ensureTabs();await benchChunks();bestTabs=await benchTabs();searchComplete=true;running=false;
+ setp(100,'Búsqueda rápida terminada','configuración elegida','Ganador: '+bestTabs+' pestaña(s), bloque '+blockS+'s. Todavía NO procesamos la hora completa.');
+ $('full').disabled=false;$('export').disabled=false;await putLab({bestTabs,searchComplete:true,complete:false});
 }
-async function boot(){const fast=await getDB(FAST_DB,FAST_STORE);if(fast?.file){sourceFile=fast.file;duration=+fast.duration||0;$('start').disabled=false;setp(0,'Audio guardado encontrado','listo para arrancar',fast.file.name+' · '+(duration?Math.round(duration/60)+' min':'duración al abrir motores'))}else{setp(0,'No encontré el audio guardado','elegir audio','Elegilo una vez y después arrancá.')}}
+async function boot(){fastState=await getDB(FAST_DB,FAST_STORE);if(fastState?.file){sourceFile=fastState.file;duration=+fastState.duration||0;$('start').disabled=false;setp(0,'Audio guardado encontrado','listo para búsqueda rápida',fastState.file.name+' · '+(duration?Math.round(duration/60)+' min':'duración al abrir motores')+' · la búsqueda usa sólo muestras cortas distribuidas')}else{setp(0,'No encontré el audio guardado','elegir audio','Elegilo una vez y después arrancá.')}}
 $('file').onchange=async e=>{const f=e.target.files?.[0];if(!f)return;sourceFile=f;try{const db=await openDB(FAST_DB,FAST_STORE);await new Promise((res,rej)=>{const tx=db.transaction(FAST_STORE,'readwrite');tx.objectStore(FAST_STORE).put({key:'current',file:f,fileMeta:{name:f.name,size:f.size,lastModified:f.lastModified}});tx.oncomplete=res;tx.onerror=()=>rej(tx.error)});db.close();$('start').disabled=false;setp(0,'Audio guardado','listo para arrancar',f.name)}catch(err){setp(0,'No pude guardar el audio','error',err.message)}};
 $('start').onclick=()=>start().catch(e=>{running=false;$('start').disabled=false;setp(0,'Error: '+e.message,'error')});
+$('full').onclick=()=>{if(running||!searchComplete)return;running=true;$('full').disabled=true;fullRun(bestTabs).then(()=>{running=false}).catch(e=>{running=false;$('full').disabled=false;setp(0,'Error corrida completa: '+e.message,'error')})};
 $('copy').onclick=()=>navigator.clipboard.writeText($('out').value);
 $('export').onclick=async()=>{const s=await getDB(LAB_DB,LAB_STORE),u=URL.createObjectURL(new Blob([JSON.stringify(s,null,2)],{type:'application/json'})),a=document.createElement('a');a.href=u;a.download='stt-lab-result.json';a.click();setTimeout(()=>URL.revokeObjectURL(u),1000)};
 setInterval(updateStats,500);boot();
