@@ -29,8 +29,8 @@ textarea{width:100%;min-height:300px;background:#080c0f;color:var(--fg);border:1
 <b>Prueba controlada de precisión</b>
 <div class="note">Leé este texto una sola vez. Guardamos esa misma grabación local y la pasamos por varias estrategias de corte. Así comparamos manzanas con manzanas, una rareza científica sorprendentemente útil.</div>
 <div id="reference" class="reference">Esta mañana, Clara salió temprano de su edificio y caminó hasta una plaza tranquila. En una esquina encontró una bicicleta roja junto a un árbol enorme. Más adelante, un perro pequeño cruzó la calle detrás de una señora con paraguas. El cielo estaba despejado, aunque todavía quedaban charcos de la tormenta nocturna. Clara compró un café, miró su reloj y siguió hacia la estación. Antes de llegar, escuchó una campana lejana y vio pasar un colectivo vacío. Entonces decidió sentarse unos minutos, respirar despacio y observar cómo empezaba el movimiento de la ciudad.</div>
-<div class="actions"><button id="testStart" class="primary" disabled>🎙️ Grabar lectura de prueba</button><button id="testStop" disabled>Terminé de leer</button></div>
-<div class="meta"><span id="testState" class="pill">esperando</span><span id="testDur" class="pill">— s</span><span id="testBest" class="pill">ganador —</span></div>
+<div class="actions"><button id="testStart" class="primary" disabled>🎙️ Grabar lectura dorada</button><button id="testStop" disabled>Terminé de leer</button><button id="replay" disabled>▶ Repetir sobre audio guardado</button><button id="exportDiag" disabled>Exportar diagnóstico JSON</button></div>
+<div class="meta"><span id="testState" class="pill">esperando</span><span id="testDur" class="pill">— s</span><span id="testBest" class="pill">ganador —</span><span id="gate" class="pill">gate —</span><span id="golden" class="pill">golden: no</span></div>
 <div id="testRows" class="rows"><div class="note">Después de leer, se prueban: sin cortes, 4/1, 4/2, 6/2, 8/3 y 10/4 segundos de bloque/solapamiento.</div></div>
 </section>
 
@@ -38,10 +38,10 @@ textarea{width:100%;min-height:300px;background:#080c0f;color:var(--fg);border:1
 <section class="card"><b>Últimos bloques</b><div id="segments" class="note">Todavía no hay audio.</div></section>
 
 <script type="module">
-const $=id=>document.getElementById(id),BUILD='STT-LIVE-V2-20260929';
+const $=id=>document.getElementById(id),BUILD='STT-LIVE-V3-20260929',LIVE_DB='stt-live-v3',LIVE_STORE='runs',LIVE_KEY='golden';
 const TEST_TEXT=$('reference').textContent.trim();
 let model=null,stream=null,ctx=null,node=null,source=null,running=false,processing=false,nativeRate=48000,parts=[],samples=0,text='',segments=[],capturedS=0;
-let testStream=null,testCtx=null,testNode=null,testSource=null,testParts=[],testRate=48000,testRunning=false,testResults=[];
+let testStream=null,testCtx=null,testNode=null,testSource=null,testParts=[],testRate=48000,testRunning=false,testResults=[],goldenPcm=null,goldenMeta=null;
 const CHUNK_S=4,OVERLAP_S=2,SILENCE_RMS=.0045;
 const TEST_CONFIGS=[
  {name:'sin cortes',chunk:null,overlap:0,live:false},
@@ -51,6 +51,20 @@ const TEST_CONFIGS=[
  {name:'8s / 3s',chunk:8,overlap:3,live:true},
  {name:'10s / 4s',chunk:10,overlap:4,live:true}
 ];
+
+function openLiveDB(){return new Promise((res,rej)=>{const q=indexedDB.open(LIVE_DB,1);q.onupgradeneeded=()=>{if(!q.result.objectStoreNames.contains(LIVE_STORE))q.result.createObjectStore(LIVE_STORE,{keyPath:'key'})};q.onsuccess=()=>res(q.result);q.onerror=()=>rej(q.error)})}
+async function getGolden(){try{const db=await openLiveDB(),v=await new Promise((res,rej)=>{const q=db.transaction(LIVE_STORE,'readonly').objectStore(LIVE_STORE).get(LIVE_KEY);q.onsuccess=()=>res(q.result||null);q.onerror=()=>rej(q.error)});db.close();return v}catch{return null}}
+async function putGolden(v){try{const db=await openLiveDB();await new Promise((res,rej)=>{const tx=db.transaction(LIVE_STORE,'readwrite');tx.objectStore(LIVE_STORE).put({key:LIVE_KEY,...v,updated_at:new Date().toISOString()});tx.oncomplete=res;tx.onerror=()=>rej(tx.error)});db.close()}catch(e){console.warn(e)}}
+function gateResult(){
+ const base=testResults.find(x=>x.name==='4s / 2s'),live=testResults.filter(x=>x.live);
+ if(!base)return{base:null,winner:null,promote:false};
+ const eligible=live.filter(x=>x.speed>=1&&x.first_latency_s<=8&&x.wer<=base.wer+1e-9&&x.dup<=base.dup);
+ const winner=[...eligible].sort((a,b)=>a.wer-b.wer||a.dup-b.dup||a.first_latency_s-b.first_latency_s||b.speed-a.speed)[0]||base;
+ const promote=winner.name!==base.name&&(winner.wer<base.wer-1e-9||winner.dup<base.dup||winner.first_latency_s<base.first_latency_s-.25);
+ return{base,winner,promote}
+}
+function diag(){const g=gateResult();return{build:BUILD,created_at:new Date().toISOString(),reference:TEST_TEXT,environment:{userAgent:navigator.userAgent,cores:navigator.hardwareConcurrency||null,deviceMemory:navigator.deviceMemory||null},golden:{duration_s:goldenPcm?goldenPcm.length/16000:null,sample_rate:16000},baseline:'4s / 2s',gate:{promote:g.promote,winner:g.winner?.name||null,baseline_wer:g.base?.wer??null,winner_wer:g.winner?.wer??null},results:testResults}}
+function downloadDiag(){const u=URL.createObjectURL(new Blob([JSON.stringify(diag(),null,2)],{type:'application/json'})),a=document.createElement('a');a.href=u;a.download='stt-live-v3-diagnostic.json';a.click();setTimeout(()=>URL.revokeObjectURL(u),1000)}
 function norm(s){return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9ñ\s]/gi,' ').replace(/\s+/g,' ').trim().split(' ').filter(Boolean)}
 function tokenDist(A,B){const d=Array.from({length:B.length+1},(_,i)=>i);for(let i=1;i<=A.length;i++){let p=d[0];d[0]=i;for(let j=1;j<=B.length;j++){const t=d[j];d[j]=Math.min(d[j]+1,d[j-1]+1,p+(A[i-1]===B[j-1]?0:1));p=t}}return d[B.length]}
 function merge(a,b){
@@ -96,7 +110,7 @@ async function startTest(){
 }
 async function stopTest(){
  if(!testRunning)return;testRunning=false;$('testStop').disabled=true;try{testNode?.disconnect();testSource?.disconnect();testStream?.getTracks().forEach(t=>t.stop());await testCtx?.close()}catch{}
- $('meter').style.width='0%';const raw=concat(testParts),dur=raw.length/testRate;$('testDur').textContent=dur.toFixed(1)+' s';$('testState').textContent='comparando estrategias…';await runTests(resample(raw,testRate,16000));$('mic').disabled=false;$('testStart').disabled=false
+ $('meter').style.width='0%';const raw=concat(testParts),pcm=resample(raw,testRate,16000),dur=pcm.length/16000;goldenPcm=pcm;goldenMeta={created_at:new Date().toISOString(),duration_s:dur,sample_rate:16000};$('testDur').textContent=dur.toFixed(1)+' s';$('golden').textContent='golden: guardado';$('testState').textContent='comparando estrategias…';await putGolden({pcm,goldenMeta,reference:TEST_TEXT,results:[],build:BUILD});await runTests(pcm);$('mic').disabled=false;$('testStart').disabled=false;$('replay').disabled=false
 }
 async function segmented(pcm,dur,cfg){
  const t0=performance.now();let out='',firstMs=null,pieces=0;
@@ -106,8 +120,8 @@ async function segmented(pcm,dur,cfg){
  return{...cfg,text:out,wer:w,dup,pieces,wall_ms:wall,speed:dur/(wall/1000),first_latency_s:firstLatency}
 }
 function renderTests(){
- const lives=testResults.filter(x=>x.live),winner=[...lives].sort((a,b)=>a.wer-b.wer||a.dup-b.dup||a.first_latency_s-b.first_latency_s)[0],oracle=testResults.find(x=>!x.live);
- $('testBest').textContent=winner?'ganador live '+winner.name:'ganador —';
+ const oracle=testResults.find(x=>!x.live),g=gateResult(),winner=g.winner;
+ $('testBest').textContent=winner?'runtime '+winner.name:'ganador —';$('gate').textContent=g.promote?'gate: PROMOVER':'gate: baseline';$('gate').className='pill '+(g.promote?'ok':'warn');
  $('testRows').innerHTML=testResults.map(x=>'<div class="row '+(winner&&x.name===winner.name?'winner':'')+'"><div class="rowtop"><b>'+(winner&&x.name===winner.name?'✓ ':'')+escapeHtml(x.name)+'</b><span class="score">'+(100*x.wer).toFixed(1)+'% WER</span><span>'+x.dup+' dup</span><span>'+x.speed.toFixed(2)+'× proceso</span><span>1er texto ~'+x.first_latency_s.toFixed(1)+'s</span></div><div class="rowtext">'+escapeHtml(x.text||'[sin texto]')+'</div></div>').join('');
  if(oracle)$('testState').textContent='listo · sin cortes '+(100*oracle.wer).toFixed(1)+'% WER · mejor live '+(winner?(100*winner.wer).toFixed(1)+'%':'—')
 }
@@ -115,9 +129,12 @@ async function runTests(pcm){
  const dur=pcm.length/16000;if(dur<6){$('testState').textContent='grabación demasiado corta · leé todo el texto';return}
  testResults=[];$('testRows').innerHTML='';
  for(let i=0;i<TEST_CONFIGS.length;i++){const cfg=TEST_CONFIGS[i];$('testState').textContent='probando '+cfg.name+' · '+(i+1)+'/'+TEST_CONFIGS.length;const r=await segmented(pcm,dur,cfg);testResults.push(r);renderTests()}
+ await putGolden({pcm:goldenPcm,goldenMeta,reference:TEST_TEXT,results:testResults,diagnostic:diag(),build:BUILD});$('exportDiag').disabled=false;
 }
 $('mic').onclick=()=>startMic().catch(e=>{$('status').textContent='No pude abrir micrófono: '+e.message;$('status').className='big bad'});
 $('stop').onclick=stopMic;$('copy').onclick=()=>navigator.clipboard.writeText(text);$('clear').onclick=()=>{text='';segments=[];$('out').value='';$('copy').disabled=true;renderSegments()};
 $('testStart').onclick=()=>startTest().catch(e=>$('testState').textContent='Error micrófono: '+e.message);$('testStop').onclick=()=>stopTest().catch(e=>$('testState').textContent='Error prueba: '+e.message);
-(async()=>{try{const mod=await import('https://cdn.jsdelivr.net/npm/parakeet.js@1.4.4/+esm'),backend=navigator.gpu?'webgpu':'wasm';$('backend').textContent=backend.toUpperCase()+' · Parakeet 0.6B';model=await mod.fromHub('parakeet-tdt-0.6b-v3',{backend,encoderQuant:backend==='webgpu'?'fp32':'int8',decoderQuant:'int8',preprocessorBackend:'js'});$('status').textContent='Modelo listo';$('status').className='big ok';$('mic').disabled=false;$('testStart').disabled=false}catch(e){$('status').textContent='No cargó el modelo: '+e.message;$('status').className='big bad'}})();
+$('replay').onclick=()=>{if(!goldenPcm)return;$('replay').disabled=true;runTests(goldenPcm).finally(()=>$('replay').disabled=false)};
+$('exportDiag').onclick=downloadDiag;
+(async()=>{try{const saved=await getGolden();if(saved?.pcm){goldenPcm=saved.pcm instanceof Float32Array?saved.pcm:new Float32Array(saved.pcm);goldenMeta=saved.goldenMeta||{duration_s:goldenPcm.length/16000,sample_rate:16000};testResults=Array.isArray(saved.results)?saved.results:[];$('golden').textContent='golden: '+(goldenMeta.duration_s||0).toFixed(1)+' s';$('testDur').textContent=(goldenMeta.duration_s||0).toFixed(1)+' s';$('replay').disabled=false;if(testResults.length){renderTests();$('exportDiag').disabled=false}}const mod=await import('https://cdn.jsdelivr.net/npm/parakeet.js@1.4.4/+esm'),backend=navigator.gpu?'webgpu':'wasm';$('backend').textContent=backend.toUpperCase()+' · Parakeet 0.6B';model=await mod.fromHub('parakeet-tdt-0.6b-v3',{backend,encoderQuant:backend==='webgpu'?'fp32':'int8',decoderQuant:'int8',preprocessorBackend:'js'});$('status').textContent='Modelo listo';$('status').className='big ok';$('mic').disabled=false;$('testStart').disabled=false}catch(e){$('status').textContent='No cargó el modelo: '+e.message;$('status').className='big bad'}})();
 </script></main></body></html>
