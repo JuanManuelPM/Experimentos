@@ -1,7 +1,7 @@
 <!doctype html><html lang="es"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="color-scheme" content="dark"><meta http-equiv="Cache-Control" content="no-cache,no-store,must-revalidate">
-<title>STT Lab V3</title>
+<title>STT Lab V4</title>
 <style>
 :root{--bg:#07090b;--p:#10151a;--line:#28343d;--fg:#f3f6f8;--mut:#8d9aa5;--ok:#77e39b;--warn:#ffd166;--bad:#ff7b7b}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:14px/1.45 system-ui,-apple-system,Segoe UI,sans-serif}main{max-width:1080px;margin:auto;padding:12px 12px 70px}
@@ -16,11 +16,11 @@ button,label.btn{border:1px solid var(--line);background:#172027;color:var(--fg)
 textarea{width:100%;min-height:260px;background:#080c0f;color:var(--fg);border:1px solid var(--line);border-radius:10px;padding:11px;font:14px/1.55 system-ui;margin-top:8px}
 @media(max-width:760px){.stats{grid-template-columns:repeat(2,1fr)}.map{grid-template-columns:repeat(12,1fr)}}
 </style></head><body><main>
-<header><h1>STT Lab V3</h1><div class="sub">Crash-safe: una sola copia del audio, motores abiertos de a uno, checkpoints antes de cada escalada y recuperación automática.</div></header>
+<header><h1>STT Lab V4</h1><div class="sub">Producción segura: descarta métricas imposibles, usa el mejor nivel estable y reanuda la transcripción por bloques después de un crash.</div></header>
 <section class="panel">
 <div id="status" class="big">Buscando estado anterior…</div><div class="bar"><i id="bar"></i></div>
 <div class="meta"><span id="pct" class="pill">0%</span><span id="phase" class="pill">inicio</span><span id="hw" class="pill">hardware</span><span id="guard" class="pill">crash guard</span></div>
-<div class="actions"><button id="start" class="primary" disabled>Continuar búsqueda segura</button><button id="full" disabled>Transcribir completo con ganador</button><label class="btn" for="file">Elegir audio</label><input id="file" type="file" accept="audio/*,.wav,.mp3,.m4a,.ogg,.webm"><button id="export" disabled>Exportar métricas</button><button id="copy" disabled>Copiar texto</button></div>
+<div class="actions"><button id="start" class="primary" disabled>Revalidar búsqueda</button><button id="full" disabled>Transcribir completo con ganador seguro</button><label class="btn" for="file">Elegir audio</label><input id="file" type="file" accept="audio/*,.wav,.mp3,.m4a,.ogg,.webm"><button id="export" disabled>Exportar métricas</button><button id="copy" disabled>Copiar texto</button></div>
 <div id="detail" class="note">Si Firefox cayó durante una topología, esa escalada se trata como sospechosa y no se repite automáticamente.</div>
 </section>
 <section class="panel"><div class="stats">
@@ -32,9 +32,9 @@ textarea{width:100%;min-height:260px;background:#080c0f;color:var(--fg);border:1
 <section class="panel"><b>Texto combinado</b><textarea id="out"></textarea></section>
 
 <script type="module">
-const $=id=>document.getElementById(id),FAST_DB='stt-fast-v1',FAST_STORE='jobs',LAB_DB='stt-lab-v1',LAB_STORE='runs',BUILD='STT-LAB-V3-20260929',GUARD='stt_lab_guard_v3';
+const $=id=>document.getElementById(id),FAST_DB='stt-fast-v1',FAST_STORE='jobs',LAB_DB='stt-lab-v1',LAB_STORE='runs',BUILD='STT-LAB-V4-20260929',GUARD='stt_lab_guard_v3';
 const group=Math.random().toString(36).slice(2),ch=new BroadcastChannel('stt-topology-'+group);
-let fastState=null,sourceFile=null,pcm=null,duration=0,tabs=[],states=[],blockS=90,stepS=87,blocks=[],bench=[],bestTabs=1,searchComplete=false,running=false,startWall=0,totalWords=0,pending=new Map(),lastPersist=0,prior=null,suspectedUnsafe=null,lastSafe=1;
+let fastState=null,sourceFile=null,pcm=null,duration=0,tabs=[],states=[],blockS=90,stepS=87,blocks=[],bench=[],bestTabs=1,searchComplete=false,running=false,startWall=0,totalWords=0,pending=new Map(),lastPersist=0,prior=null,suspectedUnsafe=null,lastSafe=1,invalidLegacy=false;
 $('hw').textContent=(navigator.hardwareConcurrency||'?')+' cores'+(navigator.deviceMemory?' · '+navigator.deviceMemory+' GB':'')+(navigator.gpu?' · WebGPU':'');
 function openDB(name,store){return new Promise((res,rej)=>{const q=indexedDB.open(name,1);q.onupgradeneeded=()=>{if(!q.result.objectStoreNames.contains(store))q.result.createObjectStore(store,{keyPath:'key'})};q.onsuccess=()=>res(q.result);q.onerror=()=>rej(q.error)})}
 async function getDB(name,store,key='current'){try{const db=await openDB(name,store),v=await new Promise((res,rej)=>{const q=db.transaction(store,'readonly').objectStore(store).get(key);q.onsuccess=()=>res(q.result||null);q.onerror=()=>rej(q.error)});db.close();return v}catch{return null}}
@@ -65,6 +65,27 @@ async function runQueue(active,jobs,chunk,onResult=null){let cursor=0,done=0;con
 async function warm(i){const s=Math.max(0,Math.min(duration-5,duration*.12));await requestJob(i,{idx:'warm',start:s,end:s+5},30)}
 async function prepareChunk(){if(+fastState?.winner){blockS=+fastState.winner;stepS=Math.max(10,blockS-3);if(!bench.some(x=>x.kind==='chunk-prior'))bench.push({kind:'chunk-prior',chunk:blockS});$('bestChunk').textContent=blockS+'s';renderBench();return}await initSlot(0);await warm(0);const cs=[30,60,90],sample=Math.min(35,Math.max(20,duration/200)),start=Math.max(0,Math.min(duration-sample,duration*.35)),texts=[];for(const c of cs){const t=performance.now(),r=await requestJob(0,{start,end:start+sample},c),wall=performance.now()-t;bench.push({kind:'chunk',chunk:c,throughput:sample/(wall/1000),text:r.text||''});texts.push(r.text||'');await putLab({force:true})}const rs=bench.filter(x=>x.kind==='chunk');for(let i=0;i<rs.length;i++)rs[i].agreement=texts.filter((_,j)=>j!==i).reduce((a,x)=>a+sim(texts[i],x),0)/Math.max(1,texts.length-1);const best=[...rs].filter(x=>x.agreement>=.85).sort((a,b)=>b.throughput-a.throughput)[0]||[...rs].sort((a,b)=>b.throughput-a.throughput)[0];blockS=best.chunk;stepS=Math.max(10,blockS-3);$('bestChunk').textContent=blockS+'s';renderBench()}
 function completedLevels(){const m=new Map();for(const x of bench.filter(x=>x.kind==='tabs-quick'||x.kind==='tabs-confirm'))m.set(x.tabs,x);return [...m.keys()].sort((a,b)=>a-b)}
+function sanitizeBench(){
+ const before=bench.length;
+ bench=bench.filter(x=>{
+   if(x.kind==='tabs-confirm'){
+     const tp=Number(x.throughput_median??x.throughput??0),runs=Array.isArray(x.runs)?x.runs:[];
+     if(!Number.isFinite(tp)||tp<=0||tp>50||runs.some(v=>!Number.isFinite(+v)||+v<=0||+v>50)){invalidLegacy=true;return false}
+   }
+   if(x.kind==='tabs-quick'){
+     const tp=Number(x.throughput||0);
+     if(!Number.isFinite(tp)||tp<=0||tp>50){invalidLegacy=true;return false}
+   }
+   return true;
+ });
+ return before-bench.length;
+}
+function chooseSafeTabs(){
+ const quick=bench.filter(x=>x.kind==='tabs-quick'&&!x.unsafe&&x.tabs<=4&&Number.isFinite(+x.throughput)&&+x.throughput>0&&+x.throughput<50).sort((a,b)=>b.throughput-a.throughput);
+ const confirmed=bench.filter(x=>x.kind==='tabs-confirm'&&!x.unsafe&&x.tabs<=4&&Number.isFinite(+(x.throughput_median??x.throughput))&&+(x.throughput_median??x.throughput)>0&&+(x.throughput_median??x.throughput)<50).sort((a,b)=>(b.throughput_median??b.throughput)-(a.throughput_median??a.throughput));
+ const pick=confirmed[0]||quick[0];
+ return pick?Math.max(1,+pick.tabs):Math.min(2,Math.max(1,+lastSafe||1));
+}
 async function search(){
  if(running)return;running=true;$('start').disabled=true;await decodeOnce();await prepareChunk();
  let levels=completedLevels(),safe=levels.length?Math.max(...levels):1;lastSafe=safe;
@@ -87,23 +108,52 @@ async function search(){
  }
  const finals=bench.filter(x=>x.kind==='tabs-confirm'&&!x.unsafe).sort((a,b)=>(b.throughput_median||0)-(a.throughput_median||0)),qs=bench.filter(x=>x.kind==='tabs-quick'&&!x.unsafe).sort((a,b)=>b.throughput-a.throughput),best=finals[0]||qs[0]||{tabs:1,throughput:0};bestTabs=best.tabs;searchComplete=true;$('bestTabs').textContent=bestTabs;$('agreement').textContent='—';$('full').disabled=false;$('export').disabled=false;guardClean();await putLab({force:true,bestTabs,searchComplete:true,searchInProgress:false,attemptingTabs:null});setp(100,'Búsqueda recuperada/terminada','listo','Ganador seguro: '+bestTabs+' pestaña(s). No se repitieron las etapas ya guardadas.');running=false
 }
-function makeBlocks(){blocks=[];for(let i=0,start=0;start<duration;i++,start+=stepS)blocks.push({i,start,end:Math.min(duration,start+blockS),status:'queued',text:''});renderMap()}
-async function fullRun(){if(!searchComplete||running)return;running=true;$('full').disabled=true;await decodeOnce();for(let i=0;i<bestTabs;i++){await initSlot(i);if(!states[i].warmed){await warm(i);states[i].warmed=true}}makeBlocks();startWall=performance.now();totalWords=0;guardSet({running:true,closed_cleanly:false,phase:'full',lastSafe:bestTabs});setp(5,'Transcribiendo completo con '+bestTabs+' motores','corrida completa');await runQueue(Array.from({length:bestTabs},(_,i)=>i),blocks,blockS,async(job,r,slot)=>{const b=blocks[job.i];if(r.error)b.status='error';else{b.status='done';b.text=r.text||'';b.slot=slot;b.infer_ms=r.infer_ms;totalWords+=words(b.text).length}renderMap();renderText();await putLab()});guardClean();await putLab({force:true,complete:true,transcript:$('out').value});setp(100,'Transcripción completa terminada','listo');$('export').disabled=false;running=false}
+function makeBlocks(){
+ const reusable=Array.isArray(prior?.blocks)&&prior.blocks.length&&Math.abs((+prior.duration||0)-duration)<1&&(+prior.blockS||0)===blockS&&(+prior.stepS||0)===stepS;
+ if(reusable){
+   blocks=prior.blocks.map(b=>({i:+b.i,start:+b.start,end:+b.end,status:b.status==='done'?'done':'queued',text:b.text||'',slot:b.slot??null,infer_ms:b.infer_ms??null}));
+ }else{
+   blocks=[];for(let i=0,start=0;start<duration;i++,start+=stepS)blocks.push({i,start,end:Math.min(duration,start+blockS),status:'queued',text:''});
+ }
+ renderMap();renderText();
+}
+async function fullRun(){
+ if(!searchComplete||running)return;
+ running=true;$('full').disabled=true;await decodeOnce();
+ bestTabs=chooseSafeTabs();$('bestTabs').textContent=bestTabs;
+ for(let i=0;i<bestTabs;i++){await initSlot(i);if(!states[i].warmed){await warm(i);states[i].warmed=true}}
+ makeBlocks();const remaining=blocks.filter(b=>b.status!=='done');totalWords=blocks.filter(b=>b.status==='done').reduce((a,b)=>a+words(b.text).length,0);startWall=performance.now();
+ if(!remaining.length){setp(100,'La transcripción completa ya estaba terminada','listo');$('export').disabled=false;running=false;return}
+ guardSet({running:true,closed_cleanly:false,phase:'full',lastSafe:bestTabs});
+ setp(5,'Transcribiendo '+remaining.length+' bloques pendientes con '+bestTabs+' motores','corrida completa','Los bloques ya terminados se conservaron.');
+ await runQueue(Array.from({length:bestTabs},(_,i)=>i),remaining,blockS,async(job,r,slot)=>{const b=blocks[job.i];if(r.error)b.status='error';else{b.status='done';b.text=r.text||'';b.slot=slot;b.infer_ms=r.infer_ms;totalWords+=words(b.text).length}renderMap();renderText();await putLab()});
+ guardClean();await putLab({force:true,complete:true,transcript:$('out').value});setp(100,'Transcripción completa terminada','listo');$('export').disabled=false;running=false
+}
 async function boot(){
  fastState=await getDB(FAST_DB,FAST_STORE);prior=await getDB(LAB_DB,LAB_STORE);
- if(prior?.bench?.length){bench=prior.bench;blockS=+prior.blockS||blockS;stepS=+prior.stepS||stepS;bestTabs=+prior.bestTabs||1;searchComplete=!!prior.searchComplete;lastSafe=+prior.lastSafe||1;renderBench();$('bestChunk').textContent=blockS+'s';if(searchComplete){$('bestTabs').textContent=bestTabs;$('full').disabled=false;$('export').disabled=false}}
+ if(prior?.bench?.length){
+   bench=prior.bench;blockS=+prior.blockS||blockS;stepS=+prior.stepS||stepS;bestTabs=+prior.bestTabs||1;searchComplete=!!prior.searchComplete;lastSafe=+prior.lastSafe||1;
+   const dropped=sanitizeBench();
+   if(dropped||bestTabs>4){invalidLegacy=true;bestTabs=chooseSafeTabs();searchComplete=bench.some(x=>x.kind==='tabs-quick'&&!x.unsafe&&x.tabs<=4);suspectedUnsafe=6}
+   renderBench();$('bestChunk').textContent=blockS+'s';
+   if(searchComplete){$('bestTabs').textContent=bestTabs;$('full').disabled=false;$('export').disabled=false}
+ }
  const g=guardGet();if(g?.running&&!g.closed_cleanly&&g.attemptingTabs){suspectedUnsafe=+g.attemptingTabs;$('guard').textContent='crash probable en '+suspectedUnsafe+' tabs';$('guard').className='pill warn'}
  if(!suspectedUnsafe&&prior?.searchInProgress&&prior?.attemptingTabs)suspectedUnsafe=+prior.attemptingTabs;
  if(!suspectedUnsafe&&prior?.build==='STT-LAB-V2-20260929'&&!prior?.searchComplete){
    const oldLevels=[...new Set((prior?.bench||[]).filter(x=>x.kind==='tabs-quick'&&!x.unsafe&&x.throughput>0).map(x=>+x.tabs).filter(Number.isFinite))].sort((a,b)=>a-b);
    if(oldLevels.length){lastSafe=Math.max(...oldLevels);suspectedUnsafe=lastSafe+1}
  }
- if(fastState?.file){sourceFile=fastState.file;duration=+fastState.duration||0;$('start').disabled=false;setp(0,prior?.bench?.length?'Estado parcial recuperado':'Audio encontrado','listo para continuar',(prior?.bench?.length?'No empezamos de cero. ':'')+(suspectedUnsafe?'Se evitará automáticamente la escalada sospechosa de '+suspectedUnsafe+' pestañas.':'Podés continuar la búsqueda segura.'))}else setp(0,'No encontré el audio','elegir audio')
+ if(fastState?.file){
+   sourceFile=fastState.file;duration=+fastState.duration||0;$('start').disabled=false;
+   const msg=invalidLegacy?'Se descartaron métricas imposibles de confirmación. Producción fijada al mejor nivel estable ≤4 pestañas. ':prior?.bench?.length?'No empezamos de cero. ':'';
+   setp(0,searchComplete?'Listo para transcribir con configuración segura':prior?.bench?.length?'Estado parcial recuperado':'Audio encontrado','listo para continuar',msg+(suspectedUnsafe?'Se evita la escalada sospechosa de '+suspectedUnsafe+' pestañas.':''));
+ }else setp(0,'No encontré el audio','elegir audio')
 }
 $('start').onclick=()=>search().catch(e=>{running=false;$('start').disabled=false;setp(0,'Error: '+e.message,'error')});
 $('full').onclick=()=>fullRun().catch(e=>{running=false;$('full').disabled=false;setp(0,'Error corrida completa: '+e.message,'error')});
 $('copy').onclick=()=>navigator.clipboard.writeText($('out').value);
-$('export').onclick=async()=>{const s=await getDB(LAB_DB,LAB_STORE),u=URL.createObjectURL(new Blob([JSON.stringify(s,null,2)],{type:'application/json'})),a=document.createElement('a');a.href=u;a.download='stt-lab-v3-result.json';a.click();setTimeout(()=>URL.revokeObjectURL(u),1000)};
+$('export').onclick=async()=>{const s=await getDB(LAB_DB,LAB_STORE),u=URL.createObjectURL(new Blob([JSON.stringify(s,null,2)],{type:'application/json'})),a=document.createElement('a');a.href=u;a.download='stt-lab-v4-result.json';a.click();setTimeout(()=>URL.revokeObjectURL(u),1000)};
 $('file').onchange=async e=>{const f=e.target.files?.[0];if(!f)return;sourceFile=f;const db=await openDB(FAST_DB,FAST_STORE);await new Promise((res,rej)=>{const tx=db.transaction(FAST_STORE,'readwrite');tx.objectStore(FAST_STORE).put({key:'current',file:f,fileMeta:{name:f.name,size:f.size,lastModified:f.lastModified}});tx.oncomplete=res;tx.onerror=()=>rej(tx.error)});db.close();$('start').disabled=false;setp(0,'Audio guardado','listo')};
 boot();
 </script></main></body></html>
