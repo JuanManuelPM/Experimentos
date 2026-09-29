@@ -1,0 +1,307 @@
+name: STT External Audio Matrix
+
+on:
+  schedule:
+    - cron: "*/5 * * * *"
+  workflow_dispatch:
+  push:
+    branches: [master]
+    paths:
+      - ".github/workflows/stt-audio-external-matrix.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: stt-audio-external-matrix
+  cancel-in-progress: false
+
+jobs:
+  discover:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.build.outputs.matrix }}
+      count: ${{ steps.build.outputs.count }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: master
+          fetch-depth: 1
+
+      - name: Poll temporary audio channel
+        run: |
+          set -euo pipefail
+          curl --retry 3 --retry-delay 2 --connect-timeout 10 --max-time 45 \
+            -fsSL "https://ntfy.sh/stt-audio-4a7c8d2f9e3b61c0/json?poll=1&since=12h" \
+            -o /tmp/stt-audio.ndjson || true
+          touch /tmp/stt-audio.ndjson
+
+      - id: build
+        name: Build missing engine matrix
+        shell: python
+        run: |
+          import json, pathlib, re, base64, os
+
+          refs = {
+            "natural":"Hoy quiero probar qué tan bien funciona esta transcripción cuando hablo a una velocidad normal y sin exagerar la pronunciación.",
+            "rioplatense":"Che, fijate si podés entenderme aunque hable rápido, junte algunas palabras y no marque demasiado cada sílaba.",
+            "prometeo":"Prometeo debería escuchar una frase, comparar varias hipótesis y conservar las palabras que aparecen con mayor consistencia.",
+            "confusiones":"Quiero comprobar si distingue entre esto, efecto, Héctor y texto cuando las palabras aparecen dentro de una frase completa.",
+            "numeros":"El martes catorce de octubre a las siete y media tengo que revisar treinta y dos archivos antes de las nueve.",
+            "tecnico":"Después voy a abrir GitHub, ejecutar el proceso y revisar si el build de Firefox coincide con el resultado publicado.",
+            "contexto":"Si una palabra sale mal al principio, no me importa que se corrija un segundo después, siempre que la frase final quede mejor y no pierda el contexto.",
+            "comandos":"Che Prometeo, poné pausa, bajá el volumen y después seguí escuchando cuando yo diga continuar."
+          }
+
+          engines = {
+            "fw-tiny": ("Faster Whisper Tiny", "external-cpu-int8-beam5"),
+            "fw-base": ("Faster Whisper Base", "external-cpu-int8-beam5"),
+            "fw-small": ("Faster Whisper Small", "external-cpu-int8-beam5"),
+            "fw-small-beam1": ("Faster Whisper Small", "external-cpu-int8-beam1"),
+            "fw-small-vad": ("Faster Whisper Small", "external-cpu-int8-vad"),
+            "fw-small-r1": ("Faster Whisper Small", "external-repeat-1"),
+            "fw-small-r2": ("Faster Whisper Small", "external-repeat-2"),
+            "fw-small-r3": ("Faster Whisper Small", "external-repeat-3"),
+            "vosk-042": ("Vosk 0.42 Python", "external-full")
+          }
+
+          pat = re.compile(r"^(mass-[^_]+)__([a-z0-9_-]+)__(STT-MASS-V4-20260928)\.wav$")
+          attachments = {}
+          for line in pathlib.Path("/tmp/stt-audio.ndjson").read_text(errors="replace").splitlines():
+              try: m = json.loads(line)
+              except Exception: continue
+              if m.get("event") != "message" or not isinstance(m.get("attachment"), dict):
+                  continue
+              a = m["attachment"]
+              name = a.get("name","")
+              mm = pat.match(name)
+              if not mm: continue
+              sid, test, build = mm.groups()
+              if test not in refs: continue
+              attachments[(sid,test)] = {
+                "session": sid, "test": test, "build": build,
+                "reference": refs[test], "url": a.get("url"), "name": name,
+                "ntfy_id": m.get("id"), "size": a.get("size")
+              }
+
+          existing = {}
+          for p in pathlib.Path("stt-results/sessions").glob("*.json"):
+              try: d = json.loads(p.read_text())
+              except Exception: continue
+              sid = d.get("session")
+              if not sid: continue
+              s = existing.setdefault(sid,set())
+              for r in d.get("results",[]):
+                  s.add((r.get("test") or r.get("test_id"), r.get("model"), r.get("config")))
+
+          include=[]
+          for engine,(model,config) in engines.items():
+              pending=[]
+              for item in attachments.values():
+                  if not item.get("url"): continue
+                  key=(item["test"],model,config)
+                  if key not in existing.get(item["session"],set()):
+                      pending.append(item)
+              if pending:
+                  packed=base64.b64encode(json.dumps(pending,ensure_ascii=False).encode()).decode()
+                  include.append({"engine":engine,"items_b64":packed})
+
+          matrix={"include":include}
+          with open(os.environ["GITHUB_OUTPUT"],"a") as f:
+              f.write("matrix="+json.dumps(matrix,separators=(",",":"))+"\n")
+              f.write("count="+str(len(include))+"\n")
+          print(json.dumps({"attachments":len(attachments),"engine_jobs":len(include)},indent=2))
+
+  process:
+    needs: discover
+    if: needs.discover.outputs.count != '0'
+    strategy:
+      fail-fast: false
+      max-parallel: 9
+      matrix: ${{ fromJSON(needs.discover.outputs.matrix) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Decode work
+        shell: python
+        env:
+          ITEMS_B64: ${{ matrix.items_b64 }}
+        run: |
+          import os,base64,pathlib
+          pathlib.Path("/tmp/items.json").write_bytes(base64.b64decode(os.environ["ITEMS_B64"]))
+
+      - name: Install engine dependencies
+        shell: bash
+        env:
+          ENGINE: ${{ matrix.engine }}
+        run: |
+          set -euo pipefail
+          python -m pip install --upgrade pip >/dev/null
+          if [[ "$ENGINE" == vosk-042 ]]; then
+            pip install vosk requests >/dev/null
+          else
+            pip install faster-whisper requests >/dev/null
+          fi
+
+      - name: Run engine over all pending audios
+        shell: python
+        env:
+          ENGINE: ${{ matrix.engine }}
+        run: |
+          import json, pathlib, os, time, re, unicodedata, wave, zipfile, subprocess
+          import requests
+
+          engine=os.environ["ENGINE"]
+          items=json.loads(pathlib.Path("/tmp/items.json").read_text())
+          work=pathlib.Path("/tmp/audio"); work.mkdir(exist_ok=True)
+          out=[]
+
+          def norm(s):
+              s="".join(c for c in unicodedata.normalize("NFD",str(s or "").lower()) if unicodedata.category(c)!="Mn")
+              s=re.sub(r"[^a-z0-9ñ\s]"," ",s)
+              return re.sub(r"\s+"," ",s).strip()
+          def toks(s): return norm(s).split()
+          def dist(a,b):
+              p=list(range(len(b)+1))
+              for i,x in enumerate(a,1):
+                  c=[i]+[0]*len(b)
+                  for j,y in enumerate(b,1): c[j]=min(p[j]+1,c[j-1]+1,p[j-1]+(x!=y))
+                  p=c
+              return p[-1]
+          def wer(r,h):
+              a,b=toks(r),toks(h); return 100*dist(a,b)/max(1,len(a))
+          def cer(r,h):
+              a=list(norm(r).replace(" ","")); b=list(norm(h).replace(" ","")); return 100*dist(a,b)/max(1,len(a))
+
+          if engine=="vosk-042":
+              from vosk import Model, KaldiRecognizer, SetLogLevel
+              SetLogLevel(-1)
+              z=pathlib.Path("/tmp/vosk.zip")
+              model_root=pathlib.Path("/tmp/vosk-model-small-es-0.42")
+              if not model_root.exists():
+                  rr=requests.get("https://alphacephei.com/vosk/models/vosk-model-small-es-0.42.zip",timeout=120); rr.raise_for_status(); z.write_bytes(rr.content)
+                  with zipfile.ZipFile(z) as zz: zz.extractall("/tmp")
+              model=Model(str(model_root))
+              model_name="Vosk 0.42 Python"; config="external-full"
+          else:
+              from faster_whisper import WhisperModel
+              model_id={"fw-tiny":"tiny","fw-base":"base"}.get(engine,"small")
+              beam=1 if engine=="fw-small-beam1" else 5
+              vad=(engine=="fw-small-vad")
+              config={
+                "fw-tiny":"external-cpu-int8-beam5","fw-base":"external-cpu-int8-beam5",
+                "fw-small":"external-cpu-int8-beam5","fw-small-beam1":"external-cpu-int8-beam1",
+                "fw-small-vad":"external-cpu-int8-vad","fw-small-r1":"external-repeat-1",
+                "fw-small-r2":"external-repeat-2","fw-small-r3":"external-repeat-3"
+              }[engine]
+              model_name={"tiny":"Faster Whisper Tiny","base":"Faster Whisper Base","small":"Faster Whisper Small"}[model_id]
+              load0=time.perf_counter()
+              model=WhisperModel(model_id,device="cpu",compute_type="int8",cpu_threads=4,num_workers=1)
+              model_load_ms=round((time.perf_counter()-load0)*1000)
+
+          for idx,item in enumerate(items):
+              wav=work/(str(idx)+"-"+item["test"]+".wav")
+              rr=requests.get(item["url"],timeout=90); rr.raise_for_status(); wav.write_bytes(rr.content)
+              t0=time.perf_counter(); text=""; status="ok"; error=None
+              try:
+                  if engine=="vosk-042":
+                      with wave.open(str(wav),"rb") as wf:
+                          rec=KaldiRecognizer(model,wf.getframerate())
+                          parts=[]
+                          while True:
+                              data=wf.readframes(4000)
+                              if not data: break
+                              if rec.AcceptWaveform(data):
+                                  j=json.loads(rec.Result()); 
+                                  if j.get("text"): parts.append(j["text"])
+                          j=json.loads(rec.FinalResult())
+                          if j.get("text"): parts.append(j["text"])
+                          text=" ".join(parts).strip()
+                      load_ms=0
+                  else:
+                      segments,info=model.transcribe(str(wav),language="es",beam_size=beam,vad_filter=vad,condition_on_previous_text=True)
+                      text=" ".join(s.text.strip() for s in segments).strip()
+                      load_ms=model_load_ms
+              except Exception as e:
+                  status="error"; error=str(e)
+                  load_ms=0 if engine=="vosk-042" else model_load_ms
+              infer_ms=round((time.perf_counter()-t0)*1000)
+              out.append({
+                  "kind":"stt_result","session":item["session"],"test":item["test"],"test_id":item["test"],
+                  "reference":item["reference"],"model":model_name,"config":config,"text":text,
+                  "status":status,"error":error,"wer":wer(item["reference"],text) if status=="ok" else None,
+                  "cer":cer(item["reference"],text) if status=="ok" else None,
+                  "load_ms":load_ms,"infer_ms":infer_ms,"origin":"github-actions",
+                  "runner":"ubuntu-latest-4cpu","audio_ntfy_id":item.get("ntfy_id"),
+                  "external_engine":engine,"build":item["build"]
+              })
+
+          pathlib.Path("/tmp/results.json").write_text(json.dumps(out,ensure_ascii=False,indent=2)+"\n")
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: stt-external-${{ matrix.engine }}
+          path: /tmp/results.json
+          retention-days: 1
+
+  aggregate:
+    needs: [discover, process]
+    if: always() && needs.discover.outputs.count != '0'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: master
+          fetch-depth: 0
+
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: stt-external-*
+          path: /tmp/external
+          merge-multiple: false
+
+      - name: Merge external results into durable sessions
+        shell: python
+        run: |
+          import json,pathlib,datetime
+          root=pathlib.Path("stt-results/sessions"); root.mkdir(parents=True,exist_ok=True)
+          merged=0
+          for p in pathlib.Path("/tmp/external").rglob("results.json"):
+              try: rows=json.loads(p.read_text())
+              except Exception: continue
+              for r in rows:
+                  sid=r.get("session")
+                  if not sid: continue
+                  sp=root/(sid+".json")
+                  try: d=json.loads(sp.read_text()) if sp.exists() else {}
+                  except Exception: d={}
+                  d.setdefault("session",sid); d.setdefault("build",r.get("build")); d.setdefault("results",[]); d.setdefault("summaries",[]); d.setdefault("seen",[])
+                  key=(r.get("test"),r.get("model"),r.get("config"))
+                  pos=None
+                  for i,x in enumerate(d["results"]):
+                      if (x.get("test") or x.get("test_id"),x.get("model"),x.get("config"))==key:
+                          pos=i; break
+                  if pos is None: d["results"].append(r)
+                  else: d["results"][pos]=r
+                  d["result_count"]=len(d["results"])
+                  d["failure_count"]=sum(1 for x in d["results"] if x.get("status")!="ok")
+                  d["external_updated_at"]=datetime.datetime.now(datetime.timezone.utc).isoformat()
+                  sp.write_text(json.dumps(d,ensure_ascii=False,indent=2)+"\n")
+                  merged+=1
+          print("merged",merged)
+
+      - name: Commit external results
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "stt-external-matrix"
+          git config user.email "stt-external-matrix@users.noreply.github.com"
+          git pull --rebase origin master
+          git add stt-results/sessions
+          if git diff --cached --quiet; then
+            echo "No new external results."
+            exit 0
+          fi
+          git commit -m "Ingest external STT audio matrix results"
+          git push origin HEAD:master
