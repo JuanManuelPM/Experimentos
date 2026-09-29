@@ -58,11 +58,41 @@ main{min-height:100svh;max-width:920px;margin:auto;padding:calc(env(safe-area-in
 .profiles{display:flex;justify-content:center;gap:6px;margin:4px 0 12px}.profiles button{min-width:76px}.profiles button.active{color:#fff;border-color:#555;background:#111}
 .perfgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin:10px 0}.perfcell{border:1px solid #111;border-radius:10px;padding:8px;background:#040405}.perfcell b{display:block;color:#aaa;font-size:14px;font-weight:600}.perfcell span{color:#4f4f54;font-size:9px;text-transform:uppercase;letter-spacing:.06em}
 @media(min-width:650px){.perfgrid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.orbwrap{width:184px;height:184px;display:grid;place-items:center;contain:layout paint}
+.orb{position:relative;width:132px;height:132px;border:0;border-radius:50%;background:#f7f7f7;color:#050505;overflow:hidden;cursor:pointer;padding:0;box-shadow:0 0 0 1px rgba(255,255,255,.05),0 16px 60px rgba(255,255,255,.035);transform:translateZ(0);contain:layout paint;isolation:isolate}
+.orb:active{transform:translateZ(0) scale(.985)}
+.orb-layer{position:absolute;inset:0;display:grid;place-items:center;will-change:transform,opacity;transform:translate3d(0,-145%,0);opacity:0;transition:transform .48s cubic-bezier(.22,.8,.22,1),opacity .22s linear;backface-visibility:hidden}
+.orb-layer svg{width:32px;height:32px}
+.orb.state-idle .mic-layer{transform:translate3d(0,0,0);opacity:1}
+.orb.state-loading .mic-layer,.orb.state-listening .mic-layer,.orb.state-processing .mic-layer{transform:translate3d(0,145%,0);opacity:0}
+.orb.state-loading .load-layer{transform:translate3d(0,0,0);opacity:1}
+.orb.state-listening .load-layer,.orb.state-processing .load-layer{transform:translate3d(0,145%,0);opacity:0}
+.orb.state-listening .voice-layer{transform:translate3d(0,0,0);opacity:1}
+.orb.state-processing .voice-layer{transform:translate3d(0,145%,0);opacity:0}
+.orb.state-processing .final-layer{transform:translate3d(0,0,0);opacity:1}
+.spinner{width:34px;height:34px;border-radius:50%;border:2px solid rgba(0,0,0,.14);border-top-color:#050505;animation:spin .82s linear infinite;will-change:transform}
+.final-spinner{width:26px;height:26px;border-width:1.7px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.eq{height:40px;display:flex;gap:5px;align-items:center;justify-content:center}
+.eq i{display:block;width:3px;height:28px;border-radius:999px;background:#050505;transform-origin:50% 50%;will-change:transform;animation:eq1 1.05s ease-in-out infinite}
+.eq i:nth-child(2){animation-name:eq2;animation-delay:-.28s}
+.eq i:nth-child(3){animation-name:eq3;animation-delay:-.64s}
+.eq i:nth-child(4){animation-name:eq2;animation-delay:-.14s}
+.eq i:nth-child(5){animation-name:eq1;animation-delay:-.48s}
+.eq i:nth-child(6){animation-name:eq3;animation-delay:-.2s}
+.eq i:nth-child(7){animation-name:eq2;animation-delay:-.72s}
+@keyframes eq1{0%,100%{transform:scaleY(.28)}48%{transform:scaleY(1)}}
+@keyframes eq2{0%,100%{transform:scaleY(.48)}55%{transform:scaleY(.18)}78%{transform:scaleY(.9)}}
+@keyframes eq3{0%,100%{transform:scaleY(.18)}35%{transform:scaleY(.76)}70%{transform:scaleY(.42)}}
+.logic-only{display:none!important}
+#status{height:0;opacity:0;overflow:hidden;color:#777;font-size:11px;transition:opacity .2s ease}
+#status.bad{height:auto;opacity:1;margin-top:12px;color:var(--bad)}
+.hint{margin-top:10px}
 @media(max-width:600px){
  main{padding-left:14px;padding-right:14px}
  .stage{min-height:390px}
- .micwrap{width:152px;height:152px}
- #mic,#stop{width:104px;height:104px}
+ .orbwrap{width:164px;height:164px}
+ .orb{width:122px;height:122px}
  #out{font-size:21px;min-height:150px;max-height:38svh;padding-left:0;padding-right:0}
  .hint{font-size:9px}
 }
@@ -70,31 +100,29 @@ main{min-height:100svh;max-width:920px;margin:auto;padding:calc(env(safe-area-in
 </head>
 <body>
 <main>
-  <div class="top">
-    <div class="logo" aria-label="STT">
-      <svg viewBox="0 0 64 64" fill="none" aria-hidden="true">
-        <circle class="ring" cx="32" cy="32" r="21" stroke="white" stroke-width="1.5" opacity=".7"/>
-        <path d="M20 34c4-8 7 8 11 0s7 8 13 0" stroke="white" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-    </div>
-  </div>
-
   <section class="stage">
-    <div class="micwrap">
-      <div class="halo"></div>
-      <button id="mic" aria-label="Grabar" disabled>
-        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-          <rect x="8" y="3" width="8" height="12" rx="4" stroke="currentColor" stroke-width="1.8"/>
-          <path d="M5.5 11.5a6.5 6.5 0 0 0 13 0M12 18v3M9 21h6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-        </svg>
-      </button>
-      <button id="stop" aria-label="Detener" disabled>
-        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="7" y="7" width="10" height="10" rx="2"/></svg>
+    <div class="orbwrap">
+      <button id="orb" class="orb state-idle" aria-label="Grabar">
+        <span class="orb-layer mic-layer" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none">
+            <rect x="8" y="3" width="8" height="12" rx="4" stroke="currentColor" stroke-width="1.8"/>
+            <path d="M5.5 11.5a6.5 6.5 0 0 0 13 0M12 18v3M9 21h6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+        </span>
+        <span class="orb-layer load-layer" aria-hidden="true"><span class="spinner"></span></span>
+        <span class="orb-layer voice-layer" aria-hidden="true">
+          <span class="eq">
+            <i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+          </span>
+        </span>
+        <span class="orb-layer final-layer" aria-hidden="true"><span class="spinner final-spinner"></span></span>
       </button>
     </div>
 
-    <div id="status">cargando</div>
-    <div class="meter"><i id="meter"></i></div>
+    <button id="mic" class="logic-only" disabled aria-hidden="true" tabindex="-1"></button>
+    <button id="stop" class="logic-only" disabled aria-hidden="true" tabindex="-1"></button>
+    <div id="meter" class="logic-only"><i></i></div>
+    <div id="status" aria-live="polite"></div>
     <div class="hint">mantener espacio</div>
 
     <div class="transcript">
@@ -153,7 +181,9 @@ main{min-height:100svh;max-width:920px;margin:auto;padding:calc(env(safe-area-in
   </details>
 </main>
 <script type="module">
-const $=id=>document.getElementById(id),BUILD='STT-LIVE-V4.3-20260929',LIVE_DB='stt-live-v3',LIVE_STORE='runs',LIVE_KEY='golden';
+const $=id=>document.getElementById(id),BUILD='STT-LIVE-V4.4-20260929',LIVE_DB='stt-live-v3',LIVE_STORE='runs',LIVE_KEY='golden';
+const advancedEl=document.querySelector('.advanced');
+let modelPromise=null,paintFrame=0,pendingPaint='';
 const TEST_TEXT=$('reference').textContent.trim();
 let model=null,stream=null,ctx=null,node=null,source=null,running=false,stopping=false,processing=false,nativeRate=48000,parts=[],samples=0,text='',segments=[],capturedS=0,finalNativeParts=[],finalNativeSamples=0,finalPcm16Parts=[],spaceHeld=false,spaceStartPending=false;
 let testStream=null,testCtx=null,testNode=null,testSource=null,testParts=[],testRate=48000,testRunning=false,testResults=[],goldenPcm=null,goldenMeta=null;
@@ -166,6 +196,28 @@ const PROFILES={
 let profileKey=localStorage.getItem('stt-live-profile')||'normal';
 if(!PROFILES[profileKey])profileKey='normal';
 const prof=()=>PROFILES[profileKey];
+function setVisual(state){
+ const o=$('orb');if(!o)return;
+ o.className='orb state-'+state;
+ o.setAttribute('aria-label',state==='listening'?'Detener':state==='idle'?'Grabar':'Procesando');
+}
+function paintTranscript(v){
+ pendingPaint=v;
+ if(paintFrame)return;
+ paintFrame=requestAnimationFrame(()=>{paintFrame=0;$('out').value=pendingPaint;$('copy').disabled=!pendingPaint});
+}
+async function ensureModel(){
+ if(model)return model;
+ if(modelPromise)return modelPromise;
+ modelPromise=(async()=>{
+   const mod=await import('https://cdn.jsdelivr.net/npm/parakeet.js@1.4.4/+esm'),backend=navigator.gpu?'webgpu':'wasm';
+   $('backend').textContent=backend.toUpperCase()+' · Parakeet 0.6B';setProfile(profileKey);
+   model=await mod.fromHub('parakeet-tdt-0.6b-v3',{backend,encoderQuant:backend==='webgpu'?'fp32':'int8',decoderQuant:'int8',preprocessorBackend:'js'});
+   return model
+ })().catch(e=>{modelPromise=null;throw e});
+ return modelPromise
+}
+
 const TEST_CONFIGS=[
  {name:'sin cortes',chunk:null,overlap:0,live:false},
  {name:'4s / 1s',chunk:4,overlap:1,live:true},
@@ -175,12 +227,12 @@ const TEST_CONFIGS=[
  {name:'10s / 4s',chunk:10,overlap:4,live:true}
 ];
 const perfStats={sessionStart:0,asrMs:[],renderMs:[],loopLagMs:[],maxQueueS:0,finalMs:null,calls:0};
-let loopExpected=performance.now()+250;
+let loopExpected=performance.now()+500;
 setInterval(()=>{
- const now=performance.now(),lag=Math.max(0,now-loopExpected);loopExpected=now+250;
- perfStats.loopLagMs.push(lag);if(perfStats.loopLagMs.length>240)perfStats.loopLagMs.shift();
- renderPerf()
-},250);
+ const now=performance.now(),lag=Math.max(0,now-loopExpected);loopExpected=now+500;
+ perfStats.loopLagMs.push(lag);if(perfStats.loopLagMs.length>120)perfStats.loopLagMs.shift();
+ if(advancedEl?.open)renderPerf()
+},500);
 function avg(a){return a.length?a.reduce((x,y)=>x+y,0)/a.length:0}
 function pct(a,p){if(!a.length)return 0;const b=[...a].sort((x,y)=>x-y);return b[Math.min(b.length-1,Math.floor((b.length-1)*p))]}
 function heapMB(){const m=performance.memory?.usedJSHeapSize;return m?m/1048576:null}
@@ -255,10 +307,10 @@ function finalPcm(){
 }
 async function canonicalizeLive(){
  const pcm=finalPcm(),dur=pcm.length/16000;if(dur<.5)return;
- $('status').textContent='corrigiendo';$('status').className='big warn';
+ setVisual('processing');
  const t=performance.now(),r=await model.transcribeLongAudio(pcm,16000,{returnTimestamps:false,returnConfidences:true,chunkLengthS:Math.max(4,Math.min(60,dur)),timeOffset:0}),ms=performance.now()-t;perfStats.finalMs=ms;perfStats.asrMs.push(ms);perfStats.calls++;renderPerf();
  const tx=(r.text||r.utterance_text||'').trim();if(tx){text=tx;$('out').value=text;$('copy').disabled=false}
- $('lat').textContent='final '+(ms/1000).toFixed(2)+' s';$('rt').textContent=(dur/(ms/1000)).toFixed(2)+'× final';$('status').textContent='listo';$('status').className='big ok'
+ $('lat').textContent='final '+(ms/1000).toFixed(2)+' s';$('rt').textContent=(dur/(ms/1000)).toFixed(2)+'× final'
 }
 function editStats(hyp,ref){
  const H=norm(hyp),R=norm(ref),n=R.length,m=H.length,d=Array.from({length:n+1},()=>new Uint16Array(m+1));
@@ -277,11 +329,11 @@ function wer(hyp,ref){return editStats(hyp,ref).wer}
 function repeatedWords(s){const t=norm(s);let dup=0;for(let n=6;n>=2;n--)for(let i=0;i+2*n<=t.length;i++){let same=true;for(let j=0;j<n;j++)if(t[i+j]!==t[i+n+j]){same=false;break}if(same){dup+=n;i+=n-1}}return dup}
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
 function takeNative(sec){const need=Math.floor(sec*nativeRate);if(samples<need)return null;const all=new Float32Array(need);let w=0,remain=need;while(remain>0&&parts.length){const p=parts[0],n=Math.min(remain,p.length);all.set(p.subarray(0,n),w);w+=n;remain-=n;if(n===p.length)parts.shift();else parts[0]=p.subarray(n)}samples-=need;const overlap=Math.floor(prof().overlap*nativeRate);if(overlap>0){const tail=all.slice(Math.max(0,all.length-overlap));parts.unshift(tail);samples+=tail.length}return all}
-function renderSegments(){const t=performance.now();$('segments').innerHTML=segments.slice(-8).reverse().map(s=>'<div class="seg"><div class="time">'+s.start.toFixed(1)+'–'+s.end.toFixed(1)+' s · '+s.ms.toFixed(0)+' ms · rms '+s.rms.toFixed(4)+'</div><div>'+escapeHtml(s.text||'[silencio]')+'</div></div>').join('')||'Todavía no hay audio.';perfStats.renderMs.push(performance.now()-t);if(perfStats.renderMs.length>100)perfStats.renderMs.shift();renderPerf()}
-async function pump(){if(processing||!running)return;const chunk=prof().chunk,overlap=prof().overlap,raw=takeNative(chunk);if(!raw){const q=samples/nativeRate;perfStats.maxQueueS=Math.max(perfStats.maxQueueS,q);$('queue').textContent='cola '+q.toFixed(1)+' s';renderPerf();return}processing=true;const start=capturedS,end=start+chunk;capturedS+=chunk-overlap;const level=rms(raw);$('meter').style.width=Math.min(100,level*900)+'%';try{
+function renderSegments(){if(!advancedEl?.open)return;const t=performance.now();$('segments').innerHTML=segments.slice(-8).reverse().map(s=>'<div class="seg"><div class="time">'+s.start.toFixed(1)+'–'+s.end.toFixed(1)+' s · '+s.ms.toFixed(0)+' ms · rms '+s.rms.toFixed(4)+'</div><div>'+escapeHtml(s.text||'[silencio]')+'</div></div>').join('')||'Todavía no hay audio.';perfStats.renderMs.push(performance.now()-t);if(perfStats.renderMs.length>100)perfStats.renderMs.shift();renderPerf()}
+async function pump(){if(processing||!running)return;const chunk=prof().chunk,overlap=prof().overlap,raw=takeNative(chunk);if(!raw){const q=samples/nativeRate;perfStats.maxQueueS=Math.max(perfStats.maxQueueS,q);$('queue').textContent='cola '+q.toFixed(1)+' s';renderPerf();return}processing=true;const start=capturedS,end=start+chunk;capturedS+=chunk-overlap;const level=rms(raw);try{
  if(level<SILENCE_RMS){segments.push({start,end,text:'',ms:0,rms:level});renderSegments()}
- else{const pcm=resample(raw,nativeRate,16000),t=performance.now(),r=await model.transcribeLongAudio(pcm,16000,{returnTimestamps:false,returnConfidences:true,chunkLengthS:chunk,timeOffset:start}),ms=performance.now()-t,tx=(r.text||r.utterance_text||'').trim();perfStats.asrMs.push(ms);perfStats.calls++;if(perfStats.asrMs.length>100)perfStats.asrMs.shift();text=merge(text,tx);$('out').value=text;$('copy').disabled=!text;segments.push({start,end,text:tx,ms,rms:level});$('lat').textContent='último '+(ms/1000).toFixed(2)+' s';$('rt').textContent=(chunk/(ms/1000)).toFixed(2)+'× realtime';renderSegments()}
- }catch(e){$('status').textContent='Error ASR: '+e.message;$('status').className='big bad'}
+ else{const pcm=resample(raw,nativeRate,16000),t=performance.now(),r=await model.transcribeLongAudio(pcm,16000,{returnTimestamps:false,returnConfidences:true,chunkLengthS:chunk,timeOffset:start}),ms=performance.now()-t,tx=(r.text||r.utterance_text||'').trim();perfStats.asrMs.push(ms);perfStats.calls++;if(perfStats.asrMs.length>100)perfStats.asrMs.shift();text=merge(text,tx);paintTranscript(text);segments.push({start,end,text:tx,ms,rms:level});$('lat').textContent='último '+(ms/1000).toFixed(2)+' s';$('rt').textContent=(chunk/(ms/1000)).toFixed(2)+'× realtime';renderSegments()}
+ }catch(e){$('status').textContent='Error ASR: '+e.message;$('status').className='bad'}
  processing=false;const q=samples/nativeRate;perfStats.maxQueueS=Math.max(perfStats.maxQueueS,q);$('queue').textContent='cola '+q.toFixed(1)+' s';renderPerf();if(running)setTimeout(pump,0)
 }
 async function makeCapture(){
@@ -290,25 +342,27 @@ async function makeCapture(){
  const src=ac.createMediaStreamSource(st),nd=new AudioWorkletNode(ac,'cap'),silent=ac.createGain();silent.gain.value=0;src.connect(nd);nd.connect(silent).connect(ac.destination);return{st,ac,rate,src,nd}
 }
 async function startMic(){
- if(running||stopping||testRunning)return;const c=await makeCapture();stream=c.st;ctx=c.ac;nativeRate=c.rate;source=c.src;node=c.nd;
- node.port.onmessage=e=>{if(!running)return;const x=new Float32Array(e.data);parts.push(x);samples+=x.length;stashFinalNative(x);const q=samples/nativeRate;perfStats.maxQueueS=Math.max(perfStats.maxQueueS,q);const lv=rms(x);$('meter').style.width=Math.min(100,lv*1200)+'%';if(!processing&&samples>=prof().chunk*nativeRate)pump()};
- parts=[];samples=0;capturedS=0;finalNativeParts=[];finalNativeSamples=0;finalPcm16Parts=[];resetPerf();running=true;stopping=false;$('mic').disabled=true;$('testStart').disabled=true;$('stop').disabled=false;$('status').textContent='escuchando';$('status').className='big ok';pump()
+ if(running||stopping||testRunning)return;setVisual('loading');$('status').textContent='';$('status').className='';
+ try{await ensureModel()}catch(e){setVisual('idle');$('status').textContent='No cargó el modelo';$('status').className='bad';throw e}
+ const c=await makeCapture();stream=c.st;ctx=c.ac;nativeRate=c.rate;source=c.src;node=c.nd;
+ node.port.onmessage=e=>{if(!running)return;const x=new Float32Array(e.data);parts.push(x);samples+=x.length;stashFinalNative(x);const q=samples/nativeRate;perfStats.maxQueueS=Math.max(perfStats.maxQueueS,q);const lv=rms(x);if(!processing&&samples>=prof().chunk*nativeRate)pump()};
+ parts=[];samples=0;capturedS=0;finalNativeParts=[];finalNativeSamples=0;finalPcm16Parts=[];resetPerf();running=true;stopping=false;$('mic').disabled=true;$('testStart').disabled=true;$('stop').disabled=false;setVisual('listening');pump()
 }
 async function stopMic(){
- if(!running||stopping)return;stopping=true;$('stop').disabled=true;$('mic').disabled=true;$('testStart').disabled=true;$('status').textContent='cerrando';$('status').className='big warn';
+ if(!running||stopping)return;stopping=true;$('stop').disabled=true;$('mic').disabled=true;$('testStart').disabled=true;
  await new Promise(r=>setTimeout(r,STOP_TAIL_MS));
- running=false;try{node?.disconnect();source?.disconnect();stream?.getTracks().forEach(t=>t.stop());await ctx?.close()}catch{};$('meter').style.width='0%';
- try{await canonicalizeLive()}catch(e){$('status').textContent='Live guardado; falló pasada final: '+e.message;$('status').className='big warn'}
- finally{stopping=false;$('mic').disabled=false;$('testStart').disabled=false}
+ running=false;try{node?.disconnect();source?.disconnect();stream?.getTracks().forEach(t=>t.stop());await ctx?.close()}catch{};
+ try{await canonicalizeLive()}catch(e){$('status').textContent='Live guardado; falló pasada final: '+e.message;$('status').className='bad'}
+ finally{stopping=false;$('mic').disabled=false;$('testStart').disabled=false;setVisual('idle')}
 }
 async function startTest(){
- if(testRunning||running)return;const c=await makeCapture();testStream=c.st;testCtx=c.ac;testRate=c.rate;testSource=c.src;testNode=c.nd;testParts=[];testRunning=true;
+ if(testRunning||running)return;setVisual('loading');await ensureModel();setVisual('idle');const c=await makeCapture();testStream=c.st;testCtx=c.ac;testRate=c.rate;testSource=c.src;testNode=c.nd;testParts=[];testRunning=true;
  testNode.port.onmessage=e=>{if(!testRunning)return;const x=new Float32Array(e.data);testParts.push(x);$('meter').style.width=Math.min(100,rms(x)*1200)+'%'};
  $('testStart').disabled=true;$('testStop').disabled=false;$('mic').disabled=true;$('testState').textContent='grabando · leé el texto';$('testRows').innerHTML='<div class="note">Grabando exactamente una lectura. Al terminar, todas las estrategias usarán este mismo audio.</div>'
 }
 async function stopTest(){
  if(!testRunning)return;testRunning=false;$('testStop').disabled=true;try{testNode?.disconnect();testSource?.disconnect();testStream?.getTracks().forEach(t=>t.stop());await testCtx?.close()}catch{}
- $('meter').style.width='0%';const raw=concat(testParts),pcm=resample(raw,testRate,16000),dur=pcm.length/16000;goldenPcm=pcm;goldenMeta={created_at:new Date().toISOString(),duration_s:dur,sample_rate:16000};$('testDur').textContent=dur.toFixed(1)+' s';$('golden').textContent='golden: guardado';$('testState').textContent='comparando estrategias…';await putGolden({pcm,goldenMeta,reference:TEST_TEXT,results:[],build:BUILD});await runTests(pcm);$('mic').disabled=false;$('testStart').disabled=false;$('replay').disabled=false
+ const raw=concat(testParts),pcm=resample(raw,testRate,16000),dur=pcm.length/16000;goldenPcm=pcm;goldenMeta={created_at:new Date().toISOString(),duration_s:dur,sample_rate:16000};$('testDur').textContent=dur.toFixed(1)+' s';$('golden').textContent='golden: guardado';$('testState').textContent='comparando estrategias…';await putGolden({pcm,goldenMeta,reference:TEST_TEXT,results:[],build:BUILD});await runTests(pcm);$('mic').disabled=false;$('testStart').disabled=false;$('replay').disabled=false
 }
 async function segmented(pcm,dur,cfg){
  const t0=performance.now();let out='',firstMs=null,pieces=0;
@@ -324,36 +378,51 @@ function renderTests(){
  if(oracle)$('testState').textContent='listo · sin cortes '+(100*oracle.wer).toFixed(1)+'% WER · mejor live '+(winner?(100*winner.wer).toFixed(1)+'%':'—')
 }
 async function runTests(pcm){
- const dur=pcm.length/16000;if(dur<6){$('testState').textContent='grabación demasiado corta · leé todo el texto';return}
+ await ensureModel();const dur=pcm.length/16000;if(dur<6){$('testState').textContent='grabación demasiado corta · leé todo el texto';return}
  testResults=[];$('testRows').innerHTML='';
  for(let i=0;i<TEST_CONFIGS.length;i++){const cfg=TEST_CONFIGS[i];$('testState').textContent='probando '+cfg.name+' · '+(i+1)+'/'+TEST_CONFIGS.length;const r=await segmented(pcm,dur,cfg);testResults.push(r);renderTests()}
  await putGolden({pcm:goldenPcm,goldenMeta,reference:TEST_TEXT,results:testResults,diagnostic:diag(),build:BUILD});$('exportDiag').disabled=false;
 }
-$('mic').onclick=()=>startMic().catch(e=>{$('status').textContent='No pude abrir micrófono: '+e.message;$('status').className='big bad'});
-$('stop').onclick=()=>stopMic().catch(e=>{$('status').textContent='Error al cerrar micrófono: '+e.message;$('status').className='big bad'});$('copy').onclick=()=>navigator.clipboard.writeText(text);$('clear').onclick=()=>{text='';segments=[];$('out').value='';$('copy').disabled=true;renderSegments()};
+$('orb').onclick=()=>{if(running&&!stopping)stopMic().catch(()=>{});else if(!running&&!stopping)startMic().catch(e=>{$('status').textContent='No pude iniciar';$('status').className='bad';setVisual('idle')})};
+$('mic').onclick=()=>startMic().catch(e=>{$('status').textContent='No pude abrir micrófono: '+e.message;$('status').className='bad'});
+$('stop').onclick=()=>stopMic().catch(e=>{$('status').textContent='Error al cerrar micrófono: '+e.message;$('status').className='bad'});$('copy').onclick=()=>navigator.clipboard.writeText(text);$('clear').onclick=()=>{text='';segments=[];paintTranscript('');renderSegments()};
 $('testStart').onclick=()=>startTest().catch(e=>$('testState').textContent='Error micrófono: '+e.message);$('testStop').onclick=()=>stopTest().catch(e=>$('testState').textContent='Error prueba: '+e.message);
 $('replay').onclick=()=>{if(!goldenPcm)return;$('replay').disabled=true;runTests(goldenPcm).finally(()=>$('replay').disabled=false)};
 $('profileLight').onclick=()=>setProfile('light');$('profileNormal').onclick=()=>setProfile('normal');$('profileQuality').onclick=()=>setProfile('quality');setProfile(profileKey);
 $('exportDiag').onclick=downloadDiag;
+advancedEl?.addEventListener('toggle',()=>{if(advancedEl.open){renderPerf();renderSegments()}});
+
 function typingTarget(el){return !!el&&(el.tagName==='INPUT'||el.tagName==='TEXTAREA'||el.isContentEditable)}
 async function beginSpacePTT(e){
  if(e.code!=='Space'||e.repeat||typingTarget(e.target)||testRunning)return;
  e.preventDefault();if(spaceHeld)return;spaceHeld=true;
  if(running||stopping)return;
  spaceStartPending=true;
- try{await startMic()}catch(err){$('status').textContent='No pude abrir micrófono: '+err.message;$('status').className='big bad'}
+ try{await startMic()}catch(err){$('status').textContent='No pude abrir micrófono: '+err.message;$('status').className='bad'}
  finally{spaceStartPending=false;if(!spaceHeld&&running&&!stopping)stopMic().catch(()=>{})}
 }
 function endSpacePTT(e){
  if(e.code!=='Space'||typingTarget(e.target))return;
  if(!spaceHeld&&!spaceStartPending)return;e.preventDefault();spaceHeld=false;
- if(running&&!stopping)stopMic().catch(err=>{$('status').textContent='Error al cerrar micrófono: '+err.message;$('status').className='big bad'})
+ if(running&&!stopping)stopMic().catch(err=>{$('status').textContent='Error al cerrar micrófono: '+err.message;$('status').className='bad'})
 }
 window.addEventListener('keydown',beginSpacePTT);
 window.addEventListener('keyup',endSpacePTT);
 window.addEventListener('blur',()=>{if(spaceHeld){spaceHeld=false;if(running&&!stopping)stopMic().catch(()=>{})}});
 
-(async()=>{try{const saved=await getGolden();if(saved?.pcm){goldenPcm=saved.pcm instanceof Float32Array?saved.pcm:new Float32Array(saved.pcm);goldenMeta=saved.goldenMeta||{duration_s:goldenPcm.length/16000,sample_rate:16000};testResults=Array.isArray(saved.results)?saved.results:[];$('golden').textContent='golden: '+(goldenMeta.duration_s||0).toFixed(1)+' s';$('testDur').textContent=(goldenMeta.duration_s||0).toFixed(1)+' s';$('replay').disabled=false;if(testResults.length){renderTests();$('exportDiag').disabled=false}}const mod=await import('https://cdn.jsdelivr.net/npm/parakeet.js@1.4.4/+esm'),backend=navigator.gpu?'webgpu':'wasm';$('backend').textContent=backend.toUpperCase()+' · Parakeet 0.6B';setProfile(profileKey);model=await mod.fromHub('parakeet-tdt-0.6b-v3',{backend,encoderQuant:backend==='webgpu'?'fp32':'int8',decoderQuant:'int8',preprocessorBackend:'js'});$('status').textContent='listo';$('status').className='big ok';$('mic').disabled=false;$('testStart').disabled=false}catch(e){$('status').textContent='No cargó el modelo: '+e.message;$('status').className='big bad'}})();
+(async()=>{try{
+ const saved=await getGolden();
+ if(saved?.pcm){
+   goldenPcm=saved.pcm instanceof Float32Array?saved.pcm:new Float32Array(saved.pcm);
+   goldenMeta=saved.goldenMeta||{duration_s:goldenPcm.length/16000,sample_rate:16000};
+   testResults=Array.isArray(saved.results)?saved.results:[];
+   $('golden').textContent='golden: '+(goldenMeta.duration_s||0).toFixed(1)+' s';
+   $('testDur').textContent=(goldenMeta.duration_s||0).toFixed(1)+' s';
+   $('replay').disabled=false;
+   if(testResults.length){renderTests();$('exportDiag').disabled=false}
+ }
+ setProfile(profileKey);setVisual('idle');$('mic').disabled=false;$('testStart').disabled=false;$('status').textContent='';$('status').className=''
+}catch(e){$('status').textContent='Error de inicio';$('status').className='bad'}})();
 </script>
 </body>
 </html>
