@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta name="color-scheme" content="dark">
-<title>STT Mass Benchmark V2</title>
+<title>STT Mass Benchmark V3</title>
 <style>
 :root{--bg:#080a0c;--p:#11161b;--p2:#0b0f13;--line:#29333c;--fg:#f4f6f8;--mut:#8c99a4;--ok:#77e49b;--warn:#ffd166;--bad:#ff7b7b}
 *{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.45 system-ui,-apple-system,Segoe UI,sans-serif}
@@ -34,7 +34,8 @@ pre{white-space:pre-wrap;max-height:240px;overflow:auto;background:#07090b;borde
   <div class="label">LEÉ ESTE TEXTO</div>
   <div id="reference" class="reference"></div>
   <div class="hint">Leelo normal. Tocá el micrófono al empezar y otra vez al terminar.</div>
-  <div class="pills"><span id="capturePill" class="pill">0/8 grabados</span><span id="remotePill" class="pill">publicación remota preparada</span><span id="sessionPill" class="pill"></span></div>
+  <div class="pills"><span id="capturePill" class="pill">0/8 grabados</span><span id="corpusPill" class="pill">corpus durable</span><span id="remotePill" class="pill">publicación remota preparada</span><span id="sessionPill" class="pill"></span></div>
+  <div class="actions"><button id="resumeBtn" class="btn" hidden>Reanudar sesión guardada</button><a class="btn" href="../stt-analysis-v3/" target="_blank" rel="noopener">Abrir análisis</a></div>
 </section>
 
 <section id="processingCard" class="card" hidden>
@@ -55,9 +56,9 @@ pre{white-space:pre-wrap;max-height:240px;overflow:auto;background:#07090b;borde
 
 <script src="https://cdn.jsdelivr.net/npm/vosk-browser@0.0.8/dist/vosk.js"></script>
 <script type="module">
-const BUILD='STT-MASS-V2-20260928';
+const BUILD='STT-MASS-V4-20260928';
 const VOSK03='https://raw.githubusercontent.com/allorenter/vosk-browser-example/main/vosk-model-small-es-0.3.tar.gz';
-const VOSK42='https://w-okada.github.io/vosk-browser-ts/vosk-browser-ts/assets/models/vosk-model-small-es-0.42.tar.gz';
+const VOSK42='https://w-okada.github.io/vosk-browser-ts/assets/models/vosk-model-small-es-0.42.tar.gz';
 const NTFY_TOPIC='stt-bench-83f229610c5fac67ba6918772670642e';
 const NTFY_URL='https://ntfy.sh/'+NTFY_TOPIC;
 const TEXTS=[
@@ -71,8 +72,13 @@ const TEXTS=[
 {id:'comandos',text:'Che Prometeo, poné pausa, bajá el volumen y después seguí escuchando cuando yo diga continuar.'}
 ];
 const $=id=>document.getElementById(id);
-const session='mass-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,8);
-const S={idx:0,running:false,stream:null,ctx:null,src:null,proc:null,native:[],pcm16:[],sampleRate:0,recordings:[],results:[],models:{},processing:false,started:0,totalJobs:0,doneJobs:0};
+let session='mass-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,8);
+const S={idx:0,running:false,stream:null,ctx:null,src:null,proc:null,native:[],pcm16:[],sampleRate:0,recordings:[],results:[],models:{},processing:false,started:0,totalJobs:0,doneJobs:0,lastProgressAt:Date.now(),remotePending:[],remotePumping:false,remoteOk:0,remoteFail:0};
+const DB_NAME='stt-mass-v3',DB_STORE='recordings';
+function openDB(){return new Promise((resolve,reject)=>{const q=indexedDB.open(DB_NAME,1);q.onupgradeneeded=()=>{const db=q.result;if(!db.objectStoreNames.contains(DB_STORE))db.createObjectStore(DB_STORE,{keyPath:'key'})};q.onsuccess=()=>resolve(q.result);q.onerror=()=>reject(q.error)})}
+async function saveRecording(rec){const db=await openDB();await new Promise((resolve,reject)=>{const tx=db.transaction(DB_STORE,'readwrite');tx.objectStore(DB_STORE).put({key:session+'|'+rec.id,session,id:rec.id,idx:rec.idx,reference:rec.reference,native:rec.native,pcm16:rec.pcm16,sampleRate:rec.sampleRate,duration_ms:rec.duration_ms});tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error)});db.close();persistManifest();$('corpusPill').textContent='audio guardado ✓';$('corpusPill').className='pill good'}
+async function loadRecordings(sid){const db=await openDB(),all=await new Promise((resolve,reject)=>{const tx=db.transaction(DB_STORE,'readonly'),q=tx.objectStore(DB_STORE).getAll();q.onsuccess=()=>resolve(q.result);q.onerror=()=>reject(q.error)});db.close();return all.filter(x=>x.session===sid).sort((a,b)=>a.idx-b.idx).map(x=>({idx:x.idx,id:x.id,reference:x.reference,native:new Float32Array(x.native),pcm16:new Float32Array(x.pcm16),sampleRate:x.sampleRate,duration_ms:x.duration_ms}))}
+function persistManifest(extra={}){try{localStorage.setItem('stt_mass_v3_manifest',JSON.stringify({build:BUILD,session,updated_at:new Date().toISOString(),recordings:S.recordings.map(r=>({idx:r.idx,id:r.id,reference:r.reference,duration_ms:r.duration_ms,sampleRate:r.sampleRate})),result_count:S.results.length,complete:false,...extra}))}catch(e){log('manifest fail',{error:String(e)})}}
 function log(m,d){$('log').textContent+='['+new Date().toLocaleTimeString()+'] '+m+(d?' '+JSON.stringify(d):'')+'\n'}
 function esc(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
 function norm(s){return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9ñ\s]/gi,' ').replace(/\s+/g,' ').trim()}
@@ -87,7 +93,7 @@ function resample16(input,rate){if(rate===16000)return new Float32Array(input);c
 function cleanAudio(a){if(!a.length)return a;let peak=0;for(const x of a)peak=Math.max(peak,Math.abs(x));const th=Math.max(.004,peak*.025);let s=0,e=a.length-1;while(s<e&&Math.abs(a[s])<th)s++;while(e>s&&Math.abs(a[e])<th)e--;s=Math.max(0,s-2400);e=Math.min(a.length-1,e+2400);const o=new Float32Array(e-s+1);let p=0;for(let i=s;i<=e;i++)p=Math.max(p,Math.abs(a[i]));const g=p?Math.min(2.0,.82/p):1;for(let i=0;i<o.length;i++)o[i]=Math.max(-1,Math.min(1,a[s+i]*g));return o}
 function renderCapture(){ $('progress').innerHTML=TEXTS.map((_,i)=>'<span class="dot '+(i<S.idx?'done':i===S.idx?'now':'')+'"></span>').join('');$('capturePill').textContent=S.recordings.length+'/8 grabados';$('sessionPill').textContent=session;if(S.idx<TEXTS.length){$('status').textContent='Texto '+(S.idx+1)+' de '+TEXTS.length;$('reference').textContent=TEXTS[S.idx].text}else{$('status').textContent='Grabación terminada';$('reference').textContent='Listo. Ahora procesa la computadora.'}}
 async function startCapture(){if(S.processing||S.idx>=TEXTS.length)return;S.native=[];S.pcm16=[];S.stream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true,channelCount:1},video:false});S.ctx=new (window.AudioContext||window.webkitAudioContext)();if(S.ctx.state==='suspended')await S.ctx.resume();S.sampleRate=S.ctx.sampleRate;S.src=S.ctx.createMediaStreamSource(S.stream);S.proc=S.ctx.createScriptProcessor(4096,1,1);const z=S.ctx.createGain();z.gain.value=0;S.proc.onaudioprocess=e=>{if(!S.running)return;const pcm=e.inputBuffer.getChannelData(0),n=new Float32Array(pcm);S.native.push(n);S.pcm16.push(resample16(n,S.sampleRate));let sum=0,peak=0;for(const x of pcm){sum+=x*x;peak=Math.max(peak,Math.abs(x))}const rms=Math.sqrt(sum/pcm.length);$('meter').style.width=Math.min(100,Math.round(Math.max(rms*380,peak*100)))+'%'};S.src.connect(S.proc);S.proc.connect(z);z.connect(S.ctx.destination);S.running=true;S.started=performance.now();$('mic').classList.add('live');$('status').textContent='Grabando texto '+(S.idx+1);$('sub').textContent='tocá otra vez cuando termines';log('capture start',{idx:S.idx,sampleRate:S.sampleRate})}
-async function stopCapture(){if(!S.running)return;S.running=false;const dur=performance.now()-S.started;try{S.proc.disconnect()}catch{};try{S.src.disconnect()}catch{};try{S.stream.getTracks().forEach(t=>t.stop())}catch{};try{await S.ctx.close()}catch{};$('meter').style.width='0%';$('mic').classList.remove('live');const rec={idx:S.idx,id:TEXTS[S.idx].id,reference:TEXTS[S.idx].text,native:concat(S.native),pcm16:concat(S.pcm16),sampleRate:S.sampleRate,duration_ms:Math.round(dur)};S.recordings.push(rec);log('capture done',{idx:S.idx,duration_ms:rec.duration_ms,samples16:rec.pcm16.length});S.idx++;renderCapture();if(S.idx<TEXTS.length){$('sub').textContent='tocá para grabar el siguiente texto'}else{$('mic').disabled=true;$('sub').textContent='iniciando torneo masivo…';setTimeout(runTournament,80)}}
+async function stopCapture(){if(!S.running)return;S.running=false;const dur=performance.now()-S.started;try{S.proc.disconnect()}catch{};try{S.src.disconnect()}catch{};try{S.stream.getTracks().forEach(t=>t.stop())}catch{};try{await S.ctx.close()}catch{};$('meter').style.width='0%';$('mic').classList.remove('live');const rec={idx:S.idx,id:TEXTS[S.idx].id,reference:TEXTS[S.idx].text,native:concat(S.native),pcm16:concat(S.pcm16),sampleRate:S.sampleRate,duration_ms:Math.round(dur)};S.recordings.push(rec);try{await saveRecording(rec)}catch(e){$('corpusPill').textContent='audio no guardado';$('corpusPill').className='pill bad';log('audio persist fail',{error:String(e)})}log('capture done',{idx:S.idx,duration_ms:rec.duration_ms,samples16:rec.pcm16.length});S.idx++;renderCapture();if(S.idx<TEXTS.length){$('sub').textContent='tocá para grabar el siguiente texto'}else{$('mic').disabled=true;$('sub').textContent='iniciando torneo masivo…';setTimeout(runTournament,80)}}
 function timeout(p,ms,label){return Promise.race([p,new Promise((_,rej)=>setTimeout(()=>rej(new Error(label+' timeout')),ms))])}
 async function voskOne(model,audio,rate){
   const rec=new model.KaldiRecognizer(rate),parts=[];let finalRequested=false;
@@ -101,11 +107,13 @@ async function voskOne(model,audio,rate){
 }
 function mergeOverlap(prev,next){const A=String(prev||'').trim().split(/\s+/).filter(Boolean),B=String(next||'').trim().split(/\s+/).filter(Boolean);if(!A.length)return B.join(' ');if(!B.length)return A.join(' ');let best=0,bscore=0;for(let k=1;k<=Math.min(12,A.length,B.length);k++){const a=A.slice(-k),b=B.slice(0,k),s=1-lev(a.map(norm),b.map(norm))/k;if(s>=.65&&s>=bscore){best=k;bscore=s}}return [...A,...B.slice(best)].join(' ')}
 async function voskWindowed(model,audio,sec,overlap){const size=Math.round(sec*16000),step=Math.max(16000,Math.round((sec-overlap)*16000));let out='';for(let s=0;s<audio.length;s+=step){const chunk=audio.subarray(s,Math.min(audio.length,s+size));if(chunk.length<8000)break;const t=await voskOne(model,chunk,16000);out=mergeOverlap(out,t);if(s+size>=audio.length)break}return out}
-async function addResult(rec,modelId,config,fn,loadMs=0){
+async function addResult(rec,modelId,config,fn,loadMs=0,jobTimeoutMs=60000){
+  const prior=S.results.find(x=>x.test_id===rec.id&&x.model===modelId&&x.config===config);
+  if(prior){S.doneJobs++;S.lastProgressAt=Date.now();updateProcessing(modelId+' · '+config+' · ya guardado');return prior}
   const t0=performance.now();let text='',status='ok',error=null;
-  try{text=await fn()}catch(e){status='error';error=String(e?.message||e)}
+  try{text=await timeout(Promise.resolve().then(fn),jobTimeoutMs,modelId+' '+config+' job')}catch(e){status='error';error=String(e?.message||e)}
   const infer=performance.now()-t0, r={session,test_index:rec.idx,test_id:rec.id,reference:rec.reference,model:modelId,config,text,status,error,wer:status==='ok'?wer(rec.reference,text):null,cer:status==='ok'?cer(rec.reference,text):null,load_ms:Math.round(loadMs),infer_ms:Math.round(infer),rtf:Number((infer/Math.max(1,rec.duration_ms)).toFixed(3)),duration_ms:rec.duration_ms,build:BUILD};
-  S.results.push(r);S.doneJobs++;persistLocal();$('copyBtn').disabled=false;updateProcessing(modelId+' · '+config);renderResults();await publishResult(r);return r
+  S.results.push(r);S.doneJobs++;S.lastProgressAt=Date.now();persistLocal();$('copyBtn').disabled=false;updateProcessing(modelId+' · '+config);renderResults();publishResult(r);return r
 }
 function updateProcessing(name){const pct=S.totalJobs?100*S.doneJobs/S.totalJobs:0;$('procBar').style.width=pct+'%';$('procCount').textContent=S.doneJobs+'/'+S.totalJobs;$('procTitle').textContent=name;const sec=(performance.now()-S.tournamentStart)/1000;$('procTime').textContent=sec.toFixed(1)+' s'}
 function renderResults(){
@@ -115,89 +123,125 @@ function renderResults(){
   $('summaryCard').hidden=!rank.length;$('ranking').innerHTML=rank.slice(0,20).map((x,i)=>'<div class="rank"><b>'+(i+1)+'. '+esc(x.name)+'</b><span>WER '+x.wer.toFixed(1)+'%</span><span>'+Math.round(x.ms)+' ms · '+x.n+'/8</span></div>').join('');
   const last=S.results.slice(-40).reverse();$('rows').innerHTML=last.map(r=>'<div class="row"><div class="rhead"><div class="rname">'+esc(r.model+' · '+r.config+' · '+r.test_id)+'</div><div class="rscore '+(r.status==='error'?'err':'')+'">'+(r.status==='ok'?'WER '+r.wer.toFixed(1)+'% · '+r.infer_ms+' ms':'ERROR')+'</div></div><div class="rtext">'+esc(r.status==='ok'?(r.text||'—'):r.error)+'</div></div>').join('');
 }
-async function publishResult(r){
-  const compact={kind:'stt_result',session:r.session,test:r.test_id,model:r.model,config:r.config,text:r.text,wer:r.wer,cer:r.cer,infer_ms:r.infer_ms,load_ms:r.load_ms,rtf:r.rtf,status:r.status,error:r.error,build:r.build};
-  try{const res=await fetch(NTFY_URL,{method:'POST',body:JSON.stringify(compact)});if(!res.ok)throw new Error('HTTP '+res.status);$('remotePill').textContent='publicando remoto ✓';$('remotePill').className='pill good'}catch(e){$('remotePill').textContent='remoto falló · copia disponible';$('remotePill').className='pill warn';log('remote fail',{error:String(e)})}
+function pendingKey(x){return [x.kind,x.session,x.test||'',x.model||'',x.config||''].join('|')}
+function loadPending(){try{return JSON.parse(localStorage.getItem('stt_remote_pending')||'[]')}catch{return[]}}
+function savePending(a){try{localStorage.setItem('stt_remote_pending',JSON.stringify(a.slice(-500)))}catch{}}
+function queueRemote(msg){const a=loadPending(),k=pendingKey(msg);if(!a.some(x=>pendingKey(x)===k))a.push(msg);savePending(a)}
+async function postRemote(msg){let last=null;for(let attempt=1;attempt<=4;attempt++){try{const res=await fetch(NTFY_URL,{method:'POST',body:JSON.stringify(msg),cache:'no-store'});if(!res.ok)throw new Error('HTTP '+res.status);return true}catch(e){last=e;await new Promise(r=>setTimeout(r,Math.min(5000,350*Math.pow(2,attempt))))}}throw last}
+async function flushRemote(){const a=loadPending(),left=[];for(const msg of a){try{await postRemote(msg)}catch(e){left.push(msg);log('remote retry pending',{key:pendingKey(msg),error:String(e)})}}savePending(left);$('remotePill').textContent=left.length?'remoto pendiente '+left.length:'publicación remota ✓';$('remotePill').className='pill '+(left.length?'warn':'good');return left.length}
+async function postRemote(compact){
+  const ctrl=new AbortController(),timer=setTimeout(()=>ctrl.abort(),5000);
+  try{const res=await fetch(NTFY_URL,{method:'POST',body:JSON.stringify(compact),signal:ctrl.signal});if(!res.ok)throw new Error('HTTP '+res.status);return true}
+  finally{clearTimeout(timer)}
 }
-function persistLocal(){try{localStorage.setItem('stt_mass_latest',JSON.stringify({build:BUILD,session,updated_at:new Date().toISOString(),results:S.results}))}catch(e){log('local persist fail',{error:String(e)})}}
-async function publishSummary(){
+function publishResult(r){
+  const compact={kind:'stt_result',session:r.session,test:r.test_id,reference:r.reference,model:r.model,config:r.config,text:r.text,wer:r.wer,cer:r.cer,infer_ms:r.infer_ms,load_ms:r.load_ms,rtf:r.rtf,status:r.status,error:r.error,build:r.build};
+  S.remotePending.push({compact,tries:0});pumpRemote();
+}
+async function pumpRemote(){
+  if(S.remotePumping)return;S.remotePumping=true;
+  while(S.remotePending.length){
+    const item=S.remotePending.shift();item.tries++;
+    try{await postRemote(item.compact);S.remoteOk++;$('remotePill').textContent='remoto ✓ '+S.remoteOk;$('remotePill').className='pill good'}
+    catch(e){S.remoteFail++;if(item.tries<3)S.remotePending.push(item);else{log('remote drop',{kind:item.compact.kind,error:String(e)});$('remotePill').textContent='remoto parcial · copia disponible';$('remotePill').className='pill warn'}}
+    await new Promise(r=>setTimeout(r,0));
+  }
+  S.remotePumping=false;
+}
+function persistLocal(){try{localStorage.setItem('stt_mass_latest',JSON.stringify({build:BUILD,session,updated_at:new Date().toISOString(),results:S.results}));persistManifest()}catch(e){log('local persist fail',{error:String(e)})}}
+function publishSummary(){
   const ok=S.results.filter(r=>r.status==='ok'&&Number.isFinite(r.wer)),groups={};
   for(const r of ok){const k=r.model+' · '+r.config;(groups[k]??=[]).push(r.wer)}
   const ranking=Object.entries(groups).map(([name,v])=>({name,wer:v.reduce((a,b)=>a+b,0)/v.length,n:v.length})).sort((a,b)=>a.wer-b.wer).slice(0,15);
-  const msg={kind:'stt_summary',session,build:BUILD,tests:S.recordings.length,results:S.results.length,ranking};
-  try{await fetch(NTFY_URL,{method:'POST',body:JSON.stringify(msg)})}catch(e){log('summary remote fail',{error:String(e)})}
+  S.remotePending.push({compact:{kind:'stt_summary',session,build:BUILD,status:'complete',expected:S.totalJobs,tests:S.recordings.length,results:S.results.length,failures:S.results.filter(r=>r.status!=='ok').length,ranking},tries:0});pumpRemote();
 }
 async function runVoskFamily(url,label,configs){
-  let model,loadMs=0;const t=performance.now();try{model=await timeout(Vosk.createModel(url),label==='Vosk 0.42'?60000:45000,label);loadMs=performance.now()-t;log('model ready',{label,load_ms:Math.round(loadMs)})}catch(e){log('model load fail',{label,error:String(e)});for(const rec of S.recordings)for(const cfg of configs)await addResult(rec,label,cfg,async()=>{throw e},performance.now()-t);return}
+  let model,loadMs=0;const t=performance.now();
+  try{model=await timeout(Vosk.createModel(url),30000,label);loadMs=performance.now()-t;log('model ready',{label,load_ms:Math.round(loadMs)})}
+  catch(e){log('model load fail',{label,error:String(e)});for(const rec of S.recordings)for(const cfg of configs)await addResult(rec,label,cfg,async()=>{throw e},performance.now()-t,1000);return false}
   for(const rec of S.recordings){
     for(const cfg of configs){
-      if(cfg==='native')await addResult(rec,label,cfg,()=>voskOne(model,rec.native,rec.sampleRate),loadMs);
-      else if(cfg==='16k')await addResult(rec,label,cfg,()=>voskOne(model,rec.pcm16,16000),loadMs);
-      else if(cfg==='clean')await addResult(rec,label,cfg,()=>voskOne(model,cleanAudio(rec.pcm16),16000),loadMs);
-      else if(cfg==='win4')await addResult(rec,label,cfg,()=>voskWindowed(model,rec.pcm16,4,2),loadMs);
-      else if(cfg==='win8')await addResult(rec,label,cfg,()=>voskWindowed(model,rec.pcm16,8,3),loadMs);
-      else if(cfg==='win15')await addResult(rec,label,cfg,()=>voskWindowed(model,rec.pcm16,15,5),loadMs);
+      if(cfg==='native')await addResult(rec,label,cfg,()=>voskOne(model,rec.native,rec.sampleRate),loadMs,30000);
+      else if(cfg==='16k')await addResult(rec,label,cfg,()=>voskOne(model,rec.pcm16,16000),loadMs,30000);
+      else if(cfg==='clean')await addResult(rec,label,cfg,()=>voskOne(model,cleanAudio(rec.pcm16),16000),loadMs,30000);
+      else if(cfg==='win4')await addResult(rec,label,cfg,()=>voskWindowed(model,rec.pcm16,4,2),loadMs,45000);
+      else if(cfg==='win8')await addResult(rec,label,cfg,()=>voskWindowed(model,rec.pcm16,8,3),loadMs,45000);
+      else if(cfg==='win15')await addResult(rec,label,cfg,()=>voskWindowed(model,rec.pcm16,15,5),loadMs,45000);
     }
   }
-  try{model.terminate?.()}catch{}
+  try{model.terminate?.()}catch{};return true
 }
 async function runWhisper(modelName,label){
   let hf,pipe,loadMs=0;const t=performance.now();
-  try{hf=await import('https://cdn.jsdelivr.net/npm/@huggingface/transformers@4.2.0/+esm');pipe=await timeout(hf.pipeline('automatic-speech-recognition',modelName,{device:'wasm',dtype:'q8'}),300000,label);loadMs=performance.now()-t;log('model ready',{label,load_ms:Math.round(loadMs)})}
-  catch(e){for(const rec of S.recordings)await addResult(rec,label,'full',async()=>{throw e},performance.now()-t);return}
+  try{hf=await import('https://cdn.jsdelivr.net/npm/@huggingface/transformers@4.2.0/+esm');pipe=await timeout(hf.pipeline('automatic-speech-recognition',modelName,{device:'wasm',dtype:'fp32'}),90000,label);loadMs=performance.now()-t;log('model ready',{label,load_ms:Math.round(loadMs),dtype:'fp32'})}
+  catch(e){for(const rec of S.recordings)for(const cfg of ['full','clean'])await addResult(rec,label,cfg,async()=>{throw e},performance.now()-t,1000);return false}
   for(const rec of S.recordings){
-    await addResult(rec,label,'full',async()=>{const x=await pipe(rec.pcm16,{language:'spanish',task:'transcribe'});return String(x?.text||'').trim()},loadMs);
-    await addResult(rec,label,'clean',async()=>{const x=await pipe(cleanAudio(rec.pcm16),{language:'spanish',task:'transcribe'});return String(x?.text||'').trim()},loadMs);
+    await addResult(rec,label,'full',async()=>{const x=await pipe(rec.pcm16,{language:'spanish',task:'transcribe'});return String(x?.text||'').trim()},loadMs,60000);
+    await addResult(rec,label,'clean',async()=>{const x=await pipe(cleanAudio(rec.pcm16),{language:'spanish',task:'transcribe'});return String(x?.text||'').trim()},loadMs,60000);
   }
-  try{await pipe.dispose?.()}catch{}
+  try{await pipe.dispose?.()}catch{};return true
 }
 async function runParakeet(){
   let mod,model,loadMs=0;const t=performance.now(),label='Parakeet 0.6B v3 INT8';
-  try{mod=await import('https://cdn.jsdelivr.net/npm/parakeet.js@1.4.4/+esm');model=await timeout(mod.fromHub('parakeet-tdt-0.6b-v3',{backend:'wasm',encoderQuant:'int8',decoderQuant:'int8',preprocessorBackend:'js'}),300000,label);loadMs=performance.now()-t;log('model ready',{label,load_ms:Math.round(loadMs)})}
-  catch(e){for(const rec of S.recordings)await addResult(rec,label,'full',async()=>{throw e},performance.now()-t);return}
+  try{mod=await import('https://cdn.jsdelivr.net/npm/parakeet.js@1.4.4/+esm');model=await timeout(mod.fromHub('parakeet-tdt-0.6b-v3',{backend:'wasm',encoderQuant:'int8',decoderQuant:'int8',preprocessorBackend:'js'}),90000,label);loadMs=performance.now()-t;log('model ready',{label,load_ms:Math.round(loadMs)})}
+  catch(e){for(const rec of S.recordings)for(const cfg of ['full','clean'])await addResult(rec,label,cfg,async()=>{throw e},performance.now()-t,1000);return false}
   for(const rec of S.recordings){
-    await addResult(rec,label,'full',async()=>{const x=await model.transcribe(rec.pcm16,16000,{returnTimestamps:false});return String(x?.text||x?.utterance_text||'').trim()},loadMs);
-    await addResult(rec,label,'clean',async()=>{const x=await model.transcribe(cleanAudio(rec.pcm16),16000,{returnTimestamps:false});return String(x?.text||x?.utterance_text||'').trim()},loadMs);
+    await addResult(rec,label,'full',async()=>{const x=await model.transcribe(rec.pcm16,16000,{returnTimestamps:false});return String(x?.text||x?.utterance_text||'').trim()},loadMs,45000);
+    await addResult(rec,label,'clean',async()=>{const x=await model.transcribe(cleanAudio(rec.pcm16),16000,{returnTimestamps:false});return String(x?.text||x?.utterance_text||'').trim()},loadMs,45000);
   }
-  try{await model.dispose?.()}catch{}
+  try{await model.dispose?.()}catch{};return true
 }
 async function runMoonshine(){
-  let mod,model,loadMs=0;const t=performance.now(),label='Moonshine ES Medium Streaming';
-  try{mod=await import('https://cdn.jsdelivr.net/npm/@moonshine-ai/moonshine-wasm@0.1.5/dist/index.js');model=await timeout(mod.Transcriber.load({language:'es',modelArch:mod.ModelArch.MediumStreaming}),300000,label);loadMs=performance.now()-t;log('model ready',{label,load_ms:Math.round(loadMs)})}
-  catch(e){for(const rec of S.recordings)await addResult(rec,label,'full',async()=>{throw e},performance.now()-t);return}
+  let mod,model,loadMs=0;const t=performance.now(),label='Moonshine ES Base';
+  try{mod=await import('https://cdn.jsdelivr.net/npm/@moonshine-ai/moonshine-wasm@0.1.5/dist/index.js');model=await timeout(mod.Transcriber.load({language:'es',modelArch:mod.ModelArch.Base}),45000,label);loadMs=performance.now()-t;log('model ready',{label,load_ms:Math.round(loadMs)})}
+  catch(e){for(const rec of S.recordings)for(const cfg of ['full','clean'])await addResult(rec,label,cfg,async()=>{throw e},performance.now()-t,1000);return false}
   for(const rec of S.recordings){
-    await addResult(rec,label,'full',async()=>{const x=model.transcribe(rec.pcm16,{sampleRate:16000});return (x?.lines||[]).map(z=>z.text).join(' ').trim()},loadMs);
-    await addResult(rec,label,'clean',async()=>{const x=model.transcribe(cleanAudio(rec.pcm16),{sampleRate:16000});return (x?.lines||[]).map(z=>z.text).join(' ').trim()},loadMs);
+    await addResult(rec,label,'full',async()=>{const x=model.transcribe(rec.pcm16,{sampleRate:16000});return (x?.lines||[]).map(z=>z.text).join(' ').trim()},loadMs,45000);
+    await addResult(rec,label,'clean',async()=>{const x=model.transcribe(cleanAudio(rec.pcm16),{sampleRate:16000});return (x?.lines||[]).map(z=>z.text).join(' ').trim()},loadMs,45000);
   }
-  try{model.close?.()}catch{}
+  try{model.close?.()}catch{};return true
 }
 async function runTournament(){
-  if(S.processing)return;S.processing=true;S.tournamentStart=performance.now();$('processingCard').hidden=false;$('summaryCard').hidden=true;$('copyBtn').disabled=false;
+  if(S.processing)return;S.processing=true;S.tournamentStart=performance.now();S.lastProgressAt=Date.now();$('processingCard').hidden=false;$('summaryCard').hidden=true;$('copyBtn').disabled=false;
   const cfg03=['native','16k','clean','win4','win8','win15'],cfg42=['native','16k','clean','win8','win15'];
-  S.totalJobs=S.recordings.length*(cfg03.length+cfg42.length+6+2+2+2);S.doneJobs=0;updateProcessing('Vosk 0.3');
-  await runVoskFamily(VOSK03,'Vosk 0.3',cfg03);
-  await runVoskFamily(VOSK42,'Vosk 0.42',cfg42);
-  await runWhisper('onnx-community/whisper-tiny','Whisper Tiny Q8');
-  await runWhisper('onnx-community/whisper-base','Whisper Base Q8');
-  await runWhisper('onnx-community/whisper-small','Whisper Small Q8');
-  await runParakeet();
-  await runMoonshine();
+  S.totalJobs=S.recordings.length*(cfg03.length+cfg42.length+6+2+2+2);S.doneJobs=0;updateProcessing('Parakeet + Vosk 0.3');
+  await Promise.allSettled([runParakeet(),runVoskFamily(VOSK03,'Vosk 0.3',cfg03)]);
+  await Promise.allSettled([runVoskFamily(VOSK42,'Vosk 0.42',cfg42),runMoonshine()]);
+  const tinyOk=await runWhisper('onnx-community/whisper-tiny','Whisper Tiny FP32');
+  if(tinyOk){
+    await runWhisper('onnx-community/whisper-base','Whisper Base FP32');
+    await runWhisper('onnx-community/whisper-small','Whisper Small FP32');
+  }else{
+    const err=new Error('omitido: Whisper Tiny canary no cargó');
+    for(const label of ['Whisper Base FP32','Whisper Small FP32'])for(const rec of S.recordings)for(const cfg of ['full','clean'])await addResult(rec,label,cfg,async()=>{throw err},0,1000);
+  }
   for(const rec of S.recordings){
     const successful=S.results.filter(r=>r.test_id===rec.id&&r.status==='ok'&&r.text);
-    await addResult(rec,'Ensemble','consenso-all',async()=>consensusText(successful.map(r=>r.text)),0);
-    const diverseNames=new Set(['Vosk 0.3 · native','Vosk 0.42 · native','Whisper Tiny Q8 · full','Whisper Base Q8 · full','Whisper Small Q8 · full','Parakeet 0.6B v3 INT8 · full','Moonshine ES Medium Streaming · full']);
+    await addResult(rec,'Ensemble','consenso-all',async()=>consensusText(successful.map(r=>r.text)),0,1000);
+    const diverseNames=new Set(['Vosk 0.3 · native','Vosk 0.42 · native','Whisper Tiny FP32 · full','Whisper Base FP32 · full','Whisper Small FP32 · full','Parakeet 0.6B v3 INT8 · full','Moonshine ES Base · full']);
     const diverse=successful.filter(r=>diverseNames.has(r.model+' · '+r.config));
-    await addResult(rec,'Ensemble','consenso-diverso',async()=>consensusText(diverse.map(r=>r.text)),0);
+    await addResult(rec,'Ensemble','consenso-diverso',async()=>consensusText(diverse.map(r=>r.text)),0,1000);
   }
-  await publishSummary();
-  S.processing=false;updateProcessing('Terminado');$('procTitle').textContent='Torneo terminado';$('copyBtn').disabled=false;$('sub').textContent='resultados listos';$('remotePill').textContent+=' · sesión '+session;renderResults();log('tournament done',{session,results:S.results.length,seconds:Math.round((performance.now()-S.tournamentStart)/1000)});
+  S.processing=false;S.doneJobs=S.totalJobs;updateProcessing('Terminado');$('procBar').style.width='100%';$('procCount').textContent=S.totalJobs+'/'+S.totalJobs;$('procTitle').textContent='Torneo terminado';$('copyBtn').disabled=false;$('sub').textContent='resultados listos';persistManifest({complete:true,expected:S.totalJobs,result_count:S.results.length,terminal_count:S.totalJobs});renderResults();publishSummary();log('tournament done',{session,results:S.results.length,seconds:Math.round((performance.now()-S.tournamentStart)/1000)});
 }
 async function copyAll(){
   const payload={build:BUILD,session,created_at:new Date().toISOString(),recordings:S.recordings.map(r=>({test_id:r.id,reference:r.reference,duration_ms:r.duration_ms,sample_rate:r.sampleRate})),results:S.results};
   const text=JSON.stringify(payload,null,2);try{await navigator.clipboard.writeText(text);$('copyBtn').textContent='Copiado ✓'}catch(e){const ta=document.createElement('textarea');ta.value=text;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();$('copyBtn').textContent='Copiado ✓'}
 }
-$('mic').onclick=()=>S.running?stopCapture():startCapture();$('copyBtn').onclick=copyAll;
-window.addEventListener('error',e=>log('window error',{message:e.message,line:e.lineno}));window.addEventListener('unhandledrejection',e=>log('unhandled',{reason:String(e.reason)}));
-log('build',{BUILD,session,userAgent:navigator.userAgent});renderCapture();$('sessionPill').textContent=session;
+async function resumeLatest(){
+  try{
+    const raw=localStorage.getItem('stt_mass_v3_manifest');if(!raw)return;const m=JSON.parse(raw);if(!m.session||m.complete)return;
+    session=m.session;S.recordings=await loadRecordings(session);S.idx=S.recordings.length;
+    const saved=JSON.parse(localStorage.getItem('stt_mass_latest')||'null');S.results=saved?.session===session&&Array.isArray(saved.results)?saved.results:[];
+    renderCapture();$('resumeBtn').hidden=true;$('mic').disabled=S.idx>=TEXTS.length;$('corpusPill').textContent=S.recordings.length+' audios recuperados';$('corpusPill').className='pill good';
+    log('session resumed',{session,recordings:S.recordings.length,results:S.results.length});
+    if(S.recordings.length===TEXTS.length)runTournament();
+  }catch(e){log('resume fail',{error:String(e)})}
+}
+function detectResume(){try{const m=JSON.parse(localStorage.getItem('stt_mass_v3_manifest')||'null');if(m?.session&&!m.complete&&Array.isArray(m.recordings)&&m.recordings.length){$('resumeBtn').hidden=false;$('resumeBtn').textContent='Reanudar '+m.recordings.length+'/8 · '+m.session}}catch{}}
+$('mic').onclick=()=>S.running?stopCapture():startCapture();$('copyBtn').onclick=copyAll;$('resumeBtn').onclick=resumeLatest;
+setInterval(()=>{if(!S.processing)return;const idle=Math.round((Date.now()-S.lastProgressAt)/1000);if(idle>=20){$('procTitle').textContent='Sin progreso hace '+idle+' s · watchdog activo';$('procTitle').style.color='var(--warn)'}else{$('procTitle').style.color=''}},1000);
+window.addEventListener('error',e=>log('window error',{message:e.message,line:e.lineno}));window.addEventListener('unhandledrejection',e=>log('unhandled',{reason:String(e.reason)}));window.addEventListener('online',()=>flushRemote());
+log('build',{BUILD,session,userAgent:navigator.userAgent});renderCapture();$('sessionPill').textContent=session;detectResume();
 </script>
 </body></html>
