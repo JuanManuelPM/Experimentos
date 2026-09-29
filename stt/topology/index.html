@@ -1,0 +1,69 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="dark"><meta http-equiv="Cache-Control" content="no-cache,no-store,must-revalidate"><title>STT Topology Lab</title><style>
+:root{--bg:#07090b;--p:#10151a;--line:#28343d;--fg:#f3f6f8;--mut:#8d9aa5;--ok:#77e39b;--warn:#ffd166;--bad:#ff7b7b;--blue:#8ab8ff}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:14px/1.45 system-ui}main{max-width:1000px;margin:auto;padding:14px 12px 70px}.panel{background:var(--p);border:1px solid var(--line);border-radius:14px;padding:13px;margin-top:10px}h1{margin:0;font-size:25px}.sub,.note{font-size:10px;color:var(--mut)}button{border:1px solid var(--line);background:#172027;color:var(--fg);padding:10px 12px;border-radius:9px;font:inherit;cursor:pointer}.primary{background:#eef5ff;color:#081018;border-color:#eef5ff;font-weight:850}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-top:10px}.stat{background:#090d10;border:1px solid #202c34;border-radius:10px;padding:9px}.stat b{display:block;font-size:19px}.stat span{font-size:9px;color:var(--mut)}.rows{margin-top:8px}.row{display:grid;grid-template-columns:1fr auto auto auto;gap:8px;padding:7px 0;border-top:1px solid #202830;font-size:11px}.row:first-child{border-top:0}.row span{color:var(--mut)}.lanes{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:7px;margin-top:8px}.lane{background:#090d10;border:1px solid #202c34;border-radius:10px;padding:9px}.lane b{display:block;font-size:16px}.pill{display:inline-block;border:1px solid var(--line);border-radius:99px;padding:4px 7px;font-size:9px;color:var(--mut);margin:6px 4px 0 0}.ok{color:var(--ok)}.warn{color:var(--warn)}.bad{color:var(--bad)}.bar{height:11px;background:#080c0f;border:1px solid var(--line);border-radius:99px;overflow:hidden;margin-top:9px}.bar i{display:block;height:100%;width:0;background:var(--ok)}@media(max-width:700px){.stats{grid-template-columns:repeat(2,1fr)}.row{grid-template-columns:1fr auto auto}}</style></head><body><main>
+<h1>STT Topology Lab</h1><div class="sub">Prueba la hipótesis “varias pestañas rinden más que varios workers dentro de una sola”. Mismo audio, mismos fragmentos, mismo modelo.</div>
+<section class="panel"><div id="status" style="font-size:21px;font-weight:850">Listo para probar topología</div><div class="bar"><i id="bar"></i></div><div><span id="phase" class="pill">idle</span><span id="hw" class="pill">hardware</span><span id="duration" class="pill">audio</span></div><div style="margin-top:10px"><button id="start" class="primary">Lanzar prueba 1→2→3→4 pestañas</button><button id="export" disabled>Exportar JSON</button></div><div class="note">El botón abre hasta cuatro pestañas auxiliares. No transcriben lo mismo: comparten una cola de fragmentos y cada una toma el próximo apenas queda libre.</div></section>
+<section class="panel"><div class="stats"><div class="stat"><b id="best">—</b><span>mejor nº pestañas</span></div><div class="stat"><b id="bestSpeed">—</b><span>throughput máximo</span></div><div class="stat"><b id="gain2">—</b><span>ganancia 2 vs 1</span></div><div class="stat"><b id="quality">—</b><span>acuerdo vs baseline</span></div></div></section>
+<section class="panel"><b>Pestañas auxiliares</b><div id="lanes" class="lanes"></div></section>
+<section class="panel"><b>Resultados por topología</b><div id="rows" class="rows"><div class="note">Todavía no hay mediciones.</div></div></section>
+<section class="panel"><b>Comparación con workers en una sola pestaña</b><div id="workerRows" class="rows"><div class="note">Si Observatory guardó resultados de concurrencia, aparecen acá.</div></div></section>
+<script type="module">
+const $=id=>document.getElementById(id),FAST_DB='stt-fast-v1',FAST_STORE='jobs',OBS_DB='stt-observatory-v2',OBS_STORE='runs',BUILD='STT-TOPOLOGY-V1-20260929';
+const group=Math.random().toString(36).slice(2),ch=new BroadcastChannel('stt-topology-'+group);
+let tabs=[],states=[],duration=0,running=false,results=[],baseline=new Map(),levelCtx=null,obs=null;
+$('hw').textContent=(navigator.hardwareConcurrency||'?')+' cores'+(navigator.deviceMemory?' · '+navigator.deviceMemory+' GB':'')+(navigator.gpu?' · WebGPU':'');
+function openDB(name,store){return new Promise((res,rej)=>{const q=indexedDB.open(name,1);q.onsuccess=()=>res(q.result);q.onerror=()=>rej(q.error)})}
+async function getDB(name,store,key='current'){try{const db=await openDB(name,store),v=await new Promise((res,rej)=>{const q=db.transaction(store,'readonly').objectStore(store).get(key);q.onsuccess=()=>res(q.result||null);q.onerror=()=>rej(q.error)});db.close();return v}catch{return null}}
+function words(s){return String(s||'').trim().split(/\s+/).filter(Boolean)}
+function norm(s){return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9ñ\s]/gi,' ').replace(/\s+/g,' ').trim().split(' ').filter(Boolean)}
+function sim(a,b){const A=norm(a),B=norm(b),n=Math.max(A.length,B.length,1),d=Array.from({length:B.length+1},(_,i)=>i);for(let i=1;i<=A.length;i++){let p=d[0];d[0]=i;for(let j=1;j<=B.length;j++){const t=d[j];d[j]=Math.min(d[j]+1,d[j-1]+1,p+(A[i-1]===B[j-1]?0:1));p=t}}return 1-d[B.length]/n}
+function setStatus(s,p=0,ph=''){ $('status').textContent=s;$('bar').style.width=Math.max(0,Math.min(100,p))+'%';if(ph)$('phase').textContent=ph }
+function renderLanes(){ $('lanes').innerHTML=states.map((s,i)=>'<div class="lane"><b>Tab '+(i+1)+'</b><span class="pill '+(s.error?'bad':s.busy?'warn':s.ready?'ok':'')+'">'+(s.error?'error':s.busy?'trabajando':s.ready?'lista':'preparando')+'</span><div class="note">'+(s.job?('fragmento '+s.job):s.load_ms?('modelo '+(s.load_ms/1000).toFixed(1)+'s'):'')+'</div></div>').join('')}
+function renderResults(){if(!results.length)return;$('rows').innerHTML=results.map(r=>'<div class="row"><b>'+r.tabs+' pestaña'+(r.tabs>1?'s':'')+'</b><span>'+r.throughput.toFixed(2)+'× realtime</span><span>speedup '+r.speedup.toFixed(2)+'×</span><span>acuerdo '+Math.round(r.agreement*100)+'%</span></div>').join('');const best=[...results].sort((a,b)=>b.throughput-a.throughput)[0];$('best').textContent=best.tabs;$('bestSpeed').textContent=best.throughput.toFixed(2)+'×';const r2=results.find(x=>x.tabs===2),r1=results.find(x=>x.tabs===1);$('gain2').textContent=r1&&r2?Math.round((r2.throughput/r1.throughput-1)*100)+'%':'—';$('quality').textContent=Math.round(best.agreement*100)+'%';$('export').disabled=false}
+function samples(){const n=6,sec=Math.min(15,Math.max(8,duration/80)),a=[];for(let i=0;i<n;i++){const center=duration*(i+.5)/n,start=Math.max(0,Math.min(duration-sec,center-sec/2));a.push({idx:i,start,end:start+sec})}return a}
+function wait(ms){return new Promise(r=>setTimeout(r,ms))}
+async function initSlot(i){if(states[i].ready)return;ch.postMessage({kind:'init_model',slot:i,backend:'wasm'});const t=performance.now();while(!states[i].ready&&!states[i].error&&performance.now()-t<180000)await wait(100);if(!states[i].ready)throw new Error('tab '+(i+1)+' no cargó modelo');}
+async function warmSlot(i){const seg={idx:'warm-'+i,start:Math.max(0,duration*.1),end:Math.min(duration,Math.max(0,duration*.1)+5)};await runLevel([i],[seg],30,true)}
+function runLevel(active,samps,chunkS=30,warm=false){
+ return new Promise((resolve,reject)=>{
+  const queue=samps.map(x=>({...x})),outputs=new Map(),start=performance.now();let done=0,failed=false;
+  levelCtx={active:new Set(active),queue,outputs,start,done,total:samps.length,warm,resolve,reject,chunkS};
+  for(const i of active)dispatch(i);
+ });
+}
+function dispatch(slot){
+ const C=levelCtx;if(!C||C.warm&&C.done>=C.total)return;
+ if(!C.queue.length){if(C.done>=C.total){const wall=(performance.now()-C.start)/1000;const audio=[...C.outputs.values()].reduce((a,x)=>a+(x.end-x.start),0);const out={wall,audio,outputs:C.outputs};const res=C.resolve;levelCtx=null;res(out)}return}
+ const s=C.queue.shift(),jobId='L'+Date.now()+'-'+slot+'-'+s.idx+'-'+Math.random().toString(36).slice(2);states[slot].busy=true;states[slot].job=s.idx;renderLanes();ch.postMessage({kind:'job',slot,jobId,start:s.start,end:s.end,chunkS:C.chunkS});
+}
+ch.onmessage=e=>{
+ const m=e.data||{};if(m.slot==null||!states[m.slot])return;
+ const s=states[m.slot];
+ if(m.kind==='tab_ready'){s.tabReady=true;s.duration=m.duration;duration=duration||m.duration;$('duration').textContent=Math.round(duration/60)+' min audio';renderLanes()}
+ else if(m.kind==='model_ready'){s.ready=true;s.load_ms=m.load_ms;s.error=null;renderLanes()}
+ else if(m.kind==='runner_error'){s.error=m.error;s.busy=false;renderLanes();if(levelCtx){const rej=levelCtx.reject;levelCtx=null;rej(new Error(m.error))}}
+ else if(m.kind==='result'&&levelCtx){s.busy=false;s.job=null;const idx=String(m.jobId).split('-').slice(-2,-1)[0];let sample=null;for(const x of samples())if(String(x.idx)===String(idx))sample=x;if(!sample){sample={idx:m.start,start:m.start,end:m.end}}levelCtx.outputs.set(sample.idx,{...m,start:m.start,end:m.end});levelCtx.done++;renderLanes();dispatch(m.slot);if(levelCtx&&levelCtx.done>=levelCtx.total&&!levelCtx.queue.length)dispatch(m.slot)}
+};
+async function showObs(){obs=await getDB(OBS_DB,OBS_STORE);const a=obs?.concResults||[];if(a.length)$('workerRows').innerHTML=a.map(r=>'<div class="row"><b>'+r.workers+' workers / 1 tab</b><span>'+Number(r.throughput).toFixed(2)+'× realtime</span><span>'+Math.round((r.utilization||0)*100)+'% util</span><span>'+(r.gain?Math.round((r.gain-1)*100)+'%':'base')+'</span></div>').join('')}
+async function start(){
+ if(running)return;running=true;$('start').disabled=true;setStatus('Abriendo pestañas auxiliares…',2,'abrir');
+ const max=4;states=Array.from({length:max},()=>({ready:false,busy:false,error:null,tabReady:false}));tabs=[];
+ for(let i=0;i<max;i++){const w=window.open('./runner.html?group='+encodeURIComponent(group)+'&slot='+i,'stt-topology-'+group+'-'+i,'popup=yes,width=430,height=260');tabs.push(w)}
+ renderLanes();
+ const t=performance.now();while(states.filter(x=>x.tabReady).length<max&&performance.now()-t<30000)await wait(100);
+ if(!duration)throw new Error('ninguna pestaña encontró el audio');
+ const samps=samples(),levels=[1,2,3,4];let baseTp=0;
+ for(let li=0;li<levels.length;li++){
+   const level=levels[li];setStatus('Preparando '+level+' pestaña'+(level>1?'s':'')+'…',5+li*22,'modelo');
+   for(let i=0;i<level;i++)if(!states[i].ready){await initSlot(i);await warmSlot(i)}
+   setStatus('Midiendo '+level+' pestaña'+(level>1?'s':'')+' sobre los mismos fragmentos…',10+li*22,'benchmark');
+   const r=await runLevel(Array.from({length:level},(_,i)=>i),samps,30,false),tp=r.audio/r.wall;
+   if(level===1){baseTp=tp;baseline=new Map([...r.outputs].map(([k,v])=>[k,v.text||'']))}
+   let ag=0,n=0;for(const [k,v] of r.outputs){if(baseline.has(k)){ag+=sim(baseline.get(k),v.text||'');n++}}
+   results.push({tabs:level,wall_s:r.wall,audio_s:r.audio,throughput:tp,speedup:tp/baseTp,parallel_efficiency:(tp/baseTp)/level,agreement:n?ag/n:1,outputs:[...r.outputs.values()].map(x=>({start:x.start,end:x.end,text:x.text,infer_ms:x.infer_ms,slot:x.slot}))});renderResults();
+ }
+ setStatus('Prueba terminada · ya sabemos si las pestañas agregan throughput',100,'listo');for(const i of [0,1,2,3])ch.postMessage({kind:'close',slot:i});running=false
+}
+$('start').onclick=()=>start().catch(e=>{setStatus('Error: '+e.message,0,'error');running=false;$('start').disabled=false});
+$('export').onclick=()=>{const payload={build:BUILD,created_at:new Date().toISOString(),hardware:{cores:navigator.hardwareConcurrency||null,deviceMemory:navigator.deviceMemory||null,webgpu:!!navigator.gpu,ua:navigator.userAgent},duration,results,observatory_worker_results:obs?.concResults||[]};const u=URL.createObjectURL(new Blob([JSON.stringify(payload,null,2)],{type:'application/json'})),a=document.createElement('a');a.href=u;a.download='stt-topology-benchmark.json';a.click();setTimeout(()=>URL.revokeObjectURL(u),1000)};
+showObs();
+</script></main></body></html>
