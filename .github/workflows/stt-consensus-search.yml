@@ -1,0 +1,204 @@
+name: STT Consensus Search
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - "stt-results/sessions/**"
+      - ".github/workflows/stt-consensus-search.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: stt-consensus-search
+  cancel-in-progress: true
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: master
+          fetch-depth: 0
+
+      - name: Search consensus space
+        shell: python
+        run: |
+          import json, pathlib, re, unicodedata, itertools, statistics, datetime, math
+
+          ROOT=pathlib.Path("stt-results/sessions")
+          OUT=pathlib.Path("stt-analysis-data")
+          OUT.mkdir(exist_ok=True)
+          refs={
+            "natural":"Hoy quiero probar qué tan bien funciona esta transcripción cuando hablo a una velocidad normal y sin exagerar la pronunciación.",
+            "rioplatense":"Che, fijate si podés entenderme aunque hable rápido, junte algunas palabras y no marque demasiado cada sílaba.",
+            "prometeo":"Prometeo debería escuchar una frase, comparar varias hipótesis y conservar las palabras que aparecen con mayor consistencia.",
+            "confusiones":"Quiero comprobar si distingue entre esto, efecto, Héctor y texto cuando las palabras aparecen dentro de una frase completa.",
+            "numeros":"El martes catorce de octubre a las siete y media tengo que revisar treinta y dos archivos antes de las nueve.",
+            "tecnico":"Después voy a abrir GitHub, ejecutar el proceso y revisar si el build de Firefox coincide con el resultado publicado.",
+            "contexto":"Si una palabra sale mal al principio, no me importa que se corrija un segundo después, siempre que la frase final quede mejor y no pierda el contexto.",
+            "comandos":"Che Prometeo, poné pausa, bajá el volumen y después seguí escuchando cuando yo diga continuar."
+          }
+          nummap={"14":["catorce"],"7":["siete"],"32":["treinta","dos"],"9":["nueve"]}
+
+          def norm(s):
+              s="".join(c for c in unicodedata.normalize("NFD",str(s or "").lower()) if unicodedata.category(c)!="Mn")
+              s=re.sub(r"[^a-z0-9ñ\s]"," ",s)
+              return re.sub(r"\s+"," ",s).strip()
+          def toks(s, semantic=False):
+              a=norm(s).split()
+              if semantic:
+                  out=[]
+                  for x in a: out.extend(nummap.get(x,[x]))
+                  return out
+              return a
+          def dist(a,b):
+              p=list(range(len(b)+1))
+              for i,x in enumerate(a,1):
+                  c=[i]+[0]*len(b)
+                  for j,y in enumerate(b,1):
+                      c[j]=min(p[j]+1,c[j-1]+1,p[j-1]+(x!=y))
+                  p=c
+              return p[-1]
+          def wer(ref,hyp,semantic=False):
+              a,b=toks(ref,semantic),toks(hyp,semantic)
+              return 100*dist(a,b)/max(1,len(a))
+          def align(base,cand):
+              A,B=toks(base),toks(cand); n,m=len(A),len(B)
+              raw=str(cand or "").strip().split()
+              dp=[[0]*(m+1) for _ in range(n+1)]
+              for i in range(n+1): dp[i][0]=i
+              for j in range(m+1): dp[0][j]=j
+              for i in range(1,n+1):
+                  for j in range(1,m+1):
+                      dp[i][j]=min(dp[i-1][j]+1,dp[i][j-1]+1,dp[i-1][j-1]+(A[i-1]!=B[j-1]))
+              out=[None]*n; i=n; j=m
+              while i or j:
+                  if i and j and dp[i][j]==dp[i-1][j-1]+(A[i-1]!=B[j-1]):
+                      out[i-1]=raw[j-1] if j-1<len(raw) else B[j-1]; i-=1; j-=1
+                  elif i and dp[i][j]==dp[i-1][j]+1: i-=1
+                  else: j-=1
+              return out
+          def fam(r):
+              m=r.get("model","")
+              for f in ("Vosk","Whisper","Parakeet","Moonshine","Ensemble"):
+                  if m.startswith(f): return f
+              return m.split()[0] if m else "Other"
+          def src(r): return r.get("model","?")+" · "+r.get("config","?")
+
+          files=sorted(ROOT.glob("*.json"), key=lambda p:p.stat().st_mtime, reverse=True)
+          if not files: raise SystemExit("No sessions")
+          doc=json.loads(files[0].read_text())
+          rs=[r for r in doc.get("results",[]) if r.get("status")=="ok" and r.get("text")]
+          for r in rs:
+              r["test_id"]=r.get("test_id") or r.get("test")
+              r["reference"]=r.get("reference") or refs.get(r["test_id"],"")
+
+          individuals=[r for r in rs if fam(r)!="Ensemble"]
+          tests=sorted(set(r["test_id"] for r in individuals if r.get("test_id")))
+          sources=sorted(set(src(r) for r in individuals))
+          bytest={t:[r for r in individuals if r["test_id"]==t] for t in tests}
+
+          ranking=[]
+          for s in sources:
+              x=[r for r in individuals if src(r)==s]
+              if not x: continue
+              ranking.append({
+                  "source":s,"n":len(x),
+                  "wer_macro":statistics.mean(wer(r["reference"],r["text"]) for r in x),
+                  "wer_semantic_macro":statistics.mean(wer(r["reference"],r["text"],True) for r in x),
+                  "infer_ms_mean":statistics.mean(float(r.get("infer_ms") or 0) for r in x),
+              })
+          ranking.sort(key=lambda x:(x["wer_semantic_macro"],x["wer_macro"],x["infer_ms_mean"]))
+
+          total=miss=0; missing={}
+          for t,rows in bytest.items():
+              ref=rows[0]["reference"]; A=toks(ref); ok=[False]*len(A)
+              for r in rows:
+                  al=align(ref,r["text"])
+                  for i,w in enumerate(al):
+                      if w and norm(w)==A[i]: ok[i]=True
+              bad=[A[i] for i,x in enumerate(ok) if not x]
+              missing[t]=bad; miss+=len(bad); total+=len(A)
+          oracle=100*miss/max(1,total)
+
+          # Reproducibility: identical transcripts from different configs of same family.
+          pair=[]
+          for a,b in itertools.combinations(sources,2):
+              A=[r for r in individuals if src(r)==a]; B=[r for r in individuals if src(r)==b]
+              common=sorted(set(r["test_id"] for r in A)&set(r["test_id"] for r in B))
+              if not common: continue
+              same=0
+              for t in common:
+                  ta=next(r["text"] for r in A if r["test_id"]==t)
+                  tb=next(r["text"] for r in B if r["test_id"]==t)
+                  same += norm(ta)==norm(tb)
+              pair.append({"a":a,"b":b,"same_tests":same,"n":len(common),"pct":100*same/len(common)})
+          pair.sort(key=lambda x:-x["pct"])
+
+          # Leave-one-test-out family/source reliability. This does NOT use held-out references for selection.
+          cv=[]
+          for held in tests:
+              train=[r for r in individuals if r["test_id"]!=held]
+              rel={}
+              for s in sources:
+                  x=[r for r in train if src(r)==s]
+                  if x: rel[s]=statistics.mean(wer(r["reference"],r["text"],True) for r in x)
+              heldrows=bytest[held]
+              if not heldrows: continue
+              bestsource=min((src(r) for r in heldrows if src(r) in rel), key=lambda s:rel[s], default=None)
+              if bestsource:
+                  r=next(r for r in heldrows if src(r)==bestsource)
+                  cv.append({"test":held,"source":bestsource,"wer":wer(r["reference"],r["text"]),"semantic_wer":wer(r["reference"],r["text"],True)})
+          cv_sem=statistics.mean(x["semantic_wer"] for x in cv) if cv else None
+
+          report={
+              "analysis_build":"STT-CONSENSUS-SEARCH-V1",
+              "session":doc.get("session"),
+              "source_file":str(files[0]),
+              "computed_at":datetime.datetime.now(datetime.timezone.utc).isoformat(),
+              "result_count":len(doc.get("results",[])),
+              "successful_hypotheses":len(individuals),
+              "oracle_word_availability_wer":oracle,
+              "oracle_missing_words":missing,
+              "best_sources":ranking[:25],
+              "leave_one_test_out_best_source_semantic_wer":cv_sem,
+              "leave_one_test_out":cv,
+              "most_redundant_pairs":pair[:25],
+          }
+          sid=doc.get("session","unknown")
+          (OUT/f"{sid}.json").write_text(json.dumps(report,ensure_ascii=False,indent=2)+"\n")
+          md=[
+            f"# STT consensus search · {sid}",
+            "",
+            f"- Approx. oracle word-availability WER: **{oracle:.2f}%**",
+            f"- Leave-one-test-out source selection, semantic-normalized macro WER: **{cv_sem:.2f}%**" if cv_sem is not None else "- CV unavailable",
+            "",
+            "## Best sources",
+            "",
+            "| source | n | WER | semantic WER | mean infer ms |",
+            "|---|---:|---:|---:|---:|",
+          ]
+          for x in ranking[:20]:
+              md.append(f"| {x['source']} | {x['n']} | {x['wer_macro']:.2f}% | {x['wer_semantic_macro']:.2f}% | {x['infer_ms_mean']:.0f} |")
+          md += ["","## Oracle missing words",""]
+          for t,bad in missing.items(): md.append(f"- {t}: {', '.join(bad) if bad else 'none'}")
+          (OUT/f"{sid}.md").write_text("\n".join(md)+"\n")
+
+      - name: Commit analysis
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "stt-consensus-search"
+          git config user.email "stt-consensus-search@users.noreply.github.com"
+          git add stt-analysis-data
+          if git diff --cached --quiet; then
+            echo "No analysis changes."
+            exit 0
+          fi
+          git commit -m "Analyze STT consensus search space"
+          git push origin HEAD:master
