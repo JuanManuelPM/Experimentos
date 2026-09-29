@@ -4,63 +4,120 @@
 <title>STT Live</title>
 <style>
 :root{--bg:#07090b;--p:#10151a;--line:#28343d;--fg:#f4f7f9;--mut:#8d9aa5;--ok:#77e39b;--warn:#ffd166;--bad:#ff7b7b}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.5 system-ui,-apple-system,Segoe UI,sans-serif}main{max-width:920px;margin:auto;padding:14px 12px 70px}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.5 system-ui,-apple-system,Segoe UI,sans-serif}main{max-width:980px;margin:auto;padding:14px 12px 70px}
 h1{font-size:27px;margin:0}.sub,.note{color:var(--mut);font-size:11px}.card{background:var(--p);border:1px solid var(--line);border-radius:14px;padding:14px;margin-top:11px}
 .big{font-size:22px;font-weight:850}.actions,.meta{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}button{border:1px solid var(--line);background:#172027;color:var(--fg);padding:11px 13px;border-radius:10px;font:inherit;cursor:pointer}.primary{background:#eef5ff;color:#081018;border-color:#eef5ff;font-weight:850}button:disabled{opacity:.42}
 .pill{border:1px solid var(--line);border-radius:99px;padding:4px 7px;color:var(--mut);font-size:9px}.ok{color:var(--ok)}.warn{color:var(--warn)}.bad{color:var(--bad)}
 .meter{height:12px;background:#080c0f;border:1px solid var(--line);border-radius:99px;overflow:hidden;margin-top:10px}.meter i{display:block;height:100%;width:0;background:var(--ok);transition:width .08s linear}
-textarea{width:100%;min-height:340px;background:#080c0f;color:var(--fg);border:1px solid var(--line);border-radius:10px;padding:12px;font:16px/1.55 system-ui;margin-top:10px}
+textarea{width:100%;min-height:300px;background:#080c0f;color:var(--fg);border:1px solid var(--line);border-radius:10px;padding:12px;font:16px/1.55 system-ui;margin-top:10px}
 .seg{border-top:1px solid #202830;padding:8px 0}.seg:first-child{border-top:0}.time{font-size:9px;color:var(--mut)}
+.reference{font-size:19px;line-height:1.75;background:#090d10;border:1px solid #202c34;border-radius:11px;padding:14px;margin-top:10px}
+.rows{display:grid;gap:7px;margin-top:10px}.row{border:1px solid #202c34;background:#090d10;border-radius:10px;padding:9px}.row.winner{border-color:#416b4d}.rowtop{display:grid;grid-template-columns:1fr repeat(4,auto);gap:9px;align-items:center}.rowtop span{font-size:10px;color:var(--mut)}.rowtext{font-size:12px;color:#cbd4db;margin-top:7px;line-height:1.55}.score{font-size:18px;font-weight:850}
+@media(max-width:720px){.rowtop{grid-template-columns:1fr auto auto}.rowtop span:nth-child(4),.rowtop span:nth-child(5){display:none}.reference{font-size:17px}}
 </style></head><body><main>
-<h1>STT Live</h1><div class="sub">Micrófono local → Parakeet. Una sola pestaña, bloques de 4 s con 2 s de solapamiento: el borde viejo se reemplaza por la lectura nueva, donde esa palabra cae cerca del centro.</div>
+<h1>STT Live</h1><div class="sub">Micrófono local → Parakeet. Una sola pestaña. Incluye prueba controlada para encontrar automáticamente el mejor recorte/solapamiento con tu voz.</div>
+
 <section class="card">
 <div id="status" class="big">Cargando modelo…</div>
 <div class="meter"><i id="meter"></i></div>
 <div class="meta"><span id="backend" class="pill">modelo</span><span id="lat" class="pill">latencia —</span><span id="rt" class="pill">—× realtime</span><span id="queue" class="pill">cola 0 s</span></div>
 <div class="actions"><button id="mic" class="primary" disabled>🎙️ Empezar micrófono</button><button id="stop" disabled>Detener</button><button id="copy" disabled>Copiar</button><button id="clear">Limpiar texto</button></div>
-<div class="note">Local: no usa Web Speech ni sube el audio. Primer texto normalmente aparece después del primer bloque de ~4 s + inferencia. Los últimos ~2 s son provisionales: el bloque siguiente los vuelve a oír lejos del corte y puede corregir ese borde. Si hablás más rápido que el modelo, la cola queda visible.</div>
+<div class="note">Modo normal: 4 s de audio con 2 s de solapamiento. La cola del bloque viejo se reemplaza por la lectura nueva, donde las palabras del borde quedan más centradas.</div>
 </section>
-<section class="card"><b>Texto</b><textarea id="out" placeholder="El texto aparece mientras hablás."></textarea></section>
+
+<section class="card">
+<b>Prueba controlada de precisión</b>
+<div class="note">Leé este texto una sola vez. Guardamos esa misma grabación local y la pasamos por varias estrategias de corte. Así comparamos manzanas con manzanas, una rareza científica sorprendentemente útil.</div>
+<div id="reference" class="reference">Esta mañana, Clara salió temprano de su edificio y caminó hasta una plaza tranquila. En una esquina encontró una bicicleta roja junto a un árbol enorme. Más adelante, un perro pequeño cruzó la calle detrás de una señora con paraguas. El cielo estaba despejado, aunque todavía quedaban charcos de la tormenta nocturna. Clara compró un café, miró su reloj y siguió hacia la estación. Antes de llegar, escuchó una campana lejana y vio pasar un colectivo vacío. Entonces decidió sentarse unos minutos, respirar despacio y observar cómo empezaba el movimiento de la ciudad.</div>
+<div class="actions"><button id="testStart" class="primary" disabled>🎙️ Grabar lectura de prueba</button><button id="testStop" disabled>Terminé de leer</button></div>
+<div class="meta"><span id="testState" class="pill">esperando</span><span id="testDur" class="pill">— s</span><span id="testBest" class="pill">ganador —</span></div>
+<div id="testRows" class="rows"><div class="note">Después de leer, se prueban: sin cortes, 4/1, 4/2, 6/2, 8/3 y 10/4 segundos de bloque/solapamiento.</div></div>
+</section>
+
+<section class="card"><b>Texto en vivo</b><textarea id="out" placeholder="El texto aparece mientras hablás."></textarea></section>
 <section class="card"><b>Últimos bloques</b><div id="segments" class="note">Todavía no hay audio.</div></section>
+
 <script type="module">
-const $=id=>document.getElementById(id),BUILD='STT-LIVE-V1-20260929';
+const $=id=>document.getElementById(id),BUILD='STT-LIVE-V2-20260929';
+const TEST_TEXT=$('reference').textContent.trim();
 let model=null,stream=null,ctx=null,node=null,source=null,running=false,processing=false,nativeRate=48000,parts=[],samples=0,text='',segments=[],capturedS=0;
+let testStream=null,testCtx=null,testNode=null,testSource=null,testParts=[],testRate=48000,testRunning=false,testResults=[];
 const CHUNK_S=4,OVERLAP_S=2,SILENCE_RMS=.0045;
+const TEST_CONFIGS=[
+ {name:'sin cortes',chunk:null,overlap:0,live:false},
+ {name:'4s / 1s',chunk:4,overlap:1,live:true},
+ {name:'4s / 2s',chunk:4,overlap:2,live:true},
+ {name:'6s / 2s',chunk:6,overlap:2,live:true},
+ {name:'8s / 3s',chunk:8,overlap:3,live:true},
+ {name:'10s / 4s',chunk:10,overlap:4,live:true}
+];
 function norm(s){return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9ñ\s]/gi,' ').replace(/\s+/g,' ').trim().split(' ').filter(Boolean)}
 function tokenDist(A,B){const d=Array.from({length:B.length+1},(_,i)=>i);for(let i=1;i<=A.length;i++){let p=d[0];d[0]=i;for(let j=1;j<=B.length;j++){const t=d[j];d[j]=Math.min(d[j]+1,d[j-1]+1,p+(A[i-1]===B[j-1]?0:1));p=t}}return d[B.length]}
 function merge(a,b){
  if(!a)return b;if(!b)return a;
  const A=String(a).trim().split(/\s+/),B=String(b).trim().split(/\s+/),na=A.map(x=>norm(x)[0]||''),nb=B.map(x=>norm(x)[0]||'');
- let best={score:-1,la:0,lb:0};
- for(let la=2;la<=Math.min(14,na.length);la++)for(let lb=Math.max(2,la-2);lb<=Math.min(14,nb.length,la+2);lb++){
-   const x=na.slice(-la),y=nb.slice(0,lb),score=1-tokenDist(x,y)/Math.max(la,lb);
-   const weighted=score+Math.min(la,lb)*.012;
+ let best={score:-1,raw:-1,la:0,lb:0};
+ for(let la=2;la<=Math.min(16,na.length);la++)for(let lb=Math.max(2,la-3);lb<=Math.min(16,nb.length,la+3);lb++){
+   const score=1-tokenDist(na.slice(-la),nb.slice(0,lb))/Math.max(la,lb),weighted=score+Math.min(la,lb)*.011;
    if(weighted>best.score)best={score:weighted,raw:score,la,lb}
  }
  if(best.raw>=.38)return A.slice(0,A.length-best.la).concat(B).join(' ').trim();
- // Si el solapamiento quedó demasiado deformado para alinearlo, sacrificamos sólo
- // la última palabra vieja: el siguiente bloque la oyó ~2 s lejos de su borde.
  return A.slice(0,Math.max(0,A.length-1)).concat(B).join(' ').trim()
 }
 function rms(x){let s=0;for(let i=0;i<x.length;i++)s+=x[i]*x[i];return Math.sqrt(s/Math.max(1,x.length))}
 function resample(x,from,to=16000){if(from===to)return x;const ratio=from/to,n=Math.max(1,Math.floor(x.length/ratio)),o=new Float32Array(n);for(let i=0;i<n;i++){const p=i*ratio,a=Math.floor(p),b=Math.min(x.length-1,a+1),f=p-a;o[i]=x[a]*(1-f)+x[b]*f}return o}
+function concat(parts){const n=parts.reduce((a,x)=>a+x.length,0),o=new Float32Array(n);let p=0;for(const x of parts){o.set(x,p);p+=x.length}return o}
+function wer(hyp,ref){const H=norm(hyp),R=norm(ref);return R.length?tokenDist(H,R)/R.length:1}
+function repeatedWords(s){const t=norm(s);let dup=0;for(let n=6;n>=2;n--)for(let i=0;i+2*n<=t.length;i++){let same=true;for(let j=0;j<n;j++)if(t[i+j]!==t[i+n+j]){same=false;break}if(same){dup+=n;i+=n-1}}return dup}
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
 function takeNative(sec){const need=Math.floor(sec*nativeRate);if(samples<need)return null;const all=new Float32Array(need);let w=0,remain=need;while(remain>0&&parts.length){const p=parts[0],n=Math.min(remain,p.length);all.set(p.subarray(0,n),w);w+=n;remain-=n;if(n===p.length)parts.shift();else parts[0]=p.subarray(n)}samples-=need;const overlap=Math.floor(OVERLAP_S*nativeRate);if(overlap>0){const tail=all.slice(Math.max(0,all.length-overlap));parts.unshift(tail);samples+=tail.length}return all}
 function renderSegments(){$('segments').innerHTML=segments.slice(-8).reverse().map(s=>'<div class="seg"><div class="time">'+s.start.toFixed(1)+'–'+s.end.toFixed(1)+' s · '+s.ms.toFixed(0)+' ms · rms '+s.rms.toFixed(4)+'</div><div>'+escapeHtml(s.text||'[silencio]')+'</div></div>').join('')||'Todavía no hay audio.'}
-function escapeHtml(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
 async function pump(){if(processing||!running)return;const raw=takeNative(CHUNK_S);if(!raw){$('queue').textContent='cola '+(samples/nativeRate).toFixed(1)+' s';return}processing=true;const start=capturedS,end=start+CHUNK_S;capturedS+=CHUNK_S-OVERLAP_S;const level=rms(raw);$('meter').style.width=Math.min(100,level*900)+'%';try{
  if(level<SILENCE_RMS){segments.push({start,end,text:'',ms:0,rms:level});renderSegments()}
  else{const pcm=resample(raw,nativeRate,16000),t=performance.now(),r=await model.transcribeLongAudio(pcm,16000,{returnTimestamps:false,returnConfidences:true,chunkLengthS:CHUNK_S,timeOffset:start}),ms=performance.now()-t,tx=(r.text||r.utterance_text||'').trim();text=merge(text,tx);$('out').value=text;$('copy').disabled=!text;segments.push({start,end,text:tx,ms,rms:level});$('lat').textContent='último '+(ms/1000).toFixed(2)+' s';$('rt').textContent=(CHUNK_S/(ms/1000)).toFixed(2)+'× realtime';renderSegments()}
  }catch(e){$('status').textContent='Error ASR: '+e.message;$('status').className='big bad'}
  processing=false;$('queue').textContent='cola '+(samples/nativeRate).toFixed(1)+' s';if(running)setTimeout(pump,0)
 }
-async function startMic(){
- if(running)return;stream=await navigator.mediaDevices.getUserMedia({audio:{channelCount:1,echoCancellation:false,noiseSuppression:false,autoGainControl:false}});
- ctx=new AudioContext();nativeRate=ctx.sampleRate;const code=`class C extends AudioWorkletProcessor{process(i){const x=i[0]?.[0];if(x)this.port.postMessage(x.slice());return true}}registerProcessor('cap',C)`,u=URL.createObjectURL(new Blob([code],{type:'text/javascript'}));await ctx.audioWorklet.addModule(u);URL.revokeObjectURL(u);
- source=ctx.createMediaStreamSource(stream);node=new AudioWorkletNode(ctx,'cap');const silent=ctx.createGain();silent.gain.value=0;source.connect(node);node.connect(silent).connect(ctx.destination);node.port.onmessage=e=>{if(!running)return;const x=new Float32Array(e.data);parts.push(x);samples+=x.length;const lv=rms(x);$('meter').style.width=Math.min(100,lv*1200)+'%';if(!processing&&samples>=CHUNK_S*nativeRate)pump()};
- parts=[];samples=0;capturedS=0;running=true;$('mic').disabled=true;$('stop').disabled=false;$('status').textContent='Escuchando…';$('status').className='big ok';pump()
+async function makeCapture(){
+ const st=await navigator.mediaDevices.getUserMedia({audio:{channelCount:1,echoCancellation:false,noiseSuppression:false,autoGainControl:false}});
+ const ac=new AudioContext(),rate=ac.sampleRate,code=`class C extends AudioWorkletProcessor{process(i){const x=i[0]?.[0];if(x)this.port.postMessage(x.slice());return true}}registerProcessor('cap',C)`,u=URL.createObjectURL(new Blob([code],{type:'text/javascript'}));await ac.audioWorklet.addModule(u);URL.revokeObjectURL(u);
+ const src=ac.createMediaStreamSource(st),nd=new AudioWorkletNode(ac,'cap'),silent=ac.createGain();silent.gain.value=0;src.connect(nd);nd.connect(silent).connect(ac.destination);return{st,ac,rate,src,nd}
 }
-async function stopMic(){running=false;$('stop').disabled=true;$('mic').disabled=false;try{node?.disconnect();source?.disconnect();stream?.getTracks().forEach(t=>t.stop());await ctx?.close()}catch{};$('status').textContent='Micrófono detenido';$('meter').style.width='0%'}
+async function startMic(){
+ if(running||testRunning)return;const c=await makeCapture();stream=c.st;ctx=c.ac;nativeRate=c.rate;source=c.src;node=c.nd;
+ node.port.onmessage=e=>{if(!running)return;const x=new Float32Array(e.data);parts.push(x);samples+=x.length;const lv=rms(x);$('meter').style.width=Math.min(100,lv*1200)+'%';if(!processing&&samples>=CHUNK_S*nativeRate)pump()};
+ parts=[];samples=0;capturedS=0;running=true;$('mic').disabled=true;$('testStart').disabled=true;$('stop').disabled=false;$('status').textContent='Escuchando…';$('status').className='big ok';pump()
+}
+async function stopMic(){running=false;$('stop').disabled=true;$('mic').disabled=false;$('testStart').disabled=false;try{node?.disconnect();source?.disconnect();stream?.getTracks().forEach(t=>t.stop());await ctx?.close()}catch{};$('status').textContent='Micrófono detenido';$('meter').style.width='0%'}
+async function startTest(){
+ if(testRunning||running)return;const c=await makeCapture();testStream=c.st;testCtx=c.ac;testRate=c.rate;testSource=c.src;testNode=c.nd;testParts=[];testRunning=true;
+ testNode.port.onmessage=e=>{if(!testRunning)return;const x=new Float32Array(e.data);testParts.push(x);$('meter').style.width=Math.min(100,rms(x)*1200)+'%'};
+ $('testStart').disabled=true;$('testStop').disabled=false;$('mic').disabled=true;$('testState').textContent='grabando · leé el texto';$('testRows').innerHTML='<div class="note">Grabando exactamente una lectura. Al terminar, todas las estrategias usarán este mismo audio.</div>'
+}
+async function stopTest(){
+ if(!testRunning)return;testRunning=false;$('testStop').disabled=true;try{testNode?.disconnect();testSource?.disconnect();testStream?.getTracks().forEach(t=>t.stop());await testCtx?.close()}catch{}
+ $('meter').style.width='0%';const raw=concat(testParts),dur=raw.length/testRate;$('testDur').textContent=dur.toFixed(1)+' s';$('testState').textContent='comparando estrategias…';await runTests(resample(raw,testRate,16000));$('mic').disabled=false;$('testStart').disabled=false
+}
+async function segmented(pcm,dur,cfg){
+ const t0=performance.now();let out='',firstMs=null,pieces=0;
+ if(!cfg.chunk){const t=performance.now(),r=await model.transcribeLongAudio(pcm,16000,{returnTimestamps:false,returnConfidences:true,chunkLengthS:Math.max(4,Math.min(60,dur)),timeOffset:0});firstMs=performance.now()-t;out=(r.text||r.utterance_text||'').trim();pieces=1}
+ else{const step=Math.max(.5,cfg.chunk-cfg.overlap);for(let start=0;start<dur;start+=step){const end=Math.min(dur,start+cfg.chunk),part=pcm.subarray(Math.floor(start*16000),Math.floor(end*16000));if(part.length<1600)break;const t=performance.now(),r=await model.transcribeLongAudio(part,16000,{returnTimestamps:false,returnConfidences:true,chunkLengthS:cfg.chunk,timeOffset:start}),ms=performance.now()-t;if(firstMs==null)firstMs=ms;out=merge(out,(r.text||r.utterance_text||'').trim());pieces++;if(end>=dur)break;await new Promise(r=>setTimeout(r,0))}}
+ const wall=performance.now()-t0,w=wer(out,TEST_TEXT),dup=repeatedWords(out),firstLatency=(cfg.chunk||dur)+(firstMs||0)/1000;
+ return{...cfg,text:out,wer:w,dup,pieces,wall_ms:wall,speed:dur/(wall/1000),first_latency_s:firstLatency}
+}
+function renderTests(){
+ const lives=testResults.filter(x=>x.live),winner=[...lives].sort((a,b)=>a.wer-b.wer||a.dup-b.dup||a.first_latency_s-b.first_latency_s)[0],oracle=testResults.find(x=>!x.live);
+ $('testBest').textContent=winner?'ganador live '+winner.name:'ganador —';
+ $('testRows').innerHTML=testResults.map(x=>'<div class="row '+(winner&&x.name===winner.name?'winner':'')+'"><div class="rowtop"><b>'+(winner&&x.name===winner.name?'✓ ':'')+escapeHtml(x.name)+'</b><span class="score">'+(100*x.wer).toFixed(1)+'% WER</span><span>'+x.dup+' dup</span><span>'+x.speed.toFixed(2)+'× proceso</span><span>1er texto ~'+x.first_latency_s.toFixed(1)+'s</span></div><div class="rowtext">'+escapeHtml(x.text||'[sin texto]')+'</div></div>').join('');
+ if(oracle)$('testState').textContent='listo · sin cortes '+(100*oracle.wer).toFixed(1)+'% WER · mejor live '+(winner?(100*winner.wer).toFixed(1)+'%':'—')
+}
+async function runTests(pcm){
+ const dur=pcm.length/16000;if(dur<6){$('testState').textContent='grabación demasiado corta · leé todo el texto';return}
+ testResults=[];$('testRows').innerHTML='';
+ for(let i=0;i<TEST_CONFIGS.length;i++){const cfg=TEST_CONFIGS[i];$('testState').textContent='probando '+cfg.name+' · '+(i+1)+'/'+TEST_CONFIGS.length;const r=await segmented(pcm,dur,cfg);testResults.push(r);renderTests()}
+}
 $('mic').onclick=()=>startMic().catch(e=>{$('status').textContent='No pude abrir micrófono: '+e.message;$('status').className='big bad'});
 $('stop').onclick=stopMic;$('copy').onclick=()=>navigator.clipboard.writeText(text);$('clear').onclick=()=>{text='';segments=[];$('out').value='';$('copy').disabled=true;renderSegments()};
-(async()=>{try{const mod=await import('https://cdn.jsdelivr.net/npm/parakeet.js@1.4.4/+esm'),backend=navigator.gpu?'webgpu':'wasm';$('backend').textContent=backend.toUpperCase()+' · Parakeet 0.6B';model=await mod.fromHub('parakeet-tdt-0.6b-v3',{backend,encoderQuant:backend==='webgpu'?'fp32':'int8',decoderQuant:'int8',preprocessorBackend:'js'});$('status').textContent='Modelo listo';$('status').className='big ok';$('mic').disabled=false}catch(e){$('status').textContent='No cargó el modelo: '+e.message;$('status').className='big bad'}})();
+$('testStart').onclick=()=>startTest().catch(e=>$('testState').textContent='Error micrófono: '+e.message);$('testStop').onclick=()=>stopTest().catch(e=>$('testState').textContent='Error prueba: '+e.message);
+(async()=>{try{const mod=await import('https://cdn.jsdelivr.net/npm/parakeet.js@1.4.4/+esm'),backend=navigator.gpu?'webgpu':'wasm';$('backend').textContent=backend.toUpperCase()+' · Parakeet 0.6B';model=await mod.fromHub('parakeet-tdt-0.6b-v3',{backend,encoderQuant:backend==='webgpu'?'fp32':'int8',decoderQuant:'int8',preprocessorBackend:'js'});$('status').textContent='Modelo listo';$('status').className='big ok';$('mic').disabled=false;$('testStart').disabled=false}catch(e){$('status').textContent='No cargó el modelo: '+e.message;$('status').className='big bad'}})();
 </script></main></body></html>
