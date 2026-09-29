@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta name="color-scheme" content="dark">
+<title>STT · Transcribir clase</title>
+<style>
+:root{--bg:#080a0c;--p:#10151a;--line:#28343d;--fg:#f3f6f8;--mut:#8c99a4;--ok:#79e69b;--warn:#ffd166}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.48 system-ui,-apple-system,Segoe UI,sans-serif}
+main{max-width:980px;margin:auto;padding:14px 12px 80px}.top{position:sticky;top:0;z-index:5;background:rgba(8,10,12,.96);backdrop-filter:blur(10px);padding:10px 0;border-bottom:1px solid #1b2329}
+h1{font-size:24px;margin:0}.sub{color:var(--mut);font-size:11px;margin-top:4px}.card{background:var(--p);border:1px solid var(--line);border-radius:14px;padding:13px;margin-top:12px}.ey{font-size:8px;letter-spacing:.13em;color:var(--mut);font-weight:850}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.btn,label.btn{border:1px solid var(--line);background:#171e24;color:var(--fg);padding:10px 12px;border-radius:10px;font:inherit;cursor:pointer}.primary{background:#eef5ff!important;color:#081018!important;border-color:#eef5ff!important;font-weight:850}.btn:disabled{opacity:.45}
+input[type=file]{display:none}.status{font-size:18px;font-weight:850;margin-top:8px}.bar{height:8px;background:#0b1014;border:1px solid #24303a;border-radius:99px;overflow:hidden;margin-top:10px}.bar i{display:block;height:100%;width:0;background:var(--ok);transition:.2s}.meta{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.pill{border:1px solid var(--line);border-radius:999px;padding:4px 7px;color:var(--mut);font-size:9px}.pill.ok{color:var(--ok);border-color:#365e43}.pill.warn{color:var(--warn);border-color:#6d5927}
+textarea{width:100%;min-height:340px;background:#090d10;color:var(--fg);border:1px solid var(--line);border-radius:12px;padding:12px;font:16px/1.55 system-ui;resize:vertical;margin-top:9px}
+.segments{display:grid;gap:7px;margin-top:8px}.seg{border-top:1px solid #222a31;padding-top:7px}.seg:first-child{border-top:0}.time{font-size:9px;color:var(--mut)}.text{font-size:13px;margin-top:2px}
+.note{font-size:10px;color:var(--mut);margin-top:7px}.err{color:#ff7b7b}
+@media(min-width:760px){textarea{min-height:480px}}
+</style>
+</head><body><main>
+<div class="top"><h1>Transcribir clase</h1><div class="sub">CURRENT práctico · Parakeet 0.6B v3 INT8 · local en tu navegador</div></div>
+
+<section class="card">
+  <div class="ey">1 · MODELO</div>
+  <div id="modelStatus" class="status">Cargando Parakeet…</div>
+  <div class="bar"><i id="modelBar"></i></div>
+  <div class="meta"><span class="pill">sin API paga</span><span class="pill">audio no sale del navegador</span><span id="backendPill" class="pill">WASM</span></div>
+</section>
+
+<section class="card">
+  <div class="ey">2 · AUDIO</div>
+  <div class="actions">
+    <label id="pickLabel" class="btn primary" for="file">Elegir audio de clase</label>
+    <input id="file" type="file" accept="audio/*,.wav,.mp3,.ogg,.m4a,.webm">
+    <button id="clear" class="btn">Limpiar</button>
+  </div>
+  <div id="fileStatus" class="status">Esperando archivo</div>
+  <div class="bar"><i id="progress"></i></div>
+  <div id="fileMeta" class="meta"></div>
+  <div class="note">WAV largo se procesa por streaming sin cargar toda la clase en RAM. OGG/MP3/M4A usan el decodificador del navegador; para archivos muy largos pueden requerir bastante memoria.</div>
+</section>
+
+<section class="card">
+  <div class="ey">3 · TRANSCRIPCIÓN</div>
+  <div class="actions"><button id="copy" class="btn primary" disabled>Copiar texto</button><button id="download" class="btn" disabled>Descargar .txt</button></div>
+  <textarea id="out" placeholder="La transcripción va a aparecer acá."></textarea>
+  <div id="metrics" class="meta"></div>
+  <details><summary style="color:var(--mut);font-size:11px;margin-top:9px;cursor:pointer">ver segmentos con tiempos</summary><div id="segments" class="segments"></div></details>
+</section>
+
+<script type="module">
+const $=id=>document.getElementById(id);
+const VERSION='STT-TRANSCRIBE-PARAKEET-V1-20260928';
+let model=null,lastFile=null,lastResult=null;
+const LONG_S=150, CHUNK_S=90, STREAM_WAV_S=30, PROBE=1024*1024;
+
+function fmt(s){s=Math.max(0,Number(s)||0);const m=Math.floor(s/60),q=Math.round(s%60);return m?m+':'+String(q).padStart(2,'0'):q+' s'}
+function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+function setProgress(n){$('progress').style.width=Math.max(0,Math.min(100,n))+'%'}
+function ascii(v,o,n){let s='';for(let i=0;i<n;i++)s+=String.fromCharCode(v.getUint8(o+i));return s}
+function isWav(f){return /\.wav$/i.test(f.name)||/audio\/(wav|wave|x-wav)/i.test(f.type||'')}
+function parseWav(buf){
+  const v=new DataView(buf);if(v.byteLength<12||ascii(v,0,4)!=='RIFF'||ascii(v,8,4)!=='WAVE')throw new Error('WAV inválido');
+  let o=12,fmt=null,data=null;while(o+8<=v.byteLength){const id=ascii(v,o,4),sz=v.getUint32(o+4,true),start=o+8;if(id==='fmt '&&start+16<=v.byteLength)fmt={format:v.getUint16(start,true),channels:v.getUint16(start+2,true),sampleRate:v.getUint32(start+4,true),blockAlign:v.getUint16(start+12,true),bits:v.getUint16(start+14,true)};if(id==='data'){data={offset:start,bytes:sz};break}o=start+sz+(sz%2)}
+  if(!fmt||!data)throw new Error('WAV sin fmt/data');if(![1,3].includes(fmt.format))throw new Error('WAV codec no soportado para streaming');
+  return {...fmt,dataOffset:data.offset,dataBytes:data.bytes,durationS:data.bytes/(fmt.sampleRate*fmt.blockAlign)}
+}
+function decodeWavChunk(buf,info){
+  const v=new DataView(buf),frames=Math.floor(v.byteLength/info.blockAlign),out=new Float32Array(frames);
+  for(let i=0;i<frames;i++){let sum=0;for(let ch=0;ch<info.channels;ch++){const o=i*info.blockAlign+ch*(info.bits/8);let x=0;if(info.format===3&&info.bits===32)x=v.getFloat32(o,true);else if(info.bits===16)x=v.getInt16(o,true)/32768;else if(info.bits===24){let q=v.getUint8(o)|(v.getUint8(o+1)<<8)|(v.getUint8(o+2)<<16);if(q&0x800000)q|=0xff000000;x=q/8388608}else if(info.bits===32)x=v.getInt32(o,true)/2147483648;else if(info.bits===8)x=(v.getUint8(o)-128)/128;else throw new Error('Bits WAV no soportados: '+info.bits);sum+=x}out[i]=sum/info.channels}return out
+}
+class Resampler{constructor(a,b){this.a=a;this.b=b;this.carry=new Float32Array(0);this.pos=0}process(input){let x;if(this.carry.length){x=new Float32Array(this.carry.length+input.length);x.set(this.carry);x.set(input,this.carry.length)}else x=input;const ratio=this.a/this.b,n=Math.max(0,Math.floor((x.length-1-this.pos)/ratio)+1),o=new Float32Array(n);let p=this.pos;for(let i=0;i<n;i++){const a=Math.floor(p),b=Math.min(a+1,x.length-1),f=p-a;o[i]=x[a]*(1-f)+x[b]*f;p+=ratio}const keep=Math.max(0,Math.floor(p)-1),left=x.length-keep;this.carry=new Float32Array(left);this.carry.set(x.subarray(keep));this.pos=p-keep;return o}}
+function averageConfidence(words){const xs=(words||[]).map(w=>w?.confidence).filter(Number.isFinite);return xs.length?xs.reduce((a,b)=>a+b,0)/xs.length:null}
+function renderResult(res,duration,wallMs){
+  const text=res.text??res.utterance_text??'';$('out').value=text;lastResult={...res,text};$('copy').disabled=!text;$('download').disabled=!text;
+  const conf=averageConfidence(res.words),m=res.metrics||{};$('metrics').innerHTML=[
+    '<span class="pill ok">duración '+fmt(duration)+'</span>',
+    '<span class="pill">proceso '+fmt(wallMs/1000)+'</span>',
+    '<span class="pill">velocidad '+(wallMs>0?(duration/(wallMs/1000)).toFixed(2):'—')+'× realtime</span>',
+    conf==null?'':'<span class="pill">confianza media '+(conf*100).toFixed(1)+'%</span>',
+    Number.isFinite(m.rtf)?'<span class="pill">RTF interno '+Number(m.rtf).toFixed(2)+'</span>':''
+  ].join('');
+  const chunks=res.chunks||[];$('segments').innerHTML=chunks.map(c=>'<div class="seg"><div class="time">'+fmt(c.timestamp?.[0]||0)+' → '+fmt(c.timestamp?.[1]||0)+'</div><div class="text">'+esc(c.text||'')+'</div></div>').join('');
+  $('fileStatus').textContent='Terminado';setProgress(100)
+}
+async function loadModel(){
+  try{
+    const mod=await import('https://cdn.jsdelivr.net/npm/parakeet.js@1.4.4/+esm');
+    const backend=navigator.gpu?'webgpu':'wasm';$('backendPill').textContent=backend.toUpperCase();
+    model=await mod.fromHub('parakeet-tdt-0.6b-v3',{backend,encoderQuant:backend==='webgpu'?'fp32':'int8',decoderQuant:'int8',preprocessorBackend:'js'});
+    $('modelStatus').textContent='Parakeet listo';$('modelBar').style.width='100%';$('modelBar').style.background='var(--ok)';$('pickLabel').classList.add('primary')
+  }catch(e){$('modelStatus').innerHTML='<span class="err">No cargó: '+esc(e.message||e)+'</span>'}
+}
+async function transcribeWavStream(file,info){
+  const streamer=model.createStreamingTranscriber({returnTimestamps:true,returnConfidences:true,sampleRate:16000});
+  const rs=new Resampler(info.sampleRate,16000),rawBytes=Math.max(info.blockAlign,Math.floor(info.sampleRate*STREAM_WAV_S)*info.blockAlign),chunkBytes=rawBytes-(rawBytes%info.blockAlign),end=info.dataOffset+info.dataBytes;let off=info.dataOffset,last=null;
+  while(off<end){const next=Math.min(end,off+chunkBytes),buf=await file.slice(off,next).arrayBuffer(),mono=decodeWavChunk(buf,info),pcm=rs.process(mono);if(pcm.length)last=await streamer.processChunk(pcm);off=next;setProgress(100*(off-info.dataOffset)/info.dataBytes);$('fileStatus').textContent='Transcribiendo… '+Math.round(100*(off-info.dataOffset)/info.dataBytes)+'%';await new Promise(r=>setTimeout(r,0))}
+  const fin=streamer.finalize();return {result:fin?.text?fin:last,duration:info.durationS}
+}
+async function transcribeFile(file){
+  if(!model){$('fileStatus').textContent='Esperando que termine de cargar el modelo…';return}
+  lastFile=file;lastResult=null;$('out').value='';$('segments').innerHTML='';$('metrics').innerHTML='';$('copy').disabled=true;$('download').disabled=true;setProgress(1);
+  $('fileStatus').textContent='Preparando '+file.name;$('fileMeta').innerHTML='<span class="pill">'+esc(file.name)+'</span><span class="pill">'+(file.size/1024/1024).toFixed(1)+' MB</span>';
+  const t0=performance.now();
+  try{
+    if(isWav(file)){
+      const probe=await file.slice(0,Math.min(file.size,PROBE)).arrayBuffer(),info=parseWav(probe);
+      $('fileMeta').innerHTML+='<span class="pill">'+fmt(info.durationS)+'</span><span class="pill">'+info.sampleRate+' Hz</span>';
+      if(info.durationS>=LONG_S){
+        $('fileStatus').textContent='WAV largo: streaming por bloques';const x=await transcribeWavStream(file,info);renderResult(x.result,x.duration,performance.now()-t0);return
+      }
+    }
+    $('fileStatus').textContent='Decodificando audio…';const buf=await file.arrayBuffer(),ctx=new AudioContext({sampleRate:16000}),decoded=await ctx.decodeAudioData(buf),pcm=new Float32Array(decoded.getChannelData(0));await ctx.close();const duration=pcm.length/16000;$('fileMeta').innerHTML+='<span class="pill">'+fmt(duration)+'</span>';
+    $('fileStatus').textContent=duration>=LONG_S?'Transcribiendo audio largo…':'Transcribiendo…';setProgress(30);
+    const opts={returnTimestamps:true,returnConfidences:true,enableProfiling:true};
+    const res=duration>=LONG_S?await model.transcribeLongAudio(pcm,16000,{...opts,chunkLengthS:CHUNK_S}):await model.transcribe(pcm,16000,opts);
+    renderResult(res,duration,performance.now()-t0)
+  }catch(e){$('fileStatus').innerHTML='<span class="err">Error: '+esc(e.message||e)+'</span>';setProgress(0)}
+}
+$('file').onchange=e=>{const f=e.target.files?.[0];if(f)transcribeFile(f)};
+$('copy').onclick=async()=>{await navigator.clipboard.writeText($('out').value);$('copy').textContent='Copiado ✓';setTimeout(()=>$('copy').textContent='Copiar texto',1200)};
+$('download').onclick=()=>{const b=new Blob([$('out').value],{type:'text/plain;charset=utf-8'}),u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download=(lastFile?.name||'transcripcion').replace(/\.[^.]+$/,'')+'.txt';a.click();setTimeout(()=>URL.revokeObjectURL(u),1000)};
+$('clear').onclick=()=>{$('file').value='';$('out').value='';$('segments').innerHTML='';$('metrics').innerHTML='';$('fileMeta').innerHTML='';$('fileStatus').textContent='Esperando archivo';setProgress(0);lastFile=null;lastResult=null;$('copy').disabled=true;$('download').disabled=true};
+loadModel();
+</script></body></html>
