@@ -31,7 +31,7 @@ function runLevel(active,samps,chunkS=30,warm=false){
  });
 }
 function dispatch(slot){
- const C=levelCtx;if(!C||C.warm&&C.done>=C.total)return;
+ const C=levelCtx;if(!C)return;
  if(!C.queue.length){if(C.done>=C.total){const wall=(performance.now()-C.start)/1000;const audio=[...C.outputs.values()].reduce((a,x)=>a+(x.end-x.start),0);const out={wall,audio,outputs:C.outputs};const res=C.resolve;levelCtx=null;res(out)}return}
  const s=C.queue.shift(),jobId='L'+Date.now()+'-'+slot+'-'+s.idx+'-'+Math.random().toString(36).slice(2);states[slot].busy=true;states[slot].job=s.idx;renderLanes();ch.postMessage({kind:'job',slot,jobId,start:s.start,end:s.end,chunkS:C.chunkS});
 }
@@ -48,6 +48,7 @@ async function start(){
  if(running)return;running=true;$('start').disabled=true;setStatus('Abriendo pestañas auxiliares…',2,'abrir');
  const max=4;states=Array.from({length:max},()=>({ready:false,busy:false,error:null,tabReady:false}));tabs=[];
  for(let i=0;i<max;i++){const w=window.open('./runner.html?group='+encodeURIComponent(group)+'&slot='+i,'stt-topology-'+group+'-'+i,'popup=yes,width=430,height=260');tabs.push(w)}
+ if(tabs.some(x=>!x))throw new Error('Firefox bloqueó pestañas auxiliares: permití pop-ups para este sitio y tocá el botón otra vez');
  renderLanes();
  const t=performance.now();while(states.filter(x=>x.tabReady).length<max&&performance.now()-t<30000)await wait(100);
  if(!duration)throw new Error('ninguna pestaña encontró el audio');
