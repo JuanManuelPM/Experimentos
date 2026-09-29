@@ -1,7 +1,7 @@
 <!doctype html><html lang="es"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="color-scheme" content="dark"><meta http-equiv="Cache-Control" content="no-cache,no-store,must-revalidate">
-<title>STT Lab V6</title>
+<title>STT Lab V7</title>
 <style>
 :root{--bg:#07090b;--p:#10151a;--line:#28343d;--fg:#f3f6f8;--mut:#8d9aa5;--ok:#77e39b;--warn:#ffd166;--bad:#ff7b7b}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:14px/1.45 system-ui,-apple-system,Segoe UI,sans-serif}main{max-width:1080px;margin:auto;padding:12px 12px 70px}
@@ -16,7 +16,7 @@ button,label.btn{border:1px solid var(--line);background:#172027;color:var(--fg)
 textarea{width:100%;min-height:260px;background:#080c0f;color:var(--fg);border:1px solid var(--line);border-radius:10px;padding:11px;font:14px/1.55 system-ui;margin-top:8px}
 @media(max-width:760px){.stats{grid-template-columns:repeat(2,1fr)}.map{grid-template-columns:repeat(12,1fr)}}
 </style></head><body><main>
-<header><h1>STT Lab V6</h1><div class="sub">Producción sin pausas por UI/checkpoint: cola continua, persistencia coalescida y perfil milimétrico también sobre la transcripción completa.</div></header>
+<header><h1>STT Lab V7</h1><div class="sub">Producción adaptativa: 6 motores si aguantan, fallback 6→4→3→2→1 tras crash y runners reutilizados para no acumular pestañas/modelos.</div></header>
 <section class="panel">
 <div id="status" class="big">Buscando estado anterior…</div><div class="bar"><i id="bar"></i></div>
 <div class="meta"><span id="pct" class="pill">0%</span><span id="phase" class="pill">inicio</span><span id="hw" class="pill">hardware</span><span id="guard" class="pill">crash guard</span></div>
@@ -33,7 +33,7 @@ textarea{width:100%;min-height:260px;background:#080c0f;color:var(--fg);border:1
 <section class="panel"><b>Texto combinado</b><textarea id="out"></textarea></section>
 
 <script type="module">
-const $=id=>document.getElementById(id),FAST_DB='stt-fast-v1',FAST_STORE='jobs',LAB_DB='stt-lab-v1',LAB_STORE='runs',BUILD='STT-LAB-V6-20260929',GUARD='stt_lab_guard_v3';
+const $=id=>document.getElementById(id),FAST_DB='stt-fast-v1',FAST_STORE='jobs',LAB_DB='stt-lab-v1',LAB_STORE='runs',BUILD='STT-LAB-V7-20260929',GUARD='stt_lab_guard_v3';
 const group=Math.random().toString(36).slice(2),ch=new BroadcastChannel('stt-topology-'+group);
 let fastState=null,sourceFile=null,pcm=null,duration=0,tabs=[],states=[],blockS=90,stepS=87,blocks=[],bench=[],bestTabs=1,searchComplete=false,running=false,startWall=0,totalWords=0,pending=new Map(),lastPersist=0,prior=null,suspectedUnsafe=null,lastSafe=1,invalidLegacy=false,lagSamples=[],loopTick=performance.now(),checkpointTimer=null,renderTimer=null;
 $('hw').textContent=(navigator.hardwareConcurrency||'?')+' cores'+(navigator.deviceMemory?' · '+navigator.deviceMemory+' GB':'')+(navigator.gpu?' · WebGPU':'');
@@ -44,6 +44,7 @@ async function putLab(extra={}){if(performance.now()-lastPersist<250&&!extra.for
 function guardSet(obj){try{localStorage.setItem(GUARD,JSON.stringify({...obj,ts:Date.now()}))}catch{}}
 function guardGet(){try{return JSON.parse(localStorage.getItem(GUARD)||'null')}catch{return null}}
 function guardClean(){guardSet({running:false,closed_cleanly:true,lastSafe,suspectedUnsafe:null})}
+function fallbackTabs(n){n=+n||1;if(n>=6)return 4;if(n===5)return 4;if(n===4)return 3;if(n===3)return 2;if(n===2)return 1;return 1}
 addEventListener('pagehide',()=>{const g=guardGet();if(g?.running)guardSet({...g,closed_cleanly:true})});
 function words(s){return String(s||'').trim().split(/\s+/).filter(Boolean)}
 function norm(s){return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9ñ\s]/gi,' ').replace(/\s+/g,' ').trim().split(' ').filter(Boolean)}
@@ -74,7 +75,7 @@ function scheduleProductionRender(){
 }
 async function decodeOnce(){if(pcm)return;setp(3,'Decodificando una sola copia del audio…','preparación');const ab=await sourceFile.arrayBuffer(),ctx=new AudioContext({sampleRate:16000}),d=await ctx.decodeAudioData(ab);pcm=new Float32Array(d.getChannelData(0));duration=pcm.length/16000;await ctx.close();await putLab({force:true})}
 function wait(ms){return new Promise(r=>setTimeout(r,ms))}
-async function openSlot(i){if(states[i]?.tab)return;while(states.length<=i)states.push({ready:false,busy:false,error:null,tabReady:false,busyMs:0,readyAt:0,tab:null,lastResultAt:0});const w=window.open('../topology/runner.html?group='+encodeURIComponent(group)+'&slot='+i,'stt-lab-'+group+'-'+i,'popup=yes,width=430,height=260');if(!w)throw new Error('Firefox bloqueó la pestaña auxiliar. Permití pop-ups y reintentá.');states[i].tab=w;renderLanes();const t=performance.now();while(!states[i].tabReady&&performance.now()-t<15000)await wait(100);if(!states[i].tabReady)throw new Error('motor '+(i+1)+' no respondió')}
+async function openSlot(i){if(states[i]?.tab)return;while(states.length<=i)states.push({ready:false,busy:false,error:null,tabReady:false,busyMs:0,readyAt:0,tab:null,lastResultAt:0});const w=window.open('../topology/runner.html?group='+encodeURIComponent(group)+'&slot='+i,'stt-engine-'+i,'popup=yes,width=430,height=260');if(!w)throw new Error('Firefox bloqueó la pestaña auxiliar. Permití pop-ups y reintentá.');states[i].tab=w;renderLanes();const t=performance.now();while(!states[i].tabReady&&performance.now()-t<15000)await wait(100);if(!states[i].tabReady)throw new Error('motor '+(i+1)+' no respondió')}
 async function initSlot(i){await openSlot(i);if(states[i].ready)return;ch.postMessage({kind:'init_model',slot:i,backend:'wasm'});const t=performance.now();while(!states[i].ready&&!states[i].error&&performance.now()-t<180000)await wait(100);if(!states[i].ready)throw new Error('motor '+(i+1)+' no pudo cargar')}
 function requestJob(slot,job,chunk){return new Promise((resolve,reject)=>{
  const jobId='J'+Date.now()+'-'+Math.random().toString(36).slice(2),t=performance.now(),copyT=performance.now(),
@@ -250,8 +251,8 @@ async function boot(){
  if(g?.running&&!g.closed_cleanly&&g.attemptingTabs){suspectedUnsafe=+g.attemptingTabs;$('guard').textContent='crash probable en '+suspectedUnsafe+' tabs';$('guard').className='pill warn'}
  if(g?.running&&!g.closed_cleanly&&g.phase==='full'){
    const crashedAt=Math.max(1,+g.lastSafe||bestTabs||1);
-   bestTabs=Math.max(1,crashedAt-1);searchComplete=true;suspectedUnsafe=crashedAt;
-   $('guard').textContent='full crash: baja '+crashedAt+'→'+bestTabs+' tabs';$('guard').className='pill warn';
+   bestTabs=fallbackTabs(crashedAt);searchComplete=true;suspectedUnsafe=crashedAt;
+   $('guard').textContent='full crash: fallback '+crashedAt+'→'+bestTabs+' tabs';$('guard').className='pill warn';
  }
  if(!suspectedUnsafe&&prior?.searchInProgress&&prior?.attemptingTabs)suspectedUnsafe=+prior.attemptingTabs;
  if(!suspectedUnsafe&&prior?.build==='STT-LAB-V2-20260929'&&!prior?.searchComplete){
@@ -267,7 +268,7 @@ async function boot(){
 $('start').onclick=()=>search().catch(e=>{running=false;$('start').disabled=false;setp(0,'Error: '+e.message,'error')});
 $('full').onclick=()=>fullRun().catch(e=>{running=false;$('full').disabled=false;setp(0,'Error corrida completa: '+e.message,'error')});
 $('copy').onclick=()=>navigator.clipboard.writeText($('out').value);
-$('export').onclick=async()=>{const s=await getDB(LAB_DB,LAB_STORE),u=URL.createObjectURL(new Blob([JSON.stringify(s,null,2)],{type:'application/json'})),a=document.createElement('a');a.href=u;a.download='stt-lab-v6-result.json';a.click();setTimeout(()=>URL.revokeObjectURL(u),1000)};
+$('export').onclick=async()=>{const s=await getDB(LAB_DB,LAB_STORE),u=URL.createObjectURL(new Blob([JSON.stringify(s,null,2)],{type:'application/json'})),a=document.createElement('a');a.href=u;a.download='stt-lab-v7-result.json';a.click();setTimeout(()=>URL.revokeObjectURL(u),1000)};
 $('file').onchange=async e=>{const f=e.target.files?.[0];if(!f)return;sourceFile=f;const db=await openDB(FAST_DB,FAST_STORE);await new Promise((res,rej)=>{const tx=db.transaction(FAST_STORE,'readwrite');tx.objectStore(FAST_STORE).put({key:'current',file:f,fileMeta:{name:f.name,size:f.size,lastModified:f.lastModified}});tx.oncomplete=res;tx.onerror=()=>rej(tx.error)});db.close();$('start').disabled=false;setp(0,'Audio guardado','listo')};
 boot();
 </script></main></body></html>
