@@ -22,7 +22,7 @@ textarea{width:100%;min-height:300px;background:#080c0f;color:var(--fg);border:1
 <div class="meter"><i id="meter"></i></div>
 <div class="meta"><span id="backend" class="pill">modelo</span><span id="lat" class="pill">latencia —</span><span id="rt" class="pill">—× realtime</span><span id="queue" class="pill">cola 0 s</span></div>
 <div class="actions"><button id="mic" class="primary" disabled>🎙️ Empezar micrófono</button><button id="stop" disabled>Detener</button><button id="copy" disabled>Copiar</button><button id="clear">Limpiar texto</button></div>
-<div class="note">Modo normal: 4 s de audio con 2 s de solapamiento. La cola del bloque viejo se reemplaza por la lectura nueva, donde las palabras del borde quedan más centradas.</div>
+<div class="note">LIVE PROVISIONAL: 4 s / 2 s para mostrar texto rápido. Al detener, una pasada canónica local sobre todo el audio reemplaza la hipótesis provisional por el texto final. El audio no sale del navegador.</div>
 </section>
 
 <section class="card">
@@ -38,9 +38,9 @@ textarea{width:100%;min-height:300px;background:#080c0f;color:var(--fg);border:1
 <section class="card"><b>Últimos bloques</b><div id="segments" class="note">Todavía no hay audio.</div></section>
 
 <script type="module">
-const $=id=>document.getElementById(id),BUILD='STT-LIVE-V3.1-20260929',LIVE_DB='stt-live-v3',LIVE_STORE='runs',LIVE_KEY='golden';
+const $=id=>document.getElementById(id),BUILD='STT-LIVE-V4-20260929',LIVE_DB='stt-live-v3',LIVE_STORE='runs',LIVE_KEY='golden';
 const TEST_TEXT=$('reference').textContent.trim();
-let model=null,stream=null,ctx=null,node=null,source=null,running=false,processing=false,nativeRate=48000,parts=[],samples=0,text='',segments=[],capturedS=0;
+let model=null,stream=null,ctx=null,node=null,source=null,running=false,processing=false,nativeRate=48000,parts=[],samples=0,text='',segments=[],capturedS=0,finalNativeParts=[],finalNativeSamples=0,finalPcm16Parts=[];
 let testStream=null,testCtx=null,testNode=null,testSource=null,testParts=[],testRate=48000,testRunning=false,testResults=[],goldenPcm=null,goldenMeta=null;
 const CHUNK_S=4,OVERLAP_S=2,SILENCE_RMS=.0045;
 const TEST_CONFIGS=[
@@ -57,13 +57,14 @@ async function getGolden(){try{const db=await openLiveDB(),v=await new Promise((
 async function putGolden(v){try{const db=await openLiveDB();await new Promise((res,rej)=>{const tx=db.transaction(LIVE_STORE,'readwrite');tx.objectStore(LIVE_STORE).put({key:LIVE_KEY,...v,updated_at:new Date().toISOString()});tx.oncomplete=res;tx.onerror=()=>rej(tx.error)});db.close()}catch(e){console.warn(e)}}
 function gateResult(){
  const base=testResults.find(x=>x.name==='4s / 2s'),live=testResults.filter(x=>x.live);
- if(!base)return{base:null,winner:null,promote:false};
- const eligible=live.filter(x=>x.speed>=1&&x.first_latency_s<=8&&x.wer<=base.wer+1e-9&&x.dup<=base.dup);
- const winner=[...eligible].sort((a,b)=>a.wer-b.wer||a.dup-b.dup||a.first_latency_s-b.first_latency_s||b.speed-a.speed)[0]||base;
+ if(!base)return{base:null,winner:null,quality:null,promote:false};
+ const realtime=live.filter(x=>x.speed>=1&&x.first_latency_s<=8&&x.wer<=base.wer+1e-9&&x.dup<=base.dup);
+ const winner=[...realtime].sort((a,b)=>a.wer-b.wer||a.dup-b.dup||a.first_latency_s-b.first_latency_s||b.speed-a.speed)[0]||base;
+ const quality=[...live].filter(x=>x.speed>=1&&x.dup<=base.dup).sort((a,b)=>a.wer-b.wer||a.dup-b.dup||a.chunk-b.chunk)[0]||base;
  const promote=winner.name!==base.name&&(winner.wer<base.wer-1e-9||winner.dup<base.dup||winner.first_latency_s<base.first_latency_s-.25);
- return{base,winner,promote}
+ return{base,winner,quality,promote}
 }
-function diag(){const g=gateResult();return{build:BUILD,created_at:new Date().toISOString(),reference:TEST_TEXT,environment:{userAgent:navigator.userAgent,cores:navigator.hardwareConcurrency||null,deviceMemory:navigator.deviceMemory||null},golden:{duration_s:goldenPcm?goldenPcm.length/16000:null,sample_rate:16000},baseline:'4s / 2s',gate:{promote:g.promote,winner:g.winner?.name||null,baseline_wer:g.base?.wer??null,winner_wer:g.winner?.wer??null},results:testResults}}
+function diag(){const g=gateResult();return{build:BUILD,created_at:new Date().toISOString(),reference:TEST_TEXT,environment:{userAgent:navigator.userAgent,cores:navigator.hardwareConcurrency||null,deviceMemory:navigator.deviceMemory||null},golden:{duration_s:goldenPcm?goldenPcm.length/16000:null,sample_rate:16000},runtime:{provisional:'4s / 2s',final:'canonical full-audio pass on stop'},gate:{promote:g.promote,winner:g.winner?.name||null,quality_candidate:g.quality?.name||null,baseline_wer:g.base?.wer??null,winner_wer:g.winner?.wer??null,quality_wer:g.quality?.wer??null},results:testResults}}
 function downloadDiag(){const u=URL.createObjectURL(new Blob([JSON.stringify(diag(),null,2)],{type:'application/json'})),a=document.createElement('a');a.href=u;a.download='stt-live-v3-diagnostic.json';a.click();setTimeout(()=>URL.revokeObjectURL(u),1000)}
 function norm(s){return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9ñ\s]/gi,' ').replace(/\s+/g,' ').trim().split(' ').filter(Boolean)}
 function tokenDist(A,B){const d=Array.from({length:B.length+1},(_,i)=>i);for(let i=1;i<=A.length;i++){let p=d[0];d[0]=i;for(let j=1;j<=B.length;j++){const t=d[j];d[j]=Math.min(d[j]+1,d[j-1]+1,p+(A[i-1]===B[j-1]?0:1));p=t}}return d[B.length]}
@@ -81,6 +82,28 @@ function merge(a,b){
 function rms(x){let s=0;for(let i=0;i<x.length;i++)s+=x[i]*x[i];return Math.sqrt(s/Math.max(1,x.length))}
 function resample(x,from,to=16000){if(from===to)return x;const ratio=from/to,n=Math.max(1,Math.floor(x.length/ratio)),o=new Float32Array(n);for(let i=0;i<n;i++){const p=i*ratio,a=Math.floor(p),b=Math.min(x.length-1,a+1),f=p-a;o[i]=x[a]*(1-f)+x[b]*f}return o}
 function concat(parts){const n=parts.reduce((a,x)=>a+x.length,0),o=new Float32Array(n);let p=0;for(const x of parts){o.set(x,p);p+=x.length}return o}
+function stashFinalNative(x){
+ finalNativeParts.push(x);finalNativeSamples+=x.length;
+ if(finalNativeSamples<nativeRate)return;
+ const all=concat(finalNativeParts),whole=Math.floor(all.length/nativeRate)*nativeRate;
+ if(whole<=0)return;
+ const y=resample(all.subarray(0,whole),nativeRate,16000),q=new Int16Array(y.length);
+ for(let i=0;i<y.length;i++)q[i]=Math.max(-32768,Math.min(32767,Math.round(y[i]*32767)));
+ finalPcm16Parts.push(q);const tail=all.slice(whole);finalNativeParts=tail.length?[tail]:[];finalNativeSamples=tail.length
+}
+function finalPcm(){
+ if(finalNativeSamples){const all=concat(finalNativeParts),y=resample(all,nativeRate,16000),q=new Int16Array(y.length);for(let i=0;i<y.length;i++)q[i]=Math.max(-32768,Math.min(32767,Math.round(y[i]*32767)));finalPcm16Parts.push(q);finalNativeParts=[];finalNativeSamples=0}
+ const n=finalPcm16Parts.reduce((a,x)=>a+x.length,0),o=new Float32Array(n);let p=0;
+ for(const q of finalPcm16Parts){for(let i=0;i<q.length;i++)o[p++]=q[i]/32767}
+ return o
+}
+async function canonicalizeLive(){
+ const pcm=finalPcm(),dur=pcm.length/16000;if(dur<.5)return;
+ $('status').textContent='Corrigiendo texto final…';$('status').className='big warn';
+ const t=performance.now(),r=await model.transcribeLongAudio(pcm,16000,{returnTimestamps:false,returnConfidences:true,chunkLengthS:Math.max(4,Math.min(60,dur)),timeOffset:0}),ms=performance.now()-t;
+ const tx=(r.text||r.utterance_text||'').trim();if(tx){text=tx;$('out').value=text;$('copy').disabled=false}
+ $('lat').textContent='final '+(ms/1000).toFixed(2)+' s';$('rt').textContent=(dur/(ms/1000)).toFixed(2)+'× final';$('status').textContent='Texto final corregido';$('status').className='big ok'
+}
 function editStats(hyp,ref){
  const H=norm(hyp),R=norm(ref),n=R.length,m=H.length,d=Array.from({length:n+1},()=>new Uint16Array(m+1));
  for(let i=0;i<=n;i++)d[i][0]=i;for(let j=0;j<=m;j++)d[0][j]=j;
@@ -112,10 +135,10 @@ async function makeCapture(){
 }
 async function startMic(){
  if(running||testRunning)return;const c=await makeCapture();stream=c.st;ctx=c.ac;nativeRate=c.rate;source=c.src;node=c.nd;
- node.port.onmessage=e=>{if(!running)return;const x=new Float32Array(e.data);parts.push(x);samples+=x.length;const lv=rms(x);$('meter').style.width=Math.min(100,lv*1200)+'%';if(!processing&&samples>=CHUNK_S*nativeRate)pump()};
- parts=[];samples=0;capturedS=0;running=true;$('mic').disabled=true;$('testStart').disabled=true;$('stop').disabled=false;$('status').textContent='Escuchando…';$('status').className='big ok';pump()
+ node.port.onmessage=e=>{if(!running)return;const x=new Float32Array(e.data);parts.push(x);samples+=x.length;stashFinalNative(x);const lv=rms(x);$('meter').style.width=Math.min(100,lv*1200)+'%';if(!processing&&samples>=CHUNK_S*nativeRate)pump()};
+ parts=[];samples=0;capturedS=0;finalNativeParts=[];finalNativeSamples=0;finalPcm16Parts=[];running=true;$('mic').disabled=true;$('testStart').disabled=true;$('stop').disabled=false;$('status').textContent='Escuchando…';$('status').className='big ok';pump()
 }
-async function stopMic(){running=false;$('stop').disabled=true;$('mic').disabled=false;$('testStart').disabled=false;try{node?.disconnect();source?.disconnect();stream?.getTracks().forEach(t=>t.stop());await ctx?.close()}catch{};$('status').textContent='Micrófono detenido';$('meter').style.width='0%'}
+async function stopMic(){running=false;$('stop').disabled=true;$('mic').disabled=true;$('testStart').disabled=true;try{node?.disconnect();source?.disconnect();stream?.getTracks().forEach(t=>t.stop());await ctx?.close()}catch{};$('meter').style.width='0%';try{await canonicalizeLive()}catch(e){$('status').textContent='Live guardado; falló pasada final: '+e.message;$('status').className='big warn'}finally{$('mic').disabled=false;$('testStart').disabled=false}}
 async function startTest(){
  if(testRunning||running)return;const c=await makeCapture();testStream=c.st;testCtx=c.ac;testRate=c.rate;testSource=c.src;testNode=c.nd;testParts=[];testRunning=true;
  testNode.port.onmessage=e=>{if(!testRunning)return;const x=new Float32Array(e.data);testParts.push(x);$('meter').style.width=Math.min(100,rms(x)*1200)+'%'};
@@ -134,7 +157,7 @@ async function segmented(pcm,dur,cfg){
 }
 function renderTests(){
  const oracle=testResults.find(x=>!x.live),g=gateResult(),winner=g.winner;
- $('testBest').textContent=winner?'runtime '+winner.name:'ganador —';$('gate').textContent=g.promote?'gate: PROMOVER':'gate: baseline';$('gate').className='pill '+(g.promote?'ok':'warn');
+ $('testBest').textContent=g.quality?'calidad '+g.quality.name:'ganador —';$('gate').textContent='live: 4s/2s · final: canónico';$('gate').className='pill '+(g.promote?'ok':'warn');
  $('testRows').innerHTML=testResults.map(x=>'<div class="row '+(winner&&x.name===winner.name?'winner':'')+'"><div class="rowtop"><b>'+(winner&&x.name===winner.name?'✓ ':'')+escapeHtml(x.name)+'</b><span class="score">'+(100*x.wer).toFixed(1)+'% WER</span><span>'+x.dup+' dup · S/I/D '+(x.substitutions??'—')+'/'+(x.insertions??'—')+'/'+(x.deletions??'—')+'</span><span>'+x.speed.toFixed(2)+'× proceso</span><span>1er texto ~'+x.first_latency_s.toFixed(1)+'s</span></div><div class="rowtext">'+escapeHtml(x.text||'[sin texto]')+'</div></div>').join('');
  if(oracle)$('testState').textContent='listo · sin cortes '+(100*oracle.wer).toFixed(1)+'% WER · mejor live '+(winner?(100*winner.wer).toFixed(1)+'%':'—')
 }
@@ -145,7 +168,7 @@ async function runTests(pcm){
  await putGolden({pcm:goldenPcm,goldenMeta,reference:TEST_TEXT,results:testResults,diagnostic:diag(),build:BUILD});$('exportDiag').disabled=false;
 }
 $('mic').onclick=()=>startMic().catch(e=>{$('status').textContent='No pude abrir micrófono: '+e.message;$('status').className='big bad'});
-$('stop').onclick=stopMic;$('copy').onclick=()=>navigator.clipboard.writeText(text);$('clear').onclick=()=>{text='';segments=[];$('out').value='';$('copy').disabled=true;renderSegments()};
+$('stop').onclick=()=>stopMic().catch(e=>{$('status').textContent='Error al cerrar micrófono: '+e.message;$('status').className='big bad'});$('copy').onclick=()=>navigator.clipboard.writeText(text);$('clear').onclick=()=>{text='';segments=[];$('out').value='';$('copy').disabled=true;renderSegments()};
 $('testStart').onclick=()=>startTest().catch(e=>$('testState').textContent='Error micrófono: '+e.message);$('testStop').onclick=()=>stopTest().catch(e=>$('testState').textContent='Error prueba: '+e.message);
 $('replay').onclick=()=>{if(!goldenPcm)return;$('replay').disabled=true;runTests(goldenPcm).finally(()=>$('replay').disabled=false)};
 $('exportDiag').onclick=downloadDiag;
