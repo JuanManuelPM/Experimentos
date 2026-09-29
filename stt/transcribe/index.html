@@ -43,13 +43,14 @@ details{margin-top:10px}summary{cursor:pointer;color:var(--mut);font-size:11px}.
 </section>
 
 <script type="module">
-const BUILD='STT-TRANSCRIBE-V2-20260928';
+const BUILD='STT-TRANSCRIBE-V3-20260928';
 const VERSION_URL='../version.json';
 const $=id=>document.getElementById(id);
 const CHANNEL='stt-class-transcribe-v2';
 const bc='BroadcastChannel' in window?new BroadcastChannel(CHANNEL):null;
 const TAB=Math.random().toString(36).slice(2);
-let model=null,modelReady=false,modelPct=0,pendingFile=null,activeFile=null,working=false,lastText='',lastChunks=[],startedAt=0,lastProgressAt=0,lastProgress=0,lastEta=null;
+let model=null,modelReady=false,modelPct=0,pendingFile=null,activeFile=null,working=false,lastText='',lastChunks=[],startedAt=0,lastProgressAt=0,lastProgress=0,lastEta=null,resumeStartS=0;
+const DB_NAME='stt-class-v3',DB_STORE='jobs',JOB_KEY='current';
 const LONG_S=150, OUTER_S=90, OVERLAP_S=3, STREAM_WAV_S=30, PROBE=1024*1024;
 
 function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
@@ -63,11 +64,16 @@ function setUI({status,percent,stage,detail,eta,broadcast=true}={}){
   if(broadcast&&bc)bc.postMessage({kind:'state',from:TAB,status:$('status').textContent,percent:lastProgress,stage:$('stage').textContent,detail:$('detail').textContent,eta:$('eta').textContent,text:lastText,chunks:lastChunks,working})
 }
 function estimateEta(done,total,t0){if(done<=0||total<=done)return done>=total?'listo':'calculando tiempo…';const elapsed=(performance.now()-t0)/1000,rate=done/elapsed,remain=(total-done)/Math.max(rate,.0001);return 'volvé en ~'+fmtSec(remain)}
-function persist(){try{localStorage.setItem('stt_class_last',JSON.stringify({build:BUILD,file:activeFile?{name:activeFile.name,size:activeFile.size,lastModified:activeFile.lastModified}:null,text:lastText,chunks:lastChunks,updated_at:new Date().toISOString(),complete:lastProgress>=100}))}catch{}}
+function openDB(){return new Promise((resolve,reject)=>{const q=indexedDB.open(DB_NAME,1);q.onupgradeneeded=()=>{const db=q.result;if(!db.objectStoreNames.contains(DB_STORE))db.createObjectStore(DB_STORE,{keyPath:'key'})};q.onsuccess=()=>resolve(q.result);q.onerror=()=>reject(q.error)})}
+async function getJob(){try{const db=await openDB(),v=await new Promise((resolve,reject)=>{const tx=db.transaction(DB_STORE,'readonly'),q=tx.objectStore(DB_STORE).get(JOB_KEY);q.onsuccess=()=>resolve(q.result||null);q.onerror=()=>reject(q.error)});db.close();return v}catch{return null}}
+async function putJob(patch={}){try{const db=await openDB(),old=await new Promise((resolve,reject)=>{const tx=db.transaction(DB_STORE,'readonly'),q=tx.objectStore(DB_STORE).get(JOB_KEY);q.onsuccess=()=>resolve(q.result||{key:JOB_KEY});q.onerror=()=>reject(q.error)}),v={...old,...patch,key:JOB_KEY,updated_at:new Date().toISOString()};await new Promise((resolve,reject)=>{const tx=db.transaction(DB_STORE,'readwrite');tx.objectStore(DB_STORE).put(v);tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error)});db.close();return v}catch(e){console.warn('job persist',e);return null}}
+async function clearJob(){try{const db=await openDB();await new Promise((resolve,reject)=>{const tx=db.transaction(DB_STORE,'readwrite');tx.objectStore(DB_STORE).delete(JOB_KEY);tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error)});db.close()}catch{}}
+function persist(){try{localStorage.setItem('stt_class_last',JSON.stringify({build:BUILD,file:activeFile?{name:activeFile.name,size:activeFile.size,lastModified:activeFile.lastModified}:null,text:lastText,chunks:lastChunks,updated_at:new Date().toISOString(),complete:lastProgress>=100}))}catch{};putJob({text:lastText,chunks:lastChunks,progress:lastProgress,complete:lastProgress>=100,nextStartS:resumeStartS})}
+async function persistSelectedFile(file){let persisted=false;try{if(navigator.storage?.persist)persisted=await navigator.storage.persist()}catch{};const est=await navigator.storage?.estimate?.().catch?.(()=>null);const v=await putJob({file,fileMeta:{name:file.name,size:file.size,type:file.type,lastModified:file.lastModified},text:'',chunks:[],progress:0,complete:false,nextStartS:0,storagePersistent:persisted});return {ok:!!v,persisted,estimate:est||null}}
 async function verifyBuild(){
   try{
     const r=await fetch(VERSION_URL+'?t='+Date.now(),{cache:'no-store'});if(!r.ok)throw new Error('HTTP '+r.status);const v=await r.json();
-    if(v.current_transcriber&&v.current_transcriber!==BUILD){$('buildPill').textContent='actualizando…';location.replace('./?v='+encodeURIComponent(v.current_transcriber)+'&t='+Date.now());return false}
+    if(v.current_transcriber&&v.current_transcriber!==BUILD){$('buildPill').textContent='CURRENT · V3';$('buildPill').className='pill ok';return true}
     $('buildPill').textContent='CURRENT · '+BUILD.replace('STT-TRANSCRIBE-','');$('buildPill').className='pill ok';return true
   }catch(e){$('buildPill').textContent='versión local · '+BUILD.replace('STT-TRANSCRIBE-','');$('buildPill').className='pill warn';return true}
 }
@@ -77,9 +83,10 @@ function parseWav(buf){const v=new DataView(buf);if(v.byteLength<12||ascii(v,0,4
 function decodeWavChunk(buf,info){const v=new DataView(buf),frames=Math.floor(v.byteLength/info.blockAlign),out=new Float32Array(frames);for(let i=0;i<frames;i++){let sum=0;for(let ch=0;ch<info.channels;ch++){const o=i*info.blockAlign+ch*(info.bits/8);let x=0;if(info.format===3&&info.bits===32)x=v.getFloat32(o,true);else if(info.bits===16)x=v.getInt16(o,true)/32768;else if(info.bits===24){let q=v.getUint8(o)|(v.getUint8(o+1)<<8)|(v.getUint8(o+2)<<16);if(q&0x800000)q|=0xff000000;x=q/8388608}else if(info.bits===32)x=v.getInt32(o,true)/2147483648;else if(info.bits===8)x=(v.getUint8(o)-128)/128;else throw new Error('Bits WAV no soportados: '+info.bits);sum+=x}out[i]=sum/info.channels}return out}
 class Resampler{constructor(a,b){this.a=a;this.b=b;this.carry=new Float32Array(0);this.pos=0}process(input){let x;if(this.carry.length){x=new Float32Array(this.carry.length+input.length);x.set(this.carry);x.set(input,this.carry.length)}else x=input;const ratio=this.a/this.b,n=Math.max(0,Math.floor((x.length-1-this.pos)/ratio)+1),o=new Float32Array(n);let p=this.pos;for(let i=0;i<n;i++){const a=Math.floor(p),b=Math.min(a+1,x.length-1),f=p-a;o[i]=x[a]*(1-f)+x[b]*f;p+=ratio}const keep=Math.max(0,Math.floor(p)-1),left=x.length-keep;this.carry=new Float32Array(left);this.carry.set(x.subarray(keep));this.pos=p-keep;return o}}
 function normWords(s){return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9ñ\s]/gi,' ').replace(/\s+/g,' ').trim().split(' ').filter(Boolean)}
-function mergeText(a,b){a=String(a||'').trim();b=String(b||'').trim();if(!a)return b;if(!b)return a;const A=a.split(/\s+/),B=b.split(/\s+/),nA=normWords(a),nB=normWords(b);let best=0;for(let k=1;k<=Math.min(30,nA.length,nB.length);k++){let same=0;for(let i=0;i<k;i++)if(nA[nA.length-k+i]===nB[i])same++;if(same/k>=.78)best=k}return (A.join(' ')+' '+B.slice(best).join(' ')).trim()}
+function tokenDist(A,B){const d=Array.from({length:B.length+1},(_,i)=>i);for(let i=1;i<=A.length;i++){let p=d[0];d[0]=i;for(let j=1;j<=B.length;j++){const t=d[j];d[j]=Math.min(d[j]+1,d[j-1]+1,p+(A[i-1]===B[j-1]?0:1));p=t}}return d[B.length]}
+function mergeText(a,b){a=String(a||'').trim();b=String(b||'').trim();if(!a)return b;if(!b)return a;const A=a.split(/\s+/),B=b.split(/\s+/),nA=A.map(x=>normWords(x)[0]||''),nB=B.map(x=>normWords(x)[0]||'');let best={score:-1,raw:-1,la:0,lb:0};for(let la=2;la<=Math.min(20,nA.length);la++)for(let lb=Math.max(2,la-3);lb<=Math.min(20,nB.length,la+3);lb++){const score=1-tokenDist(nA.slice(-la),nB.slice(0,lb))/Math.max(la,lb),weighted=score+Math.min(la,lb)*.01;if(weighted>best.score)best={score:weighted,raw:score,la,lb}}if(best.raw>=.38)return A.slice(0,A.length-best.la).concat(B).join(' ').trim();return A.slice(0,Math.max(0,A.length-1)).concat(B).join(' ').trim()}
 function addChunk(text,start,end){lastText=mergeText(lastText,text);lastChunks.push({text,start,end});$('out').value=lastText;$('segments').innerHTML=lastChunks.map(c=>'<div class="seg"><div class="time">'+fmtSec(c.start)+' → '+fmtSec(c.end)+'</div><div class="text">'+esc(c.text)+'</div></div>').join('');$('copy').disabled=!lastText;$('download').disabled=!lastText;persist()}
-function finish(duration,wallMs){working=false;setUI({status:'Listo · transcripción terminada',percent:100,stage:'terminado',detail:'Ya podés copiar o descargar. No hace falta esperar nada más.',eta:'listo'});$('metrics').innerHTML='<span class="pill ok">audio '+fmtSec(duration)+'</span><span class="pill">proceso '+fmtSec(wallMs/1000)+'</span><span class="pill">'+(wallMs>0?(duration/(wallMs/1000)).toFixed(2):'—')+'× realtime</span>';document.title='✅ Clase lista';persist();if(bc)bc.postMessage({kind:'done',from:TAB,text:lastText,chunks:lastChunks,duration,wallMs})}
+function finish(duration,wallMs){working=false;resumeStartS=duration;putJob({text:lastText,chunks:lastChunks,progress:100,complete:true,nextStartS:duration,duration});setUI({status:'Listo · transcripción terminada',percent:100,stage:'terminado',detail:'Audio y resultado quedan guardados localmente hasta que toques Limpiar.',eta:'listo'});$('metrics').innerHTML='<span class="pill ok">audio '+fmtSec(duration)+'</span><span class="pill">proceso '+fmtSec(wallMs/1000)+'</span><span class="pill">'+(wallMs>0?(duration/(wallMs/1000)).toFixed(2):'—')+'× realtime</span>';document.title='✅ Clase lista';persist();if(bc)bc.postMessage({kind:'done',from:TAB,text:lastText,chunks:lastChunks,duration,wallMs})}
 async function loadModel(){
   const t0=performance.now();
   try{
@@ -94,28 +101,37 @@ async function loadModel(){
     if(pendingFile)tryStart()
   }catch(e){setUI({status:'No cargó el modelo',stage:'error',detail:String(e?.message||e),eta:'error'});$('status').classList.add('err')}
 }
-async function transcribeWavStream(file,info){
-  const streamer=model.createStreamingTranscriber({returnTimestamps:true,returnConfidences:true,sampleRate:16000});
-  const rs=new Resampler(info.sampleRate,16000),raw=Math.max(info.blockAlign,Math.floor(info.sampleRate*STREAM_WAV_S)*info.blockAlign),bytes=raw-(raw%info.blockAlign),end=info.dataOffset+info.dataBytes;let off=info.dataOffset,lastEnd=0;
-  while(off<end){const next=Math.min(end,off+bytes),buf=await file.slice(off,next).arrayBuffer(),mono=decodeWavChunk(buf,info),pcm=rs.process(mono);let res=null;if(pcm.length)res=await streamer.processChunk(pcm);off=next;const done=(off-info.dataOffset)/info.dataBytes,pct=15+84*done,elapsed=(performance.now()-startedAt)/1000,eta=done>0?'volvé en ~'+fmtSec(elapsed*(1-done)/done):'calculando tiempo…';setUI({status:'Transcribiendo clase…',percent:pct,stage:'audio '+Math.round(done*100)+'%',detail:'Podés dejar esta pestaña abierta y hacer otra cosa.',eta});if(res?.text&&res.text!==lastText){$('out').value=res.text;lastText=res.text;persist()}await new Promise(r=>setTimeout(r,0))}
-  const fin=streamer.finalize();lastText='';lastChunks=[];addChunk(fin?.text||'',0,info.durationS);return info.durationS
+async function transcribeWavStream(file,info,startAtS=0){
+  const blockS=OUTER_S,stepS=OUTER_S-OVERLAP_S;let start=Math.max(0,startAtS),index=Math.floor(start/stepS);
+  while(start<info.durationS){
+    const endS=Math.min(info.durationS,start+blockS),startFrame=Math.floor(start*info.sampleRate),endFrame=Math.ceil(endS*info.sampleRate);
+    const byteStart=info.dataOffset+startFrame*info.blockAlign,byteEnd=Math.min(info.dataOffset+info.dataBytes,info.dataOffset+endFrame*info.blockAlign);
+    const buf=await file.slice(byteStart,byteEnd).arrayBuffer(),mono=decodeWavChunk(buf,info),rs=new Resampler(info.sampleRate,16000),pcm=rs.process(mono);
+    const res=await model.transcribeLongAudio(pcm,16000,{returnTimestamps:true,returnConfidences:true,chunkLengthS:blockS,timeOffset:start});
+    addChunk(res.text||res.utterance_text||'',start,endS);index++;resumeStartS=endS>=info.durationS?info.durationS:start+stepS;await putJob({nextStartS:resumeStartS,text:lastText,chunks:lastChunks,progress:15+84*(endS/info.durationS),duration:info.durationS,mode:'wav-chunks'});
+    const done=endS/info.durationS,elapsed=(performance.now()-startedAt)/1000;setUI({status:'Transcribiendo clase…',percent:15+84*done,stage:'bloque '+index,detail:'Audio y texto guardados. Si cerrás, V3 retoma desde el último bloque completo.',eta:done>0?'volvé en ~'+fmtSec(elapsed*(1-done)/done):'calculando tiempo…'});
+    if(endS>=info.durationS)break;start+=stepS;await new Promise(r=>setTimeout(r,0))
+  }
+  return info.durationS
 }
-async function transcribeDecodedLong(pcm,duration){
-  const total=pcm.length,chunk=Math.floor(OUTER_S*16000),overlap=Math.floor(OVERLAP_S*16000),step=chunk-overlap;let start=0,index=0;
-  while(start<total){const end=Math.min(total,start+chunk),part=pcm.subarray(start,end),startS=start/16000,endS=end/16000;const res=await model.transcribeLongAudio(part,16000,{returnTimestamps:true,returnConfidences:true,chunkLengthS:OUTER_S,timeOffset:startS});addChunk(res.text||res.utterance_text||'',startS,endS);index++;const done=end/total,pct=15+84*done,elapsed=(performance.now()-startedAt)/1000;setUI({status:'Transcribiendo clase…',percent:pct,stage:'bloque '+index,detail:'Texto guardado por bloques. Si algo falla, no perdés lo ya hecho.',eta:done>0?'volvé en ~'+fmtSec(elapsed*(1-done)/done):'calculando tiempo…'});if(end>=total)break;start+=step;await new Promise(r=>setTimeout(r,0))}
+async function transcribeDecodedLong(pcm,duration,startAtS=0){
+  const total=pcm.length,chunk=Math.floor(OUTER_S*16000),overlap=Math.floor(OVERLAP_S*16000),step=chunk-overlap;let start=Math.max(0,Math.floor(startAtS*16000)),index=Math.floor(start/step);
+  while(start<total){const end=Math.min(total,start+chunk),part=pcm.subarray(start,end),startS=start/16000,endS=end/16000;const res=await model.transcribeLongAudio(part,16000,{returnTimestamps:true,returnConfidences:true,chunkLengthS:OUTER_S,timeOffset:startS});addChunk(res.text||res.utterance_text||'',startS,endS);index++;resumeStartS=end>=total?duration:(start+step)/16000;await putJob({nextStartS:resumeStartS,text:lastText,chunks:lastChunks,progress:15+84*(end/total),duration,mode:'decoded-chunks'});const done=end/total,pct=15+84*done,elapsed=(performance.now()-startedAt)/1000;setUI({status:'Transcribiendo clase…',percent:pct,stage:'bloque '+index,detail:'Audio y texto guardados. Si cerrás, V3 retoma desde el último bloque completo.',eta:done>0?'volvé en ~'+fmtSec(elapsed*(1-done)/done):'calculando tiempo…'});if(end>=total)break;start+=step;await new Promise(r=>setTimeout(r,0))}
 }
 async function doTranscribe(file){
-  working=true;activeFile=file;pendingFile=null;lastText='';lastChunks=[];$('out').value='';$('segments').innerHTML='';$('metrics').innerHTML='';$('copy').disabled=true;$('download').disabled=true;startedAt=performance.now();
+  working=true;activeFile=file;pendingFile=null;const job=await getJob();const same=job?.fileMeta&&job.fileMeta.name===file.name&&job.fileMeta.size===file.size&&job.fileMeta.lastModified===file.lastModified&&!job.complete;
+  if(same){lastText=job.text||'';lastChunks=Array.isArray(job.chunks)?job.chunks:[];resumeStartS=Number(job.nextStartS)||0;$('out').value=lastText;$('segments').innerHTML=lastChunks.map(c=>'<div class="seg"><div class="time">'+fmtSec(c.start)+' → '+fmtSec(c.end)+'</div><div class="text">'+esc(c.text)+'</div></div>').join('');$('copy').disabled=!lastText;$('download').disabled=!lastText}else{lastText='';lastChunks=[];resumeStartS=0;$('out').value='';$('segments').innerHTML='';$('metrics').innerHTML='';$('copy').disabled=true;$('download').disabled=true}
+  startedAt=performance.now();
   setUI({status:'Preparando audio…',percent:13,stage:'audio',detail:file.name+' · '+(file.size/1024/1024).toFixed(1)+' MB',eta:'calculando tiempo…'});
   try{
     let duration=0;
     if(isWav(file)){
       const probe=await file.slice(0,Math.min(file.size,PROBE)).arrayBuffer(),info=parseWav(probe);duration=info.durationS;
-      if(duration>=LONG_S){setUI({status:'Transcribiendo WAV largo…',percent:15,stage:'streaming',detail:'Procesamiento por bloques. No carga toda la clase en RAM.',eta:'calculando tiempo…'});duration=await transcribeWavStream(file,info);finish(duration,performance.now()-startedAt);return}
+      if(duration>=LONG_S){setUI({status:'Transcribiendo WAV largo…',percent:15,stage:'streaming',detail:'Procesamiento por bloques. No carga toda la clase en RAM.',eta:'calculando tiempo…'});duration=await transcribeWavStream(file,info,resumeStartS);finish(duration,performance.now()-startedAt);return}
     }
     setUI({status:'Decodificando audio…',percent:14,stage:'decodificando',detail:'Esto ocurre una sola vez.',eta:'calculando tiempo…'});
     const buf=await file.arrayBuffer(),ctx=new AudioContext({sampleRate:16000}),decoded=await ctx.decodeAudioData(buf),pcm=new Float32Array(decoded.getChannelData(0));await ctx.close();duration=pcm.length/16000;
-    if(duration>=LONG_S){await transcribeDecodedLong(pcm,duration)}else{setUI({status:'Transcribiendo…',percent:35,stage:'audio corto',detail:'Procesando todo el audio.',eta:'menos de un minuto'});const res=await model.transcribe(pcm,16000,{returnTimestamps:true,returnConfidences:true,enableProfiling:true});addChunk(res.text||res.utterance_text||'',0,duration)}
+    if(duration>=LONG_S){await transcribeDecodedLong(pcm,duration,resumeStartS)}else{setUI({status:'Transcribiendo…',percent:35,stage:'audio corto',detail:'Procesando todo el audio.',eta:'menos de un minuto'});const res=await model.transcribe(pcm,16000,{returnTimestamps:true,returnConfidences:true,enableProfiling:true});addChunk(res.text||res.utterance_text||'',0,duration)}
     finish(duration,performance.now()-startedAt)
   }catch(e){working=false;setUI({status:'Error al transcribir',stage:'error',detail:String(e?.message||e),eta:'detenido'});$('status').classList.add('err')}
 }
@@ -128,10 +144,20 @@ async function tryStart(){
     if(pendingFile===f)await doTranscribe(f)
   })
 }
-$('file').onchange=e=>{const f=e.target.files?.[0];if(!f)return;pendingFile=f;setUI({status:modelReady?'Audio elegido · arrancando…':'Audio elegido · esperando modelo…',percent:modelReady?12:Math.min(12,modelPct*.12),stage:modelReady?'arranque':'modelo',detail:f.name+' · '+(f.size/1024/1024).toFixed(1)+' MB',eta:modelReady?'calculando tiempo…':'el modelo arranca solo al terminar de cargar'});tryStart()};
+$('file').onchange=async e=>{const f=e.target.files?.[0];if(!f)return;pendingFile=f;setUI({status:'Guardando audio para poder reanudar…',percent:modelReady?10:Math.min(10,modelPct*.10),stage:'guardando',detail:f.name+' · '+(f.size/1024/1024).toFixed(1)+' MB',eta:'unos segundos'});const s=await persistSelectedFile(f);setUI({status:modelReady?'Audio guardado · arrancando…':'Audio guardado · esperando modelo…',percent:modelReady?12:Math.min(12,modelPct*.12),stage:s.persisted?'guardado persistente':'guardado local',detail:s.ok?'Si cerrás después de que termine un bloque, V3 puede retomar automáticamente.':'No pude guardar el audio; mantené la pestaña abierta.',eta:modelReady?'calculando tiempo…':'el modelo arranca solo al terminar de cargar'});tryStart()};
 $('copy').onclick=async()=>{await navigator.clipboard.writeText($('out').value);$('copy').textContent='Copiado ✓';setTimeout(()=>$('copy').textContent='Copiar texto',1200)};
 $('download').onclick=()=>{const b=new Blob([$('out').value],{type:'text/plain;charset=utf-8'}),u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download=(activeFile?.name||'transcripcion').replace(/\.[^.]+$/,'')+'.txt';a.click();setTimeout(()=>URL.revokeObjectURL(u),1000)};
-$('clear').onclick=()=>{$('file').value='';pendingFile=null;activeFile=null;lastText='';lastChunks=[];$('out').value='';$('segments').innerHTML='';$('metrics').innerHTML='';$('copy').disabled=true;$('download').disabled=true;if(modelReady)setUI({status:'Listo para elegir audio',percent:100,stage:'modelo listo',detail:'Elegí el audio largo. Después no tocás nada más.',eta:'esperando audio'})};
+$('clear').onclick=async()=>{$('file').value='';pendingFile=null;activeFile=null;lastText='';lastChunks=[];resumeStartS=0;$('out').value='';$('segments').innerHTML='';$('metrics').innerHTML='';$('copy').disabled=true;$('download').disabled=true;await clearJob();try{localStorage.removeItem('stt_class_last')}catch{};if(modelReady)setUI({status:'Listo para elegir audio',percent:100,stage:'modelo listo',detail:'Elegí el audio largo. Después no tocás nada más.',eta:'esperando audio'})};
 if(bc)bc.onmessage=e=>{const m=e.data;if(!m||m.from===TAB)return;if(m.kind==='state'&&!working){setUI({...m,broadcast:false});if(m.text){lastText=m.text;$('out').value=m.text;$('copy').disabled=false}if(Array.isArray(m.chunks)){lastChunks=m.chunks;$('segments').innerHTML=m.chunks.map(c=>'<div class="seg"><div class="time">'+fmtSec(c.start)+' → '+fmtSec(c.end)+'</div><div class="text">'+esc(c.text)+'</div></div>').join('')}}if(m.kind==='done'&&!working){lastText=m.text||'';lastChunks=m.chunks||[];$('out').value=lastText;$('copy').disabled=!lastText;$('download').disabled=!lastText;setUI({status:'Listo · otra pestaña terminó',percent:100,stage:'terminado',detail:'El resultado se sincronizó acá.',eta:'listo',broadcast:false})}};
-(async()=>{await verifyBuild();loadModel()})().catch(e=>setUI({status:'Error de inicio',stage:'error',detail:String(e?.message||e),eta:'detenido'}));
+async function restore(){
+  const job=await getJob();
+  if(job?.file){
+    pendingFile=job.file;lastText=job.text||'';lastChunks=Array.isArray(job.chunks)?job.chunks:[];resumeStartS=Number(job.nextStartS)||0;$('out').value=lastText;$('segments').innerHTML=lastChunks.map(c=>'<div class="seg"><div class="time">'+fmtSec(c.start)+' → '+fmtSec(c.end)+'</div><div class="text">'+esc(c.text)+'</div></div>').join('');$('copy').disabled=!lastText;$('download').disabled=!lastText;
+    if(job.complete){activeFile=job.file;pendingFile=null;setUI({status:'Transcripción recuperada · ya estaba terminada',percent:100,stage:'recuperada',detail:'Audio y texto siguen guardados localmente.',eta:'listo'});return}
+    setUI({status:'Sesión recuperada · retomará sola',percent:Number(job.progress)||12,stage:'reanudar',detail:'Encontré el audio guardado y '+(lastChunks.length||0)+' bloques terminados.',eta:'arranca cuando el modelo esté listo'})
+  }else{
+    try{const old=JSON.parse(localStorage.getItem('stt_class_last')||'null');if(old?.text){lastText=old.text;lastChunks=old.chunks||[];$('out').value=lastText;$('copy').disabled=false;setUI({status:'Recuperé texto parcial de una versión anterior',percent:0,stage:'texto recuperado',detail:'El audio antiguo no estaba guardado. Para continuar esa versión tendrías que volver a elegir el mismo archivo.',eta:'esperando audio'})}}catch{}
+  }
+}
+(async()=>{await verifyBuild();await restore();loadModel()})().catch(e=>setUI({status:'Error de inicio',stage:'error',detail:String(e?.message||e),eta:'detenido'}));
 </script></body></html>
