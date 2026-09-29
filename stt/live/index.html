@@ -54,7 +54,7 @@ main{min-height:100svh;max-width:920px;margin:auto;padding:calc(env(safe-area-in
 .speech-cell.covered{visibility:hidden}
 .speech-cell.live-head .wave{opacity:.72}
 .text-line{display:none}
-.text-word{position:relative;display:inline;color:#77777f;opacity:0;filter:blur(.25px);font:inherit;line-height:inherit;white-space:nowrap;background:#050506;box-shadow:0 0 0 2px #050506;transition:color .22s ease,opacity .16s ease,filter .18s ease,transform .18s ease}
+.text-word{position:relative;display:inline;margin-right:.22em;color:#77777f;opacity:0;filter:blur(.25px);font:inherit;line-height:inherit;white-space:nowrap;background:#050506;box-shadow:0 0 0 2px #050506;transition:color .22s ease,opacity .16s ease,filter .18s ease,transform .18s ease}
 .word-text{position:relative;z-index:1}
 .text-word.visible{opacity:1}
 .text-word.confirmed{color:#fff;filter:none;text-shadow:0 0 10px rgba(255,255,255,.055)}
@@ -229,8 +229,8 @@ main{min-height:100svh;max-width:920px;margin:auto;padding:calc(env(safe-area-in
   </details>
 </main>
 <script type="module">
-import {TimelineTurn} from './timeline-engine.js?v=6.0';
-const $=id=>document.getElementById(id),BUILD='STT-LIVE-V6.0-20260929',LIVE_DB='stt-live-v3',LIVE_STORE='runs',LIVE_KEY='golden';
+import {TimelineTurn} from './timeline-engine.js?v=6.1';
+const $=id=>document.getElementById(id),BUILD='STT-LIVE-V6.1-20260929',LIVE_DB='stt-live-v3',LIVE_STORE='runs',LIVE_KEY='golden';
 const advancedEl=document.querySelector('.advanced');
 let paintFrame=0,pendingPaint='',asrWorker=null,asrInitPromise=null,asrReady=false,asrBackend='—',asrReq=0,asrPending=new Map(),asrRetryTimer=null;
 const TEST_TEXT=$('reference').textContent.trim();
