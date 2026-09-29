@@ -1,0 +1,159 @@
+name: STT Result Ingest
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - ".github/workflows/stt-result-ingest.yml"
+  schedule:
+    - cron: "*/5 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: stt-result-ingest
+  cancel-in-progress: false
+
+jobs:
+  ingest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: master
+          fetch-depth: 0
+
+      - name: Fetch public STT result channel
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p stt-results/sessions
+          curl --retry 3 --retry-delay 2 --connect-timeout 10 --max-time 45 \
+            -fsSL "https://ntfy.sh/stt-bench-83f229610c5fac67ba6918772670642e/json?poll=1&since=12h" \
+            -o /tmp/stt-ntfy.ndjson || true
+          touch /tmp/stt-ntfy.ndjson
+
+      - name: Merge messages into session files
+        shell: python
+        run: |
+          import json, pathlib, datetime, hashlib
+
+          root = pathlib.Path("stt-results")
+          sessions_dir = root / "sessions"
+          sessions_dir.mkdir(parents=True, exist_ok=True)
+
+          messages = []
+          for line in pathlib.Path("/tmp/stt-ntfy.ndjson").read_text(errors="replace").splitlines():
+              line = line.strip()
+              if not line:
+                  continue
+              try:
+                  outer = json.loads(line)
+              except Exception:
+                  continue
+              if outer.get("event") != "message":
+                  continue
+              raw = outer.get("message", "")
+              try:
+                  payload = json.loads(raw)
+              except Exception:
+                  continue
+              if payload.get("kind") not in {"stt_result", "stt_summary"}:
+                  continue
+              payload["_ntfy_id"] = outer.get("id")
+              payload["_ntfy_time"] = outer.get("time")
+              messages.append(payload)
+
+          touched = {}
+          for msg in messages:
+              sid = str(msg.get("session") or "").strip()
+              if not sid:
+                  continue
+              safe = "".join(c if c.isalnum() or c in "-_." else "_" for c in sid)[:120]
+              path = sessions_dir / f"{safe}.json"
+              if path.exists():
+                  try:
+                      doc = json.loads(path.read_text())
+                  except Exception:
+                      doc = {}
+              else:
+                  doc = {}
+
+              doc.setdefault("session", sid)
+              doc.setdefault("build", msg.get("build"))
+              doc.setdefault("results", [])
+              doc.setdefault("summaries", [])
+              doc.setdefault("seen", [])
+
+              ntfy_id = msg.get("_ntfy_id")
+              if ntfy_id and ntfy_id in doc["seen"]:
+                  continue
+
+              if msg.get("kind") == "stt_result":
+                  key = "|".join(str(msg.get(k) or "") for k in ("test", "model", "config"))
+                  replaced = False
+                  for i, old in enumerate(doc["results"]):
+                      old_key = "|".join(str(old.get(k) or "") for k in ("test", "model", "config"))
+                      if old_key == key:
+                          doc["results"][i] = msg
+                          replaced = True
+                          break
+                  if not replaced:
+                      doc["results"].append(msg)
+              else:
+                  doc["summaries"].append(msg)
+                  if msg.get("status") == "complete":
+                      doc["complete"] = True
+                  if msg.get("expected") is not None:
+                      doc["expected"] = msg.get("expected")
+
+              if ntfy_id:
+                  doc["seen"].append(ntfy_id)
+                  doc["seen"] = doc["seen"][-1000:]
+
+              doc["updated_at"] = datetime.datetime.now(datetime.timezone.utc).isoformat()
+              doc["result_count"] = len(doc["results"])
+              doc["failure_count"] = sum(1 for r in doc["results"] if r.get("status") != "ok")
+              path.write_text(json.dumps(doc, ensure_ascii=False, indent=2) + "\n")
+              touched[sid] = {
+                  "path": str(path),
+                  "updated_at": doc["updated_at"],
+                  "result_count": doc["result_count"],
+                  "failure_count": doc["failure_count"],
+                  "complete": bool(doc.get("complete")),
+                  "expected": doc.get("expected"),
+              }
+
+          index_path = root / "index.json"
+          index = {}
+          if index_path.exists():
+              try:
+                  index = json.loads(index_path.read_text())
+              except Exception:
+                  index = {}
+          index.setdefault("sessions", {})
+          index["sessions"].update(touched)
+          index["updated_at"] = datetime.datetime.now(datetime.timezone.utc).isoformat()
+          if index["sessions"]:
+              index["latest_session"] = max(
+                  index["sessions"],
+                  key=lambda s: index["sessions"][s].get("updated_at", "")
+              )
+          index_path.write_text(json.dumps(index, ensure_ascii=False, indent=2) + "\n")
+
+      - name: Commit ingested results
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "stt-result-ingest"
+          git config user.email "stt-result-ingest@users.noreply.github.com"
+          git add stt-results
+          if git diff --cached --quiet; then
+            echo "No new STT results."
+            exit 0
+          fi
+          git commit -m "Ingest STT benchmark results"
+          git push origin HEAD:master
