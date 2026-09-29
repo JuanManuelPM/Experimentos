@@ -38,7 +38,7 @@ textarea{width:100%;min-height:300px;background:#080c0f;color:var(--fg);border:1
 <section class="card"><b>Últimos bloques</b><div id="segments" class="note">Todavía no hay audio.</div></section>
 
 <script type="module">
-const $=id=>document.getElementById(id),BUILD='STT-LIVE-V3-20260929',LIVE_DB='stt-live-v3',LIVE_STORE='runs',LIVE_KEY='golden';
+const $=id=>document.getElementById(id),BUILD='STT-LIVE-V3.1-20260929',LIVE_DB='stt-live-v3',LIVE_STORE='runs',LIVE_KEY='golden';
 const TEST_TEXT=$('reference').textContent.trim();
 let model=null,stream=null,ctx=null,node=null,source=null,running=false,processing=false,nativeRate=48000,parts=[],samples=0,text='',segments=[],capturedS=0;
 let testStream=null,testCtx=null,testNode=null,testSource=null,testParts=[],testRate=48000,testRunning=false,testResults=[],goldenPcm=null,goldenMeta=null;
@@ -81,7 +81,20 @@ function merge(a,b){
 function rms(x){let s=0;for(let i=0;i<x.length;i++)s+=x[i]*x[i];return Math.sqrt(s/Math.max(1,x.length))}
 function resample(x,from,to=16000){if(from===to)return x;const ratio=from/to,n=Math.max(1,Math.floor(x.length/ratio)),o=new Float32Array(n);for(let i=0;i<n;i++){const p=i*ratio,a=Math.floor(p),b=Math.min(x.length-1,a+1),f=p-a;o[i]=x[a]*(1-f)+x[b]*f}return o}
 function concat(parts){const n=parts.reduce((a,x)=>a+x.length,0),o=new Float32Array(n);let p=0;for(const x of parts){o.set(x,p);p+=x.length}return o}
-function wer(hyp,ref){const H=norm(hyp),R=norm(ref);return R.length?tokenDist(H,R)/R.length:1}
+function editStats(hyp,ref){
+ const H=norm(hyp),R=norm(ref),n=R.length,m=H.length,d=Array.from({length:n+1},()=>new Uint16Array(m+1));
+ for(let i=0;i<=n;i++)d[i][0]=i;for(let j=0;j<=m;j++)d[0][j]=j;
+ for(let i=1;i<=n;i++)for(let j=1;j<=m;j++)d[i][j]=Math.min(d[i-1][j]+1,d[i][j-1]+1,d[i-1][j-1]+(R[i-1]===H[j-1]?0:1));
+ let i=n,j=m,sub=0,ins=0,del=0;
+ while(i||j){
+   if(i&&j&&R[i-1]===H[j-1]&&d[i][j]===d[i-1][j-1]){i--;j--;continue}
+   if(i&&j&&d[i][j]===d[i-1][j-1]+1){sub++;i--;j--;continue}
+   if(j&&d[i][j]===d[i][j-1]+1){ins++;j--;continue}
+   if(i){del++;i--;continue}
+ }
+ const errors=sub+ins+del;return{wer:n?errors/n:1,substitutions:sub,insertions:ins,deletions:del,reference_words:n,hypothesis_words:m}
+}
+function wer(hyp,ref){return editStats(hyp,ref).wer}
 function repeatedWords(s){const t=norm(s);let dup=0;for(let n=6;n>=2;n--)for(let i=0;i+2*n<=t.length;i++){let same=true;for(let j=0;j<n;j++)if(t[i+j]!==t[i+n+j]){same=false;break}if(same){dup+=n;i+=n-1}}return dup}
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
 function takeNative(sec){const need=Math.floor(sec*nativeRate);if(samples<need)return null;const all=new Float32Array(need);let w=0,remain=need;while(remain>0&&parts.length){const p=parts[0],n=Math.min(remain,p.length);all.set(p.subarray(0,n),w);w+=n;remain-=n;if(n===p.length)parts.shift();else parts[0]=p.subarray(n)}samples-=need;const overlap=Math.floor(OVERLAP_S*nativeRate);if(overlap>0){const tail=all.slice(Math.max(0,all.length-overlap));parts.unshift(tail);samples+=tail.length}return all}
@@ -116,13 +129,13 @@ async function segmented(pcm,dur,cfg){
  const t0=performance.now();let out='',firstMs=null,pieces=0;
  if(!cfg.chunk){const t=performance.now(),r=await model.transcribeLongAudio(pcm,16000,{returnTimestamps:false,returnConfidences:true,chunkLengthS:Math.max(4,Math.min(60,dur)),timeOffset:0});firstMs=performance.now()-t;out=(r.text||r.utterance_text||'').trim();pieces=1}
  else{const step=Math.max(.5,cfg.chunk-cfg.overlap);for(let start=0;start<dur;start+=step){const end=Math.min(dur,start+cfg.chunk),part=pcm.subarray(Math.floor(start*16000),Math.floor(end*16000));if(part.length<1600)break;const t=performance.now(),r=await model.transcribeLongAudio(part,16000,{returnTimestamps:false,returnConfidences:true,chunkLengthS:cfg.chunk,timeOffset:start}),ms=performance.now()-t;if(firstMs==null)firstMs=ms;out=merge(out,(r.text||r.utterance_text||'').trim());pieces++;if(end>=dur)break;await new Promise(r=>setTimeout(r,0))}}
- const wall=performance.now()-t0,w=wer(out,TEST_TEXT),dup=repeatedWords(out),firstLatency=(cfg.chunk||dur)+(firstMs||0)/1000;
- return{...cfg,text:out,wer:w,dup,pieces,wall_ms:wall,speed:dur/(wall/1000),first_latency_s:firstLatency}
+ const wall=performance.now()-t0,edits=editStats(out,TEST_TEXT),dup=repeatedWords(out),firstLatency=(cfg.chunk||dur)+(firstMs||0)/1000;
+ return{...cfg,text:out,...edits,dup,pieces,wall_ms:wall,speed:dur/(wall/1000),first_latency_s:firstLatency}
 }
 function renderTests(){
  const oracle=testResults.find(x=>!x.live),g=gateResult(),winner=g.winner;
  $('testBest').textContent=winner?'runtime '+winner.name:'ganador —';$('gate').textContent=g.promote?'gate: PROMOVER':'gate: baseline';$('gate').className='pill '+(g.promote?'ok':'warn');
- $('testRows').innerHTML=testResults.map(x=>'<div class="row '+(winner&&x.name===winner.name?'winner':'')+'"><div class="rowtop"><b>'+(winner&&x.name===winner.name?'✓ ':'')+escapeHtml(x.name)+'</b><span class="score">'+(100*x.wer).toFixed(1)+'% WER</span><span>'+x.dup+' dup</span><span>'+x.speed.toFixed(2)+'× proceso</span><span>1er texto ~'+x.first_latency_s.toFixed(1)+'s</span></div><div class="rowtext">'+escapeHtml(x.text||'[sin texto]')+'</div></div>').join('');
+ $('testRows').innerHTML=testResults.map(x=>'<div class="row '+(winner&&x.name===winner.name?'winner':'')+'"><div class="rowtop"><b>'+(winner&&x.name===winner.name?'✓ ':'')+escapeHtml(x.name)+'</b><span class="score">'+(100*x.wer).toFixed(1)+'% WER</span><span>'+x.dup+' dup · S/I/D '+(x.substitutions??'—')+'/'+(x.insertions??'—')+'/'+(x.deletions??'—')+'</span><span>'+x.speed.toFixed(2)+'× proceso</span><span>1er texto ~'+x.first_latency_s.toFixed(1)+'s</span></div><div class="rowtext">'+escapeHtml(x.text||'[sin texto]')+'</div></div>').join('');
  if(oracle)$('testState').textContent='listo · sin cortes '+(100*oracle.wer).toFixed(1)+'% WER · mejor live '+(winner?(100*winner.wer).toFixed(1)+'%':'—')
 }
 async function runTests(pcm){
