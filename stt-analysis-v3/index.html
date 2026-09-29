@@ -71,7 +71,18 @@ details{margin-top:10px;border:1px solid var(--line);border-radius:12px;backgrou
 
 <script>
 const $=id=>document.getElementById(id),EXPECTED=184;
-let DATA=null,activeTest=null,ANALYSIS=null;
+const REMOTE_INDEX='https://raw.githubusercontent.com/JuanManuelPM/Experimentos/master/stt-results/index.json';
+const REFS={
+natural:'Hoy quiero probar qué tan bien funciona esta transcripción cuando hablo a una velocidad normal y sin exagerar la pronunciación.',
+rioplatense:'Che, fijate si podés entenderme aunque hable rápido, junte algunas palabras y no marque demasiado cada sílaba.',
+prometeo:'Prometeo debería escuchar una frase, comparar varias hipótesis y conservar las palabras que aparecen con mayor consistencia.',
+confusiones:'Quiero comprobar si distingue entre esto, efecto, Héctor y texto cuando las palabras aparecen dentro de una frase completa.',
+numeros:'El martes catorce de octubre a las siete y media tengo que revisar treinta y dos archivos antes de las nueve.',
+tecnico:'Después voy a abrir GitHub, ejecutar el proceso y revisar si el build de Firefox coincide con el resultado publicado.',
+contexto:'Si una palabra sale mal al principio, no me importa que se corrija un segundo después, siempre que la frase final quede mejor y no pierda el contexto.',
+comandos:'Che Prometeo, poné pausa, bajá el volumen y después seguí escuchando cuando yo diga continuar.'
+};
+let DATA=null,activeTest=null,ANALYSIS=null,REMOTE_LAST=0;
 const FAMILY_ORDER=['Vosk','Whisper','Moonshine','Parakeet','Ensemble'];
 function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
 function norm(s){return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9ñ\s]/gi,' ').replace(/\s+/g,' ').trim()}
@@ -108,7 +119,9 @@ function buildTest(testId,rows){
   return {testId,reference,items,rows:ok}
 }
 function analyze(data){
-  const results=Array.isArray(data?.results)?data.results:[],byTest=new Map();
+  const raw=Array.isArray(data?.results)?data.results:[];
+  const results=raw.map(r=>({...r,test_id:r.test_id||r.test,reference:r.reference||REFS[r.test_id||r.test]||''}));
+  const byTest=new Map();
   for(const r of results){if(!r?.test_id)continue;(byTest.get(r.test_id)||byTest.set(r.test_id,[]).get(r.test_id)).push(r)}
   const tests=[...byTest.entries()].map(([id,rows])=>buildTest(id,rows));
   const individuals=results.filter(r=>r.status==='ok'&&Number.isFinite(Number(r.wer))&&family(r)!=='Ensemble');
@@ -129,7 +142,7 @@ function conflictClass(it){if(it.wrongAgreement)return'wrong';if(it.variants.siz
 function render(){
   if(!DATA||!ANALYSIS||!ANALYSIS.results.length){$('empty').hidden=false;$('textCard').hidden=true;$('rankCard').hidden=true;$('actions').hidden=true;$('marginalBox').hidden=true;$('confBox').hidden=true;return}
   $('empty').hidden=true;$('textCard').hidden=false;$('rankCard').hidden=false;$('actions').hidden=false;$('marginalBox').hidden=false;$('confBox').hidden=false;
-  $('sessionLine').textContent=(DATA.session||'sesión local')+' · '+(DATA.build||'build desconocido')+' · actualización automática';
+  $('sessionLine').textContent=(DATA.session||'sesión')+' · '+(DATA.build||'build desconocido')+' · '+(DATA.origin||'local')+' · actualización automática';
   $('livePill').textContent=(ANALYSIS.results.length<EXPECTED?'procesando':'completo')+' · 2 s';$('livePill').className='pill '+(ANALYSIS.results.length>=EXPECTED?'good':'');
   $('mResults').textContent=ANALYSIS.results.length;$('mExpected').textContent='/'+EXPECTED;
   const best=ANALYSIS.rank[0];$('mBest').textContent=best?best.wer.toFixed(1)+'%':'—';$('mBestName').textContent=best?.name||'—';
@@ -159,14 +172,28 @@ function openWord(t,i){
   $('alts').innerHTML=vars.length?vars.map(v=>'<div class="alt"><div class="altTop"><b class="'+(v.key===it.refNorm?'goodtxt':'')+'">'+esc(v.form)+'</b><span>'+v.families.size+' familias · '+v.sources.length+' pasadas</span></div><div class="sources">'+esc([...v.families].join(' · '))+'<br>'+esc(v.sources.join(' · '))+'</div></div>').join(''):'<div class="mini">Ningún modelo produjo una palabra alineable acá.</div>';
   $('sheet').classList.add('open')
 }
-function load(){
+function applyData(d,origin){
+  if(!d||!Array.isArray(d.results))return;
+  const candidate={...d,origin};
+  const curN=DATA?.results?.length||0,newN=candidate.results.length;
+  const same=!DATA||!DATA.session||!candidate.session||DATA.session===candidate.session;
+  const prefer=!DATA||newN>curN||(newN===curN&&origin==='local'&&DATA.origin!=='local')||(!same&&origin==='local');
+  if(prefer){DATA=candidate;ANALYSIS=analyze(candidate);render()}
+}
+function loadLocal(){
   let raw=null;try{raw=localStorage.getItem('stt_mass_latest')}catch{}
-  if(!raw)return;
-  try{const d=JSON.parse(raw);const changed=!DATA||d.session!==DATA.session||d.updated_at!==DATA.updated_at||d.results?.length!==DATA.results?.length;if(changed){DATA=d;ANALYSIS=analyze(d);render()}}catch{}
+  if(!raw)return;try{applyData(JSON.parse(raw),'local')}catch{}
+}
+async function loadRemote(){
+  try{
+    const idx=await fetch(REMOTE_INDEX+'?t='+Date.now(),{cache:'no-store'});if(!idx.ok)return;const meta=await idx.json();const sid=meta.latest_session;if(!sid)return;
+    const u='https://raw.githubusercontent.com/JuanManuelPM/Experimentos/master/stt-results/sessions/'+encodeURIComponent(sid)+'.json?t='+Date.now();
+    const r=await fetch(u,{cache:'no-store'});if(!r.ok)return;const d=await r.json();applyData(d,'GitHub');
+  }catch{}
 }
 function capsule(){return {analysis_build:'STT-ANALYSIS-V3-20260928',session:DATA?.session,source_build:DATA?.build,computed_at:new Date().toISOString(),summary:{result_count:ANALYSIS?.results.length||0,best:ANALYSIS?.rank[0]||null,oracle_approx_wer:ANALYSIS?.oracle,conflicts:ANALYSIS?.conflicts,wrong_agreement:ANALYSIS?.wrong,unique_correct:ANALYSIS?.uniqueCorrect,redundant:ANALYSIS?.redundant,confusions:ANALYSIS?.confusions}}}
 async function copyText(x,btn){const s=typeof x==='string'?x:JSON.stringify(x,null,2);try{await navigator.clipboard.writeText(s)}catch{const ta=document.createElement('textarea');ta.value=s;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove()}const old=btn.textContent;btn.textContent='Copiado ✓';setTimeout(()=>btn.textContent=old,1200)}
 $('copyAnalysis').onclick=e=>copyText(capsule(),e.currentTarget);$('copyRaw').onclick=e=>copyText(DATA,e.currentTarget);$('closeSheet').onclick=()=>$('sheet').classList.remove('open');$('sheet').addEventListener('click',e=>{if(e.target===$('sheet'))$('sheet').classList.remove('open')});
-load();setInterval(load,2000);render();
+loadLocal();loadRemote();setInterval(loadLocal,2000);setInterval(loadRemote,15000);render();
 </script>
 </body></html>
