@@ -1,0 +1,31 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="dark"><title>STT Topology Runner</title><style>
+body{margin:0;background:#07090b;color:#f3f6f8;font:14px/1.45 system-ui}main{padding:16px}.box{background:#10151a;border:1px solid #28343d;border-radius:12px;padding:12px}.big{font-size:21px;font-weight:800}.mut{color:#8d9aa5;font-size:11px}.pill{display:inline-block;border:1px solid #28343d;border-radius:99px;padding:4px 7px;font-size:10px;margin:6px 4px 0 0}.ok{color:#7be49c}.warn{color:#ffd166}</style></head><body><main><div class="box"><div class="big" id="status">Esperando controlador…</div><div class="mut" id="detail">Esta pestaña es un motor aislado del experimento de topología.</div><span id="slot" class="pill">slot ?</span><span id="state" class="pill">idle</span></div></main>
+<script type="module">
+const $=id=>document.getElementById(id);
+const qs=new URLSearchParams(location.search),group=qs.get('group')||'default',slot=+(qs.get('slot')||0),FAST_DB='stt-fast-v1',STORE='jobs';
+const ch=new BroadcastChannel('stt-topology-'+group);
+let pcm=null,duration=0,w=null,ready=false,busy=false,backend='wasm';
+$('slot').textContent='slot '+(slot+1);
+function openDB(){return new Promise((res,rej)=>{const q=indexedDB.open(FAST_DB,1);q.onsuccess=()=>res(q.result);q.onerror=()=>rej(q.error)})}
+async function getFast(){try{const db=await openDB(),v=await new Promise((res,rej)=>{const q=db.transaction(STORE,'readonly').objectStore(STORE).get('current');q.onsuccess=()=>res(q.result||null);q.onerror=()=>rej(q.error)});db.close();return v}catch{return null}}
+async function prepare(){
+ const fast=await getFast(); if(!fast?.file) throw new Error('audio no encontrado');
+ $('status').textContent='Decodificando audio…'; const ab=await fast.file.arrayBuffer(),ctx=new AudioContext({sampleRate:16000}),d=await ctx.decodeAudioData(ab);pcm=new Float32Array(d.getChannelData(0));duration=pcm.length/16000;await ctx.close();
+ $('status').textContent='Listo para cargar modelo';ch.postMessage({kind:'tab_ready',slot,duration});
+}
+async function initModel(msg){
+ if(ready)return ch.postMessage({kind:'model_ready',slot});
+ backend=msg.backend||'wasm'; $('status').textContent='Cargando modelo '+backend.toUpperCase()+'…'; $('state').textContent='loading';
+ w=new Worker('./runner-worker.js',{type:'module'});
+ w.onmessage=e=>{const m=e.data||{};if(m.kind==='ready'){ready=true;$('status').textContent='Motor listo';$('state').textContent='ready';ch.postMessage({kind:'model_ready',slot,load_ms:m.load_ms,backend})}else if(m.kind==='result'){busy=false;$('status').textContent='Esperando otro bloque';$('state').textContent='ready';ch.postMessage({kind:'result',slot,...m})}else if(m.kind==='error'){busy=false;$('status').textContent='Error: '+m.error;$('state').textContent='error';ch.postMessage({kind:'runner_error',slot,...m})}};
+ w.postMessage({kind:'init',backend});
+}
+function runJob(m){
+ if(!ready||busy)return ch.postMessage({kind:'runner_busy',slot,jobId:m.jobId});
+ busy=true;$('status').textContent='Transcribiendo '+Math.round(m.start)+'–'+Math.round(m.end)+'s';$('state').textContent='working';
+ const a=Math.max(0,Math.floor(m.start*16000)),b=Math.min(pcm.length,Math.floor(m.end*16000)),part=pcm.subarray(a,b).slice();
+ w.postMessage({kind:'job',jobId:m.jobId,start:m.start,end:m.end,chunkS:m.chunkS||30,pcm:part.buffer},[part.buffer]);
+}
+ch.onmessage=e=>{const m=e.data||{};if(m.slot!=null&&+m.slot!==slot)return;if(m.kind==='init_model')initModel(m);else if(m.kind==='job')runJob(m);else if(m.kind==='ping')ch.postMessage({kind:'pong',slot,ready,busy,duration});else if(m.kind==='close')window.close()};
+prepare().catch(e=>{$('status').textContent='Error: '+e.message;$('state').textContent='error';ch.postMessage({kind:'runner_error',slot,error:e.message})});
+</script></body></html>
