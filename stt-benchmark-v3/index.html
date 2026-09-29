@@ -123,9 +123,15 @@ function renderResults(){
   $('summaryCard').hidden=!rank.length;$('ranking').innerHTML=rank.slice(0,20).map((x,i)=>'<div class="rank"><b>'+(i+1)+'. '+esc(x.name)+'</b><span>WER '+x.wer.toFixed(1)+'%</span><span>'+Math.round(x.ms)+' ms · '+x.n+'/8</span></div>').join('');
   const last=S.results.slice(-40).reverse();$('rows').innerHTML=last.map(r=>'<div class="row"><div class="rhead"><div class="rname">'+esc(r.model+' · '+r.config+' · '+r.test_id)+'</div><div class="rscore '+(r.status==='error'?'err':'')+'">'+(r.status==='ok'?'WER '+r.wer.toFixed(1)+'% · '+r.infer_ms+' ms':'ERROR')+'</div></div><div class="rtext">'+esc(r.status==='ok'?(r.text||'—'):r.error)+'</div></div>').join('');
 }
+function pendingKey(x){return [x.kind,x.session,x.test||'',x.model||'',x.config||''].join('|')}
+function loadPending(){try{return JSON.parse(localStorage.getItem('stt_remote_pending')||'[]')}catch{return[]}}
+function savePending(a){try{localStorage.setItem('stt_remote_pending',JSON.stringify(a.slice(-500)))}catch{}}
+function queueRemote(msg){const a=loadPending(),k=pendingKey(msg);if(!a.some(x=>pendingKey(x)===k))a.push(msg);savePending(a)}
+async function postRemote(msg){let last=null;for(let attempt=1;attempt<=4;attempt++){try{const res=await fetch(NTFY_URL,{method:'POST',body:JSON.stringify(msg),cache:'no-store'});if(!res.ok)throw new Error('HTTP '+res.status);return true}catch(e){last=e;await new Promise(r=>setTimeout(r,Math.min(5000,350*Math.pow(2,attempt))))}}throw last}
+async function flushRemote(){const a=loadPending(),left=[];for(const msg of a){try{await postRemote(msg)}catch(e){left.push(msg);log('remote retry pending',{key:pendingKey(msg),error:String(e)})}}savePending(left);$('remotePill').textContent=left.length?'remoto pendiente '+left.length:'publicación remota ✓';$('remotePill').className='pill '+(left.length?'warn':'good');return left.length}
 async function publishResult(r){
   const compact={kind:'stt_result',session:r.session,test:r.test_id,reference:r.reference,model:r.model,config:r.config,text:r.text,wer:r.wer,cer:r.cer,infer_ms:r.infer_ms,load_ms:r.load_ms,rtf:r.rtf,status:r.status,error:r.error,build:r.build};
-  try{const res=await fetch(NTFY_URL,{method:'POST',body:JSON.stringify(compact)});if(!res.ok)throw new Error('HTTP '+res.status);$('remotePill').textContent='publicando remoto ✓';$('remotePill').className='pill good'}catch(e){$('remotePill').textContent='remoto falló · copia disponible';$('remotePill').className='pill warn';log('remote fail',{error:String(e)})}
+  queueRemote(compact);await flushRemote()
 }
 function persistLocal(){try{localStorage.setItem('stt_mass_latest',JSON.stringify({build:BUILD,session,updated_at:new Date().toISOString(),results:S.results}));persistManifest()}catch(e){log('local persist fail',{error:String(e)})}}
 async function publishSummary(){
@@ -133,7 +139,7 @@ async function publishSummary(){
   for(const r of ok){const k=r.model+' · '+r.config;(groups[k]??=[]).push(r.wer)}
   const ranking=Object.entries(groups).map(([name,v])=>({name,wer:v.reduce((a,b)=>a+b,0)/v.length,n:v.length})).sort((a,b)=>a.wer-b.wer).slice(0,15);
   const msg={kind:'stt_summary',session,build:BUILD,status:'complete',expected:S.totalJobs,tests:S.recordings.length,results:S.results.length,ranking};
-  try{await fetch(NTFY_URL,{method:'POST',body:JSON.stringify(msg)})}catch(e){log('summary remote fail',{error:String(e)})}
+  queueRemote(msg);await flushRemote()
 }
 async function runVoskFamily(url,label,configs){
   let model,loadMs=0;const t=performance.now();try{model=await timeout(Vosk.createModel(url),label==='Vosk 0.42'?60000:45000,label);loadMs=performance.now()-t;log('model ready',{label,load_ms:Math.round(loadMs)})}catch(e){log('model load fail',{label,error:String(e)});for(const rec of S.recordings)for(const cfg of configs)await addResult(rec,label,cfg,async()=>{throw e},performance.now()-t);return}
@@ -216,7 +222,7 @@ async function resumeLatest(){
 }
 function detectResume(){try{const m=JSON.parse(localStorage.getItem('stt_mass_v3_manifest')||'null');if(m?.session&&!m.complete&&Array.isArray(m.recordings)&&m.recordings.length){$('resumeBtn').hidden=false;$('resumeBtn').textContent='Reanudar '+m.recordings.length+'/8 · '+m.session}}catch{}}
 $('mic').onclick=()=>S.running?stopCapture():startCapture();$('copyBtn').onclick=copyAll;$('resumeBtn').onclick=resumeLatest;
-window.addEventListener('error',e=>log('window error',{message:e.message,line:e.lineno}));window.addEventListener('unhandledrejection',e=>log('unhandled',{reason:String(e.reason)}));
+window.addEventListener('error',e=>log('window error',{message:e.message,line:e.lineno}));window.addEventListener('unhandledrejection',e=>log('unhandled',{reason:String(e.reason)}));window.addEventListener('online',()=>flushRemote());
 log('build',{BUILD,session,userAgent:navigator.userAgent});renderCapture();$('sessionPill').textContent=session;detectResume();
 </script>
 </body></html>
