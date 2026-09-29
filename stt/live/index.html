@@ -1,44 +1,141 @@
-<!doctype html><html lang="es"><head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="color-scheme" content="dark"><meta http-equiv="Cache-Control" content="no-cache,no-store,must-revalidate">
-<title>STT Live</title>
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<meta http-equiv="Cache-Control" content="no-cache,no-store,must-revalidate">
+<title>STT</title>
 <style>
-:root{--bg:#07090b;--p:#10151a;--line:#28343d;--fg:#f4f7f9;--mut:#8d9aa5;--ok:#77e39b;--warn:#ffd166;--bad:#ff7b7b}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.5 system-ui,-apple-system,Segoe UI,sans-serif}main{max-width:980px;margin:auto;padding:14px 12px 70px}
-h1{font-size:27px;margin:0}.sub,.note{color:var(--mut);font-size:11px}.card{background:var(--p);border:1px solid var(--line);border-radius:14px;padding:14px;margin-top:11px}
-.big{font-size:22px;font-weight:850}.actions,.meta{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}button{border:1px solid var(--line);background:#172027;color:var(--fg);padding:11px 13px;border-radius:10px;font:inherit;cursor:pointer}.primary{background:#eef5ff;color:#081018;border-color:#eef5ff;font-weight:850}button:disabled{opacity:.42}
-.pill{border:1px solid var(--line);border-radius:99px;padding:4px 7px;color:var(--mut);font-size:9px}.ok{color:var(--ok)}.warn{color:var(--warn)}.bad{color:var(--bad)}
-.meter{height:12px;background:#080c0f;border:1px solid var(--line);border-radius:99px;overflow:hidden;margin-top:10px}.meter i{display:block;height:100%;width:0;background:var(--ok);transition:width .08s linear}
-textarea{width:100%;min-height:300px;background:#080c0f;color:var(--fg);border:1px solid var(--line);border-radius:10px;padding:12px;font:16px/1.55 system-ui;margin-top:10px}
-.seg{border-top:1px solid #202830;padding:8px 0}.seg:first-child{border-top:0}.time{font-size:9px;color:var(--mut)}
-.reference{font-size:19px;line-height:1.75;background:#090d10;border:1px solid #202c34;border-radius:11px;padding:14px;margin-top:10px}
-.rows{display:grid;gap:7px;margin-top:10px}.row{border:1px solid #202c34;background:#090d10;border-radius:10px;padding:9px}.row.winner{border-color:#416b4d}.rowtop{display:grid;grid-template-columns:1fr repeat(4,auto);gap:9px;align-items:center}.rowtop span{font-size:10px;color:var(--mut)}.rowtext{font-size:12px;color:#cbd4db;margin-top:7px;line-height:1.55}.score{font-size:18px;font-weight:850}
-@media(max-width:720px){.rowtop{grid-template-columns:1fr auto auto}.rowtop span:nth-child(4),.rowtop span:nth-child(5){display:none}.reference{font-size:17px}}
-</style></head><body><main>
-<h1>STT Live</h1><div class="sub">Micrófono local → Parakeet. Una sola pestaña. Incluye prueba controlada para encontrar automáticamente el mejor recorte/solapamiento con tu voz.</div>
+:root{--bg:#000;--fg:#f7f7f7;--mut:#6e6e73;--line:#1a1a1d;--soft:#0b0b0d;--ok:#fff;--warn:#aaa;--bad:#ff6961}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:#000;color:var(--fg);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+body{min-height:100svh;overflow-x:hidden}
+button,textarea{font:inherit}
+main{min-height:100svh;max-width:920px;margin:auto;padding:calc(env(safe-area-inset-top) + 24px) 18px calc(env(safe-area-inset-bottom) + 28px);display:flex;flex-direction:column}
+.top{display:flex;justify-content:center;align-items:center;height:58px}
+.logo{width:42px;height:42px;display:grid;place-items:center;opacity:.96}
+.logo svg{width:100%;height:100%;overflow:visible}
+.logo .ring{transform-origin:50% 50%;animation:breathe 3.2s ease-in-out infinite}
+@keyframes breathe{0%,100%{transform:scale(.92);opacity:.5}50%{transform:scale(1.06);opacity:1}}
+.stage{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:430px}
+.micwrap{position:relative;width:172px;height:172px;display:grid;place-items:center}
+.halo{position:absolute;inset:0;border:1px solid #141416;border-radius:50%;transform:scale(.86);transition:transform .25s ease,border-color .25s ease,opacity .25s ease}
+.micwrap:has(#stop:not(:disabled)) .halo{transform:scale(1);border-color:#343438;animation:pulse 1.35s ease-out infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(255,255,255,.12)}70%{box-shadow:0 0 0 26px rgba(255,255,255,0)}100%{box-shadow:0 0 0 0 rgba(255,255,255,0)}}
+#mic,#stop{position:relative;z-index:2;width:112px;height:112px;border-radius:50%;border:1px solid #202024;display:grid;place-items:center;cursor:pointer;transition:transform .14s ease,background .18s ease,border-color .18s ease}
+#mic{background:#f5f5f7;color:#050505}
+#mic:hover{transform:scale(1.025)}
+#mic:active{transform:scale(.96)}
+#stop{background:#111;color:#fff;border-color:#343438}
+#mic:disabled,#stop:disabled{display:none}
+#mic svg,#stop svg{width:29px;height:29px}
+#status{margin-top:19px;height:22px;color:#888;font-size:12px;letter-spacing:.08em;text-transform:lowercase}
+#status.ok{color:#aaa}#status.warn{color:#777}#status.bad{color:var(--bad)}
+.meter{width:124px;height:2px;background:#111;border-radius:999px;overflow:hidden;margin-top:11px}
+.meter i{display:block;height:100%;width:0;background:#e8e8ea;transition:width .07s linear}
+.hint{font-size:10px;color:#3f3f44;margin-top:14px;letter-spacing:.05em}
+.transcript{width:100%;margin-top:22px;position:relative}
+#out{width:100%;min-height:180px;max-height:42svh;resize:none;border:0;outline:0;background:transparent;color:#f2f2f4;text-align:center;font-size:clamp(20px,3.2vw,31px);line-height:1.42;font-weight:430;padding:12px 2vw;overflow:auto}
+#out::placeholder{color:#26262a}
+.actions{display:flex;justify-content:center;gap:7px;min-height:35px;margin-top:8px}
+.actions button,.tech button{border:1px solid #1d1d20;background:#08080a;color:#8d8d93;padding:7px 11px;border-radius:999px;cursor:pointer;font-size:11px}
+.actions button:hover,.tech button:hover{color:#ddd;border-color:#333}
+.actions button:disabled{display:none}
+.advanced{margin-top:auto;padding-top:18px}
+.advanced>summary{list-style:none;width:32px;height:32px;margin:auto;display:grid;place-items:center;color:#3f3f44;cursor:pointer;font-size:17px;user-select:none}
+.advanced>summary::-webkit-details-marker{display:none}
+.tech{margin:8px auto 0;max-width:760px;border-top:1px solid #111;padding-top:15px;color:#666;font-size:10px}
+.meta{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin-bottom:12px}
+.pill{border:1px solid #171719;border-radius:999px;padding:4px 7px;color:#5e5e63}
+.reference{font-size:11px;line-height:1.5;color:#666;background:#050506;border:1px solid #111;border-radius:12px;padding:11px;margin-top:10px}
+.rows{display:grid;gap:7px;margin-top:9px}
+.row{border:1px solid #111;background:#040405;border-radius:10px;padding:8px}
+.rowtop{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.rowtop span{color:#666}.rowtext{margin-top:5px;color:#555}
+.note,.seg,.time{color:#57575c}
+#segments{max-height:150px;overflow:auto;margin-top:10px}
+.testactions{display:flex;gap:6px;flex-wrap:wrap;margin-top:9px}
+@media(max-width:600px){
+ main{padding-left:14px;padding-right:14px}
+ .stage{min-height:390px}
+ .micwrap{width:152px;height:152px}
+ #mic,#stop{width:104px;height:104px}
+ #out{font-size:21px;min-height:150px;max-height:38svh;padding-left:0;padding-right:0}
+ .hint{font-size:9px}
+}
+</style>
+</head>
+<body>
+<main>
+  <div class="top">
+    <div class="logo" aria-label="STT">
+      <svg viewBox="0 0 64 64" fill="none" aria-hidden="true">
+        <circle class="ring" cx="32" cy="32" r="21" stroke="white" stroke-width="1.5" opacity=".7"/>
+        <path d="M20 34c4-8 7 8 11 0s7 8 13 0" stroke="white" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+  </div>
 
-<section class="card">
-<div id="status" class="big">Cargando modelo…</div>
-<div class="meter"><i id="meter"></i></div>
-<div class="meta"><span id="backend" class="pill">modelo</span><span id="lat" class="pill">latencia —</span><span id="rt" class="pill">—× realtime</span><span id="queue" class="pill">cola 0 s</span><span class="pill">Espacio: mantener para hablar</span></div>
-<div class="actions"><button id="mic" class="primary" disabled>🎙️ Empezar micrófono</button><button id="stop" disabled>Detener</button><button id="copy" disabled>Copiar</button><button id="clear">Limpiar texto</button></div>
-<div class="note">LIVE PROVISIONAL: 4 s / 2 s para mostrar texto rápido. Podés usar el botón o mantener ESPACIO para hablar. Al soltar/detener, el micrófono conserva 700 ms extra para no comerse las últimas palabras y luego hace la pasada canónica local final. El audio no sale del navegador.</div>
-</section>
+  <section class="stage">
+    <div class="micwrap">
+      <div class="halo"></div>
+      <button id="mic" aria-label="Grabar" disabled>
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <rect x="8" y="3" width="8" height="12" rx="4" stroke="currentColor" stroke-width="1.8"/>
+          <path d="M5.5 11.5a6.5 6.5 0 0 0 13 0M12 18v3M9 21h6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+      </button>
+      <button id="stop" aria-label="Detener" disabled>
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="7" y="7" width="10" height="10" rx="2"/></svg>
+      </button>
+    </div>
 
-<section class="card">
-<b>Prueba controlada de precisión</b>
-<div class="note">Leé este texto una sola vez. Guardamos esa misma grabación local y la pasamos por varias estrategias de corte. Así comparamos manzanas con manzanas, una rareza científica sorprendentemente útil.</div>
-<div id="reference" class="reference">Esta mañana, Clara salió temprano de su edificio y caminó hasta una plaza tranquila. En una esquina encontró una bicicleta roja junto a un árbol enorme. Más adelante, un perro pequeño cruzó la calle detrás de una señora con paraguas. El cielo estaba despejado, aunque todavía quedaban charcos de la tormenta nocturna. Clara compró un café, miró su reloj y siguió hacia la estación. Antes de llegar, escuchó una campana lejana y vio pasar un colectivo vacío. Entonces decidió sentarse unos minutos, respirar despacio y observar cómo empezaba el movimiento de la ciudad.</div>
-<div class="actions"><button id="testStart" class="primary" disabled>🎙️ Grabar lectura dorada</button><button id="testStop" disabled>Terminé de leer</button><button id="replay" disabled>▶ Repetir sobre audio guardado</button><button id="exportDiag" disabled>Exportar diagnóstico JSON</button></div>
-<div class="meta"><span id="testState" class="pill">esperando</span><span id="testDur" class="pill">— s</span><span id="testBest" class="pill">ganador —</span><span id="gate" class="pill">gate —</span><span id="golden" class="pill">golden: no</span></div>
-<div id="testRows" class="rows"><div class="note">Después de leer, se prueban: sin cortes, 4/1, 4/2, 6/2, 8/3 y 10/4 segundos de bloque/solapamiento.</div></div>
-</section>
+    <div id="status">cargando</div>
+    <div class="meter"><i id="meter"></i></div>
+    <div class="hint">mantener espacio</div>
 
-<section class="card"><b>Texto en vivo</b><textarea id="out" placeholder="El texto aparece mientras hablás."></textarea></section>
-<section class="card"><b>Últimos bloques</b><div id="segments" class="note">Todavía no hay audio.</div></section>
+    <div class="transcript">
+      <textarea id="out" spellcheck="false" placeholder="…"></textarea>
+      <div class="actions">
+        <button id="copy" disabled>copiar</button>
+        <button id="clear">limpiar</button>
+      </div>
+    </div>
+  </section>
 
+  <details class="advanced">
+    <summary aria-label="Opciones">•••</summary>
+    <div class="tech">
+      <div class="meta">
+        <span id="backend" class="pill">modelo</span>
+        <span id="lat" class="pill">—</span>
+        <span id="rt" class="pill">—</span>
+        <span id="queue" class="pill">cola 0 s</span>
+      </div>
+
+      <div class="testactions">
+        <button id="testStart" disabled>golden</button>
+        <button id="testStop" disabled>terminar</button>
+        <button id="replay" disabled>replay</button>
+        <button id="exportDiag" disabled>diagnóstico</button>
+      </div>
+
+      <div class="meta">
+        <span id="testState" class="pill">esperando</span>
+        <span id="testDur" class="pill">— s</span>
+        <span id="testBest" class="pill">—</span>
+        <span id="gate" class="pill">—</span>
+        <span id="golden" class="pill">golden: no</span>
+      </div>
+
+      <div id="reference" class="reference">Esta mañana, Clara salió temprano de su edificio y caminó hasta una plaza tranquila. En una esquina encontró una bicicleta roja junto a un árbol enorme. Más adelante, un perro pequeño cruzó la calle detrás de una señora con paraguas. El cielo estaba despejado, aunque todavía quedaban charcos de la tormenta nocturna. Clara compró un café, miró su reloj y siguió hacia la estación. Antes de llegar, escuchó una campana lejana y vio pasar un colectivo vacío. Entonces decidió sentarse unos minutos, respirar despacio y observar cómo empezaba el movimiento de la ciudad.</div>
+      <div id="testRows" class="rows"></div>
+      <div id="segments"></div>
+    </div>
+  </details>
+</main>
 <script type="module">
-const $=id=>document.getElementById(id),BUILD='STT-LIVE-V4.1-20260929',LIVE_DB='stt-live-v3',LIVE_STORE='runs',LIVE_KEY='golden';
+const $=id=>document.getElementById(id),BUILD='STT-LIVE-V4.2-20260929',LIVE_DB='stt-live-v3',LIVE_STORE='runs',LIVE_KEY='golden';
 const TEST_TEXT=$('reference').textContent.trim();
 let model=null,stream=null,ctx=null,node=null,source=null,running=false,stopping=false,processing=false,nativeRate=48000,parts=[],samples=0,text='',segments=[],capturedS=0,finalNativeParts=[],finalNativeSamples=0,finalPcm16Parts=[],spaceHeld=false,spaceStartPending=false;
 let testStream=null,testCtx=null,testNode=null,testSource=null,testParts=[],testRate=48000,testRunning=false,testResults=[],goldenPcm=null,goldenMeta=null;
@@ -99,10 +196,10 @@ function finalPcm(){
 }
 async function canonicalizeLive(){
  const pcm=finalPcm(),dur=pcm.length/16000;if(dur<.5)return;
- $('status').textContent='Corrigiendo texto final…';$('status').className='big warn';
+ $('status').textContent='corrigiendo';$('status').className='big warn';
  const t=performance.now(),r=await model.transcribeLongAudio(pcm,16000,{returnTimestamps:false,returnConfidences:true,chunkLengthS:Math.max(4,Math.min(60,dur)),timeOffset:0}),ms=performance.now()-t;
  const tx=(r.text||r.utterance_text||'').trim();if(tx){text=tx;$('out').value=text;$('copy').disabled=false}
- $('lat').textContent='final '+(ms/1000).toFixed(2)+' s';$('rt').textContent=(dur/(ms/1000)).toFixed(2)+'× final';$('status').textContent='Texto final corregido';$('status').className='big ok'
+ $('lat').textContent='final '+(ms/1000).toFixed(2)+' s';$('rt').textContent=(dur/(ms/1000)).toFixed(2)+'× final';$('status').textContent='listo';$('status').className='big ok'
 }
 function editStats(hyp,ref){
  const H=norm(hyp),R=norm(ref),n=R.length,m=H.length,d=Array.from({length:n+1},()=>new Uint16Array(m+1));
@@ -136,10 +233,10 @@ async function makeCapture(){
 async function startMic(){
  if(running||stopping||testRunning)return;const c=await makeCapture();stream=c.st;ctx=c.ac;nativeRate=c.rate;source=c.src;node=c.nd;
  node.port.onmessage=e=>{if(!running)return;const x=new Float32Array(e.data);parts.push(x);samples+=x.length;stashFinalNative(x);const lv=rms(x);$('meter').style.width=Math.min(100,lv*1200)+'%';if(!processing&&samples>=CHUNK_S*nativeRate)pump()};
- parts=[];samples=0;capturedS=0;finalNativeParts=[];finalNativeSamples=0;finalPcm16Parts=[];running=true;stopping=false;$('mic').disabled=true;$('testStart').disabled=true;$('stop').disabled=false;$('status').textContent='Escuchando…';$('status').className='big ok';pump()
+ parts=[];samples=0;capturedS=0;finalNativeParts=[];finalNativeSamples=0;finalPcm16Parts=[];running=true;stopping=false;$('mic').disabled=true;$('testStart').disabled=true;$('stop').disabled=false;$('status').textContent='escuchando';$('status').className='big ok';pump()
 }
 async function stopMic(){
- if(!running||stopping)return;stopping=true;$('stop').disabled=true;$('mic').disabled=true;$('testStart').disabled=true;$('status').textContent='Cerrando… capturando cola final';$('status').className='big warn';
+ if(!running||stopping)return;stopping=true;$('stop').disabled=true;$('mic').disabled=true;$('testStart').disabled=true;$('status').textContent='cerrando';$('status').className='big warn';
  await new Promise(r=>setTimeout(r,STOP_TAIL_MS));
  running=false;try{node?.disconnect();source?.disconnect();stream?.getTracks().forEach(t=>t.stop());await ctx?.close()}catch{};$('meter').style.width='0%';
  try{await canonicalizeLive()}catch(e){$('status').textContent='Live guardado; falló pasada final: '+e.message;$('status').className='big warn'}
@@ -196,5 +293,7 @@ window.addEventListener('keydown',beginSpacePTT);
 window.addEventListener('keyup',endSpacePTT);
 window.addEventListener('blur',()=>{if(spaceHeld){spaceHeld=false;if(running&&!stopping)stopMic().catch(()=>{})}});
 
-(async()=>{try{const saved=await getGolden();if(saved?.pcm){goldenPcm=saved.pcm instanceof Float32Array?saved.pcm:new Float32Array(saved.pcm);goldenMeta=saved.goldenMeta||{duration_s:goldenPcm.length/16000,sample_rate:16000};testResults=Array.isArray(saved.results)?saved.results:[];$('golden').textContent='golden: '+(goldenMeta.duration_s||0).toFixed(1)+' s';$('testDur').textContent=(goldenMeta.duration_s||0).toFixed(1)+' s';$('replay').disabled=false;if(testResults.length){renderTests();$('exportDiag').disabled=false}}const mod=await import('https://cdn.jsdelivr.net/npm/parakeet.js@1.4.4/+esm'),backend=navigator.gpu?'webgpu':'wasm';$('backend').textContent=backend.toUpperCase()+' · Parakeet 0.6B';model=await mod.fromHub('parakeet-tdt-0.6b-v3',{backend,encoderQuant:backend==='webgpu'?'fp32':'int8',decoderQuant:'int8',preprocessorBackend:'js'});$('status').textContent='Modelo listo';$('status').className='big ok';$('mic').disabled=false;$('testStart').disabled=false}catch(e){$('status').textContent='No cargó el modelo: '+e.message;$('status').className='big bad'}})();
-</script></main></body></html>
+(async()=>{try{const saved=await getGolden();if(saved?.pcm){goldenPcm=saved.pcm instanceof Float32Array?saved.pcm:new Float32Array(saved.pcm);goldenMeta=saved.goldenMeta||{duration_s:goldenPcm.length/16000,sample_rate:16000};testResults=Array.isArray(saved.results)?saved.results:[];$('golden').textContent='golden: '+(goldenMeta.duration_s||0).toFixed(1)+' s';$('testDur').textContent=(goldenMeta.duration_s||0).toFixed(1)+' s';$('replay').disabled=false;if(testResults.length){renderTests();$('exportDiag').disabled=false}}const mod=await import('https://cdn.jsdelivr.net/npm/parakeet.js@1.4.4/+esm'),backend=navigator.gpu?'webgpu':'wasm';$('backend').textContent=backend.toUpperCase()+' · Parakeet 0.6B';model=await mod.fromHub('parakeet-tdt-0.6b-v3',{backend,encoderQuant:backend==='webgpu'?'fp32':'int8',decoderQuant:'int8',preprocessorBackend:'js'});$('status').textContent='listo';$('status').className='big ok';$('mic').disabled=false;$('testStart').disabled=false}catch(e){$('status').textContent='No cargó el modelo: '+e.message;$('status').className='big bad'}})();
+</script>
+</body>
+</html>
