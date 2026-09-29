@@ -58,7 +58,13 @@ main{min-height:100svh;max-width:920px;margin:auto;padding:calc(env(safe-area-in
 .profiles{display:flex;justify-content:center;gap:6px;margin:4px 0 12px}.profiles button{min-width:76px}.profiles button.active{color:#fff;border-color:#555;background:#111}
 .perfgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin:10px 0}.perfcell{border:1px solid #111;border-radius:10px;padding:8px;background:#040405}.perfcell b{display:block;color:#aaa;font-size:14px;font-weight:600}.perfcell span{color:#4f4f54;font-size:9px;text-transform:uppercase;letter-spacing:.06em}
 @media(min-width:650px){.perfgrid{grid-template-columns:repeat(4,minmax(0,1fr))}}
-.orbwrap{width:184px;height:184px;display:grid;place-items:center;contain:layout paint}
+.orbwrap{position:relative;width:184px;height:184px;display:grid;place-items:center;contain:layout paint}
+.engine-ring{position:absolute;inset:7px;border-radius:50%;opacity:0;transform:scale(.93) translateZ(0);transition:opacity .28s ease,transform .38s ease;pointer-events:none;will-change:opacity,transform}
+.engine-ring::before{content:"";position:absolute;inset:0;border-radius:50%;border:1px solid rgba(255,255,255,.08)}
+.engine-ring i{position:absolute;inset:0;border-radius:50%;border:2px solid transparent;border-top-color:rgba(255,255,255,.82);border-right-color:rgba(255,255,255,.18);animation:engineSpin 1.2s linear infinite;will-change:transform}
+.engine-ring.show{opacity:1;transform:scale(1) translateZ(0)}
+.engine-ring.catchup i{animation-duration:.72s;border-top-color:#fff}
+@keyframes engineSpin{to{transform:rotate(360deg)}}
 .orb{position:relative;width:132px;height:132px;border:0;border-radius:50%;background:#f7f7f7;color:#050505;overflow:hidden;cursor:pointer;padding:0;box-shadow:0 0 0 1px rgba(255,255,255,.05),0 16px 60px rgba(255,255,255,.035);transform:translateZ(0);contain:layout paint;isolation:isolate}
 .orb:active{transform:translateZ(0) scale(.985)}
 .orb-layer{position:absolute;inset:0;display:grid;place-items:center;will-change:transform,opacity;transform:translate3d(0,-145%,0);opacity:0;transition:transform .48s cubic-bezier(.22,.8,.22,1),opacity .22s linear;backface-visibility:hidden}
@@ -102,6 +108,7 @@ main{min-height:100svh;max-width:920px;margin:auto;padding:calc(env(safe-area-in
 <main>
   <section class="stage">
     <div class="orbwrap">
+      <span id="engineRing" class="engine-ring" aria-hidden="true"><i></i></span>
       <button id="orb" class="orb state-idle" aria-label="Grabar">
         <span class="orb-layer mic-layer" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none">
@@ -181,11 +188,11 @@ main{min-height:100svh;max-width:920px;margin:auto;padding:calc(env(safe-area-in
   </details>
 </main>
 <script type="module">
-const $=id=>document.getElementById(id),BUILD='STT-LIVE-V4.4-20260929',LIVE_DB='stt-live-v3',LIVE_STORE='runs',LIVE_KEY='golden';
+const $=id=>document.getElementById(id),BUILD='STT-LIVE-V4.5-20260929',LIVE_DB='stt-live-v3',LIVE_STORE='runs',LIVE_KEY='golden';
 const advancedEl=document.querySelector('.advanced');
-let modelPromise=null,paintFrame=0,pendingPaint='';
+let paintFrame=0,pendingPaint='',asrWorker=null,asrInitPromise=null,asrReady=false,asrBackend='—',asrReq=0,asrPending=new Map(),asrRetryTimer=null;
 const TEST_TEXT=$('reference').textContent.trim();
-let model=null,stream=null,ctx=null,node=null,source=null,running=false,stopping=false,processing=false,nativeRate=48000,parts=[],samples=0,text='',segments=[],capturedS=0,finalNativeParts=[],finalNativeSamples=0,finalPcm16Parts=[],spaceHeld=false,spaceStartPending=false;
+let stream=null,ctx=null,node=null,source=null,running=false,stopping=false,processing=false,nativeRate=48000,parts=[],samples=0,text='',segments=[],capturedS=0,finalNativeParts=[],finalNativeSamples=0,finalPcm16Parts=[],spaceHeld=false,spaceStartPending=false;
 let testStream=null,testCtx=null,testNode=null,testSource=null,testParts=[],testRate=48000,testRunning=false,testResults=[],goldenPcm=null,goldenMeta=null;
 const SILENCE_RMS=.0045,STOP_TAIL_MS=700;
 const PROFILES={
@@ -201,21 +208,70 @@ function setVisual(state){
  o.className='orb state-'+state;
  o.setAttribute('aria-label',state==='listening'?'Detener':state==='idle'?'Grabar':'Procesando');
 }
+function setEngineRing(mode){
+ const r=$('engineRing');if(!r)return;
+ r.className='engine-ring'+(mode?' show '+mode:'');
+}
+function updateEngineRing(){
+ if(!running){setEngineRing(asrReady?'':'loading');return}
+ if(!asrReady){setEngineRing('loading');return}
+ const q=nativeRate?samples/nativeRate:0;
+ setEngineRing(q>Math.max(1,prof().chunk*.85)?'catchup':'');
+}
 function paintTranscript(v){
  pendingPaint=v;
  if(paintFrame)return;
  paintFrame=requestAnimationFrame(()=>{paintFrame=0;$('out').value=pendingPaint;$('copy').disabled=!pendingPaint});
 }
-async function ensureModel(){
- if(model)return model;
- if(modelPromise)return modelPromise;
- modelPromise=(async()=>{
-   const mod=await import('https://cdn.jsdelivr.net/npm/parakeet.js@1.4.4/+esm'),backend=navigator.gpu?'webgpu':'wasm';
-   $('backend').textContent=backend.toUpperCase()+' · Parakeet 0.6B';setProfile(profileKey);
-   model=await mod.fromHub('parakeet-tdt-0.6b-v3',{backend,encoderQuant:backend==='webgpu'?'fp32':'int8',decoderQuant:'int8',preprocessorBackend:'js'});
-   return model
- })().catch(e=>{modelPromise=null;throw e});
- return modelPromise
+function killAsrWorker(reason){
+ if(asrWorker){try{asrWorker.terminate()}catch{}asrWorker=null}
+ asrReady=false;asrInitPromise=null;
+ for(const [id,p] of asrPending){p.reject(new Error(reason||'ASR worker reiniciado'));asrPending.delete(id)}
+ updateEngineRing()
+}
+function scheduleAsrRetry(){
+ if(asrRetryTimer)return;
+ asrRetryTimer=setTimeout(()=>{asrRetryTimer=null;ensureAsrWorker().catch(()=>scheduleAsrRetry())},1800)
+}
+function ensureAsrWorker(){
+ if(asrReady&&asrWorker)return Promise.resolve(asrWorker);
+ if(asrInitPromise)return asrInitPromise;
+ asrInitPromise=new Promise((resolve,reject)=>{
+   try{
+     const w=new Worker('./asr-worker.js?v='+encodeURIComponent(BUILD),{type:'module',name:'stt-parakeet'});
+     asrWorker=w;updateEngineRing();
+     const timeout=setTimeout(()=>{killAsrWorker('Timeout cargando Parakeet');reject(new Error('Timeout cargando Parakeet'));scheduleAsrRetry()},90000);
+     w.onmessage=e=>{
+       const msg=e.data||{};
+       if(msg.type==='ready'){
+         clearTimeout(timeout);asrReady=true;asrBackend=msg.backend||'worker';
+         $('backend').textContent=asrBackend.toUpperCase()+' worker · Parakeet 0.6B';
+         updateEngineRing();resolve(w);
+         if(running&&!processing)pump();
+         return
+       }
+       if(msg.type==='result'||msg.type==='error'){
+         const q=asrPending.get(msg.id);if(!q)return;asrPending.delete(msg.id);
+         msg.type==='result'?q.resolve(msg):q.reject(new Error(msg.message||'ASR error'));
+         return
+       }
+       if(msg.type==='fatal'){
+         clearTimeout(timeout);killAsrWorker(msg.message||'ASR fatal');reject(new Error(msg.message||'ASR fatal'));scheduleAsrRetry()
+       }
+     };
+     w.onerror=ev=>{clearTimeout(timeout);const message=ev.message||'Worker ASR falló';killAsrWorker(message);reject(new Error(message));scheduleAsrRetry()};
+     w.postMessage({type:'init'})
+   }catch(e){asrInitPromise=null;reject(e);scheduleAsrRetry()}
+ }).finally(()=>{if(!asrReady)asrInitPromise=null});
+ return asrInitPromise
+}
+async function transcribeAsr(pcm,options){
+ await ensureAsrWorker();
+ const id=++asrReq,copy=pcm instanceof Float32Array?pcm.slice():new Float32Array(pcm);
+ return new Promise((resolve,reject)=>{
+   asrPending.set(id,{resolve,reject});
+   asrWorker.postMessage({type:'transcribe',id,pcm:copy.buffer,options},[copy.buffer])
+ })
 }
 
 const TEST_CONFIGS=[
@@ -272,7 +328,7 @@ function gateResult(){
  const promote=winner.name!==base.name&&(winner.wer<base.wer-1e-9||winner.dup<base.dup||winner.first_latency_s<base.first_latency_s-.25);
  return{base,winner,quality,promote}
 }
-function diag(){const g=gateResult();return{build:BUILD,created_at:new Date().toISOString(),reference:TEST_TEXT,environment:{userAgent:navigator.userAgent,cores:navigator.hardwareConcurrency||null,deviceMemory:navigator.deviceMemory||null},golden:{duration_s:goldenPcm?goldenPcm.length/16000:null,sample_rate:16000},runtime:{profile:profileKey,provisional:prof().chunk+'s / '+prof().overlap+'s',final:'canonical full-audio pass on stop',performance:{asr_avg_ms:avg(perfStats.asrMs),event_loop_p95_ms:pct(perfStats.loopLagMs,.95),max_queue_s:perfStats.maxQueueS,render_avg_ms:avg(perfStats.renderMs),final_ms:perfStats.finalMs,calls:perfStats.calls,heap_mb:heapMB()}},gate:{promote:g.promote,winner:g.winner?.name||null,quality_candidate:g.quality?.name||null,baseline_wer:g.base?.wer??null,winner_wer:g.winner?.wer??null,quality_wer:g.quality?.wer??null},results:testResults}}
+function diag(){const g=gateResult();return{build:BUILD,created_at:new Date().toISOString(),reference:TEST_TEXT,environment:{userAgent:navigator.userAgent,cores:navigator.hardwareConcurrency||null,deviceMemory:navigator.deviceMemory||null},golden:{duration_s:goldenPcm?goldenPcm.length/16000:null,sample_rate:16000},runtime:{profile:profileKey,architecture:'capture-first + batched AudioWorklet + ASR DedicatedWorker',asr_backend:asrBackend,provisional:prof().chunk+'s / '+prof().overlap+'s',final:'canonical full-audio pass on stop',performance:{asr_avg_ms:avg(perfStats.asrMs),event_loop_p95_ms:pct(perfStats.loopLagMs,.95),max_queue_s:perfStats.maxQueueS,render_avg_ms:avg(perfStats.renderMs),final_ms:perfStats.finalMs,calls:perfStats.calls,heap_mb:heapMB()}},gate:{promote:g.promote,winner:g.winner?.name||null,quality_candidate:g.quality?.name||null,baseline_wer:g.base?.wer??null,winner_wer:g.winner?.wer??null,quality_wer:g.quality?.wer??null},results:testResults}}
 function downloadDiag(){const u=URL.createObjectURL(new Blob([JSON.stringify(diag(),null,2)],{type:'application/json'})),a=document.createElement('a');a.href=u;a.download='stt-live-v3-diagnostic.json';a.click();setTimeout(()=>URL.revokeObjectURL(u),1000)}
 function norm(s){return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9ñ\s]/gi,' ').replace(/\s+/g,' ').trim().split(' ').filter(Boolean)}
 function tokenDist(A,B){const d=Array.from({length:B.length+1},(_,i)=>i);for(let i=1;i<=A.length;i++){let p=d[0];d[0]=i;for(let j=1;j<=B.length;j++){const t=d[j];d[j]=Math.min(d[j]+1,d[j-1]+1,p+(A[i-1]===B[j-1]?0:1));p=t}}return d[B.length]}
@@ -307,9 +363,9 @@ function finalPcm(){
 }
 async function canonicalizeLive(){
  const pcm=finalPcm(),dur=pcm.length/16000;if(dur<.5)return;
- setVisual('processing');
- const t=performance.now(),r=await model.transcribeLongAudio(pcm,16000,{returnTimestamps:false,returnConfidences:true,chunkLengthS:Math.max(4,Math.min(60,dur)),timeOffset:0}),ms=performance.now()-t;perfStats.finalMs=ms;perfStats.asrMs.push(ms);perfStats.calls++;renderPerf();
- const tx=(r.text||r.utterance_text||'').trim();if(tx){text=tx;$('out').value=text;$('copy').disabled=false}
+ setVisual('processing');updateEngineRing();await ensureAsrWorker();
+ const r=await transcribeAsr(pcm,{returnTimestamps:false,returnConfidences:true,chunkLengthS:Math.max(4,Math.min(60,dur)),timeOffset:0}),ms=r.ms;perfStats.finalMs=ms;perfStats.asrMs.push(ms);perfStats.calls++;renderPerf();
+ const tx=(r.text||'').trim();if(tx){text=tx;$('out').value=text;$('copy').disabled=false}
  $('lat').textContent='final '+(ms/1000).toFixed(2)+' s';$('rt').textContent=(dur/(ms/1000)).toFixed(2)+'× final'
 }
 function editStats(hyp,ref){
@@ -330,33 +386,37 @@ function repeatedWords(s){const t=norm(s);let dup=0;for(let n=6;n>=2;n--)for(let
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
 function takeNative(sec){const need=Math.floor(sec*nativeRate);if(samples<need)return null;const all=new Float32Array(need);let w=0,remain=need;while(remain>0&&parts.length){const p=parts[0],n=Math.min(remain,p.length);all.set(p.subarray(0,n),w);w+=n;remain-=n;if(n===p.length)parts.shift();else parts[0]=p.subarray(n)}samples-=need;const overlap=Math.floor(prof().overlap*nativeRate);if(overlap>0){const tail=all.slice(Math.max(0,all.length-overlap));parts.unshift(tail);samples+=tail.length}return all}
 function renderSegments(){if(!advancedEl?.open)return;const t=performance.now();$('segments').innerHTML=segments.slice(-8).reverse().map(s=>'<div class="seg"><div class="time">'+s.start.toFixed(1)+'–'+s.end.toFixed(1)+' s · '+s.ms.toFixed(0)+' ms · rms '+s.rms.toFixed(4)+'</div><div>'+escapeHtml(s.text||'[silencio]')+'</div></div>').join('')||'Todavía no hay audio.';perfStats.renderMs.push(performance.now()-t);if(perfStats.renderMs.length>100)perfStats.renderMs.shift();renderPerf()}
-async function pump(){if(processing||!running)return;const chunk=prof().chunk,overlap=prof().overlap,raw=takeNative(chunk);if(!raw){const q=samples/nativeRate;perfStats.maxQueueS=Math.max(perfStats.maxQueueS,q);$('queue').textContent='cola '+q.toFixed(1)+' s';renderPerf();return}processing=true;const start=capturedS,end=start+chunk;capturedS+=chunk-overlap;const level=rms(raw);try{
+async function pump(){if(processing||!running||!asrReady){updateEngineRing();return}const chunk=prof().chunk,overlap=prof().overlap,raw=takeNative(chunk);if(!raw){const q=samples/nativeRate;perfStats.maxQueueS=Math.max(perfStats.maxQueueS,q);$('queue').textContent='cola '+q.toFixed(1)+' s';renderPerf();return}processing=true;const start=capturedS,end=start+chunk;capturedS+=chunk-overlap;const level=rms(raw);try{
  if(level<SILENCE_RMS){segments.push({start,end,text:'',ms:0,rms:level});renderSegments()}
- else{const pcm=resample(raw,nativeRate,16000),t=performance.now(),r=await model.transcribeLongAudio(pcm,16000,{returnTimestamps:false,returnConfidences:true,chunkLengthS:chunk,timeOffset:start}),ms=performance.now()-t,tx=(r.text||r.utterance_text||'').trim();perfStats.asrMs.push(ms);perfStats.calls++;if(perfStats.asrMs.length>100)perfStats.asrMs.shift();text=merge(text,tx);paintTranscript(text);segments.push({start,end,text:tx,ms,rms:level});$('lat').textContent='último '+(ms/1000).toFixed(2)+' s';$('rt').textContent=(chunk/(ms/1000)).toFixed(2)+'× realtime';renderSegments()}
+ else{const pcm=resample(raw,nativeRate,16000),r=await transcribeAsr(pcm,{returnTimestamps:false,returnConfidences:true,chunkLengthS:chunk,timeOffset:start}),ms=r.ms,tx=(r.text||'').trim();perfStats.asrMs.push(ms);perfStats.calls++;if(perfStats.asrMs.length>100)perfStats.asrMs.shift();text=merge(text,tx);paintTranscript(text);segments.push({start,end,text:tx,ms,rms:level});$('lat').textContent='último '+(ms/1000).toFixed(2)+' s';$('rt').textContent=(chunk/(ms/1000)).toFixed(2)+'× realtime';renderSegments()}
  }catch(e){$('status').textContent='Error ASR: '+e.message;$('status').className='bad'}
- processing=false;const q=samples/nativeRate;perfStats.maxQueueS=Math.max(perfStats.maxQueueS,q);$('queue').textContent='cola '+q.toFixed(1)+' s';renderPerf();if(running)setTimeout(pump,0)
+ processing=false;const q=samples/nativeRate;perfStats.maxQueueS=Math.max(perfStats.maxQueueS,q);$('queue').textContent='cola '+q.toFixed(1)+' s';renderPerf();updateEngineRing();if(running)setTimeout(pump,0)
 }
 async function makeCapture(){
  const st=await navigator.mediaDevices.getUserMedia({audio:{channelCount:1,echoCancellation:false,noiseSuppression:false,autoGainControl:false}});
- const ac=new AudioContext(),rate=ac.sampleRate,code=`class C extends AudioWorkletProcessor{process(i){const x=i[0]?.[0];if(x)this.port.postMessage(x.slice());return true}}registerProcessor('cap',C)`,u=URL.createObjectURL(new Blob([code],{type:'text/javascript'}));await ac.audioWorklet.addModule(u);URL.revokeObjectURL(u);
+ const ac=new AudioContext(),rate=ac.sampleRate;
+ const code="class C extends AudioWorkletProcessor{constructor(){super();this.cap=Math.max(1024,Math.floor(sampleRate*.12));this.buf=new Float32Array(this.cap);this.n=0;this.port.onmessage=e=>{if(e.data&&e.data.type==='flush')this.flush()}}flush(){if(!this.n)return;const out=this.buf.slice(0,this.n);this.n=0;this.port.postMessage(out,[out.buffer])}process(i){const x=i[0]&&i[0][0];if(!x)return true;let p=0;while(p<x.length){const n=Math.min(x.length-p,this.cap-this.n);this.buf.set(x.subarray(p,p+n),this.n);this.n+=n;p+=n;if(this.n===this.cap)this.flush()}return true}}registerProcessor('cap',C)";
+ const u=URL.createObjectURL(new Blob([code],{type:'text/javascript'}));await ac.audioWorklet.addModule(u);URL.revokeObjectURL(u);
  const src=ac.createMediaStreamSource(st),nd=new AudioWorkletNode(ac,'cap'),silent=ac.createGain();silent.gain.value=0;src.connect(nd);nd.connect(silent).connect(ac.destination);return{st,ac,rate,src,nd}
 }
 async function startMic(){
- if(running||stopping||testRunning)return;setVisual('loading');$('status').textContent='';$('status').className='';
- try{await ensureModel()}catch(e){setVisual('idle');$('status').textContent='No cargó el modelo';$('status').className='bad';throw e}
+ if(running||stopping||testRunning)return;
+ $('status').textContent='';$('status').className='';
  const c=await makeCapture();stream=c.st;ctx=c.ac;nativeRate=c.rate;source=c.src;node=c.nd;
- node.port.onmessage=e=>{if(!running)return;const x=new Float32Array(e.data);parts.push(x);samples+=x.length;stashFinalNative(x);const q=samples/nativeRate;perfStats.maxQueueS=Math.max(perfStats.maxQueueS,q);const lv=rms(x);if(!processing&&samples>=prof().chunk*nativeRate)pump()};
- parts=[];samples=0;capturedS=0;finalNativeParts=[];finalNativeSamples=0;finalPcm16Parts=[];resetPerf();running=true;stopping=false;$('mic').disabled=true;$('testStart').disabled=true;$('stop').disabled=false;setVisual('listening');pump()
+ node.port.onmessage=e=>{if(!running)return;const x=new Float32Array(e.data);parts.push(x);samples+=x.length;stashFinalNative(x);const q=samples/nativeRate;perfStats.maxQueueS=Math.max(perfStats.maxQueueS,q);if(asrReady&&!processing&&samples>=prof().chunk*nativeRate)pump();updateEngineRing()};
+ parts=[];samples=0;capturedS=0;finalNativeParts=[];finalNativeSamples=0;finalPcm16Parts=[];resetPerf();running=true;stopping=false;$('mic').disabled=true;$('testStart').disabled=true;$('stop').disabled=false;setVisual('listening');updateEngineRing();
+ ensureAsrWorker().catch(()=>scheduleAsrRetry())
 }
 async function stopMic(){
  if(!running||stopping)return;stopping=true;$('stop').disabled=true;$('mic').disabled=true;$('testStart').disabled=true;
  await new Promise(r=>setTimeout(r,STOP_TAIL_MS));
+ try{node?.port.postMessage({type:'flush'});await new Promise(r=>setTimeout(r,40))}catch{}
  running=false;try{node?.disconnect();source?.disconnect();stream?.getTracks().forEach(t=>t.stop());await ctx?.close()}catch{};
  try{await canonicalizeLive()}catch(e){$('status').textContent='Live guardado; falló pasada final: '+e.message;$('status').className='bad'}
- finally{stopping=false;$('mic').disabled=false;$('testStart').disabled=false;setVisual('idle')}
+ finally{stopping=false;$('mic').disabled=false;$('testStart').disabled=false;setVisual('idle');updateEngineRing()}
 }
 async function startTest(){
- if(testRunning||running)return;setVisual('loading');await ensureModel();setVisual('idle');const c=await makeCapture();testStream=c.st;testCtx=c.ac;testRate=c.rate;testSource=c.src;testNode=c.nd;testParts=[];testRunning=true;
+ if(testRunning||running)return;setVisual('loading');await ensureAsrWorker();setVisual('idle');const c=await makeCapture();testStream=c.st;testCtx=c.ac;testRate=c.rate;testSource=c.src;testNode=c.nd;testParts=[];testRunning=true;
  testNode.port.onmessage=e=>{if(!testRunning)return;const x=new Float32Array(e.data);testParts.push(x);$('meter').style.width=Math.min(100,rms(x)*1200)+'%'};
  $('testStart').disabled=true;$('testStop').disabled=false;$('mic').disabled=true;$('testState').textContent='grabando · leé el texto';$('testRows').innerHTML='<div class="note">Grabando exactamente una lectura. Al terminar, todas las estrategias usarán este mismo audio.</div>'
 }
@@ -366,8 +426,8 @@ async function stopTest(){
 }
 async function segmented(pcm,dur,cfg){
  const t0=performance.now();let out='',firstMs=null,pieces=0;
- if(!cfg.chunk){const t=performance.now(),r=await model.transcribeLongAudio(pcm,16000,{returnTimestamps:false,returnConfidences:true,chunkLengthS:Math.max(4,Math.min(60,dur)),timeOffset:0});firstMs=performance.now()-t;out=(r.text||r.utterance_text||'').trim();pieces=1}
- else{const step=Math.max(.5,cfg.chunk-cfg.overlap);for(let start=0;start<dur;start+=step){const end=Math.min(dur,start+cfg.chunk),part=pcm.subarray(Math.floor(start*16000),Math.floor(end*16000));if(part.length<1600)break;const t=performance.now(),r=await model.transcribeLongAudio(part,16000,{returnTimestamps:false,returnConfidences:true,chunkLengthS:cfg.chunk,timeOffset:start}),ms=performance.now()-t;if(firstMs==null)firstMs=ms;out=merge(out,(r.text||r.utterance_text||'').trim());pieces++;if(end>=dur)break;await new Promise(r=>setTimeout(r,0))}}
+ if(!cfg.chunk){const r=await transcribeAsr(pcm,{returnTimestamps:false,returnConfidences:true,chunkLengthS:Math.max(4,Math.min(60,dur)),timeOffset:0});firstMs=r.ms;out=(r.text||'').trim();pieces=1}
+ else{const step=Math.max(.5,cfg.chunk-cfg.overlap);for(let start=0;start<dur;start+=step){const end=Math.min(dur,start+cfg.chunk),part=pcm.subarray(Math.floor(start*16000),Math.floor(end*16000));if(part.length<1600)break;const r=await transcribeAsr(part,{returnTimestamps:false,returnConfidences:true,chunkLengthS:cfg.chunk,timeOffset:start}),ms=r.ms;if(firstMs==null)firstMs=ms;out=merge(out,(r.text||'').trim());pieces++;if(end>=dur)break;await new Promise(r=>setTimeout(r,0))}}
  const wall=performance.now()-t0,edits=editStats(out,TEST_TEXT),dup=repeatedWords(out),firstLatency=(cfg.chunk||dur)+(firstMs||0)/1000;
  return{...cfg,text:out,...edits,dup,pieces,wall_ms:wall,speed:dur/(wall/1000),first_latency_s:firstLatency}
 }
@@ -378,7 +438,7 @@ function renderTests(){
  if(oracle)$('testState').textContent='listo · sin cortes '+(100*oracle.wer).toFixed(1)+'% WER · mejor live '+(winner?(100*winner.wer).toFixed(1)+'%':'—')
 }
 async function runTests(pcm){
- await ensureModel();const dur=pcm.length/16000;if(dur<6){$('testState').textContent='grabación demasiado corta · leé todo el texto';return}
+ await ensureAsrWorker();const dur=pcm.length/16000;if(dur<6){$('testState').textContent='grabación demasiado corta · leé todo el texto';return}
  testResults=[];$('testRows').innerHTML='';
  for(let i=0;i<TEST_CONFIGS.length;i++){const cfg=TEST_CONFIGS[i];$('testState').textContent='probando '+cfg.name+' · '+(i+1)+'/'+TEST_CONFIGS.length;const r=await segmented(pcm,dur,cfg);testResults.push(r);renderTests()}
  await putGolden({pcm:goldenPcm,goldenMeta,reference:TEST_TEXT,results:testResults,diagnostic:diag(),build:BUILD});$('exportDiag').disabled=false;
@@ -421,7 +481,8 @@ window.addEventListener('blur',()=>{if(spaceHeld){spaceHeld=false;if(running&&!s
    $('replay').disabled=false;
    if(testResults.length){renderTests();$('exportDiag').disabled=false}
  }
- setProfile(profileKey);setVisual('idle');$('mic').disabled=false;$('testStart').disabled=false;$('status').textContent='';$('status').className=''
+ setProfile(profileKey);setVisual('idle');$('mic').disabled=false;$('testStart').disabled=false;$('status').textContent='';$('status').className='';
+ updateEngineRing();requestAnimationFrame(()=>setTimeout(()=>ensureAsrWorker().catch(()=>scheduleAsrRetry()),120))
 }catch(e){$('status').textContent='Error de inicio';$('status').className='bad'}})();
 </script>
 </body>
