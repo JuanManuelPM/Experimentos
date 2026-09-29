@@ -70,7 +70,7 @@ async function search(){
  let levels=completedLevels(),safe=levels.length?Math.max(...levels):1;lastSafe=safe;
  if(suspectedUnsafe){$('guard').textContent='evitando '+suspectedUnsafe+' tabs';$('guard').className='pill warn'}
  const cap=(()=>{const dm=navigator.deviceMemory||0;if(dm&&dm<=8)return 3;if(dm>=16)return 4;return 3})();
- const targetLevels=[1,2,3,4].filter(n=>n<=cap&&n!==suspectedUnsafe);
+ const targetLevels=[1,2,3,4].filter(n=>n<=cap&&(!suspectedUnsafe||n<suspectedUnsafe));
  for(const level of targetLevels){
    if(bench.some(x=>x.kind==='tabs-quick'&&x.tabs===level))continue;
    guardSet({running:true,closed_cleanly:false,phase:'tabs',attemptingTabs:level,lastSafe});
@@ -94,6 +94,10 @@ async function boot(){
  if(prior?.bench?.length){bench=prior.bench;blockS=+prior.blockS||blockS;stepS=+prior.stepS||stepS;bestTabs=+prior.bestTabs||1;searchComplete=!!prior.searchComplete;lastSafe=+prior.lastSafe||1;renderBench();$('bestChunk').textContent=blockS+'s';if(searchComplete){$('bestTabs').textContent=bestTabs;$('full').disabled=false;$('export').disabled=false}}
  const g=guardGet();if(g?.running&&!g.closed_cleanly&&g.attemptingTabs){suspectedUnsafe=+g.attemptingTabs;$('guard').textContent='crash probable en '+suspectedUnsafe+' tabs';$('guard').className='pill warn'}
  if(!suspectedUnsafe&&prior?.searchInProgress&&prior?.attemptingTabs)suspectedUnsafe=+prior.attemptingTabs;
+ if(!suspectedUnsafe&&prior?.build==='STT-LAB-V2-20260929'&&!prior?.searchComplete){
+   const oldLevels=[...new Set((prior?.bench||[]).filter(x=>x.kind==='tabs-quick'&&!x.unsafe&&x.throughput>0).map(x=>+x.tabs).filter(Number.isFinite))].sort((a,b)=>a-b);
+   if(oldLevels.length){lastSafe=Math.max(...oldLevels);suspectedUnsafe=lastSafe+1}
+ }
  if(fastState?.file){sourceFile=fastState.file;duration=+fastState.duration||0;$('start').disabled=false;setp(0,prior?.bench?.length?'Estado parcial recuperado':'Audio encontrado','listo para continuar',(prior?.bench?.length?'No empezamos de cero. ':'')+(suspectedUnsafe?'Se evitará automáticamente la escalada sospechosa de '+suspectedUnsafe+' pestañas.':'Podés continuar la búsqueda segura.'))}else setp(0,'No encontré el audio','elegir audio')
 }
 $('start').onclick=()=>search().catch(e=>{running=false;$('start').disabled=false;setp(0,'Error: '+e.message,'error')});
