@@ -1,5 +1,10 @@
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const QUALITY_LAG_WORDS=5;
+
 function words(s){return String(s||'').trim().match(/\S+/gu)||[]}
+function normWord(s){
+ return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^\p{L}\p{N}]+/gu,'')
+}
 function rms(x){let s=0;for(let i=0;i<x.length;i++)s+=x[i]*x[i];return Math.sqrt(s/Math.max(1,x.length))}
 function levelOf(x){
  const db=20*Math.log10(Math.max(1e-7,rms(x)));
@@ -9,15 +14,50 @@ function concatFloat(a,b){
  if(!a?.length)return b.slice();if(!b?.length)return a.slice();
  const o=new Float32Array(a.length+b.length);o.set(a);o.set(b,a.length);return o
 }
+function alignOps(a,b){
+ const A=a.map(normWord),B=b.map(normWord),n=A.length,m=B.length;
+ const d=Array.from({length:n+1},()=>new Uint16Array(m+1));
+ for(let i=0;i<=n;i++)d[i][0]=i;for(let j=0;j<=m;j++)d[0][j]=j;
+ for(let i=1;i<=n;i++)for(let j=1;j<=m;j++){
+   const sub=d[i-1][j-1]+(A[i-1]===B[j-1]?0:1);
+   d[i][j]=Math.min(sub,d[i-1][j]+1,d[i][j-1]+1)
+ }
+ const rev=[];let i=n,j=m;
+ while(i||j){
+   if(i&&j&&A[i-1]===B[j-1]&&d[i][j]===d[i-1][j-1]){rev.push({type:'eq'});i--;j--;continue}
+   if(i&&j&&d[i][j]===d[i-1][j-1]+1){rev.push({type:'sub'});i--;j--;continue}
+   if(j&&d[i][j]===d[i][j-1]+1){rev.push({type:'ins'});j--;continue}
+   rev.push({type:'del'});i--
+ }
+ const ops=rev.reverse();let ai=0,bi=0;
+ for(const op of ops){
+   op.ai=ai;op.bi=bi;
+   if(op.type==='eq'||op.type==='sub'||op.type==='del')ai++;
+   if(op.type==='eq'||op.type==='sub'||op.type==='ins')bi++
+ }
+ return ops
+}
+function sourceConsumedByPrefix(prefix,source){
+ if(!prefix.length)return 0;
+ const ops=alignOps(prefix,source);let usedA=0,usedB=0;
+ for(const op of ops){
+   if(op.type==='eq'||op.type==='sub'){usedA++;usedB++}
+   else if(op.type==='del')usedA++;
+   else usedB++;
+   if(usedA>=prefix.length)break
+ }
+ return Math.min(source.length,usedB)
+}
 
 export class TimelineTurn{
  constructor({mount,onChange,onFollow,minLead=20}){
    this.mount=mount;this.onChange=onChange||(()=>{});this.onFollow=onFollow||(()=>{});
-   this.minLead=minLead;this.tokens=[];this.bars=[];this.consumedSlots=0;
-   this.draftTarget=[];this.qualityTarget=[];this.qualityCursor=0;
-   this.draftTimer=null;this.qualityTimer=null;this.audioClosed=false;this.finalTarget=null;
-   this.carry=new Float32Array();this.sampleRate=48000;this.barWindowMs=48;this.head=null;
-   this.waitDraft=[];this.waitQuality=[];this.finalWait=[];this.destroyed=false;
+   this.minLead=minLead;this.tokens=[];this.bars=[];this.confirmedCount=0;
+   this.draftRaw=[];this.draftTarget=[];this.qualityRaw=[];
+   this.draftTimer=null;this.qualityTimer=null;this.layoutFrame=0;
+   this.audioClosed=false;this.finalMode=false;this.done=false;this.destroyed=false;
+   this.carry=new Float32Array();this.sampleRate=48000;this.barWindowMs=38;this.head=null;
+   this.frontierIndex=0;this.waitDraft=[];this.waitFinal=[];
    this.#build()
  }
  #build(){
@@ -26,13 +66,13 @@ export class TimelineTurn{
    this.barTrack=document.createElement('div');this.barTrack.className='cell-track';
    this.wordLayer=document.createElement('div');this.wordLayer.className='word-layer';
    this.stage.append(this.barTrack,this.wordLayer);this.row.appendChild(this.stage);this.mount.appendChild(this.row);
-   this.#ensureHead();this.#layout()
+   this.#ensureHead();this.#scheduleLayout()
  }
  #makeBar(level=.06,head=false){
    const el=document.createElement('span');el.className='speech-cell'+(head?' live-head':'');
    el.style.setProperty('--level',Number(level).toFixed(3));
    const wave=document.createElement('i');wave.className='wave';el.appendChild(wave);
-   const bar={el,level,head};this.bars.push(bar);this.barTrack.appendChild(el);return bar
+   const bar={el,level,head,everCovered:false};this.bars.push(bar);this.barTrack.appendChild(el);return bar
  }
  #ensureHead(){
    if(this.audioClosed||this.head)return;
@@ -45,33 +85,31 @@ export class TimelineTurn{
  }
  #lead(){
    const committed=this.bars.length-(this.head?1:0);
-   return Math.max(0,committed-this.consumedSlots)
+   return Math.max(0,committed-this.frontierIndex)
  }
  #windowMs(){
-   const lead=this.#lead();
-   let target=82;
-   if(!this.draftTarget.length)target=46;
-   else if(lead<this.minLead)target=42;
-   else if(lead<this.minLead+8)target=48;
-   else if(lead<this.minLead+18)target=58;
-   else if(lead<this.minLead+32)target=70;
-   this.barWindowMs=this.barWindowMs*.52+target*.48;
+   const lead=this.#lead();let target=72;
+   if(!this.draftRaw.length)target=38;
+   else if(lead<this.minLead)target=32;
+   else if(lead<this.minLead+8)target=40;
+   else if(lead<this.minLead+20)target=50;
+   else if(lead<this.minLead+36)target=60;
+   this.barWindowMs=this.barWindowMs*.56+target*.44;
    return this.barWindowMs
  }
  pushAudio(x,rate){
    if(this.destroyed||this.audioClosed||!x?.length)return;
    this.sampleRate=rate||this.sampleRate;this.carry=concatFloat(this.carry,x);
    let guard=0;
-   while(this.carry.length&&guard++<96){
-     const need=Math.max(160,Math.round(this.sampleRate*this.#windowMs()/1000));
+   while(this.carry.length&&guard++<128){
+     const need=Math.max(128,Math.round(this.sampleRate*this.#windowMs()/1000));
      if(this.carry.length<need)break;
-     const part=this.carry.subarray(0,need),level=levelOf(part);
-     this.#commitHead(level);this.carry=this.carry.slice(need)
+     const part=this.carry.subarray(0,need);this.#commitHead(levelOf(part));this.carry=this.carry.slice(need)
    }
    if(this.head&&this.carry.length){
      const level=levelOf(this.carry);this.head.level=level;this.head.el.style.setProperty('--level',level.toFixed(3))
    }
-   this.#kickDraft();this.#layout()
+   this.#kickDraft();this.#scheduleLayout()
  }
  closeAudio(){
    if(this.audioClosed)return;
@@ -83,139 +121,152 @@ export class TimelineTurn{
    }
    this.head=null;this.carry=new Float32Array();this.audioClosed=true;
    this.row.classList.remove('recording');this.row.classList.add('processing');
-   this.#kickDraft();this.#kickQuality();this.#layout()
+   this.#kickDraft();this.#kickQuality();this.#scheduleLayout()
  }
  setDraft(text){
    if(this.destroyed)return;
-   const raw=words(text),confirmed=Math.min(this.qualityCursor,this.tokens.length);
-   this.draftTarget=this.tokens.slice(0,confirmed).map(t=>t.text).concat(raw.slice(confirmed));
+   this.draftRaw=words(text);
+   const confirmed=this.tokens.slice(0,this.confirmedCount).map(t=>t.text);
+   const consumed=sourceConsumedByPrefix(confirmed,this.draftRaw);
+   this.draftTarget=confirmed.concat(this.draftRaw.slice(consumed));
    this.#kickDraft()
  }
  setQuality(text,{final=false}={}){
    if(this.destroyed)return Promise.resolve();
-   const next=words(text);
-   if(next.length>=this.qualityCursor)this.qualityTarget=next;
-   if(final)this.finalTarget=next.slice();
+   this.qualityRaw=words(text);
+   if(final){this.finalMode=true;this.row.classList.add('finalizing')}
    this.#kickQuality();
    return final?this.whenFinal():Promise.resolve()
- }
- #wordSlots(text){
-   if(!this.measureCanvas){this.measureCanvas=document.createElement('canvas');this.measureCtx=this.measureCanvas.getContext('2d')}
-   try{
-     const st=getComputedStyle(this.wordLayer);this.measureCtx.font=st.font;
-     return Math.max(2,Math.ceil(this.measureCtx.measureText(String(text)+' ').width/9))
-   }catch{return Math.max(2,Math.ceil((String(text).length+1)*1.1))}
  }
  #makeToken(text,status='draft'){
    const el=document.createElement('span');el.className='text-word';
    const label=document.createElement('span');label.className='word-text';el.appendChild(label);
-   const token={text:String(text),status,slots:this.#wordSlots(text),el};this.#syncToken(token);
+   const token={text:String(text),status,el};this.#syncToken(token);
    requestAnimationFrame(()=>el.classList.add('visible'));return token
  }
  #syncToken(t){
    const label=t.el.querySelector('.word-text');if(label.textContent!==t.text)label.textContent=t.text;
    t.el.classList.toggle('confirmed',t.status==='confirmed')
  }
- #growTokenSlots(tok,nextText){
-   const n=this.#wordSlots(nextText);
-   if(n>tok.slots){this.consumedSlots+=n-tok.slots;tok.slots=n}
+ #insertToken(index,text,status='draft'){
+   const tok=this.#makeToken(text,status),before=this.tokens[index]?.el||null;
+   this.tokens.splice(index,0,tok);this.wordLayer.insertBefore(tok.el,before);return tok
  }
- #currentText(){return this.tokens.filter(t=>t.text).map(t=>t.text).join(' ').trim()}
- #notify(){this.onChange(this.#currentText());this.onFollow();this.#layout()}
+ #removeToken(index){
+   const tok=this.tokens[index];if(!tok)return;tok.el.remove();this.tokens.splice(index,1)
+ }
+ #currentText(){return this.tokens.map(t=>t.text).join(' ').trim()}
+ #notify(){this.onChange(this.#currentText());this.onFollow();this.#scheduleLayout()}
  #kickDraft(){
    if(this.destroyed||this.draftTimer)return;
    this.draftTimer=setTimeout(()=>this.#draftStep(),0)
  }
  #draftStep(){
-   this.draftTimer=null;if(this.destroyed)return;
-   const floor=this.qualityCursor,target=this.draftTarget;
-   let i=floor;
-   while(i<this.tokens.length&&i<target.length&&this.tokens[i].text===target[i])i++;
-   if(i<this.tokens.length&&i>=floor){
-     if(i<target.length){
-       const tok=this.tokens[i];this.#growTokenSlots(tok,target[i]);tok.text=target[i];tok.status='draft';this.#syncToken(tok)
-     }else{
-       for(let j=this.tokens.length-1;j>=i;j--){if(j>=floor)this.tokens[j].el.remove()}
-       this.tokens.length=i
-     }
-     this.#notify()
-   }else if(this.tokens.length<target.length){
-     const text=target[this.tokens.length],slots=this.#wordSlots(text);
-     const committed=this.bars.length-(this.head?1:0),lead=committed-this.consumedSlots;
-     if(!this.audioClosed&&lead-slots<this.minLead){
-       this.barWindowMs=42;this.draftTimer=setTimeout(()=>this.#draftStep(),22);return
-     }
-     const tok=this.#makeToken(text,'draft');this.tokens.push(tok);this.wordLayer.appendChild(tok.el);
-     this.consumedSlots+=tok.slots;this.#notify()
-   }
-   if(!this.#draftSettled()){
-     const backlog=Math.max(0,target.length-this.tokens.length),delay=backlog>10?36:backlog>4?50:70;
-     this.draftTimer=setTimeout(()=>this.#draftStep(),delay)
-   }else{
-     const w=this.waitDraft.splice(0);w.forEach(r=>r());this.#kickQuality()
-   }
+   this.draftTimer=null;if(this.destroyed||this.finalMode)return;
+   const floor=this.confirmedCount,current=this.tokens.slice(floor).map(t=>t.text),target=this.draftTarget.slice(floor);
+   const ops=alignOps(current,target),op=ops.find(x=>x.type!=='eq');
+   if(!op){const w=this.waitDraft.splice(0);w.forEach(r=>r());this.#kickQuality();return}
+   const index=floor+op.ai;
+   if(op.type==='sub'){
+     const tok=this.tokens[index];tok.text=target[op.bi];tok.status='draft';this.#syncToken(tok)
+   }else if(op.type==='del')this.#removeToken(index);
+   else if(op.type==='ins')this.#insertToken(index,target[op.bi],'draft');
+   this.#notify();
+   const distance=Math.abs(target.length-current.length),delay=distance>10?34:distance>4?48:66;
+   this.draftTimer=setTimeout(()=>this.#draftStep(),delay)
  }
  #draftSettled(){
-   if(this.tokens.length!==this.draftTarget.length)return false;
-   for(let i=this.qualityCursor;i<this.draftTarget.length;i++)if(this.tokens[i]?.text!==this.draftTarget[i])return false;
-   return true
+   const a=this.tokens.slice(this.confirmedCount).map(t=>t.text),b=this.draftTarget.slice(this.confirmedCount);
+   if(a.length!==b.length)return false;
+   for(let i=0;i<a.length;i++)if(a[i]!==b[i])return false;return true
  }
  #kickQuality(){
    if(this.destroyed||this.qualityTimer)return;
    this.qualityTimer=setTimeout(()=>this.#qualityStep(),0)
  }
  #qualityStep(){
-   this.qualityTimer=null;if(this.destroyed)return;
-   const target=this.qualityTarget;
-   if(this.qualityCursor<target.length){
-     if(this.qualityCursor>=this.tokens.length){
-       if(!this.audioClosed){this.qualityTimer=setTimeout(()=>this.#qualityStep(),40);return}
-       const tok=this.#makeToken(target[this.qualityCursor],'draft');this.tokens.push(tok);this.wordLayer.appendChild(tok.el);this.consumedSlots+=tok.slots
-     }
-     const tok=this.tokens[this.qualityCursor];this.#growTokenSlots(tok,target[this.qualityCursor]);
-     tok.text=target[this.qualityCursor];tok.status='confirmed';this.#syncToken(tok);
-     this.qualityCursor++;this.#notify();
-     const backlog=target.length-this.qualityCursor,delay=backlog>20?36:backlog>8?52:72;
-     this.qualityTimer=setTimeout(()=>this.#qualityStep(),delay);return
+   this.qualityTimer=null;if(this.destroyed||this.done)return;
+   const confirmed=this.tokens.slice(0,this.confirmedCount).map(t=>t.text);
+   const consumed=sourceConsumedByPrefix(confirmed,this.qualityRaw);
+   const qSuffix=this.qualityRaw.slice(consumed);
+   const gray=this.tokens.slice(this.confirmedCount).map(t=>t.text);
+   const lag=this.finalMode?0:(this.audioClosed?2:QUALITY_LAG_WORDS);
+   if(!this.finalMode&&gray.length<=lag){
+     this.qualityTimer=setTimeout(()=>this.#qualityStep(),70);return
    }
-   const w=this.waitQuality.splice(0);w.forEach(r=>r());
-   if(this.finalTarget)this.#settleFinal()
+   const ops=alignOps(gray,qSuffix);
+   if(!ops.length){
+     if(this.finalMode)this.#finishFinal();
+     return
+   }
+   const op=ops[0],index=this.confirmedCount;
+   if(op.type==='del'){
+     if(gray.length<=lag&&!this.finalMode){this.qualityTimer=setTimeout(()=>this.#qualityStep(),70);return}
+     this.#removeToken(index);this.#notify();this.qualityTimer=setTimeout(()=>this.#qualityStep(),58);return
+   }
+   if(op.type==='ins'){
+     if(!this.finalMode&&gray.length<=lag){this.qualityTimer=setTimeout(()=>this.#qualityStep(),70);return}
+     const tok=this.#insertToken(index,qSuffix[0],'confirmed');tok.status='confirmed';this.#syncToken(tok);
+     this.confirmedCount++;this.#notify();this.qualityTimer=setTimeout(()=>this.#qualityStep(),62);return
+   }
+   let tok=this.tokens[index];
+   if(!tok){
+     if(!this.finalMode){this.qualityTimer=setTimeout(()=>this.#qualityStep(),70);return}
+     tok=this.#insertToken(index,qSuffix[0],'confirmed')
+   }
+   tok.text=qSuffix[0];tok.status='confirmed';this.#syncToken(tok);this.confirmedCount++;this.#notify();
+   const backlog=qSuffix.length-1,delay=backlog>18?34:backlog>7?48:68;
+   this.qualityTimer=setTimeout(()=>this.#qualityStep(),delay)
  }
- #settleFinal(){
-   const final=this.finalTarget;if(!final)return;
-   if(this.qualityCursor<final.length){this.qualityTarget=final;this.#kickQuality();return}
-   this.tokens=this.tokens.slice(0,final.length);
-   for(let i=0;i<final.length;i++){
-     let tok=this.tokens[i];if(!tok){tok=this.#makeToken(final[i],'confirmed');this.tokens[i]=tok}
-     tok.text=final[i];tok.status='confirmed';this.#syncToken(tok)
-   }
-   this.wordLayer.replaceChildren();
-   for(const tok of this.tokens)this.wordLayer.appendChild(tok.el);
-   this.consumedSlots=this.bars.length;this.finalTarget=null;
-   this.row.classList.remove('processing');this.row.classList.add('done');
-   this.#notify();const w=this.finalWait.splice(0);w.forEach(r=>r())
+ #finishFinal(){
+   this.done=true;this.finalMode=false;this.confirmedCount=this.tokens.length;
+   for(const tok of this.tokens){tok.status='confirmed';this.#syncToken(tok)}
+   this.row.classList.remove('processing','finalizing');this.row.classList.add('done');
+   this.#notify();const w=this.waitFinal.splice(0);w.forEach(r=>r())
+ }
+ #scheduleLayout(){
+   if(this.destroyed||this.layoutFrame)return;
+   this.layoutFrame=requestAnimationFrame(()=>{this.layoutFrame=0;this.#layout()})
  }
  #layout(){
-   const done=this.row.classList.contains('done');
-   const covered=done?this.bars.length:Math.min(this.bars.length,this.consumedSlots);
-   for(let i=0;i<this.bars.length;i++)this.bars[i].el.classList.toggle('covered',i<covered);
-   requestAnimationFrame(()=>{
-     if(!this.stage?.isConnected)return;
-     this.stage.style.height=Math.max(40,this.barTrack.scrollHeight,this.wordLayer.scrollHeight)+'px'
-   })
+   if(!this.stage?.isConnected)return;
+   const stageRect=this.stage.getBoundingClientRect();
+   const lineH=parseFloat(getComputedStyle(this.wordLayer).lineHeight)||34;
+   const tokenRects=this.tokens.map(t=>t.el.getBoundingClientRect()).filter(r=>r.width>0&&r.height>0);
+   const buckets=new Map();
+   for(const r of tokenRects){
+     const a=Math.floor((r.top-stageRect.top+1)/lineH),b=Math.floor((r.bottom-stageRect.top-1)/lineH);
+     for(let line=a;line<=b;line++){if(!buckets.has(line))buckets.set(line,[]);buckets.get(line).push(r)}
+   }
+   let geometryFrontier=this.frontierIndex;
+   let lastRect=tokenRects[tokenRects.length-1]||null,lastLine=lastRect?Math.floor((lastRect.top-stageRect.top+1)/lineH):-1;
+   for(let i=0;i<this.bars.length;i++){
+     const bar=this.bars[i],r=bar.el.getBoundingClientRect(),cx=(r.left+r.right)/2,cy=(r.top+r.bottom)/2;
+     const line=Math.floor((cy-stageRect.top)/lineH),rects=buckets.get(line)||[];
+     let covered=bar.everCovered;
+     if(!covered){
+       for(const wr of rects){
+         if(cx>=wr.left-2&&cx<=wr.right+2&&cy>=wr.top-1&&cy<=wr.bottom+1){covered=true;break}
+       }
+     }
+     if(covered)bar.everCovered=true;
+     bar.el.classList.toggle('covered',bar.everCovered);
+     if(lastRect&&(line<lastLine||(line===lastLine&&cx<=lastRect.right+2)))geometryFrontier=Math.max(geometryFrontier,i+1)
+   }
+   this.frontierIndex=Math.max(this.frontierIndex,geometryFrontier);
+   this.stage.style.height=Math.max(40,this.barTrack.scrollHeight,this.wordLayer.scrollHeight)+'px'
  }
  whenDraftSettled(timeout=1800){
    if(this.#draftSettled())return Promise.resolve();
    return new Promise(r=>{this.waitDraft.push(r);setTimeout(r,timeout)})
  }
- whenQualitySettled(timeout=2200){
-   if(this.qualityCursor>=this.qualityTarget.length)return Promise.resolve();
-   return new Promise(r=>{this.waitQuality.push(r);setTimeout(r,timeout)})
- }
  whenFinal(){
-   if(!this.finalTarget&&this.row.classList.contains('done'))return Promise.resolve();
-   return new Promise(r=>this.finalWait.push(r))
+   if(this.done)return Promise.resolve();
+   return new Promise(r=>this.waitFinal.push(r))
  }
  getText(){return this.#currentText()}
- destroy(){this.destroyed=true;clearTimeout(this.draftTimer);clearTimeout(this.qualityTimer);this.row.remove()}
+ destroy(){
+   this.destroyed=true;clearTimeout(this.draftTimer);clearTimeout(this.qualityTimer);
+   if(this.layoutFrame)cancelAnimationFrame(this.layoutFrame);this.row.remove()
+ }
 }
