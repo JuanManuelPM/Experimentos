@@ -59,6 +59,13 @@ main{min-height:100svh;max-width:920px;margin:auto;padding:calc(env(safe-area-in
 .perfgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin:10px 0}.perfcell{border:1px solid #111;border-radius:10px;padding:8px;background:#040405}.perfcell b{display:block;color:#aaa;font-size:14px;font-weight:600}.perfcell span{color:#4f4f54;font-size:9px;text-transform:uppercase;letter-spacing:.06em}
 @media(min-width:650px){.perfgrid{grid-template-columns:repeat(4,minmax(0,1fr))}}
 .orbwrap{position:relative;width:184px;height:184px;display:grid;place-items:center;contain:layout paint}
+.jobs-orbit{position:absolute;inset:-18px;border-radius:50%;opacity:0;transform:scale(.9) translateZ(0);transition:opacity .28s ease,transform .38s ease;pointer-events:none;will-change:opacity,transform}
+.jobs-orbit.show{opacity:.78;transform:scale(1) translateZ(0)}
+.jobs-orbit i,.jobs-orbit b{position:absolute;inset:0;border-radius:50%;border:1px solid transparent;will-change:transform}
+.jobs-orbit i{border-top-color:rgba(255,255,255,.42);border-left-color:rgba(255,255,255,.08);animation:jobsSpin 2.4s linear infinite}
+.jobs-orbit b{inset:9px;border-right-color:rgba(255,255,255,.24);border-bottom-color:rgba(255,255,255,.05);animation:jobsSpinBack 3.2s linear infinite}
+.jobs-orbit.busy i{animation-duration:1.35s}.jobs-orbit.busy b{animation-duration:1.8s}
+@keyframes jobsSpin{to{transform:rotate(360deg)}}@keyframes jobsSpinBack{to{transform:rotate(-360deg)}}
 .engine-ring{position:absolute;inset:7px;border-radius:50%;opacity:0;transform:scale(.93) translateZ(0);transition:opacity .28s ease,transform .38s ease;pointer-events:none;will-change:opacity,transform}
 .engine-ring::before{content:"";position:absolute;inset:0;border-radius:50%;border:1px solid rgba(255,255,255,.08)}
 .engine-ring i{position:absolute;inset:0;border-radius:50%;border:2px solid transparent;border-top-color:rgba(255,255,255,.82);border-right-color:rgba(255,255,255,.18);animation:engineSpin 1.2s linear infinite;will-change:transform}
@@ -108,6 +115,7 @@ main{min-height:100svh;max-width:920px;margin:auto;padding:calc(env(safe-area-in
 <main>
   <section class="stage">
     <div class="orbwrap">
+      <span id="jobsOrbit" class="jobs-orbit" aria-hidden="true"><i></i><b></b></span>
       <span id="engineRing" class="engine-ring" aria-hidden="true"><i></i></span>
       <button id="orb" class="orb state-idle" aria-label="Grabar">
         <span class="orb-layer mic-layer" aria-hidden="true">
@@ -188,11 +196,12 @@ main{min-height:100svh;max-width:920px;margin:auto;padding:calc(env(safe-area-in
   </details>
 </main>
 <script type="module">
-const $=id=>document.getElementById(id),BUILD='STT-LIVE-V4.5-20260929',LIVE_DB='stt-live-v3',LIVE_STORE='runs',LIVE_KEY='golden';
+const $=id=>document.getElementById(id),BUILD='STT-LIVE-V4.6-20260929',LIVE_DB='stt-live-v3',LIVE_STORE='runs',LIVE_KEY='golden';
 const advancedEl=document.querySelector('.advanced');
 let paintFrame=0,pendingPaint='',asrWorker=null,asrInitPromise=null,asrReady=false,asrBackend='—',asrReq=0,asrPending=new Map(),asrRetryTimer=null;
 const TEST_TEXT=$('reference').textContent.trim();
 let stream=null,ctx=null,node=null,source=null,running=false,stopping=false,processing=false,nativeRate=48000,parts=[],samples=0,text='',segments=[],capturedS=0,finalNativeParts=[],finalNativeSamples=0,finalPcm16Parts=[],spaceHeld=false,spaceStartPending=false;
+let sessionSeq=0,activeSessionId=0,turnSeq=0,transcriptTurns=[],tailSinks=[],backgroundJobs=0;
 let testStream=null,testCtx=null,testNode=null,testSource=null,testParts=[],testRate=48000,testRunning=false,testResults=[],goldenPcm=null,goldenMeta=null;
 const SILENCE_RMS=.0045,STOP_TAIL_MS=700;
 const PROFILES={
@@ -212,6 +221,16 @@ function setEngineRing(mode){
  const r=$('engineRing');if(!r)return;
  r.className='engine-ring'+(mode?' show '+mode:'');
 }
+function updateJobsOrbit(){
+ const n=backgroundJobs+tailSinks.length,r=$('jobsOrbit');if(!r)return;
+ r.className='jobs-orbit'+(n?' show':'')+(n>1?' busy':'')
+}
+function combinedTranscript(){
+ const done=transcriptTurns.map(t=>t.text).filter(Boolean),active=text.trim();
+ return done.concat(active?[active]:[]).join('\n\n')
+}
+function paintCombined(){paintTranscript(combinedTranscript())}
+
 function updateEngineRing(){
  if(!running){setEngineRing(asrReady?'':'loading');return}
  if(!asrReady){setEngineRing('loading');return}
@@ -265,12 +284,12 @@ function ensureAsrWorker(){
  }).finally(()=>{if(!asrReady)asrInitPromise=null});
  return asrInitPromise
 }
-async function transcribeAsr(pcm,options){
+async function transcribeAsr(pcm,options,priority='normal'){
  await ensureAsrWorker();
  const id=++asrReq,copy=pcm instanceof Float32Array?pcm.slice():new Float32Array(pcm);
  return new Promise((resolve,reject)=>{
    asrPending.set(id,{resolve,reject});
-   asrWorker.postMessage({type:'transcribe',id,pcm:copy.buffer,options},[copy.buffer])
+   asrWorker.postMessage({type:'transcribe',id,pcm:copy.buffer,options,priority},[copy.buffer])
  })
 }
 
@@ -328,7 +347,7 @@ function gateResult(){
  const promote=winner.name!==base.name&&(winner.wer<base.wer-1e-9||winner.dup<base.dup||winner.first_latency_s<base.first_latency_s-.25);
  return{base,winner,quality,promote}
 }
-function diag(){const g=gateResult();return{build:BUILD,created_at:new Date().toISOString(),reference:TEST_TEXT,environment:{userAgent:navigator.userAgent,cores:navigator.hardwareConcurrency||null,deviceMemory:navigator.deviceMemory||null},golden:{duration_s:goldenPcm?goldenPcm.length/16000:null,sample_rate:16000},runtime:{profile:profileKey,architecture:'capture-first + batched AudioWorklet + ASR DedicatedWorker',asr_backend:asrBackend,provisional:prof().chunk+'s / '+prof().overlap+'s',final:'canonical full-audio pass on stop',performance:{asr_avg_ms:avg(perfStats.asrMs),event_loop_p95_ms:pct(perfStats.loopLagMs,.95),max_queue_s:perfStats.maxQueueS,render_avg_ms:avg(perfStats.renderMs),final_ms:perfStats.finalMs,calls:perfStats.calls,heap_mb:heapMB()}},gate:{promote:g.promote,winner:g.winner?.name||null,quality_candidate:g.quality?.name||null,baseline_wer:g.base?.wer??null,winner_wer:g.winner?.wer??null,quality_wer:g.quality?.wer??null},results:testResults}}
+function diag(){const g=gateResult();return{build:BUILD,created_at:new Date().toISOString(),reference:TEST_TEXT,environment:{userAgent:navigator.userAgent,cores:navigator.hardwareConcurrency||null,deviceMemory:navigator.deviceMemory||null},golden:{duration_s:goldenPcm?goldenPcm.length/16000:null,sample_rate:16000},runtime:{profile:profileKey,architecture:'capture-first + batched AudioWorklet + ASR DedicatedWorker',asr_backend:asrBackend,provisional:prof().chunk+'s / '+prof().overlap+'s',final:'canonical full-audio pass on stop',performance:{asr_avg_ms:avg(perfStats.asrMs),event_loop_p95_ms:pct(perfStats.loopLagMs,.95),max_queue_s:perfStats.maxQueueS,render_avg_ms:avg(perfStats.renderMs),final_ms:perfStats.finalMs,calls:perfStats.calls,heap_mb:heapMB(),background_jobs:backgroundJobs,tail_sessions:tailSinks.length}},gate:{promote:g.promote,winner:g.winner?.name||null,quality_candidate:g.quality?.name||null,baseline_wer:g.base?.wer??null,winner_wer:g.winner?.wer??null,quality_wer:g.quality?.wer??null},results:testResults}}
 function downloadDiag(){const u=URL.createObjectURL(new Blob([JSON.stringify(diag(),null,2)],{type:'application/json'})),a=document.createElement('a');a.href=u;a.download='stt-live-v3-diagnostic.json';a.click();setTimeout(()=>URL.revokeObjectURL(u),1000)}
 function norm(s){return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9ñ\s]/gi,' ').replace(/\s+/g,' ').trim().split(' ').filter(Boolean)}
 function tokenDist(A,B){const d=Array.from({length:B.length+1},(_,i)=>i);for(let i=1;i<=A.length;i++){let p=d[0];d[0]=i;for(let j=1;j<=B.length;j++){const t=d[j];d[j]=Math.min(d[j]+1,d[j-1]+1,p+(A[i-1]===B[j-1]?0:1));p=t}}return d[B.length]}
@@ -361,12 +380,35 @@ function finalPcm(){
  for(const q of finalPcm16Parts){for(let i=0;i<q.length;i++)o[p++]=q[i]/32767}
  return o
 }
-async function canonicalizeLive(){
- const pcm=finalPcm(),dur=pcm.length/16000;if(dur<.5)return;
- setVisual('processing');updateEngineRing();await ensureAsrWorker();
- const r=await transcribeAsr(pcm,{returnTimestamps:false,returnConfidences:true,chunkLengthS:Math.max(4,Math.min(60,dur)),timeOffset:0}),ms=r.ms;perfStats.finalMs=ms;perfStats.asrMs.push(ms);perfStats.calls++;renderPerf();
- const tx=(r.text||'').trim();if(tx){text=tx;$('out').value=text;$('copy').disabled=false}
- $('lat').textContent='final '+(ms/1000).toFixed(2)+' s';$('rt').textContent=(dur/(ms/1000)).toFixed(2)+'× final'
+function joinPcm(a,b){
+ if(!a?.length)return b||new Float32Array();
+ if(!b?.length)return a;
+ const o=new Float32Array(a.length+b.length);o.set(a,0);o.set(b,a.length);return o
+}
+async function maybeCloseCapture(){
+ if(running||tailSinks.length||!ctx)return;
+ const ac=ctx,nd=node,src=source,st=stream;
+ ctx=null;node=null;source=null;stream=null;
+ try{nd?.disconnect();src?.disconnect();st?.getTracks().forEach(t=>t.stop());await ac?.close()}catch{}
+}
+function enqueueFinalTurn(turn,pcm){
+ const dur=pcm.length/16000;if(dur<.18){turn.state='done';paintCombined();return}
+ backgroundJobs++;turn.state='transcribing';updateJobsOrbit();
+ transcribeAsr(pcm,{returnTimestamps:false,returnConfidences:true,chunkLengthS:Math.max(4,Math.min(60,dur)),timeOffset:0},'background').then(r=>{
+   const tx=(r.text||'').trim();if(tx)turn.text=tx;
+   turn.state='done';perfStats.finalMs=r.ms;perfStats.asrMs.push(r.ms);perfStats.calls++;
+   $('lat').textContent='final '+(r.ms/1000).toFixed(2)+' s';$('rt').textContent=(dur/(r.ms/1000)).toFixed(2)+'× final';
+   paintCombined();renderPerf()
+ }).catch(e=>{
+   turn.state='error';if(!turn.text)turn.text='';$('status').textContent='Una transcripción falló';$('status').className='bad';paintCombined()
+ }).finally(()=>{backgroundJobs=Math.max(0,backgroundJobs-1);updateJobsOrbit();updateEngineRing()})
+}
+function finishTail(sink){
+ const i=tailSinks.indexOf(sink);if(i<0)return;
+ tailSinks.splice(i,1);
+ const raw=sink.tailParts.length?concat(sink.tailParts):new Float32Array(),tail=raw.length?resample(raw,sink.rate,16000):new Float32Array();
+ enqueueFinalTurn(sink.turn,joinPcm(sink.basePcm,tail));
+ updateJobsOrbit();maybeCloseCapture()
 }
 function editStats(hyp,ref){
  const H=norm(hyp),R=norm(ref),n=R.length,m=H.length,d=Array.from({length:n+1},()=>new Uint16Array(m+1));
@@ -386,9 +428,9 @@ function repeatedWords(s){const t=norm(s);let dup=0;for(let n=6;n>=2;n--)for(let
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
 function takeNative(sec){const need=Math.floor(sec*nativeRate);if(samples<need)return null;const all=new Float32Array(need);let w=0,remain=need;while(remain>0&&parts.length){const p=parts[0],n=Math.min(remain,p.length);all.set(p.subarray(0,n),w);w+=n;remain-=n;if(n===p.length)parts.shift();else parts[0]=p.subarray(n)}samples-=need;const overlap=Math.floor(prof().overlap*nativeRate);if(overlap>0){const tail=all.slice(Math.max(0,all.length-overlap));parts.unshift(tail);samples+=tail.length}return all}
 function renderSegments(){if(!advancedEl?.open)return;const t=performance.now();$('segments').innerHTML=segments.slice(-8).reverse().map(s=>'<div class="seg"><div class="time">'+s.start.toFixed(1)+'–'+s.end.toFixed(1)+' s · '+s.ms.toFixed(0)+' ms · rms '+s.rms.toFixed(4)+'</div><div>'+escapeHtml(s.text||'[silencio]')+'</div></div>').join('')||'Todavía no hay audio.';perfStats.renderMs.push(performance.now()-t);if(perfStats.renderMs.length>100)perfStats.renderMs.shift();renderPerf()}
-async function pump(){if(processing||!running||!asrReady){updateEngineRing();return}const chunk=prof().chunk,overlap=prof().overlap,raw=takeNative(chunk);if(!raw){const q=samples/nativeRate;perfStats.maxQueueS=Math.max(perfStats.maxQueueS,q);$('queue').textContent='cola '+q.toFixed(1)+' s';renderPerf();return}processing=true;const start=capturedS,end=start+chunk;capturedS+=chunk-overlap;const level=rms(raw);try{
+async function pump(){if(processing||!running||!asrReady){updateEngineRing();return}const sid=activeSessionId,chunk=prof().chunk,overlap=prof().overlap,raw=takeNative(chunk);if(!raw){const q=samples/nativeRate;perfStats.maxQueueS=Math.max(perfStats.maxQueueS,q);$('queue').textContent='cola '+q.toFixed(1)+' s';renderPerf();return}processing=true;const start=capturedS,end=start+chunk;capturedS+=chunk-overlap;const level=rms(raw);try{
  if(level<SILENCE_RMS){segments.push({start,end,text:'',ms:0,rms:level});renderSegments()}
- else{const pcm=resample(raw,nativeRate,16000),r=await transcribeAsr(pcm,{returnTimestamps:false,returnConfidences:true,chunkLengthS:chunk,timeOffset:start}),ms=r.ms,tx=(r.text||'').trim();perfStats.asrMs.push(ms);perfStats.calls++;if(perfStats.asrMs.length>100)perfStats.asrMs.shift();text=merge(text,tx);paintTranscript(text);segments.push({start,end,text:tx,ms,rms:level});$('lat').textContent='último '+(ms/1000).toFixed(2)+' s';$('rt').textContent=(chunk/(ms/1000)).toFixed(2)+'× realtime';renderSegments()}
+ else{const pcm=resample(raw,nativeRate,16000),r=await transcribeAsr(pcm,{returnTimestamps:false,returnConfidences:true,chunkLengthS:chunk,timeOffset:start},'live'),ms=r.ms,tx=(r.text||'').trim();perfStats.asrMs.push(ms);perfStats.calls++;if(perfStats.asrMs.length>100)perfStats.asrMs.shift();if(running&&sid===activeSessionId){text=merge(text,tx);paintCombined();segments.push({start,end,text:tx,ms,rms:level});}$('lat').textContent='último '+(ms/1000).toFixed(2)+' s';$('rt').textContent=(chunk/(ms/1000)).toFixed(2)+'× realtime';renderSegments()}
  }catch(e){$('status').textContent='Error ASR: '+e.message;$('status').className='bad'}
  processing=false;const q=samples/nativeRate;perfStats.maxQueueS=Math.max(perfStats.maxQueueS,q);$('queue').textContent='cola '+q.toFixed(1)+' s';renderPerf();updateEngineRing();if(running)setTimeout(pump,0)
 }
@@ -399,21 +441,38 @@ async function makeCapture(){
  const u=URL.createObjectURL(new Blob([code],{type:'text/javascript'}));await ac.audioWorklet.addModule(u);URL.revokeObjectURL(u);
  const src=ac.createMediaStreamSource(st),nd=new AudioWorkletNode(ac,'cap'),silent=ac.createGain();silent.gain.value=0;src.connect(nd);nd.connect(silent).connect(ac.destination);return{st,ac,rate,src,nd}
 }
+function captureUsable(){return !!(ctx&&node&&stream&&stream.active&&ctx.state!=='closed')}
+function bindCapture(){
+ node.port.onmessage=e=>{
+   const x=new Float32Array(e.data),now=performance.now();
+   for(const sink of tailSinks)if(now<=sink.deadline+120)sink.tailParts.push(x);
+   if(!running){updateJobsOrbit();return}
+   parts.push(x);samples+=x.length;stashFinalNative(x);
+   const q=samples/nativeRate;perfStats.maxQueueS=Math.max(perfStats.maxQueueS,q);
+   if(asrReady&&!processing&&samples>=prof().chunk*nativeRate)pump();
+   updateEngineRing()
+ }
+}
 async function startMic(){
  if(running||stopping||testRunning)return;
  $('status').textContent='';$('status').className='';
- const c=await makeCapture();stream=c.st;ctx=c.ac;nativeRate=c.rate;source=c.src;node=c.nd;
- node.port.onmessage=e=>{if(!running)return;const x=new Float32Array(e.data);parts.push(x);samples+=x.length;stashFinalNative(x);const q=samples/nativeRate;perfStats.maxQueueS=Math.max(perfStats.maxQueueS,q);if(asrReady&&!processing&&samples>=prof().chunk*nativeRate)pump();updateEngineRing()};
- parts=[];samples=0;capturedS=0;finalNativeParts=[];finalNativeSamples=0;finalPcm16Parts=[];resetPerf();running=true;stopping=false;$('mic').disabled=true;$('testStart').disabled=true;$('stop').disabled=false;setVisual('listening');updateEngineRing();
+ if(!captureUsable()){
+   const c=await makeCapture();stream=c.st;ctx=c.ac;nativeRate=c.rate;source=c.src;node=c.nd;bindCapture()
+ }else{nativeRate=ctx.sampleRate;try{if(ctx.state==='suspended')await ctx.resume()}catch{}}
+ activeSessionId=++sessionSeq;parts=[];samples=0;capturedS=0;text='';segments=[];finalNativeParts=[];finalNativeSamples=0;finalPcm16Parts=[];resetPerf();
+ running=true;stopping=false;$('mic').disabled=true;$('testStart').disabled=true;$('stop').disabled=false;setVisual('listening');paintCombined();updateEngineRing();updateJobsOrbit();
  ensureAsrWorker().catch(()=>scheduleAsrRetry())
 }
 async function stopMic(){
- if(!running||stopping)return;stopping=true;$('stop').disabled=true;$('mic').disabled=true;$('testStart').disabled=true;
- await new Promise(r=>setTimeout(r,STOP_TAIL_MS));
- try{node?.port.postMessage({type:'flush'});await new Promise(r=>setTimeout(r,40))}catch{}
- running=false;try{node?.disconnect();source?.disconnect();stream?.getTracks().forEach(t=>t.stop());await ctx?.close()}catch{};
- try{await canonicalizeLive()}catch(e){$('status').textContent='Live guardado; falló pasada final: '+e.message;$('status').className='bad'}
- finally{stopping=false;$('mic').disabled=false;$('testStart').disabled=false;setVisual('idle');updateEngineRing()}
+ if(!running||stopping)return;stopping=true;
+ const turn={id:++turnSeq,text:text.trim(),state:'tail'};transcriptTurns.push(turn);
+ const sink={id:activeSessionId,turn,basePcm:finalPcm(),rate:nativeRate,tailParts:[],deadline:performance.now()+STOP_TAIL_MS};
+ tailSinks.push(sink);
+ running=false;text='';parts=[];samples=0;capturedS=0;finalNativeParts=[];finalNativeSamples=0;finalPcm16Parts=[];
+ try{node?.port.postMessage({type:'flush'})}catch{}
+ $('stop').disabled=true;$('mic').disabled=false;$('testStart').disabled=false;setVisual('idle');paintCombined();
+ stopping=false;updateEngineRing();updateJobsOrbit();
+ setTimeout(()=>finishTail(sink),STOP_TAIL_MS+45)
 }
 async function startTest(){
  if(testRunning||running)return;setVisual('loading');await ensureAsrWorker();setVisual('idle');const c=await makeCapture();testStream=c.st;testCtx=c.ac;testRate=c.rate;testSource=c.src;testNode=c.nd;testParts=[];testRunning=true;
@@ -445,7 +504,7 @@ async function runTests(pcm){
 }
 $('orb').onclick=()=>{if(running&&!stopping)stopMic().catch(()=>{});else if(!running&&!stopping)startMic().catch(e=>{$('status').textContent='No pude iniciar';$('status').className='bad';setVisual('idle')})};
 $('mic').onclick=()=>startMic().catch(e=>{$('status').textContent='No pude abrir micrófono: '+e.message;$('status').className='bad'});
-$('stop').onclick=()=>stopMic().catch(e=>{$('status').textContent='Error al cerrar micrófono: '+e.message;$('status').className='bad'});$('copy').onclick=()=>navigator.clipboard.writeText(text);$('clear').onclick=()=>{text='';segments=[];paintTranscript('');renderSegments()};
+$('stop').onclick=()=>stopMic().catch(e=>{$('status').textContent='Error al cerrar micrófono: '+e.message;$('status').className='bad'});$('copy').onclick=()=>navigator.clipboard.writeText($('out').value);$('clear').onclick=()=>{text='';transcriptTurns=[];segments=[];paintCombined();renderSegments()};
 $('testStart').onclick=()=>startTest().catch(e=>$('testState').textContent='Error micrófono: '+e.message);$('testStop').onclick=()=>stopTest().catch(e=>$('testState').textContent='Error prueba: '+e.message);
 $('replay').onclick=()=>{if(!goldenPcm)return;$('replay').disabled=true;runTests(goldenPcm).finally(()=>$('replay').disabled=false)};
 $('profileLight').onclick=()=>setProfile('light');$('profileNormal').onclick=()=>setProfile('normal');$('profileQuality').onclick=()=>setProfile('quality');setProfile(profileKey);
@@ -482,7 +541,7 @@ window.addEventListener('blur',()=>{if(spaceHeld){spaceHeld=false;if(running&&!s
    if(testResults.length){renderTests();$('exportDiag').disabled=false}
  }
  setProfile(profileKey);setVisual('idle');$('mic').disabled=false;$('testStart').disabled=false;$('status').textContent='';$('status').className='';
- updateEngineRing();requestAnimationFrame(()=>setTimeout(()=>ensureAsrWorker().catch(()=>scheduleAsrRetry()),120))
+ updateEngineRing();updateJobsOrbit();requestAnimationFrame(()=>setTimeout(()=>ensureAsrWorker().catch(()=>scheduleAsrRetry()),120))
 }catch(e){$('status').textContent='Error de inicio';$('status').className='bad'}})();
 </script>
 </body>
