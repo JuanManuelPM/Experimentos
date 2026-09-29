@@ -1,0 +1,316 @@
+{
+  "analysis_build": "STT-CONSENSUS-SEARCH-V1",
+  "session": "mass-mulwmyw9-ehxp51",
+  "source_file": "stt-results/sessions/mass-mulwmyw9-ehxp51.json",
+  "computed_at": "2026-09-29T00:41:04.205780+00:00",
+  "result_count": 150,
+  "successful_hypotheses": 62,
+  "oracle_word_availability_wer": 3.821656050955414,
+  "oracle_missing_words": {
+    "comandos": [],
+    "confusiones": [],
+    "contexto": [
+      "el"
+    ],
+    "natural": [
+      "tan",
+      "bien"
+    ],
+    "numeros": [
+      "nueve"
+    ],
+    "prometeo": [
+      "consistencia"
+    ],
+    "rioplatense": [
+      "junte"
+    ],
+    "tecnico": []
+  },
+  "best_sources": [
+    {
+      "source": "Parakeet 0.6B v3 INT8 · clean",
+      "n": 6,
+      "wer_macro": 3.8375350140056024,
+      "wer_semantic_macro": 3.8375350140056024,
+      "infer_ms_mean": 3833.1666666666665
+    },
+    {
+      "source": "Parakeet 0.6B v3 INT8 · full",
+      "n": 8,
+      "wer_macro": 7.184873949579832,
+      "wer_semantic_macro": 4.208683473389356,
+      "infer_ms_mean": 3661.625
+    },
+    {
+      "source": "Vosk 0.3 · native",
+      "n": 8,
+      "wer_macro": 22.204131652661065,
+      "wer_semantic_macro": 22.204131652661065,
+      "infer_ms_mean": 4419.5
+    },
+    {
+      "source": "Vosk 0.3 · 16k",
+      "n": 8,
+      "wer_macro": 22.35294117647059,
+      "wer_semantic_macro": 22.35294117647059,
+      "infer_ms_mean": 2186.375
+    },
+    {
+      "source": "Vosk 0.3 · win15",
+      "n": 8,
+      "wer_macro": 22.35294117647059,
+      "wer_semantic_macro": 22.35294117647059,
+      "infer_ms_mean": 2277.75
+    },
+    {
+      "source": "Vosk 0.3 · clean",
+      "n": 8,
+      "wer_macro": 22.97794117647059,
+      "wer_semantic_macro": 22.97794117647059,
+      "infer_ms_mean": 2183.125
+    },
+    {
+      "source": "Vosk 0.3 · win8",
+      "n": 8,
+      "wer_macro": 22.97794117647059,
+      "wer_semantic_macro": 22.97794117647059,
+      "infer_ms_mean": 3039.25
+    },
+    {
+      "source": "Vosk 0.3 · win4",
+      "n": 8,
+      "wer_macro": 23.350103199174406,
+      "wer_semantic_macro": 23.350103199174406,
+      "infer_ms_mean": 5834.25
+    }
+  ],
+  "leave_one_test_out_best_source_semantic_wer": 4.208683473389356,
+  "leave_one_test_out": [
+    {
+      "test": "comandos",
+      "source": "Parakeet 0.6B v3 INT8 · clean",
+      "wer": 0.0,
+      "semantic_wer": 0.0
+    },
+    {
+      "test": "confusiones",
+      "source": "Parakeet 0.6B v3 INT8 · clean",
+      "wer": 0.0,
+      "semantic_wer": 0.0
+    },
+    {
+      "test": "contexto",
+      "source": "Parakeet 0.6B v3 INT8 · clean",
+      "wer": 7.142857142857143,
+      "semantic_wer": 7.142857142857143
+    },
+    {
+      "test": "natural",
+      "source": "Parakeet 0.6B v3 INT8 · clean",
+      "wer": 10.0,
+      "semantic_wer": 10.0
+    },
+    {
+      "test": "numeros",
+      "source": "Parakeet 0.6B v3 INT8 · full",
+      "wer": 28.571428571428573,
+      "semantic_wer": 4.761904761904762
+    },
+    {
+      "test": "prometeo",
+      "source": "Parakeet 0.6B v3 INT8 · full",
+      "wer": 5.882352941176471,
+      "semantic_wer": 5.882352941176471
+    },
+    {
+      "test": "rioplatense",
+      "source": "Parakeet 0.6B v3 INT8 · clean",
+      "wer": 5.882352941176471,
+      "semantic_wer": 5.882352941176471
+    },
+    {
+      "test": "tecnico",
+      "source": "Parakeet 0.6B v3 INT8 · clean",
+      "wer": 0.0,
+      "semantic_wer": 0.0
+    }
+  ],
+  "most_redundant_pairs": [
+    {
+      "a": "Parakeet 0.6B v3 INT8 · clean",
+      "b": "Parakeet 0.6B v3 INT8 · full",
+      "same_tests": 6,
+      "n": 6,
+      "pct": 100.0
+    },
+    {
+      "a": "Vosk 0.3 · 16k",
+      "b": "Vosk 0.3 · win15",
+      "same_tests": 8,
+      "n": 8,
+      "pct": 100.0
+    },
+    {
+      "a": "Vosk 0.3 · 16k",
+      "b": "Vosk 0.3 · clean",
+      "same_tests": 7,
+      "n": 8,
+      "pct": 87.5
+    },
+    {
+      "a": "Vosk 0.3 · clean",
+      "b": "Vosk 0.3 · win15",
+      "same_tests": 7,
+      "n": 8,
+      "pct": 87.5
+    },
+    {
+      "a": "Vosk 0.3 · 16k",
+      "b": "Vosk 0.3 · win8",
+      "same_tests": 6,
+      "n": 8,
+      "pct": 75.0
+    },
+    {
+      "a": "Vosk 0.3 · win15",
+      "b": "Vosk 0.3 · win8",
+      "same_tests": 6,
+      "n": 8,
+      "pct": 75.0
+    },
+    {
+      "a": "Vosk 0.3 · clean",
+      "b": "Vosk 0.3 · native",
+      "same_tests": 5,
+      "n": 8,
+      "pct": 62.5
+    },
+    {
+      "a": "Vosk 0.3 · clean",
+      "b": "Vosk 0.3 · win8",
+      "same_tests": 5,
+      "n": 8,
+      "pct": 62.5
+    },
+    {
+      "a": "Vosk 0.3 · 16k",
+      "b": "Vosk 0.3 · native",
+      "same_tests": 4,
+      "n": 8,
+      "pct": 50.0
+    },
+    {
+      "a": "Vosk 0.3 · native",
+      "b": "Vosk 0.3 · win15",
+      "same_tests": 4,
+      "n": 8,
+      "pct": 50.0
+    },
+    {
+      "a": "Vosk 0.3 · native",
+      "b": "Vosk 0.3 · win8",
+      "same_tests": 4,
+      "n": 8,
+      "pct": 50.0
+    },
+    {
+      "a": "Vosk 0.3 · win4",
+      "b": "Vosk 0.3 · win8",
+      "same_tests": 3,
+      "n": 8,
+      "pct": 37.5
+    },
+    {
+      "a": "Vosk 0.3 · 16k",
+      "b": "Vosk 0.3 · win4",
+      "same_tests": 2,
+      "n": 8,
+      "pct": 25.0
+    },
+    {
+      "a": "Vosk 0.3 · win15",
+      "b": "Vosk 0.3 · win4",
+      "same_tests": 2,
+      "n": 8,
+      "pct": 25.0
+    },
+    {
+      "a": "Parakeet 0.6B v3 INT8 · clean",
+      "b": "Vosk 0.3 · 16k",
+      "same_tests": 1,
+      "n": 6,
+      "pct": 16.666666666666668
+    },
+    {
+      "a": "Parakeet 0.6B v3 INT8 · clean",
+      "b": "Vosk 0.3 · clean",
+      "same_tests": 1,
+      "n": 6,
+      "pct": 16.666666666666668
+    },
+    {
+      "a": "Parakeet 0.6B v3 INT8 · clean",
+      "b": "Vosk 0.3 · native",
+      "same_tests": 1,
+      "n": 6,
+      "pct": 16.666666666666668
+    },
+    {
+      "a": "Parakeet 0.6B v3 INT8 · clean",
+      "b": "Vosk 0.3 · win15",
+      "same_tests": 1,
+      "n": 6,
+      "pct": 16.666666666666668
+    },
+    {
+      "a": "Parakeet 0.6B v3 INT8 · clean",
+      "b": "Vosk 0.3 · win8",
+      "same_tests": 1,
+      "n": 6,
+      "pct": 16.666666666666668
+    },
+    {
+      "a": "Parakeet 0.6B v3 INT8 · full",
+      "b": "Vosk 0.3 · 16k",
+      "same_tests": 1,
+      "n": 8,
+      "pct": 12.5
+    },
+    {
+      "a": "Parakeet 0.6B v3 INT8 · full",
+      "b": "Vosk 0.3 · clean",
+      "same_tests": 1,
+      "n": 8,
+      "pct": 12.5
+    },
+    {
+      "a": "Parakeet 0.6B v3 INT8 · full",
+      "b": "Vosk 0.3 · native",
+      "same_tests": 1,
+      "n": 8,
+      "pct": 12.5
+    },
+    {
+      "a": "Parakeet 0.6B v3 INT8 · full",
+      "b": "Vosk 0.3 · win15",
+      "same_tests": 1,
+      "n": 8,
+      "pct": 12.5
+    },
+    {
+      "a": "Parakeet 0.6B v3 INT8 · full",
+      "b": "Vosk 0.3 · win8",
+      "same_tests": 1,
+      "n": 8,
+      "pct": 12.5
+    },
+    {
+      "a": "Vosk 0.3 · clean",
+      "b": "Vosk 0.3 · win4",
+      "same_tests": 1,
+      "n": 8,
+      "pct": 12.5
+    }
+  ]
+}
