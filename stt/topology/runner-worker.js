@@ -16,7 +16,7 @@ self.onmessage=async e=>{
     return;
   }
   if(m.kind==="job"){
-    const t=performance.now();
+    const workerReceivedEpoch=Date.now(), t=performance.now();
     try{
       const pcm=new Float32Array(m.pcm);
       const r=await model.transcribeLongAudio(pcm,16000,{
@@ -24,7 +24,13 @@ self.onmessage=async e=>{
         chunkLengthS:m.chunkS||30,
         timeOffset:m.start||0
       });
-      postMessage({kind:"result",jobId:m.jobId,start:m.start,end:m.end,text:r.text||r.utterance_text||"",infer_ms:performance.now()-t});
+      const infer_ms=performance.now()-t;
+      postMessage({
+        kind:"result",jobId:m.jobId,start:m.start,end:m.end,
+        text:r.text||r.utterance_text||"",infer_ms,
+        worker_delivery_ms:Math.max(0,workerReceivedEpoch-(m.runnerSentEpoch||workerReceivedEpoch)),
+        worker_result_epoch:Date.now()
+      });
     }catch(err){postMessage({kind:"error",stage:"job",jobId:m.jobId,error:String(err?.message||err)})}
   }
 };
