@@ -1,5 +1,9 @@
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const QUALITY_LAG_WORDS=5;
+const SLOT_PX=9;
+const DEFAULT_MIN_LEAD_PX=180;
+const CAMERA_HEAD_RATIO=.80;
+const BAR_VIRTUAL_MARGIN=520;
 
 function words(s){return String(s||'').trim().match(/\S+/gu)||[]}
 function normWord(s){
@@ -52,27 +56,56 @@ function sourceConsumedByPrefix(prefix,source){
 export class TimelineTurn{
  constructor({mount,onChange,onFollow,minLead=20}){
    this.mount=mount;this.onChange=onChange||(()=>{});this.onFollow=onFollow||(()=>{});
-   this.minLead=minLead;this.tokens=[];this.bars=[];this.confirmedCount=0;
-   this.draftRaw=[];this.draftTarget=[];this.qualityRaw=[];
-   this.draftTimer=null;this.qualityTimer=null;this.layoutFrame=0;
-   this.audioClosed=false;this.finalMode=false;this.done=false;this.destroyed=false;
-   this.carry=new Float32Array();this.sampleRate=48000;this.barWindowMs=38;this.head=null;
-   this.frontierIndex=0;this.waitDraft=[];this.waitFinal=[];
+   this.minLeadPx=Math.max(DEFAULT_MIN_LEAD_PX,minLead*SLOT_PX);
+   this.tokens=[];this.confirmedCount=0;this.draftRaw=[];this.draftTarget=[];this.qualityRaw=[];
+   this.draftTimer=null;this.qualityTimer=null;this.cameraFrame=0;this.audioClosed=false;this.finalMode=false;
+   this.done=false;this.destroyed=false;this.visible=true;this.carry=new Float32Array();this.sampleRate=48000;
+   this.barWindowMs=28;this.head=null;this.barSeq=0;this.bars=[];this.virtualCursor=0;
+   this.audioFrontierPx=0;this.draftFrontierPx=0;this.cameraX=0;this.waitDraft=[];this.waitFinal=[];
+   this.measureCanvas=document.createElement('canvas');this.measureCtx=this.measureCanvas.getContext('2d');
    this.#build()
  }
  #build(){
-   this.row=document.createElement('div');this.row.className='timeline-turn recording';
+   this.row=document.createElement('div');this.row.className='timeline-turn live-visible';
    this.stage=document.createElement('div');this.stage.className='flow-stage';
+   this.world=document.createElement('div');this.world.className='rail-world';
    this.barTrack=document.createElement('div');this.barTrack.className='cell-track';
    this.wordLayer=document.createElement('div');this.wordLayer.className='word-layer';
-   this.stage.append(this.barTrack,this.wordLayer);this.row.appendChild(this.stage);this.mount.appendChild(this.row);
-   this.#ensureHead();this.#scheduleLayout()
+   this.world.append(this.barTrack,this.wordLayer);this.stage.appendChild(this.world);this.row.appendChild(this.stage);this.mount.appendChild(this.row);
+   this.#ensureHead();this.#scheduleCamera()
+ }
+ setLiveVisible(flag){
+   this.visible=!!flag;this.row.classList.toggle('live-visible',this.visible);this.row.hidden=!this.visible;
+   if(this.visible)this.#scheduleCamera()
+ }
+ #font(){
+   try{return getComputedStyle(this.wordLayer).font||'430 30px system-ui'}catch{return '430 30px system-ui'}
+ }
+ #measureWord(text){
+   try{this.measureCtx.font=this.#font();return Math.ceil(this.measureCtx.measureText(String(text)+' ').width)}
+   catch{return Math.ceil((String(text).length+1)*16)}
+ }
+ #textWidth(){
+   let x=0;for(const tok of this.tokens)x+=tok.advancePx||this.#measureWord(tok.text);return x
+ }
+ #leadPx(){return Math.max(0,this.audioFrontierPx-this.draftFrontierPx)}
+ #windowMs(){
+   const lead=this.#leadPx();let target=44;
+   if(!this.draftRaw.length)target=24;
+   else if(lead<this.minLeadPx)target=18;
+   else if(lead<this.minLeadPx+90)target=22;
+   else if(lead<this.minLeadPx+180)target=28;
+   else if(lead<this.minLeadPx+320)target=34;
+   this.barWindowMs=this.barWindowMs*.52+target*.48;
+   return this.barWindowMs
  }
  #makeBar(level=.06,head=false){
+   const seq=this.barSeq++,x=seq*SLOT_PX;
    const el=document.createElement('span');el.className='speech-cell'+(head?' live-head':'');
-   el.style.setProperty('--level',Number(level).toFixed(3));
+   el.style.left=x+'px';el.style.setProperty('--level',Number(level).toFixed(3));
    const wave=document.createElement('i');wave.className='wave';el.appendChild(wave);
-   const bar={el,level,head,everCovered:false};this.bars.push(bar);this.barTrack.appendChild(el);return bar
+   const bar={seq,x,el,level,head};this.bars.push(bar);this.barTrack.appendChild(el);
+   this.audioFrontierPx=Math.max(this.audioFrontierPx,(seq+1)*SLOT_PX);return bar
  }
  #ensureHead(){
    if(this.audioClosed||this.head)return;
@@ -83,33 +116,19 @@ export class TimelineTurn{
    this.head.level=level;this.head.head=false;this.head.el.classList.remove('live-head');
    this.head.el.style.setProperty('--level',level.toFixed(3));this.head=null;this.#ensureHead()
  }
- #lead(){
-   const committed=this.bars.length-(this.head?1:0);
-   return Math.max(0,committed-this.frontierIndex)
- }
- #windowMs(){
-   const lead=this.#lead();let target=72;
-   if(!this.draftRaw.length)target=38;
-   else if(lead<this.minLead)target=32;
-   else if(lead<this.minLead+8)target=40;
-   else if(lead<this.minLead+20)target=50;
-   else if(lead<this.minLead+36)target=60;
-   this.barWindowMs=this.barWindowMs*.56+target*.44;
-   return this.barWindowMs
- }
  pushAudio(x,rate){
    if(this.destroyed||this.audioClosed||!x?.length)return;
    this.sampleRate=rate||this.sampleRate;this.carry=concatFloat(this.carry,x);
    let guard=0;
-   while(this.carry.length&&guard++<128){
-     const need=Math.max(128,Math.round(this.sampleRate*this.#windowMs()/1000));
+   while(this.carry.length&&guard++<160){
+     const need=Math.max(96,Math.round(this.sampleRate*this.#windowMs()/1000));
      if(this.carry.length<need)break;
      const part=this.carry.subarray(0,need);this.#commitHead(levelOf(part));this.carry=this.carry.slice(need)
    }
    if(this.head&&this.carry.length){
      const level=levelOf(this.carry);this.head.level=level;this.head.el.style.setProperty('--level',level.toFixed(3))
    }
-   this.#kickDraft();this.#scheduleLayout()
+   this.#kickDraft();this.#scheduleCamera()
  }
  closeAudio(){
    if(this.audioClosed)return;
@@ -117,31 +136,28 @@ export class TimelineTurn{
      if(this.carry.length){
        const level=levelOf(this.carry);this.head.level=level;this.head.el.style.setProperty('--level',level.toFixed(3));
        this.head.el.classList.remove('live-head');this.head.head=false
-     }else{this.head.el.remove();this.bars.pop()}
+     }else{this.head.el.remove();this.bars.pop();this.barSeq=Math.max(0,this.barSeq-1);this.audioFrontierPx=this.barSeq*SLOT_PX}
    }
    this.head=null;this.carry=new Float32Array();this.audioClosed=true;
-   this.row.classList.remove('recording');this.row.classList.add('processing');
-   this.#kickDraft();this.#kickQuality();this.#scheduleLayout()
+   this.row.classList.remove('recording');this.row.classList.add('processing');this.#kickDraft();this.#kickQuality();this.#scheduleCamera()
  }
  setDraft(text){
-   if(this.destroyed)return;
+   if(this.destroyed||this.finalMode)return;
    this.draftRaw=words(text);
    const confirmed=this.tokens.slice(0,this.confirmedCount).map(t=>t.text);
    const consumed=sourceConsumedByPrefix(confirmed,this.draftRaw);
-   this.draftTarget=confirmed.concat(this.draftRaw.slice(consumed));
-   this.#kickDraft()
+   this.draftTarget=confirmed.concat(this.draftRaw.slice(consumed));this.#kickDraft()
  }
  setQuality(text,{final=false}={}){
    if(this.destroyed)return Promise.resolve();
    this.qualityRaw=words(text);
    if(final){this.finalMode=true;this.row.classList.add('finalizing')}
-   this.#kickQuality();
-   return final?this.whenFinal():Promise.resolve()
+   this.#kickQuality();return final?this.whenFinal():Promise.resolve()
  }
  #makeToken(text,status='draft'){
    const el=document.createElement('span');el.className='text-word';
    const label=document.createElement('span');label.className='word-text';el.appendChild(label);
-   const token={text:String(text),status,el};this.#syncToken(token);
+   const token={text:String(text),status,advancePx:this.#measureWord(text),el};this.#syncToken(token);
    requestAnimationFrame(()=>el.classList.add('visible'));return token
  }
  #syncToken(t){
@@ -155,10 +171,16 @@ export class TimelineTurn{
  #removeToken(index){
    const tok=this.tokens[index];if(!tok)return;tok.el.remove();this.tokens.splice(index,1)
  }
- #currentText(){return this.tokens.map(t=>t.text).join(' ').trim()}
- #notify(){this.onChange(this.#currentText());this.onFollow();this.#scheduleLayout()}
+ #updateTokenText(tok,text,status=tok.status){
+   const width=this.#measureWord(text);tok.text=text;tok.status=status;tok.advancePx=Math.max(tok.advancePx||0,width);this.#syncToken(tok)
+ }
+ #recomputeDraftFrontier(){
+   this.draftFrontierPx=Math.max(this.draftFrontierPx,this.#textWidth())
+ }
+ #currentText(){return this.tokens.map(t=>t.text).filter(Boolean).join(' ').trim()}
+ #notify(){this.#recomputeDraftFrontier();this.onChange(this.#currentText());this.onFollow();this.#scheduleCamera()}
  #kickDraft(){
-   if(this.destroyed||this.draftTimer)return;
+   if(this.destroyed||this.draftTimer||this.finalMode)return;
    this.draftTimer=setTimeout(()=>this.#draftStep(),0)
  }
  #draftStep(){
@@ -166,114 +188,94 @@ export class TimelineTurn{
    const floor=this.confirmedCount,current=this.tokens.slice(floor).map(t=>t.text),target=this.draftTarget.slice(floor);
    const ops=alignOps(current,target),op=ops.find(x=>x.type!=='eq');
    if(!op){const w=this.waitDraft.splice(0);w.forEach(r=>r());this.#kickQuality();return}
-   if(!this.audioClosed&&(op.type==='ins'||op.type==='sub')&&this.#lead()<this.minLead+4){
-     this.barWindowMs=32;this.draftTimer=setTimeout(()=>this.#draftStep(),18);return
+   const expected=op.type==='del'?0:this.#measureWord(target[op.bi]||'');
+   if(!this.audioClosed&&(op.type==='ins'||op.type==='sub')&&this.#leadPx()<this.minLeadPx+expected){
+     this.barWindowMs=18;this.draftTimer=setTimeout(()=>this.#draftStep(),16);return
    }
    const index=floor+op.ai;
-   if(op.type==='sub'){
-     const tok=this.tokens[index];tok.text=target[op.bi];tok.status='draft';this.#syncToken(tok)
-   }else if(op.type==='del')this.#removeToken(index);
-   else if(op.type==='ins')this.#insertToken(index,target[op.bi],'draft');
+   if(op.type==='sub')this.#updateTokenText(this.tokens[index],target[op.bi],'draft');
+   else if(op.type==='del')this.#removeToken(index);
+   else this.#insertToken(index,target[op.bi],'draft');
    this.#notify();
-   const distance=Math.abs(target.length-current.length),delay=distance>10?34:distance>4?48:66;
+   const distance=Math.abs(target.length-current.length),delay=distance>10?30:distance>4?42:58;
    this.draftTimer=setTimeout(()=>this.#draftStep(),delay)
  }
  #draftSettled(){
    const a=this.tokens.slice(this.confirmedCount).map(t=>t.text),b=this.draftTarget.slice(this.confirmedCount);
-   if(a.length!==b.length)return false;
-   for(let i=0;i<a.length;i++)if(a[i]!==b[i])return false;return true
+   if(a.length!==b.length)return false;for(let i=0;i<a.length;i++)if(a[i]!==b[i])return false;return true
  }
  #kickQuality(){
-   if(this.destroyed||this.qualityTimer)return;
+   if(this.destroyed||this.qualityTimer||this.done)return;
    this.qualityTimer=setTimeout(()=>this.#qualityStep(),0)
  }
  #qualityStep(){
    this.qualityTimer=null;if(this.destroyed||this.done)return;
    const confirmed=this.tokens.slice(0,this.confirmedCount).map(t=>t.text);
-   const consumed=sourceConsumedByPrefix(confirmed,this.qualityRaw);
-   const qSuffix=this.qualityRaw.slice(consumed);
+   const consumed=sourceConsumedByPrefix(confirmed,this.qualityRaw),qSuffix=this.qualityRaw.slice(consumed);
    const gray=this.tokens.slice(this.confirmedCount).map(t=>t.text);
    if(!this.finalMode&&!qSuffix.length)return;
    const lag=this.finalMode?0:(this.audioClosed?2:QUALITY_LAG_WORDS);
-   if(!this.finalMode&&gray.length<=lag){
-     this.qualityTimer=setTimeout(()=>this.#qualityStep(),70);return
-   }
+   if(!this.finalMode&&gray.length<=lag){this.qualityTimer=setTimeout(()=>this.#qualityStep(),66);return}
    const ops=alignOps(gray,qSuffix);
-   if(!ops.length){
-     if(this.finalMode)this.#finishFinal();
-     return
-   }
+   if(!ops.length){if(this.finalMode)this.#finishFinal();return}
    const op=ops[0],index=this.confirmedCount;
-   if(!this.audioClosed&&!this.finalMode&&this.#lead()<this.minLead+2){
-     this.barWindowMs=32;this.qualityTimer=setTimeout(()=>this.#qualityStep(),28);return
+   if(!this.finalMode&&!this.audioClosed&&this.#leadPx()<this.minLeadPx){
+     this.barWindowMs=18;this.qualityTimer=setTimeout(()=>this.#qualityStep(),24);return
    }
    if(op.type==='del'){
-     if(gray.length<=lag&&!this.finalMode){this.qualityTimer=setTimeout(()=>this.#qualityStep(),70);return}
-     this.#removeToken(index);this.#notify();this.qualityTimer=setTimeout(()=>this.#qualityStep(),58);return
+     if(!this.finalMode&&gray.length<=lag){this.qualityTimer=setTimeout(()=>this.#qualityStep(),66);return}
+     this.#removeToken(index);this.#notify();this.qualityTimer=setTimeout(()=>this.#qualityStep(),50);return
    }
    if(op.type==='ins'){
-     if(!this.finalMode&&gray.length<=lag){this.qualityTimer=setTimeout(()=>this.#qualityStep(),70);return}
+     if(!this.finalMode&&gray.length<=lag){this.qualityTimer=setTimeout(()=>this.#qualityStep(),66);return}
      const tok=this.#insertToken(index,qSuffix[0],'confirmed');tok.status='confirmed';this.#syncToken(tok);
-     this.confirmedCount++;this.#notify();this.qualityTimer=setTimeout(()=>this.#qualityStep(),62);return
+     this.confirmedCount++;this.#notify();this.qualityTimer=setTimeout(()=>this.#qualityStep(),54);return
    }
    let tok=this.tokens[index];
    if(!tok){
-     if(!this.finalMode){this.qualityTimer=setTimeout(()=>this.#qualityStep(),70);return}
+     if(!this.finalMode){this.qualityTimer=setTimeout(()=>this.#qualityStep(),66);return}
      tok=this.#insertToken(index,qSuffix[0],'confirmed')
    }
-   tok.text=qSuffix[0];tok.status='confirmed';this.#syncToken(tok);this.confirmedCount++;this.#notify();
-   const backlog=qSuffix.length-1,delay=backlog>18?34:backlog>7?48:68;
+   this.#updateTokenText(tok,qSuffix[0],'confirmed');this.confirmedCount++;this.#notify();
+   const backlog=qSuffix.length-1,delay=backlog>18?30:backlog>7?42:58;
    this.qualityTimer=setTimeout(()=>this.#qualityStep(),delay)
  }
  #finishFinal(){
+   const current=this.tokens.map(t=>normWord(t.text)),target=this.qualityRaw.map(normWord);
+   const exact=current.length===target.length&&current.every((v,i)=>v===target[i]);
+   if(!exact){this.qualityTimer=setTimeout(()=>this.#qualityStep(),0);return}
    this.done=true;this.finalMode=false;this.confirmedCount=this.tokens.length;
    for(const tok of this.tokens){tok.status='confirmed';this.#syncToken(tok)}
-   this.row.classList.remove('processing','finalizing');this.row.classList.add('done');
-   this.#notify();const w=this.waitFinal.splice(0);w.forEach(r=>r())
+   this.row.classList.remove('processing','finalizing');this.row.classList.add('done');this.#notify();
+   const w=this.waitFinal.splice(0);w.forEach(r=>r())
  }
- #scheduleLayout(){
-   if(this.destroyed||this.layoutFrame)return;
-   this.layoutFrame=requestAnimationFrame(()=>{this.layoutFrame=0;this.#layout()})
+ #scheduleCamera(){
+   if(this.destroyed||this.cameraFrame)return;
+   this.cameraFrame=requestAnimationFrame(()=>{this.cameraFrame=0;this.#updateCamera()})
  }
- #layout(){
+ #updateCamera(){
    if(!this.stage?.isConnected)return;
-   const stageRect=this.stage.getBoundingClientRect();
-   const lineH=parseFloat(getComputedStyle(this.wordLayer).lineHeight)||34;
-   const tokenRects=this.tokens.map(t=>t.el.getBoundingClientRect()).filter(r=>r.width>0&&r.height>0);
-   const buckets=new Map();
-   for(const r of tokenRects){
-     const a=Math.floor((r.top-stageRect.top+1)/lineH),b=Math.floor((r.bottom-stageRect.top-1)/lineH);
-     for(let line=a;line<=b;line++){if(!buckets.has(line))buckets.set(line,[]);buckets.get(line).push(r)}
+   const viewport=Math.max(1,this.stage.clientWidth),headX=this.audioFrontierPx;
+   const next=Math.max(0,headX-viewport*CAMERA_HEAD_RATIO);
+   this.cameraX=Math.max(this.cameraX,next);
+   const worldWidth=Math.max(viewport,headX+viewport*.25,this.draftFrontierPx+80);
+   this.world.style.width=worldWidth+'px';this.world.style.transform='translate3d('+(-this.cameraX)+'px,0,0)';
+   while(this.virtualCursor<this.bars.length){
+     const bar=this.bars[this.virtualCursor];
+     if(bar.x>=this.cameraX-BAR_VIRTUAL_MARGIN)break;
+     if(bar.el.isConnected)bar.el.remove();this.virtualCursor++
    }
-   let geometryFrontier=this.frontierIndex;
-   let lastRect=tokenRects[tokenRects.length-1]||null,lastLine=lastRect?Math.floor((lastRect.top-stageRect.top+1)/lineH):-1;
-   for(let i=0;i<this.bars.length;i++){
-     const bar=this.bars[i],r=bar.el.getBoundingClientRect(),cx=(r.left+r.right)/2,cy=(r.top+r.bottom)/2;
-     const line=Math.floor((cy-stageRect.top)/lineH),rects=buckets.get(line)||[];
-     let covered=bar.everCovered;
-     if(!covered){
-       for(const wr of rects){
-         if(cx>=wr.left-2&&cx<=wr.right+2&&cy>=wr.top-1&&cy<=wr.bottom+1){covered=true;break}
-       }
-     }
-     if(covered)bar.everCovered=true;
-     bar.el.classList.toggle('covered',bar.everCovered);
-     if(lastRect&&(line<lastLine||(line===lastLine&&cx<=lastRect.right+2)))geometryFrontier=Math.max(geometryFrontier,i+1)
-   }
-   this.frontierIndex=Math.max(this.frontierIndex,geometryFrontier);
-   this.stage.style.height=Math.max(40,this.barTrack.scrollHeight,this.wordLayer.scrollHeight)+'px'
  }
  whenDraftSettled(timeout=1800){
    if(this.#draftSettled())return Promise.resolve();
    return new Promise(r=>{this.waitDraft.push(r);setTimeout(r,timeout)})
  }
  whenFinal(){
-   if(this.done)return Promise.resolve();
-   return new Promise(r=>this.waitFinal.push(r))
+   if(this.done)return Promise.resolve();return new Promise(r=>this.waitFinal.push(r))
  }
  getText(){return this.#currentText()}
  destroy(){
    this.destroyed=true;clearTimeout(this.draftTimer);clearTimeout(this.qualityTimer);
-   if(this.layoutFrame)cancelAnimationFrame(this.layoutFrame);this.row.remove()
+   if(this.cameraFrame)cancelAnimationFrame(this.cameraFrame);this.row.remove()
  }
 }
