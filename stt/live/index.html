@@ -42,17 +42,18 @@ main{min-height:100svh;max-width:920px;margin:auto;padding:calc(env(safe-area-in
 .timeline::-webkit-scrollbar{display:none}
 .timeline-turn{width:100%;padding:8px 0 13px;opacity:1;transition:opacity .25s ease}
 .timeline-turn+.timeline-turn{border-top:1px solid rgba(255,255,255,.035);padding-top:14px}
-.cell-track{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;align-content:flex-start;gap:3px 1px;min-height:38px}
-.speech-cell{position:relative;display:inline-grid;place-items:center;width:10px;height:36px;flex:0 0 10px;contain:layout paint;transform:translateZ(0);animation:cellIn .18s cubic-bezier(.2,.8,.2,1) both}
-.speech-cell .wave{position:absolute;left:50%;top:50%;width:6px;height:calc(3px + var(--level, .1) * 27px);border-radius:99px;background:rgba(255,255,255,.42);transform:translate(-50%,-50%) scaleY(1);transform-origin:50% 50%;transition:opacity .18s ease,background .18s ease}
-.speech-cell .glyph{position:relative;z-index:2;font:600 12px/1 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:#f7f7f8;opacity:0;transform:translate3d(0,4px,0) scale(.92);transition:opacity .12s ease,transform .16s cubic-bezier(.2,.8,.2,1)}
-.speech-cell.resolved .wave{opacity:.16;background:#fff}
-.speech-cell.resolved .glyph{opacity:1;transform:translate3d(0,0,0) scale(1)}
-.speech-cell.space .glyph{opacity:0}
-.speech-cell.resolved-empty .wave{opacity:.22}
+.cell-track{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;align-content:flex-start;gap:2px 1px;min-height:34px;margin-bottom:7px}
+.speech-cell{position:relative;display:inline-grid;place-items:center;width:8px;height:32px;flex:0 0 8px;contain:layout paint;transform:translateZ(0);animation:cellIn .18s cubic-bezier(.2,.8,.2,1) both}
+.speech-cell .wave{position:absolute;left:50%;top:50%;width:5px;height:calc(3px + var(--level, .1) * 25px);border-radius:99px;background:rgba(255,255,255,.34);transform:translate(-50%,-50%) scaleY(1);transform-origin:50% 50%;transition:opacity .18s ease,background .18s ease}
+.speech-cell.resolved .wave{opacity:.13;background:#fff}
+.speech-cell.resolved-empty .wave{opacity:.18}
 .speech-cell.frontier .wave{animation:frontierBreath .9s ease-in-out infinite}
-.speech-cell.synthetic .wave{opacity:.18}
-.timeline-turn.done{opacity:.92}
+.speech-cell.synthetic .wave{opacity:.15}
+.text-line{max-width:760px;margin:0 auto;text-align:left;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:clamp(20px,3vw,30px);line-height:1.38;font-weight:430;letter-spacing:normal;word-spacing:normal;white-space:pre-wrap;overflow-wrap:anywhere;color:#f3f3f5}
+.text-char{display:inline;opacity:0;color:#a0a0a6;transform:translateY(2px);transition:color .18s ease,opacity .13s ease}
+.text-char.visible{opacity:1}
+.text-char.confirmed{color:#f7f7f8}
+.timeline-turn.done{opacity:.94}
 @keyframes cellIn{from{opacity:0;transform:translate3d(0,5px,0) scaleY(.55)}to{opacity:1;transform:translate3d(0,0,0) scaleY(1)}}
 @keyframes frontierBreath{0%,100%{opacity:.24}50%{opacity:.72}}
 .actions{display:flex;justify-content:center;gap:7px;min-height:35px;margin-top:8px}
@@ -124,7 +125,8 @@ main{min-height:100svh;max-width:920px;margin:auto;padding:calc(env(safe-area-in
  .orbwrap{width:164px;height:164px}
  .orb{width:122px;height:122px}
  .timeline{min-height:150px;max-height:38svh;padding-left:0;padding-right:0}
- .speech-cell{width:9px;flex-basis:9px}
+ .speech-cell{width:7px;flex-basis:7px}
+ .text-line{font-size:21px;line-height:1.42}
  .hint{font-size:9px}
 }
 </style>
@@ -215,7 +217,7 @@ main{min-height:100svh;max-width:920px;margin:auto;padding:calc(env(safe-area-in
   </details>
 </main>
 <script type="module">
-const $=id=>document.getElementById(id),BUILD='STT-LIVE-V4.7-20260929',LIVE_DB='stt-live-v3',LIVE_STORE='runs',LIVE_KEY='golden';
+const $=id=>document.getElementById(id),BUILD='STT-LIVE-V4.8-20260929',LIVE_DB='stt-live-v3',LIVE_STORE='runs',LIVE_KEY='golden';
 const advancedEl=document.querySelector('.advanced');
 let paintFrame=0,pendingPaint='',asrWorker=null,asrInitPromise=null,asrReady=false,asrBackend='—',asrReq=0,asrPending=new Map(),asrRetryTimer=null;
 const TEST_TEXT=$('reference').textContent.trim();
@@ -256,16 +258,26 @@ function levelFromPcm(x){
 function ensureTurnDom(turn){
  if(turn.el?.isConnected)return turn.el;
  const row=document.createElement('div');row.className='timeline-turn '+(turn.state||'recording');row.dataset.turn=turn.id;
- const track=document.createElement('div');track.className='cell-track';row.appendChild(track);
- $('timeline').appendChild(row);turn.el=row;turn.track=track;return row
+ const track=document.createElement('div');track.className='cell-track';
+ const line=document.createElement('div');line.className='text-line';
+ row.append(track,line);$('timeline').appendChild(row);
+ turn.el=row;turn.track=track;turn.textLine=line;turn.charEls=[];return row
 }
 function makeCell(turn,level,synthetic=false){
  ensureTurnDom(turn);
- const cell={level,glyph:'',resolved:false,synthetic};
+ const cell={level,resolved:false,synthetic};
  const el=document.createElement('span');el.className='speech-cell'+(synthetic?' synthetic':'');el.style.setProperty('--level',level.toFixed(3));
- const wave=document.createElement('i');wave.className='wave';
- const glyph=document.createElement('b');glyph.className='glyph';
- el.append(wave,glyph);turn.track.appendChild(el);cell.el=el;cell.glyphEl=glyph;turn.cells.push(cell);return cell
+ const wave=document.createElement('i');wave.className='wave';el.appendChild(wave);
+ turn.track.appendChild(el);cell.el=el;turn.cells.push(cell);return cell
+}
+function ensureCharEl(turn,index,ch){
+ ensureTurnDom(turn);
+ let el=turn.charEls[index];
+ if(!el){
+   el=document.createElement('span');el.className='text-char';
+   turn.charEls[index]=el;turn.textLine.appendChild(el)
+ }
+ el.textContent=ch;return el
 }
 function refreshFrontier(turn){
  if(!turn?.cells)return;
@@ -291,8 +303,12 @@ function ensureTextCapacity(turn,n){
 }
 function clearCellFrom(turn,start){
  for(let i=start;i<turn.cells.length;i++){
-   const c=turn.cells[i];c.glyph='';c.resolved=false;c.el?.classList.remove('resolved','space','resolved-empty');if(c.glyphEl)c.glyphEl.textContent=''
+   const c=turn.cells[i];c.resolved=false;c.el?.classList.remove('resolved','resolved-empty')
  }
+ for(let i=start;i<(turn.charEls?.length||0);i++){
+   const el=turn.charEls[i];if(el){el.remove();turn.charEls[i]=null}
+ }
+ if(turn.charEls)turn.charEls.length=start
 }
 function revealOne(turn){
  const target=turn.targetText||'',index=turn.revealed.length;
@@ -305,11 +321,18 @@ function revealOne(turn){
    refreshFrontier(turn);paintCombined();return
  }
  ensureTextCapacity(turn,target.length);
- const ch=target[index],c=turn.cells[index];c.glyph=ch;c.resolved=true;c.glyphEl.textContent=ch===' ' ? '' : ch;
- c.el.classList.add('resolved');c.el.classList.toggle('space',ch===' ');c.el.classList.remove('frontier');
+ const ch=target[index],c=turn.cells[index];c.resolved=true;c.el.classList.add('resolved');c.el.classList.remove('frontier');
+ const glyph=ensureCharEl(turn,index,ch);requestAnimationFrame(()=>glyph.classList.add('visible'));
+ if(turn.final)glyph.classList.add('confirmed');
  turn.revealed+=ch;paintCombined();
  const backlog=target.length-turn.revealed.length,delay=backlog>45?18:backlog>18?25:36;
  const timer=setTimeout(()=>revealOne(turn),delay);revealTimers.set(turn.id,timer)
+}
+function confirmExisting(turn){
+ if(!turn?.charEls)return;
+ let i=0;const els=turn.charEls.filter(Boolean);
+ const tick=()=>{for(let n=0;n<3&&i<els.length;n++,i++)els[i].classList.add('confirmed');if(i<els.length)setTimeout(tick,22)};
+ tick()
 }
 function setTurnTarget(turn,target,final=false){
  if(!turn)return;target=String(target||'');
@@ -317,11 +340,12 @@ function setTurnTarget(turn,target,final=false){
  while(common<limit&&old[common]===target[common])common++;
  if(common<old.length){clearTimeout(revealTimers.get(turn.id));revealTimers.delete(turn.id);clearCellFrom(turn,common);turn.revealed=old.slice(0,common)}
  turn.targetText=target;turn.text=target;turn.final=!!final;ensureTextCapacity(turn,target.length);refreshFrontier(turn);paintCombined();
+ if(final)confirmExisting(turn);
  if(!revealTimers.has(turn.id)&&turn.revealed.length<target.length)revealOne(turn);
  else if(final&&turn.revealed.length>=target.length)revealOne(turn)
 }
 function newTurn(){
- const turn={id:++turnSeq,text:'',targetText:'',revealed:'',cells:[],state:'recording',final:false};
+ const turn={id:++turnSeq,text:'',targetText:'',revealed:'',cells:[],charEls:[],state:'recording',final:false};
  transcriptTurns.push(turn);ensureTurnDom(turn);return turn
 }
 function resetTimeline(){
