@@ -51,7 +51,15 @@ function sim(a,b){const A=norm(a),B=norm(b),n=Math.max(A.length,B.length,1),d=Ar
 function merge(a,b){if(!a)return b;if(!b)return a;const A=a.split(/\s+/),B=b.split(/\s+/),na=norm(a),nb=norm(b);let best=0;for(let k=1;k<=Math.min(30,na.length,nb.length);k++){let ok=0;for(let i=0;i<k;i++)if(na[na.length-k+i]===nb[i])ok++;if(ok/k>=.8)best=k}return(A.join(' ')+' '+B.slice(best).join(' ')).trim()}
 function setp(p,status,phase,detail){p=Math.max(0,Math.min(100,p));$('bar').style.width=p+'%';$('pct').textContent=Math.round(p)+'%';if(status)$('status').textContent=status;if(phase)$('phase').textContent=phase;if(detail)$('detail').textContent=detail}
 function renderLanes(){$('lanes').innerHTML=states.map((s,i)=>'<div class="lane"><b>Motor '+(i+1)+'</b><div class="'+(s.busy?'work':'')+'">'+(s.error?'error':s.busy?'Transcribiendo':s.ready?'Listo':'abierto, modelo no cargado')+'</div><div class="note">'+(s.load_ms?('modelo '+(s.load_ms/1000).toFixed(1)+'s'):'')+'</div></div>').join('')}
-function renderBench(){const rows=bench.filter(x=>x.kind?.startsWith('tabs')||x.kind==='chunk-prior'||x.kind==='chunk');if(!rows.length)return;$('benchRows').innerHTML=rows.map(x=>{if(x.kind==='chunk-prior')return '<div class="row"><b>bloque '+x.chunk+'s</b><span>reutilizado</span><span>Fast</span><span>✓</span></div>';if(x.kind==='chunk')return '<div class="row"><b>bloque '+x.chunk+'s</b><span>'+x.throughput.toFixed(2)+'×</span><span>'+Math.round((x.agreement||0)*100)+'%</span><span>medido</span></div>';return '<div class="row"><b>'+x.tabs+' tab'+(x.tabs>1?'s':'')+' · '+x.kind.replace('tabs-','')+'</b><span>'+Number((x.throughput??x.throughput_median) || 0).toFixed(2)+'×</span><span>'+Math.round((x.agreement||1)*100)+'%</span><span>'+(x.unsafe?'insegura':'ok')+'</span></div>'}).join('')}
+function renderBench(){
+ const rows=bench.filter(x=>x.kind==='chunk-prior'||x.kind==='chunk'||x.kind==='tier');
+ if(!rows.length)return;
+ $('benchRows').innerHTML=rows.map(x=>{
+   if(x.kind==='chunk-prior')return '<div class="row"><b>bloque '+x.chunk+'s</b><span>reutilizado</span><span>Fast</span><span>✓</span></div>';
+   if(x.kind==='chunk')return '<div class="row"><b>bloque '+x.chunk+'s</b><span>'+x.throughput.toFixed(2)+'×</span><span>'+Math.round((x.agreement||0)*100)+'%</span><span>medido</span></div>';
+   return '<div class="row"><b>'+x.tier+' · '+x.tabs+' tab'+(x.tabs>1?'s':'')+'</b><span>'+Number(x.throughput||0).toFixed(2)+'×</span><span>'+Math.round((x.utilization||0)*100)+'% util</span><span>'+(x.valid?'ok':'inválida')+'</span></div>'
+ }).join('')
+}
 function renderMap(){$('map').innerHTML=blocks.map(b=>'<div class="cell '+(b.status==='done'?'done':b.status==='active'?'active':b.status==='error'?'error':'')+'"></div>')}
 function renderText(){let out='';for(const b of blocks)if(b.status==='done'&&b.text)out=merge(out,b.text);$('out').value=out;$('copy').disabled=!out}
 function updateStats(){if(!startWall)return;const elapsed=(performance.now()-startWall)/1000,done=blocks.filter(b=>b.status==='done'),audio=done.reduce((a,b)=>a+(b.end-b.start),0);$('speed').textContent=elapsed?(audio/elapsed).toFixed(2)+'×':'—';$('wordsMin').textContent=elapsed?Math.round(totalWords/(elapsed/60)):'—';const life=states.reduce((a,s)=>a+(s.readyAt?performance.now()-s.readyAt:0),0),busy=states.reduce((a,s)=>a+(s.busyMs||0),0);$('util').textContent=life?Math.round(100*busy/life)+'%':'—'}
@@ -73,6 +81,27 @@ ch.onmessage=e=>{const m=e.data||{};if(m.slot==null)return;while(states.length<=
  else if(m.kind==='runner_dispatch'){const p=pending.get(m.jobId);if(p){p.channel_delivery_ms=m.channel_delivery_ms;p.runner_post_ms=m.runner_post_ms}}
  else if(m.kind==='result'){const p=pending.get(m.jobId);if(!p)return;pending.delete(m.jobId);const ended=performance.now(),wall_ms=ended-p.t;s.busy=false;s.busyMs+=wall_ms;s.lastResultAt=ended;p.resolve({...m,controller_wall_ms:wall_ms,copy_ms:p.copy_ms,send_call_ms:p.send_call_ms||0,idle_gap_ms:p.idle_gap_ms,channel_delivery_ms:p.channel_delivery_ms??null,runner_post_ms:p.runner_post_ms??null,result_return_ms:m.worker_result_epoch?Math.max(0,Date.now()-m.worker_result_epoch):null,overhead_ms:Math.max(0,wall_ms-(m.infer_ms||0))});renderLanes()}};
 function samples(n,sec){const a=[];for(let i=0;i<n;i++){const center=duration*(i+.5)/n,start=Math.max(0,Math.min(duration-sec,center-sec/2));a.push({idx:i,start,end:Math.min(duration,start+sec)})}return a}
+function pct(a,p){const s=a.filter(Number.isFinite).sort((x,y)=>x-y);if(!s.length)return 0;return s[Math.min(s.length-1,Math.floor((s.length-1)*p))]}
+function summarizeRun(tier,tabs,jobs,wall_ms){
+ const audio_s=jobs.reduce((a,x)=>a+Math.max(0,(x.end??x.job?.end??0)-(x.start??x.job?.start??0)),0);
+ const walls=jobs.map(x=>+x.controller_wall_ms||0),inf=jobs.map(x=>+x.infer_ms||0),copy=jobs.map(x=>+x.copy_ms||0),send=jobs.map(x=>+x.send_call_ms||0),channel=jobs.map(x=>+x.channel_delivery_ms||0),runnerPost=jobs.map(x=>+x.runner_post_ms||0),workerDelivery=jobs.map(x=>+x.worker_delivery_ms||0),returnMs=jobs.map(x=>+x.result_return_ms||0),idle=jobs.map(x=>+x.idle_gap_ms||0),over=jobs.map(x=>+x.overhead_ms||0);
+ const throughput=audio_s/Math.max(.001,wall_ms/1000),utilization=walls.reduce((a,b)=>a+b,0)/Math.max(1,tabs*wall_ms);
+ const maxJob=Math.max(0,...walls),valid=jobs.length>0&&wall_ms>=maxJob*.95&&throughput>0&&throughput<50&&inf.every(x=>x>=0)&&jobs.every(x=>!x.error);
+ return {kind:'tier',tier,tabs,audio_s,wall_ms,throughput,utilization,valid,jobs:jobs.length,
+  p50_infer_ms:pct(inf,.5),p95_infer_ms:pct(inf,.95),p50_wall_ms:pct(walls,.5),p95_wall_ms:pct(walls,.95),
+  p50_copy_ms:pct(copy,.5),p95_copy_ms:pct(copy,.95),p50_send_ms:pct(send,.5),p95_send_ms:pct(send,.95),
+  p50_channel_ms:pct(channel,.5),p95_channel_ms:pct(channel,.95),p50_runner_post_ms:pct(runnerPost,.5),p95_runner_post_ms:pct(runnerPost,.95),
+  p50_worker_delivery_ms:pct(workerDelivery,.5),p95_worker_delivery_ms:pct(workerDelivery,.95),p50_return_ms:pct(returnMs,.5),p95_return_ms:pct(returnMs,.95),
+  p50_idle_ms:pct(idle,.5),p95_idle_ms:pct(idle,.95),p50_overhead_ms:pct(over,.5),p95_overhead_ms:pct(over,.95),
+  event_loop_lag_p95_ms:pct(lagSamples,.95)
+ }
+}
+function renderProfile(row){
+ if(!row){$('profileRows').innerHTML='<div class="note">Sin perfil todavía.</div>';return}
+ const vals=[['infer p50',row.p50_infer_ms],['infer p95',row.p95_infer_ms],['overhead p50',row.p50_overhead_ms],['overhead p95',row.p95_overhead_ms],['copy p50',row.p50_copy_ms],['channel p50',row.p50_channel_ms],['idle p95',row.p95_idle_ms],['event-loop lag p95',row.event_loop_lag_p95_ms]];
+ $('profileRows').innerHTML=vals.map(([k,v])=>'<div class="row"><b>'+k+'</b><span>'+Number(v||0).toFixed(1)+' ms</span><span></span><span></span></div>').join('')+
+ '<div class="row"><b>model load total</b><span>'+states.slice(0,row.tabs).reduce((a,s)=>a+(s.load_ms||0),0).toFixed(0)+' ms</span><span></span><span></span></div>'
+}
 async function runQueue(active,jobs,chunk,onResult=null){let cursor=0,done=0;const started=performance.now(),outputs=[];return await new Promise(resolve=>{const dispatch=async slot=>{if(cursor>=jobs.length){if(done>=jobs.length)resolve({wall_ms:performance.now()-started,outputs});return}const job=jobs[cursor++];try{const r=await requestJob(slot,job,chunk);outputs.push({job,...r});done++;if(onResult)await onResult(job,r,slot);dispatch(slot)}catch(e){done++;if(onResult)await onResult(job,{error:String(e)},slot);dispatch(slot)}};active.forEach(dispatch)})}
 async function warm(i){const s=Math.max(0,Math.min(duration-5,duration*.12));await requestJob(i,{idx:'warm',start:s,end:s+5},30)}
 async function prepareChunk(){if(+fastState?.winner){blockS=+fastState.winner;stepS=Math.max(10,blockS-3);if(!bench.some(x=>x.kind==='chunk-prior'))bench.push({kind:'chunk-prior',chunk:blockS});$('bestChunk').textContent=blockS+'s';renderBench();return}await initSlot(0);await warm(0);const cs=[30,60,90],sample=Math.min(35,Math.max(20,duration/200)),start=Math.max(0,Math.min(duration-sample,duration*.35)),texts=[];for(const c of cs){const t=performance.now(),r=await requestJob(0,{start,end:start+sample},c),wall=performance.now()-t;bench.push({kind:'chunk',chunk:c,throughput:sample/(wall/1000),text:r.text||''});texts.push(r.text||'');await putLab({force:true})}const rs=bench.filter(x=>x.kind==='chunk');for(let i=0;i<rs.length;i++)rs[i].agreement=texts.filter((_,j)=>j!==i).reduce((a,x)=>a+sim(texts[i],x),0)/Math.max(1,texts.length-1);const best=[...rs].filter(x=>x.agreement>=.85).sort((a,b)=>b.throughput-a.throughput)[0]||[...rs].sort((a,b)=>b.throughput-a.throughput)[0];blockS=best.chunk;stepS=Math.max(10,blockS-3);$('bestChunk').textContent=blockS+'s';renderBench()}
