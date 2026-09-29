@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="es"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="dark"><meta http-equiv="Cache-Control" content="no-cache,no-store,must-revalidate">
+<title>STT Conflict Review</title>
+<style>
+:root{--bg:#07090b;--p:#0e1317;--p2:#101820;--line:#27343d;--fg:#f4f7f9;--mut:#8d9aa5;--ok:#77e39b;--warn:#ffd166;--bad:#ff7b7b;--blue:#8ab8ff}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--fg);font:14px/1.48 system-ui,-apple-system,Segoe UI,sans-serif}
+main{max-width:1050px;margin:auto;padding:12px 12px 80px}header{position:sticky;top:0;z-index:20;background:rgba(7,9,11,.96);backdrop-filter:blur(12px);padding:10px 0;border-bottom:1px solid #192127}
+h1{margin:0;font-size:25px}.sub,.note{font-size:10px;color:var(--mut)}.panel{background:var(--p);border:1px solid var(--line);border-radius:14px;padding:13px;margin-top:10px}
+.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:7px}.stat{background:#090d10;border:1px solid #202c34;border-radius:10px;padding:9px}.stat b{display:block;font-size:18px}.stat span{font-size:9px;color:var(--mut)}
+.bar{height:10px;background:#080c0f;border:1px solid var(--line);border-radius:99px;overflow:hidden}.bar i{display:block;height:100%;background:var(--ok);width:0}.actions,.meta{display:flex;gap:7px;flex-wrap:wrap;margin-top:9px}
+button,label.btn{border:1px solid var(--line);background:#172027;color:var(--fg);padding:9px 11px;border-radius:9px;font:inherit;cursor:pointer}.primary{background:#eef5ff!important;color:#081018!important;border-color:#eef5ff!important;font-weight:850}.warnbtn{border-color:#705d27;color:var(--warn)}
+.pill{border:1px solid var(--line);border-radius:99px;padding:4px 7px;color:var(--mut);font-size:9px}.pill.warn{color:var(--warn)}.pill.ok{color:var(--ok)}.pill.bad{color:var(--bad)}
+.conflict{font-size:22px;font-weight:850}.consensus{font-size:17px;line-height:1.7;background:#090d10;border:1px solid #202c34;border-radius:11px;padding:12px;margin-top:9px}
+.disagree{color:var(--warn);text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:3px;background:rgba(255,209,102,.06)}
+.hyps{display:grid;gap:6px;margin-top:9px}.hyp{background:#090d10;border:1px solid #202c34;border-radius:10px;padding:9px}.hyp .src{font-size:9px;color:var(--blue);margin-bottom:4px}.hyp .txt{font-size:12px}
+textarea{width:100%;min-height:115px;background:#080c0f;color:var(--fg);border:1px solid var(--line);border-radius:10px;padding:10px;font:14px/1.5 system-ui;margin-top:9px}
+.queue{display:grid;gap:5px;max-height:260px;overflow:auto}.q{display:grid;grid-template-columns:70px 1fr 60px;gap:8px;align-items:center;padding:6px 7px;border:1px solid #202c34;border-radius:8px;background:#090d10;font-size:10px;cursor:pointer}.q.current{border-color:#79652d}.q.reviewed{opacity:.55}.q .mini{height:6px;background:#161f25;border-radius:99px;overflow:hidden}.q .mini i{display:block;height:100%;background:var(--warn)}
+#player{width:100%;margin-top:9px}.schema{font:11px/1.45 ui-monospace,SFMono-Regular,Consolas,monospace;background:#090d10;border:1px solid #202c34;border-radius:10px;padding:9px;white-space:pre-wrap;color:#aeb8c0}
+@media(max-width:760px){.stats{grid-template-columns:repeat(2,1fr)}.q{grid-template-columns:62px 1fr 48px}}
+</style></head><body><main>
+<header><h1>STT Conflict Review</h1><div class="sub">Revisión humana rápida: conflictos primero, audio exacto, decisión persistente y export limpio.</div></header>
+
+<section class="panel">
+<div id="status" class="conflict">Cargando transcripciones locales…</div>
+<div class="bar"><i id="reviewBar"></i></div>
+<div class="stats" style="margin-top:10px">
+<div class="stat"><b id="nBlocks">—</b><span>bloques</span></div>
+<div class="stat"><b id="nConflicts">—</b><span>conflictos</span></div>
+<div class="stat"><b id="nSources">—</b><span>fuentes</span></div>
+<div class="stat"><b id="nReviewed">—</b><span>revisados</span></div>
+<div class="stat"><b id="reviewRate">—</b><span>segundos/conflicto</span></div>
+</div>
+<div class="actions"><button id="exportTxt" class="primary" disabled>Exportar texto limpio</button><button id="exportJson" disabled>Exportar revisión JSON</button><label class="btn" for="importJson">Importar hipótesis externas</label><input id="importJson" type="file" accept=".json,application/json" hidden></div>
+<div class="note">Lee Observatory, Fast y Booster del mismo navegador. Más adelante cualquier modelo externo puede entrar con el mismo esquema de hipótesis.</div>
+</section>
+
+<section class="panel">
+<div class="meta"><span id="where" class="pill warn">—</span><span id="score" class="pill">—</span><span id="support" class="pill">—</span><span id="speaker" class="pill">speaker: desconocido</span></div>
+<div id="consensus" class="consensus">Todavía no hay conflicto seleccionado.</div>
+<div id="hyps" class="hyps"></div>
+<audio id="player" controls preload="metadata"></audio>
+<div class="actions">
+<button id="playExact">▶ escuchar bloque</button><button id="playContext">▶ contexto ±5s</button>
+<button id="accept" class="primary">Aceptar consenso + siguiente</button><button id="inaudible" class="warnbtn">No se entiende + siguiente</button><button id="speakerChange">Otro hablante</button>
+</div>
+<textarea id="edit" placeholder="Podés corregir manualmente. Si escribís acá, esa versión gana al exportar."></textarea>
+<div class="actions"><button id="saveEdit">Guardar corrección + siguiente</button><button id="skip">Siguiente sin decidir</button></div>
+</section>
+
+<section class="panel"><b>Cola de revisión, más conflictivo primero</b><div id="queue" class="queue" style="margin-top:8px"></div></section>
+
+<section class="panel"><b>Contrato para modelos futuros</b>
+<div class="schema">[
+  {
+    "source": "groq-whisper-large-v3",
+    "start": 915.0,
+    "end": 975.0,
+    "text": "texto de esa región",
+    "confidence": 0.91,
+    "speaker": "opcional"
+  }
+]</div>
+<div class="note">Importar esto agrega otra familia de evidencia sin cambiar la interfaz de revisión.</div>
+</section>
+
+<script type="module">
+const $=id=>document.getElementById(id),FAST_DB='stt-fast-v1',FAST_STORE='jobs',OBS_DB='stt-observatory-v2',OBS_STORE='runs',REV_DB='stt-review-v1',REV_STORE='state';
+let fast=null,obs=null,audioUrl=null,groups=[],current=0,decisions={},external=[],reviewStarted=0,playTimer=null;
+
+function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+function normWord(s){return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9ñ]/gi,'')}
+function words(s){return String(s||'').trim().split(/\s+/).filter(Boolean)}
+function fmt(s){s=Math.max(0,+s||0);return Math.floor(s/60)+':'+String(Math.round(s%60)).padStart(2,'0')}
+function levenshtein(A,B){A=words(A).map(normWord).filter(Boolean);B=words(B).map(normWord).filter(Boolean);const d=Array.from({length:B.length+1},(_,i)=>i);for(let i=1;i<=A.length;i++){let p=d[0];d[0]=i;for(let j=1;j<=B.length;j++){const t=d[j];d[j]=Math.min(d[j]+1,d[j-1]+1,p+(A[i-1]===B[j-1]?0:1));p=t}}return d[B.length]}
+function sim(a,b){const n=Math.max(words(a).length,words(b).length,1);return 1-levenshtein(a,b)/n}
+function iou(a,b){const x=Math.max(0,Math.min(a.end,b.end)-Math.max(a.start,b.start)),u=Math.max(a.end,b.end)-Math.min(a.start,b.start);return u?x/u:0}
+function openDB(name,store){return new Promise((res,rej)=>{const q=indexedDB.open(name,1);q.onupgradeneeded=()=>{if(!q.result.objectStoreNames.contains(store))q.result.createObjectStore(store,{keyPath:'key'})};q.onsuccess=()=>res(q.result);q.onerror=()=>rej(q.error)})}
+async function getDB(name,store,key='current'){try{const db=await openDB(name,store),v=await new Promise((res,rej)=>{const q=db.transaction(store,'readonly').objectStore(store).get(key);q.onsuccess=()=>res(q.result||null);q.onerror=()=>rej(q.error)});db.close();return v}catch{return null}}
+async function putReview(){try{const db=await openDB(REV_DB,REV_STORE);await new Promise((res,rej)=>{const tx=db.transaction(REV_STORE,'readwrite');tx.objectStore(REV_STORE).put({key:'current',decisions,external,updated_at:new Date().toISOString()});tx.oncomplete=res;tx.onerror=()=>rej(tx.error)});db.close()}catch{}}
+function booster(){try{const x=JSON.parse(localStorage.getItem('stt_boost_chunks_v1')||'null');return Array.isArray(x?.chunks)?x.chunks.map(([i,c])=>({source:'booster',start:+c.start,end:+c.end,text:c.text||'',confidence:null,speaker:null})):[]}catch{return[]}}
+function sources(){const out=[];for(const b of obs?.blocks||[])if(b.status==='done'&&b.text)out.push({source:'observatory',start:+b.start,end:+b.end,text:b.text,confidence:null,speaker:null});for(const c of fast?.chunks||[])if(c.text)out.push({source:'fast',start:+c.start,end:+c.end,text:c.text,confidence:null,speaker:null});out.push(...booster());out.push(...external);return out}
+function medoid(h){if(h.length===1)return h[0];let best=h[0],bs=-Infinity;for(const a of h){let s=0;for(const b of h)if(a!==b)s+=sim(a.text,b.text);if(s>bs){bs=s;best=a}}return best}
+function pairScore(h){if(h.length<2)return 0;let sum=0,n=0;for(let i=0;i<h.length;i++)for(let j=i+1;j<h.length;j++){sum+=sim(h[i].text,h[j].text);n++}return 1-sum/Math.max(1,n)}
+function alignSupport(base,alts){const bw=words(base.text),support=Array(bw.length).fill(1);const bn=bw.map(normWord);for(const alt of alts){const an=words(alt.text).map(normWord),dp=Array.from({length:bn.length+1},()=>Array(an.length+1).fill(0));for(let i=1;i<=bn.length;i++)for(let j=1;j<=an.length;j++)dp[i][j]=bn[i-1]===an[j-1]?dp[i-1][j-1]+1:Math.max(dp[i-1][j],dp[i][j-1]);let i=bn.length,j=an.length;while(i&&j){if(bn[i-1]===an[j-1]){support[i-1]++;i--;j--}else if(dp[i-1][j]>=dp[i][j-1])i--;else j--}}return {words:bw,support}}
+function buildGroups(){const all=sources(),canonical=(obs?.blocks||[]).filter(b=>b.status==='done'&&b.text).map(b=>({start:+b.start,end:+b.end,text:b.text}));const anchors=canonical.length?canonical:(fast?.chunks||[]).map(c=>({start:+c.start,end:+c.end,text:c.text||''}));groups=anchors.map((a,index)=>{const hyps=all.filter(x=>x.text&&iou(a,x)>=.55);const unique=[];for(const h of hyps)if(!unique.some(x=>x.source===h.source&&x.text===h.text))unique.push(h);const base=medoid(unique.length?unique:[{source:'single',...a}]),score=pairScore(unique),al=alignSupport(base,unique.filter(x=>x!==base)),threshold=Math.floor(unique.length/2)+1,disagree=al.support.filter(x=>x<threshold).length;return {id:index,start:a.start,end:a.end,hyps:unique,base,score,wordDisagree:disagree,aligned:al,threshold}}).sort((a,b)=>(b.score+Math.min(.25,b.wordDisagree*.01))-(a.score+Math.min(.25,a.wordDisagree*.01)))}
+function key(g){return g.start.toFixed(2)+'-'+g.end.toFixed(2)}
+function conflictList(){return groups.filter(g=>g.hyps.length>1&&g.score>.025)}
+function currentGroup(){const cs=conflictList();return cs[Math.max(0,Math.min(current,cs.length-1))]||groups[0]||null}
+function highlighted(g){if(!g)return'';return g.aligned.words.map((w,i)=>g.aligned.support[i]<g.threshold?'<span class="disagree">'+esc(w)+'</span>':esc(w)).join(' ')}
+function renderQueue(){const cs=conflictList();$('queue').innerHTML=cs.map((g,i)=>{const d=decisions[key(g)],sev=Math.min(100,Math.round((g.score+Math.min(.25,g.wordDisagree*.01))*100));return '<div class="q '+(i===current?'current ':'')+(d?'reviewed':'')+'" data-i="'+i+'"><span>'+fmt(g.start)+'</span><span class="mini"><i style="width:'+sev+'%"></i></span><span>'+sev+'%</span></div>'}).join('');$('queue').querySelectorAll('.q').forEach(el=>el.onclick=()=>{current=+el.dataset.i;renderCurrent()})}
+function renderStats(){const cs=conflictList(),reviewed=cs.filter(g=>decisions[key(g)]).length,sourcesN=new Set(sources().map(x=>x.source)).size,times=Object.values(decisions).map(x=>x.review_ms).filter(Number.isFinite);$('nBlocks').textContent=groups.length;$('nConflicts').textContent=cs.length;$('nSources').textContent=sourcesN;$('nReviewed').textContent=reviewed;$('reviewRate').textContent=times.length?(times.reduce((a,b)=>a+b,0)/times.length/1000).toFixed(1)+'s':'—';$('reviewBar').style.width=(cs.length?reviewed/cs.length*100:100)+'%';$('exportTxt').disabled=!groups.length;$('exportJson').disabled=!groups.length}
+function renderCurrent(){const g=currentGroup();renderStats();renderQueue();if(!g){$('status').textContent='No encontré conflictos comparables todavía.';return}$('status').textContent='Conflicto '+(current+1)+' de '+conflictList().length;$('where').textContent=fmt(g.start)+' → '+fmt(g.end);$('score').textContent='desacuerdo '+Math.round(g.score*100)+'%';$('support').textContent=g.hyps.length+' hipótesis';$('consensus').innerHTML=highlighted(g);$('hyps').innerHTML=g.hyps.map(h=>'<div class="hyp"><div class="src">'+esc(h.source)+(h.confidence!=null?' · '+Math.round(h.confidence*100)+'%':'')+(h.speaker?' · '+esc(h.speaker):'')+'</div><div class="txt">'+esc(h.text)+'</div></div>').join('');$('edit').value=decisions[key(g)]?.text||g.base.text||'';$('speaker').textContent='speaker: '+(decisions[key(g)]?.speaker||g.base.speaker||'desconocido');reviewStarted=performance.now()}
+function next(){const cs=conflictList();if(!cs.length)return;current=(current+1)%cs.length;renderCurrent()}
+async function decide(type,text=null,extra={}){const g=currentGroup();if(!g)return;decisions[key(g)]={type,text:text??g.base.text,speaker:extra.speaker??decisions[key(g)]?.speaker??g.base.speaker??null,reviewed_at:new Date().toISOString(),review_ms:performance.now()-reviewStarted,score:g.score,start:g.start,end:g.end};await putReview();next()}
+function playRange(start,end){if(!fast?.file)return;if(playTimer)clearInterval(playTimer);const a=$('player');a.currentTime=Math.max(0,start);a.play();playTimer=setInterval(()=>{if(a.currentTime>=end){a.pause();clearInterval(playTimer);playTimer=null}},80)}
+function cleanText(){const ordered=[...groups].sort((a,b)=>a.start-b.start);let out='';for(const g of ordered){const d=decisions[key(g)],t=d?.type==='inaudible'?'[inaudible]':d?.text||g.base?.text||'';if(t)out+=(out?' ':'')+t}return out}
+function download(name,data,type){const u=URL.createObjectURL(new Blob([data],{type})),a=document.createElement('a');a.href=u;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(u),1000)}
+async function boot(){fast=await getDB(FAST_DB,FAST_STORE);obs=await getDB(OBS_DB,OBS_STORE);const rev=await getDB(REV_DB,REV_STORE);decisions=rev?.decisions||{};external=rev?.external||[];if(fast?.file){audioUrl=URL.createObjectURL(fast.file);$('player').src=audioUrl}buildGroups();renderCurrent();if(!obs?.blocks?.some(b=>b.status==='done'))$('status').textContent='Observatory todavía no dejó bloques terminados. Podés volver cuando avance más o termine.'}
+$('playExact').onclick=()=>{const g=currentGroup();if(g)playRange(g.start,g.end)};
+$('playContext').onclick=()=>{const g=currentGroup();if(g)playRange(Math.max(0,g.start-5),Math.min(+fast?.duration||g.end+5,g.end+5))};
+$('accept').onclick=()=>decide('accepted');
+$('inaudible').onclick=()=>decide('inaudible','[inaudible]');
+$('speakerChange').onclick=()=>{const g=currentGroup();if(!g)return;const prev=decisions[key(g)]?.speaker||'otro hablante';decisions[key(g)]={...(decisions[key(g)]||{}),speaker:prev,text:$('edit').value||g.base.text,type:'speaker_note',reviewed_at:new Date().toISOString(),review_ms:performance.now()-reviewStarted,start:g.start,end:g.end};$('speaker').textContent='speaker: '+prev;putReview()};
+$('saveEdit').onclick=()=>decide('edited',$('edit').value);
+$('skip').onclick=next;
+$('copy').onclick=()=>navigator.clipboard.writeText(cleanText());
+$('exportTxt').onclick=()=>download('transcripcion-revisada.txt',cleanText(),'text/plain;charset=utf-8');
+$('exportJson').onclick=()=>download('stt-review.json',JSON.stringify({build:'STT-CONFLICT-REVIEW-V1',decisions,external,stats:{blocks:groups.length,conflicts:conflictList().length,sources:[...new Set(sources().map(x=>x.source))]},conflicts:conflictList().map(g=>({start:g.start,end:g.end,score:g.score,hypotheses:g.hyps,consensus:g.base.text,word_disagreements:g.wordDisagree}))},null,2),'application/json');
+$('importJson').onchange=async e=>{const f=e.target.files?.[0];if(!f)return;try{const j=JSON.parse(await f.text()),arr=Array.isArray(j)?j:Array.isArray(j.hypotheses)?j.hypotheses:[];external.push(...arr.filter(x=>Number.isFinite(+x.start)&&Number.isFinite(+x.end)&&x.text).map(x=>({source:x.source||'external',start:+x.start,end:+x.end,text:String(x.text),confidence:Number.isFinite(+x.confidence)?+x.confidence:null,speaker:x.speaker||null})));await putReview();buildGroups();current=0;renderCurrent()}catch(err){$('status').textContent='JSON externo inválido: '+err.message}};
+boot().catch(e=>$('status').textContent='Error: '+e.message);
+</script></main></body></html>
