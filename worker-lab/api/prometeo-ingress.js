@@ -5,6 +5,7 @@ const API='https://api.github.com';
 const ALLOWED_ORIGIN='https://juanmanuelpm.github.io';
 const PAGE_CHANGE_FRONTIER='https://catnohyouxqjjtseaueb.supabase.co/functions/v1/prometeo-change-loop-v1/worker-frontier';
 const WAKE_ROOT='coordination/portfolio/evidence/prometeo-autonomous-growth/primary-chat-wakes';
+const DEPLOY_PROBE='git-connected-v1';
 
 function send(res,status,body){res.status(status).json(body)}
 function headers(res){
@@ -52,7 +53,8 @@ export default async function handler(req,res){
     status:token?'READY_SANITIZED_WAKE':'BOUNDARY_SECRET_MISSING',
     secret_configured:Boolean(token),
     privacy_mode:'PRIVATE_TEXT_PAGE_CHANGE_SANITIZED_GITHUB_WAKE',
-    authority:'PAGE_CHANGE_PRIVATE_PACKET_PLUS_CURRENT_ALLOCATOR'
+    authority:'PAGE_CHANGE_PRIVATE_PACKET_PLUS_CURRENT_ALLOCATOR',
+    deploy_probe:DEPLOY_PROBE
   });
   if(req.method!=='POST')return send(res,405,{schema:'prometeo.ingress-transport-result/v1',status:'BOUNDARY_METHOD',queued:false,ref:null,error:'METHOD_NOT_ALLOWED'});
   const origin=req.headers.origin;
