@@ -1,0 +1,145 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Prometeo Visual Factory Reference Library V1</title><style>body{margin:0;background:#111;color:#eee;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}main{max-width:1100px;margin:auto;padding:24px}pre{white-space:pre-wrap;line-height:1.45;font-size:14px;background:#181818;padding:18px;border:1px solid #444;overflow-wrap:anywhere}h1{font-size:22px}</style></head><body><main><h1>PROMETEO VISUAL FACTORY — REFERENCE LIBRARY V1</h1><pre>OBJETIVO
+No volver a generar pantallas desde prompts vagos. Toda interfaz nueva pasa por:
+REFERENCE_SELECT → SEGMENT → VISUAL_BOM → MEASURE → COMPONENTIZE → EXTRACT_RULES → SELECT_SCENE_RECIPE → RESOLVE_EXISTING_PRIMITIVES → GENERATE_ASSETS → COMPILE_SCENE → EINK_OPTIMIZE → REFERENCE_COMPARE → VISUAL_LINT → PROMOTE_OR_REVISE
+
+RECETAS DE ESCENA
+- WORLD
+- MASTER_DETAIL
+- INSPECT
+- READ_DIALOG
+- TOOL
+- CHOICE_OVERLAY
+- WRITE
+
+PRIMITIVES
+STRUCTURE: VIEWPORT, FRAME, PANEL, OVERLAY, PREVIEW
+INPUT: BUTTON, TAB, LIST_ROW, FOCUS
+CONTENT: TEXT_SLOT, ICON, SPRITE, METER, TILE
+COMPOSITION: MASK, TEXTURE, ORNAMENT, SEPARATOR, DITHER_PATTERN, SHADOW
+
+LEYES VISUALES
+- SCENE_DOMINATES_CHROME
+- ONE_PRIMARY_FOCUS
+- MAX_ONE_LARGE_CONTEXT_PANEL
+- FULLSCREEN_IS_DEFAULT
+- RIGHT_PANEL_IS_CONTEXTUAL_AND_CLOSABLE
+- ASSET_FIRST_NOT_GEOMETRY_FIRST
+- NO_GENERIC_CARD_UI
+- NO_PROCEDURAL_SYMBOL_SUBSTITUTES_WHEN_ASSET_EXISTS
+- FIXED_SPATIAL_MEMORY
+- TOUCH_AND_KEYBOARD_SHARE_SAME_FOCUS_GRAPH
+- ENTER_IS_PRIMARY_ACTION
+- SPACE_IS_CONTEXT_OR_SECONDARY_ACTION
+- BACK_CLOSES_CONTEXT_BEFORE_NAVIGATING_AWAY
+- STATIC_PIXELS_SHOULD_STAY_STATIC
+- DYNAMIC_COMPONENTS_DECLARE_DIRTY_RECT
+- EINK_OUTPUT_IS_COMPILED_FROM_RICH_SOURCE_NOT_DESIGNED_UGLY_FIRST
+- REFERENCE_CHECK_BEFORE_CHAMPION_PROMOTION
+
+BENCHMARKS CANDIDATOS
+- WORLD: primary_viewport_ratio_min=0.75 · persistent_chrome_ratio_max=0.15
+- READ: content_ratio_min=0.82 · persistent_chrome_ratio_max=0.12
+- MASTER_DETAIL: master_ratio=0.30–0.42 · detail_ratio=0.58–0.70
+- RIGHT_PANEL_OPEN: scene_ratio=0.65–0.72 · panel_ratio=0.28–0.35
+
+REFERENCIAS
+
+REF-001 — RPG horror cockpit UI
+  scene_types: WORLD, TOOL, INSPECT
+  liked_for: high_density, fixed_spatial_memory, dominant_viewport, sprite_first, status_periphery
+  regions: primary_viewport, status_panel, inventory_bar, minimap, navigation_pad, status_strip
+  dynamic: viewport_subject, meters, inventory_slots, focus
+  static: global_frame, panel_chrome, ornaments
+  notes: Rich fixed console; most pixels stable while a few regions change.
+
+REF-002 — Monochrome phone UI
+  scene_types: LIST, TOOL, MASTER_DETAIL
+  liked_for: compactness, keyboard_navigation, inverted_focus, minimal_chrome, high_text_efficiency
+  regions: top_strip, content_list, selection_row, scroll_marker, status_icons
+  dynamic: selected_row, text_rows, status
+  static: screen_frame, top_strip_layout
+  notes: Excellent reference for Kindle utility screens and focus behavior.
+
+REF-003 — Retro editor/tool UI
+  scene_types: TOOL
+  liked_for: modular_panels, dense_controls, fixed_tools, clear_grouping
+  regions: tool_palette, canvas, properties, timeline_or_rows, type_controls
+  dynamic: canvas, property_values, selected_tool, rows
+  static: tool_frames, panel_geometry
+  notes: Reference for Scene Studio / Visual Factory, not the Kindle home.
+
+REF-004 — Dark adventure framed scene
+  scene_types: READ, DIALOG, INSPECT
+  liked_for: dominant_viewport, low_chrome, illustration_first, framed_text, grayscale_compatibility
+  regions: illustration_viewport, dialog_text, minimal_status
+  dynamic: dialog_text, subject_sprite, focus_choice
+  static: ornamental_frame, background
+  notes: Useful for reading, explanation, and human decision scenes.
+
+REF-005 — Green pixel action HUD
+  scene_types: WORLD
+  liked_for: huge_viewport, tiny_hud, sprite_state, low_text
+  regions: world_viewport, bottom_hud, avatar, health_or_resource
+  dynamic: avatar, resource_count, health, focus
+  static: world_background_when_idle, hud_frame
+  notes: Strong model for default fullscreen mode.
+
+REF-006 — Construction/isometric management UI
+  scene_types: WORLD, MAP, TOOL
+  liked_for: world_as_main_content, tiny_peripheral_tools, isometric_tiles, dense_information_without_scroll
+  regions: world, tool_strips, minimap, status_counters
+  dynamic: world_objects, tool_focus, counters
+  static: frame, most_tool_chrome
+  notes: Reference for Prometeo/Organism worlds and tile kits.
+
+REF-007 — Black-and-white illustrated dialog
+  scene_types: DIALOG, INSPECT, CHOICE
+  liked_for: monochrome, single_subject, modal_choice, low_chrome
+  regions: subject_viewport, dialog_box, choice_rows
+  dynamic: choice_focus, dialog_text, subject_state
+  static: background, dialog_frame
+  notes: Good for Kindle decision prompts.
+
+REF-008 — RPG book quest/skills menu
+  scene_types: MASTER_DETAIL, LIST, INSPECT
+  liked_for: tabs, master_detail, icon_grid, preview_map, ornamental_frame, hierarchy
+  regions: tab_strip, master_list, skill_grid, detail_panel, preview_map
+  dynamic: selected_row, active_tab, selected_skill, detail_text, meter
+  static: book_frame, ornaments, panel_geometry
+  notes: Canonical reference for dense information with one primary focus.
+
+REF-009 — Mask composition examples
+  scene_types: COMPOSITION
+  liked_for: non_rectangular_media, organic_masks, shape_as_composition
+  regions: mask, image_fill, text_zone
+  dynamic: none
+  static: mask_geometry
+  notes: Introduces MASK as a first-class composition primitive.
+
+REF-010 — Isometric pixel art tutorial
+  scene_types: WORLD_KIT, REFERENCE
+  liked_for: tile_grammar, reusable_geometry, baked_isometric_worlds, limited_palette
+  regions: tile_examples, variation_grid, assembled_shape, shadow_example
+  dynamic: none
+  static: tile_examples
+  notes: Introduces modular WORLD KIT / tile-based asset generation.
+
+E-INK OUTPUT PROFILES
+- 1bit
+- 2bit
+- 4gray
+- web_preview
+
+INPUT CONTRACT
+- UP
+- DOWN
+- LEFT
+- RIGHT
+- ENTER
+- SPACE
+- BACK
+- TEXT_INPUT
+- HOME
+
+NEXT
+Antes de generar otra demo: elegir 1 escena champion, producir su Visual BOM medido, declarar primitives/estados/dirty rects y recién después renderizar.</pre></main></body></html>
