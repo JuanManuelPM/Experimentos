@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<title>Prometeo · Visual Factory Champion V2</title>
+<style>
+:root{
+  --ink:#11110f;--ink2:#2b2b27;--mid:#77776f;--soft:#b7b7ad;--paper:#ecebe3;--paper2:#d9d8cf;--white:#f7f6ef;
+  --serif:Georgia,'Times New Roman',serif;--mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;overflow:hidden;background:#101010;color:var(--ink)}
+body{font-family:var(--serif)}
+#fit{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:#101010}
+#stage{position:relative;width:1200px;height:825px;transform-origin:50% 50%;overflow:hidden;background:var(--paper);
+  box-shadow:0 0 0 1px #000,0 0 0 12px #111;image-rendering:pixelated;touch-action:none}
+#stage:before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.16;z-index:1;
+  background-image:repeating-linear-gradient(0deg,transparent 0 3px,rgba(0,0,0,.09) 3px 4px),repeating-linear-gradient(90deg,transparent 0 7px,rgba(0,0,0,.045) 7px 8px)}
+.frame{position:absolute;inset:12px;border:3px solid var(--ink);z-index:2;pointer-events:none}
+.frame:before,.frame:after{position:absolute;font-size:34px;line-height:1;background:var(--paper);padding:0 8px;top:-21px}
+.frame:before{content:"❦";left:28px}.frame:after{content:"❦";right:28px;transform:scaleX(-1)}
+.tabs{position:absolute;z-index:8;left:42px;right:42px;top:18px;height:64px;display:grid;grid-template-columns:1.05fr 1fr 1fr 1.2fr .9fr;gap:6px}
+.tab{border:2px solid var(--ink);border-bottom-width:4px;background:var(--paper2);font:700 21px/1 var(--serif);letter-spacing:.06em;color:var(--ink);cursor:pointer;position:relative}
+.tab:after{content:"";position:absolute;left:12px;right:12px;bottom:7px;border-bottom:1px dotted var(--mid)}
+.tab.active,.tab.focus{background:var(--ink);color:var(--white)}
+.tab.active:after,.tab.focus:after{border-color:var(--soft)}
+.main{position:absolute;z-index:3;left:38px;right:38px;top:98px;bottom:38px;display:grid;grid-template-columns:420px 1fr;border:2px solid var(--ink);background:var(--paper)}
+.master{border-right:2px solid var(--ink);display:grid;grid-template-rows:72px 1fr 46px;min-width:0}
+.titlebar{display:flex;align-items:center;justify-content:center;gap:18px;border-bottom:2px solid var(--ink);font:700 28px/1 var(--serif);letter-spacing:.08em}
+.titlebar .orn{font-size:22px;color:var(--mid)}
+.rows{display:grid;grid-template-rows:repeat(5,1fr);min-height:0}
+.row{display:grid;grid-template-columns:72px 1fr 32px;align-items:center;border-bottom:1px dotted var(--mid);padding:8px 14px 8px 12px;position:relative;cursor:pointer;background:transparent}
+.row:last-child{border-bottom:0}.row .glyph{width:46px;height:46px;border:2px solid var(--ink);display:grid;place-items:center;font:700 23px/1 var(--mono);background:var(--paper2)}
+.row strong{display:block;font:700 24px/1.05 var(--serif);margin-bottom:7px}.row small{font:15px/1.25 var(--serif);color:var(--ink2)}
+.row .mark{font:22px/1 var(--mono);opacity:.4}.row.selected{background:var(--paper2)}
+.row.focus{background:var(--ink);color:var(--white)}.row.focus small{color:var(--white)}.row.focus .glyph{background:var(--white);color:var(--ink)}.row.focus .mark{opacity:1}
+.masterFoot{border-top:2px solid var(--ink);display:flex;align-items:center;justify-content:center;font:14px/1 var(--mono);letter-spacing:.08em;color:var(--ink2)}
+.detail{display:grid;grid-template-rows:205px 215px 1fr;min-width:0}
+.hero{border-bottom:2px solid var(--ink);display:grid;grid-template-columns:1.05fr .95fr;min-width:0}
+.heroText{padding:22px 26px 16px 26px;position:relative}.eyebrow{font:12px/1 var(--mono);letter-spacing:.14em;color:var(--mid);margin-bottom:10px}
+.hero h1{font:700 41px/.95 var(--serif);margin:0 0 8px}.hero p{font:18px/1.25 var(--serif);margin:0 0 18px;max-width:400px}.meta{display:flex;gap:18px;font:13px/1 var(--mono);color:var(--ink2)}
+.heroArt{border-left:2px solid var(--ink);position:relative;overflow:hidden;background:var(--paper2)}
+.heroArt:before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,transparent 0 8px,rgba(0,0,0,.12) 8px 10px);opacity:.5}
+.reader{position:absolute;left:48%;top:51%;transform:translate(-50%,-50%);width:170px;height:126px;border:8px double var(--ink);background:var(--white);box-shadow:16px 14px 0 var(--soft)}
+.reader:before{content:"KINDLE";position:absolute;left:18px;right:18px;top:18px;border-bottom:3px solid var(--ink);padding-bottom:8px;font:700 18px/1 var(--mono);letter-spacing:.08em;text-align:center}
+.reader:after{content:"▥  ▥  ▥";position:absolute;left:0;right:0;bottom:18px;font:22px/1 var(--mono);text-align:center;letter-spacing:.22em}
+.signal{position:absolute;width:18px;height:18px;background:var(--ink);right:25px;top:22px;box-shadow:-10px 10px 0 var(--mid),-20px 20px 0 var(--soft)}
+.mid{display:grid;grid-template-columns:1fr 260px;border-bottom:2px solid var(--ink);min-width:0}
+.info{padding:18px 22px}.infoHead{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}.infoHead h2{font:700 25px/1 var(--serif);margin:0}.tag{border:1px solid var(--ink);padding:5px 8px;font:12px/1 var(--mono);background:var(--paper2)}
+.info p{font:17px/1.35 var(--serif);margin:0 0 14px;max-width:560px}.meterRow{display:grid;grid-template-columns:80px 1fr 46px;gap:10px;align-items:center;margin-top:9px;font:13px/1 var(--mono)}
+.meter{height:16px;border:2px solid var(--ink);padding:2px;background:var(--white);display:grid;grid-template-columns:repeat(10,1fr);gap:2px}.meter i{display:block;background:transparent}.meter i.on{background:var(--ink)}
+.actions{border-left:2px solid var(--ink);display:grid;grid-template-rows:44px repeat(4,1fr);padding:0}.actions h3{margin:0;display:grid;place-items:center;border-bottom:2px solid var(--ink);font:700 16px/1 var(--serif);letter-spacing:.08em}
+.action{border:0;border-bottom:1px dotted var(--mid);background:transparent;color:var(--ink);font:700 16px/1 var(--serif);text-align:left;padding:0 16px;cursor:pointer;display:grid;grid-template-columns:34px 1fr;align-items:center}.action:last-child{border-bottom:0}
+.action .aico{font:18px/1 var(--mono)}.action.focus{background:var(--ink);color:var(--white)}
+.mapWrap{position:relative;padding:10px 18px 16px}.mapTitle{text-align:center;font:700 19px/1 var(--serif);letter-spacing:.12em;margin-bottom:8px}.mapTitle:before,.mapTitle:after{content:"❧";color:var(--mid);margin:0 18px}
+.map{height:100%;border:2px solid var(--ink);display:grid;grid-template-columns:repeat(12,1fr);grid-template-rows:repeat(4,1fr);gap:2px;padding:4px;background:var(--ink)}
+.tile{background:var(--paper2);position:relative}.tile.dark{background:var(--mid)}.tile.black{background:var(--ink2)}.tile.dot:after{content:"";position:absolute;width:8px;height:8px;left:50%;top:50%;transform:translate(-50%,-50%);background:var(--ink);border-radius:50%}.tile.hatch{background:repeating-linear-gradient(45deg,var(--paper2) 0 4px,var(--soft) 4px 6px)}
+.panel{position:absolute;z-index:30;right:18px;top:96px;width:350px;height:691px;background:var(--paper);border:3px solid var(--ink);display:none;box-shadow:-12px 0 0 rgba(0,0,0,.25)}.panel.on{display:block}
+.panelHead{height:66px;border-bottom:2px solid var(--ink);display:flex;align-items:center;justify-content:space-between;padding:0 18px}.panelHead strong{font:700 22px/1 var(--serif)}.close{border:2px solid var(--ink);background:var(--paper2);font:700 18px/1 var(--mono);width:42px;height:34px;cursor:pointer}
+.panelBody{padding:18px}.panelBody h3{font:700 27px/1 var(--serif);margin:0 0 8px}.panelBody p{font:16px/1.35 var(--serif);margin:0 0 18px}.kv{border-top:1px dotted var(--mid);padding:11px 0;display:flex;justify-content:space-between;font:14px/1 var(--mono)}
+.panelButton{width:100%;height:50px;border:2px solid var(--ink);background:var(--ink);color:var(--white);font:700 16px/1 var(--serif);margin-top:14px;cursor:pointer}
+.choice{position:absolute;z-index:40;left:50%;top:52%;transform:translate(-50%,-50%);width:650px;background:var(--paper);border:4px double var(--ink);display:none;padding:16px 20px 20px}.choice.on{display:block}.choice h2{font:700 30px/1 var(--serif);text-align:center;margin:4px 0 10px}.choice p{font:17px/1.3 var(--serif);text-align:center;margin:0 30px 18px}.choiceGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.choiceBtn{height:72px;border:2px solid var(--ink);background:var(--paper2);font:700 17px/1.15 var(--serif);cursor:pointer}.choiceBtn.focus{background:var(--ink);color:var(--white)}
+.scrim{position:absolute;z-index:35;inset:0;background:rgba(236,235,227,.72);display:none}.scrim.on{display:block}
+.toast{position:absolute;z-index:60;left:50%;bottom:24px;transform:translateX(-50%);background:var(--ink);color:var(--white);font:14px/1 var(--mono);padding:8px 12px;display:none}.toast.on{display:block}
+.dirty{position:absolute;z-index:70;border:3px dashed var(--ink);pointer-events:none;display:none}.dirty.on{display:block;animation:blink .42s steps(2,end) 2}@keyframes blink{50%{opacity:.18}}
+.hints{position:absolute;z-index:8;left:58px;right:58px;bottom:19px;height:17px;display:flex;justify-content:space-between;color:var(--ink2);font:12px/1 var(--mono);letter-spacing:.04em}
+@media (prefers-reduced-motion:reduce){.dirty.on{animation:none}}
+</style>
+</head>
+<body>
+<div id="fit"><main id="stage" aria-label="Prometeo Visual Factory champion">
+  <div class="frame"></div>
+  <nav class="tabs" aria-label="Secciones">
+    <button class="tab" data-tab="MUNDO">MUNDO</button>
+    <button class="tab active" data-tab="TRABAJO">TRABAJO</button>
+    <button class="tab" data-tab="RESULTADOS">RESULTADOS</button>
+    <button class="tab" data-tab="CONOCIMIENTO">CONOCIMIENTO</button>
+    <button class="tab" data-tab="SISTEMA">SISTEMA</button>
+  </nav>
+
+  <section class="main">
+    <aside class="master">
+      <div class="titlebar"><span class="orn">❦</span><span>PROYECTOS</span><span class="orn">❦</span></div>
+      <div class="rows" id="rows">
+        <div class="row selected focus" tabindex="0" data-name="Kindle Shell"><div class="glyph">K</div><div><strong>Kindle Shell</strong><small>Renderer e-ink · UI/UX · lectura</small></div><div class="mark">◆</div></div>
+        <div class="row" tabindex="0" data-name="Prometeo"><div class="glyph">P</div><div><strong>Prometeo</strong><small>Organismo · trabajo · resultados</small></div><div class="mark">◇</div></div>
+        <div class="row" tabindex="0" data-name="Estudio"><div class="glyph">E</div><div><strong>Estudio</strong><small>Psicología · reader · apuntes</small></div><div class="mark">◇</div></div>
+        <div class="row" tabindex="0" data-name="Alumnos"><div class="glyph">A</div><div><strong>Alumnos</strong><small>Clases · ejercicios · seguimiento</small></div><div class="mark">◇</div></div>
+        <div class="row" tabindex="0" data-name="Archivo"><div class="glyph">▣</div><div><strong>Archivo</strong><small>Notas · fósiles · referencias</small></div><div class="mark">◇</div></div>
+      </div>
+      <div class="masterFoot">↑↓ seleccionar · → acciones · Enter abrir</div>
+    </aside>
+
+    <article class="detail">
+      <div class="hero">
+        <div class="heroText"><div class="eyebrow">MASTER_DETAIL · FOCUS: KINDLE_SHELL</div><h1>Kindle Shell</h1><p>Interfaz fija para leer, decidir y navegar Prometeo sin convertir el Kindle en una web diminuta.</p><div class="meta"><span>ESTADO · ACTIVO</span><span>ATENCIÓN · 1</span><span>VISTA · E‑INK</span></div></div>
+        <div class="heroArt"><div class="signal"></div><div class="reader"></div></div>
+      </div>
+      <div class="mid">
+        <div class="info"><div class="infoHead"><h2>Renderer e‑ink</h2><span class="tag">CONTEXTUAL</span></div><p>El fondo permanece estable. Selección, barra, avatar y panel actualizan únicamente su región. El panel derecho no existe hasta que hace falta.</p>
+          <div class="meterRow"><span>PROGRESO</span><div class="meter" data-value="7"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i><i></i></div><b>70%</b></div>
+          <div class="meterRow"><span>CONTEXTO</span><div class="meter"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i></div><b>90%</b></div>
+        </div>
+        <div class="actions" id="actions"><h3>ACCIONES</h3><button class="action" data-act="continuar"><span class="aico">▶</span><span>Continuar</span></button><button class="action" data-act="panel"><span class="aico">▤</span><span>Contexto</span></button><button class="action" data-act="choice"><span class="aico">?</span><span>Decisión</span></button><button class="action" data-act="map"><span class="aico">⌖</span><span>Mapa</span></button></div>
+      </div>
+      <div class="mapWrap"><div class="mapTitle">AREA MAP</div><div class="map" id="map"></div></div>
+    </article>
+  </section>
+
+  <div class="scrim" id="scrim"></div>
+  <aside class="panel" id="panel"><div class="panelHead"><strong>Contexto · Kindle Shell</strong><button class="close" id="closePanel">×</button></div><div class="panelBody"><h3>Qué cambia</h3><p>Este panel es la única región grande que aparece sobre la escena. Cerrar vuelve exactamente al foco anterior.</p><div class="kv"><span>dirty rect</span><b>350×691</b></div><div class="kv"><span>input owner</span><b>PANEL</b></div><div class="kv"><span>refresh</span><b>PARTIAL</b></div><div class="kv"><span>modo</span><b>NAVIGATION</b></div><button class="panelButton" id="panelDecision">Abrir decisión</button></div></aside>
+  <section class="choice" id="choice" aria-modal="true"><h2>Decisión humana</h2><p>El mundo queda quieto. Sólo cambia esta región y el foco de la opción seleccionada.</p><div class="choiceGrid"><button class="choiceBtn focus">Seguir con lectura</button><button class="choiceBtn">Abrir notas</button><button class="choiceBtn">Ver progreso</button><button class="choiceBtn">Volver</button></div></section>
+  <div class="toast" id="toast"></div><div class="dirty" id="dirty"></div>
+  <div class="hints"><span>←→ región · ↑↓ foco · Enter abrir · Space contexto · Esc volver</span><span>D = dirty rect</span></div>
+</main></div>
+<script>
+const stage=document.getElementById('stage'), rows=[...document.querySelectorAll('.row')], actions=[...document.querySelectorAll('.action')], tabs=[...document.querySelectorAll('.tab')], panel=document.getElementById('panel'),scrim=document.getElementById('scrim'),choice=document.getElementById('choice'),choiceBtns=[...document.querySelectorAll('.choiceBtn')],toast=document.getElementById('toast'),dirty=document.getElementById('dirty');
+let region='rows', rowIndex=0, actionIndex=0, tabIndex=1, choiceIndex=0, panelOpen=false, choiceOpen=false, debugDirty=false;
+function fit(){const s=Math.min(innerWidth/1200,innerHeight/825);stage.style.transform=`scale(${s})`;}
+addEventListener('resize',fit);fit();
+const map=document.getElementById('map'); const pattern=['hatch','','','dark','dark','','dot','','hatch','','','', '', 'hatch','black','black','dark','','','dot','','hatch','','', '', '', 'dark','black','black','dark','','','hatch','','dot','', 'hatch','','','dark','','','dot','','','black','','hatch']; pattern.forEach(c=>{const x=document.createElement('div');x.className='tile '+c;map.appendChild(x)});
+function say(t){toast.textContent=t;toast.classList.add('on');clearTimeout(window.__toast);window.__toast=setTimeout(()=>toast.classList.remove('on'),850)}
+function flash(el){if(!debugDirty||!el)return;const r=el.getBoundingClientRect(),s=stage.getBoundingClientRect(),scale=s.width/1200;dirty.style.left=((r.left-s.left)/scale)+'px';dirty.style.top=((r.top-s.top)/scale)+'px';dirty.style.width=(r.width/scale)+'px';dirty.style.height=(r.height/scale)+'px';dirty.classList.remove('on');void dirty.offsetWidth;dirty.classList.add('on')}
+function setRow(i){rowIndex=(i+rows.length)%rows.length;rows.forEach((r,n)=>{r.classList.toggle('focus',n===rowIndex);r.classList.toggle('selected',n===rowIndex)});document.querySelector('.hero h1').textContent=rows[rowIndex].dataset.name;flash(rows[rowIndex])}
+function setAction(i){actionIndex=(i+actions.length)%actions.length;actions.forEach((a,n)=>a.classList.toggle('focus',n===actionIndex));flash(actions[actionIndex])}
+function setTab(i){tabIndex=(i+tabs.length)%tabs.length;tabs.forEach((t,n)=>{t.classList.toggle('focus',n===tabIndex);t.classList.toggle('active',n===tabIndex)});say(tabs[tabIndex].dataset.tab);flash(tabs[tabIndex])}
+function setChoice(i){choiceIndex=(i+choiceBtns.length)%choiceBtns.length;choiceBtns.forEach((b,n)=>b.classList.toggle('focus',n===choiceIndex));flash(choiceBtns[choiceIndex])}
+function openPanel(){if(choiceOpen)return;panelOpen=true;panel.classList.add('on');say('Panel contextual');flash(panel)}
+function closePanel(){panelOpen=false;panel.classList.remove('on');region='rows';setRow(rowIndex)}
+function openChoice(){panelOpen=false;panel.classList.remove('on');choiceOpen=true;scrim.classList.add('on');choice.classList.add('on');choiceIndex=0;setChoice(0);flash(choice)}
+function closeChoice(){choiceOpen=false;scrim.classList.remove('on');choice.classList.remove('on');region='rows';setRow(rowIndex)}
+function activateAction(){const a=actions[actionIndex].dataset.act;if(a==='panel')openPanel();else if(a==='choice')openChoice();else if(a==='continuar')say('Continuar Kindle Shell');else say('Mapa seleccionado')}
+function key(e){if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Enter',' ','Escape','Backspace','d','D'].includes(e.key))e.preventDefault();
+  if(e.key==='d'||e.key==='D'){debugDirty=!debugDirty;say(debugDirty?'dirty rect ON':'dirty rect OFF');return}
+  if(e.key===' '){panelOpen?closePanel():openPanel();return}
+  if(e.key==='Escape'||e.key==='Backspace'){if(choiceOpen)closeChoice();else if(panelOpen)closePanel();else if(region!=='rows'){region='rows';setRow(rowIndex)}else say('Atrás');return}
+  if(choiceOpen){if(e.key==='ArrowRight'||e.key==='ArrowDown')setChoice(choiceIndex+1);if(e.key==='ArrowLeft'||e.key==='ArrowUp')setChoice(choiceIndex-1);if(e.key==='Enter'){say(choiceBtns[choiceIndex].textContent.trim());setTimeout(closeChoice,250)}return}
+  if(panelOpen){if(e.key==='Enter')openChoice();return}
+  if(region==='rows'){if(e.key==='ArrowDown')setRow(rowIndex+1);if(e.key==='ArrowUp')setRow(rowIndex-1);if(e.key==='ArrowRight'){region='actions';setAction(0)}if(e.key==='Enter')say('Abrir '+rows[rowIndex].dataset.name)}
+  else if(region==='actions'){if(e.key==='ArrowDown')setAction(actionIndex+1);if(e.key==='ArrowUp')setAction(actionIndex-1);if(e.key==='ArrowLeft'){region='rows';setRow(rowIndex)}if(e.key==='Enter')activateAction()}
+  else if(region==='tabs'){if(e.key==='ArrowRight')setTab(tabIndex+1);if(e.key==='ArrowLeft')setTab(tabIndex-1);if(e.key==='ArrowDown'){region='rows';setRow(rowIndex)}}
+}
+addEventListener('keydown',key);
+rows.forEach((r,i)=>r.addEventListener('click',()=>{region='rows';setRow(i);say('Abrir '+r.dataset.name)}));
+actions.forEach((a,i)=>a.addEventListener('click',()=>{region='actions';setAction(i);activateAction()}));
+tabs.forEach((t,i)=>t.addEventListener('click',()=>{region='tabs';setTab(i)}));
+choiceBtns.forEach((b,i)=>b.addEventListener('click',()=>{setChoice(i);say(b.textContent.trim());setTimeout(closeChoice,250)}));
+document.getElementById('closePanel').addEventListener('click',closePanel);document.getElementById('panelDecision').addEventListener('click',openChoice);scrim.addEventListener('click',closeChoice);
+setRow(0);
+</script>
+</body></html>
