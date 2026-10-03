@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Prometeo Visual Factory UI/UX V1</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0;height:100%;overflow:hidden;background:#111;font-family:ui-monospace,monospace}
+#stage{position:fixed;width:1200px;height:825px;transform-origin:0 0;background:#fff;overflow:hidden;touch-action:none}
+.scene{position:absolute;inset:0;width:1200px;height:825px;display:none;image-rendering:pixelated}.scene.on{display:block}
+.hot{position:absolute;border:0;background:transparent;outline:none;cursor:pointer}
+.hot.focus::after{content:"";position:absolute;inset:4px;border:5px solid #000;box-shadow:0 0 0 4px #fff inset}
+#panel{position:absolute;right:0;top:83px;width:360px;height:660px;display:none;image-rendering:pixelated;box-shadow:-8px 0 0 #000}
+#panel.on{display:block}
+#scrim{position:absolute;inset:0;display:none;background:rgba(255,255,255,.4)}#scrim.on{display:block}
+#toast{position:absolute;left:50%;bottom:48px;transform:translateX(-50%);background:#000;color:#fff;padding:8px 14px;font-size:18px;display:none}
+#toast.on{display:block}
+</style></head>
+<body><div id="stage">
+<img id="world" class="scene on" src="assets/world.png">
+<img id="master" class="scene" src="assets/master.png">
+<img id="choice" class="scene" src="assets/choice.png">
+<div id="scrim"></div>
+<img id="panel" src="assets/panel.png">
+<div id="toast"></div>
+
+<button class="hot worldHot" data-name="ALUMNOS" style="left:150px;top:160px;width:210px;height:170px"></button>
+<button class="hot worldHot" data-name="TTS" style="left:840px;top:160px;width:210px;height:170px"></button>
+<button class="hot worldHot" data-name="KINDLE SHELL" style="left:150px;top:505px;width:210px;height:170px"></button>
+<button class="hot worldHot" data-name="ESTUDIO" style="left:840px;top:505px;width:210px;height:170px"></button>
+<button class="hot worldHot" data-name="ORGANISMO" style="left:460px;top:270px;width:280px;height:280px"></button>
+
+<button class="hot masterHot" data-name="KINDLE SHELL" style="left:62px;top:165px;width:328px;height:74px;display:none"></button>
+<button class="hot masterHot" data-name="ALUMNOS" style="left:62px;top:259px;width:328px;height:74px;display:none"></button>
+<button class="hot masterHot" data-name="TTS" style="left:62px;top:353px;width:328px;height:74px;display:none"></button>
+<button class="hot masterHot" data-name="ESTUDIO" style="left:62px;top:447px;width:328px;height:74px;display:none"></button>
+<button class="hot masterHot" data-name="PROMETEO" style="left:62px;top:541px;width:328px;height:74px;display:none"></button>
+</div>
+<script>
+const stage=document.getElementById('stage'), scenes={world:world,master:master,choice:choice},panel=document.getElementById('panel'),scrim=document.getElementById('scrim'),toast=document.getElementById('toast');
+let scene='world', idx=0, panelOpen=false, choiceOpen=false;
+function fit(){const s=Math.min(innerWidth/1200,innerHeight/825);stage.style.transform=`scale(${s})`;stage.style.left=`${(innerWidth-1200*s)/2}px`;stage.style.top=`${(innerHeight-825*s)/2}px`;}
+addEventListener('resize',fit);fit();
+function currentItems(){return [...document.querySelectorAll(scene==='world'?'.worldHot':'.masterHot')].filter(x=>x.style.display!=='none')}
+function focus(i){const items=currentItems();if(!items.length)return;idx=(i+items.length)%items.length;document.querySelectorAll('.hot').forEach(x=>x.classList.remove('focus'));items[idx].classList.add('focus')}
+function showScene(s){scene=s;choiceOpen=false;Object.values(scenes).forEach(x=>x.classList.remove('on'));scenes[s].classList.add('on');document.querySelectorAll('.worldHot').forEach(x=>x.style.display=s==='world'?'block':'none');document.querySelectorAll('.masterHot').forEach(x=>x.style.display=s==='master'?'block':'none');idx=0;focus(0)}
+function say(t){toast.textContent=t;toast.classList.add('on');clearTimeout(window.__t);window.__t=setTimeout(()=>toast.classList.remove('on'),800)}
+function openPanel(){if(choiceOpen)return;panelOpen=true;panel.classList.add('on');say('Panel contextual')}
+function closePanel(){panelOpen=false;panel.classList.remove('on');focus(idx)}
+function openChoice(){choiceOpen=true;panelOpen=false;panel.classList.remove('on');Object.values(scenes).forEach(x=>x.classList.remove('on'));choice.classList.add('on')}
+function closeChoice(){choiceOpen=false;showScene('master')}
+function activate(){if(choiceOpen){say('Opción elegida');setTimeout(closeChoice,350);return}const el=currentItems()[idx]; if(!el)return; if(scene==='world' && el.dataset.name==='KINDLE SHELL') showScene('master'); else if(scene==='world') say(el.dataset.name); else if(scene==='master' && el.dataset.name==='KINDLE SHELL') openChoice(); else say(el.dataset.name)}
+function key(e){if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Enter',' ','Escape','Backspace'].includes(e.key))e.preventDefault();if(e.key===' '){panelOpen?closePanel():openPanel();return}if(e.key==='Escape'||e.key==='Backspace'){if(panelOpen)closePanel();else if(choiceOpen)closeChoice();else if(scene==='master')showScene('world');else say('Inicio');return}if(e.key==='Enter'){activate();return}if(panelOpen||choiceOpen)return; if(scene==='world'){const map={ArrowRight:1,ArrowDown:1,ArrowLeft:-1,ArrowUp:-1}; if(e.key in map)focus(idx+map[e.key])} else {if(e.key==='ArrowDown')focus(idx+1); if(e.key==='ArrowUp')focus(idx-1)}}
+addEventListener('keydown',key);
+document.querySelectorAll('.hot').forEach((b,i)=>b.addEventListener('click',()=>{const items=currentItems();idx=items.indexOf(b);focus(idx);activate()}));
+panel.addEventListener('click',closePanel);
+focus(0);
+</script></body></html>
