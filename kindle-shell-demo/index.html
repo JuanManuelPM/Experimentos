@@ -1,0 +1,384 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Prometeo Ink Shell — Kindle UX Demo</title>
+<style>
+  :root {
+    --page:#0a0a0a;
+    --panel:#111;
+    --panel2:#151515;
+    --ink:#f4f4f0;
+    --muted:#a8a8a0;
+    --line:#3c3c39;
+    --line2:#252522;
+    --soft:#d8d8d2;
+    --black:#000;
+    --white:#fff;
+    --shadow:0 24px 70px rgba(0,0,0,.45);
+    --radius:22px;
+    --ui: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--page);color:var(--ink);font-family:var(--ui);min-height:100%}
+  body{padding:18px 18px 36px}
+  button,input,textarea{font:inherit}
+  button{cursor:pointer}
+  .wrap{max-width:1500px;margin:0 auto}
+  .topbar{display:flex;gap:12px;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap}
+  .brand{display:flex;flex-direction:column;gap:3px}
+  .brand h1{font-size:18px;margin:0;letter-spacing:.08em}
+  .brand small{color:var(--muted);font-size:11px}
+  .controls{display:flex;gap:8px;flex-wrap:wrap}
+  .control{background:#151515;color:var(--ink);border:1px solid var(--line);padding:9px 12px;border-radius:10px;min-height:38px}
+  .control[aria-pressed="true"]{background:var(--ink);color:#080808;border-color:var(--ink)}
+
+  .stage{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:18px;align-items:start}
+  .device-wrap{min-width:0;display:flex;justify-content:center;align-items:flex-start}
+  .device{
+    width:min(1120px,100%);
+    aspect-ratio:4/3;
+    background:#050505;
+    border:10px solid #1f1f1d;
+    border-radius:30px;
+    padding:12px;
+    box-shadow:var(--shadow), inset 0 0 0 1px #444;
+    transition:none;
+  }
+  .device.portrait{width:min(560px,100%);aspect-ratio:3/4}
+  .screen{height:100%;width:100%;background:#000;color:#f2f2ee;border-radius:12px;overflow:hidden;border:1px solid #333;display:flex;flex-direction:column;position:relative}
+  .status{height:36px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;border-bottom:1px solid #333;font-size:11px;letter-spacing:.02em;flex:0 0 auto}
+  .status .left,.status .right{display:flex;gap:10px;align-items:center}
+  .status .dot{width:7px;height:7px;border-radius:50%;background:#e6e6df;display:inline-block}
+  .shell{display:grid;grid-template-columns:130px 1fr;min-height:0;flex:1}
+  .device.portrait .shell{display:flex;flex-direction:column}
+  .side{border-right:1px solid #333;padding:12px 8px;display:flex;flex-direction:column;gap:7px;background:#060606}
+  .device.portrait .side{order:2;border-right:0;border-top:1px solid #333;display:grid;grid-template-columns:repeat(5,1fr);padding:8px 8px 9px;gap:6px}
+  .navbtn{background:#080808;color:#deded8;border:1px solid #282826;border-radius:8px;padding:10px 8px;text-align:left;min-height:48px;display:flex;align-items:center;gap:8px}
+  .navbtn .ico{width:18px;text-align:center;font-size:14px}
+  .navbtn.active{background:#f0f0ea;color:#050505;border-color:#f0f0ea}
+  .device.portrait .navbtn{min-height:44px;justify-content:center;text-align:center;display:flex;flex-direction:column;gap:2px;padding:6px 2px;font-size:9px}
+  .device.portrait .navbtn .ico{font-size:13px}
+  .main{min-width:0;min-height:0;overflow:auto;padding:14px 16px 16px;background:#000}
+  .device.portrait .main{order:1;flex:1;padding:12px 12px 10px}
+  .screen-title{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;margin-bottom:12px}
+  .screen-title h2{font-size:14px;margin:0;letter-spacing:.08em}
+  .screen-title .sub{font-size:10px;color:var(--muted);margin-top:3px}
+  .tag{font-size:9px;color:#ccc;border:1px solid #444;padding:4px 7px;border-radius:999px;white-space:nowrap}
+
+  .home-grid{display:grid;grid-template-columns:1.25fr .75fr;gap:12px}
+  .device.portrait .home-grid{grid-template-columns:1fr}
+  .hero{border:1px solid #565650;border-radius:11px;padding:16px;background:#0a0a0a;min-height:142px;display:flex;flex-direction:column;justify-content:space-between}
+  .hero .eyebrow,.card .eyebrow{font-size:9px;letter-spacing:.12em;color:#aaa;text-transform:uppercase}
+  .hero h3{font-size:24px;line-height:1.05;margin:9px 0 6px;font-weight:700}
+  .device.portrait .hero h3{font-size:19px}
+  .hero p{font-size:11px;color:#bdbdb5;margin:0;max-width:50ch}
+  .big-action{border:1px solid #aaa;background:#eee;color:#060606;padding:11px 13px;border-radius:8px;font-weight:700;margin-top:14px;align-self:flex-start;min-width:150px}
+  .stack{display:grid;gap:12px}
+  .card{border:1px solid #333;border-radius:10px;padding:12px;background:#070707}
+  .card strong{display:block;font-size:13px;margin:5px 0 4px}
+  .card p{font-size:10px;color:#aaa;margin:0;line-height:1.45}
+  .card .row{display:flex;justify-content:space-between;gap:10px;align-items:center}
+  .card .num{font-size:24px;font-weight:800}
+  .rule{height:1px;background:#2a2a28;margin:12px 0}
+  .pulse{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px}
+  .device.portrait .pulse{grid-template-columns:repeat(2,1fr)}
+  .metric{border-top:1px solid #393936;padding-top:7px}
+  .metric b{font-size:16px;display:block}
+  .metric span{font-size:8.5px;color:#9c9c95;text-transform:uppercase;letter-spacing:.08em}
+
+  .list{display:grid;gap:8px}
+  .item{border:1px solid #333;background:#070707;border-radius:9px;padding:11px 12px;display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center}
+  .item .bullet{width:26px;height:26px;border-radius:6px;border:1px solid #666;display:grid;place-items:center;font-size:11px}
+  .item h4{margin:0;font-size:11px}
+  .item p{margin:3px 0 0;color:#999;font-size:9px;line-height:1.35}
+  .item .state{font-size:8.5px;color:#c8c8c1;border:1px solid #3e3e3c;padding:4px 6px;border-radius:999px;text-align:center;white-space:nowrap}
+  .device.portrait .item{grid-template-columns:auto 1fr}.device.portrait .item .state{grid-column:2;justify-self:start}
+
+  .action-rail{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0 14px}
+  .device.portrait .action-rail{grid-template-columns:1fr}
+  .action{border:1px solid #555;background:#090909;color:#eee;border-radius:8px;padding:10px;text-align:left;min-height:56px}
+  .action b{display:block;font-size:10px}.action span{display:block;color:#999;font-size:8.5px;margin-top:4px}
+
+  .decision{border:2px solid #deded8;border-radius:11px;padding:14px;background:#050505}
+  .decision h3{font-size:13px;margin:5px 0 8px}
+  .decision p{font-size:9.5px;color:#aaa;margin:0 0 10px;line-height:1.5}
+  .choices{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .device.portrait .choices{grid-template-columns:1fr}
+  .choice{border:1px solid #555;background:#0b0b0b;color:#eee;border-radius:8px;padding:11px;text-align:left;min-height:70px}
+  .choice.selected{background:#efefe9;color:#050505;border-color:#efefe9}
+  .choice b{display:block;font-size:11px}.choice span{font-size:8.5px;display:block;margin-top:4px;line-height:1.35;color:inherit;opacity:.78}
+  .decision-footer{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+  .primary{background:#eee;color:#050505;border:1px solid #eee;border-radius:8px;padding:9px 12px;font-weight:700}
+  .secondary{background:#080808;color:#ddd;border:1px solid #555;border-radius:8px;padding:9px 12px}
+
+  .input-label{font-size:9px;color:#aaa;margin-bottom:5px;text-transform:uppercase;letter-spacing:.08em}
+  .field,.notearea{width:100%;background:#050505;color:#eee;border:1px solid #555;border-radius:8px;padding:11px;outline:none}
+  .field:focus,.notearea:focus{border-color:#eee}
+  .notearea{min-height:180px;resize:none;line-height:1.5}
+  .device.portrait .notearea{min-height:210px}
+  .fake-kb{display:grid;grid-template-columns:repeat(10,1fr);gap:4px;margin-top:10px;border-top:1px solid #333;padding-top:10px}
+  .fake-kb span{border:1px solid #333;border-radius:4px;min-height:24px;display:grid;place-items:center;font-size:8px;color:#aaa}
+  .device.portrait .fake-kb{grid-template-columns:repeat(7,1fr)}
+
+  .search-results{margin-top:12px;display:grid;gap:7px}
+  .result{display:grid;grid-template-columns:72px 1fr;gap:10px;padding:9px 0;border-bottom:1px solid #282826}
+  .result .kind{font-size:8px;color:#aaa;text-transform:uppercase;letter-spacing:.08em}
+  .result b{font-size:10px}.result p{font-size:8.5px;color:#8f8f89;margin:3px 0 0}
+
+  .sync-box{border:1px solid #444;border-radius:10px;padding:14px;background:#070707}
+  .sync-diagram{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:12px;margin:16px 0}
+  .sync-node{border:1px solid #666;padding:16px 10px;border-radius:9px;text-align:center;font-size:10px}
+  .sync-arrow{font-size:24px;color:#aaa}
+  .sync-log{font-size:9px;color:#aaa;line-height:1.6;border-top:1px solid #333;padding-top:10px}
+
+  .footer-hint{position:absolute;right:10px;bottom:8px;font-size:8px;color:#666;pointer-events:none}
+  .panel{border:1px solid var(--line);border-radius:14px;padding:14px;background:#0f0f0f;position:sticky;top:18px}
+  .panel h3{font-size:12px;margin:0 0 8px;letter-spacing:.08em}
+  .panel p,.panel li{font-size:10px;line-height:1.45;color:#aaa}
+  .panel ul{padding-left:16px;margin:8px 0 14px}
+  .panel .mini{font-size:9px;color:#777;border-top:1px solid #2b2b2b;padding-top:10px}
+  .kbd{border:1px solid #555;border-bottom-width:2px;padding:2px 5px;border-radius:4px;color:#ddd;background:#161616}
+  .screen-pane{display:none}.screen-pane.active{display:block}
+  .toast{position:absolute;left:50%;bottom:18px;transform:translateX(-50%);border:1px solid #888;background:#eee;color:#060606;padding:8px 11px;border-radius:8px;font-size:9px;font-weight:700;display:none;z-index:10}
+  .toast.show{display:block}
+
+  @media (max-width:980px){
+    .stage{grid-template-columns:1fr}
+    .panel{position:static}
+  }
+  @media (max-width:620px){
+    body{padding:10px}
+    .device{border-width:7px;padding:8px;border-radius:22px}
+    .device:not(.portrait){aspect-ratio:4/3;min-width:760px}
+    .device-wrap{overflow:auto;justify-content:flex-start}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topbar">
+    <div class="brand">
+      <h1>PROMETEO INK SHELL · UX DEMO</h1>
+      <small>Simulación e‑ink · datos ficticios · sin backend real</small>
+    </div>
+    <div class="controls" role="group" aria-label="Orientación del dispositivo">
+      <button class="control" id="landscapeBtn" aria-pressed="true">▭ Horizontal</button>
+      <button class="control" id="portraitBtn" aria-pressed="false">▯ Vertical</button>
+      <button class="control" id="resetBtn">↺ Reiniciar demo</button>
+    </div>
+  </div>
+
+  <div class="stage">
+    <div class="device-wrap">
+      <div class="device" id="device">
+        <div class="screen">
+          <div class="status">
+            <div class="left"><span>12:41</span><span class="dot"></span><span>INK SHELL</span></div>
+            <div class="right"><span>Wi‑Fi ○</span><span>86%</span></div>
+          </div>
+
+          <div class="shell">
+            <nav class="side" aria-label="Navegación principal">
+              <button class="navbtn active" data-screen="home"><span class="ico">⌂</span><span>Inicio</span></button>
+              <button class="navbtn" data-screen="read"><span class="ico">▤</span><span>Leer</span></button>
+              <button class="navbtn" data-screen="note"><span class="ico">✎</span><span>Nota</span></button>
+              <button class="navbtn" data-screen="do"><span class="ico">✓</span><span>Hacer</span></button>
+              <button class="navbtn" data-screen="search"><span class="ico">⌕</span><span>Buscar</span></button>
+            </nav>
+
+            <main class="main">
+              <section class="screen-pane active" id="screen-home">
+                <div class="screen-title">
+                  <div><h2>INICIO</h2><div class="sub">una pantalla · una decisión clara · nada de feed infinito</div></div>
+                  <span class="tag">OFFLINE FIRST</span>
+                </div>
+                <div class="home-grid">
+                  <div class="hero">
+                    <div>
+                      <div class="eyebrow">Continuar</div>
+                      <h3>Psicología<br>· Apego</h3>
+                      <p>Página 184 · última lectura hace 2 h · 3 highlights pendientes de revisar.</p>
+                    </div>
+                    <button class="big-action" data-go="read">CONTINUAR →</button>
+                  </div>
+                  <div class="stack">
+                    <div class="card">
+                      <div class="row"><div><div class="eyebrow">Necesita vos</div><strong>1 decisión</strong></div><div class="num">1</div></div>
+                      <p>Prometeo está esperando una elección visual. Lo demás sigue solo.</p>
+                      <div class="rule"></div>
+                      <button class="secondary" data-go="do">ABRIR DECISIÓN</button>
+                    </div>
+                    <div class="card">
+                      <div class="eyebrow">Inbox</div><strong>3 cosas nuevas</strong>
+                      <p>2 lecturas · 1 study pack. Ya están descargadas localmente.</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="pulse">
+                  <div class="metric"><b>78%</b><span>Kindle Shell</span></div>
+                  <div class="metric"><b>3</b><span>Resultados hoy</span></div>
+                  <div class="metric"><b>0</b><span>Bloqueos tuyos</span></div>
+                  <div class="metric"><b>9m</b><span>Último valor útil</span></div>
+                </div>
+              </section>
+
+              <section class="screen-pane" id="screen-read">
+                <div class="screen-title">
+                  <div><h2>LEER</h2><div class="sub">KOReader como motor · esta pantalla sólo organiza</div></div>
+                  <span class="tag">3 NUEVOS</span>
+                </div>
+                <div class="action-rail">
+                  <button class="action" id="continueRead"><b>▶ CONTINUAR</b><span>Psicología · Apego · pág 184</span></button>
+                  <button class="action"><b>✦ HIGHLIGHTS</b><span>7 pendientes de revisar</span></button>
+                  <button class="action"><b>⇩ NUEVO</b><span>3 contenidos ya descargados</span></button>
+                </div>
+                <div class="list">
+                  <div class="item"><div class="bullet">P</div><div><h4>Psicología · Apego</h4><p>Libro · pág 184 · última apertura hoy</p></div><span class="state">CONTINUAR</span></div>
+                  <div class="item"><div class="bullet">PDF</div><div><h4>Clase 4 · Memoria de trabajo</h4><p>PDF · 26 páginas · disponible offline</p></div><span class="state">NUEVO</span></div>
+                  <div class="item"><div class="bullet">S</div><div><h4>Study Pack · José</h4><p>Álgebra · 12 ejercicios · generado por Prometeo</p></div><span class="state">NUEVO</span></div>
+                  <div class="item"><div class="bullet">A</div><div><h4>Artículo · atención y memoria</h4><p>Reader snapshot · texto limpio · sin navegador</p></div><span class="state">NUEVO</span></div>
+                </div>
+              </section>
+
+              <section class="screen-pane" id="screen-note">
+                <div class="screen-title">
+                  <div><h2>NUEVA NOTA</h2><div class="sub">capturar primero · clasificar después</div></div>
+                  <span class="tag">INBOX</span>
+                </div>
+                <div class="input-label">Título opcional</div>
+                <input class="field" id="noteTitle" value="idea sobre navegación Kindle" />
+                <div style="height:10px"></div>
+                <div class="input-label">Texto</div>
+                <textarea class="notearea" id="noteText">Quiero que volver a la izquierda siempre restaure exactamente la escena anterior, no sólo la pantalla anterior.</textarea>
+                <div class="decision-footer">
+                  <button class="primary" id="saveNote">GUARDAR</button>
+                  <button class="secondary" id="saveAndDo">GUARDAR + HACER</button>
+                  <span class="tag">Destino: Inbox</span>
+                </div>
+                <div class="fake-kb" aria-hidden="true">
+                  <span>Q</span><span>W</span><span>E</span><span>R</span><span>T</span><span>Y</span><span>U</span><span>I</span><span>O</span><span>P</span>
+                  <span>A</span><span>S</span><span>D</span><span>F</span><span>G</span><span>H</span><span>J</span><span>K</span><span>L</span><span>⌫</span>
+                </div>
+              </section>
+
+              <section class="screen-pane" id="screen-do">
+                <div class="screen-title">
+                  <div><h2>HACER · PROMETEO</h2><div class="sub">sólo lo que necesita decisión humana</div></div>
+                  <span class="tag">1 PENDIENTE</span>
+                </div>
+                <div class="decision" id="decisionBox">
+                  <div class="eyebrow">Decisión 1 de 1 · Kindle Shell</div>
+                  <h3>¿Dónde debe vivir la navegación principal?</h3>
+                  <p>El shell ya funciona en ambas orientaciones. Prometeo necesita una preferencia humana para congelar el champion visual.</p>
+                  <div class="choices">
+                    <button class="choice selected" data-choice="A"><b>A · Lateral</b><span>En horizontal: estable, siempre visible, aprovecha ancho.</span></button>
+                    <button class="choice" data-choice="B"><b>B · Inferior</b><span>Más simétrico entre vertical y horizontal, pero roba altura.</span></button>
+                  </div>
+                  <div class="decision-footer">
+                    <button class="primary" id="confirmChoice">ELEGIR A</button>
+                    <button class="secondary" id="postpone">POSPONER</button>
+                  </div>
+                </div>
+                <div class="rule"></div>
+                <div class="screen-title" style="margin-bottom:8px"><div><h2>SIGUE SOLO</h2><div class="sub">backstage resumido</div></div></div>
+                <div class="list">
+                  <div class="item"><div class="bullet">●</div><div><h4>Kindle Shell · Sync local</h4><p>2 bloques en paralelo · sin intervención humana</p></div><span class="state">MOVIENDO</span></div>
+                  <div class="item"><div class="bullet">●</div><div><h4>Prometeo · Result view</h4><p>verificación independiente esperando resultado</p></div><span class="state">VERIFICA</span></div>
+                  <div class="item"><div class="bullet">■</div><div><h4>Home dark theme</h4><p>champion visual listo · screenshot guardado</p></div><span class="state">PASS</span></div>
+                </div>
+              </section>
+
+              <section class="screen-pane" id="screen-search">
+                <div class="screen-title">
+                  <div><h2>BUSCAR</h2><div class="sub">una búsqueda para libros, notas, highlights y Prometeo</div></div>
+                  <span class="tag">FTS LOCAL</span>
+                </div>
+                <input class="field" id="searchInput" value="apego" aria-label="Buscar" />
+                <div class="search-results" id="results">
+                  <div class="result"><div class="kind">LIBRO</div><div><b>Psicología del desarrollo</b><p>Cap. 6 · teoría del apego · pág 171–196</p></div></div>
+                  <div class="result"><div class="kind">HIGHLIGHT</div><div><b>“base segura y exploración”</b><p>Marcado hoy · pág 182</p></div></div>
+                  <div class="result"><div class="kind">NOTA</div><div><b>idea clase apego</b><p>Inbox · hace 3 días</p></div></div>
+                  <div class="result"><div class="kind">PROMETEO</div><div><b>study-pack-apego</b><p>Artifact · PASS · 18 preguntas</p></div></div>
+                </div>
+              </section>
+            </main>
+          </div>
+          <div class="toast" id="toast">Guardado en Inbox</div>
+          <div class="footer-hint">← volver · → entrar · tap = elegir</div>
+        </div>
+      </div>
+    </div>
+
+    <aside class="panel">
+      <h3>QUÉ ESTÁS VIENDO</h3>
+      <p>Un <b>champion visual</b> del Kindle Shell. No intenta fingir Android: está diseñado para e‑ink, escenas estables y decisiones cortas.</p>
+      <ul>
+        <li><b>Horizontal:</b> navegación lateral y mucha superficie útil.</li>
+        <li><b>Vertical:</b> la misma semántica pasa a barra inferior.</li>
+        <li><b>Prometeo:</b> sólo “necesita vos / sigue solo / resultados”.</li>
+        <li><b>Notas:</b> Inbox primero, clasificación después.</li>
+        <li><b>Buscar:</b> FTS local unificado.</li>
+      </ul>
+      <h3>GESTOS PENSADOS</h3>
+      <p><span class="kbd">tap</span> elegir · <span class="kbd">←</span> volver exacto · <span class="kbd">→</span> profundizar · teclado táctil sólo cuando realmente escribís.</p>
+      <p class="mini">Demo sin backend. Los datos son ficticios, pero la navegación y el layout son funcionales.</p>
+    </aside>
+  </div>
+</div>
+<script>
+(() => {
+  const device = document.getElementById('device');
+  const landscapeBtn = document.getElementById('landscapeBtn');
+  const portraitBtn = document.getElementById('portraitBtn');
+  const resetBtn = document.getElementById('resetBtn');
+  const navButtons = [...document.querySelectorAll('.navbtn')];
+  const panes = [...document.querySelectorAll('.screen-pane')];
+  const toast = document.getElementById('toast');
+  let selectedChoice = 'A';
+
+  function orient(mode){
+    const portrait = mode === 'portrait';
+    device.classList.toggle('portrait', portrait);
+    landscapeBtn.setAttribute('aria-pressed', String(!portrait));
+    portraitBtn.setAttribute('aria-pressed', String(portrait));
+  }
+  function show(screen){
+    panes.forEach(p => p.classList.toggle('active', p.id === 'screen-' + screen));
+    navButtons.forEach(b => b.classList.toggle('active', b.dataset.screen === screen));
+  }
+  function flash(msg){
+    toast.textContent = msg;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 1200);
+  }
+  landscapeBtn.addEventListener('click', () => orient('landscape'));
+  portraitBtn.addEventListener('click', () => orient('portrait'));
+  navButtons.forEach(b => b.addEventListener('click', () => show(b.dataset.screen)));
+  document.querySelectorAll('[data-go]').forEach(b => b.addEventListener('click', () => show(b.dataset.go)));
+  document.querySelectorAll('.choice').forEach(b => b.addEventListener('click', () => {
+    selectedChoice = b.dataset.choice;
+    document.querySelectorAll('.choice').forEach(x => x.classList.toggle('selected', x.dataset.choice === selectedChoice));
+    document.getElementById('confirmChoice').textContent = 'ELEGIR ' + selectedChoice;
+  }));
+  document.getElementById('confirmChoice').addEventListener('click', () => flash('Decisión ' + selectedChoice + ' enviada a Prometeo'));
+  document.getElementById('postpone').addEventListener('click', () => flash('Decisión pospuesta'));
+  document.getElementById('saveNote').addEventListener('click', () => flash('Guardado en Inbox'));
+  document.getElementById('saveAndDo').addEventListener('click', () => { flash('Guardado + convertido en acción'); setTimeout(()=>show('do'),500); });
+  document.getElementById('continueRead').addEventListener('click', () => flash('Abriría KOReader · pág 184'));
+  document.getElementById('searchInput').addEventListener('input', e => {
+    const q = e.target.value.trim();
+    const results = document.getElementById('results');
+    results.style.opacity = q ? '1' : '.25';
+  });
+  resetBtn.addEventListener('click', () => {
+    orient('landscape'); show('home'); selectedChoice='A';
+    document.querySelectorAll('.choice').forEach(x => x.classList.toggle('selected', x.dataset.choice === 'A'));
+    document.getElementById('confirmChoice').textContent='ELEGIR A';
+    flash('Demo reiniciada');
+  });
+})();
+</script>
+</body>
+</html>
