@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Prometeo E‑Ink Engine · Demo</title>
+<style>
+:root{--bg:#050505;--ink:#f1f1e9;--mid:#9c9c94;--dim:#454541;--paper:#d9d9d0;--black:#000;--accent:#fff;--ui:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+*{box-sizing:border-box}html,body{margin:0;background:#0a0a0a;color:var(--ink);font-family:var(--ui);min-height:100%}button{font:inherit}
+body{display:flex;justify-content:center;padding:14px}.app{width:min(1400px,100%)}
+.toolbar{display:flex;gap:8px;align-items:center;justify-content:space-between;margin:0 0 10px;flex-wrap:wrap}.toolbar strong{font-size:13px;letter-spacing:.08em}.toolbar small{display:block;color:#777;margin-top:3px}.tools{display:flex;gap:6px;flex-wrap:wrap}.tools button{background:#111;color:#ddd;border:1px solid #444;border-radius:7px;padding:8px 10px;cursor:pointer}.tools button.on{background:#eee;color:#050505;border-color:#eee}
+.stage{display:grid;grid-template-columns:minmax(0,1fr) 280px;gap:12px;align-items:start}.deviceWrap{overflow:auto;display:flex;justify-content:center}.device{width:min(1080px,100%);aspect-ratio:4/3;background:#171717;border:12px solid #262626;border-radius:28px;padding:10px;box-shadow:0 24px 70px #0008}.device.portrait{width:min(560px,100%);aspect-ratio:3/4}.screen{width:100%;height:100%;position:relative;overflow:hidden;background:#000;border:1px solid #555;border-radius:8px;isolation:isolate}
+.scene{position:absolute;inset:0;display:none}.scene.active{display:block}.scene svg{width:100%;height:100%;display:block}.hot{cursor:pointer}.hot:hover .hit,.hot:focus .hit{stroke:#fff;stroke-width:3}.hit{fill:transparent;stroke:transparent;stroke-width:2}
+.pixel{shape-rendering:crispEdges}.txt{font-family:var(--ui);fill:var(--ink)}.muted{fill:#8e8e87}.dark{fill:#0a0a0a}.line{stroke:#8a8a82;stroke-width:2;fill:none}.thin{stroke:#4a4a46;stroke-width:1.5;fill:none}.solid{fill:#d9d9d0}.inkfill{fill:#141414}.midfill{fill:#55554f}
+.dialog{position:absolute;left:3%;right:3%;bottom:3%;height:22%;background:#050505;border:2px solid #d8d8d0;border-radius:3px;padding:12px 14px;display:flex;flex-direction:column;justify-content:center;z-index:7}.dialog .title{font-size:12px;letter-spacing:.12em;color:#aaa;margin-bottom:5px}.dialog .body{font-size:18px;font-weight:800;line-height:1.15}.dialog .hint{font-size:10px;color:#9a9a94;margin-top:6px}.dialog.hidden{display:none}
+.hud{position:absolute;left:2%;top:2%;display:flex;gap:8px;z-index:6}.chip{background:#000;border:1px solid #777;padding:5px 8px;font-size:10px}.hudRight{position:absolute;right:2%;top:2%;display:flex;gap:8px;z-index:6}
+.dirty{position:absolute;border:3px dashed #fff;z-index:20;pointer-events:none;display:none}.showDirty .dirty{display:block}.dirty::after{content:'DIRTY RECT';position:absolute;left:0;top:-18px;background:#fff;color:#000;font-size:8px;padding:2px 4px;white-space:nowrap}
+.flash{animation:blink .7s steps(2,end)}@keyframes blink{50%{filter:invert(1)}}
+.panel{border:1px solid #333;background:#0d0d0d;border-radius:10px;padding:12px;position:sticky;top:14px}.panel h2{font-size:12px;margin:0 0 10px}.panel p,.panel li{font-size:10px;color:#aaa;line-height:1.45}.panel ul{padding-left:18px}.panel .stat{display:grid;grid-template-columns:1fr auto;gap:6px;border-top:1px solid #333;padding:8px 0;font-size:10px}.panel .stat b{font-size:11px}.pad{display:grid;grid-template-columns:repeat(3,38px);grid-template-rows:repeat(3,32px);gap:4px;justify-content:center;margin:10px 0}.pad button{background:#151515;color:#ddd;border:1px solid #444;border-radius:5px}.pad .enter{background:#eee;color:#000}.legend{font-size:9px;color:#777;border-top:1px solid #333;padding-top:9px;margin-top:9px}.orientationNote{display:none}
+@media(max-width:900px){.stage{grid-template-columns:1fr}.panel{position:static}.deviceWrap{justify-content:flex-start}.device{min-width:760px}.device.portrait{min-width:0}.orientationNote{display:block;color:#777;font-size:9px;margin-bottom:8px}}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="toolbar">
+    <div><strong>PROMETEO E‑INK ENGINE · SCENE PROTOTYPE</strong><small>viewport fijo · cero scroll interno · escenas tipo juego · datos ficticios</small></div>
+    <div class="tools">
+      <button id="land" class="on">▭ Horizontal</button><button id="port">▯ Vertical</button><button id="dirtyBtn">▧ Dirty rects</button><button id="tick">↻ Simular cambio</button><button id="homeBtn">⌂ Home</button>
+    </div>
+  </div>
+  <div class="orientationNote">En teléfono podés desplazar la maqueta horizontalmente; dentro del Kindle simulado no hay scroll.</div>
+  <div class="stage">
+    <div class="deviceWrap"><div class="device" id="device"><div class="screen" id="screen">
+      <div class="hud"><div class="chip" id="sceneName">HOME · ARCHIVO</div></div><div class="hudRight"><div class="chip">12:41</div><div class="chip">Wi‑Fi ○ · 86%</div></div>
+
+      <!-- HOME WORLD -->
+      <section class="scene active" data-scene="home">
+        <svg viewBox="0 0 1000 750" class="pixel" aria-label="Home world">
+          <rect width="1000" height="750" fill="#020202"/>
+          <!-- floor / paths -->
+          <path d="M0 535H1000M0 590H1000" class="thin"/>
+          <path d="M500 590V690M180 535V690M820 535V690" class="thin"/>
+          <text x="48" y="82" class="txt" font-size="28" font-weight="700">ARCHIVO PERSONAL</text>
+          <text x="48" y="110" class="muted" font-size="13">un lugar · cuatro puertas · nada de feeds</text>
+          <!-- library -->
+          <g class="hot" tabindex="0" data-go="library">
+            <rect x="55" y="180" width="250" height="300" rx="6" class="inkfill" stroke="#bdbdb5" stroke-width="2"/>
+            <path d="M80 225H280M80 285H280M80 345H280M80 405H280" class="line"/>
+            <g fill="#bdbdb5"><rect x="90" y="195" width="18" height="28"/><rect x="113" y="200" width="12" height="23"/><rect x="133" y="190" width="20" height="33"/><rect x="164" y="197" width="15" height="26"/><rect x="192" y="188" width="18" height="35"/><rect x="222" y="194" width="14" height="29"/></g>
+            <text x="180" y="452" text-anchor="middle" class="txt" font-size="23" font-weight="700">BIBLIOTECA</text>
+            <text x="180" y="475" text-anchor="middle" class="muted" font-size="12">3 lecturas nuevas</text>
+            <rect x="55" y="180" width="250" height="300" class="hit"/>
+          </g>
+          <!-- note desk -->
+          <g class="hot" tabindex="0" data-go="note">
+            <rect x="380" y="305" width="240" height="150" rx="4" class="inkfill" stroke="#bdbdb5" stroke-width="2"/>
+            <rect x="420" y="337" width="160" height="82" class="dark" stroke="#8a8a82" stroke-width="2"/>
+            <path d="M445 357H558M445 375H540M445 393H565" class="thin"/>
+            <path d="M402 455V515M598 455V515" class="line"/>
+            <text x="500" y="554" text-anchor="middle" class="txt" font-size="22" font-weight="700">MESA DE NOTAS</text>
+            <text x="500" y="575" text-anchor="middle" class="muted" font-size="12">capturar primero</text>
+            <rect x="370" y="290" width="260" height="300" class="hit"/>
+          </g>
+          <!-- Prometeo tower -->
+          <g class="hot" tabindex="0" data-go="prometeo">
+            <path d="M710 470V205L820 140L930 205V470Z" class="inkfill" stroke="#d8d8d0" stroke-width="2"/>
+            <path d="M735 235H905M735 290H905M735 345H905M735 400H905" class="thin"/>
+            <circle cx="820" cy="214" r="24" class="solid"/><circle cx="820" cy="214" r="11" fill="#050505"/>
+            <text x="820" y="447" text-anchor="middle" class="txt" font-size="23" font-weight="700">PROMETEO</text>
+            <text x="820" y="490" text-anchor="middle" class="muted" font-size="12">1 decisión para vos</text>
+            <rect x="695" y="125" width="250" height="380" class="hit"/>
+          </g>
+          <!-- search kiosk -->
+          <g class="hot" tabindex="0" data-go="search">
+            <rect x="365" y="610" width="270" height="62" class="inkfill" stroke="#888" stroke-width="2"/>
+            <circle cx="405" cy="640" r="12" class="thin"/><path d="M414 649L425 660" class="line"/>
+            <text x="455" y="646" class="txt" font-size="18">BUSCAR TODO</text><rect x="350" y="595" width="300" height="90" class="hit"/>
+          </g>
+        </svg>
+        <div class="dialog"><div class="title">SELECCIONÁ UN LUGAR</div><div class="body">Biblioteca · Mesa · Prometeo · Buscar</div><div class="hint">tap / flechas + Enter · ← vuelve exactamente</div></div>
+      </section>
+
+      <!-- PROMETEO ROOM -->
+      <section class="scene" data-scene="prometeo">
+        <svg viewBox="0 0 1000 750" class="pixel">
+          <rect width="1000" height="750" fill="#020202"/>
+          <text x="50" y="95" class="txt" font-size="30" font-weight="700">SALA PROMETEO</text>
+          <text x="50" y="122" class="muted" font-size="13">resultado y decisiones adelante · workers atrás</text>
+          <!-- central organism -->
+          <circle cx="500" cy="350" r="105" class="inkfill" stroke="#d8d8d0" stroke-width="3"/>
+          <circle cx="500" cy="350" r="62" class="thin"/><circle cx="500" cy="350" r="22" class="solid"/>
+          <text x="500" y="505" text-anchor="middle" class="txt" font-size="21" font-weight="700">ORGANISMO</text>
+          <text x="500" y="528" text-anchor="middle" class="muted" font-size="12">6 moving · 2 blocked</text>
+          <!-- project stations -->
+          <g class="hot" tabindex="0" data-go="project"><rect x="80" y="190" width="230" height="120" rx="4" class="inkfill" stroke="#aaa" stroke-width="2"/><text x="105" y="226" class="txt" font-size="16" font-weight="700">KINDLE SHELL</text><text x="105" y="258" class="txt" id="kindlePct" font-size="28">71%</text><path d="M105 282H275" class="thin"/><path d="M105 282H226" class="line"/><rect x="70" y="180" width="250" height="140" class="hit"/></g>
+          <g><rect x="690" y="190" width="230" height="120" rx="4" class="inkfill" stroke="#777" stroke-width="2"/><text x="715" y="226" class="txt" font-size="16" font-weight="700">ALUMNOS</text><text x="715" y="258" class="txt" font-size="28">PASS</text><text x="715" y="286" class="muted" font-size="11">último artifact integrado</text></g>
+          <g><rect x="80" y="430" width="230" height="120" rx="4" class="inkfill" stroke="#777" stroke-width="2"/><text x="105" y="466" class="txt" font-size="16" font-weight="700">TTS</text><text x="105" y="498" class="txt" font-size="22">VERIFY</text><text x="105" y="525" class="muted" font-size="11">bloqueo: PUBLIC_HTTP</text></g>
+          <g><rect x="690" y="430" width="230" height="120" rx="4" class="inkfill" stroke="#777" stroke-width="2"/><text x="715" y="466" class="txt" font-size="16" font-weight="700">ESTUDIO</text><text x="715" y="498" class="txt" font-size="22">MOVING</text><text x="715" y="525" class="muted" font-size="11">sin intervención humana</text></g>
+          <!-- backstage tiny workers -->
+          <g opacity=".45"><path d="M380 625H620" class="thin"/><circle cx="405" cy="625" r="8" class="solid"/><circle cx="450" cy="625" r="8" class="solid"/><circle cx="495" cy="625" r="8" class="solid"/><circle cx="540" cy="625" r="8" class="solid"/><circle cx="585" cy="625" r="8" class="solid"/><text x="500" y="655" text-anchor="middle" class="muted" font-size="10">backstage · 5 shells · no necesita tu atención</text></g>
+          <!-- decision gate -->
+          <g class="hot" tabindex="0" data-go="decision"><path d="M430 150H570L590 205H410Z" class="solid"/><text x="500" y="186" text-anchor="middle" fill="#050505" font-family="monospace" font-size="15" font-weight="700">NECESITA VOS · 1</text><rect x="395" y="135" width="210" height="85" class="hit"/></g>
+        </svg>
+        <div class="dialog"><div class="title">PROMETEO</div><div class="body">El sistema sigue solo. Hay 1 decisión humana.</div><div class="hint">tocá “NECESITA VOS” o el proyecto Kindle · Esc/← vuelve</div></div>
+        <div class="dirty" id="progressDirty" style="left:8%;top:24%;width:25%;height:18%"></div>
+      </section>
+
+      <!-- PROJECT -->
+      <section class="scene" data-scene="project">
+        <svg viewBox="0 0 1000 750" class="pixel">
+          <rect width="1000" height="750" fill="#020202"/>
+          <text x="50" y="95" class="txt" font-size="30" font-weight="700">TALLER KINDLE</text><text x="50" y="122" class="muted" font-size="13">un proyecto también es un lugar, no una página</text>
+          <!-- machine/map -->
+          <rect x="55" y="170" width="610" height="400" rx="4" class="inkfill" stroke="#777" stroke-width="2"/>
+          <path d="M110 490V255H230V330H355V230H485V375H610V490Z" fill="#0b0b0b" stroke="#aaa" stroke-width="2"/>
+          <circle cx="170" cy="285" r="20" class="solid"/><circle cx="420" cy="267" r="20" class="solid"/><circle cx="550" cy="412" r="20" class="solid"/>
+          <text x="170" y="290" text-anchor="middle" fill="#000" font-family="monospace" font-size="12">UI</text><text x="420" y="272" text-anchor="middle" fill="#000" font-family="monospace" font-size="12">SYNC</text><text x="550" y="417" text-anchor="middle" fill="#000" font-family="monospace" font-size="12">INK</text>
+          <path d="M190 285H400M440 267L530 400" class="thin"/>
+          <!-- inspector fixed right -->
+          <rect x="705" y="170" width="240" height="400" rx="4" class="inkfill" stroke="#aaa" stroke-width="2"/>
+          <text x="735" y="215" class="txt" font-size="15" font-weight="700">KINDLE SHELL</text><text x="735" y="260" class="txt" font-size="36">71%</text><text x="735" y="300" class="muted" font-size="11">AHORA</text><text x="735" y="326" class="txt" font-size="13">scene engine</text><text x="735" y="360" class="muted" font-size="11">DESPUÉS</text><text x="735" y="386" class="txt" font-size="13">sync adapter</text><text x="735" y="420" class="muted" font-size="11">BLOQUEO</text><text x="735" y="446" class="txt" font-size="13">ninguno</text><text x="735" y="500" class="muted" font-size="11">último resultado</text><text x="735" y="524" class="txt" font-size="12">layout fijo PASS</text>
+          <text x="55" y="625" class="muted" font-size="12">No hay scroll. Entrar a un nodo cambia de escena.</text>
+        </svg>
+        <div class="dialog"><div class="title">PROYECTO</div><div class="body">El mapa queda quieto; sólo cambian slots semánticos.</div><div class="hint">← vuelve a Sala Prometeo</div></div>
+      </section>
+
+      <!-- DECISION -->
+      <section class="scene" data-scene="decision">
+        <svg viewBox="0 0 1000 750" class="pixel">
+          <rect width="1000" height="750" fill="#020202"/>
+          <text x="50" y="95" class="txt" font-size="30" font-weight="700">DECISIÓN HUMANA</text><text x="50" y="122" class="muted" font-size="13">una sola pregunta · una sola escena</text>
+          <text x="500" y="215" text-anchor="middle" class="txt" font-size="22" font-weight="700">¿Cómo navegamos el Kindle?</text>
+          <g class="hot" tabindex="0" data-choice="A"><rect x="110" y="280" width="340" height="250" rx="5" class="inkfill" stroke="#aaa" stroke-width="2"/><path d="M175 335H385V450H175Z" class="thin"/><path d="M175 425H385" class="line"/><text x="280" y="485" text-anchor="middle" class="txt" font-size="19" font-weight="700">A · BARRA FIJA</text><text x="280" y="510" text-anchor="middle" class="muted" font-size="11">más explícita</text><rect x="95" y="265" width="370" height="280" class="hit"/></g>
+          <g class="hot" tabindex="0" data-choice="B"><rect x="550" y="280" width="340" height="250" rx="5" class="inkfill" stroke="#aaa" stroke-width="2"/><path d="M615 335H825V450H615Z" class="thin"/><path d="M615 335V450M825 335V450" class="line"/><text x="720" y="485" text-anchor="middle" class="txt" font-size="19" font-weight="700">B · LATERALES</text><text x="720" y="510" text-anchor="middle" class="muted" font-size="11">más espacial</text><rect x="535" y="265" width="370" height="280" class="hit"/></g>
+        </svg>
+        <div class="dialog" id="decisionDialog"><div class="title">PROMETEO NECESITA VOS</div><div class="body">Elegí A o B. Nada más.</div><div class="hint">la respuesta iría a OUTBOX; esta demo no toca producción</div></div>
+      </section>
+
+      <!-- LIBRARY -->
+      <section class="scene" data-scene="library">
+        <svg viewBox="0 0 1000 750" class="pixel"><rect width="1000" height="750" fill="#020202"/><text x="50" y="95" class="txt" font-size="30" font-weight="700">BIBLIOTECA</text><text x="50" y="122" class="muted" font-size="13">KOReader abajo · esta escena sólo decide qué abrir</text>
+          <rect x="55" y="165" width="890" height="390" class="inkfill" stroke="#777" stroke-width="2"/>
+          <path d="M90 250H910M90 355H910M90 460H910" class="thin"/>
+          <g class="hot" tabindex="0" data-book="Psicología · Apego"><rect x="120" y="185" width="150" height="55" class="solid"/><text x="195" y="218" text-anchor="middle" fill="#000" font-family="monospace" font-size="12" font-weight="700">APEGO</text><rect x="100" y="170" width="190" height="85" class="hit"/></g>
+          <g><rect x="320" y="190" width="125" height="50" class="midfill"/><text x="382" y="220" text-anchor="middle" class="txt" font-size="11">FREUD</text></g><g><rect x="505" y="190" width="175" height="50" class="midfill"/><text x="592" y="220" text-anchor="middle" class="txt" font-size="11">CLASE 4</text></g>
+          <text x="95" y="595" class="txt" font-size="18" font-weight="700">CONTINUAR: Psicología · Apego · pág 184</text><text x="95" y="625" class="muted" font-size="11">3 highlights pendientes · última lectura hace 2 h</text>
+        </svg><div class="dialog"><div class="title">LECTURA</div><div class="body">Tocá APEGO → en el Kindle real abriría KOReader.</div><div class="hint">← vuelve al Archivo</div></div>
+      </section>
+
+      <!-- NOTE -->
+      <section class="scene" data-scene="note">
+        <svg viewBox="0 0 1000 750" class="pixel"><rect width="1000" height="750" fill="#020202"/><text x="50" y="95" class="txt" font-size="30" font-weight="700">MESA DE NOTAS</text><text x="50" y="122" class="muted" font-size="13">captura primero · clasificación después</text><rect x="80" y="170" width="840" height="350" class="inkfill" stroke="#aaa" stroke-width="2"/><text x="120" y="220" class="muted" font-size="11">NUEVA NOTA</text><text x="120" y="265" class="txt" font-size="20">idea sobre memoria y aprendizaje...</text><path d="M120 300H850M120 342H850M120 384H850M120 426H850" class="thin"/><rect x="660" y="455" width="190" height="42" class="solid"/><text x="755" y="482" text-anchor="middle" fill="#000" font-family="monospace" font-size="13" font-weight="700">GUARDAR</text><text x="80" y="585" class="muted" font-size="11">En el Kindle real, tocar el papel abre el teclado táctil.</text></svg><div class="dialog"><div class="title">OUTBOX LOCAL</div><div class="body">Guardar no pregunta carpeta, proyecto ni tags.</div><div class="hint">sync después · Wi‑Fi no hace falta para escribir</div></div>
+      </section>
+
+      <!-- SEARCH -->
+      <section class="scene" data-scene="search">
+        <svg viewBox="0 0 1000 750" class="pixel"><rect width="1000" height="750" fill="#020202"/><text x="50" y="95" class="txt" font-size="30" font-weight="700">BUSCAR TODO</text><text x="50" y="122" class="muted" font-size="13">FTS local · libros + notas + highlights + Prometeo</text><rect x="70" y="170" width="860" height="70" class="inkfill" stroke="#aaa" stroke-width="2"/><text x="105" y="214" class="txt" font-size="20">apego_</text><g><text x="85" y="300" class="muted" font-size="11">LIBRO</text><text x="210" y="300" class="txt" font-size="15">Psicología del desarrollo</text><path d="M70 325H930" class="thin"/><text x="85" y="375" class="muted" font-size="11">NOTA</text><text x="210" y="375" class="txt" font-size="15">idea clase apego</text><path d="M70 400H930" class="thin"/><text x="85" y="450" class="muted" font-size="11">HIGHLIGHT</text><text x="210" y="450" class="txt" font-size="15">“apego seguro...”</text><path d="M70 475H930" class="thin"/><text x="85" y="525" class="muted" font-size="11">PROMETEO</text><text x="210" y="525" class="txt" font-size="15">study-pack-apego</text></g></svg><div class="dialog"><div class="title">UNA BÚSQUEDA</div><div class="body">No hay “buscar libros” vs “buscar notas”.</div><div class="hint">local primero · resultados estables</div></div>
+      </section>
+    </div></div></div>
+
+    <aside class="panel">
+      <h2>QUÉ ESTÁS PROBANDO</h2>
+      <p>Esto ya no es una página web dentro del Kindle. Es un <b>motor de escenas</b>: cada tap cambia de lugar completo.</p>
+      <div class="stat"><span>Scroll interno</span><b>0</b></div><div class="stat"><span>Escenas</span><b id="sceneStat">HOME</b></div><div class="stat"><span>Refresh lógico</span><b id="refreshCount">0</b></div><div class="stat"><span>Dirty regions</span><b>sí</b></div>
+      <div class="pad"><span></span><button data-key="up">↑</button><span></span><button data-key="left">←</button><button class="enter" data-key="enter">OK</button><button data-key="right">→</button><span></span><button data-key="down">↓</button><button data-key="back">↩</button></div>
+      <ul><li>Home es un <b>lugar</b>, no una lista.</li><li>Prometeo es una <b>sala</b>, no un dashboard.</li><li>Los workers quedan backstage.</li><li>El fondo podría ser un render 2D/3D precompilado.</li><li>“Simular cambio” actualiza sólo un slot.</li></ul>
+      <div class="legend">Tap objetos grandes. Teclado: flechas, Enter, Esc/Backspace. Activá “Dirty rects” y luego “Simular cambio” para ver qué parte tendría que refrescar el Kindle.</div>
+    </aside>
+  </div>
+</div>
+<script>
+(()=>{
+ const device=document.getElementById('device'),screen=document.getElementById('screen');
+ const scenes=[...document.querySelectorAll('.scene')];let current='home',history=[],refresh=0,pct=71;
+ const name={home:'HOME · ARCHIVO',prometeo:'PROMETEO · SALA',project:'KINDLE · TALLER',decision:'PROMETEO · DECISIÓN',library:'HOME · BIBLIOTECA',note:'HOME · NOTAS',search:'HOME · BUSCAR'};
+ function show(id,push=true){if(id===current)return;if(push)history.push(current);current=id;scenes.forEach(s=>s.classList.toggle('active',s.dataset.scene===id));document.getElementById('sceneName').textContent=name[id]||id;document.getElementById('sceneStat').textContent=id.toUpperCase();refresh++;document.getElementById('refreshCount').textContent=refresh;screen.classList.remove('flash');void screen.offsetWidth;screen.classList.add('flash')}
+ function back(){if(history.length)show(history.pop(),false);else if(current!=='home')show('home',false)}
+ document.querySelectorAll('[data-go]').forEach(el=>el.addEventListener('click',()=>show(el.dataset.go)));
+ document.querySelectorAll('[data-choice]').forEach(el=>el.addEventListener('click',()=>{document.querySelector('#decisionDialog .body').textContent='Elegiste '+el.dataset.choice+'. Iría a OUTBOX.';refresh++;document.getElementById('refreshCount').textContent=refresh}));
+ document.querySelectorAll('[data-book]').forEach(el=>el.addEventListener('click',()=>{alert('Demo: abriría KOReader en “'+el.dataset.book+'”')}));
+ const land=document.getElementById('land'),port=document.getElementById('port');land.onclick=()=>{device.classList.remove('portrait');land.classList.add('on');port.classList.remove('on')};port.onclick=()=>{device.classList.add('portrait');port.classList.add('on');land.classList.remove('on')};
+ document.getElementById('dirtyBtn').onclick=e=>{screen.classList.toggle('showDirty');e.currentTarget.classList.toggle('on')};
+ document.getElementById('homeBtn').onclick=()=>{history=[];show('home',false)};
+ document.getElementById('tick').onclick=()=>{if(current!=='prometeo'){show('prometeo');setTimeout(()=>document.getElementById('tick').click(),120);return}pct=Math.min(99,pct+3);document.getElementById('kindlePct').textContent=pct+'%';refresh++;document.getElementById('refreshCount').textContent=refresh;const d=document.getElementById('progressDirty');d.style.display='block';setTimeout(()=>{if(!screen.classList.contains('showDirty'))d.style.display='none'},900)};
+ document.querySelectorAll('[data-key]').forEach(b=>b.onclick=()=>{let k=b.dataset.key;if(k==='back'||k==='left')back();else if(k==='enter'&&current==='home')show('prometeo');else if(k==='right'&&current==='home')show('prometeo')});
+ addEventListener('keydown',e=>{if(e.key==='Escape'||e.key==='Backspace'||e.key==='ArrowLeft'){e.preventDefault();back()}else if(e.key==='Enter'&&current==='home')show('prometeo');else if(e.key==='ArrowRight'&&current==='home')show('prometeo')});
+})();
+</script>
+</body></html>
