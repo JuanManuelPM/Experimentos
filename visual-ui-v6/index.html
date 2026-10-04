@@ -3,6 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#0e0e0e">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>Prometeo · Unix WM UI V6</title>
 <style>
 :root{
@@ -32,7 +36,6 @@ button{font:inherit}
 .reader{padding:16px 18px;font-family:Georgia,'Times New Roman',serif}.reader h1{font-size:26px;margin:0 0 12px}.reader p{font-size:17px;line-height:1.42;margin:0 0 10px}.readerFooter{position:absolute;left:18px;right:18px;bottom:12px;border-top:1px dotted var(--mid);padding-top:8px;font-family:var(--mono);font-size:11px;display:flex;justify-content:space-between}
 #dock{position:absolute;left:50%;bottom:12px;transform:translateX(-50%);z-index:80;background:var(--paper);border:3px solid var(--ink);box-shadow:6px 6px 0 rgba(0,0,0,.32);display:flex;gap:8px;padding:6px}.dockbtn{height:40px;min-width:52px;border:2px solid var(--ink);background:var(--paper2);cursor:pointer;font-weight:900}.dockbtn:focus,.dockbtn.on{background:var(--ink);color:var(--white);outline:none}
 #hint{position:absolute;right:12px;bottom:12px;z-index:70;background:var(--ink);color:var(--white);padding:6px 8px;font-size:11px}
-/* demo */
 #demoCursor{position:fixed;left:0;top:0;width:46px;height:56px;z-index:2000;pointer-events:none;display:none;transition:transform .48s cubic-bezier(.2,.85,.25,1)}
 #demoCursor.on{display:block}
 #demoCursor svg{width:46px;height:56px;filter:drop-shadow(4px 4px 0 rgba(0,0,0,.3))}
@@ -60,6 +63,7 @@ button{font:inherit}
     <button class="launch" data-open="status" data-demo="status-launch" title="Estado">S</button>
     <button class="launch" data-open="reader" data-demo="reader-launch" title="Lectura">R</button>
     <button class="launch" data-open="context" data-demo="context-launch" title="Contexto">C</button>
+    <button id="fullBtn" class="launch" title="Pantalla completa">⛶</button>
     <button id="demoBtn" class="launch demo" data-demo="demo-start" title="Demo">▶</button>
   </aside>
   <main id="desktop">
@@ -104,7 +108,43 @@ button{font:inherit}
 </div>
 <script>
 const desktop=document.getElementById('desktop'), profileEl=document.getElementById('profile');
+const fullBtn=document.getElementById('fullBtn');
 let layoutMode='auto', focused='world', demoAbort=false, demoRunning=false;
+let fullscreenArmed=true;
+function isFullscreen(){return !!(document.fullscreenElement||document.webkitFullscreenElement)}
+async function enterFullscreen(){
+  if(isFullscreen()) return true;
+  const root=document.documentElement;
+  try{
+    if(root.requestFullscreen) await root.requestFullscreen({navigationUI:'hide'});
+    else if(root.webkitRequestFullscreen) root.webkitRequestFullscreen();
+    else return false;
+    return true;
+  }catch(_){return false}
+}
+function syncFullscreen(){
+  const on=isFullscreen();
+  fullBtn?.classList.toggle('on',on);
+  fullBtn && (fullBtn.textContent=on?'↙':'⛶');
+  requestAnimationFrame(arrange);
+}
+fullBtn?.addEventListener('click',async e=>{
+  e.stopPropagation();
+  if(isFullscreen()){
+    try{if(document.exitFullscreen) await document.exitFullscreen(); else if(document.webkitExitFullscreen) document.webkitExitFullscreen();}catch(_){ }
+  }else await enterFullscreen();
+  syncFullscreen();
+});
+document.addEventListener('fullscreenchange',syncFullscreen);
+document.addEventListener('webkitfullscreenchange',syncFullscreen);
+requestAnimationFrame(()=>enterFullscreen().then(syncFullscreen));
+function firstGestureFullscreen(){
+  if(!fullscreenArmed||isFullscreen()) return;
+  fullscreenArmed=false;
+  enterFullscreen().then(syncFullscreen);
+}
+document.addEventListener('pointerdown',firstGestureFullscreen,{capture:true,passive:true});
+document.addEventListener('keydown',firstGestureFullscreen,{capture:true});
 const wins=[...document.querySelectorAll('.window')];
 function openWins(){return wins.filter(w=>w.classList.contains('open'))}
 function focusWin(id){focused=id;wins.forEach(w=>w.classList.toggle('focused',w.id===id));}
@@ -150,5 +190,6 @@ async function runDemo(){if(demoRunning)return;demoRunning=true;demoAbort=false;
   cap.classList.remove('on');cur.classList.remove('on');demoBtn.textContent='▶';demoRunning=false;
 }
 demoBtn.addEventListener('click',e=>{e.stopPropagation();if(demoRunning){demoAbort=true;demoBtn.textContent='▶'}else runDemo()});
+document.addEventListener('pointerdown',e=>{if(demoRunning&&!e.target.closest('#demoBtn')&&!e.isTrusted===false)demoAbort=true},{capture:true});
 </script>
 </body></html>
