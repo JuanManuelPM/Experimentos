@@ -7,28 +7,17 @@
 <body>
 <div class="shell" id="labRoot">
   <header class="topbar" data-demo-controls>
-    <button class="icon" id="restartBtn" title="Reiniciar">↻</button>
     <span class="status-dot"></span><b>DEMO ENGINE V6</b>
     <span class="scene-title" id="sceneTitle">FAST SHOWCASE</span>
     <span class="spacer"></span>
-    <span class="authority" id="authority">FREE</span>
-    <button id="audioBtn">SOUND ✓</button>
-    <button class="primary" id="runBtn">▶ RUN ALL</button>
-    <button class="next" id="nextBtn">NEXT ANIMATION →</button>
+    <button class="primary" id="runBtn">DEMO</button>
+    <button class="cancel" id="cancelBtn" hidden>CANCELAR</button>
   </header>
-
-  <nav class="scene-rail" id="sceneRail" data-demo-controls>
-    <button data-scene="0"><i>01</i><span>CLICK + TYPE</span></button>
-    <button data-scene="1"><i>02</i><span>SCROLL</span></button>
-    <button data-scene="2"><i>03</i><span>CONTROLS</span></button>
-    <button data-scene="3"><i>04</i><span>DRAG + RESIZE</span></button>
-    <button data-scene="4"><i>05</i><span>MARK</span></button>
-    <button data-scene="5"><i>06</i><span>FOCUS</span></button>
-  </nav>
 
   <main class="viewport" data-demo-stage>
     <div class="page-scroll" data-demo-page-scroll>
       <div class="camera" data-demo-camera>
+        <svg class="world-annotations" data-demo-annotation-surface aria-hidden="true"></svg>
         <div class="world">
           <section class="window hero" data-demo-id="widget.mail">
             <div class="window-head"><span class="lamp"></span><b>INBOX</b><span class="spacer"></span><small>MAIL.APP</small></div>
@@ -99,7 +88,6 @@
     </div>
 
     <svg class="overlay-svg" aria-hidden="true">
-      <path class="annotation-path" data-demo-annotation-path hidden></path>
       <path class="demo-trace-path" data-demo-trace-path hidden></path>
       <path class="demo-trail" data-demo-trail hidden></path>
     </svg>
@@ -113,7 +101,7 @@
 
   <footer class="narrator">
     <b data-demo-kicker>V6</b>
-    <span data-demo-caption>RUN ALL o saltá de escena con NEXT ANIMATION.</span>
+    <span data-demo-caption>DEMO inicia la secuencia. CANCELAR la detiene.</span>
     <b data-demo-counter>0 / 0</b>
   </footer>
 </div>
@@ -131,6 +119,7 @@
 <script src="../demo-engine-v5/demo-engine-v5.js"></script>
 <script src="../demo-engine-v6/audio-v6.js"></script>
 <script src="../demo-engine-v6/viewport-authority.js"></script>
+<script src="../demo-engine-v6/annotation-v6.js"></script>
 <script src="../demo-engine-v6/demo-engine-v6.js"></script>
 <script src="app.js"></script>
 </body></html>
