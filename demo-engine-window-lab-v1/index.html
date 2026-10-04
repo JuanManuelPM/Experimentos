@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Demo Engine · Window Lab</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="shell" id="labRoot">
+  <header class="topbar" data-demo-controls>
+    <button class="top-refresh" id="resetBtn" title="Reset">↻</button>
+    <span class="top-dot"></span>
+    <span class="top-title">DEMO ENGINE · WINDOW LAB</span>
+    <div class="top-spacer"></div>
+    <button class="top-action primary" id="runBtn">▶ DEMO</button>
+    <button class="top-action" id="pauseBtn">Ⅱ</button>
+    <button class="top-action" id="resumeBtn">▶</button>
+  </header>
+
+  <main class="workspace" data-demo-stage>
+    <div class="grid">
+      <section class="widget main" data-demo-id="widget.mail">
+        <div class="widget-head">
+          <span class="widget-dot"></span><span class="widget-name">INBOX</span><div class="widget-spacer"></div>
+          <button class="widget-settings" data-demo-id="mail.fullscreen">□</button>
+        </div>
+        <div class="widget-body">
+          <div class="mail-app">
+            <aside class="mail-list" data-demo-id="mail.list">
+              <button class="mail-row active"><b>Prometeo</b><span>Demo engine checklist</span><small>16:02</small></button>
+              <button class="mail-row"><b>Diseño</b><span>Ventanas y widgets</span><small>15:48</small></button>
+              <button class="mail-row"><b>Workers</b><span>Batch terminado</span><small>15:30</small></button>
+              <button class="mail-row"><b>Notas</b><span>Ideas para mejorar pacing</span><small>14:52</small></button>
+              <button class="mail-row"><b>QA</b><span>Targeting: 2 casos pendientes</span><small>13:18</small></button>
+              <button class="mail-row"><b>Archivo</b><span>Referencia visual</span><small>12:07</small></button>
+              <button class="mail-row"><b>Historial</b><span>Versión previa</span><small>11:32</small></button>
+              <button class="mail-row" data-demo-id="mail.goal"><b>FINAL</b><span>Objetivo de scroll</span><small>10:04</small></button>
+            </aside>
+            <article class="mail-view">
+              <div class="eyebrow">MENSAJE SELECCIONADO</div>
+              <h1>Probando una demo de verdad</h1>
+              <p>Esta copia no depende de Prometeo. Es un pequeño mundo de prueba para que el motor pueda hacer scroll, escribir, abrir cosas, arrastrar, redimensionar y explicar lo que hace.</p>
+              <div class="mail-actions">
+                <button data-demo-id="mail.reply">RESPONDER</button>
+                <button data-demo-id="mail.archive">ARCHIVAR</button>
+              </div>
+              <div class="reply" data-demo-id="reply.box" hidden>
+                <textarea data-demo-id="reply.input" placeholder="Escribí una respuesta"></textarea>
+                <button data-demo-id="reply.send">ENVIAR</button>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="widget" data-demo-id="widget.tasks">
+        <div class="widget-head"><span class="widget-dot amber"></span><span class="widget-name">TASKS</span><div class="widget-spacer"></div><span class="head-note">DRAG</span></div>
+        <div class="widget-body task-app">
+          <div class="task-col">
+            <span class="eyebrow">TODO</span>
+            <div class="task-card" data-demo-id="task.drag">Revisar motion</div>
+            <div class="task-card">Pulir targeting</div>
+          </div>
+          <div class="task-col drop" data-demo-id="task.drop">
+            <span class="eyebrow">DONE</span>
+            <div class="task-card done">Assets cursor</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="widget" data-demo-id="widget.settings">
+        <div class="widget-head"><span class="widget-dot green"></span><span class="widget-name">SETTINGS</span><div class="widget-spacer"></div><span class="head-note">INPUTS</span></div>
+        <div class="widget-body settings-app">
+          <label>Modo<select data-demo-id="settings.mode"><option>Calm</option><option>Product</option><option>Teach</option></select></label>
+          <label>Velocidad<input data-demo-id="settings.speed" type="range" min="1" max="100" value="38"></label>
+          <label class="check"><input data-demo-id="settings.guides" type="checkbox"> Mostrar guías</label>
+          <button data-demo-id="settings.save">GUARDAR</button>
+          <div class="save-state" data-demo-id="settings.state">sin cambios</div>
+        </div>
+      </section>
+
+      <section class="widget narrow" data-demo-id="widget.files">
+        <div class="widget-head"><span class="widget-dot"></span><span class="widget-name">FILES</span><div class="widget-spacer"></div><span class="head-note">TRACE</span></div>
+        <div class="widget-body files-app">
+          <button data-demo-id="file.one">demo-script.json</button>
+          <button>pointer-manifest.json</button>
+          <button>MOTION_GATE.json</button>
+          <button>CURRENT.json</button>
+        </div>
+      </section>
+
+      <section class="widget narrow" data-demo-id="widget.resize">
+        <div class="widget-head"><span class="widget-dot"></span><span class="widget-name">RESIZE LAB</span><div class="widget-spacer"></div><span class="head-note">HANDLE</span></div>
+        <div class="widget-body resize-app">
+          <div class="resize-box" data-demo-id="resize.box">RESIZE ME</div>
+        </div>
+      </section>
+    </div>
+
+    <svg class="demo-motion-svg" data-demo-motion-svg aria-hidden="true"><path class="demo-trail" data-demo-trail hidden></path><path class="demo-trace-path" data-demo-trace-path hidden></path></svg>
+    <div class="demo-focus" data-demo-focus hidden></div>
+    <div class="demo-comment" data-demo-comment hidden></div>
+    <div class="demo-spotlight" data-demo-spotlight hidden></div>
+    <div data-demo-click-layer></div>
+    <div class="demo-wheel" data-demo-wheel hidden>↓</div>
+    <div class="demo-measure" data-demo-measure hidden></div>
+    <div class="action-hud" data-demo-action-hud hidden></div>
+    <div class="demo-gesture" data-demo-gesture hidden><img data-demo-gesture-img alt=""></div>
+    <div class="demo-pointer" data-demo-pointer hidden><img data-demo-pointer-img alt="cursor de demo"></div>
+  </main>
+
+  <footer class="narrator">
+    <b data-demo-kicker>WINDOW LAB</b>
+    <span data-demo-caption>Una copia limpia para probar el motor, no una página de Prometeo.</span>
+    <b data-demo-counter>0 / 0</b>
+  </footer>
+</div>
+
+<script src="../demo-engine-v4/demo-engine-v3-base.js"></script>
+<script src="../demo-engine-v4/demo-engine-v4.js"></script>
+<script src="../demo-engine-v4/pointer-assets.js"></script>
+<script src="../demo-engine-v4/gesture-assets.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
