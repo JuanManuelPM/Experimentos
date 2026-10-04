@@ -1,0 +1,97 @@
+{
+  "schema": "LOFI_ASSET_FAMILY_V1",
+  "id": "human-organic-01",
+  "label": "Humano orgánico",
+  "tags": [
+    "human",
+    "organic",
+    "makehuman",
+    "low-poly-proxy"
+  ],
+  "source": {
+    "name": "MakeHuman male1591 proxy + MakeHuman system skins",
+    "author": "MakeHuman Community",
+    "license": "CC0 for system assets; proxy from MakeHuman data",
+    "url": "https://static.makehumancommunity.org/assets/assetpacks/makehuman_system_assets.html",
+    "transport_mirror": "vidya-hub/makehuman-core + vestan/skinmaker"
+  },
+  "renderer": "mesh_uv",
+  "model": {
+    "path": "assets/human-organic/male1591.obj",
+    "format": "obj"
+  },
+  "material": {
+    "strategy": "unlit_map"
+  },
+  "orientation": {
+    "up": [
+      0,
+      1,
+      0
+    ],
+    "camera_direction": [
+      0,
+      0,
+      1
+    ],
+    "ground": "minY"
+  },
+  "display": {
+    "target_size": 3.15,
+    "margin": 1.18,
+    "target_bias": [
+      0,
+      0.1,
+      0
+    ]
+  },
+  "texture_contract": {
+    "uv_channel": 0,
+    "flip_y": true,
+    "color_space": "srgb",
+    "dimension_policy": "square"
+  },
+  "validation": {
+    "status": "PASS",
+    "mode": "source_uv_contract",
+    "runtime_required": true,
+    "structural_verified": "MakeHuman proxy OBJ exposes vt UV coordinates; skin pack is MakeHuman system UV family"
+  },
+  "face_patch": {
+    "status": "PREPARED_NOT_PUBLIC",
+    "strategy": "UV-region compositor",
+    "note": "Reserved for local/licensed portraits; it must generate a new UV-compatible skin before runtime."
+  },
+  "skins": [
+    {
+      "id": "young-male",
+      "label": "YOUNG M",
+      "texture": "https://raw.githubusercontent.com/vestan/skinmaker/master/static/compositor/young_lightskinned_male_diffuse.png"
+    },
+    {
+      "id": "middle-male",
+      "label": "MIDDLE M",
+      "texture": "assets/human-organic/middleage_lightskinned_male_diffuse.png"
+    },
+    {
+      "id": "old-male",
+      "label": "OLD M",
+      "texture": "https://raw.githubusercontent.com/vestan/skinmaker/master/static/compositor/old_lightskinned_male_diffuse.png"
+    },
+    {
+      "id": "young-female",
+      "label": "YOUNG F",
+      "texture": "https://raw.githubusercontent.com/vestan/skinmaker/master/static/compositor/young_lightskinned_female_diffuse.png"
+    },
+    {
+      "id": "middle-female",
+      "label": "MIDDLE F",
+      "texture": "https://raw.githubusercontent.com/vestan/skinmaker/master/static/compositor/middleage_lightskinned_female_diffuse.png"
+    },
+    {
+      "id": "old-female",
+      "label": "OLD F",
+      "texture": "https://raw.githubusercontent.com/vestan/skinmaker/master/static/compositor/old_lightskinned_female_diffuse.png"
+    }
+  ]
+}
