@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Demo Engine V5 · Window Lab</title><link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="shell" id="labRoot">
+<header class="topbar" data-demo-controls>
+  <button id="resetBtn">↻</button><span class="dot"></span><b>DEMO ENGINE V5 · WINDOW LAB</b><span class="spacer"></span>
+  <select id="preset"><option>TEACH</option><option>PRODUCT</option><option>FAST</option></select>
+  <button id="audioBtn">AUDIO ✓</button><button id="manifestBtn">MANIFEST</button><button class="primary" id="runBtn">▶ DEMO</button>
+</header>
+
+<main class="viewport" data-demo-stage>
+  <div class="page-scroll" data-demo-page-scroll>
+    <div class="camera" data-demo-camera>
+      <div class="page-world">
+
+        <section class="widget hero" data-demo-id="widget.mail">
+          <div class="head"><span class="dot"></span><b>INBOX</b><span class="spacer"></span><small>MAIL</small></div>
+          <div class="mail">
+            <aside class="mail-list" data-demo-id="mail.list">
+              <button><b>Prometeo</b><span>Demo engine checklist</span></button>
+              <button><b>Diseño</b><span>Ventanas y widgets</span></button>
+              <button><b>Workers</b><span>Batch terminado</span></button>
+              <button><b>Notas</b><span>Pacing y motion</span></button>
+              <button><b>QA</b><span>Targeting pendiente</span></button>
+              <button><b>Archivo</b><span>Referencia visual</span></button>
+              <button><b>Historial</b><span>Versión previa</span></button>
+              <button data-demo-id="mail.goal"><b>FINAL</b><span>Objetivo de scroll local</span></button>
+            </aside>
+            <article>
+              <label>MENSAJE SELECCIONADO</label><h1>Una demo producida por intención</h1>
+              <p>Esta página es un fixture. El autor dice qué quiere mostrar; el motor decide scroll, targeting, cámara, annotation, sonido y pacing.</p>
+              <div class="row"><button data-demo-id="mail.reply">RESPONDER</button><button>ARCHIVAR</button></div>
+              <div class="reply" data-demo-id="reply.box" hidden><textarea data-demo-id="reply.input"></textarea><button data-demo-id="reply.send">ENVIAR</button></div>
+              <div class="result" data-demo-id="reply.sent" hidden>RESPUESTA ENVIADA ✓</div>
+            </article>
+          </div>
+        </section>
+
+        <div class="section-label">DEBAJO DEL FOLD · EL MOTOR DEBE SCROLLEAR LA PÁGINA ANTES DE ACTUAR</div>
+
+        <div class="grid2">
+          <section class="widget" data-demo-id="widget.settings">
+            <div class="head"><span class="dot amber"></span><b>SETTINGS</b><span class="spacer"></span><small>CONTROLS</small></div>
+            <div class="settings">
+              <label>Modo<select data-demo-id="settings.mode"><option>Calm</option><option>Product</option><option>Teach</option></select></label>
+              <label>Velocidad<input data-demo-id="settings.speed" type="range" min="1" max="100" value="38"></label>
+              <label class="inline"><input data-demo-id="settings.guides" type="checkbox"> Guías</label>
+              <button data-demo-id="settings.save">GUARDAR</button><output data-demo-id="settings.state">sin cambios</output>
+            </div>
+          </section>
+
+          <section class="widget" data-demo-id="widget.tasks">
+            <div class="head"><span class="dot green"></span><b>TASKS</b><span class="spacer"></span><small>DRAG</small></div>
+            <div class="tasks"><div><label>TODO</label><div class="card" data-demo-id="task.drag">Revisar motion</div></div><div class="drop" data-demo-id="task.drop"><label>DONE</label><div class="card done">Assets cursor</div></div></div>
+          </section>
+        </div>
+
+        <div class="grid2 lower">
+          <section class="widget" data-demo-id="widget.files">
+            <div class="head"><span class="dot"></span><b>FILES</b><span class="spacer"></span><small>ANNOTATION</small></div>
+            <div class="files"><button data-demo-id="file.one">demo-script.json</button><button>pointer-manifest.json</button><button>MOTION_GATE.json</button><button>CURRENT.json</button></div>
+          </section>
+          <section class="widget" data-demo-id="widget.resize">
+            <div class="head"><span class="dot"></span><b>RESIZE LAB</b><span class="spacer"></span><small>HANDLE</small></div>
+            <div class="resize"><div class="resize-box" data-demo-id="resize.box">RESIZE ME</div></div>
+          </section>
+        </div>
+        <div class="bottom-space">FIN DEL MUNDO DE PRUEBA</div>
+      </div>
+    </div>
+  </div>
+
+  <svg class="overlay-svg" aria-hidden="true"><path class="annotation-path" data-demo-annotation-path hidden></path><path class="demo-trace-path" data-demo-trace-path hidden></path><path class="demo-trail" data-demo-trail hidden></path></svg>
+  <div class="demo-focus" data-demo-focus hidden></div><div class="demo-comment" data-demo-comment hidden></div><div class="demo-spotlight" data-demo-spotlight hidden></div><div data-demo-click-layer></div>
+  <div class="demo-wheel" data-demo-wheel hidden>↓</div><div class="demo-measure" data-demo-measure hidden></div><div class="action-hud" data-demo-action-hud hidden></div>
+  <div class="demo-gesture" data-demo-gesture hidden><img data-demo-gesture-img alt=""></div>
+  <div class="demo-pointer" data-demo-pointer hidden><img data-demo-pointer-img alt="cursor"></div>
+
+  <pre class="manifest" id="manifest" hidden></pre>
+</main>
+
+<footer class="narrator"><b data-demo-kicker>V5</b><span data-demo-caption>Recipe → Director → Viewport → Interaction.</span><b data-demo-counter>0 / 0</b></footer>
+</div>
+
+<script src="../demo-engine-v4/demo-engine-v3-base.js"></script>
+<script src="../demo-engine-v4/demo-engine-v4.js"></script>
+<script src="../demo-engine-v4/pointer-assets.js"></script>
+<script src="../demo-engine-v4/gesture-assets.js"></script>
+<script src="../demo-engine-v5/viewport.js"></script>
+<script src="../demo-engine-v5/annotation.js"></script>
+<script src="../demo-engine-v5/camera.js"></script>
+<script src="../demo-engine-v5/audio.js"></script>
+<script src="../demo-engine-v5/page-inspector.js"></script>
+<script src="../demo-engine-v5/recipe.js"></script>
+<script src="../demo-engine-v5/demo-engine-v5.js"></script>
+<script src="app.js"></script>
+</body></html>
