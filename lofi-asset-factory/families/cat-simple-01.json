@@ -1,0 +1,66 @@
+{
+  "schema": "LOFI_ASSET_FAMILY_V1",
+  "id": "cat-simple-01",
+  "label": "Cuadrúpedo gato",
+  "tags": [
+    "quadruped",
+    "cat",
+    "low-poly"
+  ],
+  "source": {
+    "name": "Simple Cat",
+    "author": "Drummyfish",
+    "license": "CC0",
+    "url": "https://opengameart.org/content/simple-cat"
+  },
+  "renderer": "mesh_uv",
+  "model": {
+    "path": "assets/cat/cat.obj",
+    "format": "obj"
+  },
+  "material": {
+    "strategy": "unlit_map"
+  },
+  "orientation": {
+    "up": [
+      0,
+      1,
+      0
+    ],
+    "camera_direction": [
+      0,
+      0,
+      1
+    ],
+    "ground": "minY"
+  },
+  "display": {
+    "target_size": 3,
+    "margin": 1.25,
+    "target_bias": [
+      0,
+      0.03,
+      0
+    ]
+  },
+  "texture_contract": {
+    "uv_channel": 0,
+    "width": 512,
+    "height": 512,
+    "flip_y": true,
+    "color_space": "srgb"
+  },
+  "validation": {
+    "status": "PASS",
+    "mode": "source_uv_contract",
+    "runtime_required": true,
+    "structural_verified": "OBJ contains vt UV coordinates"
+  },
+  "skins": [
+    {
+      "id": "cat-free",
+      "label": "CAT FREE",
+      "texture": "assets/cat/cat_free.png"
+    }
+  ]
+}
