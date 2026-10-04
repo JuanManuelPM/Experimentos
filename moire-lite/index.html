@@ -5,276 +5,42 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no" />
 <title>Moiré Lite · Experimentos</title>
 <style>
-  :root{color-scheme:dark}
-  *{box-sizing:border-box}
-  html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#030303;color:#f0e6da;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
-  canvas{display:block;width:100%;height:100%;touch-action:none}
-  .hud{position:fixed;inset:0;pointer-events:none;padding:max(14px,env(safe-area-inset-top)) 14px max(14px,env(safe-area-inset-bottom));display:flex;flex-direction:column;justify-content:space-between}
-  .top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
-  .title{font-size:12px;line-height:1.4;letter-spacing:.08em;text-transform:uppercase;opacity:.9;text-shadow:0 1px 12px #000}
-  .stats{font-size:10px;line-height:1.5;text-align:right;opacity:.65;text-shadow:0 1px 8px #000;white-space:pre}
-  .panel{pointer-events:auto;align-self:center;display:flex;gap:7px;flex-wrap:wrap;justify-content:center;max-width:min(94vw,760px);padding:8px;border:1px solid #ffffff18;background:#050505cc;backdrop-filter:blur(8px);border-radius:12px}
-  button{appearance:none;border:1px solid #ffffff22;background:#0b0b0b;color:#d9c5b4;border-radius:8px;padding:8px 10px;font:inherit;font-size:11px;cursor:pointer}
-  button[data-on="1"]{background:#542314;color:#ffb174;border-color:#ff8a3d66}
-  .note{position:fixed;left:14px;bottom:72px;font-size:9px;opacity:.48;max-width:52ch;line-height:1.4;pointer-events:none}
-  @media (max-width:600px){.title{font-size:10px}.stats{font-size:9px}.note{display:none}.panel{gap:5px;padding:6px}button{font-size:10px;padding:7px 8px}}
+:root{color-scheme:dark}*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#020202;color:#f0e6da;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}canvas{position:fixed;inset:0;display:block;width:100%;height:100%;touch-action:none}.hud{position:fixed;z-index:2;inset:0;pointer-events:none;padding:max(14px,env(safe-area-inset-top)) 14px max(14px,env(safe-area-inset-bottom));display:flex;flex-direction:column;justify-content:space-between}.top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.title{font-size:12px;line-height:1.4;letter-spacing:.08em;text-transform:uppercase;opacity:.9;text-shadow:0 1px 12px #000}.stats{font-size:10px;line-height:1.5;text-align:right;opacity:.72;text-shadow:0 1px 8px #000;white-space:pre}.panel{pointer-events:auto;align-self:center;display:flex;gap:7px;flex-wrap:wrap;justify-content:center;max-width:min(94vw,760px);padding:8px;border:1px solid #ffffff18;background:#050505d9;backdrop-filter:blur(8px);border-radius:12px}button{appearance:none;border:1px solid #ffffff22;background:#0b0b0b;color:#d9c5b4;border-radius:8px;padding:8px 10px;font:inherit;font-size:11px;cursor:pointer}button[data-on="1"]{background:#542314;color:#ffb174;border-color:#ff8a3d66}.note{position:fixed;z-index:2;left:14px;bottom:72px;font-size:9px;opacity:.48;max-width:52ch;line-height:1.4;pointer-events:none}@media(max-width:600px){.title{font-size:10px}.stats{font-size:9px}.note{display:none}.panel{gap:5px;padding:6px}button{font-size:10px;padding:7px 8px}}
 </style>
-<script type="importmap">
-{
-  "imports": {
-    "three": "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js",
-    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"
-  }
-}
-</script>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"}}</script>
 </head>
 <body>
-<div class="hud">
-  <div class="top">
-    <div class="title">Moiré Lite<br><span id="label">FOX · Khronos glTF Sample Assets</span></div>
-    <div class="stats" id="stats">cargando…</div>
-  </div>
-  <div class="panel" id="panel">
-    <button data-model="fox" data-on="1">FOX</button>
-    <button data-model="ico">ICOSA</button>
-    <button data-model="torus">TORUS</button>
-    <button data-pattern="mixed" data-on="1">MIXTO</button>
-    <button data-pattern="lines">RAYAS</button>
-    <button data-pattern="triangles">TRIÁNGULOS</button>
-    <button id="spin" data-on="1">ROTAR</button>
-    <button id="density">DENSIDAD 8×</button>
-  </div>
-</div>
-<div class="note">1 textura 128×128 · material unlit · sin luces · sin postprocesado · DPR limitado · arrastrá para orbitar, pellizcá/rueda para zoom</div>
-
+<div class="hud"><div class="top"><div class="title">Moiré Lite<br><span id="label">FOX · Khronos glTF Sample Assets</span></div><div class="stats" id="stats">cargando…</div></div><div class="panel" id="panel"><button data-model="fox" data-on="1">FOX</button><button data-model="ico">ICOSA</button><button data-model="torus">TORUS</button><button data-pattern="mixed" data-on="1">MIXTO</button><button data-pattern="lines">RAYAS</button><button data-pattern="triangles">TRIÁNGULOS</button><button id="spin" data-on="1">ROTAR</button><button id="density">DENSIDAD 8×</button><button id="reset">ENCUADRAR</button></div></div>
+<div class="note">1 textura 128×128 · material unlit · sin luces · sin postprocesado · DPR limitado · encuadre automático según aspecto · arrastrá para orbitar</div>
 <script type="module">
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-
-const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x020202);
-
-const camera = new THREE.PerspectiveCamera(36, innerWidth / innerHeight, 0.01, 100);
-camera.position.set(0, 0.35, 5.2);
-
-const renderer = new THREE.WebGLRenderer({ antialias:false, alpha:false, powerPreference:'low-power' });
-renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 1.35));
-renderer.setSize(innerWidth, innerHeight);
-renderer.outputColorSpace = THREE.SRGBColorSpace;
-document.body.prepend(renderer.domElement);
-
-const controls = new OrbitControls(camera, renderer.domElement);
-controls.enableDamping = true;
-controls.dampingFactor = 0.055;
-controls.enablePan = false;
-controls.minDistance = 2.7;
-controls.maxDistance = 8;
-
-const root = new THREE.Group();
-scene.add(root);
-
-let currentObject = null;
-let currentModel = 'fox';
-let currentPattern = 'mixed';
-let density = 8;
-let spinning = true;
-let texture = null;
-let foxTemplate = null;
-
-function buildPattern(mode='mixed'){
-  const c = document.createElement('canvas');
-  c.width = c.height = 128;
-  const g = c.getContext('2d', { alpha:false });
-  g.fillStyle = '#140807';
-  g.fillRect(0,0,128,128);
-
-  if(mode === 'lines' || mode === 'mixed'){
-    g.strokeStyle = '#e2682e';
-    g.lineWidth = 3;
-    for(let x=-128;x<256;x+=12){
-      g.beginPath();
-      g.moveTo(x,0);
-      g.lineTo(x-128,128);
-      g.stroke();
-    }
-    g.strokeStyle = '#71311f';
-    g.lineWidth = 1;
-    for(let x=-128;x<256;x+=6){
-      g.beginPath();
-      g.moveTo(x,0);
-      g.lineTo(x+128,128);
-      g.stroke();
-    }
-  }
-
-  if(mode === 'triangles' || mode === 'mixed'){
-    const step = mode === 'mixed' ? 16 : 12;
-    for(let y=0;y<128;y+=step){
-      for(let x=0;x<128;x+=step){
-        const flip = ((x/step + y/step) & 1) === 0;
-        g.fillStyle = flip ? '#ff7a32' : '#6f2418';
-        g.beginPath();
-        if(flip){ g.moveTo(x+2,y+2); g.lineTo(x+step-2,y+step/2); g.lineTo(x+2,y+step-2); }
-        else { g.moveTo(x+step-2,y+2); g.lineTo(x+2,y+step/2); g.lineTo(x+step-2,y+step-2); }
-        g.closePath();
-        g.fill();
-      }
-    }
-  }
-
-  const t = new THREE.CanvasTexture(c);
-  t.colorSpace = THREE.SRGBColorSpace;
-  t.wrapS = t.wrapT = THREE.RepeatWrapping;
-  t.repeat.set(density,density);
-  t.generateMipmaps = false;
-  t.minFilter = THREE.LinearFilter;
-  t.magFilter = THREE.LinearFilter;
-  t.anisotropy = 1;
-  t.needsUpdate = true;
-  return t;
-}
-
-function materialForObject(){
-  return new THREE.MeshBasicMaterial({
-    map:texture,
-    color:0xff8b50,
-    side:THREE.DoubleSide,
-    toneMapped:false
-  });
-}
-
-function applyMaterial(obj){
-  obj.traverse(n => {
-    if(n.isMesh){
-      if(n.material && n.material.dispose) n.material.dispose();
-      n.material = materialForObject();
-      n.frustumCulled = true;
-    }
-  });
-}
-
-function clearRoot(){
-  if(!currentObject) return;
-  root.remove(currentObject);
-  currentObject.traverse?.(n => {
-    if(n.isMesh){
-      n.material?.dispose?.();
-      if(!n.isSkinnedMesh) n.geometry?.dispose?.();
-    }
-  });
-  currentObject = null;
-}
-
-function normalizeObject(obj, target=3.35){
-  const box = new THREE.Box3().setFromObject(obj);
-  const size = box.getSize(new THREE.Vector3());
-  const center = box.getCenter(new THREE.Vector3());
-  const scale = target / Math.max(size.x,size.y,size.z,0.0001);
-  obj.scale.multiplyScalar(scale);
-  obj.position.sub(center.multiplyScalar(scale));
-  const box2 = new THREE.Box3().setFromObject(obj);
-  const c2 = box2.getCenter(new THREE.Vector3());
-  obj.position.y -= c2.y * 0.08;
-}
-
-function showPrimitive(kind){
-  clearRoot();
-  let geo;
-  if(kind === 'ico') geo = new THREE.IcosahedronGeometry(1.65, 5);
-  else geo = new THREE.TorusKnotGeometry(1.05, .36, 220, 24, 2, 3);
-  currentObject = new THREE.Mesh(geo, materialForObject());
-  root.add(currentObject);
-  document.getElementById('label').textContent = kind === 'ico' ? 'ICOSAHEDRON · THREE.JS' : 'TORUS KNOT · THREE.JS';
-}
-
-function showFox(){
-  if(!foxTemplate) return;
-  clearRoot();
-  currentObject = foxTemplate.clone(true);
-  applyMaterial(currentObject);
-  normalizeObject(currentObject,3.25);
-  currentObject.rotation.y = Math.PI;
-  root.add(currentObject);
-  document.getElementById('label').textContent = 'FOX · KHRONOS GLTF SAMPLE ASSETS';
-}
-
-function rebuildTexture(){
-  const old = texture;
-  texture = buildPattern(currentPattern);
-  root.traverse(n => { if(n.isMesh && n.material){ n.material.map = texture; n.material.needsUpdate = true; }});
-  old?.dispose?.();
-}
-
-texture = buildPattern(currentPattern);
-showPrimitive('ico');
-
-const FOX_URL = 'https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Assets/main/Models/Fox/glTF-Binary/Fox.glb';
-new GLTFLoader().load(FOX_URL, gltf => {
-  foxTemplate = gltf.scene;
-  if(currentModel === 'fox') showFox();
-}, undefined, err => {
-  console.warn('Fox load failed, fallback primitive active', err);
-  currentModel = 'ico';
-  setButtons('model','ico');
-});
-
-function setButtons(group,value){
-  document.querySelectorAll(`[data-${group}]`).forEach(b => b.dataset.on = b.dataset[group] === value ? '1' : '0');
-}
-
-document.getElementById('panel').addEventListener('click', e => {
-  const b = e.target.closest('button');
-  if(!b) return;
-  if(b.dataset.model){
-    currentModel = b.dataset.model;
-    setButtons('model',currentModel);
-    if(currentModel === 'fox') showFox(); else showPrimitive(currentModel);
-  }
-  if(b.dataset.pattern){
-    currentPattern = b.dataset.pattern;
-    setButtons('pattern',currentPattern);
-    rebuildTexture();
-  }
-});
-
-document.getElementById('spin').addEventListener('click', e => {
-  spinning = !spinning;
-  e.currentTarget.dataset.on = spinning ? '1' : '0';
-});
-
-document.getElementById('density').addEventListener('click', e => {
-  density = density === 8 ? 14 : density === 14 ? 4 : 8;
-  e.currentTarget.textContent = `DENSIDAD ${density}×`;
-  rebuildTexture();
-});
-
-let frames=0, lastFpsTime=performance.now(), fps=0;
-const stats = document.getElementById('stats');
-let last = performance.now();
-function tick(now){
-  if(document.hidden){ requestAnimationFrame(tick); return; }
-  const dt = Math.min((now-last)/1000,.05); last=now;
-  if(spinning && currentObject) currentObject.rotation.y += dt * .24;
-  controls.update();
-  renderer.render(scene,camera);
-
-  frames++;
-  if(now-lastFpsTime>650){
-    fps = Math.round(frames*1000/(now-lastFpsTime)); frames=0; lastFpsTime=now;
-    const ri = renderer.info.render;
-    stats.textContent = `${fps} FPS\n${ri.calls} DRAW\n${ri.triangles.toLocaleString()} TRI\nDPR ${renderer.getPixelRatio().toFixed(2)}`;
-  }
-  requestAnimationFrame(tick);
-}
-requestAnimationFrame(tick);
-
-addEventListener('resize', () => {
-  camera.aspect = innerWidth/innerHeight;
-  camera.updateProjectionMatrix();
-  renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 1.35));
-  renderer.setSize(innerWidth,innerHeight);
-});
+import { clone as cloneSkeleton } from 'three/addons/utils/SkeletonUtils.js';
+const scene=new THREE.Scene();scene.background=new THREE.Color(0x020202);
+const camera=new THREE.PerspectiveCamera(36,innerWidth/innerHeight,.01,100);camera.position.set(0,.25,6);
+const renderer=new THREE.WebGLRenderer({antialias:false,alpha:false,powerPreference:'low-power'});renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.25));renderer.setSize(innerWidth,innerHeight);renderer.outputColorSpace=THREE.SRGBColorSpace;document.body.prepend(renderer.domElement);
+const controls=new OrbitControls(camera,renderer.domElement);controls.enableDamping=true;controls.dampingFactor=.055;controls.enablePan=false;
+const root=new THREE.Group();scene.add(root);
+let currentObject=null,currentModel='fox',currentPattern='mixed',density=8,spinning=true,texture=null,foxTemplate=null;
+function buildPattern(mode='mixed'){const c=document.createElement('canvas');c.width=c.height=128;const g=c.getContext('2d',{alpha:false});g.fillStyle='#120706';g.fillRect(0,0,128,128);if(mode==='lines'||mode==='mixed'){g.strokeStyle='#e46a31';g.lineWidth=3;for(let x=-128;x<256;x+=12){g.beginPath();g.moveTo(x,0);g.lineTo(x-128,128);g.stroke()}g.strokeStyle='#6c2a1c';g.lineWidth=1;for(let x=-128;x<256;x+=6){g.beginPath();g.moveTo(x,0);g.lineTo(x+128,128);g.stroke()}}if(mode==='triangles'||mode==='mixed'){const s=mode==='mixed'?16:12;for(let y=0;y<128;y+=s)for(let x=0;x<128;x+=s){const f=((x/s+y/s)&1)===0;g.fillStyle=f?'#f07836':'#632016';g.beginPath();if(f){g.moveTo(x+2,y+2);g.lineTo(x+s-2,y+s/2);g.lineTo(x+2,y+s-2)}else{g.moveTo(x+s-2,y+2);g.lineTo(x+2,y+s/2);g.lineTo(x+s-2,y+s-2)}g.closePath();g.fill()}}const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;t.wrapS=t.wrapT=THREE.RepeatWrapping;t.repeat.set(density,density);t.generateMipmaps=true;t.minFilter=THREE.LinearMipmapLinearFilter;t.magFilter=THREE.LinearFilter;t.anisotropy=1;return t}
+function materialForObject(){return new THREE.MeshBasicMaterial({map:texture,color:0xff8b50,side:THREE.DoubleSide,toneMapped:false})}
+function applyMaterial(obj){obj.traverse(n=>{if(n.isMesh){n.material=materialForObject();n.frustumCulled=true}})}
+function clearRoot(){if(!currentObject)return;root.remove(currentObject);currentObject.traverse?.(n=>{if(n.isMesh)n.material?.dispose?.()});currentObject=null}
+function normalizeObject(obj,target=3.25){const box=new THREE.Box3().setFromObject(obj),size=box.getSize(new THREE.Vector3()),center=box.getCenter(new THREE.Vector3()),scale=target/Math.max(size.x,size.y,size.z,.0001);obj.scale.multiplyScalar(scale);obj.position.sub(center.multiplyScalar(scale))}
+function fitObject(padding=1.35){if(!currentObject)return;currentObject.updateWorldMatrix(true,true);const box=new THREE.Box3().setFromObject(currentObject);if(box.isEmpty())return;const sphere=box.getBoundingSphere(new THREE.Sphere());const v=THREE.MathUtils.degToRad(camera.fov),h=2*Math.atan(Math.tan(v/2)*camera.aspect),fit=Math.min(v,h);const dist=Math.max(.1,padding*sphere.radius/Math.sin(fit/2));let dir=camera.position.clone().sub(controls.target);if(dir.lengthSq()<.001)dir.set(0,.08,1);dir.normalize();controls.target.copy(sphere.center);camera.position.copy(sphere.center).addScaledVector(dir,dist);camera.near=Math.max(.01,dist-sphere.radius*3);camera.far=dist+sphere.radius*12;camera.updateProjectionMatrix();controls.minDistance=Math.max(.2,sphere.radius*1.45);controls.maxDistance=Math.max(controls.minDistance+1,sphere.radius*9);controls.update()}
+function showPrimitive(kind){clearRoot();const geo=kind==='ico'?new THREE.IcosahedronGeometry(1.65,5):new THREE.TorusKnotGeometry(1.05,.36,220,24,2,3);currentObject=new THREE.Mesh(geo,materialForObject());root.add(currentObject);document.getElementById('label').textContent=kind==='ico'?'ICOSAHEDRON · THREE.JS':'TORUS KNOT · THREE.JS';fitObject()}
+function showFox(){if(!foxTemplate)return;clearRoot();currentObject=cloneSkeleton(foxTemplate);applyMaterial(currentObject);normalizeObject(currentObject,3.25);currentObject.rotation.y=Math.PI;root.add(currentObject);document.getElementById('label').textContent='FOX · KHRONOS GLTF SAMPLE ASSETS';fitObject(1.42)}
+function rebuildTexture(){const old=texture;texture=buildPattern(currentPattern);root.traverse(n=>{if(n.isMesh&&n.material){n.material.map=texture;n.material.needsUpdate=true}});old?.dispose?.()}
+texture=buildPattern(currentPattern);showPrimitive('ico');
+const FOX_URL='https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Assets/main/Models/Fox/glTF-Binary/Fox.glb';new GLTFLoader().load(FOX_URL,gltf=>{foxTemplate=gltf.scene;if(currentModel==='fox')showFox()},undefined,()=>{currentModel='ico';setButtons('model','ico')});
+function setButtons(group,value){document.querySelectorAll(`[data-${group}]`).forEach(b=>b.dataset.on=b.dataset[group]===value?'1':'0')}
+document.getElementById('panel').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;if(b.dataset.model){currentModel=b.dataset.model;setButtons('model',currentModel);currentModel==='fox'?showFox():showPrimitive(currentModel)}if(b.dataset.pattern){currentPattern=b.dataset.pattern;setButtons('pattern',currentPattern);rebuildTexture()}});
+document.getElementById('spin').addEventListener('click',e=>{spinning=!spinning;e.currentTarget.dataset.on=spinning?'1':'0'});
+document.getElementById('density').addEventListener('click',e=>{density=density===8?14:density===14?4:8;e.currentTarget.textContent=`DENSIDAD ${density}×`;rebuildTexture()});
+document.getElementById('reset').addEventListener('click',()=>fitObject(currentModel==='fox'?1.42:1.35));
+let frames=0,lastFpsTime=performance.now(),last=performance.now();const stats=document.getElementById('stats');function tick(now){if(document.hidden){requestAnimationFrame(tick);return}const dt=Math.min((now-last)/1000,.05);last=now;if(spinning&&currentObject)currentObject.rotation.y+=dt*.24;controls.update();renderer.render(scene,camera);frames++;if(now-lastFpsTime>650){const fps=Math.round(frames*1000/(now-lastFpsTime));frames=0;lastFpsTime=now;const ri=renderer.info.render;stats.textContent=`${fps} FPS\n${ri.calls} DRAW\n${ri.triangles.toLocaleString()} TRI\nDPR ${renderer.getPixelRatio().toFixed(2)}`}requestAnimationFrame(tick)}requestAnimationFrame(tick);
+addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.25));renderer.setSize(innerWidth,innerHeight);fitObject(currentModel==='fox'?1.42:1.35)});
 </script>
 </body>
 </html>
