@@ -1,7 +1,7 @@
 {
   "schema": "LOFI_ASSET_FAMILY_V1",
   "id": "psx-humanoid-01",
-  "label": "PSX Puppet",
+  "label": "PSX Humanoid",
   "tags": [
     "human",
     "psx",
@@ -10,19 +10,20 @@
     "ultralight"
   ],
   "source": {
-    "name": "Kenney Mini Characters",
+    "name": "Kenney Mini Dungeon",
     "author": "Kenney",
     "license": "CC0-1.0",
-    "url": "https://kenney.nl/",
-    "mirror": "Hidencod/tge-assets"
+    "url": "https://kenney.nl/assets/mini-dungeon",
+    "mirror": "Hidencod/tge-assets · packs/mini-dungeon/character-human.glb",
+    "source_blob_sha": "782c9ae4c71a6535bc39c185331965e870901fdc"
   },
   "renderer": "mesh_uv",
   "model": {
-    "path": "assets/psx-humanoid/character-male-a.glb",
+    "path": "assets/psx-humanoid/character-human.glb",
     "format": "glb"
   },
   "material": {
-    "strategy": "inherit_map_only"
+    "strategy": "unlit_map"
   },
   "orientation": {
     "up": [
@@ -54,7 +55,7 @@
     "color_space": "srgb"
   },
   "performance": {
-    "triangles": 723,
+    "triangles": 465,
     "bones": 7,
     "materials": 1,
     "meshes": 2,
@@ -66,13 +67,13 @@
     "status": "PASS",
     "mode": "source_uv_contract",
     "runtime_required": true,
-    "structural_verified": "723 tris · 7-bone rig · 1 material · 32 clips"
+    "structural_verified": "465 tris · 7-bone rig · 1 material · 32 clips · embedded source texture extracted exactly"
   },
   "skins": [
     {
       "id": "base",
       "label": "BASE",
-      "texture": "assets/psx-humanoid/base.png"
+      "texture": "assets/psx-humanoid/mini-dungeon-base.png"
     }
   ],
   "proportions": {
@@ -186,45 +187,6 @@
       }
     }
   },
-  "face_texture": {
-    "strategy": "head_uv_wrap",
-    "target_mesh": "head-mesh",
-    "uv_bbox": [
-      0.09375,
-      0.775,
-      0.84375,
-      0.975
-    ],
-    "items": [
-      {
-        "id": "none",
-        "label": "ORIGINAL",
-        "url": null,
-        "license": "CC0 source texture"
-      },
-      {
-        "id": "ada",
-        "label": "ADA",
-        "url": "https://upload.wikimedia.org/wikipedia/commons/a/a4/Ada_Lovelace_portrait.jpg",
-        "source": "https://commons.wikimedia.org/wiki/File:Ada_Lovelace_portrait.jpg",
-        "license": "Public domain"
-      },
-      {
-        "id": "lincoln",
-        "label": "LINCOLN",
-        "url": "https://upload.wikimedia.org/wikipedia/commons/7/7d/Presidential_Portrait_of_Abraham_Lincoln.jpg",
-        "source": "https://commons.wikimedia.org/wiki/File:Presidential_Portrait_of_Abraham_Lincoln.jpg",
-        "license": "Public domain"
-      },
-      {
-        "id": "tesla",
-        "label": "TESLA",
-        "url": "https://upload.wikimedia.org/wikipedia/commons/8/87/Blue_Portrait_of_Nikola_Tesla.jpg",
-        "source": "https://commons.wikimedia.org/wiki/File:Blue_Portrait_of_Nikola_Tesla.jpg",
-        "license": "Public domain"
-      }
-    ]
-  },
   "animation": {
     "default_clip": "idle",
     "clips": [
@@ -266,5 +228,17 @@
         "fps": 6
       }
     ]
+  },
+  "uv_scope": {
+    "canonical_geometry_only": true,
+    "variant_models_shared_uv": false,
+    "note": "Skins are valid for this canonical geometry only unless a candidate passes structural UV validation."
+  },
+  "face_pipeline": {
+    "status": "RESERVED_OFFLINE",
+    "strategy": "atlas_composite",
+    "region": "FACE_PATCH",
+    "runtime_projection": false,
+    "note": "Portraits must be cropped/aligned and composited into a valid atlas during ingestion; runtime receives only a finished compatible skin."
   }
 }
