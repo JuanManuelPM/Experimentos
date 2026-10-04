@@ -1,0 +1,58 @@
+{
+  "id": "PROMETEO_VISUAL_FACTORY_GATES_V1",
+  "version": "1.0.0",
+  "status": "CURRENT",
+  "purpose": "Prevent visual candidates from being published before they satisfy functional, device, reference, and human gates.",
+  "pipeline": [
+    "REFERENCE_SELECT",
+    "REFERENCE_BOM",
+    "SCENE_CONTRACT",
+    "DEVICE_CONTRACT",
+    "FUNCTIONAL_BUILD",
+    "MULTI_DEVICE_RENDER",
+    "VISUAL_LINT",
+    "REFERENCE_COMPARE",
+    "HUMAN_REVIEW",
+    "PROMOTE_OR_REJECT"
+  ],
+  "hard_rules": [
+    "NO_PROMPT_TO_UI_DIRECT",
+    "FUNCTIONAL_PROTOTYPE_IS_NOT_VISUAL_CANDIDATE",
+    "DECORATION_CANNOT_BE_PRIMARY_CONTENT",
+    "PORTRAIT_IS_NOT_A_SHRUNK_LANDSCAPE",
+    "NO_GENERIC_GEOMETRY_AS_SEMANTIC_ASSET_WHEN_A_REAL_ASSET_IS_EXPECTED",
+    "NO_PUBLIC_DEFAULT_WITHOUT_ALL_GATES_PASS",
+    "CHAMPION_MUST_NOT_BE_REPLACED_WITHOUT_COMPARE_RECEIPT"
+  ],
+  "gates": {
+    "functional": {"required": ["interaction_pass", "back_restores_state", "demo_path_pass"]},
+    "device": {
+      "required": ["portrait_layout_defined", "landscape_layout_defined", "multi_device_screenshots_present"],
+      "thresholds": {"min_touch_target_css_px": 44, "min_text_css_px": 12, "max_dead_space_ratio": 0.35, "max_persistent_chrome_ratio": 0.18}
+    },
+    "scene": {
+      "thresholds_by_type": {
+        "WORLD": {"min_primary_content_ratio": 0.72, "max_visible_controls": 5, "max_open_large_panels": 1},
+        "READ": {"min_primary_content_ratio": 0.82, "max_visible_controls": 4, "max_open_large_panels": 1},
+        "CHAT": {"min_primary_content_ratio": 0.68, "max_visible_controls": 7, "max_open_large_panels": 1},
+        "MASTER_DETAIL": {"min_primary_content_ratio": 0.58, "max_visible_controls": 12, "max_open_large_panels": 2},
+        "TOOL": {"min_primary_content_ratio": 0.45, "max_visible_controls": 24, "max_open_large_panels": 4}
+      }
+    },
+    "reference": {"required": ["reference_bom_present", "reference_count_min_3", "candidate_vs_reference_compare_present"]},
+    "human": {"required": ["explicit_human_pass"]}
+  },
+  "promotion": {
+    "required_all": ["FUNCTIONAL_PASS", "DEVICE_PASS", "SCENE_PASS", "REFERENCE_PASS", "HUMAN_PASS"],
+    "fail_state": "LAB_ONLY",
+    "pass_state": "CHAMPION_CANDIDATE"
+  },
+  "required_viewports": [
+    {"name":"phone_narrow","width":390,"height":844},
+    {"name":"phone_tall","width":412,"height":915},
+    {"name":"tablet_portrait","width":600,"height":1000},
+    {"name":"eink_portrait","width":825,"height":1200},
+    {"name":"eink_landscape","width":1200,"height":825},
+    {"name":"desktop","width":1366,"height":768}
+  ]
+}
