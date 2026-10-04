@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#0b1212">
+<title>Prometeo · Visual Factory Proof V1</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="app">
+  <header class="shellbar" data-role="chrome">
+    <div class="brand">PROMETEO</div>
+    <div class="crumb" id="crumb">HOME</div>
+    <div class="spacer"></div>
+    <div class="tinyStatus" id="tinyStatus">72%</div>
+    <button id="demoBtn" class="iconBtn" title="Demo">▶</button>
+    <button id="fullBtn" class="iconBtn" title="Pantalla completa">⛶</button>
+  </header>
+
+  <main id="stage">
+    <section class="scene on" id="home" data-scene="HOME">
+      <div class="desktopBackdrop" data-role="primary-content" data-content-role="CONTENT" data-semantic>
+        <aside class="sysWidget">
+          <div class="computerGlyph">▣</div>
+          <div class="clock">11:28</div>
+          <div class="barRow"><span>VOL</span><i style="--v:66%"></i></div>
+          <div class="barRow"><span>CPU</span><i style="--v:35%"></i></div>
+          <div class="barRow"><span>RAM</span><i style="--v:52%"></i></div>
+          <div class="miniText">PROMETEO<br>scene-first</div>
+        </aside>
+        <div class="desktopIcons">
+          <button class="deskIcon" data-open="files" data-demo="home-files"><svg><use href="assets.svg#folder"/></svg><span>FILES</span></button>
+          <button class="deskIcon" data-open="dialog" data-demo="home-dialog"><svg><use href="assets.svg#chat"/></svg><span>CHOICE</span></button>
+          <button class="deskIcon" data-open="workspace" data-demo="home-work"><svg><use href="assets.svg#tool"/></svg><span>WORK</span></button>
+          <button class="deskIcon" data-open="tool" data-demo="home-tool"><svg><use href="assets.svg#tool"/></svg><span>TOOL</span></button>
+        </div>
+        <button class="trashIcon" data-demo="home-trash"><svg><use href="assets.svg#trash"/></svg><span>TRASH</span></button>
+        <div class="homeNote">ONE PRIMARY CONTENT · LARGE TARGETS · NO EMPTY HUD</div>
+      </div>
+    </section>
+
+    <section class="scene" id="files" data-scene="FILES">
+      <div class="pixelFrame" data-role="primary-content" data-content-role="CONTENT" data-semantic>
+        <div class="frameTitle">FILES</div>
+        <div class="fileGrid">
+          <button class="fileItem" data-demo="folder-games"><svg><use href="assets.svg#folder"/></svg><span>GAMES</span></button>
+          <button class="fileItem" data-demo="folder-images"><svg><use href="assets.svg#folder"/></svg><span>IMAGES</span></button>
+          <button class="fileItem" data-demo="folder-notes"><svg><use href="assets.svg#folder"/></svg><span>NOTES</span></button>
+          <button class="fileItem trash" data-demo="files-trash"><svg><use href="assets.svg#trash"/></svg><span>TRASH</span></button>
+        </div>
+      </div>
+    </section>
+
+    <section class="scene" id="dialog" data-scene="DIALOG">
+      <div class="dialogScene" data-role="primary-content" data-content-role="CONTENT" data-semantic>
+        <aside class="vitals">
+          <div class="avatarBlob"></div>
+          <div>DAY 1 · 4:10 PM</div>
+          <div>WEATHER: FREEZING</div>
+          <div class="vital"><span>HEALTH 24/24</span><i style="--v:100%"></i></div>
+          <div class="vital"><span>ENERGY 18/22</span><i style="--v:82%"></i></div>
+          <div class="vital"><span>SANITY 14/16</span><i style="--v:88%"></i></div>
+          <div class="vital"><span>TRAUMA 0/100</span><i style="--v:4%"></i></div>
+        </aside>
+        <div class="dialogMain">
+          <div class="dialogBox">
+            <p>There’s quite the handful of books to check.</p>
+            <div class="dialogActions"><button data-demo="dialog-continue">CONTINUE</button><button data-demo="dialog-quit">QUIT</button></div>
+          </div>
+          <div class="nodeBoard">
+            <button class="nodeBall n1">A</button><button class="nodeBall n2">B</button><button class="nodeBall n3">C</button><button class="nodeBall n4">D</button><button class="nodeBall center">●</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="scene" id="workspace" data-scene="WORKSPACE">
+      <div class="workspaceScene" data-role="primary-content" data-content-role="CONTENT" data-semantic>
+        <div class="desktopFile f1"><svg><use href="assets.svg#tool"/></svg><span>CALC.MX</span></div>
+        <div class="desktopFile f2"><svg><use href="assets.svg#tool"/></svg><span>TASK.MX</span></div>
+        <section class="retroWin calcWin" data-demo="calc-win"><div class="winTitle">CALC <button data-close-win="calcWin">×</button></div><div class="calcDisplay" id="calcDisplay">1308</div><div class="keypad">
+          <button>1</button><button>2</button><button>3</button><button>×</button>
+          <button>4</button><button>5</button><button>6</button><button>÷</button>
+          <button>7</button><button>8</button><button>9</button><button>=</button>
+          <button>+</button><button>0</button><button>−</button><button>C</button>
+        </div></section>
+        <section class="retroWin taskWin" data-demo="task-win"><div class="winTitle">TASK MANAGER <button data-close-win="taskWin">×</button></div><div class="taskCols"><div><b>TASK</b><span>OS</span><span>CALC</span><span>MAN...</span></div><div><b>LOAD</b><span>8% / 5KB</span><span>1% / 1KB</span><span>8% / 9KB</span></div><div class="cpuBox"><b>CPU</b><div class="chip"></div><svg viewBox="0 0 120 65"><polyline points="5,55 25,18 38,33 55,24 72,38 96,42 115,41" fill="none" stroke="currentColor" stroke-width="3"/></svg></div></div></section>
+        <nav class="windowTray" data-role="chrome"><button data-toggle-win="calcWin">CALC</button><button data-toggle-win="taskWin">TASK</button><button data-demo="work-back">BACK</button></nav>
+      </div>
+    </section>
+
+    <section class="scene" id="tool" data-scene="TOOL">
+      <div class="toolScene" data-role="primary-content" data-content-role="CONTENT" data-semantic>
+        <div class="toolTop"><button>▦</button><button>↕</button><button>⚙</button><span>01</span><b>PRISMATIC</b><span class="spacer"></span><span>RATIO 2.125</span></div>
+        <div class="padModule"><div class="moduleTitle">MOD MATRIX</div><div class="padGrid" id="padGrid"></div><div class="toolFooter">MOD DEPTH · 1/1 · 16</div></div>
+        <div class="graphModule"><div class="moduleTitle">GEM · CONTOUR</div><svg class="curve" viewBox="0 0 520 240"><path d="M15 55 C85 10 110 165 168 165 C210 165 240 40 295 84 C345 123 380 182 435 92 C470 34 490 66 510 60"/><path class="secondary" d="M15 85 C100 95 145 100 210 120 C295 145 365 75 510 105"/></svg><div class="knobRow"><label>RATIO <input type="range" min="0" max="100" value="62" data-demo="tool-slider"></label><label>NOISE <input type="range" min="0" max="100" value="30"></label><label>ENV <input type="range" min="0" max="100" value="76"></label></div></div>
+      </div>
+    </section>
+  </main>
+
+  <nav id="dock" data-role="chrome">
+    <button class="dockBtn on" data-open="home" title="Home"><svg><use href="assets.svg#home"/></svg></button>
+    <button class="dockBtn" data-open="files" title="Files"><svg><use href="assets.svg#folder"/></svg></button>
+    <button class="dockBtn" data-open="dialog" title="Dialog"><svg><use href="assets.svg#chat"/></svg></button>
+    <button class="dockBtn" data-open="workspace" title="Workspace"><svg><use href="assets.svg#tool"/></svg></button>
+    <button class="dockBtn" data-open="tool" title="Tool"><svg><use href="assets.svg#tool"/></svg></button>
+  </nav>
+
+  <div id="demoHud"><button id="pauseBtn">Ⅱ</button><button id="speedBtn">1×</button></div>
+  <div id="caption"></div><div id="pulse"></div>
+  <div id="demoMouse"><div class="left"></div><div class="right"></div><div class="wheel"></div></div>
+  <div id="cursor"><svg class="arrow"><use href="assets.svg#arrow"/></svg><svg class="hand"><use href="assets.svg#hand"/></svg></div>
+</div>
+<script src="app.js"></script>
+</body></html>
