@@ -5,8 +5,8 @@ class DemoEngineV6 extends global.DemoEngineV5{
     super(root,script,options);
     this.presets.SHOWCASE={speed:1.28,minMove:275,maxMove:760,arrival:95,down:78,resultHold:330,curve:.075,correction:2,guide:'none',observe:390};
     this.authority=new global.DemoViewportAuthority(this);
-    this.audio.volume=options.audio?.volume??.055;
-    this.audio.textVoice=options.audio?.textVoice!==false;
+    this.audio?.off?.();
+    this.audio=new global.DemoAudioDirectorV6(this,options.audio||{});
   }
   async play(from=this.index){
     if(this.playing)return;
