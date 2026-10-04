@@ -82,11 +82,13 @@ html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--paper
     </section>
 
     <section class="section advanced" id="advancedSection">
-      <div class="head"><strong>PSX PUPPET</strong><span id="advancedInfo">manifest-driven</span></div>
+      <div class="head"><strong id="advancedTitle">CONTROLES DE FAMILIA</strong><span id="advancedInfo">manifest-driven</span></div>
       <div class="head"><strong>PROPORCIÓN</strong><span>misma malla / mismo rig</span></div>
       <div class="choice-grid" id="proportionGrid"></div>
-      <div class="head" style="margin-top:8px"><strong>CARA</strong><span>wrap sobre head-mesh real</span></div>
-      <div class="face-grid" id="faceGrid"></div>
+      <div id="faceControls" hidden>
+        <div class="head" style="margin-top:8px"><strong>CARA</strong><span>skin compatible declarada por manifest</span></div>
+        <div class="face-grid" id="faceGrid"></div>
+      </div>
       <div class="head" style="margin-top:8px"><strong>ANIMACIÓN</strong><span>clips del GLB</span></div>
       <div class="choice-grid" id="animationGrid"></div>
       <div class="head" style="margin-top:8px"><strong>MOTION STYLE</strong><span>tiempo cuantizado</span></div>
@@ -132,6 +134,8 @@ const runtimeBadge=document.getElementById('runtimeBadge');
 const diffBadge=document.getElementById('diffBadge');
 const advancedSection=document.getElementById('advancedSection');
 const advancedInfo=document.getElementById('advancedInfo');
+const advancedTitle=document.getElementById('advancedTitle');
+const faceControls=document.getElementById('faceControls');
 const proportionGrid=document.getElementById('proportionGrid');
 const faceGrid=document.getElementById('faceGrid');
 const animationGrid=document.getElementById('animationGrid');
@@ -274,11 +278,29 @@ function installSkin(obj,m,raw){
         if(old!==mat.userData.factoryTemplateMap)disposeDynamicMap(old);
       }
     }else if(m.material.strategy==='unlit_map'){
-      const template=source[0]?.map||null;
-      const tex=configureTexture(raw,template,m.texture_contract);
-      if(Array.isArray(n.material))n.material.forEach(x=>disposeDynamicMap(x?.map));
-      else disposeDynamicMap(n.material?.map);
-      n.material=new THREE.MeshBasicMaterial({map:tex,color:0xffffff,side:THREE.FrontSide,toneMapped:false});
+      const adapted=source.map(oldMat=>{
+        if(oldMat?.userData?.factoryUnlitAdapter){
+          if(!oldMat.userData.factoryTemplateMap)oldMat.userData.factoryTemplateMap=oldMat.map||null;
+          const old=oldMat.map;
+          oldMat.map=configureTexture(raw,oldMat.userData.factoryTemplateMap,m.texture_contract);
+          oldMat.color?.set?.(0xffffff);
+          oldMat.needsUpdate=true;
+          if(old!==oldMat.userData.factoryTemplateMap)disposeDynamicMap(old);
+          return oldMat;
+        }
+        const template=oldMat?.map||null;
+        const tex=configureTexture(raw,template,m.texture_contract);
+        const basic=new THREE.MeshBasicMaterial({
+          map:tex,color:0xffffff,side:oldMat?.side??THREE.FrontSide,
+          transparent:!!oldMat?.transparent,opacity:oldMat?.opacity??1,
+          alphaTest:oldMat?.alphaTest??0,toneMapped:false
+        });
+        basic.userData.factoryUnlitAdapter=true;
+        basic.userData.factoryTemplateMap=template;
+        oldMat?.dispose?.();
+        return basic;
+      });
+      n.material=Array.isArray(n.material)?adapted:adapted[0];
     }else throw new Error('Material strategy no soportada');
   });
 }
@@ -453,13 +475,15 @@ function renderAdvanced(){
   advancedSection.dataset.on=on?'1':'0';
   proportionGrid.innerHTML='';faceGrid.innerHTML='';animationGrid.innerHTML='';motionGrid.innerHTML='';performanceGrid.innerHTML='';
   if(!on)return;
+  advancedTitle.textContent=manifest.label||'CONTROLES DE FAMILIA';
+  faceControls.hidden=!(manifest.face_texture?.items?.length);
   advancedInfo.textContent=manifest.performance?manifest.performance.triangles+' tris · '+manifest.performance.bones+' huesos':'manifest-driven';
   if(manifest.proportions){
     for(const [id,p] of Object.entries(manifest.proportions)){
       const b=document.createElement('button');b.className='choice';b.dataset.proportion=id;b.textContent=p.label||id.toUpperCase();b.addEventListener('click',()=>applyProportion(id));proportionGrid.appendChild(b);
     }
   }
-  if(manifest.face_texture){
+  if(manifest.face_texture?.items?.length){
     for(const item of manifest.face_texture.items){
       const b=document.createElement('button');b.className='face';b.dataset.face=item.id;
       if(item.url){const im=document.createElement('img');im.src=item.url;im.crossOrigin='anonymous';im.alt='';b.appendChild(im)}
@@ -484,7 +508,7 @@ function initializeAdvanced(){
   stopAnimationLoop();
   currentProportion='regular';currentFace='none';motionFPS=12;
   if(manifest?.proportions)applyProportion(manifest.proportions.regular?'regular':Object.keys(manifest.proportions)[0]);
-  if(manifest?.face_texture)applyFace('none');
+  if(manifest?.face_texture?.items?.length)applyFace('none');
   if(manifest?.animation){
     const defaultStyle=manifest.animation.motion_styles.find(x=>x.fps===12)||manifest.animation.motion_styles[0];
     if(defaultStyle)setMotionStyle(defaultStyle.id);

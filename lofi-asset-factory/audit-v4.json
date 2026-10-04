@@ -1,0 +1,38 @@
+{
+  "schema": "LOFI_ASSET_AUDIT_V4",
+  "generated_at": "2026-10-04",
+  "decision": {
+    "selected": "Kenney Mini Dungeon / character-human.glb",
+    "reason": "465 triangles with the same 7-joint skeleton and 32 animation clips as the previous Mini Characters male-a foundation."
+  },
+  "structural_evidence": {
+    "selected": {
+      "triangles": 465,
+      "bones": 7,
+      "materials": 1,
+      "meshes": 2,
+      "animations": 32,
+      "texture": "512x512 PNG",
+      "bytes": 226672,
+      "source_blob_sha": "782c9ae4c71a6535bc39c185331965e870901fdc"
+    },
+    "previous": {
+      "name": "Kenney Mini Characters / character-male-a.glb",
+      "triangles": 723,
+      "bones": 7,
+      "materials": 1,
+      "meshes": 2,
+      "animations": 32,
+      "bytes": 253400
+    },
+    "mini_characters_shared_uv": false,
+    "note": "Mini Characters male/female variants are not a shared-UV family: topology and UV accessor counts differ."
+  },
+  "runtime_changes": [
+    "PSX canonical model switched to Mini Dungeon character-human.",
+    "Universal unlit_map adapter converts a source material once, then later skin changes swap only material.map.",
+    "PSX uses unlit_map so a PBR source cannot render black in the lightless low-cost viewer.",
+    "Runtime portrait projection removed from PSX manifest. FACE_PATCH is reserved for offline ingestion into a valid atlas.",
+    "Advanced-family heading is manifest-driven instead of hardcoded to PSX."
+  ]
+}
