@@ -1,0 +1,48 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Demo Engine V4 Motion Director</title><link rel="stylesheet" href="styles.css"></head><body>
+<div class="app" id="labRoot">
+  <div class="bar" data-demo-controls>
+    <button class="primary" id="runAll">▶ Run showcase</button><button id="pause">Ⅱ Pause</button><button id="resume">▶ Resume</button><button id="reset">↻ Reset</button><button id="debugToggle">Debug</button>
+    <div class="presets" id="presets"><button data-preset="CALM">Calm</button><button data-preset="PRODUCT">Product</button><button data-preset="FAST">Fast</button><button class="active" data-preset="TEACH">Teach</button></div>
+    <span class="mode-pill">SHOWCASE · Motion Director V4</span>
+  </div>
+  <section class="stage-wrap">
+    <div class="narrator"><b data-demo-kicker>DEMO ENGINE V4</b><span data-demo-caption>Continuidad, trayectorias visibles, acción local y tiempo para mirar resultados.</span><b class="counter" data-demo-counter>0 / 0</b></div>
+    <div class="stage" data-demo-stage>
+      <div class="camera" data-demo-camera>
+        <div class="world">
+          <section class="surface">
+            <h2>Interaction sandbox</h2><p>El video tiene que explicar la acción aunque tapes los logs.</p>
+            <div class="controls-demo">
+              <div class="row"><button data-demo-id="menu.open">Abrir menú</button><button data-demo-id="modal.open">Abrir modal</button><button data-demo-id="toast.show">Guardar</button></div>
+              <div class="row"><input data-demo-id="chat.input" type="text" placeholder="Escribí algo"><button data-demo-id="chat.send">Enviar</button></div>
+              <div class="row"><label><input data-demo-id="opt.toggle" type="checkbox"> activo</label><select data-demo-id="opt.select"><option>A</option><option>B</option><option>C</option></select><input data-demo-id="opt.slider" type="range" min="0" max="100" value="35"></div>
+              <div class="row"><div class="card" data-demo-id="card.drag">ARRASTRAME</div><div class="dropzone" data-demo-id="drop.zone">SOLTAR ACÁ</div></div>
+              <div class="scrollbox" data-demo-id="scroll.box"><div class="item">Item 1</div><div class="item">Item 2</div><div class="item">Item 3</div><div class="item">Item 4</div><div class="item">Item 5</div><div class="item" data-demo-id="scroll.goal">OBJETIVO DE SCROLL</div><div class="item">Item 7</div><div class="item">Item 8</div></div>
+            </div>
+          </section>
+          <section class="surface status-card">
+            <div><h2>Result</h2><p id="stateText" data-demo-id="state.text">idle</p></div>
+            <div class="transform-box" data-demo-id="box.transform">MOVE / SCALE / ROTATE</div>
+            <div class="comment-anchor" data-demo-id="comment.anchor">El comentario se acomoda alrededor de mí sin taparme.</div>
+            <button class="user-turn" data-demo-id="user.turn">TU TURNO</button>
+          </section>
+        </div>
+        <div class="modal" data-demo-id="modal" hidden><b>Modal real</b><p>Observer espera a que aparezca antes de continuar.</p><button data-demo-id="modal.close">Cerrar</button></div>
+        <div class="toast" data-demo-id="toast" hidden>Resultado guardado ✓</div>
+      </div>
+      <svg class="demo-motion-svg" data-demo-motion-svg aria-hidden="true"><path class="demo-trail" data-demo-trail hidden></path><path class="demo-trace-path" data-demo-trace-path hidden></path></svg>
+      <div class="demo-focus" data-demo-focus hidden></div><div class="demo-comment" data-demo-comment hidden></div><div class="demo-spotlight" data-demo-spotlight hidden></div><div data-demo-click-layer></div>
+      <div class="demo-wheel" data-demo-wheel hidden>↓</div><div class="demo-measure" data-demo-measure hidden></div><div class="action-hud" data-demo-action-hud hidden></div>
+      <div class="demo-gesture" data-demo-gesture hidden><img data-demo-gesture-img alt=""></div><div class="demo-pointer" data-demo-pointer hidden><img data-demo-pointer-img alt="cursor de demostración"></div>
+    </div>
+  </section>
+  <p class="showcase-note">SHOWCASE oculta los receipts. Abrí Debug sólo para inspeccionar el motor.</p>
+  <section class="debug" id="debugPanel">
+    <div class="debug-tools"><h3>DEBUG · capítulos</h3><div class="caps" data-demo-controls><button data-cap="pointer">Pointer</button><button data-cap="space">Scroll / Drag / Resize</button><button data-cap="camera">Look / Trace / Camera</button><button data-cap="logic">Wait / Assert</button><button data-cap="narrative">Narrative</button></div><div class="quality" id="quality">Quality gate esperando una corrida.</div><div class="legal">Cursor assets: Bibata Cursor, GPLv3. Ver NOTICE.md y LICENSE-BIBATA-GPL-3.txt.</div></div>
+    <div class="receipts-wrap"><h3>Receipts agrupados por paso</h3><div class="receipts" id="receipts"></div></div>
+  </section>
+</div>
+<script src="demo-engine-v3-base.js"></script><script src="demo-engine-v4.js"></script><script src="pointer-assets.js"></script>
+  <script src="gesture-assets.js"></script>
+  <script src="lab.js"></script>
+</body></html>
