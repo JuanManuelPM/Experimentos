@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="theme-color" content="#ece8df">
+<title>LO-FI COLLAGE FACTORY</title>
+<style>
+:root{color-scheme:light;--paper:#ece8df;--ink:#11110f;--panel:#f8f4eb;--line:#b8b0a5;--hot:#ffe36d;--blue:#cce6ff;--ok:#d8efb0}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--paper);color:var(--ink);font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+canvas.webgl{position:fixed;inset:0;width:100%;height:100%;display:block;touch-action:none}
+.top{position:fixed;z-index:5;top:0;left:0;right:0;padding:max(11px,env(safe-area-inset-top)) 12px 8px;display:flex;justify-content:space-between;align-items:flex-start;pointer-events:none}
+.brand{font-weight:900;font-size:13px;line-height:1.08;letter-spacing:.065em;text-shadow:0 1px #fff}.brand small{display:block;margin-top:4px;font-size:8px;color:#68635b;letter-spacing:.03em}
+.audit{font-size:8px;line-height:1.4;text-align:right;white-space:pre;background:#f8f4ebdc;border:1px solid #1112;padding:4px 6px}
+.status{position:fixed;z-index:4;top:59px;left:50%;transform:translateX(-50%);background:#111;color:#fff;padding:6px 9px;font-size:8px;font-weight:900;white-space:nowrap;pointer-events:none;max-width:92vw;overflow:hidden;text-overflow:ellipsis}
+.dock{position:fixed;z-index:10;left:6px;right:6px;bottom:max(6px,env(safe-area-inset-bottom));max-width:700px;margin:auto;background:#f8f4ebf6;border:2px solid #111;box-shadow:0 4px 0 #1112;padding:8px}
+.tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}.tab{height:42px;border:2px solid #111;background:#fff;font:900 10px/1 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;touch-action:manipulation}.tab[data-on="1"]{background:#111;color:#fff}
+.panel{display:none;padding-top:8px}.panel[data-on="1"]{display:block}
+.rail{display:flex;gap:7px;overflow-x:auto;scrollbar-width:none;padding:1px 0}.rail::-webkit-scrollbar{display:none}
+.tile{flex:0 0 88px;height:82px;border:2px solid var(--line);background:#fff;padding:4px;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:space-between;font:inherit;color:inherit;touch-action:manipulation}
+.tile img{width:58px;height:56px;object-fit:cover;display:block;background:#ddd}.tile b{font-size:8px;line-height:1}.tile small{position:absolute;top:4px;right:4px;background:#111;color:#fff;font-size:7px;padding:2px 3px}.tile[data-on="1"]{border-color:#111;background:var(--hot);transform:translateY(-1px)}
+.shapes{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}.shape{height:62px;border:2px solid var(--line);background:#fff;font:inherit;color:inherit;padding:3px;touch-action:manipulation}.shape b{display:block;font-size:21px;line-height:1.05}.shape small{font-size:7px;line-height:1.05}.shape em{display:block;font-style:normal;font-size:7px;color:#565047;margin-top:2px}.shape[data-on="1"]{border-color:#111;background:var(--blue)}
+.compat{margin-top:7px;display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:8px;padding:5px 7px;border:1px solid #1113;background:#fff}.compat strong{background:var(--ok);padding:2px 5px;border:1px solid #111}
+.controls{display:grid;grid-template-columns:1fr 1fr;gap:7px}.ctrl{border:1px solid #1113;background:#fff;padding:6px}.ctrl label{display:flex;justify-content:space-between;font-size:8px;font-weight:900;margin-bottom:4px}.ctrl input{width:100%;accent-color:#111}.actions{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:7px}.action{height:36px;border:2px solid #111;background:#111;color:#fff;font:900 8px/1 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;touch-action:manipulation}.action.alt{background:#fff;color:#111}
+.source{margin-top:6px;font-size:7px;color:#665f56;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.source a{color:#111;font-weight:900}
+.toast{position:fixed;z-index:30;left:50%;top:44%;transform:translate(-50%,-50%);display:none;background:#111;color:#fff;padding:9px 11px;font-size:9px;max-width:80vw;text-align:center}
+@media(max-height:690px){.tab{height:37px}.tile{height:70px;flex-basis:78px}.tile img{width:49px;height:45px}.shape{height:54px}.shape b{font-size:17px}.action{height:32px}}
+@media(min-aspect-ratio:1/1){.dock{left:auto;right:7px;top:7px;bottom:7px;width:min(43vw,460px);overflow:auto}.status{left:29%}}
+</style>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"}}</script>
+</head>
+<body>
+<div class="top"><div class="brand">LO-FI COLLAGE FACTORY<small>IMAGEN REAL → FORMA GENÉRICA → PROYECCIÓN COMPATIBLE</small></div><div class="audit" id="audit">IDLE\n0 DRAW\nDPR 1.00</div></div>
+<div class="status" id="status">CARGANDO IMAGEN REAL · LA ANTERIOR NO SE BORRA HASTA ESTAR LISTA</div>
+<div class="toast" id="toast"></div>
+
+<div class="dock">
+  <div class="tabs">
+    <button class="tab" data-tab="images" data-on="1">IMAGEN</button>
+    <button class="tab" data-tab="shapes">FORMA</button>
+    <button class="tab" data-tab="adjust">AJUSTE</button>
+  </div>
+
+  <section class="panel" id="images" data-on="1">
+    <div class="rail" id="imageRail"></div>
+    <div class="compat"><span id="imageHint">compatibilidad calculada por receta</span><strong id="bestShape">MEJOR: …</strong></div>
+    <div class="source" id="sourceLine"></div>
+  </section>
+
+  <section class="panel" id="shapes">
+    <div class="shapes" id="shapeGrid"></div>
+    <div class="compat"><span>la imagen no cambia; cambia sólo el receptor</span><strong id="compatScore">0%</strong></div>
+  </section>
+
+  <section class="panel" id="adjust">
+    <div class="controls">
+      <div class="ctrl"><label>ANCHO <span id="widthVal">1.00</span></label><input id="width" type="range" min=".55" max="1.8" step=".01" value="1"></div>
+      <div class="ctrl"><label>ALTO <span id="heightVal">1.00</span></label><input id="height" type="range" min=".55" max="1.8" step=".01" value="1"></div>
+      <div class="ctrl"><label>PANZA <span id="bellyVal">1.00</span></label><input id="belly" type="range" min=".55" max="1.55" step=".01" value="1"></div>
+      <div class="ctrl"><label>IMAGEN <span id="imageVal">1.00</span></label><input id="imageScale" type="range" min=".55" max="1.8" step=".01" value="1"></div>
+    </div>
+    <div class="actions">
+      <button class="action" id="autoBtn">AUTO · MEJOR FORMA</button>
+      <button class="action alt" id="resetBtn">REINICIAR</button>
+    </div>
+  </section>
+</div>
+
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+const IMAGES=[
+{id:'cat',name:'GATO',url:'https://upload.wikimedia.org/wikipedia/commons/9/9c/Public_domain_cat_photo_on_the_streets.jpg',page:'https://commons.wikimedia.org/wiki/File:Public_domain_cat_photo_on_the_streets.jpg',license:'CC0',scores:{panel:100,head:96,jar:93,capsule:90,cylinder:84,sphere:72,box:58}},
+{id:'portrait',name:'CARA',url:'https://upload.wikimedia.org/wikipedia/commons/9/99/Portrait_Shot.jpg',page:'https://commons.wikimedia.org/wiki/File:Portrait_Shot.jpg',license:'CC0',scores:{panel:100,head:100,jar:95,capsule:92,cylinder:82,sphere:74,box:56}},
+{id:'eye',name:'OJO',url:'https://upload.wikimedia.org/wikipedia/commons/8/8f/Eye_opened_close_up.jpg',page:'https://commons.wikimedia.org/wiki/File:Eye_opened_close_up.jpg',license:'PUBLIC DOMAIN',scores:{panel:100,sphere:100,head:96,capsule:78,jar:70,cylinder:62,box:60}},
+{id:'label',name:'ETIQUETA',url:'https://upload.wikimedia.org/wikipedia/commons/9/9e/Prieure_Lichine_Label_2000.jpg',page:'https://commons.wikimedia.org/wiki/File:Prieure_Lichine_Label_2000.jpg',license:'PUBLIC DOMAIN',scores:{panel:100,cylinder:100,jar:98,box:90,capsule:76,head:45,sphere:40}},
+{id:'ada',name:'GRABADO',url:'https://upload.wikimedia.org/wikipedia/commons/0/05/Engraved_portrait_of_Ada_Lovelace.jpg',page:'https://commons.wikimedia.org/wiki/File:Engraved_portrait_of_Ada_Lovelace.jpg',license:'PUBLIC DOMAIN',scores:{panel:100,head:90,jar:84,capsule:82,cylinder:72,box:68,sphere:58}}
+];
+const SHAPES=[
+{id:'panel',name:'PANEL',glyph:'▭',map:'planar'},
+{id:'cylinder',name:'CILINDRO',glyph:'▥',map:'cylindrical'},
+{id:'jar',name:'FRASCO',glyph:'⚱',map:'lathe'},
+{id:'capsule',name:'CÁPSULA',glyph:'⬭',map:'uv-wrap'},
+{id:'head',name:'CABEZA',glyph:'◉',map:'front-decal'},
+{id:'sphere',name:'ESFERA',glyph:'●',map:'spherical'},
+{id:'box',name:'CAJA',glyph:'▣',map:'box-uv'}
+];
+
+const scene=new THREE.Scene();scene.background=new THREE.Color(0xece8df);
+const camera=new THREE.PerspectiveCamera(38,innerWidth/innerHeight,.01,100);
+const renderer=new THREE.WebGLRenderer({antialias:false,alpha:false,powerPreference:'low-power'});
+renderer.domElement.className='webgl';renderer.setPixelRatio(Math.min(devicePixelRatio||1,1));renderer.setSize(innerWidth,innerHeight);renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.shadowMap.enabled=false;document.body.prepend(renderer.domElement);
+const controls=new OrbitControls(camera,renderer.domElement);controls.enableDamping=false;controls.enablePan=false;controls.rotateSpeed=.8;controls.zoomSpeed=.8;controls.touches.ONE=THREE.TOUCH.ROTATE;controls.touches.TWO=THREE.TOUCH.DOLLY_ROTATE;
+const root=new THREE.Group();scene.add(root);
+
+let currentImage=IMAGES[0],currentShape=SHAPES.find(x=>x.id==='jar'),currentTexture=null,currentObj=null,loadToken=0,renderQueued=false;
+const params={width:1,height:1,belly:1,imageScale:1};
+const loader=new THREE.TextureLoader();loader.setCrossOrigin('anonymous');
+const audit=document.getElementById('audit'),status=document.getElementById('status'),toast=document.getElementById('toast');
+
+function toastMsg(s){toast.textContent=s;toast.style.display='block';clearTimeout(toastMsg.t);toastMsg.t=setTimeout(()=>toast.style.display='none',1100)}
+function invalidate(){if(renderQueued)return;renderQueued=true;requestAnimationFrame(()=>{renderQueued=false;renderer.render(scene,camera);const r=renderer.info.render;audit.textContent='IDLE\\n'+r.calls+' DRAW\\n'+r.triangles.toLocaleString()+' TRI\\nDPR '+renderer.getPixelRatio().toFixed(2)})}
+controls.addEventListener('change',invalidate);
+
+document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.tab').forEach(x=>x.dataset.on='0');document.querySelectorAll('.panel').forEach(x=>x.dataset.on='0');b.dataset.on='1';document.getElementById(b.dataset.tab).dataset.on='1'}));
+
+const imageRail=document.getElementById('imageRail');
+for(const im of IMAGES){const b=document.createElement('button');b.className='tile';b.dataset.id=im.id;const img=document.createElement('img');img.src=im.url;img.alt='';img.loading='lazy';const l=document.createElement('b');l.textContent=im.name;const lic=document.createElement('small');lic.textContent=im.license;b.append(img,l,lic);b.addEventListener('click',()=>chooseImage(im));imageRail.appendChild(b)}
+const shapeGrid=document.getElementById('shapeGrid');
+for(const s of SHAPES){const b=document.createElement('button');b.className='shape';b.dataset.id=s.id;b.innerHTML='<b>'+s.glyph+'</b><small>'+s.name+'</small><em data-score>0%</em>';b.addEventListener('click',()=>chooseShape(s));shapeGrid.appendChild(b)}
+
+function bestFor(im){return SHAPES.slice().sort((a,b)=>(im.scores[b.id]||0)-(im.scores[a.id]||0))[0]}
+function updateUI(){
+ document.querySelectorAll('.tile').forEach(b=>b.dataset.on=b.dataset.id===currentImage.id?'1':'0');
+ document.querySelectorAll('.shape').forEach(b=>{b.dataset.on=b.dataset.id===currentShape.id?'1':'0';const sc=currentImage.scores[b.dataset.id]||0;b.querySelector('[data-score]').textContent=sc+'%'});
+ const best=bestFor(currentImage);document.getElementById('bestShape').textContent='MEJOR: '+best.name;document.getElementById('compatScore').textContent=(currentImage.scores[currentShape.id]||0)+'%';
+ document.getElementById('imageHint').textContent=currentShape.name+' · '+currentShape.map+' · '+(currentImage.scores[currentShape.id]||0)+'%';
+ document.getElementById('sourceLine').innerHTML=currentImage.name+' · '+currentImage.license+' · <a href="'+currentImage.page+'" target="_blank" rel="noopener">FUENTE</a>';
+}
+function chooseImage(im){
+ currentImage=im;updateUI();loadImageAtomic(im);
+}
+function chooseShape(s){currentShape=s;updateUI();rebuildShape();}
+
+async function loadImageAtomic(im){
+ const token=++loadToken;status.textContent='CARGANDO '+im.name+' · MANTENGO LA IMAGEN ANTERIOR HASTA DECODIFICAR';
+ try{
+  const tex=await loader.loadAsync(im.url);if(token!==loadToken){tex.dispose();return}
+  tex.colorSpace=THREE.SRGBColorSpace;tex.wrapS=THREE.RepeatWrapping;tex.wrapT=THREE.RepeatWrapping;tex.magFilter=THREE.LinearFilter;tex.minFilter=THREE.LinearMipmapLinearFilter;tex.generateMipmaps=true;tex.needsUpdate=true;
+  const old=currentTexture;currentTexture=tex;applyTextureTransform();if(old)old.dispose();rebuildShape();status.textContent=im.name+' · '+im.license+' · '+currentShape.name+' '+(im.scores[currentShape.id]||0)+'%';
+ }catch(e){status.textContent='FALLÓ '+im.name+' · CONSERVO LA ANTERIOR';toastMsg('la imagen no cargó; no se borró la anterior')}
+}
+function mat(tex){return new THREE.MeshBasicMaterial({map:tex||null,color:tex?0xffffff:0xd8d0c4,side:THREE.DoubleSide,toneMapped:false})}
+function applyTextureTransform(){
+ if(!currentTexture)return;const z=params.imageScale;currentTexture.repeat.set(1/z,1/z);currentTexture.offset.set((1-1/z)/2,(1-1/z)/2);currentTexture.needsUpdate=true
+}
+function jarGeometry(){
+ const b=params.belly,pts=[new THREE.Vector2(.55,-1.35),new THREE.Vector2(.68*b,-1.12),new THREE.Vector2(.78*b,-.72),new THREE.Vector2(.82*b,-.1),new THREE.Vector2(.79*b,.62),new THREE.Vector2(.68*b,1.0),new THREE.Vector2(.53,1.16),new THREE.Vector2(.53,1.34)];
+ return new THREE.LatheGeometry(pts,24)
+}
+function build(){
+ const t=currentTexture,m=mat(t);let o;
+ if(currentShape.id==='panel')o=new THREE.Mesh(new THREE.PlaneGeometry(2.05,2.65),m);
+ else if(currentShape.id==='cylinder')o=new THREE.Mesh(new THREE.CylinderGeometry(.82,.82,2.7,24,1,false),m);
+ else if(currentShape.id==='jar')o=new THREE.Mesh(jarGeometry(),m);
+ else if(currentShape.id==='capsule')o=new THREE.Mesh(new THREE.CapsuleGeometry(.72,1.35,5,14),m);
+ else if(currentShape.id==='sphere')o=new THREE.Mesh(new THREE.SphereGeometry(1.12,26,18),m);
+ else if(currentShape.id==='box')o=new THREE.Mesh(new THREE.BoxGeometry(1.9,2.45,.72),m);
+ else if(currentShape.id==='head'){
+  const g=new THREE.Group(),head=new THREE.Mesh(new THREE.SphereGeometry(1.05,24,18),new THREE.MeshBasicMaterial({color:0xcdb9a4,toneMapped:false}));head.scale.set(.9,1.12,.84);g.add(head);
+  const decal=new THREE.Mesh(new THREE.PlaneGeometry(1.58,1.78),m);decal.position.z=.89;decal.position.y=.02;g.add(decal);o=g;
+ }
+ o.userData.factoryMaterial=m;return o
+}
+function rebuildShape(){
+ const old=currentObj;currentObj=build();currentObj.scale.set(params.width,params.height,1);root.add(currentObj);if(old){root.remove(old);old.traverse?.(n=>{if(n.geometry)n.geometry.dispose?.();if(n.material&&n.material!==currentObj.userData.factoryMaterial)n.material.dispose?.()})}
+ fit();invalidate();
+}
+function fit(){
+ if(!currentObj)return;currentObj.updateWorldMatrix(true,true);const b=new THREE.Box3().setFromObject(currentObj),sp=b.getBoundingSphere(new THREE.Sphere()),vf=THREE.MathUtils.degToRad(camera.fov),hf=2*Math.atan(Math.tan(vf/2)*camera.aspect),f=Math.min(vf,hf),d=sp.radius*1.38/Math.sin(f/2);
+ controls.target.copy(sp.center);camera.position.copy(sp.center).add(new THREE.Vector3(0,.03,d));camera.near=Math.max(.01,d-sp.radius*3);camera.far=d+sp.radius*10;camera.updateProjectionMatrix();controls.minDistance=Math.max(.55,sp.radius*1.2);controls.maxDistance=Math.max(6,sp.radius*7);controls.update()
+}
+
+function setParam(id,key){
+ const e=document.getElementById(id),v=document.getElementById(id+'Val');e.addEventListener('input',()=>{params[key]=Number(e.value);v.textContent=Number(e.value).toFixed(2);if(key==='imageScale'){applyTextureTransform();invalidate()}else if(key==='belly'&&currentShape.id==='jar')rebuildShape();else{if(currentObj){currentObj.scale.set(params.width,params.height,1);fit();invalidate()}}})
+}
+setParam('width','width');setParam('height','height');setParam('belly','belly');setParam('imageScale','imageScale');
+document.getElementById('autoBtn').addEventListener('click',()=>{currentShape=bestFor(currentImage);updateUI();rebuildShape();toastMsg('forma recomendada: '+currentShape.name)});
+document.getElementById('resetBtn').addEventListener('click',()=>{Object.assign(params,{width:1,height:1,belly:1,imageScale:1});for(const id of ['width','height','belly','imageScale']){document.getElementById(id).value=1;document.getElementById(id+'Val').textContent='1.00'}applyTextureTransform();rebuildShape();toastMsg('ajustes reiniciados')});
+
+function resize(){renderer.setPixelRatio(Math.min(devicePixelRatio||1,1));renderer.setSize(innerWidth,innerHeight);camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();fit();invalidate()}
+addEventListener('resize',resize);resize();updateUI();loadImageAtomic(currentImage);
+</script>
+</body>
+</html>
