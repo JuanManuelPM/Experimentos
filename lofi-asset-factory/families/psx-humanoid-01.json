@@ -1,0 +1,270 @@
+{
+  "schema": "LOFI_ASSET_FAMILY_V1",
+  "id": "psx-humanoid-01",
+  "label": "PSX Puppet",
+  "tags": [
+    "human",
+    "psx",
+    "puppet",
+    "animated",
+    "ultralight"
+  ],
+  "source": {
+    "name": "Kenney Mini Characters",
+    "author": "Kenney",
+    "license": "CC0-1.0",
+    "url": "https://kenney.nl/",
+    "mirror": "Hidencod/tge-assets"
+  },
+  "renderer": "mesh_uv",
+  "model": {
+    "path": "assets/psx-humanoid/character-male-a.glb",
+    "format": "glb"
+  },
+  "material": {
+    "strategy": "inherit_map_only"
+  },
+  "orientation": {
+    "up": [
+      0,
+      1,
+      0
+    ],
+    "camera_direction": [
+      0,
+      0,
+      -1
+    ],
+    "ground": "minY"
+  },
+  "display": {
+    "target_size": 3.15,
+    "margin": 1.18,
+    "target_bias": [
+      0,
+      0.08,
+      0
+    ]
+  },
+  "texture_contract": {
+    "uv_channel": 0,
+    "width": 512,
+    "height": 512,
+    "flip_y": false,
+    "color_space": "srgb"
+  },
+  "performance": {
+    "triangles": 723,
+    "bones": 7,
+    "materials": 1,
+    "meshes": 2,
+    "animations": 32,
+    "texture": "512x512",
+    "target_runtime_texture": "128-256"
+  },
+  "validation": {
+    "status": "PASS",
+    "mode": "source_uv_contract",
+    "runtime_required": true,
+    "structural_verified": "723 tris · 7-bone rig · 1 material · 32 clips"
+  },
+  "skins": [
+    {
+      "id": "base",
+      "label": "BASE",
+      "texture": "assets/psx-humanoid/base.png"
+    }
+  ],
+  "proportions": {
+    "regular": {
+      "label": "NORMAL",
+      "bones": {}
+    },
+    "petit": {
+      "label": "PETIT",
+      "bones": {
+        "head": [
+          1.16,
+          1.16,
+          1.16
+        ],
+        "torso": [
+          1.08,
+          0.9,
+          1.08
+        ],
+        "leg-left": [
+          1,
+          0.8,
+          1
+        ],
+        "leg-right": [
+          1,
+          0.8,
+          1
+        ],
+        "arm-left": [
+          1,
+          0.88,
+          1
+        ],
+        "arm-right": [
+          1,
+          0.88,
+          1
+        ]
+      }
+    },
+    "tall": {
+      "label": "ALTO",
+      "bones": {
+        "head": [
+          0.92,
+          0.92,
+          0.92
+        ],
+        "torso": [
+          0.95,
+          1.08,
+          0.95
+        ],
+        "leg-left": [
+          1,
+          1.24,
+          1
+        ],
+        "leg-right": [
+          1,
+          1.24,
+          1
+        ],
+        "arm-left": [
+          1,
+          1.1,
+          1
+        ],
+        "arm-right": [
+          1,
+          1.1,
+          1
+        ]
+      }
+    },
+    "wide": {
+      "label": "ANCHO",
+      "bones": {
+        "head": [
+          1.05,
+          1,
+          1.05
+        ],
+        "torso": [
+          1.22,
+          0.98,
+          1.1
+        ],
+        "leg-left": [
+          1.08,
+          0.96,
+          1.08
+        ],
+        "leg-right": [
+          1.08,
+          0.96,
+          1.08
+        ],
+        "arm-left": [
+          1.12,
+          0.96,
+          1.12
+        ],
+        "arm-right": [
+          1.12,
+          0.96,
+          1.12
+        ]
+      }
+    }
+  },
+  "face_texture": {
+    "strategy": "head_uv_wrap",
+    "target_mesh": "head-mesh",
+    "uv_bbox": [
+      0.09375,
+      0.775,
+      0.84375,
+      0.975
+    ],
+    "items": [
+      {
+        "id": "none",
+        "label": "ORIGINAL",
+        "url": null,
+        "license": "CC0 source texture"
+      },
+      {
+        "id": "ada",
+        "label": "ADA",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/a/a4/Ada_Lovelace_portrait.jpg",
+        "source": "https://commons.wikimedia.org/wiki/File:Ada_Lovelace_portrait.jpg",
+        "license": "Public domain"
+      },
+      {
+        "id": "lincoln",
+        "label": "LINCOLN",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/7/7d/Presidential_Portrait_of_Abraham_Lincoln.jpg",
+        "source": "https://commons.wikimedia.org/wiki/File:Presidential_Portrait_of_Abraham_Lincoln.jpg",
+        "license": "Public domain"
+      },
+      {
+        "id": "tesla",
+        "label": "TESLA",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/8/87/Blue_Portrait_of_Nikola_Tesla.jpg",
+        "source": "https://commons.wikimedia.org/wiki/File:Blue_Portrait_of_Nikola_Tesla.jpg",
+        "license": "Public domain"
+      }
+    ]
+  },
+  "animation": {
+    "default_clip": "idle",
+    "clips": [
+      "idle",
+      "walk",
+      "sprint",
+      "jump",
+      "crouch",
+      "sit",
+      "emote-yes",
+      "emote-no",
+      "interact-right",
+      "attack-kick-right"
+    ],
+    "motion_styles": [
+      {
+        "id": "smooth",
+        "label": "SMOOTH",
+        "fps": 0
+      },
+      {
+        "id": "15",
+        "label": "15 FPS",
+        "fps": 15
+      },
+      {
+        "id": "12",
+        "label": "12 FPS",
+        "fps": 12
+      },
+      {
+        "id": "10",
+        "label": "10 FPS",
+        "fps": 10
+      },
+      {
+        "id": "6",
+        "label": "6 FPS",
+        "fps": 6
+      }
+    ]
+  }
+}

@@ -29,6 +29,15 @@ html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--paper
 .views{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}.viewbtn,.action{height:34px;border:2px solid #111;background:white;color:#111;font:900 8px/1 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;touch-action:manipulation}.viewbtn[data-on="1"]{background:#111;color:white}
 .actions{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:6px}.action.primary{background:#111;color:white}
 .note{font-size:7px;line-height:1.45;color:var(--muted);margin-top:6px}
+.advanced{display:none}.advanced[data-on="1"]{display:block}
+.choice-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.choice{height:32px;border:2px solid var(--line);background:#fff;color:#111;font:900 8px/1 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;touch-action:manipulation}
+.choice[data-on="1"]{border-color:#111;background:var(--hot)}
+.face-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.face{height:70px;border:2px solid var(--line);background:#fff;padding:3px;font:inherit;color:inherit;touch-action:manipulation;overflow:hidden}
+.face img{width:100%;height:49px;object-fit:cover;display:block;background:#d9d5ce}.face b{display:block;font-size:7px;line-height:1.1}.face[data-on="1"]{border-color:#111;background:var(--blue)}
+.perf{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px;margin-top:6px}
+.perf span{font-size:7px;border:1px solid #1112;background:#fff;padding:4px;text-align:center}
 @media(max-width:760px){
  #app{display:block}
  #viewport{position:absolute;inset:0 0 248px 0;border-right:0;border-bottom:2px solid #111}
@@ -72,6 +81,19 @@ html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--paper
       </div>
     </section>
 
+    <section class="section advanced" id="advancedSection">
+      <div class="head"><strong>PSX PUPPET</strong><span id="advancedInfo">manifest-driven</span></div>
+      <div class="head"><strong>PROPORCIÓN</strong><span>misma malla / mismo rig</span></div>
+      <div class="choice-grid" id="proportionGrid"></div>
+      <div class="head" style="margin-top:8px"><strong>CARA</strong><span>wrap sobre head-mesh real</span></div>
+      <div class="face-grid" id="faceGrid"></div>
+      <div class="head" style="margin-top:8px"><strong>ANIMACIÓN</strong><span>clips del GLB</span></div>
+      <div class="choice-grid" id="animationGrid"></div>
+      <div class="head" style="margin-top:8px"><strong>MOTION STYLE</strong><span>tiempo cuantizado</span></div>
+      <div class="choice-grid" id="motionGrid"></div>
+      <div class="perf" id="performanceGrid"></div>
+    </section>
+
     <section class="section">
       <div class="head"><strong>VISTA CANÓNICA</strong><span>sin superposición sobre el 3D</span></div>
       <div class="views">
@@ -108,6 +130,13 @@ const familyMetaEl=document.getElementById('familyMeta');
 const structBadge=document.getElementById('structBadge');
 const runtimeBadge=document.getElementById('runtimeBadge');
 const diffBadge=document.getElementById('diffBadge');
+const advancedSection=document.getElementById('advancedSection');
+const advancedInfo=document.getElementById('advancedInfo');
+const proportionGrid=document.getElementById('proportionGrid');
+const faceGrid=document.getElementById('faceGrid');
+const animationGrid=document.getElementById('animationGrid');
+const motionGrid=document.getElementById('motionGrid');
+const performanceGrid=document.getElementById('performanceGrid');
 
 const scene=new THREE.Scene();
 scene.background=new THREE.Color(0xece8df);
@@ -136,6 +165,7 @@ const textureCache=new Map();
 const validationCache=new Map();
 
 let catalog=null,manifest=null,currentAsset=null,currentSkin=null,currentView='front',renderQueued=false,familyToken=0,skinToken=0;
+let mixer=null,currentAction=null,animationRAF=0,animationStart=0,lastAnimationFrame=-1,currentClip=null,motionFPS=12,currentProportion='regular',currentFace='none',activeFaceTexture=null;
 
 function invalidate(){
   if(renderQueued)return;
@@ -163,7 +193,7 @@ async function loadRawModel(path,format){
   const key=format+'|'+path;
   if(modelCache.has(key))return modelCache.get(key);
   const p=(format==='glb'
-    ? gltfLoader.loadAsync(path).then(g=>g.scene)
+    ? gltfLoader.loadAsync(path).then(g=>{g.scene.userData.factoryAnimations=g.animations||[];return g.scene})
     : format==='obj'
       ? objLoader.loadAsync(path)
       : Promise.reject(new Error('Formato no soportado: '+format)));
@@ -199,8 +229,11 @@ function normalizeObject(obj,m){
 async function makeInstance(m,path=m.model.path,format=m.model.format){
   const base=await loadRawModel(path,format);
   const obj=cloneModel(base,format);
+  obj.userData.factoryAnimations=base.userData.factoryAnimations||[];
   cloneMaterials(obj);
-  return normalizeObject(obj,m);
+  const wrap=normalizeObject(obj,m);
+  wrap.userData.factoryAnimations=obj.userData.factoryAnimations||[];
+  return wrap;
 }
 async function loadTextureRaw(path){
   if(!textureCache.has(path))textureCache.set(path,textureLoader.loadAsync(path).then(t=>{t.colorSpace=THREE.SRGBColorSpace;return t}));
@@ -324,6 +357,140 @@ function setBadges(result){
   runtimeBadge.textContent='RUNTIME '+(result?.pass?'PASS':'FAIL');runtimeBadge.className='badge '+(result?.pass?'ok':'bad');
   diffBadge.textContent=result?.diff==null?'Δ N/A':'Δ '+result.diff.toFixed(4);diffBadge.className='badge '+(result?.pass?'ok':'bad');
 }
+function stopAnimationLoop(){
+  if(animationRAF)cancelAnimationFrame(animationRAF);
+  animationRAF=0;lastAnimationFrame=-1;
+  if(mixer)mixer.stopAllAction();
+  mixer=null;currentAction=null;currentClip=null;
+}
+function findNode(name){
+  let found=null;
+  currentAsset?.traverse(n=>{if(!found&&n.name===name)found=n});
+  return found;
+}
+function rememberBaseBoneScales(){
+  currentAsset?.traverse(n=>{
+    if(!n.userData.factoryBaseScale)n.userData.factoryBaseScale=n.scale.clone();
+  });
+}
+function applyProportion(id){
+  if(!manifest?.proportions||!currentAsset)return;
+  currentProportion=id;
+  rememberBaseBoneScales();
+  currentAsset.traverse(n=>{
+    const b=n.userData.factoryBaseScale;
+    if(b)n.scale.copy(b);
+  });
+  const preset=manifest.proportions[id];
+  for(const [name,factor] of Object.entries(preset?.bones||{})){
+    const n=findNode(name);if(!n)continue;
+    const b=n.userData.factoryBaseScale||new THREE.Vector3(1,1,1);
+    n.scale.set(b.x*factor[0],b.y*factor[1],b.z*factor[2]);
+  }
+  document.querySelectorAll('[data-proportion]').forEach(b=>b.dataset.on=b.dataset.proportion===id?'1':'0');
+  refit();invalidate();
+}
+function transformedFaceTexture(raw,box){
+  const t=raw.clone();
+  const [u0,v0,u1,v1]=box,du=Math.max(.001,u1-u0),dv=Math.max(.001,v1-v0);
+  t.colorSpace=THREE.SRGBColorSpace;t.flipY=false;
+  t.wrapS=THREE.ClampToEdgeWrapping;t.wrapT=THREE.ClampToEdgeWrapping;
+  t.repeat.set(1/du,1/dv);t.offset.set(-u0/du,-v0/dv);
+  t.center.set(0,0);t.rotation=0;t.matrixAutoUpdate=true;t.needsUpdate=true;
+  t.userData.factoryFace=true;
+  return t;
+}
+async function applyFace(id){
+  if(!manifest?.face_texture||!currentAsset)return;
+  const item=manifest.face_texture.items.find(x=>x.id===id);if(!item)return;
+  const mesh=findNode(manifest.face_texture.target_mesh);if(!mesh||!mesh.isMesh)return;
+  const mats=Array.isArray(mesh.material)?mesh.material:[mesh.material];
+  if(!mesh.userData.factoryOriginalFaceMaps)mesh.userData.factoryOriginalFaceMaps=mats.map(m=>m?.map||null);
+  if(activeFaceTexture){activeFaceTexture.dispose?.();activeFaceTexture=null}
+  if(!item.url){
+    mats.forEach((m,i)=>{if(m){m.map=mesh.userData.factoryOriginalFaceMaps[i]||null;m.needsUpdate=true}});
+    currentFace=id;document.querySelectorAll('[data-face]').forEach(b=>b.dataset.on=b.dataset.face===id?'1':'0');invalidate();return;
+  }
+  statusEl.textContent='CARGANDO CARA '+item.label+' · '+item.license;
+  try{
+    const raw=await loadTextureRaw(item.url);
+    const tex=transformedFaceTexture(raw,manifest.face_texture.uv_bbox);
+    activeFaceTexture=tex;
+    mats.forEach(m=>{if(m){m.map=tex;m.color?.set?.(0xffffff);m.needsUpdate=true}});
+    currentFace=id;document.querySelectorAll('[data-face]').forEach(b=>b.dataset.on=b.dataset.face===id?'1':'0');
+    statusEl.textContent=manifest.label+' · CARA '+item.label+' · '+item.license;invalidate();
+  }catch(e){console.error(e);statusEl.textContent='CARA NO CARGÓ · CONSERVO LA ANTERIOR'}
+}
+function animationTick(now){
+  if(!mixer||!currentAction||!currentClip)return;
+  const t=(now-animationStart)/1000;
+  const qt=motionFPS>0?Math.floor(t*motionFPS)/motionFPS:t;
+  const marker=motionFPS>0?Math.floor(t*motionFPS):Math.floor(t*60);
+  if(marker!==lastAnimationFrame){
+    lastAnimationFrame=marker;mixer.setTime(qt);invalidate();
+  }
+  animationRAF=requestAnimationFrame(animationTick);
+}
+function playClip(name){
+  if(!manifest?.animation||!currentAsset)return;
+  const clips=currentAsset.userData.factoryAnimations||[];
+  const clip=THREE.AnimationClip.findByName(clips,name);if(!clip)return;
+  if(!mixer)mixer=new THREE.AnimationMixer(currentAsset);
+  mixer.stopAllAction();currentAction=mixer.clipAction(clip);currentAction.reset().play();currentClip=name;
+  animationStart=performance.now();lastAnimationFrame=-1;
+  document.querySelectorAll('[data-clip]').forEach(b=>b.dataset.on=b.dataset.clip===name?'1':'0');
+  if(animationRAF)cancelAnimationFrame(animationRAF);
+  animationRAF=requestAnimationFrame(animationTick);
+}
+function setMotionStyle(id){
+  const style=manifest?.animation?.motion_styles?.find(x=>x.id===id);if(!style)return;
+  motionFPS=style.fps;
+  document.querySelectorAll('[data-motion]').forEach(b=>b.dataset.on=b.dataset.motion===id?'1':'0');
+  animationStart=performance.now();lastAnimationFrame=-1;
+}
+function renderAdvanced(){
+  const on=!!(manifest?.proportions||manifest?.face_texture||manifest?.animation);
+  advancedSection.dataset.on=on?'1':'0';
+  proportionGrid.innerHTML='';faceGrid.innerHTML='';animationGrid.innerHTML='';motionGrid.innerHTML='';performanceGrid.innerHTML='';
+  if(!on)return;
+  advancedInfo.textContent=manifest.performance?manifest.performance.triangles+' tris · '+manifest.performance.bones+' huesos':'manifest-driven';
+  if(manifest.proportions){
+    for(const [id,p] of Object.entries(manifest.proportions)){
+      const b=document.createElement('button');b.className='choice';b.dataset.proportion=id;b.textContent=p.label||id.toUpperCase();b.addEventListener('click',()=>applyProportion(id));proportionGrid.appendChild(b);
+    }
+  }
+  if(manifest.face_texture){
+    for(const item of manifest.face_texture.items){
+      const b=document.createElement('button');b.className='face';b.dataset.face=item.id;
+      if(item.url){const im=document.createElement('img');im.src=item.url;im.crossOrigin='anonymous';im.alt='';b.appendChild(im)}
+      else{const ph=document.createElement('div');ph.style.height='49px';ph.style.display='grid';ph.style.placeItems='center';ph.textContent='UV';b.appendChild(ph)}
+      const lab=document.createElement('b');lab.textContent=item.label;b.appendChild(lab);b.addEventListener('click',()=>applyFace(item.id));faceGrid.appendChild(b);
+    }
+  }
+  if(manifest.animation){
+    for(const name of manifest.animation.clips){
+      const b=document.createElement('button');b.className='choice';b.dataset.clip=name;b.textContent=name.toUpperCase();b.addEventListener('click',()=>playClip(name));animationGrid.appendChild(b);
+    }
+    for(const style of manifest.animation.motion_styles){
+      const b=document.createElement('button');b.className='choice';b.dataset.motion=style.id;b.textContent=style.label;b.addEventListener('click',()=>setMotionStyle(style.id));motionGrid.appendChild(b);
+    }
+  }
+  if(manifest.performance){
+    const items=[['TRIS',manifest.performance.triangles],['BONES',manifest.performance.bones],['MATS',manifest.performance.materials],['MESH',manifest.performance.meshes],['CLIPS',manifest.performance.animations]];
+    for(const [k,v] of items){const s=document.createElement('span');s.textContent=k+' '+v;performanceGrid.appendChild(s)}
+  }
+}
+function initializeAdvanced(){
+  stopAnimationLoop();
+  currentProportion='regular';currentFace='none';motionFPS=12;
+  if(manifest?.proportions)applyProportion(manifest.proportions.regular?'regular':Object.keys(manifest.proportions)[0]);
+  if(manifest?.face_texture)applyFace('none');
+  if(manifest?.animation){
+    const defaultStyle=manifest.animation.motion_styles.find(x=>x.fps===12)||manifest.animation.motion_styles[0];
+    if(defaultStyle)setMotionStyle(defaultStyle.id);
+    playClip(manifest.animation.default_clip||manifest.animation.clips[0]);
+  }
+}
 function renderFamilies(){
   familiesEl.innerHTML='';
   for(const e of catalog.families.filter(x=>x.status==='PASS')){
@@ -364,12 +531,13 @@ async function selectFamily(id){
   statusEl.textContent='CARGANDO MANIFEST '+id;
   const m=await getManifest(entry);if(token!==familyToken)return;
   if(m.validation.status!=='PASS')throw new Error('Family no PASS');
-  manifest=m;currentSkin=m.skins[0];renderSkins();updateSelectionUI();
+  manifest=m;currentSkin=m.skins[0];renderSkins();renderAdvanced();updateSelectionUI();
   const next=await makeInstance(m);if(token!==familyToken)return;
-  const old=currentAsset;currentAsset=next;root.add(next);if(old)root.remove(old);
+  stopAnimationLoop();if(activeFaceTexture){activeFaceTexture.dispose?.();activeFaceTexture=null}const old=currentAsset;currentAsset=next;root.add(next);if(old)root.remove(old);
   currentView='front';document.querySelectorAll('.viewbtn').forEach(b=>b.dataset.on=b.dataset.view==='front'?'1':'0');
   refit();
   await selectSkin(currentSkin.id,true);
+  initializeAdvanced();
 }
 async function selectSkin(id,force=false){
   const s=manifest?.skins.find(x=>x.id===id);if(!s)return;
