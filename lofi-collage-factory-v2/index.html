@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="theme-color" content="#ece8df">
+<title>LO-FI COLLAGE FACTORY · V2</title>
+<style>
+:root{color-scheme:light;--paper:#ece8df;--ink:#11110f;--panel:#f8f4eb;--line:#b9b2a6;--hot:#ffe36e;--blue:#cce6ff;--ok:#d9efb4}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--paper);color:var(--ink);font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+canvas.webgl{position:fixed;inset:0;width:100%;height:100%;display:block;touch-action:none}
+.top{position:fixed;z-index:5;top:0;left:0;right:0;padding:max(11px,env(safe-area-inset-top)) 12px 8px;display:flex;justify-content:space-between;align-items:flex-start;pointer-events:none}
+.brand{font-weight:900;font-size:13px;line-height:1.08;letter-spacing:.06em;text-shadow:0 1px #fff}
+.brand small{display:block;margin-top:4px;font-size:8px;color:#68635b;letter-spacing:.03em}
+.audit{font-size:8px;line-height:1.4;text-align:right;white-space:pre;background:#f8f4ebdd;border:1px solid #1112;padding:4px 6px}
+.status{position:fixed;z-index:4;top:59px;left:50%;transform:translateX(-50%);background:#111;color:#fff;padding:6px 9px;font-size:8px;font-weight:900;white-space:nowrap;pointer-events:none;max-width:92vw;overflow:hidden;text-overflow:ellipsis}
+.dock{position:fixed;z-index:10;left:6px;right:6px;bottom:max(6px,env(safe-area-inset-bottom));max-width:710px;margin:auto;background:#f8f4ebf6;border:2px solid #111;box-shadow:0 4px 0 #1112;padding:8px}
+.tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.tab{height:42px;border:2px solid #111;background:#fff;font:900 10px/1 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;touch-action:manipulation}
+.tab[data-on="1"]{background:#111;color:#fff}
+.panel{display:none;padding-top:8px}.panel[data-on="1"]{display:block}
+.rail{display:flex;gap:7px;overflow-x:auto;scrollbar-width:none;padding:1px 0}.rail::-webkit-scrollbar{display:none}
+.tile{flex:0 0 88px;height:82px;border:2px solid var(--line);background:#fff;padding:4px;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:space-between;font:inherit;color:inherit;touch-action:manipulation}
+.tile img{width:58px;height:56px;object-fit:cover;display:block;background:#ddd}
+.tile b{font-size:8px;line-height:1}.tile small{position:absolute;top:4px;right:4px;background:#111;color:#fff;font-size:7px;padding:2px 3px}
+.tile[data-on="1"]{border-color:#111;background:var(--hot);transform:translateY(-1px)}
+.shapes{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+.shape{height:74px;border:2px solid var(--line);background:#fff;font:inherit;color:inherit;padding:4px;touch-action:manipulation}
+.shape b{display:block;font-size:23px;line-height:1.05}.shape small{font-size:8px;font-weight:900}.shape em{display:block;font-style:normal;font-size:7px;color:#575149;margin-top:3px}
+.shape[data-on="1"]{border-color:#111;background:var(--blue)}
+.compat{margin-top:7px;display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:8px;padding:5px 7px;border:1px solid #1113;background:#fff}
+.compat strong{background:var(--ok);padding:2px 5px;border:1px solid #111}
+.modebar{display:none;grid-template-columns:1fr 1fr;gap:6px;margin-top:7px}.modebar[data-on="1"]{display:grid}
+.mode{height:34px;border:2px solid #111;background:#fff;font:900 8px/1 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+.mode[data-on="1"]{background:#111;color:#fff}
+.controls{display:grid;grid-template-columns:1fr 1fr;gap:7px}.ctrl{border:1px solid #1113;background:#fff;padding:6px}.ctrl label{display:flex;justify-content:space-between;font-size:8px;font-weight:900;margin-bottom:4px}.ctrl input{width:100%;accent-color:#111}
+.ctrl[data-hide="1"]{display:none}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:7px}.action{height:36px;border:2px solid #111;background:#111;color:#fff;font:900 8px/1 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;touch-action:manipulation}.action.alt{background:#fff;color:#111}
+.source{margin-top:6px;font-size:7px;color:#665f56;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.source a{color:#111;font-weight:900}
+.toast{position:fixed;z-index:30;left:50%;top:44%;transform:translate(-50%,-50%);display:none;background:#111;color:#fff;padding:9px 11px;font-size:9px;max-width:80vw;text-align:center}
+@media(max-height:690px){.tab{height:37px}.tile{height:70px;flex-basis:78px}.tile img{width:49px;height:45px}.shape{height:62px}.shape b{font-size:18px}.action{height:32px}}
+@media(min-aspect-ratio:1/1){.dock{left:auto;right:7px;top:7px;bottom:7px;width:min(43vw,470px);overflow:auto}.status{left:29%}}
+</style>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"}}</script>
+</head>
+<body>
+<div class="top">
+  <div class="brand">LO-FI COLLAGE FACTORY · V2<small>3 RECEPTORES · 1 MATERIAL ESTABLE · PROYECCIÓN MEME</small></div>
+  <div class="audit" id="audit">IDLE\n0 DRAW\nDPR 1.00</div>
+</div>
+<div class="status" id="status">CARGANDO · NUNCA BORRO LA TEXTURA ACTUAL ANTES DE TENER LA NUEVA</div>
+<div class="toast" id="toast"></div>
+
+<div class="dock">
+  <div class="tabs">
+    <button class="tab" data-tab="images" data-on="1">IMAGEN</button>
+    <button class="tab" data-tab="shapes">FORMA</button>
+    <button class="tab" data-tab="adjust">AJUSTE</button>
+  </div>
+
+  <section class="panel" id="images" data-on="1">
+    <div class="rail" id="imageRail"></div>
+    <div class="compat"><span id="imageHint">compatibilidad por receta</span><strong id="bestShape">MEJOR: …</strong></div>
+    <div class="source" id="sourceLine"></div>
+  </section>
+
+  <section class="panel" id="shapes">
+    <div class="shapes" id="shapeGrid"></div>
+    <div class="compat"><span id="shapeHint">receptor genérico</span><strong id="compatScore">0%</strong></div>
+    <div class="modebar" id="quadModes">
+      <button class="mode" data-mode="project" data-on="1">MEME PROJECT</button>
+      <button class="mode" data-mode="original">ORIGINAL CC0</button>
+    </div>
+  </section>
+
+  <section class="panel" id="adjust">
+    <div class="controls">
+      <div class="ctrl"><label>ANCHO <span id="widthVal">1.00</span></label><input id="width" type="range" min=".55" max="1.8" step=".01" value="1"></div>
+      <div class="ctrl"><label>ALTO <span id="heightVal">1.00</span></label><input id="height" type="range" min=".55" max="1.8" step=".01" value="1"></div>
+      <div class="ctrl"><label>PROFUNDIDAD <span id="depthVal">1.00</span></label><input id="depth" type="range" min=".55" max="1.8" step=".01" value="1"></div>
+      <div class="ctrl"><label>IMAGEN <span id="imageScaleVal">1.00</span></label><input id="imageScale" type="range" min=".6" max="2.2" step=".01" value="1"></div>
+      <div class="ctrl" id="bellyCtrl"><label>PANZA RADIAL <span id="bellyVal">1.00</span></label><input id="belly" type="range" min=".55" max="1.65" step=".01" value="1"></div>
+      <div class="ctrl" id="angleCtrl" data-hide="1"><label>ÁNGULO PROYECCIÓN <span id="angleVal">0°</span></label><input id="angle" type="range" min="-180" max="180" step="1" value="0"></div>
+    </div>
+    <div class="actions">
+      <button class="action" id="autoBtn">AUTO · MEJOR FORMA</button>
+      <button class="action alt" id="resetBtn">REINICIAR</button>
+    </div>
+  </section>
+</div>
+
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { clone as cloneSkeleton } from 'three/addons/utils/SkeletonUtils.js';
+
+const IMAGES=[
+{id:'catStreet',name:'GATO CALLE',kind:'cat',url:'https://upload.wikimedia.org/wikipedia/commons/9/9c/Public_domain_cat_photo_on_the_streets.jpg',page:'https://commons.wikimedia.org/wiki/File:Public_domain_cat_photo_on_the_streets.jpg',license:'CC0',scores:{quad:100,radial:60,sphere:52}},
+{id:'catPortrait',name:'GATO PERFIL',kind:'cat',url:'https://upload.wikimedia.org/wikipedia/commons/b/b8/Portrait_of_a_cat.jpg',page:'https://commons.wikimedia.org/wiki/File:Portrait_of_a_cat.jpg',license:'PUBLIC DOMAIN',scores:{quad:100,radial:58,sphere:50}},
+{id:'catYawn',name:'GATO MEME',kind:'cat',url:'https://upload.wikimedia.org/wikipedia/commons/0/08/Picture_of_cat.jpg',page:'https://commons.wikimedia.org/wiki/File:Picture_of_cat.jpg',license:'CC0',scores:{quad:100,radial:66,sphere:58}},
+{id:'label',name:'ETIQUETA',kind:'label',url:'https://upload.wikimedia.org/wikipedia/commons/9/9e/Prieure_Lichine_Label_2000.jpg',page:'https://commons.wikimedia.org/wiki/File:Prieure_Lichine_Label_2000.jpg',license:'PUBLIC DOMAIN',scores:{radial:100,sphere:44,quad:16}},
+{id:'eye',name:'OJO',kind:'eye',url:'https://upload.wikimedia.org/wikipedia/commons/8/8f/Eye_opened_close_up.jpg',page:'https://commons.wikimedia.org/wiki/File:Eye_opened_close_up.jpg',license:'PUBLIC DOMAIN',scores:{sphere:100,radial:55,quad:38}}
+];
+const SHAPES=[
+{id:'radial',name:'RADIAL',glyph:'▥',map:'cylindrical / lathe'},
+{id:'sphere',name:'ESFERA',glyph:'●',map:'spherical / ellipsoid'},
+{id:'quad',name:'CUADRÚPEDO',glyph:'🐈',map:'project-from-view'}
+];
+
+const scene=new THREE.Scene();scene.background=new THREE.Color(0xece8df);
+const camera=new THREE.PerspectiveCamera(38,innerWidth/innerHeight,.01,100);
+const renderer=new THREE.WebGLRenderer({antialias:false,alpha:false,powerPreference:'low-power'});
+renderer.domElement.className='webgl';renderer.setPixelRatio(Math.min(devicePixelRatio||1,1));renderer.setSize(innerWidth,innerHeight);renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.shadowMap.enabled=false;document.body.prepend(renderer.domElement);
+const controls=new OrbitControls(camera,renderer.domElement);controls.enableDamping=false;controls.enablePan=false;controls.rotateSpeed=.8;controls.zoomSpeed=.8;controls.touches.ONE=THREE.TOUCH.ROTATE;controls.touches.TWO=THREE.TOUCH.DOLLY_ROTATE;
+const root=new THREE.Group();scene.add(root);
+
+const texLoader=new THREE.TextureLoader();texLoader.setCrossOrigin('anonymous');const gltfLoader=new GLTFLoader();
+let currentImage=IMAGES[0],currentShape=SHAPES[0],currentTexture=null,currentObj=null,renderQueued=false,loadToken=0,quadSource=null,quadMode='project';
+const params={width:1,height:1,depth:1,imageScale:1,belly:1,angle:0};
+const audit=document.getElementById('audit'),status=document.getElementById('status'),toast=document.getElementById('toast');
+
+function toastMsg(s){toast.textContent=s;toast.style.display='block';clearTimeout(toastMsg.t);toastMsg.t=setTimeout(()=>toast.style.display='none',1100)}
+function invalidate(){if(renderQueued)return;renderQueued=true;requestAnimationFrame(()=>{renderQueued=false;renderer.render(scene,camera);const r=renderer.info.render;audit.textContent='IDLE\\n'+r.calls+' DRAW\\n'+r.triangles.toLocaleString()+' TRI\\nDPR '+renderer.getPixelRatio().toFixed(2)})}
+controls.addEventListener('change',invalidate);
+
+document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.tab').forEach(x=>x.dataset.on='0');document.querySelectorAll('.panel').forEach(x=>x.dataset.on='0');b.dataset.on='1';document.getElementById(b.dataset.tab).dataset.on='1'}));
+
+const imageRail=document.getElementById('imageRail');
+for(const im of IMAGES){
+ const b=document.createElement('button');b.className='tile';b.dataset.id=im.id;
+ const img=document.createElement('img');img.src=im.url;img.alt='';img.loading='lazy';
+ const l=document.createElement('b');l.textContent=im.name;const lic=document.createElement('small');lic.textContent=im.license;
+ b.append(img,l,lic);b.addEventListener('click',()=>chooseImage(im));imageRail.appendChild(b)
+}
+const shapeGrid=document.getElementById('shapeGrid');
+for(const s of SHAPES){const b=document.createElement('button');b.className='shape';b.dataset.id=s.id;b.innerHTML='<b>'+s.glyph+'</b><small>'+s.name+'</small><em data-score>0%</em>';b.addEventListener('click',()=>chooseShape(s));shapeGrid.appendChild(b)}
+
+document.querySelectorAll('.mode').forEach(b=>b.addEventListener('click',()=>{quadMode=b.dataset.mode;document.querySelectorAll('.mode').forEach(x=>x.dataset.on=x.dataset.mode===quadMode?'1':'0');if(currentShape.id==='quad')rebuildShape()}));
+
+function bestFor(im){return SHAPES.slice().sort((a,b)=>(im.scores[b.id]||0)-(im.scores[a.id]||0))[0]}
+function updateUI(){
+ document.querySelectorAll('.tile').forEach(b=>b.dataset.on=b.dataset.id===currentImage.id?'1':'0');
+ document.querySelectorAll('.shape').forEach(b=>{b.dataset.on=b.dataset.id===currentShape.id?'1':'0';b.querySelector('[data-score]').textContent=(currentImage.scores[b.dataset.id]||0)+'%'});
+ const best=bestFor(currentImage);document.getElementById('bestShape').textContent='MEJOR: '+best.name;
+ document.getElementById('compatScore').textContent=(currentImage.scores[currentShape.id]||0)+'%';
+ document.getElementById('imageHint').textContent=currentShape.name+' · '+currentShape.map+' · '+(currentImage.scores[currentShape.id]||0)+'%';
+ document.getElementById('shapeHint').textContent=currentShape.map;
+ document.getElementById('sourceLine').innerHTML=currentImage.name+' · '+currentImage.license+' · <a href="'+currentImage.page+'" target="_blank" rel="noopener">IMAGEN</a>'+(currentShape.id==='quad'?' · <a href="https://poly.pizza/m/2f54vbV0In" target="_blank" rel="noopener">CAT MESH CC0</a>':'');
+ document.getElementById('quadModes').dataset.on=currentShape.id==='quad'?'1':'0';
+ document.getElementById('angleCtrl').dataset.hide=currentShape.id==='quad'&&quadMode==='project'?'0':'1';
+ document.getElementById('bellyCtrl').dataset.hide=currentShape.id==='radial'?'0':'1';
+}
+function chooseImage(im){currentImage=im;updateUI();loadImageAtomic(im)}
+function chooseShape(s){currentShape=s;updateUI();rebuildShape()}
+
+async function loadImageAtomic(im){
+ const token=++loadToken;status.textContent='CARGANDO '+im.name+' · CONSERVO LA TEXTURA VIEJA HASTA TERMINAR';
+ try{
+  const tex=await texLoader.loadAsync(im.url);if(token!==loadToken){tex.dispose();return}
+  tex.colorSpace=THREE.SRGBColorSpace;tex.wrapS=tex.wrapT=THREE.ClampToEdgeWrapping;tex.magFilter=THREE.LinearFilter;tex.minFilter=THREE.LinearMipmapLinearFilter;tex.generateMipmaps=true;tex.needsUpdate=true;
+  const old=currentTexture;currentTexture=tex;applyTextureTransform();rebuildShape();if(old)old.dispose();
+  status.textContent=im.name+' · '+currentShape.name+' · '+(im.scores[currentShape.id]||0)+'%';
+ }catch(e){status.textContent='FALLÓ '+im.name+' · SIGUE VISIBLE LA ANTERIOR';toastMsg('imagen falló; no rompí la escena')}
+}
+function applyTextureTransform(){if(!currentTexture)return;const z=params.imageScale;currentTexture.repeat.set(1/z,1/z);currentTexture.offset.set((1-1/z)/2,(1-1/z)/2);currentTexture.needsUpdate=true}
+function stableMaterial(tex){return new THREE.MeshBasicMaterial({map:tex||null,color:tex?0xffffff:0xd7d0c5,side:THREE.DoubleSide,toneMapped:false})}
+
+function radialGeometry(){
+ const b=params.belly;
+ const pts=[
+  new THREE.Vector2(.56,-1.35),new THREE.Vector2(.63*b,-1.15),new THREE.Vector2(.78*b,-.65),
+  new THREE.Vector2(.86*b,0),new THREE.Vector2(.78*b,.65),new THREE.Vector2(.62*b,1.08),new THREE.Vector2(.56,1.35)
+ ];
+ return new THREE.LatheGeometry(pts,28)
+}
+function normalize(obj,target=3.0){
+ obj.updateWorldMatrix(true,true);const box=new THREE.Box3().setFromObject(obj),size=box.getSize(new THREE.Vector3()),center=box.getCenter(new THREE.Vector3()),s=target/Math.max(size.x,size.y,size.z,.0001);
+ obj.scale.multiplyScalar(s);obj.position.sub(center.multiplyScalar(s))
+}
+function unlitOriginal(obj){
+ obj.traverse(n=>{if(!n.isMesh)return;const convert=x=>{const hasMap=!!x?.map;const m=new THREE.MeshBasicMaterial({map:x?.map||null,color:hasMap?0xffffff:(x?.color?x.color.clone():0xffffff),vertexColors:!!x?.vertexColors,transparent:!!x?.transparent,opacity:x?.opacity??1,alphaTest:x?.alphaTest??0,side:THREE.DoubleSide,toneMapped:false});if(m.map){m.map.colorSpace=THREE.SRGBColorSpace;m.map.needsUpdate=true}return m};n.material=Array.isArray(n.material)?n.material.map(convert):convert(n.material)})
+}
+async function ensureQuad(){if(quadSource)return quadSource;status.textContent='DESCARGANDO CUADRÚPEDO CC0 · UNA SOLA VEZ';const gltf=await gltfLoader.loadAsync('assets/cat.glb');quadSource=gltf.scene;return quadSource}
+
+function projectSceneUV(obj,deg){
+ obj.updateWorldMatrix(true,true);const meshes=[];obj.traverse(n=>{if(n.isMesh&&n.geometry?.attributes?.position)meshes.push(n)});
+ const a=THREE.MathUtils.degToRad(deg),right=new THREE.Vector3(Math.cos(a),0,-Math.sin(a)),center=new THREE.Box3().setFromObject(obj).getCenter(new THREE.Vector3());
+ let minU=Infinity,maxU=-Infinity,minV=Infinity,maxV=-Infinity;
+ const p=new THREE.Vector3(),q=new THREE.Vector3();
+ for(const m of meshes){const pos=m.geometry.attributes.position;for(let i=0;i<pos.count;i++){p.fromBufferAttribute(pos,i).applyMatrix4(m.matrixWorld).sub(center);const u=p.dot(right),v=p.y;minU=Math.min(minU,u);maxU=Math.max(maxU,u);minV=Math.min(minV,v);maxV=Math.max(maxV,v)}}
+ const du=Math.max(maxU-minU,.0001),dv=Math.max(maxV-minV,.0001);
+ for(const m of meshes){
+  const g=m.geometry.clone(),pos=g.attributes.position,uv=new Float32Array(pos.count*2);
+  for(let i=0;i<pos.count;i++){p.fromBufferAttribute(pos,i).applyMatrix4(m.matrixWorld).sub(center);uv[i*2]=(p.dot(right)-minU)/du;uv[i*2+1]=(p.y-minV)/dv}
+  g.setAttribute('uv',new THREE.BufferAttribute(uv,2));m.geometry=g;m.material=stableMaterial(currentTexture)
+ }
+}
+async function buildQuad(){
+ const source=await ensureQuad();const obj=cloneSkeleton(source);normalize(obj,3.1);
+ if(quadMode==='original'){unlitOriginal(obj);return obj}
+ projectSceneUV(obj,params.angle);return obj
+}
+async function build(){
+ if(currentShape.id==='radial')return new THREE.Mesh(radialGeometry(),stableMaterial(currentTexture));
+ if(currentShape.id==='sphere')return new THREE.Mesh(new THREE.SphereGeometry(1.15,28,20),stableMaterial(currentTexture));
+ if(currentShape.id==='quad')return await buildQuad();
+}
+function disposeObj(obj){if(!obj)return;obj.traverse?.(n=>{if(n.geometry&&n.geometry.userData?.factoryOwned)n.geometry.dispose?.();if(n.material)(Array.isArray(n.material)?n.material:[n.material]).forEach(m=>m?.dispose?.())})}
+
+let buildId=0;
+async function rebuildShape(){
+ const id=++buildId;
+ try{
+  const next=await build();if(id!==buildId){disposeObj(next);return}
+  if(currentObj)root.remove(currentObj);currentObj=next;root.add(currentObj);applyObjectScale();fit();invalidate();updateUI();
+  status.textContent=currentImage.name+' · '+currentShape.name+' · '+(currentImage.scores[currentShape.id]||0)+'%';
+ }catch(e){console.error(e);status.textContent='ERROR DE FORMA · CONSERVO EL OBJETO ANTERIOR';toastMsg('falló la forma; no borro la anterior')}
+}
+function applyObjectScale(){if(!currentObj)return;currentObj.scale.set(params.width,params.height,params.depth)}
+function fit(){
+ if(!currentObj)return;currentObj.updateWorldMatrix(true,true);const box=new THREE.Box3().setFromObject(currentObj),sp=box.getBoundingSphere(new THREE.Sphere()),vf=THREE.MathUtils.degToRad(camera.fov),hf=2*Math.atan(Math.tan(vf/2)*camera.aspect),f=Math.min(vf,hf),d=sp.radius*1.38/Math.sin(f/2);
+ controls.target.copy(sp.center);camera.position.copy(sp.center).add(new THREE.Vector3(0,.04,d));camera.near=Math.max(.01,d-sp.radius*3);camera.far=d+sp.radius*10;camera.updateProjectionMatrix();controls.minDistance=Math.max(.55,sp.radius*1.2);controls.maxDistance=Math.max(6,sp.radius*7);controls.update()
+}
+
+function wireSlider(id,key,mode){
+ const el=document.getElementById(id),val=document.getElementById(id+'Val');
+ el.addEventListener('input',()=>{params[key]=Number(el.value);val.textContent=key==='angle'?Math.round(params[key])+'°':params[key].toFixed(2);
+  if(mode==='texture'){applyTextureTransform();invalidate()}
+  else if(mode==='rebuild')rebuildShape();
+  else{applyObjectScale();fit();invalidate()}
+ })
+}
+wireSlider('width','width','scale');wireSlider('height','height','scale');wireSlider('depth','depth','scale');wireSlider('imageScale','imageScale','texture');wireSlider('belly','belly','rebuild');wireSlider('angle','angle','rebuild');
+
+document.getElementById('autoBtn').addEventListener('click',()=>{currentShape=bestFor(currentImage);updateUI();rebuildShape();toastMsg('forma recomendada: '+currentShape.name)});
+document.getElementById('resetBtn').addEventListener('click',()=>{Object.assign(params,{width:1,height:1,depth:1,imageScale:1,belly:1,angle:0});for(const id of ['width','height','depth','imageScale','belly']){document.getElementById(id).value=1;document.getElementById(id+'Val').textContent='1.00'}document.getElementById('angle').value=0;document.getElementById('angleVal').textContent='0°';applyTextureTransform();rebuildShape();toastMsg('ajustes reiniciados')});
+
+function resize(){renderer.setPixelRatio(Math.min(devicePixelRatio||1,1));renderer.setSize(innerWidth,innerHeight);camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();fit();invalidate()}
+addEventListener('resize',resize);resize();updateUI();loadImageAtomic(currentImage);
+</script>
+</body>
+</html>

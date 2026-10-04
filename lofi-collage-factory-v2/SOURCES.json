@@ -1,0 +1,73 @@
+{
+  "mode": "COLLAGE_FACTORY_V2",
+  "canonical_receivers": [
+    {
+      "id": "radial",
+      "mapping": "lathe + cylindrical UV",
+      "intended_sources": [
+        "labels",
+        "portraits",
+        "patterns"
+      ]
+    },
+    {
+      "id": "sphere",
+      "mapping": "spherical UV / ellipsoid scaling",
+      "intended_sources": [
+        "eyes",
+        "faces",
+        "planet-like images"
+      ]
+    },
+    {
+      "id": "quad",
+      "mapping": "project-from-view",
+      "intended_sources": [
+        "cat photos",
+        "animal memes"
+      ]
+    }
+  ],
+  "quadruped": {
+    "local_file": "assets/cat.glb",
+    "original_author": "Quaternius",
+    "original_source": "https://poly.pizza/m/2f54vbV0In",
+    "license": "CC0",
+    "mirror_source": "https://github.com/sametkabay/agent-arena",
+    "note": "Binary copied byte-for-byte from the cited CC0 mirror; original mode preserves the source materials, project mode computes planar UVs at runtime."
+  },
+  "images": [
+    {
+      "name": "Public domain cat photo on the streets",
+      "source": "https://commons.wikimedia.org/wiki/File:Public_domain_cat_photo_on_the_streets.jpg",
+      "license": "CC0"
+    },
+    {
+      "name": "Portrait of a cat",
+      "source": "https://commons.wikimedia.org/wiki/File:Portrait_of_a_cat.jpg",
+      "license": "Public domain"
+    },
+    {
+      "name": "Picture of cat",
+      "source": "https://commons.wikimedia.org/wiki/File:Picture_of_cat.jpg",
+      "license": "CC0"
+    },
+    {
+      "name": "Prieure Lichine Label 2000",
+      "source": "https://commons.wikimedia.org/wiki/File:Prieure_Lichine_Label_2000.jpg",
+      "license": "Public domain"
+    },
+    {
+      "name": "Eye opened close up",
+      "source": "https://commons.wikimedia.org/wiki/File:Eye_opened_close_up.jpg",
+      "license": "Public domain"
+    }
+  ],
+  "runtime_rules": [
+    "Atomic image swap: never clear the current texture before the replacement is decoded.",
+    "Quadruped is lazy-loaded only when selected.",
+    "Projection angle is adjustable so a photo can be aligned to the generic quadruped.",
+    "Original CC0 model and projected meme mode are explicitly separate.",
+    "No fake head receiver, no capsule receiver; sphere scaling absorbs capsule/ellipsoid use cases."
+  ]
+}
