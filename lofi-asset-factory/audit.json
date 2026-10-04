@@ -1,0 +1,21 @@
+{
+  "schema": "LOFI_ASSET_AUDIT_V1",
+  "catalog_status": "PASS",
+  "rules": [
+    "Viewer only reads PASS families from catalog.json.",
+    "Family code is data-driven; runtime branches only by model format/material strategy.",
+    "Skin swap never rebuilds the visible model or refits the camera.",
+    "Human skins are reference-render validated before becoming visible.",
+    "Texture dimensions are checked against the family contract.",
+    "Viewport size comes from the actual viewer element, never window.innerWidth."
+  ],
+  "human_blocky_01": {
+    "variants": 18,
+    "exact_shared_geometry_uv": true,
+    "runtime_reference_render": true
+  },
+  "cat_simple_01": {
+    "skins": 1,
+    "true_uv_source": true
+  }
+}
