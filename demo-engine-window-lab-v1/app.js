@@ -45,6 +45,11 @@ const script={
   {action:'narrate',say:'Esta es una copia de la shell. Todo lo que ves existe para probar el motor.',hold:900},
   {action:'look',target:'widget.mail',hold:700},
   {action:'trace',target:'widget.mail',segmentDuration:300,hold:450},
+  {action:'narrate',say:'La misma ventana puede entrar y salir de pantalla completa.',hold:650},
+  {action:'click',target:'mail.fullscreen',guide:'ghost'},
+  {action:'visualHold',ms:650},
+  {action:'click',target:'mail.fullscreen',guide:false},
+  {action:'visualHold',ms:500},
 
   {action:'narrate',say:'Primero hago scroll dentro de una app, no sobre toda la página.',hold:700},
   {action:'scroll',target:'mail.list',toTarget:'mail.goal',observe:650},
