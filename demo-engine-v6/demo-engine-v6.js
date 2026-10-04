@@ -5,6 +5,8 @@ class DemoEngineV6 extends global.DemoEngineV5{
     super(root,script,options);
     this.presets.SHOWCASE={speed:1.28,minMove:275,maxMove:760,arrival:95,down:78,resultHold:330,curve:.075,correction:2,guide:'none',observe:390};
     this.authority=new global.DemoViewportAuthority(this);
+    this.annotation?.clear?.();
+    this.annotation=new global.DemoAnnotationControllerV6(this);
     this.audio?.off?.();
     this.audio=new global.DemoAudioDirectorV6(this,options.audio||{});
   }
@@ -17,7 +19,12 @@ class DemoEngineV6 extends global.DemoEngineV5{
   stop(reason='manual'){
     const out=super.stop(reason);
     this.authority?.release();
+    this.annotation?.clear?.();
     return out;
+  }
+  reset(...args){
+    this.annotation?.clear?.();
+    return super.reset(...args);
   }
   async narrateV5(text,opts={},token=this.runToken){
     const caption=this.ui.caption;if(!caption){await this._delay(opts.hold??240,token);return;}
