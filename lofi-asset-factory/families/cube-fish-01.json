@@ -1,0 +1,151 @@
+{
+  "schema": "LOFI_ASSET_FAMILY_V1",
+  "id": "cube-fish-01",
+  "label": "Fish 422",
+  "tags": [
+    "animal",
+    "fish",
+    "rigid",
+    "limbless"
+  ],
+  "source": {
+    "name": "Kenney Cube Pets",
+    "author": "Kenney",
+    "license": "CC0-1.0",
+    "url": "https://kenney.nl/assets/cube-pets",
+    "mirror": "Hidencod/tge-assets · packs/cube-pets/animal-fish.glb",
+    "source_blob_sha": "08c1261e465a8d3c06cf646d01a7702218d5b406"
+  },
+  "renderer": "mesh_uv",
+  "model": {
+    "path": "assets/cube-pets/fish.glb",
+    "format": "glb"
+  },
+  "material": {
+    "strategy": "unlit_map"
+  },
+  "orientation": {
+    "up": [
+      0,
+      1,
+      0
+    ],
+    "camera_direction": [
+      0,
+      0,
+      -1
+    ],
+    "ground": "minY"
+  },
+  "display": {
+    "target_size": 3,
+    "margin": 1.22,
+    "target_bias": [
+      0,
+      0,
+      0
+    ]
+  },
+  "texture_contract": {
+    "uv_channel": 0,
+    "width": 512,
+    "height": 512,
+    "flip_y": false,
+    "color_space": "srgb"
+  },
+  "performance": {
+    "triangles": 422,
+    "bones": 0,
+    "materials": 1,
+    "meshes": 3,
+    "animations": 8,
+    "texture": "512x512"
+  },
+  "validation": {
+    "status": "PASS",
+    "mode": "source_uv_contract",
+    "runtime_required": true,
+    "structural_verified": "422 tris · 3 rigid meshes · 1 material · 8 clips · source texture extracted exactly"
+  },
+  "skins": [
+    {
+      "id": "base",
+      "label": "BASE",
+      "texture": "assets/cube-pets/colormap.png"
+    }
+  ],
+  "parts": {
+    "mode": "rigid_mesh_nodes",
+    "slots": {
+      "body": [
+        "body"
+      ],
+      "fins": [
+        "wing-left",
+        "wing-right"
+      ]
+    },
+    "default": "full",
+    "presets": [
+      {
+        "id": "full",
+        "label": "COMPLETO",
+        "hide": []
+      },
+      {
+        "id": "body",
+        "label": "SIN ALETAS",
+        "hide": [
+          "wing-left",
+          "wing-right"
+        ]
+      }
+    ]
+  },
+  "animation": {
+    "default_clip": "idle",
+    "clips": [
+      "idle",
+      "walk",
+      "run",
+      "eat",
+      "dance",
+      "gesture-positive",
+      "gesture-negative"
+    ],
+    "motion_styles": [
+      {
+        "id": "smooth",
+        "label": "SMOOTH",
+        "fps": 0
+      },
+      {
+        "id": "15",
+        "label": "15 FPS",
+        "fps": 15
+      },
+      {
+        "id": "12",
+        "label": "12 FPS",
+        "fps": 12
+      },
+      {
+        "id": "10",
+        "label": "10 FPS",
+        "fps": 10
+      },
+      {
+        "id": "6",
+        "label": "6 FPS",
+        "fps": 6
+      }
+    ]
+  },
+  "appearance_transfer": {
+    "direct_cross_family": false,
+    "ingest_only": true,
+    "strategy": "offline_project_from_view_then_validate",
+    "runtime": "finished_target_atlas_only",
+    "note": "A source appearance is baked/reprojected to this target UV offline. Runtime never treats an incompatible source texture as a valid skin."
+  }
+}

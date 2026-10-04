@@ -1,0 +1,152 @@
+{
+  "schema": "LOFI_ASSET_FAMILY_V1",
+  "id": "ghost-simple-01",
+  "label": "Ghost 413",
+  "tags": [
+    "ghost",
+    "rigid",
+    "armless-capable",
+    "limbless"
+  ],
+  "source": {
+    "name": "Kenney Graveyard Kit",
+    "author": "Kenney",
+    "license": "CC0-1.0",
+    "url": "https://kenney.nl/assets/graveyard-kit",
+    "mirror": "Hidencod/tge-assets · packs/graveyard-kit/character-ghost.glb",
+    "source_blob_sha": "7a30156c112020264c1a26ffb2652ee98af54643"
+  },
+  "renderer": "mesh_uv",
+  "model": {
+    "path": "assets/ghost-simple/ghost.glb",
+    "format": "glb"
+  },
+  "material": {
+    "strategy": "unlit_map"
+  },
+  "orientation": {
+    "up": [
+      0,
+      1,
+      0
+    ],
+    "camera_direction": [
+      0,
+      0,
+      -1
+    ],
+    "ground": "minY"
+  },
+  "display": {
+    "target_size": 3,
+    "margin": 1.2,
+    "target_bias": [
+      0,
+      0.04,
+      0
+    ]
+  },
+  "texture_contract": {
+    "uv_channel": 0,
+    "width": 512,
+    "height": 512,
+    "flip_y": false,
+    "color_space": "srgb"
+  },
+  "performance": {
+    "triangles": 413,
+    "bones": 0,
+    "materials": 1,
+    "meshes": 3,
+    "animations": 32,
+    "texture": "512x512"
+  },
+  "validation": {
+    "status": "PASS",
+    "mode": "source_uv_contract",
+    "runtime_required": true,
+    "structural_verified": "413 tris · 3 rigid meshes · 1 material · 32 clips · source texture extracted exactly"
+  },
+  "skins": [
+    {
+      "id": "base",
+      "label": "BASE",
+      "texture": "assets/ghost-simple/base.png"
+    }
+  ],
+  "parts": {
+    "mode": "rigid_mesh_nodes",
+    "slots": {
+      "body": [
+        "torso"
+      ],
+      "arms": [
+        "arm-left",
+        "arm-right"
+      ]
+    },
+    "default": "full",
+    "presets": [
+      {
+        "id": "full",
+        "label": "COMPLETO",
+        "hide": []
+      },
+      {
+        "id": "body",
+        "label": "SIN BRAZOS",
+        "hide": [
+          "arm-left",
+          "arm-right"
+        ]
+      }
+    ]
+  },
+  "animation": {
+    "default_clip": "idle",
+    "clips": [
+      "idle",
+      "walk",
+      "sprint",
+      "jump",
+      "emote-yes",
+      "emote-no",
+      "interact-right",
+      "attack-melee-right"
+    ],
+    "motion_styles": [
+      {
+        "id": "smooth",
+        "label": "SMOOTH",
+        "fps": 0
+      },
+      {
+        "id": "15",
+        "label": "15 FPS",
+        "fps": 15
+      },
+      {
+        "id": "12",
+        "label": "12 FPS",
+        "fps": 12
+      },
+      {
+        "id": "10",
+        "label": "10 FPS",
+        "fps": 10
+      },
+      {
+        "id": "6",
+        "label": "6 FPS",
+        "fps": 6
+      }
+    ]
+  },
+  "appearance_transfer": {
+    "direct_cross_family": false,
+    "ingest_only": true,
+    "strategy": "offline_project_from_view_then_validate",
+    "runtime": "finished_target_atlas_only",
+    "note": "A source appearance is baked/reprojected to this target UV offline. Runtime never treats an incompatible source texture as a valid skin."
+  }
+}
