@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="theme-color" content="#ece8df">
+<title>LO-FI SKINLAB · REAL ASSET MODE</title>
+<style>
+:root{color-scheme:light;--paper:#ece8df;--ink:#11110f;--panel:#f8f4eb;--line:#b9b2a7;--ok:#bfdc8b;--blue:#bcd8f2}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--paper);color:var(--ink);font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+canvas.webgl{position:fixed;inset:0;width:100%;height:100%;display:block;touch-action:none}
+.top{position:fixed;z-index:5;top:0;left:0;right:0;padding:max(11px,env(safe-area-inset-top)) 12px 8px;display:flex;justify-content:space-between;align-items:flex-start;pointer-events:none}
+.brand{font-weight:900;font-size:13px;line-height:1.08;letter-spacing:.065em;text-shadow:0 1px #fff}
+.brand small{display:block;margin-top:4px;font-size:8px;letter-spacing:.03em;color:#68635b}
+.audit{font-size:8px;line-height:1.4;text-align:right;white-space:pre;background:#f8f4ebdf;border:1px solid #1112;padding:4px 6px}
+.badge{position:fixed;z-index:4;top:59px;left:50%;transform:translateX(-50%);background:#111;color:#fff;padding:6px 9px;font-size:8px;font-weight:900;white-space:nowrap;pointer-events:none}
+.dock{position:fixed;z-index:10;left:6px;right:6px;bottom:max(6px,env(safe-area-inset-bottom));max-width:690px;margin:auto;background:#f8f4ebf5;border:2px solid #111;padding:8px;box-shadow:0 4px 0 #1112}
+.line{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px}.line strong{font-size:9px;letter-spacing:.08em}.line span{font-size:8px;color:#6a655d;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}.grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:6px}
+button{font:inherit;color:inherit;touch-action:manipulation}
+.family,.skin,.util{border:2px solid var(--line);background:#fff}
+.family{height:64px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px}
+.family b{font-size:20px;line-height:1}.family small,.skin small{font-size:8px;font-weight:900;line-height:1}
+.family[data-on="1"]{border-color:#111;background:#ffe370}
+.skin{height:48px;display:flex;align-items:center;justify-content:center;gap:7px}.skin b{font-size:16px}.skin[data-on="1"]{border-color:#111;background:var(--blue)}
+.compat{margin:7px 0 6px;border:1px solid #1113;background:#fff;padding:6px 8px;font-size:8px;display:flex;justify-content:space-between;gap:10px}
+.compat strong{font-size:8px}.compat [data-ok="1"]{background:var(--ok);padding:2px 5px;border:1px solid #111}
+.actions{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px}.util{height:36px;font-size:8px;font-weight:900;letter-spacing:.025em}.util.dark{background:#111;color:#fff;border-color:#111}
+.micro{position:fixed;z-index:3;left:10px;bottom:211px;font-size:7px;color:#645f56;pointer-events:none;max-width:70vw}
+.overlay{position:fixed;z-index:30;inset:0;background:#111b;display:none;align-items:center;justify-content:center;padding:14px}
+.overlay[data-open="1"]{display:flex}.card{width:min(92vw,540px);max-height:88vh;overflow:auto;background:#f8f4eb;border:2px solid #111;padding:10px;box-shadow:0 7px 0 #0005}
+.cardhead{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}.cardhead strong{font-size:10px}.close{border:2px solid #111;background:#fff;width:38px;height:34px;font-size:17px}
+#texCanvas{display:block;width:min(100%,420px);height:auto;image-rendering:pixelated;margin:8px auto;border:2px solid #111;background:#ccc}
+.meta{font-size:8px;line-height:1.55;white-space:pre-wrap;word-break:break-word}.meta a{color:#111;font-weight:900}
+@media(max-height:690px){.family{height:56px}.family b{font-size:17px}.skin{height:42px}.util{height:32px}.compat{padding:4px 6px}.micro{display:none}}
+@media(min-aspect-ratio:1/1){.dock{left:auto;right:7px;top:7px;bottom:7px;width:min(43vw,450px);overflow:auto}.micro{bottom:10px}.badge{left:29%}}
+</style>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"}}</script>
+</head>
+<body>
+<div class="top">
+  <div class="brand">LO-FI SKINLAB · REAL ASSET MODE<small>0 TEXTURAS INVENTADAS · 0 THUMBNAILS COMO SKIN</small></div>
+  <div class="audit" id="audit">IDLE\n0 DRAW\nDPR 1.00</div>
+</div>
+<div class="badge">1 DEDO GIRA · 2 DEDOS ZOOM · BYTES CC0 COPIADOS AL REPO</div>
+<div class="micro">Gobkit Minion Pack · CC0 1.0 · GLB originales con texturas embebidas · carga lazy por familia</div>
+
+<div class="dock">
+  <div class="line"><strong>1 · CUERPO REAL</strong><span id="fileLabel">A · cargando</span></div>
+  <div class="grid4" id="families"></div>
+
+  <div class="line" style="margin-top:8px"><strong>2 · SKIN REAL DEL MISMO PACK</strong><span id="skinLabel">01</span></div>
+  <div class="grid2" id="skins"></div>
+
+  <div class="compat">
+    <span>geometría 01 vs 02</span>
+    <strong id="compat" data-ok="0">VERIFICANDO</strong>
+  </div>
+
+  <div class="actions">
+    <button class="util dark" id="textureBtn">VER TEXTURA</button>
+    <button class="util" id="sourceBtn">FUENTE / LICENCIA</button>
+    <button class="util" id="resetBtn">REINICIAR VISTA</button>
+  </div>
+</div>
+
+<div class="overlay" id="textureOverlay">
+  <div class="card">
+    <div class="cardhead"><strong id="textureTitle">TEXTURA EMBEBIDA REAL</strong><button class="close" data-close="textureOverlay">×</button></div>
+    <canvas id="texCanvas" width="256" height="256"></canvas>
+    <div class="meta" id="textureMeta"></div>
+  </div>
+</div>
+
+<div class="overlay" id="sourceOverlay">
+  <div class="card">
+    <div class="cardhead"><strong>PROVENIENCIA</strong><button class="close" data-close="sourceOverlay">×</button></div>
+    <div class="meta">SOURCE
+Ariescar/gobkit-free-assets
+
+PACK
+Minion Pack
+
+LICENSE
+CC0 1.0 / public domain
+
+ARCHIVOS COPIADOS SIN REDIBUJAR
+minion-a01.glb · minion-a02.glb
+minion-b01.glb · minion-b02.glb
+minion-c01.glb · minion-c02.glb
+minion-d01.glb · minion-d02.glb
+
+TÉCNICA
+El visor carga los dos GLB reales de la familia seleccionada.
+Compara la geometría en runtime.
+La escena visible usa la geometría de 01.
+Al tocar 02 aplica los materiales/texturas reales extraídos del GLB 02 sobre esa misma geometría.
+No se genera ninguna imagen de reemplazo.
+
+<a href="https://github.com/Ariescar/gobkit-free-assets" target="_blank" rel="noopener">ABRIR FUENTE ORIGINAL</a></div>
+  </div>
+</div>
+
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { clone as cloneSkeleton } from 'three/addons/utils/SkeletonUtils.js';
+
+const families=['a','b','c','d'];
+const files={a:['minion-a01.glb','minion-a02.glb'],b:['minion-b01.glb','minion-b02.glb'],c:['minion-c01.glb','minion-c02.glb'],d:['minion-d01.glb','minion-d02.glb']};
+
+const scene=new THREE.Scene();scene.background=new THREE.Color(0xece8df);
+const camera=new THREE.PerspectiveCamera(38,innerWidth/innerHeight,.01,100);
+const renderer=new THREE.WebGLRenderer({antialias:false,alpha:false,powerPreference:'low-power'});
+renderer.domElement.className='webgl';renderer.setPixelRatio(Math.min(devicePixelRatio||1,1));renderer.setSize(innerWidth,innerHeight);renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.shadowMap.enabled=false;document.body.prepend(renderer.domElement);
+
+const controls=new OrbitControls(camera,renderer.domElement);controls.enableDamping=false;controls.enablePan=false;controls.rotateSpeed=.78;controls.zoomSpeed=.8;controls.touches.ONE=THREE.TOUCH.ROTATE;controls.touches.TWO=THREE.TOUCH.DOLLY_ROTATE;
+const root=new THREE.Group();scene.add(root);const loader=new GLTFLoader(),cache=new Map();
+let family='a',skin=0,display=null,activePair=null,renderQueued=false;
+
+const audit=document.getElementById('audit'),fileLabel=document.getElementById('fileLabel'),skinLabel=document.getElementById('skinLabel'),compatEl=document.getElementById('compat');
+const famEl=document.getElementById('families'),skinsEl=document.getElementById('skins');
+
+families.forEach(f=>{const b=document.createElement('button');b.className='family';b.dataset.id=f;b.innerHTML='<b>'+f.toUpperCase()+'</b><small>BODY '+f.toUpperCase()+'</small>';b.addEventListener('click',()=>selectFamily(f));famEl.appendChild(b)});
+['01','02'].forEach((s,i)=>{const b=document.createElement('button');b.className='skin';b.dataset.id=String(i);b.innerHTML='<b>'+s+'</b><small>EMBEDDED</small>';b.addEventListener('click',()=>selectSkin(i));skinsEl.appendChild(b)});
+
+function invalidate(){
+ if(renderQueued)return;renderQueued=true;requestAnimationFrame(()=>{renderQueued=false;renderer.render(scene,camera);const r=renderer.info.render;audit.textContent='IDLE\\n'+r.calls+' DRAW\\n'+r.triangles.toLocaleString()+' TRI\\nDPR '+renderer.getPixelRatio().toFixed(2)});
+}
+controls.addEventListener('change',invalidate);
+
+function loadGLB(path){
+ if(cache.has(path))return cache.get(path);
+ const p=new Promise((resolve,reject)=>loader.load('assets/'+path,resolve,undefined,reject));cache.set(path,p);return p;
+}
+function meshes(obj){const a=[];obj.traverse(n=>{if(n.isMesh)a.push(n)});return a}
+function sig(obj){
+ const ms=meshes(obj),parts=[];
+ for(const m of ms){const p=m.geometry.attributes.position,ix=m.geometry.index;let h=2166136261;const ar=p.array,step=Math.max(1,Math.floor(ar.length/128));for(let i=0;i<ar.length;i+=step){const q=Math.round(ar[i]*10000);h^=q;h=Math.imul(h,16777619)}parts.push([p.count,ix?ix.count:0,h>>>0].join(':'))}
+ return parts.join('|');
+}
+function materialClone(m){if(Array.isArray(m))return m.map(x=>x.clone());return m.clone()}
+function materialsFrom(obj){return meshes(obj).map(m=>materialClone(m.material))}
+function applyMaterials(target,source){
+ const tm=meshes(target),sm=meshes(source);
+ for(let i=0;i<tm.length;i++){const old=tm[i].material,src=sm[Math.min(i,sm.length-1)];if(!src)continue;tm[i].material=materialClone(src.material);(Array.isArray(old)?old:[old]).forEach(x=>x?.dispose?.())}
+}
+function normalize(obj,target=3.15){
+ obj.updateWorldMatrix(true,true);const b=new THREE.Box3().setFromObject(obj),sz=b.getSize(new THREE.Vector3()),c=b.getCenter(new THREE.Vector3()),s=target/Math.max(sz.x,sz.y,sz.z,.0001);obj.scale.multiplyScalar(s);obj.position.sub(c.multiplyScalar(s));
+}
+function fit(){
+ if(!display)return;display.updateWorldMatrix(true,true);const b=new THREE.Box3().setFromObject(display),sp=b.getBoundingSphere(new THREE.Sphere()),vf=THREE.MathUtils.degToRad(camera.fov),hf=2*Math.atan(Math.tan(vf/2)*camera.aspect),f=Math.min(vf,hf),d=sp.radius*1.34/Math.sin(f/2);
+ controls.target.copy(sp.center);camera.position.copy(sp.center).add(new THREE.Vector3(0,.04,d));camera.near=Math.max(.01,d-sp.radius*3);camera.far=d+sp.radius*10;camera.updateProjectionMatrix();controls.minDistance=Math.max(.6,sp.radius*1.25);controls.maxDistance=Math.max(6,sp.radius*7);controls.update();
+}
+function disposeDisplay(){if(!display)return;root.remove(display);display.traverse(n=>{if(n.isMesh)(Array.isArray(n.material)?n.material:[n.material]).forEach(m=>m?.dispose?.())});display=null}
+
+async function selectFamily(f){
+ family=f;skin=0;updateUI();fileLabel.textContent=f.toUpperCase()+' · cargando bytes reales';compatEl.textContent='VERIFICANDO';compatEl.dataset.ok='0';
+ try{
+  const [g1,g2]=await Promise.all(files[f].map(loadGLB));if(family!==f)return;
+  const s1=sig(g1.scene),s2=sig(g2.scene),same=s1===s2;
+  activePair=[g1,g2];compatEl.textContent=same?'MISMA GEOMETRÍA: SÍ':'GEOMETRÍA DISTINTA';compatEl.dataset.ok=same?'1':'0';
+  disposeDisplay();display=cloneSkeleton(g1.scene);normalize(display);root.add(display);applyMaterials(display,g1.scene);fileLabel.textContent=files[f][0]+' · '+Math.round((performance.now())%1e6);
+  fit();updateUI();invalidate();
+ }catch(e){fileLabel.textContent='ERROR AL CARGAR';compatEl.textContent='ERROR';console.error(e)}
+}
+function selectSkin(i){
+ if(!activePair||!display)return;skin=i;
+ if(compatEl.dataset.ok==='1')applyMaterials(display,activePair[i].scene);
+ else{disposeDisplay();display=cloneSkeleton(activePair[i].scene);normalize(display);root.add(display);fit()}
+ updateUI();invalidate();
+}
+function updateUI(){
+ document.querySelectorAll('.family').forEach(b=>b.dataset.on=b.dataset.id===family?'1':'0');
+ document.querySelectorAll('.skin').forEach(b=>b.dataset.on=Number(b.dataset.id)===skin?'1':'0');
+ skinLabel.textContent=files[family][skin];
+}
+
+function currentMaps(){
+ if(!activePair)return[];const out=[];for(const m of meshes(activePair[skin].scene)){for(const mat of (Array.isArray(m.material)?m.material:[m.material]))if(mat?.map&&!out.includes(mat.map))out.push(mat.map)}return out;
+}
+document.getElementById('textureBtn').addEventListener('click',()=>{
+ const maps=currentMaps(),ov=document.getElementById('textureOverlay'),c=document.getElementById('texCanvas'),meta=document.getElementById('textureMeta');
+ if(!maps.length){meta.textContent='Este GLB no expuso una map 2D separada.';ov.dataset.open='1';return}
+ const img=maps[0].image,ctx=c.getContext('2d');try{const w=img.width||img.videoWidth||256,h=img.height||img.videoHeight||256;c.width=w;c.height=h;ctx.clearRect(0,0,w,h);ctx.drawImage(img,0,0,w,h);meta.textContent='TEXTURA EXTRAÍDA DEL GLB\\n'+files[family][skin]+'\\n'+w+'×'+h+' px\\n\\nNo es thumbnail ni imagen generada.'}catch(e){c.width=c.height=256;ctx.fillStyle='#ddd';ctx.fillRect(0,0,256,256);meta.textContent='La textura existe dentro del GLB, pero el navegador no permitió copiarla al canvas.'}
+ ov.dataset.open='1';
+});
+document.getElementById('sourceBtn').addEventListener('click',()=>document.getElementById('sourceOverlay').dataset.open='1');
+document.getElementById('resetBtn').addEventListener('click',()=>{fit();invalidate()});
+document.querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click',()=>document.getElementById(b.dataset.close).dataset.open='0'));
+document.querySelectorAll('.overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.dataset.open='0'}));
+
+function resize(){renderer.setPixelRatio(Math.min(devicePixelRatio||1,1));renderer.setSize(innerWidth,innerHeight);camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();fit();invalidate()}
+addEventListener('resize',resize);resize();selectFamily('a');
+</script>
+</body>
+</html>
