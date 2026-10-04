@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="theme-color" content="#ece8df">
+<title>LO-FI UV CONTRACT LAB</title>
+<style>
+:root{color-scheme:light;--paper:#ece8df;--ink:#11110f;--panel:#f8f4eb;--line:#b8b0a5;--hot:#ffe36d;--blue:#cce6ff;--green:#d9efb4}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--paper);color:var(--ink);font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+canvas.webgl{position:fixed;inset:0;width:100%;height:100%;display:block;touch-action:none}
+.top{position:fixed;z-index:5;top:0;left:0;right:0;padding:max(11px,env(safe-area-inset-top)) 12px 8px;display:flex;justify-content:space-between;align-items:flex-start;pointer-events:none}
+.brand{font-weight:900;font-size:13px;line-height:1.08;letter-spacing:.06em;text-shadow:0 1px #fff}.brand small{display:block;margin-top:4px;font-size:8px;color:#68635b;letter-spacing:.03em}
+.audit{font-size:8px;line-height:1.35;text-align:right;white-space:pre;background:#f8f4ebde;border:1px solid #1112;padding:4px 6px}
+.status{position:fixed;z-index:4;top:60px;left:50%;transform:translateX(-50%);max-width:94vw;background:#111;color:#fff;padding:6px 9px;font-size:8px;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;pointer-events:none}
+.uvcard{position:fixed;z-index:7;right:10px;top:102px;width:112px;background:#f8f4ebf4;border:2px solid #111;padding:5px;box-shadow:0 3px 0 #1112}
+.uvcard strong{display:block;font-size:8px;margin-bottom:4px}.uvcard img{display:block;width:100%;height:94px;object-fit:contain;background:#d7d2c8;image-rendering:pixelated;border:1px solid #111}.uvcard small{display:block;font-size:7px;line-height:1.2;margin-top:4px;color:#5e584f}
+.dock{position:fixed;z-index:10;left:6px;right:6px;bottom:max(6px,env(safe-area-inset-bottom));max-width:720px;margin:auto;background:#f8f4ebf6;border:2px solid #111;box-shadow:0 4px 0 #1112;padding:8px}
+.rowhead{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:6px}.rowhead strong{font-size:9px;letter-spacing:.07em}.rowhead span{font-size:8px;color:#655f56;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rail{display:flex;gap:7px;overflow-x:auto;scrollbar-width:none;padding:1px 0}.rail::-webkit-scrollbar{display:none}
+.family{flex:0 0 110px;height:64px;border:2px solid var(--line);background:#fff;font:inherit;color:inherit;padding:5px;touch-action:manipulation}.family b{display:block;font-size:17px;line-height:1.05}.family small{font-size:7px;line-height:1.1}.family[data-on="1"]{background:var(--hot);border-color:#111}
+.skin{flex:0 0 70px;height:66px;border:2px solid var(--line);background:#fff;padding:3px;font:inherit;color:inherit;touch-action:manipulation}.skin img{width:100%;height:47px;object-fit:contain;background:#ddd;image-rendering:pixelated}.skin b{display:block;font-size:7px;line-height:1.1}.skin[data-on="1"]{background:var(--blue);border-color:#111}
+.contract{margin-top:7px;border:1px solid #1113;background:#fff;padding:6px 7px;display:flex;justify-content:space-between;gap:8px;font-size:8px}.contract strong{background:var(--green);border:1px solid #111;padding:2px 5px;white-space:nowrap}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:7px}.action{height:35px;border:2px solid #111;background:#111;color:#fff;font:900 8px/1 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}.action.alt{background:#fff;color:#111}
+.overlay{position:fixed;z-index:40;inset:0;background:#111c;display:none;align-items:center;justify-content:center;padding:14px}.overlay[data-open="1"]{display:flex}.sheet{width:min(94vw,680px);max-height:92vh;overflow:auto;background:#f8f4eb;border:2px solid #111;padding:9px}.sheethead{display:flex;justify-content:space-between;align-items:center;gap:8px}.sheethead strong{font-size:10px}.close{width:38px;height:34px;border:2px solid #111;background:#fff;font-size:18px}.sheet img{display:block;max-width:100%;max-height:65vh;margin:10px auto;object-fit:contain;background:#ddd;image-rendering:pixelated;border:2px solid #111}.meta{font-size:8px;line-height:1.5;white-space:pre-wrap}.meta a{color:#111;font-weight:900}
+@media(max-height:690px){.family{height:55px}.skin{height:58px}.skin img{height:39px}.uvcard{width:92px}.uvcard img{height:72px}.action{height:31px}}
+@media(min-aspect-ratio:1/1){.dock{left:auto;right:7px;top:7px;bottom:7px;width:min(43vw,470px);overflow:auto}.status{left:29%}.uvcard{right:calc(min(43vw,470px) + 20px);top:95px}}
+</style>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"}}</script>
+</head>
+<body>
+<div class="top">
+  <div class="brand">LO-FI UV CONTRACT LAB<small>FIGURA FIJA + UV FIJO + SÓLO TEXTURAS COMPATIBLES</small></div>
+  <div class="audit" id="audit">IDLE\n0 DRAW\nDPR 1.00</div>
+</div>
+<div class="status" id="status">CARGANDO CONTRATO UV REAL</div>
+
+<button class="uvcard" id="uvCard">
+  <strong>UV 2D REAL</strong>
+  <img id="uvPreview" alt="">
+  <small id="uvSmall">tocá para ampliar</small>
+</button>
+
+<div class="dock">
+  <div class="rowhead"><strong>FIGURA / CONTRATO</strong><span id="familyInfo"></span></div>
+  <div class="rail" id="families"></div>
+
+  <div class="rowhead" style="margin-top:8px"><strong>TEXTURAS COMPATIBLES</strong><span id="skinInfo"></span></div>
+  <div class="rail" id="skins"></div>
+
+  <div class="contract"><span id="contractText"></span><strong id="contractBadge"></strong></div>
+  <div class="actions">
+    <button class="action" id="uvBtn">VER UV GRANDE</button>
+    <button class="action alt" id="resetBtn">REINICIAR VISTA</button>
+  </div>
+</div>
+
+<div class="overlay" id="overlay">
+  <div class="sheet">
+    <div class="sheethead"><strong id="overlayTitle">UV SHEET</strong><button class="close" id="closeBtn">×</button></div>
+    <img id="overlayImg" alt="">
+    <div class="meta" id="overlayMeta"></div>
+  </div>
+</div>
+
+<script type="module">
+import * as THREE from 'three';
+import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
+import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
+import {OBJLoader} from 'three/addons/loaders/OBJLoader.js';
+import {clone as cloneSkeleton} from 'three/addons/utils/SkeletonUtils.js';
+
+const HUMAN_SKINS="abcdefghijklmnopqr".split("").map(n=>({id:n,label:n.toUpperCase(),url:'assets/human/skin-'+n+'.png'}));
+const FAMILIES=[
+ {id:'human',label:'HUMANO',sub:'18 skins · shared UV',contract:'TRUE SHARED UV',badge:'18/18 EXACTOS',skins:HUMAN_SKINS,source:'Kenney Blocky Characters · CC0 1.0',sourceUrl:'https://kenney.nl/assets/blocky-characters'},
+ {id:'cat',label:'CUADRÚPEDO',sub:'cat · true UV',contract:'TRUE UV SHEET',badge:'1 VERIFICADA',skins:[{id:'cat',label:'CAT FREE',url:'assets/cat/cat_free.png'}],source:'Simple Cat · Drummyfish · CC0',sourceUrl:'https://opengameart.org/content/simple-cat'},
+ {id:'sphere',label:'ESFERA',sub:'2:1 equirectangular',contract:'STANDARD 2:1 MAP',badge:'MATEMÁTICO',skins:[
+   {id:'earth',label:'EARTH',url:'https://commons.wikimedia.org/wiki/Special:Redirect/file/Equirectangular-projection.jpg'},
+   {id:'earthnight',label:'NIGHT',url:'https://commons.wikimedia.org/wiki/Special:Redirect/file/Solarsystemscope_texture_2k_earth_nightmap.jpg'}
+ ],source:'Wikimedia Commons / NASA-derived maps',sourceUrl:'https://commons.wikimedia.org/wiki/File:Equirectangular-projection.jpg'},
+ {id:'radial',label:'RADIAL',sub:'wrap 360°',contract:'CYLINDRICAL WRAP',badge:'360° ESTABLE',skins:[
+   {id:'label',label:'LABEL',url:'https://upload.wikimedia.org/wikipedia/commons/9/9e/Prieure_Lichine_Label_2000.jpg'}
+ ],source:'Wikimedia Commons · public-domain label',sourceUrl:'https://commons.wikimedia.org/wiki/File:Prieure_Lichine_Label_2000.jpg'}
+];
+
+const scene=new THREE.Scene();scene.background=new THREE.Color(0xece8df);
+const camera=new THREE.PerspectiveCamera(38,innerWidth/innerHeight,.01,100);
+const renderer=new THREE.WebGLRenderer({antialias:false,alpha:false,powerPreference:'low-power'});
+renderer.domElement.className='webgl';renderer.setPixelRatio(Math.min(devicePixelRatio||1,1));renderer.setSize(innerWidth,innerHeight);renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.shadowMap.enabled=false;document.body.prepend(renderer.domElement);
+const controls=new OrbitControls(camera,renderer.domElement);controls.enableDamping=false;controls.enablePan=false;controls.rotateSpeed=.8;controls.zoomSpeed=.8;controls.touches.ONE=THREE.TOUCH.ROTATE;controls.touches.TWO=THREE.TOUCH.DOLLY_ROTATE;
+const root=new THREE.Group();scene.add(root);
+
+const gltfLoader=new GLTFLoader(),objLoader=new OBJLoader(),texLoader=new THREE.TextureLoader();texLoader.setCrossOrigin('anonymous');
+const objectCache=new Map(),textureCache=new Map();
+let family=FAMILIES[0],skin=family.skins[0],currentObj=null,renderQueued=false,buildToken=0;
+
+const audit=document.getElementById('audit'),status=document.getElementById('status'),familiesEl=document.getElementById('families'),skinsEl=document.getElementById('skins');
+const uvPreview=document.getElementById('uvPreview'),uvSmall=document.getElementById('uvSmall'),familyInfo=document.getElementById('familyInfo'),skinInfo=document.getElementById('skinInfo'),contractText=document.getElementById('contractText'),contractBadge=document.getElementById('contractBadge');
+
+function invalidate(){if(renderQueued)return;renderQueued=true;requestAnimationFrame(()=>{renderQueued=false;renderer.render(scene,camera);const r=renderer.info.render;audit.textContent='IDLE\\n'+r.calls+' DRAW\\n'+r.triangles.toLocaleString()+' TRI\\nDPR '+renderer.getPixelRatio().toFixed(2)})}
+controls.addEventListener('change',invalidate);
+
+function setupFamilies(){
+ familiesEl.innerHTML='';
+ for(const f of FAMILIES){const b=document.createElement('button');b.className='family';b.dataset.id=f.id;b.innerHTML='<b>'+f.label+'</b><small>'+f.sub+'</small>';b.addEventListener('click',()=>selectFamily(f.id));familiesEl.appendChild(b)}
+}
+function setupSkins(){
+ skinsEl.innerHTML='';
+ for(const s of family.skins){const b=document.createElement('button');b.className='skin';b.dataset.id=s.id;const im=document.createElement('img');im.src=s.url;im.alt='';im.crossOrigin='anonymous';const lab=document.createElement('b');lab.textContent=s.label;b.append(im,lab);b.addEventListener('click',()=>selectSkin(s.id));skinsEl.appendChild(b)}
+}
+function updateUI(){
+ document.querySelectorAll('.family').forEach(b=>b.dataset.on=b.dataset.id===family.id?'1':'0');
+ document.querySelectorAll('.skin').forEach(b=>b.dataset.on=b.dataset.id===skin.id?'1':'0');
+ familyInfo.textContent=family.source;skinInfo.textContent=family.skins.length+' compatible'+(family.skins.length===1?'':'s');
+ contractText.textContent=family.contract;contractBadge.textContent=family.badge;
+ uvPreview.src=skin.url;uvPreview.crossOrigin='anonymous';
+ uvSmall.textContent=family.id==='human'?'1024×1024 · sheet real':family.id==='cat'?'512×512 · sheet real':family.id==='sphere'?'2:1 · equirectangular':'wrap rectangular 360°';
+}
+function selectFamily(id){const next=FAMILIES.find(f=>f.id===id);if(!next||next===family)return;family=next;skin=family.skins[0];setupSkins();updateUI();rebuild()}
+function selectSkin(id){const next=family.skins.find(s=>s.id===id);if(!next||next===skin)return;skin=next;updateUI();rebuild()}
+
+async function loadTexture(url,flipY=true){
+ const key=url+'|'+flipY;if(textureCache.has(key))return textureCache.get(key);
+ const p=texLoader.loadAsync(url).then(t=>{t.colorSpace=THREE.SRGBColorSpace;t.flipY=flipY;t.magFilter=THREE.NearestFilter;t.minFilter=THREE.NearestMipmapNearestFilter;t.generateMipmaps=true;t.needsUpdate=true;return t});textureCache.set(key,p);return p;
+}
+async function baseHuman(){if(!objectCache.has('human'))objectCache.set('human',gltfLoader.loadAsync('assets/human/blocky-base.glb').then(g=>g.scene));return objectCache.get('human')}
+async function baseCat(){if(!objectCache.has('cat'))objectCache.set('cat',objLoader.loadAsync('assets/cat/cat.obj'));return objectCache.get('cat')}
+
+function whiteMapMaterial(tex){return new THREE.MeshBasicMaterial({map:tex,color:0xffffff,side:THREE.DoubleSide,toneMapped:false})}
+function replaceMaterials(obj,tex){obj.traverse(n=>{if(n.isMesh)n.material=whiteMapMaterial(tex)})}
+function normalize(obj,target=3.0){
+ obj.updateWorldMatrix(true,true);const b=new THREE.Box3().setFromObject(obj),sz=b.getSize(new THREE.Vector3()),c=b.getCenter(new THREE.Vector3()),s=target/Math.max(sz.x,sz.y,sz.z,.0001);obj.scale.multiplyScalar(s);obj.position.sub(c.multiplyScalar(s))
+}
+function radialGeo(){
+ const p=[new THREE.Vector2(.65,-1.35),new THREE.Vector2(.76,-.9),new THREE.Vector2(.8,-.2),new THREE.Vector2(.8,.55),new THREE.Vector2(.72,1.05),new THREE.Vector2(.62,1.35)];
+ return new THREE.LatheGeometry(p,28)
+}
+async function buildObject(){
+ if(family.id==='human'){const [base,tex]=await Promise.all([baseHuman(),loadTexture(skin.url,false)]);const o=cloneSkeleton(base);replaceMaterials(o,tex);normalize(o,3.05);return o}
+ if(family.id==='cat'){const [base,tex]=await Promise.all([baseCat(),loadTexture(skin.url,true)]);const o=base.clone(true);replaceMaterials(o,tex);normalize(o,2.9);o.rotation.y=-.25;return o}
+ if(family.id==='sphere'){const tex=await loadTexture(skin.url,true);return new THREE.Mesh(new THREE.SphereGeometry(1.25,32,22),whiteMapMaterial(tex))}
+ if(family.id==='radial'){const tex=await loadTexture(skin.url,true);tex.wrapS=THREE.RepeatWrapping;tex.needsUpdate=true;return new THREE.Mesh(radialGeo(),whiteMapMaterial(tex))}
+}
+async function rebuild(){
+ const token=++buildToken;status.textContent='CARGANDO '+family.label+' · '+skin.label+' · mantengo el objeto anterior';
+ try{
+  const next=await buildObject();if(token!==buildToken)return;
+  const old=currentObj;currentObj=next;root.add(next);if(old)root.remove(old);
+  fit();invalidate();status.textContent=family.label+' · '+skin.label+' · '+family.contract;
+ }catch(e){console.error(e);status.textContent='FALLÓ LA CARGA · CONSERVO EL OBJETO ANTERIOR'}
+}
+function fit(){
+ if(!currentObj)return;currentObj.updateWorldMatrix(true,true);const b=new THREE.Box3().setFromObject(currentObj),sp=b.getBoundingSphere(new THREE.Sphere()),vf=THREE.MathUtils.degToRad(camera.fov),hf=2*Math.atan(Math.tan(vf/2)*camera.aspect),f=Math.min(vf,hf),d=sp.radius*1.38/Math.sin(f/2);
+ controls.target.copy(sp.center);camera.position.copy(sp.center).add(new THREE.Vector3(0,.03,d));camera.near=Math.max(.01,d-sp.radius*3);camera.far=d+sp.radius*10;camera.updateProjectionMatrix();controls.minDistance=Math.max(.55,sp.radius*1.2);controls.maxDistance=Math.max(6,sp.radius*7);controls.update()
+}
+
+function openUV(){
+ const ov=document.getElementById('overlay'),img=document.getElementById('overlayImg'),meta=document.getElementById('overlayMeta');
+ document.getElementById('overlayTitle').textContent=family.label+' · '+skin.label+' · UV 2D';
+ img.src=skin.url;img.crossOrigin='anonymous';
+ meta.innerHTML='CONTRATO\\n'+family.contract+'\\n\\nFUENTE\\n'+family.source+'\\n\\nEsta imagen NO es una miniatura pegada al azar. Es la textura que usa este contrato 3D.\\n\\n<a href="'+family.sourceUrl+'" target="_blank" rel="noopener">ABRIR FUENTE</a>';
+ ov.dataset.open='1'
+}
+document.getElementById('uvCard').addEventListener('click',openUV);document.getElementById('uvBtn').addEventListener('click',openUV);
+document.getElementById('closeBtn').addEventListener('click',()=>document.getElementById('overlay').dataset.open='0');
+document.getElementById('overlay').addEventListener('click',e=>{if(e.target.id==='overlay')e.currentTarget.dataset.open='0'});
+document.getElementById('resetBtn').addEventListener('click',()=>{fit();invalidate()});
+
+function resize(){renderer.setPixelRatio(Math.min(devicePixelRatio||1,1));renderer.setSize(innerWidth,innerHeight);camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();fit();invalidate()}
+addEventListener('resize',resize);setupFamilies();setupSkins();updateUI();resize();rebuild();
+</script>
+</body>
+</html>

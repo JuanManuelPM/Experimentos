@@ -1,0 +1,39 @@
+{
+  "title": "LO-FI UV CONTRACT LAB",
+  "principle": "A figure is a UV contract. Only textures known to match that UV contract are offered.",
+  "families": {
+    "human_blocky": {
+      "source": "Kenney Blocky Characters via Hidencod/tge-assets mirror",
+      "license": "CC0-1.0",
+      "base": "character-a.glb",
+      "variants": 18,
+      "verification": "All 18 character A-R GLBs were inspected. POSITION, TEXCOORD_0 and index accessor byte signatures match exactly across all variants; embedded PNG differs per variant.",
+      "texture_size": "1024x1024",
+      "mode": "TRUE_SHARED_UV"
+    },
+    "quadruped_cat": {
+      "source": "OpenGameArt Simple Cat by Drummyfish",
+      "source_url": "https://opengameart.org/content/simple-cat",
+      "transport_mirror": "GustavoAlexandreD/BedroomWindow",
+      "license": "CC0",
+      "model": "cat.obj",
+      "texture": "cat_free.png",
+      "texture_size": "512x512",
+      "mode": "TRUE_UV"
+    },
+    "sphere": {
+      "source": "Wikimedia Commons / NASA-derived equirectangular maps",
+      "mode": "STANDARD_EQUIRECTANGULAR_2_1"
+    },
+    "radial": {
+      "source": "Wikimedia Commons public-domain bottle label",
+      "mode": "STANDARD_CYLINDRICAL_WRAP"
+    }
+  },
+  "excluded": [
+    "arbitrary photos pretending to be UV skins",
+    "thumbnail images used as texture replacements",
+    "fake head made from a plane in front of a sphere",
+    "cross-family texture swapping without verified UV compatibility"
+  ]
+}
