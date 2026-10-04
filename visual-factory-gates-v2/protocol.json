@@ -1,0 +1,27 @@
+{
+  "id": "PROMETEO_VISUAL_FACTORY_GATES_V2",
+  "version": "2.0.0",
+  "status": "CURRENT",
+  "supersedes": "PROMETEO_VISUAL_FACTORY_GATES_V1",
+  "purpose": "Block visually empty, semantically weak, or badly composed candidates even when responsive and technically usable.",
+  "pipeline": ["REFERENCE_SELECT","REFERENCE_BOM","SCENE_CONTRACT","DEVICE_CONTRACT","FUNCTIONAL_BUILD","MULTI_DEVICE_RENDER","GEOMETRIC_LINT","SEMANTIC_VISUAL_LINT","REFERENCE_COMPARE","HUMAN_REVIEW","PROMOTE_OR_REJECT"],
+  "hard_rules": ["NO_PROMPT_TO_UI_DIRECT","FUNCTIONAL_PROTOTYPE_IS_NOT_VISUAL_CANDIDATE","DECORATION_CANNOT_BE_PRIMARY_CONTENT","PRIMARY_CONTENT_MUST_BE_TASK_BEARING","PORTRAIT_IS_NOT_A_SHRUNK_LANDSCAPE","NO_GENERIC_GEOMETRY_AS_SEMANTIC_ASSET_WHEN_A_REAL_ASSET_IS_EXPECTED","NO_PUBLIC_DEFAULT_WITHOUT_ALL_GATES_PASS","CHAMPION_MUST_NOT_BE_REPLACED_WITHOUT_COMPARE_RECEIPT","MEANINGFUL_OCCUPANCY_REQUIRED","PRIMARY_OBJECT_SCALE_REQUIRED","ASSET_FAMILY_CONSISTENCY_REQUIRED","COMPOSITION_CLUSTERING_REQUIRED","SEMANTIC_DEAD_SPACE_LIMITED"],
+  "semantic_metrics": {
+    "task_bearing_primary_content":{"type":"boolean","required":true,"description":"The dominant region must perform or represent the actual task. Wallpaper, ornament, radar decoration, or empty canvas do not count."},
+    "meaningful_occupancy_ratio":{"type":"ratio","description":"Fraction of viewport occupied by task-bearing content, controls, status, or intentional composition around a dominant object. Background alone does not count."},
+    "primary_object_scale":{"type":"ratio","description":"Largest meaningful object's width or equivalent visual mass relative to viewport."},
+    "asset_family_consistency":{"type":"score_0_1","description":"Consistency of pixel grid, outline weight, perspective, shadow rule, label spacing, and icon language."},
+    "composition_clustering":{"type":"score_0_1","description":"Whether related elements form deliberate visual groups instead of unrelated islands."},
+    "semantic_dead_space_ratio":{"type":"ratio","description":"Viewport area that contributes neither task content, navigation, status, hierarchy, nor intentional breathing room around a dominant object."}
+  },
+  "thresholds_by_scene": {
+    "HOME":{"min_meaningful_occupancy_ratio":0.38,"min_primary_object_scale":0.22,"min_asset_family_consistency":0.78,"min_composition_clustering":0.72,"max_semantic_dead_space_ratio":0.34,"max_persistent_chrome_ratio":0.14,"max_visible_controls":7},
+    "WORLD":{"min_meaningful_occupancy_ratio":0.42,"min_primary_object_scale":0.25,"min_asset_family_consistency":0.78,"min_composition_clustering":0.70,"max_semantic_dead_space_ratio":0.32,"max_persistent_chrome_ratio":0.15,"max_visible_controls":5},
+    "READ":{"min_meaningful_occupancy_ratio":0.72,"min_primary_object_scale":0.60,"min_asset_family_consistency":0.70,"min_composition_clustering":0.80,"max_semantic_dead_space_ratio":0.20,"max_persistent_chrome_ratio":0.12,"max_visible_controls":4},
+    "CHAT":{"min_meaningful_occupancy_ratio":0.58,"min_primary_object_scale":0.38,"min_asset_family_consistency":0.76,"min_composition_clustering":0.78,"max_semantic_dead_space_ratio":0.28,"max_persistent_chrome_ratio":0.16,"max_visible_controls":7},
+    "WORKSPACE":{"min_meaningful_occupancy_ratio":0.62,"min_primary_object_scale":0.34,"min_asset_family_consistency":0.72,"min_composition_clustering":0.70,"max_semantic_dead_space_ratio":0.24,"max_persistent_chrome_ratio":0.18,"max_visible_controls":18},
+    "TOOL":{"min_meaningful_occupancy_ratio":0.68,"min_primary_object_scale":0.30,"min_asset_family_consistency":0.82,"min_composition_clustering":0.82,"max_semantic_dead_space_ratio":0.20,"max_persistent_chrome_ratio":0.18,"max_visible_controls":24}
+  },
+  "device_gate":{"min_touch_target_css_px":44,"min_text_css_px":12,"required_viewports":[[390,844],[412,915],[600,1000],[825,1200],[1200,825],[1366,768]]},
+  "promotion":{"required_all":["FUNCTIONAL_PASS","DEVICE_PASS","GEOMETRIC_PASS","SEMANTIC_VISUAL_PASS","REFERENCE_PASS","HUMAN_PASS"],"fail_state":"LAB_ONLY","pass_state":"CHAMPION_CANDIDATE"}
+}
