@@ -40,7 +40,7 @@ button{font:inherit;color:inherit;touch-action:manipulation}
 </head>
 <body>
 <div class="top">
-  <div class="brand">LO-FI SKINLAB · REAL ASSET MODE<small>0 TEXTURAS INVENTADAS · 0 THUMBNAILS COMO SKIN</small></div>
+  <div class="brand">LO-FI SKINLAB · REAL ASSET MODE<small>TEXTURAS REALES · UNLIT PARA NO DEPENDER DE LUCES</small></div>
   <div class="audit" id="audit">IDLE\n0 DRAW\nDPR 1.00</div>
 </div>
 <div class="badge">1 DEDO GIRA · 2 DEDOS ZOOM · BYTES CC0 COPIADOS AL REPO</div>
@@ -141,7 +141,22 @@ function sig(obj){
  for(const m of ms){const p=m.geometry.attributes.position,ix=m.geometry.index;let h=2166136261;const ar=p.array,step=Math.max(1,Math.floor(ar.length/128));for(let i=0;i<ar.length;i+=step){const q=Math.round(ar[i]*10000);h^=q;h=Math.imul(h,16777619)}parts.push([p.count,ix?ix.count:0,h>>>0].join(':'))}
  return parts.join('|');
 }
-function materialClone(m){if(Array.isArray(m))return m.map(x=>x.clone());return m.clone()}
+function unlitMaterial(x){
+ const hasMap=!!x?.map;
+ const m=new THREE.MeshBasicMaterial({
+  map:x?.map||null,
+  color:hasMap?0xffffff:(x?.color?x.color.clone():0xffffff),
+  vertexColors:!!x?.vertexColors,
+  transparent:!!x?.transparent,
+  opacity:x?.opacity??1,
+  alphaTest:x?.alphaTest??0,
+  side:x?.side??THREE.FrontSide,
+  toneMapped:false
+ });
+ if(x?.map){x.map.colorSpace=THREE.SRGBColorSpace;x.map.needsUpdate=true}
+ return m
+}
+function materialClone(m){if(Array.isArray(m))return m.map(unlitMaterial);return unlitMaterial(m)}
 function materialsFrom(obj){return meshes(obj).map(m=>materialClone(m.material))}
 function applyMaterials(target,source){
  const tm=meshes(target),sm=meshes(source);
