@@ -1,0 +1,13 @@
+{
+  "title":"MOTION DIRECTOR V4 EXAMPLE",
+  "steps":[
+    {"intent":"explain","say":"Primero miramos el control antes de tocarlo.","hold":850},
+    {"action":"look","target":"menu.open","hold":800},
+    {"action":"click","target":"menu.open","guide":"laser"},
+    {"action":"scroll","target":"scroll.box","toTarget":"scroll.goal"},
+    {"action":"drag","from":"card.drag","to":"drop.zone","duration":1050,"guide":"laser"},
+    {"action":"resize","target":"box.transform","width":250,"height":150,"duration":1000,"guide":"arrow"},
+    {"action":"trace","target":"chat.input","hold":650},
+    {"action":"cameraFocus","target":"chat.input","scale":1.10,"hold":1050}
+  ]
+}
