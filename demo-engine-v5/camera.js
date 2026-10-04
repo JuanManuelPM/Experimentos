@@ -33,7 +33,9 @@ class DemoCameraController{
     await this.engine.viewport.ensureVisible(el,{},token);
     await this.engine.movePointerTo(el,{guide:false,ensureVisible:false},token);
     const r=this.engine.rect(el),W=this.engine.ui.stage.clientWidth,H=this.engine.ui.stage.clientHeight,scale=opts.scale||this.adaptiveScale(el,opts);
-    const tx=W/2-r.cx*scale,ty=H/2-r.cy*scale;
+    const sr=this.engine.ui.stage.getBoundingClientRect(),cr=this.camera.getBoundingClientRect();
+    const baseLeft=cr.left-sr.left,baseTop=cr.top-sr.top,localX=r.cx-baseLeft,localY=r.cy-baseTop;
+    const tx=W/2-baseLeft-localX*scale,ty=H/2-baseTop-localY*scale;
     const from={x:0,y:0,scale:1},to={x:tx,y:ty,scale};
     this.engine._showAction?.('FOCUS',`×${scale.toFixed(2)}`);
     await this.animate(from,to,(opts.duration??520)/(this.engine.speed*this.engine.preset().speed),el,token);
