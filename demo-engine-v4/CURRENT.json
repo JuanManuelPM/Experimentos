@@ -1,0 +1,40 @@
+{
+  "id": "DEMO_ENGINE_V4",
+  "status": "PUBLIC_CURRENT",
+  "published_at": "2026-10-04",
+  "public_url": "https://juanmanuelpm.github.io/Experimentos/demo-engine-v4/",
+  "repository": "JuanManuelPM/Experimentos",
+  "branch": "gh-pages",
+  "path": "demo-engine-v4/",
+  "base": "DEMO_ENGINE_V3",
+  "focus": "MOTION_DIRECTOR",
+  "current_contract": "MOTION_REFERENCE_CONTRACT_V4.json",
+  "current_gate": "MOTION_QUALITY_GATE_V4.json",
+  "entrypoints": {
+    "public_showcase": "index.html",
+    "source_lab": "lab.html",
+    "engine": "demo-engine-v4.js",
+    "base_engine": "demo-engine-v3-base.js",
+    "demo_script": "example-script.json"
+  },
+  "design_law": "The Showcase must communicate the action without DEBUG logs.",
+  "known_limitations": [
+    "Browser end-to-end capture was not asserted from the build environment because local Chromium headless had DBus issues.",
+    "Motion quality still needs human review from a real recorded public run.",
+    "V4 is a demo engine/lab, not a finished product UI.",
+    "Gesture assets are transformed from user-supplied reference imagery; keep provenance documented."
+  ],
+  "next": [
+    "Record the public Showcase and inspect it frame-by-frame.",
+    "Repair any remaining continuity, pacing, targeting, contrast, or locality failures.",
+    "Connect Demo Engine V4 to the Visual Factory four-variant batch using one semantic script."
+  ],
+  "forbidden_regressions": [
+    "fixed-coordinate semantic targeting",
+    "pointer feedback detached from hotspot",
+    "drag or resize detached from pointer",
+    "raw debug logs visible in Showcase",
+    "decorative motion with no explanatory role",
+    "primitive failure aborting the whole demo when a local fallback is possible"
+  ]
+}
