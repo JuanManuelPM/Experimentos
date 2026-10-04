@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="theme-color" content="#e9e5dc">
+<title>LO-FI SKINLAB · Experimentos</title>
+<style>
+:root{color-scheme:light;--ink:#11110f;--paper:#e9e5dc;--panel:#f6f3ec;--muted:#6c695f}*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--paper);color:var(--ink);font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+canvas{position:fixed;inset:0;width:100%;height:100%;display:block;touch-action:manipulation}
+header{position:fixed;z-index:5;top:0;left:0;right:0;padding:max(13px,env(safe-area-inset-top)) 14px 10px;display:flex;justify-content:space-between;align-items:flex-start;pointer-events:none}
+.brand{font-weight:900;font-size:14px;letter-spacing:.08em;line-height:1.18;text-shadow:0 1px 0 #fff}.brand small{display:block;margin-top:4px;font-weight:700;font-size:9px;letter-spacing:.05em;color:var(--muted)}
+.stats{font-size:9px;line-height:1.45;text-align:right;color:#4e4c46;white-space:pre;background:#f6f3ecb8;padding:5px 7px;border:1px solid #1112}
+.hint{position:fixed;z-index:4;top:64px;left:50%;transform:translateX(-50%);font-size:9px;font-weight:800;letter-spacing:.04em;background:#111;color:#f6f3ec;padding:6px 9px;pointer-events:none;white-space:nowrap}
+.dock{position:fixed;z-index:10;left:8px;right:8px;bottom:max(8px,env(safe-area-inset-bottom));background:#f6f3ecf2;border:2px solid var(--ink);box-shadow:0 4px 0 #1113;padding:9px 9px 8px;max-width:650px;margin:auto}
+.bar{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:7px}.bar strong{font-size:10px;letter-spacing:.08em}.bar span{font-size:9px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.objects,.skins{display:flex;gap:7px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}.objects::-webkit-scrollbar,.skins::-webkit-scrollbar{display:none}
+.obj{flex:1 0 68px;min-width:68px;height:74px;border:2px solid #b9b4a9;background:#fff;padding:4px 4px 3px;display:flex;flex-direction:column;align-items:center;justify-content:space-between;font:inherit;color:var(--ink);touch-action:manipulation}
+.obj img{width:48px;height:48px;object-fit:contain}.obj b{font-size:9px;line-height:1}.obj[data-on="1"]{border-color:#111;background:#ffe26c;transform:translateY(-1px)}
+.skinbar{margin-top:8px}.skin{flex:0 0 68px;height:55px;border:2px solid #b9b4a9;background:#fff;padding:3px;display:flex;gap:4px;flex-direction:column;align-items:center;justify-content:center;font:inherit;color:var(--ink);touch-action:manipulation}
+.skin .sw{width:30px;height:30px;object-fit:cover;border:1px solid #111;display:block;background:#ddd}.skin b{font-size:8px;line-height:1}.skin[data-on="1"]{border-color:#111;background:#cbe4ff}
+.mix{border:2px solid #111;background:#111;color:#fff;font:800 9px/1 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;padding:8px 10px;touch-action:manipulation}
+.license{position:fixed;z-index:3;left:12px;bottom:205px;font-size:8px;color:#6d695f;pointer-events:none}.toast{position:fixed;z-index:20;left:50%;top:50%;transform:translate(-50%,-50%);background:#111;color:#fff;padding:10px 12px;font-size:10px;display:none}
+@media(max-width:430px){.brand{font-size:12px}.brand small{font-size:8px}.stats{font-size:8px}.hint{top:60px;font-size:8px}.dock{left:5px;right:5px;padding:8px}.obj{min-width:70px;height:72px}.obj img{width:46px;height:46px}.license{bottom:202px;left:8px;font-size:7px}}
+</style>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"}}</script>
+</head>
+<body>
+<header><div class="brand">LO-FI SKINLAB<small>LOW-POLY BASE MESH + 2D SKIN SWAP</small></div><div class="stats" id="stats">cargando…</div></header>
+<div class="hint">TOCÁ OBJETO → ELEGÍ IMAGEN · LA MALLA NO CAMBIA</div>
+<div class="license">formas + imágenes: Kenney CC0 · runtime: Three.js · sin postprocesado</div>
+<div class="toast" id="toast"></div>
+<div class="dock">
+  <div class="bar"><strong>OBJETO</strong><span id="selectedLabel">GATO · original</span></div>
+  <div class="objects" id="objects"></div>
+  <div class="bar skinbar"><strong>IMAGEN / TEXTURE SKIN</strong><button class="mix" id="mix">MEZCLAR</button></div>
+  <div class="skins" id="skins"></div>
+</div>
+
+<script type="module">
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+
+const CDN='https://cdn.jsdelivr.net/gh/Hidencod/tge-assets@main/';
+const assets=[
+{id:'cat',label:'GATO',file:'packs/cube-pets/animal-cat.glb',thumb:'packs/cube-pets/thumbs/animal-cat.webp',pos:[-.86,.82,0],size:1.35,ry:.12},
+{id:'fish',label:'PEZ',file:'packs/cube-pets/animal-fish.glb',thumb:'packs/cube-pets/thumbs/animal-fish.webp',pos:[.86,.82,0],size:1.28,ry:1.45},
+{id:'parrot',label:'LORO',file:'packs/cube-pets/animal-parrot.glb',thumb:'packs/cube-pets/thumbs/animal-parrot.webp',pos:[-.86,-.72,0],size:1.32,ry:-.18},
+{id:'tv',label:'TELE',file:'packs/furniture-kit/televisionvintage.glb',thumb:'packs/furniture-kit/thumbs/televisionvintage.webp',pos:[.86,-.72,0],size:1.35,ry:0,tv:true}
+];
+const skinDefs=[{id:'original',label:'ORIGINAL'},...assets.map(a=>({id:a.id,label:a.label+' IMG',src:a.thumb})),{id:'stripes',label:'TRAMA'}];
+
+const scene=new THREE.Scene();scene.background=new THREE.Color(0xe9e5dc);
+const camera=new THREE.PerspectiveCamera(40,innerWidth/innerHeight,.01,100);camera.position.set(0,.28,7);camera.lookAt(0,.28,0);
+const renderer=new THREE.WebGLRenderer({antialias:false,alpha:false,powerPreference:'low-power'});renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.25));renderer.setSize(innerWidth,innerHeight);renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.shadowMap.enabled=false;document.body.prepend(renderer.domElement);
+scene.add(new THREE.HemisphereLight(0xffffff,0x8a8170,2.2));const key=new THREE.DirectionalLight(0xffffff,1.55);key.position.set(3,5,6);scene.add(key);
+const gallery=new THREE.Group();gallery.position.y=.34;scene.add(gallery);
+
+const loader=new GLTFLoader(),texLoader=new THREE.TextureLoader(),loaded=new Map(),textureBank={};let selected='cat';
+const objectsEl=document.getElementById('objects'),skinsEl=document.getElementById('skins'),selectedLabel=document.getElementById('selectedLabel'),toast=document.getElementById('toast');
+function showToast(msg){toast.textContent=msg;toast.style.display='block';clearTimeout(showToast.t);showToast.t=setTimeout(()=>toast.style.display='none',1200)}
+function buildObjectButtons(){assets.forEach(a=>{const b=document.createElement('button');b.className='obj';b.dataset.id=a.id;b.dataset.on=a.id===selected?'1':'0';const img=document.createElement('img');img.src=CDN+a.thumb;img.alt='';const lab=document.createElement('b');lab.textContent=a.label;b.append(img,lab);b.addEventListener('click',()=>selectAsset(a.id));objectsEl.appendChild(b)})}
+function buildSkinButtons(){skinDefs.forEach(s=>{const b=document.createElement('button');b.className='skin';b.dataset.skin=s.id;b.dataset.on=s.id==='original'?'1':'0';const sw=document.createElement('img');sw.className='sw';sw.alt='';if(s.src)sw.src=CDN+s.src;if(s.id==='original')sw.id='originalPreview';if(s.id==='stripes')sw.id='stripesPreview';const lab=document.createElement('b');lab.textContent=s.label;b.append(sw,lab);b.addEventListener('click',()=>applySkin(selected,s.id));skinsEl.appendChild(b)})}
+buildObjectButtons();buildSkinButtons();
+
+function prepTexture(t,nearest=false){t.colorSpace=THREE.SRGBColorSpace;t.flipY=false;t.wrapS=t.wrapT=THREE.ClampToEdgeWrapping;t.magFilter=nearest?THREE.NearestFilter:THREE.LinearFilter;t.minFilter=nearest?THREE.NearestMipmapNearestFilter:THREE.LinearMipmapLinearFilter;t.generateMipmaps=true;t.needsUpdate=true;return t}
+async function loadTexture(url){return await new Promise((res,rej)=>texLoader.load(url,t=>res(prepTexture(t)),undefined,rej))}
+function makeStripeTexture(){const c=document.createElement('canvas');c.width=c.height=128;const g=c.getContext('2d');g.fillStyle='#17130f';g.fillRect(0,0,128,128);g.fillStyle='#e06a31';for(let x=-128;x<256;x+=18){g.beginPath();g.moveTo(x,0);g.lineTo(x+8,0);g.lineTo(x-120,128);g.lineTo(x-128,128);g.closePath();g.fill()}g.fillStyle='#f3d96a';for(let y=8;y<128;y+=24)for(let x=8;x<128;x+=24)g.fillRect(x,y,5,5);const t=prepTexture(new THREE.CanvasTexture(c),true);return {t,preview:c.toDataURL('image/png')}}
+async function initTextures(){for(const a of assets)textureBank[a.id]=await loadTexture(CDN+a.thumb);const p=makeStripeTexture();textureBank.stripes=p.t;document.getElementById('stripesPreview').src=p.preview}
+await initTextures();
+
+function normalize(obj,target){obj.updateWorldMatrix(true,true);const box=new THREE.Box3().setFromObject(obj),size=box.getSize(new THREE.Vector3()),center=box.getCenter(new THREE.Vector3()),s=target/Math.max(size.x,size.y,size.z,.0001);obj.scale.multiplyScalar(s);obj.position.sub(center.multiplyScalar(s))}
+function rememberMaterials(obj){obj.traverse(n=>{if(n.isMesh){n.userData.originalMaterial=n.material;n.userData.alt=false}})}
+function disposeAlt(mat){(Array.isArray(mat)?mat:[mat]).forEach(m=>{if(m&&m.userData&&m.userData.skinlabAlt)m.dispose()})}
+function restoreOriginal(item){item.model.traverse(n=>{if(!n.isMesh)return;if(n.userData.alt)disposeAlt(n.material);n.material=n.userData.originalMaterial;n.userData.alt=false});if(item.screen)item.screen.visible=false}
+function altMaterial(tex,color=0xffffff){const m=new THREE.MeshBasicMaterial({map:tex,color,side:THREE.DoubleSide,toneMapped:false});m.userData.skinlabAlt=true;return m}
+function applyTextureToModel(item,skin){const tex=textureBank[skin];item.model.traverse(n=>{if(!n.isMesh)return;if(n.userData.alt)disposeAlt(n.material);if(!n.geometry.attributes.uv){const m=altMaterial(null,skin==='stripes'?0xc76632:0xc1ad8e);n.material=m}else if(Array.isArray(n.userData.originalMaterial)){n.material=n.userData.originalMaterial.map(()=>altMaterial(tex))}else n.material=altMaterial(tex);n.userData.alt=true})}
+function addTVScreen(item){item.model.updateWorldMatrix(true,true);const box=new THREE.Box3().setFromObject(item.model),size=box.getSize(new THREE.Vector3()),center=box.getCenter(new THREE.Vector3());const geo=new THREE.PlaneGeometry(Math.max(.25,size.x*.54),Math.max(.18,size.y*.40));const mat=new THREE.MeshBasicMaterial({color:0x161616,toneMapped:false,side:THREE.DoubleSide});const p=new THREE.Mesh(geo,mat);p.position.set(center.x,center.y+size.y*.045,box.max.z+.015);p.visible=false;item.pivot.add(p);item.screen=p}
+function setTVScreen(item,skin){if(!item.screen)return;item.screen.material.map=textureBank[skin];item.screen.material.color.set(0xffffff);item.screen.material.needsUpdate=true;item.screen.visible=true}
+function applySkin(id,skin){const item=loaded.get(id);if(!item){showToast('todavía cargando');return}restoreOriginal(item);if(skin!=='original'){if(item.asset.tv)setTVScreen(item,skin);else applyTextureToModel(item,skin)}item.skin=skin;if(id===selected)updateSkinUI()}
+function updateSkinUI(){const item=loaded.get(selected),asset=assets.find(a=>a.id===selected),skin=item?item.skin||'original':'cargando';selectedLabel.textContent=asset.label+' · '+skin;document.querySelectorAll('.skin').forEach(b=>b.dataset.on=b.dataset.skin===skin?'1':'0');document.querySelectorAll('.obj').forEach(b=>b.dataset.on=b.dataset.id===selected?'1':'0');document.getElementById('originalPreview').src=CDN+asset.thumb}
+function selectAsset(id){selected=id;updateSkinUI()}updateSkinUI();
+
+function loadAsset(asset){loader.load(CDN+asset.file,gltf=>{const pivot=new THREE.Group();pivot.position.set(asset.pos[0],asset.pos[1],asset.pos[2]);const model=gltf.scene;normalize(model,asset.size);model.rotation.y=asset.ry;rememberMaterials(model);pivot.add(model);gallery.add(pivot);const item={asset,pivot,model,screen:null,skin:'original',phase:Math.random()*6.28};loaded.set(asset.id,item);model.traverse(n=>{if(n.isMesh)n.userData.assetId=asset.id});if(asset.tv)addTVScreen(item);if(asset.id===selected)updateSkinUI()},undefined,()=>showToast('falló '+asset.label))}
+assets.forEach(loadAsset);
+
+document.getElementById('mix').addEventListener('click',()=>{const pool=['fish','parrot','cat','stripes'];assets.forEach((a,i)=>{if(loaded.has(a.id))applySkin(a.id,pool[i%pool.length])});updateSkinUI();showToast('4 mallas · 4 imágenes')});
+const ray=new THREE.Raycaster(),pointer=new THREE.Vector2();renderer.domElement.addEventListener('pointerup',e=>{if(e.target!==renderer.domElement)return;pointer.x=e.clientX/innerWidth*2-1;pointer.y=-(e.clientY/innerHeight)*2+1;ray.setFromCamera(pointer,camera);const hits=ray.intersectObjects(gallery.children,true),h=hits.find(x=>x.object.userData.assetId);if(h)selectAsset(h.object.userData.assetId)});
+function fitCamera(){camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();const vf=THREE.MathUtils.degToRad(camera.fov),hf=2*Math.atan(Math.tan(vf/2)*camera.aspect),d=Math.max(1.78/Math.tan(hf/2),1.72/Math.tan(vf/2))*1.16;camera.position.set(0,.28,d);camera.lookAt(0,.28,0)}
+fitCamera();addEventListener('resize',()=>{renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.25));renderer.setSize(innerWidth,innerHeight);fitCamera()});
+
+let frames=0,lastFps=performance.now(),last=performance.now();const stats=document.getElementById('stats');
+function frame(now){last=now;loaded.forEach((it,id)=>{const target=id===selected?1.08:1,s=it.pivot.scale.x+(target-it.pivot.scale.x)*.08;it.pivot.scale.setScalar(s);it.model.rotation.y=it.asset.ry+Math.sin(now*.00035+it.phase)*.14;if(id==='fish')it.pivot.position.y=it.asset.pos[1]+Math.sin(now*.001+it.phase)*.035});renderer.render(scene,camera);frames++;if(now-lastFps>700){const fps=Math.round(frames*1000/(now-lastFps));frames=0;lastFps=now;const r=renderer.info.render;stats.textContent=fps+' FPS\n'+r.calls+' DRAW\n'+r.triangles.toLocaleString()+' TRI\nDPR '+renderer.getPixelRatio().toFixed(2)}requestAnimationFrame(frame)}
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>
