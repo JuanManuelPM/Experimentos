@@ -38,7 +38,7 @@ class DemoViewportController{
       const desiredTop=c.top+Math.max(margin,(c.height-r.height)/2);
       const delta=r.top-desiredTop;
       this.engine._showAction?.('SCROLL TO',this.engine._targetName(el));
-      this.engine.observer.emit('viewport_scroll_start',{target:this.engine._targetName(el),container:scroller.getAttribute('data-demo-id')||scroller.getAttribute('data-demo-page-scroll')!==null?'page':'scroll'});
+      this.engine.observer.emit('viewport_scroll_start',{target:this.engine._targetName(el),container:scroller.getAttribute('data-demo-id')||(scroller.hasAttribute('data-demo-page-scroll')?'page':'scroll')});
       await this.animateScroll(scroller,scroller.scrollTop+delta,opts.duration??620,token);
       await this.engine._delay(opts.settle??180,token);
       this.engine.observer.emit('viewport_scroll_end',{target:this.engine._targetName(el),scrollTop:Math.round(scroller.scrollTop)});
