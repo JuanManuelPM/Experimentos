@@ -89,7 +89,7 @@ async function handlePrivateWake(token,body){
     authority:'WAKE_ONLY_NO_SCHEDULER_NO_CURRENT_NO_EXECUTION_AUTHORITY'
   };
   await createFile(token,wakePath,JSON.stringify(receipt,null,2)+'\n',`primary chat: wake ${workItemId}`);
-  return{schema:'prometeo.ingress-transport-result/v1',status:'QUEUED',ref:wakePath,queued:true,error:null,work_item_id:workItemId,privacy:'PRIVATE_TEXT_PAGE_CHANGE'};
+  return{schema:'prometeo.ingress-transport-result/v1',status:'QUEUED',ref:returnPath,queued:true,error:null,work_item_id:workItemId,return_path:returnPath,wake_ref:wakePath,privacy:'PRIVATE_TEXT_PAGE_CHANGE'};
 }
 async function handlePublicCanary(token,body){
   if(body.public_canary!==true)throw new Error('PUBLIC_CANARY_EXPLICIT_OPT_IN_REQUIRED');
