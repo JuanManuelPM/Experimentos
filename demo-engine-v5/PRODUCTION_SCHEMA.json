@@ -1,0 +1,21 @@
+{
+  "schema":"demo.production-recipe/v1",
+  "authoring_rule":"Describe intent, not coordinates or microtimings.",
+  "top_level":["demo","preset","audio","steps"],
+  "step_families":{
+    "show":{"fields":["show","say","method","hold"],"methods":["auto","look","focus","annotate"]},
+    "activate":{"fields":["activate"]},
+    "enter":{"fields":["enter.target","enter.text","enter.submit"]},
+    "showResult":{"fields":["showResult","method","hold"]},
+    "annotate":{"fields":["annotate.target","annotate.type","annotate.hold"],"types":["underline","box","circle","arrow"]},
+    "drag":{"fields":["drag.from","drag.to","drag.duration"]},
+    "resize":{"fields":["resize.target","resize.width","resize.height","resize.duration"]},
+    "set":{"fields":["set.target","set.value"]}
+  },
+  "defaults":{
+    "laser":"annotation_only",
+    "scroll":"automatic_before_interaction",
+    "camera":"adaptive",
+    "audio":"event_driven_optional"
+  }
+}
