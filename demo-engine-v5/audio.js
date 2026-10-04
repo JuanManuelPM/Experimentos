@@ -32,7 +32,8 @@ class DemoAudioDirector{
         const base=330+(ch.charCodeAt(0)%7)*18;
         this.tone(base,.026,'square',.18);
       }
-      const gap=/[.!?]/.test(ch)?190:/[,;:]/.test(ch)?120:(minGap+Math.random()*(maxGap-minGap));
+      const rnd=this.engine.rand?.next?.()??Math.random();
+      const gap=/[.!?]/.test(ch)?190:/[,;:]/.test(ch)?120:(minGap+rnd*(maxGap-minGap));
       await new Promise(r=>setTimeout(r,gap));
     }
   }
