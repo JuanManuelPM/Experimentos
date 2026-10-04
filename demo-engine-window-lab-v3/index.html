@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Demo Engine V6 · Fast Showcase</title><link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="shell" id="labRoot">
+  <header class="topbar" data-demo-controls>
+    <button class="icon" id="restartBtn" title="Reiniciar">↻</button>
+    <span class="status-dot"></span><b>DEMO ENGINE V6</b>
+    <span class="scene-title" id="sceneTitle">FAST SHOWCASE</span>
+    <span class="spacer"></span>
+    <span class="authority" id="authority">FREE</span>
+    <button id="audioBtn">SOUND ✓</button>
+    <button class="primary" id="runBtn">▶ RUN ALL</button>
+    <button class="next" id="nextBtn">NEXT ANIMATION →</button>
+  </header>
+
+  <nav class="scene-rail" id="sceneRail" data-demo-controls>
+    <button data-scene="0"><i>01</i><span>CLICK + TYPE</span></button>
+    <button data-scene="1"><i>02</i><span>SCROLL</span></button>
+    <button data-scene="2"><i>03</i><span>CONTROLS</span></button>
+    <button data-scene="3"><i>04</i><span>DRAG + RESIZE</span></button>
+    <button data-scene="4"><i>05</i><span>MARK</span></button>
+    <button data-scene="5"><i>06</i><span>FOCUS</span></button>
+  </nav>
+
+  <main class="viewport" data-demo-stage>
+    <div class="page-scroll" data-demo-page-scroll>
+      <div class="camera" data-demo-camera>
+        <div class="world">
+          <section class="window hero" data-demo-id="widget.mail">
+            <div class="window-head"><span class="lamp"></span><b>INBOX</b><span class="spacer"></span><small>MAIL.APP</small></div>
+            <div class="mail-layout">
+              <aside class="mail-list" data-demo-id="mail.list">
+                <button><b>Prometeo</b><span>Demo engine checklist</span></button>
+                <button><b>Diseño</b><span>Motion review</span></button>
+                <button><b>Workers</b><span>Batch terminado</span></button>
+                <button><b>Notas</b><span>Viewport authority</span></button>
+                <button><b>QA</b><span>Audio / pacing</span></button>
+                <button><b>Archivo</b><span>Referencia visual</span></button>
+                <button><b>Historial</b><span>Versión previa</span></button>
+                <button data-demo-id="mail.goal"><b>FINAL</b><span>Scroll local target</span></button>
+              </aside>
+              <article class="message">
+                <div class="micro">SELECTED MESSAGE</div>
+                <h1>Fast showcase.</h1>
+                <p>Una demo corta donde cada escena prueba una sola idea. Durante autoplay el motor tiene autoridad exclusiva sobre el viewport.</p>
+                <div class="actions"><button data-demo-id="mail.reply">RESPONDER</button><button>ARCHIVAR</button></div>
+                <div class="reply" data-demo-id="reply.box" hidden>
+                  <textarea data-demo-id="reply.input" placeholder="Respuesta"></textarea>
+                  <button data-demo-id="reply.send">ENVIAR</button>
+                </div>
+                <div class="success" data-demo-id="reply.sent" hidden>✓ ENVIADO</div>
+              </article>
+            </div>
+          </section>
+
+          <div class="fold-marker"><span>BELOW THE FOLD</span></div>
+
+          <section class="split">
+            <div class="window" data-demo-id="widget.settings">
+              <div class="window-head"><span class="lamp amber"></span><b>SETTINGS</b><span class="spacer"></span><small>CONTROLS</small></div>
+              <div class="settings">
+                <label>MODE<select data-demo-id="settings.mode"><option>Calm</option><option>Product</option><option>Teach</option></select></label>
+                <label>SPEED<input data-demo-id="settings.speed" type="range" min="1" max="100" value="32"></label>
+                <label class="toggle"><input data-demo-id="settings.guides" type="checkbox"> GUIDES</label>
+                <div class="settings-foot"><button data-demo-id="settings.save">GUARDAR</button><output data-demo-id="settings.state">sin cambios</output></div>
+              </div>
+            </div>
+
+            <div class="window" data-demo-id="widget.tasks">
+              <div class="window-head"><span class="lamp green"></span><b>TASKS</b><span class="spacer"></span><small>DRAG</small></div>
+              <div class="tasks">
+                <div><span class="micro">TODO</span><div class="task" data-demo-id="task.drag">Revisar motion</div></div>
+                <div class="drop" data-demo-id="task.drop"><span class="micro">DONE</span><div class="task muted">Pointer assets</div></div>
+              </div>
+            </div>
+          </section>
+
+          <section class="split lower">
+            <div class="window" data-demo-id="widget.files">
+              <div class="window-head"><span class="lamp"></span><b>FILES</b><span class="spacer"></span><small>MARK</small></div>
+              <div class="files">
+                <button data-demo-id="file.one">demo-script.json</button>
+                <button data-demo-id="file.two">pointer-manifest.json</button>
+                <button>MOTION_GATE.json</button><button>CURRENT.json</button>
+              </div>
+            </div>
+            <div class="window" data-demo-id="widget.resize">
+              <div class="window-head"><span class="lamp"></span><b>RESIZE LAB</b><span class="spacer"></span><small>HANDLE</small></div>
+              <div class="resize-zone"><div class="resize-box" data-demo-id="resize.box">RESIZE ME</div></div>
+            </div>
+          </section>
+          <div class="endcap">END OF TEST WORLD</div>
+        </div>
+      </div>
+    </div>
+
+    <svg class="overlay-svg" aria-hidden="true">
+      <path class="annotation-path" data-demo-annotation-path hidden></path>
+      <path class="demo-trace-path" data-demo-trace-path hidden></path>
+      <path class="demo-trail" data-demo-trail hidden></path>
+    </svg>
+    <div class="demo-focus" data-demo-focus hidden></div><div class="demo-comment" data-demo-comment hidden></div>
+    <div class="demo-spotlight" data-demo-spotlight hidden></div><div data-demo-click-layer></div>
+    <div class="demo-wheel" data-demo-wheel hidden>↓</div><div class="demo-measure" data-demo-measure hidden></div>
+    <div class="action-hud" data-demo-action-hud hidden></div>
+    <div class="demo-gesture" data-demo-gesture hidden><img data-demo-gesture-img alt=""></div>
+    <div class="demo-pointer" data-demo-pointer hidden><img data-demo-pointer-img alt="demo cursor"></div>
+  </main>
+
+  <footer class="narrator">
+    <b data-demo-kicker>V6</b>
+    <span data-demo-caption>RUN ALL o saltá de escena con NEXT ANIMATION.</span>
+    <b data-demo-counter>0 / 0</b>
+  </footer>
+</div>
+
+<script src="../demo-engine-v4/demo-engine-v3-base.js"></script>
+<script src="../demo-engine-v4/demo-engine-v4.js"></script>
+<script src="../demo-engine-v4/pointer-assets.js"></script>
+<script src="../demo-engine-v4/gesture-assets.js"></script>
+<script src="../demo-engine-v5/viewport.js"></script>
+<script src="../demo-engine-v5/annotation.js"></script>
+<script src="../demo-engine-v5/camera.js"></script>
+<script src="../demo-engine-v5/audio.js"></script>
+<script src="../demo-engine-v5/page-inspector.js"></script>
+<script src="../demo-engine-v5/recipe.js"></script>
+<script src="../demo-engine-v5/demo-engine-v5.js"></script>
+<script src="../demo-engine-v6/audio-v6.js"></script>
+<script src="../demo-engine-v6/viewport-authority.js"></script>
+<script src="../demo-engine-v6/demo-engine-v6.js"></script>
+<script src="app.js"></script>
+</body></html>
