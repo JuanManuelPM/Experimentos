@@ -8,6 +8,7 @@ const WAKE_ROOT='coordination/portfolio/evidence/prometeo-autonomous-growth/prim
 const THREAD_PATH='coordination/portfolio/evidence/prometeo-autonomous-growth/CHAT_THREAD_MIRROR_CANARY_V1.json';
 const PROJECT_ID='prometeo-autonomous-growth';
 const PUBLIC_CANARY_MAX_TEXT=1200;
+const PRIMARY_HOT_ENDPOINT=String(process.env.PROMETEO_PRIMARY_HOT_ENDPOINT||'').replace(/\/+$/,'');
 
 function send(res,status,body){res.status(status).json(body)}
 function headers(res){
@@ -66,6 +67,114 @@ async function verifiedCandidate(workItemId,pageId,returnPath){
   if(!item)throw new Error('PAGE_CHANGE_WORK_NOT_READY');
   return item;
 }
+async function hotPost(body){
+  if(!PRIMARY_HOT_ENDPOINT)throw new Error('PRIMARY_HOT_ENDPOINT_MISSING');
+  const r=await fetch(PRIMARY_HOT_ENDPOINT,{
+    method:'POST',
+    headers:{'Content-Type':'application/json','Accept':'application/json'},
+    body:JSON.stringify(body)
+  });
+  let data=null;try{data=await r.json()}catch{}
+  if(!r.ok){
+    const e=new Error(clean(data?.error||data?.message||'PRIMARY_HOT_REQUEST_FAILED',160));
+    e.detail={status:r.status};throw e;
+  }
+  return data||{};
+}
+
+async function handleHotWake(token,body){
+  if(!PRIMARY_HOT_ENDPOINT)throw new Error('PRIMARY_HOT_ENDPOINT_MISSING');
+  const wakeToken=clean(body.wake_token,256);
+  if(wakeToken.length<32)throw new Error('WAKE_TOKEN_INVALID');
+
+  const verified=await hotPost({action:'wake_verify',wake_token:wakeToken});
+  if(verified?.schema!=='prometeo.primary-hot-wake-verification/v1'||verified?.status!=='VERIFIED_PRIVATE_LOCATOR'){
+    throw new Error('PRIMARY_HOT_VERIFICATION_INVALID');
+  }
+
+  const requestId=safeId(verified.request_id,'REQUEST_ID_INVALID');
+  const workItemId=safeId(verified.work_item_id,'WORK_ITEM_ID_INVALID');
+  const pageId=safeId(verified.page_id,'PAGE_ID_INVALID');
+  const returnPath=safePath(verified.return_path,'RETURN_PATH_INVALID');
+  const lookup=verified.private_packet_lookup||{};
+  const projectRef=clean(lookup.project_id,64);
+  if(!/^[a-z0-9]{10,40}$/.test(projectRef))throw new Error('PRIVATE_PROJECT_REF_INVALID');
+  if(lookup.table!=='prometeo_primary_hot_requests_v1')throw new Error('PRIVATE_TABLE_INVALID');
+  if(lookup.key!=='work_item_id'||String(lookup.value||'')!==workItemId)throw new Error('PRIVATE_LOOKUP_INVALID');
+  if(lookup.private_text_field!=='private_text')throw new Error('PRIVATE_TEXT_FIELD_INVALID');
+
+  const jobPath=`coordination/portfolio/derived/${PROJECT_ID}/${workItemId}.json`;
+  const createdAt=Number.isFinite(Date.parse(verified.created_at))
+    ?new Date(verified.created_at).toISOString()
+    :new Date().toISOString();
+
+  const job={
+    schema:'prometeo.portfolio-derived-job/v1',
+    job_id:workItemId,
+    dedupe_key:`prometeo:primary-chat-hot:${requestId}`,
+    project_id:PROJECT_ID,
+    title:'Primary Chat · request privado',
+    kind:'primary_chat_private_response',
+    value_class:'SYSTEM_MULTIPLIER',
+    priority:500,
+    seed_status:'ready',
+    required_capabilities:['github_repository_write','connected_supabase_prometeo'],
+    mission:'Consumí el payload privado únicamente después de poseer este job. Respondé la intención humana, ejecutá trabajo seguro compatible con CURRENT, persistí RETURN durable y publicá al Primary Chat sólo una respuesta sanitizada. No publiques el prompt privado.',
+    definition_of_done:[
+      'Usar private_packet_lookup sólo después de claim/PIN válido.',
+      'No copiar private_text, credenciales ni payload privado a GitHub.',
+      'Persistir RETURN durable bajo el return root declarado.',
+      `Publicar una respuesta ASSISTANT/WORKER sanitizada en ${THREAD_PATH} correlacionada por request_id.`,
+      'Reportar únicamente workers/resultados con evidencia durable.',
+      'Reentrar a E8/SUBMIT_NEXT si el shell sigue siendo útil; no crear scheduler, queue, CURRENT ni worker family.'
+    ],
+    evidence:[
+      'coordination/chat-sessions/CHAT-PROMETEO-PRIMARY-20261004T201500Z-S09/CURRENT_TEXT_MAP.md',
+      jobPath
+    ],
+    source:{
+      surface:'PRIMARY_CHAT_PRIVATE_HOT_V1',
+      request_id:requestId,
+      page_id:pageId,
+      chat_object_id:'chat-object-prometeo-chat-control-main',
+      return_root:returnPath,
+      context_transport:'SUPABASE_CONNECTED_PROJECT',
+      private_packet_lookup:{
+        project_id:projectRef,
+        table:'prometeo_primary_hot_requests_v1',
+        key:'work_item_id',
+        value:workItemId,
+        private_text_field:'private_text'
+      },
+      privacy:'PRIVATE_TEXT_NEVER_GITHUB'
+    },
+    created_at:createdAt,
+    expires_at:verified.expires_at||null,
+    authority:'EXISTING_CURRENT_ALLOCATOR_PRIMARY_CHAT_PRIVATE_TRANSPORT_ONLY'
+  };
+
+  const created=await createFile(token,jobPath,JSON.stringify(job,null,2)+'\n',`primary chat hot: enqueue ${requestId}`);
+  let hotState='MARK_QUEUED_PENDING';
+  try{
+    const marked=await hotPost({action:'mark_queued',wake_token:wakeToken});
+    hotState=marked?.status||'QUEUED';
+  }catch{}
+
+  return{
+    schema:'prometeo.ingress-transport-result/v1',
+    status:created?.exists?'QUEUED_REPLAY':'QUEUED',
+    ref:returnPath,
+    queued:true,
+    error:null,
+    request_id:requestId,
+    work_item_id:workItemId,
+    return_path:returnPath,
+    job_ref:jobPath,
+    hot_state:hotState,
+    privacy:'PRIVATE_HOT_V1'
+  };
+}
+
 async function handlePrivateWake(token,body){
   const workItemId=safeId(body.work_item_id,'WORK_ITEM_ID_INVALID');
   const pageId=safeId(body.page_id,'PAGE_ID_INVALID');
@@ -163,6 +272,7 @@ export default async function handler(req,res){
     schema:'prometeo.ingress-bridge-health/v3',
     status:token?'READY_PRIVATE_WAKE_PLUS_CANARY_FALLBACK':'BOUNDARY_SECRET_MISSING',
     secret_configured:Boolean(token),
+    primary_hot_configured:Boolean(PRIMARY_HOT_ENDPOINT),
     privacy_mode:'PRIVATE_BY_DEFAULT_EXPLICIT_CANARY_PUBLIC_FALLBACK',
     authority:'EXISTING_CURRENT_ALLOCATOR_ONLY'
   });
@@ -172,6 +282,7 @@ export default async function handler(req,res){
   if(!token)return send(res,503,{schema:'prometeo.ingress-transport-result/v1',status:'BOUNDARY_SECRET_MISSING',queued:false,ref:null,error:'PROMETEO_GITHUB_TOKEN_MISSING'});
   try{
     const body=typeof req.body==='string'?JSON.parse(req.body):(req.body||{});
+    if(body.schema==='prometeo.primary-chat-hot-wake/v1')return send(res,200,await handleHotWake(token,body));
     if(body.schema==='prometeo.primary-chat-page-change-wake/v1')return send(res,200,await handlePrivateWake(token,body));
     if(body.schema==='prometeo.primary-chat-public-canary-submit/v1')return send(res,200,await handlePublicCanary(token,body));
     throw new Error('INGRESS_SCHEMA_INVALID');
