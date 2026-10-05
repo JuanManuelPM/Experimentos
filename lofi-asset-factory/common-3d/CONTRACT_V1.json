@@ -1,0 +1,47 @@
+{
+  "schema": "COMMON_FORM_3D_V1",
+  "generated_at": "2026-10-04",
+  "source": {
+    "name": "Kenney Blocky Characters",
+    "license": "CC0-1.0",
+    "model": "../assets/human/blocky-base.glb"
+  },
+  "invariants": {
+    "geometry_triangles": 72,
+    "rigid_mesh_parts": 6,
+    "skinning_bones": 0,
+    "materials_runtime": 1,
+    "exact_compatible_skins": 18,
+    "shared_uv": true,
+    "animation_clips_source": 27
+  },
+  "forms": [
+    {
+      "id": "standard",
+      "triangles": 72
+    },
+    {
+      "id": "petit",
+      "triangles": 72
+    },
+    {
+      "id": "tall",
+      "triangles": 72
+    },
+    {
+      "id": "wide",
+      "triangles": 72
+    },
+    {
+      "id": "compact",
+      "triangles": 72
+    },
+    {
+      "id": "armless",
+      "triangles": 48
+    }
+  ],
+  "compatibility_rule": "Forms may change part scale, position, rotation or visibility only. They do not change topology or UV, so all 18 validated skins remain compatible.",
+  "runtime_rule": "One shared unlit material; texture swap does not rebuild geometry.",
+  "animation_rule": "Source clips animate the same six rigid nodes. Form deformation is reapplied after mixer evaluation."
+}
