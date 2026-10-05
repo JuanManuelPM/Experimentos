@@ -1,0 +1,63 @@
+{
+  "schema": "CUTOUT_FORM_CONTRACT_V1",
+  "generated_at": "2026-10-04",
+  "renderer": "canvas2d_prebaked_atlas",
+  "principle": "Forms and skins are independent. A semantic skin compiles into every canonical form.",
+  "minimum_compatible_skins_per_form": 10,
+  "current_demo_skins": 12,
+  "current_forms": [
+    {
+      "id": "blob",
+      "label": "BLOB BIPED",
+      "semantic_parts": [
+        "body",
+        "head/face",
+        "armL",
+        "armR",
+        "legL",
+        "legR"
+      ],
+      "poses": 8
+    },
+    {
+      "id": "human",
+      "label": "SIMPLE HUMAN",
+      "semantic_parts": [
+        "head",
+        "face",
+        "torso",
+        "armL",
+        "armR",
+        "legL",
+        "legR"
+      ],
+      "poses": 8
+    },
+    {
+      "id": "bean",
+      "label": "HEAD+BODY",
+      "semantic_parts": [
+        "body",
+        "face",
+        "armL",
+        "armR",
+        "legL",
+        "legR"
+      ],
+      "poses": 8
+    }
+  ],
+  "semantic_source_map": {
+    "head": "top-center crop",
+    "face": "upper-center crop",
+    "torso": "middle-center crop",
+    "armL": "middle-left crop",
+    "armR": "middle-right crop",
+    "legL": "bottom-left crop",
+    "legR": "bottom-right crop",
+    "body": "detected foreground bounds or full image fallback"
+  },
+  "arbitrary_image_policy": "Any uploaded image is accepted. Foreground is approximated from alpha/background contrast, then split into semantic regions. Missing or bad regions degrade visually but do not invalidate the skin.",
+  "production_path": "Compile skin + form + poses offline to a spritesheet. Runtime draws one atlas frame instead of deforming a 3D mesh.",
+  "reference_image_interpretation": "Use simple 2D pose silhouettes with implied volume; do not require one geometrically consistent 3D model across poses."
+}
