@@ -21,3 +21,8 @@ V6 is the current experience pass over V5.
 
 During ENGINE authority, human input must not alter the geometry used by the Director.
 After an annotation is committed, pointer motion must not alter the annotation geometry.
+
+
+## Universal page workflow
+
+For creating or improving any page local-first, use [`UNIVERSAL_BUILD_DEMO_PROTOCOL_V1.md`](./UNIVERSAL_BUILD_DEMO_PROTOCOL_V1.md). It defines DEFINE → PLAN → BUILD LOCAL → VERIFY → DEMO → LOCAL ACCEPTANCE → PUBLISH PACKET → optional publish.
