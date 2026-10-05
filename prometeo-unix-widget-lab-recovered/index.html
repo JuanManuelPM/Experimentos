@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Prometeo · Unix Widget Lab · Recovered</title>
+<style>
+:root{
+  color-scheme:dark;
+  --bg:#070807;--ink:#d8dacb;--muted:#777b70;--line:rgba(218,224,205,.22);
+  --line-strong:rgba(218,224,205,.48);--accent:#9cab83;--gap:10px;--bar:34px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--ink);
+font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono",monospace}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.035;
+background:repeating-linear-gradient(to bottom,transparent 0,transparent 3px,#fff 4px)}
+button{font:inherit}
+.app{height:100dvh;display:grid;grid-template-rows:var(--bar) minmax(0,1fr)}
+.top{display:flex;align-items:center;gap:9px;padding:0 10px;border-bottom:1px solid var(--line);background:rgba(7,8,7,.72);backdrop-filter:blur(8px)}
+.refresh,.reset{border:0;background:transparent;color:var(--muted);cursor:pointer;padding:3px 5px}
+.refresh:hover,.reset:hover{color:var(--ink)}
+.dot{width:6px;height:6px;border-radius:50%;background:#9d665f}
+.brand{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.spacer{flex:1}
+.note{font-size:8px;letter-spacing:.08em;color:#5d6258;text-transform:uppercase}
+.workspace-shell{position:relative;min-height:0;padding:10px 18px 10px 10px}
+.workspace{position:relative;width:100%;height:100%;min-width:0;min-height:0;border:1px solid var(--line);
+border-radius:10px;padding:var(--gap);background:rgba(255,255,255,.008);overflow:hidden}
+.root-split{height:100%;display:flex;min-width:0;min-height:0}
+.stack{display:flex;flex-direction:column;min-width:0;min-height:0}
+.pane{position:relative;min-width:0;min-height:0;overflow:auto;border:1px solid var(--line);border-radius:7px;
+background:transparent;scrollbar-width:thin;scrollbar-color:rgba(218,224,205,.18) transparent}
+.pane.active{border-color:var(--line-strong)}
+.pane:focus{outline:none;border-color:var(--line-strong)}
+.pane-mark{position:absolute;left:9px;top:8px;font-size:8px;color:rgba(216,218,203,.26);letter-spacing:.16em;pointer-events:none}
+.ghost{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none}
+.ghost i{width:4px;height:4px;border:1px solid rgba(216,218,203,.16);transform:rotate(45deg)}
+.vsplit,.hsplit{flex:0 0 var(--gap);position:relative;touch-action:none;user-select:none}
+.vsplit{cursor:col-resize}
+.hsplit{cursor:row-resize}
+.vsplit:before,.hsplit:before{content:"";position:absolute;background:rgba(216,218,203,.16);transition:.12s}
+.vsplit:before{top:7px;bottom:7px;left:50%;width:1px;transform:translateX(-50%)}
+.hsplit:before{left:7px;right:7px;top:50%;height:1px;transform:translateY(-50%)}
+.vsplit:hover:before,.hsplit:hover:before,.dragging:before{background:rgba(216,218,203,.56)}
+.rail{position:absolute;right:4px;top:14px;bottom:14px;width:7px;display:flex;justify-content:center}
+.rail:before{content:"";width:1px;background:rgba(216,218,203,.15)}
+.rail-thumb{position:absolute;top:8%;width:5px;height:20%;border:1px solid rgba(216,218,203,.26);background:var(--bg);cursor:ns-resize}
+.help{position:absolute;right:27px;bottom:15px;font-size:8px;color:rgba(216,218,203,.25);pointer-events:none}
+@media(max-width:720px){
+  .note{display:none}.workspace-shell{padding-right:10px}.rail{display:none}
+  .root-split{flex-direction:column}.vsplit{cursor:row-resize}.vsplit:before{left:7px;right:7px;top:50%;bottom:auto;width:auto;height:1px;transform:translateY(-50%)}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="top">
+    <button class="refresh" id="refresh" title="Comprobar">↻</button>
+    <span class="dot"></span>
+    <span class="brand">Prometeo · Unix Widget Lab</span>
+    <span class="spacer"></span>
+    <span class="note">recovered prototype · no production</span>
+    <button class="reset" id="reset" title="Restaurar proporciones">reset</button>
+  </header>
+
+  <main class="workspace-shell">
+    <section class="workspace" id="workspace">
+      <div class="root-split" id="rootSplit">
+        <div class="stack" id="leftStack">
+          <section class="pane" tabindex="0" data-pane="a"><span class="pane-mark">01</span><div class="ghost"><i></i></div></section>
+          <div class="hsplit" id="leftH" role="separator" aria-orientation="horizontal" tabindex="0"></div>
+          <section class="pane" tabindex="0" data-pane="b"><span class="pane-mark">02</span><div class="ghost"><i></i></div></section>
+        </div>
+        <div class="vsplit" id="rootV" role="separator" aria-orientation="vertical" tabindex="0"></div>
+        <div class="stack" id="rightStack">
+          <section class="pane" tabindex="0" data-pane="c"><span class="pane-mark">03</span><div class="ghost"><i></i></div></section>
+          <div class="hsplit" id="rightH" role="separator" aria-orientation="horizontal" tabindex="0"></div>
+          <section class="pane" tabindex="0" data-pane="d"><span class="pane-mark">04</span><div class="ghost"><i></i></div></section>
+        </div>
+      </div>
+      <div class="help">arrastrá entre ventanas · ↔ ancho · ↕ alto</div>
+    </section>
+    <div class="rail" aria-hidden="true"><div class="rail-thumb"></div></div>
+  </main>
+</div>
+<script>
+(()=>{
+  const KEY='prometeo.unix-widget-lab.recovered.v1';
+  const $=id=>document.getElementById(id);
+  const root=$('rootSplit'), left=$('leftStack'), right=$('rightStack');
+  const panes=[...document.querySelectorAll('.pane')];
+  const defaults={root:.68,left:.62,right:.55};
+  let state={...defaults};
+  try{state={...state,...JSON.parse(localStorage.getItem(KEY)||'{}')}}catch{}
+  const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
+  function apply(){
+    const mobile=matchMedia('(max-width:720px)').matches;
+    if(mobile){
+      left.style.flex=`${state.root} 1 0`;right.style.flex=`${1-state.root} 1 0`;
+    }else{
+      left.style.flex=`${state.root} 1 0`;right.style.flex=`${1-state.root} 1 0`;
+    }
+    const lp=left.querySelectorAll('.pane'),rp=right.querySelectorAll('.pane');
+    lp[0].style.flex=`${state.left} 1 0`;lp[1].style.flex=`${1-state.left} 1 0`;
+    rp[0].style.flex=`${state.right} 1 0`;rp[1].style.flex=`${1-state.right} 1 0`;
+    try{localStorage.setItem(KEY,JSON.stringify(state))}catch{}
+  }
+  function drag(handle,mode,owner,key){
+    handle.addEventListener('pointerdown',e=>{
+      e.preventDefault();handle.setPointerCapture(e.pointerId);handle.classList.add('dragging');
+      const rect=owner.getBoundingClientRect();
+      const move=ev=>{
+        const mobile=matchMedia('(max-width:720px)').matches;
+        let ratio;
+        if(mode==='vertical'&&!mobile) ratio=(ev.clientX-rect.left)/rect.width;
+        else ratio=(ev.clientY-rect.top)/rect.height;
+        state[key]=clamp(ratio,.18,.82);apply();
+      };
+      const end=()=>{handle.classList.remove('dragging');handle.removeEventListener('pointermove',move);handle.removeEventListener('pointerup',end);handle.removeEventListener('pointercancel',end)};
+      handle.addEventListener('pointermove',move);handle.addEventListener('pointerup',end);handle.addEventListener('pointercancel',end);
+    });
+    handle.addEventListener('keydown',e=>{
+      const delta=(e.key==='ArrowRight'||e.key==='ArrowDown')?.025:(e.key==='ArrowLeft'||e.key==='ArrowUp')?-.025:0;
+      if(!delta)return;e.preventDefault();state[key]=clamp(state[key]+delta,.18,.82);apply();
+    });
+  }
+  drag($('rootV'),'vertical',root,'root');drag($('leftH'),'horizontal',left,'left');drag($('rightH'),'horizontal',right,'right');
+  panes.forEach(p=>p.addEventListener('pointerdown',()=>{panes.forEach(x=>x.classList.toggle('active',x===p))}));
+  $('reset').addEventListener('click',()=>{state={...defaults};apply()});
+  $('refresh').addEventListener('click',()=>location.reload());
+  addEventListener('resize',apply);
+  apply();
+})();
+</script>
+</body>
+</html>
