@@ -1,0 +1,165 @@
+{
+  "schema": "LOFI_ASSET_FAMILY_V1",
+  "id": "cube-penguin-01",
+  "label": "Penguin 558",
+  "tags": [
+    "animal",
+    "penguin",
+    "rigid",
+    "club-like"
+  ],
+  "source": {
+    "name": "Kenney Cube Pets",
+    "author": "Kenney",
+    "license": "CC0-1.0",
+    "url": "https://kenney.nl/assets/cube-pets",
+    "mirror": "Hidencod/tge-assets · packs/cube-pets/animal-penguin.glb",
+    "source_blob_sha": "ca2b8d0e8c4f9b9eb4689f57af6e5f1a4b2fb8d9"
+  },
+  "renderer": "mesh_uv",
+  "model": {
+    "path": "assets/cube-pets/penguin.glb",
+    "format": "glb"
+  },
+  "material": {
+    "strategy": "unlit_map"
+  },
+  "orientation": {
+    "up": [
+      0,
+      1,
+      0
+    ],
+    "camera_direction": [
+      0,
+      0,
+      -1
+    ],
+    "ground": "minY"
+  },
+  "display": {
+    "target_size": 3,
+    "margin": 1.24,
+    "target_bias": [
+      0,
+      0.02,
+      0
+    ]
+  },
+  "texture_contract": {
+    "uv_channel": 0,
+    "width": 512,
+    "height": 512,
+    "flip_y": false,
+    "color_space": "srgb"
+  },
+  "performance": {
+    "triangles": 558,
+    "bones": 0,
+    "materials": 1,
+    "meshes": 5,
+    "animations": 8,
+    "texture": "512x512"
+  },
+  "validation": {
+    "status": "PASS",
+    "mode": "source_uv_contract",
+    "runtime_required": true,
+    "structural_verified": "558 tris · 5 rigid meshes · 1 material · 8 clips · source texture extracted exactly"
+  },
+  "skins": [
+    {
+      "id": "base",
+      "label": "BASE",
+      "texture": "assets/cube-pets/colormap.png"
+    }
+  ],
+  "parts": {
+    "mode": "rigid_mesh_nodes",
+    "slots": {
+      "body": [
+        "body"
+      ],
+      "wings": [
+        "wing-left",
+        "wing-right"
+      ],
+      "feet": [
+        "leg-front-left",
+        "leg-front-right"
+      ]
+    },
+    "default": "full",
+    "presets": [
+      {
+        "id": "full",
+        "label": "COMPLETO",
+        "hide": []
+      },
+      {
+        "id": "wingless",
+        "label": "SIN ALAS",
+        "hide": [
+          "wing-left",
+          "wing-right"
+        ]
+      },
+      {
+        "id": "body",
+        "label": "CUERPO",
+        "hide": [
+          "wing-left",
+          "wing-right",
+          "leg-front-left",
+          "leg-front-right"
+        ]
+      }
+    ]
+  },
+  "animation": {
+    "default_clip": "idle",
+    "clips": [
+      "idle",
+      "walk",
+      "run",
+      "eat",
+      "dance",
+      "gesture-positive",
+      "gesture-negative"
+    ],
+    "motion_styles": [
+      {
+        "id": "smooth",
+        "label": "SMOOTH",
+        "fps": 0
+      },
+      {
+        "id": "15",
+        "label": "15 FPS",
+        "fps": 15
+      },
+      {
+        "id": "12",
+        "label": "12 FPS",
+        "fps": 12
+      },
+      {
+        "id": "10",
+        "label": "10 FPS",
+        "fps": 10
+      },
+      {
+        "id": "6",
+        "label": "6 FPS",
+        "fps": 6
+      }
+    ]
+  },
+  "appearance_transfer": {
+    "direct_cross_family": false,
+    "ingest_only": true,
+    "strategy": "offline_project_from_view_then_validate",
+    "runtime": "finished_target_atlas_only",
+    "note": "A source appearance is baked/reprojected to this target UV offline. Runtime never treats an incompatible source texture as a valid skin."
+  }
+}
