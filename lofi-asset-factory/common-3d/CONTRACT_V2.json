@@ -1,0 +1,54 @@
+{
+  "schema": "COMMON_FORM_3D_V2",
+  "generated_at": "2026-10-04",
+  "principle": "Existing visually coherent 3D assets are canonical forms. A common semantic palette skin is recompiled onto each form's own UV instead of sharing incompatible texture files.",
+  "forms": [
+    {
+      "id": "mini",
+      "source": "Kenney Mini Characters / character-male-a",
+      "triangles": 723,
+      "meshes": 2,
+      "bones": 7,
+      "source_clips": 32
+    },
+    {
+      "id": "dungeon",
+      "source": "Kenney Mini Dungeon / character-human",
+      "triangles": 465,
+      "meshes": 2,
+      "bones": 7,
+      "source_clips": 32
+    },
+    {
+      "id": "penguin",
+      "source": "Kenney Cube Pets / animal-penguin",
+      "triangles": 558,
+      "meshes": 5,
+      "bones": 0,
+      "source_clips": 8
+    },
+    {
+      "id": "ghost",
+      "source": "Kenney Graveyard Kit / character-ghost",
+      "triangles": 413,
+      "meshes": 3,
+      "bones": 0,
+      "source_clips": 32
+    }
+  ],
+  "common_skins": {
+    "count": 12,
+    "representation": "4-color semantic palette",
+    "runtime_texture": "256x256 per selected form/skin",
+    "custom_image": "extract four dominant colors and apply the same recipe to every form"
+  },
+  "animation_semantics": [
+    "idle",
+    "walk",
+    "run",
+    "yes",
+    "no"
+  ],
+  "compatibility": "Every recipe is compiled from each form's original embedded texture, so UV topology remains native to that form.",
+  "rejected_baseline": "The previous 72-triangle Blocky common-form page is not the visual baseline."
+}

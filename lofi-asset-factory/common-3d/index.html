@@ -3,75 +3,72 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#ddd8cf">
-<title>COMMON FORM 3D LAB</title>
+<meta name="theme-color" content="#d8d4cc">
+<title>COMMON FORM 3D · V2</title>
 <style>
-:root{--bg:#d8d4cc;--panel:#f3efe7;--ink:#111;--muted:#706b63;--line:#aaa39a;--hot:#ffe36d;--ok:#d9efb4}
+:root{--bg:#d8d4cc;--panel:#f4f0e8;--ink:#111;--muted:#726c63;--line:#aaa39a;--hot:#ffe36d;--blue:#cce6ff;--ok:#d9efb4}
 *{box-sizing:border-box}
 html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--ink);font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
-#app{height:100%;display:grid;grid-template-columns:minmax(0,1fr) 430px}
-#stage{position:relative;min-width:0;min-height:0;border-right:2px solid #111;background:linear-gradient(#cac6bf,#ddd9d1)}
+#app{height:100%;display:grid;grid-template-columns:minmax(0,1fr) 440px}
+#stage{position:relative;min-width:0;min-height:0;border-right:2px solid #111;background:linear-gradient(#c9c5be,#dedad2)}
 #stage canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none}
 .hud{position:absolute;z-index:4;left:12px;top:12px;background:#111;color:#fff;padding:7px 9px;font-size:9px;line-height:1.55;white-space:pre;pointer-events:none}
-.badge{display:inline-block;background:var(--ok);border:1px solid #111;padding:3px 5px;font-size:8px;font-weight:900}
 #panel{overflow:auto;background:var(--panel);padding:10px}
 .section{padding-bottom:10px;margin-bottom:10px;border-bottom:1px solid #1112}.section:last-child{border:0;margin:0}
 .head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:7px}.head b{font-size:10px;letter-spacing:.06em}.head span{font-size:8px;color:var(--muted)}
-.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
 .forms{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
-button{border:2px solid var(--line);background:#fff;color:#111;font:900 8px/1.15 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;min-height:42px;padding:6px;cursor:pointer}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.skin-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+button,.upload{border:2px solid var(--line);background:#fff;color:#111;font:900 8px/1.2 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;min-height:43px;padding:6px;cursor:pointer}
 button[data-on="1"]{border-color:#111;background:var(--hot)}
-.skin-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:5px}
-.skin{height:54px;padding:3px;overflow:hidden}
-.skin img{display:block;width:100%;height:32px;object-fit:cover;image-rendering:pixelated;background:#d2cec6}
-.skin b{font-size:7px;display:block;margin-top:2px}
-.metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px}.metric{background:#fff;border:1px solid #1112;padding:7px 5px;text-align:center}.metric b{display:block;font-size:14px}.metric span{font-size:7px;color:var(--muted)}
-.note{font-size:8px;line-height:1.5;color:var(--muted);background:#fff;border:1px solid #1112;padding:8px}
+.form{min-height:62px}.form strong{display:block;font-size:9px}.form small{display:block;font-size:7px;color:var(--muted);margin-top:4px;line-height:1.3}
+.skin{height:58px;padding:4px}.swatch{display:grid;grid-template-columns:repeat(4,1fr);height:24px;border:1px solid #1112;margin-bottom:4px}.skin b{font-size:7px}
 .actions{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px}.metric{background:#fff;border:1px solid #1112;padding:7px 5px;text-align:center}.metric b{display:block;font-size:13px}.metric span{font-size:7px;color:var(--muted)}
+.note{font-size:8px;line-height:1.5;color:var(--muted);background:#fff;border:1px solid #1112;padding:8px}
+.upload{display:flex;align-items:center;justify-content:center;position:relative;background:var(--blue)}.upload input{position:absolute;inset:0;opacity:0;cursor:pointer}
+#customPreview{display:none;width:100%;max-height:110px;object-fit:contain;background:#ccc7bf;border:1px solid #1112;margin-top:6px}
+.badge{display:inline-block;background:var(--ok);border:1px solid #111;padding:3px 5px;font-size:7px;font-weight:900}
 @media(max-width:820px){
  #app{display:block}
- #stage{position:absolute;inset:0 0 330px 0;border-right:0;border-bottom:2px solid #111}
- #panel{position:absolute;left:0;right:0;bottom:0;height:330px;padding:7px}
- .hud{left:8px;top:8px}
- .skin-grid{grid-template-columns:repeat(9,minmax(0,1fr))}
- .skin{height:44px}.skin img{height:23px}
+ #stage{position:absolute;inset:0 0 350px 0;border-right:0;border-bottom:2px solid #111}
+ #panel{position:absolute;left:0;right:0;bottom:0;height:350px;padding:7px}
+ .skin-grid{grid-template-columns:repeat(6,minmax(0,1fr))}
+ .skin{height:48px}.swatch{height:18px}
 }
 </style>
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"}}</script>
 </head>
 <body>
 <div id="app">
-  <main id="stage">
-    <div class="hud" id="hud">COMMON FORM 3D
-72 TRIS · 6 RIGID PARTS
-18 EXACT SKINS
-1 MATERIAL</div>
-  </main>
+  <main id="stage"><div class="hud" id="hud">COMMON FORM 3D · V2\nLOADING</div></main>
   <aside id="panel">
     <section class="section">
-      <div class="head"><b>FORMAS 3D</b><span>misma malla + mismo UV</span></div>
+      <div class="head"><b>FORMAS 3D REALES</b><span>assets existentes · no figuras inventadas</span></div>
       <div class="forms" id="forms"></div>
     </section>
 
     <section class="section">
-      <div class="head"><b>18 SKINS COMPATIBLES</b><span>swap de textura, sin rebuild</span></div>
+      <div class="head"><b>SKINS COMUNES</b><span>12 recetas · recompiladas al UV de cada forma</span></div>
       <div class="skin-grid" id="skins"></div>
+      <label class="upload" style="margin-top:6px">USAR IMAGEN → EXTRAER PALETA<input id="upload" type="file" accept="image/*"></label>
+      <img id="customPreview" alt="custom palette source">
     </section>
 
     <section class="section">
-      <div class="head"><b>ANIMACIÓN COMÚN</b><span>clips fuente Kenney</span></div>
-      <div class="grid" id="clips"></div>
-      <div class="head" style="margin-top:8px"><b>MOTION</b><span>stepped para look PSX</span></div>
+      <div class="head"><b>ANIMACIÓN SEMÁNTICA</b><span>mismo botón · clip equivalente por forma</span></div>
+      <div class="grid" id="actions"></div>
+      <div class="head" style="margin-top:8px"><b>MOTION</b><span>PSX stepped opcional</span></div>
       <div class="grid" id="fps"></div>
     </section>
 
     <section class="section">
-      <div class="head"><b>COSTO ACTUAL</b><span id="costLabel">—</span></div>
+      <div class="head"><b>COSTO DE LA FORMA</b><span id="costLabel">—</span></div>
       <div class="metrics">
-        <div class="metric"><b id="triMetric">72</b><span>TRIS</span></div>
-        <div class="metric"><b>6</b><span>MESH PARTS</span></div>
+        <div class="metric"><b id="tris">—</b><span>TRIS</span></div>
+        <div class="metric"><b id="meshes">—</b><span>MESHES</span></div>
+        <div class="metric"><b id="bones">—</b><span>BONES</span></div>
         <div class="metric"><b>1</b><span>MATERIAL</span></div>
-        <div class="metric"><b>0</b><span>SKINNING BONES</span></div>
       </div>
     </section>
 
@@ -81,10 +78,10 @@ button[data-on="1"]{border-color:#111;background:var(--hot)}
         <button id="fit">REENCUADRAR</button>
       </div>
       <div class="note" style="margin-top:7px">
-        Base real: Kenney Blocky Characters, CC0. Las seis piezas son meshes rígidos:
-        HEAD · TORSO · ARM L/R · LEG L/R. Las 18 skins ya fueron validadas sobre la
-        misma estructura. Las formas cambian sólo escala, posición y visibilidad de
-        esas piezas, por eso las 18 skins siguen siendo compatibles.
+        <span class="badge">REGLA</span><br><br>
+        Cada forma conserva su geometría y su UV originales. La skin común NO reutiliza un PNG incompatible:
+        convierte una receta de cuatro colores sobre la textura base de esa forma y genera un mapa 256×256.
+        Por eso las 12 recetas funcionan sobre las cuatro formas aunque sus UV sean distintos.
       </div>
     </section>
   </aside>
@@ -94,214 +91,171 @@ button[data-on="1"]{border-color:#111;background:var(--hot)}
 import * as THREE from 'three';
 import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
+import {clone as cloneSkeleton} from 'three/addons/utils/SkeletonUtils.js';
 
-const stage=document.getElementById('stage');
-const formsEl=document.getElementById('forms');
-const skinsEl=document.getElementById('skins');
-const clipsEl=document.getElementById('clips');
-const fpsEl=document.getElementById('fps');
-const hud=document.getElementById('hud');
-const triMetric=document.getElementById('triMetric');
-const costLabel=document.getElementById('costLabel');
+const stage=document.getElementById('stage'),formsEl=document.getElementById('forms'),skinsEl=document.getElementById('skins');
+const actionsEl=document.getElementById('actions'),fpsEl=document.getElementById('fps'),hud=document.getElementById('hud');
+const trisEl=document.getElementById('tris'),meshesEl=document.getElementById('meshes'),bonesEl=document.getElementById('bones'),costLabel=document.getElementById('costLabel');
+const customPreview=document.getElementById('customPreview');
 
 const renderer=new THREE.WebGLRenderer({antialias:false,powerPreference:'low-power'});
-renderer.outputColorSpace=THREE.SRGBColorSpace;
-renderer.setPixelRatio(Math.min(devicePixelRatio||1,1));
-renderer.shadowMap.enabled=false;
+renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.setPixelRatio(Math.min(devicePixelRatio||1,1));renderer.shadowMap.enabled=false;
 stage.prepend(renderer.domElement);
-
-const scene=new THREE.Scene();
-scene.background=new THREE.Color(0xd8d4cc);
-const camera=new THREE.PerspectiveCamera(34,1,.01,100);
-const controls=new OrbitControls(camera,renderer.domElement);
-controls.enablePan=false;
-controls.enableDamping=false;
-controls.rotateSpeed=.7;
-controls.zoomSpeed=.8;
-
-const root=new THREE.Group();
-scene.add(root);
+const scene=new THREE.Scene();scene.background=new THREE.Color(0xd8d4cc);
+const camera=new THREE.PerspectiveCamera(35,1,.01,100);
+const controls=new OrbitControls(camera,renderer.domElement);controls.enablePan=false;controls.enableDamping=false;controls.rotateSpeed=.7;controls.zoomSpeed=.8;
+const world=new THREE.Group();scene.add(world);
 const loader=new GLTFLoader();
-const textureLoader=new THREE.TextureLoader();
 
-const PARTS=['head','torso','arm-left','arm-right','leg-left','leg-right'];
-const BASE_TRIS={'head':12,'torso':12,'arm-left':12,'arm-right':12,'leg-left':12,'leg-right':12};
-const skins='abcdefghijklmnopqr'.split('').map(id=>({id,label:id.toUpperCase(),texture:'../assets/human/skin-'+id+'.png'}));
-const clipsWanted=['idle','walk','sprint','sit','emote-yes','emote-no','attack-kick-right','interact-right'];
-const fpsModes=[{id:'smooth',label:'SMOOTH',fps:0},{id:'15',label:'15 FPS',fps:15},{id:'10',label:'10 FPS',fps:10},{id:'6',label:'6 FPS',fps:6}];
-
-const forms=[
- {id:'standard',label:'STANDARD',note:'72 tris',hidden:[],parts:{}},
- {id:'petit',label:'PETIT',note:'72 tris',hidden:[],parts:{
-   head:{s:[1.28,1.28,1.28],p:[0,-.02,0]},torso:{s:[1.08,.88,1.05],p:[0,.02,0]},
-   'arm-left':{s:[1,.78,1],p:[-.02,-.03,0]},'arm-right':{s:[1,.78,1],p:[.02,-.03,0]},
-   'leg-left':{s:[1,.72,1],p:[0,-.03,0]},'leg-right':{s:[1,.72,1],p:[0,-.03,0]}
- }},
- {id:'tall',label:'TALL',note:'72 tris',hidden:[],parts:{
-   head:{s:[.84,.84,.84],p:[0,.08,0]},torso:{s:[.92,1.14,.95],p:[0,.03,0]},
-   'arm-left':{s:[.92,1.22,.92],p:[0,.04,0]},'arm-right':{s:[.92,1.22,.92],p:[0,.04,0]},
-   'leg-left':{s:[.92,1.28,.92],p:[0,.02,0]},'leg-right':{s:[.92,1.28,.92],p:[0,.02,0]}
- }},
- {id:'wide',label:'WIDE',note:'72 tris',hidden:[],parts:{
-   head:{s:[1.05,1,1.05],p:[0,0,0]},torso:{s:[1.34,.98,1.10],p:[0,0,0]},
-   'arm-left':{s:[1.10,.92,1.10],p:[.10,0,0]},'arm-right':{s:[1.10,.92,1.10],p:[-.10,0,0]},
-   'leg-left':{s:[1.12,.90,1.12],p:[.03,0,0]},'leg-right':{s:[1.12,.90,1.12],p:[-.03,0,0]}
- }},
- {id:'compact',label:'COMPACT',note:'72 tris',hidden:[],parts:{
-   head:{s:[1.22,1.12,1.22],p:[0,-.07,0]},torso:{s:[1.28,.94,1.18],p:[0,.02,0]},
-   'arm-left':{s:[.92,.72,1],p:[-.03,-.05,0]},'arm-right':{s:[.92,.72,1],p:[.03,-.05,0]},
-   'leg-left':{s:[1.16,.58,1.12],p:[.02,-.07,0]},'leg-right':{s:[1.16,.58,1.12],p:[-.02,-.07,0]}
- }},
- {id:'armless',label:'NO ARMS',note:'48 tris',hidden:['arm-left','arm-right'],parts:{
-   head:{s:[1.18,1.10,1.18],p:[0,-.05,0]},torso:{s:[1.28,1.03,1.18],p:[0,0,0]},
-   'leg-left':{s:[1.12,.72,1.10],p:[.02,-.04,0]},'leg-right':{s:[1.12,.72,1.10],p:[-.02,-.04,0]}
- }}
+const FORMS=[
+ {id:'mini',label:'MINI HUMAN',path:'../assets/psx-humanoid/character-male-a.glb',tris:723,meshes:2,bones:7,clips:32,source:'Kenney Mini Characters',
+  actions:{idle:'idle',walk:'walk',run:'sprint',yes:'emote-yes',no:'emote-no'}},
+ {id:'dungeon',label:'DUNGEON HUMAN',path:'../assets/psx-humanoid/character-human.glb',tris:465,meshes:2,bones:7,clips:32,source:'Kenney Mini Dungeon',
+  actions:{idle:'idle',walk:'walk',run:'sprint',yes:'emote-yes',no:'emote-no'}},
+ {id:'penguin',label:'PENGUIN',path:'../assets/cube-pets/penguin.glb',tris:558,meshes:5,bones:0,clips:8,source:'Kenney Cube Pets',
+  actions:{idle:'idle',walk:'walk',run:'run',yes:'gesture-positive',no:'gesture-negative'}},
+ {id:'ghost',label:'GHOST',path:'../assets/ghost-simple/ghost.glb',tris:413,meshes:3,bones:0,clips:32,source:'Kenney Graveyard Kit',
+  actions:{idle:'idle',walk:'walk',run:'sprint',yes:'emote-yes',no:'emote-no'}}
 ];
 
-let asset=null,mixer=null,currentAction=null,currentClip='idle',currentSkin='a',currentForm='standard',motionFPS=10;
-let baseState=new Map(),clipMap=new Map(),sharedMaterial=null,lastTick=-1,raf=0;
+const SKINS=[
+ {id:'ocean',label:'OCEAN',c:['#172b3c','#246987','#74b7c8','#e8f1ef']},
+ {id:'ember',label:'EMBER',c:['#2a1817','#8b3027','#d96a3e','#f2d0a5']},
+ {id:'moss',label:'MOSS',c:['#1f2d24','#3f6d43','#83a94f','#ddd7a8']},
+ {id:'plum',label:'PLUM',c:['#261c30','#5b3b75','#a06a9b','#eadde8']},
+ {id:'sun',label:'SUN',c:['#3d2d17','#a86420','#e5b832','#fff0b0']},
+ {id:'ink',label:'INK',c:['#080a0f','#252936','#69717e','#e5e7e8']},
+ {id:'coral',label:'CORAL',c:['#3a2020','#9e4d4e','#db7775','#f5d5cb']},
+ {id:'ice',label:'ICE',c:['#263a46','#527d91','#96c4d4','#eef7f8']},
+ {id:'sand',label:'SAND',c:['#3d3225','#806a4c','#c4a77a','#f0e2c6']},
+ {id:'lime',label:'LIME',c:['#25341d','#537d31','#9fbe55','#edf0c8']},
+ {id:'rose',label:'ROSE',c:['#38222d','#83435f','#c47795','#f1dbe5']},
+ {id:'steel',label:'STEEL',c:['#20272e','#485866','#8496a4','#e0e5e8']}
+];
+const ACTIONS=['idle','walk','run','yes','no'];
+const FPS=[{v:0,l:'SMOOTH'},{v:15,l:'15 FPS'},{v:10,l:'10 FPS'},{v:6,l:'6 FPS'}];
 
-function size(){
- const w=Math.max(1,stage.clientWidth),h=Math.max(1,stage.clientHeight);
- renderer.setSize(w,h,false);
- camera.aspect=w/h;
- camera.updateProjectionMatrix();
- renderer.render(scene,camera);
+const gltfCache=new Map(),skinTextureCache=new Map();
+let formId='dungeon',skinId='ocean',customSkin=null,actionId='idle',fps=10;
+let asset=null,gltf=null,mixer=null,currentAction=null,baseMap=null,sharedMaterial=null,lastTick=-1,raf=0,token=0;
+
+function hexRGB(h){const n=parseInt(h.slice(1),16);return[(n>>16)&255,(n>>8)&255,n&255]}
+function mix(a,b,t){return Math.round(a+(b-a)*t)}
+function luma(r,g,b){return(.2126*r+.7152*g+.0722*b)/255}
+function paletteSample(cols,t){
+ const rgb=cols.map(hexRGB),x=Math.max(0,Math.min(.999,t))*3,i=Math.floor(x),f=x-i;
+ const a=rgb[i],b=rgb[Math.min(3,i+1)];return[mix(a[0],b[0],f),mix(a[1],b[1],f),mix(a[2],b[2],f)]
 }
-new ResizeObserver(size).observe(stage);
-
-function loadTexture(path){
- return new Promise((resolve,reject)=>textureLoader.load(path,t=>{
-   t.colorSpace=THREE.SRGBColorSpace;
-   t.flipY=false;
-   t.magFilter=THREE.NearestFilter;
-   t.minFilter=THREE.NearestMipmapNearestFilter;
-   resolve(t);
- },undefined,reject));
-}
-function findPart(name){return asset?.getObjectByName(name)||null}
-
-function captureBase(){
- baseState.clear();
- for(const name of PARTS){
-   const n=findPart(name);if(!n)continue;
-   baseState.set(name,{p:n.position.clone(),s:n.scale.clone()});
+function recolorTexture(source,recipe,key){
+ const cacheKey=key+'|'+recipe.c.join(',');
+ if(skinTextureCache.has(cacheKey))return skinTextureCache.get(cacheKey);
+ const c=document.createElement('canvas'),w=256,h=256;c.width=w;c.height=h;
+ const x=c.getContext('2d',{willReadFrequently:true});x.drawImage(source,0,0,w,h);
+ const im=x.getImageData(0,0,w,h),d=im.data;
+ for(let i=0;i<d.length;i+=4){
+   if(d[i+3]<8)continue;
+   const y=luma(d[i],d[i+1],d[i+2]),p=paletteSample(recipe.c,y);
+   const sat=Math.max(d[i],d[i+1],d[i+2])-Math.min(d[i],d[i+1],d[i+2]);
+   const keep=sat<10?.12:.02;
+   d[i]=mix(p[0],d[i],keep);d[i+1]=mix(p[1],d[i+1],keep);d[i+2]=mix(p[2],d[i+2],keep);
  }
+ x.putImageData(im,0,0);
+ const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;t.flipY=false;t.magFilter=THREE.LinearFilter;t.minFilter=THREE.LinearMipmapLinearFilter;
+ skinTextureCache.set(cacheKey,t);return t;
 }
-function reapplyForm(){
- const f=forms.find(x=>x.id===currentForm)||forms[0];
- for(const name of PARTS){
-   const n=findPart(name),b=baseState.get(name);if(!n||!b)continue;
-   const c=f.parts[name]||{},sm=c.s||[1,1,1],pm=c.p||[0,0,0];
-   n.visible=!f.hidden.includes(name);
-   n.scale.set(b.s.x*sm[0],b.s.y*sm[1],b.s.z*sm[2]);
-   n.position.set(b.p.x+pm[0],b.p.y+pm[1],b.p.z+pm[2]);
+function dominantPalette(img){
+ const c=document.createElement('canvas');c.width=96;c.height=96;const x=c.getContext('2d',{willReadFrequently:true});
+ x.drawImage(img,0,0,96,96);const d=x.getImageData(0,0,96,96).data,hist=new Map();
+ for(let i=0;i<d.length;i+=16){
+   if(d[i+3]<96)continue;
+   const r=d[i]>>4,g=d[i+1]>>4,b=d[i+2]>>4,k=(r<<8)|(g<<4)|b;hist.set(k,(hist.get(k)||0)+1);
  }
- const tris=PARTS.filter(n=>!f.hidden.includes(n)).reduce((a,n)=>a+BASE_TRIS[n],0);
- triMetric.textContent=tris;
- costLabel.textContent=f.label+' · '+skins.length+' exact skins';
- hud.textContent='COMMON FORM 3D\n'+f.label+' · '+currentSkin.toUpperCase()+' · '+currentClip.toUpperCase()+'\n'+tris+' TRIS · 6 RIGID PARTS\n18 EXACT SKINS · 1 MATERIAL';
+ const raw=[...hist.entries()].sort((a,b)=>b[1]-a[1]).slice(0,24).map(([k])=>[((k>>8)&15)*17,((k>>4)&15)*17,(k&15)*17]);
+ const chosen=[];
+ for(const p of raw){
+   if(chosen.every(q=>Math.hypot(p[0]-q[0],p[1]-q[1],p[2]-q[2])>70))chosen.push(p);
+   if(chosen.length===4)break;
+ }
+ while(chosen.length<4)chosen.push(chosen[chosen.length-1]||[128,128,128]);
+ chosen.sort((a,b)=>luma(...a)-luma(...b));
+ return chosen.map(p=>'#'+p.map(v=>v.toString(16).padStart(2,'0')).join(''));
 }
+async function getGLTF(form){
+ if(!gltfCache.has(form.id))gltfCache.set(form.id,await loader.loadAsync(form.path));
+ return gltfCache.get(form.id);
+}
+function firstMap(obj){
+ let map=null;obj.traverse(n=>{if(!map&&n.isMesh){const m=Array.isArray(n.material)?n.material[0]:n.material;map=m?.map||null}});return map;
+}
+function assignMaterial(obj,mat){obj.traverse(n=>{if(n.isMesh)n.material=mat})}
 function fit(){
  if(!asset)return;
  const box=new THREE.Box3().setFromObject(asset),sphere=box.getBoundingSphere(new THREE.Sphere());
- controls.target.copy(sphere.center);
- const d=Math.max(.5,sphere.radius/Math.tan(THREE.MathUtils.degToRad(camera.fov*.5))*1.4);
- camera.position.set(sphere.center.x,sphere.center.y+d*.08,sphere.center.z+d);
- camera.near=Math.max(.01,d/1000);camera.far=d*20;camera.updateProjectionMatrix();
- controls.update();renderer.render(scene,camera);
+ controls.target.copy(sphere.center);const dist=Math.max(.5,sphere.radius/Math.tan(THREE.MathUtils.degToRad(camera.fov*.5))*1.45);
+ camera.position.set(sphere.center.x,sphere.center.y+dist*.04,sphere.center.z+dist);
+ camera.near=Math.max(.01,dist/1000);camera.far=dist*20;camera.updateProjectionMatrix();controls.update();renderer.render(scene,camera);
 }
-async function setSkin(id){
- currentSkin=id;
- const tex=await loadTexture('../assets/human/skin-'+id+'.png');
- if(!sharedMaterial){
-   sharedMaterial=new THREE.MeshBasicMaterial({map:tex,color:0xffffff,toneMapped:false});
-   asset.traverse(n=>{if(n.isMesh)n.material=sharedMaterial});
- }else{
-   const old=sharedMaterial.map;
-   sharedMaterial.map=tex;sharedMaterial.needsUpdate=true;
-   if(old&&old!==tex)old.dispose();
- }
- document.querySelectorAll('[data-skin]').forEach(b=>b.dataset.on=b.dataset.skin===id?'1':'0');
- reapplyForm();renderer.render(scene,camera);
+function size(){
+ const w=Math.max(1,stage.clientWidth),h=Math.max(1,stage.clientHeight);renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();renderer.render(scene,camera);
 }
-function setForm(id){
- currentForm=id;
- document.querySelectorAll('[data-form]').forEach(b=>b.dataset.on=b.dataset.form===id?'1':'0');
- reapplyForm();fit();
+new ResizeObserver(size).observe(stage);
+
+function recipe(){return customSkin||SKINS.find(s=>s.id===skinId)||SKINS[0]}
+function updateHUD(){
+ const f=FORMS.find(x=>x.id===formId),s=recipe();
+ hud.textContent='COMMON FORM 3D · V2\n'+f.label+' · '+s.label+' · '+actionId.toUpperCase()+'\n'+f.tris+' TRIS · '+f.bones+' BONES · 1 MATERIAL\n12+ COMMON SKINS · 256² MAP';
+ trisEl.textContent=f.tris;meshesEl.textContent=f.meshes;bonesEl.textContent=f.bones;costLabel.textContent=f.source+' · '+f.clips+' source clips';
 }
-function setClip(name){
- currentClip=name;
+function applySkin(){
+ if(!asset||!baseMap?.image)return;
+ const r=recipe(),tex=recolorTexture(baseMap.image,r,formId);
+ if(!sharedMaterial){sharedMaterial=new THREE.MeshBasicMaterial({map:tex,color:0xffffff,toneMapped:false});assignMaterial(asset,sharedMaterial)}
+ else{sharedMaterial.map=tex;sharedMaterial.needsUpdate=true}
+ document.querySelectorAll('[data-skin]').forEach(b=>b.dataset.on=!customSkin&&b.dataset.skin===skinId?'1':'0');
+ updateHUD();renderer.render(scene,camera);
+}
+function setAction(id){
+ actionId=id;document.querySelectorAll('[data-action]').forEach(b=>b.dataset.on=b.dataset.action===id?'1':'0');
  if(!mixer)return;
- currentAction?.stop();
- const clip=clipMap.get(name)||clipMap.get('idle');
- currentAction=mixer.clipAction(clip);
- currentAction.reset().play();
- document.querySelectorAll('[data-clip]').forEach(b=>b.dataset.on=b.dataset.clip===name?'1':'0');
- lastTick=-1;
+ currentAction?.stop();const f=FORMS.find(x=>x.id===formId),clipName=f.actions[id]||f.actions.idle;
+ const clip=gltf.animations.find(c=>c.name===clipName)||gltf.animations[0];
+ currentAction=mixer.clipAction(clip);currentAction.reset().play();lastTick=-1;updateHUD();
 }
-function setFPS(v){
- motionFPS=v;
- document.querySelectorAll('[data-fps]').forEach(b=>b.dataset.on=Number(b.dataset.fps)===v?'1':'0');
- lastTick=-1;
+async function setForm(id){
+ const my=++token;formId=id;document.querySelectorAll('[data-form]').forEach(b=>b.dataset.on=b.dataset.form===id?'1':'0');
+ const f=FORMS.find(x=>x.id===id);hud.textContent='LOADING\n'+f.label;
+ const source=await getGLTF(f);if(my!==token)return;
+ const next=cloneSkeleton(source.scene);world.clear();asset=next;gltf=source;world.add(asset);
+ baseMap=firstMap(asset);sharedMaterial=null;mixer=new THREE.AnimationMixer(asset);
+ applySkin();setAction(actionId);fit();updateHUD();
 }
-function animate(t){
- raf=requestAnimationFrame(animate);
- if(!mixer||!currentAction)return;
- const seconds=t/1000;
- if(motionFPS===0){
-   mixer.setTime(seconds);
-   reapplyForm();
-   renderer.render(scene,camera);
- }else{
-   const q=Math.floor(seconds*motionFPS);
-   if(q===lastTick)return;
-   lastTick=q;
-   mixer.setTime(q/motionFPS);
-   reapplyForm();
-   renderer.render(scene,camera);
- }
+function setSkin(id){customSkin=null;skinId=id;customPreview.style.display='none';applySkin()}
+function setFPS(v){fps=v;lastTick=-1;document.querySelectorAll('[data-fps]').forEach(b=>b.dataset.on=Number(b.dataset.fps)===v?'1':'0')}
+function animate(ms){
+ raf=requestAnimationFrame(animate);if(!mixer||!currentAction)return;const t=ms/1000;
+ if(fps===0){mixer.setTime(t);renderer.render(scene,camera);return}
+ const q=Math.floor(t*fps);if(q===lastTick)return;lastTick=q;mixer.setTime(q/fps);renderer.render(scene,camera);
 }
 function buildUI(){
- for(const f of forms){
-   const b=document.createElement('button');b.dataset.form=f.id;b.dataset.on=f.id===currentForm?'1':'0';
-   b.innerHTML=f.label+'<br><span style="font-weight:400;color:#706b63">'+f.note+'</span>';
-   b.onclick=()=>setForm(f.id);formsEl.appendChild(b);
+ for(const f of FORMS){
+  const b=document.createElement('button');b.className='form';b.dataset.form=f.id;b.dataset.on=f.id===formId?'1':'0';
+  b.innerHTML='<strong>'+f.label+'</strong><small>'+f.tris+' tris · '+f.bones+' bones · '+f.clips+' clips</small>';b.onclick=()=>setForm(f.id);formsEl.appendChild(b);
  }
- for(const s of skins){
-   const b=document.createElement('button');b.className='skin';b.dataset.skin=s.id;b.dataset.on=s.id===currentSkin?'1':'0';
-   const img=document.createElement('img');img.src=s.texture;img.alt='skin '+s.label;img.loading='lazy';
-   const label=document.createElement('b');label.textContent=s.label;b.append(img,label);b.onclick=()=>setSkin(s.id);skinsEl.appendChild(b);
+ for(const s of SKINS){
+  const b=document.createElement('button');b.className='skin';b.dataset.skin=s.id;b.dataset.on=s.id===skinId?'1':'0';
+  const sw=document.createElement('div');sw.className='swatch';for(const c of s.c){const i=document.createElement('i');i.style.background=c;sw.appendChild(i)}
+  const l=document.createElement('b');l.textContent=s.label;b.append(sw,l);b.onclick=()=>setSkin(s.id);skinsEl.appendChild(b);
  }
- for(const c of clipsWanted){
-   const b=document.createElement('button');b.dataset.clip=c;b.dataset.on=c===currentClip?'1':'0';b.textContent=c.toUpperCase();b.onclick=()=>setClip(c);clipsEl.appendChild(b);
- }
- for(const m of fpsModes){
-   const b=document.createElement('button');b.dataset.fps=m.fps;b.dataset.on=m.fps===motionFPS?'1':'0';b.textContent=m.label;b.onclick=()=>setFPS(m.fps);fpsEl.appendChild(b);
- }
- document.getElementById('front').onclick=()=>{fit()};
- document.getElementById('fit').onclick=fit;
+ for(const a of ACTIONS){const b=document.createElement('button');b.dataset.action=a;b.dataset.on=a===actionId?'1':'0';b.textContent=a.toUpperCase();b.onclick=()=>setAction(a);actionsEl.appendChild(b)}
+ for(const m of FPS){const b=document.createElement('button');b.dataset.fps=m.v;b.dataset.on=m.v===fps?'1':'0';b.textContent=m.l;b.onclick=()=>setFPS(m.v);fpsEl.appendChild(b)}
+ document.getElementById('front').onclick=fit;document.getElementById('fit').onclick=fit;
+ document.getElementById('upload').onchange=e=>{
+  const file=e.target.files?.[0];if(!file)return;const img=new Image();
+  img.onload=()=>{const cols=dominantPalette(img);customSkin={id:'custom',label:'CUSTOM IMAGE',c:cols};customPreview.src=img.src;customPreview.style.display='block';applySkin();URL.revokeObjectURL(img.src)};
+  img.src=URL.createObjectURL(file);
+ };
 }
-
-async function start(){
- buildUI();
- const gltf=await loader.loadAsync('../assets/human/blocky-base.glb');
- asset=gltf.scene;
- root.add(asset);
- clipMap=new Map(gltf.animations.map(c=>[c.name,c]));
- mixer=new THREE.AnimationMixer(asset);
- captureBase();
- await setSkin('a');
- setForm('standard');
- setClip('idle');
- setFPS(10);
- fit();
- animate(0);
-}
-start().catch(err=>{
- hud.textContent='ERROR\n'+String(err?.message||err);
- console.error(err);
-});
+buildUI();setForm(formId);setFPS(fps);animate(0);
 </script>
 </body>
 </html>
