@@ -1,0 +1,116 @@
+/* ==UserStyle==
+@name         ChatGPT Minimal · Firefox
+@namespace    https://github.com/JuanManuelPM/Experimentos
+@version      1.0.0
+@description  Tema editorial con colores personalizados, menos ruido visual y ancho de lectura flexible.
+@author       JuanManuelPM
+@license      MIT
+@homepageURL  https://github.com/JuanManuelPM/Experimentos
+@updateURL    https://raw.githubusercontent.com/JuanManuelPM/Experimentos/master/userstyles/chatgpt-minimal.user.css
+==/UserStyle== */
+
+@-moz-document domain("chatgpt.com") {
+
+  /*
+   * V1.0.0: cambios VISIBLES y reversibles.
+   * El zoom queda bajo el control de Firefox (Ctrl + / Ctrl -).
+   * El menú de modelo, historial, adjuntos y envío siguen accesibles.
+   */
+
+  /* Paleta clara: papel cálido, tinta oscura. */
+  html:not(.dark):not([data-theme="dark"]) {
+    --bg-primary: #eee9df !important;
+    --bg-secondary: #ded8cc !important;
+    --bg-tertiary: #d4ccbf !important;
+    --main-surface-primary: #eee9df !important;
+    --main-surface-secondary: #e6dfd2 !important;
+    --sidebar-surface: #e3dccf !important;
+    --sidebar-surface-primary: #e3dccf !important;
+    --sidebar-surface-secondary: #d9d1c3 !important;
+    --composer-surface: #faf7f0 !important;
+    --composer-surface-primary: #faf7f0 !important;
+    --text-primary: #252b30 !important;
+    --text-secondary: #4b545a !important;
+    --text-tertiary: #5b666a !important;
+    --icon-primary: #252b30 !important;
+    --icon-secondary: #4b545a !important;
+    --border-default: #b9b0a2 !important;
+    --thread-content-max-width: min(1050px, calc(100vw - 32px)) !important;
+  }
+
+  /* Paleta oscura: grafito azulado, texto marfil. */
+  html.dark,
+  html[data-theme="dark"] {
+    --bg-primary: #192630 !important;
+    --bg-secondary: #293945 !important;
+    --bg-tertiary: #344957 !important;
+    --main-surface-primary: #192630 !important;
+    --main-surface-secondary: #21313d !important;
+    --sidebar-surface: #121e27 !important;
+    --sidebar-surface-primary: #121e27 !important;
+    --sidebar-surface-secondary: #1b2b36 !important;
+    --composer-surface: #293d4b !important;
+    --composer-surface-primary: #293d4b !important;
+    --text-primary: #f0eee6 !important;
+    --text-secondary: #c9d4d7 !important;
+    --text-tertiary: #a9bbbf !important;
+    --icon-primary: #f0eee6 !important;
+    --icon-secondary: #c9d4d7 !important;
+    --border-default: #516570 !important;
+    --thread-content-max-width: min(1050px, calc(100vw - 32px)) !important;
+  }
+
+  /* Respaldo para áreas que definen su fondo directamente. */
+  html,
+  body,
+  main,
+  #__next {
+    background-color: var(--main-surface-primary) !important;
+    color: var(--text-primary) !important;
+  }
+
+  .bg-token-main-surface-primary {
+    background-color: var(--main-surface-primary) !important;
+  }
+
+  .bg-token-sidebar-surface-primary {
+    background-color: var(--sidebar-surface-primary) !important;
+  }
+
+  /* Mantener legible el campo de escritura. */
+  #prompt-textarea {
+    color: var(--text-primary) !important;
+    caret-color: var(--text-primary) !important;
+  }
+
+  /* Ocultar solo el botón de compartir, no todo el encabezado. */
+  button[data-testid="share-chat-button"],
+  #page-header button[aria-label="Compartir" i],
+  #page-header button[aria-label="Share" i],
+  #page-header button[title="Compartir" i],
+  #page-header button[title="Share" i],
+  #page-header [data-testid="share-chat-button"],
+  header button[aria-label="Compartir" i],
+  header button[aria-label="Share" i],
+  header button[title="Compartir" i],
+  header button[title="Share" i] {
+    display: none !important;
+  }
+
+  /* Enlaces diferenciados de la tipografía común. */
+  html:not(.dark):not([data-theme="dark"]) .markdown a {
+    color: #155b73 !important;
+  }
+  html:is(.dark, [data-theme="dark"]) .markdown a {
+    color: #9ce5df !important;
+  }
+
+  /* No recortar bloques de código ni tablas. */
+  .markdown pre,
+  .markdown table {
+    max-width: 100% !important;
+  }
+  .markdown pre {
+    overflow-x: auto !important;
+  }
+}
