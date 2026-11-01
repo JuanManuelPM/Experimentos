@@ -215,3 +215,20 @@ test('existing unrelated chat does not count as confirmation',async()=>{
     assert.match(sh.getElementById('openText').textContent,/No pude confirmar/);
   }finally{dom.window.close();}
 });
+
+
+test('selected row cannot falsely confirm if native chat header names another contact',async()=>{
+  const {dom,w}=await run('canvas');
+  try{
+    const main=w.document.createElement('section');main.id='main';
+    main.innerHTML='<header><span title="Persona uno">Persona uno</span></header>'+
+      '<footer><div contenteditable="true" role="textbox"></div></footer>';
+    w.document.getElementById('native-right').replaceChildren(main);
+    const row=w.document.getElementById('chat-two');
+    row.setAttribute('aria-selected','true');
+    const sh=w.document.getElementById('wml-canvas-host').shadowRoot;
+    sh.querySelectorAll('.person')[1].click();
+    await new Promise(r=>setTimeout(r,2400));
+    assert.match(sh.getElementById('openText').textContent,/No pude confirmar/);
+  }finally{dom.window.close();}
+});
