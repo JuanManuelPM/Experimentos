@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         WhatsApp Minimal · Live
 // @namespace    https://github.com/JuanManuelPM/Experimentos
-// @version      1.2.0
-// @description  Base cero: oculta bienvenida, encabezado y Archivados. Restaura con ◐.
+// @version      1.3.0
+// @description  Lista angosta con nombres únicamente. Volver a Original desde ◐.
 // @author       JuanManuelPM
 // @match        https://web.whatsapp.com/*
 // @noframes
@@ -114,7 +114,7 @@
   }
   function updateState(key,val) {
     GM_setValue(key,val);
-    attrs(); applyCss(); updateUI();
+    attrs(); applyCss(); updateUI(); scheduleNakedList();
   }
   function restore() {
     updateState(MODE_KEY,'original');
@@ -362,11 +362,129 @@
     }
   }
 
+
+  /* NAKED_LIST_V21: reduce native WhatsApp DOM to its real conversation links.
+     No copied contacts, messages, network calls, or fake rows.
+     Only structural labels/rectangles, preserving WhatsApp's click handlers. */
+  let layoutObserver = null, layoutScheduled = 0;
+  function compactNakedList() {
+    if (mode() !== 'radical') return;
+    const app=document.querySelector('#app');
+    const side=document.querySelector('#side');
+    const pane=document.querySelector('#pane-side');
+    if(!app || !side || !pane) return;
+    const pw=pane.getBoundingClientRect();
+    if(pw.width<130 || window.innerWidth<650) return;
+
+    // Choose the outermost narrow flex column that contains the chat pane,
+    // but never the right conversation or full application.
+    let column=side, candidate=side;
+    for(let p=side.parentElement; p && p!==app; p=p.parentElement) {
+      const r=p.getBoundingClientRect();
+      if(p.contains(document.querySelector('#main')) && document.querySelector('#main')) break;
+      if(r.width>180 && r.width<=Math.min(730,window.innerWidth*.62) &&
+         r.height>Math.min(260,window.innerHeight*.45)) candidate=p;
+      else if(r.width>window.innerWidth*.7) break;
+    }
+    column=candidate;
+    if(column && column!==app && !column.hasAttribute('data-wml-column'))
+      column.setAttribute('data-wml-column','');
+
+    // Hide the column's extra chrome, including a lingering native header
+    // outside #side. Never hide anything containing #pane-side.
+    const firstRow=pane.querySelector('[role="row"],[role="listitem"]');
+    const firstTop=firstRow ? firstRow.getBoundingClientRect().top : pw.top+70;
+    let branch=pane;
+    for(let parent=pane.parentElement; parent && parent!==app; parent=parent.parentElement) {
+      for(const child of parent.children) {
+        if(child===branch || child.contains(pane) || child.contains(document.querySelector('#main'))) continue;
+        const r=child.getBoundingClientRect();
+        if(r.width>40 && r.height>10 && r.right<=pw.right+18 &&
+           r.bottom<=firstTop+10 && r.top<firstTop) {
+          if(!child.hasAttribute('data-wml-extra-chrome'))
+            child.setAttribute('data-wml-extra-chrome','');
+        }
+      }
+      if(parent===column) break;
+      branch=parent;
+    }
+
+    // Each native row remains clickable. Hide only sibling branches on the
+    // path to the first title. Never read textContent/innerText/contact names.
+    const rows=pane.querySelectorAll('[role="row"], [role="listitem"]');
+    let count=0;
+    for(const row of rows) {
+      if(++count>250) break;
+      if(row.closest('[data-wml-remove="archived"]')) continue;
+      // Nested rows belong to the outer row.
+      const ancestor=row.parentElement?.closest('[role="row"],[role="listitem"]');
+      if(ancestor && pane.contains(ancestor)) continue;
+      const box=row.getBoundingClientRect();
+      if(box.width<80 || box.height<22) continue;
+      const candidates=row.querySelectorAll(
+        '[data-testid="cell-frame-title"], [data-testid="chatlist-title"], '+
+        'span[title], span[dir="auto"]'
+      );
+      let name=null;
+      for(const el of candidates) {
+        const b=el.getBoundingClientRect();
+        if(b.width>8 && b.height>7 && b.left<box.left+box.width*.75 &&
+           b.top>=box.top-3 && b.top<box.top+Math.min(39,box.height*.66)) {
+          name=el;break;
+        }
+      }
+      if(!name) continue;
+      if(row.getAttribute('data-wml-chat-row')!=='yes')row.setAttribute('data-wml-chat-row','yes');
+      // Clear stale markers if WhatsApp's virtualizer recycled a row.
+      for(const hidden of row.querySelectorAll('[data-wml-row-detail]'))
+        hidden.removeAttribute('data-wml-row-detail');
+      let target=name, depth=0;
+      while(target && target!==row && depth++<15) {
+        const parent=target.parentElement;
+        if(!parent || !row.contains(parent)) break;
+        for(const sibling of parent.children) {
+          if(sibling!==target && !sibling.contains(name) &&
+            !sibling.hasAttribute('data-wml-row-detail'))
+            sibling.setAttribute('data-wml-row-detail','');
+        }
+        target=parent;
+      }
+      name.setAttribute('data-wml-chat-name','');
+    }
+
+    // When there is no selected conversation, hide the entire native
+    // welcome/advertisement content without collapsing the right pane.
+    // :not(:has(#main)) in CSS automatically restores it on selection.
+    if(!app.querySelector('#main')) {
+      let branch=column;
+      for(let p=column?.parentElement; p && p!==app; p=p.parentElement) {
+        for(const sibling of p.children) {
+          if(sibling===branch || sibling.contains(pane))continue;
+          const r=sibling.getBoundingClientRect();
+          if(r.width>Math.max(220,window.innerWidth*.25) &&
+             r.height>window.innerHeight*.45 &&
+             r.left>=pw.right-6 &&
+             !sibling.hasAttribute('data-wml-empty-right'))
+            sibling.setAttribute('data-wml-empty-right','');
+        }
+        branch=p;
+      }
+    }
+  }
+  function scheduleNakedList(){
+    if(mode()!=='radical' || layoutScheduled)return;
+    layoutScheduled=setTimeout(()=>{
+      layoutScheduled=0;
+      try { markBareChatLayout(); compactNakedList(); }
+      catch(e) { /* never stop native WhatsApp on selector drift */ }
+    },160);
+  }
+
   function init(){
     attrs();
     applyCss();
-    if(document.body){createUI();markBareChatLayout();}
-    else document.addEventListener('DOMContentLoaded',()=>{createUI();markBareChatLayout();},{once:true});
+    if(document.body){createUI();scheduleNakedList();}
+    else document.addEventListener('DOMContentLoaded',()=>{createUI();scheduleNakedList();},{once:true});
     fetchCss(true);
     setInterval(()=>fetchCss(false),60000);
     window.addEventListener('focus',()=>fetchCss(true));
@@ -379,8 +497,18 @@
     refreshTimer=setInterval(()=>{
       if(!uiRoot || !uiRoot.isConnected) {uiRoot=null;uiShadow=null;createUI();}
       if(styleNode && !styleNode.isConnected)applyCss();
-      markBareChatLayout();
-    },4000);
+      scheduleNakedList();
+    },3500);
+    const startObserver=()=>{
+      const root=document.querySelector('#app');
+      if(!root || layoutObserver)return;
+      layoutObserver=new MutationObserver(()=>scheduleNakedList());
+      layoutObserver.observe(root,{childList:true,subtree:true});
+      scheduleNakedList();
+    };
+    if(document.body)startObserver();
+    else document.addEventListener('DOMContentLoaded',startObserver,{once:true});
+    setInterval(()=>{if(!layoutObserver)startObserver();},3500);
   }
   GM_registerMenuCommand('WhatsApp Minimal: abrir panel',()=>{if(!uiRoot)createUI();toggle(true);});
   GM_registerMenuCommand('WhatsApp Minimal: restaurar original',restore);
