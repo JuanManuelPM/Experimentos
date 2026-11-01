@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         WhatsApp Minimal · Live
 // @namespace    https://github.com/JuanManuelPM/Experimentos
-// @version      1.4.0
-// @description  Superficies de chats propias: tipografía, sin separadores, ancho real ajustado.
+// @version      1.5.0
+// @description  Canvas experimental: widget de contactos reales. Modos anteriores intactos.
 // @author       JuanManuelPM
 // @match        https://web.whatsapp.com/*
 // @noframes
@@ -25,9 +25,9 @@
   const CLEAN_KEY = 'wml-clean-v1';
   const AVATAR_KEY = 'wml-avatars-v1';
   const NARROW_KEY = 'wml-narrow-v1';
-  const MODES = ['original', 'minimal', 'radical'];
+  const MODES = ['original', 'minimal', 'radical', 'canvas'];
   const THEMES = ['carbon', 'cafe', 'grafito'];
-  const LABELS = {original:'Original', minimal:'Minimal', radical:'Radical', carbon:'Carbón', cafe:'Café', grafito:'Grafito'};
+  const LABELS = {original:'Original', minimal:'Minimal', radical:'Radical', canvas:'Canvas', carbon:'Carbón', cafe:'Café', grafito:'Grafito'};
   // Network outage does not leave the initial demo entirely unchanged.
   const FALLBACK_CSS = `
     html[data-wml-mode]:not([data-wml-mode="original"]) {
@@ -114,7 +114,7 @@
   }
   function updateState(key,val) {
     GM_setValue(key,val);
-    attrs(); applyCss(); updateUI(); scheduleNakedList();
+    attrs(); applyCss(); updateUI(); scheduleNakedList(); syncCanvas();
   }
   function restore() {
     updateState(MODE_KEY,'original');
@@ -217,7 +217,7 @@
         <div class="segments" aria-label="Modo visual">
           <button data-mode="original" aria-pressed="false">Original</button>
           <button data-mode="minimal" aria-pressed="false">Minimal</button>
-          <button data-mode="radical" aria-pressed="false">Radical</button>
+          <button data-mode="radical" aria-pressed="false">Radical</button><button data-mode="canvas" aria-pressed="false">Canvas</button>
         </div>
         <div class="label">Paleta</div>
         <div class="swatches" aria-label="Temas">
@@ -509,11 +509,167 @@
     },160);
   }
 
+
+  /* WML_CANVAS_V1. No duplicate chat data. Read only displayed chat titles
+     from the original WhatsApp list, keep native click and scrolling. */
+  const canvas = {host:null,shadow:null,entries:[],pane:null,shift:0,timer:0,selected:''};
+  const canvasWidth=208;
+  function canvasSourceStyle(){
+    if(document.getElementById('wml-canvas-source-css'))return;
+    const st=document.createElement('style');
+    st.id='wml-canvas-source-css';
+    st.textContent='html[data-wml-mode="canvas"] #app {'+
+      'transform:translateX(calc(-1 * var(--wml-canvas-shift,0px))) !important;'+
+      'width:calc(100% + var(--wml-canvas-shift,0px)) !important;max-width:none !important}'+
+      'html[data-wml-mode="canvas"] body{background:#080b0d!important}';
+    (document.head||document.documentElement).appendChild(st);
+  }
+  function makeCanvas(){
+    if(canvas.host?.isConnected)return;
+    if(!document.body)return;
+    canvasSourceStyle();
+    const host=document.createElement('div');
+    host.id='wml-canvas-host';
+    host.style.cssText='position:fixed!important;inset:0!important;pointer-events:none!important;z-index:2147482000!important';
+    const sh=host.attachShadow({mode:'open'});
+    sh.innerHTML=[
+      '<style>:host{all:initial;font-family:Arial,"Liberation Sans",system-ui,sans-serif}',
+      '*,*::before,*::after{box-sizing:border-box}',
+      '#shell{position:fixed;inset:0;display:flex;pointer-events:none;color:#eceeed;background:transparent}',
+      '#contacts{width:208px;flex:0 0 208px;height:100%;min-width:0;',
+      'background:#0d1113;pointer-events:auto;overflow:hidden;display:flex;flex-direction:column}',
+      '#list{flex:1;overflow:hidden;padding:4px 0 16px;overscroll-behavior:contain}',
+      '.person{display:block;width:100%;height:34px;line-height:34px;margin:0;border:0;border-radius:0;',
+      'padding:0 12px;text-align:left;background:transparent;color:#e2e4e3;cursor:pointer;',
+      'font:400 13px/34px Arial,"Liberation Sans",system-ui,sans-serif;',
+      'letter-spacing:-.014em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}',
+      '.person:hover{background:#1b2426}',
+      '.person[data-selected="true"]{background:#263135;color:#fff}',
+      '.person:focus-visible{outline:2px solid #c0ae87;outline-offset:-2px}',
+      '#message{font:12px/1.5 Arial,sans-serif;padding:12px;color:#9ba4a7}',
+      '#right{flex:1;min-width:0;background:#080b0d;pointer-events:auto}',
+      '#right[data-chat="true"]{background:transparent;pointer-events:none}',
+      '@media(max-width:650px){#contacts{width:155px;flex-basis:155px}}',
+      '</style>',
+      '<div id="shell"><section id="contacts" role="region" aria-label="Contactos">',
+      '<div id="list" role="listbox" aria-label="Conversaciones"></div>',
+      '<p id="message" hidden></p></section><div id="right" aria-hidden="true"></div></div>'
+    ].join('');
+    sh.getElementById('list').addEventListener('click',event=>{
+      const btn=event.target.closest('[data-index]');
+      if(!btn)return;
+      const item=canvas.entries[Number(btn.dataset.index)];
+      if(!item?.row?.isConnected)return;
+      canvas.selected=item.name;
+      const native=item.row.querySelector('[role="button"],[tabindex="0"]')||item.row;
+      native.click();
+      scheduleCanvas();
+    });
+    sh.getElementById('contacts').addEventListener('wheel',event=>{
+      const pane=canvas.pane;
+      if(!pane)return;
+      let scroller=null;
+      for(const el of [pane,...pane.querySelectorAll('[data-testid="chat-list"],[role="grid"],[tabindex]')]){
+        if(el.scrollHeight>el.clientHeight+20&&el.clientHeight>80 &&
+          /auto|scroll/.test(getComputedStyle(el).overflowY)){scroller=el;break;}
+      }
+      scroller=scroller||pane;
+      if(scroller.scrollHeight>scroller.clientHeight+20){
+        event.preventDefault();
+        scroller.scrollTop+=event.deltaY;
+        scheduleCanvas();
+      }
+    },{passive:false});
+    document.body.appendChild(host);
+    canvas.host=host;canvas.shadow=sh;
+  }
+  function canvasEntries(pane){
+    if(!pane)return [];
+    const items=pane.querySelectorAll('[role="row"],[role="listitem"],'+
+      '[data-testid="cell-frame-container"],[data-testid="chat-list-item"]');
+    const result=[],names=new Set();
+    let scanned=0;
+    for(const row of items){
+      if(++scanned>350)break;
+      if(row.parentElement?.closest('[role="row"],[role="listitem"]'))continue;
+      if(row.matches('[data-testid*="archived" i]')||row.querySelector('[data-icon="archived"]'))continue;
+      const title=row.querySelector('[data-testid="cell-frame-title"],'+
+        '[data-testid="chatlist-title"],span[title],span[dir="auto"]');
+      if(!title)continue;
+      // In-memory name only, not message text or preview.
+      const name=(title.getAttribute('title')||title.textContent||'').trim();
+      if(!name||name.length>140||names.has(name))continue;
+      names.add(name);
+      result.push({row,name,selected:row.getAttribute('aria-selected')==='true'||
+        !!row.querySelector('[aria-selected="true"]')});
+    }
+    return result;
+  }
+  function updateCanvasShift(){
+    const main=document.querySelector('#main');
+    const pane=document.querySelector('#pane-side');
+    const edge=main?.getBoundingClientRect().left ?? pane?.getBoundingClientRect().right;
+    if(!Number.isFinite(edge))return;
+    // Undo the previously applied translation before measuring.
+    const next=Math.max(0,Math.min(900,Math.round(edge+canvas.shift-canvasWidth)));
+    if(Math.abs(next-canvas.shift)>3){
+      canvas.shift=next;
+      document.documentElement.style.setProperty('--wml-canvas-shift',next+'px');
+    }
+  }
+  function renderCanvas(){
+    if(mode()!=='canvas'||!canvas.shadow)return;
+    const pane=document.querySelector('#pane-side');
+    canvas.pane=pane;
+    const entries=canvasEntries(pane);
+    const list=canvas.shadow.getElementById('list');
+    const hasChat=!!document.querySelector('#main');
+    canvas.shadow.getElementById('right').dataset.chat=String(hasChat);
+    const sig=entries.map(e=>e.name+(e.selected?'*':'')).join('|');
+    if(list.dataset.signature!==sig){
+      const frag=document.createDocumentFragment();
+      entries.forEach((item,i)=>{
+        const btn=document.createElement('button');
+        btn.type='button';btn.className='person';btn.dataset.index=String(i);
+        btn.dataset.selected=String(item.selected||item.name===canvas.selected);
+        btn.setAttribute('role','option');
+        btn.setAttribute('aria-selected',btn.dataset.selected);
+        btn.textContent=item.name;
+        frag.appendChild(btn);
+      });
+      list.replaceChildren(frag);
+      list.dataset.signature=sig;
+    }
+    canvas.entries=entries;
+    const msg=canvas.shadow.getElementById('message');
+    msg.hidden=entries.length>0;
+    if(!entries.length)msg.textContent=pane?'No hay chats cargados en la vista.':'Cargando WhatsApp…';
+    updateCanvasShift();
+  }
+  function scheduleCanvas(){
+    if(mode()!=='canvas'||canvas.timer)return;
+    canvas.timer=setTimeout(()=>{
+      canvas.timer=0;
+      try{renderCanvas();}catch(_){} // fail open, native WhatsApp unaffected
+    },140);
+  }
+  function syncCanvas(){
+    if(mode()!=='canvas'){
+      if(canvas.host)canvas.host.remove();
+      canvas.host=null;canvas.shadow=null;canvas.pane=null;
+      canvas.entries=[];canvas.selected='';canvas.shift=0;
+      document.documentElement.style.removeProperty('--wml-canvas-shift');
+      return;
+    }
+    makeCanvas();
+    scheduleCanvas();
+  }
+
   function init(){
     attrs();
     applyCss();
-    if(document.body){createUI();scheduleNakedList();}
-    else document.addEventListener('DOMContentLoaded',()=>{createUI();scheduleNakedList();},{once:true});
+    if(document.body){createUI();scheduleNakedList();syncCanvas();}
+    else document.addEventListener('DOMContentLoaded',()=>{createUI();scheduleNakedList();syncCanvas();},{once:true});
     fetchCss(true);
     setInterval(()=>fetchCss(false),60000);
     window.addEventListener('focus',()=>fetchCss(true));
@@ -527,11 +683,12 @@
       if(!uiRoot || !uiRoot.isConnected) {uiRoot=null;uiShadow=null;createUI();}
       if(styleNode && !styleNode.isConnected)applyCss();
       scheduleNakedList();
+      if(mode()==='canvas'){makeCanvas();scheduleCanvas();}
     },3500);
     const startObserver=()=>{
       const root=document.querySelector('#app');
       if(!root || layoutObserver)return;
-      layoutObserver=new MutationObserver(()=>scheduleNakedList());
+      layoutObserver=new MutationObserver(()=>{scheduleNakedList();scheduleCanvas();});
       layoutObserver.observe(root,{childList:true,subtree:true});
       scheduleNakedList();
     };
