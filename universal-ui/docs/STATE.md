@@ -5,6 +5,8 @@
 
 ## Hecho
 
+- **Corrección real del observador en rama candidata:** se evitó el bucle de reaplicaciones causadas por la hoja `#uui-style` y ahora se detectan cambios de selectores por atributos sin añadir nodos (ver `OBSERVER_REPAIR_2026-11-01.md`).
+
 - 40 archivos de fuente importados íntegramente desde `universal-ui-v0.1.0.zip` a GitHub en esta rama.
 - Núcleo común, sistema de temas, perfiles y verificación; adaptadores ChatGPT, WhatsApp Web y Wikipedia.
 - Interfaz con un único botón/popup de Firefox; documentación y código de demo.
