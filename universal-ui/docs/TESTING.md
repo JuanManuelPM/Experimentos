@@ -1,6 +1,6 @@
 # Pruebas
 
-`npm test` · 32 pruebas · `node:test` + jsdom. Cargan los mismos archivos que la extensión (`core/`, `adapters/`) dentro de páginas sintéticas (`test/fixtures/`).
+`npm test` · 34 pruebas declaradas (32 originales + 2 regresiones) · `node:test` + jsdom. Cargan los mismos archivos que la extensión (`core/`, `adapters/`) dentro de páginas sintéticas (`test/fixtures/`).
 
 Las páginas sintéticas reproducen la estructura de selectores, no son capturas de los sitios: no contienen conversaciones, mensajes ni contactos.
 
@@ -34,3 +34,11 @@ Las páginas sintéticas reproducen la estructura de selectores, no son capturas
 - Los sitios reales (ver STATE.md, paso 1).
 - Firefox real: permisos, `scripting.executeScript`, cierre del panel al pedir permiso.
 - Rendimiento del observador en conversaciones muy largas.
+
+## Regresión del observador · 2026-11-01
+
+- Antes del arreglo: tras una sola inserción DOM externa se observaron **12 informes en ~550 ms** en cada fixture (ChatGPT, WhatsApp y Wikipedia); se realimentaba por escritura en `#uui-style`.
+- Después: **3 informes** en ~550 ms, incluyendo aplicación inicial, una actualización por cambio externo y consulta explícita. Restauración completa de `data-uui-hide`.
+- Una mutación **solo de `data-testid`**, sin insertar nodos, dispara reevaluación: el botón Compartir pasa del selector principal al alternativo y registra `selector alternativo`.
+- Esta comprobación se hizo con **Chromium y fixtures sintéticos**. NO equivale a comprobar Firefox real ni los sitios públicos.
+- **Suite `npm test`: NO EJECUTADA como prueba completa aquí** porque `npm ci` quedó bloqueado y falta `jsdom/index.js`; el número 34 describe casos escritos, no PASS.
