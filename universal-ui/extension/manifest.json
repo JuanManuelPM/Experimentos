@@ -19,13 +19,6 @@
     "activeTab",
     "scripting"
   ],
-  "host_permissions": [
-    "https://chatgpt.com/*",
-    "https://chat.openai.com/*",
-    "https://web.whatsapp.com/*",
-    "https://es.wikipedia.org/*",
-    "https://en.wikipedia.org/*"
-  ],
   "action": {
     "default_title": "Universal UI (Alt+Shift+U)",
     "default_popup": "popup/popup.html",
@@ -42,32 +35,15 @@
       "description": "Abrir Universal UI"
     }
   },
-  "content_scripts": [
-    {
-      "matches": [
-        "https://chatgpt.com/*",
-        "https://chat.openai.com/*",
-        "https://web.whatsapp.com/*",
-        "https://es.wikipedia.org/*",
-        "https://en.wikipedia.org/*"
-      ],
-      "js": [
-        "core/status.js",
-        "core/themes.js",
-        "core/schema.js",
-        "core/store.js",
-        "core/adapter.js",
-        "core/engine.js",
-        "adapters/chatgpt.js",
-        "adapters/whatsapp.js",
-        "adapters/wikipedia.js",
-        "content/content.js"
-      ],
-      "run_at": "document_idle"
-    }
-  ],
   "icons": {
     "48": "icons/icon.svg",
     "96": "icons/icon.svg"
-  }
+  },
+  "optional_host_permissions": [
+    "https://chatgpt.com/*",
+    "https://chat.openai.com/*",
+    "https://web.whatsapp.com/*",
+    "https://es.wikipedia.org/*",
+    "https://en.wikipedia.org/*"
+  ]
 }
