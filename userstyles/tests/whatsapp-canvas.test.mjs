@@ -154,3 +154,64 @@ test('native composer is present through transparent conversation pane, never co
     assert.equal(main.isConnected,true);
   } finally {dom.window.close();}
 });
+
+
+test('inner native chat title opens the correct conversation when outer row has no handler',async()=>{
+  const {dom,w}=await run('canvas');
+  try{
+    let innerClicks=0, outerClicks=0;
+    const row=w.document.getElementById('chat-two');
+    row.addEventListener('click',event=>{if(event.target===row)outerClicks++;});
+    row.querySelector('[data-testid="cell-frame-title"]').addEventListener('click',()=>{
+      innerClicks++;
+      row.setAttribute('aria-selected','true');
+      const main=w.document.createElement('section');
+      main.id='main';
+      main.innerHTML='<header><span title="Persona dos">Persona dos</span></header>'+
+        '<footer><div contenteditable="true" role="textbox"></div></footer>';
+      w.document.getElementById('native-right').replaceChildren(main);
+    });
+    const sh=w.document.getElementById('wml-canvas-host').shadowRoot;
+    sh.querySelectorAll('.person')[1].click();
+    await new Promise(r=>setTimeout(r,440));
+    assert.equal(innerClicks,1,'inner title, not outer row, receives native click');
+    assert.equal(outerClicks,0,'outer wrapper not used as event target');
+    assert.equal(sh.getElementById('openNotice').hidden,true,'correct chat verified');
+    assert.equal(sh.getElementById('shell').dataset.chat,'true');
+    assert.ok(w.document.querySelector('#main footer [contenteditable="true"]'));
+  }finally{dom.window.close();}
+});
+
+test('a click without native conversation confirmation shows an honest fallback',async()=>{
+  const {dom,w,saved}=await run('canvas');
+  try{
+    const sh=w.document.getElementById('wml-canvas-host').shadowRoot;
+    sh.querySelector('.person').click();
+    assert.equal(sh.getElementById('openNotice').hidden,false,'pending state is visible');
+    await new Promise(r=>setTimeout(r,2400));
+    assert.equal(sh.getElementById('openNotice').hidden,false);
+    assert.match(sh.getElementById('openText').textContent,/No pude confirmar/);
+    const original=sh.getElementById('openOriginal');
+    assert.equal(original.hidden,false);
+    original.click();
+    assert.equal(saved.get('wml-mode-v1'),'original');
+    assert.equal(w.document.getElementById('wml-canvas-host'),null);
+    assert.ok(w.document.getElementById('chat-one'));
+  }finally{dom.window.close();}
+});
+
+test('existing unrelated chat does not count as confirmation',async()=>{
+  const {dom,w}=await run('canvas');
+  try{
+    const old=w.document.createElement('section');
+    old.id='main';
+    old.innerHTML='<header><span title="Persona uno">Persona uno</span></header>'+
+      '<footer><div contenteditable="true"></div></footer>';
+    w.document.getElementById('native-right').replaceChildren(old);
+    const sh=w.document.getElementById('wml-canvas-host').shadowRoot;
+    sh.querySelectorAll('.person')[1].click();
+    await new Promise(r=>setTimeout(r,2450));
+    assert.equal(sh.getElementById('openNotice').hidden,false);
+    assert.match(sh.getElementById('openText').textContent,/No pude confirmar/);
+  }finally{dom.window.close();}
+});
