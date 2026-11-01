@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Universal UI · demo</title>
+<title>Universal UI · Demostración interactiva</title>
 <style>
 /* Universal UI · panel. Sistema visual Riel (tema Tide). Hairlines, una sola énfasis. */
 :root {
@@ -141,12 +141,12 @@ iframe { width: 100%; height: 620px; border: 0; background: #fff; display: block
   <section id="view-profiles" role="tabpanel" aria-labelledby="tab-profiles" hidden></section>
   <p id="toast" class="toast" role="status" aria-live="polite"></p>
 </div>
-    <p class="note">SIMULACIÓN · páginas sintéticas de test/fixtures, no los sitios reales. El panel, el motor y los adaptadores son los mismos archivos que usa la extensión. Los cambios se aplican en vivo a las tres pestañas.</p>
+    <p class="note">DEMOSTRACIÓN SIN MENSAJES REALES · páginas sintéticas de test/fixtures, no los sitios reales. El panel, el motor y los adaptadores son los mismos archivos que usa la extensión. Los cambios se aplican en vivo a las tres pestañas.</p>
   </div>
   <div class="browser">
     <div class="chrome" role="group" aria-label="Pestañas simuladas">
       <button class="tabbtn" data-app="chatgpt" aria-pressed="false">chatgpt.com</button><button class="tabbtn" data-app="whatsapp" aria-pressed="false">web.whatsapp.com</button><button class="tabbtn" data-app="wikipedia" aria-pressed="false">es.wikipedia.org</button>
-      <span class="sim">simulación</span>
+      <span class="sim">DEMO · páginas de prueba</span>
     </div>
     <iframe title="chatgpt (simulación)" data-app="chatgpt" srcdoc="<!doctype html>
 <!-- FIXTURE SINTÉTICO. Reproduce la estructura de selectores que usa el adaptador,
@@ -162,26 +162,41 @@ iframe { width: 100%; height: 620px; border: 0; background: #fff; display: block
   .markdown { font-size: 16px; }
   .max-w-\(--thread-content-max-width\) { max-width: 768px; }
 </style>
-</head>
+<style>
+*{box-sizing:border-box}html,body{height:100%}body{margin:0;background:#1d1d1d;color:#e7ecea;font:15px/1.6 system-ui,sans-serif;--main-surface-primary:#1d1d1d;--sidebar-surface-primary:#191919;--text-primary:#e7ecea}
+#app-shell-sidebar{position:absolute;left:0;top:0;bottom:0;width:214px;padding:26px 15px;background:var(--sidebar-surface-primary);border-right:1px solid #454545}
+#app-shell-sidebar a{display:block;color:#e3e7e5;margin:8px 0;padding:12px;border-radius:8px;text-decoration:none}
+[data-app-shell-main-content-layout]{margin-left:214px;min-height:100vh;background:var(--main-surface-primary)}
+#page-header{height:65px;display:flex;justify-content:flex-end;align-items:center;padding:14px 24px;border-bottom:1px solid #3b4040}
+#page-header button{color:#e9ece8;background:#2c383b;border:1px solid #536164;border-radius:9px;padding:8px 13px}
+main{min-height:calc(100vh - 65px);padding:60px 7% 35px;display:flex;flex-direction:column;gap:30px}
+article{width:100%;margin:0 auto;max-width:960px}article>div>div{max-width:760px;margin:auto}
+[data-message-author-role=user]{background:#343a39;border-radius:12px;padding:15px;margin:0 0 0 auto;max-width:75%;width:max-content}
+[data-message-author-role=assistant]{color:var(--text-primary)}.markdown p{font-size:19px!important;margin:12px 0 25px}
+article button{border:1px solid #677;border-radius:6px;background:transparent;color:#eee;padding:4px 10px}
+form{margin-top:auto}form [data-testid=composer]{background:#303638;padding:15px;display:flex;border:1px solid #626b6b;border-radius:18px;gap:12px;max-width:760px;margin:auto}
+#prompt-textarea{flex:1;min-height:60px;background:transparent;color:#fff;border:0}form button{border-radius:8px;border:0;padding:6px 12px}
+[data-testid=thread-disclaimer]{text-align:center;color:#919d9f;font-size:11px;padding:12px}
+</style></head>
 <body>
   <div id=&quot;app-shell-sidebar&quot;>
     <a data-testid=&quot;create-new-chat-button&quot; href=&quot;/&quot;>Nuevo</a>
-    <a href=&quot;/pricing&quot;>[promo]</a>
-    <a href=&quot;/manage&quot;>[manage]</a>
+    <a href=&quot;/pricing&quot;>Upgrade</a>
+    <a href=&quot;/manage&quot;>Administrar</a>
   </div>
   <div data-app-shell-main-content-layout>
     <div id=&quot;page-header&quot;>
-      <button data-testid=&quot;share-chat-button&quot; aria-label=&quot;Share&quot;>[share]</button>
+      <button data-testid=&quot;share-chat-button&quot; aria-label=&quot;Share&quot;>Compartir</button>
     </div>
     <main>
       <article data-testid=&quot;conversation-turn-1&quot;>
         <div><div class=&quot;max-w-(--thread-content-max-width)&quot;>
-          <div data-message-author-role=&quot;user&quot;><div class=&quot;whitespace-pre-wrap&quot;>[mensaje de prueba]</div></div>
+          <div data-message-author-role=&quot;user&quot;><div class=&quot;whitespace-pre-wrap&quot;>Quiero un diseño más simple y cómodo.</div></div>
         </div></div>
       </article>
       <article data-testid=&quot;conversation-turn-2&quot;>
         <div><div class=&quot;max-w-(--thread-content-max-width)&quot;>
-          <div data-message-author-role=&quot;assistant&quot;><div class=&quot;markdown&quot;><p>[respuesta de prueba]</p></div>
+          <div data-message-author-role=&quot;assistant&quot;><div class=&quot;markdown&quot;><p>Podemos usar un solo menú universal para todas tus aplicaciones.</p></div>
             <button data-testid=&quot;good-response-turn-action-button&quot;>+</button>
             <button data-testid=&quot;bad-response-turn-action-button&quot;>−</button>
           </div>
@@ -191,7 +206,7 @@ iframe { width: 100%; height: 620px; border: 0; background: #fff; display: block
         <div data-testid=&quot;composer&quot;><textarea id=&quot;prompt-textarea&quot;></textarea>
           <button data-testid=&quot;send-button&quot; type=&quot;submit&quot;>[enviar]</button></div>
       </form>
-      <div data-testid=&quot;thread-disclaimer&quot;>[aviso]</div>
+      <div data-testid=&quot;thread-disclaimer&quot;>Aviso de prueba</div>
     </main>
   </div>
 </body>
@@ -208,29 +223,51 @@ iframe { width: 100%; height: 620px; border: 0; background: #fff; display: block
   #main header { background-color: #202c33; }
   #main [role=&quot;application&quot;] { max-width: 920px; }
 </style>
-</head>
+<style>
+*{box-sizing:border-box}html,body{height:100%}body{margin:0;color:#e9edef;background:#0b141a;font:14px/1.4 system-ui,sans-serif;--panel-background:#101d24;--conversation-panel-background:#0b141a;--primary:#eff2f1;--secondary:#93a6aa}
+#app{display:grid;grid-template-columns:54px 305px minmax(0,1fr);height:100vh;overflow:hidden}
+#app>header{grid-column:1;grid-row:1;background:#1b2a31;display:flex;flex-direction:column;align-items:center;gap:13px;padding:18px 4px;border-right:1px solid #35424a}
+#app>header button{color:#d8e4e4;background:none;border:0;padding:8px;font-size:14px;border-radius:9px;min-width:40px;min-height:36px}
+#side{grid-column:2;grid-row:1;min-width:0;display:flex;flex-direction:column;background:var(--panel-background);border-right:1px solid #344149;padding:0}
+#side>button{align-self:flex-end;border:0;background:transparent;color:#deece9;margin:12px;padding:8px}
+#side [role=textbox]{margin:0 12px 12px;padding:12px;border-radius:10px;background:#2a363c;min-height:42px}
+#side [role=textbox]:empty:before{content:'⌕  Buscar una conversación';color:#9babb1}
+#side [role=tablist]{display:flex;gap:6px;padding:0 12px 14px}
+#side [role=tablist] button{background:#274337;color:#baddcf;border:0;border-radius:15px;padding:7px 13px}
+#pane-side{flex:1;background:var(--panel-background);overflow:auto}
+#pane-side>button{background:none;border:0;color:#b8d4cd;padding:15px;display:block}
+#pane-side [role=listitem]{height:72px!important;padding:14px 15px!important;border-top:1px solid #304048;display:flex;align-items:center;gap:14px;font-weight:600}
+#pane-side [role=listitem] img{width:38px;height:38px;border-radius:50%;background:#a9cbbd;content-visibility:hidden}
+#main{grid-column:3;grid-row:1;min-width:0;background:var(--conversation-panel-background);display:flex;flex-direction:column}
+#main>header{height:72px;flex:none;padding:23px 26px;color:var(--primary);background:#202f36!important;font-weight:700}
+#main [role=application]{flex:1;min-height:0;display:flex;flex-direction:column;gap:18px;padding:46px 8%;background:var(--conversation-panel-background);color:var(--primary)}
+#main .copyable-text{background:#2c3a3f;padding:16px 18px;border-radius:12px;width:max-content;max-width:75%;font-size:15px;color:var(--primary)}
+#main>footer{display:flex;gap:12px;padding:16px 22px;background:#233139}
+#main>footer [contenteditable]{border-radius:10px;padding:13px;background:#35464b;color:var(--primary);flex:1;min-height:45px}
+#main>footer button{border:0;border-radius:50%;background:#94bfb1;padding:8px 14px;color:#19352c}
+</style></head>
 <body class=&quot;dark&quot;>
   <div id=&quot;app&quot;>
     <header data-tab=&quot;2&quot;>
-      <button aria-label=&quot;Chats&quot;>c</button>
-      <button aria-label=&quot;Status&quot;>s</button>
-      <button aria-label=&quot;Channels&quot;>ch</button>
-      <button aria-label=&quot;Communities&quot;>co</button>
-      <button aria-label=&quot;Meta AI&quot;>m</button>
+      <button aria-label=&quot;Chats&quot;>▤</button>
+      <button aria-label=&quot;Status&quot;>◉</button>
+      <button aria-label=&quot;Channels&quot;>⌁</button>
+      <button aria-label=&quot;Communities&quot;>♧</button>
+      <button aria-label=&quot;Meta AI&quot;>✺</button>
     </header>
     <div id=&quot;side&quot;>
       <button aria-label=&quot;New chat&quot;><span data-icon=&quot;new-chat-outline&quot;></span></button>
       <div contenteditable=&quot;true&quot; role=&quot;textbox&quot; aria-label=&quot;Buscar&quot;></div>
       <div role=&quot;tablist&quot;><button role=&quot;tab&quot;>Todos</button><button role=&quot;tab&quot;>No leídos</button></div>
       <div id=&quot;pane-side&quot;>
-        <button aria-label=&quot;Archived&quot;>[archivados]</button>
-        <div role=&quot;listitem&quot; style=&quot;padding-top: 10px; padding-bottom: 10px&quot;><img alt=&quot;&quot; src=&quot;data:,&quot;> [chat]</div>
-        <div role=&quot;listitem&quot; style=&quot;padding-top: 10px; padding-bottom: 10px&quot;><img alt=&quot;&quot; src=&quot;data:,&quot;> [chat]</div>
+        <button aria-label=&quot;Archived&quot;>▥ Archivados</button>
+        <div role=&quot;listitem&quot; style=&quot;padding-top: 10px; padding-bottom: 10px&quot;><img alt=&quot;&quot; src=&quot;data:,&quot;> Marina · Nos vemos mañana</div>
+        <div role=&quot;listitem&quot; style=&quot;padding-top: 10px; padding-bottom: 10px&quot;><img alt=&quot;&quot; src=&quot;data:,&quot;> Marina · Nos vemos mañana</div>
       </div>
     </div>
     <div id=&quot;main&quot;>
-      <header>[contacto]</header>
-      <div role=&quot;application&quot;><div class=&quot;copyable-text&quot;>[mensaje de prueba]</div></div>
+      <header>Marina  ·  en línea</header>
+      <div role=&quot;application&quot;><div class=&quot;copyable-text&quot;>¿Te parece si lo simplificamos así?</div></div>
       <footer><div contenteditable=&quot;true&quot; role=&quot;textbox&quot;></div><button aria-label=&quot;Send&quot;><span data-icon=&quot;send&quot;></span></button></footer>
     </div>
   </div>
@@ -1609,7 +1646,7 @@ html[data-uui-theme] a { color: var(--uui-accent) !important; }`,
     document.querySelectorAll('.tabbtn').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.app === id)));
     document.querySelectorAll('iframe').forEach(f => { f.hidden = f.dataset.app !== id; });
   }
-  show('chatgpt');
+  show('whatsapp');
   let panel = null;
   const env = {
     store,
@@ -1622,6 +1659,14 @@ html[data-uui-theme] a { color: var(--uui-accent) !important; }`,
   };
   Promise.all(ready).then(() => {
     panel = UUI.mountPanel(document.getElementById('uui'), env);
+    store.update(s => {
+      const themed = UUI.store.setValue(s, {level:'app', appId:'whatsapp', key:'theme'}, 'cafe');
+      return UUI.store.setValue(themed, {level:'app', appId:'whatsapp', key:'mode'}, 'minimal');
+    }).then(async saved => {
+      panel.state.settings = saved;
+      panel.state.ctx = await env.getContext();
+      await panel.refreshReport();
+    });
     document.querySelectorAll('.tabbtn').forEach(b => b.addEventListener('click', async () => {
       show(b.dataset.app);
       panel.state.ctx = await env.getContext();
