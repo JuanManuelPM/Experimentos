@@ -1,0 +1,142 @@
+/* CHATGPT_LIVE_STYLE_V1
+   SAFE_TEXT_CONTRAST_V2
+   CANDIDATE_MOCHA_2026_11_01
+   Inspired by redneurocom/chatgpt-mocha-userstyle (MIT)
+   Design research: catppuccin/userstyles PR #2333 (Oct 2026):
+   ChatGPT changed to data-theme and --color-* tokens.
+   Dark-mode-only. Never invert light-mode text/background separately.
+   Compatible with ChatGPT Minimal Live 1.1.0 validator:
+   --text-primary: var(--cm-text) !important;
+   [data-message-author-role="assistant"]
+   License: MIT, compatible with inspiration.
+*/
+
+/* Theme names vary the accent, not the contrast pairing. */
+html[data-cm-theme="aire"]    { --cm-accent: #94e2d5; --cm-accent-rgb: 148,226,213; }
+html[data-cm-theme="cafe"]    { --cm-accent: #f5cba7; --cm-accent-rgb: 245,203,167; }
+html[data-cm-theme="ambar"]   { --cm-accent: #f9e2af; --cm-accent-rgb: 249,226,175; }
+html[data-cm-theme="papel"]   { --cm-accent: #bac2de; --cm-accent-rgb: 186,194,222; }
+html[data-cm-theme="grafito"] { --cm-accent: #cba6f7; --cm-accent-rgb: 203,166,247; }
+
+/* Never style ChatGPT light mode: it may have hardcoded dark text.
+   The native dark scheme is essential for consistent contrast. */
+:is(html[data-theme="dark"], html.dark)[data-cm-theme] {
+  --cm-base: #1e1e2e;
+  --cm-main: #191925;
+  --cm-side: #151520;
+  --cm-card: #262638;
+  --cm-text: #e3e6f3;
+  --cm-muted: #b5bdd3;
+  --cm-border: #44465e;
+
+  color-scheme: dark !important;
+
+  /* Old and new ChatGPT token families, kept in sync. */
+  --text-primary: var(--cm-text) !important;
+  --text-secondary: var(--cm-muted) !important;
+  --text-tertiary: var(--cm-muted) !important;
+  --icon-primary: var(--cm-text) !important;
+  --icon-secondary: var(--cm-muted) !important;
+
+  --bg-primary: var(--cm-main) !important;
+  --bg-secondary: var(--cm-card) !important;
+  --bg-tertiary: var(--cm-card) !important;
+  --main-surface-primary: var(--cm-main) !important;
+  --main-surface-secondary: var(--cm-card) !important;
+  --sidebar-surface-primary: var(--cm-side) !important;
+  --sidebar-surface-secondary: var(--cm-base) !important;
+
+  --color-surface: var(--cm-main) !important;
+  --color-surface-secondary: var(--cm-card) !important;
+  --color-background-panel: var(--cm-side) !important;
+  --color-background-composer-surface: var(--cm-card) !important;
+  --color-background-composer-action-bar: var(--cm-card) !important;
+  --color-text: var(--cm-text) !important;
+  --color-text-primary: var(--cm-text) !important;
+  --color-text-prose: var(--cm-text) !important;
+  --color-text-emphasis: var(--cm-text) !important;
+  --color-text-secondary: var(--cm-muted) !important;
+  --color-text-tertiary: var(--cm-muted) !important;
+  --color-border-button-outline: var(--cm-border) !important;
+  --color-text-button-outline: var(--cm-text) !important;
+}
+@media (min-width: 900px) {
+  :is(html[data-theme="dark"], html.dark)[data-cm-wide="yes"] {
+    --thread-content-max-width: min(1700px, calc(100vw - 7rem)) !important;
+    --thread-body-max-width: min(1700px, calc(100vw - 7rem)) !important;
+  }
+  :is(html[data-theme="dark"], html.dark)[data-cm-wide="yes"] main :is(
+    article, [data-message-author-role], [data-message-author-role] > div,
+    .prose, .agent-turn, [class*="thread-content-max-width"],
+    [data-content-search-unit-key], [data-chatgpt-search-unit-key]
+  ) {
+    max-width: min(1700px, calc(100vw - 7rem)) !important;
+  }
+  :is(html[data-theme="dark"], html.dark)[data-cm-wide="yes"]
+    main :is([data-message-author-role="assistant"], .agent-turn) {
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+  :is(html[data-theme="dark"], html.dark)[data-cm-wide="yes"]
+    :is([data-testid="composer"], [data-testid="composer-root"],
+        main form:has(#prompt-textarea)) {
+    max-width: min(1700px, calc(100vw - 7rem)) !important;
+    width: calc(100% - 2rem) !important;
+  }
+}
+
+/* Dark on dark: a single pair of foreground/background colors.
+   In particular, never set the color of every descendant in main. */
+:is(html[data-theme="dark"], html.dark)[data-cm-theme]
+  [data-app-shell-main-content-layout] {
+  background:
+    radial-gradient(ellipse 72% 65% at 4% 0%,
+      rgba(var(--cm-accent-rgb), .065), transparent 66%),
+    var(--cm-main) !important;
+}
+:is(html[data-theme="dark"], html.dark)[data-cm-theme]
+  :is(aside[data-app-shell-left-panel-appearance], [data-app-navigation-rail="true"]) {
+  background: var(--cm-side) !important;
+  border-right: 1px solid var(--cm-border) !important;
+}
+
+:is(html[data-theme="dark"], html.dark)[data-cm-theme]
+  [data-user-message-bubble="true"] {
+  border: 1px solid rgba(var(--cm-accent-rgb), .45) !important;
+  background-color: var(--cm-card) !important;
+  color: var(--cm-text) !important;
+  border-radius: 16px !important;
+}
+:is(html[data-theme="dark"], html.dark)[data-cm-theme]
+  [data-message-author-role="assistant"] {
+  --text-primary: var(--cm-text) !important;
+  --color-text-prose: var(--cm-text) !important;
+}
+:is(html[data-theme="dark"], html.dark)[data-cm-theme]
+  #prompt-textarea {
+  caret-color: var(--cm-text) !important;
+}
+:is(html[data-theme="dark"], html.dark)[data-cm-theme]
+  :is([data-testid="composer"],[data-testid="composer-root"]) {
+  border: 1px solid rgba(var(--cm-accent-rgb), .52) !important;
+  background: var(--cm-card) !important;
+  border-radius: 18px !important;
+}
+:is(html[data-theme="dark"], html.dark)[data-cm-theme]
+  :is(.markdown, .prose) a {
+  color: var(--cm-accent) !important;
+}
+:is(html[data-theme="dark"], html.dark)[data-cm-theme]
+  :is(.markdown, .prose) pre {
+  max-width: 100% !important;
+  overflow-x: auto !important;
+}
+:is(html[data-theme="dark"], html.dark)[data-cm-theme]
+  ::selection {
+  background: rgba(var(--cm-accent-rgb), .33) !important;
+}
+/* Hide only Share; never remove the entire header. */
+:is(html[data-theme="dark"], html.dark)[data-cm-theme]
+  button[data-testid="share-chat-button"] {
+  display: none !important;
+}
