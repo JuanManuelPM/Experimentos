@@ -1,7 +1,7 @@
 /* ==UserStyle==
 @name         ChatGPT Minimal · Firefox
 @namespace    https://github.com/JuanManuelPM/Experimentos
-@version      1.1.0
+@version      1.1.1
 @description  Temas editoriales seleccionables, conversacion a pantalla ancha y controles discretos.
 @author       JuanManuelPM
 @license      MIT
@@ -16,7 +16,7 @@
 
 @-moz-document domain("chatgpt.com") {
   /*
-   * ChatGPT Minimal 1.1.0
+   * ChatGPT Minimal 1.1.1
    * Solo CSS: no recopila datos, no envía nada y no modifica las funciones.
    * La configuración del tema está en Stylus → Configure.
    * Los márgenes se adaptan al panel disponible, no al ancho total de la ventana.
@@ -178,10 +178,27 @@
         min-width: 0 !important;
       }
 
-      /* El cuadro de escritura sigue el mismo ancho, sin afectar otros paneles. */
-      main [class*="max-w-"]:has(#prompt-textarea) {
+      /* Compatibilidad con las capas de ancho usadas en 2026. */
+      main article,
+      main [data-message-author-role],
+      main [data-message-author-role] > div,
+      main .prose {
         max-width: calc(100% - 1.5rem) !important;
+      }
+
+      main [data-message-author-role],
+      main .prose {
         width: 100% !important;
+        min-width: 0 !important;
+      }
+
+      /* El cuadro de escritura sigue el mismo ancho, sin afectar otros paneles. */
+      main [class*="max-w-"]:has(#prompt-textarea),
+      [data-testid="composer"],
+      [data-testid="composer-root"],
+      main form:has(textarea) {
+        max-width: calc(100% - 1.5rem) !important;
+        width: calc(100% - 1.5rem) !important;
       }
     } else {
       :root,
