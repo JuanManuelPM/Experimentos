@@ -249,4 +249,74 @@ html[data-wml-mode="radical"] #app :is(#main, #side, #pane-side) {
 }
 /* Fin WHATSAPP_EMPTY_BASE_V3 */
 
+
+/* WHATSAPP_NAKED_LIST_V21 · 2026-11-01
+   Solo nombres; conserva las filas originales y su click. No se cambia la
+   altura del virtualizador de WhatsApp porque rompería el desplazamiento. */
+@media (min-width: 651px) {
+  html[data-wml-mode="radical"] #app [data-wml-column] {
+    width: 215px !important;
+    min-width: 195px !important;
+    max-width: 215px !important;
+    flex: 0 0 215px !important;
+    flex-basis: 215px !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+  }
+  html[data-wml-mode="radical"] #side,
+  html[data-wml-mode="radical"] #pane-side {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    flex-basis: auto !important;
+    box-sizing: border-box !important;
+  }
+}
+/* Las marcas son generadas a partir de la ruta DOM del primer título
+   visible. Esto evita suponer una clase CSS concreta de Meta. */
+html[data-wml-mode="radical"] #pane-side [data-wml-row-detail] {
+  display: none !important;
+}
+html[data-wml-mode="radical"] #pane-side [data-wml-chat-name] {
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  line-height: 1.2 !important;
+  letter-spacing: 0 !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  max-width: 186px !important;
+}
+/* Si la versión de WhatsApp usa otros contenedores, igual ocultamos
+   las imágenes y metadatos con identificadores semánticos seguros. */
+html[data-wml-mode="radical"] #pane-side :is([role="row"],[role="listitem"]) img,
+html[data-wml-mode="radical"] #pane-side :is([role="row"],[role="listitem"]) [data-testid="cell-frame-avatar"],
+html[data-wml-mode="radical"] #pane-side :is([role="row"],[role="listitem"]) [data-testid="avatar"] {
+  display: none !important;
+}
+html[data-wml-mode="radical"] #pane-side :is(
+  [data-testid="cell-frame-secondary"],
+  [data-testid="chatlist-secondary"],
+  [data-testid="cell-frame-time"],
+  [data-testid="cell-frame-unread-count"]
+) { display: none !important; }
+/* Quitar definitivamente el cromado detectado por geometría,
+   incluidos encabezados que viven FUERA de #side. */
+html[data-wml-mode="radical"] #app [data-wml-extra-chrome],
+html[data-wml-mode="radical"] #app [data-wml-remove="header"],
+html[data-wml-mode="radical"] #app [data-wml-remove="archived"] {
+  display: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+/* Nada de tarjetas de bienvenida: derecha lisa mientras no haya chat.
+   :has(#main) libera inmediatamente la zona al abrir una conversación. */
+html[data-wml-mode="radical"] #app:not(:has(#main)) [data-wml-empty-right] > * {
+  display: none !important;
+}
+html[data-wml-mode="radical"] #app:not(:has(#main)) [data-wml-empty-right] {
+  background: var(--wml-bg) !important;
+}
+/* Fin WHATSAPP_NAKED_LIST_V21 */
+
 /* Fin WHATSAPP_MINIMAL_LIVE_V1 */
