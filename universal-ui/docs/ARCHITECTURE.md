@@ -75,4 +75,4 @@ Por cada `apply(settings)`:
 
 ## Permisos
 
-`host_permissions` en MV3 de Firefox son opcionales: el usuario los concede por sitio (botón *Permitir en este sitio* → `permissions.request`). Los scripts de contenido solo se ejecutan donde hay permiso. Permisos fijos: `storage`, `activeTab`, `scripting`.
+**Acceso opt-in real:** `optional_host_permissions` enumera únicamente los cinco orígenes conocidos. No hay `host_permissions` ni `content_scripts` declarativos. Al pulsar *Permitir en este sitio*, `permissions.request` pide solo el origen activo, `scripting.registerContentScripts` registra el código persistente para ese origen y `executeScript` lo aplica en la pestaña ya abierta. Tras una actualización, el popup reconstruye un registro ausente. Permisos fijos: `storage`, `activeTab`, `scripting`. No hay inyección silenciosa antes del consentimiento. **Firefox real todavía pendiente de comprobar.**
