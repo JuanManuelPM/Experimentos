@@ -42,8 +42,9 @@ Preguntas antes de añadir un elemento o control:
 
 ## 2. Registrar
 
-- `manifest.json`: el origen en `host_permissions` y en `content_scripts.matches`; el archivo en `content_scripts.js` (antes de `content/content.js`).
-- `popup/popup.html` y `popup/env-extension.js` (`CONTENT_FILES`): el mismo archivo.
+- `manifest.json`: cada origen nuevo en `optional_host_permissions`; **no** en `host_permissions` ni en `content_scripts` declarativos.
+- `popup/popup.html` y `popup/env-extension.js` (`CONTENT_FILES`): registrar el archivo antes de `content/content.js` para inyección dinámica. El permiso se pide por origen activo, no para todas las aplicaciones.
+- `test/third-app.test.mjs` y `test/permissions.test.mjs`: verificar que la aplicación solo recibe acceso cuando el usuario lo concede.
 
 `test/third-app.test.mjs` falla si manifiesto, panel y adaptadores no coinciden.
 
