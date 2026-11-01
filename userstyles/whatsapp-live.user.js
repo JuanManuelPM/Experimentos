@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         WhatsApp Minimal · Live
 // @namespace    https://github.com/JuanManuelPM/Experimentos
-// @version      2.0.0
-// @description  Studio: ventana flotante de contactos y conversación nativa; arrastre y búsqueda.
+// @version      2.1.0
+// @description  Studio: abrir chats con verificación y restauración; conserva interfaz flotante.
 // @author       JuanManuelPM
 // @match        https://web.whatsapp.com/*
 // @noframes
@@ -516,7 +516,7 @@
      names are volatile DOM references, not a copied contacts database. */
   const canvas={
     host:null,shadow:null,entries:[],pane:null,shift:0,timer:0,selected:'',
-    x:0,y:24,w:0,h:0,loaded:false,drag:null,search:''
+    x:0,y:24,w:0,h:0,loaded:false,drag:null,search:'',pending:null,openState:'idle'
   };
   const canvasWidth=282;
   const layoutKey='wml-studio-layout-v2';
@@ -655,6 +655,21 @@
       '<span>Elegí un contacto y la conversación se abrirá acá.</span></div></section>',
       '<div id="resize" aria-label="Redimensionar" role="separator"></div></div>'
     ].join('');
+    // Status uses our own DOM and never modifies WhatsApp's conversation.
+    const notice=document.createElement('div');
+    notice.id='openNotice';
+    notice.setAttribute('role','status');
+    notice.setAttribute('aria-live','polite');
+    notice.hidden=true;
+    notice.style.cssText='margin:6px 16px 10px;padding:12px;border:1px solid #7ed3bd66;border-radius:12px;background:#062833;color:#def6ef;font:12px/1.5 system-ui';
+    const feedback=document.createElement('span');feedback.id='openText';
+    const fallback=document.createElement('button');
+    fallback.type='button';fallback.id='openOriginal';
+    fallback.textContent='Abrir WhatsApp original';fallback.hidden=true;
+    fallback.style.cssText='display:block;margin-top:7px;border:1px solid #a1d1c177;background:#174445;color:#eafff8;border-radius:7px;padding:6px 9px;cursor:pointer';
+    fallback.addEventListener('click',()=>updateState(MODE_KEY,'original'));
+    notice.append(feedback,fallback);
+    sh.getElementById('contacts').insertBefore(notice,sh.getElementById('foot'));
     sh.getElementById('settings').addEventListener('click',()=>toggle(true));
     sh.getElementById('search').addEventListener('input',e=>{
       canvas.search=e.target.value.toLocaleLowerCase();drawNames();
@@ -662,9 +677,7 @@
     sh.getElementById('list').addEventListener('click',e=>{
       const btn=e.target.closest('[data-index]');if(!btn)return;
       const item=canvas.entries[Number(btn.dataset.index)];
-      if(!item?.row?.isConnected){scheduleCanvas();return;}
-      canvas.selected=item.row;
-      item.row.click();scheduleCanvas();
+      activateStudioConversation(item);
     });
     sh.getElementById('list').addEventListener('wheel',e=>{
       if(!canvas.pane)return;
@@ -728,7 +741,7 @@
       const candidates=row.querySelectorAll(
         '[data-testid="cell-frame-title"],[data-testid="chatlist-title"],span[title],span[dir="auto"]'
       );
-      let chosen=null,high=-100;
+      let chosen=null,chosenElement=null,high=-100;
       const rect=row.getBoundingClientRect();
       for(const el of candidates){
         const name=(el.getAttribute('title')||el.textContent||'').trim();
@@ -739,14 +752,93 @@
         const score=(testId.includes('title')?100:0)+
           (el.hasAttribute('title')?60:0)+(el.getAttribute('dir')==='auto'?20:0)+
           (rect.height&&box.height?Math.max(0,28-(box.top-rect.top)):0);
-        if(score>high){high=score;chosen=name;}
+        if(score>high){high=score;chosen=name;chosenElement=el;}
       }
       if(!chosen)continue;
-      result.push({row,name:chosen,selected:row.getAttribute('aria-selected')==='true'||
+      result.push({row,name:chosen,trigger:chosenElement,selected:row.getAttribute('aria-selected')==='true'||
         !!row.querySelector('[aria-selected="true"]')});
     }
     return result;
   }
+
+  /* Studio 2.1: a row may only be a layout wrapper. Click its real title,
+     then verify native composer plus correct header/selection. */
+  function normalizedStudioName(value){
+    return String(value||'').normalize('NFKC').trim().replace(/\s+/g,' ').toLocaleLowerCase();
+  }
+  function nativeStudioHeader(){
+    const h=document.querySelector('#main > header, #main header');
+    if(!h)return '';
+    const label=h.querySelector(
+      '[data-testid="conversation-info-header-chat-title"],'+
+      '[data-testid="conversation-title"],[title],[dir="auto"]'
+    );
+    return (label?.getAttribute('title')||label?.textContent||h.textContent||'').trim();
+  }
+  function nativeStudioComposer(){
+    return document.querySelector(
+      '#main footer [contenteditable="true"],'+
+      '#main [data-testid="conversation-compose-box-input"],'+
+      '#main [contenteditable="true"][data-tab]'
+    );
+  }
+  function displayStudioOpening(state,message){
+    const sh=canvas.shadow;if(!sh)return;
+    const notice=sh.getElementById('openNotice');
+    if(!notice)return;
+    notice.hidden=state!=='pending' && state!=='error';
+    sh.getElementById('openText').textContent=message||'';
+    sh.getElementById('openOriginal').hidden=state!=='error';
+    canvas.openState=state;
+  }
+  function checkStudioOpening(){
+    const p=canvas.pending;
+    if(!p||mode()!=='canvas')return;
+    const name=normalizedStudioName(p.name);
+    const header=normalizedStudioName(nativeStudioHeader());
+    const composer=!!nativeStudioComposer();
+    const selected=!!(p.row?.isConnected &&
+      (p.row.getAttribute('aria-selected')==='true' ||
+       p.row.querySelector('[aria-selected="true"]')));
+    if(composer && ((name && header && (name===header || header.includes(name))) || selected)){
+      canvas.selected=p.row;
+      canvas.pending=null;
+      displayStudioOpening('ok','');
+      drawNames();
+      positionCanvas();
+      return;
+    }
+    if(Date.now()-p.started>2100){
+      canvas.pending=null;
+      displayStudioOpening('error','No pude confirmar la apertura. Usá WhatsApp original.');
+    }
+  }
+  function activateStudioConversation(item){
+    if(!item?.row?.isConnected){
+      displayStudioOpening('error','Este contacto ya no está cargado.');
+      return;
+    }
+    const title=item.trigger?.isConnected && item.row.contains(item.trigger)
+      ? item.trigger : item.row.querySelector(
+        '[data-testid="cell-frame-title"],[data-testid="chatlist-title"],span[title]'
+      );
+    // Click the title so the event bubbles to WhatsApp's inner React handler.
+    // Never click an arbitrary button (avatar, menu, send).
+    const target=title||item.row.querySelector('[data-testid="cell-frame-container"]')||item.row;
+    canvas.pending={row:item.row,name:item.name,started:Date.now()};
+    displayStudioOpening('pending','Abriendo conversación…');
+    try{
+      target.click();
+      scheduleCanvas();
+      setTimeout(checkStudioOpening,280);
+      setTimeout(checkStudioOpening,900);
+      setTimeout(checkStudioOpening,2250);
+    }catch(_){
+      canvas.pending=null;
+      displayStudioOpening('error','No pude abrir este chat. Usá WhatsApp original.');
+    }
+  }
+
   function drawNames(){
     const sh=canvas.shadow;if(!sh)return;
     const list=sh.getElementById('list');
@@ -773,7 +865,7 @@
   }
   function positionCanvas(){
     const sh=canvas.shadow;if(!sh)return;
-    const main=document.querySelector('#main'),hasChat=!!main;
+    const main=document.querySelector('#main'),hasChat=!!nativeStudioComposer();
     const cW=innerWidth<760?220:canvasWidth;
     const w=Math.max(cW+320,Math.min(canvas.w,innerWidth-canvas.x-8));
     const h=Math.max(400,Math.min(canvas.h,innerHeight-canvas.y-8));
@@ -816,6 +908,7 @@
       entries.some((e,i)=>canvas.entries[i]?.name!==e.name ||
         canvas.entries[i]?.row!==e.row||canvas.entries[i]?.selected!==e.selected);
     if(changed){canvas.entries=entries;drawNames();}
+    checkStudioOpening();
     positionCanvas();
   }
   function scheduleCanvas(){
@@ -830,6 +923,7 @@
       if(canvas.host)canvas.host.remove();
       canvas.host=null;canvas.shadow=null;canvas.pane=null;
       canvas.entries=[];canvas.selected='';canvas.shift=0;canvas.loaded=false;
+      canvas.pending=null;canvas.openState='idle';
       for(const prop of ['--wml-canvas-shift','--wml-chat-top','--wml-chat-w','--wml-chat-h'])
         document.documentElement.style.removeProperty(prop);
       if(uiShadow)uiShadow.getElementById('trigger').style.display='';
