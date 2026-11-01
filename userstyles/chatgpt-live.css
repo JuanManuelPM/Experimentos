@@ -150,15 +150,7 @@ html[data-cm-theme] main
 /* EMERGENCY READABILITY · 2026-11-01 · CHECKPOINT 03
    Broad assistant-only foreground fallback. Does not target user bubbles,
    composer, buttons, code blocks or icons. */
-html[data-cm-theme] main
-  :not([data-message-author-role="user"])
-  :not([data-message-author-role="user"] *)
-  :not(#prompt-textarea)
-  :not(#prompt-textarea *)
-  :not(form):not(form *)
-  :not(pre):not(pre *)
-  :not(button):not(button *)
-  :not(svg):not(svg *) {
+html[data-cm-theme] main :not([data-message-author-role="user"]):not([data-message-author-role="user"] *):not(#prompt-textarea):not(#prompt-textarea *):not(form):not(form *):not(pre):not(pre *):not(button):not(button *):not(svg):not(svg *) {
   color: var(--cm-text) !important;
   -webkit-text-fill-color: var(--cm-text) !important;
 }
