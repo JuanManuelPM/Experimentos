@@ -191,6 +191,20 @@
         return;
       }
       if (state.scope === 'app') {
+        // One obvious, reversible action: demonstrate visible changes in the
+        // active site without modifying global preferences or other apps.
+        v.append(h('div', { class: 'quick-start' },
+          h('div', { class: 'quick-label' }, h('strong', {}, 'PROBAR EN ESTA APP'),
+            h('small', {}, 'Café + Minimal · sin afectar otras páginas')),
+          h('div', { class: 'quick-actions' },
+            h('button', { type: 'button', class: 'btn primary',
+              onclick: () => commit(s => {
+                const themed = ST.setValue(s, { level: 'app', appId: a.id, key: 'theme' }, 'cafe');
+                return ST.setValue(themed, { level: 'app', appId: a.id, key: 'mode' }, 'minimal');
+              }, 'Vista aplicada en ' + a.name) }, 'Aplicar ahora'),
+            h('button', { type: 'button', class: 'btn',
+              onclick: () => commit(s => ST.resetApp(s, a.id), 'Vista original restaurada') },
+              '↺ Original'))));
         v.append(h('div', { class: 'comps', role: 'group', 'aria-label': 'Componente' },
           h('button', { type: 'button', 'aria-pressed': String(!state.component), onclick: () => { state.component = null; render(); } }, 'Toda la app'),
           Object.entries(a.components).map(([cid, c]) => h('button', { type: 'button', 'aria-pressed': String(state.component === cid),
