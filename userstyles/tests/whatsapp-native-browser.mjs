@@ -22,7 +22,7 @@ try{
  await page.setContent(`<!doctype html><html><head><style>
  *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;}
  body{background:#252b30;font-family:Arial}
- #app{display:flex;height:100vh;overflow:hidden;}
+ #app{display:flex;height:100vh;overflow:hidden;isolation:isolate;}
  .nav{width:56px;flex:0 0 56px;background:#182128;}
  #left-container{width:460px;overflow:hidden;display:flex}
  #side{width:460px;height:100%;background:#27333a;display:flex;flex-direction:column}
@@ -71,6 +71,17 @@ try{
  assert.ok(before && Math.abs(before.width-286)<5,'Native side should be 286px wide, not old WhatsApp width');
  const nativeRows=page.locator('#pane-side [data-wml-n3-row]');
  assert.equal(await nativeRows.count(),2);
+ const listVisibility=await page.evaluate(()=>{
+   const row=document.getElementById('chat-b');
+   const b=row.getBoundingClientRect();
+   const hit=document.elementFromPoint(b.left+70,b.top+Math.min(14,b.height/2));
+   return {visible:hit===row||row.contains(hit),under:hit?.tagName,
+     pseudo:getComputedStyle(document.body,'::before').content};
+ });
+ assert.equal(listVisibility.visible,true,
+   'Contact names must be painted and hit-testable, not behind a black overlay');
+ assert.equal(listVisibility.pseudo,'none',
+   'No fullscreen body::before overlay in native Studio');
  // This is an actual Chromium pointer action. The native row's listener
  // must receive isTrusted=true; proxy .click() would not.
  await page.locator('#chat-b').click();
@@ -80,6 +91,12 @@ try{
  const main=await page.locator('#main').boundingBox();
  const side=await page.locator('#side').boundingBox();
  assert.ok(main&&side);
+ const chatVisibility=await page.evaluate(()=>{
+   const main=document.getElementById('main');const b=main.getBoundingClientRect();
+   const top=document.elementFromPoint(b.left+b.width/2,b.top+Math.min(95,b.height*.4));
+   return main===top||main.contains(top);
+ });
+ assert.equal(chatVisibility,true,'Chat content must be painted above all overlays');
  assert.ok(Math.abs(main.x-(side.x+side.width))<4,
    'Native conversation must be visually aligned to the right of contacts');
  await page.locator('#main footer [contenteditable="true"]').fill('Texto de prueba, sin enviar');

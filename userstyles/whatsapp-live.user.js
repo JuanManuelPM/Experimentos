@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         WhatsApp Minimal · Live
 // @namespace    https://github.com/JuanManuelPM/Experimentos
-// @version      3.0.0
-// @description  Studio 3: contactos nativos clicables, ventana flotante y conversación real.
+// @version      3.1.0
+// @description  Studio 3.1: eliminar capa que tapa chats; comprobar visibilidad real y recuperar Original.
 // @author       JuanManuelPM
 // @match        https://web.whatsapp.com/*
 // @noframes
@@ -521,7 +521,7 @@
   const n3={
     host:null,shadow:null,style:null,side:null,pane:null,main:null,
     scheduled:0,observer:null,listenerPane:null,lastRow:null,pending:0,
-    layout:null,drag:null,verified:false,checkTimer:null,needOriginal:false
+    layout:null,drag:null,verified:false,checkTimer:null,needOriginal:false,blindSince:0,visibleProof:false
   };
   const N3_LAYOUT_KEY='wml-native-studio-v3-layout';
   const n3Clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
@@ -566,14 +566,19 @@
     let el=document.getElementById('wml-native-studio-css');
     if(!el){el=document.createElement('style');el.id='wml-native-studio-css';}
     el.textContent=String.raw`
-      html[data-wml-mode="canvas"] body {background:#070d16!important; overflow:hidden!important;}
-      html[data-wml-mode="canvas"] body::before {
-        content:"";position:fixed;inset:0;z-index:2147481000;
-        background:radial-gradient(ellipse at 10% 80%,#133642 0%,transparent 40%),
-          radial-gradient(ellipse at 88% 12%,#282640 0%,transparent 42%),#090e19;
-        pointer-events:none;
+      /* No fullscreen pseudo overlay. It can paint ABOVE #app when WhatsApp
+         establishes a stacking context: everything native goes black even
+         when our floating header remains visible. */
+      html[data-wml-mode="canvas"] body {
+        background:#090e19!important;overflow:hidden!important;
       }
-      html[data-wml-mode="canvas"] #app {transform:none!important;overflow:visible!important;}
+      html[data-wml-mode="canvas"] body::before {
+        content:none!important;display:none!important;
+      }
+      html[data-wml-mode="canvas"] #app {
+        transform:none!important;overflow:visible!important;
+        background:#090e19!important;
+      }
       html[data-wml-mode="canvas"] #app [data-wml-n3-unclip] {
         overflow:visible!important;transform:none!important;
         filter:none!important;contain:none!important;
@@ -716,6 +721,53 @@
     n3.side=side;n3.pane=pane;n3.main=main;
     return true;
   }
+
+  /* Visibility, not merely presence in the DOM, is the acceptance gate.
+     This detects an occluding layer, clipped rows or an inaccessible chat.
+     No contact names or message text are ever collected or transmitted. */
+  function n3HitVisible(node,kind){
+    if(!node||!node.isConnected||typeof document.elementFromPoint!=='function')return null;
+    const box=node.getBoundingClientRect();
+    if(box.width<35||box.height<18)return false;
+    if(box.right<=0||box.bottom<=0||box.left>=innerWidth||box.top>=innerHeight)return false;
+    // An invisible ancestor is just as fatal as an invisible row.
+    for(let parent=node,k=0; parent&&k++<35; parent=parent.parentElement){
+      const style=getComputedStyle(parent);
+      if(style.display==='none'||style.visibility==='hidden'||
+        parseFloat(style.opacity||'1')<.2)return false;
+    }
+    const x=n3Clamp(box.left+(kind==='row'?Math.min(80,box.width*.55):box.width*.5),3,innerWidth-4);
+    const y=n3Clamp(box.top+(kind==='row'?Math.min(16,box.height*.5):Math.min(95,box.height*.4)),3,innerHeight-4);
+    const top=document.elementFromPoint(x,y);
+    if(!top)return false;
+    return node===top||node.contains(top);
+  }
+  function n3AuditVisibility(){
+    if(mode()!=='canvas'||!n3.side||!n3.pane||typeof document.elementFromPoint!=='function')return;
+    const rect=n3.pane.getBoundingClientRect();
+    const rows=Array.from(n3.pane.querySelectorAll('[data-wml-n3-row]'));
+    const row=rows.find(el=>{
+      const b=el.getBoundingClientRect();
+      return b.width>35 && b.height>18 && b.top>=rect.top-2 &&
+        b.bottom<=rect.bottom+2 && b.top>=0 && b.bottom<=innerHeight;
+    });
+    // If React has not populated the chat list yet, don't hide all WhatsApp
+    // forever behind a decorative widget. Give it time to hydrate.
+    const listVisible=row ? n3HitVisible(row,'row') : false;
+    const main=n3.main;
+    const chatVisible=main ? n3HitVisible(main,'chat') : true;
+    if(listVisible===true && chatVisible===true){
+      n3.visibleProof=true;n3.blindSince=0;
+      if(!n3.pending)n3Status('',false);
+      return;
+    }
+    if(!n3.blindSince)n3.blindSince=Date.now();
+    if(Date.now()-n3.blindSince<5000)return;
+    // Fail open. A blank app is worse than the original working WhatsApp.
+    n3.blindSince=0;
+    updateState(MODE_KEY,'original');
+  }
+
   function n3OnNativeClick(event){
     // Passive observer only. The physical click is delivered to WhatsApp.
     // This observer never cancels the native event or synthesizes a replacement.
@@ -875,6 +927,7 @@
       n3Status('WhatsApp todavía no mostró su lista de contactos. Esperando carga…',false);
     }
     n3CheckOpened();
+    n3AuditVisibility();
   }
   function scheduleCanvas(){
     if(mode()!=='canvas'||n3.scheduled)return;
@@ -891,6 +944,7 @@
       if(n3.listenerPane)n3.listenerPane.removeEventListener('click',n3OnNativeClick,true);
       n3.listenerPane=null;n3.pending=0;n3.main=null;n3.side=null;n3.pane=null;
       n3.layout=null;n3.verified=false;n3.needOriginal=false;
+      n3.blindSince=0;n3.visibleProof=false;
       for(const prop of ['--n3-x','--n3-y','--n3-w','--n3-h','--n3-side','--n3-chat-x','--n3-chat-w'])
         document.documentElement.style.removeProperty(prop);
       if(uiShadow)uiShadow.getElementById('trigger').style.display='';
