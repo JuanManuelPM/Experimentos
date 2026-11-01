@@ -1,0 +1,179 @@
+/* WHATSAPP_MINIMAL_LIVE_V1 · Aplicación: web.whatsapp.com
+   No se ocultan mensajes, conversaciones, buscador, cuadro de escritura,
+   botones de envío, llamadas, archivos ni avisos de seguridad.
+   Modo original: ninguna regla CSS de este archivo se aplica.
+   Los selectores estructurales pueden variar tras actualizaciones de WhatsApp. */
+
+/* Núcleo de colores: tokens nativos y WDS nuevos; siempre texto y fondo juntos. */
+html[data-wml-mode]:not([data-wml-mode="original"]) {
+  color-scheme: dark !important;
+  --wml-bg: #090c0e;
+  --wml-side: #111619;
+  --wml-surface: #171d20;
+  --wml-hover: #222c30;
+  --wml-in: #1d262a;
+  --wml-out: #2b3d39;
+  --wml-text: #f0ede8;
+  --wml-muted: #aaaeb0;
+  --wml-border: #303a3d;
+  --wml-accent: #d9b879;
+
+  --background-default: var(--wml-bg) !important;
+  --panel-background: var(--wml-side) !important;
+  --panel-header-background: var(--wml-side) !important;
+  --panel-background-deeper: var(--wml-bg) !important;
+  --panel-background-lighter: var(--wml-surface) !important;
+  --panel-input-background: var(--wml-surface) !important;
+  --conversation-panel-background: var(--wml-bg) !important;
+  --conversation-header-background: var(--wml-side) !important;
+  --compose-panel-background: var(--wml-side) !important;
+  --compose-input-background: var(--wml-surface) !important;
+  --rich-text-panel-background: var(--wml-surface) !important;
+  --search-container-background: var(--wml-side) !important;
+  --dropdown-background: var(--wml-surface) !important;
+  --incoming-background: var(--wml-in) !important;
+  --incoming-background-deeper: var(--wml-in) !important;
+  --outgoing-background: var(--wml-out) !important;
+  --message-in: var(--wml-in) !important;
+  --message-out: var(--wml-out) !important;
+  --primary: var(--wml-text) !important;
+  --primary-strong: var(--wml-text) !important;
+  --primary-stronger: var(--wml-text) !important;
+  --primary-title: var(--wml-text) !important;
+  --incoming-primary: var(--wml-text) !important;
+  --compose-primary: var(--wml-text) !important;
+  --message-primary: var(--wml-text) !important;
+  --secondary: var(--wml-muted) !important;
+  --secondary-stronger: var(--wml-muted) !important;
+  --bubble-meta: var(--wml-muted) !important;
+  --panel-header-icon: var(--wml-muted) !important;
+  --icon: var(--wml-muted) !important;
+  --icon-strong: var(--wml-text) !important;
+  --link: var(--wml-accent) !important;
+  --teal: var(--wml-accent) !important;
+  --active-tab-marker: var(--wml-accent) !important;
+  --border-panel: var(--wml-border) !important;
+  --border-default: var(--wml-border) !important;
+
+  --WDS-background-default: var(--wml-bg) !important;
+  --WDS-background-deep: var(--wml-bg) !important;
+  --WDS-surface-default: var(--wml-side) !important;
+  --WDS-surface-raised: var(--wml-surface) !important;
+  --WDS-surface-elevated-emphasized: var(--wml-surface) !important;
+  --WDS-surface-highlight: var(--wml-hover) !important;
+  --WDS-text-primary: var(--wml-text) !important;
+  --WDS-text-secondary: var(--wml-muted) !important;
+  --WDS-accent: var(--wml-accent) !important;
+  --WDS-accent-deemphasized: var(--wml-out) !important;
+  --WDS-accent-emphasized: var(--wml-accent) !important;
+}
+html[data-wml-theme="cafe"][data-wml-mode]:not([data-wml-mode="original"]) {
+  --wml-bg: #14110f; --wml-side: #201c19; --wml-surface: #2b2520;
+  --wml-hover: #3b312a; --wml-in: #2c251f; --wml-out: #423329;
+  --wml-text: #f0e7d8; --wml-muted: #b9aa9a; --wml-border: #4b4035; --wml-accent: #e5b880;
+}
+html[data-wml-theme="grafito"][data-wml-mode]:not([data-wml-mode="original"]) {
+  --wml-bg: #101114; --wml-side: #191b20; --wml-surface: #26292d;
+  --wml-hover: #31363d; --wml-in: #2a2e34; --wml-out: #383e4a;
+  --wml-text: #f1f1f0; --wml-muted: #b7b9c0; --wml-border: #3f434b; --wml-accent: #cbd4ed;
+}
+/* Colorear superficies reales, no todos los elementos. */
+html[data-wml-mode]:not([data-wml-mode="original"]) body,
+html[data-wml-mode]:not([data-wml-mode="original"]) #app {
+  background: var(--wml-bg) !important;
+  color: var(--wml-text) !important;
+}
+html[data-wml-mode]:not([data-wml-mode="original"]) :is(#side, #pane-side) {
+  background-color: var(--wml-side) !important;
+  color: var(--wml-text) !important;
+}
+html[data-wml-mode]:not([data-wml-mode="original"]) #main {
+  background-color: var(--wml-bg) !important;
+  color: var(--wml-text) !important;
+}
+html[data-wml-mode]:not([data-wml-mode="original"]) :is(#main > header, #main > footer, #side > header) {
+  background: var(--wml-side) !important;
+  border-color: var(--wml-border) !important;
+}
+html[data-wml-mode]:not([data-wml-mode="original"]) #main footer [contenteditable="true"] {
+  color: var(--wml-text) !important;
+  caret-color: var(--wml-accent) !important;
+}
+/* Nuevas superficies de mensaje: cuidamos texto y fondos sin tocar multimedia. */
+html[data-wml-mode]:not([data-wml-mode="original"]) :is(.message-in, .message-out) :is([data-testid="msg-container"], .copyable-text) {
+  color: var(--wml-text) !important;
+}
+html[data-wml-mode]:not([data-wml-mode="original"]) :is(.message-in, .message-out) :is([data-testid="msg-container"], [class*="message-container"]) {
+  border-radius: 6px !important;
+}
+/* Minimal: limpieza editorial, poco riesgo para navegación principal. */
+html[data-wml-mode="minimal"] :is(#main, #side, #pane-side) {
+  font-family: "Inter", "Segoe UI", system-ui, sans-serif !important;
+}
+html[data-wml-mode="minimal"] #pane-side :is([role="row"], [role="listitem"]) {
+  border-bottom: 1px solid var(--wml-border) !important;
+}
+html[data-wml-mode="minimal"] #main [data-asset-chat-background-dark],
+html[data-wml-mode="minimal"] #main [data-asset-chat-background-light] {
+  background-image: none !important;
+  opacity: 0 !important;
+}
+/* Radical: contraste fuerte, sin ornamentos, ritmo más compacto. */
+html[data-wml-mode="radical"] :is(#main, #side, #pane-side) {
+  font-family: "Inter", "Segoe UI", system-ui, sans-serif !important;
+  letter-spacing: -0.015em !important;
+}
+html[data-wml-mode="radical"] :is(#main > header, #main > footer) {
+  border-top: 1px solid var(--wml-border) !important;
+  border-bottom: 1px solid var(--wml-border) !important;
+  box-shadow: none !important;
+}
+html[data-wml-mode="radical"] #pane-side :is([role="row"], [role="listitem"]) {
+  min-height: 57px !important;
+  border-bottom: 1px solid var(--wml-border) !important;
+  border-radius: 0 !important;
+}
+html[data-wml-mode="radical"] #pane-side :is([role="row"], [role="listitem"]):hover {
+  background: var(--wml-hover) !important;
+}
+html[data-wml-mode="radical"] #main [data-asset-chat-background-dark],
+html[data-wml-mode="radical"] #main [data-asset-chat-background-light],
+html[data-wml-mode="radical"] #main [class*="wallpaper"] {
+  background-image: none !important;
+  opacity: 0 !important;
+}
+html[data-wml-mode="radical"] #main :is(.message-in, .message-out) :is([data-testid="msg-container"], [class*="message-container"], .copyable-text) {
+  border-radius: 3px !important;
+  box-shadow: none !important;
+}
+html[data-wml-mode="radical"] #main footer :is(input, [contenteditable="true"]) {
+  border-radius: 4px !important;
+}
+html[data-wml-mode="radical"] :is(#main, #side) :is(button, [role="button"]) {
+  transition: background-color 90ms linear !important;
+}
+/* Solo ocultar accesos inequívocamente secundarios, nunca el buscador. */
+html[data-wml-mode="radical"][data-wml-clean="yes"] #side :is(button, [role="button"]):is(
+  [aria-label="Estados" i], [aria-label="Status" i],
+  [aria-label="Canales" i], [aria-label="Channels" i],
+  [aria-label="Comunidades" i], [aria-label="Communities" i],
+  [aria-label="Meta AI" i]
+) { display: none !important; }
+html[data-wml-mode="radical"][data-wml-clean="yes"] #side [role="tablist"] {
+  display: none !important;
+}
+html[data-wml-mode="radical"][data-wml-avatars="no"] #pane-side :is([role="row"], [role="listitem"]) img {
+  visibility: hidden !important;
+  opacity: 0 !important;
+}
+@media (min-width: 900px) {
+  html[data-wml-mode="radical"][data-wml-narrow="yes"] #side {
+    max-width: min(360px, 32vw) !important;
+    flex-basis: min(360px, 32vw) !important;
+  }
+}
+@media (max-width: 760px) {
+  /* Evitar destruir la UI móvil/ventana estrecha. */
+  html[data-wml-mode="radical"] #pane-side :is([role="row"], [role="listitem"]) { min-height: unset !important; }
+}
+/* Fin WHATSAPP_MINIMAL_LIVE_V1 */
