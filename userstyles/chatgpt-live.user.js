@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         ChatGPT Minimal · Live
 // @namespace    https://github.com/JuanManuelPM/Experimentos
-// @version      1.2.0
-// @description  Temas y modos desde un botón compacto dentro de ChatGPT.
+// @version      1.3.0
+// @description  Temas, modos y elementos visibles desde un botón compacto.
 // @author       JuanManuelPM
 // @match        https://chatgpt.com/*
 // @noframes
@@ -33,6 +33,12 @@
   const PAUSE_KEY = 'cm-live-paused';
   const MODE_KEY = 'cm-live-mode';
   const MODES = [['minimal', 'Minimal'], ['equilibrado', 'Equilibrado'], ['completo', 'Completo']];
+  const VISIBLE_ITEMS = [["upgrade","Promociones","Upgrade y ofertas de planes"],["share","Compartir","Botón de compartir"],["notices","Avisos","Nota repetitiva bajo el chat"],["feedback","Valoraciones","Pulgar arriba y abajo"],["header","Encabezado","Barra superior de la conversación"],["sidebar","Barra lateral","Historial y navegación"],["brand","Marca ChatGPT","Logotipo y texto decorativo"],["manage","Administrar","Entradas visibles para Manage"]];
+  const MODE_VISIBILITY = {
+    minimal: {upgrade:false, share:false, notices:false, feedback:false, header:false, sidebar:true, brand:false, manage:false},
+    equilibrado: {upgrade:false, share:false, notices:false, feedback:true, header:true, sidebar:true, brand:true, manage:true},
+    completo: {upgrade:true, share:true, notices:true, feedback:true, header:true, sidebar:true, brand:true, manage:true}
+  };
 
   let styleElement = null;
   let activeCss = '';
@@ -54,6 +60,26 @@
     const saved = setting(MODE_KEY, 'equilibrado');
     return MODES.some(([id]) => id === saved) ? saved : 'equilibrado';
   }
+  function showItem(id) {
+    if (!VISIBLE_ITEMS.some(item => item[0] === id)) return true;
+    return setting('cm-live-show-' + id, MODE_VISIBILITY[currentMode()][id]) === true;
+  }
+  function customizeCount() {
+    return VISIBLE_ITEMS.filter(([id]) => showItem(id) !== MODE_VISIBILITY[currentMode()][id]).length;
+  }
+  function setItemVisible(id, yes) {
+    if (!VISIBLE_ITEMS.some(item => item[0] === id)) return;
+    GM_setValue('cm-live-show-' + id, !!yes);
+    updateAttributes();
+    updatePanelControls();
+  }
+  function restoreAllVisible() {
+    GM_setValue(MODE_KEY, 'completo');
+    for (const [id] of VISIBLE_ITEMS) GM_setValue('cm-live-show-' + id, true);
+    updateAttributes();
+    updatePanelControls();
+    notify('Todos los elementos restaurados');
+  }
   function isWide() { return setting(WIDTH_KEY, true) !== false; }
   function isPaused() { return setting(PAUSE_KEY, false) === true; }
 
@@ -62,6 +88,9 @@
     document.documentElement.setAttribute('data-cm-theme', currentTheme());
     document.documentElement.setAttribute('data-cm-wide', isWide() ? 'yes' : 'no');
     document.documentElement.setAttribute('data-cm-mode', currentMode());
+    for (const [id] of VISIBLE_ITEMS) {
+      document.documentElement.setAttribute('data-cm-show-' + id, showItem(id) ? 'yes' : 'no');
+    }
   }
 
   function notify(message) {
@@ -229,16 +258,26 @@
       const state = toggle.querySelector('[data-cm-width-state]');
       if (state) state.textContent = isWide() ? 'Sí' : 'No';
     }
+    for (const button of configRoot.querySelectorAll('[data-cm-visible-key]')) {
+      const id = button.dataset.cmVisibleKey;
+      const on = showItem(id);
+      button.setAttribute('aria-checked', String(on));
+      const state = button.querySelector('[data-cm-state]');
+      if (state) state.textContent = on ? 'Sí' : 'No';
+    }
     const status = configRoot.getElementById('cm-menu-status');
     if (status) {
+      const count = customizeCount();
       status.textContent = 'Tema: ' + (THEMES.find(([id]) => id === currentTheme())?.[1] || 'Aire') +
-        ' · Modo: ' + (MODES.find(([id]) => id === currentMode())?.[1] || 'Equilibrado');
+        ' · Modo: ' + (MODES.find(([id]) => id === currentMode())?.[1] || 'Equilibrado') +
+        (count ? ' · ' + count + ' ajustes propios' : '');
     }
   }
 
   function selectMode(id) {
     if (!MODES.some(([value]) => value === id)) return;
     GM_setValue(MODE_KEY, id);
+    for (const [key] of VISIBLE_ITEMS) GM_setValue('cm-live-show-' + key, MODE_VISIBILITY[id][key]);
     updateAttributes();
     updatePanelControls();
     notify('Modo: ' + MODES.find(([value]) => value === id)[1]);
@@ -283,7 +322,8 @@
           border-color: #94e2d5; background: #31354c; }
         [hidden] { display: none !important; }
         #cm-mode-panel { position: absolute; right: 0; top: 46px;
-          width: min(310px, calc(100vw - 28px)); padding: 16px; border-radius: 15px;
+          width: min(330px, calc(100vw - 28px)); padding: 16px; border-radius: 15px;
+          max-height: min(76vh, 680px); overflow-y: auto; overscroll-behavior: contain;
           border: 1px solid #585c79; background: #1c2030; color: #e3e6f3;
           box-shadow: 0 16px 40px #0009; font: 14px/1.35 system-ui, sans-serif; }
         .heading { display: flex; justify-content: space-between; align-items: center;
@@ -302,6 +342,25 @@
           border-radius: 9px; font-size: 13px; }
         #cm-mode-wide[aria-checked="true"] { border-color: #94e2d5; }
         #cm-menu-status { margin: 12px 0 0; font-size: 11px; color: #b5bdd3; }
+        .divider { border: 0; height: 1px; margin: 14px 0 11px; background: #464d64; }
+        .visibility { display: grid; gap: 3px; }
+        .visibility button { display: flex; align-items: center; justify-content: space-between;
+          gap: 12px; padding: 9px 4px; width: 100%; min-height: 45px;
+          border: 0; border-bottom: 1px solid #30384b;
+          color: #e3e6f3; background: transparent; text-align: left; border-radius: 5px; }
+        .visibility button:hover { background: #2a3043; }
+        .visibility strong { display: block; font: 600 13px/1.3 system-ui, sans-serif; }
+        .visibility small { display: block; margin-top: 2px; color: #b7c1d4; font-size: 11px; }
+        .switch { min-width: 44px; border-radius: 14px; padding: 4px 7px; border: 1px solid #697086;
+          color: #aeb8ca; background: #303748; font: 700 11px/1.15 system-ui, sans-serif;
+          text-align: center; }
+        .visibility button[aria-checked="true"] .switch { color: #dffff6;
+          background: #28584e; border-color: #66bbab; }
+        #cm-show-all { width: 100%; margin-top: 10px; padding: 10px 12px; min-height: 38px;
+          color: #e3e6f3; background: #2a3043; border: 1px solid #68718a;
+          border-radius: 9px; font-size: 13px; }
+        #cm-show-all:hover { border-color: #94e2d5; background: #374057; }
+        .note { margin: 8px 0 0; font-size: 11px; color: #b7c1d4; line-height: 1.5; }
         .theme-swatch { display: inline-block; width: 8px; height: 8px; border-radius: 50%;
           margin-right: 4px; vertical-align: 1px; }
         @media(max-width: 480px) {
@@ -330,6 +389,20 @@
         <button type="button" id="cm-mode-wide" role="switch" aria-checked="true">
           Ancho completo <strong data-cm-width-state>Sí</strong>
         </button>
+        <hr class="divider">
+        <div class="section-label">Elementos visibles</div>
+        <div class="visibility" role="group" aria-label="Mostrar u ocultar elementos">
+          <button type="button" role="switch" data-cm-visible-key="upgrade" aria-checked="true"><span><strong>Promociones</strong><small>Upgrade y ofertas de planes</small></span><span class="switch" data-cm-state>Sí</span></button>
+          <button type="button" role="switch" data-cm-visible-key="share" aria-checked="true"><span><strong>Compartir</strong><small>Botón de compartir</small></span><span class="switch" data-cm-state>Sí</span></button>
+          <button type="button" role="switch" data-cm-visible-key="notices" aria-checked="true"><span><strong>Avisos</strong><small>Nota repetitiva bajo el chat</small></span><span class="switch" data-cm-state>Sí</span></button>
+          <button type="button" role="switch" data-cm-visible-key="feedback" aria-checked="true"><span><strong>Valoraciones</strong><small>Pulgar arriba y abajo</small></span><span class="switch" data-cm-state>Sí</span></button>
+          <button type="button" role="switch" data-cm-visible-key="header" aria-checked="true"><span><strong>Encabezado</strong><small>Barra superior de la conversación</small></span><span class="switch" data-cm-state>Sí</span></button>
+          <button type="button" role="switch" data-cm-visible-key="sidebar" aria-checked="true"><span><strong>Barra lateral</strong><small>Historial y navegación</small></span><span class="switch" data-cm-state>Sí</span></button>
+          <button type="button" role="switch" data-cm-visible-key="brand" aria-checked="true"><span><strong>Marca ChatGPT</strong><small>Logotipo y texto decorativo</small></span><span class="switch" data-cm-state>Sí</span></button>
+          <button type="button" role="switch" data-cm-visible-key="manage" aria-checked="true"><span><strong>Administrar</strong><small>Entradas visibles para Manage</small></span><span class="switch" data-cm-state>Sí</span></button>
+        </div>
+        <button type="button" id="cm-show-all">Restaurar todos los elementos</button>
+        <p class="note">Los cambios son reversibles. El botón ◐ siempre queda accesible.</p>
         <p id="cm-menu-status" role="status"></p>
       </section>`;
     configRoot = root;
@@ -342,6 +415,16 @@
       if (themeChoice) { selectTheme(themeChoice.dataset.cmChoiceTheme); return; }
       const modeChoice = event.target.closest('[data-cm-choice-mode]');
       if (modeChoice) { selectMode(modeChoice.dataset.cmChoiceMode); return; }
+      const visibility = event.target.closest('[data-cm-visible-key]');
+      if (visibility) {
+        const key = visibility.dataset.cmVisibleKey;
+        setItemVisible(key, !showItem(key));
+        return;
+      }
+      if (event.target.closest('#cm-show-all')) {
+        restoreAllVisible();
+        return;
+      }
       if (event.target.closest('#cm-mode-wide')) {
         GM_setValue(WIDTH_KEY, !isWide());
         updateAttributes();
