@@ -223,3 +223,56 @@ test('native player styles restore precisely when changing to Original',async()=
     assert.equal(c.media.isConnected,true);
   }finally{cleanup(c)}
 });
+
+
+test('native YouTube player falls back safely when it is occluded by an overlay',async()=>{
+  const c=await boot('youtube');
+  try{
+    const target=c.w.document.getElementById('player-container-outer');
+    const slot=$(c,'videoSlot');
+    slot.getBoundingClientRect=()=>({left:315,top:100,width:630,height:354});
+    target.getBoundingClientRect=()=>({
+      left:parseFloat(target.style.left)||0,top:parseFloat(target.style.top)||0,
+      width:parseFloat(target.style.width)||0,height:parseFloat(target.style.height)||0
+    });
+    c.w.document.elementFromPoint=()=>c.w.document.body;
+    c.w.dispatchEvent(new c.w.Event('resize'));
+    assert.equal(target.style.position,'');
+    assert.equal(target.style.margin,'10px');
+    assert.equal(slot.dataset.mounted,'false');
+    assert.match($(c,'videoMessage').textContent,/Explorar/);
+    assert.ok(c.media.isConnected);
+  }finally{cleanup(c)}
+});
+
+test('Music media controls support a native audio element without a video tag',async()=>{
+  const c=await boot('music');
+  try{
+    c.media.remove();
+    const audio=c.w.document.createElement('audio');
+    let played=0;
+    audio.play=()=>{played++;return Promise.resolve()};
+    c.w.document.body.appendChild(audio);
+    $(c,'play').click();
+    assert.equal(played,1);
+  }finally{cleanup(c)}
+});
+
+test('visual backdrop masks block ghost clicks while Canvas is open',async()=>{
+  const c=await boot('music');
+  try{
+    assert.equal($(c,'masks').hidden,false);
+    assert.equal($(c,'ambient').hidden,false);
+    assert.match(c.sh.querySelector('style').textContent, /\.mask\{position:fixed;pointer-events:auto/);
+    $(c,'browse').click();
+    assert.equal($(c,'masks').hidden,true);
+  }finally{cleanup(c)}
+});
+
+test('window is centered by default rather than hard-pinned to sidebar',async()=>{
+  const c=await boot('youtube');
+  try{
+    const x=parseInt($(c,'desk').style.left,10);
+    assert.ok(x > 34,'expected centered start, not old sidebar position');
+  }finally{cleanup(c)}
+});
