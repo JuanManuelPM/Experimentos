@@ -1,6 +1,6 @@
 # Pruebas
 
-`npm test` · 34 pruebas declaradas (32 originales + 2 regresiones) · `node:test` + jsdom. Cargan los mismos archivos que la extensión (`core/`, `adapters/`) dentro de páginas sintéticas (`test/fixtures/`).
+`npm test` · **38 pruebas automatizadas, 38 PASS en GitHub Actions** (32 originales + 2 observador + 4 permisos) · `node:test` + jsdom. Cargan los mismos archivos que la extensión (`core/`, `adapters/`) dentro de páginas sintéticas (`test/fixtures/`).
 
 Las páginas sintéticas reproducen la estructura de selectores, no son capturas de los sitios: no contienen conversaciones, mensajes ni contactos.
 
@@ -41,4 +41,4 @@ Las páginas sintéticas reproducen la estructura de selectores, no son capturas
 - Después: **3 informes** en ~550 ms, incluyendo aplicación inicial, una actualización por cambio externo y consulta explícita. Restauración completa de `data-uui-hide`.
 - Una mutación **solo de `data-testid`**, sin insertar nodos, dispara reevaluación: el botón Compartir pasa del selector principal al alternativo y registra `selector alternativo`.
 - Esta comprobación se hizo con **Chromium y fixtures sintéticos**. NO equivale a comprobar Firefox real ni los sitios públicos.
-- **Suite `npm test`: NO EJECUTADA como prueba completa aquí** porque `npm ci` quedó bloqueado y falta `jsdom/index.js`; el número 34 describe casos escritos, no PASS.
+- **Suite `npm test`: PASS 38/38** en GitHub Actions run `41312116187`. La ejecución local no pudo instalar `jsdom`, pero la ejecución en CI instaló dependencias y verificó todos los casos. Firefox real y páginas públicas continúan NOT_RUN.

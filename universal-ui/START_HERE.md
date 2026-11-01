@@ -11,12 +11,12 @@
 - **Prueba de sintaxis JS:** PASS (`node --check`).
 - **Construcción de demo:** PASS (`npm run build:demo`).
 - **Pruebas de navegador con Chromium local y fixtures sintéticos:** PASS para aplicar tema Café, ocultar elementos con modo Minimal y restaurar en ChatGPT, WhatsApp y Wikipedia. Véase `docs/BROWSER_SMOKE_2026-11-01.md`.
-- **Suite Node de 34 pruebas:** **NO VERIFICADA** localmente: falta la dependencia `jsdom`. No confundir el número de pruebas declaradas por la entrega con 32 PASS independientes.
+- **Suite Node de 38 pruebas:** **38/38 PASS** en GitHub Actions (`41312116187`). No se pudo instalar `jsdom` localmente por DNS, pero la ejecución del runner remoto es verificable.
 - **Firefox real y páginas reales:** **NOT_RUN**. Los adaptadores todavía tienen `calibratedAt: null`.
 
 ## Próxima etapa
 
-1. Instalar dependencias de desarrollo en un entorno con npm operativo y ejecutar `npm test`. Registrar cada resultado.
+1. La suite `npm test` ya pasó (38/38) en GitHub Actions; mantener CI verde después de cada cambio.
 2. Calibrar adaptador ChatGPT con navegador real. Prioridad: elemento esencial `composer`, encabezado, texto de marca, `Manage`, valoración y ancho.
 3. Calibrar WhatsApp Web y asegurar que jamás se lean ni envíen mensajes.
 4. Probar permiso por sitio, popup y teclado en Firefox. Contrastar el modo claro/oscuro y la restauración.
@@ -42,3 +42,10 @@ Reanudar leyendo `docs/DIAGNOSIS.md`, `docs/ARCHITECTURE.md`, `docs/DECISIONS.md
 - `manifest.json`: se reemplazaron hosts obligatorios y scripts declarativos por `optional_host_permissions` y registro dinámico por origen en `popup/env-extension.js`. No se habilitan todas las páginas al instalar.
 - `test/third-app.test.mjs` actualizado y `test/permissions.test.mjs` creado (opt-in, rechazo, alias y recuperación). Ahora hay **38 casos escritos**.
 - **Falta:** prueba Firefox real con permiso / denegación / reapertura, además de selectores ChatGPT/WhatsApp reales y aceptación humana. No tocar `master` ni `userstyles/`.
+
+## CI definitivo de esta etapa (2026-11-01)
+
+- Run: https://github.com/JuanManuelPM/Experimentos/actions/runs/41312116187
+- **PASS: 38 pruebas / 0 fallas / 0 omitidas**, `npm ci`, `npm run build:demo`, sintaxis JS.
+- Se corrigieron permisos globales del manifiesto: acceso ahora opcional por origen mediante `optional_host_permissions` + registro dinámico y script en la pestaña abierta, con cuatro regresiones.
+- **No equivale a validación real en Firefox o ChatGPT/WhatsApp**. Conservamos `calibratedAt: null` y el userscript actual de producción intacto.

@@ -5,7 +5,7 @@
 
 ## Hecho
 
-- **CI en GitHub Actions:** suite completa de 34 casos, `npm ci`, `npm run build:demo` y sintaxis JS **PASS** en ejecución `41311607812`. Se agregaron 4 pruebas de permisos posteriores (38 escritas); resultado de esa ejecución adicional se registra por separado cuando termine.
+- **CI en GitHub Actions:** **38/38 PASS, 0 fallas** en ejecución `41312116187`; `npm ci`, `npm test`, compilación de demo y revisión de sintaxis JS, todo exitoso. Incluye 4 pruebas de permiso por sitio y 2 de observador.
 - **Permisos corregidos en candidata:** ahora son `optional_host_permissions` por sitio, sin scripts declarativos. La autorización manual activa registra scripts persistentes y los inyecta en la pestaña abierta. Pendiente prueba real en Firefox.
 
 - **Corrección real del observador en rama candidata:** se evitó el bucle de reaplicaciones causadas por la hoja `#uui-style` y ahora se detectan cambios de selectores por atributos sin añadir nodos (ver `OBSERVER_REPAIR_2026-11-01.md`).
@@ -15,12 +15,12 @@
 - Interfaz con un único botón/popup de Firefox; documentación y código de demo.
 - PASS: sintaxis de JS y `npm run build:demo`.
 - PASS en Chromium **sobre fixtures sintéticos**: temas, visibilidad Minimal y restauración para las tres aplicaciones; véase `BROWSER_SMOKE_2026-11-01.md`.
-- Pruebas: **38 casos escritos** (32 originales + 2 observador + 4 permisos). Los primeros 34 pasaron en CI (run `41311607812`, 34/34); las 4 nuevas requieren su ejecución CI. Este contenedor sigue sin poder instalar `jsdom` por DNS a npm, pero el runner de GitHub sí lo hace.
+- Pruebas: **38 casos escritos** (32 originales + 2 observador + 4 permisos). Los 38 pasaron en CI (`41312116187`, 38/38). Este contenedor sigue sin poder instalar `jsdom` por DNS a npm; no es bloqueo porque el runner sí pudo.
 - Los selectores de páginas reales **siguen pendientes de calibración**; `calibratedAt: null`.
 
 ## Siguiente acción comprobable
 
-1. `npm ci && npm test` en un entorno con acceso a registro npm.
+1. Comprobación real de permisos y popup en Firefox; la suite de 38 casos ya pasó en GitHub Actions.
 2. Firefox real: test de extensión temporal y adaptador ChatGPT. Registrar captura, URL, fecha, selectores encontrados, antes/después, accesibilidad de controles esenciales, reversión y resultados PASS/FAIL.
 3. Repetir en WhatsApp Web, verificar privacidad.
 4. Solo después, preparar una distribución sencilla y migrar el estilo viejo.

@@ -25,7 +25,7 @@ extension/
   adapters/              una descripción por app (chatgpt, whatsapp, wikipedia)
   content/content.js     arranque en las páginas permitidas
   popup/                 el panel: Aplicaciones · Personalización · Perfiles
-test/                    34 casos escritos (node:test + jsdom) y páginas sintéticas
+test/                    38 pruebas aprobadas en CI (node:test + jsdom) y páginas sintéticas
 demo/index.html          demo funcional: panel y motor reales sobre páginas sintéticas
 design/                  copia versionada del canvas de diseño (.dc.html)
 docs/                    arquitectura, decisiones, pruebas, estado
@@ -35,7 +35,7 @@ docs/                    arquitectura, decisiones, pruebas, estado
 
 ```bash
 npm install
-npm test               # 34 casos escritos; requiere jsdom instalado
+npm test               # 38 PASS en CI (jsdom instalado)
 npm run build:demo     # regenera demo/index.html (abrir en el navegador)
 ```
 
@@ -49,4 +49,6 @@ Probar la extensión en Firefox: `about:debugging` → *Este Firefox* → *Carga
 - [docs/TESTING.md](docs/TESTING.md) — qué se prueba y qué no
 - [docs/STATE.md](docs/STATE.md) — estado actual y cómo continuar
 
-> **Verificación de esta revisión (2026-11-01):** dos nuevas regresiones para evitar bucles del observador y detectar cambios por atributos. Chromium con fixtures PASS; la suite Node/jsdom está pendiente por dependencia faltante. Véase [docs/OBSERVER_REPAIR_2026-11-01.md](docs/OBSERVER_REPAIR_2026-11-01.md).
+> **Verificación de esta revisión (2026-11-01):** dos nuevas regresiones para evitar bucles del observador y detectar cambios por atributos. Chromium con fixtures PASS; la suite Node/jsdom pasó 38/38 en GitHub Actions (run `41312116187`); Firefox real y sitios públicos siguen pendientes. Véase [docs/OBSERVER_REPAIR_2026-11-01.md](docs/OBSERVER_REPAIR_2026-11-01.md).
+
+> **Permisos (candidato):** se piden por origen activo mediante `optional_host_permissions` y se registra el content script tras permiso explícito. Sin scripts declarativos sobre todas las aplicaciones antes de autorizar.
