@@ -223,3 +223,34 @@ test('WhatsApp Web · distribución de la lista y modo, aislado de ChatGPT', () 
   assert.equal(visible(p, '#main footer [contenteditable]'), true);
   assert.equal(st(rep, 'a:new-chat'), 'available');
 });
+
+test('observador no se realimenta al escribir su propia hoja de estilos', async () => {
+  const p = page(fixture('chatgpt'));
+  let reports = 0;
+  const e = engineFor(p, 'chatgpt', { debounceMs: 5, onReport: () => { reports++; } });
+  let s = set(p, empty(p), { level: 'global', key: 'theme' }, 'cafe');
+  s = set(p, s, { level: 'app', appId: 'chatgpt', key: 'mode' }, 'minimal');
+  e.apply(s);
+  e.start();
+  p.doc.body.appendChild(p.doc.createElement('div'));
+  await tick(100);
+  e.stop();
+  assert.ok(reports >= 2, 'revisó el cambio externo');
+  assert.ok(reports <= 3, `no debe ejecutarse en bucle: ${reports} ciclos`);
+  assert.equal(st(e.report(), 'share'), 'applied');
+});
+
+test('observador detecta cambios de selector por atributo sin nueva inserción DOM', async () => {
+  const p = page(fixture('chatgpt'));
+  const e = engineFor(p, 'chatgpt', { debounceMs: 5 });
+  const s = set(p, empty(p), { level: 'app', appId: 'chatgpt', key: 'mode' }, 'minimal');
+  e.apply(s);
+  e.start();
+  p.doc.querySelector('[data-testid="share-chat-button"]').setAttribute('data-testid', 'share-v2');
+  await tick(50);
+  e.stop();
+  const rep = e.report();
+  assert.equal(st(rep, 'share'), 'applied');
+  assert.equal(rep.statuses.share.fallback, true);
+  assert.ok(rep.drift.some(d => d.id === 'share' && d.kind === 'selector alternativo'));
+});
