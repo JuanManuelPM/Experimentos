@@ -1,111 +1,198 @@
 /* ==UserStyle==
 @name         ChatGPT Minimal · Firefox
 @namespace    https://github.com/JuanManuelPM/Experimentos
-@version      1.0.0
-@description  Tema editorial con colores personalizados, menos ruido visual y ancho de lectura flexible.
+@version      1.1.0
+@description  Temas editoriales seleccionables, conversacion a pantalla ancha y controles discretos.
 @author       JuanManuelPM
 @license      MIT
 @homepageURL  https://github.com/JuanManuelPM/Experimentos
 @updateURL    https://raw.githubusercontent.com/JuanManuelPM/Experimentos/master/userstyles/chatgpt-minimal.user.css
+@preprocessor stylus
+@var select theme "Tema visual" ["aire:Aire*", "cafe:Café", "ambar:Ámbar", "papel:Papel", "grafito:Grafito"]
+@var checkbox fullWidth "Texto en todo el ancho disponible" 1
+@var checkbox hideShare "Ocultar botón Compartir" 1
+@var checkbox discreetUI "Controles secundarios discretos" 1
 ==/UserStyle== */
 
 @-moz-document domain("chatgpt.com") {
-
   /*
-   * V1.0.0: cambios VISIBLES y reversibles.
-   * El zoom queda bajo el control de Firefox (Ctrl + / Ctrl -).
-   * El menú de modelo, historial, adjuntos y envío siguen accesibles.
+   * ChatGPT Minimal 1.1.0
+   * Solo CSS: no recopila datos, no envía nada y no modifica las funciones.
+   * La configuración del tema está en Stylus → Configure.
+   * Los márgenes se adaptan al panel disponible, no al ancho total de la ventana.
    */
 
-  /* Paleta clara: papel cálido, tinta oscura. */
-  html:not(.dark):not([data-theme="dark"]) {
-    --bg-primary: #eee9df !important;
-    --bg-secondary: #ded8cc !important;
-    --bg-tertiary: #d4ccbf !important;
-    --main-surface-primary: #eee9df !important;
-    --main-surface-secondary: #e6dfd2 !important;
-    --sidebar-surface: #e3dccf !important;
-    --sidebar-surface-primary: #e3dccf !important;
-    --sidebar-surface-secondary: #d9d1c3 !important;
-    --composer-surface: #faf7f0 !important;
-    --composer-surface-primary: #faf7f0 !important;
-    --text-primary: #252b30 !important;
-    --text-secondary: #4b545a !important;
-    --text-tertiary: #5b666a !important;
-    --icon-primary: #252b30 !important;
-    --icon-secondary: #4b545a !important;
-    --border-default: #b9b0a2 !important;
-    --thread-content-max-width: min(1050px, calc(100vw - 32px)) !important;
-  }
-
-  /* Paleta oscura: grafito azulado, texto marfil. */
+  :root,
+  html,
+  html.light,
   html.dark,
-  html[data-theme="dark"] {
-    --bg-primary: #192630 !important;
-    --bg-secondary: #293945 !important;
-    --bg-tertiary: #344957 !important;
-    --main-surface-primary: #192630 !important;
-    --main-surface-secondary: #21313d !important;
-    --sidebar-surface: #121e27 !important;
-    --sidebar-surface-primary: #121e27 !important;
-    --sidebar-surface-secondary: #1b2b36 !important;
-    --composer-surface: #293d4b !important;
-    --composer-surface-primary: #293d4b !important;
-    --text-primary: #f0eee6 !important;
-    --text-secondary: #c9d4d7 !important;
-    --text-tertiary: #a9bbbf !important;
-    --icon-primary: #f0eee6 !important;
-    --icon-secondary: #c9d4d7 !important;
-    --border-default: #516570 !important;
-    --thread-content-max-width: min(1050px, calc(100vw - 32px)) !important;
+  html[data-theme] {
+    if theme == aire {
+      --cm-bg: #eaf1ed;
+      --cm-panel: #dbe7e0;
+      --cm-side: #dae5de;
+      --cm-card: #f5f8f4;
+      --cm-ink: #253936;
+      --cm-muted: #50645d;
+      --cm-border: #b5c7bb;
+      --cm-link: #186b64;
+    } else if theme == cafe {
+      --cm-bg: #eee5d8;
+      --cm-panel: #dfd0bc;
+      --cm-side: #e4d5c1;
+      --cm-card: #f8f2e9;
+      --cm-ink: #352c26;
+      --cm-muted: #67564a;
+      --cm-border: #c8b49e;
+      --cm-link: #835533;
+    } else if theme == ambar {
+      --cm-bg: #f2e8cd;
+      --cm-panel: #e9d7ad;
+      --cm-side: #ebdab5;
+      --cm-card: #fbf3df;
+      --cm-ink: #3a3325;
+      --cm-muted: #6b5b3d;
+      --cm-border: #d0bd8c;
+      --cm-link: #85591c;
+    } else if theme == papel {
+      --cm-bg: #f5f3ed;
+      --cm-panel: #e8e5dd;
+      --cm-side: #e9e6de;
+      --cm-card: #fffdf7;
+      --cm-ink: #272a2a;
+      --cm-muted: #555e5e;
+      --cm-border: #c9c9c0;
+      --cm-link: #295978;
+    } else if theme == grafito {
+      --cm-bg: #1b2831;
+      --cm-panel: #293943;
+      --cm-side: #14212b;
+      --cm-card: #2c3d48;
+      --cm-ink: #f1ede4;
+      --cm-muted: #c1cfd0;
+      --cm-border: #4a6069;
+      --cm-link: #98ded8;
+      color-scheme: dark;
+    }
+
+    if theme != grafito {
+      color-scheme: light;
+    }
+
+    --bg-primary: var(--cm-bg) !important;
+    --bg-secondary: var(--cm-panel) !important;
+    --bg-tertiary: var(--cm-panel) !important;
+    --main-surface-primary: var(--cm-bg) !important;
+    --main-surface-secondary: var(--cm-panel) !important;
+    --sidebar-surface: var(--cm-side) !important;
+    --sidebar-surface-primary: var(--cm-side) !important;
+    --sidebar-surface-secondary: var(--cm-panel) !important;
+    --composer-surface: var(--cm-card) !important;
+    --composer-surface-primary: var(--cm-card) !important;
+    --text-primary: var(--cm-ink) !important;
+    --text-secondary: var(--cm-muted) !important;
+    --text-tertiary: var(--cm-muted) !important;
+    --icon-primary: var(--cm-ink) !important;
+    --icon-secondary: var(--cm-muted) !important;
+    --border-default: var(--cm-border) !important;
+
+    /* Variables de la interfaz nueva de ChatGPT. */
+    --color-surface: var(--cm-bg) !important;
+    --color-surface-secondary: var(--cm-panel) !important;
+    --color-background-panel: var(--cm-side) !important;
   }
 
-  /* Respaldo para áreas que definen su fondo directamente. */
   html,
   body,
   main,
   #__next {
-    background-color: var(--main-surface-primary) !important;
-    color: var(--text-primary) !important;
+    background-color: var(--cm-bg) !important;
+    color: var(--cm-ink) !important;
   }
 
   .bg-token-main-surface-primary {
-    background-color: var(--main-surface-primary) !important;
+    background-color: var(--cm-bg) !important;
   }
 
   .bg-token-sidebar-surface-primary {
-    background-color: var(--sidebar-surface-primary) !important;
+    background-color: var(--cm-side) !important;
   }
 
-  /* Mantener legible el campo de escritura. */
   #prompt-textarea {
-    color: var(--text-primary) !important;
-    caret-color: var(--text-primary) !important;
+    color: var(--cm-ink) !important;
+    caret-color: var(--cm-ink) !important;
   }
 
-  /* Ocultar solo el botón de compartir, no todo el encabezado. */
-  button[data-testid="share-chat-button"],
-  #page-header button[aria-label="Compartir" i],
-  #page-header button[aria-label="Share" i],
-  #page-header button[title="Compartir" i],
-  #page-header button[title="Share" i],
-  #page-header [data-testid="share-chat-button"],
-  header button[aria-label="Compartir" i],
-  header button[aria-label="Share" i],
-  header button[title="Compartir" i],
-  header button[title="Share" i] {
-    display: none !important;
+  .markdown a {
+    color: var(--cm-link) !important;
+    text-underline-offset: 0.18em;
   }
 
-  /* Enlaces diferenciados de la tipografía común. */
-  html:not(.dark):not([data-theme="dark"]) .markdown a {
-    color: #155b73 !important;
-  }
-  html:is(.dark, [data-theme="dark"]) .markdown a {
-    color: #9ce5df !important;
+  if hideShare {
+    button[data-testid="share-chat-button"],
+    #page-header button[aria-label="Compartir" i],
+    #page-header button[aria-label="Share" i],
+    #page-header button[title="Compartir" i],
+    #page-header button[title="Share" i],
+    header button[aria-label="Compartir" i],
+    header button[aria-label="Share" i],
+    header button[title="Compartir" i],
+    header button[title="Share" i] {
+      display: none !important;
+    }
   }
 
-  /* No recortar bloques de código ni tablas. */
+  if discreetUI {
+    /* Evita tapar los controles; solo reduce ruido de bordes. */
+    [data-testid^="conversation-turn-"] .markdown hr {
+      border-color: var(--cm-border) !important;
+    }
+    [data-testid^="conversation-turn-"] .markdown blockquote {
+      border-left-color: var(--cm-border) !important;
+    }
+    #prompt-textarea:focus {
+      outline-offset: 3px;
+    }
+  }
+
+  @media (min-width: 800px) {
+    if fullWidth {
+      :root,
+      #thread,
+      #thread main,
+      main {
+        --thread-content-max-width: calc(100cqi - 1.5rem) !important;
+        --thread-body-max-width: calc(100cqi - 1.5rem) !important;
+      }
+
+      /* Fallback cuando ChatGPT mantiene un max-width en el contenedor. */
+      #thread [class*="thread-content-max-width"],
+      #thread [class*="thread-body-max-width"] {
+        max-width: calc(100% - 1.5rem) !important;
+      }
+
+      #thread [data-message-author-role="assistant"],
+      #thread [data-message-author-role="assistant"] > div {
+        max-width: none !important;
+        width: 100% !important;
+        min-width: 0 !important;
+      }
+
+      /* El cuadro de escritura sigue el mismo ancho, sin afectar otros paneles. */
+      main [class*="max-w-"]:has(#prompt-textarea) {
+        max-width: calc(100% - 1.5rem) !important;
+        width: 100% !important;
+      }
+    } else {
+      :root,
+      #thread {
+        --thread-content-max-width: min(1050px, calc(100cqi - 2rem)) !important;
+        --thread-body-max-width: min(1050px, calc(100cqi - 2rem)) !important;
+      }
+    }
+  }
+
+  /* Mantener tablas y bloques de código dentro del ancho real. */
   .markdown pre,
   .markdown table {
     max-width: 100% !important;
