@@ -11,23 +11,68 @@
    License: MIT, compatible with inspiration.
 */
 
-/* Theme names vary the accent, not the contrast pairing. */
-html[data-cm-theme="aire"]    { --cm-accent: #94e2d5; --cm-accent-rgb: 148,226,213; }
-html[data-cm-theme="cafe"]    { --cm-accent: #f5cba7; --cm-accent-rgb: 245,203,167; }
-html[data-cm-theme="ambar"]   { --cm-accent: #f9e2af; --cm-accent-rgb: 249,226,175; }
-html[data-cm-theme="papel"]   { --cm-accent: #bac2de; --cm-accent-rgb: 186,194,222; }
-html[data-cm-theme="grafito"] { --cm-accent: #cba6f7; --cm-accent-rgb: 203,166,247; }
-
-/* Never style ChatGPT light mode: it may have hardcoded dark text.
-   The native dark scheme is essential for consistent contrast. */
-:is(html[data-theme="dark"], html.dark)[data-cm-theme] {
-  --cm-base: #1e1e2e;
+/* V07 · Colores completos por tema, no solo el borde.
+   Each preset defines backgrounds AND foregrounds as a paired palette. */
+html[data-cm-theme="aire"] {
+  --cm-main: #182728;
+  --cm-side: #142122;
+  --cm-base: #1c302e;
+  --cm-card: #2a3e3b;
+  --cm-text: #e5f0ea;
+  --cm-muted: #b8cfca;
+  --cm-border: #506661;
+  --cm-accent: #94e2d5;
+  --cm-accent-rgb: 148,226,213;
+}
+html[data-cm-theme="cafe"] {
+  --cm-main: #2a211d;
+  --cm-side: #211a17;
+  --cm-base: #221914;
+  --cm-card: #3a2b26;
+  --cm-text: #f4e8de;
+  --cm-muted: #cfb9aa;
+  --cm-border: #6d5347;
+  --cm-accent: #f5cba7;
+  --cm-accent-rgb: 245,203,167;
+}
+html[data-cm-theme="ambar"] {
+  --cm-main: #282419;
+  --cm-side: #201d16;
+  --cm-base: #211e18;
+  --cm-card: #3c3527;
+  --cm-text: #f5ead2;
+  --cm-muted: #d3c3a1;
+  --cm-border: #716448;
+  --cm-accent: #f9e2af;
+  --cm-accent-rgb: 249,226,175;
+}
+html[data-cm-theme="papel"] {
+  --cm-main: #262b2a;
+  --cm-side: #1e2423;
+  --cm-base: #1e2422;
+  --cm-card: #353d39;
+  --cm-text: #eff1e9;
+  --cm-muted: #cad1c8;
+  --cm-border: #617168;
+  --cm-accent: #bac2de;
+  --cm-accent-rgb: 186,194,222;
+}
+html[data-cm-theme="grafito"] {
   --cm-main: #191925;
   --cm-side: #151520;
+  --cm-base: #1e1e2e;
   --cm-card: #262638;
   --cm-text: #e3e6f3;
   --cm-muted: #b5bdd3;
   --cm-border: #44465e;
+  --cm-accent: #cba6f7;
+  --cm-accent-rgb: 203,166,247;
+}
+
+/* Never style ChatGPT light mode: it may have hardcoded dark text.
+   The native dark scheme is essential for consistent contrast. */
+:is(html[data-theme="dark"], html.dark)[data-cm-theme] {
+  /* Colors inherited from the selected --cm-* palette above. */
 
   color-scheme: dark !important;
 
@@ -193,3 +238,32 @@ html[data-cm-mode="minimal"] [data-message-author-role="assistant"] :is(
   display: none !important;
 }
 
+/* V07 · La elección de modo ahora produce cambios visibles.
+   Minimal keeps the script's floating switch accessible so the user can
+   immediately return to Equilibrado or Completo. */
+html[data-cm-mode="minimal"] :is(
+  #page-header,
+  [data-testid="conversation-header"],
+  [data-app-shell-top-bar]
+) {
+  display: none !important;
+}
+html[data-cm-mode="minimal"] [data-app-navigation-rail="true"] {
+  opacity: .55 !important;
+  transition: opacity .18s ease !important;
+}
+html[data-cm-mode="minimal"] [data-app-navigation-rail="true"]:hover,
+html[data-cm-mode="minimal"] [data-app-navigation-rail="true"]:focus-within {
+  opacity: 1 !important;
+}
+html[data-cm-mode="minimal"] [data-testid="thread-disclaimer"],
+html[data-cm-mode="minimal"] [data-testid*="upgrade" i] {
+  display: none !important;
+}
+html[data-cm-mode="minimal"] main {
+  padding-left: 8px !important;
+  padding-right: 8px !important;
+}
+html[data-cm-mode="completo"] [data-app-navigation-rail="true"] {
+  opacity: 1 !important;
+}
