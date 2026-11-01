@@ -28,7 +28,9 @@
   const state = {
     enabled: store(MODE_KEY, true) !== false,
     browse: false, drag: null, search: '', pane: 'queue', player: null,
-    x: 34, y: 36, w: 1070, h: 722, lastList: '', lastMeta: '',
+    x: Math.max(12, Math.round(((innerWidth || 1440) - 1070) / 2)),
+    y: Math.max(12, Math.round(((innerHeight || 900) - 722) / 2)),
+    w: 1070, h: 722, lastList: '', lastMeta: '',
     lastVideo: null, lastTime: -1, messageUntil: 0, videoMoveOk: false
   };
   const initial = store(STATE_KEY, null);
@@ -66,11 +68,11 @@
     if (APP === 'music') {
       return document.querySelector('ytmusic-player video') ||
         document.querySelector('ytmusic-player-bar video') ||
-        document.querySelector('video');
+        document.querySelector('video') || document.querySelector('audio');
     }
     return document.querySelector('#movie_player video.html5-main-video') ||
       document.querySelector('ytd-watch-flexy video') ||
-      document.querySelector('video.html5-main-video');
+      document.querySelector('video.html5-main-video') || document.querySelector('audio');
   }
   function nativePlayerBox() {
     if (APP !== 'youtube') return null;
