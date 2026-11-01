@@ -16,8 +16,8 @@ Archivo instalable: `userstyles/media-studio.user.js`. WhatsApp Studio no se toc
 | 05 | Widgets de búsqueda, cola, metadatos | Enlaces nativos + cola solo si sitio la publica | Implementado, fixture |
 | 06 | Arrastrar, tamaño, posiciones por aplicación | Guardado independiente y restauración | Implementado, fixture |
 | 07 | Tipografía y diseño unificado | Verificación visual por sitio | Pendiente Firefox real |
-| 08 | Regresiones, compatibilidad, multimedia | CI, comprobación Firefox autenticado | CI pendiente, Firefox NOT_RUN |
-| 09 | Publicar instalador, documentar funciones confirmadas | SHA verificado y URL raw | Pendiente |
+| 08 | Regresiones, compatibilidad, multimedia | CI, comprobación Firefox autenticado | 18/18 pruebas CI PASS; Firefox NOT_RUN |
+| 09 | Publicar instalador, documentar funciones confirmadas | SHA verificado y URL raw | Candidato CI PASS; publicación master pendiente |
 
 ## Decisiones técnicas
 
@@ -47,3 +47,9 @@ Un fallo **bloqueante** se devuelve a la fase correspondiente. No declarar «ter
 ## Instalación
 
 Una instalación en Violentmonkey del archivo raw. En ambas páginas: el botón ◐ para reabrir, × para Original, ↗ para Explorar, `Alt+Shift+M` para alternar.
+
+## Evidencia candidata
+
+- GitHub Actions: 18 tests, 18 PASS, 0 FAIL. Ejecución: https://github.com/JuanManuelPM/Experimentos/actions/runs/41329477965
+- Entorno: Node 22 + jsdom 26 con DOM representativo. No equivale a prueba autenticada real en Firefox.
+- Siguiente verificación manual crítica: video visible e interactivo después del cambio de posición y reproducción de YouTube Music tras navegación SPA.
