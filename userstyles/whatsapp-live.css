@@ -227,4 +227,26 @@ html[data-wml-mode="radical"] #pane-side {
 }
 /* Fin WHATSAPP_EMPTY_BASE_V2 */
 
+
+/* WHATSAPP_EMPTY_BASE_V3: completa la limpieza de la captura real.
+   Atributos que el userscript aplica SOLO después de identificar
+   las etiquetas de interfaz y comprobar geometría/contención.
+   Se ocultan los BLOQUES COMPLETOS, jamás #main ni la lista. */
+html[data-wml-mode="radical"] #app [data-wml-remove="header"],
+html[data-wml-mode="radical"] #app [data-wml-remove="archived"],
+html[data-wml-mode="radical"] #app [data-wml-remove="welcome"],
+html[data-wml-mode="radical"] #app [data-wml-remove="welcome-action"] {
+  display: none !important;
+  height: 0 !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+/* La superficie vacía queda limpia aunque el contenido de bienvenida
+   tenga un fondo propio que no coincide con los tokens de WhatsApp. */
+html[data-wml-mode="radical"] #app :is(#main, #side, #pane-side) {
+  box-shadow: none !important;
+}
+/* Fin WHATSAPP_EMPTY_BASE_V3 */
+
 /* Fin WHATSAPP_MINIMAL_LIVE_V1 */
