@@ -9,7 +9,15 @@
   color-scheme: dark;
 }
 * { box-sizing: border-box; }
-body { margin: 0; background: var(--ground); color: var(--text); font: 13px/18px var(--sans); }
+/* Firefox popup sizing uses BODY width (not only a child panel).
+   The launcher bypasses the popup entirely, but keep this page usable as
+   an ordinary settings tab and future popup fallback. */
+body { width:390px; min-width:390px; margin:0; background:var(--ground);
+  color:var(--text); font:13px/18px var(--sans); }
+@media(min-width:700px) {
+  body{width:100%;min-width:0}
+  .panel{margin:25px auto}
+}
 .panel { width: 380px; max-width: 100vw; background: var(--surface); border: 2px solid var(--focus); border-radius: 8px; overflow: hidden; }
 button, input, select { font: inherit; color: inherit; }
 button { cursor: pointer; }

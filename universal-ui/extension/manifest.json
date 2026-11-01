@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "Universal UI",
-  "version": "0.3.0",
-  "description": "Personalización y lanzador de WhatsApp y ChatGPT en Firefox.",
+  "version": "0.4.0",
+  "description": "Lanzador Firefox: un clic abre el escritorio, sin popup.",
   "browser_specific_settings": {
     "gecko": {
       "id": "universal-ui@juanmanuelpm",
@@ -21,8 +21,7 @@
     "tabs"
   ],
   "action": {
-    "default_title": "Universal UI (Alt+Shift+U)",
-    "default_popup": "popup/popup.html",
+    "default_title": "Abrir escritorio Universal UI (Alt+Shift+U)",
     "default_icon": {
       "16": "icons/icon.svg",
       "32": "icons/icon.svg"
@@ -46,5 +45,10 @@
     "https://web.whatsapp.com/*",
     "https://es.wikipedia.org/*",
     "https://en.wikipedia.org/*"
-  ]
+  ],
+  "background": {
+    "scripts": [
+      "background/open-launcher.js"
+    ]
+  }
 }

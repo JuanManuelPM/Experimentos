@@ -36,6 +36,19 @@
       [tab] = await api.tabs.query({active: true, currentWindow: true});
       host = '';
       try { host = new URL(tab.url).hostname; } catch (_) { /* non-web tab */ }
+      // Settings now opens in a full tab. Pick a real application tab rather
+      // than treating moz-extension:// as an unsupported website.
+      if (!['chatgpt.com','chat.openai.com','web.whatsapp.com',
+              'es.wikipedia.org','en.wikipedia.org'].includes(host)) {
+        const openTabs = await api.tabs.query({});
+        const preferred = ['chatgpt.com','web.whatsapp.com','chat.openai.com'];
+        const found = openTabs.filter(t => {
+          try { return preferred.includes(new URL(t.url).hostname); }
+          catch (_) { return false; }
+        }).sort((a,b) => preferred.indexOf(new URL(a.url).hostname) -
+                          preferred.indexOf(new URL(b.url).hostname))[0];
+        if(found) { tab=found; host=new URL(found.url).hostname; }
+      }
       const adapter = UUI.adapters.adapterForHost(host);
       const permitted = adapter ? await hasHostPermission(host) : false;
       if (permitted) await register(host);
