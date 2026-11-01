@@ -718,7 +718,7 @@
   }
   function n3OnNativeClick(event){
     // Passive observer only. The physical click is delivered to WhatsApp.
-    // No stopPropagation, preventDefault or synthesized events.
+    // This observer never cancels the native event or synthesizes a replacement.
     const row=event.target.closest?.('[data-wml-n3-row]');
     if(!row || !event.isTrusted)return;
     n3.lastRow=row;
