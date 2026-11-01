@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         WhatsApp Minimal · Live
 // @namespace    https://github.com/JuanManuelPM/Experimentos
-// @version      1.5.0
-// @description  Canvas experimental: widget de contactos reales. Modos anteriores intactos.
+// @version      2.0.0
+// @description  Studio: ventana flotante de contactos y conversación nativa; arrastre y búsqueda.
 // @author       JuanManuelPM
 // @match        https://web.whatsapp.com/*
 // @noframes
@@ -510,159 +510,332 @@
   }
 
 
-  /* WML_CANVAS_V1. No duplicate chat data. Read only displayed chat titles
-     from the original WhatsApp list, keep native click and scrolling. */
-  const canvas = {host:null,shadow:null,entries:[],pane:null,shift:0,timer:0,selected:''};
-  const canvasWidth=208;
+
+  /* WML_STUDIO_V2
+     Own visual interface. Native React conversation remains mounted;
+     names are volatile DOM references, not a copied contacts database. */
+  const canvas={
+    host:null,shadow:null,entries:[],pane:null,shift:0,timer:0,selected:'',
+    x:0,y:24,w:0,h:0,loaded:false,drag:null,search:''
+  };
+  const canvasWidth=282;
+  const layoutKey='wml-studio-layout-v2';
+  function stageBounds(){
+    if(canvas.loaded)return;
+    canvas.loaded=true;
+    const p=setting(layoutKey,null)||{};
+    canvas.w=Math.min(innerWidth-28,Math.max(720,Number(p.w)||1060));
+    canvas.h=Math.min(innerHeight-24,Math.max(420,Number(p.h)||innerHeight-48));
+    canvas.x=Math.max(8,Math.min(innerWidth-canvasWidth-8,
+      Number.isFinite(Number(p.x))?Number(p.x):Math.round((innerWidth-canvas.w)/2)));
+    canvas.y=Math.max(8,Math.min(innerHeight-110,
+      Number.isFinite(Number(p.y))?Number(p.y):24));
+  }
+  function saveStage(){
+    GM_setValue(layoutKey,{x:Math.round(canvas.x),y:Math.round(canvas.y),
+      w:Math.round(canvas.w),h:Math.round(canvas.h)});
+  }
   function canvasSourceStyle(){
-    if(document.getElementById('wml-canvas-source-css'))return;
-    const st=document.createElement('style');
-    st.id='wml-canvas-source-css';
-    st.textContent='html[data-wml-mode="canvas"] #app {'+
-      'transform:translateX(calc(-1 * var(--wml-canvas-shift,0px))) !important;'+
-      'width:calc(100% + var(--wml-canvas-shift,0px)) !important;max-width:none !important}'+
-      'html[data-wml-mode="canvas"] body{background:#080b0d!important}';
-    (document.head||document.documentElement).appendChild(st);
+    let st=document.getElementById('wml-canvas-source-css');
+    if(!st){st=document.createElement('style');st.id='wml-canvas-source-css';}
+    st.textContent=[
+      'html[data-wml-mode="canvas"] body{background:#090d16!important;overflow:hidden!important}',
+      'html[data-wml-mode="canvas"] #app{',
+        'transform:translateX(calc(-1 * var(--wml-canvas-shift,0px)))!important;',
+        'width:calc(100% + var(--wml-canvas-shift,0px))!important;max-width:none!important}',
+      'html[data-wml-mode="canvas"] :is(#side,#pane-side){opacity:0!important;pointer-events:none!important}',
+      'html[data-wml-mode="canvas"] #main{',
+        'width:var(--wml-chat-w,750px)!important;max-width:none!important;min-width:0!important;',
+        'height:var(--wml-chat-h,740px)!important;max-height:var(--wml-chat-h,740px)!important;',
+        'transform:translateY(var(--wml-chat-top,24px))!important;',
+        'border-radius:0 22px 22px 0!important;box-shadow:none!important;overflow:hidden!important;',
+        'background:linear-gradient(125deg,#133045,#171e39)!important;',
+        '--conversation-panel-background:#122b3b!important;',
+        '--conversation-header-background:#1a3747!important;',
+        '--compose-panel-background:#193343!important;',
+        '--incoming-background:#234352!important;',
+        '--outgoing-background:#315168!important;',
+        '--primary:#f0f8ff!important;--secondary:#b1cad4!important;',
+        '--WDS-text-primary:#f0f8ff!important}',
+      'html[data-wml-mode="canvas"] #main>header{background:#183847ee!important;',
+        'border-bottom:1px solid #ffffff16!important}',
+      'html[data-wml-mode="canvas"] #main>footer{background:#193442ed!important;',
+        'border-top:1px solid #ffffff14!important}',
+      'html[data-wml-mode="canvas"] #main [contenteditable="true"]{',
+        'color:#f2f9fb!important;caret-color:#83eac3!important}'
+    ].join('');
+    if(!st.isConnected)(document.head||document.documentElement).appendChild(st);
   }
   function makeCanvas(){
     if(canvas.host?.isConnected)return;
     if(!document.body)return;
-    canvasSourceStyle();
-    const host=document.createElement('div');
-    host.id='wml-canvas-host';
-    host.style.cssText='position:fixed!important;inset:0!important;pointer-events:none!important;z-index:2147482000!important';
+    stageBounds();canvasSourceStyle();
+    const host=document.createElement('div');host.id='wml-canvas-host';
+    host.style.cssText='position:fixed!important;inset:0!important;z-index:2147482000!important;pointer-events:none!important';
     const sh=host.attachShadow({mode:'open'});
     sh.innerHTML=[
-      '<style>:host{all:initial;font-family:Arial,"Liberation Sans",system-ui,sans-serif}',
+      '<style>',
+      ':host{all:initial;font-family:system-ui,-apple-system,"Segoe UI",Arial,sans-serif}',
       '*,*::before,*::after{box-sizing:border-box}',
-      '#shell{position:fixed;inset:0;display:flex;pointer-events:none;color:#eceeed;background:transparent}',
-      '#contacts{width:208px;flex:0 0 208px;height:100%;min-width:0;',
-      'background:#0d1113;pointer-events:auto;overflow:hidden;display:flex;flex-direction:column}',
-      '#list{flex:1;overflow:hidden;padding:4px 0 16px;overscroll-behavior:contain}',
-      '.person{display:block;width:100%;height:34px;line-height:34px;margin:0;border:0;border-radius:0;',
-      'padding:0 12px;text-align:left;background:transparent;color:#e2e4e3;cursor:pointer;',
-      'font:400 13px/34px Arial,"Liberation Sans",system-ui,sans-serif;',
-      'letter-spacing:-.014em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}',
-      '.person:hover{background:#1b2426}',
-      '.person[data-selected="true"]{background:#263135;color:#fff}',
-      '.person:focus-visible{outline:2px solid #c0ae87;outline-offset:-2px}',
-      '#message{font:12px/1.5 Arial,sans-serif;padding:12px;color:#9ba4a7}',
-      '#right{flex:1;min-width:0;background:#080b0d;pointer-events:auto}',
-      '#right[data-chat="true"]{background:transparent;pointer-events:none}',
-      '@media(max-width:650px){#contacts{width:155px;flex-basis:155px}}',
+      '#backdrop{position:fixed;inset:0;background:radial-gradient(ellipse at 8% 92%,#113b44 0%,transparent 37%),',
+        'radial-gradient(ellipse at 86% 8%,#24213d 0%,transparent 44%),#080d16;pointer-events:none}',
+      '#backdrop[data-chat="true"]{background:transparent}',
+      '#masks{position:fixed;inset:0;pointer-events:none;display:none}',
+      '#masks[data-chat="true"]{display:block}',
+      '.mask{position:fixed;background:#080d16;pointer-events:none}',
+      '#shell{position:fixed;display:flex;overflow:hidden;pointer-events:none;',
+        'border:1px solid #ffffff30;border-radius:24px;',
+        'background:linear-gradient(130deg,#133547,#192039 70%,#27213a);',
+        'box-shadow:0 24px 75px #0009,0 1px 12px #07152180;',
+        'transition:width .28s ease}',
+      '#shell[data-chat="false"]{width:282px!important}',
+      '#contacts{width:282px;flex:0 0 282px;min-width:0;display:flex;flex-direction:column;',
+        'background:linear-gradient(180deg,#17404b 0%,#132f3d 48%,#10232f 100%);',
+        'border-right:1px solid #ffffff18;pointer-events:auto}',
+      '#head{padding:22px 19px 14px;cursor:grab;touch-action:none;user-select:none}',
+      '#head:active{cursor:grabbing}',
+      '.kicker{color:#82c1c9;font:700 10px/1 system-ui;letter-spacing:.20em}',
+      '.heading{margin-top:9px;display:flex;align-items:center;justify-content:space-between}',
+      '.heading strong{font-size:26px;font-weight:650;letter-spacing:-.065em;color:#f0fbff}',
+      '#settings{width:32px;height:32px;border:1px solid #ffffff28;border-radius:11px;',
+        'background:#ffffff12;color:#e0f4f4;font-size:18px;cursor:pointer}',
+      '#searchbar{margin:0 14px 12px;height:40px;border:1px solid #ffffff23;border-radius:12px;',
+        'background:#061b26c4;display:flex;align-items:center;padding:0 11px;gap:9px}',
+      '#searchbar span{font-size:20px;color:#96c6c8}',
+      '#search{flex:1;min-width:0;background:transparent;border:0;outline:0;',
+        'color:#ecfaff;font:13px system-ui}',
+      '#search::placeholder{color:#8aabb2}',
+      '#list{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;',
+        'scrollbar-width:thin;scrollbar-color:#ffffff36 transparent;padding:0 9px}',
+      '.person{display:block;width:100%;height:48px;padding:0 13px;text-align:left;',
+        'border:0;border-radius:11px;background:transparent;cursor:pointer;',
+        'color:#dcebef;letter-spacing:-.018em;',
+        'font:500 14px/48px system-ui,-apple-system,"Segoe UI",sans-serif;',
+        'white-space:nowrap;text-overflow:ellipsis;overflow:hidden}',
+      '.person:hover{background:#ffffff14}',
+      '.person[data-selected="true"]{background:#7ac5d129;color:#fff}',
+      'button:focus-visible,#search:focus-visible{outline:2px solid #95f2ce;outline-offset:2px}',
+      '#message{color:#acc3ca;font:12px/1.5 system-ui;padding:16px}',
+      '#foot{padding:12px 20px 17px;color:#8fb4bd;font:10px/1.5 system-ui;',
+        'letter-spacing:.06em}',
+      '#right{flex:1;min-width:0;pointer-events:none;display:grid;place-items:center}',
+      '#right[data-chat="false"]{background:radial-gradient(circle at 65% 27%,#41558c65,transparent 46%),',
+        'linear-gradient(135deg,#173e55,#25213f)}',
+      '#right[data-chat="true"]{background:transparent}',
+      '#placeholder{text-align:center;color:#c8e2e9;max-width:300px}',
+      '#placeholder strong{display:block;font-size:25px;font-weight:500;',
+        'letter-spacing:-.045em;margin-bottom:10px}',
+      '#placeholder span{font-size:13px;color:#9bb7c3;line-height:1.6}',
+      '#right[data-chat="true"] #placeholder{display:none}',
+      '#resize{position:absolute;right:0;bottom:0;width:18px;height:18px;',
+        'cursor:nwse-resize;pointer-events:auto;display:none;',
+        'background:linear-gradient(135deg,transparent 45%,#85bdc88a 48%,transparent 54%)}',
+      '#shell[data-chat="true"] #resize{display:block}',
+      '@media(max-width:760px){#contacts{width:220px;flex-basis:220px}',
+        '#shell[data-chat="false"]{width:220px!important}',
+        '.heading strong{font-size:22px}#head{padding:15px 13px 12px}}',
       '</style>',
-      '<div id="shell"><section id="contacts" role="region" aria-label="Contactos">',
+      '<div id="backdrop"></div>',
+      '<div id="masks"><div class="mask" id="topmask"></div><div class="mask" id="leftmask"></div>',
+        '<div class="mask" id="rightmask"></div><div class="mask" id="bottommask"></div></div>',
+      '<div id="shell" data-chat="false">',
+      '<section id="contacts" role="region" aria-label="Contactos">',
+      '<header id="head"><div class="kicker">WHATSAPP · STUDIO</div>',
+      '<div class="heading"><strong>Mensajes</strong>',
+      '<button id="settings" type="button" aria-label="Personalización">◐</button></div></header>',
+      '<label id="searchbar"><span aria-hidden="true">⌕</span>',
+      '<input id="search" type="search" aria-label="Filtrar contactos cargados"',
+        ' placeholder="Buscar conversaciones" autocomplete="off"></label>',
       '<div id="list" role="listbox" aria-label="Conversaciones"></div>',
-      '<p id="message" hidden></p></section><div id="right" aria-hidden="true"></div></div>'
+      '<p id="message" hidden></p>',
+      '<footer id="foot">VISTA PERSONAL · SINCRONIZADA</footer></section>',
+      '<section id="right" data-chat="false" aria-label="Conversación">',
+      '<div id="placeholder"><strong>Tu espacio.</strong>',
+      '<span>Elegí un contacto y la conversación se abrirá acá.</span></div></section>',
+      '<div id="resize" aria-label="Redimensionar" role="separator"></div></div>'
     ].join('');
-    sh.getElementById('list').addEventListener('click',event=>{
-      const btn=event.target.closest('[data-index]');
-      if(!btn)return;
-      const item=canvas.entries[Number(btn.dataset.index)];
-      if(!item?.row?.isConnected)return;
-      canvas.selected=item.name;
-      // Click the native chat row itself, not a child avatar/menu control.
-      item.row.click();
-      scheduleCanvas();
+    sh.getElementById('settings').addEventListener('click',()=>toggle(true));
+    sh.getElementById('search').addEventListener('input',e=>{
+      canvas.search=e.target.value.toLocaleLowerCase();drawNames();
     });
-    sh.getElementById('contacts').addEventListener('wheel',event=>{
-      const pane=canvas.pane;
-      if(!pane)return;
-      let scroller=null;
-      for(const el of [pane,...pane.querySelectorAll('[data-testid="chat-list"],[role="grid"],[tabindex]')]){
-        if(el.scrollHeight>el.clientHeight+20&&el.clientHeight>80 &&
-          /auto|scroll/.test(getComputedStyle(el).overflowY)){scroller=el;break;}
+    sh.getElementById('list').addEventListener('click',e=>{
+      const btn=e.target.closest('[data-index]');if(!btn)return;
+      const item=canvas.entries[Number(btn.dataset.index)];
+      if(!item?.row?.isConnected){scheduleCanvas();return;}
+      canvas.selected=item.row;
+      item.row.click();scheduleCanvas();
+    });
+    sh.getElementById('list').addEventListener('wheel',e=>{
+      if(!canvas.pane)return;
+      let node=canvas.pane,scroller=null;
+      for(let i=0;node&&i<5;node=node.parentElement,i++){
+        if(node.scrollHeight>node.clientHeight+30 &&
+          /auto|scroll/.test(getComputedStyle(node).overflowY)){scroller=node;break;}
       }
-      scroller=scroller||pane;
-      if(scroller.scrollHeight>scroller.clientHeight+20){
-        event.preventDefault();
-        scroller.scrollTop+=event.deltaY;
-        scheduleCanvas();
+      if(scroller && (e.deltaY>0?scroller.scrollTop+scroller.clientHeight<
+        scroller.scrollHeight-2:scroller.scrollTop>2)){
+        e.preventDefault();scroller.scrollTop+=e.deltaY;scheduleCanvas();
       }
     },{passive:false});
+    function dragHandle(el,type){
+      el.addEventListener('pointerdown',e=>{
+        if(e.target.closest('button,input'))return;
+        canvas.drag={type,cx:e.clientX,cy:e.clientY,
+          x:canvas.x,y:canvas.y,w:canvas.w,h:canvas.h};
+        el.setPointerCapture?.(e.pointerId);e.preventDefault();
+      });
+      el.addEventListener('pointermove',e=>{
+        if(!canvas.drag||canvas.drag.type!==type)return;
+        const d=canvas.drag;
+        if(type==='move'){
+          canvas.x=Math.max(8,Math.min(innerWidth-canvasWidth-10,d.x+e.clientX-d.cx));
+          canvas.y=Math.max(8,Math.min(innerHeight-110,d.y+e.clientY-d.cy));
+        }else{
+          canvas.w=Math.max(720,Math.min(innerWidth-canvas.x-8,d.w+e.clientX-d.cx));
+          canvas.h=Math.max(420,Math.min(innerHeight-canvas.y-8,d.h+e.clientY-d.cy));
+        }
+        positionCanvas();
+      });
+      el.addEventListener('pointerup',()=>{
+        if(canvas.drag){canvas.drag=null;saveStage();}
+      });
+      el.addEventListener('pointercancel',()=>{canvas.drag=null;});
+    }
+    dragHandle(sh.getElementById('head'),'move');
+    dragHandle(sh.getElementById('resize'),'size');
     document.body.appendChild(host);
     canvas.host=host;canvas.shadow=sh;
+    positionCanvas();
+  }
+  function validName(n){
+    if(!n || n.length>110)return false;
+    if(/^(archived|archivados|whatsapp|today|yesterday|ayer|hoy|search|buscar)$/i.test(n))return false;
+    if(/^\d+\s+unread messages?/i.test(n)||/^\d+\s+mensajes?\s+sin\s+leer/i.test(n))return false;
+    if(/^(message|mensaje|no messages|new chat|nuevo chat)$/i.test(n))return false;
+    return true;
   }
   function canvasEntries(pane){
     if(!pane)return [];
-    const items=pane.querySelectorAll('[role="row"],[role="listitem"],'+
-      '[data-testid="cell-frame-container"],[data-testid="chat-list-item"]');
-    const result=[],names=new Set();
-    let scanned=0;
-    for(const row of items){
-      if(++scanned>350)break;
+    const rows=pane.querySelectorAll(
+      '[role="row"],[role="listitem"],[data-testid="cell-frame-container"],[data-testid="chat-list-item"]'
+    );
+    const result=[];let scanned=0;
+    for(const row of rows){
+      if(++scanned>400)break;
       if(row.parentElement?.closest('[role="row"],[role="listitem"]'))continue;
       if(row.matches('[data-testid*="archived" i]')||row.querySelector('[data-icon="archived"]'))continue;
-      const title=row.querySelector('[data-testid="cell-frame-title"],'+
-        '[data-testid="chatlist-title"],span[title],span[dir="auto"]');
-      if(!title)continue;
-      // In-memory name only, not message text or preview.
-      const name=(title.getAttribute('title')||title.textContent||'').trim();
-      if(!name||name.length>140||names.has(name))continue;
-      names.add(name);
-      result.push({row,name,selected:row.getAttribute('aria-selected')==='true'||
+      const candidates=row.querySelectorAll(
+        '[data-testid="cell-frame-title"],[data-testid="chatlist-title"],span[title],span[dir="auto"]'
+      );
+      let chosen=null,high=-100;
+      const rect=row.getBoundingClientRect();
+      for(const el of candidates){
+        const name=(el.getAttribute('title')||el.textContent||'').trim();
+        if(!validName(name))continue;
+        const box=el.getBoundingClientRect();
+        if(rect.height&&box.height && box.top>rect.top+rect.height*.67)continue;
+        const testId=el.getAttribute('data-testid')||'';
+        const score=(testId.includes('title')?100:0)+
+          (el.hasAttribute('title')?60:0)+(el.getAttribute('dir')==='auto'?20:0)+
+          (rect.height&&box.height?Math.max(0,28-(box.top-rect.top)):0);
+        if(score>high){high=score;chosen=name;}
+      }
+      if(!chosen)continue;
+      result.push({row,name:chosen,selected:row.getAttribute('aria-selected')==='true'||
         !!row.querySelector('[aria-selected="true"]')});
     }
     return result;
   }
-  function updateCanvasShift(){
-    const main=document.querySelector('#main');
-    const pane=document.querySelector('#pane-side');
-    const edge=main?.getBoundingClientRect().left ?? pane?.getBoundingClientRect().right;
-    if(!Number.isFinite(edge))return;
-    // Undo the previously applied translation before measuring.
-    const next=Math.max(0,Math.min(900,Math.round(edge+canvas.shift-canvasWidth)));
-    if(Math.abs(next-canvas.shift)>3){
-      canvas.shift=next;
-      document.documentElement.style.setProperty('--wml-canvas-shift',next+'px');
+  function drawNames(){
+    const sh=canvas.shadow;if(!sh)return;
+    const list=sh.getElementById('list');
+    const frag=document.createDocumentFragment();
+    let count=0;
+    canvas.entries.forEach((item,i)=>{
+      if(canvas.search&&!item.name.toLocaleLowerCase().includes(canvas.search))return;
+      count++;
+      const button=document.createElement('button');
+      button.type='button';button.className='person';
+      button.dataset.index=String(i);
+      button.dataset.selected=String(item.selected||canvas.selected===item.row);
+      button.setAttribute('role','option');
+      button.setAttribute('aria-selected',button.dataset.selected);
+      button.textContent=item.name;
+      frag.appendChild(button);
+    });
+    const oldScroll=list.scrollTop;list.replaceChildren(frag);list.scrollTop=oldScroll;
+    const msg=sh.getElementById('message');
+    msg.hidden=count!==0;
+    if(!count)msg.textContent=canvas.entries.length?
+      'No hay coincidencias entre los chats cargados.':'Esperando conversaciones de WhatsApp.';
+    sh.getElementById('foot').textContent=count+' CHATS CARGADOS · VISTA LOCAL';
+  }
+  function positionCanvas(){
+    const sh=canvas.shadow;if(!sh)return;
+    const main=document.querySelector('#main'),hasChat=!!main;
+    const cW=innerWidth<760?220:canvasWidth;
+    const w=Math.max(cW+320,Math.min(canvas.w,innerWidth-canvas.x-8));
+    const h=Math.max(400,Math.min(canvas.h,innerHeight-canvas.y-8));
+    const width=hasChat?w:cW;
+    const shell=sh.getElementById('shell');
+    shell.style.left=canvas.x+'px';shell.style.top=canvas.y+'px';
+    shell.style.width=width+'px';shell.style.height=h+'px';
+    shell.dataset.chat=String(hasChat);
+    sh.getElementById('right').dataset.chat=String(hasChat);
+    sh.getElementById('backdrop').dataset.chat=String(hasChat);
+    const masks=sh.getElementById('masks');masks.dataset.chat=String(hasChat);
+    if(hasChat){
+      const rects={topmask:[0,0,innerWidth,canvas.y],
+        leftmask:[0,canvas.y,canvas.x,h],
+        rightmask:[canvas.x+width,canvas.y,Math.max(0,innerWidth-canvas.x-width),h],
+        bottommask:[0,canvas.y+h,innerWidth,Math.max(0,innerHeight-canvas.y-h)]};
+      for(const [id,v] of Object.entries(rects)){
+        const el=sh.getElementById(id);
+        Object.assign(el.style,{left:v[0]+'px',top:v[1]+'px',width:v[2]+'px',height:v[3]+'px'});
+      }
+      const left=main.getBoundingClientRect().left+canvas.shift;
+      const next=Math.max(-950,Math.min(1500,Math.round(left-canvas.x-cW)));
+      if(Number.isFinite(next)&&Math.abs(next-canvas.shift)>2){
+        canvas.shift=next;
+        document.documentElement.style.setProperty('--wml-canvas-shift',next+'px');
+      }
+      document.documentElement.style.setProperty('--wml-chat-top',canvas.y+'px');
+      document.documentElement.style.setProperty('--wml-chat-w',Math.max(320,w-cW)+'px');
+      document.documentElement.style.setProperty('--wml-chat-h',h+'px');
     }
   }
   function renderCanvas(){
-    if(mode()!=='canvas'||!canvas.shadow)return;
+    if(mode()!=='canvas')return;
+    makeCanvas();
+    if(!canvas.shadow)return;
     const pane=document.querySelector('#pane-side');
     canvas.pane=pane;
     const entries=canvasEntries(pane);
-    const list=canvas.shadow.getElementById('list');
-    const hasChat=!!document.querySelector('#main');
-    canvas.shadow.getElementById('right').dataset.chat=String(hasChat);
-    const sig=entries.map(e=>e.name+(e.selected?'*':'')).join('|');
-    if(list.dataset.signature!==sig){
-      const frag=document.createDocumentFragment();
-      entries.forEach((item,i)=>{
-        const btn=document.createElement('button');
-        btn.type='button';btn.className='person';btn.dataset.index=String(i);
-        btn.dataset.selected=String(item.selected||item.name===canvas.selected);
-        btn.setAttribute('role','option');
-        btn.setAttribute('aria-selected',btn.dataset.selected);
-        btn.textContent=item.name;
-        frag.appendChild(btn);
-      });
-      list.replaceChildren(frag);
-      list.dataset.signature=sig;
-    }
-    canvas.entries=entries;
-    const msg=canvas.shadow.getElementById('message');
-    msg.hidden=entries.length>0;
-    if(!entries.length)msg.textContent=pane?'No hay chats cargados en la vista.':'Cargando WhatsApp…';
-    updateCanvasShift();
+    const changed=entries.length!==canvas.entries.length ||
+      entries.some((e,i)=>canvas.entries[i]?.name!==e.name ||
+        canvas.entries[i]?.row!==e.row||canvas.entries[i]?.selected!==e.selected);
+    if(changed){canvas.entries=entries;drawNames();}
+    positionCanvas();
   }
   function scheduleCanvas(){
     if(mode()!=='canvas'||canvas.timer)return;
     canvas.timer=setTimeout(()=>{
       canvas.timer=0;
-      try{renderCanvas();}catch(_){} // fail open, native WhatsApp unaffected
+      try{renderCanvas();}catch(_){}  // Always leave native WhatsApp intact.
     },140);
   }
   function syncCanvas(){
     if(mode()!=='canvas'){
       if(canvas.host)canvas.host.remove();
       canvas.host=null;canvas.shadow=null;canvas.pane=null;
-      canvas.entries=[];canvas.selected='';canvas.shift=0;
-      document.documentElement.style.removeProperty('--wml-canvas-shift');
+      canvas.entries=[];canvas.selected='';canvas.shift=0;canvas.loaded=false;
+      for(const prop of ['--wml-canvas-shift','--wml-chat-top','--wml-chat-w','--wml-chat-h'])
+        document.documentElement.style.removeProperty(prop);
+      if(uiShadow)uiShadow.getElementById('trigger').style.display='';
       return;
     }
-    makeCanvas();
-    scheduleCanvas();
+    if(uiShadow)uiShadow.getElementById('trigger').style.display='none';
+    makeCanvas();scheduleCanvas();
   }
 
   function init(){
