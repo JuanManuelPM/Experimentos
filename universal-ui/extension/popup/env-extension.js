@@ -62,6 +62,17 @@
         return api.tabs.sendMessage(tab.id, {type: 'uui:report'});
       }
     },
+    async openLauncher() {
+      const url = api.runtime.getURL('launcher/index.html');
+      const all = await api.tabs.query({});
+      const existing = all.find(t => t.url === url);
+      if (existing) {
+        await api.windows.update(existing.windowId, {focused: true});
+        await api.tabs.update(existing.id, {active: true});
+        return;
+      }
+      await api.tabs.create({url, active: true});
+    },
     runAction: id => api.tabs.sendMessage(tab.id, {type: 'uui:action', id}),
     download(name, content) {
       const url = URL.createObjectURL(new Blob([content], {type: 'application/json'}));

@@ -251,6 +251,13 @@
           h('span', {}, h('div', {}, a.name), h('div', { class: 'meta' }, meta + ' · v' + a.version + (a.calibratedAt ? '' : ' · sin calibrar'))),
           custom ? h('button', { class: 'btn quiet', onclick: () => commit(s => ST.resetApp(s, a.id), a.name + ' restaurado') }, '↺') : null));
       }
+      if (env.openLauncher) {
+        v.prepend(h('div', { class: 'group' },
+          h('button', { type: 'button', class: 'btn primary',
+            onclick: async () => {
+              try { await env.openLauncher(); } catch (e) { toast('No se pudo abrir: ' + e.message); }
+            } }, 'Abrir escritorio Firefox')));
+      }
       v.append(h('p', { class: 'empty' }, 'Nuevas apps: un adaptador en adapters/. Ver docs/ADDING_AN_APP.md'));
     }
 

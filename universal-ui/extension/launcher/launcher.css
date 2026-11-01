@@ -1,0 +1,18 @@
+:root{color-scheme:dark;--bg:#0b0f12;--panel:#161d22;--border:#2a343a;--fg:#e5ebe9;--muted:#8a9b9d;--accent:#bdd8cb;font-family:Cantarell,"Noto Sans",system-ui,sans-serif}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:var(--bg);color:var(--fg)}
+body{background:radial-gradient(ellipse at 100% 0%,#202d32 0%,transparent 48%),var(--bg)}
+main{width:min(870px,calc(100% - 40px));margin:0 auto;padding:clamp(35px,8vw,96px) 0 70px}
+header{margin-bottom:64px}.eyebrow,h2,.num,footer{font:11px ui-monospace,Menlo,monospace;letter-spacing:.1em;color:var(--muted)}
+h1{font-size:clamp(42px,7vw,72px);font-weight:520;letter-spacing:-.07em;margin:10px 0}h2{text-transform:uppercase;margin:0 0 17px}
+.app{border-top:1px solid var(--border);padding:25px 2px;display:grid;grid-template-columns:35px minmax(100px,1fr) auto;gap:14px;align-items:center}
+.app:last-child{border-bottom:1px solid var(--border)}h3{font-size:23px;letter-spacing:-.035em;font-weight:500;margin:0}
+p{margin:0}.app p{font-size:12px;color:var(--muted);margin-top:4px}
+.buttons{display:flex;gap:8px;flex-wrap:wrap}button{cursor:pointer;border:1px solid #394b50;border-radius:7px;background:var(--panel);color:var(--fg);padding:9px 13px;font:inherit;min-height:39px}
+button:hover{border-color:#78928c;background:#243038}button:focus-visible{outline:2px solid #def4e7;outline-offset:3px}
+button:disabled{opacity:.45;cursor:progress}.primary{background:var(--accent);border-color:var(--accent);color:#142b27}.primary:hover{background:#dcece3}
+.layouts{margin-top:56px}.layout{display:flex;align-items:center;justify-content:space-between;text-align:left;width:100%;min-height:86px;margin-top:9px;padding:18px 22px;border-radius:10px}
+.layout strong{font-size:19px;font-weight:520;letter-spacing:-.03em}.layout small{display:block;color:var(--muted);font-size:12px;margin-top:7px}.layout b{font-size:28px;color:var(--accent);font-weight:300}
+.layout.secondary{background:transparent;border-color:var(--border)}
+#status{margin-top:24px;min-height:24px;font-size:12px;color:var(--accent)}#status[data-error=true]{color:#ffb9aa}
+footer{border-top:1px solid var(--border);margin-top:45px;padding-top:16px;font-size:10px;letter-spacing:0;color:#6e8185}
+@media(max-width:700px){main{width:calc(100% - 30px)}.app{grid-template-columns:25px 1fr}.buttons{grid-column:2}.app p{font-size:11px}}
