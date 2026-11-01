@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         WhatsApp Minimal · Live
 // @namespace    https://github.com/JuanManuelPM/Experimentos
-// @version      1.3.0
-// @description  Lista angosta con nombres únicamente. Volver a Original desde ◐.
+// @version      1.4.0
+// @description  Superficies de chats propias: tipografía, sin separadores, ancho real ajustado.
 // @author       JuanManuelPM
 // @match        https://web.whatsapp.com/*
 // @noframes
@@ -471,11 +471,40 @@
       }
     }
   }
+
+  /* WML_WIDGET_SURFACES_V1
+     Two *native* surfaces: contacts and current chat. This is not a copy of
+     personal data. WhatsApp retains its DOM, scroll, handlers, and messages.
+     Mark the full native left column, including hidden outer wrappers. */
+  function markWidgetSurfaces() {
+    if (mode() !== 'radical') return;
+    const app=document.querySelector('#app');
+    const side=document.querySelector('#side');
+    const pane=document.querySelector('#pane-side');
+    const main=document.querySelector('#main');
+    if(!app || !side || !pane || window.innerWidth<650)return;
+    // The original WhatsApp shell may remain 500px wide after the visible
+    // list shrinks. Mark each distinct wrapper until the split containing
+    // the right conversation, never touching the shared parent.
+    let level=0;
+    for(let el=side; el && el!==app && level++<12; el=el.parentElement){
+      if(main && el.contains(main))break;
+      const r=el.getBoundingClientRect();
+      if(r.height<200 || r.width<120 || r.width>window.innerWidth*.78)continue;
+      if(el.getAttribute('data-wml-left-shell')!=='yes')
+        el.setAttribute('data-wml-left-shell','yes');
+    }
+    if(side.getAttribute('data-wml-widget')!=='contacts')
+      side.setAttribute('data-wml-widget','contacts');
+    if(main && main.getAttribute('data-wml-widget')!=='conversation')
+      main.setAttribute('data-wml-widget','conversation');
+  }
+
   function scheduleNakedList(){
     if(mode()!=='radical' || layoutScheduled)return;
     layoutScheduled=setTimeout(()=>{
       layoutScheduled=0;
-      try { markBareChatLayout(); compactNakedList(); }
+      try { markBareChatLayout(); compactNakedList(); markWidgetSurfaces(); }
       catch(e) { /* never stop native WhatsApp on selector drift */ }
     },160);
   }
