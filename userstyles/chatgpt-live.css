@@ -140,3 +140,40 @@ html[data-cm-theme="grafito"] { --cm-accent: #cba6f7; --cm-accent-rgb: 203,166,2
   button[data-testid="share-chat-button"] {
   display: none !important;
 }
+
+/* =============================================================
+   V06 · LIMPIEZA DISCRETA: sólo elementos prescindibles.
+   Inspirado en chatgpt-cleanup y ChatGPT-Web-Utils (GitHub, 2026).
+   Evita texto genérico, selectores hash y ocultar controles de cuenta.
+   No toca colores, contraste, editor, navegación esencial ni modelo.
+   ============================================================= */
+
+/* Promociones "Upgrade" dentro del encabezado y barra lateral.
+   Una coincidencia por aria-label/href, no un simple "button" global. */
+:is(
+  #app-shell-sidebar,
+  [data-app-navigation-rail="true"],
+  #page-header,
+  header
+) :is(
+  a[href*="/upgrade"],
+  a[href*="/pricing"],
+  button[aria-label="Upgrade" i],
+  button[aria-label="Upgrade plan" i],
+  button[aria-label="Upgrade your plan" i],
+  [data-testid="upgrade-button"]
+) {
+  display: none !important;
+}
+
+/* Descargo repetido bajo el chat.
+   El aviso continúa existiendo en la página, sólo se oculta visualmente. */
+[data-testid="thread-disclaimer"] {
+  display: none !important;
+}
+
+/* Si alguna promo reaparece con el componente explícito de banner, se
+   oculta sólo cuando tenga el cierre identificado de esa promo. */
+aside:has(button[aria-label="Dismiss ChatGPT beacon banner" i]) {
+  display: none !important;
+}
