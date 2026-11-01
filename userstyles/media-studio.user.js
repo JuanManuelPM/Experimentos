@@ -27,7 +27,7 @@ const state={open:p.open!==false,tab:'player',type:'all',focus:!!p.focus,shorts:
 comments:!!p.comments,related:!!p.related,x:Number.isFinite(p.x)?p.x:null,
 y:Number.isFinite(p.y)?p.y:74,w:Number.isFinite(p.w)?p.w:348,
 h:Number.isFinite(p.h)?p.h:616,drag:null,signature:''};
-let favorites=read(LIB,[]);
+let favorites=read(LIBRARY,[]);
 if(!Array.isArray(favorites))favorites=[];
 favorites=favorites.filter(x=>x&&/^[\w-]{11}$/.test(x.id)&&['music','video'].includes(x.type)).slice(0,400);
 let host=null,shadow=null;
