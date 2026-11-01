@@ -36,7 +36,7 @@ test('URL matching is exact host and https (no lookalike phishing host)',()=>{
   assert.equal(launcher.matches(url,'whatsapp'),false);
   assert.equal(launcher.matches(url,'chatgpt'),false);
  }
- assert.throws(()=>launcher.matches('https://chatgpt.com/','evil'));
+ assert.equal(launcher.matches('https://chatgpt.com/','evil'),false);
 });
 test('Abrir uses existing WhatsApp tab and focuses it, never duplicates',async()=>{
  const m=mock();m.tabs.push({id:9,windowId:4,url:'https://web.whatsapp.com/',active:false});
