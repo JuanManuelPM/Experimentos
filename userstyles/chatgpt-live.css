@@ -135,8 +135,8 @@ html[data-cm-theme="grafito"] { --cm-accent: #cba6f7; --cm-accent-rgb: 203,166,2
   ::selection {
   background: rgba(var(--cm-accent-rgb), .33) !important;
 }
-/* Hide only Share; never remove the entire header. */
-:is(html[data-theme="dark"], html.dark)[data-cm-theme]
+/* Hide Share in Minimal and Equilibrado; Completo restores the native button. */
+:is(html[data-theme="dark"], html.dark)[data-cm-theme]:not([data-cm-mode="completo"])
   button[data-testid="share-chat-button"] {
   display: none !important;
 }
@@ -150,7 +150,7 @@ html[data-cm-theme="grafito"] { --cm-accent: #cba6f7; --cm-accent-rgb: 203,166,2
 
 /* Promociones "Upgrade" dentro del encabezado y barra lateral.
    Una coincidencia por aria-label/href, no un simple "button" global. */
-:is(
+html:not([data-cm-mode="completo"]) :is(
   #app-shell-sidebar,
   [data-app-navigation-rail="true"],
   #page-header,
@@ -168,12 +168,28 @@ html[data-cm-theme="grafito"] { --cm-accent: #cba6f7; --cm-accent-rgb: 203,166,2
 
 /* Descargo repetido bajo el chat.
    El aviso continúa existiendo en la página, sólo se oculta visualmente. */
-[data-testid="thread-disclaimer"] {
+html:not([data-cm-mode="completo"]) [data-testid="thread-disclaimer"] {
   display: none !important;
 }
 
 /* Si alguna promo reaparece con el componente explícito de banner, se
    oculta sólo cuando tenga el cierre identificado de esa promo. */
-aside:has(button[aria-label="Dismiss ChatGPT beacon banner" i]) {
+html:not([data-cm-mode="completo"]) aside:has(button[aria-label="Dismiss ChatGPT beacon banner" i]) {
   display: none !important;
 }
+
+/* Minimal additionally hides optional assistant-feedback actions, never Copy.
+   Target individual accessible labels to avoid wiping the whole action toolbar. */
+html[data-cm-mode="minimal"] [data-message-author-role="assistant"] :is(
+  button[aria-label="Good response" i],
+  button[aria-label="Bad response" i],
+  button[aria-label="Read aloud" i],
+  button[aria-label="Regenerate" i],
+  button[aria-label="Buena respuesta" i],
+  button[aria-label="Mala respuesta" i],
+  button[aria-label="Leer en voz alta" i],
+  button[aria-label="Regenerar" i]
+) {
+  display: none !important;
+}
+
