@@ -118,9 +118,7 @@ html[data-cm-theme] main [data-message-author-role="assistant"] {
 
 html[data-cm-theme] main :is(.markdown, .prose)
   :is(p, span, li, ul, ol, div, h1, h2, h3, h4, h5, h6,
-      strong, b, em, i, small, blockquote, th, td, label)
-  :not(pre):not(pre *):not(button):not(button *):not(svg):not(svg *)
-  :not([data-message-author-role="user"] *) {
+      strong, b, em, i, small, blockquote, th, td, label):not(pre):not(pre *):not(button):not(button *):not(svg):not(svg *):not([data-message-author-role="user"] *) {
   color: var(--cm-text) !important;
   -webkit-text-fill-color: var(--cm-text) !important;
 }
