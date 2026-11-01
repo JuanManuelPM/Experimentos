@@ -55,6 +55,7 @@ try{
    const row=event.target.closest('[role="row"]');
    if(!row)return;
    window.nativeEvents.push({trusted:event.isTrusted,target:row.id,type:event.type});
+   if(window.ignoreNativeAction)return;
    const main=document.createElement('section');
    main.id='main';
    main.innerHTML='<header>'+row.querySelector('[data-testid="cell-frame-title"]').textContent+
@@ -96,13 +97,24 @@ try{
  assert.ok(moved && moved.x>side.x+25,'drag changes real side position');
  assert.ok(movedChat && Math.abs(movedChat.x-(moved.x+moved.width))<4,
    'drag keeps real chat attached');
+ // A physical click on a different row is real, but if WhatsApp doesn't
+ // update its chat, Studio must NOT falsely confirm the still-open header.
+ await page.evaluate(()=>{window.ignoreNativeAction=true;});
+ await page.locator('#chat-a').click();
+ await page.waitForTimeout(5800);
+ const fallback=page.locator('#wml-native-studio-host').locator('#original');
+ assert.equal(await fallback.isVisible(),true,
+   'wrong pre-existing native chat requires an honest fallback');
+ assert.ok((await page.locator('#wml-native-studio-host').locator('#alertText').innerText())
+   .includes('no abrió'),'failure status visible for unresponsive native chat');
+ await page.evaluate(()=>{window.ignoreNativeAction=false;});
  const screenshot=resolve(process.cwd(),'studio-3-native-browser.png');
  await page.screenshot({path:screenshot});
  await page.locator('#wml-native-studio-host').locator('#settings').click();
  await page.locator('#wml-live-root').locator('[data-mode="original"]').click();
  assert.equal(await page.locator('#wml-native-studio-host').count(),0);
  assert.equal(await page.locator('#chat-b').count(),1);
- console.log('PASS: trusted physical native click, exact chat target, native composer, visual alignment, drag, Original. Screenshot: '+screenshot);
+ console.log('PASS: trusted native click, correct chat, native composer, drag, stale-chat detection, Original. Screenshot: '+screenshot);
 }finally{
  await browser.close();
 }
