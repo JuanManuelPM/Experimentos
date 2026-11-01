@@ -217,7 +217,7 @@
         <div class="segments" aria-label="Modo visual">
           <button data-mode="original" aria-pressed="false">Original</button>
           <button data-mode="minimal" aria-pressed="false">Minimal</button>
-          <button data-mode="radical" aria-pressed="false">Radical</button><button data-mode="canvas" aria-pressed="false">Canvas</button>
+          <button data-mode="radical" aria-pressed="false">Radical</button><button data-mode="canvas" aria-pressed="false">Studio</button>
         </div>
         <div class="label">Paleta</div>
         <div class="swatches" aria-label="Temas">
