@@ -19,7 +19,7 @@ const browser=await chromium.launch({headless:true,executablePath,
  args:['--no-sandbox','--disable-dev-shm-usage']});
 const page=await browser.newPage({viewport:{width:1280,height:800},deviceScaleFactor:1});
 try{
- await page.setContent(\`<!doctype html><html><head><style>
+ await page.setContent(`<!doctype html><html><head><style>
  *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;}
  body{background:#252b30;font-family:Arial}
  #app{display:flex;height:100vh;overflow:hidden;}
@@ -43,7 +43,7 @@ try{
  <div id="pane-side">
  <div class="row" role="row" id="chat-a"><div class="avatar"></div><div class="meta"><span data-testid="cell-frame-title">Persona A</span><span class="preview">PRIVADO A</span></div></div>
  <div class="row" role="row" id="chat-b"><div class="avatar"></div><div class="meta"><span data-testid="cell-frame-title">Persona B</span><span class="preview">PRIVADO B</span></div></div>
- </div></section></div><div id="native-right"></div></div></body></html>\`);
+ </div></section></div><div id="native-right"></div></div></body></html>`);
  await page.evaluate(()=>{
   const store=new Map([['wml-mode-v1','canvas']]);
   window.GM_getValue=(k,d)=>store.has(k)?store.get(k):d;
