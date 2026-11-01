@@ -318,12 +318,36 @@
     // Tiempo real: el sitio cambia su DOM (SPA) → se vuelve a localizar y aplicar.
     function start() {
       if (observer || !win.MutationObserver) return;
-      observer = new win.MutationObserver(() => {
-        if (applying) return;
+      // The engine itself creates/updates #uui-style. Observing that element
+      // (or its insertion into <head>) caused an infinite reapply loop after
+      // any external DOM change: each apply rewrote its own stylesheet.
+      // Ignore only our own injected style; still observe real SPA changes.
+      function ownStyleNode(n) {
+        return !!n && ((n.nodeType === 1 && n.id === STYLE_ID) ||
+          (n.parentNode && n.parentNode.nodeType === 1 && n.parentNode.id === STYLE_ID));
+      }
+      function relevant(m) {
+        if (ownStyleNode(m.target)) return false;
+        if (m.type === 'attributes') return true;
+        if (m.type !== 'childList') return false;
+        const changed = [...m.addedNodes, ...m.removedNodes];
+        return changed.some(n => !ownStyleNode(n));
+      }
+      observer = new win.MutationObserver(records => {
+        if (applying || !records.some(relevant)) return;
         clearTimeout(timer);
         timer = setTimeout(() => apply(), opts.debounceMs ?? 250);
       });
-      observer.observe(doc.documentElement, { childList: true, subtree: true });
+      observer.observe(doc.documentElement, {
+        childList: true, subtree: true, attributes: true,
+        // Capture selector drift (React often mutates attributes without
+        // inserting a node), but never our own data-uui-* or inline styles.
+        attributeFilter: [
+          'class', 'id', 'role', 'aria-label', 'data-testid',
+          'data-theme', 'href', 'hidden', 'data-app-navigation-rail',
+          'data-app-shell-left-panel-appearance', 'data-content-search-unit-key',
+        ],
+      });
     }
     function stop() { if (observer) observer.disconnect(); observer = null; clearTimeout(timer); }
 
