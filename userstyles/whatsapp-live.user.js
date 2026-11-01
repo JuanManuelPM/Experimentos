@@ -561,8 +561,8 @@
       const item=canvas.entries[Number(btn.dataset.index)];
       if(!item?.row?.isConnected)return;
       canvas.selected=item.name;
-      const native=item.row.querySelector('[role="button"],[tabindex="0"]')||item.row;
-      native.click();
+      // Click the native chat row itself, not a child avatar/menu control.
+      item.row.click();
       scheduleCanvas();
     });
     sh.getElementById('contacts').addEventListener('wheel',event=>{
