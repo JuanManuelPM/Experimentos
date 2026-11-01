@@ -103,6 +103,52 @@ html[data-cm-theme] .markdown :not(pre) > code {
   background-color: var(--cm-sidebar) !important;
 }
 
+/* READABILITY FIX · 2026-11-01
+   ChatGPT can apply white text directly to nested markdown elements
+   (not just via --text-primary), so changing palette variables alone
+   is insufficient. Override the VISIBLE answer nodes explicitly.
+   Do not target the user's message bubble or the dark composer.
+*/
+html[data-cm-theme] main :is(.markdown, .prose),
+html[data-cm-theme] main [data-message-author-role="assistant"] {
+  --text-primary: var(--cm-text) !important;
+  --text-secondary: var(--cm-muted) !important;
+  color: var(--cm-text) !important;
+}
+
+html[data-cm-theme] main :is(.markdown, .prose)
+  :is(p, span, li, ul, ol, div, h1, h2, h3, h4, h5, h6,
+      strong, b, em, i, small, blockquote, th, td, label)
+  :not(pre):not(pre *):not(button):not(button *):not(svg):not(svg *)
+  :not([data-message-author-role="user"] *) {
+  color: var(--cm-text) !important;
+  -webkit-text-fill-color: var(--cm-text) !important;
+}
+
+/* Also catch markdown parents carrying a direct white-text class. */
+html[data-cm-theme] main :is(.markdown, .prose)
+  :is([class*="text-white"], [class*="text-token-text-primary"],
+      [class*="text-token-text-secondary"]) {
+  color: var(--cm-text) !important;
+  -webkit-text-fill-color: var(--cm-text) !important;
+}
+
+/* Links intentionally remain distinct from ordinary text. */
+html[data-cm-theme] main :is(.markdown, .prose) a:not(button) {
+  color: var(--cm-link) !important;
+  -webkit-text-fill-color: var(--cm-link) !important;
+}
+
+/* Never recolor user bubbles, the dark input, syntax-highlighted code
+   or controls inside assistant content. */
+html[data-cm-theme] main
+  [data-message-author-role="user"] :is(.markdown, .prose) *,
+html[data-cm-theme] main
+  [data-message-author-role="user"] :is(.markdown, .prose) {
+  color: inherit !important;
+  -webkit-text-fill-color: currentColor !important;
+}
+
 /* Navigation text and icons should not remain white on the pale sidebar. */
 html[data-cm-theme] :is(aside, #stage-slideover-sidebar) {
   color: var(--cm-text) !important;
