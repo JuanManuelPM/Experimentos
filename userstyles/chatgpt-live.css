@@ -53,6 +53,14 @@ html[data-cm-theme="grafito"] {
   --cm-link: #9fdfd9;
 }
 
+/* Force form controls to match the selected palette, regardless of the native ChatGPT theme. */
+html[data-cm-theme]:not([data-cm-theme="grafito"]) {
+  color-scheme: light !important;
+}
+html[data-cm-theme="grafito"] {
+  color-scheme: dark !important;
+}
+
 html[data-cm-theme][data-cm-theme][data-cm-theme] {
   --bg-primary: var(--cm-bg) !important;
   --bg-secondary: var(--cm-panel) !important;
