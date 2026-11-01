@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Incorporar una tercera app</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&amp;family=Cantarell:wght@400;700&amp;display=swap">
+<style>
+body{margin:0;background:#05070b}
+a{color:#8cb8f2}a:hover{color:#c3cde0}
+</style>
+</helmet>
+<div style="width: 1280px; height: 860px; box-sizing: border-box; background: #05070b; color: #c3cde0; font-family: Cantarell, 'Noto Sans', system-ui, sans-serif; font-size: 13px; line-height: 18px; display: flex; flex-direction: column; gap: 10px; padding: 0 10px 10px">
+  <div style="height: 30px; display: flex; align-items: center; justify-content: space-between; padding: 0 4px; font-family: 'JetBrains Mono', monospace; font-size: 12.5px">
+    <span>tercera app · wikipedia · 4 pasos, 0 líneas en core/</span>
+    <span style="color: #8a96ad">docs/ADDING_AN_APP.md</span>
+  </div>
+
+  <div style="display: flex; gap: 10px; flex: 1; min-height: 0">
+    <div style="flex: 5; min-width: 0; background: #0a0c11; border: 2px solid #8cb8f2; border-radius: 8px; display: flex; flex-direction: column; overflow: hidden">
+      <div style="height: 30px; display: flex; align-items: center; justify-content: space-between; padding: 0 12px; background: #11141b; font-family: 'JetBrains Mono', monospace; font-size: 12px"><span>1 · describir</span><span style="color: #8a96ad">adapters/wikipedia.js</span></div>
+      <div style="padding: 10px 12px; font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 1.55; white-space: pre; color: #c3cde0; overflow: hidden"><span style="color: #7fa7f5">UUI.adapters.defineAdapter</span>({
+  <span style="color: #ef8b98">id</span>: <span style="color: #a6d6a0">'wikipedia'</span>, <span style="color: #ef8b98">version</span>: <span style="color: #a6d6a0">'0.1.0'</span>,
+  <span style="color: #ef8b98">hosts</span>: [<span style="color: #a6d6a0">'es.wikipedia.org'</span>],
+  <span style="color: #ef8b98">anchors</span>: [{ <span style="color: #ef8b98">id</span>: <span style="color: #a6d6a0">'content'</span>,
+    <span style="color: #ef8b98">selectors</span>: [<span style="color: #a6d6a0">'#content'</span>, <span style="color: #a6d6a0">'.mw-body'</span>] }],
+  <span style="color: #ef8b98">essentials</span>: [<span style="color: #a6d6a0">'#mw-content-text'</span>],
+  <span style="color: #ef8b98">components</span>: {
+    <span style="color: #ef8b98">article</span>: { <span style="color: #ef8b98">selectors</span>: [<span style="color: #a6d6a0">'#content'</span>],
+      <span style="color: #ef8b98">supports</span>: [<span style="color: #a6d6a0">'fontScale'</span>, <span style="color: #a6d6a0">'readingWidth'</span>] },
+  },
+  <span style="color: #ef8b98">capabilities</span>: [
+    { <span style="color: #ef8b98">id</span>: <span style="color: #a6d6a0">'notice'</span>, <span style="color: #ef8b98">component</span>: <span style="color: #a6d6a0">'menus'</span>,
+      <span style="color: #ef8b98">selectors</span>: [<span style="color: #a6d6a0">'#siteNotice'</span>, <span style="color: #a6d6a0">'#centralNotice'</span>] },
+  ],
+  <span style="color: #ef8b98">modes</span>: { <span style="color: #ef8b98">minimal</span>: [...], <span style="color: #ef8b98">equilibrado</span>: [<span style="color: #a6d6a0">'notice'</span>] },
+  <span style="color: #ef8b98">theme</span>: { <span style="color: #ef8b98">bridge</span>: <span style="color: #a6d6a0">`--background-color-base: var(--uui-bg)`</span>,
+    <span style="color: #ef8b98">verify</span>: [{ <span style="color: #ef8b98">selector</span>: <span style="color: #a6d6a0">'body'</span>, <span style="color: #ef8b98">token</span>: <span style="color: #a6d6a0">'bg'</span> }] },
+});</div>
+    </div>
+
+    <div style="flex: 4; min-width: 0; display: flex; flex-direction: column; gap: 10px">
+      <div style="background: #0a0c11; border: 2px solid #222b3b; border-radius: 8px; overflow: hidden">
+        <div style="height: 30px; display: flex; align-items: center; padding: 0 12px; background: #11141b; font-family: 'JetBrains Mono', monospace; font-size: 12px">2 · registrar</div>
+        <div style="padding: 10px 12px; font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 1.55; color: #8a96ad">
+          <div>manifest.json</div>
+          <div style="color: #a6d6a0">+ "https://es.wikipedia.org/*"</div>
+          <div style="color: #a6d6a0">+ "adapters/wikipedia.js"</div>
+          <div style="margin-top: 6px">popup/popup.html</div>
+          <div style="color: #a6d6a0">+ &lt;script src="../adapters/wikipedia.js"&gt;</div>
+          <div style="margin-top: 6px; color: #5d6a81">un test falla si las tres listas no coinciden</div>
+        </div>
+      </div>
+      <div style="background: #0a0c11; border: 2px solid #222b3b; border-radius: 8px; overflow: hidden">
+        <div style="height: 30px; display: flex; align-items: center; padding: 0 12px; background: #11141b; font-family: 'JetBrains Mono', monospace; font-size: 12px">3 · probar</div>
+        <div style="padding: 10px 12px; font-family: 'JetBrains Mono', monospace; font-size: 12.5px; line-height: 1.5">
+          <div><span style="color: #c2a5ff">»</span> <span style="color: #7fa7f5">npm</span> test</div>
+          <div style="color: #a6d6a0">✓ Wikipedia funciona con el mismo motor</div>
+          <div style="color: #a6d6a0">✓ el núcleo no menciona ninguna app</div>
+          <div style="color: #a6d6a0">✓ adaptador nuevo en 20 líneas</div>
+          <div style="color: #a6d6a0">✓ manifiesto y panel coinciden</div>
+          <div style="color: #8a96ad">pass 32 · fail 0</div>
+        </div>
+      </div>
+      <div style="flex: 1; background: #0a0c11; border: 2px solid #222b3b; border-radius: 8px; overflow: hidden">
+        <div style="height: 30px; display: flex; align-items: center; padding: 0 12px; background: #11141b; font-family: 'JetBrains Mono', monospace; font-size: 12px">4 · calibrar en el sitio real</div>
+        <div style="padding: 10px 12px; display: flex; flex-direction: column; gap: 8px">
+          <div style="display: flex; gap: 10px; align-items: center; min-height: 30px; border-bottom: 1px solid #222b3b"><span style="flex: 1">Índice</span><span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; padding: 0 6px; border-radius: 4px; color: #c3cde0; border: 1px solid #222b3b">Disponible</span></div>
+          <div style="display: flex; gap: 10px; align-items: center; min-height: 30px; border-bottom: 1px solid #222b3b"><span style="flex: 1">Avisos del sitio</span><span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; padding: 0 6px; border-radius: 4px; color: #06121c; background: #62c3f6">Aplicado</span></div>
+          <div style="display: flex; gap: 10px; align-items: center; min-height: 30px"><span style="flex: 1">Idiomas</span><span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; padding: 0 6px; border-radius: 4px; color: #8a96ad; border: 1px dashed #323b4d">No encontrado</span></div>
+          <div style="color: #8a96ad">Abrir el panel en el sitio, corregir los selectores que el informe marca, y fijar <span style="font-family: 'JetBrains Mono', monospace; color: #c3cde0">calibratedAt</span>.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":860}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

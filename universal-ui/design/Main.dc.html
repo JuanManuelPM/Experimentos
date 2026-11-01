@@ -1,0 +1,381 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Universal UI · prototipo</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&amp;family=Cantarell:wght@400;700&amp;display=swap">
+<style>
+body{margin:0;background:#05070b}
+a{color:#8cb8f2}a:hover{color:#c3cde0}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible{outline:1px solid #8cb8f2;outline-offset:2px}
+button:disabled{cursor:not-allowed}
+</style>
+</helmet>
+<div style="width: 1280px; height: 860px; box-sizing: border-box; background: #05070b; font-family: Cantarell, 'Noto Sans', 'Segoe UI', system-ui, sans-serif; color: #c3cde0; display: flex; flex-direction: column; overflow: hidden">
+
+  <div style="height: 30px; padding: 0 14px; display: flex; align-items: center; justify-content: space-between; font-size: 12.5px; color: #c3cde0">
+    <span style="font-family: 'JetBrains Mono', monospace; display: flex; gap: 10px; align-items: center"><span style="width: 6px; height: 6px; border-radius: 50%; background: #8cb8f2"></span><span style="width: 6px; height: 6px; border-radius: 50%; background: #323b4d"></span><span>universal-ui · prototipo</span></span>
+    <span style="font-family: 'JetBrains Mono', monospace; color: #e7c98c">simulación visual · no modifica sitios reales</span>
+  </div>
+
+  <div style="flex: 1; display: flex; gap: 10px; padding: 0 10px 10px; min-height: 0">
+
+    <div style="flex: 1; min-width: 0; position: relative; display: flex; flex-direction: column; background: #0a0c11; border: 2px solid #8cb8f2; border-radius: 8px; overflow: hidden">
+      <div style="height: 40px; flex: none; display: flex; align-items: center; gap: 6px; padding: 0 8px; border-bottom: 1px solid #222b3b; font-family: 'JetBrains Mono', monospace; font-size: 12px">
+        <sc-for list="{{appTabs}}" as="t" hint-placeholder-count="2">
+          <button type="button" aria-pressed="{{t.pressed}}" onClick="{{t.pick}}" style="{{t.style}}">{{t.label}}</button>
+        </sc-for>
+        <span style="flex: 1"></span>
+        <span style="color: #8a96ad">Alt+Shift+U</span>
+        <button type="button" aria-label="Universal UI" aria-expanded="{{open}}" onClick="{{toggleOpen}}" style="{{uuiBtnStyle}}">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" aria-hidden="true"><rect x="1.5" y="2.5" width="4" height="11" rx="1.2"></rect><rect x="7" y="2.5" width="7.5" height="11" rx="1.2"></rect><path d="M9 6h3.5M9 9h2"></path></svg>
+        </button>
+      </div>
+
+      <div style="flex: 1; min-height: 0; position: relative; background: {{pv.bg}}; display: flex">
+        <sc-if value="{{isChat}}" hint-placeholder-val="{{ true }}">
+          <sc-if value="{{show.sidebar}}" hint-placeholder-val="{{ true }}">
+            <div style="width: 170px; flex: none; background: {{pv.side}}; border-right: 1px solid {{pv.border}}; padding: 14px 12px; box-sizing: border-box; display: flex; flex-direction: column; gap: 10px">
+              <div style="height: 28px; border-radius: 6px; border: 1px solid {{pv.border}}; display: flex; align-items: center; padding: 0 8px; font-size: 12px; color: {{pv.text}}">+ nuevo</div>
+              <div style="height: 8px; width: 80%; border-radius: 4px; background: {{pv.card}}"></div>
+              <div style="height: 8px; width: 64%; border-radius: 4px; background: {{pv.card}}"></div>
+              <div style="height: 8px; width: 72%; border-radius: 4px; background: {{pv.card}}"></div>
+              <div style="flex: 1"></div>
+              <sc-if value="{{show.upgrade}}" hint-placeholder-val="{{ true }}">
+                <div style="height: 30px; border-radius: 6px; background: {{pv.card}}; display: flex; align-items: center; padding: 0 8px; font-size: 11px; color: {{pv.muted}}">promoción</div>
+              </sc-if>
+            </div>
+          </sc-if>
+          <div style="flex: 1; min-width: 0; display: flex; flex-direction: column">
+            <sc-if value="{{show.header}}" hint-placeholder-val="{{ true }}">
+              <div style="height: 40px; flex: none; display: flex; align-items: center; justify-content: space-between; padding: 0 14px; color: {{pv.text}}; font-size: 13px">
+                <span>modelo ▾</span>
+                <sc-if value="{{show.share}}" hint-placeholder-val="{{ true }}">
+                  <span style="border: 1px solid {{pv.border}}; border-radius: 6px; padding: 2px 8px; font-size: 11px">compartir</span>
+                </sc-if>
+              </div>
+            </sc-if>
+            <div style="flex: 1; padding: 18px 22px; display: flex; flex-direction: column; gap: 14px">
+              <div style="align-self: flex-end; width: 46%; padding: 10px 12px; border-radius: 14px; background: {{pv.card}}; display: flex; flex-direction: column; gap: 6px"><div style="height: 7px; border-radius: 4px; background: {{pv.muted}}; opacity: .55"></div><div style="height: 7px; width: 60%; border-radius: 4px; background: {{pv.muted}}; opacity: .55"></div></div>
+              <div style="width: 78%; display: flex; flex-direction: column; gap: 7px">
+                <div style="height: 7px; border-radius: 4px; background: {{pv.text}}; opacity: .7"></div>
+                <div style="height: 7px; width: 92%; border-radius: 4px; background: {{pv.text}}; opacity: .7"></div>
+                <div style="height: 7px; width: 70%; border-radius: 4px; background: {{pv.text}}; opacity: .7"></div>
+                <div style="height: 7px; width: 84%; border-radius: 4px; background: {{pv.text}}; opacity: .7"></div>
+              </div>
+              <sc-if value="{{show.feedback}}" hint-placeholder-val="{{ true }}">
+                <div style="display: flex; gap: 6px; color: {{pv.muted}}; font-size: 12px"><span>⧉</span><span>▲</span><span>▼</span></div>
+              </sc-if>
+            </div>
+            <div style="padding: 0 22px 10px">
+              <div style="height: 46px; border-radius: 18px; background: {{pv.card}}; border: 1px solid {{pv.border}}"></div>
+              <sc-if value="{{show.notices}}" hint-placeholder-val="{{ true }}">
+                <div style="height: 6px; width: 40%; margin: 8px auto 0; border-radius: 3px; background: {{pv.muted}}; opacity: .4"></div>
+              </sc-if>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{isWa}}" hint-placeholder-val="{{ false }}">
+          <div style="width: 46px; flex: none; background: {{pv.card}}; display: flex; flex-direction: column; align-items: center; gap: 10px; padding-top: 14px">
+            <span style="width: 22px; height: 22px; border-radius: 6px; background: {{pv.muted}}; opacity: .7"></span>
+            <sc-if value="{{show.status}}" hint-placeholder-val="{{ true }}"><span style="width: 22px; height: 22px; border-radius: 50%; border: 2px solid {{pv.muted}}; box-sizing: border-box"></span></sc-if>
+            <sc-if value="{{show.channels}}" hint-placeholder-val="{{ true }}"><span style="width: 22px; height: 22px; border-radius: 6px; border: 2px solid {{pv.muted}}; box-sizing: border-box"></span></sc-if>
+            <sc-if value="{{show.communities}}" hint-placeholder-val="{{ true }}"><span style="width: 22px; height: 16px; border-radius: 4px; border: 2px solid {{pv.muted}}; box-sizing: border-box"></span></sc-if>
+            <sc-if value="{{show.meta}}" hint-placeholder-val="{{ true }}"><span style="width: 22px; height: 22px; border-radius: 50%; background: {{pv.muted}}; opacity: .5"></span></sc-if>
+          </div>
+          <div style="width: 210px; flex: none; background: {{pv.side}}; border-right: 1px solid {{pv.border}}; display: flex; flex-direction: column">
+            <div style="padding: 12px; display: flex; flex-direction: column; gap: 8px">
+              <div style="height: 28px; border-radius: 8px; background: {{pv.card}}"></div>
+              <sc-if value="{{show.filters}}" hint-placeholder-val="{{ true }}">
+                <div style="display: flex; gap: 6px"><span style="height: 20px; width: 40px; border-radius: 10px; background: {{pv.card}}"></span><span style="height: 20px; width: 56px; border-radius: 10px; background: {{pv.card}}"></span><span style="height: 20px; width: 48px; border-radius: 10px; background: {{pv.card}}"></span></div>
+              </sc-if>
+            </div>
+            <sc-for list="{{waRows}}" as="r" hint-placeholder-count="5">
+              <div style="{{r.style}}">
+                <sc-if value="{{show.avatars}}" hint-placeholder-val="{{ true }}"><span style="width: 34px; height: 34px; flex: none; border-radius: 50%; background: {{pv.card}}"></span></sc-if>
+                <span style="flex: 1; display: flex; flex-direction: column; gap: 6px"><span style="height: 7px; width: 70%; border-radius: 4px; background: {{pv.text}}; opacity: .65"></span><span style="height: 6px; width: 90%; border-radius: 3px; background: {{pv.muted}}; opacity: .5"></span></span>
+              </div>
+            </sc-for>
+          </div>
+          <div style="flex: 1; min-width: 0; display: flex; flex-direction: column">
+            <div style="height: 44px; background: {{pv.card}}; flex: none"></div>
+            <div style="flex: 1; padding: 16px; display: flex; flex-direction: column; gap: 10px">
+              <div style="width: 40%; height: 30px; border-radius: 8px; background: {{pv.card}}"></div>
+              <div style="align-self: flex-end; width: 36%; height: 30px; border-radius: 8px; background: {{pv.accentSoft}}"></div>
+              <div style="width: 30%; height: 30px; border-radius: 8px; background: {{pv.card}}"></div>
+            </div>
+            <div style="height: 50px; background: {{pv.card}}; flex: none"></div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{open}}" hint-placeholder-val="{{ true }}">
+          <div role="dialog" aria-label="Universal UI" style="position: absolute; top: 6px; right: 8px; width: 372px; max-height: calc(100% - 12px); display: flex; flex-direction: column; background: #0a0c11; border: 1px solid #222b3b; border-radius: 8px; box-shadow: 0 16px 40px rgba(0,0,0,0.55); overflow: hidden; color: #c3cde0; font-size: 13px; line-height: 18px">
+            <div style="height: 30px; flex: none; display: flex; align-items: center; justify-content: space-between; padding: 0 14px; font-family: 'JetBrains Mono', monospace; font-size: 12px">
+              <span style="display: flex; gap: 8px; align-items: center"><span style="width: 6px; height: 6px; border-radius: 50%; background: #8cb8f2"></span>{{appName}} · {{host}}</span>
+              <span style="color: #8a96ad">sin calibrar</span>
+            </div>
+            <div role="tablist" aria-label="Espacios" style="display: flex; flex: none; border-top: 1px solid #222b3b; border-bottom: 1px solid #222b3b">
+              <sc-for list="{{tabs}}" as="t" hint-placeholder-count="3">
+                <button type="button" role="tab" aria-selected="{{t.pressed}}" onClick="{{t.pick}}" style="{{t.style}}">{{t.label}}</button>
+              </sc-for>
+            </div>
+
+            <div style="flex: 1; min-height: 0; overflow-y: auto">
+              <sc-if value="{{isCustom}}" hint-placeholder-val="{{ true }}">
+                <div style="display: flex; margin: 10px 14px 4px; border: 1px solid #222b3b; border-radius: 4px; overflow: hidden">
+                  <sc-for list="{{scopes}}" as="t" hint-placeholder-count="2">
+                    <button type="button" aria-pressed="{{t.pressed}}" onClick="{{t.pick}}" style="{{t.style}}">{{t.label}}</button>
+                  </sc-for>
+                </div>
+
+                <div style="padding: 10px 14px 4px">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px"><span style="font-family: 'JetBrains Mono', monospace; font-weight: 600; font-size: 11px; letter-spacing: .18em; color: #8a96ad">TEMA</span><span style="display: flex; gap: 8px; align-items: center; font-family: 'JetBrains Mono', monospace; font-size: 11px"><span style="color: {{themeSrcColor}}">{{themeSrc}}</span><span style="{{themeStatus.style}}">{{themeStatus.label}}</span></span></div>
+                  <div role="group" aria-label="Tema" style="display: flex; gap: 6px; flex-wrap: wrap">
+                    <sc-for list="{{themes}}" as="t" hint-placeholder-count="7">
+                      <button type="button" aria-label="{{t.name}}" aria-pressed="{{t.pressed}}" onClick="{{t.pick}}" style="{{t.style}}"><span style="background: {{t.bg}}"></span><span style="background: {{t.accent}}"></span></button>
+                    </sc-for>
+                  </div>
+                  <div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #8a96ad; margin-top: 4px">{{themeNote}}</div>
+                </div>
+
+                <div style="padding: 10px 14px 4px">
+                  <div style="display: flex; justify-content: space-between; margin-bottom: 6px"><span style="font-family: 'JetBrains Mono', monospace; font-weight: 600; font-size: 11px; letter-spacing: .18em; color: #8a96ad">MODO</span><span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: {{modeSrcColor}}">{{modeSrc}}</span></div>
+                  <div role="group" aria-label="Modo" style="display: inline-flex; border: 1px solid #222b3b; border-radius: 4px; overflow: hidden">
+                    <sc-for list="{{modes}}" as="t" hint-placeholder-count="3">
+                      <button type="button" aria-pressed="{{t.pressed}}" onClick="{{t.pick}}" style="{{t.style}}">{{t.label}}</button>
+                    </sc-for>
+                  </div>
+                </div>
+
+                <sc-if value="{{isAppScope}}" hint-placeholder-val="{{ true }}">
+                  <div style="padding: 10px 14px 4px">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 2px"><span style="font-family: 'JetBrains Mono', monospace; font-weight: 600; font-size: 11px; letter-spacing: .18em; color: #8a96ad">ELEMENTOS</span><span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #8a96ad">excepciones sobre el modo</span></div>
+                    <sc-for list="{{rows}}" as="r" hint-placeholder-count="7">
+                      <div style="display: flex; align-items: center; gap: 10px; min-height: 34px; border-bottom: 1px solid #222b3b">
+                        <button type="button" role="switch" aria-checked="{{r.on}}" aria-label="{{r.label}}" disabled="{{r.disabled}}" onClick="{{r.toggle}}" style="{{r.track}}"><span style="{{r.knob}}"></span></button>
+                        <span style="flex: 1; display: flex; gap: 8px; align-items: baseline">{{r.label}}<button type="button" onClick="{{r.reset}}" disabled="{{r.inherited}}" style="{{r.srcStyle}}">{{r.src}}</button></span>
+                        <span style="{{r.pill}}">{{r.status}}</span>
+                      </div>
+                    </sc-for>
+                  </div>
+                </sc-if>
+                <sc-if value="{{isGlobalScope}}" hint-placeholder-val="{{ false }}">
+                  <p style="margin: 10px 14px; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #8a96ad">Común: tema y modo para todas las apps. Cada app puede sobrescribirlos sin tocar este valor.</p>
+                </sc-if>
+              </sc-if>
+
+              <sc-if value="{{isApps}}" hint-placeholder-val="{{ false }}">
+                <sc-for list="{{appList}}" as="a" hint-placeholder-count="3">
+                  <button type="button" onClick="{{a.pick}}" disabled="{{a.locked}}" style="{{a.style}}">
+                    <span style="{{a.markStyle}}">{{a.mark}}</span>
+                    <span style="flex: 1; display: flex; flex-direction: column; text-align: left"><span>{{a.name}}</span><span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #8a96ad">{{a.meta}}</span></span>
+                  </button>
+                </sc-for>
+                <p style="margin: 10px 14px; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #8a96ad">nueva app → adapters/&lt;id&gt;.js</p>
+              </sc-if>
+
+              <sc-if value="{{isProfiles}}" hint-placeholder-val="{{ false }}">
+                <div style="padding: 10px 14px; display: flex; gap: 6px">
+                  <button type="button" onClick="{{saveProfile}}" style="border: 1px solid #8cb8f2; background: #8cb8f2; color: #06121c; border-radius: 4px; padding: 4px 10px; min-height: 28px; font-size: 12px">Guardar actual</button>
+                  <button type="button" style="border: 1px solid #222b3b; background: #11141b; border-radius: 4px; padding: 4px 10px; min-height: 28px; font-size: 12px">Importar…</button>
+                </div>
+                <sc-for list="{{profiles}}" as="p" hint-placeholder-count="2">
+                  <div style="display: flex; align-items: center; gap: 10px; padding: 8px 14px; border-top: 1px solid #222b3b">
+                    <span style="flex: 1; display: flex; flex-direction: column"><span>{{p.name}}</span><span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #8a96ad">{{p.meta}}</span></span>
+                    <button type="button" onClick="{{p.apply}}" style="border: 1px solid #222b3b; background: #11141b; border-radius: 4px; padding: 4px 10px; min-height: 28px; font-size: 12px">Aplicar</button>
+                    <button type="button" aria-label="Exportar" style="border: 0; background: none; color: #8a96ad; min-height: 28px; font-size: 12px">⇩</button>
+                  </div>
+                </sc-for>
+              </sc-if>
+            </div>
+
+            <div style="flex: none; display: flex; gap: 6px; justify-content: space-between; align-items: center; padding: 8px 14px; border-top: 1px solid #222b3b">
+              <button type="button" onClick="{{restoreApp}}" style="border: 1px solid #222b3b; background: #11141b; border-radius: 4px; padding: 4px 10px; min-height: 28px; font-size: 12px">Restaurar {{appName}}</button>
+              <button type="button" onClick="{{restoreAll}}" style="border: 0; background: none; color: #8a96ad; padding: 4px 6px; min-height: 28px; font-size: 12px">Restaurar todo</button>
+            </div>
+            <div style="flex: none; height: 24px; padding: 0 14px; background: #11141b; border-top: 1px solid #222b3b; font-family: 'JetBrains Mono', monospace; font-size: 11px; line-height: 24px; color: #c3cde0" role="status">{{toast}}</div>
+          </div>
+        </sc-if>
+      </div>
+
+      <div style="height: 34px; flex: none; display: flex; align-items: center; gap: 10px; padding: 0 12px; border-top: 1px solid #222b3b; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #8a96ad">
+        <span style="color: #e7c98c">SIMULACIÓN</span>
+        <span>esquema del sitio, no el sitio real</span>
+        <span style="flex: 1"></span>
+        <button type="button" role="switch" aria-checked="{{light}}" onClick="{{toggleLight}}" style="border: 1px solid #222b3b; background: #11141b; border-radius: 4px; padding: 2px 8px; min-height: 24px; font-size: 11px">{{lightLabel}}</button>
+      </div>
+    </div>
+
+    <div style="width: 360px; flex: none; background: #0a0c11; border: 2px solid #222b3b; border-radius: 8px; padding: 8px 12px; box-sizing: border-box; font-family: 'JetBrains Mono', monospace; font-size: 12.5px; line-height: 1.5; overflow: hidden">
+      <div><span style="color: #c2a5ff">»</span> <span style="color: #7fa7f5">uui</span> report {{appId}}</div>
+      <div style="font-weight: 600; letter-spacing: .18em; color: #62c3f6; margin: 8px 0 4px">ESTADO VERIFICADO</div>
+      <sc-for list="{{report}}" as="r" hint-placeholder-count="8">
+        <div style="display: flex; gap: 10px"><span style="width: 92px; color: #c3cde0">{{r.id}}</span><span style="width: 118px; color: {{r.color}}">{{r.status}}</span><span style="color: #8a96ad">{{r.src}}</span></div>
+      </sc-for>
+      <div style="margin-top: 14px; color: #8a96ad">herencia</div>
+      <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-top: 4px">
+        <sc-for list="{{chain}}" as="c" hint-placeholder-count="4">
+          <span style="{{c.style}}">{{c.label}}</span>
+        </sc-for>
+      </div>
+      <div style="margin-top: 14px; color: #8a96ad">tema efectivo <span style="color: #e7c98c">{{themeName}}</span></div>
+      <div style="margin-top: 14px; color: #8a96ad">El panel solo habilita un interruptor cuando el elemento existe en la página. Lo no encontrado queda deshabilitado y a la vista.</div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":860}}'>
+const THEMES = {
+  aire: ['Aire', '#182728', '#142122', '#2a3e3b', '#e5f0ea', '#b8cfca', '#506661', '#94e2d5'],
+  cafe: ['Café', '#2a211d', '#211a17', '#3a2b26', '#f4e8de', '#cfb9aa', '#6d5347', '#f5cba7'],
+  ambar: ['Ámbar', '#282419', '#201d16', '#3c3527', '#f5ead2', '#d3c3a1', '#716448', '#f9e2af'],
+  papel: ['Papel', '#262b2a', '#1e2423', '#353d39', '#eff1e9', '#cad1c8', '#617168', '#bac2de'],
+  grafito: ['Grafito', '#191925', '#151520', '#262638', '#e3e6f3', '#b5bdd3', '#44465e', '#cba6f7'],
+  tide: ['Tide', '#0a0c11', '#05070b', '#11141b', '#c3cde0', '#8a96ad', '#222b3b', '#8cb8f2']
+};
+const SITE = {
+  chatgpt: { dark: ['#212121', '#181818', '#303030', '#ececec', '#afafaf', '#3a3a3a', '#4a4a4a'], light: ['#ffffff', '#f9f9f9', '#f0f0f0', '#0d0d0d', '#5d5d5d', '#e5e5e5', '#d9d9d9'] },
+  whatsapp: { dark: ['#0b141a', '#111b21', '#202c33', '#e9edef', '#8696a0', '#2a3942', '#005c4b'], light: ['#efeae2', '#ffffff', '#f0f2f5', '#111b21', '#667781', '#e9edef', '#d9fdd3'] }
+};
+const APPS = {
+  chatgpt: { name: 'ChatGPT', host: 'chatgpt.com', elems: [['upgrade', 'Promociones', true], ['share', 'Compartir', true], ['notices', 'Avisos', true], ['feedback', 'Valoraciones', true], ['header', 'Encabezado', true], ['sidebar', 'Barra lateral', true], ['brand', 'Marca', false]],
+    modes: { minimal: ['upgrade', 'share', 'notices', 'feedback', 'header', 'brand'], equilibrado: ['upgrade', 'share', 'notices'], completo: [] } },
+  whatsapp: { name: 'WhatsApp Web', host: 'web.whatsapp.com', elems: [['status', 'Estados', true], ['channels', 'Canales', true], ['communities', 'Comunidades', true], ['meta', 'Meta AI', true], ['filters', 'Filtros de chats', true], ['banner', 'Avisos', false], ['avatars', 'Fotos de perfil', true]],
+    modes: { minimal: ['status', 'channels', 'communities', 'meta', 'filters', 'banner'], equilibrado: ['meta', 'banner'], completo: [] } }
+};
+const MODE_LABEL = { minimal: 'Minimal', equilibrado: 'Equilibrado', completo: 'Completo' };
+const PILL = {
+  applied: ['Aplicado', 'color: #06121c; background: #62c3f6; border: 1px solid #62c3f6', '#a6d6a0'],
+  available: ['Disponible', 'color: #c3cde0; border: 1px solid #222b3b', '#c3cde0'],
+  not_found: ['No encontrado', 'color: #8a96ad; border: 1px dashed #323b4d', '#8a96ad'],
+  incompatible: ['Incompatible', 'color: #e7c98c; border: 1px solid #222b3b', '#e7c98c'],
+  error: ['Error', 'color: #ef8b98; border: 1px solid #ef8b98', '#ef8b98']
+};
+const PILL_BASE = 'font-family: \'JetBrains Mono\', monospace; font-size: 11px; line-height: 18px; padding: 0 6px; border-radius: 4px; white-space: nowrap; ';
+const FRESH = () => ({ gTheme: 'original', aTheme: {}, gMode: 'completo', aMode: {}, ex: { chatgpt: {}, whatsapp: {} } });
+
+class Component extends DCLogic {
+  constructor(...args) {
+    super(...args);
+    this.state = Object.assign(FRESH(), { app: 'chatgpt', tab: 'custom', scope: 'app', open: true, light: false, toast: 'listo',
+      profiles: [{ name: 'Café · ChatGPT minimal', meta: 'todas las apps', data: { gTheme: 'cafe', aTheme: {}, gMode: 'completo', aMode: { chatgpt: 'minimal' } } }] });
+  }
+  set(patch, toast) { this.setState(Object.assign({}, patch, toast ? { toast: toast } : {})); }
+  renderVals() {
+    const s = this.state;
+    const app = APPS[s.app];
+    const global = s.scope === 'global';
+    const themeId = s.aTheme[s.app] || s.gTheme;
+    const modeId = s.aMode[s.app] || s.gMode;
+    const shownTheme = global ? s.gTheme : themeId;
+    const shownMode = global ? s.gMode : modeId;
+    const ex = s.ex[s.app];
+    const visible = (id) => ex[id] !== undefined ? ex[id] : !app.modes[modeId].includes(id);
+    const themeIncompat = s.light;
+    const themeState = themeIncompat ? 'incompatible' : (themeId === 'original' ? 'available' : 'applied');
+    const t = THEMES[themeId];
+    const site = SITE[s.app][s.light ? 'light' : 'dark'];
+    const useTheme = t && !themeIncompat;
+    const pal = useTheme ? { bg: t[1], side: t[2], card: t[3], text: t[4], muted: t[5], border: t[6], accentSoft: t[3] }
+      : { bg: site[0], side: site[1], card: site[2], text: site[3], muted: site[4], border: site[5], accentSoft: site[6] };
+
+    const show = {};
+    for (const e of app.elems) show[e[0]] = !e[2] || visible(e[0]);
+    const btn = (on) => 'border: 1px solid ' + (on ? '#8cb8f2' : '#222b3b') + '; background: none; color: ' + (on ? '#c3cde0' : '#8a96ad') + '; border-radius: 4px; padding: 2px 10px; min-height: 26px; font-size: 12px';
+    const segBtn = (on) => 'flex: 1; border: 0; border-right: 1px solid #222b3b; padding: 3px 10px; min-height: 28px; font-size: 12px; background: ' + (on ? '#8cb8f2' : 'none') + '; color: ' + (on ? '#06121c' : '#8a96ad');
+
+    const themeSrc = global ? (s.gTheme !== 'original' ? '● común' : '○ original') : (s.aTheme[s.app] ? '● propio ↺' : (s.gTheme !== 'original' ? '○ común' : '○ original'));
+    const modeSrc = global ? (s.gMode !== 'completo' ? '● común' : '○ original') : (s.aMode[s.app] ? '● propio' : (s.gMode !== 'completo' ? '○ común' : '○ original'));
+    const own = (txt) => txt.indexOf('●') === 0 ? '#8cb8f2' : '#8a96ad';
+
+    const pickTheme = (id) => () => {
+      if (global) this.set({ gTheme: id }, 'común · tema ' + (THEMES[id] ? THEMES[id][0] : 'original'));
+      else { const a = Object.assign({}, s.aTheme); if (id === s.gTheme) delete a[s.app]; else a[s.app] = id; this.set({ aTheme: a }, app.name + ' · tema ' + (THEMES[id] ? THEMES[id][0] : 'original')); }
+    };
+    const pickMode = (id) => () => {
+      if (global) this.set({ gMode: id }, 'común · modo ' + MODE_LABEL[id]);
+      else { const a = Object.assign({}, s.aMode); if (id === s.gMode) delete a[s.app]; else a[s.app] = id; this.set({ aMode: a }, app.name + ' · modo ' + MODE_LABEL[id]); }
+    };
+
+    const rows = app.elems.map((e) => {
+      const id = e[0], found = e[2];
+      const on = visible(id);
+      const status = !found ? 'not_found' : (on ? 'available' : 'applied');
+      const pinned = ex[id] !== undefined;
+      return {
+        label: e[1], on: String(on), disabled: !found, inherited: !pinned, status: PILL[status][0], pill: PILL_BASE + PILL[status][1],
+        src: pinned ? '● propio ↺' : '○ modo',
+        srcStyle: 'border: 0; background: none; padding: 0; font-family: \'JetBrains Mono\', monospace; font-size: 11px; color: ' + (pinned ? '#8cb8f2' : '#8a96ad'),
+        track: 'width: 30px; height: 18px; flex: none; border-radius: 9px; position: relative; padding: 0; border: 1px solid ' + (on ? '#8cb8f2' : '#323b4d') + '; background: ' + (on ? '#8cb8f2' : '#11141b') + '; opacity: ' + (found ? 1 : 0.35),
+        knob: 'position: absolute; top: 2px; left: ' + (on ? '14px' : '2px') + '; width: 12px; height: 12px; border-radius: 50%; background: ' + (on ? '#06121c' : '#8a96ad'),
+        toggle: () => { const all = Object.assign({}, s.ex); all[s.app] = Object.assign({}, ex); all[s.app][id] = !on; this.set({ ex: all }, e[1] + (on ? ' · oculto' : ' · visible')); },
+        reset: () => { const all = Object.assign({}, s.ex); all[s.app] = Object.assign({}, ex); delete all[s.app][id]; this.set({ ex: all }, e[1] + ' · vuelve al modo'); }
+      };
+    });
+
+    const report = [{ id: 'theme', status: PILL[themeState][0], color: PILL[themeState][2], src: themeIncompat ? 'modo claro' : (s.aTheme[s.app] ? 'app' : (s.gTheme !== 'original' ? 'global' : 'default')) }]
+      .concat(app.elems.map((e) => { const st = !e[2] ? 'not_found' : (visible(e[0]) ? 'available' : 'applied'); return { id: e[0], status: PILL[st][0], color: PILL[st][2], src: !e[2] ? '—' : (ex[e[0]] !== undefined ? 'excepción' : 'modo') }; }));
+
+    const chainOn = { global: s.gTheme !== 'original' || s.gMode !== 'completo', app: !!(s.aTheme[s.app] || s.aMode[s.app]), comp: false, ex: Object.keys(ex).length > 0 };
+    const chip = (on) => 'padding: 0 6px; border-radius: 4px; border: 1px solid ' + (on ? '#8cb8f2' : '#222b3b') + '; color: ' + (on ? '#8cb8f2' : '#8a96ad');
+
+    const appCustom = (id) => !!(s.aTheme[id] || s.aMode[id] || Object.keys(s.ex[id]).length);
+    const appList = ['chatgpt', 'whatsapp'].map((id) => ({
+      name: APPS[id].name, mark: APPS[id].name.slice(0, 2), locked: false,
+      meta: 'permitido · ' + (appCustom(id) ? 'personalizado' : 'hereda común') + ' · v0.1.0',
+      style: 'width: 100%; display: flex; gap: 10px; align-items: center; padding: 8px 14px; border: 0; border-bottom: 1px solid #222b3b; background: ' + (id === s.app ? '#17233a' : 'none') + '; text-align: left',
+      markStyle: 'width: 26px; height: 26px; border-radius: 6px; display: grid; place-items: center; font-family: \'JetBrains Mono\', monospace; font-size: 11px; font-weight: 600; background: #11141b; border: 1px solid ' + (appCustom(id) ? '#8cb8f2' : '#222b3b') + '; color: ' + (appCustom(id) ? '#8cb8f2' : '#8a96ad'),
+      pick: () => this.set({ app: id, tab: 'custom' }, APPS[id].name)
+    })).concat([{ name: 'Wikipedia', mark: 'Wi', locked: true, meta: 'sin permiso · adaptador de ejemplo', pick: () => {},
+      style: 'width: 100%; display: flex; gap: 10px; align-items: center; padding: 8px 14px; border: 0; border-bottom: 1px solid #222b3b; background: none; opacity: .7; text-align: left',
+      markStyle: 'width: 26px; height: 26px; border-radius: 6px; display: grid; place-items: center; font-family: \'JetBrains Mono\', monospace; font-size: 11px; background: #11141b; border: 1px dashed #323b4d; color: #8a96ad' }]);
+
+    return {
+      appId: s.app, appName: app.name, host: app.host, open: s.open, light: String(s.light),
+      isChat: s.app === 'chatgpt', isWa: s.app === 'whatsapp',
+      isCustom: s.tab === 'custom', isApps: s.tab === 'apps', isProfiles: s.tab === 'profiles',
+      isAppScope: !global, isGlobalScope: global,
+      pv: pal, show: show, toast: s.toast, themeName: useTheme ? t[0] : (themeIncompat && t ? t[0] + ' (no aplicado)' : 'original del sitio'),
+      lightLabel: s.light ? 'sitio en modo claro' : 'sitio en modo oscuro',
+      toggleLight: () => this.set({ light: !s.light }, s.light ? 'sitio: modo oscuro' : 'sitio: modo claro → tema incompatible'),
+      toggleOpen: () => this.set({ open: !s.open }),
+      uuiBtnStyle: 'width: 28px; height: 28px; display: grid; place-items: center; border-radius: 6px; padding: 0; background: #11141b; color: #8cb8f2; border: 1px solid ' + (s.open ? '#8cb8f2' : '#222b3b'),
+      appTabs: ['chatgpt', 'whatsapp'].map((id) => ({ label: APPS[id].host, pressed: String(s.app === id), style: btn(s.app === id), pick: () => this.set({ app: id }, APPS[id].name) })),
+      tabs: [['apps', 'Aplicaciones'], ['custom', 'Personalización'], ['profiles', 'Perfiles']].map((x) => ({ label: x[1], pressed: String(s.tab === x[0]),
+        style: 'flex: 1; min-height: 34px; border: 0; background: none; border-bottom: 2px solid ' + (s.tab === x[0] ? '#8cb8f2' : 'transparent') + '; color: ' + (s.tab === x[0] ? '#c3cde0' : '#8a96ad'),
+        pick: () => this.set({ tab: x[0] }) })),
+      scopes: [['global', 'Común · todas'], ['app', 'Solo ' + app.name]].map((x) => ({ label: x[1], pressed: String(s.scope === x[0]),
+        style: 'flex: 1; min-height: 30px; border: 0; border-right: 1px solid #222b3b; background: ' + (s.scope === x[0] ? '#17233a' : 'none') + '; color: ' + (s.scope === x[0] ? '#c3cde0' : '#8a96ad'),
+        pick: () => this.set({ scope: x[0] }) })),
+      themes: ['original'].concat(Object.keys(THEMES)).map((id) => ({
+        name: THEMES[id] ? THEMES[id][0] : 'Original', pressed: String(shownTheme === id),
+        bg: THEMES[id] ? THEMES[id][1] : '#0a0c11', accent: THEMES[id] ? THEMES[id][7] : '#323b4d',
+        style: 'width: 44px; height: 32px; padding: 0; display: grid; grid-template-columns: 1fr 1fr; overflow: hidden; border-radius: 4px; border: 1px solid #222b3b; outline: ' + (shownTheme === id ? '2px solid #8cb8f2' : 'none') + '; outline-offset: 1px',
+        pick: pickTheme(id) })),
+      themeSrc: themeSrc, themeSrcColor: own(themeSrc),
+      themeStatus: global ? { label: '', style: 'display: none' } : { label: PILL[themeState][0], style: PILL_BASE + PILL[themeState][1] },
+      themeNote: global ? (THEMES[s.gTheme] ? THEMES[s.gTheme][0] + ' · todas las apps' : 'cada sitio con sus colores') : (themeIncompat ? 'requiere el modo oscuro del sitio' : (t ? t[0] : 'colores del sitio')),
+      modes: ['minimal', 'equilibrado', 'completo'].map((id) => ({ label: MODE_LABEL[id], pressed: String(shownMode === id), style: segBtn(shownMode === id), pick: pickMode(id) })),
+      modeSrc: modeSrc, modeSrcColor: own(modeSrc),
+      rows: rows, report: report,
+      chain: [['Global', chainOn.global], ['App', chainOn.app], ['Componente', chainOn.comp], ['Excepción', chainOn.ex]].map((x, i) => ({ label: (i ? '→ ' : '') + x[0], style: chip(x[1]) })),
+      waRows: [0, 1, 2, 3, 4].map(() => ({ style: 'display: flex; gap: 10px; align-items: center; padding: 10px 12px; border-top: 1px solid ' + pal.border })),
+      appList: appList,
+      profiles: s.profiles.map((p, i) => ({ name: p.name, meta: p.meta, apply: () => this.set(Object.assign({}, FRESH(), JSON.parse(JSON.stringify(p.data)), { ex: s.ex }), 'perfil aplicado · excepciones conservadas') })),
+      saveProfile: () => this.set({ profiles: s.profiles.concat([{ name: 'Perfil ' + (s.profiles.length + 1), meta: 'todas las apps', data: { gTheme: s.gTheme, aTheme: Object.assign({}, s.aTheme), gMode: s.gMode, aMode: Object.assign({}, s.aMode) } }]) }, 'perfil guardado'),
+      restoreApp: () => { const a = Object.assign({}, s.aTheme), m = Object.assign({}, s.aMode), all = Object.assign({}, s.ex); delete a[s.app]; delete m[s.app]; all[s.app] = {}; this.set({ aTheme: a, aMode: m, ex: all }, app.name + ' restaurado · hereda común'); },
+      restoreAll: () => this.set(FRESH(), 'todo restaurado · sitios originales')
+    };
+  }
+}
+</script>
+</body>
+</html>

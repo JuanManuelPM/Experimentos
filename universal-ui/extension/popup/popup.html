@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Universal UI</title>
+<link rel="stylesheet" href="popup.css">
+</head>
+<body>
+<div id="uui" class="panel">
+  <header class="head">
+    <span id="ctx" class="ctx"><span class="dot" aria-hidden="true"></span><span id="ctx-name">—</span></span>
+    <span id="ctx-health" class="health"></span>
+  </header>
+  <nav class="tabs" role="tablist" aria-label="Espacios">
+    <button role="tab" id="tab-apps" aria-controls="view-apps" aria-selected="false">Aplicaciones</button>
+    <button role="tab" id="tab-custom" aria-controls="view-custom" aria-selected="true">Personalización</button>
+    <button role="tab" id="tab-profiles" aria-controls="view-profiles" aria-selected="false">Perfiles</button>
+  </nav>
+  <section id="view-apps" role="tabpanel" aria-labelledby="tab-apps" hidden></section>
+  <section id="view-custom" role="tabpanel" aria-labelledby="tab-custom"></section>
+  <section id="view-profiles" role="tabpanel" aria-labelledby="tab-profiles" hidden></section>
+  <p id="toast" class="toast" role="status" aria-live="polite"></p>
+</div>
+<script src="../core/status.js"></script>
+<script src="../core/themes.js"></script>
+<script src="../core/schema.js"></script>
+<script src="../core/store.js"></script>
+<script src="../core/adapter.js"></script>
+<script src="../adapters/chatgpt.js"></script>
+<script src="../adapters/whatsapp.js"></script>
+<script src="../adapters/wikipedia.js"></script>
+<script src="popup.js"></script>
+<script src="env-extension.js"></script>
+</body>
+</html>

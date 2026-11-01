@@ -1,0 +1,73 @@
+{
+  "manifest_version": 3,
+  "name": "Universal UI",
+  "version": "0.1.0",
+  "description": "Personaliza tus aplicaciones web desde un solo botón. Cambios reversibles y verificados.",
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "universal-ui@juanmanuelpm",
+      "strict_min_version": "115.0",
+      "data_collection_permissions": {
+        "required": [
+          "none"
+        ]
+      }
+    }
+  },
+  "permissions": [
+    "storage",
+    "activeTab",
+    "scripting"
+  ],
+  "host_permissions": [
+    "https://chatgpt.com/*",
+    "https://chat.openai.com/*",
+    "https://web.whatsapp.com/*",
+    "https://es.wikipedia.org/*",
+    "https://en.wikipedia.org/*"
+  ],
+  "action": {
+    "default_title": "Universal UI (Alt+Shift+U)",
+    "default_popup": "popup/popup.html",
+    "default_icon": {
+      "16": "icons/icon.svg",
+      "32": "icons/icon.svg"
+    }
+  },
+  "commands": {
+    "_execute_action": {
+      "suggested_key": {
+        "default": "Alt+Shift+U"
+      },
+      "description": "Abrir Universal UI"
+    }
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://chatgpt.com/*",
+        "https://chat.openai.com/*",
+        "https://web.whatsapp.com/*",
+        "https://es.wikipedia.org/*",
+        "https://en.wikipedia.org/*"
+      ],
+      "js": [
+        "core/status.js",
+        "core/themes.js",
+        "core/schema.js",
+        "core/store.js",
+        "core/adapter.js",
+        "core/engine.js",
+        "adapters/chatgpt.js",
+        "adapters/whatsapp.js",
+        "adapters/wikipedia.js",
+        "content/content.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ],
+  "icons": {
+    "48": "icons/icon.svg",
+    "96": "icons/icon.svg"
+  }
+}

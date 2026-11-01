@@ -1,0 +1,39 @@
+<!doctype html>
+<!-- FIXTURE SINTÉTICO. Estructura aproximada de web.whatsapp.com; sin chats, contactos ni mensajes reales. -->
+<html lang="es">
+<head>
+<style>
+  body { margin: 0; font-size: 14px; }
+  body.dark { --panel-background: #111b21; --conversation-panel-background: #0b141a; }
+  #side, #pane-side { background-color: var(--panel-background); }
+  #main header { background-color: #202c33; }
+  #main [role="application"] { max-width: 920px; }
+</style>
+</head>
+<body class="dark">
+  <div id="app">
+    <header data-tab="2">
+      <button aria-label="Chats">c</button>
+      <button aria-label="Status">s</button>
+      <button aria-label="Channels">ch</button>
+      <button aria-label="Communities">co</button>
+      <button aria-label="Meta AI">m</button>
+    </header>
+    <div id="side">
+      <button aria-label="New chat"><span data-icon="new-chat-outline"></span></button>
+      <div contenteditable="true" role="textbox" aria-label="Buscar"></div>
+      <div role="tablist"><button role="tab">Todos</button><button role="tab">No leídos</button></div>
+      <div id="pane-side">
+        <button aria-label="Archived">[archivados]</button>
+        <div role="listitem" style="padding-top: 10px; padding-bottom: 10px"><img alt="" src="data:,"> [chat]</div>
+        <div role="listitem" style="padding-top: 10px; padding-bottom: 10px"><img alt="" src="data:,"> [chat]</div>
+      </div>
+    </div>
+    <div id="main">
+      <header>[contacto]</header>
+      <div role="application"><div class="copyable-text">[mensaje de prueba]</div></div>
+      <footer><div contenteditable="true" role="textbox"></div><button aria-label="Send"><span data-icon="send"></span></button></footer>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,48 @@
+<!doctype html>
+<!-- FIXTURE SINTÉTICO. Reproduce la estructura de selectores que usa el adaptador,
+     no es una captura de chatgpt.com. No contiene conversaciones reales. -->
+<html class="dark" data-theme="dark" lang="es">
+<head>
+<style>
+  html.dark { --main-surface-primary: #212121; --sidebar-surface-primary: #181818; --text-primary: #ececec; }
+  body { margin: 0; font-size: 16px; }
+  main, [data-app-shell-main-content-layout] { background-color: var(--main-surface-primary); }
+  #app-shell-sidebar { background-color: var(--sidebar-surface-primary); }
+  [data-message-author-role="assistant"] { color: var(--text-primary); }
+  .markdown { font-size: 16px; }
+  .max-w-\(--thread-content-max-width\) { max-width: 768px; }
+</style>
+</head>
+<body>
+  <div id="app-shell-sidebar">
+    <a data-testid="create-new-chat-button" href="/">Nuevo</a>
+    <a href="/pricing">[promo]</a>
+    <a href="/manage">[manage]</a>
+  </div>
+  <div data-app-shell-main-content-layout>
+    <div id="page-header">
+      <button data-testid="share-chat-button" aria-label="Share">[share]</button>
+    </div>
+    <main>
+      <article data-testid="conversation-turn-1">
+        <div><div class="max-w-(--thread-content-max-width)">
+          <div data-message-author-role="user"><div class="whitespace-pre-wrap">[mensaje de prueba]</div></div>
+        </div></div>
+      </article>
+      <article data-testid="conversation-turn-2">
+        <div><div class="max-w-(--thread-content-max-width)">
+          <div data-message-author-role="assistant"><div class="markdown"><p>[respuesta de prueba]</p></div>
+            <button data-testid="good-response-turn-action-button">+</button>
+            <button data-testid="bad-response-turn-action-button">−</button>
+          </div>
+        </div></div>
+      </article>
+      <form>
+        <div data-testid="composer"><textarea id="prompt-textarea"></textarea>
+          <button data-testid="send-button" type="submit">[enviar]</button></div>
+      </form>
+      <div data-testid="thread-disclaimer">[aviso]</div>
+    </main>
+  </div>
+</body>
+</html>

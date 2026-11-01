@@ -1,0 +1,1635 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Universal UI · demo</title>
+<style>
+/* Universal UI · panel. Sistema visual Riel (tema Tide). Hairlines, una sola énfasis. */
+:root {
+  --ground: #05070b; --surface: #0a0c11; --raised: #11141b; --selection: #17233a;
+  --border: #222b3b; --mute: #323b4d; --focus: #8cb8f2; --accent: #62c3f6; --on-accent: #06121c;
+  --text: #c3cde0; --text-muted: #8a96ad; --text-dim: #5d6a81;
+  --red: #ef8b98; --green: #a6d6a0; --yellow: #e7c98c;
+  --mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --sans: Cantarell, "Noto Sans", "Segoe UI", system-ui, sans-serif;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--ground); color: var(--text); font: 13px/18px var(--sans); }
+.panel { width: 380px; max-width: 100vw; background: var(--surface); border: 2px solid var(--focus); border-radius: 8px; overflow: hidden; }
+button, input, select { font: inherit; color: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 1px solid var(--focus); outline-offset: 2px; }
+[hidden] { display: none !important; }
+
+.head { display: flex; justify-content: space-between; align-items: center; height: 30px; padding: 0 14px; font-family: var(--mono); font-size: 12px; }
+.ctx { display: flex; gap: 8px; align-items: center; color: var(--text); }
+.ctx .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--mute); }
+.ctx[data-on="true"] .dot { background: var(--focus); }
+.health { color: var(--text-muted); }
+.health[data-state="incompatible"] { color: var(--yellow); }
+
+.tabs { display: flex; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+.tabs button { flex: 1; min-height: 34px; background: none; border: 0; border-bottom: 2px solid transparent; color: var(--text-muted); }
+.tabs button[aria-selected="true"] { color: var(--text); border-bottom-color: var(--focus); }
+
+section[role="tabpanel"] { max-height: 520px; overflow-y: auto; padding: 4px 0 10px; }
+.group { padding: 10px 14px 4px; }
+.caps { font: 600 11px/18px var(--mono); letter-spacing: .18em; text-transform: uppercase; color: var(--text-muted); margin: 0 0 6px; display: flex; justify-content: space-between; }
+.caps small { letter-spacing: 0; text-transform: none; font-weight: 400; color: var(--text-dim); }
+hr { border: 0; border-top: 1px solid var(--border); margin: 6px 0 0; }
+
+/* Ámbito: común vs particular */
+.scope { display: flex; gap: 0; margin: 10px 14px 2px; border: 1px solid var(--border); border-radius: 4px; overflow: hidden; }
+.scope button { flex: 1; min-height: 30px; border: 0; background: none; color: var(--text-muted); border-right: 1px solid var(--border); }
+.scope button:last-child { border-right: 0; }
+.scope button[aria-pressed="true"] { background: var(--selection); color: var(--text); }
+.comps { display: flex; flex-wrap: wrap; gap: 4px; padding: 8px 14px 0; }
+.comps button { border: 1px solid var(--border); background: none; border-radius: 4px; padding: 2px 8px; color: var(--text-muted); font-size: 12px; min-height: 24px; }
+.comps button[aria-pressed="true"] { border-color: var(--focus); color: var(--text); }
+
+/* Filas de control */
+.row { display: grid; grid-template-columns: minmax(0, 1fr); gap: 4px; padding: 6px 0; }
+.row .name { display: flex; gap: 8px; align-items: center; min-width: 0; }
+.row .name .pill { margin-left: auto; }
+.row > .seg, .row > .actions { justify-self: start; }
+.seg { flex-wrap: wrap; }
+.src { font: 11px var(--mono); color: var(--text-dim); border: 0; background: none; padding: 0; }
+.src[data-own="true"] { color: var(--focus); }
+.seg { display: inline-flex; border: 1px solid var(--border); border-radius: 4px; overflow: hidden; }
+.seg button { border: 0; border-right: 1px solid var(--border); background: none; padding: 3px 8px; color: var(--text-muted); font-size: 12px; min-height: 26px; }
+.seg button:last-child { border-right: 0; }
+.seg button[aria-pressed="true"] { background: var(--focus); color: var(--on-accent); }
+.seg button:disabled { opacity: .45; cursor: not-allowed; }
+
+.swatches { display: flex; gap: 6px; flex-wrap: wrap; }
+.sw { width: 44px; height: 32px; border-radius: 4px; border: 1px solid var(--border); padding: 0; position: relative; overflow: hidden; display: grid; grid-template-columns: 1fr 1fr; }
+.sw span { display: block; }
+.sw[aria-pressed="true"] { outline: 2px solid var(--focus); outline-offset: 1px; }
+.sw.orig { display: grid; place-items: center; grid-template-columns: 1fr; background: none; font: 10px var(--mono); color: var(--text-muted); }
+.sw-label { font: 11px var(--mono); color: var(--text-dim); margin-top: 4px; }
+
+/* Estado de cada capacidad */
+.pill { font: 11px/18px var(--mono); padding: 0 6px; border-radius: 4px; border: 1px solid var(--border); color: var(--text-muted); white-space: nowrap; }
+.pill[data-s="applied"] { color: var(--on-accent); background: var(--accent); border-color: var(--accent); }
+.pill[data-s="available"] { color: var(--text); }
+.pill[data-s="not_found"] { color: var(--text-dim); border-style: dashed; }
+.pill[data-s="incompatible"] { color: var(--yellow); }
+.pill[data-s="error"] { color: var(--red); border-color: var(--red); }
+.vis { display: grid; grid-template-columns: auto 1fr auto; gap: 10px; align-items: center; min-height: 34px; border-bottom: 1px solid var(--border); }
+.vis:last-child { border-bottom: 0; }
+.vis .name { display: flex; gap: 8px; align-items: center; }
+.vis .why { grid-column: 2 / 4; font: 11px var(--mono); color: var(--text-dim); margin-top: -6px; padding-bottom: 4px; }
+.sw-toggle { width: 30px; height: 18px; border-radius: 9px; border: 1px solid var(--mute); background: var(--raised); position: relative; padding: 0; }
+.sw-toggle::after { content: ""; position: absolute; top: 2px; left: 2px; width: 12px; height: 12px; border-radius: 50%; background: var(--text-muted); transition: transform .15s; }
+.sw-toggle[aria-checked="true"] { background: var(--focus); border-color: var(--focus); }
+.sw-toggle[aria-checked="true"]::after { transform: translateX(12px); background: var(--on-accent); }
+.sw-toggle:disabled { opacity: .35; cursor: not-allowed; }
+@media (prefers-reduced-motion: reduce) { .sw-toggle::after { transition: none; } }
+
+.actions { display: flex; flex-wrap: wrap; gap: 6px; }
+.btn { border: 1px solid var(--border); background: var(--raised); border-radius: 4px; padding: 4px 10px; min-height: 28px; color: var(--text); font-size: 12px; }
+.btn:hover { border-color: var(--mute); }
+.btn:disabled { opacity: .4; cursor: not-allowed; }
+.btn.primary { background: var(--focus); color: var(--on-accent); border-color: var(--focus); }
+.btn.quiet { background: none; color: var(--text-muted); }
+
+.foot { display: flex; gap: 6px; justify-content: space-between; padding: 10px 14px; border-top: 1px solid var(--border); }
+
+.app { display: grid; grid-template-columns: auto 1fr auto; gap: 10px; align-items: center; padding: 8px 14px; border-bottom: 1px solid var(--border); }
+.app .meta { font: 11px var(--mono); color: var(--text-dim); }
+.app[data-current="true"] { background: var(--selection); }
+.mark { width: 26px; height: 26px; border-radius: 6px; background: var(--raised); border: 1px solid var(--border); display: grid; place-items: center; font: 600 11px var(--mono); color: var(--text-muted); }
+.app[data-custom="true"] .mark { border-color: var(--focus); color: var(--focus); }
+
+.drift { font: 11px/16px var(--mono); color: var(--yellow); padding: 0 14px; }
+.empty { padding: 18px 14px; color: var(--text-muted); }
+.toast { position: sticky; bottom: 0; margin: 0; padding: 0 14px; height: 0; overflow: hidden; font: 11px/24px var(--mono); color: var(--text); background: var(--raised); transition: height .15s; }
+.toast[data-on="true"] { height: 24px; border-top: 1px solid var(--border); }
+input[type="text"] { background: var(--raised); border: 1px solid var(--border); border-radius: 4px; padding: 4px 8px; min-height: 28px; width: 100%; }
+label.file { display: inline-flex; align-items: center; }
+label.file input { position: absolute; width: 1px; height: 1px; opacity: 0; }
+
+.demo { display: flex; flex-wrap: wrap; gap: 10px; padding: 10px; min-height: 100vh; align-items: flex-start; }
+.browser { flex: 999 1 560px; min-width: 0; border: 2px solid var(--border); border-radius: 8px; overflow: hidden; background: var(--surface); }
+.chrome { display: flex; align-items: center; gap: 6px; height: 34px; padding: 0 8px; border-bottom: 1px solid var(--border); font: 12px var(--mono); }
+.chrome .tabbtn { border: 1px solid var(--border); background: none; color: var(--text-muted); border-radius: 4px; padding: 2px 10px; min-height: 26px; }
+.chrome .tabbtn[aria-pressed="true"] { color: var(--text); border-color: var(--focus); }
+.chrome .sim { margin-left: auto; color: var(--yellow); }
+.chrome .uui-btn { border: 1px solid var(--focus); background: var(--raised); color: var(--focus); border-radius: 4px; width: 28px; height: 26px; }
+iframe { width: 100%; height: 620px; border: 0; background: #fff; display: block; }
+.side { flex: 0 0 380px; display: flex; flex-direction: column; gap: 8px; }
+.note { font: 11px/16px var(--mono); color: var(--text-muted); max-width: 380px; }
+</style>
+</head>
+<body>
+<div class="demo">
+  <div class="side">
+    <div id="uui" class="panel">
+  <header class="head">
+    <span id="ctx" class="ctx"><span class="dot" aria-hidden="true"></span><span id="ctx-name">—</span></span>
+    <span id="ctx-health" class="health"></span>
+  </header>
+  <nav class="tabs" role="tablist" aria-label="Espacios">
+    <button role="tab" id="tab-apps" aria-controls="view-apps" aria-selected="false">Aplicaciones</button>
+    <button role="tab" id="tab-custom" aria-controls="view-custom" aria-selected="true">Personalización</button>
+    <button role="tab" id="tab-profiles" aria-controls="view-profiles" aria-selected="false">Perfiles</button>
+  </nav>
+  <section id="view-apps" role="tabpanel" aria-labelledby="tab-apps" hidden></section>
+  <section id="view-custom" role="tabpanel" aria-labelledby="tab-custom"></section>
+  <section id="view-profiles" role="tabpanel" aria-labelledby="tab-profiles" hidden></section>
+  <p id="toast" class="toast" role="status" aria-live="polite"></p>
+</div>
+    <p class="note">SIMULACIÓN · páginas sintéticas de test/fixtures, no los sitios reales. El panel, el motor y los adaptadores son los mismos archivos que usa la extensión. Los cambios se aplican en vivo a las tres pestañas.</p>
+  </div>
+  <div class="browser">
+    <div class="chrome" role="group" aria-label="Pestañas simuladas">
+      <button class="tabbtn" data-app="chatgpt" aria-pressed="false">chatgpt.com</button><button class="tabbtn" data-app="whatsapp" aria-pressed="false">web.whatsapp.com</button><button class="tabbtn" data-app="wikipedia" aria-pressed="false">es.wikipedia.org</button>
+      <span class="sim">simulación</span>
+    </div>
+    <iframe title="chatgpt (simulación)" data-app="chatgpt" srcdoc="<!doctype html>
+<!-- FIXTURE SINTÉTICO. Reproduce la estructura de selectores que usa el adaptador,
+     no es una captura de chatgpt.com. No contiene conversaciones reales. -->
+<html class=&quot;dark&quot; data-theme=&quot;dark&quot; lang=&quot;es&quot;>
+<head>
+<style>
+  html.dark { --main-surface-primary: #212121; --sidebar-surface-primary: #181818; --text-primary: #ececec; }
+  body { margin: 0; font-size: 16px; }
+  main, [data-app-shell-main-content-layout] { background-color: var(--main-surface-primary); }
+  #app-shell-sidebar { background-color: var(--sidebar-surface-primary); }
+  [data-message-author-role=&quot;assistant&quot;] { color: var(--text-primary); }
+  .markdown { font-size: 16px; }
+  .max-w-\(--thread-content-max-width\) { max-width: 768px; }
+</style>
+</head>
+<body>
+  <div id=&quot;app-shell-sidebar&quot;>
+    <a data-testid=&quot;create-new-chat-button&quot; href=&quot;/&quot;>Nuevo</a>
+    <a href=&quot;/pricing&quot;>[promo]</a>
+    <a href=&quot;/manage&quot;>[manage]</a>
+  </div>
+  <div data-app-shell-main-content-layout>
+    <div id=&quot;page-header&quot;>
+      <button data-testid=&quot;share-chat-button&quot; aria-label=&quot;Share&quot;>[share]</button>
+    </div>
+    <main>
+      <article data-testid=&quot;conversation-turn-1&quot;>
+        <div><div class=&quot;max-w-(--thread-content-max-width)&quot;>
+          <div data-message-author-role=&quot;user&quot;><div class=&quot;whitespace-pre-wrap&quot;>[mensaje de prueba]</div></div>
+        </div></div>
+      </article>
+      <article data-testid=&quot;conversation-turn-2&quot;>
+        <div><div class=&quot;max-w-(--thread-content-max-width)&quot;>
+          <div data-message-author-role=&quot;assistant&quot;><div class=&quot;markdown&quot;><p>[respuesta de prueba]</p></div>
+            <button data-testid=&quot;good-response-turn-action-button&quot;>+</button>
+            <button data-testid=&quot;bad-response-turn-action-button&quot;>−</button>
+          </div>
+        </div></div>
+      </article>
+      <form>
+        <div data-testid=&quot;composer&quot;><textarea id=&quot;prompt-textarea&quot;></textarea>
+          <button data-testid=&quot;send-button&quot; type=&quot;submit&quot;>[enviar]</button></div>
+      </form>
+      <div data-testid=&quot;thread-disclaimer&quot;>[aviso]</div>
+    </main>
+  </div>
+</body>
+</html>
+" hidden></iframe>
+    <iframe title="whatsapp (simulación)" data-app="whatsapp" srcdoc="<!doctype html>
+<!-- FIXTURE SINTÉTICO. Estructura aproximada de web.whatsapp.com; sin chats, contactos ni mensajes reales. -->
+<html lang=&quot;es&quot;>
+<head>
+<style>
+  body { margin: 0; font-size: 14px; }
+  body.dark { --panel-background: #111b21; --conversation-panel-background: #0b141a; }
+  #side, #pane-side { background-color: var(--panel-background); }
+  #main header { background-color: #202c33; }
+  #main [role=&quot;application&quot;] { max-width: 920px; }
+</style>
+</head>
+<body class=&quot;dark&quot;>
+  <div id=&quot;app&quot;>
+    <header data-tab=&quot;2&quot;>
+      <button aria-label=&quot;Chats&quot;>c</button>
+      <button aria-label=&quot;Status&quot;>s</button>
+      <button aria-label=&quot;Channels&quot;>ch</button>
+      <button aria-label=&quot;Communities&quot;>co</button>
+      <button aria-label=&quot;Meta AI&quot;>m</button>
+    </header>
+    <div id=&quot;side&quot;>
+      <button aria-label=&quot;New chat&quot;><span data-icon=&quot;new-chat-outline&quot;></span></button>
+      <div contenteditable=&quot;true&quot; role=&quot;textbox&quot; aria-label=&quot;Buscar&quot;></div>
+      <div role=&quot;tablist&quot;><button role=&quot;tab&quot;>Todos</button><button role=&quot;tab&quot;>No leídos</button></div>
+      <div id=&quot;pane-side&quot;>
+        <button aria-label=&quot;Archived&quot;>[archivados]</button>
+        <div role=&quot;listitem&quot; style=&quot;padding-top: 10px; padding-bottom: 10px&quot;><img alt=&quot;&quot; src=&quot;data:,&quot;> [chat]</div>
+        <div role=&quot;listitem&quot; style=&quot;padding-top: 10px; padding-bottom: 10px&quot;><img alt=&quot;&quot; src=&quot;data:,&quot;> [chat]</div>
+      </div>
+    </div>
+    <div id=&quot;main&quot;>
+      <header>[contacto]</header>
+      <div role=&quot;application&quot;><div class=&quot;copyable-text&quot;>[mensaje de prueba]</div></div>
+      <footer><div contenteditable=&quot;true&quot; role=&quot;textbox&quot;></div><button aria-label=&quot;Send&quot;><span data-icon=&quot;send&quot;></span></button></footer>
+    </div>
+  </div>
+</body>
+</html>
+" hidden></iframe>
+    <iframe title="wikipedia (simulación)" data-app="wikipedia" srcdoc="<!doctype html>
+<!-- FIXTURE SINTÉTICO. Estructura de la skin Vector 2022. -->
+<html lang=&quot;es&quot;>
+<head><style>body { margin: 0; background-color: #ffffff; color: #202122; } .mw-page-container { max-width: 1596px; background-color: #ffffff; }</style></head>
+<body>
+  <div class=&quot;mw-page-container&quot;>
+    <div class=&quot;vector-header-container&quot;><div id=&quot;p-lang-btn&quot;>[idiomas]</div><input id=&quot;searchInput&quot; type=&quot;search&quot;></div>
+    <div id=&quot;siteNotice&quot;>[aviso]</div>
+    <div id=&quot;vector-toc-pinned-container&quot;>[índice]</div>
+    <div id=&quot;content&quot; class=&quot;mw-body&quot;>
+      <h1 id=&quot;firstHeading&quot;>[título]</h1>
+      <div id=&quot;mw-content-text&quot;><p>[texto de prueba]</p></div>
+    </div>
+    <div id=&quot;vector-page-tools-pinned-container&quot;>[herramientas]</div>
+  </div>
+</body>
+</html>
+" hidden></iframe>
+  </div>
+</div>
+<script>
+/* Universal UI · estados de una capacidad.
+   Un control solo se muestra como funcional si su estado es APPLIED o AVAILABLE. */
+(function (UUI) {
+  'use strict';
+  const STATUS = Object.freeze({
+    AVAILABLE: 'available',      // elementos reales encontrados; la modificación no está activa
+    APPLIED: 'applied',          // activa y verificada contra el DOM real
+    NOT_FOUND: 'not_found',      // ningún selector candidato coincide con la página actual
+    INCOMPATIBLE: 'incompatible',// la app está en un estado donde no se puede aplicar (p. ej. tema claro)
+    ERROR: 'error',              // se aplicó pero la verificación falló; se revirtió
+  });
+  const LABEL = {
+    available: 'Disponible',
+    applied: 'Aplicado',
+    not_found: 'No encontrado',
+    incompatible: 'Incompatible',
+    error: 'Error',
+  };
+  // ¿Puede el usuario operar el control?
+  function isOperable(status) {
+    return status === STATUS.AVAILABLE || status === STATUS.APPLIED;
+  }
+  UUI.STATUS = STATUS;
+  UUI.STATUS_LABEL = LABEL;
+  UUI.isOperable = isOperable;
+})(globalThis.UUI = globalThis.UUI || {});
+
+/* Universal UI · sistema visual.
+   Un tema es un conjunto de tokens universales. Ningún tema conoce una app:
+   cada adaptador traduce estos tokens a las variables propias del sitio (su "bridge").
+   Las cinco primeras paletas provienen del personalizador anterior (userstyles/, v1.3.0) sin cambios. */
+(function (UUI) {
+  'use strict';
+  const TOKENS = ['bg', 'side', 'card', 'text', 'muted', 'border', 'accent'];
+
+  const THEMES = {
+    aire:    { name: 'Aire',    scheme: 'dark',  bg: '#182728', side: '#142122', card: '#2a3e3b', text: '#e5f0ea', muted: '#b8cfca', border: '#506661', accent: '#94e2d5' },
+    cafe:    { name: 'Café',    scheme: 'dark',  bg: '#2a211d', side: '#211a17', card: '#3a2b26', text: '#f4e8de', muted: '#cfb9aa', border: '#6d5347', accent: '#f5cba7' },
+    ambar:   { name: 'Ámbar',   scheme: 'dark',  bg: '#282419', side: '#201d16', card: '#3c3527', text: '#f5ead2', muted: '#d3c3a1', border: '#716448', accent: '#f9e2af' },
+    papel:   { name: 'Papel',   scheme: 'dark',  bg: '#262b2a', side: '#1e2423', card: '#353d39', text: '#eff1e9', muted: '#cad1c8', border: '#617168', accent: '#bac2de' },
+    grafito: { name: 'Grafito', scheme: 'dark',  bg: '#191925', side: '#151520', card: '#262638', text: '#e3e6f3', muted: '#b5bdd3', border: '#44465e', accent: '#cba6f7' },
+    tide:    { name: 'Tide',    scheme: 'dark',  bg: '#0a0c11', side: '#05070b', card: '#11141b', text: '#c3cde0', muted: '#8a96ad', border: '#222b3b', accent: '#8cb8f2' },
+  };
+
+  // ---- color utilities (shared by engine verification and tests) ----
+  function parseColor(value) {
+    if (!value) return null;
+    const v = String(value).trim().toLowerCase();
+    let m = /^#([0-9a-f]{3}|[0-9a-f]{6})$/.exec(v);
+    if (m) {
+      let h = m[1];
+      if (h.length === 3) h = h.split('').map(c => c + c).join('');
+      return [0, 2, 4].map(i => parseInt(h.slice(i, i + 2), 16));
+    }
+    m = /^rgba?\(\s*([\d.]+)[,\s]+([\d.]+)[,\s]+([\d.]+)(?:[,\s/]+([\d.]+%?))?\s*\)$/.exec(v);
+    if (m) {
+      if (m[4] !== undefined && parseFloat(m[4]) === 0) return null; // transparent
+      return [m[1], m[2], m[3]].map(Number);
+    }
+    return null;
+  }
+  function sameColor(a, b) {
+    const x = parseColor(a), y = parseColor(b);
+    return !!(x && y) && x.every((c, i) => Math.abs(c - y[i]) <= 1);
+  }
+  function luminance(rgb) {
+    const l = rgb.map(c => { c /= 255; return c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4); });
+    return 0.2126 * l[0] + 0.7152 * l[1] + 0.0722 * l[2];
+  }
+  function contrast(fg, bg) {
+    const a = parseColor(fg), b = parseColor(bg);
+    if (!a || !b) return null;
+    const la = luminance(a), lb = luminance(b);
+    return (Math.max(la, lb) + 0.05) / (Math.min(la, lb) + 0.05);
+  }
+
+  UUI.THEME_TOKENS = TOKENS;
+  UUI.THEMES = THEMES;
+  UUI.color = { parseColor, sameColor, contrast };
+})(globalThis.UUI = globalThis.UUI || {});
+
+/* Universal UI · controles universales y herencia.
+   Orden de herencia: Global → Aplicación → Componente → Excepción del usuario.
+   Una capa más específica sobrescribe a la anterior sin modificarla.
+
+   Las excepciones son "pines" del usuario: sobreviven a cambios de modo y a la
+   aplicación de perfiles (salvo que se pida explícitamente incluirlas). */
+(function (UUI) {
+  'use strict';
+  const LEVELS = ['global', 'app', 'component', 'exception'];
+  const ALL = LEVELS;
+
+  const CONTROLS = {
+    theme:        { label: 'Tema', kind: 'enum', default: 'original', levels: ['global', 'app'],
+                    options: () => ['original'].concat(Object.keys(UUI.THEMES)) },
+    mode:         { label: 'Modo', kind: 'enum', default: 'completo', levels: ['global', 'app'],
+                    options: () => ['minimal', 'equilibrado', 'completo'] },
+    fontScale:    { label: 'Tamaño de texto', kind: 'range', default: 1, min: 0.85, max: 1.3, step: 0.05, levels: ALL },
+    font:         { label: 'Tipografía', kind: 'enum', default: 'original', levels: ['global', 'app', 'component'],
+                    options: () => ['original', 'sans', 'serif', 'mono'] },
+    density:      { label: 'Espaciado', kind: 'enum', default: 'normal', levels: ALL,
+                    options: () => ['compacto', 'normal', 'amplio'] },
+    readingWidth: { label: 'Ancho de lectura', kind: 'enum', default: 'original', levels: ALL,
+                    options: () => ['original', 'lectura', 'amplio', 'completo'] },
+    margin:       { label: 'Márgenes', kind: 'enum', default: 'original', levels: ALL,
+                    options: () => ['original', 'estrecho', 'amplio'] },
+  };
+
+  // Valores CSS universales. Los adaptadores los consumen vía var(--uui-*).
+  const CSS_VALUES = {
+    font: { sans: 'system-ui, "Segoe UI", Cantarell, "Noto Sans", sans-serif',
+            serif: 'Charter, "Iowan Old Style", Georgia, serif',
+            mono: '"JetBrains Mono", ui-monospace, Menlo, Consolas, monospace' },
+    density: { compacto: 0.75, normal: 1, amplio: 1.3 },
+    // px y no rem: el valor computado debe poder compararse literalmente al verificar.
+    readingWidth: { lectura: '704px', amplio: '1024px', completo: 'none' },
+    margin: { estrecho: '8px', amplio: '48px' },
+  };
+
+  const isVisibilityKey = (key) => typeof key === 'string' && key.startsWith('show:');
+
+  function controlFor(key) {
+    if (isVisibilityKey(key)) return { label: 'Visible', kind: 'bool', default: true, levels: ['exception'] };
+    return CONTROLS[key] || null;
+  }
+
+  function validValue(key, value) {
+    const c = controlFor(key);
+    if (!c) return false;
+    if (c.kind === 'bool') return typeof value === 'boolean';
+    if (c.kind === 'range') return typeof value === 'number' && value >= c.min - 1e-9 && value <= c.max + 1e-9;
+    if (c.kind === 'enum') return c.options().includes(value);
+    return false;
+  }
+
+  function emptySettings() {
+    return { version: 1, enabled: true, global: {}, apps: {}, profiles: {} };
+  }
+  function appLayer(settings, appId) {
+    return (settings.apps && settings.apps[appId]) || { values: {}, components: {}, exceptions: {} };
+  }
+  const exKey = (componentId, key) => (componentId || '*') + '/' + key;
+
+  /* Devuelve { value, source } — source ∈ default|global|app|component|exception|mode.
+     `adapter` es opcional; solo se usa para la visibilidad derivada del modo. */
+  function resolve(settings, appId, componentId, key, adapter) {
+    const s = settings || emptySettings();
+    const app = appLayer(s, appId);
+    if (isVisibilityKey(key)) {
+      const ex = app.exceptions && app.exceptions[exKey(componentId, key)];
+      if (ex !== undefined) return { value: ex, source: 'exception' };
+      const mode = resolve(s, appId, null, 'mode').value;
+      const hidden = adapter && adapter.modes && adapter.modes[mode];
+      const id = key.slice(5);
+      return { value: !(hidden && hidden.includes(id)), source: 'mode' };
+    }
+    const c = CONTROLS[key];
+    if (!c) throw new Error('Control desconocido: ' + key);
+    const allow = (lvl) => c.levels.includes(lvl);
+    if (componentId && allow('exception') && app.exceptions && app.exceptions[exKey(componentId, key)] !== undefined)
+      return { value: app.exceptions[exKey(componentId, key)], source: 'exception' };
+    const comp = componentId && app.components && app.components[componentId];
+    if (comp && allow('component') && comp[key] !== undefined) return { value: comp[key], source: 'component' };
+    if (allow('app') && app.values && app.values[key] !== undefined) return { value: app.values[key], source: 'app' };
+    if (allow('global') && s.global && s.global[key] !== undefined) return { value: s.global[key], source: 'global' };
+    return { value: c.default, source: 'default' };
+  }
+
+  UUI.LEVELS = LEVELS;
+  UUI.CONTROLS = CONTROLS;
+  UUI.CSS_VALUES = CSS_VALUES;
+  UUI.schema = { controlFor, validValue, emptySettings, appLayer, exKey, isVisibilityKey, resolve };
+})(globalThis.UUI = globalThis.UUI || {});
+
+/* Universal UI · persistencia, perfiles y operaciones sobre la configuración.
+   Todas las operaciones son puras: reciben una configuración y devuelven otra nueva.
+   `Store` envuelve un área tipo browser.storage.local y notifica cambios en tiempo real. */
+(function (UUI) {
+  'use strict';
+  const { validValue, controlFor, emptySettings, exKey, isVisibilityKey } = UUI.schema;
+  const KEY = 'uui.settings';
+  const PROFILE_SCHEMA = 'uui.profile/1';
+
+  const clone = (o) => JSON.parse(JSON.stringify(o));
+  function ensureApp(s, appId) {
+    s.apps[appId] = s.apps[appId] || { values: {}, components: {}, exceptions: {} };
+    return s.apps[appId];
+  }
+
+  /* target = { level, appId?, componentId?, key } */
+  function setValue(settings, target, value) {
+    const { level, appId, componentId, key } = target;
+    const c = controlFor(key);
+    if (!c) throw new Error('Control desconocido: ' + key);
+    if (!c.levels.includes(level)) throw new Error(`"${key}" no admite el nivel ${level}`);
+    if (!validValue(key, value)) throw new Error(`Valor inválido para ${key}: ${JSON.stringify(value)}`);
+    if (level !== 'global' && !appId) throw new Error('Falta appId');
+    if ((level === 'component') && !componentId) throw new Error('Falta componentId');
+    const s = clone(settings);
+    if (level === 'global') s.global[key] = value;
+    else {
+      const app = ensureApp(s, appId);
+      if (level === 'app') app.values[key] = value;
+      if (level === 'component') (app.components[componentId] = app.components[componentId] || {})[key] = value;
+      if (level === 'exception') app.exceptions[exKey(componentId, key)] = value;
+    }
+    return s;
+  }
+
+  // Quita un valor de una capa: vuelve a heredar de la capa anterior.
+  function clearValue(settings, target) {
+    const { level, appId, componentId, key } = target;
+    const s = clone(settings);
+    if (level === 'global') delete s.global[key];
+    const app = s.apps[appId];
+    if (app) {
+      if (level === 'app') delete app.values[key];
+      if (level === 'component' && app.components[componentId]) {
+        delete app.components[componentId][key];
+        if (!Object.keys(app.components[componentId]).length) delete app.components[componentId];
+      }
+      if (level === 'exception') delete app.exceptions[exKey(componentId, key)];
+    }
+    return s;
+  }
+
+  function resetApp(settings, appId) {
+    const s = clone(settings);
+    delete s.apps[appId];
+    return s;
+  }
+  function resetExceptions(settings, appId) {
+    const s = clone(settings);
+    if (s.apps[appId]) s.apps[appId].exceptions = {};
+    return s;
+  }
+  // Restaura todo a los valores originales de cada sitio. Los perfiles guardados se conservan.
+  function resetAll(settings) {
+    const s = emptySettings();
+    s.profiles = clone(settings.profiles || {});
+    return s;
+  }
+  function setEnabled(settings, appId, enabled) {
+    const s = clone(settings);
+    if (!appId) s.enabled = !!enabled;
+    else ensureApp(s, appId).enabled = !!enabled;
+    return s;
+  }
+
+  // ---- perfiles ----
+  function snapshot(settings, scope) {
+    if (scope && scope !== 'all') {
+      return { global: {}, apps: { [scope]: clone(settings.apps[scope] || { values: {}, components: {}, exceptions: {} }) } };
+    }
+    return { global: clone(settings.global), apps: clone(settings.apps) };
+  }
+  function saveProfile(settings, name, opts) {
+    const scope = (opts && opts.scope) || 'all';
+    const id = (opts && opts.id) || 'p' + Date.now().toString(36);
+    const s = clone(settings);
+    s.profiles[id] = { name: String(name).slice(0, 60), scope, createdAt: new Date().toISOString(), data: snapshot(settings, scope) };
+    return { settings: s, id };
+  }
+  function applyProfile(settings, profileId, opts) {
+    const p = settings.profiles[profileId];
+    if (!p) throw new Error('Perfil inexistente');
+    const keepExceptions = !(opts && opts.includeExceptions);
+    const s = clone(settings);
+    if (p.scope === 'all') s.global = clone(p.data.global);
+    for (const [appId, layer] of Object.entries(p.data.apps)) {
+      const prev = s.apps[appId];
+      s.apps[appId] = clone(layer);
+      if (keepExceptions) s.apps[appId].exceptions = prev ? clone(prev.exceptions || {}) : {};
+    }
+    if (p.scope === 'all') {
+      // apps ausentes del perfil vuelven a heredar del global del perfil
+      for (const appId of Object.keys(s.apps)) {
+        if (!p.data.apps[appId]) s.apps[appId] = { values: {}, components: {}, exceptions: keepExceptions ? s.apps[appId].exceptions : {} };
+      }
+    }
+    return s;
+  }
+  function deleteProfile(settings, profileId) {
+    const s = clone(settings);
+    delete s.profiles[profileId];
+    return s;
+  }
+
+  /* Reutiliza la configuración de una app en otra. Solo copia lo que la app destino
+     entiende: controles universales siempre; componentes y visibilidad solo si el
+     adaptador destino declara ese componente/elemento. */
+  function copyApp(settings, fromId, toId, toAdapter) {
+    const s = clone(settings);
+    const from = s.apps[fromId];
+    if (!from) return s;
+    const to = ensureApp(s, toId);
+    Object.assign(to.values, clone(from.values));
+    const comps = new Set(Object.keys((toAdapter && toAdapter.components) || {}));
+    const elems = new Set(((toAdapter && toAdapter.capabilities) || []).map(c => c.id));
+    for (const [cid, vals] of Object.entries(from.components || {})) {
+      if (comps.has(cid)) to.components[cid] = Object.assign(to.components[cid] || {}, clone(vals));
+    }
+    for (const [k, v] of Object.entries(from.exceptions || {})) {
+      const [cid, key] = [k.slice(0, k.indexOf('/')), k.slice(k.indexOf('/') + 1)];
+      if (isVisibilityKey(key) ? elems.has(key.slice(5)) : (cid === '*' || comps.has(cid))) to.exceptions[k] = v;
+    }
+    return s;
+  }
+
+  function exportProfile(settings, profileId) {
+    const p = settings.profiles[profileId];
+    if (!p) throw new Error('Perfil inexistente');
+    return JSON.stringify({ schema: PROFILE_SCHEMA, profile: p }, null, 2);
+  }
+  // Importación defensiva: se valida cada valor; lo desconocido se descarta y se informa.
+  function importProfile(settings, json) {
+    const parsed = typeof json === 'string' ? JSON.parse(json) : json;
+    if (!parsed || parsed.schema !== PROFILE_SCHEMA || !parsed.profile || !parsed.profile.data)
+      throw new Error('No es un perfil de Universal UI');
+    const dropped = [];
+    const p = parsed.profile;
+    const data = { global: {}, apps: {} };
+    for (const [k, v] of Object.entries(p.data.global || {})) {
+      if (UUI.CONTROLS[k] && validValue(k, v)) data.global[k] = v; else dropped.push('global.' + k);
+    }
+    for (const [appId, layer] of Object.entries(p.data.apps || {})) {
+      if (!/^[a-z0-9-]{1,40}$/.test(appId)) { dropped.push(appId); continue; }
+      const out = { values: {}, components: {}, exceptions: {} };
+      for (const [k, v] of Object.entries(layer.values || {})) (UUI.CONTROLS[k] && validValue(k, v)) ? out.values[k] = v : dropped.push(appId + '.' + k);
+      for (const [cid, vals] of Object.entries(layer.components || {})) {
+        for (const [k, v] of Object.entries(vals || {})) {
+          if (UUI.CONTROLS[k] && validValue(k, v)) (out.components[cid] = out.components[cid] || {})[k] = v; else dropped.push(appId + '.' + cid + '.' + k);
+        }
+      }
+      for (const [k, v] of Object.entries(layer.exceptions || {})) {
+        const key = k.slice(k.indexOf('/') + 1);
+        if (k.includes('/') && validValue(key, v)) out.exceptions[k] = v; else dropped.push(appId + '.' + k);
+      }
+      data.apps[appId] = out;
+    }
+    const s = clone(settings);
+    const id = 'p' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5);
+    s.profiles[id] = { name: String(p.name || 'Importado').slice(0, 60), scope: p.scope === 'all' ? 'all' : (Object.keys(data.apps)[0] || 'all'), createdAt: new Date().toISOString(), data };
+    return { settings: s, id, dropped };
+  }
+
+  // ---- almacenamiento ----
+  class Store {
+    constructor(area) { this.area = area; this.listeners = new Set(); }
+    async load() {
+      const got = await this.area.get(KEY);
+      const s = got && got[KEY];
+      return s && s.version === 1 ? s : emptySettings();
+    }
+    async save(settings) { await this.area.set({ [KEY]: settings }); return settings; }
+    async update(fn) { const next = fn(await this.load()); await this.save(next); return next; }
+    // Notifica cambios hechos desde cualquier contexto (popup, otra pestaña).
+    watch(cb) {
+      const h = (changes, areaName) => { if ((!areaName || areaName === 'local') && changes[KEY]) cb(changes[KEY].newValue || emptySettings()); };
+      if (this.area.onChanged) this.area.onChanged.addListener(h);
+      return () => this.area.onChanged && this.area.onChanged.removeListener(h);
+    }
+  }
+
+  // Área en memoria con la misma forma que browser.storage.local (pruebas y demo).
+  function memoryArea() {
+    let data = {};
+    const ls = new Set();
+    return {
+      async get(k) { return k in data ? { [k]: clone(data[k]) } : {}; },
+      async set(obj) {
+        const changes = {};
+        for (const [k, v] of Object.entries(obj)) { changes[k] = { oldValue: data[k], newValue: clone(v) }; data[k] = clone(v); }
+        ls.forEach(l => l(changes, 'local'));
+      },
+      onChanged: { addListener: (l) => ls.add(l), removeListener: (l) => ls.delete(l) },
+    };
+  }
+
+  UUI.store = { KEY, PROFILE_SCHEMA, setValue, clearValue, resetApp, resetExceptions, resetAll, setEnabled,
+    saveProfile, applyProfile, deleteProfile, copyApp, exportProfile, importProfile, Store, memoryArea };
+})(globalThis.UUI = globalThis.UUI || {});
+
+/* Universal UI · contrato de adaptador y registro.
+   Un adaptador describe una aplicación: no contiene lógica de aplicación de cambios.
+   Todo lo que modifica la página vive en engine.js, compartido por todas las apps.
+
+   Contrato (ver docs/ADDING_AN_APP.md):
+   {
+     id, name, version, calibratedAt,            // calibratedAt: fecha de la última verificación en el sitio real o null
+     hosts: ['app.example'],                     // coincidencia exacta de hostname
+     anchors: [{ id, selectors[] }],             // si falta uno, la app se declara incompatible y no se toca nada
+     essentials: [selector],                     // nunca se ocultan (ni ellos ni un contenedor que los incluya)
+     components: { [cid]: { label, selectors[], supports: [controlKey], targets?: { [controlKey]: selectors[] } } },
+     capabilities: [{ id, label, component, selectors[] }],   // elementos que se pueden mostrar/ocultar
+     modes: { minimal: [capId], equilibrado: [capId], completo: [] },
+     theme: { requires?(doc) -> null | motivo, bridge: css, verify: [{ selector, property, token }], contrast?: { text } },
+     actions: [{ id, label, selectors[] }],      // accesos a funciones nativas: solo click() sobre el control real
+   }
+   Los selectores son listas de candidatos en orden de preferencia. El motor informa cuál coincidió. */
+(function (UUI) {
+  'use strict';
+  const adapters = new Map();
+  const REQUIRED = ['id', 'name', 'version', 'hosts', 'anchors', 'components', 'capabilities', 'modes'];
+
+  function validateAdapter(a) {
+    const problems = [];
+    for (const k of REQUIRED) if (a[k] === undefined) problems.push('falta ' + k);
+    if (a.id && !/^[a-z0-9-]{1,40}$/.test(a.id)) problems.push('id inválido');
+    const comps = a.components || {};
+    for (const [cid, c] of Object.entries(comps)) {
+      if (!Array.isArray(c.selectors) || !c.selectors.length) problems.push(`componente ${cid} sin selectores`);
+      for (const k of c.supports || []) if (!UUI.CONTROLS[k]) problems.push(`componente ${cid}: control desconocido ${k}`);
+    }
+    const ids = new Set();
+    for (const cap of a.capabilities || []) {
+      if (ids.has(cap.id)) problems.push('capacidad duplicada ' + cap.id);
+      ids.add(cap.id);
+      if (!comps[cap.component]) problems.push(`capacidad ${cap.id}: componente inexistente ${cap.component}`);
+      if (!Array.isArray(cap.selectors) || !cap.selectors.length) problems.push(`capacidad ${cap.id} sin selectores`);
+    }
+    for (const [mode, hidden] of Object.entries(a.modes || {})) {
+      for (const id of hidden) if (!ids.has(id)) problems.push(`modo ${mode}: capacidad inexistente ${id}`);
+    }
+    if (a.theme) for (const v of a.theme.verify || []) if (!UUI.THEME_TOKENS.includes(v.token)) problems.push('token desconocido ' + v.token);
+    return problems;
+  }
+
+  function defineAdapter(a) {
+    const problems = validateAdapter(a);
+    if (problems.length) throw new Error(`Adaptador ${a.id || '?'} inválido: ` + problems.join('; '));
+    adapters.set(a.id, Object.freeze(a));
+    return a;
+  }
+  function adapterForHost(hostname) {
+    for (const a of adapters.values()) if (a.hosts.includes(hostname)) return a;
+    return null;
+  }
+
+  UUI.adapters = { defineAdapter, validateAdapter, adapterForHost, get: (id) => adapters.get(id), all: () => [...adapters.values()] };
+})(globalThis.UUI = globalThis.UUI || {});
+
+/* Universal UI · motor de aplicación y verificación.
+   Un único motor para todas las apps. Recibe un adaptador (descripción) y una
+   configuración; localiza los elementos reales, aplica cambios reversibles y
+   comprueba su efecto en el DOM. Nunca lee texto, mensajes ni valores de campos:
+   solo selectores estructurales y estilos computados. */
+(function (UUI) {
+  'use strict';
+  const S = UUI.STATUS;
+  const { resolve, appLayer } = UUI.schema;
+  const { parseColor, sameColor, contrast } = UUI.color;
+
+  const STYLE_ID = 'uui-style';
+  const HIDE_ATTR = 'data-uui-hide';
+  const COMP_ATTR = 'data-uui-c'; // reservado; se limpia por compatibilidad
+  // Un acceso a funciones nativas nunca puede apuntar a un control de envío.
+  const FORBIDDEN_ACTION = '[type="submit"], [data-testid*="send" i], [aria-label*="send" i], [aria-label*="enviar" i], [data-icon="send"]';
+
+  // Propiedades CSS que el motor escribe por control universal.
+  const LAYOUT = {
+    fontScale:    { props: ['font-size'], neutral: 1 },
+    font:         { props: ['font-family'], neutral: 'original' },
+    density:      { props: ['row-gap', 'padding-top', 'padding-bottom'], neutral: 'normal' },
+    readingWidth: { props: ['max-width'], neutral: 'original' },
+    margin:       { props: ['padding-left', 'padding-right'], neutral: 'original' },
+  };
+
+  function createEngine(opts) {
+    const adapter = opts.adapter;
+    const doc = opts.document;
+    const win = opts.window || doc.defaultView;
+    const onReport = opts.onReport || (() => {});
+    const now = opts.now || (() => new Date().toISOString());
+    const css = (el) => win.getComputedStyle(el);
+
+    let settings = null;
+    let statuses = {};       // id → { status, detail, selector, count }
+    let lastSeen = {};       // id → índice del selector que coincidió la última vez
+    const drift = [];        // eventos de invalidación de reglas
+    const inlineLog = new Map(); // el → { prop: [valor previo, prioridad previa] }
+    const original = new WeakMap(); // el → estilos computados antes de tocar nada
+    let observer = null, timer = null, applying = false;
+
+    // ---------- localización ----------
+    function find(selectors) {
+      for (let i = 0; i < selectors.length; i++) {
+        let list;
+        try { list = doc.querySelectorAll(selectors[i]); } catch (e) { continue; }
+        if (list.length) return { elements: [...list], index: i, selector: selectors[i] };
+      }
+      return { elements: [], index: -1, selector: null };
+    }
+    function noteSeen(id, found) {
+      const prev = lastSeen[id];
+      if (prev !== undefined && prev >= 0 && found.index !== prev) {
+        drift.push({ id, at: now(), from: prev, to: found.index,
+          kind: found.index < 0 ? 'desaparecido' : 'selector alternativo' });
+        if (drift.length > 50) drift.shift();
+      }
+      lastSeen[id] = found.index;
+    }
+    function isEssential(el) {
+      return (adapter.essentials || []).some(sel => {
+        try { return el.matches(sel) || !!el.querySelector(sel); } catch (e) { return false; }
+      });
+    }
+
+    // ---------- estilo inyectado (tema + ocultación) ----------
+    function styleEl() {
+      let el = doc.getElementById(STYLE_ID);
+      if (!el) {
+        el = doc.createElement('style');
+        el.id = STYLE_ID;
+        (doc.head || doc.documentElement).appendChild(el);
+      }
+      return el;
+    }
+    function themeCss(theme) {
+      if (!theme) return '';
+      const vars = UUI.THEME_TOKENS.map(t => `--uui-${t}: ${theme[t]};`).join(' ');
+      return `html[data-uui-theme] { ${vars} }\n${adapter.theme.bridge}`;
+    }
+    function writeStyle(theme) {
+      styleEl().textContent = `/* Universal UI · ${adapter.id} ${adapter.version} */\n` +
+        `[${HIDE_ATTR}] { display: none !important; }\n` + themeCss(theme);
+    }
+
+    // ---------- estilos en línea reversibles ----------
+    function setInline(el, prop, value) {
+      if (!inlineLog.has(el)) inlineLog.set(el, {});
+      const log = inlineLog.get(el);
+      if (!(prop in log)) log[prop] = [el.style.getPropertyValue(prop), el.style.getPropertyPriority(prop)];
+      el.style.setProperty(prop, value, 'important');
+    }
+    function restoreInline(el, prop) {
+      const log = inlineLog.get(el);
+      if (!log || !(prop in log)) return;
+      const [v, p] = log[prop];
+      if (v) el.style.setProperty(prop, v, p); else el.style.removeProperty(prop);
+      if (el.getAttribute('style') === '') el.removeAttribute('style');
+      delete log[prop];
+      if (!Object.keys(log).length) inlineLog.delete(el);
+    }
+    function snapshot(el) {
+      if (!original.has(el)) {
+        const c = css(el);
+        original.set(el, { fontSize: parseFloat(c.fontSize) || 16, paddingTop: parseFloat(c.paddingTop) || 0,
+          paddingBottom: parseFloat(c.paddingBottom) || 0, rowGap: parseFloat(c.rowGap) || 0 });
+      }
+      return original.get(el);
+    }
+
+    // Resuelve var(--x) cuando el entorno no lo hace (los navegadores ya lo hacen).
+    function computed(el, prop) {
+      let v = css(el).getPropertyValue(prop).trim();
+      for (let guard = 0; guard < 8 && /^var\(/.test(v); guard++) {
+        const m = /^var\(\s*(--[\w-]+)\s*(?:,\s*(.+))?\)$/.exec(v);
+        if (!m) break;
+        let found = '';
+        for (let n = el; n && n.nodeType === 1 && !found; n = n.parentElement) found = css(n).getPropertyValue(m[1]).trim();
+        v = found || (m[2] || '').trim();
+      }
+      return v;
+    }
+
+    // ---------- capacidades de visibilidad ----------
+    function applyVisibility() {
+      for (const cap of adapter.capabilities) {
+        const found = find(cap.selectors);
+        noteSeen(cap.id, found);
+        const shown = resolve(settings, adapter.id, cap.component, 'show:' + cap.id, adapter);
+        // limpiar marcas previas de esta capacidad (puede haber cambiado el selector)
+        doc.querySelectorAll(`[${HIDE_ATTR}~="${cap.id}"]`).forEach(el => untag(el, cap.id));
+        const base = { selector: found.selector, count: found.elements.length, fallback: found.index > 0, source: shown.source };
+        if (!found.elements.length) { statuses[cap.id] = { ...base, status: S.NOT_FOUND, detail: 'Ningún selector coincide' }; continue; }
+        if (found.elements.some(isEssential)) { statuses[cap.id] = { ...base, status: S.INCOMPATIBLE, detail: 'Contiene un elemento esencial' }; continue; }
+        if (shown.value) { statuses[cap.id] = { ...base, status: S.AVAILABLE }; continue; }
+        found.elements.forEach(el => tag(el, cap.id));
+        const ok = found.elements.every(el => css(el).display === 'none');
+        if (ok) statuses[cap.id] = { ...base, status: S.APPLIED };
+        else {
+          found.elements.forEach(el => untag(el, cap.id));
+          statuses[cap.id] = { ...base, status: S.ERROR, detail: 'El elemento sigue visible: la regla fue anulada' };
+        }
+      }
+    }
+    function tag(el, id) {
+      const cur = (el.getAttribute(HIDE_ATTR) || '').split(' ').filter(Boolean);
+      if (!cur.includes(id)) el.setAttribute(HIDE_ATTR, cur.concat(id).join(' '));
+    }
+    function untag(el, id) {
+      const rest = (el.getAttribute(HIDE_ATTR) || '').split(' ').filter(x => x && x !== id);
+      if (rest.length) el.setAttribute(HIDE_ATTR, rest.join(' ')); else el.removeAttribute(HIDE_ATTR);
+    }
+
+    // ---------- controles de diseño por componente ----------
+    function expected(key, value, el) {
+      const V = UUI.CSS_VALUES;
+      const o = snapshot(el);
+      if (key === 'fontScale') return { 'font-size': (o.fontSize * value).toFixed(2) + 'px' };
+      if (key === 'font') return { 'font-family': V.font[value] };
+      if (key === 'density') { const k = V.density[value];
+        return { 'row-gap': (o.rowGap * k).toFixed(2) + 'px', 'padding-top': (o.paddingTop * k).toFixed(2) + 'px', 'padding-bottom': (o.paddingBottom * k).toFixed(2) + 'px' }; }
+      if (key === 'readingWidth') return { 'max-width': V.readingWidth[value] };
+      if (key === 'margin') return { 'padding-left': V.margin[value], 'padding-right': V.margin[value] };
+      return {};
+    }
+    function matchesComputed(el, prop, want) {
+      const got = css(el).getPropertyValue(prop).trim();
+      if (prop === 'font-family') return got.replace(/["']/g, '').split(',')[0].trim() === want.replace(/["']/g, '').split(',')[0].trim();
+      if (want === 'none') return got === 'none';
+      if (/px$/.test(want)) return Math.abs(parseFloat(got) - parseFloat(want)) < 0.6 || (/rem$/.test(got) && Math.abs(parseFloat(got) * 16 - parseFloat(want)) < 0.6);
+      return got === want;
+    }
+    function applyLayout() {
+      for (const [cid, comp] of Object.entries(adapter.components)) {
+        const root = find(comp.selectors);
+        noteSeen('c:' + cid, root);
+        for (const key of comp.supports || []) {
+          const id = cid + '.' + key;
+          const sel = (comp.targets && comp.targets[key]) || comp.selectors;
+          const found = sel === comp.selectors ? root : find(sel);
+          const r = resolve(settings, adapter.id, cid, key);
+          const base = { selector: found.selector, count: found.elements.length, fallback: found.index > 0, source: r.source, value: r.value };
+          // revertir primero lo escrito antes (idempotente)
+          for (const el of [...inlineLog.keys()]) if (el.__uuiOwner && el.__uuiOwner[id]) { LAYOUT[key].props.forEach(p => restoreInline(el, p)); delete el.__uuiOwner[id]; }
+          if (!found.elements.length) { statuses[id] = { ...base, status: S.NOT_FOUND, detail: 'Ningún selector coincide' }; continue; }
+          if (r.value === LAYOUT[key].neutral) { statuses[id] = { ...base, status: S.AVAILABLE }; continue; }
+          let ok = true;
+          for (const el of found.elements) {
+            const want = expected(key, r.value, el);
+            el.__uuiOwner = el.__uuiOwner || {};
+            el.__uuiOwner[id] = true;
+            for (const [p, v] of Object.entries(want)) setInline(el, p, v);
+            for (const [p, v] of Object.entries(want)) if (!matchesComputed(el, p, v)) ok = false;
+          }
+          if (ok) statuses[id] = { ...base, status: S.APPLIED };
+          else {
+            found.elements.forEach(el => { LAYOUT[key].props.forEach(p => restoreInline(el, p)); if (el.__uuiOwner) delete el.__uuiOwner[id]; });
+            statuses[id] = { ...base, status: S.ERROR, detail: 'El sitio anula el valor; revertido' };
+          }
+        }
+      }
+    }
+
+    // ---------- tema ----------
+    function applyTheme() {
+      const html = doc.documentElement;
+      const r = resolve(settings, adapter.id, null, 'theme');
+      const theme = r.value !== 'original' ? UUI.THEMES[r.value] : null;
+      const base = { source: r.source, value: r.value };
+      html.removeAttribute('data-uui-theme');
+      writeStyle(null);
+      if (!adapter.theme) { statuses.theme = { ...base, status: S.INCOMPATIBLE, detail: 'Esta app no declara puente de tema' }; return; }
+      const reason = adapter.theme.requires ? adapter.theme.requires(doc, win) : null;
+      if (reason) { statuses.theme = { ...base, status: S.INCOMPATIBLE, detail: reason }; return; }
+      const probes = (adapter.theme.verify || []).map(v => ({ v, found: find([].concat(v.selector)) }));
+      if (!probes.some(p => p.found.elements.length)) { statuses.theme = { ...base, status: S.NOT_FOUND, detail: 'No hay superficies verificables' }; return; }
+      if (!theme) { statuses.theme = { ...base, status: S.AVAILABLE }; return; }
+      writeStyle(theme);
+      html.setAttribute('data-uui-theme', r.value);
+      const failed = [];
+      let checked = 0;
+      for (const { v, found } of probes) {
+        if (!found.elements.length) continue;
+        checked++;
+        if (!sameColor(computed(found.elements[0], v.property), theme[v.token])) failed.push(v.selector + ' ' + v.property);
+      }
+      let low = null;
+      if (!failed.length && adapter.theme.contrast) {
+        const t = find([].concat(adapter.theme.contrast.text)).elements[0];
+        if (t) {
+          let bg = null;
+          for (let n = t; n && n.nodeType === 1 && !bg; n = n.parentElement) bg = parseColor(computed(n, 'background-color')) ? computed(n, 'background-color') : null;
+          const ratio = bg ? contrast(computed(t, 'color'), bg) : null;
+          if (ratio !== null && ratio < 4.5) low = ratio;
+        }
+      }
+      if (failed.length || low !== null) {
+        html.removeAttribute('data-uui-theme');
+        writeStyle(null);
+        statuses.theme = { ...base, status: S.ERROR, detail: failed.length ? 'Sin efecto en: ' + failed.join(', ') : `Contraste insuficiente (${low.toFixed(2)}:1); revertido` };
+      } else statuses.theme = { ...base, status: S.APPLIED, count: checked };
+    }
+
+    // ---------- acciones nativas ----------
+    function probeActions() {
+      for (const a of adapter.actions || []) {
+        const found = find(a.selectors);
+        noteSeen('a:' + a.id, found);
+        const el = found.elements[0];
+        const status = !el ? S.NOT_FOUND : (el.matches(FORBIDDEN_ACTION) ? S.INCOMPATIBLE : S.AVAILABLE);
+        statuses['a:' + a.id] = { status, selector: found.selector, count: found.elements.length, fallback: found.index > 0,
+          detail: status === S.INCOMPATIBLE ? 'Apunta a un control de envío' : undefined };
+      }
+    }
+    function runAction(id) {
+      const a = (adapter.actions || []).find(x => x.id === id);
+      if (!a) return { ok: false, detail: 'Acción desconocida' };
+      const el = find(a.selectors).elements[0];
+      if (!el) return { ok: false, detail: 'No encontrado' };
+      if (el.matches(FORBIDDEN_ACTION)) return { ok: false, detail: 'Bloqueado: control de envío' };
+      el.click();
+      return { ok: true };
+    }
+
+    // ---------- ciclo ----------
+    function health() {
+      const missing = adapter.anchors.filter(a => !find(a.selectors).elements.length).map(a => a.id);
+      return missing.length ? { ok: false, missing } : { ok: true, missing: [] };
+    }
+    function enabled() {
+      return settings && settings.enabled !== false && appLayer(settings, adapter.id).enabled !== false;
+    }
+    function apply(next) {
+      if (next) settings = next;
+      if (!settings) return report();
+      applying = true;
+      try {
+        statuses = {};
+        const h = health();
+        if (!enabled() || !h.ok) {
+          revertAll();
+          const st = !h.ok ? S.INCOMPATIBLE : S.AVAILABLE;
+          const detail = !h.ok ? 'Estructura no reconocida: falta ' + h.missing.join(', ') : 'Desactivado';
+          for (const cap of adapter.capabilities) statuses[cap.id] = { status: st, detail };
+          statuses.theme = { status: st, detail };
+          return report(h);
+        }
+        writeStyle(null);
+        applyTheme();
+        applyVisibility();
+        applyLayout();
+        probeActions();
+        return report(h);
+      } catch (e) {
+        statuses.engine = { status: S.ERROR, detail: String(e && e.message || e) };
+        return report();
+      } finally { applying = false; }
+    }
+
+    // Restauración total: elimina todo rastro del motor en la página.
+    function revertAll() {
+      const st = doc.getElementById(STYLE_ID);
+      if (st) st.remove();
+      doc.documentElement.removeAttribute('data-uui-theme');
+      doc.querySelectorAll(`[${HIDE_ATTR}]`).forEach(el => el.removeAttribute(HIDE_ATTR));
+      doc.querySelectorAll(`[${COMP_ATTR}]`).forEach(el => el.removeAttribute(COMP_ATTR));
+      for (const [el, log] of [...inlineLog.entries()]) { Object.keys(log).forEach(p => restoreInline(el, p)); delete el.__uuiOwner; }
+    }
+
+    function report(h) {
+      const r = { app: adapter.id, name: adapter.name, version: adapter.version, calibratedAt: adapter.calibratedAt || null,
+        health: h || health(), enabled: !!enabled(), statuses: JSON.parse(JSON.stringify(statuses)), drift: drift.slice(), at: now() };
+      onReport(r);
+      return r;
+    }
+
+    // Tiempo real: el sitio cambia su DOM (SPA) → se vuelve a localizar y aplicar.
+    function start() {
+      if (observer || !win.MutationObserver) return;
+      observer = new win.MutationObserver(() => {
+        if (applying) return;
+        clearTimeout(timer);
+        timer = setTimeout(() => apply(), opts.debounceMs ?? 250);
+      });
+      observer.observe(doc.documentElement, { childList: true, subtree: true });
+    }
+    function stop() { if (observer) observer.disconnect(); observer = null; clearTimeout(timer); }
+
+    return { apply, revertAll, report: () => report(), runAction, start, stop, get drift() { return drift.slice(); } };
+  }
+
+  UUI.createEngine = createEngine;
+})(globalThis.UUI = globalThis.UUI || {});
+
+/* Adaptador ChatGPT.
+   Migrado desde userstyles/chatgpt-live.css v1.3.0 (V07 paletas, V08 visibilidad).
+   Diferencias con la versión anterior:
+   - Cada elemento declara candidatos; el motor informa cuál coincide y verifica el efecto.
+   - El tema traduce tokens universales (--uui-*) en lugar de paletas propias del sitio.
+   - El tema sigue limitado al modo oscuro: en el claro el sitio fija texto oscuro (decisión heredada).
+   calibratedAt: null → los selectores no se volvieron a comprobar en vivo desde este entorno. */
+(function (UUI) {
+  'use strict';
+  const DARK = ':is(html[data-theme="dark"], html.dark)[data-uui-theme]';
+  const SIDEBAR = ['#app-shell-sidebar', 'aside[data-app-shell-left-panel-appearance]', '[data-app-navigation-rail="true"]', '#stage-slideover-sidebar', 'nav[aria-label="Chat history" i]'];
+  const HEADER = ['#page-header', '[data-testid="conversation-header"]', '[data-app-shell-top-bar]', 'main header'];
+
+  UUI.adapters.defineAdapter({
+    id: 'chatgpt',
+    name: 'ChatGPT',
+    version: '0.1.0',
+    calibratedAt: null,
+    hosts: ['chatgpt.com', 'chat.openai.com'],
+    anchors: [
+      { id: 'composer', selectors: ['#prompt-textarea', '[data-testid="composer"] textarea', 'form textarea'] },
+      { id: 'main', selectors: ['main'] },
+    ],
+    essentials: ['#prompt-textarea', '[data-testid="composer"]', '[data-message-author-role]', 'main'],
+
+    components: {
+      sidebar:  { label: 'Barra lateral', selectors: SIDEBAR, supports: ['fontScale', 'font', 'density'] },
+      header:   { label: 'Encabezado', selectors: HEADER, supports: ['density'] },
+      messages: { label: 'Conversación', selectors: ['[data-app-shell-main-content-layout]', 'main'],
+                  supports: ['fontScale', 'font', 'readingWidth', 'margin'],
+                  targets: {
+                    fontScale: ['[data-message-author-role] .markdown', '[data-message-author-role] .whitespace-pre-wrap'],
+                    font: ['[data-message-author-role]'],
+                    readingWidth: ['main [class*="thread-content-max-width"]', 'main article > div > div'],
+                    margin: ['main article', 'main [data-testid^="conversation-turn"]'],
+                  } },
+      composer: { label: 'Cuadro de texto', selectors: ['[data-testid="composer"]', '[data-testid="composer-root"]', 'form:has(#prompt-textarea)'],
+                  supports: ['fontScale', 'font', 'readingWidth'],
+                  targets: { fontScale: ['#prompt-textarea'], font: ['#prompt-textarea'] } },
+    },
+
+    capabilities: [
+      { id: 'upgrade', label: 'Promociones', component: 'sidebar', selectors: [
+        '#app-shell-sidebar :is(a[href*="/upgrade" i], a[href*="/pricing" i], [data-testid*="upgrade" i])',
+        ':is(#page-header, header) :is(a[href*="/upgrade" i], button[aria-label*="upgrade" i], [data-testid*="upgrade" i])',
+        'aside:has(button[aria-label="Dismiss ChatGPT beacon banner" i])'] },
+      { id: 'share', label: 'Compartir', component: 'header', selectors: [
+        'button[data-testid="share-chat-button"]', ':is(#page-header, header) button[aria-label="Share" i]', ':is(#page-header, header) button[aria-label="Compartir" i]'] },
+      { id: 'notices', label: 'Avisos', component: 'composer', selectors: [
+        '[data-testid="thread-disclaimer"]', '[data-testid="composer-disclaimer"]'] },
+      { id: 'feedback', label: 'Valoraciones', component: 'messages', selectors: [
+        '[data-message-author-role="assistant"] :is(button[data-testid="good-response-turn-action-button"], button[data-testid="bad-response-turn-action-button"])',
+        'article :is(button[data-testid="good-response-turn-action-button"], button[data-testid="bad-response-turn-action-button"])',
+        ':is(button[aria-label="Good response" i], button[aria-label="Bad response" i], button[aria-label="Buena respuesta" i], button[aria-label="Mala respuesta" i])'] },
+      { id: 'header', label: 'Encabezado', component: 'header', selectors: HEADER },
+      { id: 'sidebar', label: 'Barra lateral', component: 'sidebar', selectors: SIDEBAR },
+      { id: 'brand', label: 'Marca', component: 'header', selectors: [
+        ':is(#page-header, #app-shell-sidebar, header) :is([data-testid="brand-name"], [data-testid="brand-title"], [data-testid="logo-text"])'] },
+      { id: 'manage', label: 'Administrar', component: 'sidebar', selectors: [
+        ':is(#app-shell-sidebar, #page-header, header) :is(a[href*="/manage" i], button[aria-label="Manage" i], [data-testid="manage-plan-button"])'] },
+    ],
+
+    // Qué oculta cada modo. Las excepciones del usuario prevalecen sobre el modo.
+    modes: {
+      minimal: ['upgrade', 'share', 'notices', 'feedback', 'header', 'brand', 'manage'],
+      equilibrado: ['upgrade', 'share', 'notices'],
+      completo: [],
+    },
+
+    theme: {
+      requires(doc) {
+        const h = doc.documentElement;
+        return (h.classList.contains('dark') || h.getAttribute('data-theme') === 'dark') ? null
+          : 'Requiere el modo oscuro de ChatGPT: en el claro el sitio fija colores de texto';
+      },
+      bridge: `
+${DARK} {
+  color-scheme: dark !important;
+  --text-primary: var(--uui-text) !important; --text-secondary: var(--uui-muted) !important; --text-tertiary: var(--uui-muted) !important;
+  --icon-primary: var(--uui-text) !important; --icon-secondary: var(--uui-muted) !important;
+  --bg-primary: var(--uui-bg) !important; --bg-secondary: var(--uui-card) !important; --bg-tertiary: var(--uui-card) !important;
+  --main-surface-primary: var(--uui-bg) !important; --main-surface-secondary: var(--uui-card) !important;
+  --sidebar-surface-primary: var(--uui-side) !important; --sidebar-surface-secondary: var(--uui-side) !important;
+  --color-surface: var(--uui-bg) !important; --color-surface-secondary: var(--uui-card) !important;
+  --color-background-panel: var(--uui-side) !important; --color-background-composer-surface: var(--uui-card) !important;
+  --color-text: var(--uui-text) !important; --color-text-primary: var(--uui-text) !important; --color-text-prose: var(--uui-text) !important;
+  --color-text-secondary: var(--uui-muted) !important; --color-text-tertiary: var(--uui-muted) !important;
+  --color-border-button-outline: var(--uui-border) !important;
+}
+${DARK} :is([data-app-shell-main-content-layout], main) { background-color: var(--uui-bg) !important; }
+${DARK} :is(${SIDEBAR.join(', ')}) { background-color: var(--uui-side) !important; border-right: 1px solid var(--uui-border) !important; }
+${DARK} [data-user-message-bubble="true"] { background-color: var(--uui-card) !important; color: var(--uui-text) !important; border: 1px solid var(--uui-border) !important; }
+${DARK} [data-message-author-role="assistant"] { color: var(--uui-text) !important; }
+${DARK} :is([data-testid="composer"], [data-testid="composer-root"]) { background-color: var(--uui-card) !important; border: 1px solid var(--uui-border) !important; }
+${DARK} :is(.markdown, .prose) a { color: var(--uui-accent) !important; }
+${DARK} #prompt-textarea { caret-color: var(--uui-text) !important; }`,
+      verify: [
+        { selector: ['[data-app-shell-main-content-layout]', 'main'], property: 'background-color', token: 'bg' },
+        { selector: SIDEBAR, property: 'background-color', token: 'side' },
+      ],
+      contrast: { text: ['[data-message-author-role="assistant"] .markdown p', '[data-message-author-role="assistant"]'] },
+    },
+
+    actions: [
+      { id: 'new-chat', label: 'Nuevo chat', selectors: ['[data-testid="create-new-chat-button"]', 'nav a[href="/"]'] },
+      { id: 'toggle-sidebar', label: 'Alternar barra lateral', selectors: ['[data-testid="close-sidebar-button"]', '[data-testid="open-sidebar-button"]', 'button[aria-controls="stage-slideover-sidebar"]'] },
+      { id: 'search', label: 'Buscar chats', selectors: ['[data-testid="search-conversations"]', 'button[aria-label="Search chats" i]', 'button[aria-label="Buscar chats" i]'] },
+    ],
+  });
+})(globalThis.UUI);
+
+/* Adaptador WhatsApp Web.
+   Primera versión: selectores candidatos basados en la estructura pública conocida
+   (#app, #side, #pane-side, #main, footer). calibratedAt: null → sin verificar en vivo.
+   El motor mostrará "No encontrado" en lo que no coincida: no se simula nada.
+   Límites deliberados: no lee mensajes ni contactos, no escribe en el cuadro de texto,
+   no ofrece acciones de envío. */
+(function (UUI) {
+  'use strict';
+  const DARK = ':is(body.dark, html.dark, html[data-theme="dark"])';
+  const ON = `html[data-uui-theme] ${DARK}`;
+  const ON_ROOT = `html[data-uui-theme]:is(.dark, [data-theme="dark"])`;
+
+  UUI.adapters.defineAdapter({
+    id: 'whatsapp',
+    name: 'WhatsApp Web',
+    version: '0.1.0',
+    calibratedAt: null,
+    hosts: ['web.whatsapp.com'],
+    anchors: [
+      { id: 'app', selectors: ['#app'] },
+      { id: 'side', selectors: ['#side'] },
+    ],
+    essentials: ['footer [contenteditable="true"]', '#main', '#pane-side', '#side [contenteditable="true"]'],
+
+    components: {
+      nav:          { label: 'Navegación', selectors: ['#app header[data-tab]', '#app div[role="navigation"]', '#app header'], supports: [] },
+      chatList:     { label: 'Lista de chats', selectors: ['#pane-side'], supports: ['fontScale', 'font', 'density'],
+                      targets: { density: ['#pane-side [role="listitem"]', '#pane-side [role="row"]'] } },
+      conversation: { label: 'Conversación', selectors: ['#main'], supports: ['fontScale', 'font', 'readingWidth', 'margin'],
+                      targets: {
+                        fontScale: ['#main .copyable-text', '#main [data-pre-plain-text]'],
+                        readingWidth: ['#main [role="application"]', '#main .copyable-area > div:nth-child(2)'],
+                        margin: ['#main [role="application"]'],
+                      } },
+      composer:     { label: 'Cuadro de texto', selectors: ['#main footer'], supports: ['fontScale', 'font'],
+                      targets: { fontScale: ['#main footer [contenteditable="true"]'], font: ['#main footer [contenteditable="true"]'] } },
+    },
+
+    capabilities: [
+      { id: 'status', label: 'Estados', component: 'nav', selectors: ['[aria-label="Status" i]', '[aria-label="Estados" i]', 'button:has(> span[data-icon="status-outline"])'] },
+      { id: 'channels', label: 'Canales', component: 'nav', selectors: ['[aria-label="Channels" i]', '[aria-label="Canales" i]', 'button:has(> span[data-icon="newsletter-outline"])'] },
+      { id: 'communities', label: 'Comunidades', component: 'nav', selectors: ['[aria-label="Communities" i]', '[aria-label="Comunidades" i]', 'button:has(> span[data-icon="community-outline"])'] },
+      { id: 'meta-ai', label: 'Meta AI', component: 'nav', selectors: ['[aria-label="Meta AI" i]', 'button:has(> span[data-icon="meta-ai"])'] },
+      { id: 'filters', label: 'Filtros de chats', component: 'chatList', selectors: ['#side [role="tablist"]', '#side [aria-label*="filters" i]', '#side [aria-label*="filtros" i]'] },
+      { id: 'archived', label: 'Archivados', component: 'chatList', selectors: ['#pane-side button[aria-label*="Archived" i]', '#pane-side button[aria-label*="Archivados" i]'] },
+      { id: 'banner', label: 'Avisos', component: 'chatList', selectors: ['#side [role="button"]:has(span[data-icon="alert-notification"])', '#side span[data-icon="alert-notification"]'] },
+      { id: 'avatars', label: 'Fotos de perfil', component: 'chatList', selectors: ['#pane-side img'] },
+    ],
+
+    modes: {
+      minimal: ['status', 'channels', 'communities', 'meta-ai', 'filters', 'banner'],
+      equilibrado: ['meta-ai', 'banner'],
+      completo: [],
+    },
+
+    theme: {
+      requires(doc) {
+        const dark = doc.body && doc.body.classList.contains('dark') ||
+          doc.documentElement.classList.contains('dark') || doc.documentElement.getAttribute('data-theme') === 'dark';
+        return dark ? null : 'Requiere el tema oscuro de WhatsApp Web';
+      },
+      bridge: `
+${ON}, ${ON_ROOT} {
+  --panel-background: var(--uui-side) !important; --panel-header-background: var(--uui-card) !important;
+  --conversation-panel-background: var(--uui-bg) !important; --conversation-header-background: var(--uui-card) !important;
+  --compose-input-background: var(--uui-card) !important; --search-container-background: var(--uui-side) !important;
+  --primary: var(--uui-text) !important; --primary-strong: var(--uui-text) !important; --secondary: var(--uui-muted) !important;
+  --border-list: var(--uui-border) !important; --incoming-background: var(--uui-card) !important;
+}
+html[data-uui-theme] :is(#side, #pane-side) { background-color: var(--uui-side) !important; }
+html[data-uui-theme] :is(#main header, #main footer) { background-color: var(--uui-card) !important; }
+html[data-uui-theme] #main [role="application"] { background-color: var(--uui-bg) !important; }`,
+      verify: [
+        { selector: ['#pane-side', '#side'], property: 'background-color', token: 'side' },
+        { selector: ['#main header'], property: 'background-color', token: 'card' },
+      ],
+      contrast: null,
+    },
+
+    actions: [
+      { id: 'new-chat', label: 'Nuevo chat', selectors: ['[aria-label="New chat" i]', '[aria-label="Nuevo chat" i]', 'button:has(> span[data-icon="new-chat-outline"])'] },
+      { id: 'archived', label: 'Abrir archivados', selectors: ['#pane-side button[aria-label*="Archived" i]', '#pane-side button[aria-label*="Archivados" i]'] },
+    ],
+  });
+})(globalThis.UUI);
+
+/* Adaptador de ejemplo: Wikipedia (skin Vector 2022).
+   Demuestra la incorporación de una tercera app sin tocar el núcleo:
+   este archivo + una línea en manifest.json + una línea en el registro de la ventana emergente.
+   Ver docs/ADDING_AN_APP.md. */
+(function (UUI) {
+  'use strict';
+  UUI.adapters.defineAdapter({
+    id: 'wikipedia',
+    name: 'Wikipedia',
+    version: '0.1.0',
+    calibratedAt: null,
+    hosts: ['es.wikipedia.org', 'en.wikipedia.org'],
+    anchors: [{ id: 'content', selectors: ['#content', '.mw-body'] }],
+    essentials: ['#mw-content-text', '#firstHeading'],
+    components: {
+      article: { label: 'Artículo', selectors: ['#content', '.mw-body'], supports: ['fontScale', 'font', 'readingWidth', 'margin'],
+                 targets: { fontScale: ['#mw-content-text'], readingWidth: ['.mw-page-container'] } },
+      menus:   { label: 'Menús', selectors: ['.vector-header-container', '#mw-head'], supports: ['density'] },
+    },
+    capabilities: [
+      { id: 'toc', label: 'Índice', component: 'article', selectors: ['#vector-toc-pinned-container', '#toc'] },
+      { id: 'tools', label: 'Herramientas', component: 'article', selectors: ['#vector-page-tools-pinned-container'] },
+      { id: 'notice', label: 'Avisos del sitio', component: 'menus', selectors: ['#siteNotice', '#centralNotice'] },
+      { id: 'langs', label: 'Idiomas', component: 'menus', selectors: ['#p-lang-btn'] },
+    ],
+    modes: { minimal: ['toc', 'tools', 'notice', 'langs'], equilibrado: ['notice'], completo: [] },
+    theme: {
+      bridge: `
+html[data-uui-theme] { color-scheme: dark; --background-color-base: var(--uui-bg) !important; --color-base: var(--uui-text) !important; }
+html[data-uui-theme] body, html[data-uui-theme] .mw-page-container { background-color: var(--uui-bg) !important; color: var(--uui-text) !important; }
+html[data-uui-theme] a { color: var(--uui-accent) !important; }`,
+      verify: [{ selector: ['.mw-page-container', 'body'], property: 'background-color', token: 'bg' }],
+      contrast: { text: ['#mw-content-text p', '#mw-content-text'] },
+    },
+    actions: [{ id: 'search', label: 'Buscar', selectors: ['#searchInput', 'input[name="search"]'] }],
+  });
+})(globalThis.UUI);
+
+/* Universal UI · panel (ventana emergente del botón de la barra).
+   Independiente del entorno: `env` abstrae navegador/pestaña. env-extension.js lo conecta
+   a las APIs de Firefox; demo/ lo conecta a una página de prueba con el motor real. */
+(function (UUI) {
+  'use strict';
+  const { resolve, appLayer } = UUI.schema;
+  const ST = UUI.store;
+  const LBL = UUI.STATUS_LABEL;
+  const OPT_LABEL = {
+    minimal: 'Minimal', equilibrado: 'Equilibrado', completo: 'Completo',
+    original: 'Original', sans: 'Sans', serif: 'Serif', mono: 'Mono',
+    compacto: 'Compacto', normal: 'Normal', amplio: 'Amplio', lectura: 'Lectura', estrecho: 'Estrecho',
+  };
+  const UNIVERSAL = ['fontScale', 'font', 'density', 'readingWidth', 'margin'];
+
+  function h(tag, attrs, ...kids) {
+    const el = document.createElement(tag);
+    for (const [k, v] of Object.entries(attrs || {})) {
+      if (v === undefined || v === null || v === false) continue;
+      if (k.startsWith('on')) el.addEventListener(k.slice(2), v);
+      else if (k === 'text') el.textContent = v;
+      else el.setAttribute(k, v === true ? '' : v);
+    }
+    for (const kid of kids.flat()) if (kid !== null && kid !== undefined && kid !== false) el.append(kid);
+    return el;
+  }
+
+  function mountPanel(root, env) {
+    const $ = (id) => root.querySelector('#' + id);
+    const state = { tab: 'custom', scope: 'app', component: null, settings: null, ctx: null, report: null };
+    let toastTimer = null;
+
+    function toast(msg) {
+      const t = $('toast');
+      t.textContent = msg; t.dataset.on = 'true';
+      clearTimeout(toastTimer); toastTimer = setTimeout(() => { t.dataset.on = 'false'; }, 1800);
+    }
+    async function commit(fn, msg) {
+      try {
+        state.settings = await env.store.update(fn);
+        if (msg) toast(msg);
+        await refreshReport();
+      } catch (e) { toast(e.message); }
+    }
+    async function refreshReport() {
+      state.report = state.ctx && state.ctx.adapter && state.ctx.permitted ? await env.getReport().catch(() => null) : null;
+      render();
+    }
+
+    // ---------- estado agregado ----------
+    function statusOf(id) { return state.report && state.report.statuses[id]; }
+    function aggregate(key) {
+      const a = state.ctx.adapter;
+      const ids = Object.entries(a.components).filter(([, c]) => (c.supports || []).includes(key)).map(([cid]) => cid + '.' + key);
+      if (key === 'theme' || key === 'mode') return statusOf(key) || null;
+      const list = ids.map(statusOf).filter(Boolean);
+      if (!ids.length) return { status: 'incompatible', detail: 'Ningún componente lo admite' };
+      if (!list.length) return null;
+      for (const s of ['error', 'applied', 'available', 'incompatible']) {
+        const hit = list.find(x => x.status === s);
+        if (hit) return { ...hit, status: s, detail: hit.detail || `${list.filter(x => x.status === s).length}/${ids.length} componentes` };
+      }
+      return { status: 'not_found', detail: 'Ningún componente encontrado' };
+    }
+    const pill = (st) => st ? h('span', { class: 'pill', 'data-s': st.status, title: st.detail || '', text: LBL[st.status] }) : null;
+
+    // ---------- encabezado ----------
+    function renderHead() {
+      const a = state.ctx && state.ctx.adapter;
+      const r = state.report;
+      $('ctx').dataset.on = String(!!(r && r.enabled && r.health.ok));
+      $('ctx-name').textContent = a ? `${a.name} · ${state.ctx.host}` : (state.ctx && state.ctx.host) || 'sin pestaña';
+      const hEl = $('ctx-health');
+      if (!a) { hEl.textContent = 'sin adaptador'; hEl.dataset.state = ''; }
+      else if (!state.ctx.permitted) { hEl.textContent = 'sin permiso'; hEl.dataset.state = 'incompatible'; }
+      else if (!r) { hEl.textContent = 'sin respuesta'; hEl.dataset.state = 'incompatible'; }
+      else if (!r.health.ok) { hEl.textContent = 'estructura cambiada'; hEl.dataset.state = 'incompatible'; }
+      else { hEl.textContent = a.calibratedAt ? 'calibrado ' + a.calibratedAt : 'sin calibrar'; hEl.dataset.state = ''; }
+    }
+
+    // ---------- Personalización ----------
+    function target(key, componentId) {
+      if (state.scope === 'global') return { level: 'global', key };
+      if (state.component) return { level: 'component', appId: state.ctx.adapter.id, componentId: state.component, key };
+      return { level: 'app', appId: state.ctx.adapter.id, key };
+    }
+    function current(key) {
+      const appId = state.scope === 'global' ? '__none__' : state.ctx.adapter.id;
+      return resolve(state.settings, appId, state.component, key);
+    }
+    const LEVEL_NAME = { global: 'común', app: 'esta app', component: 'componente', exception: 'excepción', default: 'original', mode: 'modo' };
+    function sourceTag(key) {
+      const r = current(key);
+      const lvl = target(key).level;
+      const own = r.source === lvl;
+      return h('button', { class: 'src', 'data-own': String(own), title: own ? 'Volver a heredar' : 'Valor heredado',
+        disabled: !own, 'aria-label': own ? `Quitar valor propio de ${UUI.CONTROLS[key].label}` : undefined,
+        onclick: () => commit(s => ST.clearValue(s, target(key)), 'Hereda de nuevo') },
+        own ? '● propio ↺' : '○ ' + LEVEL_NAME[r.source]);
+    }
+    function seg(key, options, disabled) {
+      const cur = current(key).value;
+      return h('div', { class: 'seg', role: 'group', 'aria-label': UUI.CONTROLS[key].label },
+        options.map(o => h('button', { type: 'button', 'aria-pressed': String(cur === o), disabled,
+          onclick: () => commit(s => ST.setValue(s, target(key), o)) }, OPT_LABEL[o] || o)));
+    }
+    function controlRow(key, extra) {
+      const c = UUI.CONTROLS[key];
+      const st = state.scope === 'global' ? null : (state.component ? statusOf(state.component + '.' + key) : aggregate(key));
+      const blocked = st && !UUI.isOperable(st.status) && st.status !== 'error';
+      let input;
+      if (c.kind === 'range') {
+        const v = current(key).value;
+        const step = (d) => commit(s => ST.setValue(s, target(key), Math.round(Math.min(c.max, Math.max(c.min, v + d)) * 100) / 100));
+        input = h('div', { class: 'seg', role: 'group', 'aria-label': c.label },
+          h('button', { type: 'button', 'aria-label': 'Reducir', disabled: blocked || v <= c.min, onclick: () => step(-c.step) }, '−'),
+          h('button', { type: 'button', 'aria-pressed': 'false', disabled: true }, Math.round(v * 100) + '%'),
+          h('button', { type: 'button', 'aria-label': 'Aumentar', disabled: blocked || v >= c.max, onclick: () => step(c.step) }, '+'));
+      } else input = seg(key, c.options(), blocked);
+      return h('div', { class: 'row' },
+        h('span', { class: 'name' }, c.label, sourceTag(key), pill(st)), input, extra);
+    }
+
+    function themeGroup() {
+      const cur = current('theme').value;
+      const st = state.scope === 'global' ? null : statusOf('theme');
+      const blocked = st && st.status === 'incompatible';
+      const list = ['original'].concat(Object.keys(UUI.THEMES));
+      return h('div', { class: 'group' },
+        h('p', { class: 'caps' }, h('span', {}, 'Tema'), h('small', {}, sourceTag('theme'), ' ', pill(st))),
+        h('div', { class: 'swatches', role: 'group', 'aria-label': 'Tema' },
+          list.map(id => {
+            const t = UUI.THEMES[id];
+            const b = h('button', { type: 'button', class: 'sw' + (t ? '' : ' orig'), 'aria-pressed': String(cur === id),
+              title: t ? t.name : 'Original', 'aria-label': t ? t.name : 'Original del sitio', disabled: blocked && id !== 'original',
+              onclick: () => commit(s => ST.setValue(s, target('theme'), id), 'Tema: ' + (t ? t.name : 'original')) },
+              t ? [h('span', { style: `background:${t.bg}` }), h('span', { style: `background:${t.accent}` })] : 'orig');
+            return b;
+          })),
+        h('div', { class: 'sw-label' }, st && st.detail ? st.detail : (UUI.THEMES[cur] ? UUI.THEMES[cur].name : 'Colores del sitio')));
+    }
+
+    function visibilityGroup() {
+      const a = state.ctx.adapter;
+      const caps = a.capabilities.filter(c => !state.component || c.component === state.component);
+      return h('div', { class: 'group' },
+        h('p', { class: 'caps' }, h('span', {}, 'Elementos'), h('small', {}, 'excepciones sobre el modo')),
+        caps.map(cap => {
+          const r = resolve(state.settings, a.id, cap.component, 'show:' + cap.id, a);
+          const st = statusOf(cap.id);
+          const operable = st && (UUI.isOperable(st.status) || st.status === 'error');
+          const t = { level: 'exception', appId: a.id, componentId: cap.component, key: 'show:' + cap.id };
+          return h('div', { class: 'vis' },
+            h('button', { type: 'button', role: 'switch', class: 'sw-toggle', 'aria-checked': String(r.value),
+              'aria-label': `${cap.label}: ${r.value ? 'visible' : 'oculto'}`, disabled: !operable,
+              onclick: () => commit(s => ST.setValue(s, t, !r.value), `${cap.label}: ${r.value ? 'oculto' : 'visible'}`) }),
+            h('span', { class: 'name' }, cap.label,
+              r.source === 'exception'
+                ? h('button', { class: 'src', 'data-own': 'true', title: 'Volver al modo', onclick: () => commit(s => ST.clearValue(s, t)) }, '● propio ↺')
+                : h('span', { class: 'src' }, '○ modo')),
+            pill(st),
+            st && st.status !== 'applied' && st.status !== 'available' ? h('span', { class: 'why' }, st.detail || '') : null,
+            st && st.fallback ? h('span', { class: 'why' }, 'selector alternativo: ' + st.selector) : null);
+        }));
+    }
+
+    function actionsGroup() {
+      const a = state.ctx.adapter;
+      if (!a.actions || !a.actions.length) return null;
+      return h('div', { class: 'group' },
+        h('p', { class: 'caps' }, h('span', {}, 'Acciones'), h('small', {}, 'controles nativos del sitio')),
+        h('div', { class: 'actions' }, a.actions.map(ac => {
+          const st = statusOf('a:' + ac.id);
+          return h('button', { type: 'button', class: 'btn', disabled: !st || st.status !== 'available', title: st ? LBL[st.status] : '',
+            onclick: async () => { const r = await env.runAction(ac.id); toast(r.ok ? ac.label : r.detail); } }, ac.label);
+        })));
+    }
+
+    function renderCustom() {
+      const v = $('view-custom');
+      v.replaceChildren();
+      const a = state.ctx && state.ctx.adapter;
+      if (!a && state.scope !== 'global') state.scope = 'global';
+      v.append(h('div', { class: 'scope', role: 'group', 'aria-label': 'Ámbito' },
+        h('button', { type: 'button', 'aria-pressed': String(state.scope === 'global'), onclick: () => { state.scope = 'global'; state.component = null; render(); } }, 'Común · todas'),
+        h('button', { type: 'button', 'aria-pressed': String(state.scope === 'app'), disabled: !a, onclick: () => { state.scope = 'app'; render(); } }, a ? 'Solo ' + a.name : 'Sin app')));
+
+      if (a && !state.ctx.permitted && state.scope === 'app') {
+        v.append(h('div', { class: 'empty' }, `Universal UI no tiene permiso en ${state.ctx.host}. `,
+          h('button', { class: 'btn primary', onclick: async () => { if (await env.requestPermission(a)) { state.ctx.permitted = true; await refreshReport(); } } }, 'Permitir en este sitio')));
+        return;
+      }
+      if (state.scope === 'app') {
+        v.append(h('div', { class: 'comps', role: 'group', 'aria-label': 'Componente' },
+          h('button', { type: 'button', 'aria-pressed': String(!state.component), onclick: () => { state.component = null; render(); } }, 'Toda la app'),
+          Object.entries(a.components).map(([cid, c]) => h('button', { type: 'button', 'aria-pressed': String(state.component === cid),
+            onclick: () => { state.component = cid; render(); } }, c.label))));
+      }
+      if (!state.component) {
+        v.append(themeGroup());
+        v.append(h('div', { class: 'group' }, h('p', { class: 'caps' }, h('span', {}, 'Modo'), h('small', {}, sourceTag('mode'))), seg('mode', UUI.CONTROLS.mode.options())));
+      }
+      const keys = state.component ? (a.components[state.component].supports || []) : UNIVERSAL;
+      if (keys.length) v.append(h('div', { class: 'group' }, h('p', { class: 'caps' }, h('span', {}, 'Texto y distribución')), keys.map(k => controlRow(k))));
+      if (state.scope === 'app') {
+        v.append(visibilityGroup());
+        if (!state.component) v.append(actionsGroup());
+        if (state.report && state.report.drift.length) {
+          v.append(h('p', { class: 'drift' }, `${state.report.drift.length} reglas cambiaron desde que se abrió la página: ` +
+            state.report.drift.slice(-3).map(d => `${d.id} (${d.kind})`).join(', ')));
+        }
+      }
+      const appId = a && a.id;
+      v.append(h('div', { class: 'foot' },
+        state.scope === 'app'
+          ? h('button', { class: 'btn', onclick: () => commit(s => ST.resetApp(s, appId), `${a.name} restaurado`) }, 'Restaurar ' + a.name)
+          : h('button', { class: 'btn', onclick: () => commit(s => Object.assign(ST.resetAll(s), { apps: s.apps }), 'Común restaurado') }, 'Restaurar común'),
+        state.scope === 'app'
+          ? h('button', { class: 'btn quiet', onclick: () => commit(s => ST.setEnabled(s, appId, appLayer(s, appId).enabled === false), appLayer(state.settings, appId).enabled === false ? 'Reanudado' : 'Pausado: sitio original') },
+              appLayer(state.settings, appId).enabled === false ? 'Reanudar' : 'Pausar')
+          : null,
+        h('button', { class: 'btn quiet', onclick: () => commit(s => ST.resetAll(s), 'Todo restaurado') }, 'Restaurar todo')));
+    }
+
+    // ---------- Aplicaciones ----------
+    async function renderApps() {
+      const v = $('view-apps');
+      v.replaceChildren();
+      for (const a of UUI.adapters.all()) {
+        const layer = state.settings.apps[a.id];
+        const custom = !!layer && (Object.keys(layer.values || {}).length + Object.keys(layer.components || {}).length + Object.keys(layer.exceptions || {}).length) > 0;
+        const isCur = state.ctx && state.ctx.adapter && state.ctx.adapter.id === a.id;
+        const perm = await env.hasPermission(a);
+        const meta = [perm ? 'permitido' : 'sin permiso', custom ? 'personalizado' : 'hereda común', layer && layer.enabled === false ? 'pausado' : null].filter(Boolean).join(' · ');
+        v.append(h('div', { class: 'app', 'data-current': String(!!isCur), 'data-custom': String(custom) },
+          h('span', { class: 'mark', 'aria-hidden': 'true' }, a.name.slice(0, 2)),
+          h('span', {}, h('div', {}, a.name), h('div', { class: 'meta' }, meta + ' · v' + a.version + (a.calibratedAt ? '' : ' · sin calibrar'))),
+          custom ? h('button', { class: 'btn quiet', onclick: () => commit(s => ST.resetApp(s, a.id), a.name + ' restaurado') }, '↺') : null));
+      }
+      v.append(h('p', { class: 'empty' }, 'Nuevas apps: un adaptador en adapters/. Ver docs/ADDING_AN_APP.md'));
+    }
+
+    // ---------- Perfiles ----------
+    function renderProfiles() {
+      const v = $('view-profiles');
+      v.replaceChildren();
+      const a = state.ctx && state.ctx.adapter;
+      const name = h('input', { type: 'text', placeholder: 'Nombre del perfil', 'aria-label': 'Nombre del perfil', maxlength: '60' });
+      v.append(h('div', { class: 'group' },
+        h('p', { class: 'caps' }, h('span', {}, 'Guardar')),
+        name,
+        h('div', { class: 'actions', style: 'margin-top:6px' },
+          h('button', { class: 'btn primary', onclick: () => commit(s => ST.saveProfile(s, name.value || 'Perfil', { scope: 'all' }).settings, 'Perfil guardado') }, 'Todo'),
+          a ? h('button', { class: 'btn', onclick: () => commit(s => ST.saveProfile(s, name.value || a.name, { scope: a.id }).settings, 'Perfil guardado') }, 'Solo ' + a.name) : null,
+          h('label', { class: 'btn file' }, 'Importar…', h('input', { type: 'file', accept: 'application/json', onchange: async (e) => {
+            const f = e.target.files[0]; if (!f) return;
+            const text = await f.text();
+            let dropped = [];
+            await commit(s => { const r = ST.importProfile(s, text); dropped = r.dropped; return r.settings; });
+            toast(dropped.length ? `Importado; ${dropped.length} valores descartados` : 'Perfil importado');
+          } })))));
+      const list = Object.entries(state.settings.profiles);
+      v.append(h('div', { class: 'group' }, h('p', { class: 'caps' }, h('span', {}, 'Guardados'), h('small', {}, String(list.length))),
+        list.length ? list.map(([id, p]) => h('div', { class: 'row' },
+          h('span', {}, p.name, ' ', h('span', { class: 'src' }, p.scope === 'all' ? 'todas' : p.scope)),
+          h('div', { class: 'actions' },
+            h('button', { class: 'btn', onclick: () => commit(s => ST.applyProfile(s, id), 'Perfil aplicado') }, 'Aplicar'),
+            h('button', { class: 'btn quiet', 'aria-label': 'Exportar ' + p.name, onclick: () => env.download(p.name + '.uui.json', ST.exportProfile(state.settings, id)) }, '⇩'),
+            h('button', { class: 'btn quiet', 'aria-label': 'Borrar ' + p.name, onclick: () => commit(s => ST.deleteProfile(s, id), 'Perfil borrado') }, '×')))) :
+          h('p', { class: 'sw-label' }, 'Sin perfiles')));
+      if (a) {
+        const others = UUI.adapters.all().filter(o => o.id !== a.id && state.settings.apps[o.id]);
+        v.append(h('div', { class: 'group' }, h('p', { class: 'caps' }, h('span', {}, 'Reutilizar en ' + a.name)),
+          others.length ? h('div', { class: 'actions' }, others.map(o => h('button', { class: 'btn',
+            onclick: () => commit(s => ST.copyApp(s, o.id, a.id, a), `Copiado de ${o.name}`) }, 'Copiar de ' + o.name)))
+            : h('p', { class: 'sw-label' }, 'Ninguna otra app personalizada')));
+      }
+    }
+
+    function render() {
+      if (!state.settings) return;
+      renderHead();
+      for (const [tab, fn] of [['apps', renderApps], ['custom', renderCustom], ['profiles', renderProfiles]]) {
+        $('tab-' + tab).setAttribute('aria-selected', String(state.tab === tab));
+        $('view-' + tab).hidden = state.tab !== tab;
+        if (state.tab === tab) fn();
+      }
+    }
+
+    for (const tab of ['apps', 'custom', 'profiles']) {
+      $('tab-' + tab).addEventListener('click', () => { state.tab = tab; render(); });
+    }
+    root.addEventListener('keydown', (e) => {
+      if (e.target.getAttribute('role') !== 'tab') return;
+      const order = ['apps', 'custom', 'profiles'];
+      const i = order.indexOf(state.tab);
+      if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+        state.tab = order[(i + (e.key === 'ArrowRight' ? 1 : 2)) % 3];
+        render(); $('tab-' + state.tab).focus();
+      }
+    });
+
+    (async () => {
+      state.ctx = await env.getContext();
+      state.settings = await env.store.load();
+      if (!state.ctx.adapter) state.scope = 'global';
+      env.store.watch(s => { state.settings = s; setTimeout(refreshReport, 60); });
+      await refreshReport();
+    })();
+    return { state, render, refreshReport };
+  }
+
+  UUI.mountPanel = mountPanel;
+})(globalThis.UUI);
+
+(function (UUI) {
+  'use strict';
+  const area = UUI.store.memoryArea();
+  const store = new UUI.store.Store(area);
+  const engines = {};
+  const hostOf = { chatgpt: 'chatgpt.com', whatsapp: 'web.whatsapp.com', wikipedia: 'es.wikipedia.org' };
+  let current = 'chatgpt';
+  const ready = [...document.querySelectorAll('iframe')].map(f => new Promise(res => {
+    const init = () => {
+      if (engines[f.dataset.app]) return res();
+      const id = f.dataset.app;
+      engines[id] = UUI.createEngine({ adapter: UUI.adapters.get(id), document: f.contentDocument, window: f.contentWindow });
+      store.load().then(s => { engines[id].apply(s); engines[id].start(); res(); });
+    };
+    const d = f.contentDocument;
+    if (d && d.readyState === 'complete' && d.body && d.body.children.length) init();
+    else f.addEventListener('load', init);
+  }));
+  store.watch(s => Object.values(engines).forEach(e => e.apply(s)));
+  function show(id) {
+    current = id;
+    document.querySelectorAll('.tabbtn').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.app === id)));
+    document.querySelectorAll('iframe').forEach(f => { f.hidden = f.dataset.app !== id; });
+  }
+  show('chatgpt');
+  let panel = null;
+  const env = {
+    store,
+    getContext: async () => ({ host: hostOf[current], adapter: UUI.adapters.get(current), permitted: true }),
+    hasPermission: async () => true,
+    requestPermission: async () => true,
+    getReport: async () => engines[current] ? engines[current].report() : null,
+    runAction: async (id) => engines[current].runAction(id),
+    download(name, text) { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([text])); a.download = name; a.click(); },
+  };
+  Promise.all(ready).then(() => {
+    panel = UUI.mountPanel(document.getElementById('uui'), env);
+    document.querySelectorAll('.tabbtn').forEach(b => b.addEventListener('click', async () => {
+      show(b.dataset.app);
+      panel.state.ctx = await env.getContext();
+      panel.state.component = null;
+      await panel.refreshReport();
+    }));
+  });
+})(globalThis.UUI);
+</script>
+</body>
+</html>

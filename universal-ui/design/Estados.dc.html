@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Estados y verificación</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&amp;family=Cantarell:wght@400;700&amp;display=swap">
+<style>
+body{margin:0;background:#05070b}
+a{color:#8cb8f2}a:hover{color:#c3cde0}
+</style>
+</helmet>
+<div style="width: 1280px; height: 860px; box-sizing: border-box; background: #05070b; color: #c3cde0; font-family: Cantarell, 'Noto Sans', system-ui, sans-serif; font-size: 13px; line-height: 18px; display: flex; flex-direction: column; gap: 10px; padding: 0 10px 10px">
+  <div style="height: 30px; display: flex; align-items: center; justify-content: space-between; padding: 0 4px; font-family: 'JetBrains Mono', monospace; font-size: 12.5px">
+    <span>estados · un control que no funciona no se muestra como funcional</span>
+    <span style="color: #8a96ad">core/status.js</span>
+  </div>
+
+  <div style="display: flex; gap: 10px; flex: 1; min-height: 0">
+    <div style="flex: 3; min-width: 0; background: #0a0c11; border: 2px solid #8cb8f2; border-radius: 8px; padding: 6px 14px; display: flex; flex-direction: column">
+      <div style="display: grid; grid-template-columns: 140px 220px minmax(0, 1fr); gap: 12px; padding: 10px 0; border-bottom: 1px solid #222b3b; font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: .18em; color: #8a96ad; font-weight: 600">
+        <span>ESTADO</span><span>EN EL PANEL</span><span>QUÉ COMPROBÓ EL MOTOR</span>
+      </div>
+      <div style="display: grid; grid-template-columns: 140px 220px minmax(0, 1fr); gap: 12px; align-items: center; padding: 14px 0; border-bottom: 1px solid #222b3b">
+        <span><span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; padding: 0 6px; border-radius: 4px; color: #06121c; background: #62c3f6; border: 1px solid #62c3f6">Aplicado</span></span>
+        <span style="display: flex; gap: 10px; align-items: center"><span style="width: 30px; height: 18px; border-radius: 9px; border: 1px solid #323b4d; background: #11141b; position: relative; display: inline-block"><span style="position: absolute; top: 2px; left: 2px; width: 12px; height: 12px; border-radius: 50%; background: #8a96ad"></span></span>Compartir</span>
+        <span style="color: #8a96ad">Encontró el botón real, lo marcó y leyó <span style="font-family: 'JetBrains Mono', monospace; color: #c3cde0">display: none</span> en su estilo computado.</span>
+      </div>
+      <div style="display: grid; grid-template-columns: 140px 220px minmax(0, 1fr); gap: 12px; align-items: center; padding: 14px 0; border-bottom: 1px solid #222b3b">
+        <span><span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; padding: 0 6px; border-radius: 4px; color: #c3cde0; border: 1px solid #222b3b">Disponible</span></span>
+        <span style="display: flex; gap: 10px; align-items: center"><span style="width: 30px; height: 18px; border-radius: 9px; border: 1px solid #8cb8f2; background: #8cb8f2; position: relative; display: inline-block"><span style="position: absolute; top: 2px; left: 14px; width: 12px; height: 12px; border-radius: 50%; background: #06121c"></span></span>Barra lateral</span>
+        <span style="color: #8a96ad">El elemento existe y el cambio es posible, pero no está activo.</span>
+      </div>
+      <div style="display: grid; grid-template-columns: 140px 220px minmax(0, 1fr); gap: 12px; align-items: center; padding: 14px 0; border-bottom: 1px solid #222b3b">
+        <span><span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; padding: 0 6px; border-radius: 4px; color: #8a96ad; border: 1px dashed #323b4d">No encontrado</span></span>
+        <span style="display: flex; gap: 10px; align-items: center; color: #8a96ad"><span style="width: 30px; height: 18px; border-radius: 9px; border: 1px solid #323b4d; background: #11141b; opacity: .35; position: relative; display: inline-block"><span style="position: absolute; top: 2px; left: 14px; width: 12px; height: 12px; border-radius: 50%; background: #8a96ad"></span></span>Marca</span>
+        <span style="color: #8a96ad">Ningún selector candidato coincide con la página. El interruptor queda deshabilitado y a la vista, no oculto.</span>
+      </div>
+      <div style="display: grid; grid-template-columns: 140px 220px minmax(0, 1fr); gap: 12px; align-items: center; padding: 14px 0; border-bottom: 1px solid #222b3b">
+        <span><span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; padding: 0 6px; border-radius: 4px; color: #e7c98c; border: 1px solid #222b3b">Incompatible</span></span>
+        <span style="display: flex; gap: 10px; align-items: center">Tema · Café</span>
+        <span style="color: #8a96ad">La app está en un estado donde no se puede aplicar: tema con el sitio en modo claro, o un elemento que contiene algo esencial (el cuadro de texto, la conversación).</span>
+      </div>
+      <div style="display: grid; grid-template-columns: 140px 220px minmax(0, 1fr); gap: 12px; align-items: center; padding: 14px 0">
+        <span><span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; padding: 0 6px; border-radius: 4px; color: #ef8b98; border: 1px solid #ef8b98">Error</span></span>
+        <span style="display: flex; gap: 10px; align-items: center">Ancho de lectura</span>
+        <span style="color: #8a96ad">Se aplicó, pero el valor computado no cambió (el sitio lo anula) o el contraste quedó bajo 4.5:1. Se revierte solo y el detalle queda en el panel.</span>
+      </div>
+    </div>
+
+    <div style="flex: 2; min-width: 0; display: flex; flex-direction: column; gap: 10px">
+      <div style="background: #0a0c11; border: 2px solid #222b3b; border-radius: 8px; padding: 12px 14px; display: flex; flex-direction: column; gap: 8px">
+        <div style="font-family: 'JetBrains Mono', monospace; font-weight: 600; font-size: 12.5px; letter-spacing: .18em; color: #8a96ad">ANTES · v1.3.0</div>
+        <div style="display: flex; gap: 10px; align-items: center; min-height: 34px; border-bottom: 1px solid #222b3b"><span style="flex: 1">Marca ChatGPT</span><span style="font-size: 11px; padding: 2px 8px; border-radius: 14px; color: #dffff6; background: #28584e; border: 1px solid #66bbab">No</span></div>
+        <div style="color: #8a96ad">El interruptor cambia, el atributo se escribe en &lt;html&gt;, pero la regla CSS apunta a <span style="font-family: 'JetBrains Mono', monospace; color: #c3cde0">[data-testid="brand-name"]</span>, que no existe. Nada cambia y nada lo dice.</div>
+      </div>
+      <div style="background: #0a0c11; border: 2px solid #8cb8f2; border-radius: 8px; padding: 12px 14px; display: flex; flex-direction: column; gap: 8px">
+        <div style="font-family: 'JetBrains Mono', monospace; font-weight: 600; font-size: 12.5px; letter-spacing: .18em; color: #62c3f6">AHORA</div>
+        <div style="display: flex; gap: 10px; align-items: center; min-height: 34px; border-bottom: 1px solid #222b3b; color: #8a96ad"><span style="width: 30px; height: 18px; border-radius: 9px; border: 1px solid #323b4d; background: #11141b; opacity: .35"></span><span style="flex: 1">Marca</span><span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; padding: 0 6px; border-radius: 4px; color: #8a96ad; border: 1px dashed #323b4d">No encontrado</span></div>
+        <div style="color: #8a96ad">El motor busca antes de aplicar y comprueba después. El estado viene del DOM, no del interruptor.</div>
+      </div>
+      <div style="flex: 1; background: #0a0c11; border: 2px solid #222b3b; border-radius: 8px; padding: 8px 12px; font-family: 'JetBrains Mono', monospace; font-size: 12.5px; line-height: 1.5">
+        <div><span style="color: #c2a5ff">»</span> <span style="color: #7fa7f5">el sitio se actualiza</span></div>
+        <div style="color: #8a96ad">share  <span style="color: #e7c98c">selector alternativo</span></div>
+        <div style="color: #5d6a81">  button[data-testid="share-chat-button"] ✗</div>
+        <div style="color: #5d6a81">  #page-header button[aria-label="Share"] ✓</div>
+        <div style="color: #8a96ad">share  <span style="color: #ef8b98">desaparecido</span> → No encontrado</div>
+        <div style="color: #8a96ad">anclas  composer ✗ → app <span style="color: #e7c98c">incompatible</span>, nada aplicado</div>
+        <div style="margin-top: 8px; color: #8a96ad">MutationObserver · re-localiza en cada cambio del DOM y registra la invalidación con hora y selector.</div>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":860}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>
