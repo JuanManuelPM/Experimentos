@@ -11,7 +11,7 @@
 - **Prueba de sintaxis JS:** PASS (`node --check`).
 - **Construcción de demo:** PASS (`npm run build:demo`).
 - **Pruebas de navegador con Chromium local y fixtures sintéticos:** PASS para aplicar tema Café, ocultar elementos con modo Minimal y restaurar en ChatGPT, WhatsApp y Wikipedia. Véase `docs/BROWSER_SMOKE_2026-11-01.md`.
-- **Suite Node de 32 pruebas:** **NO VERIFICADA** localmente: falta la dependencia `jsdom`. No confundir el número de pruebas declaradas por la entrega con 32 PASS independientes.
+- **Suite Node de 34 pruebas:** **NO VERIFICADA** localmente: falta la dependencia `jsdom`. No confundir el número de pruebas declaradas por la entrega con 32 PASS independientes.
 - **Firefox real y páginas reales:** **NOT_RUN**. Los adaptadores todavía tienen `calibratedAt: null`.
 
 ## Próxima etapa
@@ -27,3 +27,11 @@
 Este trabajo vive exclusivamente en `universal-ui/v0`. `master`, `gh-pages` y el personalizador existente permanecen sin cambios. No afirmar que un selector funciona en chatgpt.com o web.whatsapp.com reales hasta aportar evidencia.
 
 Reanudar leyendo `docs/DIAGNOSIS.md`, `docs/ARCHITECTURE.md`, `docs/DECISIONS.md` y `docs/BROWSER_SMOKE_2026-11-01.md`.
+
+## Actualización verificada (2026-11-01, corrección del observador)
+
+- Se corrigió `extension/core/engine.js`: filtrado de mutaciones internas del estilo; observación de atributos estructurales sin bucles.
+- En Chromium con fixtures sintéticos: cambio externo → solo una reaplicación adicional, y selector `data-testid` renombrado → fallback detectado.
+- Se añadieron **dos regresiones** en `test/engine.test.mjs` (ahora 34 casos escritos). **No se ejecutó `npm test` completo**: `jsdom` no quedó instalado en el contenedor, y `npm ci` agotó el tiempo.
+- No hay acceso desde este entorno a `https://chatgpt.com` (`ERR_BLOCKED_BY_ADMINISTRATOR`); calibración real y Firefox siguen pendientes.
+- Ver `docs/OBSERVER_REPAIR_2026-11-01.md`. Producción y userscript actual intactos.
