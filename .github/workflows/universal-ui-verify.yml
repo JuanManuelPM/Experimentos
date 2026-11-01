@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - universal-ui/v0
+      - candidate/firefox-launcher-v0-20261101
     paths:
       - 'universal-ui/**'
       - '.github/workflows/universal-ui-verify.yml'
@@ -35,3 +36,14 @@ jobs:
         run: npm run build:demo
       - name: Check browser extension JavaScript syntax
         run: find extension -type f -name '*.js' -print0 | xargs -0 -n 1 node --check
+
+      - name: Package candidate Firefox extension
+        run: |
+          cd ..
+          zip -q -r firefox-launcher-0.3.0.zip universal-ui/extension universal-ui/docs/FIREFOX_LAUNCHER_V0_3.md
+      - name: Upload installable candidate archive
+        uses: actions/upload-artifact@v4
+        with:
+          name: firefox-launcher-0.3.0
+          path: firefox-launcher-0.3.0.zip
+          if-no-files-found: error
