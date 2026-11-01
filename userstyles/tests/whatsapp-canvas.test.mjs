@@ -5,230 +5,127 @@ import {fileURLToPath} from 'node:url';
 import {JSDOM} from 'jsdom';
 
 const source=readFileSync(fileURLToPath(new URL('../whatsapp-live.user.js',import.meta.url)),'utf8');
-const fixture=()=>'<html><head></head><body><div id="app"><div class="layout">'+
-  '<div id="left"><div id="side"><div id="pane-side">'+
-  '<div role="row" id="chat-one"><span data-testid="cell-frame-title">Persona uno</span>'+
-  '<span data-testid="cell-frame-secondary">PREVIEW_PRIVADO_1</span></div>'+
-  '<div role="row" id="chat-two"><span data-testid="cell-frame-title">Persona dos</span>'+
-  '<span data-testid="cell-frame-secondary">PREVIEW_PRIVADO_2</span></div>'+
-  '</div></div></div><div id="native-right"></div></div></div></body></html>';
-
-async function run(mode='canvas'){
-  const dom=new JSDOM(fixture(),{url:'https://web.whatsapp.com/',runScripts:'outside-only',pretendToBeVisual:true});
-  const w=dom.window;
-  const saved=new Map([['wml-mode-v1',mode]]);
-  const menus=new Map();
-  w.GM_getValue=(k,f)=>saved.has(k)?saved.get(k):f;
-  w.GM_setValue=(k,v)=>saved.set(k,v);
-  w.GM_registerMenuCommand=(name,fn)=>menus.set(name,fn);
-  w.GM_xmlhttpRequest=()=>{}; // no external networks
-  w.setInterval=()=>1; // no hanging polling jobs in tests
-  w.eval(source);
-  await new Promise(r=>setTimeout(r,300));
-  return {dom,w,saved,menus};
+const nativeBlock=source.slice(source.indexOf('/* WML_NATIVE_STUDIO_V3'),
+  source.indexOf('function init(){',source.indexOf('/* WML_NATIVE_STUDIO_V3')));
+function fixture(){
+ return '<!doctype html><html><head></head><body><div id="app"><div class="app-layout">'+
+   '<aside class="rail">NAVEGACION</aside>'+
+   '<div class="left-wrap"><div id="side">'+
+   '<div class="native-header">NAV ORIGINAL</div>'+
+   '<div id="pane-side"><div class="scroll-root">'+
+   '<div role="row" id="chat-a"><span data-testid="cell-frame-title">Persona A</span>'+
+   '<span data-testid="cell-frame-secondary">PRIVADO_A</span></div>'+
+   '<div role="row" id="chat-b"><span data-testid="cell-frame-title">Persona B</span>'+
+   '<span data-testid="cell-frame-secondary">PRIVADO_B</span></div>'+
+   '</div></div></div></div><div id="native-right"></div></div></body></html>';
 }
-
-test('Canvas displays native chat names only; never copies previews',async()=>{
-  const {dom,w}=await run('canvas');
-  try{
-    const root=w.document.getElementById('wml-canvas-host');
-    assert.ok(root,'Canvas overlay was inserted');
-    const items=[...root.shadowRoot.querySelectorAll('.person')].map(e=>e.textContent);
-    assert.deepEqual(items,['Persona uno','Persona dos']);
-    assert.equal(root.shadowRoot.textContent.includes('PREVIEW_PRIVADO'),false);
-    assert.equal(w.document.querySelector('#pane-side').children.length,2,'native chat rows remain');
-    assert.equal(root.shadowRoot.getElementById('right').dataset.chat,'false');
-  }finally{dom.window.close();}
+async function run(mode='canvas'){
+ const dom=new JSDOM(fixture(),{url:'https://web.whatsapp.com/',runScripts:'outside-only',pretendToBeVisual:true});
+ const w=dom.window;
+ const saved=new Map([['wml-mode-v1',mode]]);
+ w.GM_getValue=(key,fallback)=>saved.has(key)?saved.get(key):fallback;
+ w.GM_setValue=(key,value)=>saved.set(key,value);
+ w.GM_xmlhttpRequest=()=>{};
+ w.GM_registerMenuCommand=()=>{};
+ w.setInterval=()=>1;
+ w.eval(source);
+ await new Promise(r=>setTimeout(r,300));
+ return {dom,w,saved};
+}
+test('Studio 3 mounts native list and leaves actual chat DOM in place',async()=>{
+ const {dom,w}=await run();
+ try{
+  const sh=w.document.getElementById('wml-native-studio-host').shadowRoot;
+  assert.ok(sh.getElementById('head'));
+  assert.equal(sh.querySelectorAll('.person').length,0,'no copied contact buttons');
+  assert.equal(w.document.querySelectorAll('#pane-side [data-wml-n3-row]').length,2);
+  assert.equal(w.document.getElementById('chat-a').isConnected,true);
+  assert.equal(sh.textContent.includes('Persona A'),false,'contact names remain native');
+  assert.equal(sh.textContent.includes('PRIVADO_A'),false,'no copied message previews');
+  assert.ok(w.document.getElementById('wml-native-studio-css'));
+ }finally{dom.window.close();}
 });
-
-test('Click opens native WhatsApp row and reveals right conversation',async()=>{
-  const {dom,w}=await run('canvas');
-  try{
-    let clicks=0;
-    w.document.getElementById('chat-one').addEventListener('click',()=>{
-      clicks++;
-      const main=w.document.createElement('section');
-      main.id='main';
-      main.innerHTML='<footer><div contenteditable="true"></div></footer>';
-      w.document.getElementById('native-right').replaceChildren(main);
-    });
-    const btn=w.document.getElementById('wml-canvas-host').shadowRoot.querySelector('.person');
-    btn.click();
-    await new Promise(r=>setTimeout(r,260));
-    assert.equal(clicks,1,'native row receives the click');
-    assert.equal(w.document.getElementById('wml-canvas-host').shadowRoot.getElementById('right').dataset.chat,'true');
-  }finally{dom.window.close();}
+test('no programmatic contact clicking or event interception in native Studio module',()=>{
+ assert.ok(nativeBlock.includes('event.isTrusted'),'only physical event observers');
+ assert.ok(!/\.click\s*\(/.test(nativeBlock),'no synthetic click calls');
+ assert.ok(!/new MouseEvent|dispatchEvent|stopPropagation|preventDefault\(\)/.test(
+   nativeBlock.slice(nativeBlock.indexOf('function n3OnNativeClick'),nativeBlock.indexOf('function n3CheckOpened'))));
 });
-
-test('Original removes Canvas entirely and leaves native chats untouched',async()=>{
-  const {dom,w,saved}=await run('canvas');
-  try{
-    w.document.getElementById('wml-live-root').shadowRoot.querySelector('[data-mode="original"]').click();
-    assert.equal(saved.get('wml-mode-v1'),'original');
-    assert.equal(w.document.documentElement.dataset.wmlMode,'original');
-    assert.equal(w.document.getElementById('wml-canvas-host'),null);
-    assert.ok(w.document.getElementById('chat-one'));
-    assert.ok(w.document.getElementById('chat-two'));
-    assert.equal(w.document.documentElement.style.getPropertyValue('--wml-canvas-shift'),'');
-  }finally{dom.window.close();}
+test('native row receives native handler and opens #main without cloning messages',async()=>{
+ const {dom,w}=await run();
+ try{
+  const row=w.document.getElementById('chat-b');
+  let calls=0;
+  row.addEventListener('click',()=>{
+   calls++;
+   const main=w.document.createElement('div');
+   main.id='main';
+   main.innerHTML='<header><span>Persona B</span></header>'+
+     '<div id="messages">MENSAJE ORIGINAL</div>'+
+     '<footer><div contenteditable="true" role="textbox"></div></footer>';
+   w.document.getElementById('native-right').replaceChildren(main);
+  });
+  row.querySelector('[data-testid="cell-frame-title"]').click();
+  await new Promise(r=>setTimeout(r,250));
+  assert.equal(calls,1);
+  const main=w.document.getElementById('main');
+  assert.ok(main?.querySelector('[contenteditable="true"]'));
+  assert.equal(w.document.getElementById('messages').textContent,'MENSAJE ORIGINAL');
+  assert.equal(w.document.getElementById('wml-native-studio-host').shadowRoot
+    .getElementById('frame').dataset.chat,'true');
+ }finally{dom.window.close();}
 });
-
-test('Canvas is opt-in; Radical and Original modes do not mount it',async()=>{
-  for(const m of ['radical','original']){
-    const {dom,w}=await run(m);
-    try{assert.equal(w.document.getElementById('wml-canvas-host'),null,'unexpected canvas in '+m);}
-    finally{dom.window.close();}
-  }
+test('hides navigation siblings but keeps the native path to chat rows',async()=>{
+ const {dom,w}=await run();
+ try{
+  const header=w.document.querySelector('#side .native-header');
+  assert.equal(header.hasAttribute('data-wml-n3-chrome'),true);
+  assert.equal(w.document.getElementById('pane-side').hasAttribute('data-wml-n3-chrome'),false);
+  assert.equal(w.document.getElementById('chat-a').hasAttribute('data-wml-n3-row'),true);
+  assert.equal(w.document.getElementById('chat-b').hasAttribute('data-wml-n3-row'),true);
+ }finally{dom.window.close();}
 });
-
-
-test('filters navigation and unread-status rows instead of presenting them as contacts',async()=>{
-  const {dom,w}=await run('canvas');
-  try {
-    const pane=w.document.getElementById('pane-side');
-    const bad=w.document.createElement('div');
-    bad.setAttribute('role','row');
-    bad.innerHTML='<span title="Archived">Archived</span>';
-    const unread=w.document.createElement('div');
-    unread.setAttribute('role','row');
-    unread.innerHTML='<span title="1 unread message">1 unread message</span>';
-    pane.prepend(bad,unread);
-    await new Promise(r=>setTimeout(r,250));
-    const labels=[...w.document.getElementById('wml-canvas-host').shadowRoot.querySelectorAll('.person')]
-      .map(e=>e.textContent);
-    assert.deepEqual(labels,['Persona uno','Persona dos']);
-  } finally {dom.window.close();}
+test('Original removes visual Studio, retains WhatsApp nodes and clears layout variables',async()=>{
+ const {dom,w,saved}=await run();
+ try{
+  const panel=w.document.getElementById('wml-live-root').shadowRoot;
+  panel.querySelector('[data-mode="original"]').click();
+  assert.equal(saved.get('wml-mode-v1'),'original');
+  assert.equal(w.document.getElementById('wml-native-studio-host'),null);
+  assert.equal(w.document.documentElement.style.getPropertyValue('--n3-x'),'');
+  assert.equal(w.document.getElementById('chat-b').isConnected,true);
+ }finally{dom.window.close();}
 });
-
-test('search filters only custom name widgets without touching native WhatsApp rows',async()=>{
-  const {dom,w}=await run('canvas');
-  try {
-    const sh=w.document.getElementById('wml-canvas-host').shadowRoot;
-    const input=sh.getElementById('search');
-    input.value='dos';
-    input.dispatchEvent(new w.Event('input',{bubbles:true}));
-    assert.deepEqual([...sh.querySelectorAll('.person')].map(e=>e.textContent),['Persona dos']);
-    assert.equal(w.document.querySelector('#pane-side').children.length,2);
-    input.value='';
-    input.dispatchEvent(new w.Event('input',{bubbles:true}));
-    assert.equal(sh.querySelectorAll('.person').length,2);
-  } finally {dom.window.close();}
+test('Studio drag moves both native side and chat via shared variables and saves position',async()=>{
+ const {dom,w,saved}=await run();
+ try{
+  const sh=w.document.getElementById('wml-native-studio-host').shadowRoot;
+  const head=sh.getElementById('head');
+  const root=w.document.documentElement;
+  const x=Number.parseInt(root.style.getPropertyValue('--n3-x'),10);
+  const p=(type,a,b)=>{
+   const ev=new w.Event(type,{bubbles:true});
+   Object.defineProperties(ev,{clientX:{value:a},clientY:{value:b},pointerId:{value:1}});
+   head.dispatchEvent(ev);
+  };
+  p('pointerdown',100,110);p('pointermove',140,110);p('pointerup',140,110);
+  assert.equal(Number.parseInt(root.style.getPropertyValue('--n3-x'),10),x+40);
+  assert.equal(saved.get('wml-native-studio-v3-layout').x,x+40);
+ }finally{dom.window.close();}
 });
-
-test('window drag updates position and persists design position, without moving WhatsApp nodes',async()=>{
-  const {dom,w,saved}=await run('canvas');
-  try {
-    const sh=w.document.getElementById('wml-canvas-host').shadowRoot;
-    const head=sh.getElementById('head');
-    const frame=sh.getElementById('shell');
-    const initial=parseInt(frame.style.left,10);
-    const mouse=(type,x,y)=>{
-      const e=new w.Event(type,{bubbles:true});
-      Object.defineProperty(e,'clientX',{value:x});
-      Object.defineProperty(e,'clientY',{value:y});
-      Object.defineProperty(e,'pointerId',{value:1});
-      head.dispatchEvent(e);
-    };
-    mouse('pointerdown',200,100);
-    mouse('pointermove',235,100);
-    mouse('pointerup',235,100);
-    assert.equal(parseInt(frame.style.left,10),initial+35);
-    assert.equal(saved.get('wml-studio-layout-v2').x,initial+35);
-    assert.ok(w.document.getElementById('chat-one').isConnected);
-  } finally {dom.window.close();}
+test('native Studio not mounted in Original or Radical',async()=>{
+ for(const m of ['original','radical']){
+  const {dom,w}=await run(m);
+  try{assert.equal(w.document.getElementById('wml-native-studio-host'),null);}
+  finally{dom.window.close();}
+ }
 });
-
-test('native composer is present through transparent conversation pane, never copied',async()=>{
-  const {dom,w}=await run('canvas');
-  try {
-    const main=w.document.createElement('section');
-    main.id='main';
-    main.innerHTML='<footer><div contenteditable="true"></div></footer>';
-    w.document.getElementById('native-right').replaceChildren(main);
-    await new Promise(r=>setTimeout(r,230));
-    const sh=w.document.getElementById('wml-canvas-host').shadowRoot;
-    assert.equal(sh.getElementById('shell').dataset.chat,'true');
-    assert.ok(sh.innerHTML.includes('#shell[data-chat="true"]{background:transparent'));
-    assert.ok(w.document.querySelector('#main footer [contenteditable="true"]'));
-    assert.equal(sh.textContent.includes('PREVIEW_PRIVADO'),false);
-    assert.equal(main.isConnected,true);
-  } finally {dom.window.close();}
-});
-
-
-test('inner native chat title opens the correct conversation when outer row has no handler',async()=>{
-  const {dom,w}=await run('canvas');
-  try{
-    let innerClicks=0, outerClicks=0;
-    const row=w.document.getElementById('chat-two');
-    row.addEventListener('click',event=>{if(event.target===row)outerClicks++;});
-    row.querySelector('[data-testid="cell-frame-title"]').addEventListener('click',()=>{
-      innerClicks++;
-      row.setAttribute('aria-selected','true');
-      const main=w.document.createElement('section');
-      main.id='main';
-      main.innerHTML='<header><span title="Persona dos">Persona dos</span></header>'+
-        '<footer><div contenteditable="true" role="textbox"></div></footer>';
-      w.document.getElementById('native-right').replaceChildren(main);
-    });
-    const sh=w.document.getElementById('wml-canvas-host').shadowRoot;
-    sh.querySelectorAll('.person')[1].click();
-    await new Promise(r=>setTimeout(r,440));
-    assert.equal(innerClicks,1,'inner title, not outer row, receives native click');
-    assert.equal(outerClicks,0,'outer wrapper not used as event target');
-    assert.equal(sh.getElementById('openNotice').hidden,true,'correct chat verified');
-    assert.equal(sh.getElementById('shell').dataset.chat,'true');
-    assert.ok(w.document.querySelector('#main footer [contenteditable="true"]'));
-  }finally{dom.window.close();}
-});
-
-test('a click without native conversation confirmation shows an honest fallback',async()=>{
-  const {dom,w,saved}=await run('canvas');
-  try{
-    const sh=w.document.getElementById('wml-canvas-host').shadowRoot;
-    sh.querySelector('.person').click();
-    assert.equal(sh.getElementById('openNotice').hidden,false,'pending state is visible');
-    await new Promise(r=>setTimeout(r,2400));
-    assert.equal(sh.getElementById('openNotice').hidden,false);
-    assert.match(sh.getElementById('openText').textContent,/No pude confirmar/);
-    const original=sh.getElementById('openOriginal');
-    assert.equal(original.hidden,false);
-    original.click();
-    assert.equal(saved.get('wml-mode-v1'),'original');
-    assert.equal(w.document.getElementById('wml-canvas-host'),null);
-    assert.ok(w.document.getElementById('chat-one'));
-  }finally{dom.window.close();}
-});
-
-test('existing unrelated chat does not count as confirmation',async()=>{
-  const {dom,w}=await run('canvas');
-  try{
-    const old=w.document.createElement('section');
-    old.id='main';
-    old.innerHTML='<header><span title="Persona uno">Persona uno</span></header>'+
-      '<footer><div contenteditable="true"></div></footer>';
-    w.document.getElementById('native-right').replaceChildren(old);
-    const sh=w.document.getElementById('wml-canvas-host').shadowRoot;
-    sh.querySelectorAll('.person')[1].click();
-    await new Promise(r=>setTimeout(r,2450));
-    assert.equal(sh.getElementById('openNotice').hidden,false);
-    assert.match(sh.getElementById('openText').textContent,/No pude confirmar/);
-  }finally{dom.window.close();}
-});
-
-
-test('selected row cannot falsely confirm if native chat header names another contact',async()=>{
-  const {dom,w}=await run('canvas');
-  try{
-    const main=w.document.createElement('section');main.id='main';
-    main.innerHTML='<header><span title="Persona uno">Persona uno</span></header>'+
-      '<footer><div contenteditable="true" role="textbox"></div></footer>';
-    w.document.getElementById('native-right').replaceChildren(main);
-    const row=w.document.getElementById('chat-two');
-    row.setAttribute('aria-selected','true');
-    const sh=w.document.getElementById('wml-canvas-host').shadowRoot;
-    sh.querySelectorAll('.person')[1].click();
-    await new Promise(r=>setTimeout(r,2400));
-    assert.match(sh.getElementById('openText').textContent,/No pude confirmar/);
-  }finally{dom.window.close();}
+test('missing native contacts surface triggers an honest loading state',async()=>{
+ const {dom,w}=await run();
+ try{
+  w.document.getElementById('side').remove();
+  await new Promise(r=>setTimeout(r,280));
+  const sh=w.document.getElementById('wml-native-studio-host').shadowRoot;
+  assert.match(sh.getElementById('alertText').textContent,/Esperando carga/);
+ }finally{dom.window.close();}
 });
