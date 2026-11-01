@@ -559,7 +559,7 @@
         shell.dataset.chat=String(!!n3.main);
       }
       const title=n3.shadow.getElementById('stageTitle');
-      if(title)title.textContent=n3.main?'Conversación':'Mensajes';
+      if(title)title.textContent='Mensajes';
     }
   }
   function n3Style(){
@@ -722,10 +722,25 @@
     const row=event.target.closest?.('[data-wml-n3-row]');
     if(!row || !event.isTrusted)return;
     n3.lastRow=row;
-    n3.pending=Date.now();
+    const nameEl=row.querySelector('[data-wml-n3-name]');
+    const name=(nameEl?.getAttribute('title')||nameEl?.textContent||'').trim();
+    n3.pending={
+      started:Date.now(),
+      requested:name,
+      previousHeader:n3NativeHeader()
+    };
     n3Status('Esperando que WhatsApp abra la conversación…',false);
-    setTimeout(n3CheckOpened,650);
-    setTimeout(n3CheckOpened,2200);
+    setTimeout(n3CheckOpened,700);
+    setTimeout(n3CheckOpened,5500);
+  }
+  function n3NativeHeader(){
+    const header=document.querySelector('#main > header, #main header');
+    if(!header)return '';
+    const title=header.querySelector(
+      '[data-testid="conversation-info-header-chat-title"],'+
+      '[data-testid="conversation-title"],span[title],[dir="auto"]'
+    );
+    return (title?.getAttribute('title')||title?.textContent||header.textContent||'').trim();
   }
   function n3CheckOpened(){
     if(!n3.pending||mode()!=='canvas')return;
@@ -733,11 +748,21 @@
     const editable=main?.querySelector(
       'footer [contenteditable="true"],[data-testid="conversation-compose-box-input"],[role="textbox"][contenteditable="true"]'
     );
-    if(main && editable){
+    const header=n3NativeHeader();
+    const fold=value=>String(value||'').normalize('NFKC').trim().toLocaleLowerCase();
+    const correct=Boolean(
+      header && n3.pending.requested &&
+      (fold(header)===fold(n3.pending.requested) ||
+       fold(header).includes(fold(n3.pending.requested)))
+    );
+    // If title selectors drift, require the native header to CHANGE.
+    // Never accept a pre-existing unrelated conversation as success.
+    const changed=Boolean(header && header!==n3.pending.previousHeader);
+    if(main && editable && (correct || (changed && !n3.pending.requested))){
       n3.pending=0;n3.verified=true;n3Status('',false);
       n3.main=main;n3Vars();return;
     }
-    if(Date.now()-n3.pending>1900){
+    if(Date.now()-n3.pending.started>5000){
       n3.pending=0;
       n3Status('WhatsApp no abrió el chat. Usá Original para comprobar la conversación.',true);
     }
