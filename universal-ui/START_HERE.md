@@ -1,3 +1,16 @@
+# Firefox Launcher 0.4 · Recuperación del popup y menos fricción (2026-11-01)
+
+- **Fallo real:** Firefox mostraba el popup de Universal UI como una tira vertical mínima. La v0.3 fijaba el ancho de `.panel`, pero no de `body`; Mozilla calcula el ancho del popup a partir de `body`.
+- **Solución inmediata SIN descargas:** desde `about:debugging#/runtime/this-firefox` abrir la URL del manifiesto de Universal UI y sustituir `manifest.json` por `launcher/index.html`. Guardar marcador. Se usa la v0.3 ya instalada.
+- **Candidata 0.4.0:** nuevo `background/open-launcher.js` registrado en manifest MV3. Se **elimina `action.default_popup`**: clic en el icono o atajo abre/enfoca una pestaña normal con el escritorio. Personalización accesible desde botón en launcher; body de página de ajustes también corregido.
+- **Seguridad:** NO hay permisos de descargas, `nativeMessaging`, ejecución de archivos ni cambios en los userscripts. `tabs` se usa para localizar el launcher y las apps existentes.
+- **CI:** `41335298852` PASS: 53/53 pruebas, build demo, sintaxis y paquete Firefox 0.4.0. Instalación real en Firefox del usuario NOT_RUN.
+- **Distribución definitiva, AÚN NO ACTIVA:** firmar extensión en Mozilla AMO (requiere cuenta/consentimiento del usuario) y establecer actualizaciones automáticas (AMO listado o `update_url` HTTPS + XPI firmado si es no listado). Nunca ejecutar un ZIP descargado sin autorización y validación. Una extensión temporal cargada por `about:debugging` no puede autoactualizarse ni persistir tras reinicio.
+- **Siguiente acción:** usar marcador ahora, probar v0.4 si se desea el botón reparado, y preparar una firma oficial única para terminar con actualizaciones manuales. No afirmar instalado, firmado ni autoactualizable.
+- **Rama:** `candidate/firefox-launcher-frictionless-20261101` (no sustituye la extensión ni producción).
+
+---
+
 # Actualización · Firefox Launcher 0.3.0 (2026-11-01)
 
 **Estado:** candidato en `candidate/firefox-launcher-v0-20261101`, no instalado ni firmado. No modifica `master`, los userscripts de WhatsApp 3.1 / ChatGPT 1.3, ni `gh-pages`.
