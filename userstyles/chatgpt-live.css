@@ -1,12 +1,128 @@
 /* CHATGPT_LIVE_STYLE_V1
-   HOTFIX: contrast safety rollback, 2026-11-01.
-   Theme colors are temporarily disabled until tested against
-   the live ChatGPT dark/light theme. This restores native contrast.
-   data-cm-theme stays available for future verified theme work.
+   CONTRAST_FIX_2026_11_01_B: keep pastel backgrounds, force dark readable text.
+   Avoid touching the composer, dialogs, menus and code highlighting.
+   The live userscript updates this CSS in the open tab without reloading.
 */
+html[data-cm-theme="aire"] {
+  --cm-bg: #eaf1ed;
+  --cm-sidebar: #d7e4dc;
+  --cm-text: #233834;
+  --cm-muted: #405850;
+  --cm-link: #145c54;
+  --cm-border: #9fb8a8;
+}
+html[data-cm-theme="cafe"] {
+  --cm-bg: #eee5d8;
+  --cm-sidebar: #e3d4c1;
+  --cm-text: #332b24;
+  --cm-muted: #57493b;
+  --cm-link: #71431f;
+  --cm-border: #bca78f;
+}
+html[data-cm-theme="ambar"] {
+  --cm-bg: #f2e7cc;
+  --cm-sidebar: #e8d9b8;
+  --cm-text: #3c3324;
+  --cm-muted: #5c4b2d;
+  --cm-link: #75450f;
+  --cm-border: #c8ad77;
+}
+html[data-cm-theme="papel"] {
+  --cm-bg: #f5f3ed;
+  --cm-sidebar: #eae6dd;
+  --cm-text: #282c2b;
+  --cm-muted: #4c5550;
+  --cm-link: #245570;
+  --cm-border: #c0c1b8;
+}
+html[data-cm-theme="grafito"] {
+  --cm-bg: #1c2831;
+  --cm-sidebar: #142029;
+  --cm-text: #f2eee6;
+  --cm-muted: #c7d2d2;
+  --cm-link: #9fdfd9;
+  --cm-border: #4f626e;
+}
 
+/* Override BOTH ChatGPT's surface AND text tokens.
+   Fixes the old mismatch: light background + white native dark-mode text. */
+html[data-cm-theme] {
+  --bg-primary: var(--cm-bg) !important;
+  --main-surface-primary: var(--cm-bg) !important;
+  --main-surface-secondary: var(--cm-bg) !important;
+  --sidebar-surface: var(--cm-sidebar) !important;
+  --sidebar-surface-primary: var(--cm-sidebar) !important;
+  --sidebar-surface-secondary: var(--cm-sidebar) !important;
+  --text-primary: var(--cm-text) !important;
+  --text-secondary: var(--cm-muted) !important;
+  --text-tertiary: var(--cm-muted) !important;
+  --icon-primary: var(--cm-text) !important;
+  --icon-secondary: var(--cm-muted) !important;
+}
+html[data-cm-theme]:not([data-cm-theme="grafito"]) {
+  color-scheme: light !important;
+}
+html[data-cm-theme="grafito"] {
+  color-scheme: dark !important;
+}
+
+/* Use matching surface + text color on the actual conversation. */
+html[data-cm-theme] body,
+html[data-cm-theme] main,
+html[data-cm-theme] #__next {
+  background-color: var(--cm-bg) !important;
+}
+html[data-cm-theme] .bg-token-main-surface-primary {
+  background-color: var(--cm-bg) !important;
+}
+html[data-cm-theme] .bg-token-sidebar-surface-primary {
+  background-color: var(--cm-sidebar) !important;
+}
+html[data-cm-theme] :is(#thread, main) {
+  color: var(--cm-text) !important;
+}
+
+/* Specific selectors for messages: native dark mode sometimes hardcodes white. */
+html[data-cm-theme] [data-message-author-role="assistant"],
+html[data-cm-theme] [data-message-author-role="assistant"] :is(
+  .markdown, .prose, p, li, ul, ol, h1, h2, h3, h4, h5, h6,
+  strong, em, blockquote, th, td
+),
+html[data-cm-theme] [data-testid^="conversation-turn-"] .markdown,
+html[data-cm-theme] [data-testid^="conversation-turn-"] .markdown :is(
+  p, li, ul, ol, h1, h2, h3, h4, h5, h6, strong, em, blockquote
+) {
+  color: var(--cm-text) !important;
+}
+html[data-cm-theme] .markdown a {
+  color: var(--cm-link) !important;
+  text-decoration-color: currentColor !important;
+}
+html[data-cm-theme] .markdown :not(pre) > code {
+  color: var(--cm-text) !important;
+  background-color: var(--cm-sidebar) !important;
+}
+
+/* Navigation text and icons should not remain white on the pale sidebar. */
+html[data-cm-theme] :is(aside, #stage-slideover-sidebar) {
+  color: var(--cm-text) !important;
+  background-color: var(--cm-sidebar) !important;
+}
+html[data-cm-theme] :is(aside, #stage-slideover-sidebar)
+  :is(a, button, span, svg) {
+  color: var(--cm-text) !important;
+}
+
+/* The user's composer is dark in the screenshot. Preserve its native
+   light-on-dark contrast instead of forcing dark text into its dark field. */
+html[data-cm-theme] #prompt-textarea,
+html[data-cm-theme] #prompt-textarea * {
+  color: #f4f4f2 !important;
+  caret-color: #fff !important;
+}
+
+/* Full-width reading when the user selects that option. */
 @media (min-width: 760px) {
-  /* Full-width conversation without changing native text colors. */
   html[data-cm-wide="yes"] {
     --thread-content-max-width: calc(100vw - 48px) !important;
     --thread-body-max-width: calc(100vw - 48px) !important;
@@ -23,7 +139,6 @@
   }
 }
 
-/* Hide Share only. Keep all original navigation and essential controls. */
 html[data-cm-theme] button[data-testid="share-chat-button"],
 html[data-cm-theme] header button[aria-label="Compartir" i],
 html[data-cm-theme] header button[aria-label="Share" i],
@@ -32,7 +147,6 @@ html[data-cm-theme] #page-header button[aria-label="Share" i] {
   display: none !important;
 }
 
-/* Updater's temporary confirmation respects the native colors. */
 #cm-live-toast {
   position: fixed !important;
   bottom: 16px !important;
