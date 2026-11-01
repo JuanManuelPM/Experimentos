@@ -779,7 +779,8 @@
     return document.querySelector(
       '#main footer [contenteditable="true"],'+
       '#main [data-testid="conversation-compose-box-input"],'+
-      '#main [contenteditable="true"][data-tab]'
+      '#main [contenteditable="true"][data-tab],'+
+      '#main [role="textbox"][contenteditable="true"]'
     );
   }
   function displayStudioOpening(state,message){
@@ -800,7 +801,7 @@
     const selected=!!(p.row?.isConnected &&
       (p.row.getAttribute('aria-selected')==='true' ||
        p.row.querySelector('[aria-selected="true"]')));
-    if(composer && ((name && header && (name===header || header.includes(name))) || selected)){
+    if(composer && (header ? (name && (name===header || header.includes(name))) : selected)){
       canvas.selected=p.row;
       canvas.pending=null;
       displayStudioOpening('ok','');
