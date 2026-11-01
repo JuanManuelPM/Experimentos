@@ -730,8 +730,12 @@
     const box=node.getBoundingClientRect();
     if(box.width<35||box.height<18)return false;
     if(box.right<=0||box.bottom<=0||box.left>=innerWidth||box.top>=innerHeight)return false;
-    const style=getComputedStyle(node);
-    if(style.display==='none'||style.visibility==='hidden'||parseFloat(style.opacity||'1')<.2)return false;
+    // An invisible ancestor is just as fatal as an invisible row.
+    for(let parent=node,k=0; parent&&k++<35; parent=parent.parentElement){
+      const style=getComputedStyle(parent);
+      if(style.display==='none'||style.visibility==='hidden'||
+        parseFloat(style.opacity||'1')<.2)return false;
+    }
     const x=n3Clamp(box.left+(kind==='row'?Math.min(80,box.width*.55):box.width*.5),3,innerWidth-4);
     const y=n3Clamp(box.top+(kind==='row'?Math.min(16,box.height*.5):Math.min(95,box.height*.4)),3,innerHeight-4);
     const top=document.elementFromPoint(x,y);
