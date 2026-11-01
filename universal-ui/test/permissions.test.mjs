@@ -48,7 +48,7 @@ test('opt-in on active host, persisted registration and one injection',async()=>
   assert.deepEqual(calls.requested,['https://chatgpt.com/*']);
   assert.equal(calls.registered.length,1);
   assert.equal(calls.registered[0].persistAcrossSessions,true);
-  assert.deepEqual(calls.registered[0].matches,['https://chatgpt.com/*']);
+  assert.deepEqual(Array.from(calls.registered[0].matches),['https://chatgpt.com/*']);
   assert.equal(calls.injected.length,1);
   assert.equal((await env.getReport()).ok,true);
   assert.equal(calls.injected.length,1);
