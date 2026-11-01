@@ -1,3 +1,19 @@
+# Actualización · Firefox Launcher 0.3.0 (2026-11-01)
+
+**Estado:** candidato en `candidate/firefox-launcher-v0-20261101`, no instalado ni firmado. No modifica `master`, los userscripts de WhatsApp 3.1 / ChatGPT 1.3, ni `gh-pages`.
+
+**Qué se creó:** `extension/launcher/index.html`, `launcher.css`, `launcher-core.js`, `launcher.js`; acceso desde `Universal UI → Aplicaciones → Abrir escritorio Firefox`. Versión del manifiesto 0.3.0. Permiso `tabs` para detectar URL de pestañas y reutilizarlas, sin permiso de descargas ni native messaging. Permisos de contenidos por origen siguen opcionales.
+
+**Funciones:** Abrir WhatsApp/ChatGPT reutilizando pestañas, nueva ventana, pareja de ventanas lado a lado con IDs reutilizables (no Split View nativo), preparar pestañas para Alt + clic manual. No mueve ventanas a otro escritorio de GNOME.
+
+**Pruebas:** GitHub Actions 41333969085: 47/47 PASS, demo PASS, sintaxis PASS, paquete ZIP PASS. Pruebas basadas en API simulada. Firefox real instalado, posiciones GNOME y sesiones de usuarios: NOT_RUN.
+
+**Instalación:** consultar `docs/FIREFOX_LAUNCHER_V0_3.md`. Entrega con `Firefox-Lanzador-0.3.zip` desde conversación. En Firefox estable sin firma, requiere `about:debugging` y carga temporal del `manifest.json`. Para instalación persistente, firmar el add-on.
+
+**Próximo control:** instalar temporalmente, probar Abrir → reutilizar pestaña, Nueva ventana y WhatsApp+ChatGPT en Ubuntu; solo entonces decidir si integrar la candidata en `universal-ui/v0` o publicar una extensión firmada.
+
+---
+
 # Universal UI · START HERE
 
 **Fecha:** 2026-11-01  
