@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         WhatsApp Minimal · Live
 // @namespace    https://github.com/JuanManuelPM/Experimentos
-// @version      2.1.0
-// @description  Studio: abrir chats con verificación y restauración; conserva interfaz flotante.
+// @version      3.0.0
+// @description  Studio 3: contactos nativos clicables, ventana flotante y conversación real.
 // @author       JuanManuelPM
 // @match        https://web.whatsapp.com/*
 // @noframes
@@ -511,427 +511,368 @@
 
 
 
-  /* WML_STUDIO_V2
-     Own visual interface. Native React conversation remains mounted;
-     names are volatile DOM references, not a copied contacts database. */
-  const canvas={
-    host:null,shadow:null,entries:[],pane:null,shift:0,timer:0,selected:'',
-    x:0,y:24,w:0,h:0,loaded:false,drag:null,search:'',pending:null,openState:'idle'
+
+  /* WML_NATIVE_STUDIO_V3
+   * Unlike V2, no cloned contacts, proxy clicks or simulated React events.
+   * The visible, interactive list is WhatsApp's own #pane-side / #side.
+   * The conversation remains WhatsApp's own #main and native composer.
+   * All layout CSS is scoped to mode=canvas; Original is instantly reversible.
+   */
+  const n3={
+    host:null,shadow:null,style:null,side:null,pane:null,main:null,
+    scheduled:0,observer:null,listenerPane:null,lastRow:null,pending:0,
+    layout:null,drag:null,verified:false,checkTimer:null,needOriginal:false
   };
-  const canvasWidth=282;
-  const layoutKey='wml-studio-layout-v2';
-  function stageBounds(){
-    if(canvas.loaded)return;
-    canvas.loaded=true;
-    const p=setting(layoutKey,null)||{};
-    canvas.w=Math.min(innerWidth-28,Math.max(720,Number(p.w)||1060));
-    canvas.h=Math.min(innerHeight-24,Math.max(420,Number(p.h)||innerHeight-48));
-    canvas.x=Math.max(8,Math.min(innerWidth-canvasWidth-8,
-      Number.isFinite(Number(p.x))?Number(p.x):Math.round((innerWidth-canvas.w)/2)));
-    canvas.y=Math.max(8,Math.min(innerHeight-110,
-      Number.isFinite(Number(p.y))?Number(p.y):24));
+  const N3_LAYOUT_KEY='wml-native-studio-v3-layout';
+  const n3Clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
+  function n3InitialLayout(){
+    if(n3.layout)return;
+    const stored=setting(N3_LAYOUT_KEY,{});
+    const storedSafe=stored&&typeof stored==='object'?stored:{};
+    const width=Math.max(650,Math.min(innerWidth-24,Number(storedSafe.w)||980));
+    const height=Math.max(430,Math.min(innerHeight-24,Number(storedSafe.h)||innerHeight-58));
+    n3.layout={
+      x:n3Clamp(Number(storedSafe.x)||Math.round((innerWidth-width)/2),8,Math.max(8,innerWidth-285)),
+      y:n3Clamp(Number(storedSafe.y)||28,8,Math.max(8,innerHeight-140)),
+      w:width,h:height
+    };
   }
-  function saveStage(){
-    GM_setValue(layoutKey,{x:Math.round(canvas.x),y:Math.round(canvas.y),
-      w:Math.round(canvas.w),h:Math.round(canvas.h)});
+  function n3Save(){
+    if(n3.layout)GM_setValue(N3_LAYOUT_KEY,{...n3.layout});
   }
-  function canvasSourceStyle(){
-    let st=document.getElementById('wml-canvas-source-css');
-    if(!st){st=document.createElement('style');st.id='wml-canvas-source-css';}
-    st.textContent=[
-      'html[data-wml-mode="canvas"] body{background:#090d16!important;overflow:hidden!important}',
-      'html[data-wml-mode="canvas"] #app{',
-        'transform:translateX(calc(-1 * var(--wml-canvas-shift,0px)))!important;',
-        'width:calc(100% + var(--wml-canvas-shift,0px))!important;max-width:none!important}',
-      'html[data-wml-mode="canvas"] :is(#side,#pane-side){opacity:0!important;pointer-events:none!important}',
-      'html[data-wml-mode="canvas"] #main{',
-        'width:var(--wml-chat-w,750px)!important;max-width:none!important;min-width:0!important;',
-        'height:var(--wml-chat-h,740px)!important;max-height:var(--wml-chat-h,740px)!important;',
-        'transform:translateY(var(--wml-chat-top,24px))!important;',
-        'border-radius:0 22px 22px 0!important;box-shadow:none!important;overflow:hidden!important;',
-        'background:linear-gradient(125deg,#133045,#171e39)!important;',
-        '--conversation-panel-background:#122b3b!important;',
-        '--conversation-header-background:#1a3747!important;',
-        '--compose-panel-background:#193343!important;',
-        '--incoming-background:#234352!important;',
-        '--outgoing-background:#315168!important;',
-        '--primary:#f0f8ff!important;--secondary:#b1cad4!important;',
-        '--WDS-text-primary:#f0f8ff!important}',
-      'html[data-wml-mode="canvas"] #main>header{background:#183847ee!important;',
-        'border-bottom:1px solid #ffffff16!important}',
-      'html[data-wml-mode="canvas"] #main>footer{background:#193442ed!important;',
-        'border-top:1px solid #ffffff14!important}',
-      'html[data-wml-mode="canvas"] #main [contenteditable="true"]{',
-        'color:#f2f9fb!important;caret-color:#83eac3!important}'
-    ].join('');
-    if(!st.isConnected)(document.head||document.documentElement).appendChild(st);
-  }
-  function makeCanvas(){
-    if(canvas.host?.isConnected)return;
-    if(!document.body)return;
-    stageBounds();canvasSourceStyle();
-    const host=document.createElement('div');host.id='wml-canvas-host';
-    host.style.cssText='position:fixed!important;inset:0!important;z-index:2147482000!important;pointer-events:none!important';
-    const sh=host.attachShadow({mode:'open'});
-    sh.innerHTML=[
-      '<style>',
-      ':host{all:initial;font-family:system-ui,-apple-system,"Segoe UI",Arial,sans-serif}',
-      '*,*::before,*::after{box-sizing:border-box}',
-      '#backdrop{position:fixed;inset:0;background:radial-gradient(ellipse at 8% 92%,#113b44 0%,transparent 37%),',
-        'radial-gradient(ellipse at 86% 8%,#24213d 0%,transparent 44%),#080d16;pointer-events:auto}',
-      '#backdrop[data-chat="true"]{background:transparent;pointer-events:none}',
-      '#masks{position:fixed;inset:0;pointer-events:none;display:none}',
-      '#masks[data-chat="true"]{display:block}',
-      '.mask{position:fixed;background:#080d16;pointer-events:auto}',
-      '#shell{position:fixed;display:flex;overflow:hidden;pointer-events:none;',
-        'border:1px solid #ffffff30;border-radius:24px;',
-        'background:linear-gradient(130deg,#133547,#192039 70%,#27213a);',
-        'box-shadow:0 24px 75px #0009,0 1px 12px #07152180;',
-        'transition:width .28s ease}',
-      '#shell[data-chat="false"]{width:282px!important}',
-      '#shell[data-chat="true"]{background:transparent!important}',
-      '#contacts{width:282px;flex:0 0 282px;min-width:0;display:flex;flex-direction:column;',
-        'background:linear-gradient(180deg,#17404b 0%,#132f3d 48%,#10232f 100%);',
-        'border-right:1px solid #ffffff18;pointer-events:auto}',
-      '#head{padding:22px 19px 14px;cursor:grab;touch-action:none;user-select:none}',
-      '#head:active{cursor:grabbing}',
-      '.kicker{color:#82c1c9;font:700 10px/1 system-ui;letter-spacing:.20em}',
-      '.heading{margin-top:9px;display:flex;align-items:center;justify-content:space-between}',
-      '.heading strong{font-size:26px;font-weight:650;letter-spacing:-.065em;color:#f0fbff}',
-      '#settings{width:32px;height:32px;border:1px solid #ffffff28;border-radius:11px;',
-        'background:#ffffff12;color:#e0f4f4;font-size:18px;cursor:pointer}',
-      '#searchbar{margin:0 14px 12px;height:40px;border:1px solid #ffffff23;border-radius:12px;',
-        'background:#061b26c4;display:flex;align-items:center;padding:0 11px;gap:9px}',
-      '#searchbar span{font-size:20px;color:#96c6c8}',
-      '#search{flex:1;min-width:0;background:transparent;border:0;outline:0;',
-        'color:#ecfaff;font:13px system-ui}',
-      '#search::placeholder{color:#8aabb2}',
-      '#list{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;',
-        'scrollbar-width:thin;scrollbar-color:#ffffff36 transparent;padding:0 9px}',
-      '.person{display:block;width:100%;height:48px;padding:0 13px;text-align:left;',
-        'border:0;border-radius:11px;background:transparent;cursor:pointer;',
-        'color:#dcebef;letter-spacing:-.018em;',
-        'font:500 14px/48px system-ui,-apple-system,"Segoe UI",sans-serif;',
-        'white-space:nowrap;text-overflow:ellipsis;overflow:hidden}',
-      '.person:hover{background:#ffffff14}',
-      '.person[data-selected="true"]{background:#7ac5d129;color:#fff}',
-      'button:focus-visible,#search:focus-visible{outline:2px solid #95f2ce;outline-offset:2px}',
-      '#message{color:#acc3ca;font:12px/1.5 system-ui;padding:16px}',
-      '#foot{padding:12px 20px 17px;color:#8fb4bd;font:10px/1.5 system-ui;',
-        'letter-spacing:.06em}',
-      '#right{flex:1;min-width:0;pointer-events:none;display:grid;place-items:center}',
-      '#right[data-chat="false"]{background:radial-gradient(circle at 65% 27%,#41558c65,transparent 46%),',
-        'linear-gradient(135deg,#173e55,#25213f)}',
-      '#right[data-chat="true"]{background:transparent;pointer-events:none}',
-      '#placeholder{text-align:center;color:#c8e2e9;max-width:300px}',
-      '#placeholder strong{display:block;font-size:25px;font-weight:500;',
-        'letter-spacing:-.045em;margin-bottom:10px}',
-      '#placeholder span{font-size:13px;color:#9bb7c3;line-height:1.6}',
-      '#right[data-chat="true"] #placeholder{display:none}',
-      '#resize{position:absolute;right:0;bottom:0;width:18px;height:18px;',
-        'cursor:nwse-resize;pointer-events:auto;display:none;',
-        'background:linear-gradient(135deg,transparent 45%,#85bdc88a 48%,transparent 54%)}',
-      '#shell[data-chat="true"] #resize{display:block}',
-      '@media(max-width:760px){#contacts{width:220px;flex-basis:220px}',
-        '#shell[data-chat="false"]{width:220px!important}',
-        '.heading strong{font-size:22px}#head{padding:15px 13px 12px}}',
-      '</style>',
-      '<div id="backdrop"></div>',
-      '<div id="masks"><div class="mask" id="topmask"></div><div class="mask" id="leftmask"></div>',
-        '<div class="mask" id="rightmask"></div><div class="mask" id="bottommask"></div></div>',
-      '<div id="shell" data-chat="false">',
-      '<section id="contacts" role="region" aria-label="Contactos">',
-      '<header id="head"><div class="kicker">WHATSAPP · STUDIO</div>',
-      '<div class="heading"><strong>Mensajes</strong>',
-      '<button id="settings" type="button" aria-label="Personalización">◐</button></div></header>',
-      '<label id="searchbar"><span aria-hidden="true">⌕</span>',
-      '<input id="search" type="search" aria-label="Filtrar contactos cargados"',
-        ' placeholder="Buscar conversaciones" autocomplete="off"></label>',
-      '<div id="list" role="listbox" aria-label="Conversaciones"></div>',
-      '<p id="message" hidden></p>',
-      '<footer id="foot">VISTA PERSONAL · SINCRONIZADA</footer></section>',
-      '<section id="right" data-chat="false" aria-label="Conversación">',
-      '<div id="placeholder"><strong>Tu espacio.</strong>',
-      '<span>Elegí un contacto y la conversación se abrirá acá.</span></div></section>',
-      '<div id="resize" aria-label="Redimensionar" role="separator"></div></div>'
-    ].join('');
-    // Status uses our own DOM and never modifies WhatsApp's conversation.
-    const notice=document.createElement('div');
-    notice.id='openNotice';
-    notice.setAttribute('role','status');
-    notice.setAttribute('aria-live','polite');
-    notice.hidden=true;
-    notice.style.cssText='margin:6px 16px 10px;padding:12px;border:1px solid #7ed3bd66;border-radius:12px;background:#062833;color:#def6ef;font:12px/1.5 system-ui';
-    const feedback=document.createElement('span');feedback.id='openText';
-    const fallback=document.createElement('button');
-    fallback.type='button';fallback.id='openOriginal';
-    fallback.textContent='Abrir WhatsApp original';fallback.hidden=true;
-    fallback.style.cssText='display:block;margin-top:7px;border:1px solid #a1d1c177;background:#174445;color:#eafff8;border-radius:7px;padding:6px 9px;cursor:pointer';
-    fallback.addEventListener('click',()=>updateState(MODE_KEY,'original'));
-    notice.append(feedback,fallback);
-    sh.getElementById('contacts').insertBefore(notice,sh.getElementById('foot'));
-    sh.getElementById('settings').addEventListener('click',()=>toggle(true));
-    sh.getElementById('search').addEventListener('input',e=>{
-      canvas.search=e.target.value.toLocaleLowerCase();drawNames();
-    });
-    sh.getElementById('list').addEventListener('click',e=>{
-      const btn=e.target.closest('[data-index]');if(!btn)return;
-      const item=canvas.entries[Number(btn.dataset.index)];
-      activateStudioConversation(item);
-    });
-    sh.getElementById('list').addEventListener('wheel',e=>{
-      if(!canvas.pane)return;
-      let node=canvas.pane,scroller=null;
-      for(let i=0;node&&i<5;node=node.parentElement,i++){
-        if(node.scrollHeight>node.clientHeight+30 &&
-          /auto|scroll/.test(getComputedStyle(node).overflowY)){scroller=node;break;}
+  function n3Vars(){
+    if(!n3.layout)return;
+    const d=n3.layout, sideW=innerWidth<740?236:286;
+    const width=n3Clamp(d.w,sideW+260,Math.max(sideW+260,innerWidth-d.x-8));
+    const height=n3Clamp(d.h,340,Math.max(340,innerHeight-d.y-8));
+    const root=document.documentElement;
+    for(const [key,val] of Object.entries({
+      '--n3-x':d.x+'px','--n3-y':d.y+'px','--n3-w':width+'px',
+      '--n3-h':height+'px','--n3-side':sideW+'px',
+      '--n3-chat-x':(d.x+sideW)+'px','--n3-chat-w':Math.max(260,width-sideW)+'px'
+    }))root.style.setProperty(key,val);
+    if(n3.shadow){
+      const shell=n3.shadow.getElementById('frame');
+      if(shell){
+        shell.style.left=d.x+'px';shell.style.top=d.y+'px';
+        shell.style.width=(n3.main?width:sideW)+'px';shell.style.height=height+'px';
+        shell.dataset.chat=String(!!n3.main);
       }
-      if(scroller && (e.deltaY>0?scroller.scrollTop+scroller.clientHeight<
-        scroller.scrollHeight-2:scroller.scrollTop>2)){
-        e.preventDefault();scroller.scrollTop+=e.deltaY;scheduleCanvas();
-      }
-    },{passive:false});
-    function dragHandle(el,type){
-      el.addEventListener('pointerdown',e=>{
-        if(e.target.closest('button,input'))return;
-        canvas.drag={type,cx:e.clientX,cy:e.clientY,
-          x:canvas.x,y:canvas.y,w:canvas.w,h:canvas.h};
-        el.setPointerCapture?.(e.pointerId);e.preventDefault();
-      });
-      el.addEventListener('pointermove',e=>{
-        if(!canvas.drag||canvas.drag.type!==type)return;
-        const d=canvas.drag;
-        if(type==='move'){
-          canvas.x=Math.max(8,Math.min(innerWidth-canvasWidth-10,d.x+e.clientX-d.cx));
-          canvas.y=Math.max(8,Math.min(innerHeight-110,d.y+e.clientY-d.cy));
-        }else{
-          canvas.w=Math.max(720,Math.min(innerWidth-canvas.x-8,d.w+e.clientX-d.cx));
-          canvas.h=Math.max(420,Math.min(innerHeight-canvas.y-8,d.h+e.clientY-d.cy));
-        }
-        positionCanvas();
-      });
-      el.addEventListener('pointerup',()=>{
-        if(canvas.drag){canvas.drag=null;saveStage();}
-      });
-      el.addEventListener('pointercancel',()=>{canvas.drag=null;});
+      const title=n3.shadow.getElementById('stageTitle');
+      if(title)title.textContent=n3.main?'Conversación':'Mensajes';
     }
-    dragHandle(sh.getElementById('head'),'move');
-    dragHandle(sh.getElementById('resize'),'size');
-    document.body.appendChild(host);
-    canvas.host=host;canvas.shadow=sh;
-    positionCanvas();
   }
-  function validName(n){
-    if(!n || n.length>110)return false;
-    if(/^(archived|archivados|whatsapp|today|yesterday|ayer|hoy|search|buscar)$/i.test(n))return false;
-    if(/^\d+\s+unread messages?/i.test(n)||/^\d+\s+mensajes?\s+sin\s+leer/i.test(n))return false;
-    if(/^(message|mensaje|no messages|new chat|nuevo chat)$/i.test(n))return false;
-    return true;
+  function n3Style(){
+    let el=document.getElementById('wml-native-studio-css');
+    if(!el){el=document.createElement('style');el.id='wml-native-studio-css';}
+    el.textContent=String.raw`
+      html[data-wml-mode="canvas"] body {background:#070d16!important; overflow:hidden!important;}
+      html[data-wml-mode="canvas"] body::before {
+        content:"";position:fixed;inset:0;z-index:2147481000;
+        background:radial-gradient(ellipse at 10% 80%,#133642 0%,transparent 40%),
+          radial-gradient(ellipse at 88% 12%,#282640 0%,transparent 42%),#090e19;
+        pointer-events:none;
+      }
+      html[data-wml-mode="canvas"] #app {transform:none!important;overflow:visible!important;}
+      html[data-wml-mode="canvas"] #app [data-wml-n3-unclip] {
+        overflow:visible!important;transform:none!important;
+        filter:none!important;contain:none!important;
+      }
+      html[data-wml-mode="canvas"] #side {
+        position:fixed!important;left:var(--n3-x)!important;top:var(--n3-y)!important;
+        width:var(--n3-side)!important;min-width:var(--n3-side)!important;
+        max-width:var(--n3-side)!important;
+        height:var(--n3-h)!important;max-height:var(--n3-h)!important;
+        margin:0!important;padding:0!important;
+        border:1px solid #ffffff24!important;border-right:0!important;
+        border-radius:22px 0 0 22px!important;overflow:hidden!important;
+        background:linear-gradient(155deg,#183f4a,#0d2331 70%)!important;
+        z-index:2147482001!important;pointer-events:auto!important;
+        box-shadow:0 24px 75px #0008!important;
+      }
+      html[data-wml-mode="canvas"] #side [data-wml-n3-chrome] {
+        display:none!important;
+      }
+      html[data-wml-mode="canvas"] #pane-side {
+        position:relative!important;left:0!important;top:0!important;
+        display:block!important;
+        width:100%!important;min-width:0!important;max-width:100%!important;
+        height:calc(var(--n3-h) - 112px)!important;max-height:calc(var(--n3-h) - 112px)!important;
+        margin:112px 0 0!important;padding:0 8px 16px!important;
+        background:transparent!important;
+        overflow-x:hidden!important;
+        pointer-events:auto!important;opacity:1!important;
+        scrollbar-width:thin;scrollbar-color:#66889170 transparent;
+      }
+      html[data-wml-mode="canvas"] #pane-side [data-wml-n3-detail] {
+        display:none!important;
+      }
+      html[data-wml-mode="canvas"] #pane-side [data-wml-n3-row]{
+        border:0!important;box-shadow:none!important;
+        background:transparent!important;
+        cursor:pointer!important;
+      }
+      html[data-wml-mode="canvas"] #pane-side [data-wml-n3-row]:hover {
+        background:#e5fffa11!important;border-radius:12px!important;
+      }
+      html[data-wml-mode="canvas"] #pane-side [data-wml-n3-row][aria-selected="true"] {
+        background:#71c6ba27!important;border-radius:12px!important;
+      }
+      html[data-wml-mode="canvas"] #pane-side [data-wml-n3-name] {
+        font-family:system-ui,"Liberation Sans",Arial,sans-serif!important;
+        font-size:14px!important;font-weight:550!important;
+        line-height:1.4!important;letter-spacing:-.017em!important;
+        color:#e9f5f7!important;
+        white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;
+      }
+      html[data-wml-mode="canvas"] #main {
+        position:fixed!important;
+        left:var(--n3-chat-x)!important;top:var(--n3-y)!important;
+        width:var(--n3-chat-w)!important;min-width:0!important;max-width:var(--n3-chat-w)!important;
+        height:var(--n3-h)!important;max-height:var(--n3-h)!important;
+        margin:0!important;padding:0!important;
+        overflow:hidden!important;
+        border:1px solid #ffffff22!important;border-left:0!important;
+        border-radius:0 22px 22px 0!important;
+        background:#142431!important;z-index:2147482002!important;
+        pointer-events:auto!important;
+        --conversation-panel-background:#142431!important;
+        --conversation-header-background:#1e3543!important;
+        --compose-panel-background:#1b3440!important;
+        --incoming-background:#263d4c!important;
+        --outgoing-background:#2f5160!important;
+        --primary:#eef7fa!important;
+        --secondary:#aac4c9!important;
+        --WDS-text-primary:#eef7fa!important;
+        box-shadow:0 24px 75px #0008!important;
+      }
+      html[data-wml-mode="canvas"] #main [contenteditable="true"]{
+        color:#edf6fa!important;caret-color:#83e2c6!important;
+      }
+      html[data-wml-mode="canvas"] #main > header {
+        background:#1e3543!important;border-bottom:1px solid #ffffff1a!important;
+      }
+      html[data-wml-mode="canvas"] #main > footer{
+        background:#1b3440!important;border-top:1px solid #ffffff17!important;
+      }
+    `;
+    if(!el.isConnected)(document.head||document.documentElement).appendChild(el);
+    n3.style=el;
   }
-  function canvasEntries(pane){
-    if(!pane)return [];
+  function n3MarkAncestors(node){
+    for(let p=node?.parentElement,k=0;p&&p.id!=='app'&&k++<24;p=p.parentElement){
+      if(!p.hasAttribute('data-wml-n3-unclip'))p.setAttribute('data-wml-n3-unclip','');
+    }
+  }
+  function n3MarkNativeList(){
+    const side=document.querySelector('#side'),pane=document.querySelector('#pane-side');
+    if(!side||!pane||!side.contains(pane))return false;
+    n3MarkAncestors(side);
+    const main=document.querySelector('#main');
+    if(main)n3MarkAncestors(main);
+    // Preserve the complete native branch from #side to #pane-side,
+    // hiding only navigation/search siblings. Never move DOM nodes.
+    let child=pane;
+    for(let parent=child.parentElement;parent&&side.contains(parent);parent=child.parentElement){
+      for(const sibling of parent.children){
+        if(sibling!==child&&!sibling.hasAttribute('data-wml-n3-chrome'))
+          sibling.setAttribute('data-wml-n3-chrome','');
+      }
+      if(parent===side)break;
+      child=parent;
+    }
     const rows=pane.querySelectorAll(
       '[role="row"],[role="listitem"],[data-testid="cell-frame-container"],[data-testid="chat-list-item"]'
     );
-    const result=[];let scanned=0;
+    let marked=0;
     for(const row of rows){
-      if(++scanned>400)break;
+      if(marked>=250)break;
       if(row.parentElement?.closest('[role="row"],[role="listitem"]'))continue;
-      if(row.matches('[data-testid*="archived" i]')||row.querySelector('[data-icon="archived"]'))continue;
-      const candidates=row.querySelectorAll(
-        '[data-testid="cell-frame-title"],[data-testid="chatlist-title"],span[title],span[dir="auto"]'
-      );
-      let chosen=null,chosenElement=null,high=-100;
-      const rect=row.getBoundingClientRect();
-      for(const el of candidates){
-        const name=(el.getAttribute('title')||el.textContent||'').trim();
-        if(!validName(name))continue;
-        const box=el.getBoundingClientRect();
-        if(rect.height&&box.height && box.top>rect.top+rect.height*.67)continue;
-        const testId=el.getAttribute('data-testid')||'';
-        const score=(testId.includes('title')?100:0)+
-          (el.hasAttribute('title')?60:0)+(el.getAttribute('dir')==='auto'?20:0)+
-          (rect.height&&box.height?Math.max(0,28-(box.top-rect.top)):0);
-        if(score>high){high=score;chosen=name;chosenElement=el;}
+      const t=row.querySelector('[data-testid="cell-frame-title"],'+
+        '[data-testid="chatlist-title"],span[title]');
+      if(!t)continue;
+      if(!row.hasAttribute('data-wml-n3-row'))row.setAttribute('data-wml-n3-row','');
+      if(!t.hasAttribute('data-wml-n3-name'))t.setAttribute('data-wml-n3-name','');
+      // A React virtualizer can recycle a row: clear old hidden branches.
+      for(const h of row.querySelectorAll('[data-wml-n3-detail]'))
+        h.removeAttribute('data-wml-n3-detail');
+      let node=t;
+      for(let i=0;node!==row&&node?.parentElement&&i<16;i++){
+        const parent=node.parentElement;
+        if(!row.contains(parent))break;
+        for(const sibling of parent.children){
+          if(sibling!==node&&!sibling.contains(t))
+            sibling.setAttribute('data-wml-n3-detail','');
+        }
+        node=parent;
       }
-      if(!chosen)continue;
-      result.push({row,name:chosen,trigger:chosenElement,selected:row.getAttribute('aria-selected')==='true'||
-        !!row.querySelector('[aria-selected="true"]')});
+      marked++;
     }
-    return result;
+    if(n3.listenerPane!==pane){
+      if(n3.listenerPane)n3.listenerPane.removeEventListener('click',n3OnNativeClick,true);
+      pane.addEventListener('click',n3OnNativeClick,true);
+      n3.listenerPane=pane;
+    }
+    n3.side=side;n3.pane=pane;n3.main=main;
+    return true;
   }
-
-  /* Studio 2.1: a row may only be a layout wrapper. Click its real title,
-     then verify native composer plus correct header/selection. */
-  function normalizedStudioName(value){
-    return String(value||'').normalize('NFKC').trim().replace(/\s+/g,' ').toLocaleLowerCase();
+  function n3OnNativeClick(event){
+    // Passive observer only. The physical click is delivered to WhatsApp.
+    // No stopPropagation, preventDefault or synthesized events.
+    const row=event.target.closest?.('[data-wml-n3-row]');
+    if(!row || !event.isTrusted)return;
+    n3.lastRow=row;
+    n3.pending=Date.now();
+    n3Status('Esperando que WhatsApp abra la conversación…',false);
+    setTimeout(n3CheckOpened,650);
+    setTimeout(n3CheckOpened,2200);
   }
-  function nativeStudioHeader(){
-    const h=document.querySelector('#main > header, #main header');
-    if(!h)return '';
-    const label=h.querySelector(
-      '[data-testid="conversation-info-header-chat-title"],'+
-      '[data-testid="conversation-title"],[title],[dir="auto"]'
+  function n3CheckOpened(){
+    if(!n3.pending||mode()!=='canvas')return;
+    const main=document.querySelector('#main');
+    const editable=main?.querySelector(
+      'footer [contenteditable="true"],[data-testid="conversation-compose-box-input"],[role="textbox"][contenteditable="true"]'
     );
-    return (label?.getAttribute('title')||label?.textContent||h.textContent||'').trim();
-  }
-  function nativeStudioComposer(){
-    return document.querySelector(
-      '#main footer [contenteditable="true"],'+
-      '#main [data-testid="conversation-compose-box-input"],'+
-      '#main [contenteditable="true"][data-tab],'+
-      '#main [role="textbox"][contenteditable="true"]'
-    );
-  }
-  function displayStudioOpening(state,message){
-    const sh=canvas.shadow;if(!sh)return;
-    const notice=sh.getElementById('openNotice');
-    if(!notice)return;
-    notice.hidden=state!=='pending' && state!=='error';
-    sh.getElementById('openText').textContent=message||'';
-    sh.getElementById('openOriginal').hidden=state!=='error';
-    canvas.openState=state;
-  }
-  function checkStudioOpening(){
-    const p=canvas.pending;
-    if(!p||mode()!=='canvas')return;
-    const name=normalizedStudioName(p.name);
-    const header=normalizedStudioName(nativeStudioHeader());
-    const composer=!!nativeStudioComposer();
-    const selected=!!(p.row?.isConnected &&
-      (p.row.getAttribute('aria-selected')==='true' ||
-       p.row.querySelector('[aria-selected="true"]')));
-    if(composer && (header ? (name && (name===header || header.includes(name))) : selected)){
-      canvas.selected=p.row;
-      canvas.pending=null;
-      displayStudioOpening('ok','');
-      drawNames();
-      positionCanvas();
-      return;
+    if(main && editable){
+      n3.pending=0;n3.verified=true;n3Status('',false);
+      n3.main=main;n3Vars();return;
     }
-    if(Date.now()-p.started>2100){
-      canvas.pending=null;
-      displayStudioOpening('error','No pude confirmar la apertura. Usá WhatsApp original.');
+    if(Date.now()-n3.pending>1900){
+      n3.pending=0;
+      n3Status('WhatsApp no abrió el chat. Usá Original para comprobar la conversación.',true);
     }
   }
-  function activateStudioConversation(item){
-    if(!item?.row?.isConnected){
-      displayStudioOpening('error','Este contacto ya no está cargado.');
-      return;
-    }
-    const title=item.trigger?.isConnected && item.row.contains(item.trigger)
-      ? item.trigger : item.row.querySelector(
-        '[data-testid="cell-frame-title"],[data-testid="chatlist-title"],span[title]'
-      );
-    // Click the title so the event bubbles to WhatsApp's inner React handler.
-    // Never click an arbitrary button (avatar, menu, send).
-    const target=title||item.row.querySelector('[data-testid="cell-frame-container"]')||item.row;
-    canvas.pending={row:item.row,name:item.name,started:Date.now()};
-    displayStudioOpening('pending','Abriendo conversación…');
-    try{
-      target.click();
-      scheduleCanvas();
-      setTimeout(checkStudioOpening,280);
-      setTimeout(checkStudioOpening,900);
-      setTimeout(checkStudioOpening,2250);
-    }catch(_){
-      canvas.pending=null;
-      displayStudioOpening('error','No pude abrir este chat. Usá WhatsApp original.');
-    }
+  function n3Status(message,error){
+    const sh=n3.shadow;if(!sh)return;
+    const info=sh.getElementById('alert');
+    if(!info)return;
+    info.hidden=!message;
+    sh.getElementById('alertText').textContent=message||'';
+    sh.getElementById('original').hidden=!error;
   }
-
-  function drawNames(){
-    const sh=canvas.shadow;if(!sh)return;
-    const list=sh.getElementById('list');
-    const frag=document.createDocumentFragment();
-    let count=0;
-    canvas.entries.forEach((item,i)=>{
-      if(canvas.search&&!item.name.toLocaleLowerCase().includes(canvas.search))return;
-      count++;
-      const button=document.createElement('button');
-      button.type='button';button.className='person';
-      button.dataset.index=String(i);
-      button.dataset.selected=String(item.selected||canvas.selected===item.row);
-      button.setAttribute('role','option');
-      button.setAttribute('aria-selected',button.dataset.selected);
-      button.textContent=item.name;
-      frag.appendChild(button);
-    });
-    const oldScroll=list.scrollTop;list.replaceChildren(frag);list.scrollTop=oldScroll;
-    const msg=sh.getElementById('message');
-    msg.hidden=count!==0;
-    if(!count)msg.textContent=canvas.entries.length?
-      'No hay coincidencias entre los chats cargados.':'Esperando conversaciones de WhatsApp.';
-    sh.getElementById('foot').textContent=count+' CHATS CARGADOS · VISTA LOCAL';
-  }
-  function positionCanvas(){
-    const sh=canvas.shadow;if(!sh)return;
-    const main=document.querySelector('#main'),hasChat=!!nativeStudioComposer();
-    const cW=innerWidth<760?220:canvasWidth;
-    const w=Math.max(cW+320,Math.min(canvas.w,innerWidth-canvas.x-8));
-    const h=Math.max(400,Math.min(canvas.h,innerHeight-canvas.y-8));
-    const width=hasChat?w:cW;
-    const shell=sh.getElementById('shell');
-    shell.style.left=canvas.x+'px';shell.style.top=canvas.y+'px';
-    shell.style.width=width+'px';shell.style.height=h+'px';
-    shell.dataset.chat=String(hasChat);
-    sh.getElementById('right').dataset.chat=String(hasChat);
-    sh.getElementById('backdrop').dataset.chat=String(hasChat);
-    const masks=sh.getElementById('masks');masks.dataset.chat=String(hasChat);
-    if(hasChat){
-      const rects={topmask:[0,0,innerWidth,canvas.y],
-        leftmask:[0,canvas.y,canvas.x,h],
-        rightmask:[canvas.x+width,canvas.y,Math.max(0,innerWidth-canvas.x-width),h],
-        bottommask:[0,canvas.y+h,innerWidth,Math.max(0,innerHeight-canvas.y-h)]};
-      for(const [id,v] of Object.entries(rects)){
-        const el=sh.getElementById(id);
-        Object.assign(el.style,{left:v[0]+'px',top:v[1]+'px',width:v[2]+'px',height:v[3]+'px'});
-      }
-      const left=main.getBoundingClientRect().left+canvas.shift;
-      const next=Math.max(-950,Math.min(1500,Math.round(left-canvas.x-cW)));
-      if(Number.isFinite(next)&&Math.abs(next-canvas.shift)>2){
-        canvas.shift=next;
-        document.documentElement.style.setProperty('--wml-canvas-shift',next+'px');
-      }
-      document.documentElement.style.setProperty('--wml-chat-top',canvas.y+'px');
-      document.documentElement.style.setProperty('--wml-chat-w',Math.max(320,w-cW)+'px');
-      document.documentElement.style.setProperty('--wml-chat-h',h+'px');
+  function n3Create(){
+    if(n3.host?.isConnected)return;
+    if(!document.body)return;
+    n3InitialLayout();n3Style();
+    const host=document.createElement('div');
+    host.id='wml-native-studio-host';
+    host.style.cssText='position:fixed!important;inset:0!important;z-index:2147482010!important;pointer-events:none!important';
+    const sh=host.attachShadow({mode:'open'});
+    sh.innerHTML=[
+      '<style>:host{all:initial;font-family:system-ui,-apple-system,"Segoe UI",sans-serif}',
+      '*,*::before,*::after{box-sizing:border-box}',
+      '#frame{position:fixed;pointer-events:none;border-radius:22px;overflow:visible;',
+      'box-shadow:0 18px 65px #0007;transition:width .25s ease}',
+      '#head{position:absolute;left:0;top:0;width:var(--n3-side);height:110px;',
+      'padding:19px 18px 10px;border-radius:22px 0 0 0;',
+      'background:linear-gradient(180deg,#1b424e,#193a47);pointer-events:auto;',
+      'border-bottom:1px solid #ffffff18;cursor:grab;touch-action:none;user-select:none}',
+      '#head:active{cursor:grabbing}',
+      '#eyebrow{color:#83bbc5;font-weight:750;font-size:10px;letter-spacing:.18em}',
+      '#heading{display:flex;align-items:center;justify-content:space-between;margin-top:7px}',
+      '#stageTitle{font-size:24px;letter-spacing:-.055em;font-weight:650;color:#f2fcff}',
+      '#settings{font:18px system-ui;background:#ffffff0c;color:#e6f4f6;',
+      'border:1px solid #ffffff29;border-radius:10px;width:30px;height:30px;cursor:pointer}',
+      '#sub{font-size:11px;color:#94b4bd;margin-top:7px}',
+      '#alert{position:absolute;top:114px;left:8px;width:calc(var(--n3-side) - 16px);',
+      'border-radius:10px;background:#113542;border:1px solid #78c7be63;',
+      'color:#e6faf5;font:11px/1.45 system-ui;padding:10px;pointer-events:auto}',
+      '#original{display:block;margin-top:6px;color:#dffff7;',
+      'background:#286056;border:0;border-radius:6px;padding:6px 10px;cursor:pointer}',
+      '#alert[hidden],#original[hidden]{display:none!important}',
+      '#resize{position:absolute;right:0;bottom:0;width:20px;height:20px;',
+      'pointer-events:auto;cursor:nwse-resize;',
+      'background:linear-gradient(135deg,transparent 50%,#7dc8b6 55%,transparent 62%);',
+      'border-radius:0 0 18px 0}',
+      '#empty{position:absolute;left:var(--n3-side);top:0;',
+      'width:var(--n3-chat-w);height:100%;border-radius:0 22px 22px 0;',
+      'background:radial-gradient(circle at 70% 26%,#283a55,transparent 50%),#132231;',
+      'display:grid;place-items:center;pointer-events:none;',
+      'box-shadow:0 18px 65px #0007}',
+      '#empty strong{font-size:22px;color:#dceff3;font-weight:550;letter-spacing:-.04em}',
+      '#frame[data-chat="true"] #empty{display:none}',
+      '#frame[data-chat="false"] #empty{display:none}',
+      '#frame[data-chat="false"] #resize{display:none}',
+      '@media(max-width:740px){#stageTitle{font-size:20px}#head{padding:17px 12px}}',
+      '</style>',
+      '<div id="frame" data-chat="false">',
+      '<header id="head"><div id="eyebrow">WHATSAPP · STUDIO</div>',
+      '<div id="heading"><strong id="stageTitle">Mensajes</strong>',
+      '<button id="settings" type="button" aria-label="Abrir ajustes">◐</button></div>',
+      '<div id="sub">Contactos reales · clic directo</div></header>',
+      '<div id="alert" role="status" aria-live="polite" hidden>',
+      '<span id="alertText"></span><button id="original" type="button" hidden>',
+      'Abrir WhatsApp original</button></div>',
+      '<div id="empty"><strong>Elegí una conversación</strong></div>',
+      '<div id="resize" aria-label="Redimensionar Studio"></div></div>'
+    ].join('');
+    sh.getElementById('settings').addEventListener('click',()=>toggle(true));
+    sh.getElementById('original').addEventListener('click',()=>updateState(MODE_KEY,'original'));
+    const handle=sh.getElementById('head');
+    const resize=sh.getElementById('resize');
+    for(const [el,kind] of [[handle,'move'],[resize,'size']]){
+      el.addEventListener('pointerdown',e=>{
+        if(e.target.closest('button'))return;
+        n3.drag={kind,x:e.clientX,y:e.clientY,layout:{...n3.layout}};
+        el.setPointerCapture?.(e.pointerId);
+        e.preventDefault();
+      });
+      el.addEventListener('pointermove',e=>{
+        if(!n3.drag||n3.drag.kind!==kind)return;
+        const d=n3.drag,dx=e.clientX-d.x,dy=e.clientY-d.y;
+        if(kind==='move'){
+          n3.layout.x=n3Clamp(d.layout.x+dx,8,Math.max(8,innerWidth-295));
+          n3.layout.y=n3Clamp(d.layout.y+dy,8,Math.max(8,innerHeight-130));
+        }else{
+          n3.layout.w=n3Clamp(d.layout.w+dx,560,Math.max(560,innerWidth-n3.layout.x-8));
+          n3.layout.h=n3Clamp(d.layout.h+dy,340,Math.max(340,innerHeight-n3.layout.y-8));
+        }
+        n3Vars();
+      });
+      el.addEventListener('pointerup',()=>{
+        if(n3.drag){n3.drag=null;n3Save();}
+      });
+      el.addEventListener('pointercancel',()=>{n3.drag=null;});
     }
+    document.body.appendChild(host);
+    n3.host=host;n3.shadow=sh;
+    n3Vars();
   }
-  function renderCanvas(){
+  function n3Refresh(){
     if(mode()!=='canvas')return;
-    makeCanvas();
-    if(!canvas.shadow)return;
-    const pane=document.querySelector('#pane-side');
-    canvas.pane=pane;
-    const entries=canvasEntries(pane);
-    const changed=entries.length!==canvas.entries.length ||
-      entries.some((e,i)=>canvas.entries[i]?.name!==e.name ||
-        canvas.entries[i]?.row!==e.row||canvas.entries[i]?.selected!==e.selected);
-    if(changed){canvas.entries=entries;drawNames();}
-    checkStudioOpening();
-    positionCanvas();
+    n3Create();
+    if(n3MarkNativeList()){
+      n3Vars();
+      if(n3.needOriginal)n3Status('',false);
+      n3.needOriginal=false;
+    }else{
+      n3.needOriginal=true;
+      n3Status('WhatsApp todavía no mostró su lista de contactos. Esperando carga…',false);
+    }
+    n3CheckOpened();
   }
   function scheduleCanvas(){
-    if(mode()!=='canvas'||canvas.timer)return;
-    canvas.timer=setTimeout(()=>{
-      canvas.timer=0;
-      try{renderCanvas();}catch(_){}  // Always leave native WhatsApp intact.
-    },140);
+    if(mode()!=='canvas'||n3.scheduled)return;
+    n3.scheduled=setTimeout(()=>{
+      n3.scheduled=0;
+      try{n3Refresh();}catch(e){n3Status('No se pudo aplicar Studio. Usá WhatsApp Original.',true);}
+    },130);
   }
+  function makeCanvas(){n3Create();}
   function syncCanvas(){
     if(mode()!=='canvas'){
-      if(canvas.host)canvas.host.remove();
-      canvas.host=null;canvas.shadow=null;canvas.pane=null;
-      canvas.entries=[];canvas.selected='';canvas.shift=0;canvas.loaded=false;
-      canvas.pending=null;canvas.openState='idle';
-      for(const prop of ['--wml-canvas-shift','--wml-chat-top','--wml-chat-w','--wml-chat-h'])
+      if(n3.host)n3.host.remove();
+      n3.host=null;n3.shadow=null;
+      if(n3.listenerPane)n3.listenerPane.removeEventListener('click',n3OnNativeClick,true);
+      n3.listenerPane=null;n3.pending=0;n3.main=null;n3.side=null;n3.pane=null;
+      n3.layout=null;n3.verified=false;n3.needOriginal=false;
+      for(const prop of ['--n3-x','--n3-y','--n3-w','--n3-h','--n3-side','--n3-chat-x','--n3-chat-w'])
         document.documentElement.style.removeProperty(prop);
       if(uiShadow)uiShadow.getElementById('trigger').style.display='';
       return;
     }
     if(uiShadow)uiShadow.getElementById('trigger').style.display='none';
-    makeCanvas();scheduleCanvas();
+    n3Create();scheduleCanvas();
   }
 
   function init(){
