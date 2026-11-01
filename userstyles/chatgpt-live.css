@@ -1,11 +1,14 @@
 /* CHATGPT_LIVE_STYLE_V1
-   SAFE_TEXT_CONTRAST_V2: CONTRAST_FIX_2026_11_01_B: keep pastel backgrounds, force dark readable text.
-   Avoid touching the composer, dialogs, menus and code highlighting.
-   The live userscript updates this CSS in the open tab without reloading.
+   SAFE_TEXT_CONTRAST_V2
+   V04 · Contraste por superficie, no por toda la página.
+   Corrige el texto de respuestas, tarjetas oscuras y editor.
+   Eliminada la regla global que oscurecía texto dentro de cajas negras.
+   El actualizador Live sigue siendo el propietario de este CSS.
 */
 html[data-cm-theme="aire"] {
   --cm-bg: #eaf1ed;
   --cm-sidebar: #d7e4dc;
+  --cm-card: #f5faf6;
   --cm-text: #233834;
   --cm-muted: #405850;
   --cm-link: #145c54;
@@ -14,6 +17,7 @@ html[data-cm-theme="aire"] {
 html[data-cm-theme="cafe"] {
   --cm-bg: #eee5d8;
   --cm-sidebar: #e3d4c1;
+  --cm-card: #f9f2e8;
   --cm-text: #332b24;
   --cm-muted: #57493b;
   --cm-link: #71431f;
@@ -22,6 +26,7 @@ html[data-cm-theme="cafe"] {
 html[data-cm-theme="ambar"] {
   --cm-bg: #f2e7cc;
   --cm-sidebar: #e8d9b8;
+  --cm-card: #fbf2db;
   --cm-text: #3c3324;
   --cm-muted: #5c4b2d;
   --cm-link: #75450f;
@@ -30,6 +35,7 @@ html[data-cm-theme="ambar"] {
 html[data-cm-theme="papel"] {
   --cm-bg: #f5f3ed;
   --cm-sidebar: #eae6dd;
+  --cm-card: #fffdf8;
   --cm-text: #282c2b;
   --cm-muted: #4c5550;
   --cm-link: #245570;
@@ -38,14 +44,14 @@ html[data-cm-theme="papel"] {
 html[data-cm-theme="grafito"] {
   --cm-bg: #1c2831;
   --cm-sidebar: #142029;
+  --cm-card: #273842;
   --cm-text: #f2eee6;
   --cm-muted: #c7d2d2;
   --cm-link: #9fdfd9;
   --cm-border: #4f626e;
 }
 
-/* Override BOTH ChatGPT's surface AND text tokens.
-   Fixes the old mismatch: light background + white native dark-mode text. */
+/* Tema: las superficies y el texto general deben combinarse. */
 html[data-cm-theme] {
   --bg-primary: var(--cm-bg) !important;
   --main-surface-primary: var(--cm-bg) !important;
@@ -62,152 +68,142 @@ html[data-cm-theme] {
 html[data-cm-theme]:not([data-cm-theme="grafito"]) {
   color-scheme: light !important;
 }
-html[data-cm-theme="grafito"] {
-  color-scheme: dark !important;
-}
+html[data-cm-theme="grafito"] { color-scheme: dark !important; }
 
-/* Use matching surface + text color on the actual conversation. */
-html[data-cm-theme] body,
-html[data-cm-theme] main,
-html[data-cm-theme] #__next {
-  background-color: var(--cm-bg) !important;
-}
+html[data-cm-theme] :is(body, main, #__next),
 html[data-cm-theme] .bg-token-main-surface-primary {
   background-color: var(--cm-bg) !important;
 }
-html[data-cm-theme] .bg-token-sidebar-surface-primary {
-  background-color: var(--cm-sidebar) !important;
-}
-html[data-cm-theme] :is(#thread, main) {
+html[data-cm-theme] :is(main, #thread) {
   color: var(--cm-text) !important;
 }
 
-/* Specific selectors for messages: native dark mode sometimes hardcodes white. */
-html[data-cm-theme] [data-message-author-role="assistant"],
-html[data-cm-theme] [data-message-author-role="assistant"] :is(
-  .markdown, .prose, p, li, ul, ol, h1, h2, h3, h4, h5, h6,
-  strong, em, blockquote, th, td
-),
-html[data-cm-theme] [data-testid^="conversation-turn-"] .markdown,
-html[data-cm-theme] [data-testid^="conversation-turn-"] .markdown :is(
-  p, li, ul, ol, h1, h2, h3, h4, h5, h6, strong, em, blockquote
+/* RESPUESTAS: texto oscuro en fondos claros (claro en Grafito).
+   Evitar aplicar esta regla a todas las etiquetas dentro de main:
+   eso provocaba el texto verde oscuro en cuadros negros. */
+html[data-cm-theme] main [data-message-author-role="assistant"],
+html[data-cm-theme] main [data-message-author-role="assistant"] :is(.markdown, .prose),
+html[data-cm-theme] main [data-message-author-role="assistant"] :is(.markdown, .prose) :is(
+  p, li, h1, h2, h3, h4, h5, h6, strong, b, em, blockquote, th, td,
+  span:not(pre span), div:not(pre div)
 ) {
-  color: var(--cm-text) !important;
-}
-html[data-cm-theme] .markdown a {
-  color: var(--cm-link) !important;
-  text-decoration-color: currentColor !important;
-}
-html[data-cm-theme] .markdown :not(pre) > code {
-  color: var(--cm-text) !important;
-  background-color: var(--cm-sidebar) !important;
-}
-
-/* READABILITY FIX · 2026-11-01
-   ChatGPT can apply white text directly to nested markdown elements
-   (not just via --text-primary), so changing palette variables alone
-   is insufficient. Override the VISIBLE answer nodes explicitly.
-   Do not target the user's message bubble or the dark composer.
-*/
-html[data-cm-theme] main :is(.markdown, .prose),
-html[data-cm-theme] main [data-message-author-role="assistant"] {
   --text-primary: var(--cm-text) !important;
-  --text-secondary: var(--cm-muted) !important;
-  color: var(--cm-text) !important;
-}
-
-html[data-cm-theme] main :is(.markdown, .prose)
-  :is(p, span, li, ul, ol, div, h1, h2, h3, h4, h5, h6,
-      strong, b, em, i, small, blockquote, th, td, label):not(pre):not(pre *):not(button):not(button *):not(svg):not(svg *):not([data-message-author-role="user"] *) {
   color: var(--cm-text) !important;
   -webkit-text-fill-color: var(--cm-text) !important;
 }
-
-/* Also catch markdown parents carrying a direct white-text class. */
-html[data-cm-theme] main :is(.markdown, .prose)
-  :is([class*="text-white"], [class*="text-token-text-primary"],
-      [class*="text-token-text-secondary"]) {
-  color: var(--cm-text) !important;
-  -webkit-text-fill-color: var(--cm-text) !important;
-}
-
-/* Links intentionally remain distinct from ordinary text. */
-html[data-cm-theme] main :is(.markdown, .prose) a:not(button) {
+html[data-cm-theme] main [data-message-author-role="assistant"] :is(.markdown, .prose) a {
   color: var(--cm-link) !important;
   -webkit-text-fill-color: var(--cm-link) !important;
+  text-decoration-color: var(--cm-link) !important;
 }
 
-/* Never recolor user bubbles, the dark input, syntax-highlighted code
-   or controls inside assistant content. */
-html[data-cm-theme] main
-  [data-message-author-role="user"] :is(.markdown, .prose) *,
-html[data-cm-theme] main
-  [data-message-author-role="user"] :is(.markdown, .prose) {
-  color: inherit !important;
-  -webkit-text-fill-color: currentColor !important;
+/* MENSAJES DEL USUARIO: cada burbuja de fondo oscuro lleva tinta clara.
+   Los mensajes no dependen de una regla que recorra todos los elementos main. */
+html[data-cm-theme] main [data-message-author-role="user"],
+html[data-cm-theme] main [data-message-author-role="user"] :is(
+  p, li, span, div, h1, h2, h3, h4, h5, h6, strong, em, blockquote
+) {
+  --text-primary: #f6f6f2 !important;
+  --text-secondary: #e5e9e5 !important;
+  color: #f6f6f2 !important;
+  -webkit-text-fill-color: #f6f6f2 !important;
 }
 
-/* EMERGENCY READABILITY · 2026-11-01 · CHECKPOINT 03
-   Broad assistant-only foreground fallback. Does not target user bubbles,
-   composer, buttons, code blocks or icons. */
-html[data-cm-theme] main :not([data-message-author-role="user"]):not([data-message-author-role="user"] *):not([class*="bg-token-message-surface"]):not([class*="bg-token-message-surface"] *):not(#prompt-textarea):not(#prompt-textarea *):not(form):not(form *):not(pre):not(pre *):not(button):not(button *):not(svg):not(svg *) {
+/* BLOQUES OSCUROS DE CONTENIDO: priorizar legibilidad por encima
+   del resaltado de sintaxis de ChatGPT. No aplicar a las respuestas generales. */
+html[data-cm-theme] main :is(
+  pre, pre *,
+  [data-testid*="code-block"],
+  [data-testid*="code-block"] *
+) {
+  --text-primary: #f3f5f2 !important;
+  color: #f3f5f2 !important;
+  -webkit-text-fill-color: #f3f5f2 !important;
+}
+html[data-cm-theme] main pre {
+  background-color: #232a2b !important;
+  border: 1px solid #465a59 !important;
+  border-radius: 12px !important;
+  max-width: 100% !important;
+  overflow-x: auto !important;
+}
+html[data-cm-theme] main :is(.markdown, .prose) :not(pre) > code {
   color: var(--cm-text) !important;
   -webkit-text-fill-color: var(--cm-text) !important;
-}
-
-/* Temporary on-screen receipt: verifies the LIVE CSS actually arrived.
-   Will be removed once the user confirms readable text. */
-html[data-cm-theme] body::after {
-  content: "CSS LIVE · 03";
-  position: fixed;
-  left: 60px;
-  bottom: 9px;
-  z-index: 2147483646;
-  padding: 4px 7px;
-  border-radius: 4px;
-  background: #182922;
-  color: #ffffff;
-  font: 11px/1 system-ui, sans-serif;
-  letter-spacing: .03em;
-  pointer-events: none;
-}
-
-/* Navigation text and icons should not remain white on the pale sidebar. */
-html[data-cm-theme] :is(aside, #stage-slideover-sidebar) {
-  color: var(--cm-text) !important;
   background-color: var(--cm-sidebar) !important;
+}
+
+/* COMPOSER OSCURO: restaurar letras, cursor e iconos claros.
+   La interfaz original utiliza un editor contenteditable con elementos hijos;
+   'color' solo en #prompt-textarea no alcanza si hay text-fill-color en hijos. */
+html[data-cm-theme] :is(
+  form:has(#prompt-textarea),
+  [data-testid="composer"],
+  [data-testid="composer-root"]
+) {
+  --text-primary: #f6f7f3 !important;
+  --text-secondary: #cbd4ce !important;
+  --icon-primary: #f6f7f3 !important;
+  --icon-secondary: #cbd4ce !important;
+}
+html[data-cm-theme] #prompt-textarea,
+html[data-cm-theme] #prompt-textarea *,
+html[data-cm-theme] #prompt-textarea [contenteditable="true"] {
+  color: #f6f7f3 !important;
+  -webkit-text-fill-color: #f6f7f3 !important;
+  caret-color: #ffffff !important;
+}
+html[data-cm-theme] :is(form:has(#prompt-textarea), [data-testid="composer"])
+  :is(button, button span, button svg) {
+  color: #e7efeb !important;
+  -webkit-text-fill-color: #e7efeb !important;
+}
+html[data-cm-theme] :is(form:has(#prompt-textarea), [data-testid="composer"])
+  button:is([data-testid="send-button"],[aria-label="Send prompt"],[aria-label="Enviar mensaje"]) {
+  color: #17221e !important;
+  -webkit-text-fill-color: #17221e !important;
+}
+/* Al mandar una respuesta, el botón blanco no debe perder su flecha oscura. */
+html[data-cm-theme] :is(form:has(#prompt-textarea), [data-testid="composer"])
+  button:is([data-testid="send-button"],[aria-label="Send prompt"],[aria-label="Enviar mensaje"]) svg {
+  color: #17221e !important;
+}
+
+/* BARRA LATERAL: iconos contrastados con su superficie real. */
+html[data-cm-theme] .bg-token-sidebar-surface-primary,
+html[data-cm-theme] :is(aside, #stage-slideover-sidebar) {
+  background-color: var(--cm-sidebar) !important;
+  color: var(--cm-text) !important;
 }
 html[data-cm-theme] :is(aside, #stage-slideover-sidebar)
   :is(a, button, span, svg) {
   color: var(--cm-text) !important;
 }
 
-/* The user's composer is dark in the screenshot. Preserve its native
-   light-on-dark contrast instead of forcing dark text into its dark field. */
-html[data-cm-theme] #prompt-textarea,
-html[data-cm-theme] #prompt-textarea * {
-  color: #f4f4f2 !important;
-  caret-color: #fff !important;
-}
-
-/* Full-width reading when the user selects that option. */
-@media (min-width: 760px) {
+/* Conversación ancha. Evitar estirar burbujas, tablas o ventanas modales. */
+@media (min-width: 900px) {
   html[data-cm-wide="yes"] {
-    --thread-content-max-width: calc(100vw - 48px) !important;
-    --thread-body-max-width: calc(100vw - 48px) !important;
+    --thread-content-max-width: calc(100vw - 112px) !important;
+    --thread-body-max-width: calc(100vw - 112px) !important;
   }
-  html[data-cm-wide="yes"] #thread [class*="max-w-"],
-  html[data-cm-wide="yes"] main article,
-  html[data-cm-wide="yes"] main .prose {
-    max-width: calc(100% - 24px) !important;
-    min-width: 0 !important;
-  }
-  html[data-cm-wide="yes"] #thread [data-message-author-role="assistant"] {
+  html[data-cm-wide="yes"] main [data-testid^="conversation-turn-"] {
     max-width: none !important;
     width: 100% !important;
+    min-width: 0 !important;
+  }
+  html[data-cm-wide="yes"] main [data-testid^="conversation-turn-"]
+    :is([class*="max-w-"], .mx-auto),
+  html[data-cm-wide="yes"] main [class*="max-w-"][class*="mx-auto"],
+  html[data-cm-wide="yes"] #thread [class*="max-w-"] {
+    max-width: calc(100% - 32px) !important;
+  }
+  html[data-cm-wide="yes"] main [data-message-author-role="assistant"] {
+    max-width: none !important;
+    min-width: 0 !important;
   }
 }
 
+/* Menos ruido: el selector de Compartir no ocupa espacio. */
 html[data-cm-theme] button[data-testid="share-chat-button"],
 html[data-cm-theme] header button[aria-label="Compartir" i],
 html[data-cm-theme] header button[aria-label="Share" i],
@@ -216,16 +212,17 @@ html[data-cm-theme] #page-header button[aria-label="Share" i] {
   display: none !important;
 }
 
+/* Solo para avisos fugaces del actualizador. SIN etiqueta CSS LIVE permanente. */
 #cm-live-toast {
   position: fixed !important;
   bottom: 16px !important;
   right: 16px !important;
   z-index: 2147483600 !important;
-  background: #1d2b34 !important;
-  color: #f7f7f3 !important;
-  border: 1px solid #687986 !important;
-  border-radius: 8px !important;
+  color: #fff !important;
+  background: #1f3029 !important;
+  border: 1px solid #65776b !important;
   padding: 8px 12px !important;
+  border-radius: 8px !important;
   font: 13px/1.4 system-ui, sans-serif !important;
   pointer-events: none !important;
 }
