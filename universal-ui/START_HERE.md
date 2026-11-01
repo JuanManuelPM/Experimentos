@@ -1,36 +1,29 @@
-# Universal UI · Importación candidata (pendiente de código)
+# Universal UI · START HERE
 
-**Estado real, 2026-11-01:** creada rama `universal-ui/v0` desde `master`. Este archivo es un handoff de recepción, NO una entrega funcional ni una importación del código fuente.
+**Fecha:** 2026-11-01  
+**Rama:** `universal-ui/v0` (candidata; NO producción)  
+**Fuente original:** ZIP `universal-ui-v0.1.0.zip`, SHA-256 `0c4fc3fac7e4f1dbce81e960c75af56b5d7f1f79f077fbdca1ef3d83493c0fa2`
 
-## Fuente recibida
+## Estado comprobado
 
-Adjunto de conversación: `universal-ui-v0.1.0.zip`
+- **Código fuente importado:** 40 archivos extraídos del ZIP original y versionados en esta rama: `extension/`, `test/`, `docs/`, `design/`, `demo/`, `scripts/`, manifiesto y dependencias.
+- **Recuperación:** `sources/universal-ui-v0.1.0.tar.xz` es un archivo redundante íntegro con esos 40 archivos. SHA-256 local: `ed178d416fa4d479a1e96318589d2082d29d406229fdc5e25f3e50852e38046e`.
+- **Prueba de sintaxis JS:** PASS (`node --check`).
+- **Construcción de demo:** PASS (`npm run build:demo`).
+- **Pruebas de navegador con Chromium local y fixtures sintéticos:** PASS para aplicar tema Café, ocultar elementos con modo Minimal y restaurar en ChatGPT, WhatsApp y Wikipedia. Véase `docs/BROWSER_SMOKE_2026-11-01.md`.
+- **Suite Node de 32 pruebas:** **NO VERIFICADA** localmente: falta la dependencia `jsdom`. No confundir el número de pruebas declaradas por la entrega con 32 PASS independientes.
+- **Firefox real y páginas reales:** **NOT_RUN**. Los adaptadores todavía tienen `calibratedAt: null`.
 
-- SHA-256 del ZIP original: `0c4fc3fac7e4f1dbce81e960c75af56b5d7f1f79f077fbdca1ef3d83493c0fa2`.
-- Archivo de la entrega: `universal-ui/`, 53 entradas ZIP en total.
-- Contiene `extension/` (manifest MV3, núcleo, adaptadores para ChatGPT, WhatsApp Web y Wikipedia), `test/`, `docs/`, `design/`, `demo/` y `scripts/`.
-- El ZIP **todavía no está subido a esta rama**. No afirmar que el código esté versionado en GitHub hasta confirmar su importación.
+## Próxima etapa
 
-## Pruebas reproducidas desde el ZIP
+1. Instalar dependencias de desarrollo en un entorno con npm operativo y ejecutar `npm test`. Registrar cada resultado.
+2. Calibrar adaptador ChatGPT con navegador real. Prioridad: elemento esencial `composer`, encabezado, texto de marca, `Manage`, valoración y ancho.
+3. Calibrar WhatsApp Web y asegurar que jamás se lean ni envíen mensajes.
+4. Probar permiso por sitio, popup y teclado en Firefox. Contrastar el modo claro/oscuro y la restauración.
+5. Preparar un paquete instalable candidato y una instalación de un solo paso; **no sustituir el userscript actual** antes de demostrar equivalencia y obtener aceptación del usuario.
 
-- `node --check` en todos los JS de `extension/`: **PASS**.
-- `npm run build:demo`: **PASS**, produjo `demo/index.html`.
-- `npm test`: **NOT_RUN / entorno sin jsdom**. La entrega declara 32 casos, pero en este entorno `ERR_MODULE_NOT_FOUND` impide ejecutarlos. No contar 32 PASS propios.
-- Navegación funcional contra ChatGPT y WhatsApp Web reales: **NOT_RUN**.
-- Firefox real (permisos, popup, atajo, reversión): **NOT_RUN**.
+## Aislamiento
 
-## Estado de seguridad
+Este trabajo vive exclusivamente en `universal-ui/v0`. `master`, `gh-pages` y el personalizador existente permanecen sin cambios. No afirmar que un selector funciona en chatgpt.com o web.whatsapp.com reales hasta aportar evidencia.
 
-No activar Universal UI en producción ni cambiar `userstyles/chatgpt-live.css` y `userstyles/chatgpt-live.user.js`. El personalizador que el usuario utiliza permanece en `master`.
-
-El manifiesto del ZIP declara permisos `storage`, `activeTab`, `scripting` y permisos de host limitados a ChatGPT, WhatsApp Web y Wikipedia. Esto es una lectura estática, no una garantía de seguridad.
-
-## Continuación estricta
-
-1. Importar el ZIP completo en esta rama, con el mismo hash/estructura y sin directorio `node_modules`.
-2. Ejecutar la suite con `jsdom` instalado y registrar resultado real.
-3. Calibrar los selectores de ChatGPT en Firefox real. Registrar `No encontrado` frente a `Aplicado`; nunca falsos positivos.
-4. Probar restauración, navegación y selección de tema, en una rama candidata y sin activar simultáneamente el userscript de ChatGPT.
-5. Solo tras aceptación humana, planificar migración; no sustituir la instalación actual unilateralmente.
-
-**Regla:** el ZIP adjunto es fuente de verdad para la versión 0.1.0 hasta que los archivos estén importados y comparados. Este documento no reemplaza `docs/STATE.md` de la entrega.
+Reanudar leyendo `docs/DIAGNOSIS.md`, `docs/ARCHITECTURE.md`, `docs/DECISIONS.md` y `docs/BROWSER_SMOKE_2026-11-01.md`.

@@ -1,36 +1,27 @@
-# Estado · para continuar en otra conversación
+# Universal UI 0.1.0 · Estado real (2026-11-01)
 
-Actualizado: 2026-11-01 · rama `universal-ui/v0` · versión 0.1.0
+**Rama:** `universal-ui/v0`  
+**Producción:** intacta; no instalar esta candidata en paralelo con ChatGPT Minimal Live.
 
 ## Hecho
 
-- Núcleo universal, sistema visual, contrato de adaptadores, motor de verificación (`extension/core/`).
-- Adaptadores ChatGPT, WhatsApp Web y Wikipedia (ejemplo de tercera app). **Ninguno calibrado en vivo.**
-- Panel con Aplicaciones · Personalización · Perfiles, botón de barra y `Alt+Shift+U`.
-- 32 pruebas en verde. Demo funcional en `demo/index.html`.
-- Diseño en un canvas de Claude con el sistema Riel; copia de las fuentes en `design/`.
-- `userstyles/` sin modificar.
+- 40 archivos de fuente importados íntegramente desde `universal-ui-v0.1.0.zip` a GitHub en esta rama.
+- Núcleo común, sistema de temas, perfiles y verificación; adaptadores ChatGPT, WhatsApp Web y Wikipedia.
+- Interfaz con un único botón/popup de Firefox; documentación y código de demo.
+- PASS: sintaxis de JS y `npm run build:demo`.
+- PASS en Chromium **sobre fixtures sintéticos**: temas, visibilidad Minimal y restauración para las tres aplicaciones; véase `BROWSER_SMOKE_2026-11-01.md`.
+- Suite declarada en ZIP: 32 pruebas. **No fueron ejecutadas completamente por este chat**, pues `jsdom` falta en el entorno; sin inflar el porcentaje.
+- Los selectores de páginas reales **siguen pendientes de calibración**; `calibratedAt: null`.
 
-## Siguiente, en orden
+## Siguiente acción comprobable
 
-1. **Calibrar ChatGPT** en Firefox real: cargar la extensión temporal, abrir el panel, corregir selectores *No encontrado* o *alternativo* en `adapters/chatgpt.js`, fijar `calibratedAt`. Empezar por `brand`, `manage` y `feedback`.
-2. **Calibrar WhatsApp Web** igual (`adapters/whatsapp.js`); sobre todo el puente de tema (nombres de variables) y `nav`.
-3. Probar en Firefox: permiso por sitio, inyección inmediata tras conceder, atajo.
-4. Migrar la configuración de v1.3.0 a un perfil (DIAGNOSIS.md, *Migración propuesta*).
-5. Valorar: puentes de tema para modo claro; observar también cambios de atributo `style` en objetivos de diseño.
+1. `npm ci && npm test` en un entorno con acceso a registro npm.
+2. Firefox real: test de extensión temporal y adaptador ChatGPT. Registrar captura, URL, fecha, selectores encontrados, antes/después, accesibilidad de controles esenciales, reversión y resultados PASS/FAIL.
+3. Repetir en WhatsApp Web, verificar privacidad.
+4. Solo después, preparar una distribución sencilla y migrar el estilo viejo.
 
-## Cómo retomar
+## Reglas
 
-```bash
-git checkout universal-ui/v0
-cd universal-ui && npm install && npm test
-```
+No modificar `master` ni `userstyles/`; no instalar en producción ni ocultar resultados no verificados. No leer conversaciones ni mensajes. Mantener configuración global separada de aplicación y excepciones. Registrar cualquier decisión nueva a partir de D16.
 
-Leer en este orden: `docs/DIAGNOSIS.md` → `docs/ARCHITECTURE.md` → `docs/DECISIONS.md`. Las decisiones D1–D15 están cerradas salvo que la calibración en vivo demuestre lo contrario; registrar cualquier cambio como D16+.
-
-## Reglas del proyecto
-
-- No modificar `userstyles/` ni publicar en `master` hasta tener paridad calibrada.
-- Ningún control se muestra como funcional sin verificación.
-- No leer ni transmitir conversaciones, mensajes ni credenciales; no automatizar envíos.
-- Una app nueva no puede requerir cambios en `core/`.
+Ver `START_HERE.md`, `docs/DIAGNOSIS.md`, `docs/ARCHITECTURE.md` y `docs/DECISIONS.md`.
