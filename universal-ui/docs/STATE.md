@@ -5,6 +5,9 @@
 
 ## Hecho
 
+- **CI en GitHub Actions:** suite completa de 34 casos, `npm ci`, `npm run build:demo` y sintaxis JS **PASS** en ejecución `41311607812`. Se agregaron 4 pruebas de permisos posteriores (38 escritas); resultado de esa ejecución adicional se registra por separado cuando termine.
+- **Permisos corregidos en candidata:** ahora son `optional_host_permissions` por sitio, sin scripts declarativos. La autorización manual activa registra scripts persistentes y los inyecta en la pestaña abierta. Pendiente prueba real en Firefox.
+
 - **Corrección real del observador en rama candidata:** se evitó el bucle de reaplicaciones causadas por la hoja `#uui-style` y ahora se detectan cambios de selectores por atributos sin añadir nodos (ver `OBSERVER_REPAIR_2026-11-01.md`).
 
 - 40 archivos de fuente importados íntegramente desde `universal-ui-v0.1.0.zip` a GitHub en esta rama.
@@ -12,7 +15,7 @@
 - Interfaz con un único botón/popup de Firefox; documentación y código de demo.
 - PASS: sintaxis de JS y `npm run build:demo`.
 - PASS en Chromium **sobre fixtures sintéticos**: temas, visibilidad Minimal y restauración para las tres aplicaciones; véase `BROWSER_SMOKE_2026-11-01.md`.
-- Pruebas: **34 casos escritos** (32 incluidos en el ZIP + 2 regresiones añadidas). **No se ejecutó toda la suite** aquí: falta `jsdom` y `npm ci` agotó el tiempo. No contarlos como 34 PASS.
+- Pruebas: **38 casos escritos** (32 originales + 2 observador + 4 permisos). Los primeros 34 pasaron en CI (run `41311607812`, 34/34); las 4 nuevas requieren su ejecución CI. Este contenedor sigue sin poder instalar `jsdom` por DNS a npm, pero el runner de GitHub sí lo hace.
 - Los selectores de páginas reales **siguen pendientes de calibración**; `calibratedAt: null`.
 
 ## Siguiente acción comprobable
