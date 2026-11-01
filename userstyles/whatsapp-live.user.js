@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         WhatsApp Minimal · Live
 // @namespace    https://github.com/JuanManuelPM/Experimentos
-// @version      1.1.0
-// @description  Base cero para WhatsApp: solo chats y conversación, desde ◐. Reversible.
+// @version      1.2.0
+// @description  Base cero: oculta bienvenida, encabezado y Archivados. Restaura con ◐.
 // @author       JuanManuelPM
 // @match        https://web.whatsapp.com/*
 // @noframes
@@ -250,71 +250,115 @@
   /* Identificación estructural de las CINCO zonas pedidas.
      Solo lee roles/atributos/geometría, jamás nombres ni texto de chats.
      Nunca oculta #side, #pane-side, #main ni sus ancestros. */
+  /* Base cero v1.2 · Usar etiquetas de interfaz muy concretas y límites
+     geométricos. No inspecciona ni guarda nombres o mensajes de chats. */
   function markBareChatLayout() {
+    if (mode() !== 'radical') return;
     const side = document.querySelector('#side');
     const pane = document.querySelector('#pane-side');
-    if (!side || !pane || !pane.isConnected) return;
-    const main = document.querySelector('#main');
-    const sideBox = side.getBoundingClientRect();
-    const paneBox = pane.getBoundingClientRect();
-    if (sideBox.width < 140) return;
-    const valid = el => el && el !== side && el !== pane && el !== main &&
-      !el.contains(pane) && (!main || !el.contains(main));
-    const mark = (el, id) => {
-      if (valid(el) && el.getAttribute('data-wml-remove') !== id)
-        el.setAttribute('data-wml-remove', id);
-    };
-    /* Rail: slot muy estrecho, alto y situado a la izquierda de #side. */
-    for (const el of document.querySelectorAll('#app header, #app [role="navigation"]')) {
-      if (!valid(el) || side.contains(el) || (main && main.contains(el))) continue;
-      const r = el.getBoundingClientRect();
-      if (r.width > 22 && r.width < 145 &&
-          r.height > Math.min(220, innerHeight * .36) &&
-          r.right <= sideBox.left + 16 && r.left < sideBox.left) {
-        mark(el, 'rail');
+    const app = document.querySelector('#app');
+    if (!side || !pane || !app) return;
+    const s = side.getBoundingClientRect();
+    const list = pane.getBoundingClientRect();
+    if (s.width < 160) return;
+
+    const protectedNode = node => !node || node === app || node === side ||
+      node === pane || node.id === 'main' ||
+      node.contains(side) || node.contains(pane) ||
+      !!node.querySelector('#main footer [contenteditable="true"]');
+    function mark(node, type) {
+      if (!node || protectedNode(node)) return false;
+      if (node.getAttribute('data-wml-remove') !== type)
+        node.setAttribute('data-wml-remove', type);
+      return true;
+    }
+    function textNode(label, predicate, scope = app) {
+      // Exact UI labels only; skip actual message and chat text nodes.
+      const walker = document.createTreeWalker(scope, NodeFilter.SHOW_TEXT);
+      let node, checked = 0;
+      while ((node = walker.nextNode()) && checked++ < 7000) {
+        const el = node.parentElement;
+        if (!el || el.closest('#wml-live-root, script, style, #main [data-testid="msg-container"]')) continue;
+        const r = el.getBoundingClientRect();
+        if (!predicate(el, r)) continue;
+        const value = (node.nodeValue || '').trim().replace(/\s+/g, ' ');
+        if (value.toLowerCase() === label.toLowerCase()) return el;
+      }
+      return null;
+    }
+    function bestRow(start, options) {
+      if (!start) return null;
+      let best = null, el = start;
+      for (let depth=0; el && depth<12; depth++, el=el.parentElement) {
+        if (protectedNode(el)) break;
+        const r=el.getBoundingClientRect();
+        if (r.height > options.maxHeight || r.width > options.maxWidth) break;
+        if (r.width >= options.minWidth && r.height >= options.minHeight &&
+            (!options.topLimit || r.top < options.topLimit) &&
+            (!options.bottomLimit || r.bottom <= options.bottomLimit)) best=el;
+      }
+      return best;
+    }
+
+    // 1) Encabezado WhatsApp, puntos y Nuevo chat: la misma fila completa.
+    const leftUpper=(el,r)=>s.left-8<=r.left && r.right<=s.right+8 &&
+      r.top>=s.top-8 && r.top<s.top+95 && !pane.contains(el);
+    const title=textNode('WhatsApp',leftUpper,side) ||
+      textNode('WhatsApp',leftUpper,app);
+    const header=bestRow(title,{minWidth:s.width*.58,minHeight:25,
+      maxHeight:105,maxWidth:s.width+18,
+      topLimit:s.top+45,bottomLimit:Math.max(list.top+22,s.top+105)});
+    if (header) mark(header,'header');
+    // Fallback structural; only headers above the conversation list.
+    for(const h of side.querySelectorAll('header, [data-testid="chatlist-header"], [data-testid="chat-list-header"]')) {
+      const r=h.getBoundingClientRect();
+      if(r.width>s.width*.62 && r.height>25 && r.height<105 &&
+        r.top<s.top+54 && r.bottom<list.top+30) mark(h,'header');
+    }
+
+    // 2) Archivados: selecciona su fila exacta, nunca "primer chat".
+    const archived=textNode('Archived',(el,r)=>r.left>=s.left-8 &&
+      r.right<=s.right+8 && r.top>=s.top && r.top<s.top+205,side) ||
+      textNode('Archivados',(el,r)=>r.left>=s.left-8 &&
+      r.right<=s.right+8 && r.top>=s.top && r.top<s.top+205,side);
+    const archivedRow=bestRow(archived,{minWidth:s.width*.57,
+      minHeight:20,maxHeight:86,maxWidth:s.width+18,
+      topLimit:s.top+205,bottomLimit:s.top+245});
+    if(archivedRow) mark(archivedRow,'archived');
+    for(const el of side.querySelectorAll(
+      '[data-testid="archived-row"], [data-icon="archived"], [aria-label="Archived" i], [aria-label="Archivados" i]'
+    )){
+      const r=el.getBoundingClientRect();
+      if(r.top<s.top+205){
+        const row=bestRow(el,{minWidth:s.width*.57,minHeight:20,maxHeight:86,
+          maxWidth:s.width+18,topLimit:s.top+205,bottomLimit:s.top+245});
+        if(row) mark(row,'archived');
       }
     }
-    /* En vez de depender de clases aleatorias de React, subir desde un
-       control inequívoco hasta su fila compacta, sin alcanzar la lista. */
-    function markRow(input, id, maxHeight, maxBelowPane = 24) {
-      if (!input || !valid(input)) return;
-      let node = input, candidate = null;
-      while (node && node !== side && node !== pane) {
-        if (!valid(node)) break;
-        const r = node.getBoundingClientRect();
-        if (r.height > maxHeight || r.top > paneBox.top + maxBelowPane) break;
-        if (r.width > sideBox.width * .6 && r.height >= 18) candidate = node;
-        node = node.parentElement;
+
+    // 3) Pantalla de bienvenida: solo cuando NO hay chat abierto.
+    // Nunca tocar #main ni el compositor. Se eliminan las tarjetas/atajos,
+    // pero se conserva la superficie vacía de la derecha.
+    const activeComposer=!!document.querySelector('#main footer [contenteditable="true"], #main [data-testid="conversation-compose-box-input"]');
+    if (!activeComposer) {
+      const right=(el,r)=>r.left >= s.right+15 && r.width>0 &&
+        !side.contains(el) && !pane.contains(el) &&
+        !el.closest('#main [data-testid="msg-container"]');
+      const card=textNode('Voice and video calling is now available',right,app);
+      const cardBox=bestRow(card,{minWidth:180,minHeight:105,maxHeight:460,
+        maxWidth:650});
+      if(cardBox)mark(cardBox,'welcome');
+      for(const label of ['Send document','Add contact','Invite a friend','New call','Ask Meta AI']){
+        const item=textNode(label,right,app);
+        const tile=bestRow(item,{minWidth:38,minHeight:30,maxHeight:145,
+          maxWidth:170});
+        if(tile)mark(tile,'welcome-action');
       }
-      if (candidate) mark(candidate, id);
-    }
-    /* Encabezado WhatsApp + menú + Nuevo chat. */
-    for (const el of side.querySelectorAll('header, [data-testid="chatlist-header"], [data-testid="chat-list-header"]')) {
-      if (!valid(el)) continue;
-      const r = el.getBoundingClientRect();
-      if (r.height > 20 && r.height < 150 && r.top < paneBox.top + 25)
-        mark(el, 'header');
-    }
-    const newChat = side.querySelector(
-      '[aria-label="New chat" i], [title="New chat" i], [aria-label="Nuevo chat" i], [data-testid="new-chat"]'
-    );
-    markRow(newChat, 'header', 115);
-    /* Buscar: nunca quitar el buscador de mensajes dentro de #main. */
-    const search = side.querySelector(
-      '[aria-label="Search input textbox" i], [aria-label="Search or start a new chat" i], ' +
-      '[aria-label="Buscar o empezar un chat nuevo" i], [data-testid="chat-list-search"], ' +
-      'input[placeholder*="Search" i], input[placeholder*="Buscar" i]'
-    );
-    markRow(search, 'search', 105);
-    /* Archivados: exclusivamente un control etiquetado o con icono.
-       Evitamos suponer que la primera fila sea siempre Archivados. */
-    const archived = side.querySelector(
-      '[data-testid="archived-row"], [data-testid="archived-chat"], ' +
-      '[data-icon="archived"], [aria-label="Archived" i], [aria-label="Archivados" i], ' +
-      '[title="Archived" i], [title="Archivados" i]'
-    );
-    if (archived && valid(archived)) {
-      markRow(archived, 'archived', 100, 145);
+      // Nearby standard default welcome copy in versions without call promo.
+      const intro=textNode('Download WhatsApp for Windows',right,app);
+      const introBox=bestRow(intro,{minWidth:180,minHeight:95,
+        maxHeight:500,maxWidth:650});
+      if(introBox)mark(introBox,'welcome');
     }
   }
 
