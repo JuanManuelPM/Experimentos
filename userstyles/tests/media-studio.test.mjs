@@ -1,280 +1,166 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
-import { fileURLToPath } from 'node:url';
-import { JSDOM } from 'jsdom';
+import {readFileSync} from 'node:fs';
+import {fileURLToPath} from 'node:url';
+import {JSDOM} from 'jsdom';
 
-const source = readFileSync(fileURLToPath(new URL('../media-studio.user.js', import.meta.url)), 'utf8');
-function native(kind) {
-  if (kind === 'music') return '<ytmusic-player-bar>'+
-    '<yt-formatted-string class="title ytmusic-player-bar">Canción uno</yt-formatted-string>'+
-    '<yt-formatted-string class="byline">Artista uno</yt-formatted-string>'+
-    '<div id="thumbnail"><img src="https://i.ytimg.com/something.jpg"></div>'+
-    '<button class="previous-button"></button><button class="next-button"></button>'+
-    '</ytmusic-player-bar><ytmusic-player><video></video></ytmusic-player>'+
-    '<ytmusic-player-queue-item><yt-formatted-string class="song-title">Próxima canción</yt-formatted-string></ytmusic-player-queue-item>';
-  return '<ytd-watch-flexy><div id="player-container-outer" style="margin:10px">'+
-    '<div id="movie_player"><video class="html5-main-video"></video>'+
-    '<button class="ytp-next-button"></button></div></div></ytd-watch-flexy>'+
-    '<ytd-watch-metadata><h1><yt-formatted-string>Video principal</yt-formatted-string></h1>'+
-    '<ytd-channel-name><a>Canal prueba</a></ytd-channel-name></ytd-watch-metadata>'+
-    '<ytd-playlist-panel-video-renderer>'+
-    '<a id="video-title" href="/watch?v=123&list=ABC">Video siguiente</a>'+
-    '</ytd-playlist-panel-video-renderer>';
-}
-async function boot(kind, enabled = true) {
-  const site = kind === 'music' ? 'music.youtube.com' : 'www.youtube.com';
-  const dom = new JSDOM('<html><head></head><body>'+native(kind)+'</body></html>', {
-    url: 'https://' + site + '/watch?v=123', runScripts: 'outside-only', pretendToBeVisual: true
+const source=readFileSync(fileURLToPath(new URL('../media-studio.user.js',import.meta.url)),'utf8');
+const VIDEO_ID='aBcDeFg1234';
+const fixture=()=>'<html><head></head><body>'+
+  '<ytd-watch-flexy><div id="movie_player"><video class="html5-main-video"></video></div></ytd-watch-flexy>'+
+  '<ytd-watch-metadata><h1><yt-formatted-string>Probando una canción</yt-formatted-string></h1>'+
+  '<ytd-channel-name><a>Canal verificable</a></ytd-channel-name></ytd-watch-metadata>'+
+  '<ytd-guide-entry-renderer><a title="Mi playlist" href="/playlist?list=PLabc">Mi playlist</a></ytd-guide-entry-renderer></body></html>';
+const wait=n=>new Promise(r=>setTimeout(r,n));
+async function boot(overrides={}){
+  const url=overrides.url||'https://www.youtube.com/watch?v='+VIDEO_ID;
+  const dom=new JSDOM(fixture(),{url,runScripts:'outside-only',pretendToBeVisual:true});
+  const w=dom.window;
+  Object.defineProperty(w,'innerWidth',{configurable:true,value:1366});
+  Object.defineProperty(w,'innerHeight',{configurable:true,value:820});
+  const state=new Map(Object.entries(overrides.saved||{}));
+  const cmds=[];
+  w.GM_getValue=(k,f)=>state.has(k)?state.get(k):f;
+  w.GM_setValue=(k,v)=>state.set(k,v);
+  w.GM_registerMenuCommand=(name,fn)=>cmds.push({name,fn});
+  w.setInterval=()=>1; // no background jobs in test runner
+  const media=w.document.querySelector('video');
+  let playing=false,played=0,paused=0;
+  Object.defineProperties(media,{
+    paused:{configurable:true,get:()=>!playing},
+    duration:{configurable:true,get:()=>220},
+    volume:{configurable:true,value:.7,writable:true}
   });
-  const {window: w} = dom, stored = new Map(), cmds = [];
-  Object.defineProperty(w, 'innerWidth', { value: 1536, configurable: true });
-  Object.defineProperty(w, 'innerHeight', { value: 900, configurable: true });
-  stored.set('ums-enabled-v1-'+kind, enabled);
-  w.GM_getValue = (key, fall) => stored.has(key) ? stored.get(key) : fall;
-  w.GM_setValue = (key, val) => stored.set(key, val);
-  w.GM_registerMenuCommand = (label, handler) => cmds.push({label, handler});
-  const media = w.document.querySelector('video');
-  let playing = false, plays = 0, pauses = 0;
-  Object.defineProperty(media, 'paused', {get:()=>!playing, configurable:true});
-  Object.defineProperty(media, 'duration', {get:()=>200, configurable:true});
-  Object.defineProperty(media, 'volume', {value:.65, writable:true, configurable:true});
-  media.play = () => {playing=true;plays++;return Promise.resolve()};
-  media.pause = () => {playing=false;pauses++};
-  w.setInterval=()=>0; // no background loops in tests
+  media.play=()=>{playing=true;played++;return Promise.resolve()};
+  media.pause=()=>{playing=false;paused++};
   w.eval(source);
-  const host=w.document.getElementById('ums-host');
-  return { dom,w,stored,cmds,host,sh:host.shadowRoot,media,stats:()=>({plays,pauses,playing})};
+  await wait(25);
+  const host=w.document.querySelector('#ums-youtube-studio-host');
+  return {dom,w,media,state,cmds,host,sh:host?.shadowRoot,stats:()=>({played,paused,playing})};
 }
-function cleanup(context){context.dom.window.close();}
-const $=(ctx,id)=>ctx.sh.getElementById(id);
-function pointer(win,target,event,x,y) {
-  const e=new win.Event(event,{bubbles:true,cancelable:true});
-  Object.defineProperties(e,{clientX:{value:x},clientY:{value:y},pointerId:{value:1},button:{value:0}});
-  target.dispatchEvent(e);
+function close(c){c.dom.window.close()}
+const $=(c,id)=>c.sh.getElementById(id);
+function pointer(w,el,type,x,y){
+ const e=new w.Event(type,{bubbles:true,cancelable:true});
+ for(const [key,value] of Object.entries({clientX:x,clientY:y,pointerId:1,button:0}))
+ Object.defineProperty(e,key,{value});
+ el.dispatchEvent(e);
 }
-
-test('single installed userscript supports both official domains',()=>{
+test('only YouTube is targeted, never YouTube Music',()=>{
   assert.match(source,/@match\s+https:\/\/www.youtube.com\/\*/);
-  assert.match(source,/@match\s+https:\/\/music.youtube.com\/\*/);
-  assert.match(source,/GM_getValue/);
-  assert.doesNotMatch(source,/GM_xmlhttpRequest|fetch\(/);
+  assert.doesNotMatch(source,/@match\s+https:\/\/music.youtube.com\/\*/);
+  assert.match(source,/@updateURL\s+https:\/\/raw.githubusercontent.com/);
+  assert.doesNotMatch(source,/GM_xmlhttpRequest|document\.cookie/);
 });
-
-test('YouTube canvas has an independent video stage and keeps native video attached',async()=>{
-  const c=await boot('youtube');
-  try{
-    assert.equal($ (c,'appName').textContent,'YouTube Studio');
-    assert.equal($(c,'desk').hidden,false);
-    assert.ok(c.media.isConnected);
-    assert.equal(c.sh.getElementById('videoMessage').textContent.includes('video'),true);
-    assert.equal($(c,'searchForm').getAttribute('action'),'https://www.youtube.com/results');
-    assert.equal($(c,'search').name,'search_query');
-  }finally{cleanup(c)}
+test('launcher and real panel are visible after initial injection',async()=>{
+ const c=await boot();try{
+  assert.ok(c.host?.isConnected);
+  assert.ok($(c,'launcher'));
+  assert.equal($(c,'panel').hidden,false);
+  assert.equal($(c,'panel').style.position,''); // position comes from shadow stylesheet
+  assert.equal(c.sh.querySelector('#launcher').textContent.includes('STUDIO'),true);
+  assert.equal(c.media.isConnected,true);
+ }finally{close(c)}
 });
-
-test('YouTube Music album info comes from player bar and media remains original',async()=>{
-  const c=await boot('music');
-  try{
-    assert.equal($(c,'appName').textContent,'Music Studio');
-    assert.equal($(c,'song').textContent,'Canción uno');
-    assert.equal($(c,'artist').textContent,'Artista uno');
-    assert.match($(c,'cover').src,/ytimg.com/);
-    assert.equal($(c,'search').name,'q');
-    assert.ok(c.media.isConnected);
-  }finally{cleanup(c)}
+test('closed state preserves launcher on reload and can reopen',async()=>{
+ const c=await boot({saved:{'ums-youtube-v1':{open:false}}});try{
+  assert.equal($(c,'panel').hidden,true);
+  assert.ok($(c,'launcher').isConnected);
+  $(c,'launcher').click();
+  assert.equal($(c,'panel').hidden,false);
+  assert.equal(c.state.get('ums-youtube-v1').open,true);
+ }finally{close(c)}
 });
-
-test('play and pause operate on actual native HTMLMediaElement',async()=>{
-  for(const kind of ['youtube','music']){
-    const c=await boot(kind);
-    try{
-      $(c,'play').click();
-      assert.equal(c.stats().plays,1);
-      assert.equal(c.stats().playing,true);
-      $(c,'play').click();
-      assert.equal(c.stats().pauses,1);
-      assert.equal(c.stats().playing,false);
-    }finally{cleanup(c)}
-  }
+test('native playback/pause operate on original media element',async()=>{
+ const c=await boot();try{
+  assert.equal(c.stats().played,0);
+  $(c,'play').click();assert.equal(c.stats().played,1);
+  $(c,'play').click();assert.equal(c.stats().paused,1);
+  assert.ok(c.media.isConnected);
+ }finally{close(c)}
 });
-
-test('seek and volume write native media properties',async()=>{
-  const c=await boot('music');
-  try{
-    const seek=$(c,'seek');seek.value='250';seek.dispatchEvent(new c.w.Event('input'));
-    assert.equal(c.media.currentTime,50);
-    const volume=$(c,'volume');volume.value='40';volume.dispatchEvent(new c.w.Event('input'));
-    assert.equal(c.media.volume,.4);
-  }finally{cleanup(c)}
+test('seek/volume and skip time modify native media properties',async()=>{
+ const c=await boot();try{
+  c.media.currentTime=30;
+  $(c,'back').click();assert.equal(c.media.currentTime,20);
+  $(c,'ahead').click();assert.equal(c.media.currentTime,30);
+  const seek=$(c,'seek');seek.value='500';seek.dispatchEvent(new c.w.Event('input'));
+  assert.equal(c.media.currentTime,110);
+  const v=$(c,'volume');v.value='35';v.dispatchEvent(new c.w.Event('input'));
+  assert.equal(c.media.volume,.35);
+ }finally{close(c)}
 });
-
-test('youtube queue builds only local origin links, without copying message data',async()=>{
-  const c=await boot('youtube');
-  try{
-    const entries=c.sh.querySelectorAll('#queue a.row');
-    assert.equal(entries.length,1);
-    assert.equal(entries[0].textContent,'Video siguiente');
-    assert.equal(new URL(entries[0].href).origin,'https://www.youtube.com');
-    assert.equal(c.sh.textContent.includes('Chat'),false);
-  }finally{cleanup(c)}
+test('save music as a YouTube link with title and category, not fake YouTube Music sync',async()=>{
+ const c=await boot();try{
+  $(c,'saveMusic').click();
+  const items=c.state.get('ums-saved-youtube-v1');
+  assert.equal(items.length,1);
+  assert.equal(items[0].type,'music');
+  assert.equal(items[0].id,VIDEO_ID);
+  assert.equal(items[0].title,'Probando una canción');
+  c.sh.querySelector('[data-tab="library"]').click();
+  const links=c.sh.querySelectorAll('#favorites a.link');
+  assert.equal(links.length,1);
+  assert.equal(new URL(links[0].href).searchParams.get('v'),VIDEO_ID);
+ }finally{close(c)}
 });
-
-test('music queue is clearly read-only and has no fake URL for next item',async()=>{
-  const c=await boot('music');
-  try {
-    const entries=c.sh.querySelectorAll('#queue .row');
-    assert.equal(entries.length,1);
-    assert.equal(entries[0].textContent,'Próxima canción');
-    assert.equal(entries[0].tagName,'DIV');
-  }finally{cleanup(c)}
+test('library deduplicates and category filters; removing a favorite persists',async()=>{
+ const c=await boot();try{
+  $(c,'saveMusic').click();$(c,'saveVideo').click();
+  assert.equal(c.state.get('ums-saved-youtube-v1').length,1);
+  assert.equal(c.state.get('ums-saved-youtube-v1')[0].type,'video');
+  c.sh.querySelector('[data-tab="library"]').click();
+  c.sh.querySelector('[data-filter="music"]').click();
+  assert.equal(c.sh.querySelectorAll('#favorites .saved').length,0);
+  c.sh.querySelector('[data-filter="video"]').click();
+  assert.equal(c.sh.querySelectorAll('#favorites .saved').length,1);
+  c.sh.querySelector('#favorites .remove').click();
+  assert.equal(c.state.get('ums-saved-youtube-v1').length,0);
+ }finally{close(c)}
 });
-
-test('browse mode exposes original site and keeps floating controls',async()=>{
-  const c=await boot('music');
-  try{
-    $(c,'browse').click();
-    assert.equal($(c,'desk').dataset.browse,'true');
-    assert.equal($(c,'ambient').hidden,true);
-    assert.equal($(c,'masks').hidden,true);
-    assert.ok(c.media.isConnected);
-    $(c,'browse').click();
-    assert.equal($(c,'desk').dataset.browse,'false');
-  }finally{cleanup(c)}
+test('native playlists are links, with no invented account data',async()=>{
+ const c=await boot();try{
+  c.sh.querySelector('[data-tab="library"]').click();
+  const links=[...c.sh.querySelectorAll('#playlists a.link')];
+  assert.equal(links[0].textContent,'Mi playlist');
+  assert.equal(new URL(links[0].href).searchParams.get('list'),'PLabc');
+  assert.ok(links.some(x=>x.textContent.includes('biblioteca original')));
+ }finally{close(c)}
 });
-
-test('Original mode is reversible, never removes native player and includes launcher',async()=>{
-  const c=await boot('youtube');
-  try{
-    $(c,'close').click();
-    assert.equal($(c,'desk').hidden,true);
-    assert.equal($(c,'launcher').hidden,false);
-    assert.equal(c.stored.get('ums-enabled-v1-youtube'),false);
-    assert.ok(c.media.isConnected);
-    $(c,'launcher').click();
-    assert.equal($(c,'desk').hidden,false);
-    assert.equal(c.stored.get('ums-enabled-v1-youtube'),true);
-  }finally{cleanup(c)}
+test('appearance preferences toggle independently and restore without removing YouTube nodes',async()=>{
+ const c=await boot();try{
+  c.sh.querySelector('[data-tab="design"]').click();
+  const focus=$(c,'focus');focus.checked=true;focus.dispatchEvent(new c.w.Event('change'));
+  assert.equal(c.w.document.documentElement.dataset.umsFocus,'true');
+  assert.equal(c.w.document.documentElement.dataset.umsComments,'true');
+  $(c,'reset').click();
+  assert.equal(c.w.document.documentElement.dataset.umsFocus,'false');
+  assert.equal(c.w.document.documentElement.dataset.umsRelated,'false');
+  assert.equal(c.media.isConnected,true);
+ }finally{close(c)}
 });
-
-test('drag persists layout separately for YouTube and Music',async()=>{
-  const c=await boot('music');
-  try{
-    const desk=$(c,'desk'),handle=$(c,'handle');
-    const x=parseInt(desk.style.left,10),y=parseInt(desk.style.top,10);
-    pointer(c.w,handle,'pointerdown',50,60);
-    pointer(c.w,handle,'pointermove',85,85);
-    pointer(c.w,handle,'pointerup',85,85);
-    assert.equal(parseInt(desk.style.left,10),x+35);
-    assert.equal(parseInt(desk.style.top,10),y+25);
-    assert.equal(c.stored.get('ums-layout-v1-music').x,x+35);
-    assert.equal(c.stored.has('ums-layout-v1-youtube'),false);
-  }finally{cleanup(c)}
+test('dragging moves and persists window position',async()=>{
+ const c=await boot();try{
+  const handle=$(c,'handle'),left=parseInt($(c,'panel').style.left,10);
+  pointer(c.w,handle,'pointerdown',40,40);
+  pointer(c.w,handle,'pointermove',-10,72);
+  pointer(c.w,handle,'pointerup',-10,72);
+  assert.equal(parseInt($(c,'panel').style.left,10),left-50);
+  assert.equal(c.state.get('ums-youtube-v1').x,left-50);
+ }finally{close(c)}
 });
-
-test('does not auto-play media and stays honest without a loaded video',async()=>{
-  const c=await boot('youtube');
-  try{
-    assert.equal(c.stats().plays,0);
-    c.media.remove();
-    $(c,'play').click();
-    assert.match($(c,'status').textContent,/No hay reproducción/);
-    assert.equal(c.stats().plays,0);
-  }finally{cleanup(c)}
+test('keyboard Alt+Shift+Y toggles panel without disabling dock',async()=>{
+ const c=await boot();try{
+  const e=new c.w.KeyboardEvent('keydown',{key:'Y',code:'KeyY',altKey:true,shiftKey:true,bubbles:true});
+  c.w.dispatchEvent(e);
+  assert.equal($(c,'panel').hidden,true);
+  assert.ok($(c,'launcher').isConnected);
+ }finally{close(c)}
 });
-
-test('native next action uses existing site control, never fabricates playback',async()=>{
-  const c=await boot('music');
-  try{
-    let clicks=0;
-    c.w.document.querySelector('ytmusic-player-bar .next-button').addEventListener('click',()=>clicks++);
-    $(c,'next').click();
-    assert.equal(clicks,1);
-    assert.match($(c,'status').textContent,/Comprobando/);
-    assert.equal(c.stats().plays,0);
-  }finally{cleanup(c)}
-});
-
-test('fallback when native next button is unavailable',async()=>{
-  const c=await boot('music');
-  try{
-    c.w.document.querySelector('ytmusic-player-bar .next-button').remove();
-    $(c,'next').click();
-    assert.match($(c,'status').textContent,/no disponible/);
-  }finally{cleanup(c)}
-});
-
-test('native player styles restore precisely when changing to Original',async()=>{
-  const c=await boot('youtube');
-  try{
-    const target=c.w.document.getElementById('player-container-outer');
-    assert.equal(target.style.margin,'10px');
-    const slot=$(c,'videoSlot');
-    slot.getBoundingClientRect=()=>({left:350,top:110,width:650,height:366});
-    target.getBoundingClientRect=()=>({
-      left:parseFloat(target.style.left)||0,top:parseFloat(target.style.top)||0,
-      width:parseFloat(target.style.width)||0,height:parseFloat(target.style.height)||0
-    });
-    c.w.document.elementFromPoint=()=>target;
-    c.w.dispatchEvent(new c.w.Event('resize'));
-    assert.equal(target.style.position,'fixed');
-    assert.equal(target.style.left,'350px');
-    $(c,'close').click();
-    assert.equal(target.style.position,'');
-    assert.equal(target.style.margin,'10px');
-    assert.equal(c.media.isConnected,true);
-  }finally{cleanup(c)}
-});
-
-
-test('native YouTube player falls back safely when it is occluded by an overlay',async()=>{
-  const c=await boot('youtube');
-  try{
-    const target=c.w.document.getElementById('player-container-outer');
-    const slot=$(c,'videoSlot');
-    slot.getBoundingClientRect=()=>({left:315,top:100,width:630,height:354});
-    target.getBoundingClientRect=()=>({
-      left:parseFloat(target.style.left)||0,top:parseFloat(target.style.top)||0,
-      width:parseFloat(target.style.width)||0,height:parseFloat(target.style.height)||0
-    });
-    c.w.document.elementFromPoint=()=>c.w.document.body;
-    c.w.dispatchEvent(new c.w.Event('resize'));
-    assert.equal(target.style.position,'');
-    assert.equal(target.style.margin,'10px');
-    assert.equal(slot.dataset.mounted,'false');
-    assert.match($(c,'videoMessage').textContent,/Explorar/);
-    assert.ok(c.media.isConnected);
-  }finally{cleanup(c)}
-});
-
-test('Music media controls support a native audio element without a video tag',async()=>{
-  const c=await boot('music');
-  try{
-    c.media.remove();
-    const audio=c.w.document.createElement('audio');
-    let played=0;
-    audio.play=()=>{played++;return Promise.resolve()};
-    c.w.document.body.appendChild(audio);
-    $(c,'play').click();
-    assert.equal(played,1);
-  }finally{cleanup(c)}
-});
-
-test('visual backdrop masks block ghost clicks while Canvas is open',async()=>{
-  const c=await boot('music');
-  try{
-    assert.equal($(c,'masks').hidden,false);
-    assert.equal($(c,'ambient').hidden,false);
-    assert.match(c.sh.querySelector('style').textContent, /\.mask\{position:fixed;pointer-events:auto/);
-    $(c,'browse').click();
-    assert.equal($(c,'masks').hidden,true);
-  }finally{cleanup(c)}
-});
-
-test('window is centered by default rather than hard-pinned to sidebar',async()=>{
-  const c=await boot('youtube');
-  try{
-    const x=parseInt($(c,'desk').style.left,10);
-    assert.ok(x > 34,'expected centered start, not old sidebar position');
-  }finally{cleanup(c)}
+test('on a YouTube home page there is no fake playback or saved video',async()=>{
+ const c=await boot({url:'https://www.youtube.com/'});try{
+  $(c,'saveVideo').click();
+  assert.equal(c.state.has('ums-saved-youtube-v1'),false);
+  assert.match($(c,'status').textContent,/Abrí un video/);
+ }finally{close(c)}
 });
