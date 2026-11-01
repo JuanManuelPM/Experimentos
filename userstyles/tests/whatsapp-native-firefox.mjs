@@ -12,7 +12,7 @@ try {
  const html=[
  '<!doctype html><html><head><style>',
  '*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}',
- '#app{display:flex;height:100vh;overflow:hidden}',
+ '#app{display:flex;height:100vh;overflow:hidden;isolation:isolate}',
  '.nav{width:46px;flex:0 0 46px;background:#152128}',
  '#left{width:430px;flex:0 0 430px}',
  '#side{height:100%;width:430px;background:#26343d}',
@@ -53,6 +53,14 @@ try {
  });
  await driver.executeScript(script);
  await driver.wait(until.elementLocated(By.css('#pane-side [data-wml-n3-row]')),9000);
+ const visibleNames=await driver.executeScript(function(){
+   const row=document.getElementById('chat-b');const b=row.getBoundingClientRect();
+   const hit=document.elementFromPoint(b.left+65,b.top+12);
+   return {hit:hit===row||row.contains(hit),
+     pseudo:getComputedStyle(document.body,'::before').content};
+ });
+ assert.equal(visibleNames.hit,true,'Firefox native contacts must be visibly clickable');
+ assert.equal(visibleNames.pseudo,'none','No fullscreen black cover');
  const row=await driver.findElement(By.id('chat-b'));
  await row.click();
  await driver.wait(until.elementLocated(By.css('#main footer [contenteditable="true"]')),9000);
@@ -65,6 +73,12 @@ try {
  });
  assert.deepEqual(result.events,[{trusted:true,target:'chat-b'}]);
  assert.equal(result.title,'Persona B');
+ const chatHit=await driver.executeScript(function(){
+   const main=document.getElementById('main'),b=main.getBoundingClientRect();
+   const hit=document.elementFromPoint(b.left+b.width/2,b.top+90);
+   return hit===main||main.contains(hit);
+ });
+ assert.equal(chatHit,true,'Firefox native chat must be visibly on top');
  assert.ok(Math.abs(result.main.x-result.side.x-result.side.w)<5,
    'Firefox must place native conversation flush right of native contacts');
  const editor=await driver.findElement(By.css('#main footer [contenteditable="true"]'));
