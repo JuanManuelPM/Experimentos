@@ -1,165 +1,48 @@
 /* CHATGPT_LIVE_STYLE_V1
-   Remote CSS data only. No scripts or user data.
-   Theme + width preferences are local to the user's browser. */
+   HOTFIX: contrast safety rollback, 2026-11-01.
+   Theme colors are temporarily disabled until tested against
+   the live ChatGPT dark/light theme. This restores native contrast.
+   data-cm-theme stays available for future verified theme work.
+*/
 
-html[data-cm-theme="aire"] {
-  --cm-bg: #eaf1ed;
-  --cm-panel: #dce8e0;
-  --cm-side: #d7e4dc;
-  --cm-card: #f5f9f5;
-  --cm-ink: #233834;
-  --cm-muted: #4d625b;
-  --cm-border: #b2c8b9;
-  --cm-link: #15665f;
-}
-html[data-cm-theme="cafe"] {
-  --cm-bg: #eee5d8;
-  --cm-panel: #dfd0bc;
-  --cm-side: #e3d4c1;
-  --cm-card: #fbf5ed;
-  --cm-ink: #332b24;
-  --cm-muted: #645248;
-  --cm-border: #c6b19b;
-  --cm-link: #85512d;
-}
-html[data-cm-theme="ambar"] {
-  --cm-bg: #f2e7cc;
-  --cm-panel: #ead5a9;
-  --cm-side: #e8d9b8;
-  --cm-card: #fcf3dd;
-  --cm-ink: #3c3324;
-  --cm-muted: #685638;
-  --cm-border: #cdbb8d;
-  --cm-link: #805419;
-}
-html[data-cm-theme="papel"] {
-  --cm-bg: #f5f3ed;
-  --cm-panel: #e9e5dc;
-  --cm-side: #eae6dd;
-  --cm-card: #fffdf8;
-  --cm-ink: #282c2b;
-  --cm-muted: #555e59;
-  --cm-border: #c7c8be;
-  --cm-link: #295d78;
-}
-html[data-cm-theme="grafito"] {
-  --cm-bg: #1c2831;
-  --cm-panel: #293943;
-  --cm-side: #142029;
-  --cm-card: #30404c;
-  --cm-ink: #f2eee6;
-  --cm-muted: #c7d2d2;
-  --cm-border: #4f626e;
-  --cm-link: #9fdfd9;
+@media (min-width: 760px) {
+  /* Full-width conversation without changing native text colors. */
+  html[data-cm-wide="yes"] {
+    --thread-content-max-width: calc(100vw - 48px) !important;
+    --thread-body-max-width: calc(100vw - 48px) !important;
+  }
+  html[data-cm-wide="yes"] #thread [class*="max-w-"],
+  html[data-cm-wide="yes"] main article,
+  html[data-cm-wide="yes"] main .prose {
+    max-width: calc(100% - 24px) !important;
+    min-width: 0 !important;
+  }
+  html[data-cm-wide="yes"] #thread [data-message-author-role="assistant"] {
+    max-width: none !important;
+    width: 100% !important;
+  }
 }
 
-/* Force form controls to match the selected palette, regardless of the native ChatGPT theme. */
-html[data-cm-theme]:not([data-cm-theme="grafito"]) {
-  color-scheme: light !important;
-}
-html[data-cm-theme="grafito"] {
-  color-scheme: dark !important;
-}
-
-html[data-cm-theme][data-cm-theme][data-cm-theme] {
-  --bg-primary: var(--cm-bg) !important;
-  --bg-secondary: var(--cm-panel) !important;
-  --bg-tertiary: var(--cm-panel) !important;
-  --main-surface-primary: var(--cm-bg) !important;
-  --main-surface-secondary: var(--cm-panel) !important;
-  --sidebar-surface: var(--cm-side) !important;
-  --sidebar-surface-primary: var(--cm-side) !important;
-  --sidebar-surface-secondary: var(--cm-panel) !important;
-  --composer-surface: var(--cm-card) !important;
-  --composer-surface-primary: var(--cm-card) !important;
-  --text-primary: var(--cm-ink) !important;
-  --text-secondary: var(--cm-muted) !important;
-  --text-tertiary: var(--cm-muted) !important;
-  --icon-primary: var(--cm-ink) !important;
-  --icon-secondary: var(--cm-muted) !important;
-  --border-default: var(--cm-border) !important;
-  --color-surface: var(--cm-bg) !important;
-  --color-surface-secondary: var(--cm-panel) !important;
-  --color-background-panel: var(--cm-side) !important;
-}
-
-html[data-cm-theme] body,
-html[data-cm-theme] main,
-html[data-cm-theme] #__next {
-  background: var(--cm-bg) !important;
-  color: var(--cm-ink) !important;
-}
-html[data-cm-theme] .bg-token-main-surface-primary {
-  background-color: var(--cm-bg) !important;
-}
-html[data-cm-theme] .bg-token-sidebar-surface-primary {
-  background-color: var(--cm-side) !important;
-}
-html[data-cm-theme] #prompt-textarea {
-  color: var(--cm-ink) !important;
-  caret-color: var(--cm-ink) !important;
-}
-html[data-cm-theme] .markdown a {
-  color: var(--cm-link) !important;
-  text-underline-offset: .18em;
-}
-html[data-cm-theme] .markdown pre,
-html[data-cm-theme] .markdown table {
-  max-width: 100% !important;
-}
-html[data-cm-theme] .markdown pre {
-  overflow-x: auto !important;
-}
-
-/* Only hide Share, never remove the whole page header. */
+/* Hide Share only. Keep all original navigation and essential controls. */
 html[data-cm-theme] button[data-testid="share-chat-button"],
 html[data-cm-theme] header button[aria-label="Compartir" i],
 html[data-cm-theme] header button[aria-label="Share" i],
-html[data-cm-theme] header button[title="Compartir" i],
-html[data-cm-theme] header button[title="Share" i],
 html[data-cm-theme] #page-header button[aria-label="Compartir" i],
 html[data-cm-theme] #page-header button[aria-label="Share" i] {
   display: none !important;
 }
 
-/* Width applies to the conversation region, not the browser chrome. */
-@media (min-width: 760px) {
-  html[data-cm-wide="yes"][data-cm-wide] {
-    --thread-content-max-width: calc(100vw - 40px) !important;
-    --thread-body-max-width: calc(100vw - 40px) !important;
-  }
-  html[data-cm-wide="yes"] #thread [class*="max-w-"],
-  html[data-cm-wide="yes"] main article,
-  html[data-cm-wide="yes"] main .prose {
-    max-width: calc(100% - 20px) !important;
-    min-width: 0 !important;
-  }
-  html[data-cm-wide="yes"] #thread [data-message-author-role="assistant"],
-  html[data-cm-wide="yes"] #thread [data-message-author-role="assistant"] > div {
-    max-width: none !important;
-    width: 100% !important;
-    min-width: 0 !important;
-  }
-  html[data-cm-wide="yes"] main [class*="max-w-"]:has(#prompt-textarea),
-  html[data-cm-wide="yes"] main form:has(#prompt-textarea),
-  html[data-cm-wide="yes"] main [data-testid="composer"] {
-    max-width: calc(100% - 24px) !important;
-    width: calc(100% - 24px) !important;
-  }
-}
-
-/* Transient status toast: shown only when the live updater detects a change. */
+/* Updater's temporary confirmation respects the native colors. */
 #cm-live-toast {
   position: fixed !important;
-  bottom: 14px !important;
+  bottom: 16px !important;
   right: 16px !important;
   z-index: 2147483600 !important;
-  background: var(--cm-card) !important;
-  color: var(--cm-ink) !important;
-  border: 1px solid var(--cm-border) !important;
-  border-radius: 7px !important;
-  padding: 7px 11px !important;
-  font: 12px/1.35 system-ui, sans-serif !important;
-  box-shadow: 0 2px 14px #0002 !important;
+  background: #1d2b34 !important;
+  color: #f7f7f3 !important;
+  border: 1px solid #687986 !important;
+  border-radius: 8px !important;
+  padding: 8px 12px !important;
+  font: 13px/1.4 system-ui, sans-serif !important;
   pointer-events: none !important;
 }
