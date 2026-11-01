@@ -180,90 +180,91 @@ html[data-cm-theme="grafito"] {
   ::selection {
   background: rgba(var(--cm-accent-rgb), .33) !important;
 }
-/* Hide Share in Minimal and Equilibrado; Completo restores the native button. */
-:is(html[data-theme="dark"], html.dark)[data-cm-theme]:not([data-cm-mode="completo"])
-  button[data-testid="share-chat-button"] {
-  display: none !important;
-}
+/* V08 · VISIBILIDAD EXPLÍCITA
+   Each switch is independent of colors and uses a reversible html attribute.
+   No text color, font size, or surface tokens are modified.
+   CSS is scoped to identifiable UI elements; no blanket 'button' rules.
+*/
 
-/* =============================================================
-   V06 · LIMPIEZA DISCRETA: sólo elementos prescindibles.
-   Inspirado en chatgpt-cleanup y ChatGPT-Web-Utils (GitHub, 2026).
-   Evita texto genérico, selectores hash y ocultar controles de cuenta.
-   No toca colores, contraste, editor, navegación esencial ni modelo.
-   ============================================================= */
+/* COMPARTIR */
+html[data-cm-show-share="no"] :is(
+  button[data-testid="share-chat-button"],
+  #page-header button[aria-label="Compartir" i],
+  #page-header button[aria-label="Share" i],
+  header button[aria-label="Compartir" i],
+  header button[aria-label="Share" i]
+) { display: none !important; }
 
-/* Promociones "Upgrade" dentro del encabezado y barra lateral.
-   Una coincidencia por aria-label/href, no un simple "button" global. */
-html:not([data-cm-mode="completo"]) :is(
+/* PROMOCIONES */
+html[data-cm-show-upgrade="no"] :is(
   #app-shell-sidebar,
   [data-app-navigation-rail="true"],
   #page-header,
   header
 ) :is(
-  a[href*="/upgrade"],
-  a[href*="/pricing"],
+  a[href*="/upgrade" i],
+  a[href*="/pricing" i],
   button[aria-label="Upgrade" i],
   button[aria-label="Upgrade plan" i],
   button[aria-label="Upgrade your plan" i],
-  [data-testid="upgrade-button"]
-) {
+  [data-testid="upgrade-button"],
+  [data-testid*="upgrade" i]
+) { display: none !important; }
+html[data-cm-show-upgrade="no"] aside:has(button[aria-label="Dismiss ChatGPT beacon banner" i]) {
   display: none !important;
 }
 
-/* Descargo repetido bajo el chat.
-   El aviso continúa existiendo en la página, sólo se oculta visualmente. */
-html:not([data-cm-mode="completo"]) [data-testid="thread-disclaimer"] {
-  display: none !important;
-}
+/* AVISOS: hide only known secondary footer disclaimers, not alerts/errors. */
+html[data-cm-show-notices="no"] :is(
+  [data-testid="thread-disclaimer"],
+  [data-testid="composer-disclaimer"]
+) { display: none !important; }
 
-/* Si alguna promo reaparece con el componente explícito de banner, se
-   oculta sólo cuando tenga el cierre identificado de esa promo. */
-html:not([data-cm-mode="completo"]) aside:has(button[aria-label="Dismiss ChatGPT beacon banner" i]) {
-  display: none !important;
-}
+/* REACCIONES: intentionally preserve Copy and Edit. */
+html[data-cm-show-feedback="no"] [data-message-author-role="assistant"] :is(
+  button[aria-label="Good response" i], button[aria-label="Bad response" i],
+  button[aria-label="Buena respuesta" i], button[aria-label="Mala respuesta" i],
+  button[aria-label="Thumbs up" i], button[aria-label="Thumbs down" i],
+  button[data-testid="thumbs-up-button"], button[data-testid="thumbs-down-button"]
+) { display: none !important; }
 
-/* Minimal additionally hides optional assistant-feedback actions, never Copy.
-   Target individual accessible labels to avoid wiping the whole action toolbar. */
-html[data-cm-mode="minimal"] [data-message-author-role="assistant"] :is(
-  button[aria-label="Good response" i],
-  button[aria-label="Bad response" i],
-  button[aria-label="Read aloud" i],
-  button[aria-label="Regenerate" i],
-  button[aria-label="Buena respuesta" i],
-  button[aria-label="Mala respuesta" i],
-  button[aria-label="Leer en voz alta" i],
-  button[aria-label="Regenerar" i]
-) {
-  display: none !important;
-}
-
-/* V07 · La elección de modo ahora produce cambios visibles.
-   Minimal keeps the script's floating switch accessible so the user can
-   immediately return to Equilibrado or Completo. */
-html[data-cm-mode="minimal"] :is(
+/* BARRA SUPERIOR: floating ◐ is a separate Shadow DOM control. */
+html[data-cm-show-header="no"] :is(
   #page-header,
   [data-testid="conversation-header"],
   [data-app-shell-top-bar]
-) {
-  display: none !important;
-}
-html[data-cm-mode="minimal"] [data-app-navigation-rail="true"] {
-  opacity: .55 !important;
-  transition: opacity .18s ease !important;
-}
-html[data-cm-mode="minimal"] [data-app-navigation-rail="true"]:hover,
-html[data-cm-mode="minimal"] [data-app-navigation-rail="true"]:focus-within {
-  opacity: 1 !important;
-}
-html[data-cm-mode="minimal"] [data-testid="thread-disclaimer"],
-html[data-cm-mode="minimal"] [data-testid*="upgrade" i] {
-  display: none !important;
-}
+) { display: none !important; }
+
+/* BARRA LATERAL: still recoverable from ◐ > Elementos. */
+html[data-cm-show-sidebar="no"] :is(
+  #app-shell-sidebar,
+  aside[data-app-shell-left-panel-appearance],
+  [data-app-navigation-rail="true"]
+) { display: none !important; }
+
+/* MARCA: only explicit brand text, never the model picker. */
+html[data-cm-show-brand="no"] :is(#page-header,#app-shell-sidebar,header) :is(
+  [data-testid="brand-name"],
+  [data-testid="brand-title"],
+  [data-testid="logo-text"]
+) { display: none !important; }
+
+/* ADMINISTRAR: only explicitly labeled entry points in header/sidebar;
+   account menus/settings remain untouched. */
+html[data-cm-show-manage="no"] :is(
+  #app-shell-sidebar,
+  [data-app-navigation-rail="true"],
+  #page-header,
+  header
+) :is(
+  a[href*="/manage" i],
+  button[aria-label="Manage" i],
+  button[aria-label="Manage plan" i],
+  [data-testid="manage-plan-button"]
+) { display: none !important; }
+
+/* Minimal spacing without changing the selected color theme. */
 html[data-cm-mode="minimal"] main {
   padding-left: 8px !important;
   padding-right: 8px !important;
-}
-html[data-cm-mode="completo"] [data-app-navigation-rail="true"] {
-  opacity: 1 !important;
 }
