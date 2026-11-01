@@ -6,7 +6,7 @@
 // @description  YouTube únicamente. Studio flotante, player nativo y biblioteca personal.
 // @match        https://www.youtube.com/*
 // @match        https://youtube.com/*
-// @run-at       document-start
+// @run-at       document-idle
 // @noframes
 // @grant        GM_getValue
 // @grant        GM_setValue
