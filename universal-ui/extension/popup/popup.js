@@ -27,7 +27,7 @@
 
   function mountPanel(root, env) {
     const $ = (id) => root.querySelector('#' + id);
-    const state = { tab: 'custom', scope: 'app', component: null, settings: null, ctx: null, report: null };
+    const state = { tab: 'apps', scope: 'app', component: null, settings: null, ctx: null, report: null };
     let toastTimer = null;
 
     function toast(msg) {
