@@ -7,6 +7,7 @@ on:
       - 'userstyles/whatsapp-live.user.js'
       - 'userstyles/tests/whatsapp-canvas.test.mjs'
       - 'userstyles/tests/whatsapp-native-browser.mjs'
+      - 'userstyles/tests/whatsapp-native-firefox.mjs'
       - '.github/workflows/whatsapp-canvas-verify.yml'
   workflow_dispatch:
 
@@ -26,17 +27,21 @@ jobs:
         with:
           node-version: '22'
       - name: Install DOM test dependency
-        run: npm install --ignore-scripts --no-package-lock --no-audit --no-fund --no-save jsdom@26.1.0 playwright-core@1.56.1
+        run: npm install --ignore-scripts --no-package-lock --no-audit --no-fund --no-save jsdom@26.1.0 playwright-core@1.56.1 selenium-webdriver@4.35.0
       - name: JavaScript syntax
         run: node --check ../whatsapp-live.user.js
       - name: Studio native DOM regressions
         run: node --test whatsapp-canvas.test.mjs
       - name: Studio real Chromium pointer and layout test
         run: node whatsapp-native-browser.mjs
+      - name: Studio native Firefox pointer and composer test
+        run: node whatsapp-native-firefox.mjs
       - name: Attach browser screenshot
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: whatsapp-native-studio-browser
-          path: userstyles/tests/studio-3-native-browser.png
+          path: |
+            userstyles/tests/studio-3-native-browser.png
+            userstyles/tests/studio-3-native-firefox.png
           if-no-files-found: ignore
