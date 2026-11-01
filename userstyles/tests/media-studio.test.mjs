@@ -28,6 +28,8 @@ async function boot(kind, enabled = true) {
     url: 'https://' + site + '/watch?v=123', runScripts: 'outside-only', pretendToBeVisual: true
   });
   const {window: w} = dom, stored = new Map(), cmds = [];
+  Object.defineProperty(w, 'innerWidth', { value: 1536, configurable: true });
+  Object.defineProperty(w, 'innerHeight', { value: 900, configurable: true });
   stored.set('ums-enabled-v1-'+kind, enabled);
   w.GM_getValue = (key, fall) => stored.has(key) ? stored.get(key) : fall;
   w.GM_setValue = (key, val) => stored.set(key, val);
