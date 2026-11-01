@@ -36,13 +36,13 @@ test('toolbar click opens the bundled launcher tab',async()=>{
  const x=setup();
  x.listeners[0]();
  await new Promise(r=>setTimeout(r,20));
- assert.deepEqual(x.log,[['tabs.create',{url:'moz-extension://abcd1234/launcher/index.html',active:true}]]);
+ assert.deepEqual(JSON.parse(JSON.stringify(x.log)),[['tabs.create',{url:'moz-extension://abcd1234/launcher/index.html',active:true}]]);
 });
 test('second toolbar click reuses existing launcher tab',async()=>{
  const x=setup([{id:18,windowId:4,url:'moz-extension://abcd1234/launcher/index.html'}]);
  const result=await x.context.UUI_openLauncher();
  assert.equal(result.reused,true);
- assert.deepEqual(x.log,[['windows.update',4,{focused:true}],['tabs.update',18,{active:true}]]);
+ assert.deepEqual(JSON.parse(JSON.stringify(x.log)),[['windows.update',4,{focused:true}],['tabs.update',18,{active:true}]]);
 });
 test('action launcher error is logged, no silent disappearance',async()=>{
  const x=setup();
