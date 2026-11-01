@@ -49,13 +49,15 @@ test('un adaptador nuevo definido en 20 líneas se aplica y se verifica', () => 
 
 test('el manifiesto y el panel cargan los mismos archivos de adaptador', () => {
   const manifest = JSON.parse(readFileSync(join(EXT, 'manifest.json'), 'utf8'));
-  const js = manifest.content_scripts[0].js;
-  for (const a of ADAPTERS) assert.ok(js.includes(a), a);
   const popup = readFileSync(join(EXT, 'popup/popup.html'), 'utf8');
   for (const a of ADAPTERS) assert.ok(popup.includes('../' + a), a);
   const envExt = readFileSync(join(EXT, 'popup/env-extension.js'), 'utf8');
-  for (const f of js) assert.ok(envExt.includes(`'${f}'`), 'env-extension CONTENT_FILES: ' + f);
+  for (const a of ADAPTERS) assert.ok(envExt.includes(`'${a}'`), 'dynamic injection: ' + a);
+  assert.match(envExt, /registerContentScripts/, 'permitted scripts are registered persistently');
+  assert.match(envExt, /executeScript/, 'open tab receives the script after opt-in');
   const p = page('<!doctype html><html></html>');
   const hosts = p.UUI.adapters.all().flatMap(a => a.hosts.map(h => `https://${h}/*`));
-  assert.deepEqual([...manifest.host_permissions].sort(), [...hosts].sort());
+  assert.deepEqual([...manifest.optional_host_permissions].sort(), [...hosts].sort());
+  assert.equal(manifest.host_permissions, undefined, 'no mandatory host access at install');
+  assert.equal(manifest.content_scripts, undefined, 'no silent declarative injection');
 });
