@@ -246,7 +246,7 @@ shadow.innerHTML='<style>'+CSS+'</style>'+
 '</div><footer id="foot"><span>YOUTUBE NATIVO</span><b>v'+VERSION+'</b></footer>'+
 '<div id="resize" aria-label="Cambiar tamaño" role="separator"></div></section>';
 document.documentElement.appendChild(host);bind();nativeStyle();place();
-showTab('player');
+const wasOpen=state.open;showTab('player');state.open=wasOpen;place();
 const links=[['Inicio','/'],['Suscripciones','/feed/subscriptions'],
 ['Mi biblioteca','/feed/you'],['Historial','/feed/history'],['Ver más tarde','/playlist?list=WL']];
 const q=$('quick');for(const [name,href] of links){const a=document.createElement('a');
