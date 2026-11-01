@@ -390,7 +390,7 @@
     const rules = {
       position: 'fixed', left: box.left + 'px', top: box.top + 'px',
       width: box.width + 'px', height: box.height + 'px',
-      'z-index': '2147481900', margin: '0', 'border-radius': '15px',
+      'z-index': '2147483500', margin: '0', 'border-radius': '15px',
       overflow: 'hidden', 'max-width': 'none', 'max-height': 'none'
     };
     for (const [prop, val] of Object.entries(rules)) target.style.setProperty(prop, val, 'important');
@@ -401,6 +401,18 @@
       restoreNative();
       slot.dataset.mounted = 'false';
       $('videoMessage').textContent = 'La estructura de YouTube cambió. Usá «Explorar» para ver el reproductor original.';
+      return;
+    }
+    // Check visibility and hit testing. A native target may be trapped inside
+    // a YouTube stacking context even with a large z-index.
+    const centerX = box.left + box.width / 2, centerY = box.top + box.height / 2;
+    const hit = typeof document.elementFromPoint === 'function'
+      ? document.elementFromPoint(centerX, centerY) : null;
+    if (hit && hit !== target && !target.contains(hit)) {
+      restoreNative();
+      slot.dataset.mounted = 'false';
+      $('videoMessage').textContent =
+        'Este diseño de YouTube no permite traer el video al frente. Tocá «Explorar» para usar el original.';
       return;
     }
     state.videoMoveOk = true;
@@ -431,7 +443,11 @@
       setMask($('mRight'), x + w, y, innerWidth - x - w, h);
       setMask($('mBottom'), 0, y + h, innerWidth, innerHeight - y - h);
     }
-    if (APP === 'youtube') attachNativeVideo();
+    if (APP === 'youtube') {
+      attachNativeVideo();
+      // Never claim that a native video is visible when hit-testing failed.
+      $('ambient').hidden = !canvas || state.videoMoveOk;
+    }
   }
   function redrawQueue() {
     const entries = queueItems();
