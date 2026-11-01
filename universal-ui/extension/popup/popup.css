@@ -34,6 +34,12 @@ section[role="tabpanel"] { max-height: 520px; overflow-y: auto; padding: 4px 0 1
 hr { border: 0; border-top: 1px solid var(--border); margin: 6px 0 0; }
 
 /* Ámbito: común vs particular */
+.quick-start { margin: 10px 14px 3px; padding: 10px 11px; border: 1px solid var(--focus); border-radius: 6px; background: #111b26; }
+.quick-label { display: flex; flex-direction: column; gap: 2px; margin-bottom: 9px; }
+.quick-label strong { font: 700 11px/16px var(--mono); letter-spacing: .08em; color: var(--text); }
+.quick-label small { color: var(--text-muted); font: 11px/15px var(--sans); }
+.quick-actions { display: flex; gap: 8px; }
+.quick-actions .btn { flex: 1; min-height: 34px; }
 .scope { display: flex; gap: 0; margin: 10px 14px 2px; border: 1px solid var(--border); border-radius: 4px; overflow: hidden; }
 .scope button { flex: 1; min-height: 30px; border: 0; background: none; color: var(--text-muted); border-right: 1px solid var(--border); }
 .scope button:last-child { border-right: 0; }
