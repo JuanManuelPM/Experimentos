@@ -176,4 +176,55 @@ html[data-wml-mode="radical"][data-wml-avatars="no"] #pane-side :is([role="row"]
   /* Evitar destruir la UI móvil/ventana estrecha. */
   html[data-wml-mode="radical"] #pane-side :is([role="row"], [role="listitem"]) { min-height: unset !important; }
 }
+
+/* WHATSAPP_EMPTY_BASE_V2
+   2026-11-01 · Base cero: SOLO ocultar chrome lateral / de la lista.
+   Reversible sin recargar con el modo Original del botón ◐.
+   NUNCA ocultar #side, #pane-side, #main, una fila de chat corriente,
+   botones de conversación, ni el compositor. */
+/* El riel vertical de iconos está fuera de #side y #main.
+   Primera regla: estructura reciente conocida; segunda: detección
+   geométrica no sensible del userscript v1.1+. */
+html[data-wml-mode="radical"] #app:has(#pane-side) > div > div > div:nth-last-child(2) > div > header:not(:has(#side, #pane-side, #main)),
+html[data-wml-mode="radical"] #app [data-wml-remove="rail"] {
+  display: none !important;
+  width: 0 !important;
+  min-width: 0 !important;
+  flex-basis: 0 !important;
+}
+/* La barra WhatsApp / tres puntos / Nuevo chat, sin tocar cabeceras
+   de una conversación en #main. */
+html[data-wml-mode="radical"] #side > header,
+html[data-wml-mode="radical"] #side header[data-tab="2"],
+html[data-wml-mode="radical"] #side > :is([data-testid="chatlist-header"], [data-testid="chat-list-header"]),
+html[data-wml-mode="radical"] #side [data-wml-remove="header"] {
+  display: none !important;
+}
+/* Buscador: elimina la FILA completa, no solamente el campo o la lupa.
+   Si WhatsApp mueve el input, el userscript identifica su contenedor
+   por geometría sin examinar nombres ni mensajes. */
+html[data-wml-mode="radical"] #side > :not(#pane-side):not(:has(#pane-side)):has([aria-label="Search input textbox" i]),
+html[data-wml-mode="radical"] #side > :not(#pane-side):not(:has(#pane-side)):has([aria-label="Search or start a new chat" i]),
+html[data-wml-mode="radical"] #side > :not(#pane-side):not(:has(#pane-side)):has([data-testid="chat-list-search"]),
+html[data-wml-mode="radical"] #side [data-wml-remove="search"] {
+  display: none !important;
+}
+/* Archivados: ocultamos únicamente la tarjeta identificada explícitamente;
+   nunca la primera conversación por posición. */
+html[data-wml-mode="radical"] #pane-side [role="row"]:has(:is([aria-label="Archived" i],[aria-label="Archivados" i],[data-testid*="archived" i])),
+html[data-wml-mode="radical"] #pane-side [role="listitem"]:has(:is([aria-label="Archived" i],[aria-label="Archivados" i],[data-testid*="archived" i])),
+html[data-wml-mode="radical"] #side [data-wml-remove="archived"] {
+  display: none !important;
+}
+/* Un comienzo sin aire desperdiciado. Mantener el scroll nativo. */
+html[data-wml-mode="radical"] #side,
+html[data-wml-mode="radical"] #pane-side {
+  padding-top: 0 !important;
+  margin-top: 0 !important;
+}
+html[data-wml-mode="radical"] #pane-side {
+  min-height: 0 !important;
+}
+/* Fin WHATSAPP_EMPTY_BASE_V2 */
+
 /* Fin WHATSAPP_MINIMAL_LIVE_V1 */
