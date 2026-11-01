@@ -35,3 +35,10 @@ Reanudar leyendo `docs/DIAGNOSIS.md`, `docs/ARCHITECTURE.md`, `docs/DECISIONS.md
 - Se añadieron **dos regresiones** en `test/engine.test.mjs` (ahora 34 casos escritos). **No se ejecutó `npm test` completo**: `jsdom` no quedó instalado en el contenedor, y `npm ci` agotó el tiempo.
 - No hay acceso desde este entorno a `https://chatgpt.com` (`ERR_BLOCKED_BY_ADMINISTRATOR`); calibración real y Firefox siguen pendientes.
 - Ver `docs/OBSERVER_REPAIR_2026-11-01.md`. Producción y userscript actual intactos.
+
+## Actualización CI y permisos (2026-11-01)
+
+- GitHub Actions candidato `.github/workflows/universal-ui-verify.yml`: ejecución `41311607812` **PASS**, 34/34 tests, demo y sintaxis. Cuatro regresiones extra de permisos incorporadas luego: deben comprobarse en un run nuevo.
+- `manifest.json`: se reemplazaron hosts obligatorios y scripts declarativos por `optional_host_permissions` y registro dinámico por origen en `popup/env-extension.js`. No se habilitan todas las páginas al instalar.
+- `test/third-app.test.mjs` actualizado y `test/permissions.test.mjs` creado (opt-in, rechazo, alias y recuperación). Ahora hay **38 casos escritos**.
+- **Falta:** prueba Firefox real con permiso / denegación / reapertura, además de selectores ChatGPT/WhatsApp reales y aceptación humana. No tocar `master` ni `userstyles/`.
