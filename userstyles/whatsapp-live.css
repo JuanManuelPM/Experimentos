@@ -319,4 +319,86 @@ html[data-wml-mode="radical"] #app:not(:has(#main)) [data-wml-empty-right] {
 }
 /* Fin WHATSAPP_NAKED_LIST_V21 */
 
+
+/* WML_WIDGET_SURFACES_V1
+   La misma estructura real de WhatsApp, con dos superficies visuales propias.
+   El CSS está limitado a Radical y se revierte instantáneamente con Original.
+   No se tocan la caja de texto, multimedia ni eventos nativos de WhatsApp. */
+@media (min-width: 651px) {
+  html[data-wml-mode="radical"] #app [data-wml-left-shell] {
+    width: 208px !important;
+    min-width: 208px !important;
+    max-width: 208px !important;
+    flex: 0 0 208px !important;
+    flex-grow: 0 !important;
+    flex-shrink: 0 !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+  }
+}
+html[data-wml-mode="radical"] #app [data-wml-widget="contacts"],
+html[data-wml-mode="radical"] #pane-side {
+  font-family: "Liberation Sans", "Helvetica Neue", Arial, sans-serif !important;
+  font-feature-settings: "kern" 1 !important;
+  font-kerning: normal !important;
+  background-color: var(--wml-side) !important;
+}
+html[data-wml-mode="radical"] #pane-side [data-wml-chat-name] {
+  font: 500 13px/1.35 "Liberation Sans", "Helvetica Neue", Arial, sans-serif !important;
+  letter-spacing: -.012em !important;
+  color: var(--wml-text) !important;
+  padding-inline: 0 !important;
+  max-width: calc(100% - 18px) !important;
+}
+html[data-wml-mode="radical"] #app [data-wml-left-shell],
+html[data-wml-mode="radical"] #app [data-wml-widget="contacts"],
+html[data-wml-mode="radical"] #side,
+html[data-wml-mode="radical"] #pane-side,
+html[data-wml-mode="radical"] #pane-side :is([role="row"], [role="listitem"]) {
+  border: 0 !important;
+  border-inline: 0 !important;
+  border-block: 0 !important;
+  box-shadow: none !important;
+  outline-color: transparent !important;
+  background-image: none !important;
+}
+html[data-wml-mode="radical"] #pane-side :is([role="row"], [role="listitem"])::before,
+html[data-wml-mode="radical"] #pane-side :is([role="row"], [role="listitem"])::after {
+  border: 0 !important;
+  box-shadow: none !important;
+  background-image: none !important;
+}
+/* Una lista de nombres, sin fichas ni franjas horizontales. */
+html[data-wml-mode="radical"] #pane-side [data-wml-chat-row="yes"] {
+  background: transparent !important;
+  border-radius: 0 !important;
+  padding-left: 8px !important;
+  padding-right: 8px !important;
+  transition: background-color 110ms ease !important;
+}
+html[data-wml-mode="radical"] #pane-side [data-wml-chat-row="yes"]:hover {
+  background-color: var(--wml-hover) !important;
+}
+html[data-wml-mode="radical"] #pane-side [data-wml-chat-row="yes"][aria-selected="true"],
+html[data-wml-mode="radical"] #pane-side [data-wml-chat-row="yes"]:has([aria-selected="true"]) {
+  background-color: var(--wml-surface) !important;
+}
+/* Limpiar fronteras del panel de mensajes, no el contenido. */
+html[data-wml-mode="radical"] #app [data-wml-widget="conversation"] {
+  border-left: 0 !important;
+  border-right: 0 !important;
+  box-shadow: none !important;
+  background-color: var(--wml-bg) !important;
+}
+html[data-wml-mode="radical"] #app [data-wml-widget="conversation"]::before,
+html[data-wml-mode="radical"] #app [data-wml-widget="conversation"]::after {
+  border: 0 !important;
+  box-shadow: none !important;
+}
+html[data-wml-mode="radical"] #app :is(#side,#pane-side,#main) :focus-visible {
+  outline: 2px solid var(--wml-accent) !important;
+  outline-offset: -2px !important;
+}
+/* Fin WML_WIDGET_SURFACES_V1 */
+
 /* Fin WHATSAPP_MINIMAL_LIVE_V1 */
