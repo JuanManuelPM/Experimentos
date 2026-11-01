@@ -12,7 +12,7 @@
 - Interfaz con un único botón/popup de Firefox; documentación y código de demo.
 - PASS: sintaxis de JS y `npm run build:demo`.
 - PASS en Chromium **sobre fixtures sintéticos**: temas, visibilidad Minimal y restauración para las tres aplicaciones; véase `BROWSER_SMOKE_2026-11-01.md`.
-- Suite declarada en ZIP: 32 pruebas. **No fueron ejecutadas completamente por este chat**, pues `jsdom` falta en el entorno; sin inflar el porcentaje.
+- Pruebas: **34 casos escritos** (32 incluidos en el ZIP + 2 regresiones añadidas). **No se ejecutó toda la suite** aquí: falta `jsdom` y `npm ci` agotó el tiempo. No contarlos como 34 PASS.
 - Los selectores de páginas reales **siguen pendientes de calibración**; `calibratedAt: null`.
 
 ## Siguiente acción comprobable
