@@ -1,0 +1,32 @@
+name: WhatsApp Canvas candidate verification
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - 'userstyles/whatsapp-live.user.js'
+      - 'userstyles/tests/whatsapp-canvas.test.mjs'
+      - '.github/workflows/whatsapp-canvas-verify.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  canvas:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: userstyles/tests
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install DOM test dependency
+        run: npm install --ignore-scripts --no-package-lock --no-audit --no-fund --no-save jsdom@26.1.0
+      - name: JavaScript syntax
+        run: node --check ../whatsapp-live.user.js
+      - name: Native WhatsApp Canvas regression tests
+        run: node --test whatsapp-canvas.test.mjs
