@@ -1,0 +1,18 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>PATIO · Antes y ahora</title>
+<style>*{box-sizing:border-box}html,body{height:100%;margin:0;overflow:hidden;background:#18201c;color:#f3e9d6;font:14px system-ui}header{height:60px;display:flex;align-items:center;justify-content:space-between;gap:7px;padding:8px 12px;border-bottom:1px solid #647563}b{font-size:18px;letter-spacing:-.07em}nav{display:flex;gap:5px}button,a{padding:9px 11px;min-height:40px;border:1px solid #68816e;border-radius:5px;color:inherit;background:none;font:700 13px system-ui;text-decoration:none;cursor:pointer}button[aria-pressed=true]{background:#e4edcd;color:#1d2d22}iframe{display:block;width:100%;height:calc(100% - 60px);border:0;background:#c9d4bd}aside{display:none;position:fixed;right:10px;top:67px;width:min(350px,calc(100vw - 20px));padding:14px;background:#f9f0df;color:#28342b;z-index:7;border:1px solid #597263;box-shadow:0 8px 40px #0006}aside.show{display:block}textarea{width:100%;min-height:150px;padding:12px;resize:vertical;font:14px system-ui}aside button{color:#28342b}#status{font-size:12px}@media(max-width:490px){header{padding:6px;gap:3px}b{font-size:15px}button,a{padding:8px 6px;font-size:11px}}</style>
+</head><body><header><b>PATIO</b><nav><button id="before" aria-pressed="false">ANTES</button><button id="after" aria-pressed="true">AHORA</button></nav><button id="notes">NOTAS</button><a id="full" href="./index.html" target="_blank" rel="noopener">ABRIR ↗</a></header>
+<iframe id="frame" src="./index.html" title="PATIO versión candidata" allow="fullscreen"></iframe>
+<aside id="drawer"><b>Notas de revisión</b><p>¿Qué conservamos? ¿Qué cambiarías?</p><textarea id="feedback"></textarea><div><button id="copy">COPIAR</button><button id="export">EXPORTAR</button><button id="close">CERRAR</button></div><p id="status" role="status"></p></aside>
+<script>
+const frame=document.getElementById("frame"),before=document.getElementById("before"),after=document.getElementById("after"),drawer=document.getElementById("drawer"),feedback=document.getElementById("feedback"),full=document.getElementById("full");
+let version="after";const links={before:"./baseline/index.html",after:"./index.html"},key="patio-dispatch-001-feedback";
+try{feedback.value=localStorage.getItem(key)||""}catch{}
+feedback.oninput=()=>{try{localStorage.setItem(key,feedback.value)}catch{}};
+function choose(v){version=v;frame.src=links[v];frame.title="PATIO "+v;full.href=links[v];before.setAttribute("aria-pressed",String(v==="before"));after.setAttribute("aria-pressed",String(v==="after"))}
+before.onclick=()=>choose("before");after.onclick=()=>choose("after");
+document.getElementById("notes").onclick=()=>drawer.classList.toggle("show");
+document.getElementById("close").onclick=()=>drawer.classList.remove("show");
+const receipt=()=>JSON.stringify({product:"PATIO",baseline:"bc006140bf6ba17156e3cfe589f799d1b7cbe739",candidate:"candidate/prometeo-v5-patio-art-gameplay-01-20261110",version,notes:feedback.value},null,2);
+document.getElementById("copy").onclick=async()=>{try{await navigator.clipboard.writeText(receipt());document.getElementById("status").textContent="Copiado. Las notas sólo se sincronizan cuando las compartís."}catch{feedback.focus();feedback.select();document.getElementById("status").textContent="No se pudo copiar. Seleccioná el texto."}};
+document.getElementById("export").onclick=()=>{const url=URL.createObjectURL(new Blob([receipt()],{type:"application/json"}));const a=document.createElement("a");a.href=url;a.download="patio-feedback.json";a.click();setTimeout(()=>URL.revokeObjectURL(url),2500)};
+</script></body></html>
