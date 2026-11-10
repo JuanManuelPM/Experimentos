@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#f4f1e9">
+<title>Estadística · Árbol de organización</title>
+<style>
+:root{--paper:#f5f2ea;--paper2:#f9f7f0;--ink:#282820;--soft:#5d5c53;--line:#6f6c60;--line2:#b9b3a6;--hover:#ebe6d9}
+*{box-sizing:border-box}
+html{background:var(--paper);scroll-behavior:smooth}
+body{margin:0;color:var(--ink);font:14px/1.42 "Helvetica Neue",Arial,Helvetica,sans-serif;background:radial-gradient(ellipse at 20% 0%,#ffffff55,transparent 60%),var(--paper);min-height:100vh}
+button,a{font:inherit}button{cursor:pointer;color:inherit}
+a{color:inherit;text-decoration:none}a:hover{text-decoration:underline;text-underline-offset:3px}button:focus-visible,a:focus-visible,summary:focus-visible{outline:2px solid #574e3d;outline-offset:3px}
+.frame{margin:clamp(12px,2.7vw,32px);min-height:calc(100vh - clamp(24px,5.4vw,64px));border:1px solid var(--ink);padding:7px;position:relative}
+.frame::before{content:"";position:absolute;inset:5px;border:1px solid var(--ink);pointer-events:none}
+.sheet{padding:48px clamp(18px,3.5vw,58px) 32px;max-width:1760px;margin:auto;position:relative}
+.mast{display:flex;flex-direction:column;align-items:center;text-align:center}
+.mast .main-folder{width:48px;height:40px;margin-bottom:14px;color:var(--ink)}
+h1{font-size:clamp(21px,2.4vw,31px);font-weight:500;line-height:1.15;letter-spacing:.015em;margin:0 0 8px}
+.subtitle{font-size:11px;letter-spacing:.26em;margin:0;color:var(--soft);text-transform:uppercase}
+.main-connector{height:59px;width:1px;background:var(--line);margin:22px auto 0}
+.overline{border-top:1px solid var(--line);height:27px;max-width:94%;margin:0 auto;position:relative}
+.overline::before,.overline::after{content:"";position:absolute;top:0;height:21px;border-left:1px solid var(--line)}
+.overline::before{left:0}.overline::after{right:0}
+.tools{display:flex;align-items:center;justify-content:flex-end;gap:14px;padding:0 4px 12px;color:var(--soft);font-size:12px;min-height:38px}
+.tools button{border:0;background:none;padding:4px 0;color:var(--soft);text-decoration:underline;text-decoration-color:var(--line2);text-underline-offset:3px}
+.tools button:hover{color:var(--ink)}.tools .dot{color:var(--line2)}
+.columns{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:clamp(15px,2vw,34px)}
+.col{min-width:0;position:relative;padding-top:0}
+.col::before{content:"";position:absolute;top:-27px;height:27px;left:50%;border-left:1px solid var(--line)}
+.col-head{min-height:112px;text-align:center;display:flex;align-items:center;flex-direction:column;justify-content:flex-start;border-bottom:1px solid var(--line2);padding:0 0 17px}
+.col-head svg{height:28px;width:34px;margin-bottom:10px}
+.col-title{font-size:14px;font-weight:600;line-height:1.2;letter-spacing:.014em}
+.col-caption{color:var(--soft);font-size:11px;margin-top:5px;line-height:1.35;min-height:14px}
+.tree{list-style:none;margin:16px 0 0;padding:0 0 0 7px}
+.tree ul{list-style:none;margin:0 0 0 10px;padding:0 0 0 13px;border-left:1px solid var(--line2)}
+.tree li{position:relative;margin:0;padding:0;min-width:0}
+.tree ul>li::before{content:"";position:absolute;top:16px;left:-13px;width:11px;border-top:1px solid var(--line2)}
+.tree ul>li:last-child::after{content:"";position:absolute;top:17px;bottom:0;left:-14px;width:3px;background:var(--paper)}
+.folder{margin:0;min-width:0}
+.folder summary{display:flex;align-items:flex-start;gap:8px;list-style:none;cursor:pointer;padding:7px 3px 7px 0;min-width:0;position:relative}
+.folder summary::-webkit-details-marker{display:none}
+.folder summary:hover .node-title{border-bottom:1px solid var(--ink)}
+.folder summary .ico{width:19px;height:18px;flex:none;margin-top:1px}
+.node-words{min-width:0;flex:1}
+.node-title{font-size:12.8px;line-height:1.36;overflow-wrap:anywhere;border-bottom:1px solid transparent}
+.node-meta{display:block;color:var(--soft);font-size:10.7px;line-height:1.35;margin-top:3px}
+.folder .arrow{font-size:12px;color:var(--soft);flex:none;margin-top:1px;transition:transform .15s}
+.folder[open]>summary .arrow{transform:rotate(90deg)}
+.folder>ul{margin-top:0;margin-bottom:8px}
+.leaf{display:flex;align-items:flex-start;gap:8px;padding:5px 0;font-size:12.2px;min-width:0;line-height:1.35}
+.leaf .fileico{flex:none;width:14px;height:16px;color:var(--soft);margin-top:1px}
+.leaf span{min-width:0;overflow-wrap:anywhere}
+.leaf small{display:block;color:var(--soft);font-size:10.6px;margin-top:2px}
+.leaf a{display:inline-block;max-width:100%}
+.linkicon{font-size:11px;vertical-align:baseline;white-space:nowrap;letter-spacing:-1px;color:var(--soft)}
+.col-note{color:var(--soft);font-size:11px;line-height:1.4;margin:16px 0 0 7px}
+.foot{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px;margin-top:67px;padding-top:14px;border-top:1px solid var(--line2);color:var(--soft);font-size:11px}
+.foot-center{letter-spacing:.18em;text-transform:uppercase}
+.note{max-width:450px}
+@media(max-width:1250px){.columns{grid-template-columns:repeat(3,minmax(0,1fr));row-gap:46px}.overline{display:none}.main-connector{height:38px}.col::before{height:21px;top:-21px}.col-head{min-height:100px}.col:nth-child(n+4)::before{display:none}}
+@media(max-width:750px){.frame{margin:9px;padding:5px}.frame::before{inset:3px}.sheet{padding:36px 20px 23px}.columns{grid-template-columns:repeat(2,minmax(0,1fr));gap:31px 21px}.mast .main-folder{width:42px}.col::before{display:none}.main-connector{height:24px}.col-head{min-height:100px}.tools{margin-top:7px}.col-title{font-size:13px}}
+@media(max-width:470px){.sheet{padding:33px 22px 20px}.columns{display:block}.col{margin-bottom:33px}.col-head{min-height:0;display:flex;flex-direction:row;text-align:left;align-items:center;gap:10px;padding:0 0 13px}.col-head svg{margin:0;width:27px;height:27px;flex:none}.col-caption{margin:3px 0 0}.tree{margin-top:11px}.mast{text-align:center}.main-connector{height:28px}.tools{justify-content:center;margin-bottom:4px}.foot{margin-top:27px}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<symbol id="folder-icon" viewBox="0 0 42 35"><path d="M2.5 11V5.3c0-1.5 1-2.7 2.5-2.7h11l4.2 4.6h17c1.5 0 2.4 1.2 2.4 2.7v3.4M2.5 11h34.7c1.9 0 2.9 1.6 2.4 3.3l-3.3 15.5a2.9 2.9 0 0 1-2.9 2.3H5c-1.6 0-2.6-1.3-2.5-2.8L2.5 11Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="file-icon" viewBox="0 0 18 21"><path d="M2 1.7h9l5 5v12.2a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V1.7Z M11 1.7v5h5" stroke="currentColor" fill="none" stroke-width="1.15" stroke-linejoin="round"/></symbol>
+</defs></svg>
+<div class="frame"><div class="sheet">
+<header class="mast">
+<svg class="main-folder" aria-hidden="true"><use href="#folder-icon"/></svg>
+<h1>Estadística aplicada a la Psicología</h1>
+<p class="subtitle">Mapa de organización</p>
+</header>
+<div class="main-connector"></div><div class="overline" aria-hidden="true"></div>
+<div class="tools"><span>Carpetas desplegables</span><span class="dot">·</span><button type="button" id="expand">Abrir todo</button><span class="dot">/</span><button type="button" id="collapse">Cerrar todo</button></div>
+<main class="columns" id="columns" aria-label="Árbol de carpetas de Estadística"></main>
+<footer class="foot"><span class="note">Los enlaces llevan al material real; las demás ramas muestran una organización propuesta.</span><span class="foot-center">ESTADÍSTICA · ARCHIVO DE ESTUDIO</span></footer>
+</div></div>
+<script>
+(function(){
+'use strict';
+const doc=id=>'https://docs.google.com/document/d/'+id+'/edit';
+const folder=id=>'https://drive.google.com/drive/folders/'+id;
+const F=(name,nodes=[],meta='',open=false)=>({name,nodes,meta,open,type:'folder'});
+const L=(name,url='',meta='')=>({name,url,meta,type:'leaf'});
+const modules=[
+{n:'M1 · Investigación',r:'R01–R04',qty:10,doc:'1f4QAxggJadWJI7Gb6akwXVAP4_Rhr_iXhv4anDX8rDg',items:['Ficha de investigación','Clasificar variables','Reconocer diseños','Formular hipótesis']},
+{n:'M2 · Frecuencias',r:'R05–R08',qty:10,doc:'1aKRKkwfOt8AI0dbOZTGoG2HdCn0ykc11su5u1dv6ilw',items:['FA · FR · FAA · FRA','Completar tablas','Leer gráficos','Tablas cruzadas']},
+{n:'M3 · Medidas',r:'R09–R13',qty:12,doc:'1B0ExCp4SFA1nAe1nHF8B7D0zL4VvPIumYuqCiEj9oEw',items:['Media · mediana · moda','Percentiles','Varianza · desvío · CV','Comparar grupos','Asimetría']},
+{n:'M4 · Regresión',r:'R14–R19',qty:12,doc:'1npKLqG9qU5NIFOCtkgFfro2n-IJ2ECUG6zB-lM4sf0o',items:['Sentido de la relación','Coeficiente r','Recta de regresión','Coeficiente R²','Predicciones','Límites del modelo']},
+{n:'M6 · Probabilidad',r:'R20–R27',qty:14,doc:'1djvf8uE3bb_XU8Z9M6uKHfW-9mhU5_7QBcO_d36PDac',items:['Probabilidad simple','Probabilidad condicional','Comparar grupos','Unión y complemento','Independencia','Reconstruir tablas','Test diagnósticos','Casos inversos']},
+{n:'M7 · Distribución normal',r:'R28–R33',qty:14,doc:'1YYeBX2kIxkC3wLYROf4zLhmlOrJ-X3E-Mv_YD5wul8M',items:['Puntaje z','Mayor · menor · entre','Percentil normal','Cantidad esperada','Comparar escalas','Enunciados inversos']},
+{n:'M8 · Inferencia',r:'R34–R39',qty:14,doc:'11qCd5L7hJgP2jqdn2AxdE51hVWRpJadXVNwt_1Nd3_Q',items:['Pregunta de investigación','Hipótesis H₀ y H₁','Decisión con p','Errores I y II','Una o dos colas','Causalidad']},
+{n:'M9 · Comparación de medias',r:'R40–R47',qty:16,doc:'1jcnpbrO0CnZhG8vWpz9ZDqleiIcq7M8yYK5I3wW_ge8',items:['Apareadas o independientes','Variables y escalas','Hipótesis para medias','t apareada','t independiente','Varianzas','Cuando dan p','Interpretar descriptivos']},
+{n:'M10 · Proporciones',r:'R48–R53',qty:14,doc:'1ogR_aR2RNo38oMgpoz3vxh_bCUA1swp61ytOv2w0W_w',items:['Reconocer proporciones','Hipótesis','Contraste z','Porcentajes redondeados','Significación','Elegir procedimiento']}
+];
+function moduleFolder(m){return F(m.n,[F('Procedimientos',m.items.map((x,i)=>L('R'+String(Number(m.r.slice(1,3))+i).padStart(2,'0')+' · '+x)),'Recetas, sin duplicar'),L('Teoría mínima · '+m.r,doc(m.doc)),L('Práctica · '+m.qty+' ejercicios',doc(m.doc)),L('Respuestas',doc(m.doc))],m.r+' · '+m.qty+' ejercicios');}
+const groups=[
+{title:'00 · Fuentes',caption:'Lo que entregó la cátedra',nodes:[
+ L('50 archivos originales',folder('1E-TPBPeS6zKVrFsWBMQKPfyghBjvd-T8')),
+ F('Primer parcial',[L('Guías M1–M4',folder('1E-TPBPeS6zKVrFsWBMQKPfyghBjvd-T8')),L('Parcial 2026',folder('1cCuzMCggsqLHv7THFHZkdEF7BpCepDpr')),L('Integrador',folder('1cCuzMCggsqLHv7THFHZkdEF7BpCepDpr'))]),
+ F('Segundo parcial',[L('Guías M6–M10',folder('1E-TPBPeS6zKVrFsWBMQKPfyghBjvd-T8')),L('Parciales 2025–2026',folder('1nc_B1qhSNKB32wO80tqGr3aLhpsjbp-b')),L('Integrador',folder('1nc_B1qhSNKB32wO80tqGr3aLhpsjbp-b'))]),
+ L('2 infografías',folder('1-5yFmy73N1m_3KUvToL2bkefHVVY4bJY')),
+ L('2 transcripciones',folder('1FtrEQa_Ntd5yEuopXmmqCL3tKcGg-DLs')),
+ ],note:'Originales preservados y separados de las versiones de estudio.'},
+{title:'01 · Contenido',caption:'Qué hay que aprender',nodes:[
+F('Primer parcial',modules.slice(0,4).map(moduleFolder),'Módulos 1–4',true),
+F('Segundo parcial',modules.slice(4).map(moduleFolder),'Módulos 6–10',true),
+L('Índice de ejercicios originales',doc('15cHF-46eLJJIdxiR1kVcXYPiB3yalLlW4PZ_1U8qzmk')),
+L('53 recetas · 9 unidades',doc('1Rids6YTO5wRYDNTqx0OvSni9YzRMMTJfUjQg3o2uyTY'))
+],note:'Módulo 5: no incluido en los archivos recibidos.'},
+{title:'02 · Didáctica',caption:'Cómo se practica',nodes:[
+ F('Plantilla de una receta',[L('Cuándo usarla'),L('Teoría mínima'),L('Fórmula'),L('Operaciones'),L('Ejemplo resuelto'),L('Variantes')],'Estructura reutilizable'),
+ F('Banco de ejercicios',[L('116 ejercicios nuevos',doc('1Rids6YTO5wRYDNTqx0OvSni9YzRMMTJfUjQg3o2uyTY')),L('Ejercicios reales',doc('15cHF-46eLJJIdxiR1kVcXYPiB3yalLlW4PZ_1U8qzmk')),L('Respuestas por unidad')]),
+ F('Modo de aprendizaje',[L('Ejemplo guiado'),L('Pistas graduales'),L('Resolver solo'),L('Mezclar tipos'),L('Repetir variantes')],'Flujo propuesto'),
+ L('3 simulacros con soluciones',doc('1IHA1G8D31zAL69g600TXhOyBN5tS50OuI6LOCwPzsyY')),
+ L('Errores en solucionarios',doc('15cHF-46eLJJIdxiR1kVcXYPiB3yalLlW4PZ_1U8qzmk'))
+],note:'Las reglas didácticas se reutilizan en todas las unidades.'},
+{title:'03 · Diseño visual',caption:'Cómo se muestra',nodes:[
+ F('Navegación',[L('Temas desplegables'),L('Unidad → tipo de ejercicio'),L('Anterior / siguiente')]),
+ F('Pantalla de estudio',[L('Teoría a la izquierda'),L('Ejercicio a la derecha'),L('Pasos sincronizados')]),
+ F('Componentes',[L('Fórmulas matemáticas'),L('Tablas'),L('Gráficos'),L('Resaltado de datos'),L('Controles de resolución')]),
+ F('Estilo',[L('Tipografía'),L('Espaciado'),L('Tinta y papel'),L('Líneas e íconos'),L('Responsive')]),
+ L('Prototipo anterior ↗','https://juanmanuelpm.github.io/Experimentos/estadistica-ui-ejemplo/')
+],note:'No contiene fórmulas ni respuestas de ejercicios.'},
+{title:'04 · Publicación',caption:'Cómo se une todo',nodes:[
+ F('Contenido independiente',[L('Textos por unidad'),L('Recetas por ID'),L('Ejercicios y claves')]),
+ F('Interfaz independiente',[L('Estructura HTML'),L('Estilos CSS'),L('Navegación'),L('Interacciones')]),
+ F('Integración',[L('Vincular receta y ejercicio'),L('Validar datos y fórmulas'),L('Probar PC y celular')]),
+ F('Versiones',[L('Prototipos'),L('Revisión de contenido'),L('Versión aprobada')]),
+ L('Repositorio de prototipos ↗','https://github.com/JuanManuelPM/Experimentos'),
+ L('Página actual de ejercicios ↗','https://jpmstat.vercel.app/')
+],note:'La web final queda pendiente de aprobación.'}
+];
+function icon(type){return '<svg class="'+(type==='folder'?'ico':'fileico')+'" aria-hidden="true"><use href="#'+(type==='folder'?'folder-icon':'file-icon')+'"/></svg>';}
+function leaf(node){const li=document.createElement('li');const row=document.createElement('div');row.className='leaf';row.innerHTML=icon('file');const span=document.createElement('span');if(node.url){const a=document.createElement('a');a.href=node.url;a.target='_blank';a.rel='noopener noreferrer';a.textContent=node.name;span.appendChild(a);const small=document.createElement('span');small.className='linkicon';small.textContent=' ↗';span.appendChild(small);}else span.textContent=node.name;if(node.meta){const sub=document.createElement('small');sub.textContent=node.meta;span.appendChild(sub)}row.appendChild(span);li.appendChild(row);return li;}
+function branch(node){const li=document.createElement('li');const details=document.createElement('details');details.className='folder';details.open=Boolean(node.open);const s=document.createElement('summary');s.innerHTML=icon('folder');const words=document.createElement('div');words.className='node-words';const n=document.createElement('span');n.className='node-title';n.textContent=node.name;words.appendChild(n);if(node.meta){const sub=document.createElement('small');sub.className='node-meta';sub.textContent=node.meta;words.appendChild(sub)}s.appendChild(words);const arrow=document.createElement('span');arrow.className='arrow';arrow.textContent='›';arrow.setAttribute('aria-hidden','true');s.appendChild(arrow);details.appendChild(s);const ul=document.createElement('ul');node.nodes.forEach(v=>ul.appendChild(v.type==='folder'?branch(v):leaf(v)));details.appendChild(ul);li.appendChild(details);return li;}
+const mount=document.getElementById('columns');
+groups.forEach(group=>{const col=document.createElement('section');col.className='col';const h=document.createElement('header');h.className='col-head';const i=document.createElementNS('http://www.w3.org/2000/svg','svg');i.setAttribute('aria-hidden','true');i.setAttribute('viewBox','0 0 42 35');i.innerHTML='<use href="#folder-icon"/>';h.appendChild(i);const titles=document.createElement('div');const title=document.createElement('div');title.className='col-title';title.textContent=group.title;titles.appendChild(title);const caption=document.createElement('div');caption.className='col-caption';caption.textContent=group.caption;titles.appendChild(caption);h.appendChild(titles);col.appendChild(h);const ul=document.createElement('ul');ul.className='tree';group.nodes.forEach(v=>ul.appendChild(v.type==='folder'?branch(v):leaf(v)));col.appendChild(ul);const note=document.createElement('p');note.className='col-note';note.textContent=group.note;col.appendChild(note);mount.appendChild(col)});
+document.getElementById('expand').addEventListener('click',()=>document.querySelectorAll('details.folder').forEach(x=>x.open=true));
+document.getElementById('collapse').addEventListener('click',()=>document.querySelectorAll('details.folder').forEach(x=>x.open=false));
+})();
+</script>
+</body>
+</html>
