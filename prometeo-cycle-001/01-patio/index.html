@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<link rel="stylesheet" href="./style.css">
+<meta name="theme-color" content="#e7d7ba"><meta name="description" content="PATIO, una placita 3D para recorrer, saludar y descubrir">
+<title>PATIO · Una plaza para estar</title>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js"}}</script>
+</head>
+<body>
+<div id="game" aria-label="Mundo 3D de PATIO"><canvas id="scene" aria-label="Escenario 3D interactivo"></canvas></div>
+<header id="topbar">
+ <div class="brand"><span class="brand-mark">✳</span><span>PATIO</span><small>una plaza para estar</small></div>
+ <div class="head-actions"><button id="look" class="iconbtn" aria-label="Recentrar cámara" title="Recentrar cámara">◎</button><button id="styleToggle" class="iconbtn" aria-label="Cambiar aspecto">✦</button><button id="helpToggle" class="iconbtn" aria-label="Ayuda">?</button></div>
+</header>
+<section id="stylePanel" class="sheet hidden" aria-label="Personalizar avatar">
+ <div class="sheet-title">Tu personaje <button id="styleClose" class="xbtn" aria-label="Cerrar">×</button></div>
+ <div class="tiny-label">Color</div><div id="swatches" class="swatches"></div>
+ <div class="tiny-label">Accesorio</div><div id="hatPicker" class="hat-picker"></div>
+</section>
+<section id="helpPanel" class="sheet hidden" aria-label="Controles">
+ <div class="sheet-title">Cómo jugar <button id="helpClose" class="xbtn" aria-label="Cerrar">×</button></div>
+ <p><b>Móvil:</b> joystick para andar; arrastrá el lado derecho para mirar; pellizcá para acercar.</p>
+ <p><b>PC:</b> WASD, arrastrar mouse, rueda para zoom, E para interactuar, 1 y 2 para emotes.</p>
+ <p><b>Correo del PATIO:</b> encontrá el buzón ilustrado, llevá una carta a Mora, otra a Tilo y la última a Luz. El progreso se guarda automáticamente.</p>
+ <p><b>Carillón:</b> encontrá las tres campanas y tocá ámbar → verde → coral para activar la melodía.</p>
+ <p>Es una plaza de un solo jugador con personajes <b>NPC</b>, no otros usuarios conectados.</p>
+ <button id="reset" class="quiet-button">Volver a la entrada</button>
+</section>
+<div id="progress" class="progress"><span class="progress-spark">✴</span><span id="progressText">Conocé la plaza</span></div>
+<div id="postHint" class="postal-hint" role="status" aria-live="polite"></div>
+<div id="nameplates" aria-hidden="true"></div>
+<div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
+<div id="bubble" class="bubble hidden" role="status" aria-live="polite"><small id="speaker"></small><div id="speech"></div><button id="bubbleClose" class="bubble-close" aria-label="Cerrar conversación">×</button></div>
+<div id="mobileUi">
+ <div id="joystick" class="joystick" role="application" aria-label="Joystick virtual para desplazarse"><div class="joy-ring"></div><div id="joyKnob" class="joy-knob"></div></div>
+ <div class="right-controls"><button id="action" class="action hidden" aria-label="Interactuar"></button><button id="emotes" class="emotes" aria-label="Mostrar emotes">☺</button></div>
+</div>
+<div id="emoteTray" class="emote-tray hidden"><button id="wave" aria-label="Saludar">👋 <span>Saludar</span></button><button id="dance" aria-label="Bailar">♪ <span>Bailar</span></button></div>
+<div id="desktop-hint">WASD mover · Arrastrar mirar · E interactuar</div>
+<div id="loading" role="status"><div class="loader-sign">✳ PATIO</div><div>Armando la plaza…</div></div>
+<div id="fatal" class="fatal hidden" role="alert">No pudimos iniciar la escena 3D. Probá abrirla con un navegador compatible con WebGL.</div>
+<script type="module" src="./main.js"></script>
+</body></html>
