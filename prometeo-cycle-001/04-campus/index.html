@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f7f3eb">
+<meta name="color-scheme" content="light">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' data: blob:; script-src 'self'; style-src 'self'; img-src 'self' data:; object-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'">
+<title>Campus personal · Lector</title>
+<link rel="stylesheet" href="style.css">
+<script defer src="local-material.js"></script>
+<script defer src="app.js"></script>
+</head>
+<body>
+<div class="app" id="app">
+  <header class="topbar">
+    <button id="goCampus" class="brand" aria-label="Volver a materias"><span class="mark" aria-hidden="true">◧</span><span>CAMPUS<span class="muted brand-caption"> / PERSONAL</span></span></button>
+    <div class="top-meta">BIBLIOTECA DE ESTUDIO <span aria-hidden="true">·</span> LOCAL EN ESTE DISPOSITIVO</div>
+    <button id="goShelf" class="top-action" aria-label="Ver materiales">☰ <span>Materiales</span></button>
+  </header>
+  <div class="workspace">
+    <aside class="sidebar" id="sidebar" aria-label="Índice de la materia">
+      <div class="sidebar-heading"><span class="eyebrow">TU ESPACIO</span><button id="closeSidebar" class="xsmall" aria-label="Cerrar índice">✕</button></div>
+      <button id="sidebarCampus" class="crumb">← Todas las materias</button>
+      <h2 class="sidebar-title">Modelos y<br>Teorías II</h2>
+      <p class="sidebar-sub">Psicología · Material personal</p>
+      <div class="sidebar-rule"></div>
+      <div class="sidebar-label">DOCUMENTOS <span id="docCount">0</span></div>
+      <div id="docList" class="doc-list"></div>
+      <div class="sidebar-bottom"><button id="importSidebar" class="button-simple">＋ Incorporar texto</button><p>Los textos importados no salen de este navegador.</p></div>
+    </aside>
+    <main id="main" class="main" tabindex="-1"></main>
+  </div>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <input id="fileInput" type="file" accept=".txt,.md,text/plain,text/markdown" hidden>
+  <dialog id="noteDialog" class="note-dialog"><form method="dialog" id="noteForm"><h2>Guardar cita</h2><blockquote id="quotePreview"></blockquote><label for="noteText">Nota personal (opcional)</label><textarea id="noteText" rows="4" maxlength="4000" placeholder="¿Por qué querés recordar este fragmento?"></textarea><div class="dialog-actions"><button value="cancel" class="button-quiet">Cancelar</button><button value="save" class="button-dark">Guardar</button></div></form></dialog>
+</div>
+</body>
+</html>
