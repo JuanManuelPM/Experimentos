@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#f5f5f1">
+<meta name="description" content="Cinco vistas para estudiar Estadística.">
+<title>Estadística · Vistas</title>
+<style>
+:root{--bg:#f5f5f1;--paper:#fff;--ink:#212420;--dim:#71746e;--line:#d9dad3;--light:#edeee8;--focus:#39473e}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.47 Arial,Helvetica,sans-serif;-webkit-font-smoothing:antialiased}button,input,textarea{font:inherit}button{color:inherit;cursor:pointer}button:focus-visible,a:focus-visible,summary:focus-visible{outline:2px solid var(--focus);outline-offset:4px}button:disabled{opacity:.35;cursor:default}a{color:inherit} [hidden]{display:none!important}
+header{height:68px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 clamp(20px,3.7vw,58px);gap:16px;background:var(--bg);position:sticky;top:0;z-index:30} .logo{font-weight:650;font-size:16px;letter-spacing:-.045em;white-space:nowrap}.switches{display:flex;align-self:stretch;align-items:stretch;gap:clamp(9px,1.6vw,25px)}.switches button{border:0;background:none;color:var(--dim);padding:0 2px;position:relative;font-size:13px;white-space:nowrap}.switches button[aria-selected="true"]{color:var(--ink);font-weight:700}.switches button[aria-selected="true"]::after{content:"";position:absolute;height:2px;bottom:-1px;left:0;right:0;background:var(--ink)}.view{min-height:calc(100dvh - 68px)}.eyebrow{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);font-weight:650}.muted{color:var(--dim)}.h1{font-size:clamp(36px,4vw,61px);line-height:1.04;letter-spacing:-.065em;font-weight:550;margin:15px 0 26px}.h2{font-size:clamp(30px,3vw,48px);line-height:1.08;letter-spacing:-.06em;font-weight:550;margin:12px 0 24px}.serif{font-family:Georgia,'Times New Roman',serif;font-weight:400}.formula{font:clamp(27px,3vw,43px)/1.3 Georgia,'Times New Roman',serif;letter-spacing:-.025em}.line{border-top:1px solid var(--line)}.ghost{height:8px;border-radius:5px;background:#dbddd6;margin:12px 0;opacity:.65}.ghost.a{width:93%}.ghost.b{width:66%}.ghost.c{width:80%}.ghost.d{width:45%}.thinbtn{border:1px solid var(--line);background:transparent;padding:12px 17px;font-size:13px;display:inline-flex;gap:30px;justify-content:space-between;align-items:center;transition:background .15s}.thinbtn:hover{background:var(--light)}.txtbtn{border:0;background:transparent;font-size:14px;font-weight:600;padding:9px 0}.txtbtn:hover{text-decoration:underline;text-underline-offset:5px}
+/* 01 — index */
+.index-shell{display:grid;grid-template-columns:260px minmax(0,1fr);min-height:calc(100dvh - 68px)}.index-rail{border-right:1px solid var(--line);padding:34px 19px 50px clamp(20px,3.5vw,56px)}.index-rail .eyebrow{margin:0 0 22px}.rail-group{margin:24px 0 11px;padding-left:8px;color:var(--dim);font-size:11px;text-transform:uppercase;letter-spacing:.12em}.railbtn{width:100%;border:0;background:transparent;text-align:left;padding:10px 11px;font-size:14px;line-height:1.25;display:block;border-radius:0}.railbtn.selected{background:#e5e6df;font-weight:650}.railbtn:hover:not(.selected){background:#eceee8}.index-main{max-width:980px;width:100%;padding:clamp(40px,7vw,100px) clamp(26px,7vw,110px)}.index-main .h1{margin-bottom:48px}.index-row{width:100%;border:0;border-top:1px solid var(--line);background:transparent;display:grid;grid-template-columns:40px 1fr 23px;gap:14px;text-align:left;padding:25px 1px;font-size:clamp(17px,2vw,22px);letter-spacing:-.025em;align-items:center}.index-row .n{font-size:12px;color:var(--dim);letter-spacing:0}.index-row .arrow{justify-self:end;font-size:23px;font-weight:300}.index-row:hover{padding-left:8px}.index-sub{display:block;font-size:12px;color:var(--dim);letter-spacing:0;margin-top:4px;font-weight:400}
+/* 02 — split */
+.split-shell{display:grid;grid-template-columns:42% 58%;min-height:calc(100dvh - 68px)}.split-guide{border-right:1px solid var(--line);padding:clamp(32px,5vw,77px) clamp(28px,4.5vw,75px)}.split-work{background:var(--paper);padding:clamp(32px,5vw,77px) clamp(28px,5.5vw,90px)}.split-guide .h2{margin-bottom:32px}.split-rule{border-top:1px solid var(--line);padding:20px 0;display:grid;grid-template-columns:28px 1fr;gap:10px;font-size:14px}.split-rule .n{font-size:12px;color:var(--dim)}.split-rule p{margin:0 0 8px}.split-guide .formula{font-size:clamp(27px,2.5vw,38px);padding:2px 0 24px}.split-work .h2{margin-bottom:12px}.workarea{margin-top:48px;min-height:165px;padding:24px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}.work-lines{height:132px;border-top:1px solid #e9e9e3;background:repeating-linear-gradient(transparent,transparent 34px,#edeee9 35px,#edeee9 36px);margin:18px 0 30px}.demo-result{border-top:1px solid var(--line);margin-top:24px;padding-top:18px;font:25px Georgia,serif}
+/* 03 — reader */
+.reader-canvas{padding:55px 20px 130px}.reader-page{background:var(--paper);border:1px solid #e2e2dc;max-width:830px;min-height:850px;margin:auto;padding:clamp(33px,7vw,96px) clamp(27px,8vw,110px);box-shadow:0 8px 35px #20231c08}.reader-page .h1{font-family:Georgia,'Times New Roman',serif;font-weight:400;letter-spacing:-.06em;margin-top:22px;margin-bottom:40px}.reader-page .lead{font-size:18px;line-height:1.68;max-width:580px;margin:0 0 40px}.reader-feature{padding:32px 0 37px;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}.reader-feature .formula{margin:18px 0 10px}.reader-follow{display:grid;grid-template-columns:90px 1fr;gap:16px;margin-top:50px}.reader-follow .n{color:var(--dim);font-size:12px;padding-top:8px}.reader-follow h3{margin:0 0 18px;font-weight:500;letter-spacing:-.04em;font-size:25px}.reader-follow p{margin:0;color:var(--dim);font-size:15px}.reader-follow details{margin-top:26px;border-top:1px solid var(--line)}.reader-follow summary{padding:16px 0;cursor:pointer;font-size:13px;list-style:none}.reader-follow summary::after{content:'+';float:right}.reader-follow details[open] summary::after{content:'−'}
+/* 04 — cards */
+.cards-shell{max-width:1350px;margin:auto;padding:clamp(35px,5vw,75px) clamp(20px,5vw,75px) 110px}.cards-head{display:flex;justify-content:space-between;gap:24px;align-items:end;margin-bottom:40px}.cards-head .h1{margin-bottom:0}.cards-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.study-card{border:1px solid var(--line);background:#fff;min-height:240px;display:flex;flex-direction:column;justify-content:space-between;padding:24px 25px;text-align:left;transition:transform .15s,box-shadow .15s}.study-card:hover{transform:translateY(-3px);box-shadow:0 6px 20px #2222}.study-card .card-top{display:flex;justify-content:space-between;font-size:12px;color:var(--dim)}.study-card .card-name{font-size:clamp(20px,2.1vw,31px);line-height:1.1;letter-spacing:-.045em;font-weight:530;max-width:230px}.study-card .card-end{font-size:13px;color:var(--dim)}.study-card.dark{background:#303a34;color:#fafbf8;border-color:#303a34}.study-card.dark .card-top,.study-card.dark .card-end{color:#c9d0c7}.card-dialog{border:1px solid var(--line);padding:0;width:min(620px,calc(100% - 38px));max-height:86dvh;background:var(--paper);color:var(--ink)}.card-dialog::backdrop{background:#17201ac9;backdrop-filter:blur(2px)}.dialog-inner{padding:clamp(28px,5vw,60px)}.dialog-close{float:right;border:0;background:none;font-size:30px;font-weight:300;line-height:1;padding:0 0 8px 16px}.dialog-inner .h2{margin:20px 0 42px}.dialog-inner .formula{margin-bottom:28px}.dialog-inner .line{padding-top:25px;font-size:14px;color:var(--dim)}
+/* 05 — focus */
+.focus-shell{min-height:calc(100dvh - 68px);display:flex;flex-direction:column}.focus-top{padding:clamp(27px,4vw,60px) clamp(28px,5.5vw,90px);display:flex;justify-content:space-between;align-items:baseline}.focus-count{font-size:12px;color:var(--dim)}.focus-center{flex:1;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:5vw;align-items:center;padding:0 clamp(28px,8vw,130px) 70px}.big-num{font-size:clamp(144px,27vw,460px);font-weight:350;line-height:.88;letter-spacing:-.13em;color:#e1e3dc;user-select:none}.focus-lesson{max-width:650px}.focus-lesson .h1{font-size:clamp(44px,5.2vw,84px);margin:16px 0 42px}.focus-lesson p{font-size:clamp(16px,1.7vw,21px);max-width:560px;line-height:1.56}.focus-lesson .formula{margin:25px 0}.focus-bottom{border-top:1px solid var(--line);padding:20px clamp(28px,5.5vw,90px);display:flex;justify-content:space-between;align-items:center;gap:25px}.focus-nav{display:flex;gap:9px}.focus-nav button{width:53px;height:46px;display:grid;place-items:center;border:1px solid var(--line);background:none;font-size:19px}.focus-nav button:hover:not(:disabled){background:var(--light)}.progress{display:flex;gap:5px}.progress span{height:2px;width:36px;background:#c5c8c0}.progress span.current{background:#2a342d}
+@media(max-width:900px){.cards-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.index-shell{grid-template-columns:220px 1fr}.index-main{padding:60px 40px}.index-rail{padding-left:19px}.split-guide,.split-work{padding:44px 32px}}
+@media(max-width:680px){header{height:auto;min-height:103px;display:block;padding:13px 18px 0}.logo{height:28px}.switches{height:59px;overflow-x:auto;gap:21px;scrollbar-width:none}.switches::-webkit-scrollbar{display:none}.switches button{flex:none;font-size:13px}.view{min-height:calc(100dvh - 103px)}.index-shell{display:block}.index-rail{border-right:0;border-bottom:1px solid var(--line);padding:18px 20px 20px}.index-rail .eyebrow{margin:0 0 10px}.rail-group{margin:12px 0 7px}.rail-buttons{display:flex;gap:5px;overflow-x:auto;scrollbar-width:none}.railbtn{width:auto;min-width:112px;font-size:12px;border:1px solid var(--line);padding:10px 12px;flex:none}.railbtn.selected{border-color:#c4c5bd}.index-main{padding:36px 22px 60px}.index-main .h1{margin-bottom:31px}.index-row{padding:18px 0;font-size:17px;grid-template-columns:28px 1fr 19px}.split-shell{display:block}.split-guide{border-right:0;border-bottom:1px solid var(--line);padding:34px 22px 31px}.split-work{padding:34px 22px 60px}.split-rule{padding:14px 0}.split-guide .h2{margin-bottom:24px}.split-work .h2{margin-bottom:9px}.workarea{margin-top:30px;min-height:90px}.work-lines{height:86px}.reader-canvas{padding:0 0 60px}.reader-page{border:0;box-shadow:none;padding:40px 24px 64px;min-height:650px}.reader-page .lead{font-size:16px}.reader-follow{grid-template-columns:30px 1fr;gap:10px;margin-top:35px}.cards-shell{padding:35px 17px 70px}.cards-head{margin-bottom:26px}.cards-grid{gap:8px}.study-card{padding:17px;min-height:205px}.study-card .card-name{font-size:20px}.focus-shell{min-height:calc(100dvh - 103px)}.focus-top{padding:25px 23px}.focus-center{display:flex;flex-direction:column;align-items:stretch;gap:0;padding:0 23px 55px}.big-num{font-size:100px;align-self:flex-start;margin:15px 0 17px}.focus-lesson .h1{font-size:42px;margin:10px 0 29px}.focus-lesson p{font-size:17px}.focus-bottom{padding:17px 23px}.progress span{width:24px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important}}
+</style>
+</head>
+<body>
+<header><div class="logo">Estadística.</div><nav class="switches" aria-label="Elegir diseño" role="tablist">
+<button role="tab" aria-selected="true" aria-controls="view-index" data-view="index">01 Índice</button>
+<button role="tab" aria-selected="false" aria-controls="view-split" data-view="split" tabindex="-1">02 Doble</button>
+<button role="tab" aria-selected="false" aria-controls="view-reader" data-view="reader" tabindex="-1">03 Cuaderno</button>
+<button role="tab" aria-selected="false" aria-controls="view-cards" data-view="cards" tabindex="-1">04 Fichas</button>
+<button role="tab" aria-selected="false" aria-controls="view-focus" data-view="focus" tabindex="-1">05 Pasos</button>
+</nav></header>
+<section id="view-index" class="view" role="tabpanel" aria-label="Diseño índice">
+ <div class="index-shell">
+  <aside class="index-rail"><div class="eyebrow">Unidades</div>
+   <div class="rail-group">Primer parcial</div><div class="rail-buttons">
+    <button class="railbtn" data-unit="1">01 Investigación</button><button class="railbtn" data-unit="2">02 Datos</button><button class="railbtn" data-unit="3">03 Resumen</button><button class="railbtn" data-unit="4">04 Relaciones</button>
+   </div><div class="rail-group">Segundo parcial</div><div class="rail-buttons">
+    <button class="railbtn" data-unit="6">06 Probabilidad</button><button class="railbtn selected" data-unit="7">07 Distribución normal</button><button class="railbtn" data-unit="8">08 Hipótesis</button><button class="railbtn" data-unit="9">09 Medias</button><button class="railbtn" data-unit="10">10 Proporciones</button>
+   </div>
+  </aside>
+  <div class="index-main"><div class="eyebrow" id="idx-kicker">Unidad 07</div><h1 class="h1" id="idx-title">Distribución normal</h1><div id="idx-rows"></div></div>
+ </div>
+</section>
+<section id="view-split" class="view" role="tabpanel" aria-label="Diseño pantalla dividida" hidden>
+ <div class="split-shell"><div class="split-guide"><div class="eyebrow">01 / Referencia</div><h2 class="h2">Calcular una probabilidad</h2>
+  <div class="split-rule"><span class="n">01</span><div><p>Convertir el puntaje a z.</p><div class="formula">z = (x − μ) / σ</div></div></div>
+  <div class="split-rule"><span class="n">02</span><div><p>Buscar el área correspondiente.</p><div class="formula">Φ(z)</div></div></div>
+  <div class="split-rule"><span class="n">03</span><div><p>Elegir la parte de la curva que pide el enunciado.</p></div></div>
+ </div><div class="split-work"><div class="eyebrow">02 / Práctica</div><h2 class="h2">Ejercicio</h2>
+  <div aria-hidden="true" style="padding-top:12px;max-width:510px"><div class="ghost a"></div><div class="ghost c"></div><div class="ghost b"></div></div>
+  <div class="workarea"><div class="eyebrow">Cálculo</div><div class="work-lines"></div></div>
+  <button class="txtbtn" id="split-reveal" aria-expanded="false">Ver resolución +</button><div id="split-answer" class="demo-result" hidden>z → Φ(z) → resultado</div>
+ </div></div>
+</section>
+<section id="view-reader" class="view" role="tabpanel" aria-label="Diseño cuaderno" hidden>
+ <div class="reader-canvas"><article class="reader-page"><div class="eyebrow">Unidad 07 · Distribución normal</div><h1 class="h1">El puntaje y<br>su posición</h1>
+ <p class="lead">La media marca el centro. El desvío indica qué tan separados están los valores. Con ambos, podemos ubicar cualquier puntaje dentro de una distribución normal.</p>
+ <div class="reader-feature"><div class="eyebrow">La fórmula</div><div class="formula">z = (x − μ) / σ</div><div class="muted" style="font-size:14px;margin-top:16px">x · puntaje &nbsp;&nbsp; μ · media &nbsp;&nbsp; σ · desvío</div></div>
+ <div class="reader-follow"><span class="n">01 /</span><div><h3>Una aplicación</h3><p>El ejemplo se ubicaría acá, inmediatamente debajo de la explicación. Sin cambiar de pantalla.</p>
+  <details><summary>Mostrar procedimiento</summary><p style="font-size:15px;color:var(--ink);line-height:1.8">1. Identificá los datos.<br>2. Sustituí en la fórmula.<br>3. Interpretá el resultado.</p></details></div></div>
+ </article></div>
+</section>
+<section id="view-cards" class="view" role="tabpanel" aria-label="Diseño fichas" hidden>
+ <div class="cards-shell"><div class="cards-head"><div><div class="eyebrow">Segundo parcial / 07</div><h1 class="h1">Procedimientos</h1></div><div class="muted" style="font-size:13px;margin-bottom:8px">06 fichas</div></div>
+ <div class="cards-grid">
+  <button class="study-card dark" data-card="01" data-name="Estandarizar un puntaje"><span class="card-top"><span>01</span><span>↗</span></span><span class="card-name">Estandarizar un puntaje</span><span class="card-end">z = (x − μ) / σ</span></button>
+  <button class="study-card" data-card="02" data-name="Por debajo"><span class="card-top"><span>02</span><span>↗</span></span><span class="card-name">Por debajo de un valor</span><span class="card-end">Φ(z)</span></button>
+  <button class="study-card" data-card="03" data-name="Por encima"><span class="card-top"><span>03</span><span>↗</span></span><span class="card-name">Por encima de un valor</span><span class="card-end">1 − Φ(z)</span></button>
+  <button class="study-card" data-card="04" data-name="Entre valores"><span class="card-top"><span>04</span><span>↗</span></span><span class="card-name">Entre dos valores</span><span class="card-end">Φ(b) − Φ(a)</span></button>
+  <button class="study-card" data-card="05" data-name="Encontrar un percentil"><span class="card-top"><span>05</span><span>↗</span></span><span class="card-name">Encontrar un percentil</span><span class="card-end">x = μ + zσ</span></button>
+  <button class="study-card" data-card="06" data-name="Cantidad de personas"><span class="card-top"><span>06</span><span>↗</span></span><span class="card-name">Cantidad de personas</span><span class="card-end">n × P</span></button>
+ </div></div>
+ <dialog id="card-dialog" class="card-dialog" aria-label="Ficha de procedimiento"><div class="dialog-inner"><button class="dialog-close" aria-label="Cerrar ficha">×</button><div class="eyebrow" id="card-number">Ficha 01</div><h2 class="h2" id="card-name">Estandarizar un puntaje</h2><div class="formula" id="card-formula">z = (x − μ) / σ</div><div class="line">Aquí aparecerían la explicación y la práctica de este procedimiento.</div></div></dialog>
+</section>
+<section id="view-focus" class="view" role="tabpanel" aria-label="Diseño por pasos" hidden>
+ <div class="focus-shell"><div class="focus-top"><div class="eyebrow">07 / Distribución normal</div><div class="focus-count" id="focus-position">01 / 03</div></div>
+ <div class="focus-center"><div class="big-num" id="focus-big">01</div><div class="focus-lesson"><div class="eyebrow">Procedimiento</div><h1 class="h1" id="focus-title">Identificá los datos.</h1><p id="focus-body">Buscá la media, el desvío y el puntaje que aparece en la pregunta.</p><div id="focus-equation" class="formula">μ &nbsp; σ &nbsp; x</div></div></div>
+ <div class="focus-bottom"><div class="progress" id="focus-progress"><span class="current"></span><span></span><span></span></div><div class="focus-nav"><button id="prev-step" aria-label="Paso anterior" disabled>←</button><button id="next-step" aria-label="Paso siguiente">→</button></div></div></div>
+</section>
+<script>
+const views=['index','split','reader','cards','focus'];
+const tabs=[...document.querySelectorAll('.switches [role="tab"]')];
+function showView(view,remember=true){
+ if(!views.includes(view))view='index';
+ views.forEach(name=>{document.getElementById('view-'+name).hidden=name!==view});
+ tabs.forEach(tab=>{const selected=tab.dataset.view===view;tab.setAttribute('aria-selected',String(selected));tab.tabIndex=selected?0:-1});
+ if(remember){history.replaceState(null,'','#'+view)}
+ window.scrollTo({top:0,behavior:'instant'});
+}
+tabs.forEach((tab,index)=>{
+ tab.addEventListener('click',()=>showView(tab.dataset.view));
+ tab.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key==='ArrowLeft'){e.preventDefault();const next=tabs[(index+(e.key==='ArrowRight'?1:tabs.length-1))%tabs.length];showView(next.dataset.view);next.focus()}})
+});
+window.addEventListener('hashchange',()=>showView(location.hash.slice(1),false));
+const units={
+ 1:['Investigación',['Identificar una población','Distinguir muestra y unidad','Clasificar variables','Reconocer el diseño']],
+ 2:['Organizar datos',['Armar una tabla de frecuencias','Calcular porcentajes','Leer un gráfico','Completar una tabla cruzada']],
+ 3:['Medidas de resumen',['Media, mediana y moda','Percentiles','Medir la dispersión','Comparar grupos']],
+ 4:['Relaciones entre variables',['Leer una nube de puntos','Interpretar una correlación','Construir una recta','Hacer una predicción']],
+ 6:['Probabilidad',['Casos favorables','Probabilidad condicionada','Calcular A o B','Comparar grupos']],
+ 7:['Distribución normal',['Estandarizar un puntaje','Calcular una probabilidad','Encontrar un percentil','Calcular una cantidad']],
+ 8:['Hipótesis',['Formular H₀ y H₁','Interpretar el valor p','Decidir con α','Reconocer errores']],
+ 9:['Comparación de medias',['Antes y después','Dos grupos independientes','Elegir la prueba','Interpretar el resultado']],
+ 10:['Comparación de proporciones',['Comparar porcentajes','Formular hipótesis','Calcular el contraste','Interpretar el resultado']]
+};
+function showUnit(n){const unit=units[n];if(!unit)return;
+ document.querySelectorAll('.railbtn').forEach(b=>b.classList.toggle('selected',b.dataset.unit===String(n)));
+ document.getElementById('idx-kicker').textContent='Unidad '+String(n).padStart(2,'0');document.getElementById('idx-title').textContent=unit[0];
+ const container=document.getElementById('idx-rows');container.replaceChildren();unit[1].forEach((s,i)=>{
+ const b=document.createElement('button');b.className='index-row';b.innerHTML='<span class="n">'+String(i+1).padStart(2,'0')+'</span><span></span><span class="arrow">↗</span>';
+ const span=b.children[1];span.textContent=s;const hint=document.createElement('span');hint.className='index-sub';hint.textContent='Ver procedimiento';span.appendChild(hint);
+ b.addEventListener('click',()=>showView('split'));container.appendChild(b);
+ })}
+document.querySelectorAll('.railbtn').forEach(b=>b.addEventListener('click',()=>showUnit(Number(b.dataset.unit))));showUnit(7);
+const reveal=document.getElementById('split-reveal');reveal.addEventListener('click',()=>{const answer=document.getElementById('split-answer');answer.hidden=!answer.hidden;reveal.setAttribute('aria-expanded',String(!answer.hidden));reveal.textContent=answer.hidden?'Ver resolución +':'Ocultar resolución −'});
+const dlg=document.getElementById('card-dialog');const cardFormulas={'01':'z = (x − μ) / σ','02':'P(X < x) = Φ(z)','03':'P(X > x) = 1 − Φ(z)','04':'Φ(b) − Φ(a)','05':'x = μ + zσ','06':'n × P'};
+document.querySelectorAll('.study-card').forEach(c=>c.addEventListener('click',()=>{document.getElementById('card-number').textContent='Ficha '+c.dataset.card;document.getElementById('card-name').textContent=c.dataset.name;document.getElementById('card-formula').textContent=cardFormulas[c.dataset.card];dlg.showModal()}));document.querySelector('.dialog-close').addEventListener('click',()=>dlg.close());dlg.addEventListener('click',e=>{if(e.target===dlg)dlg.close()});
+const steps=[['Identificá los datos.','Buscá la media, el desvío y el puntaje que aparece en la pregunta.','μ     σ     x'],['Convertí el puntaje.','Restá la media y dividí el resultado por el desvío estándar.','z = (x − μ) / σ'],['Interpretá el área.','Elegí si necesitás la parte izquierda, la derecha o el intervalo.','Φ(z)']];let step=0;
+function updateStep(){const [title,body,formula]=steps[step];document.getElementById('focus-position').textContent=String(step+1).padStart(2,'0')+' / 03';document.getElementById('focus-big').textContent=String(step+1).padStart(2,'0');document.getElementById('focus-title').textContent=title;document.getElementById('focus-body').textContent=body;document.getElementById('focus-equation').textContent=formula;document.querySelectorAll('#focus-progress span').forEach((s,i)=>s.classList.toggle('current',i===step));document.getElementById('prev-step').disabled=step===0;document.getElementById('next-step').disabled=step===steps.length-1}
+document.getElementById('prev-step').addEventListener('click',()=>{step=Math.max(0,step-1);updateStep()});document.getElementById('next-step').addEventListener('click',()=>{step=Math.min(steps.length-1,step+1);updateStep()});
+showView(location.hash.slice(1)||'index',false);
+</script>
+</body></html>
