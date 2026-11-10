@@ -85,7 +85,7 @@ function renderShelf(){
   const body=el('div',{className:'reading-title'}),p=getProgress(doc.id);body.append(text('h2',doc.title),text('small',doc.source==='local'?'Archivo personal en este dispositivo':'Material autorizado incluido solo en esta copia'),text('small',' · '+(p.percent||0)+'% leído'));row.append(body,action(p.percent?'Continuar →':'Leer →',()=>route('reader',doc.id),'reading-action'));wrap.append(row);
  }
  const tools=el('div',{className:'shelf-tools'});tools.append(action('＋ Incorporar .txt o .md',()=>$('fileInput').click(),'button-dark'));
- const link=el('a',{href:course.drive,target:'_blank',rel:'noopener noreferrer',className:'button-quiet',textContent:'Abrir carpeta privada ↗'});tools.append(link);wrap.append(tools,text('p','Importá un .txt o .md exportado desde tus archivos. La app no accede a Drive ni pide credenciales. No se admiten PDF directamente en esta versión.','small-foot'));main.append(wrap);
+ const link=el('span',{className:'button-quiet',textContent:'Carpeta privada no incluida en esta demo'});tools.append(link);wrap.append(tools,text('p','Importá un .txt o .md exportado desde tus archivos. La app no accede a Drive ni pide credenciales. No se admiten PDF directamente en esta versión.','small-foot'));main.append(wrap);
 }
 function getCurrentBlock(){
  const blocks=[...document.querySelectorAll('.reader-block[data-block]')];if(!blocks.length)return 0;
