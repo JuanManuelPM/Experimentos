@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#f7f7f4">
+<title>Estadística · Guía y ejercicios</title>
+<style>
+:root{--paper:#f7f7f4;--ink:#20211f;--muted:#696b66;--line:#d4d5cf}
+*{box-sizing:border-box}html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.47 Arial,Helvetica,sans-serif}
+button{font:inherit}
+.top{height:67px;padding:0 clamp(22px,4vw,60px);border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:20px}
+.brand{font-weight:650;font-size:16px;letter-spacing:-.025em}
+.tabs{display:flex;align-items:center;height:100%;gap:24px}
+.tabs button{height:100%;padding:0 2px;border:0;background:transparent;color:var(--muted);font-size:14px;cursor:pointer;position:relative}
+.tabs button[aria-selected="true"]{color:var(--ink);font-weight:600}
+.tabs button[aria-selected="true"]::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;background:var(--ink)}
+.tabs button:focus-visible,summary:focus-visible{outline:2px solid var(--ink);outline-offset:4px}
+.surface{display:grid;grid-template-columns:minmax(0,42%) minmax(0,58%);min-height:calc(100dvh - 67px)}
+.guide{border-right:1px solid var(--line);padding:clamp(28px,4vw,64px) clamp(26px,4.4vw,70px) 80px}
+.exercise{padding:clamp(28px,4vw,64px) clamp(26px,6.1vw,96px) 80px}
+.inner{max-width:630px}.hint{margin:0 0 28px;color:var(--muted);letter-spacing:.14em;font-size:11px;font-weight:700;text-transform:uppercase}
+h1{margin:0 0 56px;font-size:clamp(32px,3.35vw,51px);line-height:1.11;font-weight:600;letter-spacing:-.055em;text-wrap:balance}
+h2{margin:0 0 23px;font-size:clamp(26px,2.5vw,39px);line-height:1.17;letter-spacing:-.04em;font-weight:570;text-wrap:balance}
+.step{border-top:1px solid var(--line);display:grid;grid-template-columns:33px 1fr;padding:19px 0 22px;gap:8px}
+.num{color:var(--muted);font-size:12px;padding-top:3px}.step p{margin:0 0 8px;font-size:15px}
+.formula{font-family:Georgia,'Times New Roman',serif;font-size:clamp(22px,2.1vw,31px);letter-spacing:-.03em;line-height:1.35}
+.footnote{margin:33px 0 0;font-size:13px;color:var(--muted)}
+.statement{max-width:540px;margin:0 0 30px;font-size:18px;line-height:1.55}
+.data{display:flex;gap:0;width:fit-content;border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin:34px 0 36px}
+.datum{min-width:105px;padding:12px 24px 17px 0}
+.datum+.datum{padding-left:24px;border-left:1px solid var(--line)}
+.datum-label{font-size:12px;color:var(--muted);display:block;margin-bottom:3px}
+.datum-value{font-size:30px;letter-spacing:-.035em}
+details{border-top:1px solid var(--line);max-width:540px}
+summary{padding:20px 0;display:flex;justify-content:space-between;align-items:center;cursor:pointer;list-style:none;font-size:15px;font-weight:600}
+summary::-webkit-details-marker{display:none}summary::after{content:'+';font-size:23px;font-weight:350;line-height:1}
+details[open] summary::after{content:'−'}.solution{padding:9px 0 22px}
+.solution p{margin:0 0 15px;font:20px Georgia,'Times New Roman',serif}
+.solution strong{display:block;margin-top:20px;font-size:37px;font-weight:570;letter-spacing:-.045em}
+.tablewrap{max-width:540px;margin:28px 0 34px;overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:350px;font-size:14px}
+th,td{text-align:right;font-weight:400;padding:11px 9px;border-bottom:1px solid var(--line)}
+th:first-child,td:first-child{text-align:left;padding-left:0}th{color:var(--muted);font-size:12px}
+tbody tr:last-child td{font-weight:600}.spot{background:#e9eae5;font-weight:700}
+[hidden]{display:none!important}
+@media(max-width:760px){.top{height:59px;padding:0 20px}.tabs{gap:19px}.tabs button{font-size:13px}
+.surface{display:block}.guide{border-right:0;border-bottom:1px solid var(--line);padding:35px 23px 39px}.exercise{padding:35px 23px 70px}
+.hint{margin-bottom:20px}h1{margin-bottom:34px}.step{padding:15px 0 16px}.statement{font-size:16px}h2{font-size:29px}
+.data{width:100%}.datum{min-width:0;flex:1;padding-right:10px}.datum+.datum{padding-left:15px}.datum-value{font-size:27px}
+.footnote{margin-top:18px}.formula{font-size:23px}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="brand">Estadística</div>
+  <nav class="tabs" aria-label="Elegir ejercicio" role="tablist">
+    <button id="tab-normal" role="tab" aria-controls="example-normal" aria-selected="true" data-target="normal">01 · Normal</button>
+    <button id="tab-table" role="tab" aria-controls="example-table" aria-selected="false" data-target="table" tabindex="-1">02 · Tabla</button>
+  </nav>
+</header>
+<main id="example-normal" class="surface" role="tabpanel" aria-labelledby="tab-normal">
+  <section class="guide" aria-label="Machete del ejercicio"><div class="inner">
+    <p class="hint">Machete</p><h1>Mayor que un valor</h1>
+    <div class="step"><span class="num">01</span><div><p>Restá la media y dividí por el desvío.</p><div class="formula">z = (x − μ) / σ</div></div></div>
+    <div class="step"><span class="num">02</span><div><p>Buscá el área acumulada hasta z.</p><div class="formula">Φ(z)</div></div></div>
+    <div class="step"><span class="num">03</span><div><p>Como pide «mayor», restá a 1.</p><div class="formula">P(X &gt; x) = 1 − Φ(z)</div></div></div>
+    <p class="footnote">Si pide «menor», usá Φ(z) directamente.</p>
+  </div></section>
+  <section class="exercise" aria-label="Ejercicio real"><div class="inner">
+    <p class="hint">Ejercicio · Parcial 2026</p><h2>Resiliencia psicológica</h2>
+    <p class="statement">El puntaje sigue una distribución normal con media 68 y desviación estándar 9. ¿Qué porcentaje obtiene más de 74 puntos?</p>
+    <div class="data" aria-label="Datos del ejercicio">
+      <div class="datum"><span class="datum-label">Media · μ</span><span class="datum-value">68</span></div>
+      <div class="datum"><span class="datum-label">Desvío · σ</span><span class="datum-value">9</span></div>
+      <div class="datum"><span class="datum-label">Valor · x</span><span class="datum-value">74</span></div>
+    </div>
+    <details><summary>Ver resolución</summary><div class="solution">
+      <p>z = (74 − 68) / 9 = 0,6667</p><p>P(X &gt; 74) = 1 − Φ(0,6667)</p><p>≈ 1 − 0,7475 = 0,2525</p><strong>25,25 %</strong>
+    </div></details>
+  </div></section>
+</main>
+<main id="example-table" class="surface" role="tabpanel" aria-labelledby="tab-table" hidden>
+  <section class="guide" aria-label="Machete del ejercicio"><div class="inner">
+    <p class="hint">Machete</p><h1>De los que…</h1>
+    <div class="step"><span class="num">01</span><div><p>Lo que viene después de «de los que» es el total de referencia.</p><div class="formula">Denominador</div></div></div>
+    <div class="step"><span class="num">02</span><div><p>Buscá la casilla que cumple las dos condiciones.</p><div class="formula">Numerador</div></div></div>
+    <div class="step"><span class="num">03</span><div><p>Dividí y pasá a porcentaje.</p><div class="formula">(Numerador / Denominador) × 100</div></div></div>
+    <p class="footnote">«De los que» cambia el denominador. No uses el total general.</p>
+  </div></section>
+  <section class="exercise" aria-label="Ejercicio real"><div class="inner">
+    <p class="hint">Ejercicio · Parcial 2026</p><h2>Aislamiento social</h2>
+    <p class="statement">¿Qué porcentaje de quienes <b>no presentan aislamiento</b> vive con su familia?</p>
+    <div class="tablewrap"><table aria-label="Aislamiento según convivencia">
+      <thead><tr><th></th><th>Aislamiento</th><th>No presenta</th><th>Total</th></tr></thead>
+      <tbody><tr><td>Vive solo</td><td>9</td><td>6</td><td>15</td></tr><tr><td>Con familia</td><td>4</td><td class="spot">11</td><td>15</td></tr><tr><td>Total</td><td>13</td><td class="spot">17</td><td>30</td></tr></tbody>
+    </table></div>
+    <details><summary>Ver resolución</summary><div class="solution">
+      <p>Denominador: no presentan aislamiento = 17</p><p>Numerador: viven con familia y no presentan = 11</p><p>11 / 17 × 100 ≈ 64,71</p><strong>64,71 %</strong>
+    </div></details>
+  </div></section>
+</main>
+<script>
+const tabs=[...document.querySelectorAll('[role="tab"]')];
+function selectTab(tab){
+ for(const b of tabs){const active=b===tab;b.setAttribute('aria-selected',String(active));b.tabIndex=active?0:-1;document.getElementById('example-'+b.dataset.target).hidden=!active;}
+ document.querySelectorAll('details').forEach(d=>d.open=false);
+}
+tabs.forEach((tab,index)=>{
+ tab.addEventListener('click',()=>selectTab(tab));
+ tab.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'||e.key==='ArrowLeft'){e.preventDefault();const next=tabs[(index+(e.key==='ArrowRight'?1:tabs.length-1))%tabs.length];selectTab(next);next.focus();}
+ });
+});
+</script>
+</body></html>
