@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="es-AR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#faf9f6">
+<title>Estadística · Aprender con ejercicios</title>
+<style>
+:root{--paper:#faf9f6;--ink:#232422;--muted:#666863;--line:#dadbd4;--soft:#f0f0eb;--focus:#dce6ce;--focusInk:#33502a}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.48 system-ui,-apple-system,"Segoe UI",Arial,sans-serif}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible{outline:2px solid var(--focusInk);outline-offset:4px}
+a{color:inherit}
+[hidden]{display:none!important}
+.sitehead{min-height:72px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:23px;padding:13px clamp(20px,3vw,44px)}
+.drawer-button{border:0;background:transparent;display:flex;gap:11px;align-items:center;padding:10px 0;white-space:nowrap;font-size:14px}
+.drawer-button svg{height:17px;width:17px;stroke:currentColor;stroke-width:1.5}
+.headline{display:flex;flex-direction:column;min-width:0;gap:1px}
+.site-title{font-size:16px;font-weight:730;letter-spacing:-.025em;white-space:nowrap}
+.site-description{font-size:12px;color:var(--muted);white-space:nowrap}
+.header-end{margin-left:auto;display:flex;align-items:center;gap:18px}
+.progress{color:var(--muted);white-space:nowrap;font-size:12px}
+.next{border:1px solid var(--line);width:35px;height:35px;display:grid;place-items:center;background:transparent;border-radius:50%;font-size:21px;line-height:1}
+.next:hover{background:var(--soft)}
+.context{min-height:55px;padding:15px clamp(22px,4.3vw,68px);display:flex;justify-content:space-between;align-items:center;gap:20px;border-bottom:1px solid var(--line);font-size:12px}
+.crumb{display:flex;gap:9px;align-items:center;flex-wrap:wrap;color:var(--muted)}
+.crumb b{color:var(--ink);font-weight:650}
+.crumb .slash{color:#a8aaa3}
+.context-tag{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
+.workarea{display:grid;grid-template-columns:minmax(0,45%) minmax(0,55%);min-height:calc(100dvh - 127px)}
+.lesson,.practice{padding:clamp(29px,4.5vw,68px) clamp(23px,4.8vw,78px) 85px;min-width:0}
+.lesson{border-right:1px solid var(--line)}
+.inner{max-width:580px}
+.eyebrow{font-weight:700;font-size:11px;letter-spacing:.11em;text-transform:uppercase;color:var(--muted);margin:0 0 22px}
+h1{margin:0 0 21px;font-size:clamp(33px,3.8vw,53px);line-height:1.10;letter-spacing:-.055em;font-weight:640;text-wrap:balance}
+.lesson .intro{font-size:16px;line-height:1.57;margin:0 0 26px;max-width:480px}
+.formula{font-family:Georgia,"Times New Roman",serif;font-size:clamp(21px,2.15vw,30px);line-height:1.25;letter-spacing:-.03em;margin:0 0 31px;min-height:48px;display:flex;align-items:center}
+.formula math{font-size:1em}
+.formula math mtext{font-size:.72em}
+.rule-list{border-top:1px solid var(--line)}
+.rule{display:grid;grid-template-columns:30px 1fr;gap:9px;padding:18px 11px 19px 0;border-bottom:1px solid var(--line);transition:background .12s,padding .12s}
+.rule .n{font-size:12px;color:var(--muted);padding-top:2px}
+.rule .name{font-size:15px;font-weight:650}
+.rule .why{font-size:13px;color:var(--muted);margin-top:4px;line-height:1.55}
+.rule.is-active{background:var(--soft);padding-left:11px}
+.rule.is-active .n{color:var(--focusInk);font-weight:750}
+h2{font-size:clamp(25px,2.7vw,38px);line-height:1.14;letter-spacing:-.042em;font-weight:630;margin:0 0 23px}
+.prompt{font-size:18px;line-height:1.58;margin:0 0 31px;max-width:570px}
+.important{font-weight:750}
+.source{font-size:12px;color:var(--muted);margin:0 0 10px}
+.tablewrap{width:100%;max-width:560px;overflow-x:auto;margin:29px 0 34px}
+table{border-collapse:collapse;width:100%;table-layout:fixed;min-width:300px;font-variant-numeric:tabular-nums;font-size:14px}
+th,td{text-align:right;padding:12px 8px;border-bottom:1px solid var(--line);font-weight:450}
+th:first-child,td:first-child{text-align:left;padding-left:0;width:34%}
+th{font-size:12px;font-weight:550;color:var(--muted);line-height:1.35}
+th:nth-child(2){width:24%}th:nth-child(3){width:24%}th:nth-child(4){width:18%}
+tbody tr:last-child td{font-weight:650}
+[data-highlight].marked{background:var(--focus);color:var(--focusInk);font-weight:750;transition:background .15s}
+.data{display:flex;max-width:500px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin:29px 0 35px}
+.datum{flex:1;min-width:0;padding:13px 10px 15px 0}
+.datum+.datum{border-left:1px solid var(--line);padding-left:15px}
+.datum-label{color:var(--muted);font-size:12px}
+.datum-value{font-size:28px;font-weight:550;letter-spacing:-.03em}
+.resolver{max-width:560px;border-top:1px solid var(--line);margin-top:26px;padding-top:22px}
+.resolve-button{border:1px solid var(--ink);background:var(--ink);color:var(--paper);padding:12px 18px;min-height:46px;font-weight:650;font-size:14px}
+.resolve-button:hover{background:#42443d}
+.resolve-caption{font-size:12px;color:var(--muted);margin:12px 0 0;max-width:370px}
+.answer-step{border-bottom:1px solid var(--line);padding:2px 0 18px;margin:0 0 19px}
+.answer-step .small{font-size:12px;color:var(--muted);font-weight:650;margin-bottom:9px}
+.answer-step .mathline{font-family:Georgia,"Times New Roman",serif;font-size:clamp(20px,2vw,28px);line-height:1.45}
+.answer-step .final{font-size:32px;letter-spacing:-.04em;font-weight:650}
+.overlay{position:fixed;inset:0;background:rgba(21,24,20,.30);z-index:30}
+.drawer{position:fixed;inset:0 auto 0 0;width:min(368px,calc(100vw - 38px));background:var(--paper);z-index:31;border-right:1px solid var(--line);box-shadow:15px 0 50px #11111112;overflow:auto;padding:31px 27px 50px}
+.drawer-head{display:flex;justify-content:space-between;align-items:center;margin:0 0 44px}
+.drawer-title{font-size:18px;letter-spacing:-.035em;font-weight:700}
+.close{background:transparent;border:1px solid var(--line);font-size:21px;line-height:1;width:35px;height:35px}
+.drawer-label{font-size:11px;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);font-weight:700;margin:27px 0 10px}
+.unit-title{font-size:13px;font-weight:660;margin:0 0 10px}
+.choice{display:flex;width:100%;justify-content:space-between;gap:12px;text-align:left;border:0;background:transparent;font-size:15px;padding:14px 12px;border-radius:2px;line-height:1.35}
+.choice[aria-current="page"]{background:var(--soft);font-weight:720}
+.choice:hover{background:var(--soft)}
+.choice .indexnum{font-size:12px;color:var(--muted)}
+.drawer-footer{border-top:1px solid var(--line);margin-top:30px;padding-top:19px;color:var(--muted);font-size:12px}
+@media(max-width:960px){.lesson,.practice{padding:34px 30px 65px}.workarea{grid-template-columns:minmax(0,46%) minmax(0,54%)}}
+@media(max-width:700px){
+.sitehead{padding:12px 18px;gap:16px;min-height:67px}.site-title{font-size:14px}.site-description{font-size:11px}.drawer-button{font-size:13px;gap:7px}.header-end{gap:11px}.progress{display:none}.next{width:32px;height:32px}
+.context{padding:13px 22px;min-height:51px}.context-tag{display:none}
+.workarea{display:block}
+.lesson{padding:29px 23px 35px;border-right:0;border-bottom:1px solid var(--line)}.practice{padding:31px 23px 65px}
+h1{font-size:37px}h2{font-size:30px}.lesson .intro{font-size:15px}.prompt{font-size:16px}.formula{font-size:24px;margin-bottom:19px}
+.rule{padding:13px 0}.rule .why{font-size:12px}.eyebrow{margin-bottom:14px}
+}
+@media(max-width:390px){.site-description{display:none}.site-title{white-space:normal}.context{font-size:11px}.crumb{gap:6px}th,td{padding:11px 5px;font-size:13px}th{font-size:11px}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<header class="sitehead">
+<button class="drawer-button" id="openMenu" aria-expanded="false" aria-controls="drawer"><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M2 4.5h16M2 10h16M2 15.5h16"/></svg>Temas</button>
+<div class="headline"><span class="site-title">Estadística aplicada a Psicología</span><span class="site-description">Aprendé a resolver ejercicios de parciales.</span></div>
+<div class="header-end"><span class="progress" id="progress">Ejercicio 1 de 2</span><button class="next" id="next" title="Siguiente ejercicio" aria-label="Siguiente ejercicio">→</button></div>
+</header>
+<div class="context">
+<div class="crumb"><span>Segundo parcial</span><span class="slash">/</span><span id="unitcrumb">Unidad 6 · Probabilidad</span><span class="slash">/</span><b id="topiccrumb">Probabilidad condicional</b></div>
+<div class="context-tag">Teoría + práctica</div>
+</div>
+<div class="workarea">
+<section class="lesson" aria-label="Teoría y procedimiento">
+<div class="inner">
+<p class="eyebrow">Entender</p>
+<h1 id="lessonTitle">Probabilidad condicional</h1>
+<p class="intro" id="intro">Calculamos una probabilidad sabiendo que ya se cumple otra condición. Por eso, <strong>no siempre dividimos por el total de personas</strong>.</p>
+<div class="formula" id="formula"><math display="inline"><mi>P</mi><mo>=</mo><mfrac><mrow><mtext>casos que cumplen ambas</mtext></mrow><mtext>total del grupo</mtext></mfrac></math></div>
+<div class="rule-list" id="ruleList">
+<div class="rule" data-rule="1"><div class="n">01</div><div><div class="name">Elegí el grupo.</div><div class="why">«De quienes no presentan aislamiento» indica el total de referencia.</div></div></div>
+<div class="rule" data-rule="2"><div class="n">02</div><div><div class="name">Buscá los casos.</div><div class="why">Encontrá la casilla que cumple ambas condiciones.</div></div></div>
+<div class="rule" data-rule="3"><div class="n">03</div><div><div class="name">Dividí y multiplicá por 100.</div><div class="why">Convertí la probabilidad en porcentaje.</div></div></div>
+</div>
+</div>
+</section>
+<section class="practice" aria-label="Ejercicio del parcial">
+<div class="inner">
+<p class="eyebrow">Aplicar · Parcial 2026</p>
+<h2 id="exerciseTitle">Aislamiento social</h2>
+<p class="prompt" id="question">De quienes <strong>no presentan aislamiento</strong>, ¿qué porcentaje vive con su familia?</p>
+<div id="sampleData">
+<div class="tablewrap">
+<table aria-label="Aislamiento social según convivencia">
+<thead><tr><th></th><th>Aislamiento</th><th>No presenta</th><th>Total</th></tr></thead>
+<tbody><tr><td>Vive solo</td><td>9</td><td>6</td><td>15</td></tr><tr><td>Con familia</td><td>4</td><td data-highlight="numerator">11</td><td>15</td></tr><tr><td>Total</td><td>13</td><td data-highlight="denominator">17</td><td>30</td></tr></tbody></table>
+</div></div>
+<div class="resolver" id="resolver">
+<div id="answer" class="answer-step" aria-live="polite" hidden></div>
+<button type="button" class="resolve-button" id="stepButton">Ver primer paso →</button>
+<p class="resolve-caption" id="caption">Seguí el procedimiento de la izquierda mientras resolvés.</p>
+</div>
+</div>
+</section>
+</div>
+<div class="overlay" id="overlay" hidden></div>
+<nav class="drawer" id="drawer" aria-label="Índice de temas" hidden>
+<div class="drawer-head"><span class="drawer-title">Temas</span><button class="close" id="closeMenu" aria-label="Cerrar temas">×</button></div>
+<p class="drawer-label">Segundo parcial</p>
+<div class="unit-title">06 · Probabilidad</div>
+<button class="choice" data-example="conditional" aria-current="page"><span>Probabilidad condicional</span><span class="indexnum">01</span></button>
+<p class="drawer-label">07 · Distribución normal</p>
+<button class="choice" data-example="normal" aria-current="false"><span>Superar un valor</span><span class="indexnum">02</span></button>
+<div class="drawer-footer">Dos ejemplos para probar el formato. El contenido completo se incorporará después.</div>
+</nav>
+<script>
+(function(){
+'use strict';
+const el=id=>document.getElementById(id);
+const pages=["conditional","normal"];
+const normalFormula='<math display="inline"><mi>z</mi><mo>=</mo><mfrac><mrow><mi>x</mi><mo>−</mo><mi>μ</mi></mrow><mi>σ</mi></mfrac></math>';
+const conditionalFormula='<math display="inline"><mi>P</mi><mo>=</mo><mfrac><mtext>casos que cumplen ambas</mtext><mtext>total del grupo</mtext></mfrac></math>';
+const info={
+conditional:{
+unit:"Unidad 6 · Probabilidad",name:"Probabilidad condicional",lesson:"Probabilidad condicional",
+intro:"Calculamos una probabilidad sabiendo que ya se cumple otra condición. Por eso, <strong>no siempre dividimos por el total de personas</strong>.",
+formula:conditionalFormula,
+rules:[["Elegí el grupo.","«De quienes no presentan aislamiento» indica el total de referencia."],["Buscá los casos.","Encontrá la casilla que cumple ambas condiciones."],["Dividí y multiplicá por 100.","Convertí la probabilidad en porcentaje."]],
+title:"Aislamiento social",
+question:"De quienes <strong>no presentan aislamiento</strong>, ¿qué porcentaje vive con su familia?",
+data:'<div class="tablewrap"><table aria-label="Aislamiento social según convivencia"><thead><tr><th></th><th>Aislamiento</th><th>No presenta</th><th>Total</th></tr></thead><tbody><tr><td>Vive solo</td><td>9</td><td>6</td><td>15</td></tr><tr><td>Con familia</td><td>4</td><td data-highlight="numerator">11</td><td>15</td></tr><tr><td>Total</td><td>13</td><td data-highlight="denominator">17</td><td>30</td></tr></tbody></table></div>',
+answers:[
+["El grupo de referencia tiene 17 personas.","17","denominator"],
+["11 personas cumplen las dos condiciones.","11","numerator"],
+["El porcentaje es 11 ÷ 17 × 100.","64,71 %","both"]
+]
+},
+normal:{
+unit:"Unidad 7 · Distribución normal",name:"Superar un valor",lesson:"Superar un valor",
+intro:"La media indica el centro de la distribución. El desvío muestra cuánto se alejan los puntajes. Con esos datos podemos calcular <strong>qué parte queda por encima de un valor</strong>.",
+formula:normalFormula,
+rules:[["Calculá z.","Restá la media al puntaje y dividí por el desvío."],["Buscá Φ(z).","La tabla o calculadora devuelve el área que queda por debajo."],["Restá a 1.","Lo que queda es el porcentaje por encima del puntaje."]],
+title:"Resiliencia psicológica",
+question:"El puntaje sigue una distribución normal con media 68 y desvío 9. ¿Qué porcentaje obtiene <strong>más de 74 puntos</strong>?",
+data:'<div class="data"><div class="datum"><div class="datum-label">Media · μ</div><div class="datum-value">68</div></div><div class="datum"><div class="datum-label">Desvío · σ</div><div class="datum-value">9</div></div><div class="datum"><div class="datum-label">Puntaje · x</div><div class="datum-value">74</div></div></div>',
+answers:[
+["Estandarizá el puntaje.","z = (74 − 68) / 9 ≈ 0,6667",""],
+["Buscá el acumulado de la normal.","Φ(0,6667) ≈ 0,7475",""],
+["Restá a 1 para obtener la parte superior.","25,25 %",""]
+]
+}
+};
+let current="conditional",step=0;
+const menuBtn=el('openMenu'),closeBtn=el('closeMenu'),overlay=el('overlay'),drawer=el('drawer'),stepBtn=el('stepButton');
+function toggleMenu(open){
+drawer.hidden=!open;overlay.hidden=!open;menuBtn.setAttribute("aria-expanded",String(open));
+if(open)el('closeMenu').focus();else menuBtn.focus();
+}
+menuBtn.addEventListener('click',()=>toggleMenu(true));
+closeBtn.addEventListener('click',()=>toggleMenu(false));
+overlay.addEventListener('click',()=>toggleMenu(false));
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!drawer.hidden)toggleMenu(false)});
+function show(key,writeHash=true){
+if(!info[key])key="conditional";
+current=key;step=0;const d=info[key];
+el('unitcrumb').textContent=d.unit;el('topiccrumb').textContent=d.name;
+el('lessonTitle').textContent=d.lesson;el('intro').innerHTML=d.intro;el('formula').innerHTML=d.formula;
+el('ruleList').innerHTML=d.rules.map((r,i)=>'<div class="rule" data-rule="'+(i+1)+'"><div class="n">0'+(i+1)+'</div><div><div class="name">'+r[0]+'</div><div class="why">'+r[1]+'</div></div></div>').join('');
+el('exerciseTitle').textContent=d.title;el('question').innerHTML=d.question;el('sampleData').innerHTML=d.data;
+el('answer').hidden=true;stepBtn.textContent='Ver primer paso →';el('caption').textContent='Seguí el procedimiento de la izquierda mientras resolvés.';
+el('progress').textContent='Ejercicio '+(pages.indexOf(key)+1)+' de 2';
+document.querySelectorAll('.choice').forEach(b=>b.setAttribute('aria-current',String(b.dataset.example===key)));
+if(writeHash)history.replaceState(null,'','#'+key);
+if(!drawer.hidden)toggleMenu(false);
+window.scrollTo({top:0,behavior:'instant'});
+}
+stepBtn.addEventListener('click',()=>{
+const d=info[current];
+if(step===3){step=0;el('answer').hidden=true;el('answer').innerHTML='';stepBtn.textContent='Ver primer paso →';el('caption').textContent='Seguí el procedimiento de la izquierda mientras resolvés.';}
+else{
+step++;
+const item=d.answers[step-1];
+const box=el('answer');box.hidden=false;
+box.innerHTML='<div class="small">Paso 0'+step+' · '+item[0]+'</div><div class="'+(step===3?'final':'mathline')+'">'+item[1]+'</div>';
+stepBtn.textContent=step===3?'Volver a empezar ↺':'Siguiente paso →';
+el('caption').textContent=step===3?'Resolución completa.':'El paso '+step+' también está marcado a la izquierda.';
+}
+document.querySelectorAll('[data-rule]').forEach(b=>b.classList.toggle('is-active',Number(b.dataset.rule)===step));
+document.querySelectorAll('[data-highlight]').forEach(cell=>{
+const v=cell.dataset.highlight;
+cell.classList.toggle('marked',step>0&&(step===3||(step===1&&v==='denominator')||(step===2&&v==='numerator')));
+});
+});
+document.querySelectorAll('.choice').forEach(b=>b.addEventListener('click',()=>show(b.dataset.example)));
+el('next').addEventListener('click',()=>show(pages[(pages.indexOf(current)+1)%pages.length]));
+window.addEventListener('hashchange',()=>show(location.hash.slice(1),false));
+show(location.hash.slice(1),false);
+})();
+</script>
+</body>
+</html>
