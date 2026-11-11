@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Evaluaciones · Proyectos</title><meta name="color-scheme" content="light">
+<style>
+:root{font-family:system-ui,-apple-system,sans-serif;color:#252924;background:#faf9f6}
+*{box-sizing:border-box}body{margin:0}button,input,textarea,select{font:inherit}button{cursor:pointer}
+header{height:66px;display:flex;align-items:center;gap:18px;padding:0 clamp(16px,3vw,38px);border-bottom:1px solid #dddcd4;background:#fff}
+header a{color:#252924;text-decoration:none;border:1px solid #d9d8d1;border-radius:6px;padding:8px 12px;font-size:13px}
+header strong{font-size:16px}header span{margin-left:auto;font-size:12px;color:#646a62}
+main{display:grid;grid-template-columns:minmax(195px,255px) minmax(0,720px);gap:32px;max-width:1180px;margin:0 auto;padding:32px 24px}
+nav{display:flex;flex-direction:column;gap:4px;align-self:start}nav button{text-align:left;padding:13px 14px;background:transparent;border:1px solid transparent;border-radius:7px;color:#414641}nav button.active{background:#ebede7;border-color:#d8dcd4;font-weight:650}
+h1{font-size:clamp(26px,4vw,39px);letter-spacing:-.04em;margin:4px 0 4px}h2{margin:0 0 12px;font-size:15px}
+p{color:#777b74;line-height:1.5}label{display:block;margin:21px 0 8px;font-size:13px;font-weight:600}
+select,textarea{width:100%;max-width:100%;border:1px solid #d2d5cc;border-radius:7px;background:#fff;padding:13px;color:#262a26}
+textarea{min-height:100px;resize:vertical}.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.grid label{margin-top:8px}
+.actions{display:flex;gap:9px;flex-wrap:wrap;margin:22px 0}.actions button,.actions label{border:1px solid #b9beb6;padding:11px 14px;border-radius:6px;background:#fff;margin:0;font-weight:600;font-size:13px}
+.actions .primary{background:#263b32;color:white;border-color:#263b32}
+#message{font-size:12px;min-height:26px;color:#3b6352}
+.note{background:#f0f0eb;border:1px solid #e1e2db;border-radius:6px;padding:14px;font-size:12px;color:#626960;line-height:1.5;margin:20px 0}
+input[type=file]{display:none}
+@media(max-width:720px){main{display:block;padding:18px 16px}nav{display:flex;flex-direction:row;overflow:auto;white-space:nowrap;padding:0 0 14px;margin-bottom:12px}nav button{flex:none}header span{display:none}.grid{grid-template-columns:1fr;gap:0}}
+</style></head><body>
+<header><a href="./index.html">← Proyectos</a><strong>Evaluaciones</strong><span id="scope">Guardado en este navegador</span></header>
+<main><nav id="list" aria-label="Proyectos"></nav><article>
+<h1 id="name">Evaluación</h1><p id="hint">Seleccioná un proyecto.</p>
+<div class="grid"><div><label for="decision">Decisión</label><select id="decision"><option value="">Sin decidir</option><option value="KEEP">Conservar</option><option value="REVISE">Revisar</option><option value="REJECT">Descartar</option><option value="BLOCKED">No pude utilizarlo</option></select></div>
+<div><label for="score">Puntuación</label><select id="score"><option value="">Sin puntuación</option><option value="1">1 / 5</option><option value="2">2 / 5</option><option value="3">3 / 5</option><option value="4">4 / 5</option><option value="5">5 / 5</option></select></div></div>
+<label for="liked">Qué me gustó</label><textarea id="liked" placeholder="Una parte concreta que vale la pena conservar"></textarea>
+<label for="fix">Qué cambiaría</label><textarea id="fix" placeholder="Algo que faltó o no funcionó"></textarea>
+<p id="message" aria-live="polite"></p>
+<div class="actions"><button class="primary" id="save">Guardar</button><button id="export">Descargar copia JSON ↓</button><label for="import">Importar copia JSON</label><input id="import" type="file" accept="application/json,.json"><button id="backup">Respaldar en GitHub privado ↗</button></div>
+<div class="note"><b>Persistencia.</b> Las notas se guardan automáticamente en este navegador. Descargar una copia permite recuperarlas en otro dispositivo. «Respaldar en GitHub» abre un borrador en tu repositorio privado: solo se guarda allí cuando iniciás sesión y confirmás su creación. No enviamos credenciales, datos ni notas en segundo plano. La biblioteca pública nunca muestra tus evaluaciones.</div>
+</article></main>
+<script>
+(()=>{'use strict';
+const $=s=>document.querySelector(s);
+const KEY='prometeo-projects-reviews-v1', GAL='prometeo-cycle001-human-review-v1';
+const fallback=[['patio','PATIO'],['pizarron','Pizarrón'],['voz','Voz'],['campus','Campus'],['estadistica','Estadística'],['chat','Chat']];
+let products=fallback.map(([id,name])=>({id,name,version:'Ronda 001'}));let selected='patio';let reviews={};
+const idMap={'01':'patio','02':'pizarron','03':'voz','04':'campus','05':'estadistica','06':'chat'};
+try{const raw=JSON.parse(localStorage.getItem(KEY)||'{}');if(raw&&typeof raw==='object'&&!Array.isArray(raw))reviews=raw;}catch(_){}
+try{let prev=JSON.parse(localStorage.getItem(GAL)||'{}');for(const [k,v] of Object.entries(prev)){const id=idMap[k];if(id&&!reviews[id]&&v&&typeof v==='object')reviews[id]={decision:v.outcome||'',score:v.score||'',liked:v.liked||'',fix:v.fix||'',origin:'round-001',savedAt:v.recordedAt||null}}}catch(_){}
+function validValue(v){return String(v||'').slice(0,15000)}
+function persist(){try{localStorage.setItem(KEY,JSON.stringify(reviews));$('#message').textContent='Guardado en este navegador ✓';}catch(_){$('#message').textContent='No se pudo guardar aquí. Descargá una copia JSON.'}}
+function drawNav(){$('#list').replaceChildren();for(const p of products){const b=document.createElement('button');b.type='button';b.textContent=p.name;b.className=p.id===selected?'active':'';b.onclick=()=>{save();selected=p.id;draw()};$('#list').append(b)}}
+function draw(){const p=products.find(p=>p.id===selected)||products[0];if(!p)return;selected=p.id;$('#name').textContent=p.name;$('#hint').textContent=p.version||'Proyecto';let v=reviews[selected]||{};for(const f of ['decision','score','liked','fix'])$('#'+f).value=v[f]||'';$('#message').textContent='';drawNav()}
+function save(){let val={};for(const f of ['decision','score','liked','fix'])val[f]=validValue($('#'+f).value);val.savedAt=new Date().toISOString();reviews[selected]=val;persist();}
+function payload(){save();return {schema:'prometeo.reviews/v1',createdAt:new Date().toISOString(),reviews:Object.fromEntries(Object.entries(reviews).filter(([k])=>/^[a-z0-9-]+$/.test(k)))}}
+function download(name,data){const url=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}));const a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),4000)}
+$('#save').onclick=save;$('#export').onclick=()=>download('prometeo-evaluaciones.json',payload());
+for(const f of ['decision','score','liked','fix'])$('#'+f).addEventListener('change',save);
+$('#import').onchange=async ev=>{const file=ev.target.files?.[0];if(!file)return;try{if(file.size>600000)throw Error('Archivo demasiado grande');const x=JSON.parse(await file.text());if(x.schema!=='prometeo.reviews/v1'||typeof x.reviews!=='object'||Array.isArray(x.reviews))throw Error('El archivo no contiene evaluaciones compatibles');for(const [id,v] of Object.entries(x.reviews)){if(!/^[a-z0-9-]{1,80}$/.test(id)||!v||typeof v!=='object')continue;reviews[id]={decision:['KEEP','REVISE','REJECT','BLOCKED'].includes(v.decision)?v.decision:'',score:['1','2','3','4','5'].includes(String(v.score))?String(v.score):'',liked:validValue(v.liked),fix:validValue(v.fix),savedAt:validValue(v.savedAt)}}persist();draw();$('#message').textContent='Copia importada ✓';}catch(e){$('#message').textContent=e.message||'No se pudo importar'}finally{ev.target.value=''}};
+$('#backup').onclick=()=>{const data=payload();if(!Object.values(data.reviews).some(r=>r.decision||r.score||r.liked||r.fix)){alert('Primero guardá alguna evaluación.');return;}if(!confirm('Se abrirá GitHub para guardar estas notas en el repositorio PRIVADO. Tenés que confirmar la creación allí. ¿Continuar?'))return;
+const body='Respaldo de evaluaciones de Prometeo. Esta información es PRIVADA.\n\n'+'\x60\x60\x60json\n'+JSON.stringify(data,null,2)+'\n\x60\x60\x60';
+const title='PROMETEO · Evaluaciones '+new Date().toISOString().slice(0,10);
+const url='https://github.com/JuanManuelPM/pruebas/issues/new?title='+encodeURIComponent(title)+'&body='+encodeURIComponent(body);
+if(url.length>16500){download('prometeo-evaluaciones.json',data);alert('Las notas son demasiado largas para el formulario. Se descargó el respaldo JSON.');return;}
+window.open(url,'_blank','noopener,noreferrer');
+};
+fetch('./catalog.json',{cache:'no-store'}).then(r=>r.ok?r.json():null).then(d=>{if(!d||d.schema!=='prometeo.library-catalog/v1'||!Array.isArray(d.items))return;products=d.items.filter(p=>p&&typeof p.id==='string'&&typeof p.name==='string').map(p=>({id:p.id,name:p.name,version:p.version}));if(!products.some(p=>p.id===selected))selected=products[0]?.id;draw()}).catch(()=>{});
+draw();
+})();
+</script></body></html>
