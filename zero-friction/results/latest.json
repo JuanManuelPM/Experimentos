@@ -1,9 +1,9 @@
 {
   "schema": "worker-lab.zero-friction/v1",
-  "run_id": "zf-42872884215",
-  "started_at": "2026-11-10T18:14:06.745Z",
-  "finished_at": "2026-11-10T18:14:19.171Z",
-  "duration_ms": 12426,
+  "run_id": "zf-43073780032",
+  "started_at": "2026-11-11T18:02:44.653Z",
+  "finished_at": "2026-11-11T18:04:56.472Z",
+  "duration_ms": 131819,
   "human_actions": 0,
   "cost_usd": 0,
   "fully_zero_friction": true,
@@ -21,7 +21,7 @@
     "local_models": 3,
     "best_local_model": "qwen2.5:0.5b-instruct",
     "best_local_score": 0.8,
-    "horde_status": "DONE"
+    "horde_status": "TIMEOUT"
   },
   "tasks": [
     {
@@ -73,7 +73,7 @@
           "expected": "WORKER_LAB_OK",
           "status": "PASS",
           "output": "WORKER_LAB_OK",
-          "latency_ms": 1184,
+          "latency_ms": 1263,
           "eval_count": 6,
           "prompt_eval_count": 38
         },
@@ -84,7 +84,7 @@
           "expected": "391",
           "status": "PASS",
           "output": "391",
-          "latency_ms": 187,
+          "latency_ms": 226,
           "eval_count": 4,
           "prompt_eval_count": 39
         },
@@ -95,7 +95,7 @@
           "expected": "FRUIT",
           "status": "FAIL",
           "output": "VEHICLE",
-          "latency_ms": 206,
+          "latency_ms": 259,
           "eval_count": 4,
           "prompt_eval_count": 45
         },
@@ -106,7 +106,7 @@
           "expected": "ZX-4821",
           "status": "PASS",
           "output": "ZX-4821",
-          "latency_ms": 295,
+          "latency_ms": 329,
           "eval_count": 7,
           "prompt_eval_count": 47
         },
@@ -117,7 +117,7 @@
           "expected": "YES",
           "status": "PASS",
           "output": "YES",
-          "latency_ms": 213,
+          "latency_ms": 294,
           "eval_count": 2,
           "prompt_eval_count": 53
         }
@@ -125,7 +125,7 @@
       "score": 0.8,
       "passed": 4,
       "total": 5,
-      "duration_ms": 2099
+      "duration_ms": 2388
     },
     {
       "engine": "github-actions-ollama",
@@ -144,7 +144,7 @@
           "expected": "WORKER_LAB_OK",
           "status": "PASS",
           "output": "WORKER_LAB_OK\n",
-          "latency_ms": 905,
+          "latency_ms": 957,
           "eval_count": 8,
           "prompt_eval_count": 38
         },
@@ -154,9 +154,9 @@
           "prompt": "Compute 17 * 23. Return only the integer.",
           "expected": "391",
           "status": "FAIL",
-          "output": "17 * 23\n",
-          "latency_ms": 127,
-          "eval_count": 8,
+          "output": "17 * 23 = 391",
+          "latency_ms": 209,
+          "eval_count": 12,
           "prompt_eval_count": 38
         },
         {
@@ -166,7 +166,7 @@
           "expected": "FRUIT",
           "status": "PASS",
           "output": "FRUIT\n",
-          "latency_ms": 86,
+          "latency_ms": 136,
           "eval_count": 4,
           "prompt_eval_count": 43
         },
@@ -177,7 +177,7 @@
           "expected": "ZX-4821",
           "status": "FAIL",
           "output": "Ticket ID: ZX-4821\n",
-          "latency_ms": 164,
+          "latency_ms": 230,
           "eval_count": 11,
           "prompt_eval_count": 46
         },
@@ -188,7 +188,7 @@
           "expected": "YES",
           "status": "FAIL",
           "output": "NO\n",
-          "latency_ms": 79,
+          "latency_ms": 128,
           "eval_count": 3,
           "prompt_eval_count": 52
         }
@@ -196,7 +196,7 @@
       "score": 0.4,
       "passed": 2,
       "total": 5,
-      "duration_ms": 1361
+      "duration_ms": 1660
     },
     {
       "engine": "github-actions-ollama",
@@ -215,7 +215,7 @@
           "expected": "WORKER_LAB_OK",
           "status": "PASS",
           "output": "WORKER_LAB_OK",
-          "latency_ms": 1839,
+          "latency_ms": 2211,
           "eval_count": 6,
           "prompt_eval_count": 50
         },
@@ -226,7 +226,7 @@
           "expected": "391",
           "status": "FAIL",
           "output": "432",
-          "latency_ms": 193,
+          "latency_ms": 313,
           "eval_count": 2,
           "prompt_eval_count": 49
         },
@@ -237,7 +237,7 @@
           "expected": "FRUIT",
           "status": "PASS",
           "output": "FRUIT",
-          "latency_ms": 257,
+          "latency_ms": 457,
           "eval_count": 3,
           "prompt_eval_count": 57
         },
@@ -248,7 +248,7 @@
           "expected": "ZX-4821",
           "status": "PASS",
           "output": "ZX-4821",
-          "latency_ms": 351,
+          "latency_ms": 568,
           "eval_count": 5,
           "prompt_eval_count": 57
         },
@@ -259,7 +259,7 @@
           "expected": "YES",
           "status": "PASS",
           "output": "YES",
-          "latency_ms": 360,
+          "latency_ms": 516,
           "eval_count": 2,
           "prompt_eval_count": 65
         }
@@ -267,203 +267,303 @@
       "score": 0.8,
       "passed": 4,
       "total": 5,
-      "duration_ms": 3000
+      "duration_ms": 4065
     },
     {
       "engine": "ai-horde-anonymous",
       "provider": "AI_HORDE",
-      "model": "qwen3.8-27b-int4",
+      "model": "TheDrummer/Behemoth-128B-v3",
       "human_actions": 0,
       "account_required": false,
       "api_key_required": false,
       "credential": "anonymous public key",
       "cost_usd": 0,
-      "status": "DONE",
-      "tests": [
-        {
-          "id": "H01",
-          "level": "L0",
-          "expected": "WORKER_LAB_OK",
-          "output": "WORKER_LAB_OK\n\n\n\n<think>\nThe user is asking me to return exactly \"WORKER_LAB_OK",
-          "status": "FAIL"
-        }
-      ],
-      "active_threads": 32,
-      "request_id": "3f036005-60a4-4044-8bad-d35128bb8ebc",
+      "status": "TIMEOUT",
+      "tests": [],
+      "active_threads": 8,
+      "request_id": "36af6a5e-c2c5-47cc-8383-08dff543ebb3",
       "queue_position": 0,
       "wait_time": 0,
-      "score": 0,
-      "passed": 0,
-      "total": 1,
-      "duration_ms": 5965
+      "duration_ms": 123704,
+      "note": "Anonymous queue did not finish inside 120s. This is a capacity signal, not a harness failure."
     }
   ],
   "events": [
     {
-      "ts": "2026-11-10T18:14:06.746Z",
+      "ts": "2026-11-11T18:02:44.654Z",
       "type": "model_start",
       "detail": "qwen2.5:0.5b-instruct",
       "model": "qwen2.5:0.5b-instruct"
     },
     {
-      "ts": "2026-11-10T18:14:07.943Z",
+      "ts": "2026-11-11T18:02:45.933Z",
       "type": "task_result",
       "detail": "qwen2.5:0.5b-instruct T01 PASS",
       "model": "qwen2.5:0.5b-instruct",
       "task_id": "T01"
     },
     {
-      "ts": "2026-11-10T18:14:08.130Z",
+      "ts": "2026-11-11T18:02:46.159Z",
       "type": "task_result",
       "detail": "qwen2.5:0.5b-instruct T02 PASS",
       "model": "qwen2.5:0.5b-instruct",
       "task_id": "T02"
     },
     {
-      "ts": "2026-11-10T18:14:08.336Z",
+      "ts": "2026-11-11T18:02:46.418Z",
       "type": "task_result",
       "detail": "qwen2.5:0.5b-instruct T03 FAIL",
       "model": "qwen2.5:0.5b-instruct",
       "task_id": "T03"
     },
     {
-      "ts": "2026-11-10T18:14:08.631Z",
+      "ts": "2026-11-11T18:02:46.747Z",
       "type": "task_result",
       "detail": "qwen2.5:0.5b-instruct T04 PASS",
       "model": "qwen2.5:0.5b-instruct",
       "task_id": "T04"
     },
     {
-      "ts": "2026-11-10T18:14:08.845Z",
+      "ts": "2026-11-11T18:02:47.042Z",
       "type": "task_result",
       "detail": "qwen2.5:0.5b-instruct T05 PASS",
       "model": "qwen2.5:0.5b-instruct",
       "task_id": "T05"
     },
     {
-      "ts": "2026-11-10T18:14:08.845Z",
+      "ts": "2026-11-11T18:02:47.042Z",
       "type": "model_done",
       "detail": "qwen2.5:0.5b-instruct: 4/5",
       "model": "qwen2.5:0.5b-instruct"
     },
     {
-      "ts": "2026-11-10T18:14:08.845Z",
+      "ts": "2026-11-11T18:02:47.042Z",
       "type": "model_start",
       "detail": "gemma3:270m",
       "model": "gemma3:270m"
     },
     {
-      "ts": "2026-11-10T18:14:09.750Z",
+      "ts": "2026-11-11T18:02:47.999Z",
       "type": "task_result",
       "detail": "gemma3:270m T01 PASS",
       "model": "gemma3:270m",
       "task_id": "T01"
     },
     {
-      "ts": "2026-11-10T18:14:09.877Z",
+      "ts": "2026-11-11T18:02:48.208Z",
       "type": "task_result",
       "detail": "gemma3:270m T02 FAIL",
       "model": "gemma3:270m",
       "task_id": "T02"
     },
     {
-      "ts": "2026-11-10T18:14:09.963Z",
+      "ts": "2026-11-11T18:02:48.344Z",
       "type": "task_result",
       "detail": "gemma3:270m T03 PASS",
       "model": "gemma3:270m",
       "task_id": "T03"
     },
     {
-      "ts": "2026-11-10T18:14:10.127Z",
+      "ts": "2026-11-11T18:02:48.574Z",
       "type": "task_result",
       "detail": "gemma3:270m T04 FAIL",
       "model": "gemma3:270m",
       "task_id": "T04"
     },
     {
-      "ts": "2026-11-10T18:14:10.206Z",
+      "ts": "2026-11-11T18:02:48.702Z",
       "type": "task_result",
       "detail": "gemma3:270m T05 FAIL",
       "model": "gemma3:270m",
       "task_id": "T05"
     },
     {
-      "ts": "2026-11-10T18:14:10.206Z",
+      "ts": "2026-11-11T18:02:48.702Z",
       "type": "model_done",
       "detail": "gemma3:270m: 2/5",
       "model": "gemma3:270m"
     },
     {
-      "ts": "2026-11-10T18:14:10.206Z",
+      "ts": "2026-11-11T18:02:48.702Z",
       "type": "model_start",
       "detail": "llama3.2:1b",
       "model": "llama3.2:1b"
     },
     {
-      "ts": "2026-11-10T18:14:12.045Z",
+      "ts": "2026-11-11T18:02:50.913Z",
       "type": "task_result",
       "detail": "llama3.2:1b T01 PASS",
       "model": "llama3.2:1b",
       "task_id": "T01"
     },
     {
-      "ts": "2026-11-10T18:14:12.238Z",
+      "ts": "2026-11-11T18:02:51.226Z",
       "type": "task_result",
       "detail": "llama3.2:1b T02 FAIL",
       "model": "llama3.2:1b",
       "task_id": "T02"
     },
     {
-      "ts": "2026-11-10T18:14:12.495Z",
+      "ts": "2026-11-11T18:02:51.683Z",
       "type": "task_result",
       "detail": "llama3.2:1b T03 PASS",
       "model": "llama3.2:1b",
       "task_id": "T03"
     },
     {
-      "ts": "2026-11-10T18:14:12.846Z",
+      "ts": "2026-11-11T18:02:52.251Z",
       "type": "task_result",
       "detail": "llama3.2:1b T04 PASS",
       "model": "llama3.2:1b",
       "task_id": "T04"
     },
     {
-      "ts": "2026-11-10T18:14:13.206Z",
+      "ts": "2026-11-11T18:02:52.767Z",
       "type": "task_result",
       "detail": "llama3.2:1b T05 PASS",
       "model": "llama3.2:1b",
       "task_id": "T05"
     },
     {
-      "ts": "2026-11-10T18:14:13.206Z",
+      "ts": "2026-11-11T18:02:52.767Z",
       "type": "model_done",
       "detail": "llama3.2:1b: 4/5",
       "model": "llama3.2:1b"
     },
     {
-      "ts": "2026-11-10T18:14:13.206Z",
+      "ts": "2026-11-11T18:02:52.768Z",
       "type": "horde_discover",
       "detail": "Discovering active anonymous text models"
     },
     {
-      "ts": "2026-11-10T18:14:13.635Z",
+      "ts": "2026-11-11T18:02:53.013Z",
       "type": "horde_model",
-      "detail": "qwen3.8-27b-int4 · threads=32"
+      "detail": "TheDrummer/Behemoth-128B-v3 · threads=8"
     },
     {
-      "ts": "2026-11-10T18:14:13.925Z",
+      "ts": "2026-11-11T18:02:53.280Z",
       "type": "horde_submit",
-      "detail": "3f036005-60a4-4044-8bad-d35128bb8ebc"
+      "detail": "36af6a5e-c2c5-47cc-8383-08dff543ebb3"
     },
     {
-      "ts": "2026-11-10T18:14:19.171Z",
+      "ts": "2026-11-11T18:02:58.624Z",
       "type": "horde_poll",
-      "detail": "done=true queue=0"
+      "detail": "done=false queue=0"
     },
     {
-      "ts": "2026-11-10T18:14:19.171Z",
-      "type": "horde_done",
-      "detail": "qwen3.8-27b-int4 · FAIL"
+      "ts": "2026-11-11T18:03:03.821Z",
+      "type": "horde_poll",
+      "detail": "done=false queue=0"
+    },
+    {
+      "ts": "2026-11-11T18:03:09.161Z",
+      "type": "horde_poll",
+      "detail": "done=false queue=0"
+    },
+    {
+      "ts": "2026-11-11T18:03:14.351Z",
+      "type": "horde_poll",
+      "detail": "done=false queue=0"
+    },
+    {
+      "ts": "2026-11-11T18:03:19.947Z",
+      "type": "horde_poll",
+      "detail": "done=false queue=0"
+    },
+    {
+      "ts": "2026-11-11T18:03:25.130Z",
+      "type": "horde_poll",
+      "detail": "done=false queue=0"
+    },
+    {
+      "ts": "2026-11-11T18:03:30.636Z",
+      "type": "horde_poll",
+      "detail": "done=false queue=0"
+    },
+    {
+      "ts": "2026-11-11T18:03:36.054Z",
+      "type": "horde_poll",
+      "detail": "done=false queue=0"
+    },
+    {
+      "ts": "2026-11-11T18:03:41.241Z",
+      "type": "horde_poll",
+      "detail": "done=false queue=0"
+    },
+    {
+      "ts": "2026-11-11T18:03:46.740Z",
+      "type": "horde_poll",
+      "detail": "done=false queue=0"
+    },
+    {
+      "ts": "2026-11-11T18:03:51.905Z",
+      "type": "horde_poll",
+      "detail": "done=false queue=0"
+    },
+    {
+      "ts": "2026-11-11T18:03:57.170Z",
+      "type": "horde_poll",
+      "detail": "done=false queue=0"
+    },
+    {
+      "ts": "2026-11-11T18:04:02.356Z",
+      "type": "horde_poll",
+      "detail": "done=false queue=0"
+    },
+    {
+      "ts": "2026-11-11T18:04:08.310Z",
+      "type": "horde_poll",
+      "detail": "done=false queue=0"
+    },
+    {
+      "ts": "2026-11-11T18:04:13.629Z",
+      "type": "horde_poll",
+      "detail": "done=false queue=0"
+    },
+    {
+      "ts": "2026-11-11T18:04:18.827Z",
+      "type": "horde_poll",
+      "detail": "done=false queue=0"
+    },
+    {
+      "ts": "2026-11-11T18:04:24.015Z",
+      "type": "horde_poll",
+      "detail": "done=false queue=0"
+    },
+    {
+      "ts": "2026-11-11T18:04:29.426Z",
+      "type": "horde_poll",
+      "detail": "done=false queue=0"
+    },
+    {
+      "ts": "2026-11-11T18:04:34.623Z",
+      "type": "horde_poll",
+      "detail": "done=false queue=0"
+    },
+    {
+      "ts": "2026-11-11T18:04:40.182Z",
+      "type": "horde_poll",
+      "detail": "done=false queue=0"
+    },
+    {
+      "ts": "2026-11-11T18:04:45.514Z",
+      "type": "horde_poll",
+      "detail": "done=false queue=0"
+    },
+    {
+      "ts": "2026-11-11T18:04:50.802Z",
+      "type": "horde_poll",
+      "detail": "done=false queue=0"
+    },
+    {
+      "ts": "2026-11-11T18:04:56.472Z",
+      "type": "horde_poll",
+      "detail": "done=false queue=0"
+    },
+    {
+      "ts": "2026-11-11T18:04:56.472Z",
+      "type": "horde_timeout",
+      "detail": "Anonymous queue did not finish inside 120s. This is a capacity signal, not a harness failure."
     }
   ]
 }
