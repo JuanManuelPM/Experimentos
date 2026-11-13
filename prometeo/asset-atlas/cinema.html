@@ -1,0 +1,27 @@
+<!doctype html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#101715"><title>ARCHIVO 03:17 · Animación 3D con recursos reales</title>
+<style>*{box-sizing:border-box}body{margin:0;background:#0d1715;color:#f2eadc;font-family:Arial,sans-serif;overflow:hidden}button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus-visible{outline:2px solid #e5c49a;outline-offset:3px}
+canvas{width:100%;height:100%;display:block;touch-action:none}
+main{position:fixed;inset:0;overflow:hidden;background:radial-gradient(circle at 40% 50%,#384942,#0b1715)}
+main:after{content:"";position:absolute;inset:0;pointer-events:none;opacity:.09;background-image:repeating-linear-gradient(0deg,#fff2 0 1px,transparent 1px 5px);mix-blend-mode:screen}
+header{position:fixed;z-index:8;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;gap:10px;padding:16px 22px;background:linear-gradient(#07100edf,transparent)}
+.brand{font-size:20px;letter-spacing:3px;font-weight:900;text-shadow:0 2px 8px #000}.brand span{color:#e1bf8e}.tiny{font-size:10px;letter-spacing:2px;color:#c2d4c8}
+.actions{display:flex;gap:8px}.button{padding:11px 15px;border:1px solid #9dab9c;background:#1e2d25db;color:#eee8d9;text-decoration:none;font-size:12px;font-weight:800;letter-spacing:1px;border-radius:3px}.button.primary{background:#dec89d;color:#243127;border-color:#dec89d}
+.hud{position:fixed;z-index:6;left:clamp(14px,5vw,80px);top:clamp(92px,20vh,230px);pointer-events:none;max-width:460px;text-shadow:0 2px 12px #070b0b}
+.hud .ep{font-size:11px;letter-spacing:3px;color:#e6c9a5}.hud h1{font-size:clamp(24px,6vw,64px);letter-spacing:1px;margin:8px 0;line-height:.93}.hud p{font-size:clamp(12px,2vw,17px);line-height:1.45;color:#d9d7c7}
+.bottom{z-index:9;position:fixed;left:14px;right:14px;bottom:calc(12px + env(safe-area-inset-bottom,0px));background:#0c1613cf;border:1px solid #536459;padding:13px;display:grid;grid-template-columns:auto auto auto 1fr auto;gap:8px;align-items:center;backdrop-filter:blur(8px)}
+.bottom button{font-size:12px;background:#304337;color:#eae5d5;border:1px solid #647364;padding:11px;border-radius:3px}
+.bottom button[aria-pressed=true]{background:#cfbea0;color:#151e18}.bottom input{accent-color:#dec89d;width:100%}
+.time{white-space:nowrap;font-size:11px;letter-spacing:1px;color:#e6d8be;min-width:88px;text-align:right}
+#loading{position:absolute;inset:0;display:grid;place-content:center;text-align:center;background:#10201b;z-index:4;transition:opacity .5s}
+#loading h2{font-size:24px;letter-spacing:5px}#loading p{font-size:12px;letter-spacing:2px;color:#c6d7c9}
+#loading.hide{opacity:0;pointer-events:none}
+#notice{position:fixed;z-index:15;bottom:90px;left:20px;color:#f8e6cc;font-size:11px;letter-spacing:1px;text-shadow:0 1px 10px #000}
+#diag{position:fixed;z-index:5;top:73px;right:12px;background:#0b1510bb;color:#c8ddc9;padding:7px 10px;font:10px monospace}
+@media(max-width:700px){header{padding:12px}.brand{font-size:15px}.tiny{font-size:8px}.button{font-size:10px;padding:10px}.hud{left:16px;top:96px;max-width:75vw}.hud h1{font-size:27px}.bottom{grid-template-columns:repeat(3,auto) minmax(30px,1fr);gap:4px;padding:7px}.bottom button{padding:8px;font-size:10px}.bottom .time{grid-column:1/-1;text-align:left;padding:2px 5px}.hud p{max-width:260px}.actions{gap:5px}}
+</style><script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.181.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.181.0/examples/jsm/"}}</script></head>
+<body><main id="screen"><canvas id="canvas"></canvas><div id="loading"><h2>ARCHIVO 03:17</h2><p id="load-state">CARGANDO MODELOS 3D REALES...</p></div></main>
+<header><div><div class="brand">PROMETEO <span>/ ARCHIVO 03:17</span></div><div class="tiny">PSX · MUNDOS REUTILIZABLES · ASSETS REALES</div></div><div class="actions"><a class="button" href="./CREDITS.html">CRÉDITOS</a><a class="button" href="./">BIBLIOTECA 1.883</a><button class="button" id="fullscreen">⛶</button></div></header>
+<div class="hud" id="hud"><div class="ep" id="chapter">CAPÍTULO 01 / LA LLEGADA</div><h1 id="title">LA CASA VACÍA</h1><p id="subtitle">No todas las puertas necesitan una llave.</p></div>
+<div id="diag">INICIANDO · WEBGL2</div><div id="notice">MODELO Y TEXTURA DE AUTOR · NO PLACEHOLDERS</div>
+<footer class="bottom"><button id="play" aria-pressed="false">▶ REPRODUCIR</button><button id="explore" aria-pressed="false">EXPLORAR</button><button id="audio" aria-pressed="false">SONIDO OFF</button><input type="range" id="seek" aria-label="Avanzar por el corto" min="0" max="52" value="0" step=".1"><span class="time" id="time">00:00 / 00:52</span></footer>
+<script type="module" src="./cinema.mjs"></script></body></html>
