@@ -64,6 +64,7 @@
     modeButton.setAttribute('aria-pressed', String(editing));
     modeButton.setAttribute('aria-label', editing ? 'Ocultar herramientas y contemplar la escena' : 'Mostrar herramientas de edición');
     if (!editing) showPanel(null);
+    document.dispatchEvent(new CustomEvent('forja:mode-change', { detail: { mode: root.dataset.forjaMode } }));
   }
 
   function refreshAccessibility() {
