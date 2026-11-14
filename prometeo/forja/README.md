@@ -2,6 +2,10 @@
 
 **Primer compositor reutilizable de escenas** construido sobre la biblioteca real de **1.883 GLB / 19 colecciones** que ya alimenta [ATLAS](../asset-atlas/). No es otro gato ni un catálogo estático: ahora se puede **construir una escena** con edificios, caminos, vehículos, muebles, vegetación y personajes sin preparar código.
 
+## Reentrada de experiencia móvil · Candidata 2026-11-13
+
+**Estado: código en rama de desarrollo, no publicado ni aprobado visualmente.** Tras la captura de Android con tres columnas ilegibles, se separaron contemplación y edición: escena principal, MODELOS/EDITAR/OBJETOS táctiles, drawers contextuales, detección de viewport virtual, encuadre por bounds y preset de entrada. Se conservaron motor GLB/Three.js, catálogo y serialización. La verificación estática y de DOM simulado pasó; **GPU, navegador móvil real y criterio artístico siguen NOT_RUN**. Ver [recibo y puerta de publicación](MOBILE_UX_CANDIDATE.md). La URL pública más abajo sigue con la versión anterior.
+
 ## Abrir
 
 - Web (GitHub Pages después de publicar en `master`): https://juanmanuelpm.github.io/Experimentos/prometeo/forja/
@@ -17,7 +21,7 @@
 4. **Animaciones reales del archivo GLB**: si el recurso incluye clips, reproducir el clip seleccionado por prioridad `idle/walk/run` y mostrar el número de clips presentes. No inventar clips ni suponer que todos los modelos se animan.
 5. **Persistencia local** tras acciones y cambios de nombre; deshacer/rehacer hasta 50 snapshots; exportar/importar una escena JSON portátil que guarda ids de activos, posiciones, giros y escalas por eje, y procedencia.
 6. **Exportar geometría/materiales a GLB** de la escena editada. Los clips animados **no se incluyen en esa exportación** en esta versión; el proyecto JSON conserva los modelos de origen y permite recargar clips.
-7. **Modo Android**: biblioteca e inspector se abren como paneles laterales grandes; escena ocupa pantalla, con controles táctiles y OrbitControls.
+7. **Adaptación Android candidata**: modo escena-primero, biblioteca deslizable, inspector contextual y acciones táctiles legibles. **No verificada todavía en Android físico**.
 
 ## Manejo rápido
 
