@@ -114,12 +114,23 @@ function init3D(){
   floor.rotation.x=-Math.PI/2;floor.position.y=-.045;floor.name='EDITOR_FLOOR';state.scene.add(floor);
   const grid=new THREE.GridHelper(100,100,0x668073,0x3b5948);
   grid.position.y=-.035;grid.material.transparent=true;grid.material.opacity=.25;state.scene.add(grid);
+  grid.visible=!document.documentElement.classList.contains('forja-compact')||document.documentElement.dataset.forjaMode==='edit';
   state.transform=new TransformControls(state.camera,canvas);
   state.transform.setMode('translate');
   state.scene.add(state.transform.getHelper());
   state.transform.addEventListener('dragging-changed',event=>{state.controls.enabled=!event.value});
   state.transform.addEventListener('objectChange',()=>{updateInspector()});
   state.transform.addEventListener('mouseUp',()=>{historyPush()});
+  // Reentrada UX: visualizar sin gizmos; editar conserva selección e historial.
+  document.addEventListener('forja:mode-change',event=>{
+    const editing=event.detail?.mode==='edit';
+    grid.visible=!document.documentElement.classList.contains('forja-compact')||editing;
+    if(!editing)state.transform.detach();
+    else{const chosen=state.objects.find(x=>x.uid===state.selected);if(chosen)state.transform.attach(chosen.root)}
+  });
+  window.addEventListener('resize',()=>{
+    grid.visible=!document.documentElement.classList.contains('forja-compact')||document.documentElement.dataset.forjaMode==='edit';
+  });
   state.renderer.domElement.addEventListener('webglcontextlost',e=>{e.preventDefault();state.webgl=false;status('CONTEXTO WEBGL PERDIDO')});
   state.renderer.domElement.addEventListener('webglcontextrestored',()=>location.reload());
   window.addEventListener('resize',resize);
@@ -259,7 +270,20 @@ function focus(){
  state.controls.target.copy(target);state.camera.position.copy(target.clone().add(new THREE.Vector3(d*.72,d*.52,d)));
  state.controls.update();
 }
-function resetCamera(){state.controls.target.set(0,1,0);state.camera.position.set(12,9,17);state.controls.update()}
+function resetCamera(){
+ if(!state.objects.length){state.controls.target.set(0,1,0);state.camera.position.set(12,9,17);state.controls.update();return}
+ const bounds=new THREE.Box3().setFromObject(state.world);
+ const center=bounds.getCenter(new THREE.Vector3()),size=bounds.getSize(new THREE.Vector3());
+ const fovy=THREE.MathUtils.degToRad(state.camera.fov);
+ const fovx=2*Math.atan(Math.tan(fovy/2)*Math.max(.35,state.camera.aspect));
+ const halfHeight=Math.max(1,size.y*.55+size.z*.18),halfWidth=Math.max(1,size.x*.55+size.z*.25);
+ const distance=Math.min(180,Math.max(10,halfHeight/Math.tan(fovy/2),halfWidth/Math.tan(fovx/2))*1.18);
+ state.controls.target.copy(center);
+ state.camera.position.copy(center).add(new THREE.Vector3(.9,.7,1).normalize().multiplyScalar(distance));
+ state.controls.maxDistance=Math.max(110,distance*1.6);
+ state.camera.far=Math.max(240,distance*6);
+ state.camera.updateProjectionMatrix();state.controls.update();
+}
 function setMode(mode){
  if(!['translate','rotate','scale'].includes(mode))return;
  state.mode=mode;state.transform?.setMode(mode);
