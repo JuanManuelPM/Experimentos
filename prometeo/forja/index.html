@@ -1,10 +1,26 @@
 <!doctype html>
 <html lang="es"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<script>
+/* Viewport CSS ancho en Android "sitio de escritorio" no debe imponer tres columnas. */
+(function () {
+  function sync() {
+    var shortSide=Math.min(screen.width||9999,screen.height||9999);
+    var touch=matchMedia('(pointer:coarse)').matches||navigator.maxTouchPoints>0;
+    document.documentElement.classList.toggle('forja-compact',
+      window.innerWidth<=940 || (touch && shortSide<=900));
+  }
+  sync();
+  window.addEventListener('resize',sync);
+  window.addEventListener('orientationchange',sync);
+})();
+</script>
 <meta name="theme-color" content="#121916">
 <title>FORJA · Prometeo 3D · Compositor de escenas</title>
 <meta name="description" content="Componé escenas 3D con 1.883 GLB CC0: edificios, vehículos, naturaleza, objetos y personajes. Guardá, editá y exportá.">
 <link rel="stylesheet" href="./forge.css">
+<link rel="stylesheet" href="./forge-mobile.css">
+<script src="./forge-mobile.js" defer></script>
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.181.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.181.0/examples/jsm/"}}</script>
 </head><body>
 <div id="app">
