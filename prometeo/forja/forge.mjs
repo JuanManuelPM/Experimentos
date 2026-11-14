@@ -286,6 +286,7 @@ function validateProject(input){
 }
 async function replaceScene(data,{remember=true}={}){
  if(state.busy)return false;
+ if(!state.webgl){status('CATÁLOGO 2D · GPU NO DISPONIBLE');toast('ESTE NAVEGADOR NO PUEDE EDITAR 3D SIN WEBGL2');return false;}
  let safe;
  try{safe=validateProject(data)}catch(e){toast(e.message);return false}
  state.request++;setBusy(true);setLoading(true,'PREPARANDO ESCENA',0);
@@ -408,7 +409,7 @@ async function initCatalog(){
    const o=document.createElement('option');o.value=p.id;o.textContent=p.name+' ('+p.models.length+')';$('pack').append(o);
   }
   $('model-total').textContent='1.883 GLB · 19 COLECCIONES';
-  renderLibrary();status('CATÁLOGO REAL · 1.883 RECURSOS');
+  renderLibrary();status(state.webgl?'CATÁLOGO REAL · 1.883 RECURSOS':'CATÁLOGO 2D · WEBGL2 NO DISPONIBLE');
   let prev=null;try{prev=JSON.parse(localStorage.getItem(STORAGE)||'null')}catch{}
   if(prev?.schema===SCHEMA&&prev.items?.length){
    await replaceScene(prev,{remember:false});
