@@ -207,7 +207,7 @@ function select(uid){
  state.transform?.detach();
  if(e)state.transform?.attach(e.root);
  updateInspector();renderObjects();
- if(e&&window.matchMedia('(max-width:800px)').matches)$('inspector-panel').classList.add('open');
+ if(e&&document.documentElement.classList.contains('forja-compact'))$('inspector-panel').classList.add('open');
 }
 function updateInspector(){
  const e=state.objects.find(x=>x.uid===state.selected);
@@ -387,7 +387,7 @@ function renderLibrary(){
   const plus=document.createElement('span');plus.className='add-symbol';plus.textContent='+';
   b.append(img,t,meta,plus);
   b.addEventListener('click',async()=>{await addAsset(m,{p:[(state.objects.length%5-2)*1.5,0,3]});
-   if(window.matchMedia('(max-width:800px)').matches)$('library-panel').classList.remove('open')});
+   if(document.documentElement.classList.contains('forja-compact'))$('library-panel').classList.remove('open')});
   b.addEventListener('dragstart',e=>e.dataTransfer.setData('text/forja-asset-id',m.id));
   f.append(b);
  }
@@ -411,10 +411,19 @@ async function initCatalog(){
   $('model-total').textContent='1.883 GLB · 19 COLECCIONES';
   renderLibrary();status(state.webgl?'CATÁLOGO REAL · 1.883 RECURSOS':'CATÁLOGO 2D · WEBGL2 NO DISPONIBLE');
   let prev=null;try{prev=JSON.parse(localStorage.getItem(STORAGE)||'null')}catch{}
-  if(prev?.schema===SCHEMA&&prev.items?.length){
-   await replaceScene(prev,{remember:false});
-   state.history=[snapshot()];state.cursor=0;historyButtons();
-  }else{state.history=[snapshot()];state.cursor=0;historyButtons()}
+  if(prev?.schema===SCHEMA&&Array.isArray(prev.items)){
+   // Un proyecto vacío guardado es una decisión válida: no se pisa con un preset.
+   if(prev.items.length)await replaceScene(prev,{remember:false});
+   else{
+    state.sceneName=String(prev.name||'Escena sin título').slice(0,64);
+    $('scene-name').value=state.sceneName;
+    metrics();
+   }
+  }else if(state.webgl){
+   // Primera visita: mostrar una obra real, no un editor vacío con paneles.
+   await replaceScene(makePreset('barrio'),{remember:false});
+  }
+  state.history=[snapshot()];state.cursor=0;historyButtons();
  }catch(e){status('FALLÓ EL CATÁLOGO · '+e.message);toast('NO PUDO LEER EL CATÁLOGO');console.error(e)}
 }
 function wire(){
