@@ -76,12 +76,7 @@
     library.setAttribute('aria-hidden', String(on && !libOpen));
     inspector.setAttribute('aria-hidden', String(on && !inspectorOpen));
     backdrop.hidden = !(on && (libOpen || inspectorOpen));
-    if (inspectorOpen && root.dataset.forjaMode !== 'edit') {
-      root.dataset.forjaMode = 'edit';
-      modeButton.textContent = 'VER ESCENA';
-      modeButton.setAttribute('aria-pressed', 'true');
-      modeButton.setAttribute('aria-label', 'Ocultar herramientas y contemplar la escena');
-    }
+    if (inspectorOpen && root.dataset.forjaMode !== 'edit') setPresentationMode('edit');
   }
 
   function showPanel(name) {
