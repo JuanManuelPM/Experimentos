@@ -296,7 +296,9 @@ function frame(ms){
 function setStatus(text){notice.textContent=text;notice.classList.add('show')}
 async function init(){
  try{
-  renderer=new THREE.WebGLRenderer({canvas:stage,antialias:false,alpha:false,powerPreference:'high-performance',preserveDrawingBuffer:true});
+  const context=stage.getContext('webgl2',{alpha:false,antialias:false,powerPreference:'high-performance',preserveDrawingBuffer:true});
+  if(!context)throw new Error('Este navegador no habilita WebGL2. Abrí la página en Chrome con aceleración gráfica para reproducir el corto 3D.');
+  renderer=new THREE.WebGLRenderer({canvas:stage,context,antialias:false,alpha:false,powerPreference:'high-performance',preserveDrawingBuffer:true});
   renderer.setSize(360,640,false);renderer.setPixelRatio(1);
   renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.17;
   renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
