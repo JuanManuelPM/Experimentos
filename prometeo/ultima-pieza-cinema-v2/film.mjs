@@ -202,7 +202,7 @@ function aim(now){
  const shot=SHOTS.find(s=>now<s[1])||SHOTS.at(-1);
  const f=shot[1]-shot[0],u=smooth((now-shot[0])/f);
  camera.position.copy(v(shot[2]).lerp(v(shot[3]),u));
- const q=v(shot[4]).lerp(v(shot[5]),u);camera.lookAt(q);camera.fov=shot[6]+((shot[7]==='Debajo de la mesa')?2*Math.sin(u*Math.PI):0);camera.updateProjectionMatrix();
+ const q=v(shot[4]).lerp(v(shot[5]),u);camera.lookAt(q);camera.fov=shot[6]+((shot[7]==='Debajo de la mesa')?2*Math.sin(u*Math.PI):0);camera.updateProjectionMatrix();camera.updateMatrixWorld();
  // Cinematic hard cuts and a short deliberate dip-to-black before reveal
  let alpha=0;
  if(now<.40)alpha=1-smooth(now/.40);
