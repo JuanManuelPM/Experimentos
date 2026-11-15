@@ -8,7 +8,7 @@ function make({storage=true,mixer=false,loading=false,historyUI=false}={}){
  const old={uid:'old',root:{id:'old'},mixer:{stopAllAction(){}}},world=new Set([old.root]);
  const state={busy:false,webgl:true,objects:[old],selected:'old',sceneName:'OLD',history:[{name:'OLD'}],cursor:0,request:0,byId:new Map([['a',{id:'a'}]]),world:{add(x){world.add(x)},remove(x){world.delete(x)}},transform:{detach(){}}};
  const saveLocal=()=>storage,historyButtons=()=>{if(historyUI)throw Error('HISTORY_UI_FAILED')};
- const historyPush=new Function('state','snapshot','saveLocal','historyButtons',history+';return historyPush')(state,()=>({name:state.sceneName,items:state.objects.map(x=>x.uid)}),saveLocal,historyButtons);
+ const historyPush=new Function('state','snapshot','saveLocal','historyButtons','console',history+';return historyPush')(state,()=>({name:state.sceneName,items:state.objects.map(x=>x.uid)}),saveLocal,historyButtons,{warn(){},error(){}});
  const run=new Function('state','validateProject','setBusy','setLoading','status','toast','addAsset','metrics','renderObjects','updateInspector','resetCamera','historyPush','saveLocal','historyButtons','$','console',code+';return replaceScene')(
   state,x=>x,x=>state.busy=x,x=>{if(!x&&loading)throw Error('LOADING_FAILED')},()=>{},()=>{},
   async(asset,item)=>({uid:item.id,root:{id:item.id},mixer:{stopAllAction(){if(mixer)throw Error('MIXER_FAILED')}}}),
