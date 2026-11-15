@@ -1,0 +1,11 @@
+import {test} from 'node:test';import assert from 'node:assert/strict';
+import {CameraRig,shotAt,modes} from './camera-rig.mjs';
+const finite=p=>{assert.equal(p.eye.length,3);for(const x of [...p.eye,...p.target])assert.ok(Number.isFinite(x));assert.ok(Math.hypot(...p.eye.map((x,i)=>x-p.target[i]))>.2);assert.ok(p.fov>=25&&p.fov<=90)};
+test('valid finite camera poses for orbit, first person, follow, shot',()=>{const c=new CameraRig();for(const m of modes){c.setMode(m);finite(c.pose(3,.016,{follow:{x:3,z:-3,heading:1}}))}});
+test('orbital zoom clamps against clipping and out-of-range distance',()=>{const c=new CameraRig();c.zoom(.001);assert.equal(c.radius,14);finite(c.pose());c.zoom(500);assert.equal(c.radius,145)});
+test('pitch drag clamps for orbit and first-person; NaN input rejected',()=>{const c=new CameraRig();c.drag(0,5000);assert.ok(c.pitch<=1.3);c.setMode('FIRST_PERSON');c.drag(0,-5000);assert.ok(c.pitch>=-.8);assert.throws(()=>c.drag(NaN,0))});
+test('first-person movement clamps inside map bounds',()=>{const c=new CameraRig({bounds:6});c.setMode('FIRST_PERSON');for(let i=0;i<100;i++)c.move(5,5);assert.ok(Math.abs(c.fp[0])<=6&&Math.abs(c.fp[2])<=6);finite(c.pose())});
+test('first-person never enters solid rectangular obstacle (axis-by-axis)',()=>{const c=new CameraRig({bounds:20,obstacles:[{minX:-3,maxX:3,minZ:9,maxZ:19}]});c.setMode('FIRST_PERSON');c.fp=[0,1.8,8];c.yaw=Math.PI;for(let i=0;i<30;i++)c.move(1,0);assert.ok(c.fp[2]<=8);finite(c.pose())});
+test('follow camera tracks moving car and smooths independent of input frame rate',()=>{const c=new CameraRig();c.setMode('FOLLOW');let p;for(let i=0;i<100;i++)p=c.pose(i/60,1/60,{follow:{x:10,z:-5,heading:Math.PI/2}});finite(p);assert.ok(Math.abs(p.target[0]-10)<.05);assert.ok(Math.abs(p.eye[2]+5)<.1)});
+test('shot timeline is cyclic and positions change between cuts without jumps at loop',()=>{finite(shotAt(2));assert.deepEqual(shotAt(0).eye,shotAt(16).eye);assert.notDeepEqual(shotAt(0).eye,shotAt(3).eye);assert.deepEqual(shotAt(7.2).eye,shotAt(23.2).eye)});
+test('invalid camera timeline and mode fail safely',()=>{assert.throws(()=>shotAt(0,[{at:0,eye:[0,0,0],target:[1,0,0],fov:50}]));const c=new CameraRig();assert.throws(()=>c.setMode('ROCKET'));assert.throws(()=>new CameraRig({bounds:-1}))});
