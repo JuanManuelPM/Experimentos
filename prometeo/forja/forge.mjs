@@ -133,7 +133,7 @@ function init3D(){
   window.addEventListener('resize',()=>{
     grid.visible=!document.documentElement.classList.contains('forja-compact')||document.documentElement.dataset.forjaMode==='edit';
   });
-  state.renderer.domElement.addEventListener('webglcontextlost',e=>{e.preventDefault();state.webgl=false;status('CONTEXTO WEBGL PERDIDO')});
+  state.renderer.domElement.addEventListener('webglcontextlost',e=>{e.preventDefault();state.webgl=false;status('CONTEXTO WEBGL PERDIDO');$('render-status').textContent='GPU · NO DISPONIBLE'});
   state.renderer.domElement.addEventListener('webglcontextrestored',()=>location.reload());
   window.addEventListener('resize',resize);
   state.webgl=true;resize();
