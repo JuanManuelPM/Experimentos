@@ -20,7 +20,9 @@
 <meta name="description" content="Componé escenas 3D con 1.883 GLB CC0: edificios, vehículos, naturaleza, objetos y personajes. Guardá, editá y exportá.">
 <link rel="stylesheet" href="./forge.css">
 <link rel="stylesheet" href="./forge-mobile.css">
+<link rel="stylesheet" href="./forge-cinema.css">
 <script src="./forge-mobile.js" defer></script>
+<script src="./forge-fallback.js" defer></script>
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.181.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.181.0/examples/jsm/"}}</script>
 </head><body>
 <div id="app">
@@ -45,10 +47,14 @@
  </aside>
  <main class="stage" id="stage">
   <canvas id="canvas" aria-label="Escena tridimensional editable"></canvas>
+  <iframe id="forja-preview" title="Vista de Ciudad Viva, demostración interactiva no editable" hidden loading="lazy"></iframe>
+  <div id="forja-fallback-label" hidden role="status">VISTA INTERACTIVA 2D · EL EDITOR 3D REQUIERE WEBGL2 · <a href="./ciudad-viva/index.html" target="_blank" rel="noopener">ABRIR DEMO COMPLETA</a></div>
   <div class="stage-top">
     <div class="view-label"><span class="live-dot"></span><b>FORJA / EDITOR REAL</b><small id="status">INICIANDO BIBLIOTECA</small></div>
     <div class="scene-metrics"><span id="world-count">0 OBJETOS</span><span id="clip-count">0 ANIMACIONES</span><span id="render-status">GPU · —</span></div>
   </div>
+  <div class="cinema-tools" id="cinema-tools"><label for="camera-cinema-mode">CÁMARA</label><select id="camera-cinema-mode" aria-label="Modo de cámara cinematográfica" disabled><option value="ORBIT">◎ ÓRBITA</option><option value="FOLLOW">▣ SEGUIR MODELO</option><option value="FIRST_PERSON">◉ 1ª PERSONA</option><option value="SHOT">▶ RECORRIDO</option></select><span id="camera-cinema-status">EDITOR · ÓRBITA</span><button type="button" id="camera-cinema-capture" title="Guardar captura PNG de la escena" disabled>↓ PNG</button></div>
+  <div id="camera-walk-pad" hidden aria-label="Movimiento en primera persona"><button type="button" data-walk="left" aria-label="Caminar a la izquierda">◀</button><button type="button" data-walk="forward" aria-label="Caminar hacia adelante">▲</button><button type="button" data-walk="back" aria-label="Caminar hacia atrás">▼</button><button type="button" data-walk="right" aria-label="Caminar a la derecha">▶</button></div>
   <div class="empty-state" id="empty-state"><span class="empty-mark">◈</span><h1>UN MUNDO EN BLANCO<br><em>NO SE CONSTRUYE SOLO.</em></h1><p>Elegí una escena inicial o agregá modelos desde la biblioteca. Podés convertir los recursos disponibles en algo propio.</p><div class="presets" id="presets">
     <button type="button" data-preset="barrio">▥ BARRIO NOCTURNO</button>
     <button type="button" data-preset="interior">⌂ INTERIOR</button>
