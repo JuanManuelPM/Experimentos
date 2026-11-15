@@ -1,0 +1,57 @@
+{
+  "schema": "prometeo.scene-lint/v1",
+  "tool": "scene-source-lint",
+  "warnings": [
+    {
+      "id": "RAIN_LINES",
+      "severity": "BLOCK",
+      "signature": "function createRain(){\n // Line segments with 3D parallax, not postprocessing noise.\n const pts=[];let seed=17;const rnd=()=>((seed=(1103515",
+      "description": "Lluvia dibujada como líneas regulares",
+      "remediation": "Comparar partículas en profundidad, oclusión y respuesta lumínica; renderizar 3 vistas",
+      "provenance": "source_regex"
+    },
+    {
+      "id": "DIRECT_LIGHT_NOT_CASTING_SHADOW",
+      "severity": "REVIEW",
+      "signature": "new THREE.DirectionalLight(",
+      "description": "Hay luces direccionales o spot: revisar castShadow por fuente",
+      "remediation": "Verificar luz principal, sombras y contacto en 3 capturas",
+      "provenance": "source_regex"
+    },
+    {
+      "id": "MAGIC_SEAT_OFFSET",
+      "severity": "BLOCK",
+      "signature": "bottom*scale-.48",
+      "description": "Posición del conductor calculada con offset arbitrario",
+      "remediation": "Usar sockets de pelvis y asiento y medir penetración real",
+      "provenance": "source_regex"
+    },
+    {
+      "id": "WORLD_MOTION_NO_AXIS_CHECK",
+      "severity": "BLOCK",
+      "signature": "z=18-now*",
+      "description": "Movimiento de coche con signo hardcoded sin verificación de eje local",
+      "remediation": "Determinar orientación real del GLB, forward vector y dot con velocidad; probar frame+1",
+      "provenance": "source_regex"
+    },
+    {
+      "id": "VISIBILITY_SPLIT",
+      "severity": "REVIEW",
+      "signature": "carModel.visible=shot.kind==='ext'",
+      "description": "El modelo completo del auto desaparece en interiores",
+      "remediation": "Separar techo/occlusión de vidrio y preservar continuidad del vehículo",
+      "provenance": "source_regex"
+    },
+    {
+      "id": "FLAT_PUDDLE",
+      "severity": "REVIEW",
+      "signature": "new THREE.MeshBasicMaterial({color:0x29576c,transparent:true,opacity:",
+      "description": "Charcos planos sin reflexión de escena",
+      "remediation": "Probar máscara roughness/SSR limitado o highlights estilizados motivados por faroles",
+      "provenance": "source_regex"
+    }
+  ],
+  "blockCount": 3,
+  "reviewCount": 3,
+  "disclaimer": "Regex only: never counts as actual visual verification. Missing detection does not imply approval."
+}
