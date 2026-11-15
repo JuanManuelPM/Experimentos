@@ -1,0 +1,10 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+const bytes=name=>readFileSync(new URL('./assets/'+name,import.meta.url));
+test('real GLB headers and length',()=>{for(const name of ['Fox.glb','Oak.glb','Chair.glb']){const buf=bytes(name);assert.equal(buf.toString('ascii',0,4),'glTF');assert.equal(buf.readUInt32LE(8),buf.length)}});
+test('Fox real skeletal clips',()=>{const b=bytes('Fox.glb');const n=b.readUInt32LE(12);const doc=JSON.parse(b.subarray(20,20+n).toString('utf8'));assert.ok(doc.skins?.length>0);assert.ok(doc.animations?.length>=10);assert.ok(doc.animations.some(x=>x.name==='Walk'));assert.ok(doc.skins.some(s=>s.joints.length>20))});
+test('real OBJ MTL and texture bytes',()=>{const o=bytes('anvil.obj').toString();const m=bytes('anvil.mtl').toString();assert.match(o,/^mtllib anvil.mtl/m);assert.match(o,/^v /m);assert.match(o,/^f /m);assert.match(m,/map_Kd block_bits_texture.png/);assert.equal(bytes('block_bits_texture.png').toString('hex',0,8),'89504e470d0a1a0a')});
+test('license and manifest coverage',()=>{const x=JSON.parse(readFileSync(new URL('./assets.json',import.meta.url),'utf8'));assert.equal(x.models.length,4);assert.ok(x.models.every(y=>y.license==='CC0'));assert.match(bytes('LICENSE.txt').toString(),/Creative Commons Zero/i)});
+test('actual loader and skeletal animation in source',()=>{const s=readFileSync(new URL('./scene.mjs',import.meta.url),'utf8');for(const x of ['new GLTFLoader','new MTLLoader','new OBJLoader','new THREE.AnimationMixer','clipAction','isSkinnedMesh','OrbitControls'])assert.ok(s.includes(x))});
+test('mobile controls and visible error reporting',()=>{const s=readFileSync(new URL('./index.html',import.meta.url),'utf8');for(const x of ['viewport-fit=cover','touch-action:none','min-height:48px','aria-live="polite"','data-anim="Walk"'])assert.ok(s.includes(x))});
