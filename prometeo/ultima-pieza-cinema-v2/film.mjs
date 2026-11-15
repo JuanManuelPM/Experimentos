@@ -163,7 +163,7 @@ function atmosphere(){
  steam=new THREE.Points(g,new THREE.PointsMaterial({size:.014,vertexColors:true,transparent:true,opacity:.25,depthWrite:false}));group.add(steam);
 }
 function piece(){
- const g=new THREE.Group();g.position.set(-.68,1.39,.64);group.add(g);
+ const g=new THREE.Group();g.position.set(-.68,1.31,.64);group.add(g);
  const frame=bevel([0,0,0],[.235,.075,.17],paint.brass,.018,g);
  for(let x of [-.07,.07]){globe([x,.046,.06],.036,paint.dark,g);pipe([x,-.045,.06],[x,-.10,.065],.013,paint.copper,g)}
  box([0,.047,-.07],[.095,.028,.025],paint.steel,g);return g;
@@ -189,7 +189,7 @@ async function loadActor(id,file,position,turn){
  const mixer=data.animations.length?new THREE.AnimationMixer(data.scene):null;
  let action=null;
  if(mixer){
-  const clip=data.animations.find(c=>/idle|breathing|stand/i.test(c.name))||data.animations[0];
+  const clip=data.animations.find(c=>c.name==='Idle')||data.animations.find(c=>c.name==='Unarmed_Idle')||data.animations.find(c=>/idle|breathing|stand/i.test(c.name))||data.animations[0];
   action=mixer.clipAction(clip);action.play();
  }
  const head=bones.find(b=>/head/i.test(b.name)&&!/headtop|headend/i.test(b.name));
@@ -212,7 +212,10 @@ function aim(now){
  const ttl=$('filmTitle');ttl.classList.toggle('show',now>.67&&now<4.2);
  const ds=DIALOG.find(d=>now>=d.start&&now<d.end);
  $('bubble').classList.toggle('active',!!ds);
- if(ds){$('speaker').textContent=ds.name;$('words').textContent=ds.text;const b=$('bubble');b.style.transform='translateY('+((1-smooth((now-ds.start)/.15))*11)+'px)';}
+ if(ds){$('speaker').textContent=ds.name;$('words').textContent=ds.text;const b=$('bubble');
+  const point=ds.id==='vera'?[-1.4,2.65,-.76]:ds.id==='nico'?[1.35,2.62,-.80]:[.12,2.67,.23];
+  const screen=v(point).project(camera),px=50*(screen.x+1),py=50*(1-screen.y);
+  b.style.bottom='auto';b.style.left=clamp(px-24,6,42)+'%';b.style.top=clamp(py-29,8,55)+'%';b.style.transform='translateY('+((1-smooth((now-ds.start)/.15))*11)+'px)';}
  $('subtitleDots').textContent=now<5.3?'UN TALLER · UNA NOCHE · UNA PREGUNTA':now>48.7?'LA ÚLTIMA PIEZA · FIN':'';
 }
 function updateActors(now){
@@ -234,8 +237,8 @@ function updateActors(now){
  bot.headRig.rotation.y=.035*Math.sin(now*1.2)+(wake*.34);
  bot.arms[0].rotation.x=.045*Math.sin(now*.9);
  bot.arms[1].rotation.x=(now>42?-.65*smooth((now-42)/1.5):0)+.045*Math.sin(now*.7);
- const take=smooth((now-31.6)/1.6);original.position.set(-.68-.06*take,1.39+.44*take,.64+.045*take);
- original.rotation.z=-.11*take;
+ original.position.set(-.68,1.31,.64);
+ original.rotation.z=0;
  for(let drop of rainItems)drop.position.y=-((now*.73)%1.9);
  steam.rotation.y=now*.003;
  spot.intensity=105+2*Math.sin(now*8.7);
