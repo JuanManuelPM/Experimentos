@@ -332,7 +332,7 @@ async function replaceScene(data,{remember=true}={}){
  if(!state.webgl){status('CATÁLOGO 2D · GPU NO DISPONIBLE');toast('ESTE NAVEGADOR NO PUEDE EDITAR 3D SIN WEBGL2');return false;}
  let safe;
  try{safe=validateProject(data)}catch(e){toast(e.message);return false}
- state.request++;setBusy(true);setLoading(true,'PREPARANDO ESCENA',0);
+ state.request++;setBusy(true);
  // Keep the original scene untouched until every worker has settled.
  // Each slot corresponds to the original item index, not completion order.
  const staged=new Array(safe.items.length);let next=0,done=0,failed=false,committed=false;
@@ -340,6 +340,8 @@ async function replaceScene(data,{remember=true}={}){
   history:state.history.slice(),cursor:state.cursor,sceneInput:$('scene-name').value};
  let mutationStarted=false;
  try{
+  // Overlay setup is fallible; keep it inside the transactional finally.
+  setLoading(true,'PREPARANDO ESCENA',0);
   const workers=Array.from({length:Math.min(3,safe.items.length)},async()=>{
    while(next<safe.items.length){
     const index=next++,item=safe.items[index],asset=state.byId.get(item.id);
