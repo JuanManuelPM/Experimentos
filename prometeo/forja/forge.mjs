@@ -328,10 +328,16 @@ function validateProject(input){
  return {schema:SCHEMA,name:String(input.name||'Escena importada').slice(0,64),items:out};
 }
 async function replaceScene(data,{remember=true}={}){
+ // Reporting is best-effort: a broken notification surface must never mask
+ // the original import outcome or convert an expected false into a rejection.
+ const report=(message,notification)=>{
+  try{status(message)}catch(error){console.warn('FORJA STATUS REPORT FAILED',error)}
+  if(notification)try{toast(notification)}catch(error){console.warn('FORJA TOAST REPORT FAILED',error)}
+ };
  if(state.busy)return false;
- if(!state.webgl){status('CATÁLOGO 2D · GPU NO DISPONIBLE');toast('ESTE NAVEGADOR NO PUEDE EDITAR 3D SIN WEBGL2');return false;}
+ if(!state.webgl){report('CATÁLOGO 2D · GPU NO DISPONIBLE','ESTE NAVEGADOR NO PUEDE EDITAR 3D SIN WEBGL2');return false;}
  let safe;
- try{safe=validateProject(data)}catch(e){toast(e.message);return false}
+ try{safe=validateProject(data)}catch(e){report('PROYECTO INVÁLIDO',e.message);return false}
  state.request++;
  // Keep the original scene untouched until every worker has settled.
  // Each slot corresponds to the original item index, not completion order.
@@ -360,8 +366,7 @@ async function replaceScene(data,{remember=true}={}){
   // A failed worker cannot release busy while another worker still loads.
   await Promise.allSettled(workers);
   if(failed||staged.some(entry=>!entry)){
-   status('IMPORTACIÓN CANCELADA · ESCENA ORIGINAL INTACTA');
-   toast('FALLÓ UN MODELO: NO SE CAMBIÓ LA ESCENA');
+   report('IMPORTACIÓN CANCELADA · ESCENA ORIGINAL INTACTA','FALLÓ UN MODELO: NO SE CAMBIÓ LA ESCENA');
    return false;
   }
   // Commit is reversible until UI and persistence have succeeded.
@@ -388,8 +393,7 @@ async function replaceScene(data,{remember=true}={}){
    state.history=previous.history;state.cursor=previous.cursor;$('scene-name').value=previous.sceneInput;
    try{metrics();renderObjects();updateInspector();resetCamera()}catch(uiError){console.error('FORJA ROLLBACK UI',uiError)}
   }
-  status('ERROR DE IMPORTACIÓN · ESCENA ORIGINAL CONSERVADA');
-  toast('ERROR AL ABRIR ESCENA');
+  report('ERROR DE IMPORTACIÓN · ESCENA ORIGINAL CONSERVADA','ERROR AL ABRIR ESCENA');
   return false;
  }finally{
   // Cleanup must never throw over the import result or leave the editor locked.
