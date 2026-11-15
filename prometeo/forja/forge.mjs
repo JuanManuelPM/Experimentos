@@ -387,8 +387,13 @@ async function replaceScene(data,{remember=true}={}){
   toast('ERROR AL ABRIR ESCENA');
   return false;
  }finally{
-  if(!committed)for(const e of staged)if(e)e.mixer?.stopAllAction();
-  setBusy(false);setLoading(false);historyButtons();
+  // Cleanup must never throw over the import result or leave the editor locked.
+  if(!committed)for(const e of staged)if(e){
+   try{e.mixer?.stopAllAction()}catch(cleanupError){console.warn('FORJA STAGED MIXER CLEANUP',cleanupError)}
+  }
+  try{setBusy(false)}catch(cleanupError){console.error('FORJA UNLOCK FAILED',cleanupError)}
+  try{setLoading(false)}catch(cleanupError){console.warn('FORJA LOADING CLEANUP',cleanupError)}
+  try{historyButtons()}catch(cleanupError){console.warn('FORJA HISTORY UI CLEANUP',cleanupError)}
  }
 }
 
