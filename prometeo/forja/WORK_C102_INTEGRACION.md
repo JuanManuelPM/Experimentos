@@ -42,3 +42,6 @@ bash tests/run-regression.sh
 2. Validar recorte y targets en Android vertical/horizontal y opción «sitio de escritorio».
 3. Si pasa, revalidar C101 y recién entonces integrar C103 demo con modelos reales y mover la rama candidata mediante PR verificado; no adelantar `master`.
 4. Ante fallo, guardar captura + consola + modelo/URL y corregir en la misma rama. No retornar al usuario una lista infinita de tareas.
+
+## Recuperación adicional C101
+Se comprobó que la reserva C101 tenía archivos concretos aunque no tuviera RESULT final. Este C102 **reutilizó sin modificar la reserva C101** sus siete objetos físicos en `archivo-vivo/assets/` (Fox GLB 590.112 B, Oak GLB 14.644 B, Chair GLB 7.376 B, OBJ 23.610 B, MTL 275 B, PNG 31.211 B, LICENSE 1.791 B), junto con `archivo-vivo/index.html`, `scene.mjs`, `scene.test.mjs`, `assets.json` y README. **7/7 git-blob SHA verificadas por lectura independiente en el repositorio dueño**, sintaxis JS válida y referencias GLTFLoader/OBJLoader/MTLLoader/AnimationMixer presentes. Ver `archivo-vivo/index.html` y el enlace desde el inspector de FORJA. No equivale a reproducción WebGL de clips. La fuente C101 sigue siendo una claim separada sin recibo final; no moverla a DONE por esta integración.
