@@ -3,6 +3,7 @@ import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
 import {TransformControls} from 'three/addons/controls/TransformControls.js';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 import * as SkeletonUtils from 'three/addons/utils/SkeletonUtils.js';
+import {installCinema} from './forge-cinema.mjs';
 
 const SOURCE_SHA='3ddcc695adbba9fb918cf31b7c139b3f95b76910';
 const ROOT='https://raw.githubusercontent.com/Hidencod/tge-assets/'+SOURCE_SHA+'/';
@@ -21,6 +22,7 @@ const clock=new THREE.Clock();
 const picker=new THREE.Raycaster(),mouse=new THREE.Vector2(),floorPlane=new THREE.Plane(new THREE.Vector3(0,1,0),0);
 let toastTimer=0;
 let idCounter=0;
+let cinema=null; // FORJA C102: cinematic overlay on the canonical Three editor, not a second scene.
 
 function toast(text){
   const el=$('toast');el.textContent=text;el.classList.add('show');
@@ -118,7 +120,7 @@ function init3D(){
   state.transform=new TransformControls(state.camera,canvas);
   state.transform.setMode('translate');
   state.scene.add(state.transform.getHelper());
-  state.transform.addEventListener('dragging-changed',event=>{state.controls.enabled=!event.value});
+  state.transform.addEventListener('dragging-changed',event=>{state.controls.enabled=!event.value&&(!cinema||cinema.mode==='ORBIT')});
   state.transform.addEventListener('objectChange',()=>{updateInspector()});
   state.transform.addEventListener('mouseUp',()=>{historyPush()});
   // Reentrada UX: visualizar sin gizmos; editar conserva selección e historial.
@@ -126,20 +128,26 @@ function init3D(){
     const editing=event.detail?.mode==='edit';
     grid.visible=!document.documentElement.classList.contains('forja-compact')||editing;
     if(!editing)state.transform.detach();
-    else{const chosen=state.objects.find(x=>x.uid===state.selected);if(chosen)state.transform.attach(chosen.root)}
+    else{const chosen=state.objects.find(x=>x.uid===state.selected);if(chosen&&(!cinema||cinema.mode==='ORBIT'))state.transform.attach(chosen.root)}
   });
   window.addEventListener('resize',()=>{
     grid.visible=!document.documentElement.classList.contains('forja-compact')||document.documentElement.dataset.forjaMode==='edit';
   });
-  state.renderer.domElement.addEventListener('webglcontextlost',e=>{e.preventDefault();state.webgl=false;status('CONTEXTO WEBGL PERDIDO')});
+  state.renderer.domElement.addEventListener('webglcontextlost',e=>{e.preventDefault();state.webgl=false;status('CONTEXTO WEBGL PERDIDO');$('render-status').textContent='GPU · NO DISPONIBLE'});
   state.renderer.domElement.addEventListener('webglcontextrestored',()=>location.reload());
   window.addEventListener('resize',resize);
   state.webgl=true;resize();
+  try{
+   cinema=installCinema({THREE,canvas,renderer:state.renderer,scene:state.scene,world:state.world,
+     camera:state.camera,controls:state.controls,transform:state.transform,
+     getObjects:()=>state.objects,getSelected:()=>state.selected,
+     onOrbit:()=>resetCamera(),notify:toast});
+  }catch(cameraError){console.warn('FORJA CAMERA MODULE',cameraError);}
   $('render-status').textContent='GPU · WEBGL2';
   let pointerDown=null;
   canvas.addEventListener('pointerdown',e=>{pointerDown={x:e.clientX,y:e.clientY}});
   canvas.addEventListener('pointerup',e=>{
-   if(!pointerDown||state.transform.dragging)return;
+   if(!pointerDown||state.transform.dragging||(cinema&&cinema.mode!=='ORBIT'))return;
    const moved=Math.hypot(e.clientX-pointerDown.x,e.clientY-pointerDown.y);pointerDown=null;
    if(moved>6)return;
    const hits=ray(e.clientX,e.clientY).intersectObjects(state.world.children,true);
@@ -161,7 +169,8 @@ function init3D(){
    if(!state.webgl)return;
    const dt=Math.min(.08,clock.getDelta());
    if(state.playing)for(const o of state.objects)o.mixer?.update(dt);
-   state.controls.update();
+   if(cinema&&cinema.mode!=='ORBIT')cinema.tick(dt);
+   else state.controls.update();
    state.renderer.render(state.scene,state.camera);
   }
   frame();metrics();
@@ -216,7 +225,7 @@ function select(uid){
  const e=state.objects.find(x=>x.uid===uid)||null;
  state.selected=e?.uid||null;
  state.transform?.detach();
- if(e)state.transform?.attach(e.root);
+ if(e&&(!cinema||cinema.mode==='ORBIT'))state.transform?.attach(e.root);
  updateInspector();renderObjects();
  if(e&&document.documentElement.classList.contains('forja-compact'))$('inspector-panel').classList.add('open');
 }
@@ -262,6 +271,7 @@ function renderObjects(){
  $('object-list').replaceChildren(f);metrics();
 }
 function focus(){
+ if(cinema&&cinema.mode!=='ORBIT')cinema.setMode('ORBIT');
  const e=state.objects.find(x=>x.uid===state.selected);
  if(!e)return;const bounds=new THREE.Box3().setFromObject(e.root);
  const target=new THREE.Vector3();bounds.getCenter(target);
@@ -457,7 +467,7 @@ function wire(){
  document.querySelectorAll('[data-preset]').forEach(b=>b.addEventListener('click',()=>{if(state.busy)return;replaceScene(makePreset(b.dataset.preset))}));
  document.querySelectorAll('[data-mode]').forEach(b=>b.addEventListener('click',()=>setMode(b.dataset.mode)));
  $('snap').addEventListener('click',snap);
- $('camera-reset').addEventListener('click',resetCamera);
+ $('camera-reset').addEventListener('click',()=>{if(cinema)cinema.setMode('ORBIT');else resetCamera();});
  $('play-animations').addEventListener('click',()=>{state.playing=!state.playing;metrics()});
  $('scene-name').addEventListener('change',e=>{state.sceneName=(e.target.value.trim()||'Escena sin título').slice(0,64);historyPush();metrics()});
  for(const id of ['pos-x','pos-y','pos-z','rot','scale'])$(id).addEventListener('change',updateProperty);
@@ -495,6 +505,7 @@ function wire(){
 }
 wire();initCatalog();
 window.__FORJA__={
- diagnostic:()=>({schema:'prometeo.forja.diagnostic/v1',webgl2:state.webgl,catalog:state.catalog.length,loadedTemplates:state.loadedModels.size,instances:state.objects.length,clips:state.objects.reduce((n,e)=>n+e.clips.length,0),failed:state.failed,sourceCommit:SOURCE_SHA,saved:!!localStorage.getItem(STORAGE),note:'No sustituye validación visual en navegador con GPU'}),
+ diagnostic:()=>({schema:'prometeo.forja.diagnostic/v1',webgl2:state.webgl,catalog:state.catalog.length,loadedTemplates:state.loadedModels.size,instances:state.objects.length,clips:state.objects.reduce((n,e)=>n+e.clips.length,0),failed:state.failed,sourceCommit:SOURCE_SHA,saved:!!localStorage.getItem(STORAGE),cinema:cinema?.diagnostic()||null,readOnlyPreview2D:!state.webgl,
+  note:'No sustituye validación visual en navegador con GPU'}),
  snapshot,loadPreset:async name=>replaceScene(makePreset(name)),add:async id=>addAsset(state.byId.get(id)),export:exportJSON
 };

@@ -1,0 +1,34 @@
+
+/* C102 native FORJA integration: actual Three.js camera controls + honest read-only 2D preview. */
+#forja-preview[hidden],#forja-fallback-label[hidden],#camera-walk-pad[hidden]{display:none!important}
+#forja-preview{position:absolute;inset:0;width:100%;height:100%;border:0;z-index:2;background:#081a1e}
+#forja-fallback-label{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);width:min(92%,620px);padding:10px 14px;z-index:8;border:1px solid #7b9987;border-radius:8px;background:#11241dec;color:#f4e5c4;text-align:center;font-size:12px;line-height:1.5;pointer-events:auto}
+#forja-fallback-label a{color:#b9efd8;text-decoration:underline;font-weight:700}
+.stage-top{z-index:4}
+.cinema-tools{position:absolute;right:16px;top:85px;z-index:6;display:flex;align-items:center;gap:7px;pointer-events:auto;padding:7px 9px;background:#101e19e8;border:1px solid #547565;border-radius:9px;color:#e9dfc6}
+.cinema-tools label{font:700 10px system-ui;letter-spacing:.08em}
+.cinema-tools select,.cinema-tools button{min-height:44px;min-width:56px;border-radius:7px;border:1px solid #6a8675;background:#263a30;color:#f6f0da;padding:7px;font:700 12px system-ui}
+.cinema-tools select{min-width:142px;max-width:175px}
+.cinema-tools select:disabled,.cinema-tools button:disabled{opacity:.5}
+#camera-cinema-status{font:700 10px system-ui;color:#bcdac3;min-width:100px}
+#camera-walk-pad{position:absolute;left:12px;bottom:82px;z-index:7;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px;max-width:250px}
+#camera-walk-pad button{min-width:48px;min-height:48px;border:1px solid #94b6a0;border-radius:8px;color:#eaf7ed;background:#13251edb;font-size:20px;touch-action:none;user-select:none}
+html.forja-no-gpu .cinema-tools,html.forja-no-gpu .stage-bottom{display:none!important}
+html.forja-no-gpu .empty-state{display:none!important}
+@media(max-width:740px){
+ .cinema-tools{left:9px;right:9px;top:68px;gap:5px;justify-content:center;padding:5px}
+ .cinema-tools label{font-size:10px}
+ .cinema-tools select{min-width:128px;max-width:46vw;flex:1;font-size:11px}
+ .cinema-tools button{min-width:55px}
+ #camera-cinema-status{min-width:0;max-width:26vw;font-size:9px}
+ #camera-walk-pad{bottom:66px;left:9px;max-width:none}
+ #camera-walk-pad button{min-width:46px;min-height:48px}
+ #forja-fallback-label{bottom:5px;padding:6px 8px;font-size:10px}
+}
+@media(max-height:430px){
+ .cinema-tools{top:6px;left:50%;right:auto;transform:translateX(-50%);width:max-content;max-width:90%;padding:3px}
+ .cinema-tools label,#camera-cinema-status{display:none}
+ .cinema-tools select,.cinema-tools button{min-height:40px}
+ #camera-walk-pad{bottom:52px}
+ .stage-top{display:none}
+}
