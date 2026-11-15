@@ -9,6 +9,7 @@ export function installCinema({THREE,canvas,renderer,scene,world,camera,controls
   const status=document.getElementById('camera-cinema-status');
   const pad=document.getElementById('camera-walk-pad');
   const capture=document.getElementById('camera-cinema-capture');
+  const pauseButton=document.getElementById('camera-cinema-pause');
   const keys=new Set();
   let mode='ORBIT',elapsed=0,looking=null,paused=false;
   const clamp=(x,a,b)=>Math.min(b,Math.max(a,x));
@@ -41,7 +42,7 @@ export function installCinema({THREE,canvas,renderer,scene,world,camera,controls
     mode=next;rig.setMode(next);elapsed=0;looking=null;keys.clear();
     if(next==='FIRST_PERSON'){
       const {center,span,bounds}=worldBounds();
-      rig.bounds=Math.max(45,Math.min(220,Math.abs(center.x)+span*1.7,Math.abs(center.z)+span*1.7));
+      rig.bounds=Math.max(45,Math.min(220,Math.max(Math.abs(center.x),Math.abs(center.z))+span*1.7));
       const originZ=bounds?clamp(bounds.max.z+3,-rig.bounds,rig.bounds):14;
       rig.fp=[clamp(center.x,-rig.bounds,rig.bounds),1.8,originZ];
       rig.obstacles=buildings();
@@ -118,6 +119,7 @@ export function installCinema({THREE,canvas,renderer,scene,world,camera,controls
     button.addEventListener('pointercancel',()=>keys.delete(action));
     button.addEventListener('lostpointercapture',()=>keys.delete(action));
   }
+  pauseButton?.addEventListener('click',()=>{paused=!paused;pauseButton.textContent=paused?'▶':'Ⅱ';pauseButton.setAttribute('aria-pressed',String(paused));});
   capture?.addEventListener('click',()=>{
     if(!renderer){notify('SIN GPU · NO HAY CAPTURA 3D');return;}
     try{
