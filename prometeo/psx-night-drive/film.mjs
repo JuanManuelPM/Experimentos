@@ -233,6 +233,8 @@ async function loadGLBs(){
  // Fixed seated pose only in lower body. Upper body remains model-authored and static.
  qa.actorSource='programasweights/avatar@a488723e (MIT costume & Quaternius CC0)';
  ready=true;qa.ready=true;
+ const qframe=new URLSearchParams(location.search).get('frame');
+ if(qframe!==null&&Number.isFinite(Number(qframe)))setTime(clamp(Number(qframe),0,DURATION));
  $('loading').textContent='Mallas auténticas cargadas · 9 planos · 38 segundos';
  $('status').textContent='PELÍCULA LISTA · 9 planos · 3D real y audio original.';
  }
