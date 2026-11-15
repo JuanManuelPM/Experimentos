@@ -324,44 +324,66 @@ async function replaceScene(data,{remember=true}={}){
  let safe;
  try{safe=validateProject(data)}catch(e){toast(e.message);return false}
  state.request++;setBusy(true);setLoading(true,'PREPARANDO ESCENA',0);
- const staged=[];let done=0,failed=false,committed=false;
+ // Keep the original scene untouched until every worker has settled.
+ // Each slot corresponds to the original item index, not completion order.
+ const staged=new Array(safe.items.length);let next=0,done=0,failed=false,committed=false;
+ const previous={objects:state.objects,selected:state.selected,sceneName:state.sceneName,
+  history:state.history.slice(),cursor:state.cursor,sceneInput:$('scene-name').value};
+ let mutationStarted=false;
  try{
-  const queue=safe.items.slice();
-  const tasks=Array.from({length:Math.min(3,queue.length)},async()=>{
-   while(queue.length){
-    const item=queue.shift(),asset=state.byId.get(item.id);
-    const entry=await addAsset(asset,item,true,true);
-    if(entry)staged.push(entry);else failed=true;
-    done++;setLoading(true,'CARGANDO '+done+' / '+safe.items.length+' MODELOS',done/Math.max(1,safe.items.length));
+  const workers=Array.from({length:Math.min(3,safe.items.length)},async()=>{
+   while(next<safe.items.length){
+    const index=next++,item=safe.items[index],asset=state.byId.get(item.id);
+    try{
+     const entry=await addAsset(asset,item,true,true);
+     if(entry)staged[index]=entry;else failed=true;
+    }catch(error){failed=true;console.warn('FORJA STAGED LOAD',item.id,error)}
+    finally{
+     done++;
+     setLoading(true,'CARGANDO '+done+' / '+safe.items.length+' MODELOS',done/Math.max(1,safe.items.length));
+    }
    }
   });
-  await Promise.all(tasks);
-  if(failed||staged.length!==safe.items.length){
+  // A failed worker cannot release busy while another worker still loads.
+  await Promise.allSettled(workers);
+  if(failed||staged.some(entry=>!entry)){
    status('IMPORTACIÓN CANCELADA · ESCENA ORIGINAL INTACTA');
    toast('FALLÓ UN MODELO: NO SE CAMBIÓ LA ESCENA');
    return false;
   }
+  // Commit is reversible until UI and persistence have succeeded.
+  mutationStarted=true;
   state.transform?.detach();
-  for(const e of state.objects){state.world.remove(e.root);e.mixer?.stopAllAction()}
-  state.objects=staged.slice();
+  for(const e of previous.objects)state.world.remove(e.root);
   for(const e of staged)state.world.add(e.root);
-  committed=true;
-  state.selected=null;state.sceneName=safe.name;$('scene-name').value=safe.name;
+  state.objects=staged;state.selected=null;state.sceneName=safe.name;$('scene-name').value=safe.name;
   metrics();renderObjects();updateInspector();resetCamera();
-  if(remember){state.busy=false;historyPush();state.busy=true}else saveLocal();
+  if(remember){state.busy=false;try{historyPush()}finally{state.busy=true}}
+  else if(saveLocal()===false)throw Error('SCENE_PERSISTENCE_FAILED');
   status('ESCENA EDITABLE · '+staged.length+' OBJETOS');
   toast('ESCENA LISTA: '+staged.length+' OBJETOS');
+  committed=true;
+  // Stop old animations only after the commit is known to have succeeded.
+  for(const e of previous.objects)e.mixer?.stopAllAction();
   return true;
  }catch(e){
   console.error('FORJA TRANSACTIONAL IMPORT',e);
-  status('ERROR DE IMPORTACIÓN');
+  if(mutationStarted){
+   for(const e of staged)if(e)state.world.remove(e.root);
+   for(const e of previous.objects)state.world.add(e.root);
+   state.objects=previous.objects;state.selected=previous.selected;state.sceneName=previous.sceneName;
+   state.history=previous.history;state.cursor=previous.cursor;$('scene-name').value=previous.sceneInput;
+   try{metrics();renderObjects();updateInspector();resetCamera()}catch(uiError){console.error('FORJA ROLLBACK UI',uiError)}
+  }
+  status('ERROR DE IMPORTACIÓN · ESCENA ORIGINAL CONSERVADA');
   toast('ERROR AL ABRIR ESCENA');
   return false;
  }finally{
-  if(!committed)for(const e of staged)e.mixer?.stopAllAction();
+  if(!committed)for(const e of staged)if(e)e.mixer?.stopAllAction();
   setBusy(false);setLoading(false);historyButtons();
  }
 }
+
 const PRESETS={
  barrio:{name:'El barrio que no duerme',items:[
   ['city-kit-commercial/building-a',-9,0,-12,7,0],['city-kit-commercial/building-h',9,0,-13,7,Math.PI],
