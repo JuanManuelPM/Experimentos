@@ -1,0 +1,60 @@
+<!DOCTYPE html><html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1"><title>PROMETEO · Prefilm QA</title>
+<meta name="theme-color" content="#10171d">
+<style>
+:root{font-family:system-ui,-apple-system,sans-serif;background:#0d1419;color:#e9e3d6}
+*{box-sizing:border-box}body{margin:0}main{max-width:1100px;margin:auto;padding:26px 20px 70px}
+h1{font-family:Georgia,serif;font-weight:400;letter-spacing:-1.5px;font-size:clamp(33px,5vw,55px);line-height:1.05;margin:10px 0 17px}
+h2{font-size:18px;margin:0}.eyebrow{font:700 11px monospace;letter-spacing:2.7px;color:#d8af77}
+p{color:#bcc6c6;line-height:1.55;font-size:14px}a{color:#e9bf81}
+nav{display:flex;align-items:center;justify-content:space-between;gap:12px}
+nav a{font:11px monospace;text-decoration:none;white-space:nowrap}
+.intro{max-width:780px}.results{display:grid;grid-template-columns:repeat(3,1fr);border-block:1px solid #425057;margin:25px 0}
+.metric{padding:17px 0}.metric+.metric{padding-left:19px;border-left:1px solid #425057}
+.metric strong{display:block;font:400 clamp(25px,4vw,39px) Georgia,serif}.metric span{font:10px monospace;color:#a8babb;letter-spacing:1px}
+.banner{border:1px solid #7a524b;padding:16px 18px;background:#261d20;margin:16px 0;color:#f6d6c5;font:700 13px monospace;letter-spacing:.8px}
+.actions{display:flex;flex-wrap:wrap;gap:9px;margin:14px 0 24px}
+button,.upload{font:700 11px monospace;letter-spacing:.3px;border:1px solid #66767a;color:#f2e7d2;background:#22313a;padding:11px 16px;cursor:pointer;border-radius:2px}
+button:focus-visible,.upload:focus-visible{outline:2px solid #f2c58d;outline-offset:2px}
+button.primary,.upload{color:#172126;background:#d5a66e;border-color:#d5a66e}
+#file{position:absolute;opacity:0;width:1px;height:1px}
+#gateGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.gate{border:1px solid #3d4c54;padding:15px 16px;background:#142128;min-height:140px}
+.gate .line{display:flex;align-items:baseline;gap:10px;justify-content:space-between}
+.tag{font:700 10px monospace;letter-spacing:1.4px}
+.tag.fail{color:#e6a096}.tag.pass{color:#9fd0ae}.tag.unverified{color:#e2c284}
+.gate h3{font-size:16px;line-height:1.2;margin:8px 0 10px}
+.gate ul{padding-left:18px;margin:0;color:#aebebc;font-size:12px;line-height:1.55}
+small{color:#a8b8bf;font-size:11px}
+.controls{border-top:1px solid #435057;margin-top:32px;padding-top:20px}
+textarea{display:block;width:100%;min-height:220px;font:11px/1.4 monospace;background:#091014;color:#cde0dd;border:1px solid #3d5b5c;padding:12px;resize:vertical;margin-top:10px}
+label{font-size:12px;color:#d9c3a5}.explain{border-top:1px solid #435057;margin-top:26px;padding-top:16px;font-size:12px;color:#a9bab9}
+@media(max-width:650px){main{padding:17px 13px 42px}#gateGrid{grid-template-columns:1fr}.results{grid-template-columns:repeat(3,1fr)}.metric{padding:13px 4px}.metric+.metric{padding-left:10px}nav a{font-size:9px}}
+</style></head><body><main>
+<nav><div class="eyebrow">PROMETEO / ESTUDIO 3D / PREFLIGHT V1</div><a href="https://juanmanuelpm.github.io/Experimentos/prometeo/psx-night-drive/">VER CORTO AUDITADO</a></nav>
+<header><h1>Primero se investiga.<br>Después se filma.</h1><p class="intro">Control de preproducción PSX reutilizable. Los encuadres bonitos no alcanzan si el conductor atraviesa el asiento o el auto circula en reversa. Este laboratorio conserva evidencia, detecta bloqueos y evita declarar aprobado un render simplemente porque funciona.</p></header>
+<div class="banner" id="decision" role="status">Leyendo manifest y ejecutando evaluación…</div>
+<section class="results" aria-label="Resumen de auditoría">
+<div class="metric"><strong id="ok">0</strong><span>APROBADOS</span></div><div class="metric"><strong id="fail">0</strong><span>RECHAZADOS</span></div><div class="metric"><strong id="unknown">0</strong><span>SIN VERIFICAR</span></div>
+</section>
+<div class="actions"><button id="reset" class="primary">CARGAR AUDITORÍA REAL</button><label class="upload" for="file" tabindex="0">ABRIR MANIFEST JSON</label><input id="file" type="file" accept="application/json,.json"><button id="reeval">EVALUAR JSON EDITADO</button><button id="download">DESCARGAR RECIBO</button></div>
+<section id="gateGrid" aria-label="Puertas de calidad"></section>
+<div class="controls"><label for="editor">Manifest de entrada · editable, sin subir datos a un servidor</label><textarea id="editor" spellcheck="false"></textarea><p id="notice" aria-live="polite"></p></div>
+<div class="explain">El control es <b>fail-closed</b>: una casilla sin evidencia nunca se convierte automáticamente en PASS. Un usuario debe aprobar el arte explícitamente. Este informe describe <b>No hay vuelta</b> a partir del código y de capturas proporcionadas por el usuario, no sustituye pruebas de FPS, contacto geométrico o fotogramas renderizados de todos los planos. <a href="./README.md">Documentación y fuentes</a> · <a href="https://github.com/JuanManuelPM/Experimentos/tree/candidate/prometeo-psx-preflight-lab-20261115/prometeo/psx-preflight-lab">Código de fábrica</a>.</div>
+</main><script type="module">
+import {evaluatePreflight} from './preflight-engine.mjs';
+const $=id=>document.getElementById(id);let report=null;const escapeHtml=s=>String(s??'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;');
+function render(source){
+ report=evaluatePreflight(source);
+ $('ok').textContent=report.counts.PASS;$('fail').textContent=report.counts.FAIL;$('unknown').textContent=report.counts.UNVERIFIED;
+ $('decision').textContent=report.decision==='STOP_PREPRODUCTION'?'⛔ NO EMPEZAR A FILMAR · HAY BLOQUEOS DE PREPRODUCCIÓN':report.decision==='STOP_RELEASE'?'NO PUBLICAR COMO TERMINADO · FALTAN PRUEBAS':'REVISAR APROBACIÓN ARTÍSTICA';
+ $('gateGrid').innerHTML=report.gates.map(g=>'<article class="gate"><div class="line"><span class="tag '+g.status.toLowerCase()+'">'+escapeHtml(g.status)+'</span><small>'+escapeHtml(g.phase)+'</small></div><h3>'+escapeHtml(g.label)+'</h3><ul>'+g.issues.map(x=>'<li>'+escapeHtml(x)+'</li>').join('')+(g.status==='PASS'?'<li>Evidencia registrada</li>':'')+'</ul></article>').join('');
+ window.__PREFLIGHT_QA={ready:true,report};
+}
+function showError(e){$('notice').textContent='Manifest inválido: '+e.message}
+const source=await fetch('./night-drive.audit.json').then(x=>x.json());$('editor').value=JSON.stringify(source,null,2);render(source);
+$('reset').onclick=()=>{$('editor').value=JSON.stringify(source,null,2);render(source);$('notice').textContent='Auditoría real restablecida'};
+$('reeval').onclick=()=>{try{render(JSON.parse($('editor').value));$('notice').textContent='Evaluación completa'}catch(e){showError(e)}};
+$('file').addEventListener('change',async event=>{let f=event.target.files?.[0];if(!f)return;try{let s=await f.text();$('editor').value=s;render(JSON.parse(s));$('notice').textContent='Evaluado localmente: '+f.name}catch(e){showError(e)}});
+$('download').onclick=()=>{if(!report)return;let blob=new Blob([JSON.stringify(report,null,2)+'\n'],{type:'application/json'}),url=URL.createObjectURL(blob);let a=document.createElement('a');a.href=url;a.download='prometeo-prefilm-qa-receipt.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),2000)};
+</script></body></html>
