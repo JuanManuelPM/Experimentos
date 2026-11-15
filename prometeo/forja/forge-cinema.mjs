@@ -13,6 +13,17 @@ export function installCinema({THREE,canvas,renderer,scene,world,camera,controls
   const keys=new Set();
   let mode='ORBIT',elapsed=0,looking=null,paused=false;
   const clamp=(x,a,b)=>Math.min(b,Math.max(a,x));
+  function setPaused(next) {
+    paused=Boolean(next);
+    keys.clear();
+    looking=null;
+    if(pauseButton){
+      pauseButton.textContent=paused?'▶':'Ⅱ';
+      pauseButton.setAttribute('aria-pressed',String(paused));
+      pauseButton.setAttribute('aria-label',paused?'Reanudar recorrido':'Pausar recorrido');
+    }
+    return paused;
+  }
   const isEditable=e=>!!e.target.closest?.('input,textarea,select,[contenteditable="true"]');
   const buildings=()=>getObjects().filter(o=>/building|house|tower|furniture-kit/i.test(o.asset?.id||'')).map(o=>{
     const b=new THREE.Box3().setFromObject(o.root);
@@ -39,7 +50,7 @@ export function installCinema({THREE,canvas,renderer,scene,world,camera,controls
   }
   function setMode(next){
     if(!['ORBIT','FOLLOW','FIRST_PERSON','SHOT'].includes(next))return false;
-    mode=next;rig.setMode(next);elapsed=0;looking=null;keys.clear();
+    mode=next;rig.setMode(next);elapsed=0;setPaused(false);
     if(next==='FIRST_PERSON'){
       const {center,span,bounds}=worldBounds();
       rig.bounds=Math.max(45,Math.min(220,Math.max(Math.abs(center.x),Math.abs(center.z))+span*1.7));
@@ -74,7 +85,7 @@ export function installCinema({THREE,canvas,renderer,scene,world,camera,controls
     if(mode==='ORBIT')return;
     const step=clamp(Number.isFinite(dt)?dt:0,0,.08);
     if(!paused)elapsed+=step;
-    if(mode==='FIRST_PERSON'){
+    if(!paused&&mode==='FIRST_PERSON'){
       const f=+(keys.has('KeyW')||keys.has('ArrowUp')||keys.has('forward'))-
               +(keys.has('KeyS')||keys.has('ArrowDown')||keys.has('back'));
       const s=+(keys.has('KeyD')||keys.has('ArrowRight')||keys.has('right'))-
@@ -88,7 +99,7 @@ export function installCinema({THREE,canvas,renderer,scene,world,camera,controls
     if(camera.fov!==p.fov){camera.fov=p.fov;camera.updateProjectionMatrix();}
   }
   function keyDown(e){
-    if(mode!=='FIRST_PERSON'||isEditable(e))return;
+    if(paused||mode!=='FIRST_PERSON'||isEditable(e))return;
     if(['KeyW','KeyA','KeyS','KeyD','ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.code)){
       e.preventDefault();e.stopImmediatePropagation();keys.add(e.code);
     }
@@ -97,12 +108,12 @@ export function installCinema({THREE,canvas,renderer,scene,world,camera,controls
   document.addEventListener('keyup',e=>keys.delete(e.code));
   window.addEventListener('blur',()=>{keys.clear();looking=null;});
   canvas.addEventListener('pointerdown',e=>{
-    if(mode!=='FIRST_PERSON')return;
+    if(paused||mode!=='FIRST_PERSON')return;
     looking={x:e.clientX,y:e.clientY,id:e.pointerId};
     try{canvas.setPointerCapture(e.pointerId);}catch{}
   },true);
   canvas.addEventListener('pointermove',e=>{
-    if(mode!=='FIRST_PERSON'||!looking||e.pointerId!==looking.id)return;
+    if(paused||mode!=='FIRST_PERSON'||!looking||e.pointerId!==looking.id)return;
     rig.drag(e.clientX-looking.x,e.clientY-looking.y);
     looking.x=e.clientX;looking.y=e.clientY;
   },true);
@@ -111,7 +122,7 @@ export function installCinema({THREE,canvas,renderer,scene,world,camera,controls
   for(const button of pad?.querySelectorAll('[data-walk]')||[]){
     const action=button.dataset.walk;
     button.addEventListener('pointerdown',e=>{
-      if(mode!=='FIRST_PERSON')return;
+      if(paused||mode!=='FIRST_PERSON')return;
       e.preventDefault();keys.add(action);
       try{button.setPointerCapture(e.pointerId);}catch{}
     });
@@ -119,7 +130,7 @@ export function installCinema({THREE,canvas,renderer,scene,world,camera,controls
     button.addEventListener('pointercancel',()=>keys.delete(action));
     button.addEventListener('lostpointercapture',()=>keys.delete(action));
   }
-  pauseButton?.addEventListener('click',()=>{paused=!paused;pauseButton.textContent=paused?'▶':'Ⅱ';pauseButton.setAttribute('aria-pressed',String(paused));});
+  pauseButton?.addEventListener('click',()=>setPaused(!paused));
   capture?.addEventListener('click',()=>{
     if(!renderer){notify('SIN GPU · NO HAY CAPTURA 3D');return;}
     try{
@@ -134,8 +145,9 @@ export function installCinema({THREE,canvas,renderer,scene,world,camera,controls
       },'image/png');
     }catch(e){notify('ERROR CAPTURA: '+e.message);}
   });
+  setPaused(false);
   if(modeSelect)modeSelect.disabled=false;
   if(capture)capture.disabled=false;
   if(status)status.textContent='EDITOR · ÓRBITA';
-  return {setMode,tick,get mode(){return mode;},diagnostic:()=>({mode,elapsed,firstPerson:rig.fp.slice(),blockers:rig.obstacles.length,controlsEnabled:controls.enabled})};
+  return {setMode,tick,get mode(){return mode;},diagnostic:()=>({mode,paused,elapsed,firstPerson:rig.fp.slice(),blockers:rig.obstacles.length,controlsEnabled:controls.enabled})};
 }
