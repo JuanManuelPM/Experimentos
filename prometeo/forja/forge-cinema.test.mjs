@@ -8,7 +8,7 @@ class NodeStub extends EventTarget {
   setAttribute(k,v){this.attributes.set(k,String(v))}
   getAttribute(k){return this.attributes.get(k)??null}
   closest(){return null}
-  querySelectorAll(){return []}
+  querySelectorAll(){return this.children||[]}
   setPointerCapture(){}
 }
 class Vector3Stub {
@@ -26,6 +26,8 @@ function boot(){
     ['camera-cinema-pause',new NodeStub()]
   ]);
   document.getElementById=id=>nodes.get(id)||null;
+  const walkButton=new NodeStub();walkButton.dataset.walk='forward';
+  nodes.get('camera-walk-pad').children=[walkButton];
   globalThis.document=document;
   globalThis.window=window;
   const controls={enabled:true};
@@ -37,7 +39,7 @@ function boot(){
   });
   const pause=nodes.get('camera-cinema-pause');
   return {
-    cinema,pause,document,controls,
+    cinema,pause,document,controls,walkButton,
     pressKey(code){const e=new Event('keydown',{cancelable:true});Object.defineProperty(e,'code',{value:code});document.dispatchEvent(e);},
     restore(){globalThis.document=originalDocument;globalThis.window=originalWindow;}
   };
@@ -81,5 +83,24 @@ test('C114 regression: switching paused FIRST_PERSON to SHOT resumes clock and U
     const before=s.cinema.diagnostic().firstPerson;
     s.cinema.tick(.08);
     assert.ok(s.cinema.diagnostic().firstPerson[2]<before[2],'walk resumes in new mode');
+  }finally{s.restore()}
+});
+test('C114 regression: paused keyboard and virtual touch pad cannot queue motion',()=>{
+  const s=boot();
+  try{
+    s.cinema.setMode('FIRST_PERSON');
+    const before=s.cinema.diagnostic().firstPerson;
+    s.pause.dispatchEvent(new Event('click'));
+    s.pressKey('KeyW');
+    s.walkButton.dispatchEvent(new Event('pointerdown',{cancelable:true}));
+    s.cinema.tick(.08);
+    assert.deepEqual(s.cinema.diagnostic().firstPerson,before,'still frozen while paused');
+    s.pause.dispatchEvent(new Event('click'));
+    s.cinema.tick(.08);
+    assert.deepEqual(s.cinema.diagnostic().firstPerson,before,'ignored paused inputs must not resume later');
+    s.walkButton.dispatchEvent(new Event('pointerdown',{cancelable:true}));
+    s.cinema.tick(.08);
+    assert.ok(s.cinema.diagnostic().firstPerson[2]<before[2],'touch pad works when playing');
+    s.walkButton.dispatchEvent(new Event('pointerup'));
   }finally{s.restore()}
 });
