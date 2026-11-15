@@ -147,7 +147,7 @@
   function checkWebGLStatus() {
     const missingGPU = /NO DISPONIBLE/.test(renderStatus.textContent);
     root.classList.toggle('forja-no-gpu', missingGPU);
-    fallback.hidden = !missingGPU || !compact();
+    fallback.hidden = !!$('forja-preview') || !missingGPU || !compact();
   }
   new MutationObserver(checkWebGLStatus).observe(renderStatus, { childList: true, characterData: true, subtree: true });
   window.addEventListener('resize', () => { syncLayout(); checkWebGLStatus(); });
