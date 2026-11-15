@@ -192,7 +192,7 @@ async function modelTemplate(asset){
  const promise=gltfLoader.loadAsync(uri).catch(e=>{state.loadedModels.delete(asset.id);throw e});
  state.loadedModels.set(asset.id,promise);return promise;
 }
-async function addAsset(asset,opts={},silent=false){
+async function addAsset(asset,opts={},silent=false,staging=false){
  if(!state.webgl){toast('NO HAY WEBGL2: ABRÍ EN NAVEGADOR COMPATIBLE');return null}
  if(state.busy&&!silent)return null;
  const h=clamp(finite(opts.h,defaultHeight(asset)),.02,90);
@@ -216,9 +216,9 @@ async function addAsset(asset,opts={},silent=false){
   const mixer=data.animations.length?new THREE.AnimationMixer(model):null;
   if(mixer){const clip=data.animations.find(x=>/idle|walk|run/i.test(x.name))||data.animations[0];mixer.clipAction(clip).play()}
   const entry={uid,asset,h,root,baseScale,mixer,clips:data.animations};
-  state.world.add(root);state.objects.push(entry);
-  if(!silent){select(uid);historyPush();status('MODELO AÑADIDO · '+short(asset.id));toast('AÑADIDO: '+short(asset.id))}
-  metrics();renderObjects();return entry;
+  if(!staging){state.world.add(root);state.objects.push(entry)}
+  if(!silent&&!staging){select(uid);historyPush();status('MODELO AÑADIDO · '+short(asset.id));toast('AÑADIDO: '+short(asset.id))}
+  if(!staging){metrics();renderObjects()}return entry;
  }catch(e){state.failed++;status('FALLÓ LA CARGA DE '+short(asset.id));toast('No se pudo cargar '+short(asset.id));console.warn('FORJA MODEL',asset.id,e);return null}
 }
 function select(uid){
@@ -324,35 +324,43 @@ async function replaceScene(data,{remember=true}={}){
  let safe;
  try{safe=validateProject(data)}catch(e){toast(e.message);return false}
  state.request++;setBusy(true);setLoading(true,'PREPARANDO ESCENA',0);
- const previous=snapshot();
- const oldName=state.sceneName;
+ const staged=[];let done=0,failed=false,committed=false;
  try{
-  state.transform?.detach();state.selected=null;
-  for(const e of state.objects){state.world.remove(e.root);e.mixer?.stopAllAction()}
-  state.objects=[];state.sceneName=safe.name;$('scene-name').value=safe.name;
-  renderObjects();updateInspector();
-  let done=0;
   const queue=safe.items.slice();
-  const tasks=Array.from({length:3},async()=>{
+  const tasks=Array.from({length:Math.min(3,queue.length)},async()=>{
    while(queue.length){
     const item=queue.shift(),asset=state.byId.get(item.id);
-    await addAsset(asset,item,true);
+    const entry=await addAsset(asset,item,true,true);
+    if(entry)staged.push(entry);else failed=true;
     done++;setLoading(true,'CARGANDO '+done+' / '+safe.items.length+' MODELOS',done/Math.max(1,safe.items.length));
    }
-  });await Promise.all(tasks);
-  const loaded=state.objects.length;
-  metrics();renderObjects();resetCamera();
+  });
+  await Promise.all(tasks);
+  if(failed||staged.length!==safe.items.length){
+   status('IMPORTACIÓN CANCELADA · ESCENA ORIGINAL INTACTA');
+   toast('FALLÓ UN MODELO: NO SE CAMBIÓ LA ESCENA');
+   return false;
+  }
+  state.transform?.detach();
+  for(const e of state.objects){state.world.remove(e.root);e.mixer?.stopAllAction()}
+  state.objects=staged.slice();
+  for(const e of staged)state.world.add(e.root);
+  committed=true;
+  state.selected=null;state.sceneName=safe.name;$('scene-name').value=safe.name;
+  metrics();renderObjects();updateInspector();resetCamera();
   if(remember){state.busy=false;historyPush();state.busy=true}else saveLocal();
-  toast('ESCENA LISTA: '+loaded+' / '+safe.items.length+' OBJETOS');
-  if(loaded!==safe.items.length)status('ESCENA PARCIAL · '+(safe.items.length-loaded)+' FALTANTES');
-  else status('ESCENA EDITABLE · '+loaded+' OBJETOS');
+  status('ESCENA EDITABLE · '+staged.length+' OBJETOS');
+  toast('ESCENA LISTA: '+staged.length+' OBJETOS');
   return true;
- }catch(e){console.error(e);toast('ERROR AL ABRIR ESCENA');
-  for(const prior of state.objects){state.world.remove(prior.root);prior.mixer?.stopAllAction()}
-  state.objects=[];state.selected=null;state.sceneName=oldName;$('scene-name').value=oldName;
-  for(const item of previous.items){const asset=state.byId.get(item.id);if(asset)await addAsset(asset,item,true)}
-  metrics();renderObjects();updateInspector();return false;
- }finally{setBusy(false);setLoading(false);historyButtons()}
+ }catch(e){
+  console.error('FORJA TRANSACTIONAL IMPORT',e);
+  status('ERROR DE IMPORTACIÓN');
+  toast('ERROR AL ABRIR ESCENA');
+  return false;
+ }finally{
+  if(!committed)for(const e of staged)e.mixer?.stopAllAction();
+  setBusy(false);setLoading(false);historyButtons();
+ }
 }
 const PRESETS={
  barrio:{name:'El barrio que no duerme',items:[
