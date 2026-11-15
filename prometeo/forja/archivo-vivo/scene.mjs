@@ -3,11 +3,12 @@ import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 import {OBJLoader} from 'three/addons/loaders/OBJLoader.js';
 import {MTLLoader} from 'three/addons/loaders/MTLLoader.js';
+import {resolveClip} from './clip-resolver.mjs';
 
 const status=document.getElementById('status');
 const count=document.getElementById('count');
 const root=document.getElementById('stage');
-const state={loaded:0,total:4,failed:[],clips:[],mixer:null,action:null,paused:false,requested:'Idle'};
+const state={loaded:0,total:4,failed:[],clips:[],mixer:null,action:null,paused:false,requested:'Idle',clipError:null,activeClipName:null};
 let renderer;
 try {
   renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:'high-performance'});
@@ -52,18 +53,20 @@ function report(name,error){
   if(error)state.failed.push(name+' '+String(error.message||error));
   else state.loaded++;
   count.textContent=state.loaded+' / '+state.total+' originales';
-  status.textContent=state.failed.length?'Falló: '+state.failed.join(' | '):'Modelos importados correctamente.';
+  status.textContent=state.failed.length?'Falló: '+state.failed.join(' | '):state.clipError||('Modelos importados correctamente.'+(state.activeClipName?' · '+state.activeClipName:''));
   document.body.dataset.loaded=String(state.loaded);
 }
 function setClip(name){
   state.requested=name;
   for(const btn of document.querySelectorAll('[data-anim]'))btn.setAttribute('aria-pressed',String(btn.dataset.anim===name));
   if(!state.mixer)return;
-  const clip=state.clips.find(c=>c.name===name);
-  if(!clip){status.textContent='Clip '+name+' no encontrado';return}
+  let clip;
+  try{clip=resolveClip(state.clips,name)}catch(e){state.clipError='Error de animación: '+e.message;status.textContent=state.clipError;return}
+  if(!clip){state.clipError='Clip '+name+' no encontrado';status.textContent=state.clipError;return}
+  state.clipError=null;state.activeClipName=clip.name;
   if(state.action)state.action.fadeOut(.24);
   state.action=state.mixer.clipAction(clip);state.action.reset().fadeIn(.24).play();
-  status.textContent='Zorro con animación GLB: '+name;
+  status.textContent='Zorro con animación GLB: '+clip.name;
 }
 async function loadFox(){
   try {
@@ -72,7 +75,7 @@ async function loadFox(){
     if(!hasSkin.length||!f.animations?.length)throw Error('FOX_NO_SKELETAL_CLIPS');
     positionModel(f.scene,0,0,2.8,Math.PI*.12);
     state.clips=f.animations;state.mixer=new THREE.AnimationMixer(f.scene);
-    setClip(state.requested);report('Fox.glb');
+    report('Fox.glb');setClip(state.requested);
   }catch(e){report('Fox.glb',e)}
 }
 async function loadGlb(name,path,x,z,height,angle=0){
@@ -107,5 +110,5 @@ function tick(){
 tick();
 Promise.all([loadFox(),loadGlb('Oak.glb','./assets/Oak.glb',-4,-1.5,4.5,.4),loadGlb('Chair.glb','./assets/Chair.glb',3.3,-2,2,Math.PI),loadObj()]).then(()=>{
   document.body.dataset.settled='true';
-  if(!state.failed.length)status.textContent='4 / 4 modelos reales disponibles. Clips Fox: '+state.clips.length;
+  if(!state.failed.length)status.textContent=state.clipError||('4 / 4 modelos reales disponibles. Clips Fox: '+state.clips.length+(state.activeClipName?' · '+state.activeClipName:''));
 });
