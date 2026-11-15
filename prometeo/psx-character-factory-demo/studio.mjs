@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
 import {GLTFExporter} from 'three/addons/exporters/GLTFExporter.js';
+import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 
 // PSX FACE FACTORY v1. One neutral, reusable character template and a late-1990s video store.
 // All face pixels are applied to actual front-facing polygonal head triangles through UVs.
@@ -104,7 +105,7 @@ function makeCharacter(){
  }
  for(const side of [-1,1]){
   const collar=geomMesh(new THREE.ConeGeometry(.21,.28,4),palette.tan,[side*.15,1.99,.17],root,'COLLAR');
-  collar.scale.set(.77,.63,.52);collar.rotation.z=side*.45;
+  collar.scale.set(.66,.48,.48);collar.rotation.z=side*.45;
  }
  box([0,1.035,.221],[.61,.11,.08],leather,root,'BELT');
  box([0,1.048,.273],[.13,.12,.04],palette.brass,root,'BUCKLE');
@@ -123,10 +124,8 @@ function makeCharacter(){
  // Crown/hair is purpose-built separate polygonal mesh and not a face card.
  const hairMat=material(0x97734c,.99);
  const hair=geomMesh(uvProfile([[.27,.268,.265],[.36,.286,.277],[.45,.237,.22],[.49,.09,.10]],12),hairMat,[0,0,-.075],headRoot,'HAIR_SCALP');
- for(let k=0;k<4;k++){
-  const strand=geomMesh(new THREE.ConeGeometry(.065,.12,3),hairMat,[-.15+k*.10,.405,.214],headRoot,'HAIR_STRAND');
-  strand.rotation.z=.24;strand.rotation.x=.56;strand.scale.set(1,.52,.92);
- }
+ // Hair volume remains a low-poly connected cap; no floating cone strips.
+
  root.userData.factory={schema:'prometeo.psx.character/v1',rigged:false,faceMaterial:'projected-photo-uv',movements:'static-clean-baseline',source:'photo-upload-or-licensed-sample'};
  return root;
 }
@@ -417,6 +416,16 @@ async function exportGLB(){
   const exporter=new GLTFExporter();
   const data=await exporter.parseAsync(root,{binary:true,onlyVisible:true,trs:true,maxTextureSize:512});
   if(!(data instanceof ArrayBuffer)||data.byteLength<1000)throw Error('GLB vacío');
+  // Real roundtrip QA: parse GLB in Three.js, inspect geometry and embedded face UV.
+  const parsed=await new GLTFLoader().parseAsync(data,'');
+  let meshCount=0, textured=0, faces=0;
+  parsed.scene.traverse(o=>{
+   if(!o.isMesh)return;
+   meshCount++;faces+=o.geometry.index?o.geometry.index.count/3:o.geometry.attributes.position.count/3;
+   for(const mat of Array.isArray(o.material)?o.material:[o.material])if(mat?.map)textured++;
+  });
+  if(meshCount<10||textured<1||faces<500)throw Error('GLB sin malla o textura válidas');
+  window.__PSX_FACTORY_QA.roundtrip={passed:true,meshCount,textured,triangles:Math.round(faces)};
   const blob=new Blob([data],{type:'model/gltf-binary'}),url=URL.createObjectURL(blob);
   const link=document.createElement('a');link.href=url;link.download='prometeo-psx-persona-001.glb';
   document.body.appendChild(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),30000);
