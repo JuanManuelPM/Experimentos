@@ -95,7 +95,7 @@ export function installCinema({THREE,canvas,renderer,scene,world,camera,controls
     if(camera.fov!==p.fov){camera.fov=p.fov;camera.updateProjectionMatrix();}
   }
   function keyDown(e){
-    if(mode!=='FIRST_PERSON'||isEditable(e))return;
+    if(mode!=='FIRST_PERSON'||paused||isEditable(e))return;
     if(['KeyW','KeyA','KeyS','KeyD','ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.code)){
       e.preventDefault();e.stopImmediatePropagation();keys.add(e.code);
     }
@@ -118,7 +118,7 @@ export function installCinema({THREE,canvas,renderer,scene,world,camera,controls
   for(const button of pad?.querySelectorAll('[data-walk]')||[]){
     const action=button.dataset.walk;
     button.addEventListener('pointerdown',e=>{
-      if(mode!=='FIRST_PERSON')return;
+      if(mode!=='FIRST_PERSON'||paused)return;
       e.preventDefault();keys.add(action);
       try{button.setPointerCapture(e.pointerId);}catch{}
     });
