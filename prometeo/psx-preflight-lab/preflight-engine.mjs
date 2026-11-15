@@ -75,7 +75,9 @@ export function evaluatePreflight(source){
   const check=validateGateFacts(m,id);
   const evidence=evidenceHas(m,kinds,id);
   const issues=check.issues||[];
-  const status=(issues.length===0&&evidence)?'PASS':issues.length?'FAIL':'UNVERIFIED';
+  const details=record(record(m.facts)[id]);
+  const notRun=['camera','render','mobile'].includes(id)&&details.reviewState==='NOT_RUN';
+  const status=(issues.length===0&&evidence)?'PASS':notRun?'UNVERIFIED':issues.length?'FAIL':'UNVERIFIED';
   out.push({id,label,phase,status,issues:evidence?issues:[...issues,'Sin evidencia primaria verificable de tipo '+kinds.join('/')],evidenceCount:(record(m.evidence)[id]||[]).filter(evidenceValid).length});
  }
  const blockers=out.filter(g=>g.phase==='PREPRODUCTION'&&g.status!=='PASS');
