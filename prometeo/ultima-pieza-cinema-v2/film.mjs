@@ -313,7 +313,7 @@ async function init(){
   else render(0);window.__FILM_QA={ready:true,stage:'ART_CANDIDATE',actors:Object.keys(actors),clips:Object.fromEntries(Object.entries(actors).map(([k,v])=>[k,v.clips])),duration:D,shots:SHOTS.length,canvas:{width:stage.width,height:stage.height}};
   window.__FILM_SEEK=t=>render(t);
   requestAnimationFrame(frame);
- }catch(e){console.error(e);setStatus(e.message||String(e));start.textContent='INTENTAR OTRA VEZ';start.disabled=false;start.onclick=()=>location.reload();
+ }catch(e){console.error(e);window.__FILM_QA={ready:false,error:String(e),stack:String(e.stack||'')};setStatus((e.message||String(e))+' | '+String(e.stack||'').slice(0,550));start.textContent='INTENTAR OTRA VEZ';start.disabled=false;start.onclick=()=>location.reload();
   window.__FILM_QA={ready:false,error:String(e)};
  }
 }
