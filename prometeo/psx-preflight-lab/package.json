@@ -1,0 +1,12 @@
+{
+  "name": "prometeo-psx-preflight-lab",
+  "private": true,
+  "version": "1.0.1",
+  "type": "module",
+  "description": "Quality gates before producing 3D PSX shorts in Three.js",
+  "scripts": {
+    "test": "node --test test-preflight.mjs test-scene-lint.mjs",
+    "preflight": "node preflight-cli.mjs night-drive.audit.json night-drive.checked.json",
+    "lint:night-drive": "node scene-source-lint.mjs ../psx-night-drive/film.mjs night-drive.source-lint.json"
+  }
+}
