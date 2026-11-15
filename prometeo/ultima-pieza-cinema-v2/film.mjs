@@ -134,6 +134,7 @@ function robot(){
   arms.push(shoulder)
  }
  // realistic shadow contact: table receives shadow automatically
+ base.scale.setScalar(.55);
  return {base,headRig,pupils,eyeMat,arms};
 }
 function lighting(){
@@ -184,7 +185,7 @@ async function loadActor(id,file,position,turn){
   catch(e){lastError=e;console.warn('GLB host fallback',file,String(e))}
  }
  if(!data)throw lastError||new Error('No GLB '+file);
- const actor=adaptActor(data.scene,1.82,position,turn);
+ const actor=adaptActor(data.scene,2.42,position,turn);
  const bones=[];data.scene.traverse(o=>{if(o.isBone)bones.push(o)});
  const mixer=data.animations.length?new THREE.AnimationMixer(data.scene):null;
  let action=null;
@@ -213,9 +214,9 @@ function aim(now){
  const ds=DIALOG.find(d=>now>=d.start&&now<d.end);
  $('bubble').classList.toggle('active',!!ds);
  if(ds){$('speaker').textContent=ds.name;$('words').textContent=ds.text;const b=$('bubble');
-  const point=ds.id==='vera'?[-1.4,2.65,-.76]:ds.id==='nico'?[1.35,2.62,-.80]:[.12,2.67,.23];
+  const point=ds.id==='vera'?[-1.4,2.18,-.76]:ds.id==='nico'?[1.35,2.18,-.80]:[.12,2.16,.23];
   const screen=v(point).project(camera),px=50*(screen.x+1),py=50*(1-screen.y);
-  b.style.bottom='auto';b.style.left=clamp(px-24,6,42)+'%';b.style.top=clamp(py-29,8,55)+'%';b.style.transform='translateY('+((1-smooth((now-ds.start)/.15))*11)+'px)';}
+  b.style.bottom='auto';b.style.left=clamp(px-24,6,42)+'%';b.style.top=clamp(py-17,6,58)+'%';b.style.transform='translateY('+((1-smooth((now-ds.start)/.15))*11)+'px)';}
  $('subtitleDots').textContent=now<5.3?'UN TALLER · UNA NOCHE · UNA PREGUNTA':now>48.7?'LA ÚLTIMA PIEZA · FIN':'';
 }
 function updateActors(now){
@@ -308,8 +309,8 @@ async function init(){
   aim(0);renderer.render(scene,camera);
   start.textContent='CARGANDO PERSONAJES…';start.disabled=true;
   const res=await Promise.allSettled([
-   loadActor('vera','Rogue_Hooded',[-1.40,.0,-.79],-.13),
-   loadActor('nico','Barbarian',[1.35,.0,-.86],.13)
+   loadActor('vera','Rogue',[-1.40,.0,-.79],-.13),
+   loadActor('nico','Mage',[1.35,.0,-.86],.13)
   ]);
   if(res.some(x=>x.status==='rejected')){throw Error('Falló la descarga de modelos GLB. Revisá tu conexión y recargá. '+res.filter(x=>x.status==='rejected').map(x=>String(x.reason)).join(' / ').slice(0,160));}
   loaded=true;start.disabled=false;start.textContent='▶ VER LA PELÍCULA';
