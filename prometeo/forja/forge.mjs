@@ -506,6 +506,24 @@ async function initCatalog(){
   state.history=[snapshot()];state.cursor=0;historyButtons();
  }catch(e){status('FALLÓ EL CATÁLOGO · '+e.message);toast('NO PUDO LEER EL CATÁLOGO');console.error(e)}
 }
+// Commit the history cursor only after the transactional scene replacement succeeds.
+async function moveHistory(direction){
+ if(state.busy||![1,-1].includes(direction))return false;
+ const target=state.cursor+direction;
+ if(target<0||target>=state.history.length)return false;
+ try{
+  const applied=await replaceScene(state.history[target],{remember:false});
+  if(applied===true)state.cursor=target;
+  return applied===true;
+ }catch(error){
+  console.error('FORJA HISTORY NAVIGATION',error);
+  status('HISTORIAL NO MODIFICADO');
+  toast('NO SE PUDO RECORRER EL HISTORIAL');
+  return false;
+ }finally{
+  historyButtons();
+ }
+}
 function wire(){
  $('search').addEventListener('input',()=>{pageSize=60;renderLibrary()});
  $('pack').addEventListener('change',()=>{pageSize=60;renderLibrary()});
@@ -517,8 +535,8 @@ function wire(){
  $('play-animations').addEventListener('click',()=>{state.playing=!state.playing;metrics()});
  $('scene-name').addEventListener('change',e=>{state.sceneName=(e.target.value.trim()||'Escena sin título').slice(0,64);historyPush();metrics()});
  for(const id of ['pos-x','pos-y','pos-z','rot','scale'])$(id).addEventListener('change',updateProperty);
- $('undo').addEventListener('click',async()=>{if(state.busy||state.cursor<=0)return;state.cursor--;await replaceScene(state.history[state.cursor],{remember:false});historyButtons()});
- $('redo').addEventListener('click',async()=>{if(state.busy||state.cursor>=state.history.length-1)return;state.cursor++;await replaceScene(state.history[state.cursor],{remember:false});historyButtons()});
+ $('undo').addEventListener('click',()=>{void moveHistory(-1)});
+ $('redo').addEventListener('click',()=>{void moveHistory(1)});
  $('delete').addEventListener('click',removeSelected);
  $('duplicate').addEventListener('click',duplicateSelected);
  $('focus').addEventListener('click',focus);
