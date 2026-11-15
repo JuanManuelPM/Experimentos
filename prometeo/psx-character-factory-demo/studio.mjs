@@ -111,21 +111,21 @@ function makeCharacter(){
  for(const side of [-1,1])box([side*.21,1.44,.216],[.14,.16,.026],palette.black,root,'POCKET');
  // neck under real cranium, not a planar sticker
  geomMesh(new THREE.CylinderGeometry(.13,.15,.25,10),palette.skin,[0,2.10,.018],root,'NECK');
- const headRoot=new THREE.Group();headRoot.name='HEAD_RIG_STATIC';headRoot.position.set(0,2.40,.015);root.add(headRoot);
+ const headRoot=new THREE.Group();headRoot.name='HEAD_RIG_STATIC';headRoot.position.set(0,2.40,.015);root.add(headRoot);headRoot.scale.setScalar(.83);
  // Initial template geometry replaced by createFaceMaterial/updateHead.
  skinMaterial=material(0xb99a80,.95);
  faceMaterial=new THREE.MeshStandardMaterial({color:0xffffff,roughness:.93,metalness:0,side:THREE.FrontSide});
  headMesh=geomMesh(makeHeadGeometry(photoState.shape),[faceMaterial,skinMaterial],[0,0,0],headRoot,'UV_FACIAL_MESH');
  for(const side of [-1,1]){
-  const ear=geomMesh(new THREE.IcosahedronGeometry(.105,1),skinMaterial,[side*.31,-.04,-.023],headRoot,'EAR');
-  ear.scale.set(.67,1.28,.82);
+  const ear=geomMesh(new THREE.IcosahedronGeometry(.085,1),skinMaterial,[side*.292,-.048,-.030],headRoot,'EAR');
+  ear.scale.set(.64,.91,.65);
  }
  // Crown/hair is purpose-built separate polygonal mesh and not a face card.
- const hairMat=material(0xb08d62,.99);
- const hair=geomMesh(uvProfile([[.19,.275,.285],[.35,.30,.285],[.44,.245,.245],[.51,.11,.10]],12),hairMat,[0,0,-.035],headRoot,'HAIR_SCALP');
+ const hairMat=material(0x97734c,.99);
+ const hair=geomMesh(uvProfile([[.27,.268,.265],[.36,.286,.277],[.45,.237,.22],[.49,.09,.10]],12),hairMat,[0,0,-.075],headRoot,'HAIR_SCALP');
  for(let k=0;k<4;k++){
-  const strand=geomMesh(new THREE.ConeGeometry(.11,.25,3),hairMat,[-.18+k*.12,.405,.245],headRoot,'HAIR_STRAND');
-  strand.rotation.z=.28;strand.rotation.x=.72;strand.scale.set(1,.55,1.13);
+  const strand=geomMesh(new THREE.ConeGeometry(.065,.12,3),hairMat,[-.15+k*.10,.405,.214],headRoot,'HAIR_STRAND');
+  strand.rotation.z=.24;strand.rotation.x=.56;strand.scale.set(1,.52,.92);
  }
  root.userData.factory={schema:'prometeo.psx.character/v1',rigged:false,faceMaterial:'projected-photo-uv',movements:'static-clean-baseline',source:'photo-upload-or-licensed-sample'};
  return root;
@@ -158,7 +158,7 @@ export function makeHeadGeometry(shape={jaw:1,head:1,nose:1}){
   const first=indices.length;indices.push(a,a+1,b,b,a+1,b+1);
   const angle=-Math.PI+2*Math.PI*(j+.5)/segments;
   // Only the front facial polygon receives photo material; ears/scalp/back keep skin.
-  groups.push({start:first,count:6,materialIndex:Math.abs(angle)<1.21?0:1});
+  groups.push({start:first,count:6,materialIndex:Math.abs(angle)<1.00?0:1});
  }
  const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(points,3));
  g.setAttribute('uv',new THREE.Float32BufferAttribute(uv,2));g.setIndex(indices);
@@ -170,27 +170,32 @@ function makeTexture(img){
  const x=c.getContext('2d',{willReadFrequently:true});x.imageSmoothingEnabled=true;x.imageSmoothingQuality='high';
  const w=img.naturalWidth||img.width,h=img.naturalHeight||img.height;
  const {cx,cy,scale}=photoState.crop;
- const base=Math.min(w,h)*.69/scale;
+ const base=Math.min(w,h)*.548/scale;
  // Crops retain hair, eyes, nose, jaw; alignment fine-tuned by Face Landmarker or manual controls.
  const sx=cx*w-base/2,sy=cy*h-base/2;
  const crop=document.createElement('canvas');crop.width=crop.height=size;const p=crop.getContext('2d',{willReadFrequently:true});
  p.drawImage(img,sx,sy,base,base,0,0,size,size);
  // Sample skin from cheek centers, avoiding flag, clothing and background.
  const sample=p.getImageData(0,0,size,size).data;
- const positions=[[.30,.65],[.70,.65],[.26,.54],[.74,.54],[.50,.74]];
+ const positions=[[.35,.64],[.65,.64],[.31,.56],[.69,.56],[.50,.72]];
  let rr=0,gg=0,bb=0,n=0;
  for(let [u,v] of positions){
   const idx=((Math.round(v*255)*256)+Math.round(u*255))*4;
   const r=sample[idx],g=sample[idx+1],b=sample[idx+2];if(r>55&&r<245&&g>38&&b>25){rr+=r;gg+=g;bb+=b;n++}
  }
  const skin=n?[(rr/n)|0,(gg/n)|0,(bb/n)|0]:[189,148,124];
+ if(photoState.source==='ejemplo público')skin.splice(0,3,198,151,128);
  const bg='rgb('+skin.join(',')+')';x.fillStyle=bg;x.fillRect(0,0,size,size);
  // Feather photo into the same skin base; no rectangular billboard boundaries.
  const mask=document.createElement('canvas');mask.width=mask.height=size;const m=mask.getContext('2d');
  m.drawImage(crop,0,0);
- m.globalCompositeOperation='destination-in';const grad=m.createRadialGradient(128,127,81,128,127,138);
- grad.addColorStop(0,'rgba(0,0,0,1)');grad.addColorStop(.60,'rgba(0,0,0,.96)');grad.addColorStop(1,'rgba(0,0,0,0)');
- m.fillStyle=grad;m.fillRect(0,0,256,256);m.globalCompositeOperation='source-over';
+ m.globalCompositeOperation='destination-in';
+ // Elliptical face-boundary alpha, no photo's white wall or flag on the cheek sides.
+ m.save();m.translate(128,127);m.scale(.83,1.04);
+ const grad=m.createRadialGradient(0,0,76,0,0,126);
+ grad.addColorStop(0,'rgba(0,0,0,1)');grad.addColorStop(.54,'rgba(0,0,0,.95)');
+ grad.addColorStop(.85,'rgba(0,0,0,.32)');grad.addColorStop(1,'rgba(0,0,0,0)');
+ m.fillStyle=grad;m.fillRect(-160,-160,320,320);m.restore();m.globalCompositeOperation='source-over';
  x.drawImage(mask,0,0);
  // PS1-style color precision with deliberately restrained near-neighbor sampling, not a VHS filter.
  const image=x.getImageData(0,0,256,256);
@@ -224,13 +229,13 @@ function readImage(src,source){
 function createLighting(){
  scene.background=new THREE.Color(0x111f29);scene.fog=new THREE.FogExp2(0x142933,.028);
  scene.add(new THREE.HemisphereLight(0xa3b4b3,0x251e1e,1.12));
- const warm=new THREE.SpotLight(0xffcf9b,105,12,Math.PI*.39,.73,1.4);
+ const warm=new THREE.SpotLight(0xffcf9b,73,12,Math.PI*.39,.73,1.4);
  warm.position.set(-.1,4.1,2.5);warm.target.position.set(.2,1.4,-.8);
  warm.castShadow=true;warm.shadow.mapSize.set(1024,1024);warm.shadow.normalBias=.014;warm.shadow.bias=-.00024;
  world.add(warm,warm.target);
- const cool=new THREE.DirectionalLight(0x5b9fb8,3.3);cool.position.set(3.1,3.2,-1.5);world.add(cool);
- const signage=new THREE.PointLight(0xe9895e,18,5,2);signage.position.set(-2.8,3.2,-2.0);world.add(signage);
- const windowLight=new THREE.PointLight(0x6bc1d5,20,4,2);windowLight.position.set(2.2,2.6,-2.65);world.add(windowLight);
+ const cool=new THREE.DirectionalLight(0x5b9fb8,2.1);cool.position.set(3.1,3.2,-1.5);world.add(cool);
+ const signage=new THREE.PointLight(0xe9895e,11,5,2);signage.position.set(-2.8,3.2,-2.0);world.add(signage);
+ const windowLight=new THREE.PointLight(0x6bc1d5,14,4,2);windowLight.position.set(2.2,2.6,-2.65);world.add(windowLight);
 }
 function sceneTexture(type){
  const c=document.createElement('canvas');c.width=c.height=128;const x=c.getContext('2d');
@@ -325,7 +330,7 @@ function setupThree(){
  if(!context)throw Error('WebGL2 no disponible. Abrí en Chrome con aceleración gráfica.');
  renderer=new THREE.WebGLRenderer({canvas,context,antialias:false,preserveDrawingBuffer:true});
  renderer.outputColorSpace=THREE.SRGBColorSpace;
- renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.12;
+ renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=.94;
  renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
  renderer.setPixelRatio(1);
  camera=new THREE.PerspectiveCamera(36,1,.04,110);
@@ -354,6 +359,7 @@ function setView(id){
  view=PROFILE[id]?id:'portrait';
  for(let b of document.querySelectorAll('[data-view]'))b.classList.toggle('active',b.dataset.view===view);
  const d=PROFILE[view];camera.position.set(...d.p);controls.target.set(...d.t);
+ document.querySelector('.hero').classList.toggle('face-mode',view!=='scene');
  camera.fov=d.fov;camera.updateProjectionMatrix();controls.update();
  $('viewLabel').textContent=d.label;
 }
