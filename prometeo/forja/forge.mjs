@@ -332,14 +332,16 @@ async function replaceScene(data,{remember=true}={}){
  if(!state.webgl){status('CATÁLOGO 2D · GPU NO DISPONIBLE');toast('ESTE NAVEGADOR NO PUEDE EDITAR 3D SIN WEBGL2');return false;}
  let safe;
  try{safe=validateProject(data)}catch(e){toast(e.message);return false}
- state.request++;setBusy(true);
+ state.request++;
  // Keep the original scene untouched until every worker has settled.
  // Each slot corresponds to the original item index, not completion order.
  const staged=new Array(safe.items.length);let next=0,done=0,failed=false,committed=false;
  const previous={objects:state.objects,selected:state.selected,sceneName:state.sceneName,
   history:state.history.slice(),cursor:state.cursor,sceneInput:$('scene-name').value};
- let mutationStarted=false;
+ let mutationStarted=false,progressDegraded=false;
  try{
+  // Both editor locking and overlay setup are fallible; protect them with finally.
+  setBusy(true);
   // Overlay setup is fallible; keep it inside the transactional finally.
   setLoading(true,'PREPARANDO ESCENA',0);
   const workers=Array.from({length:Math.min(3,safe.items.length)},async()=>{
@@ -351,7 +353,7 @@ async function replaceScene(data,{remember=true}={}){
     }catch(error){failed=true;console.warn('FORJA STAGED LOAD',item.id,error)}
     finally{
      done++;
-     setLoading(true,'CARGANDO '+done+' / '+safe.items.length+' MODELOS',done/Math.max(1,safe.items.length));
+     try{setLoading(true,'CARGANDO '+done+' / '+safe.items.length+' MODELOS',done/Math.max(1,safe.items.length));}catch(progressError){progressDegraded=true;console.warn('FORJA PROGRESS UI FAILED',progressError)}
     }
    }
   });
@@ -373,7 +375,7 @@ async function replaceScene(data,{remember=true}={}){
   else if(saveLocal()===false)throw Error('SCENE_PERSISTENCE_FAILED');
   committed=true;
   // Presentation messages and mixer disposal must not undo a durable commit.
-  try{status('ESCENA EDITABLE · '+staged.length+' OBJETOS');toast('ESCENA LISTA: '+staged.length+' OBJETOS')}
+  try{status(progressDegraded?'ESCENA EDITABLE · AVISO: INDICADOR DE CARGA FALLÓ':'ESCENA EDITABLE · '+staged.length+' OBJETOS');toast(progressDegraded?'ESCENA LISTA · INDICADOR DE CARGA FALLÓ':'ESCENA LISTA: '+staged.length+' OBJETOS')}
   catch(uiError){console.warn('FORJA POST-COMMIT UI',uiError)}
   for(const e of previous.objects)try{e.mixer?.stopAllAction()}catch(disposeError){console.warn('FORJA MIXER CLEANUP',disposeError)}
   return true;
@@ -394,7 +396,7 @@ async function replaceScene(data,{remember=true}={}){
   if(!committed)for(const e of staged)if(e){
    try{e.mixer?.stopAllAction()}catch(cleanupError){console.warn('FORJA STAGED MIXER CLEANUP',cleanupError)}
   }
-  try{setBusy(false)}catch(cleanupError){console.error('FORJA UNLOCK FAILED',cleanupError)}
+  try{setBusy(false)}catch(cleanupError){state.busy=false;console.error('FORJA UNLOCK FAILED',cleanupError)}
   try{setLoading(false)}catch(cleanupError){console.warn('FORJA LOADING CLEANUP',cleanupError)}
   try{historyButtons()}catch(cleanupError){console.warn('FORJA HISTORY UI CLEANUP',cleanupError)}
  }
