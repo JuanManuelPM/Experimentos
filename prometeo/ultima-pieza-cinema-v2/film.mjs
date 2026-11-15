@@ -2,7 +2,8 @@ import * as THREE from 'three';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 
 const $=id=>document.getElementById(id),D=53,clamp=(x,a=0,b=1)=>Math.min(b,Math.max(a,x)),smooth=x=>{x=clamp(x);return x*x*(3-2*x)},v=a=>new THREE.Vector3(...a),L=(a,b,t)=>a+(b-a)*t;
-const src='https://raw.githubusercontent.com/KayKit-Game-Assets/KayKit-Character-Pack-Adventures-1.0/672074b73ba276876a19e8816ecdc5241817ab47/addons/kaykit_character_pack_adventures/Characters/gltf/';
+const src='https://cdn.jsdelivr.net/gh/KayKit-Game-Assets/KayKit-Character-Pack-Adventures-1.0@672074b73ba276876a19e8816ecdc5241817ab47/addons/kaykit_character_pack_adventures/Characters/gltf/';
+const fallbackSrc='https://raw.githubusercontent.com/KayKit-Game-Assets/KayKit-Character-Pack-Adventures-1.0/672074b73ba276876a19e8816ecdc5241817ab47/addons/kaykit_character_pack_adventures/Characters/gltf/';
 const screen=$('screen'),stage=$('stage'),entry=$('entry'),start=$('start'),progress=$('progress'),toggle=$('toggle'),notice=$('notice');
 let renderer,scene,camera,spot,lampLight,windowLight,bot,actors={},loaded=false,playing=false,time=0,previous=0,lastFrame=0,muted=false,sound=null,ended=false;
 const SHOTS=[
@@ -177,7 +178,12 @@ function adaptActor(root,wanted,p,zTurn=0){
  return sceneRoot;
 }
 async function loadActor(id,file,position,turn){
- const data=await new GLTFLoader().loadAsync(src+file+'.glb');
+ let data=null,lastError=null;
+ for(const base of [src,fallbackSrc]){
+  try {data=await Promise.race([new GLTFLoader().loadAsync(base+file+'.glb'),new Promise((_,reject)=>setTimeout(()=>reject(new Error('model load timeout '+file)),16000))]);break;}
+  catch(e){lastError=e;console.warn('GLB host fallback',file,String(e))}
+ }
+ if(!data)throw lastError||new Error('No GLB '+file);
  const actor=adaptActor(data.scene,1.82,position,turn);
  const bones=[];data.scene.traverse(o=>{if(o.isBone)bones.push(o)});
  const mixer=data.animations.length?new THREE.AnimationMixer(data.scene):null;
@@ -302,7 +308,9 @@ async function init(){
   ]);
   if(res.some(x=>x.status==='rejected')){throw Error('Falló la descarga de modelos GLB. Revisá tu conexión y recargá. '+res.filter(x=>x.status==='rejected').map(x=>String(x.reason)).join(' / ').slice(0,160));}
   loaded=true;start.disabled=false;start.textContent='▶ VER LA PELÍCULA';
-  render(0);window.__FILM_QA={ready:true,actors:Object.keys(actors),clips:Object.fromEntries(Object.entries(actors).map(([k,v])=>[k,v.clips])),duration:D,shots:SHOTS.length,canvas:{width:stage.width,height:stage.height}};
+  const requestedFrame=new URLSearchParams(location.search).get('frame');
+  if(requestedFrame!==null){entry.hidden=true;render(Number(requestedFrame))}
+  else render(0);window.__FILM_QA={ready:true,stage:'ART_CANDIDATE',actors:Object.keys(actors),clips:Object.fromEntries(Object.entries(actors).map(([k,v])=>[k,v.clips])),duration:D,shots:SHOTS.length,canvas:{width:stage.width,height:stage.height}};
   window.__FILM_SEEK=t=>render(t);
   requestAnimationFrame(frame);
  }catch(e){console.error(e);setStatus(e.message||String(e));start.textContent='INTENTAR OTRA VEZ';start.disabled=false;start.onclick=()=>location.reload();
