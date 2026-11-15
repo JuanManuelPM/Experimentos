@@ -42,7 +42,7 @@ label{font-size:12px;color:#d9c3a5}.explain{border-top:1px solid #435057;margin-
 <div class="controls"><label for="editor">Manifest de entrada · editable, sin subir datos a un servidor</label><textarea id="editor" spellcheck="false"></textarea><p id="notice" aria-live="polite"></p></div>
 <div class="explain">El control es <b>fail-closed</b>: una casilla sin evidencia nunca se convierte automáticamente en PASS. Un usuario debe aprobar el arte explícitamente. Este informe describe <b>No hay vuelta</b> a partir del código y de capturas proporcionadas por el usuario, no sustituye pruebas de FPS, contacto geométrico o fotogramas renderizados de todos los planos. <a href="./README.md">Documentación y fuentes</a> · <a href="https://github.com/JuanManuelPM/Experimentos/tree/candidate/prometeo-psx-preflight-lab-20261115/prometeo/psx-preflight-lab">Código de fábrica</a>.</div>
 </main><script type="module">
-import {evaluatePreflight} from './preflight-engine.mjs';
+import {evaluatePreflight} from './preflight-engine.mjs?v=gates1-1-20261115';
 const $=id=>document.getElementById(id);let report=null;const escapeHtml=s=>String(s??'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;');
 function render(source){
  report=evaluatePreflight(source);
@@ -52,7 +52,7 @@ function render(source){
  window.__PREFLIGHT_QA={ready:true,report};
 }
 function showError(e){$('notice').textContent='Manifest inválido: '+e.message}
-const source=await fetch('./night-drive.audit.json').then(x=>x.json());$('editor').value=JSON.stringify(source,null,2);render(source);
+const source=await fetch('./night-drive.audit.json?v=tri-state-20261115').then(x=>x.json());$('editor').value=JSON.stringify(source,null,2);render(source);
 $('reset').onclick=()=>{$('editor').value=JSON.stringify(source,null,2);render(source);$('notice').textContent='Auditoría real restablecida'};
 $('reeval').onclick=()=>{try{render(JSON.parse($('editor').value));$('notice').textContent='Evaluación completa'}catch(e){showError(e)}};
 $('file').addEventListener('change',async event=>{let f=event.target.files?.[0];if(!f)return;try{let s=await f.text();$('editor').value=s;render(JSON.parse(s));$('notice').textContent='Evaluado localmente: '+f.name}catch(e){showError(e)}});
