@@ -360,11 +360,11 @@ async function replaceScene(data,{remember=true}={}){
   metrics();renderObjects();updateInspector();resetCamera();
   if(remember){state.busy=false;try{historyPush()}finally{state.busy=true}}
   else if(saveLocal()===false)throw Error('SCENE_PERSISTENCE_FAILED');
-  status('ESCENA EDITABLE · '+staged.length+' OBJETOS');
-  toast('ESCENA LISTA: '+staged.length+' OBJETOS');
   committed=true;
-  // Stop old animations only after the commit is known to have succeeded.
-  for(const e of previous.objects)e.mixer?.stopAllAction();
+  // Presentation messages and mixer disposal must not undo a durable commit.
+  try{status('ESCENA EDITABLE · '+staged.length+' OBJETOS');toast('ESCENA LISTA: '+staged.length+' OBJETOS')}
+  catch(uiError){console.warn('FORJA POST-COMMIT UI',uiError)}
+  for(const e of previous.objects)try{e.mixer?.stopAllAction()}catch(disposeError){console.warn('FORJA MIXER CLEANUP',disposeError)}
   return true;
  }catch(e){
   console.error('FORJA TRANSACTIONAL IMPORT',e);
