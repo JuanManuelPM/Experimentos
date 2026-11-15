@@ -232,7 +232,9 @@ async function addAsset(asset,opts={},silent=false,staging=false){
   if(!staging){state.world.add(root);state.objects.push(entry)}
   if(!silent&&!staging){select(uid);historyPush();status('MODELO AÑADIDO · '+short(asset.id));toast('AÑADIDO: '+short(asset.id))}
   if(!staging){metrics();renderObjects()}return entry;
- }catch(e){state.failed++;status('FALLÓ LA CARGA DE '+short(asset.id));toast('No se pudo cargar '+short(asset.id));console.warn('FORJA MODEL',asset.id,e);return null}
+ }catch(e){
+  if(!staging&&(state.busy||state.request!==requestBeforeLoad))return null;
+  state.failed++;status('FALLÓ LA CARGA DE '+short(asset.id));toast('No se pudo cargar '+short(asset.id));console.warn('FORJA MODEL',asset.id,e);return null}
 }
 function select(uid){
  const e=state.objects.find(x=>x.uid===uid)||null;
