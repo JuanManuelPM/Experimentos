@@ -168,6 +168,37 @@ function createRain(){
  rain=new THREE.LineSegments(geom,new THREE.LineBasicMaterial({color:0x82aeb9,transparent:true,opacity:.33,depthWrite:false}));
  sceneRoot.add(rain);
 }
+function aimBoneAt(bone,child,target){
+ if(!bone||!child)return false;
+ actorRoot.updateMatrixWorld(true);
+ const a=bone.getWorldPosition(new THREE.Vector3());
+ const b=child.getWorldPosition(new THREE.Vector3());
+ const v=b.sub(a),desired=target.clone().sub(a);
+ if(v.lengthSq()<1e-7||desired.lengthSq()<1e-7)return false;
+ const prev=bone.getWorldQuaternion(new THREE.Quaternion());
+ const correction=new THREE.Quaternion().setFromUnitVectors(v.normalize(),desired.normalize());
+ const result=correction.multiply(prev);
+ const parent=bone.parent.getWorldQuaternion(new THREE.Quaternion()).invert();
+ bone.quaternion.copy(parent.multiply(result));
+ actorRoot.updateMatrixWorld(true);return true;
+}
+function poseDrivingCharacter(){
+ // Author-made skeletal GLB, not rectangular upper limbs.
+ // Two-bone reaching from shoulders via elbows to the wheel; pose computed once, no per-frame additive Euler rotations.
+ const bones=new Map();actorRoot.traverse(o=>{if(o.isBone)bones.set(o.name,o)});
+ let solved=0;
+ for(const side of ['l','r']){
+  const upper=bones.get('upperarm_'+side),lower=bones.get('lowerarm_'+side),hand=bones.get('hand_'+side);
+  if(!(upper&&lower&&hand))continue;
+  actorRoot.updateMatrixWorld(true);
+  const start=upper.getWorldPosition(new THREE.Vector3());
+  const goal=carRoot.localToWorld(new THREE.Vector3(side==='l'?-.83:-.31,1.025,-.83));
+  const bend=start.clone().lerp(goal,.53).add(new THREE.Vector3(side==='l'?-.11:.11,-.18,.08));
+  if(aimBoneAt(upper,lower,bend))solved++;
+  if(aimBoneAt(lower,hand,goal))solved++;
+ }
+ qa.pose={kind:'skeletal-upper-limb-steering',targets:solved,absolute:true};
+}
 async function loadGLBs(){
  const carUrl='./assets/sedan_blue.glb';
  const personUrl='https://cdn.jsdelivr.net/gh/programasweights/avatar@a488723e3a93d73d5c562d88f8a85353c37bc721/public/assets/gangnam-character.glb';
@@ -197,6 +228,7 @@ async function loadGLBs(){
  actorRoot.scale.setScalar(scale);actorRoot.rotation.y=Math.PI;
  actorRoot.position.set(-.56,.23-bottom*scale-.48,.28);
  actorRoot.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=true}if(o.isBone&&/head$/i.test(o.name))actorHeadBone=o});
+ poseDrivingCharacter();
  qa.actorLoaded=true;qa.actorBones=[...new Set((()=>{let n=[];actorRoot.traverse(o=>{if(o.isBone)n.push(o.name)});return n})())].length;
  // Fixed seated pose only in lower body. Upper body remains model-authored and static.
  qa.actorSource='programasweights/avatar@a488723e (MIT costume & Quaternius CC0)';
