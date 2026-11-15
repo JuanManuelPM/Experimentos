@@ -75,7 +75,7 @@ $('full').onclick=()=>{const el=document.documentElement;if(!document.fullscreen
 document.addEventListener('keydown',e=>{if(['INPUT','BUTTON'].includes(document.activeElement?.tagName))return;if(e.code==='Space'){e.preventDefault();$('play').click()}if(e.key==='ArrowRight')$('next').click();if(e.key==='ArrowLeft')$('prev').click()});
 function soundStart(){const AC=window.AudioContext||window.webkitAudioContext;if(!AC){toast('Audio no disponible');return}if(audio)return;
  const ctx=new AC(),osc=ctx.createOscillator(),gain=ctx.createGain(),dest=ctx.createMediaStreamDestination();
- osc.type='sine';osc.frequency.value=109;gain.gain.value=.018;osc.connect(gain);gain.connect(ctx.destination);gain.connect(dest);osc.start();audio={ctx,osc,gain,dest};
+ osc.type='sine';osc.frequency.value=109;gain.gain.value=0;osc.connect(gain);gain.connect(ctx.destination);gain.connect(dest);osc.start();audio={ctx,osc,gain,dest};
 }
 $('sound').onclick=()=>{try{soundStart();if(!audio)return;audio.ctx.resume();const on=!audio.gain.gain.value;audio.gain.gain.value=on?.018:0;$('sound').textContent=on?'♪ SONIDO ON':'♪ SONIDO OFF';$('sound').setAttribute('aria-pressed',String(on))}catch(e){toast('No se pudo iniciar audio: '+e.message)}};
 $('record').onclick=async()=>{if(state.recording){recorder?.stop();return}
