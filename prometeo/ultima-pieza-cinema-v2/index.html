@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#050b10"><meta name="description" content="La última pieza. Un microcorto 3D retro interactivo.">
+<title>LA ÚLTIMA PIEZA · PROMETEO CINE</title>
+<style>
+:root{color-scheme:dark;--paper:#f3dfb5;--ink:#10191a;--copper:#e8ad6c}
+*{box-sizing:border-box}body{margin:0;overflow:hidden;background:#04090d;color:var(--paper);font-family:ui-monospace,"Courier New",monospace}
+button{font:inherit;cursor:pointer;touch-action:manipulation}#app{height:100dvh;display:grid;place-items:center;position:relative;background:radial-gradient(ellipse at 50% 50%,#1b2930 0%,#05080b 66%)}
+#screen{position:relative;height:100dvh;max-height:100dvh;aspect-ratio:9/16;max-width:100vw;overflow:hidden;background:#0d151c;box-shadow:0 0 100px #0009}
+@media(max-aspect-ratio:9/16){#screen{height:auto;width:100vw;max-width:100vw;aspect-ratio:9/16}}
+#screen:after{content:"";pointer-events:none;position:absolute;inset:0;background:linear-gradient(180deg,#0007,transparent 18%,transparent 80%,#0008);opacity:.48}
+canvas{display:block;width:100%;height:100%;object-fit:cover;image-rendering:pixelated}
+#safe{position:absolute;inset:0;pointer-events:none;z-index:4}#filmTitle{position:absolute;left:7%;right:6%;top:7%;transform:translateY(-8px);opacity:0;transition:opacity .35s,transform .35s}
+#filmTitle.show{opacity:1;transform:none}#filmTitle small{color:#dbaa70;letter-spacing:3px;font-size:10px}#filmTitle strong{display:block;max-width:75%;font:900 clamp(26px,6vw,44px)/.93 Georgia,serif;color:#f3d9a7;text-shadow:0 3px 14px #000b;letter-spacing:-1.4px;padding-top:8px}
+#bubble{position:absolute;left:7%;right:7%;bottom:12%;text-align:left;display:none;transition:transform .13s;pointer-events:none}
+#bubble.active{display:block}#bubble .plate{background:#f4e3bb;color:#293234;border:3px solid #242c31;padding:13px 16px 15px;border-radius:18px 18px 18px 5px;box-shadow:0 6px 0 #090d10a8,0 10px 24px #0009;max-width:100%;width:fit-content;min-width:175px;position:relative}
+#bubble .plate:after{content:"";position:absolute;bottom:-14px;left:23px;border:7px solid transparent;border-top-color:#242c31}
+#speaker{font:bold 10px ui-monospace,monospace;color:#8d5739;letter-spacing:2px;margin-bottom:6px}
+#words{font:700 clamp(15px,4.4vw,21px)/1.35 Georgia,serif;letter-spacing:.1px;max-width:345px}
+#subtitleDots{position:absolute;bottom:7%;left:7%;font:700 10px ui-monospace;color:#a1b7b5;letter-spacing:2px}
+#cinemaMask{position:absolute;inset:0;background:#000;opacity:0;pointer-events:none;z-index:3}
+#entry{position:absolute;inset:0;z-index:8;background:linear-gradient(0deg,#050d12db,#0a1a215e 47%,#050a10d7);display:flex;flex-direction:column;justify-content:flex-end;align-items:flex-start;padding:9% 8% 17%;gap:14px}
+#entry h1{font:900 clamp(38px,9vw,64px)/.88 Georgia,serif;margin:0;letter-spacing:-2px;color:#efd8a9;text-shadow:0 3px 18px #000}
+#entry p{font-size:11px;letter-spacing:1px;line-height:1.7;color:#b4b7b1;margin:3px 0 10px;max-width:300px}
+#entry button,#controls button{background:#e9b574;color:#111e21;border:0;padding:15px 21px;font-weight:900;letter-spacing:1.5px;box-shadow:5px 5px 0 #081016}
+#entry .stamp{font-size:10px;letter-spacing:2.2px;color:#e7b67c;margin-bottom:4px}
+#entry[hidden]{display:none}
+#controls{position:absolute;z-index:10;bottom:1.6%;left:6%;right:6%;display:flex;align-items:center;justify-content:space-between;gap:8px;opacity:.15;transition:opacity .3s}
+#screen:hover #controls,#screen:focus-within #controls,#controls.visible{opacity:1}
+#controls button{padding:8px 10px;font-size:10px;box-shadow:none;background:#111e26cf;color:#e9d8ba;border:1px solid #d6b78d5c}
+#clock{font-size:10px;color:#ded1b2;min-width:67px;font-variant-numeric:tabular-nums}#progress{appearance:none;width:100%;min-width:25px;height:5px;background:#ffffff28;accent-color:#e7b270;cursor:pointer}
+#notice{position:absolute;inset:auto 7% 8%;padding:10px;font-size:11px;color:#f4e0c6;background:#151d22db;border:1px solid #a46f53;z-index:12;display:none}
+#notice.show{display:block}
+@media(prefers-reduced-motion:reduce){#screen{scroll-behavior:auto}}
+</style>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.181.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.181.0/examples/jsm/"}}</script>
+</head><body><main id="app"><section id="screen" aria-label="Reproductor cinematográfico de La última pieza">
+<canvas id="stage" aria-label="Cortometraje 3D renderizado"></canvas><div id="cinemaMask"></div>
+<div id="safe"><div id="filmTitle"><small>PROMETEO PICTURES · UNA HISTORIA DE 3D</small><strong>LA ÚLTIMA<br>PIEZA</strong></div>
+<div id="bubble" aria-live="off"><div class="plate"><div id="speaker"></div><div id="words"></div></div></div>
+<div id="subtitleDots">UN TALLER · UNA NOCHE · UNA PREGUNTA</div></div>
+<div id="entry"><div class="stamp">CORTOMETRAJE RETRO INTERACTIVO · V2</div><h1>LA<br>ÚLTIMA<br>PIEZA.</h1><p>Una tormenta. Dos mecánicos. Un robot reparado demasiadas veces.<br>Duración: 53 segundos · Sin voces sintéticas.</p><button id="start" type="button">▶ VER LA PELÍCULA</button></div>
+<div id="controls"><button id="toggle" aria-label="Pausar o reproducir">Ⅱ</button><input type="range" id="progress" min="0" max="53" step=".01" value="0" aria-label="Posición de reproducción"><span id="clock">00:00</span><button id="restart" aria-label="Volver al comienzo">↺</button><button id="mute" aria-label="Activar o silenciar sonido">♫</button></div>
+<div id="notice" role="alert"></div></section></main>
+<script type="module" src="./film.mjs"></script>
+</body></html>
