@@ -76,10 +76,11 @@ function historyPush(){
  // A failed localStorage write cannot certify a durable scene import.
  if(saveLocal()===false){
   state.history=priorHistory;state.cursor=priorCursor;
-  historyButtons();
+  try{historyButtons()}catch(uiError){console.warn('FORJA HISTORY UI AFTER FAILED SAVE',uiError)}
   return false;
  }
- historyButtons();
+ // Once persistence succeeded, a disabled/enabled button cannot undo the commit.
+ try{historyButtons()}catch(uiError){console.warn('FORJA HISTORY UI AFTER SAVE',uiError)}
  return true;
 }
 function historyButtons(){
