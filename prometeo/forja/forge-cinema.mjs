@@ -37,9 +37,16 @@ export function installCinema({THREE,canvas,renderer,scene,world,camera,controls
     ];
     rig.shots=shots;
   }
+  function syncPauseButton(){
+    if(!pauseButton)return;
+    pauseButton.textContent=paused?'▶':'Ⅱ';
+    pauseButton.setAttribute('aria-pressed',String(paused));
+  }
   function setMode(next){
     if(!['ORBIT','FOLLOW','FIRST_PERSON','SHOT'].includes(next))return false;
-    mode=next;rig.setMode(next);elapsed=0;looking=null;keys.clear();
+    // A new camera mode starts playing; do not inherit a frozen SHOT or walking state.
+    paused=false;mode=next;rig.setMode(next);elapsed=0;looking=null;keys.clear();
+    syncPauseButton();
     if(next==='FIRST_PERSON'){
       const {center,span,bounds}=worldBounds();
       rig.bounds=Math.max(45,Math.min(220,Math.max(Math.abs(center.x),Math.abs(center.z))+span*1.7));
@@ -79,7 +86,7 @@ export function installCinema({THREE,canvas,renderer,scene,world,camera,controls
               +(keys.has('KeyS')||keys.has('ArrowDown')||keys.has('back'));
       const s=+(keys.has('KeyD')||keys.has('ArrowRight')||keys.has('right'))-
               +(keys.has('KeyA')||keys.has('ArrowLeft')||keys.has('left'));
-      if(f||s)rig.move(f*step*5,s*step*5);
+      if(!paused && (f||s))rig.move(f*step*5,s*step*5);
     }
     const p=rig.pose(elapsed,paused?0:step,{follow:getFollow()});
     camera.position.set(...p.eye);
@@ -88,7 +95,7 @@ export function installCinema({THREE,canvas,renderer,scene,world,camera,controls
     if(camera.fov!==p.fov){camera.fov=p.fov;camera.updateProjectionMatrix();}
   }
   function keyDown(e){
-    if(mode!=='FIRST_PERSON'||isEditable(e))return;
+    if(mode!=='FIRST_PERSON'||paused||isEditable(e))return;
     if(['KeyW','KeyA','KeyS','KeyD','ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.code)){
       e.preventDefault();e.stopImmediatePropagation();keys.add(e.code);
     }
@@ -97,12 +104,12 @@ export function installCinema({THREE,canvas,renderer,scene,world,camera,controls
   document.addEventListener('keyup',e=>keys.delete(e.code));
   window.addEventListener('blur',()=>{keys.clear();looking=null;});
   canvas.addEventListener('pointerdown',e=>{
-    if(mode!=='FIRST_PERSON')return;
+    if(mode!=='FIRST_PERSON'||paused)return;
     looking={x:e.clientX,y:e.clientY,id:e.pointerId};
     try{canvas.setPointerCapture(e.pointerId);}catch{}
   },true);
   canvas.addEventListener('pointermove',e=>{
-    if(mode!=='FIRST_PERSON'||!looking||e.pointerId!==looking.id)return;
+    if(mode!=='FIRST_PERSON'||paused||!looking||e.pointerId!==looking.id)return;
     rig.drag(e.clientX-looking.x,e.clientY-looking.y);
     looking.x=e.clientX;looking.y=e.clientY;
   },true);
@@ -111,7 +118,7 @@ export function installCinema({THREE,canvas,renderer,scene,world,camera,controls
   for(const button of pad?.querySelectorAll('[data-walk]')||[]){
     const action=button.dataset.walk;
     button.addEventListener('pointerdown',e=>{
-      if(mode!=='FIRST_PERSON')return;
+      if(mode!=='FIRST_PERSON'||paused)return;
       e.preventDefault();keys.add(action);
       try{button.setPointerCapture(e.pointerId);}catch{}
     });
@@ -119,7 +126,12 @@ export function installCinema({THREE,canvas,renderer,scene,world,camera,controls
     button.addEventListener('pointercancel',()=>keys.delete(action));
     button.addEventListener('lostpointercapture',()=>keys.delete(action));
   }
-  pauseButton?.addEventListener('click',()=>{paused=!paused;pauseButton.textContent=paused?'▶':'Ⅱ';pauseButton.setAttribute('aria-pressed',String(paused));});
+  pauseButton?.addEventListener('click',()=>{
+    paused=!paused;
+    if(paused){keys.clear();looking=null;}
+    syncPauseButton();
+  });
+  syncPauseButton();
   capture?.addEventListener('click',()=>{
     if(!renderer){notify('SIN GPU · NO HAY CAPTURA 3D');return;}
     try{
@@ -137,5 +149,5 @@ export function installCinema({THREE,canvas,renderer,scene,world,camera,controls
   if(modeSelect)modeSelect.disabled=false;
   if(capture)capture.disabled=false;
   if(status)status.textContent='EDITOR · ÓRBITA';
-  return {setMode,tick,get mode(){return mode;},diagnostic:()=>({mode,elapsed,firstPerson:rig.fp.slice(),blockers:rig.obstacles.length,controlsEnabled:controls.enabled})};
+  return {setMode,tick,get mode(){return mode;},diagnostic:()=>({mode,paused,elapsed,firstPerson:rig.fp.slice(),blockers:rig.obstacles.length,controlsEnabled:controls.enabled})};
 }
