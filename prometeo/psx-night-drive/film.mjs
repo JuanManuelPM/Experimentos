@@ -110,7 +110,7 @@ function createStreet(){
    cylindricalLine([x,.15,z],[x,4.75,z],.075,materials.dark);
    cylindricalLine([x,4.68,z],[x-side*.90,4.78,z],.055,materials.dark);
    rect([x-side*.9,4.73,z],[.43,.13,.34],materials.lamp);
-   const light=new THREE.PointLight(0xffb37b,4.1,8,2.3);light.position.set(x-side*.75,4.56,z);scene.add(light);
+   if(side===-1&&[-76,-44,-12,20].includes(z)){const light=new THREE.PointLight(0xffb37b,4.1,8,2.3);light.position.set(x-side*.75,4.56,z);scene.add(light)}
   }
  }
  // A distinct story prop, the sign which keeps returning.
@@ -188,7 +188,7 @@ async function loadGLBs(){
  carRoot.userData.carMixer=new THREE.AnimationMixer(carModel);const drive=carData.animations.find(a=>/drive/i.test(a.name));if(drive)carRoot.userData.carMixer.clipAction(drive).play();
  let human;
  try{human=await loader.loadAsync(personUrl)}
- catch(e){human=await loader.loadAsync('https://raw.githubusercontent.com/programasweights/avatar/a488723e3a93d73d5c562d88f8a85353c37bc721/public/assets/gangnam-character.glb')}
+ catch(e){try{human=await loader.loadAsync('https://raw.githubusercontent.com/programasweights/avatar/a488723e3a93d73d5c562d88f8a85353c37bc721/public/assets/gangnam-character.glb')}catch(e2){human=await loader.loadAsync('https://cdn.jsdelivr.net/gh/programasweights/avatar@a488723e3a93d73d5c562d88f8a85353c37bc721/public/assets/character.glb');qa.actorFallback=true}}
  actorRoot=human.scene;actorRoot.name='AUTHOR_DESIGNED_HUMAN_WITH_CLOTH_FACE_HAIR';
  cabinRoot.add(actorRoot);
  actorRoot.updateMatrixWorld(true);
