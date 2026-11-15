@@ -204,10 +204,14 @@ async function modelTemplate(asset){
 async function addAsset(asset,opts={},silent=false,staging=false){
  if(!state.webgl){toast('NO HAY WEBGL2: ABRÍ EN NAVEGADOR COMPATIBLE');return null}
  if(state.busy&&!silent)return null;
+ const requestBeforeLoad=state.request;
  const h=clamp(finite(opts.h,defaultHeight(asset)),.02,90);
  status('CARGANDO '+short(asset.id).toUpperCase());
  try{
   const data=await modelTemplate(asset);
+  // An add started in the previous scene must never commit after replaceScene starts.
+  // Staged workers belong to replaceScene and are not live library insertions.
+  if(!staging&&(state.busy||state.request!==requestBeforeLoad))return null;
   const model=SkeletonUtils.clone(data.scene);
   const box=new THREE.Box3().setFromObject(model),dims=new THREE.Vector3(),center=new THREE.Vector3();
   box.getSize(dims);box.getCenter(center);
