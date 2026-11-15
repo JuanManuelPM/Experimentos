@@ -65,14 +65,22 @@ function saveLocal(){
  catch(e){console.warn('FORJA SAVE',e);return false}
 }
 function historyPush(){
- if(state.busy)return;
+ if(state.busy)return false;
  const current=JSON.stringify(snapshot());
- if(state.cursor>=0&&JSON.stringify(state.history[state.cursor])===current)return;
+ if(state.cursor>=0&&JSON.stringify(state.history[state.cursor])===current)return true;
+ const priorHistory=state.history,priorCursor=state.cursor;
  state.history=state.history.slice(0,state.cursor+1);
  state.history.push(JSON.parse(current));
  if(state.history.length>50)state.history.shift();
  state.cursor=state.history.length-1;
- saveLocal();historyButtons();
+ // A failed localStorage write cannot certify a durable scene import.
+ if(saveLocal()===false){
+  state.history=priorHistory;state.cursor=priorCursor;
+  historyButtons();
+  return false;
+ }
+ historyButtons();
+ return true;
 }
 function historyButtons(){
  $('undo').disabled=state.busy||state.cursor<=0;
@@ -358,7 +366,7 @@ async function replaceScene(data,{remember=true}={}){
   for(const e of staged)state.world.add(e.root);
   state.objects=staged;state.selected=null;state.sceneName=safe.name;$('scene-name').value=safe.name;
   metrics();renderObjects();updateInspector();resetCamera();
-  if(remember){state.busy=false;try{historyPush()}finally{state.busy=true}}
+  if(remember){state.busy=false;try{if(historyPush()===false)throw Error('SCENE_PERSISTENCE_FAILED')}finally{state.busy=true}}
   else if(saveLocal()===false)throw Error('SCENE_PERSISTENCE_FAILED');
   committed=true;
   // Presentation messages and mixer disposal must not undo a durable commit.
