@@ -155,7 +155,7 @@ export function makeHeadGeometry(shape={jaw:1,head:1,nose:1}){
  }
  for(let r=0;r<rings.length-1;r++)for(let j=0;j<segments;j++){
   const a=r*fullCount+j,b=a+fullCount;
-  const first=indices.length;indices.push(a,b,a+1,b,b+1,a+1);
+  const first=indices.length;indices.push(a,a+1,b,b,a+1,b+1);
   const angle=-Math.PI+2*Math.PI*(j+.5)/segments;
   // Only the front facial polygon receives photo material; ears/scalp/back keep skin.
   groups.push({start:first,count:6,materialIndex:Math.abs(angle)<1.21?0:1});
@@ -423,7 +423,7 @@ function bindUI(){
  document.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',()=>setView(b.dataset.view)));
  const update=()=>{if(!photoState.image)return;const z=Number($('zoom').value);
   photoState.crop.scale=z;
-  photoState.crop.cy=photoState.source.startsWith('ejemplo')?.397+Number($('offsetY').value):photoState.cropBaseY+Number($('offsetY').value);
+  photoState.crop.cy=(photoState.source.startsWith('ejemplo')?.397:photoState.cropBaseY)+Number($('offsetY').value);
   applyPhoto(photoState.image,photoState.source);
  };
  $('zoom').addEventListener('input',update);$('offsetY').addEventListener('input',update);
