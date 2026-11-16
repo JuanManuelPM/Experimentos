@@ -39,6 +39,7 @@ details[open] .arrow{transform:rotate(90deg)}
 #status{font:10px/1.5 system-ui;color:#b9c5c4;margin-top:15px}
 #footer{font:11px/1.6 system-ui;color:#9badac;margin-top:13px;padding-top:12px;border-top:1px solid #35484b}
 #all{display:block;color:#dfc7a6!important;text-decoration:underline;font-weight:700;margin-top:8px}
+#global{display:block;color:#dfc7a6!important;text-decoration:underline;font-weight:700;margin-top:11px}
 button,a,summary{touch-action:manipulation}
 button:focus-visible,a:focus-visible,summary:focus-visible{outline:2px solid #e9c5a0;outline-offset:3px}
 #screen.home #mask{display:none}
