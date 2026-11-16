@@ -53,7 +53,7 @@ button:focus-visible,a:focus-visible,summary:focus-visible{outline:2px solid #e9
     <div id="desc">Carpetas ordenadas por la última actualización pública.</div>
     <div id="list">Cargando proyectos…</div>
     <div id="status" aria-live="polite">Abriendo registro…</div>
-    <div id="footer">Fecha = último commit público de la carpeta, no aprobación artística. No se muestran proyectos privados.<a id="all">Ver el índice completo</a></div>
+    <div id="footer">Fecha = último commit público de la carpeta, no aprobación artística. No se muestran proyectos privados.<a id="all">Ver el índice completo</a><a id="global">Todos los estudios</a></div>
   </div>
 </div>`;
 const el=id=>shadow.getElementById(id),screen=el('screen'),button=el('launcher'),status=el('status');
@@ -82,7 +82,7 @@ function open(){opened=true;screen.classList.add('active');button.hidden=true;co
 function close(){if(home)return;opened=false;screen.classList.remove('active');if(!document.getElementById('toggle-info'))button.hidden=false;}
 button.addEventListener('click',open);el('mask').addEventListener('click',close);el('close').addEventListener('click',close);
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&opened&&!home)close();});
-el('all').href=base.href;if(home){button.hidden=true;el('close').hidden=true;el('all').hidden=true;screen.classList.add('active','home');opened=true;}
+el('all').href=base.href;el('global').href=new URL('../',base).href;if(home){button.hidden=true;el('close').hidden=true;el('all').hidden=true;screen.classList.add('active','home');opened=true;}
 const info=document.getElementById('toggle-info');
 if(info&&!home){
  info.setAttribute('aria-label','Ver proyectos 3D');info.setAttribute('title','Carpetas de proyectos');
