@@ -49,5 +49,21 @@
     "BLOCKED_RENDER: agent network cannot fetch remote binary or verify actual WebGL frame; external browser screenshot tool refused due exhausted credits.",
     "No authentic identical camera baseline captures."
   ],
-  "notes": "Site's own WebGL telemetry can run in the visitor's browser; this does not establish independent artistic verification."
+  "notes": "Site's own WebGL telemetry can run in the visitor's browser; this does not establish independent artistic verification.",
+  "mobileViewerUpdate": {
+    "date": "2026-11-16",
+    "change": "Full viewport WebGL scene, touch orbit and pinch, no large header/nav/panels; original comparison preserved as comparison.html",
+    "fixedRootCause": "Casual.glb at git blob a74f94183952267a874c24ac73c4d2382fd0187d has 4 skins, 4 meshes, 49 joints per skin, and 0 embedded animations; former application rejected entire actor for lack of Idle/Walk",
+    "changedPolicy": "Render authentic GLB as static even without animation; do not synthesize fake walk or claim motion fixed",
+    "uiQA": "CHROMIUM_DOM_LAYOUT_PASS_621x349_390x844_863x1536",
+    "pageSourceQA": "GH_PAGES_SOURCE_READBACK_PASS",
+    "actualGLBRenderedOnUserDevice": "PENDING",
+    "independentArtApproval": "PENDING",
+    "artifacts": [
+      "index.html",
+      "fullscreen.mjs",
+      "comparison.html"
+    ],
+    "caveats": "Local browser visual test uses HTML without remote WebGL modules/GLB; public HTTP reachability not reverified by remote browser in this turn. Camera/touch source and dimensions checked."
+  }
 }
