@@ -167,7 +167,7 @@ function setMode(mode){
   if(mode==='environment'){camera.position.set(13,5.8,17);controls.target.set(0,2,-3);controls.update();$('mode-caption').textContent='15 GLB CC0 REALES · ESQUINA CON IDENTIDAD';}
   else {$('mode-caption').textContent='9 PLANOS · CORTES EN FOTOGRAMAS EXACTOS';renderCamera();}
  }
- $('control-cameras').hidden=mode!=='cameras';$('material-explain').hidden=mode!=='materials';$('env-explain').hidden=mode!=='environment';
+ $('control-cameras').hidden=mode!=='cameras';$('material-explain').hidden=mode!=='materials';$('material-key').hidden=mode!=='materials';$('env-explain').hidden=mode!=='environment';$('camera-explain').hidden=mode!=='cameras';
 }
 function animate(){
  requestAnimationFrame(animate);
