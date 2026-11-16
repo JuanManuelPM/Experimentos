@@ -13,12 +13,12 @@ const qs=new URLSearchParams(location.search);
 const qa=window.__AFTERHOURS_QA={ready:false,frameVisible:false,renderFrames:0,assetProvenance:'CC BY 4.0 PSX Character Creator Free + PSX Vehicles Free / embedded UV atlas',mobilePhysical:'NOT_RUN',artStatus:'PENDING_HUMAN',rain:'InstancedMesh alpha quads / THREE.LineSegments forbidden',version:'2026-11-15/afterhours-r1'};
 const shots=[
 {a:0,b:3.7,title:'01 · LA ESTACIÓN',mode:'static',cam:[-9.0,3.65,15],look:[1.5,1.4,-7],fov:42},
-{a:3.7,b:7.2,title:'02 · EL CAMINO',mode:'trackSide',offset:[-3.8,1.47,2.6],lookOffset:[.5,1.32,-1.7],fov:43,who:'VIAJERA',line:'¿Alguien sigue acá?'},
+{a:3.7,b:7.2,title:'02 · EL CAMINO',mode:'trackSide',offset:[-3.45,1.72,1.2],lookOffset:[0,1.10,0],fov:45,who:'VIAJERA',line:'¿Alguien sigue acá?'},
 {a:7.2,b:10.1,title:'03 · ASFALTO',mode:'feet',offset:[-2.4,.38,1.5],lookOffset:[.05,.20,-.7],fov:38},
-{a:10.1,b:13.3,title:'04 · TRAVELLING',mode:'track',offset:[-1.05,1.77,3.7],lookOffset:[0,1.5,0],fov:36,who:'VIAJERA',line:'Juraría que ayer estaba cerrado.'},
+{a:10.1,b:13.3,title:'04 · TRAVELLING',mode:'track',offset:[-1.55,1.72,-2.80],lookOffset:[0,1.52,0],fov:39,who:'VIAJERA',line:'Juraría que ayer estaba cerrado.'},
 {a:13.3,b:16.1,title:'05 · EL CARTEL',mode:'static',cam:[-.3,2.22,-6.2],look:[6.8,3.45,-8.8],fov:33},
 {a:16.1,b:19.0,title:'06 · ASIENTO VACÍO',mode:'static',cam:[-2.1,1.45,-1.1],look:[2.25,.88,-7],fov:39,who:'RADIO',line:'...último servicio...'},
-{a:19.0,b:22.5,title:'07 · LA MIRADA',mode:'track',offset:[-1.38,1.63,2.8],lookOffset:[0,1.50,-.13],fov:34},
+{a:19.0,b:22.5,title:'07 · LA MIRADA',mode:'track',offset:[1.25,1.7,-2.75],lookOffset:[0,1.52,0],fov:38},
 {a:22.5,b:26.1,title:'08 · FAROS',mode:'static',cam:[-3.75,1.6,-3.45],look:[2.22,.8,-7.0],fov:39,who:'VIAJERA',line:'Pero... no hay nadie adentro.'},
 {a:26.1,b:30.0,title:'09 · SIN REGRESO',mode:'pullback',cam:[-5,3.25,2.8],end:[-10,4.9,10],look:[.65,1.2,-6.5],fov:45,who:'',line:'Y el motor arrancó solo.'}
 ];
@@ -224,9 +224,14 @@ async function loadModels(){
  car.updateMatrixWorld(true);carBB=new THREE.Box3().setFromObject(car);carDims=carBB.getSize(new THREE.Vector3());
  const u=4.4/Math.max(carDims.z,.001);car.scale.setScalar(u);car.updateMatrixWorld(true);carBB=new THREE.Box3().setFromObject(car);
  carAnchor.updateMatrixWorld(true);
- const center=carBB.getCenter(new THREE.Vector3());center.y=carBB.min.y;
- const localOrigin=carAnchor.worldToLocal(center.clone());
- car.position.sub(localOrigin);car.updateMatrixWorld(true);
+ carBB=new THREE.Box3().setFromObject(car);
+ const measuredCenter=carBB.getCenter(new THREE.Vector3());
+ const deltaWorld=new THREE.Vector3(carAnchor.position.x-measuredCenter.x,-carBB.min.y,carAnchor.position.z-measuredCenter.z);
+ deltaWorld.applyQuaternion(carAnchor.getWorldQuaternion(new THREE.Quaternion()).invert());
+ car.position.add(deltaWorld);
+ carAnchor.updateMatrixWorld(true);
+ qa.carWorldCenter=new THREE.Box3().setFromObject(car).getCenter(new THREE.Vector3()).toArray();
+ qa.carSizeMeters=new THREE.Box3().setFromObject(car).getSize(new THREE.Vector3()).toArray();
  let mats=[];
  car.traverse(o=>{if(!o.isMesh)return;o.castShadow=true;o.receiveShadow=true;
   const paintOne=src=>{
