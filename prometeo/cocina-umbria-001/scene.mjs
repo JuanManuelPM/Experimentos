@@ -132,7 +132,7 @@ function animate(){
  if(mixer)mixer.update(dt);pose(t);
  if(treeGroup)treeGroup.rotation.z=Math.sin(t*1.55)*.014;
  if(skyM)skyM.uniforms.uTime.value=t;
- for(const d of raindrops){const a=d.obj.geometry.attributes.position;for(const i of [1,4]){let y=a.array[i]-dt*d.speed;if(y<.25)y+=4.25;a.array[i]=y}a.needsUpdate=true}
+ for(const d of raindrops){const a=d.obj.geometry.attributes.position;let y=a.array[1]-dt*d.speed;if(y<.25)y+=4.25;a.array[1]=y;a.array[4]=y-.19a.needsUpdate=true}
  controls.update();renderer.render(scene,camera);telemetry.drawn++;
 }
 async function init(){
