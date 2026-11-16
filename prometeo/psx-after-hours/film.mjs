@@ -10,16 +10,16 @@ const $=id=>document.getElementById(id);
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v)),smooth=v=>{v=clamp(v,0,1);return v*v*(3-2*v)},mod=(a,n)=>((a%n)+n)%n;
 const V=(x,y,z)=>new THREE.Vector3(x,y,z),T=30;
 const qs=new URLSearchParams(location.search);
-const qa=window.__AFTERHOURS_QA={ready:false,frameVisible:false,renderFrames:0,assetProvenance:'Three.js Soldier.glb + CC BY PSX Vehicles Free',mobilePhysical:'NOT_RUN',artStatus:'PENDING_HUMAN',rain:'InstancedMesh alpha quads / THREE.LineSegments forbidden',version:'2026-11-15/afterhours-r1'};
+const qa=window.__AFTERHOURS_QA={ready:false,frameVisible:false,renderFrames:0,assetProvenance:'CC BY 4.0 PSX Character Creator Free + PSX Vehicles Free / embedded UV atlas',mobilePhysical:'NOT_RUN',artStatus:'PENDING_HUMAN',rain:'InstancedMesh alpha quads / THREE.LineSegments forbidden',version:'2026-11-15/afterhours-r1'};
 const shots=[
 {a:0,b:3.7,title:'01 · LA ESTACIÓN',mode:'static',cam:[-9.0,3.65,15],look:[1.5,1.4,-7],fov:42},
-{a:3.7,b:7.2,title:'02 · EL CAMINO',mode:'trackSide',offset:[-3.8,1.47,2.6],lookOffset:[.5,1.32,-1.7],fov:43,who:'VIGÍA',line:'¿Alguien sigue acá?'},
+{a:3.7,b:7.2,title:'02 · EL CAMINO',mode:'trackSide',offset:[-3.8,1.47,2.6],lookOffset:[.5,1.32,-1.7],fov:43,who:'VIAJERA',line:'¿Alguien sigue acá?'},
 {a:7.2,b:10.1,title:'03 · ASFALTO',mode:'feet',offset:[-2.4,.38,1.5],lookOffset:[.05,.20,-.7],fov:38},
-{a:10.1,b:13.3,title:'04 · TRAVELLING',mode:'track',offset:[-1.05,1.77,3.7],lookOffset:[0,1.5,0],fov:36,who:'VIGÍA',line:'Juraría que ayer estaba cerrado.'},
+{a:10.1,b:13.3,title:'04 · TRAVELLING',mode:'track',offset:[-1.05,1.77,3.7],lookOffset:[0,1.5,0],fov:36,who:'VIAJERA',line:'Juraría que ayer estaba cerrado.'},
 {a:13.3,b:16.1,title:'05 · EL CARTEL',mode:'static',cam:[-.3,2.22,-6.2],look:[6.8,3.45,-8.8],fov:33},
 {a:16.1,b:19.0,title:'06 · ASIENTO VACÍO',mode:'static',cam:[-2.1,1.45,-1.1],look:[2.25,.88,-7],fov:39,who:'RADIO',line:'...último servicio...'},
 {a:19.0,b:22.5,title:'07 · LA MIRADA',mode:'track',offset:[-1.38,1.63,2.8],lookOffset:[0,1.50,-.13],fov:34},
-{a:22.5,b:26.1,title:'08 · FAROS',mode:'static',cam:[-3.75,1.6,-3.45],look:[2.22,.8,-7.0],fov:39,who:'VIGÍA',line:'Pero... no hay nadie adentro.'},
+{a:22.5,b:26.1,title:'08 · FAROS',mode:'static',cam:[-3.75,1.6,-3.45],look:[2.22,.8,-7.0],fov:39,who:'VIAJERA',line:'Pero... no hay nadie adentro.'},
 {a:26.1,b:30.0,title:'09 · SIN REGRESO',mode:'pullback',cam:[-5,3.25,2.8],end:[-10,4.9,10],look:[.65,1.2,-6.5],fov:45,who:'',line:'Y el motor arrancó solo.'}
 ];
 let scene,renderer,camera,loader,world,actorAnchor,actor,gltfClips=[],mixer,carAnchor,car,
@@ -178,14 +178,21 @@ function updateRain(time,cam){
 function setupCamera(){
  camera=new THREE.PerspectiveCamera(42,9/16,.075,120);camera.position.set(-8,3,13);
 }
+async function loadLicensedBundled(name){
+ const url='./assets/'+name+'-complete.glb.gz';
+ const res=await fetch(url);
+ if(!res.ok)throw Error('Pack PSX '+name+' HTTP '+res.status);
+ if(!('DecompressionStream' in window))throw Error('Navegador sin DecompressionStream gzip');
+ const stream=res.body.pipeThrough(new DecompressionStream('gzip'));
+ const buffer=await new Response(stream).arrayBuffer();
+ if(new DataView(buffer).getUint32(0,true)!==0x46546c67)throw Error('GLB '+name+' corrupto');
+ return await loader.parseAsync(buffer,location.href);
+}
 async function loadModels(){
  loader=new GLTFLoader();
- const soldier='https://cdn.jsdelivr.net/gh/mrdoob/three.js@ab6386854db0dcebd9800b95a9a5effde6071b19/examples/models/gltf/Soldier.glb';
- let human;
- try{human=await loader.loadAsync(soldier)}catch(e){
-   qa.heroCDNFallback=true;
-   human=await loader.loadAsync('https://raw.githubusercontent.com/mrdoob/three.js/ab6386854db0dcebd9800b95a9a5effde6071b19/examples/models/gltf/Soldier.glb');
- }
+ const human=await loadLicensedBundled('student');
+ qa.licensedModelVariant='PSX Character Creator Free/student.glb';
+
  actorAnchor=new THREE.Group();world.add(actorAnchor);
  actor=human.scene;actor.name='AUTHOR_RIGGED_SOLDIER';actorAnchor.add(actor);
  actor.updateMatrixWorld(true);let bb=new THREE.Box3().setFromObject(actor),sizes=bb.getSize(new THREE.Vector3());
@@ -196,8 +203,8 @@ async function loadModels(){
  if(!idle||!walk)throw Error('El GLB no trae clips Idle+Walk; no reemplazar con rotaciones artificiales');
  mixer=new THREE.AnimationMixer(actor);qa.heroClips=clips.map(c=>c.name);qa.heroHasRig=actor.getObjectByProperty('type','SkinnedMesh')!==undefined;
  for(const clip of [idle,walk]){const action=mixer.clipAction(clip);action.setLoop(THREE.LoopRepeat,Infinity);action.play();action.enabled=true;action.setEffectiveWeight(1)}
- qa.heroSource=soldier;
- const carG=await loader.loadAsync('../psx-night-drive/assets/sedan_blue.glb');
+ qa.heroSource='PSX Character Creator Free by heyheythere (CC BY 4.0)';
+ const carG=await loadLicensedBundled('car');
  car=carG.scene;carAnchor.add(car);
  car.updateMatrixWorld(true);
  let carBB=new THREE.Box3().setFromObject(car),carDims=carBB.getSize(new THREE.Vector3());
@@ -214,12 +221,9 @@ async function loadModels(){
   const paintOne=src=>{
    if(!src)return src;const m=src.clone();
    const name=(src.name+' '+o.name).toLowerCase();
-   if(/body|paint|shell|car|hood|door/.test(name)){
-    if(m.color)m.color.multiply(new THREE.Color('#4c7774'));
-    m.metalness=.25;m.roughness=.48;
-   }else if(m.color&&m.color.r>.75&&m.color.g>.75&&m.color.b>.75){
-    m.color.multiply(new THREE.Color('#64817f'));m.roughness=.58;
-   }
+   // Preserve licensed PSX atlas colours; previous version rendered white because its external atlas returned HTTP 404.
+   if(!m.map&&m.color&&m.color.r>.75&&m.color.g>.75&&m.color.b>.75)m.color.multiply(new THREE.Color('#62837f'));
+   m.metalness=.10;m.roughness=.66;
    if(m.map){m.map.magFilter=THREE.NearestFilter;m.map.minFilter=THREE.NearestMipmapNearestFilter}
    mats.push({mesh:o.name,material:src.name,color:src.color?.getHexString()});
    return m;
@@ -254,7 +258,7 @@ function setTime(time){
  t=clamp(time,0,T);
  const walking=smooth((t-1.2)/1.4)*(1-smooth((t-21.9)/.9));
  actorAnchor.position.set(-2.28,.01,characterZ(t));
- actorAnchor.rotation.y=Math.PI+.03*Math.sin(t*.25);
+ actorAnchor.rotation.y=.03*Math.sin(t*.25);
  if(mixer){
   for(const a of mixer._actions){const name=a.getClip().name.toLowerCase();a.setEffectiveWeight(name==='walk'?walking:name==='idle'?1-walking:0)}
   mixer.setTime(t);
