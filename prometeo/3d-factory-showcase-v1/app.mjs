@@ -95,7 +95,28 @@ function buildWorld(){
  for(const [x,z] of [[-4.7,-7.6],[4.6,7.3]]){const q=new THREE.Mesh(new THREE.CircleGeometry(2.1,36),glow);q.rotation.x=-Math.PI/2;q.position.set(x,.035,z);scene.add(q);}
  }
 function status(s){$('status').textContent=s}
-function showError(text){const el=$('fallback');el.hidden=false;el.textContent=text;}
+function showError(message){
+ const el=$('fallback');el.hidden=false;el.replaceChildren();
+ const box=document.createElement('div');box.className='offline';
+ const title=document.createElement('h2');title.textContent='WEBGL2 NO DISPONIBLE';
+ const note=document.createElement('p');note.textContent=message;box.append(title,note);
+ const grid=document.createElement('div');grid.className='source-previews';
+ for(const [pack,slug,label] of [
+ ['city-kit-commercial','building-i','Edificio urbano CC0'],
+ ['city-kit-commercial','building-j','Fachada diferenciada CC0'],
+ ['car-kit','taxi','Taxi CC0'],
+ ['city-kit-roads','light-curved','Farol CC0']]){
+  const figure=document.createElement('figure');const img=document.createElement('img');
+  img.loading='lazy';img.alt=label;img.src=SRC+'packs/'+pack+'/thumbs/'+slug+'.webp';
+  const cap=document.createElement('figcaption');cap.textContent=label;
+  figure.append(img,cap);grid.append(figure);
+ }
+ box.append(grid);
+ const link=document.createElement('a');link.href='https://juanmanuelpm.github.io/Experimentos/prometeo/asset-atlas/';
+ link.textContent='VER CATÁLOGO DE MODELOS CC0';link.target='_blank';link.rel='noopener noreferrer';box.append(link);
+ const disclaimer=document.createElement('small');disclaimer.textContent='Miniaturas del catálogo original: NO son fotogramas de esta escena.';box.append(disclaimer);
+ el.append(box);
+}
 function init(){
  const canvas=$('viewport');
  try{
