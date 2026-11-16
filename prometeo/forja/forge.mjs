@@ -380,8 +380,8 @@ async function replaceScene(data,{remember=true}={}){
   else if(saveLocal()===false)throw Error('SCENE_PERSISTENCE_FAILED');
   committed=true;
   // Presentation messages and mixer disposal must not undo a durable commit.
-  try{status(progressDegraded?'ESCENA EDITABLE · AVISO: INDICADOR DE CARGA FALLÓ':'ESCENA EDITABLE · '+staged.length+' OBJETOS');toast(progressDegraded?'ESCENA LISTA · INDICADOR DE CARGA FALLÓ':'ESCENA LISTA: '+staged.length+' OBJETOS')}
-  catch(uiError){console.warn('FORJA POST-COMMIT UI',uiError)}
+  report(progressDegraded?'ESCENA EDITABLE · AVISO: INDICADOR DE CARGA FALLÓ':'ESCENA EDITABLE · '+staged.length+' OBJETOS',
+   progressDegraded?'ESCENA LISTA · INDICADOR DE CARGA FALLÓ':'ESCENA LISTA: '+staged.length+' OBJETOS');
   for(const e of previous.objects)try{e.mixer?.stopAllAction()}catch(disposeError){console.warn('FORJA MIXER CLEANUP',disposeError)}
   return true;
  }catch(e){
