@@ -1,0 +1,77 @@
+{
+  "film": "Última parada",
+  "runtime": "Three.js r181",
+  "durationSeconds": 30,
+  "aspect": "9:16",
+  "hero": {
+    "source": "Three.js Soldier.glb",
+    "clips": [
+      "Idle",
+      "Walk",
+      "Run"
+    ],
+    "technique": "authored skin, animation mixer absolute-time",
+    "characterPrimitiveStack": false
+  },
+  "vehicle": {
+    "source": "PSX Vehicles Free/sedan_blue.glb",
+    "motion": "parked only",
+    "why": "avoid fake driver seat pose and unchecked GLB orientation"
+  },
+  "weather": {
+    "method": "Three.InstancedMesh + soft transparent atlas",
+    "layers": 3,
+    "nonGoals": [
+      "physical raindrop collisions",
+      "film compositing"
+    ]
+  },
+  "shots": [
+    {
+      "start": 0,
+      "end": 3.7,
+      "kind": "establishing"
+    },
+    {
+      "start": 3.7,
+      "end": 7.2,
+      "kind": "lateral-tracking"
+    },
+    {
+      "start": 7.2,
+      "end": 10.1,
+      "kind": "footwear-detail"
+    },
+    {
+      "start": 10.1,
+      "end": 13.3,
+      "kind": "character-track"
+    },
+    {
+      "start": 13.3,
+      "end": 16.1,
+      "kind": "sign-closeup"
+    },
+    {
+      "start": 16.1,
+      "end": 19,
+      "kind": "parked-car"
+    },
+    {
+      "start": 19,
+      "end": 22.5,
+      "kind": "actor-reaction"
+    },
+    {
+      "start": 22.5,
+      "end": 26.1,
+      "kind": "headlight-reveal"
+    },
+    {
+      "start": 26.1,
+      "end": 30,
+      "kind": "final-wide"
+    }
+  ],
+  "approval": "NOT_ART_APPROVED"
+}
