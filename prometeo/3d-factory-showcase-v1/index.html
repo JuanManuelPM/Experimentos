@@ -25,7 +25,7 @@ main{position:relative;flex:1;min-height:0;overflow:hidden;background:radial-gra
 .compare{display:flex;gap:8px}.compare span{border:1px solid #c7b291;background:#1f2a2cd9;color:#f1e4d0;padding:12px 15px;font-size:11px;font-weight:bold;letter-spacing:.05em}
 .bottom{flex:none;position:relative;z-index:3;background:#121d23;border-top:1px solid #435158;padding:14px clamp(13px,3vw,40px);display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:74px}
 .status{font-size:10px;line-height:1.55;color:#cad8d8;letter-spacing:.07em}.status strong{color:#f5d8a6;display:block;font-size:12px}.toolrow{display:flex;gap:8px;align-items:center}.toolrow button,.toolrow a{background:#24343a;border:1px solid #526368;color:#e3e9e5;padding:11px 13px;cursor:pointer;border-radius:3px;font-weight:800;font-size:11px;text-decoration:none;white-space:nowrap}.toolrow button:active{background:#d5b07c;color:#1b252a}
-#control-cameras{display:flex;align-items:center;gap:9px;max-width:600px;width:100%}#control-cameras[hidden],#material-explain[hidden],#env-explain[hidden]{display:none!important}
+#control-cameras{display:flex;align-items:center;gap:9px;max-width:600px;width:100%}#control-cameras[hidden],#material-explain[hidden],#material-key[hidden],#env-explain[hidden],#camera-explain[hidden]{display:none!important}
 #control-cameras button{padding:11px 13px;background:#26363b;border:1px solid #526368;color:#f1e9da;border-radius:3px;cursor:pointer;font-weight:bold;white-space:nowrap}
 #seek{flex:1;min-width:50px;accent-color:#d9b98b}#shot-index{color:#e7c698;font-weight:900;font-size:12px;white-space:nowrap}
 #segment-bar{height:3px;width:100%;background:#43535b;position:absolute;top:0;left:0}#segment{background:#e4b47c;display:block;height:100%;width:0}
@@ -56,8 +56,8 @@ main{position:relative;flex:1;min-height:0;overflow:hidden;background:radial-gra
 <div class="topright"><strong id="asset-count">0/15 GLB reales</strong><div id="photo-state">A: CARGANDO FOTO</div></div>
 <div class="mode-note"><div class="note" id="env-explain"><h2>Una calle, no un montón de cajas</h2><p>Edificios y mobiliario de Kenney, atlas específico para el suelo, proporciones medibles. Arrastrá para explorar la esquina.</p></div>
 <div class="note" id="material-explain" hidden><h2>Misma geometría, dos acabados</h2><p><small>A</small> Foto CC0 Poly Haven sobre asfalto; <small>B</small> atlas pintado con parches y desgaste localizado. Sin cambiar cámara, suelo ni luz.</p></div>
-<div class="compare" id="material-key"><span>IZQUIERDA · A</span><span>DERECHA · B</span></div>
-<div class="note" id="camera-explain"><h2 id="shot-label">01 · ESTABLECIMIENTO</h2><p>9 planos · 24 fps · cortes exactos. La cámara no modifica autos, edificios ni materiales.</p></div></div>
+<div class="compare" id="material-key" hidden><span>IZQUIERDA · A</span><span>DERECHA · B</span></div>
+<div class="note" id="camera-explain" hidden><h2 id="shot-label">01 · ESTABLECIMIENTO</h2><p>9 planos · 24 fps · cortes exactos. La cámara no modifica autos, edificios ni materiales.</p></div></div>
 <div id="fallback" hidden></div><pre id="debug" hidden></pre>
 </section></main>
 <footer class="bottom"><div id="segment-bar"><span id="segment"></span></div>
