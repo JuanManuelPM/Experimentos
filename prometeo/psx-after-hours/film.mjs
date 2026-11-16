@@ -179,15 +179,26 @@ function setupCamera(){
  camera=new THREE.PerspectiveCamera(42,9/16,.075,120);camera.position.set(-8,3,13);
 }
 async function loadLicensedBundled(name){
- const url='./assets/'+name+'-complete.glb.gz';
- const res=await fetch(url);
- if(!res.ok)throw Error('Pack PSX '+name+' HTTP '+res.status);
- if(!('DecompressionStream' in window))throw Error('Navegador sin DecompressionStream gzip');
- const stream=res.body.pipeThrough(new DecompressionStream('gzip'));
- const buffer=await new Response(stream).arrayBuffer();
- if(new DataView(buffer).getUint32(0,true)!==0x46546c67)throw Error('GLB '+name+' corrupto');
+ if(name==='car')return await loader.loadAsync('./assets/sedan_blue.glb');
+ if(name!=='student')throw Error('Modelo sin manifest aprobado: '+name);
+ const count=13;
+ const chunks=await Promise.all(Array.from({length:count},async(_,i)=>{
+  const r=await fetch('./assets/student-base64-part-'+String(i).padStart(2,'0')+'.txt');
+  if(!r.ok)throw Error('Parte GLB '+i+' HTTP '+r.status);
+  return (await r.text()).trim();
+ }));
+ const encoded=chunks.join('');
+ if(encoded.length!==127476)throw Error('Paquete PSX incompleto: '+encoded.length);
+ const raw=atob(encoded),bytes=new Uint8Array(raw.length);
+ for(let i=0;i<raw.length;i++)bytes[i]=raw.charCodeAt(i);
+ if(bytes.length!==95605)throw Error('Paquete PSX tamaño incorrecto');
+ if(!('DecompressionStream' in window))throw Error('Se requiere navegador Chrome con gzip Web Streams');
+ const buffer=await new Response(new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip'))).arrayBuffer();
+ if(new DataView(buffer).getUint32(0,true)!==0x46546c67)throw Error('GLB de personaje corrupto');
+ qa.characterBundle={compressedBytes:bytes.length,glbBytes:buffer.byteLength,parts:count,embeddedTexture:true};
  return await loader.parseAsync(buffer,location.href);
 }
+
 async function loadModels(){
  loader=new GLTFLoader();
  const human=await loadLicensedBundled('student');
@@ -203,7 +214,7 @@ async function loadModels(){
  if(!idle||!walk)throw Error('El GLB no trae clips Idle+Walk; no reemplazar con rotaciones artificiales');
  mixer=new THREE.AnimationMixer(actor);qa.heroClips=clips.map(c=>c.name);qa.heroHasRig=actor.getObjectByProperty('type','SkinnedMesh')!==undefined;
  for(const clip of [idle,walk]){const action=mixer.clipAction(clip);action.setLoop(THREE.LoopRepeat,Infinity);action.play();action.enabled=true;action.setEffectiveWeight(1)}
- qa.heroSource='PSX Character Creator Free by heyheythere (CC BY 4.0)';
+ qa.heroSource='PSX Character Creator Free by heyheythere (CC BY 4.0) · packaged UV atlas';
  const carG=await loadLicensedBundled('car');
  car=carG.scene;carAnchor.add(car);
  car.updateMatrixWorld(true);
