@@ -111,7 +111,7 @@ async function refresh(){
   projects=[...map.values()];paint();
  }
  let cursor=0;const tasks=projects.slice();
- await Promise.all(Array.from({length:3},async()=>{while(cursor<tasks.length){const p=tasks[cursor++];try{const a=await api('commits?sha=gh-pages&path='+encodeURIComponent('prometeo/'+p.id)+'&per_page=1');if(a[0]){p.updatedAt=a[0].commit?.committer?.date||a[0].commit?.author?.date||p.updatedAt;p.commit=a[0].sha;ok++;}}catch{}}}));
+ await Promise.all(Array.from({length:3},async()=>{while(cursor<tasks.length){const p=tasks[cursor++];try{const a=await api('commits?sha=gh-pages&path='+encodeURIComponent('prometeo/'+p.id)+'&per_page=12');const relevant=a.find(c=>!/^prometeo 3d: (acceso compartido|navegaci[oó]n de proyectos)/i.test(c.commit?.message||''));if(relevant){p.updatedAt=relevant.commit?.committer?.date||relevant.commit?.author?.date||p.updatedAt;p.commit=relevant.sha;ok++;}}catch{}}}));
  projects.sort(cmp);paint();if(ok)keep();status.textContent=ok?'GitHub consultado '+date(new Date().toISOString())+' · '+projects.length+' proyectos':'Fechas guardadas; GitHub no respondió en vivo';
  }catch{status.textContent='Mostrando las fechas verificadas guardadas';}
  refreshing=false;
