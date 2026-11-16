@@ -16,6 +16,33 @@
 <div id="bar"><div id="title">COCINA UMBRÍA / 18:47</div><div id="state" aria-live="polite">Preparando la escena 3D…</div><div id="hint">Arrastrá para mirar · dos dedos para acercar</div></div>
 <div id="actions"><button class="action" id="reset" title="Recentrar cámara" aria-label="Recentrar">⌖</button><button class="action" id="full" title="Pantalla completa" aria-label="Pantalla completa">⛶</button></div>
 <div id="error" hidden><strong>La escena no pudo iniciarse</strong><span id="err-text"></span></div>
-<script type="module" src="./scene.mjs"></script>
+<script>
+(function(){
+  let shown=false;
+  function show(message){
+    if(shown)return;shown=true;
+    const panel=document.getElementById('error');
+    const label=document.getElementById('err-text');
+    const status=document.getElementById('state');
+    if(label)label.textContent=message;
+    if(panel)panel.hidden=false;
+    if(status)status.textContent='No se pudo dibujar la escena 3D';
+  }
+  window.addEventListener('error',function(e){
+    if(e.target&&e.target.tagName==='SCRIPT'){show('Falló la descarga del módulo 3D. Revisá la conexión.');return;}
+    if(!window.__PROMETEO_QA__)show('Error al ejecutar el módulo 3D: '+String(e.message||'sin detalles').slice(0,150));
+  },true);
+  window.addEventListener('unhandledrejection',function(e){
+    if(!window.__PROMETEO_QA__)show('Fallo al iniciar el motor 3D: '+String(e.reason||'sin detalles').slice(0,150));
+  });
+  setTimeout(function(){
+    let q;try{q=window.__PROMETEO_QA__&&window.__PROMETEO_QA__();}catch{}
+    if(!q){show('El motor 3D no llegó a iniciar: módulos de JavaScript ausentes o bloqueados.');return;}
+    if(q.webgl==='FAILED'){show('Este navegador no pudo iniciar WebGL2. '+(q.errors||[]).slice(-1)[0]);return;}
+    if(!q.drawn){show('El motor inició pero no dibujó ningún fotograma.');}
+  },12000);
+})();
+</script>
+<script type="module" src="./scene.mjs?v=syntax-fix-20261116-1"></script>
 <script defer src="../project-explorer/launcher.js" data-prometeo-3d-nav="1"></script>
 </body></html>
