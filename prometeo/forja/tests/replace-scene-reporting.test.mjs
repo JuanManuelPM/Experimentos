@@ -12,10 +12,10 @@ assert.ok(start>=0&&end>start,'exact replaceScene function must exist');
 const functionSource=source.slice(start,end);
 function fixture(opts={}){
  const state={busy:false,webgl:!opts.noWebgl,request:0,byId:new Map([['a',{id:'a'}]]),objects:[],selected:null,sceneName:'old',history:[],cursor:0,world:{add(){},remove(){}},transform:{detach(){}}};
- const input={value:'old'};
+ const input={value:'old'};const calls={status:0,toast:0};
  const env={state,$:()=>input,validateProject:()=>{if(opts.invalid)throw Error('INVALID');return {name:'new',items:[{id:'a'}]}},
- status:()=>{if(opts.statusFail)throw Error('STATUS_FAILED')},
- toast:()=>{if(opts.toastFail)throw Error('TOAST_FAILED')},
+ status:()=>{calls.status++;if(opts.statusFail)throw Error('STATUS_FAILED')},
+ toast:()=>{calls.toast++;if(opts.toastFail)throw Error('TOAST_FAILED')},
  setBusy:value=>{state.busy=value},setLoading:()=>{},
  addAsset:async()=>{if(opts.loadFail)throw Error('LOAD_FAILED');return {root:{}}},
  metrics:()=>{},renderObjects:()=>{},updateInspector:()=>{},resetCamera:()=>{},
@@ -23,7 +23,7 @@ function fixture(opts={}){
  saveLocal:()=>true,historyButtons:()=>{},console:{warn(){},error(){}}};
  const keys=Object.keys(env);
  const replaceScene=Function(...keys,functionSource+'; return replaceScene;')(...keys.map(key=>env[key]));
- return {state,replaceScene};
+ return {state,replaceScene,calls};
 }
 const scenarios=[
  ['load failure with broken status',{loadFail:true,statusFail:true},false],
@@ -39,5 +39,21 @@ for(const [name,options,expected] of scenarios){
   assert.equal(await replaceScene({}),expected);
   assert.equal(state.busy,false);
   if(options.loadFail||options.commitFail)assert.equal(state.sceneName,'old');
+ });
+}
+
+// V8 regression: a post-commit status failure must not suppress toast.
+for(const [name,options] of [
+ ['postcommit status failure still attempts toast',{statusFail:true}],
+ ['postcommit toast failure preserves successful import',{toastFail:true}],
+ ['both postcommit reporters fail without losing committed scene',{statusFail:true,toastFail:true}],
+]){
+ test(name,async()=>{
+  const {state,replaceScene,calls}=fixture(options);
+  assert.equal(await replaceScene({}),true);
+  assert.equal(calls.status,1);
+  assert.equal(calls.toast,1);
+  assert.equal(state.sceneName,'new');
+  assert.equal(state.busy,false);
  });
 }
