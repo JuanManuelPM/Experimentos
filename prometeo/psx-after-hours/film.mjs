@@ -205,12 +205,14 @@ async function loadModels(){
  if(carDims.x>carDims.z*1.2)car.rotation.y=Math.PI/2;
  car.updateMatrixWorld(true);carBB=new THREE.Box3().setFromObject(car);carDims=carBB.getSize(new THREE.Vector3());
  const u=4.4/Math.max(carDims.z,.001);car.scale.setScalar(u);car.updateMatrixWorld(true);carBB=new THREE.Box3().setFromObject(car);
- const center=carBB.getCenter(new THREE.Vector3());car.position.sub(new THREE.Vector3(center.x,carBB.min.y,center.z));car.updateMatrixWorld(true);
+ carAnchor.updateMatrixWorld(true);
+ const center=carBB.getCenter(new THREE.Vector3());center.y=carBB.min.y;
+ const localOrigin=carAnchor.worldToLocal(center.clone());
+ car.position.sub(localOrigin);car.updateMatrixWorld(true);
  let mats=[];
  car.traverse(o=>{if(!o.isMesh)return;o.castShadow=true;o.receiveShadow=true;
-  for(const src of (Array.isArray(o.material)?o.material:[o.material])){
-   if(!src)continue;const m=src.clone();
-   // Tone down overbright paint but leave tires/glass as authored.
+  const paintOne=src=>{
+   if(!src)return src;const m=src.clone();
    const name=(src.name+' '+o.name).toLowerCase();
    if(/body|paint|shell|car|hood|door/.test(name)){
     if(m.color)m.color.multiply(new THREE.Color('#4c7774'));
@@ -219,9 +221,10 @@ async function loadModels(){
     m.color.multiply(new THREE.Color('#64817f'));m.roughness=.58;
    }
    if(m.map){m.map.magFilter=THREE.NearestFilter;m.map.minFilter=THREE.NearestMipmapNearestFilter}
-   o.material=m;
    mats.push({mesh:o.name,material:src.name,color:src.color?.getHexString()});
-  }
+   return m;
+  };
+  o.material=Array.isArray(o.material)?o.material.map(paintOne):paintOne(o.material);
  });qa.vehicleMaterialAudit=mats.slice(0,25);qa.vehicleClips=carG.animations.map(c=>c.name);
  // Vehicle remains parked. No arbitrary reversing and no floating driver.
  qa.carStationary=true;qa.heroLoaded=true;qa.carLoaded=true;
