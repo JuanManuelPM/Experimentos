@@ -1,0 +1,9 @@
+import test from 'node:test';import assert from 'node:assert/strict';
+import {trianglesFromGeometry,uvBounds,validateRecipe,materialSignature,compatible,ATLAS_SIZE} from '../src/core.mjs';
+const attr=(arr)=>({itemSize:2,count:arr.length/2,getX:i=>arr[2*i],getY:i=>arr[2*i+1]});
+test('las coordenadas UV del GLB se leen, no se inventan',()=>{let g={getAttribute:n=>n==='uv'?attr([0.1,0.2,0.5,0.2,0.3,0.8]):null,getIndex:()=>null};assert.deepEqual(trianglesFromGeometry(g),[[[0.1,0.2],[0.5,0.2],[0.3,0.8]]]);assert.deepEqual(uvBounds(trianglesFromGeometry(g)),{minU:0.1,minV:0.2,maxU:0.5,maxV:0.8});});
+test('las mallas sin UV dan error visible',()=>assert.throws(()=>trianglesFromGeometry({getAttribute:()=>null}),/UV_MISSING/));
+test('índices fuera de rango rechazados',()=>assert.throws(()=>trianglesFromGeometry({getAttribute:()=>attr([0,0,1,0,0,1]),getIndex:()=>({count:3,getX:i=>[0,3,2][i]})}),/UV_INDEX_OUT_OF_RANGE/));
+test('NaN en UV rechazado',()=>assert.throws(()=>trianglesFromGeometry({getAttribute:()=>attr([0,0,1,0,NaN,1]),getIndex:()=>null}),/UV_NOT_FINITE/));
+test('roundtrip preserva la firma de rig, morphs y clips',()=>{const signature=[{id:'Body',positions:5,uvs:5,indices:9,skin:true,bones:['Head'],weight:5,joint:5,morph:[['position',1]]}];const clips=[{name:'Walk',duration:2,tracks:[1,2]}];assert.deepEqual(compatible(signature,structuredClone(signature),clips,structuredClone(clips)),[]);assert.equal(compatible(signature,[{...signature[0],bones:[]}],clips,clips).length,1);assert.equal(compatible(signature,signature,clips,[]).length,1);});
+test('la receta es validable y rechaza capas inservibles',()=>{const recipe={schema:'prometeo.texture-recipe/v2',atlasSize:ATLAS_SIZE,source:{sha256:'abc'},meshId:'Body',layers:[{kind:'image',filename:'input.png',cx:.5,cy:.5,widthUV:.4,opacity:1}]};assert.equal(validateRecipe(recipe),true);assert.throws(()=>validateRecipe({...recipe,layers:[{...recipe.layers[0],opacity:3}]}),/INVALID/);});
