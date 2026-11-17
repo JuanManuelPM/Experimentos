@@ -1,0 +1,46 @@
+name: NPC civil · build real CC0 GLBs
+on:
+  push:
+    branches: [candidate/prometeo-3d-npc-civilian-build-20261116]
+    paths:
+      - 'prometeo/3d-npc-civilian-v1/source/**'
+      - 'prometeo/3d-npc-civilian-v1/viewer/**'
+      - '.github/workflows/prometeo-3d-npc-civilian-build.yml'
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Unit and source checks
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd prometeo/3d-npc-civilian-v1/source
+          python -m unittest -v test_derive.py
+          python -m py_compile derive.py
+          cd ../viewer
+          node --check app.mjs
+      - name: Download pinned CC0 GLB and derive two real skin GLBs
+        shell: bash
+        run: |
+          set -euo pipefail
+          python prometeo/3d-npc-civilian-v1/source/derive.py --output prometeo/3d-npc-civilian-v1/dist
+          test -s prometeo/3d-npc-civilian-v1/dist/civil_azul.glb
+          test -s prometeo/3d-npc-civilian-v1/dist/civil_granate.glb
+      - name: Save verified artifact to isolated experiment branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add prometeo/3d-npc-civilian-v1/dist/
+          if ! git diff --cached --quiet; then
+            git commit -m "npc: built two validated real GLBs from pinned Quaternius CC0 source"
+            git push origin HEAD:candidate/prometeo-3d-npc-civilian-build-20261116
+          fi
