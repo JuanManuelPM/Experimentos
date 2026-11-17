@@ -2,16 +2,12 @@ import * as THREE from 'three';
 import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 
-const source = 'https://raw.githubusercontent.com/LuanDucate/Ducz.CharacterCreator/fcd215b58eec5c9ed97d0ba5f696d0e7dc085e08/public/models/Male/Casual_Hoodie.glb';
+const source = {azul:'../dist/civil_azul.glb',granate:'../dist/civil_granate.glb'};
 const el = (s)=>document.querySelector(s);
 const stage = el('#viewport'), readout=el('#status'), stats=el('#stats');
 const skinButtons = [...document.querySelectorAll('[data-skin]')];
 const viewButtons = [...document.querySelectorAll('[data-view]')];
-let renderer, camera, controls, avatar, bbox, center, scale=1, materials=[], selected='azul', orbit=true;
-const themes = {
- azul:{cloth:0x548fa1,pants:0x485c70,shoe:0x817464,accent:0xcbb8a6},
- granate:{cloth:0x9e5366,pants:0x72685c,shoe:0x68616a,accent:0xd6ae83}
-};
+let renderer, camera, controls, avatar, bbox, center, scale=1, variants={}, selected='azul', orbit=true;
 function setStatus(msg,ok=false){readout.textContent=msg;readout.dataset.ok=ok?'true':'false';}
 function placeCamera(view){
  if(!bbox)return;
@@ -33,25 +29,12 @@ function placeCamera(view){
  el('#spin').setAttribute('aria-pressed','false');
 }
 function recolor(){
- const palette=themes[selected];
- const keys=['cloth','pants','shoe','accent'];
- let flagged=0;
- for(let i=0;i<materials.length;i++){
-  const {material,original,name}=materials[i];
-  material.color.copy(original);
-  const n=name.toLowerCase();
-  const skinHair=/skin|head|face|body|hands|hair|eye|nose|teeth|mouth/.test(n);
-  if(!skinHair){
-   const target=/pants|leg|trouser|jean/.test(n)?palette.pants:/boot|shoe|foot/.test(n)?palette.shoe:/shirt|hood|coat|jacket|top|cloth/.test(n)?palette.cloth:palette[keys[i%keys.length]];
-   const c=new THREE.Color(target);material.color.multiply(c);
-   flagged++;
-  }
-  material.needsUpdate=true;
- }
- stats.dataset.variant=selected;
- el('#look').textContent=selected==='azul'?'AZUL PETRÓLEO / TELA DESGASTADA':'GRANATE / TONOS CÁLIDOS';
+ if(!variants[selected])return;
+ for(const [id,object] of Object.entries(variants))object.visible=id===selected;
+ avatar=variants[selected];stats.dataset.variant=selected;
+ el('#look').textContent=selected==='azul'?'AZUL PETRÓLEO / CHAQUETA':'GRANATE / CHAQUETA';
  skinButtons.forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.skin===selected)));
- el('#materialcount').textContent=String(flagged);
+ const download=el('#download');if(download){download.href=source[selected];download.download='civil_'+selected+'.glb'}
 }
 try{
  renderer=new THREE.WebGLRenderer({antialias:true,alpha:false,preserveDrawingBuffer:true});
@@ -71,32 +54,30 @@ try{
  floor.rotation.x=-Math.PI/2;floor.position.y=-.02;scene.add(floor);
  const loader=new GLTFLoader();
  setStatus('Descargando malla original CC0 (GLB real, sin geometría de sustitución)');
- const gltf=await loader.loadAsync(source);
+ const [gltf,second]=await Promise.all([loader.loadAsync(source.azul),loader.loadAsync(source.granate)]);
  avatar=gltf.scene;
- scene.add(avatar);
+ variants={azul:avatar,granate:second.scene};
+ scene.add(avatar);scene.add(second.scene);second.scene.visible=false;
  let count=0, uv=0, skinned=0, faces=0;
- const unique=new Set();
  avatar.traverse(o=>{
   if(!o.isMesh)return;
-  count++; if(o.isSkinnedMesh)skinned++;
+  count++;if(o.isSkinnedMesh)skinned++;
   if(o.geometry?.attributes?.uv)uv++;
   faces+=o.geometry?.index?o.geometry.index.count/3:(o.geometry?.attributes?.position?.count||0)/3;
-  const mats=Array.isArray(o.material)?o.material:[o.material];
-  for(const m of mats){if(m&&!unique.has(m)){unique.add(m);const clone=m.clone();o.material=Array.isArray(o.material)?o.material.map(x=>x===m?clone:x):clone;materials.push({material:clone,original:clone.color.clone(),name:m.name||''});}}
  });
  if(!uv||!skinned)throw new Error('El GLB cargó pero falló la prueba de UV/rig');
  bbox=new THREE.Box3().setFromObject(avatar);
  center=bbox.getCenter(new THREE.Vector3());
  const size=bbox.getSize(new THREE.Vector3());
  if(!Number.isFinite(size.y)||size.y<=0)throw new Error('Límites de malla inválidos');
- scale=1.8/size.y;avatar.scale.setScalar(scale);
+ scale=1.8/size.y;avatar.scale.setScalar(scale);second.scene.scale.setScalar(scale);
  bbox.setFromObject(avatar);bbox.getCenter(center);
  floor.position.y=bbox.min.y-.03;
  floor.scale.setScalar(Math.max(1,(bbox.max.x-bbox.min.x)*.8));
  stats.textContent='GLB recibido · '+count+' mallas · '+Math.floor(faces).toLocaleString('es-AR')+' triángulos · '+uv+' UV · '+skinned+' skinned · '+gltf.animations.length+' clips';
  placeCamera('full');controls.autoRotate=true;orbit=true;el('#spin').setAttribute('aria-pressed','true');
  recolor();
- setStatus('GLB original cargado. Revisá el rostro, ropa, manos y variantes; la aprobación artística sigue pendiente.',true);
+ setStatus('Dos GLB reales cargados. Comprobá rostro, manos, ropa y color. Calidad artística pendiente de revisión.',true);
  const resize=()=>{
   const w=stage.clientWidth,h=Math.max(stage.clientHeight,250);
   renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();
@@ -114,7 +95,7 @@ try{
   renderer.render(scene,camera);
   const a=document.createElement('a');a.href=renderer.domElement.toDataURL('image/png');a.download='npc-'+selected+'-captura.png';a.click();
  });
- window.PROMETEO_QA={source,faces:Math.floor(faces),meshes:count,uvMeshes:uv,skinnedMeshes:skinned,glbLoaded:true,get skin(){return selected},get frame(){return renderer.domElement.toDataURL('image/png')}};
+ window.PROMETEO_QA={source,variantsLoaded:2,faces:Math.floor(faces),meshes:count,uvMeshes:uv,skinnedMeshes:skinned,glbLoaded:true,get skin(){return selected},get frame(){return renderer.domElement.toDataURL('image/png')}};
 }catch(error){
  console.error('[character capsule] Failed to load/render genuine GLB',error);
  setStatus('ERROR REAL: '+(error?.message||String(error)));

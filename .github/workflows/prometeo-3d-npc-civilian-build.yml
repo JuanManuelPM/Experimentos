@@ -11,7 +11,7 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 12
+    timeout-minutes: 24
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -33,13 +33,29 @@ jobs:
           python prometeo/3d-npc-civilian-v1/source/derive.py --output prometeo/3d-npc-civilian-v1/dist
           test -s prometeo/3d-npc-civilian-v1/dist/civil_azul.glb
           test -s prometeo/3d-npc-civilian-v1/dist/civil_granate.glb
+      - name: Install Chromium and Playwright
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm install --no-save --no-package-lock playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Browser WebGL desktop and mobile QA
+        shell: bash
+        run: node prometeo/3d-npc-civilian-v1/viewer/qa_playwright.mjs
+      - name: Store QA screenshots if present
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: npc-webgl-evidence
+          path: prometeo/3d-npc-civilian-v1/evidence/
+          if-no-files-found: warn
       - name: Save verified artifact to isolated experiment branch
         shell: bash
         run: |
           set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add prometeo/3d-npc-civilian-v1/dist/
+          git add prometeo/3d-npc-civilian-v1/dist/ prometeo/3d-npc-civilian-v1/evidence/
           if ! git diff --cached --quiet; then
             git commit -m "npc: built two validated real GLBs from pinned Quaternius CC0 source"
             git push origin HEAD:candidate/prometeo-3d-npc-civilian-build-20261116
