@@ -1,0 +1,167 @@
+{
+  "schema": "prometeo.3d.semantic-director/1",
+  "fps": {
+    "num": 24,
+    "den": 1
+  },
+  "totalFrames": 480,
+  "notes": "Root route is deterministic in logic.mjs; original camera director source remains exact owner blob",
+  "shots": [
+    {
+      "id": "S01_ESTUDIO",
+      "label": "01 / ESTUDIO",
+      "startFrame": 0,
+      "endFrame": 168,
+      "camera": {
+        "origin": "root",
+        "lookAt": "face",
+        "from": [
+          -3.1,
+          2.9,
+          5.6
+        ],
+        "to": [
+          -2.1,
+          2.55,
+          4.2
+        ],
+        "fov": 42
+      },
+      "subtitle": "El estudio. Alguien se acerca.",
+      "transition": {
+        "type": "fade",
+        "frames": 9
+      }
+    },
+    {
+      "id": "S02_GIRO",
+      "label": "02 / GIRO",
+      "startFrame": 168,
+      "endFrame": 240,
+      "camera": {
+        "origin": "root",
+        "lookAt": "face",
+        "from": [
+          2.2,
+          2.0,
+          3.7
+        ],
+        "to": [
+          1.55,
+          1.9,
+          3.0
+        ],
+        "fov": 43
+      },
+      "subtitle": "Pausa. Un giro de noventa grados.",
+      "transition": {
+        "type": "cut",
+        "frames": 0
+      }
+    },
+    {
+      "id": "S03_RECUMBRA",
+      "label": "03 / RECORRIDO",
+      "startFrame": 240,
+      "endFrame": 310,
+      "camera": {
+        "origin": "root",
+        "lookAt": "face",
+        "from": [
+          2.5,
+          2.2,
+          2.7
+        ],
+        "to": [
+          2.45,
+          1.95,
+          2.3
+        ],
+        "fov": 43
+      },
+      "subtitle": "Otra dirección. Hacia la mesa.",
+      "transition": {
+        "type": "cut",
+        "frames": 0
+      }
+    },
+    {
+      "id": "S04_ROSTRO",
+      "label": "04 / ROSTRO",
+      "startFrame": 310,
+      "endFrame": 350,
+      "camera": {
+        "origin": "face",
+        "lookAt": "face",
+        "from": [
+          1.2,
+          0.08,
+          0.2
+        ],
+        "to": [
+          0.9,
+          0.035,
+          0.17
+        ],
+        "fov": 35
+      },
+      "subtitle": "Una decisión antes del gesto.",
+      "transition": {
+        "type": "fade",
+        "frames": 8
+      }
+    },
+    {
+      "id": "S05_MANOS",
+      "label": "05 / MANOS",
+      "startFrame": 350,
+      "endFrame": 430,
+      "camera": {
+        "origin": "object",
+        "lookAt": "hands",
+        "from": [
+          0.82,
+          0.78,
+          1.15
+        ],
+        "to": [
+          0.7,
+          0.55,
+          0.98
+        ],
+        "fov": 36
+      },
+      "subtitle": "El contacto debe existir; un corte no lo inventa.",
+      "transition": {
+        "type": "cut",
+        "frames": 0
+      }
+    },
+    {
+      "id": "S06_REGRESO",
+      "label": "06 / GENERAL",
+      "startFrame": 430,
+      "endFrame": 480,
+      "camera": {
+        "origin": "root",
+        "lookAt": "face",
+        "from": [
+          -3.6,
+          3.0,
+          5.1
+        ],
+        "to": [
+          -3.3,
+          2.8,
+          5.1
+        ],
+        "fov": 43
+      },
+      "subtitle": "Volvemos al estudio.",
+      "transition": {
+        "type": "fade",
+        "frames": 8
+      }
+    }
+  ]
+}

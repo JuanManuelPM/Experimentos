@@ -1,0 +1,136 @@
+TAP version 13
+# Subtest: real vendor director import validates 6-shot cinematography
+ok 1 - real vendor director import validates 6-shot cinematography
+  ---
+  duration_ms: 1.633047
+  type: 'test'
+  ...
+# Subtest: all camera samples yield finite positions and fov
+ok 2 - all camera samples yield finite positions and fov
+  ---
+  duration_ms: 11.051559
+  type: 'test'
+  ...
+# Subtest: face projection at key shot midpoints is in view for NOMINAL ONLY anchors
+ok 3 - face projection at key shot midpoints is in view for NOMINAL ONLY anchors
+  ---
+  duration_ms: 0.564713
+  type: 'test'
+  ...
+# Subtest: shot transitions contain expected labels
+ok 4 - shot transitions contain expected labels
+  ---
+  duration_ms: 0.163331
+  type: 'test'
+  ...
+# Subtest: scene lock has immutable SHA256 for BOTH original civilian skins and original two props
+ok 5 - scene lock has immutable SHA256 for BOTH original civilian skins and original two props
+  ---
+  duration_ms: 1.187221
+  type: 'test'
+  ...
+# Subtest: rig allows same-skeleton clips only and needs explicit front evidence
+ok 6 - rig allows same-skeleton clips only and needs explicit front evidence
+  ---
+  duration_ms: 1.491179
+  type: 'test'
+  ...
+# Subtest: original prop socket and camera revisions are pinned
+ok 7 - original prop socket and camera revisions are pinned
+  ---
+  duration_ms: 0.265702
+  type: 'test'
+  ...
+# Subtest: stage floor and object positions match source config
+ok 8 - stage floor and object positions match source config
+  ---
+  duration_ms: 0.847239
+  type: 'test'
+  ...
+# Subtest: camera shotlist 20s at 24fps and no frame gaps
+ok 9 - camera shotlist 20s at 24fps and no frame gaps
+  ---
+  duration_ms: 0.349004
+  type: 'test'
+  ...
+# Subtest: web entrypoint contains usable input controls and failure overlay
+ok 10 - web entrypoint contains usable input controls and failure overlay
+  ---
+  duration_ms: 0.364097
+  type: 'test'
+  ...
+# Subtest: 480 frames 20s with six contiguous shots
+ok 11 - 480 frames 20s with six contiguous shots
+  ---
+  duration_ms: 2.650338
+  type: 'test'
+  ...
+# Subtest: negative: overlapping shots rejected
+ok 12 - negative: overlapping shots rejected
+  ---
+  duration_ms: 0.470784
+  type: 'test'
+  ...
+# Subtest: exact endpoints and deterministic repeat
+ok 13 - exact endpoints and deterministic repeat
+  ---
+  duration_ms: 1.348719
+  type: 'test'
+  ...
+# Subtest: walk then stop then 90 degree turn then second walk
+ok 14 - walk then stop then 90 degree turn then second walk
+  ---
+  duration_ms: 0.253293
+  type: 'test'
+  ...
+# Subtest: facing aligns with velocity, not assumed front
+ok 15 - facing aligns with velocity, not assumed front
+  ---
+  duration_ms: 0.604521
+  type: 'test'
+  ...
+# Subtest: negative: opposite facing flags moonwalk
+ok 16 - negative: opposite facing flags moonwalk
+  ---
+  duration_ms: 0.241246
+  type: 'test'
+  ...
+# Subtest: calibration rotates arbitrary real front into target trajectory
+ok 17 - calibration rotates arbitrary real front into target trajectory
+  ---
+  duration_ms: 0.255216
+  type: 'test'
+  ...
+# Subtest: null on rest and bad front rejected
+ok 18 - null on rest and bad front rejected
+  ---
+  duration_ms: 0.176931
+  type: 'test'
+  ...
+# Subtest: finite movement, no jumps over 0.11 m per frame
+ok 19 - finite movement, no jumps over 0.11 m per frame
+  ---
+  duration_ms: 3.82545
+  type: 'test'
+  ...
+# Subtest: reach only after arrival, holds and retracts
+ok 20 - reach only after arrival, holds and retracts
+  ---
+  duration_ms: 0.472426
+  type: 'test'
+  ...
+# Subtest: motion profile exact at bounds
+ok 21 - motion profile exact at bounds
+  ---
+  duration_ms: 0.214256
+  type: 'test'
+  ...
+1..21
+# tests 21
+# suites 0
+# pass 21
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 86.610323

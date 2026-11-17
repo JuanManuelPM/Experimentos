@@ -1,0 +1,61 @@
+{
+  "schema": "prometeo.3d.rig-adapter/v1",
+  "familyProfiles": {
+    "quaternius-civilian": {
+      "family": "QUATERNIUS_CIVILIAN",
+      "rigSource": "Casual_Hoodie.glb / Quaternius CC0 frozen v0.1.3",
+      "localFront": [
+        0,
+        0,
+        1
+      ],
+      "frontEvidence": "Face surface & nose Z-positive geometry measured in owner source/analyze_head.py + source mouth anchors; live motion proof pending",
+      "frontStatus": "INFERRED_FROM_FACE_GEOMETRY_NOT_VISUAL_PASS",
+      "bones": {
+        "rightUpperArm": [
+          "UpperArm.R"
+        ],
+        "rightLowerArm": [
+          "LowerArm.R"
+        ],
+        "rightWrist": [
+          "Wrist.R"
+        ],
+        "leftFoot": [
+          "Foot.L"
+        ],
+        "rightFoot": [
+          "Foot.R"
+        ],
+        "head": [
+          "Head"
+        ],
+        "hips": [
+          "Hips"
+        ]
+      },
+      "sockets": {
+        "face": "socket_face",
+        "rightHand": "socket_hand_right",
+        "leftHand": "socket_hand_left",
+        "root": "socket_root"
+      },
+      "clips": {
+        "idlePatterns": [
+          "idle",
+          "stand"
+        ],
+        "walkPatterns": [
+          "walk"
+        ],
+        "turnPatterns": [
+          "turn"
+        ]
+      },
+      "retargetPolicy": "ONLY_SOURCE_CLIPS_OF_SAME_SKELETON",
+      "contactType": "CCD_WRIST_TO_PROP_GRIP_NO_FINGER_CLOSURE",
+      "scaleM": 1,
+      "status": "FROZEN_ASSET_ADAPTER_RUNTIME_QA_PENDING"
+    }
+  }
+}

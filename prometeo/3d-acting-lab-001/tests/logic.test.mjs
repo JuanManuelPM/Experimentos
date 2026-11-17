@@ -1,0 +1,13 @@
+import test from 'node:test';import assert from 'node:assert/strict';
+import {FPS,END,SHOTS,poseAt,facingDot,calibratedYaw,travelAt,shotAt,validateShotRanges,normalizeFront} from '../logic.mjs';
+test('480 frames 20s with six contiguous shots',()=>{assert.equal(END/FPS,20);assert.equal(SHOTS.length,6);assert.ok(validateShotRanges());assert.equal(shotAt(479).id,'S06_REGRESO')});
+test('negative: overlapping shots rejected',()=>assert.throws(()=>validateShotRanges([{start:0,end:30},{start:29,end:480}]),/GAP/));
+test('exact endpoints and deterministic repeat',()=>{assert.deepEqual(poseAt(0),poseAt(0));assert.deepEqual(poseAt(168).position,[0,0,-1.55]);assert.deepEqual(poseAt(228).position,[.36,0,-1.19]);assert.deepEqual(poseAt(290).position,[.98,0,-1.19]);});
+test('walk then stop then 90 degree turn then second walk',()=>{assert.equal(poseAt(60).clip,'Walk');assert.equal(poseAt(180).clip,'Idle');assert.equal(poseAt(210).phase,'ARC_TURN_90');assert.equal(poseAt(270).phase,'APPROACH_OBJECT');assert.equal(poseAt(310).clip,'Idle');assert.equal(poseAt(228).yaw,Math.PI/2)});
+test('facing aligns with velocity, not assumed front',()=>{for(const f of [60,95,140,202,214,244,260,285]){const p=poseAt(f);if(Math.hypot(...p.velocity)>.0001)assert.ok(facingDot([0,0,1],p.yaw,p.velocity)>.999,`${f}`)} });
+test('negative: opposite facing flags moonwalk',()=>assert.ok(facingDot([0,0,-1],0,[0,1])<-.99));
+test('calibration rotates arbitrary real front into target trajectory',()=>{for(const front of [[1,0,0],[-1,0,0],[0,0,-1]]){const yaw=calibratedYaw(front,[1,0]);assert.ok(facingDot(front,yaw,[1,0])>.9999)}});
+test('null on rest and bad front rejected',()=>{assert.equal(facingDot([0,0,1],0,[0,0]),null);assert.throws(()=>normalizeFront([0,1,0]),/INVALID/)});
+test('finite movement, no jumps over 0.11 m per frame',()=>{let prior=poseAt(0);for(let f=1;f<END;f++){const p=poseAt(f);assert.ok(Math.hypot(p.position[0]-prior.position[0],p.position[2]-prior.position[2])<.11,`f ${f}`);prior=p}});
+test('reach only after arrival, holds and retracts',()=>{assert.equal(poseAt(300).reach,0);assert.equal(poseAt(368).reach,1);assert.ok(poseAt(385).interact);assert.equal(poseAt(430).reach,0);assert.equal(poseAt(470).interact,false)});
+test('motion profile exact at bounds',()=>{assert.deepEqual(travelAt(2,2,20),{ratio:0,derivative:0});assert.deepEqual(travelAt(20,2,20),{ratio:1,derivative:0})});

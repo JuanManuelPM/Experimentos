@@ -1,0 +1,27 @@
+{
+  "schema":"prometeo.3d.acting-lab-result/v1", "date":"2026-11-17", "job":"3D-ACTING-UNIVERSAL-LAB-20261117", "status":"MATERIAL_SOURCE_AND_MATH_TESTED_RENDER_NOT_VERIFIED", "published":false,
+  "releaseUrl":null, "privateBranch":"candidate/prometeo-3d-acting-lab-chained-20261117", "publicCandidateBranch":"candidate/prometeo-3d-acting-lab-20261117",
+  "materialOutputs":["index.html","app.mjs","logic.mjs","vendor/director.mjs","LAB_STAGE.json","RIG_ADAPTER.json","ACTION_TIMELINE.json","SCENE_LOCK.json","tests/logic.test.mjs","tests/config.test.mjs","tests/camera.test.mjs"],
+  "sources":[{"id":"character:ps2-civilian@0.1.3","asset":"Quaternius CC0 civilian two real rigged GLBs","reportedSourceAnimations":24,"liveAnimationsEnumerated":"NOT_RUN"},{"id":"prop:retro-utility-lunchbox@0.1.0","twoRealGLBVariants":true,"gripSocketReported":true,"lidPivotReported":true},{"id":"camera:semantic-director@0.1.0","blob":"43b8138bf9d0a8b9181bebd61c7c2730ca9f10b0"}],
+  "tests":{
+    "node_check_app":{"status":"PASS","runner":"node --check","tool":"Node v22.16.0"},
+    "node_check_logic":{"status":"PASS","runner":"node --check"},
+    "node_check_camera_vendor":{"status":"PASS","runner":"node --check"},
+    "node_unit":{"status":"PASS","passed":21,"failed":0,"runner":"node --test tests/*.test.mjs"},
+    "three_dependency_local":{"status":"NOT_RUN","reason":"Three CDN only; local npm dependency not installed"},
+    "npc_source_GLB_structural":{"status":"SOURCE_PREVIOUSLY_VERIFIED_NOT_RERUN","reason":"Owner build report 24 clips, skinned rig and measured face. Binary unavailable to this container"},
+    "npc_real_walk":{"status":"NOT_RUN","reason":"WebGL unavailable and source Walk clip names not independently enumerated this turn"},
+    "facing_dot":{"status":"PASS_SOURCE_MATH_ONLY","reason":"Math tests for arbitrary local front and opposed front; no GLB visual orientation"},
+    "foot_contacts":{"status":"NOT_RUN","reason":"No real animated foot world positions observed in WebGL"},
+    "IK_grip":{"status":"NOT_RUN","reason":"CCD code implemented; real wrist/socket proximity not runtime measured"},
+    "prop_hinge":{"status":"NOT_RUN","reason":"Existing owner tested hinge EGL, not this integrated actor"},
+    "browser_real_chromium":{"status":"PASS_LAUNCH_ONLY","runner":"Playwright system Chromium"},
+    "browser_webgl_and_pixels":{"status":"FAIL","reason":"Chromium contexts webgl2=false and webgl=false in normal and SwiftShader mode"},
+    "android_physical":{"status":"NOT_RUN"},
+    "second_distinct_character":{"status":"NOT_RUN","reason":"Only two skins of SAME civilian rig; no licensed second compatible skeleton proven"},
+    "human_art_approval":{"status":"NOT_RUN"}
+  },
+  "gates":{"materialCode":"PASS","isolatedBranch":"PASS_CREATED","rig_motion_visual":"BLOCKED","interaction_visual":"BLOCKED","publicRelease":"NOT_APPROVED","claimOfUniversalRetargeting":"REJECTED"},
+  "historicalRegressionNotes":{"moonwalk":"Mathematical dot negative test PASS; visual unknown","tpose":"Auto clips selection runtime unverified","camera_only_grip":"Prevented by CCD-to-socket and 3.5cm proximity gate","black_screen":"Explicit fallback; render unverified"},
+  "next":"NEXT_ACTION.json"
+}
