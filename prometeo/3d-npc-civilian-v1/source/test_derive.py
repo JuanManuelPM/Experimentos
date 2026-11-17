@@ -1,5 +1,6 @@
 import unittest,copy
 from derive import unpack,pack,modify,inspect,add_mouth
+from face_mouth import ANCHORS
 class TestCapsule(unittest.TestCase):
  def setUp(self):
   self.j={'asset':{'version':'2.0'},'scenes':[{'nodes':[0]}],'scene':0,'nodes':[{'name':'Rig:Head'},{'name':'Rig:Wrist.L'},{'name':'Rig:Wrist.R'}],'skins':[{'joints':[0,1,2]}],'meshes':[{'primitives':[{'attributes':{'TEXCOORD_0':2,'JOINTS_0':3,'WEIGHTS_0':4}}]}],'materials':[{'name':'Skin'},{'name':'Purple'},{'name':'LightBlue'},{'name':'Eye'},{'name':'Hair'}]}
@@ -27,6 +28,9 @@ class TestCapsule(unittest.TestCase):
   self.assertEqual(new['nodes'][-1]['skin'],0)
   self.assertEqual(new['materials'][-1]['name'],'FaceMouthLip_Shadow')
   self.assertTrue(len(b)>4)
+ def test_mouth_vertical_anatomy_regression(self):
+  self.assertTrue(all(1.60<y<1.625 for x,y,z in ANCHORS))
+  self.assertAlmostEqual(ANCHORS[0][0],-ANCHORS[-1][0])
  def test_negative_missing_head_joint(self):
   j={'skins':[{'joints':[0]}],'nodes':[{'name':'Torso'}]}
   with self.assertRaisesRegex(ValueError,'MOUTH_HEAD_JOINT_MISSING'):add_mouth(j,b'')

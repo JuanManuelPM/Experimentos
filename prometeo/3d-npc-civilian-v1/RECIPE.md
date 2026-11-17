@@ -21,3 +21,6 @@ El primer build produjo dos GLB reales, pero el an√°lisis de materiales encontr√
 
 ## v0.1.2: correction of missing mouth
 Chromium face captures exposed a blank lower face. We measured the actual source head mesh with source/analyze_head.py: nose tip (0,1.6449,0.1751), lower center (0,1.5829,0.1525), cheek (+/-0.0377,1.5885,0.1443). source/face_mouth.py adds a curved 8-triangle polygon lip into both real GLBs, skinned to the original Head bone, with separate UV and material. This is a small original authored facial edit, not a whole improvised humanoid nor browser overlay. Every build rejects missing mouth, missing head joint, UV or rig. Browser QA and human art judgement still required.
+
+## v0.1.3 - anatomical mouth placement regression
+Real v0.1.2 face screenshot showed lip too low, only ~15 pixels from chin. Revised measured mouth anchors to y 1.615-1.620 in front of the source facial surface from head geometry report. Keep v0.1.2 GLB and screenshots as rejected art reference. Negative unit gate: reject vertical mouth anchoring at original low chin zone. Re-run real browser capture and inspect mouth position.

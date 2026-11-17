@@ -26,6 +26,9 @@ jobs:
           python -m py_compile derive.py
           cd ../viewer
           node --check app.mjs
+          node --check qa_playwright.mjs
+          cd ../source
+          python -m py_compile face_mouth.py analyze_head.py
       - name: Download pinned CC0 GLB and derive two real skin GLBs
         shell: bash
         run: |

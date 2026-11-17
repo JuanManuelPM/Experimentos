@@ -7,13 +7,14 @@ import struct
 FACE_PROFILE="Quaternius_Casual_Hoodie_bdae92bf"
 # Measured on original Head mesh via source/analyze_head.py.
 # Nose tip: (0,1.6449,0.1751); lower-center face (0,1.5829,0.1525).
-# Cheeks: (+/-0.0377,1.5885,0.1443).
+# Cheeks: (+/-0.0377,1.5885,0.1443); upper cheek (+/-0.0447,1.6172,0.1424).
+# v0.1.3: raised lip from y=1.588 to y=1.615 after reviewing real face screenshot;
 ANCHORS=[
-    (-.0275,1.5920,.1470),
-    (-.0140,1.5894,.1520),
-    (0.,1.5881,.1550),
-    (.0140,1.5894,.1520),
-    (.0275,1.5920,.1470),
+    (-.0275,1.6200,.1500),
+    (-.0140,1.6170,.1540),
+    (0.,1.6150,.1580),
+    (.0140,1.6170,.1540),
+    (.0275,1.6200,.1500),
 ]
 def add_mouth(doc,bin):
     """Add 8-triangle lip silhouette to original rigged face, with real UV+weights."""
