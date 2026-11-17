@@ -2,6 +2,7 @@
 """PROMETEO: derive two civilian style variants from real CC0 rigged GLB, preserve UV/rig."""
 import argparse, copy, hashlib, json, re, struct, urllib.request
 from pathlib import Path
+from face_mouth import add_mouth
 REV="fcd215b58eec5c9ed97d0ba5f696d0e7dc085e08"
 URL="https://raw.githubusercontent.com/LuanDucate/Ducz.CharacterCreator/"+REV+"/public/models/Male/Casual_Hoodie.glb"
 BLOB="bdae92bff1aef0bf58b6bee99a3ea22a53cfd1c1"
@@ -63,6 +64,7 @@ def build(source,output):
     if not info["uv"]:raise ValueError("NO_UV")
     if not info["skins"] or not info["weighted"]:raise ValueError("NOT_RIGGED")
     if not any('head' in n.lower() for n in info['node_names']):raise ValueError("MISSING_HEAD")
+    j,bin=add_mouth(j,bin)
     result=[]
     for name in ("azul","granate"):
         new,sockets=modify(j,name)
@@ -70,7 +72,8 @@ def build(source,output):
         path=output/("civil_"+name+".glb")
         data=pack(new,bin);path.write_bytes(data)
         reread,_=unpack(data);a=inspect(reread)
-        if (a["uv"],a["skins"],a["weighted"],a["meshes"])!=(info["uv"],info["skins"],info["weighted"],info["meshes"]):raise ValueError("GEOMETRY_RIG_REGRESSION")
+        if (a["uv"],a["skins"],a["weighted"],a["meshes"])!=(info["uv"]+1,info["skins"],info["weighted"]+1,info["meshes"]+1):raise ValueError("GEOMETRY_RIG_REGRESSION")
+        if "FaceMouthLip_Shadow" not in a["materials"]:raise ValueError("MOUTH_MISSING")
         result.append({"skin":name,"filename":path.name,"bytes":len(data),"sha256":hashlib.sha256(data).hexdigest(),"sockets":sockets,"rig_skins":a["skins"],"uv_primitives":a["uv"]})
     report={"status":"SOURCE_GLB_STRUCTURAL_PASS","source":{"url":URL,"commit":REV,"git_blob":actual,"sha256":hashlib.sha256(b).hexdigest(),"bytes":len(b),"license":"CC0-1.0"},"source_inspection":info,"variants":result,"rig_and_uv_preserved":True,"webgl_capture":"NOT_RUN","art_approval":"NOT_RUN","movement_controller":"OUT_OF_SCOPE"}
     (output/"BUILD_REPORT.json").write_text(json.dumps(report,indent=2,ensure_ascii=False))

@@ -18,3 +18,6 @@ Esta primera versión usa tinte de materiales: es un candidato técnico y podrí
 
 ## v0.1.1 (corrección antes de publicación)
 El primer build produjo dos GLB reales, pero el análisis de materiales encontró el defecto de tintar `Skin` y ausencia de sockets de muñecas (nombres originales `Wrist.L`/`Wrist.R`). Se preservan los primeros hashes como rechazo de prueba. La nueva receta cambia SÓLO materiales `Purple` y `LightBlue`; conserva `Skin`, `Hair`, `Eye`, `Eyebrows`, `White` y agrega anclas root/head/wrists. Test negativo obligatorio: si el build cambia piel/ojos/pelo o falta cualquiera de los 4 sockets, REJECT.
+
+## v0.1.2: correction of missing mouth
+Chromium face captures exposed a blank lower face. We measured the actual source head mesh with source/analyze_head.py: nose tip (0,1.6449,0.1751), lower center (0,1.5829,0.1525), cheek (+/-0.0377,1.5885,0.1443). source/face_mouth.py adds a curved 8-triangle polygon lip into both real GLBs, skinned to the original Head bone, with separate UV and material. This is a small original authored facial edit, not a whole improvised humanoid nor browser overlay. Every build rejects missing mouth, missing head joint, UV or rig. Browser QA and human art judgement still required.

@@ -1,5 +1,5 @@
 import unittest,copy
-from derive import unpack,pack,modify,inspect
+from derive import unpack,pack,modify,inspect,add_mouth
 class TestCapsule(unittest.TestCase):
  def setUp(self):
   self.j={'asset':{'version':'2.0'},'scenes':[{'nodes':[0]}],'scene':0,'nodes':[{'name':'Rig:Head'},{'name':'Rig:Wrist.L'},{'name':'Rig:Wrist.R'}],'skins':[{'joints':[0,1,2]}],'meshes':[{'primitives':[{'attributes':{'TEXCOORD_0':2,'JOINTS_0':3,'WEIGHTS_0':4}}]}],'materials':[{'name':'Skin'},{'name':'Purple'},{'name':'LightBlue'},{'name':'Eye'},{'name':'Hair'}]}
@@ -19,6 +19,17 @@ class TestCapsule(unittest.TestCase):
    if original['name'] in ('Skin','Eye','Hair'):
     self.assertEqual(original,ma);self.assertEqual(ma,mb)
    else:self.assertNotEqual(ma['pbrMetallicRoughness'],mb['pbrMetallicRoughness'])
+ def test_original_uv_mouth_is_rigged_and_editable(self):
+  j={'asset':{'version':'2.0'},'scenes':[{'nodes':[0]}],'scene':0,'buffers':[{'byteLength':4}], 'nodes':[{'name':'Head'}],'skins':[{'joints':[0]}],'meshes':[],'materials':[{'name':'Skin'}]}
+  new,b=add_mouth(j,b'ABCD')
+  self.assertIn('TEXCOORD_0',new['meshes'][-1]['primitives'][0]['attributes'])
+  self.assertIn('JOINTS_0',new['meshes'][-1]['primitives'][0]['attributes'])
+  self.assertEqual(new['nodes'][-1]['skin'],0)
+  self.assertEqual(new['materials'][-1]['name'],'FaceMouthLip_Shadow')
+  self.assertTrue(len(b)>4)
+ def test_negative_missing_head_joint(self):
+  j={'skins':[{'joints':[0]}],'nodes':[{'name':'Torso'}]}
+  with self.assertRaisesRegex(ValueError,'MOUTH_HEAD_JOINT_MISSING'):add_mouth(j,b'')
  def test_no_materials(self):
   with self.assertRaisesRegex(ValueError,'NO_MATERIALS'):modify({'nodes':[]},'azul')
 if __name__=="__main__":unittest.main()
