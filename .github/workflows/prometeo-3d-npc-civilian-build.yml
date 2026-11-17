@@ -33,6 +33,11 @@ jobs:
           python prometeo/3d-npc-civilian-v1/source/derive.py --output prometeo/3d-npc-civilian-v1/dist
           test -s prometeo/3d-npc-civilian-v1/dist/civil_azul.glb
           test -s prometeo/3d-npc-civilian-v1/dist/civil_granate.glb
+      - name: Measure real face surface for modelling correction
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONPATH=prometeo/3d-npc-civilian-v1/source python prometeo/3d-npc-civilian-v1/source/analyze_head.py
       - name: Install Chromium and Playwright
         shell: bash
         run: |
