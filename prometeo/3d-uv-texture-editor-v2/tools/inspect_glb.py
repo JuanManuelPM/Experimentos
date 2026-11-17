@@ -41,5 +41,5 @@ def inspect(path):
    rows.append(row)
  return {'schema':'prometeo.uv-profile/v2','source':{'name':Path(path).name,'sha256':hashlib.sha256(raw).hexdigest(),'bytes':len(raw),'version':'0.1.3' if hashlib.sha256(raw).hexdigest()=='8bec29e84c9f0d082cc8ac08fd8cbe898dfcaa82abc9e1fa1bb13de46bfa5e4b' else 'unknown'},'summary':{'meshes':len(data.get('meshes',[])),'primitives':len(rows),'skins':len(data.get('skins',[])),'animations':len(data.get('animations',[])),'withUV':sum('uvSha256' in row for row in rows)},'profiles':rows,'status':'STRUCTURE_INSPECTED_NOT_WEBGL'}
 if __name__=='__main__':
- profile=inspect(sys.argv[1]);destination=sys.argv[2] if len(sys.argv)>2 else 'UV_PROFILE.real.json';Path(destination).write_text(json.dumps(profile,indent=2,ensure_ascii=False)+'\n');print('INSPECT_GLTF',json.dumps(profile['summary']),profile['source']['sha256']);
+ profile=inspect(sys.argv[1]);destination=sys.argv[2] if len(sys.argv)>2 else 'UV_PROFILE.real.json';Path(destination).parent.mkdir(parents=True,exist_ok=True);Path(destination).write_text(json.dumps(profile,indent=2,ensure_ascii=False)+'\n');print('INSPECT_GLTF',json.dumps(profile['summary']),profile['source']['sha256']);
  if profile['source']['version']!='0.1.3' or not profile['summary']['withUV'] or not profile['summary']['skins']:sys.exit(2)

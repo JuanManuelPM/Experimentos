@@ -40,6 +40,7 @@ jobs:
             'https://raw.githubusercontent.com/JuanManuelPM/Experimentos/candidate/prometeo-3d-npc-civilian-build-20261116/prometeo/3d-npc-civilian-v1/dist/civil_azul.glb' \
             --output civil_azul.glb
           echo '8bec29e84c9f0d082cc8ac08fd8cbe898dfcaa82abc9e1fa1bb13de46bfa5e4b  civil_azul.glb' | sha256sum --check
+          mkdir -p evidence
           python tools/inspect_glb.py civil_azul.glb evidence/UV_PROFILE.real.json
       - name: Install browser test dependencies
         run: |
