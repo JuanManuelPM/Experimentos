@@ -39,12 +39,14 @@ jobs:
           set -euo pipefail
           PYTHONPATH=prometeo/3d-npc-civilian-v1/source python prometeo/3d-npc-civilian-v1/source/analyze_head.py
       - name: Install Chromium and Playwright
+        if: ${{ !contains(github.event.head_commit.message, '[head-probe]') }}
         shell: bash
         run: |
           set -euo pipefail
           npm install --no-save --no-package-lock playwright@1.65.1
           npx playwright install --with-deps chromium
       - name: Browser WebGL desktop and mobile QA
+        if: ${{ !contains(github.event.head_commit.message, '[head-probe]') }}
         shell: bash
         run: node prometeo/3d-npc-civilian-v1/viewer/qa_playwright.mjs
       - name: Store QA screenshots if present

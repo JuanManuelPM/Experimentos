@@ -32,6 +32,8 @@ def analyze():
                         frontal.append([round(a,4) for a in v])
                 item['frontCandidates']=sorted(frontal,key=lambda k:-k[1])[:160]
                 item['nearestYLevels']=ys[::max(1,len(ys)//70)]
+                slabs=[1.55,1.57,1.58,1.59,1.60,1.61,1.62,1.63,1.64]
+                item['mouthSlices']={str(y):sorted([[round(float(a),4) for a in v] for v in pos if abs(v[1]-y)<0.006 and abs(v[0])<0.073 and v[2]>0.08],key=lambda v:(abs(v[0]),-v[2]))[:38] for y in slabs}
             targets.append(item)
     return {'headNodes':[{'index':i,'name':n.get('name'),'mesh':n.get('mesh'),'skin':n.get('skin'),'children':n.get('children',[])} for i,n in headnames],'targets':targets,'skinHeadJoint':[(i,x) for i,x in enumerate(j['skins'][0]['joints']) if j['nodes'][x].get('name','').lower()=='head'],'scene':j.get('scene'), 'nodes':len(j['nodes'])}
 if __name__=='__main__':
