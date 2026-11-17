@@ -15,3 +15,6 @@ Esta primera versión usa tinte de materiales: es un candidato técnico y podrí
 1. Quaternius: CC0, modular y con mallas/UV/rig en GLB. Elegida para canario porque no exige Blender local.
 2. MakeHuman/MPFB: assets base CC0 y control facial superior, código AGPL/GPL; requiere ejecución de editor externo y creación de ropa. No disponible en este contenedor.
 3. Kenney Animated Characters Retro: CC0 con skins y rig, pero tipología más caricaturesca y formatos originales FBX, menos adecuado para rostro PS2.
+
+## v0.1.1 (corrección antes de publicación)
+El primer build produjo dos GLB reales, pero el análisis de materiales encontró el defecto de tintar `Skin` y ausencia de sockets de muñecas (nombres originales `Wrist.L`/`Wrist.R`). Se preservan los primeros hashes como rechazo de prueba. La nueva receta cambia SÓLO materiales `Purple` y `LightBlue`; conserva `Skin`, `Hair`, `Eye`, `Eyebrows`, `White` y agrega anclas root/head/wrists. Test negativo obligatorio: si el build cambia piel/ojos/pelo o falta cualquiera de los 4 sockets, REJECT.

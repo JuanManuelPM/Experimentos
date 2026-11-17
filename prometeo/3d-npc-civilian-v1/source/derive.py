@@ -28,20 +28,26 @@ def inspect(j):
 def modify(j,name):
     if name not in ('azul','granate'):raise ValueError('INVALID_VARIANT')
     o=copy.deepcopy(j)
-    palette={'azul':[(.40,.72,.78),(.65,.78,.87),(.86,.85,.77)],'granate':[(.79,.41,.50),(.78,.65,.56),(.77,.77,.83)]}[name]
+    palette={'azul':{'purple':(.10,.32,.48),'lightblue':(.38,.46,.58)},'granate':{'purple':(.46,.12,.22),'lightblue':(.50,.36,.29)}}[name]
     mm=o.get("materials",[])
     if not mm:raise ValueError("NO_MATERIALS")
-    for i,m in enumerate(mm):
+    changed=0
+    for m in mm:
+        key=m.get("name","").lower().replace("_","")
+        if key not in palette:continue
         p=m.setdefault("pbrMetallicRoughness",{})
-        old=p.get("baseColorFactor",[1,1,1,1]);p["baseColorFactor"]=[round(old[k]*palette[i%3][k],4) for k in range(3)]+[old[3]]
+        old=p.get("baseColorFactor",[1,1,1,1])
+        p["baseColorFactor"]=[*palette[key],old[3]]
         m.setdefault("extras",{})["prometeo_variant"]=name
+        changed+=1
+    if changed<2:raise ValueError("CLOTHING_MATERIALS_NOT_FOUND")
     o.setdefault("asset",{}).setdefault("extras",{})["prometeo_variant"]=name
     o.setdefault("scenes",[{"nodes":[]}]);nodes=o.setdefault("nodes",[])
     scene=o.get("scene",0)
     nodes.append({"name":"socket_root","extras":{"prometeo_socket":"root"}})
     o["scenes"][scene].setdefault("nodes",[]).append(len(nodes)-1)
     found={"root":True}
-    for k,pattern in [("face",r"(?:head|neck)"),("hand_left",r"(?:lefthand|hand.?l|l.?hand)"),("hand_right",r"(?:righthand|hand.?r|r.?hand)")]:
+    for k,pattern in [("face",r"(?:head|neck)"),("hand_left",r"(?:left.?hand|hand[._]?l|wrist[._]?l)"),("hand_right",r"(?:right.?hand|hand[._]?r|wrist[._]?r)")]:
         matches=[i for i,n in enumerate(nodes) if re.search(pattern,n.get("name",""),re.I)]
         if matches:
             nodes.append({"name":"socket_"+k,"extras":{"prometeo_socket":k}})
@@ -60,6 +66,7 @@ def build(source,output):
     result=[]
     for name in ("azul","granate"):
         new,sockets=modify(j,name)
+        if not all(sockets.get(k) for k in ('root','face','hand_left','hand_right')):raise ValueError("MISSING_SOCKET_ANCHOR")
         path=output/("civil_"+name+".glb")
         data=pack(new,bin);path.write_bytes(data)
         reread,_=unpack(data);a=inspect(reread)
