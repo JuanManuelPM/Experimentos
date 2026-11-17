@@ -1,0 +1,27 @@
+{
+  "schema": "prometeo.3d.next-action/v1",
+  "owner": "character:uv-texture-editor",
+  "version": "0.2.1-canary",
+  "priority": "MEDIUM",
+  "state": "MATERIAL_CANARY_COMPLETE_DESIGN_QA_PENDING",
+  "next": "Run 24 clip deformation smoke + UV seam checking on face, torso, pants and shoes; produce better UV with semantic masks for face and clothes if art quality fails. Do not change original GLB; consume this canary by ID/SHA.",
+  "input": {
+    "sourceGLB": "8bec29e84c9f0d082cc8ac08fd8cbe898dfcaa82abc9e1fa1bb13de46bfa5e4b",
+    "derivedCanaryGLB": "db185749e17a7612ac12b3b6ccddf63dee8c5201c449ec27d83f6ce4086d6ac1",
+    "UVProfile": "UV_PROFILE.json",
+    "renderRecipe": "RECIPE.md",
+    "privateBranch": "candidate/prometeo-3d-uv-texture-editor-v2-20261117"
+  },
+  "blockingGates": {
+    "visuallyApproved": "NOT_RUN",
+    "animatedSkinVisual": "NOT_RUN",
+    "AndroidDevice": "NOT_RUN",
+    "livePublicDemo": "NOT_PUBLISHED"
+  },
+  "prohibitions": [
+    "No production changes",
+    "No automatic promotion",
+    "No new head geometry",
+    "No sharing local image uploads"
+  ]
+}

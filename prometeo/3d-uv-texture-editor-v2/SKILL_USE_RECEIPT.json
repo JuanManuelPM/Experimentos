@@ -1,0 +1,41 @@
+{
+  "schema": "prometeo.3d.skill-use-receipt/v1",
+  "date": "2026-11-17",
+  "discovered": {
+    "WORK": "skills://plugins/calibrar-one-shotting/work",
+    "CALIBRAR": "skills://plugins/calibrar-one-shotting/calibrar",
+    "C": "skills://plugins/c-compilador-autonomo/c-compilador",
+    "WEB": "skills://plugins/estudio-web-riguroso/diseno-web-riguroso"
+  },
+  "read": [
+    "WORK",
+    "CALIBRAR",
+    "C",
+    "WEB"
+  ],
+  "used": {
+    "WORK": "GitHub recovery and ownership branch",
+    "CALIBRAR": "Measured collapsed UV in 10/11, WebGL headless failure, unsafe 1->11 skins roundtrip; explicit rejected candidate and corrective CI",
+    "C": "Staged source SHA, code tests, source-preserving Python bake, real WebGL validation, postQA receipts",
+    "WEB": "Two-column responsive viewer with real camera/UV; viewport screenshots desktop and 320 mobile with no black"
+  },
+  "runtime": {
+    "node": "v22.16.0",
+    "python": "3.13",
+    "blender": "NOT_INSTALLED",
+    "bpy": "NOT_INSTALLED",
+    "mpfb": "NOT_VERIFIED",
+    "chromium": "/usr/bin/chromium",
+    "playwright": "PYTHON_AVAILABLE_BINARY_PATH_MANUAL",
+    "webgl2_local": false,
+    "threejs": "PINNED_0.180.0_REMOTE_NOT_FETCHED_LOCALLY",
+    "githubActions": {
+      "host": "ubuntu-24.04",
+      "browser": "Playwright 1.56.1 Chromium software WebGL2 PASS",
+      "runId": 44150178247,
+      "status": "PASS"
+    },
+    "MPFB": "NOT_RUN"
+  },
+  "limits": "Skills are methods, not GPU, binaries or async workers."
+}

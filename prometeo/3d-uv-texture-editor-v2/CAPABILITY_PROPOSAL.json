@@ -1,0 +1,58 @@
+{
+  "schema": "prometeo.3d.capability-proposal/v1",
+  "id": "character:uv-texture-editor",
+  "owner": "character",
+  "version": "0.2.1-canary",
+  "state": "MATERIAL_CANARY_PASS_PROPOSE_REVIEW_NOT_PROMOTED",
+  "editableSource": [
+    "index.html",
+    "src/core.mjs",
+    "src/editor.mjs",
+    "render_recipe.py",
+    "tools/build_uv_glb.py",
+    "tools/inspect_glb.py"
+  ],
+  "frozenInput": "8bec29e84c9f0d082cc8ac08fd8cbe898dfcaa82abc9e1fa1bb13de46bfa5e4b",
+  "derivedOutput": "db185749e17a7612ac12b3b6ccddf63dee8c5201c449ec27d83f6ce4086d6ac1",
+  "rights": {
+    "character": "CC0 Quaternius from pinned LuanDucate source",
+    "canaryTexture": "original test image created in this run",
+    "threejs": "MIT",
+    "playwright": "Apache-2.0"
+  },
+  "interface": {
+    "input": [
+      "CC0 GLB with position/normal/skinning",
+      "local PNG per region",
+      "front-back-planar-v1 projection params"
+    ],
+    "output": [
+      "UV_PROFILE.json",
+      "TEXTURE_RECIPE.json",
+      "per-mesh PNG",
+      "actual glTF2 GLB with source-preserving skin and animations",
+      "browser screenshot receipts"
+    ],
+    "failure": [
+      "UV_MISSING",
+      "UV_PROJECTION_DEGENERATE",
+      "ROUNDTRIP_BLOCKED",
+      "SOURCE_SHA_MISMATCH"
+    ]
+  },
+  "acceptance": {
+    "source_GLBSHA256": "PASS",
+    "sourceUV": "DEFECT_FOUND_10_OF_11_COLLAPSED",
+    "image_face_visible_WebGL2": "PASS",
+    "trueGLB_source_structure": "PASS",
+    "mobile320": "PASS",
+    "animated_skin_visual": "NOT_RUN",
+    "artistic_signoff": "NOT_RUN"
+  },
+  "prohibitions": [
+    "Do not overwrite source NPC",
+    "Do not promote to global catalog",
+    "Do not publish production",
+    "Do not pretend planar projection is artist-authored UV unwrap"
+  ]
+}

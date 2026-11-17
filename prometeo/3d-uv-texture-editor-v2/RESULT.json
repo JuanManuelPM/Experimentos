@@ -1,0 +1,82 @@
+{
+  "schema": "prometeo.3d.uv-editor-result/v2",
+  "job": "02_UV_TEXTURE_EDITOR",
+  "date": "2026-11-17",
+  "state": "MATERIAL_CANARY_PASS_BUT_ART_REVIEW_PENDING",
+  "sourceModelSha256": "8bec29e84c9f0d082cc8ac08fd8cbe898dfcaa82abc9e1fa1bb13de46bfa5e4b",
+  "originalGLB": {
+    "bytes": 1649028,
+    "meshCount": 5,
+    "primitives": 11,
+    "skins": 1,
+    "animations": 24,
+    "hasUV": 11,
+    "usableUVPrimitives": 1,
+    "collapsedUV": 10
+  },
+  "derivedGLB": {
+    "bytes": 1669764,
+    "sha256": "db185749e17a7612ac12b3b6ccddf63dee8c5201c449ec27d83f6ce4086d6ac1",
+    "meshCount": 5,
+    "primitives": 11,
+    "skins": 1,
+    "animations": 24,
+    "usableUVPrimitives": 11,
+    "textureTarget": {
+      "meshIndex": 2,
+      "primitiveIndex": 0,
+      "zone": "rostro/cabeza skin"
+    },
+    "bakeAlgorithm": "front-back-planar-v1"
+  },
+  "checks": {
+    "node_check": "PASS core/editor/browser module syntax on CI",
+    "node_tests": "PASS 9/9 CI and local",
+    "python_tests": "PASS 6/6 CI and local",
+    "source_GLBSHA256": "PASS exact CC0 frozen source verified in CI",
+    "source_UV_real_inspection": "PASS original 10/11 UV degenerate; all 11 contained TEXCOORD_0",
+    "source_derived_GLB_true_binary": "PASS glTF2 GLB authentic 1,669,764 bytes",
+    "source_preserving_UV_AND_skin_bake": "PASS same 1 skin / 24 animations, attributes non-UV, nodes, indices, weights unmodified",
+    "browser_WebGL2": "PASS Chromium Ubuntu24 GitHub Actions",
+    "face_PNG_visible_3D": "PASS 21,660 pixel changed in same camera face screenshot",
+    "roundtrip_safe_GLTF_python": "PASS derived GLB re-imported in Three/WebGL and screenshot captured",
+    "browser_GLTFExporter": "BLOCKED safety gate due 1 source skin vs 11 exporter skins (correctly no unsafe download)",
+    "PNG_UV_recipe_exports": "PASS real browser downloaded three outputs",
+    "mobile_chromium_320": "PASS no horizontal scroll and screenshot no black",
+    "local_WebGL2": "UNAVAILABLE local headless GPU",
+    "Android_physical": "NOT_RUN",
+    "skinning_animation_playback": "NOT_RUN",
+    "morph_visual_QA": "NOT_RUN",
+    "artistic_approval": "NOT_RUN",
+    "public_live_demo": "NOT_PUBLISHED"
+  },
+  "evidence": {
+    "workflowRun": "https://github.com/JuanManuelPM/Experimentos/actions/runs/44150178247",
+    "publicCandidate": "candidate/prometeo-3d-uv-editor-v2-qa-20261117",
+    "privateCandidate": "candidate/prometeo-3d-uv-texture-editor-v2-20261117",
+    "browser": "evidence/BROWSER_QA.json",
+    "pixelDiff": "evidence/PIXEL_DIFF.json",
+    "bake": "evidence/UV_BAKE_REPORT.json",
+    "uvSource": "UV_PROFILE.source.json",
+    "uvDerived": "evidence/UV_PROFILE.derived.json",
+    "screenshots": [
+      "evidence/final/remote/01-before.png",
+      "evidence/final/remote/02-after.png",
+      "evidence/final/remote/04-mobile320.png",
+      "evidence/final/remote/05-reimported-baked-face.png"
+    ]
+  },
+  "rights": {
+    "character": "CC0 Quaternius from pinned LuanDucate source",
+    "canaryTexture": "original test image created in this run",
+    "threejs": "MIT",
+    "playwright": "Apache-2.0"
+  },
+  "limitations": [
+    "UV source collapsed, so functional editable UV is explicit derived planar projection, not original UV islands",
+    "Front/back planar UV can distort and overlap on curved clothing; seams need art QA",
+    "Face canary is a high-contrast label for functional QA, not finished character art",
+    "Web GLTFExporter duplicates 1 skin into 11, so blocked; use Python bake CLI",
+    "Browser screenshots do not prove animated deformations across 24 clips"
+  ]
+}
