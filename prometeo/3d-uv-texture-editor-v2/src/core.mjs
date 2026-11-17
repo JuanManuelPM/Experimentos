@@ -12,3 +12,25 @@ export function compatible(before,after,originalClips=[],roundClips=[]){const pr
 export function uvBounds(triangles){let minU=Infinity,minV=Infinity,maxU=-Infinity,maxV=-Infinity;for(const t of triangles)for(const [u,v] of t){minU=Math.min(minU,u);minV=Math.min(minV,v);maxU=Math.max(maxU,u);maxV=Math.max(maxV,v);}return {minU,minV,maxU,maxV};}
 export function validateRecipe(r){if(r?.schema!=='prometeo.texture-recipe/v2'||r.atlasSize!==ATLAS_SIZE||!r.meshId||!r.source?.sha256||!Array.isArray(r.layers))throw new Error('TEXTURE_RECIPE_INVALID');for(const l of r.layers){if(l.kind!=='image'||![l.cx,l.cy,l.widthUV,l.opacity].every(Number.isFinite)||l.opacity<0||l.opacity>1||l.widthUV<=0||!l.filename)throw new Error('TEXTURE_RECIPE_LAYER_INVALID');}return true;}
 export async function sha256(buf){const array=buf instanceof ArrayBuffer?buf:buf.buffer.slice(buf.byteOffset,buf.byteOffset+buf.byteLength);return [...new Uint8Array(await crypto.subtle.digest('SHA-256',array))].map(x=>x.toString(16).padStart(2,'0')).join('');}
+// UX gate: a TEXCOORD attribute is not evidence of a usable atlas.
+export function uvDiagnostics(triangles){
+ let area=0,nonZero=0;for(const [a,b,c] of triangles){const signed=(b[0]-a[0])*(c[1]-a[1])-(c[0]-a[0])*(b[1]-a[1]);area+=Math.abs(signed)/2;if(Math.abs(signed)>1e-8)nonZero++;}
+ const b=uvBounds(triangles);return {usable:nonZero>0&&b.maxU-b.minU>1e-5&&b.maxV-b.minV>1e-5,nonZeroTriangles:nonZero,totalTriangles:triangles.length,areaSum:area,bounds:b};
+}
+// The generated UV is a DERIVATION, never misrepresented as original UV.
+// Front half U=.02..48 and back half U=.52..98. Preserves vertex order.
+export function projectUVValues(positions,normals){
+ if(!positions.length||positions.length!==normals.length)throw new Error('UV_PROJECTION_INPUT_INVALID');
+ const xs=positions.map(p=>p[0]),ys=positions.map(p=>p[1]),minX=Math.min(...xs),maxX=Math.max(...xs),minY=Math.min(...ys),maxY=Math.max(...ys);
+ if(![minX,maxX,minY,maxY].every(Number.isFinite))throw new Error('UV_PROJECTION_POSITION_NOT_FINITE');
+ const dx=Math.max(1e-8,maxX-minX),dy=Math.max(1e-8,maxY-minY);
+ return positions.map((p,i)=>{const n=normals[i];if(![...p,...n].every(Number.isFinite))throw new Error('UV_PROJECTION_VERTEX_NOT_FINITE');return [(n[2]>=0?.02:.52)+.46*(p[0]-minX)/dx,.02+.96*(maxY-p[1])/dy];});
+}
+export function readGLBStructure(buffer){
+ const a=buffer instanceof Uint8Array?buffer:new Uint8Array(buffer);if(a.byteLength<20)throw new Error('GLB_HEADER_SHORT');
+ const view=new DataView(a.buffer,a.byteOffset,a.byteLength);
+ if(view.getUint32(0,true)!==0x46546c67||view.getUint32(4,true)!==2||view.getUint32(8,true)!==a.byteLength||view.getUint32(16,true)!==0x4e4f534a)throw new Error('GLB_HEADER_INVALID');
+ const len=view.getUint32(12,true);if(len>1e8||20+len>a.byteLength)throw new Error('GLB_JSON_INVALID');
+ const data=JSON.parse(new TextDecoder().decode(a.subarray(20,20+len)));
+ return {skins:data.skins?.length??0,animations:data.animations?.length??0,meshes:data.meshes?.length??0,meshRefs:(data.meshes??[]).flatMap((m,mi)=>(m.primitives??[]).map((p,pi)=>({meshIndex:mi,primitiveIndex:pi,meshName:m.name||`mesh_${mi}`,materialName:data.materials?.[p.material]?.name||`mat_${p.material}`,hasUV:'TEXCOORD_0' in (p.attributes||{})})))};
+}

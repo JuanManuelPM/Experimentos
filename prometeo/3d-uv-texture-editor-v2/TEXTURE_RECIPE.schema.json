@@ -1,1 +1,164 @@
-{"$schema":"https://json-schema.org/draft/2020-12/schema","title":"PROMETEO TEXTURE_RECIPE v2","type":"object","required":["schema","source","meshId","atlasSize","baseColor","flipY","colorSpace","layers"],"properties":{"schema":{"const":"prometeo.texture-recipe/v2"},"source":{"type":"object","required":["sha256"],"properties":{"sha256":{"type":"string","minLength":8},"version":{"type":"string"}}},"meshId":{"type":"string","minLength":1},"atlasSize":{"const":1024},"baseColor":{"type":"string","pattern":"^#[0-9a-fA-F]{6}$"},"flipY":{"const":false},"colorSpace":{"const":"sRGB"},"roughness":{"type":"number","minimum":0,"maximum":1},"metalness":{"type":"number","minimum":0,"maximum":1},"layers":{"type":"array","items":{"type":"object","required":["kind","filename","sha256","cx","cy","widthUV","opacity"],"properties":{"kind":{"const":"image"},"filename":{"type":"string","minLength":1},"sha256":{"type":"string","minLength":8},"cx":{"type":"number"},"cy":{"type":"number"},"widthUV":{"type":"number","exclusiveMinimum":0},"opacity":{"type":"number","minimum":0,"maximum":1},"aspect":{"type":"number","exclusiveMinimum":0}}}}}}
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "PROMETEO TEXTURE_RECIPE v2",
+  "type": "object",
+  "required": [
+    "schema",
+    "source",
+    "meshId",
+    "atlasSize",
+    "baseColor",
+    "flipY",
+    "colorSpace",
+    "layers"
+  ],
+  "properties": {
+    "schema": {
+      "const": "prometeo.texture-recipe/v2"
+    },
+    "source": {
+      "type": "object",
+      "required": [
+        "sha256"
+      ],
+      "properties": {
+        "sha256": {
+          "type": "string",
+          "minLength": 8
+        },
+        "version": {
+          "type": "string"
+        }
+      }
+    },
+    "meshId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "atlasSize": {
+      "const": 1024
+    },
+    "baseColor": {
+      "type": "string",
+      "pattern": "^#[0-9a-fA-F]{6}$"
+    },
+    "flipY": {
+      "const": false
+    },
+    "colorSpace": {
+      "const": "sRGB"
+    },
+    "roughness": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "metalness": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "layers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "kind",
+          "filename",
+          "sha256",
+          "cx",
+          "cy",
+          "widthUV",
+          "opacity"
+        ],
+        "properties": {
+          "kind": {
+            "const": "image"
+          },
+          "filename": {
+            "type": "string",
+            "minLength": 1
+          },
+          "sha256": {
+            "type": "string",
+            "minLength": 8
+          },
+          "cx": {
+            "type": "number"
+          },
+          "cy": {
+            "type": "number"
+          },
+          "widthUV": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "opacity": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "aspect": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          }
+        }
+      }
+    },
+    "sourceRef": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "meshIndex": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "primitiveIndex": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "meshName": {
+          "type": "string"
+        },
+        "materialName": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "meshIndex",
+        "primitiveIndex"
+      ]
+    },
+    "uvMode": {
+      "enum": [
+        "original",
+        "front-back-planar-v1"
+      ]
+    },
+    "uvProjection": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "algorithm": {
+          "const": "front-back-planar-v1"
+        },
+        "frontU": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          }
+        },
+        "backU": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          }
+        }
+      }
+    }
+  }
+}
