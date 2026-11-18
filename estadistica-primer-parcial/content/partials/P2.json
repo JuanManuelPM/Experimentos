@@ -16,15 +16,73 @@
       "blocks": [
         {
           "type": "paragraph",
-          "text": "Una probabilidad es una proporción respecto de un universo claramente definido. En tablas de dos variables, los totales marginales y las intersecciones permiten contestar distintas preguntas, pero cambiar la condición cambia el denominador."
+          "text": "En el segundo parcial te presentan tablas de dos variables y te preguntan probabilidades distintas según qué denominador elijas. Primero localizá la casilla; luego decidí si se divide por toda la muestra, por una fila o por una columna."
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Convivencia",
+            "Aislamiento",
+            "Sin aislamiento",
+            "Total"
+          ],
+          "rows": [
+            [
+              "Vive solo",
+              "9",
+              "6",
+              "15"
+            ],
+            [
+              "Con familia",
+              "4",
+              "11",
+              "15"
+            ],
+            [
+              "Total",
+              "13",
+              "17",
+              "30"
+            ]
+          ]
+        },
+        {
+          "type": "steps",
+          "items": [
+            "«Vive solo Y tiene aislamiento» usa intersección: 9 de las 30 personas.",
+            "«Entre quienes NO tienen aislamiento, ¿cuántos viven con familia?» usa la columna sin aislamiento: 11 de 17.",
+            "«De los que viven solos, ¿cuántos tienen aislamiento?» usa la fila vive solo: 9 de 15.",
+            "Compará riesgos entre grupos con el mismo tipo de denominador: 9/15 frente a 4/15, no 9 frente a 4."
+          ]
         },
         {
           "type": "formula",
-          "expression": "P(A) = casos de A / N    ·    P(A∩B) = casos de A y B / N"
+          "lines": [
+            {
+              "left": "P(A y B) =",
+              "numerator": "casos de A y B",
+              "denominator": "N"
+            },
+            {
+              "left": "P(A dado B) =",
+              "numerator": "casos de A y B",
+              "denominator": "casos de B"
+            }
+          ],
+          "symbols": []
         },
         {
-          "type": "paragraph",
-          "text": "«De quienes viven solos, ¿cuántos tienen aislamiento?» divide por el total de quienes viven solos. «Entre quienes tienen aislamiento, ¿cuántos viven solos?» invierte la condición y, por tanto, el denominador."
+          "type": "worked",
+          "title": "Parcial 2026: convivencia y aislamiento",
+          "problem": "Con la tabla anterior, responder una conjunta, una condicional y comparar grupos.",
+          "steps": [
+            "P(vive solo y aislamiento) = 9/30 = 0,30 = 30 %.",
+            "P(familia | sin aislamiento) = 11/17 ≈ 0,6471 = 64,71 %.",
+            "P(aislamiento | solo)=9/15=60 % y P(aislamiento | familia)=4/15≈26,67 %."
+          ],
+          "result": "El aislamiento aparece proporcionalmente más entre quienes viven solos (60 % frente a 26,67 %).",
+          "interpretation": "No afirmes que vivir solo causa aislamiento: la tabla muestra una asociación, no prueba causalidad."
         }
       ]
     },
@@ -33,20 +91,49 @@
       "title": "Unión, condicional e independencia",
       "blocks": [
         {
-          "type": "formula",
-          "expression": "P(A∪B) = P(A)+P(B)−P(A∩B)"
+          "type": "paragraph",
+          "text": "Cuando te preguntan «o», «y», «ninguno» o «dado que», se aplican operaciones distintas. Traducí primero las palabras a sucesos A y B."
         },
         {
           "type": "formula",
-          "expression": "P(A|B) = P(A∩B)/P(B)    ·    P(no A) = 1−P(A)"
+          "lines": [
+            {
+              "left": "P(A o B) =",
+              "right": "P(A) + P(B) − P(A y B)"
+            },
+            {
+              "left": "P(ninguno) =",
+              "right": "1 − P(A o B)"
+            },
+            {
+              "left": "P(A dado B) =",
+              "numerator": "P(A y B)",
+              "denominator": "P(B)"
+            }
+          ],
+          "symbols": []
         },
         {
           "type": "list",
           "items": [
-            "«A o B»: unión; «A y B»: intersección; «ninguno»: complemento de la unión.",
-            "Independencia: P(A∩B)=P(A)P(B). Exclusión: P(A∩B)=0. No son sinónimos.",
-            "Probabilidad condicional: siempre comprobá qué grupo aparece después de «dado que»."
+            "Unión («A o B»): incluye a quienes tienen A, B o ambos. Restá la intersección una vez para no contarla dos veces.",
+            "Intersección («A y B»): ocurren los dos sucesos.",
+            "Complemento («ninguno»): lo que falta hasta completar el 100 %.",
+            "Independencia significa P(A y B)=P(A)×P(B). Exclusión significa que no pueden ocurrir juntos, P(A y B)=0. No son equivalentes."
           ]
+        },
+        {
+          "type": "worked",
+          "title": "Ansiedad y depresión",
+          "problem": "En un grupo, P(ansiedad)=0,40, P(depresión)=0,30 y P(ambas)=0,15.",
+          "steps": [
+            "Al menos una: 0,40+0,30−0,15=0,55.",
+            "Ninguna: 1−0,55=0,45.",
+            "Solo ansiedad: 0,40−0,15=0,25.",
+            "Entre quienes tienen ansiedad, P(depresión | ansiedad)=0,15/0,40=0,375."
+          ],
+          "result": "Unión 55 %; ninguna 45 %; solo ansiedad 25 %; condicional 37,5 %.",
+          "interpretation": "Para condicional, el denominador siempre es la condición que viene después de «dado que»."
         }
       ]
     },
@@ -56,24 +143,61 @@
       "blocks": [
         {
           "type": "paragraph",
-          "text": "La normal se describe por media μ y desvío estándar σ. Si te dan la varianza σ², primero obtené σ. Para hallar proporciones, convertí X en z y consultá la probabilidad acumulada izquierda Φ(z)."
+          "text": "La distribución normal tiene forma de campana. Sus datos son la media μ y el desvío estándar σ. Si el enunciado da varianza, el desvío es su raíz cuadrada. Para obtener porcentajes convertí un puntaje x a su distancia estandarizada z."
         },
         {
           "type": "formula",
-          "expression": "z = (x−μ)/σ    ·    P(X>x)=1−Φ(z)"
-        },
-        {
-          "type": "list",
-          "items": [
-            "Entre dos valores: Φ(z superior)−Φ(z inferior).",
-            "Para encontrar un percentil, partí de su área izquierda y calculá x=μ+z·σ.",
-            "P10 normal usa z≈−1,2816; P90 usa z≈+1,2816. P25 y P75 usan ±0,6745.",
-            "Revisá el sentido de los puntajes: en tiempo de reacción, un valor menor puede significar mejor rendimiento."
+          "lines": [
+            {
+              "left": "z =",
+              "numerator": "x − μ",
+              "denominator": "σ"
+            },
+            {
+              "left": "x =",
+              "right": "μ + z × σ"
+            }
+          ],
+          "symbols": [
+            {
+              "symbol": "μ",
+              "meaning": "media de la población"
+            },
+            {
+              "symbol": "σ",
+              "meaning": "desvío estándar de la población"
+            },
+            {
+              "symbol": "Φ(z)",
+              "meaning": "área o proporción a la izquierda del valor z"
+            }
           ]
         },
         {
+          "type": "steps",
+          "items": [
+            "Si piden «menos de x», calculá z y buscá Φ(z).",
+            "Si piden «más de x», calculá 1−Φ(z).",
+            "Si piden «entre a y b», calculá Φ(z de b)−Φ(z de a).",
+            "Si piden el valor que delimita el 10 % superior, usá P90: x=μ+1,2816σ. Para el 10 % inferior, P10: x=μ−1,2816σ.",
+            "Para P25 y P75, los z correspondientes son aproximadamente −0,6745 y +0,6745."
+          ]
+        },
+        {
+          "type": "worked",
+          "title": "Parcial real 2026: resiliencia",
+          "problem": "Distribución normal con μ=68 y σ=9; calcular P10, P90, porcentaje sobre 74 y proporción entre 65 y 72.",
+          "steps": [
+            "P10=68−1,2816×9≈56,47; P90=68+1,2816×9≈79,53.",
+            "Más de 74: z=(74−68)/9≈0,6667. Φ(0,6667)≈0,7475, entonces el área derecha es 1−0,7475=0,2525.",
+            "Entre 65 y 72: z inferior=−0,3333; superior=0,4444. Φ(0,4444)−Φ(−0,3333)≈0,3022."
+          ],
+          "result": "P10≈56,47; P90≈79,53; más de 74≈25,25 %; entre 65 y 72≈30,22 %.",
+          "interpretation": "El primer paso siempre es identificar si la pregunta busca un puntaje o un porcentaje. Son operaciones inversas."
+        },
+        {
           "type": "paragraph",
-          "text": "Ejemplo del parcial 2026: con μ=68, σ=9 y puntaje 74, z=(74−68)/9≈0,67. Para el porcentaje superior, calculá 1−Φ(0,67), aproximadamente 25 %. Antes de operar, decidí si piden cola izquierda, derecha o intervalo."
+          "text": "En los parciales de 2025 también preguntaron normales con media 0,4 segundos y desvío 0,1, y otra con media 42 y desvío 6. El procedimiento es el mismo: cambia el contexto y el sentido de «mejor» o «peor»."
         }
       ]
     },
@@ -83,19 +207,43 @@
       "blocks": [
         {
           "type": "paragraph",
-          "text": "H₀ representa la referencia contra la que se contrasta; H₁ es la alternativa formulada antes de mirar los datos. Una hipótesis sobre «diferencia» suele ser bilateral (≠); sobre «mayor» o «menor», unilateral (> o <)."
+          "text": "Una prueba estadística sirve para decidir si los datos aportan evidencia contra una hipótesis nula H₀. La alternativa H₁ expresa lo que querés detectar; hay que escribirlas ANTES de conocer el p."
+        },
+        {
+          "type": "list",
+          "items": [
+            "«Es diferente»: alternativa bilateral, ≠. «Aumenta»: unilateral, >. «Disminuye»: unilateral, <. Definí claramente qué se resta primero.",
+            "α (alfa) es el umbral decidido antes del análisis, por ejemplo 0,05. p es el resultado de la prueba bajo H₀ y sus supuestos.",
+            "Si p≤α rechazás H₀; si p>α NO la rechazás. No significa aceptar H₀ ni probar ausencia de efecto.",
+            "Error tipo I: rechazar una H₀ verdadera. Error tipo II: no rechazar una H₀ falsa. Potencia: 1−β.",
+            "Un p pequeño no dice cuántos pacientes mejoraron ni la importancia clínica de un efecto."
+          ]
         },
         {
           "type": "formula",
-          "expression": "p ≤ α → rechazar H₀    ·    p > α → no rechazar H₀"
+          "lines": [
+            {
+              "left": "p ≤ α",
+              "right": "→ rechazar H₀"
+            },
+            {
+              "left": "p > α",
+              "right": "→ no rechazar H₀"
+            }
+          ],
+          "symbols": []
         },
         {
-          "type": "paragraph",
-          "text": "No rechazar H₀ no demuestra igualdad ni ausencia de efecto. El valor p tampoco es la probabilidad de que H₀ sea verdadera. Error I: rechazar una H₀ verdadera (riesgo α). Error II: no rechazar una H₀ falsa (riesgo β); potencia=1−β."
-        },
-        {
-          "type": "paragraph",
-          "text": "En los parciales de 2026, p=0,02 con α=0,05 implica rechazar H₀; p=0,06 con α=0,05 implica no rechazarla. Explicá siempre la conclusión en términos del fenómeno psicológico medido."
+          "type": "worked",
+          "title": "Dos resultados de parciales 2026",
+          "problem": "Se esperaba reducción de impulsividad con p=0,02 y α=0,05; para dependencia al móvil se obtuvo p=0,06 con el mismo α.",
+          "steps": [
+            "Impulsividad: 0,02<0,05. Rechazá H₀; hay evidencia estadística compatible con una reducción media.",
+            "Dependencia móvil: 0,06>0,05. No rechazás H₀; no hay evidencia suficiente al 5 % para afirmar una reducción.",
+            "No cambies α después de mirar p y no escribas «H₀ es verdadera»."
+          ],
+          "result": "Una conclusión se expresa en el idioma del caso, no solo con símbolos.",
+          "interpretation": "En 2025 también aparecieron antes/después con p=0,04 y p=0,001; ambos rechazan a α=0,05 bajo las hipótesis correspondientes."
         }
       ]
     },
@@ -104,27 +252,48 @@
       "title": "Qué prueba elegir",
       "blocks": [
         {
+          "type": "paragraph",
+          "text": "Elegir la prueba correcta depende de dos decisiones: si el resultado es NUMÉRICO o SÍ/NO, y si las observaciones pertenecen a personas DISTINTAS o a las MISMAS."
+        },
+        {
           "type": "comparison",
           "columns": [
             {
-              "label": "Resultado cuantitativo",
+              "label": "Resultado numérico",
               "items": [
-                "Mismas personas antes/después → t apareada sobre diferencias.",
-                "Dos grupos independientes → t de muestras independientes; revisar supuestos y varianzas (Welch cuando corresponda)."
+                "Misma persona antes/después → t apareada sobre la diferencia de sus puntajes.",
+                "Dos grupos de personas distintas → t independiente; revisar supuestos de normalidad y homogeneidad de varianzas (Welch cuando sea apropiado)."
               ]
             },
             {
-              "label": "Resultado sí/no",
+              "label": "Resultado binario",
               "items": [
-                "Se comparan porcentajes de dos grupos → contraste de proporciones.",
-                "Una tabla categórica no permite calcular una t sobre puntajes no informados."
+                "Sí/no en dos grupos distintos → comparación de proporciones; no t de puntajes inexistentes.",
+                "Tabla con frecuencias categóricas → calcular proporciones o asociación según la consigna."
               ]
             }
           ]
         },
         {
-          "type": "paragraph",
-          "text": "Si d=después−antes, una reducción implica H₁: μd<0. Si invertís el orden de la resta, se invierte el signo. La prueba y la conclusión deben referirse a la variable efectivamente medida."
+          "type": "steps",
+          "items": [
+            "Buscá el RESULTADO que se compara: un puntaje psicológico numérico o la proporción de casos.",
+            "Buscá si hay dependencia: ¿son los mismos 26 pacientes antes y después o son grupos de 15 personas distintas?",
+            "Escribí H₁ con la dirección solicitada. Si d = después−antes, una reducción significa μd<0; si d=antes−después, una reducción significa μd>0.",
+            "Indicá la prueba y justificá en una oración: «t apareada porque son las mismas personas medidas dos veces»."
+          ]
+        },
+        {
+          "type": "worked",
+          "title": "Parcial 2026: apoyo social y convivencia",
+          "problem": "Se pregunta por diferencias de puntaje 0–100 entre quienes viven solos y con familia. La tabla que acompaña el caso solo registra aislamiento sí/no.",
+          "steps": [
+            "Son dos grupos de participantes distintos: muestras independientes.",
+            "El puntaje 0–100 es una respuesta numérica: corresponde proponer una t para grupos independientes, sujetos a sus supuestos.",
+            "La tabla categórica NO contiene los puntajes necesarios para calcular esa t, y la parte descriptiva se resuelve con porcentajes."
+          ],
+          "result": "H₁: media de puntaje entre quienes viven solos ≠ media de puntaje entre quienes viven con familia.",
+          "interpretation": "La misma consigna puede contener una tabla sí/no para probabilidad y, aparte, pedir la prueba de medias de un puntaje diferente."
         }
       ]
     },
@@ -134,19 +303,80 @@
       "blocks": [
         {
           "type": "paragraph",
-          "text": "En una t apareada, primero calculás la diferencia de cada persona, luego su media y su desvío. En una t independiente, el error estándar usa la variabilidad de los dos grupos."
+          "text": "No memorices t y Z sin mirar el tipo de datos. Para la t apareada calculás las diferencias persona por persona. Para dos proporciones necesitás cuántos casos hubo en cada grupo y sus dos tamaños."
         },
         {
           "type": "formula",
-          "expression": "t apareada = media(d) / (s_d/√n)"
+          "lines": [
+            {
+              "left": "t apareada =",
+              "numerator": "media de las diferencias",
+              "denominator": "desvío de diferencias / √n"
+            }
+          ],
+          "symbols": [
+            {
+              "symbol": "n",
+              "meaning": "cantidad de pares completos de mediciones"
+            }
+          ]
         },
         {
-          "type": "paragraph",
-          "text": "Para dos proporciones, calculá p̂₁=x₁/n₁ y p̂₂=x₂/n₂. Bajo H₀ de igualdad, el error estándar del Z habitual usa la proporción combinada (x₁+x₂)/(n₁+n₂). Después elegí una o dos colas según H₁, no según el signo observado."
+          "type": "worked",
+          "title": "Ejemplo guiado: cinco diferencias",
+          "problem": "Se define d=después−antes y se registran −3, −1, −4, 0, −2 puntos.",
+          "steps": [
+            "Media de las diferencias = (−3−1−4+0−2)/5=−2.",
+            "Desvío muestral de diferencias: las desviaciones respecto de −2 son −1,1,−2,2,0. Sus cuadrados suman 10; s_d=√(10/4)≈1,581.",
+            "Error estándar =1,581/√5≈0,707. t=−2/0,707≈−2,83; grados de libertad: 4."
+          ],
+          "result": "t≈−2,83 (gl=4). Para decidir significación necesitás el valor p y la alternativa elegida.",
+          "interpretation": "Este es un ejemplo NUEVO de procedimiento, no los datos de un examen presencial."
         },
         {
           "type": "formula",
-          "expression": "Z = (p̂₁−p̂₂) / √[p̂(1−p̂)(1/n₁+1/n₂)]"
+          "lines": [
+            {
+              "left": "p̂₁ =",
+              "numerator": "casos favorables del grupo 1",
+              "denominator": "n₁"
+            },
+            {
+              "left": "p̂₂ =",
+              "numerator": "casos favorables del grupo 2",
+              "denominator": "n₂"
+            },
+            {
+              "left": "p̂ combinada =",
+              "numerator": "casos favorables de ambos grupos",
+              "denominator": "n₁ + n₂"
+            }
+          ],
+          "symbols": []
+        },
+        {
+          "type": "formula",
+          "lines": [
+            {
+              "left": "Z =",
+              "numerator": "p̂₁ − p̂₂",
+              "denominator": "√[p̂(1−p̂)(1/n₁+1/n₂)]"
+            }
+          ],
+          "symbols": []
+        },
+        {
+          "type": "worked",
+          "title": "Guía 10: provincia frente a CABA",
+          "problem": "Provincia: 763 respuestas afirmativas de 2180; CABA: 672 de 2100. Se investiga si la proporción de Provincia es mayor.",
+          "steps": [
+            "Provincia: 763/2180=0,35. CABA: 672/2100=0,32. Diferencia=0,03.",
+            "Proporción combinada: (763+672)/(2180+2100)=1435/4280≈0,33528.",
+            "Error estándar bajo H₀≈0,01443. Estadístico Z≈0,03/0,01443≈2,078.",
+            "H₁ es Provincia>CABA: valor p unilateral≈0,0188. Para α=0,05 se rechaza H₀."
+          ],
+          "result": "Hay evidencia de mayor proporción en Provincia según ese contraste.",
+          "interpretation": "Si la pregunta dijera «son diferentes» en vez de «es mayor», cambiaría a dos colas y se evaluaría otro p."
         }
       ]
     }
@@ -158,18 +388,40 @@
     },
     {
       "type": "formula",
-      "expression": "P(A)=n(A)/N    ·    P(A∩B)=n(A y B)/N"
+      "lines": [
+        {
+          "left": "P(A y B) =",
+          "numerator": "casos A y B",
+          "denominator": "N"
+        },
+        {
+          "left": "P(A | B) =",
+          "numerator": "casos A y B",
+          "denominator": "total B"
+        }
+      ],
+      "symbols": []
     },
     {
       "type": "formula",
-      "expression": "P(A|B)=n(A y B)/n(B)"
+      "lines": [
+        {
+          "left": "P(A o B) =",
+          "right": "P(A) + P(B) − P(A y B)"
+        },
+        {
+          "left": "P(ninguno) =",
+          "right": "1 − P(A o B)"
+        }
+      ],
+      "symbols": []
     },
     {
       "type": "list",
       "items": [
-        "«Dado B» → denominador n(B). Invertir A|B cambia la base.",
-        "Unión = suma de marginales − intersección; ninguno = 1 − unión.",
-        "Excluyentes: intersección 0. Independientes: intersección = producto."
+        "«Dado que B»: B es el denominador. «A y B»: conjunta sobre N.",
+        "Comparar grupos: divide cada cantidad por su total de fila.",
+        "Independencia: P(A y B)=P(A)×P(B). Exclusión: P(A y B)=0."
       ]
     },
     {
@@ -178,14 +430,25 @@
     },
     {
       "type": "formula",
-      "expression": "z=(x−μ)/σ    ·    x=μ+z·σ"
+      "lines": [
+        {
+          "left": "z =",
+          "numerator": "x − μ",
+          "denominator": "σ"
+        },
+        {
+          "left": "x =",
+          "right": "μ + z × σ"
+        }
+      ],
+      "symbols": []
     },
     {
       "type": "list",
       "items": [
-        "Izquierda: Φ(z). Derecha: 1−Φ(z). Entre a y b: Φ(z_b)−Φ(z_a).",
-        "P10/P90: z=∓1,2816. P25/P75: z=∓0,6745.",
-        "Si te dan varianza, σ=√varianza. Áreas siempre entre 0 y 1."
+        "Izquierda: Φ(z); derecha: 1−Φ(z); intervalo: Φ(z arriba)−Φ(z abajo).",
+        "P10: z≈−1,2816; P90: z≈1,2816. P25/P75: z≈±0,6745.",
+        "Si te dan varianza σ², antes sacá σ=√varianza."
       ]
     },
     {
@@ -193,12 +456,25 @@
       "text": "Hipótesis"
     },
     {
+      "type": "formula",
+      "lines": [
+        {
+          "left": "p ≤ α",
+          "right": "rechazar H₀"
+        },
+        {
+          "left": "p > α",
+          "right": "no rechazar H₀"
+        }
+      ],
+      "symbols": []
+    },
+    {
       "type": "list",
       "items": [
-        "«Diferente»: H₁ ≠; «supera»: H₁ >; «reduce»: H₁ < (según orden de la resta).",
-        "p≤α → rechazar H₀; p>α → no rechazar.",
+        "Bilateral: H₁ ≠. Mayor: H₁ >. Reducción: H₁ < si d=después−antes.",
         "Error I: rechazar H₀ verdadera; error II: no rechazar H₀ falsa.",
-        "No rechazar ≠ aceptar H₀; significación ≠ importancia clínica."
+        "No rechazar NO significa probar que H₀ sea cierta."
       ]
     },
     {
@@ -208,10 +484,10 @@
     {
       "type": "list",
       "items": [
-        "Mismas personas dos momentos + puntaje → t apareada.",
-        "Dos grupos distintos + puntaje → t independiente (Welch si corresponde).",
-        "Dos grupos distintos + sí/no → diferencia de proporciones.",
-        "Solo tabla categórica: no calcules t sin puntajes."
+        "Mismas personas antes/después, puntaje: t apareada.",
+        "Personas distintas, puntaje: t independiente (Welch si corresponde).",
+        "Grupos independientes, sí/no: contraste de proporciones.",
+        "Una tabla categórica no da puntajes para calcular t."
       ]
     },
     {
@@ -220,19 +496,42 @@
     },
     {
       "type": "formula",
-      "expression": "t pareada = media(d)/(s_d/√n)"
+      "lines": [
+        {
+          "left": "t apareada =",
+          "numerator": "media(d)",
+          "denominator": "s_d / √n"
+        },
+        {
+          "left": "p̂ grupo =",
+          "numerator": "casos favorables",
+          "denominator": "n del grupo"
+        }
+      ],
+      "symbols": []
     },
     {
       "type": "formula",
-      "expression": "p̂₁=x₁/n₁    ·    p̂₂=x₂/n₂"
+      "lines": [
+        {
+          "left": "p̂ combinada =",
+          "numerator": "x₁+x₂",
+          "denominator": "n₁+n₂"
+        },
+        {
+          "left": "Z =",
+          "numerator": "p̂₁−p̂₂",
+          "denominator": "√[p̂(1−p̂)(1/n₁+1/n₂)]"
+        }
+      ],
+      "symbols": []
     },
     {
-      "type": "formula",
-      "expression": "p̂=(x₁+x₂)/(n₁+n₂)    ·    Z=(p̂₁−p̂₂)/√[p̂(1−p̂)(1/n₁+1/n₂)]"
-    },
-    {
-      "type": "paragraph",
-      "text": "Para hipótesis unilaterales, la dirección de la alternativa determina la cola del valor p."
+      "type": "list",
+      "items": [
+        "Elegí una o dos colas según H₁, no según la dirección que casualmente muestran los datos.",
+        "Para concluir: regla p/α + significado del signo + contexto psicológico."
+      ]
     }
   ],
   "practiceRefs": [
