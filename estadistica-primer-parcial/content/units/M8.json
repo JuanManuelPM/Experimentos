@@ -3,21 +3,1725 @@
   "moduleId": "M8",
   "id": "08",
   "partial": "P2",
-  "status": "draft",
+  "status": "ready",
   "title": "Inferencia estadística",
-  "intro": "Hipótesis y decisiones",
-  "source": "Fuente privada: paquete académico v2",
-  "theory": [],
-  "practice": [],
+  "intro": "Hipótesis, valor p, decisión, errores y potencia",
+  "source": "Teoría original M8 · UP; prácticas pedagógicas basadas en guías M9/M10, integrador y parciales P2 2025/2026.",
+  "theory": [
+    {
+      "id": "08.inferencia",
+      "title": "De una muestra a una población",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "La estadística descriptiva cuenta qué ocurrió entre las personas observadas. La inferencia intenta responder qué puede sostenerse sobre una población más amplia a partir de esa muestra, sabiendo que otra muestra podría dar resultados diferentes."
+        },
+        {
+          "type": "list",
+          "items": [
+            {
+              "label": "Población",
+              "text": "el conjunto sobre el que se quiere concluir."
+            },
+            {
+              "label": "Muestra",
+              "text": "las personas efectivamente medidas."
+            },
+            {
+              "label": "Parámetro",
+              "text": "característica desconocida de la población (por ejemplo, μ o π)."
+            },
+            {
+              "label": "Estadístico",
+              "text": "valor calculado con la muestra (por ejemplo, una media o proporción muestral)."
+            }
+          ]
+        },
+        {
+          "type": "definition",
+          "term": "Ejemplo",
+          "text": "En 26 pacientes la impulsividad media baja después de un programa. Esa diferencia describe a los 26; para sostener que el cambio existe en la población se necesita una inferencia estadística.",
+          "example": "Una diferencia de medias observada no demuestra, por sí sola, que la diferencia poblacional sea distinta de cero."
+        },
+        {
+          "type": "note",
+          "text": "La prueba usa un modelo y supuestos. Un valor p por sí solo no garantiza representatividad, ausencia de sesgos ni causalidad."
+        }
+      ]
+    },
+    {
+      "id": "08.hipotesis",
+      "title": "H₀ y H₁: qué afirmación se pone a prueba",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Las hipótesis estadísticas son afirmaciones sobre parámetros poblacionales. H₀ es el punto de referencia que la prueba intenta refutar; H₁ describe la diferencia o dirección para la que se busca evidencia."
+        },
+        {
+          "type": "comparison",
+          "columns": [
+            {
+              "label": "H₀ · nula",
+              "items": [
+                "Incluye la ausencia de efecto o el valor de referencia.",
+                "En una prueba unilateral puede incluir también los valores opuestos a H₁.",
+                "No se declara verdadera cuando la prueba no la rechaza."
+              ]
+            },
+            {
+              "label": "H₁ · alternativa",
+              "items": [
+                "Plantea el cambio, diferencia o dirección de interés.",
+                "Se define antes de ver los resultados.",
+                "Determina si el contraste es unilateral o bilateral."
+              ]
+            }
+          ]
+        },
+        {
+          "type": "formula",
+          "expression": "H₀: μ ≤ 1000      H₁: μ > 1000",
+          "symbols": [
+            {
+              "symbol": "μ",
+              "meaning": "promedio diario de fotocopias de la población"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "El negocio solo es rentable si el promedio supera 1000 copias diarias. Por eso la hipótesis alternativa es μ > 1000; no alcanza con ver 1001 copias en una muestra pequeña."
+        },
+        {
+          "type": "note",
+          "text": "H₀ no siempre se escribe «=». En contrastes unilaterales, ≤ o ≥ puede ser una formulación completa de la hipótesis nula."
+        }
+      ]
+    },
+    {
+      "id": "08.parametro",
+      "title": "Qué representa μ, una diferencia y una proporción",
+      "blocks": [
+        {
+          "type": "list",
+          "items": [
+            {
+              "label": "μ",
+              "text": "media poblacional de una variable numérica."
+            },
+            {
+              "label": "μdespués − μantes",
+              "text": "diferencia de medias del mismo grupo en dos momentos; en datos apareados se analiza la media poblacional de las diferencias individuales."
+            },
+            {
+              "label": "μA − μB",
+              "text": "diferencia poblacional entre las medias de dos grupos independientes."
+            },
+            {
+              "label": "πA − πB",
+              "text": "diferencia entre proporciones poblacionales cuando cada resultado es sí/no."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "El cero es la referencia habitual para una diferencia: equivale a que no hay cambio medio o diferencia entre grupos. El símbolo y el orden de la resta definen qué significa un resultado positivo."
+        },
+        {
+          "type": "definition",
+          "term": "Ejemplo",
+          "text": "Si «mayor puntuación» significa más ansiedad y d = después − antes, d < 0 representa una reducción. Si d = antes − después, la misma mejora produce d > 0."
+        }
+      ]
+    },
+    {
+      "id": "08.direccion",
+      "title": "Bilateral y unilateral: cómo elegir el signo",
+      "blocks": [
+        {
+          "type": "comparison",
+          "columns": [
+            {
+              "label": "Unilateral",
+              "items": [
+                "Se anticipa un sentido: aumenta (>) o disminuye (<).",
+                "Solo ese sentido constituye la alternativa.",
+                "El sentido depende de qué cantidad se resta de cuál."
+              ]
+            },
+            {
+              "label": "Bilateral",
+              "items": [
+                "Se pregunta si las cantidades difieren, sin priorizar una dirección.",
+                "La alternativa usa ≠.",
+                "Una diferencia en cualquier sentido podría respaldar H₁."
+              ]
+            }
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            {
+              "label": "Taller que reduce impulsividad",
+              "text": "d = después − antes → H₁: μd < 0."
+            },
+            {
+              "label": "El mismo taller, resta invertida",
+              "text": "d = antes − después → H₁: μd > 0."
+            },
+            {
+              "label": "Cambios de opinión tras un debate",
+              "text": "sin dirección esperada → H₁: μd ≠ 0."
+            }
+          ]
+        },
+        {
+          "type": "note",
+          "text": "No elegir el sentido de la prueba mirando cuál media muestral salió más alta: eso transforma una decisión previa en una selección oportunista."
+        }
+      ]
+    },
+    {
+      "id": "08.diseno",
+      "title": "Mismos participantes o grupos diferentes",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Antes de elegir una hipótesis, comprobá qué observaciones se comparan. El diseño cambia qué representa la diferencia y qué prueba puede usarse después."
+        },
+        {
+          "type": "comparison",
+          "columns": [
+            {
+              "label": "Relacionadas / apareadas",
+              "items": [
+                "Las mismas personas en dos momentos o pares vinculados.",
+                "Se calcula una diferencia por par.",
+                "Ejemplo: ansiedad antes y después de TCC."
+              ]
+            },
+            {
+              "label": "Independientes",
+              "items": [
+                "Personas distintas integran cada grupo.",
+                "Se comparan las medias o proporciones de los grupos.",
+                "Ejemplo: estudiantes con y sin tutorías."
+              ]
+            }
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            {
+              "label": "Resultado numérico",
+              "text": "si se comparan medias, M9 desarrolla las pruebas t según el diseño."
+            },
+            {
+              "label": "Resultado binario",
+              "text": "si se comparan porcentajes de «sí», M10 desarrolla las pruebas para proporciones."
+            }
+          ]
+        },
+        {
+          "type": "definition",
+          "term": "Ejemplo",
+          "text": "En 35 pacientes, el puntaje de satisfacción se mide antes y después de una operación: las dos observaciones de cada persona están relacionadas, aunque haya 70 mediciones."
+        }
+      ]
+    },
+    {
+      "id": "08.alfa",
+      "title": "α: el riesgo que se fija antes de analizar",
+      "blocks": [
+        {
+          "type": "definition",
+          "term": "Nivel de significación (α)",
+          "text": "Es la probabilidad máxima fijada para cometer un error de tipo I bajo la hipótesis nula, con el procedimiento de prueba considerado.",
+          "example": "α = 0,05 significa un nivel del 5 %; no dice que H₀ tenga un 5 % de probabilidad de ser verdadera."
+        },
+        {
+          "type": "paragraph",
+          "text": "Se elige antes de ver el valor p. Si una decisión equivocada al rechazar H₀ tiene consecuencias importantes, el nivel de significación debe evaluarse en ese contexto."
+        },
+        {
+          "type": "list",
+          "items": [
+            {
+              "label": "α = 0,01",
+              "text": "umbral más exigente para rechazar."
+            },
+            {
+              "label": "α = 0,05",
+              "text": "umbral común, no una regla universal."
+            },
+            {
+              "label": "α = 0,10",
+              "text": "umbral menos exigente, con mayor tolerancia al error tipo I."
+            }
+          ]
+        },
+        {
+          "type": "note",
+          "text": "Reducir α, manteniendo el tamaño muestral y el resto constantes, suele dificultar rechazar H₀ y puede disminuir la potencia."
+        }
+      ]
+    },
+    {
+      "id": "08.p",
+      "title": "Valor p: qué mide y qué no mide",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "El valor p mide qué tan extremos serían los resultados observados, o más, si H₀ fuese cierta y los supuestos de la prueba se cumplieran. Debe corresponder a la prueba y al sentido de H₁ elegidos."
+        },
+        {
+          "type": "comparison",
+          "columns": [
+            {
+              "label": "p pequeño",
+              "items": [
+                "Los resultados serían poco frecuentes bajo H₀.",
+                "Puede aportar evidencia en contra de H₀."
+              ]
+            },
+            {
+              "label": "p grande",
+              "items": [
+                "Los resultados son compatibles con H₀.",
+                "No demuestra que H₀ sea verdadera ni que el efecto sea cero."
+              ]
+            }
+          ]
+        },
+        {
+          "type": "note",
+          "text": "p no es P(H₀ verdadera), ni la probabilidad de que el resultado sea «solo azar», ni el tamaño del efecto."
+        },
+        {
+          "type": "definition",
+          "term": "Ejemplo",
+          "text": "Un resultado p = 0,02 sería extremo bajo H₀ según el modelo. A α = 0,05 corresponde rechazar H₀; a α = 0,01 no alcanza para hacerlo."
+        }
+      ]
+    },
+    {
+      "id": "08.regla",
+      "title": "Regla de decisión y conclusión",
+      "blocks": [
+        {
+          "type": "formula",
+          "expression": "p ≤ α → rechazar H₀     |     p > α → no rechazar H₀",
+          "symbols": [
+            {
+              "symbol": "p",
+              "meaning": "valor p obtenido con la prueba correspondiente"
+            },
+            {
+              "symbol": "α",
+              "meaning": "nivel de significación definido de antemano"
+            }
+          ]
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Caso",
+            "Comparación",
+            "Decisión"
+          ],
+          "rows": [
+            [
+              "p = 0,02; α = 0,05",
+              "0,02 ≤ 0,05",
+              "Rechazar H₀"
+            ],
+            [
+              "p = 0,06; α = 0,05",
+              "0,06 > 0,05",
+              "No rechazar H₀"
+            ],
+            [
+              "p = 0,05; α = 0,05",
+              "0,05 = 0,05",
+              "Rechazar H₀"
+            ]
+          ]
+        },
+        {
+          "type": "steps",
+          "items": [
+            "Localizar el efecto y la dirección de H₁.",
+            "Leer el valor p y el α de ese contraste.",
+            "Comparar los dos números sin redondear de modo que cambie la decisión.",
+            "Decir «rechazar» o «no rechazar» H₀.",
+            "Explicar qué significa respecto de la pregunta psicológica, sin afirmar más de lo que permiten los datos."
+          ]
+        },
+        {
+          "type": "definition",
+          "term": "Ejemplo del parcial 2026",
+          "text": "Programa para disminuir impulsividad, p = 0,02 y α = 0,05: se rechaza H₀. Hay evidencia estadística compatible con una reducción media en la población estudiada, si la prueba y sus supuestos son adecuados."
+        }
+      ]
+    },
+    {
+      "id": "08.errores",
+      "title": "Errores de tipo I y II: decisión frente a realidad",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Una prueba toma una decisión con datos limitados. La realidad poblacional no se conoce con certeza, por lo que tanto el rechazo como el no rechazo pueden equivocarse."
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Situación real",
+            "Rechazar H₀",
+            "No rechazar H₀"
+          ],
+          "rows": [
+            [
+              "H₀ verdadera",
+              "Error tipo I",
+              "Decisión correcta"
+            ],
+            [
+              "H₀ falsa",
+              "Decisión correcta",
+              "Error tipo II"
+            ]
+          ]
+        },
+        {
+          "type": "formula",
+          "expression": "α = P(rechazar H₀ | H₀ verdadera)     β = P(no rechazar H₀ | H₀ falsa)",
+          "symbols": []
+        },
+        {
+          "type": "definition",
+          "term": "Tipo I",
+          "text": "En el negocio de fotocopias, alquilar concluyendo que μ > 1000 cuando en realidad μ ≤ 1000.",
+          "example": "Se actúa como si hubiera evidencia cuando la hipótesis alternativa es falsa."
+        },
+        {
+          "type": "definition",
+          "term": "Tipo II",
+          "text": "No alquilar cuando en realidad el promedio poblacional supera 1000.",
+          "example": "No detectar un efecto que realmente existe."
+        },
+        {
+          "type": "note",
+          "text": "Qué error resulta más grave depende de las consecuencias: no existe una jerarquía universal independiente del problema."
+        }
+      ]
+    },
+    {
+      "id": "08.potencia",
+      "title": "Potencia y la relación entre α y β",
+      "blocks": [
+        {
+          "type": "formula",
+          "expression": "Potencia = 1 − β",
+          "symbols": [
+            {
+              "symbol": "β",
+              "meaning": "probabilidad de error tipo II para una alternativa específica"
+            },
+            {
+              "symbol": "Potencia",
+              "meaning": "probabilidad de rechazar H₀ cuando la alternativa considerada es verdadera"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Una prueba con potencia 0,80 detectaría el efecto especificado en el 80 % de estudios repetidos bajo esas condiciones. La potencia varía con tamaño del efecto, dispersión, tamaño de muestra, tipo de prueba y α."
+        },
+        {
+          "type": "definition",
+          "term": "Ejemplo",
+          "text": "Si β = 0,20 para una reducción clínicamente relevante, la potencia para detectar esa reducción es 0,80; no es la probabilidad de que el tratamiento funcione en un paciente."
+        },
+        {
+          "type": "note",
+          "text": "α y β no son probabilidades complementarias: en general α + β ≠ 1. La cantidad 1 − β es potencia, no 1 − α."
+        }
+      ]
+    },
+    {
+      "id": "08.significado",
+      "title": "Significativo no significa grande ni causal",
+      "blocks": [
+        {
+          "type": "comparison",
+          "columns": [
+            {
+              "label": "Significación estadística",
+              "items": [
+                "Compara los datos con H₀ mediante un valor p y un α.",
+                "Indica evidencia contra una hipótesis bajo un modelo."
+              ]
+            },
+            {
+              "label": "Importancia psicológica",
+              "items": [
+                "Pregunta cuán grande, útil o relevante es el cambio.",
+                "Se evalúa con tamaño del efecto, medidas clínicas y contexto."
+              ]
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Un efecto minúsculo puede ser estadísticamente significativo con muchas observaciones. Un estudio pequeño puede no rechazar H₀ aunque exista un efecto relevante. La causalidad requiere considerar el diseño, el control de confusores y otras amenazas a la validez."
+        },
+        {
+          "type": "definition",
+          "term": "Ejemplo",
+          "text": "Si el puntaje de ansiedad baja significativamente, eso no prueba por sí solo que el programa causó toda la reducción ni que la mejoría alcanza un umbral clínico."
+        }
+      ]
+    },
+    {
+      "id": "08.secuencia",
+      "title": "Cómo se resuelve un contraste en el examen",
+      "blocks": [
+        {
+          "type": "steps",
+          "items": [
+            "Precisar el objetivo: cambio, diferencia, aumento o disminución.",
+            "Identificar qué parámetro corresponde (media, diferencia de medias o proporción), el diseño y el orden de resta.",
+            "Formular H₀ y H₁; decidir si el contraste es unilateral o bilateral.",
+            "Seleccionar la prueba y comprobar sus supuestos cuando el ejercicio lo solicite (en M9/M10 se desarrollan las pruebas concretas).",
+            "Fijar α y obtener el valor p de la prueba apropiada.",
+            "Aplicar p ≤ α o p > α y redactar una conclusión limitada a la pregunta original."
+          ]
+        },
+        {
+          "type": "comparison",
+          "columns": [
+            {
+              "label": "Si el ejercicio entrega p",
+              "items": [
+                "No hace falta inventar datos ni recalcular el estadístico.",
+                "Se puede decidir con p y α, una vez identificada la hipótesis."
+              ]
+            },
+            {
+              "label": "Si no entrega p ni datos suficientes",
+              "items": [
+                "Es posible formular hipótesis y proponer una prueba.",
+                "No es legítimo afirmar significación estadística solo por comparar promedios de una muestra."
+              ]
+            }
+          ]
+        },
+        {
+          "type": "note",
+          "text": "En la teoría original de M8 la regla se explica también con áreas y regiones de rechazo; los números de esos gráficos son ilustrativos, no una base de datos para calcular resultados de un parcial."
+        }
+      ]
+    }
+  ],
+  "practice": [
+    {
+      "id": "M8.H1.01",
+      "type": "choice",
+      "title": "Rentabilidad: hipótesis",
+      "prompt": "Un negocio conviene únicamente si el promedio poblacional de ventas diarias supera 1000. ¿Qué hipótesis expresan esa condición?",
+      "source": "Adaptación pedagógica · Teoría original M8, ejemplo 2 (fotocopias)",
+      "hints": [
+        "El negocio solo se alquila si se supera cierto promedio.",
+        "La alternativa debe contener el resultado que justificaría actuar.",
+        "μ representa el promedio poblacional; «supera» exige μ > 1000."
+      ],
+      "solution": [
+        "El parámetro es la media poblacional μ de ventas diarias.",
+        "Como interesa demostrar que supera 1000, H₁: μ > 1000. La nula complementaria es H₀: μ ≤ 1000."
+      ],
+      "options": [
+        "H₀: μ ≤ 1000; H₁: μ > 1000",
+        "H₀: μ = 1000; H₁: μ < 1000",
+        "H₀: μ > 1000; H₁: μ ≤ 1000",
+        "H₀: μ = 1000; H₁: μ ≠ 1000"
+      ],
+      "answer": 0
+    },
+    {
+      "id": "M8.H1.02",
+      "type": "choice",
+      "title": "Impulsividad antes y después",
+      "prompt": "Se mide impulsividad en las mismas 26 personas; más puntos significan mayor impulsividad. Se espera una reducción. Con d = después − antes, elegí la alternativa.",
+      "source": "Adaptación pedagógica · Segundo parcial presencial 2026, tema 1, ejercicio 2",
+      "hints": [
+        "Pensá cuánto vale «después − antes» cuando el puntaje disminuye.",
+        "La media de diferencias apareadas conserva el signo de la reducción.",
+        "Por ejemplo, después 8 y antes 12: d = 8 − 12, negativo."
+      ],
+      "solution": [
+        "Son las mismas personas, por lo que se estudian diferencias dentro de cada participante.",
+        "Si d = después − antes, una reducción implica μd < 0. H₁: μd < 0; H₀: μd ≥ 0."
+      ],
+      "options": [
+        "H₁: μd > 0",
+        "H₁: μd < 0",
+        "H₁: μd ≠ 0",
+        "H₁: μd = 0"
+      ],
+      "answer": 1
+    },
+    {
+      "id": "M8.H1.03",
+      "type": "choice",
+      "title": "La misma mejora, resta invertida",
+      "prompt": "El puntaje de dependencia al teléfono disminuye después de un taller. Esta vez se define d = antes − después. ¿Qué H₁ corresponde?",
+      "source": "Adaptación pedagógica · Segundo parcial presencial 2026, tema 2, ejercicio 2",
+      "hints": [
+        "No te guíes por la palabra «disminuye» sin ver la resta.",
+        "La diferencia elegida es antes menos después.",
+        "Si pasa de 22 a 16, d = 22 − 16 = +6."
+      ],
+      "solution": [
+        "Para una mejora, el antes supera al después.",
+        "Con d = antes − después, la reducción queda positiva: H₁: μd > 0 y H₀: μd ≤ 0."
+      ],
+      "options": [
+        "H₁: μd < 0",
+        "H₁: μd ≠ 0",
+        "H₁: μd > 0",
+        "H₁: μd = 0"
+      ],
+      "answer": 2
+    },
+    {
+      "id": "M8.H1.04",
+      "type": "choice",
+      "title": "Cambio sin dirección anunciada",
+      "prompt": "Se evalúa en los mismos estudiantes su opinión antes y después de un debate; solo interesa saber si cambió. Con d = después − antes, ¿cuál es la alternativa?",
+      "source": "Adaptación pedagógica · Integrador P2, ejercicio 9",
+      "hints": [
+        "«Cambió» no indica si el puntaje subió o bajó.",
+        "Es un contraste bilateral.",
+        "La alternativa bilateral incluye diferencias positivas y negativas respecto de cero."
+      ],
+      "solution": [
+        "La pregunta no anticipa dirección del cambio.",
+        "H₁: μd ≠ 0; H₀: μd = 0. Corresponde un contraste bilateral para datos apareados."
+      ],
+      "options": [
+        "H₁: μd > 0",
+        "H₁: μd < 0",
+        "H₁: μd = 0",
+        "H₁: μd ≠ 0"
+      ],
+      "answer": 3
+    },
+    {
+      "id": "M8.H1.05",
+      "type": "choice",
+      "title": "Dos grupos y una predicción",
+      "prompt": "Se plantea que internos impulsivos obtienen más puntaje de violencia que internos premeditados. Definí Δ = μimpulsivos − μpremeditados. ¿Cuál es H₁?",
+      "source": "Adaptación pedagógica · Integrador P2, ejercicio 10",
+      "hints": [
+        "La comparación es entre grupos de personas distintas.",
+        "Un grupo se espera mayor que el otro.",
+        "Un primer promedio mayor menos un segundo menor da un número positivo."
+      ],
+      "solution": [
+        "Se comparan medias de dos grupos independientes.",
+        "La predicción «impulsivos mayor» equivale a Δ = μimpulsivos − μpremeditados > 0."
+      ],
+      "options": [
+        "Δ < 0",
+        "Δ > 0",
+        "Δ = 0",
+        "Δ ≠ 0"
+      ],
+      "answer": 1
+    },
+    {
+      "id": "M8.H1.06",
+      "type": "choice",
+      "title": "Dos tratamientos: resultado binario",
+      "prompt": "Se compara la proporción de pacientes con ansiedad clínica entre TCC (A) y mindfulness (B); se quiere saber si son diferentes en cualquier dirección. ¿Qué H₁ corresponde?",
+      "source": "Adaptación pedagógica · Integrador P2, ejercicio 12",
+      "hints": [
+        "El resultado es presencia o ausencia de ansiedad clínica.",
+        "Corresponde comparar proporciones, no medias de puntajes.",
+        "Como no se anticipa un grupo superior, usá «distinto» entre πA y πB."
+      ],
+      "solution": [
+        "El parámetro es una proporción poblacional para cada tratamiento.",
+        "H₀: πA = πB; H₁: πA ≠ πB. Es bilateral."
+      ],
+      "options": [
+        "πA > πB",
+        "πA = πB",
+        "πA ≠ πB",
+        "μA ≠ μB"
+      ],
+      "answer": 2
+    },
+    {
+      "id": "M8.H1.07",
+      "type": "choice",
+      "title": "Satisfacción y liderazgo",
+      "prompt": "El equipo espera mayor satisfacción en la compañía B (énfasis en bienestar) que en la A. Si Δ = μB − μA, elegí la alternativa.",
+      "source": "Adaptación pedagógica · Guía 9, ejercicio 2",
+      "hints": [
+        "B es el grupo que se espera mayor.",
+        "La variable de resultado es un puntaje numérico de satisfacción.",
+        "«Media de B menos media de A» es positiva si B supera a A."
+      ],
+      "solution": [
+        "Interesa comprobar una media de satisfacción mayor en B.",
+        "H₁: μB − μA > 0; H₀: μB − μA ≤ 0."
+      ],
+      "options": [
+        "H₁: Δ > 0",
+        "H₁: Δ < 0",
+        "H₁: Δ = 0",
+        "H₁: Δ ≠ 0"
+      ],
+      "answer": 0
+    },
+    {
+      "id": "M8.H1.08",
+      "type": "choice",
+      "title": "Tratamiento frente a lista de espera",
+      "prompt": "Puntajes SPAI más altos indican más fobia. Tratados (T) y lista de espera (E) son grupos independientes. ¿Qué alternativa corresponde a «el tratamiento reduce la fobia»?",
+      "source": "Adaptación pedagógica · Guía 9, ejercicio 4(b)",
+      "hints": [
+        "Cuanto menor el puntaje, menor la fobia.",
+        "Se comparan medias de dos grupos distintos.",
+        "La predicción es que el promedio T resulte menor que el promedio E."
+      ],
+      "solution": [
+        "La medida es numérica y los grupos son independientes.",
+        "La eficacia en el sentido anticipado equivale a H₁: μT < μE (H₀: μT ≥ μE)."
+      ],
+      "options": [
+        "H₁: μT > μE",
+        "H₁: μT = μE",
+        "H₁: μT ≠ μE",
+        "H₁: μT < μE"
+      ],
+      "answer": 3
+    },
+    {
+      "id": "M8.H1.09",
+      "type": "choice",
+      "title": "Satisfacción después de cirugía",
+      "prompt": "Las mismas personas responden antes y después a una escala donde puntajes mayores significan mayor satisfacción. Se espera una mejora. ¿Cuál es H₁ si d = después − antes?",
+      "source": "Adaptación pedagógica · Integrador P2, ejercicio 11",
+      "hints": [
+        "La mejora se refleja en un puntaje más alto.",
+        "La resta definida es después menos antes.",
+        "Postoperatorio mayor → diferencia positiva."
+      ],
+      "solution": [
+        "Cada persona aporta una pareja de mediciones.",
+        "H₁: μd > 0 y H₀: μd ≤ 0 para d = después − antes. No se puede decidir significación con medias descriptivas solas."
+      ],
+      "options": [
+        "μd < 0",
+        "μd > 0",
+        "μd = 0",
+        "μd ≠ 0"
+      ],
+      "answer": 1
+    },
+    {
+      "id": "M8.H1.10",
+      "type": "truefalse",
+      "title": "Formulación y dirección",
+      "prompt": "Para cada afirmación, elegí V o F.",
+      "source": "Ejercicio original de transferencia · no pertenece a ninguna guía",
+      "hints": [
+        "Revisá si la afirmación habla del sentido o del símbolo de la hipótesis.",
+        "Usá las reglas unilateral: > o <; bilateral: ≠.",
+        "Probá el signo de d con después 15 y antes 10: d = +5."
+      ],
+      "solution": [
+        "1 V: «distinto» implica ≠. 2 F: después − antes > 0 en un aumento.",
+        "3 F: H₀ puede ser compuesta, con ≤ o ≥. 4 F: el sentido se define antes de observar resultados."
+      ],
+      "claims": [
+        {
+          "text": "Una alternativa «hay diferencia» sin dirección previa puede escribirse μA − μB ≠ 0.",
+          "answer": true,
+          "explanation": "La alternativa bilateral usa ≠."
+        },
+        {
+          "text": "Si d = después − antes, un aumento del puntaje corresponde a μd < 0.",
+          "answer": false,
+          "explanation": "Un aumento produce diferencias positivas: μd > 0."
+        },
+        {
+          "text": "H₀ siempre debe escribirse con el símbolo =, incluso en pruebas unilaterales.",
+          "answer": false,
+          "explanation": "La nula unilateral puede incluir ≤ o ≥."
+        },
+        {
+          "text": "Se puede elegir H₁ según el signo de la diferencia muestral observada, después de mirar los datos.",
+          "answer": false,
+          "explanation": "El sentido debe formularse antes del análisis."
+        }
+      ]
+    },
+    {
+      "id": "M8.H1.11",
+      "type": "choice",
+      "title": "Cuál de estas conclusiones requiere inferencia",
+      "prompt": "En un grupo de 35 pacientes, la satisfacción media registrada pasó de 14,01 a 24,96 puntos después de la cirugía. ¿Qué afirmación está justificada solo con esos promedios?",
+      "source": "Adaptación pedagógica · Integrador P2, ejercicio 11",
+      "hints": [
+        "Diferenciá lo observado de lo inferido.",
+        "Dos medias de muestra no incluyen por sí solas un valor p ni la dispersión de las diferencias.",
+        "Es posible restar 24,96 − 14,01, pero no afirmar significación solo con esa resta."
+      ],
+      "solution": [
+        "En los datos descriptivos, la media postoperatoria supera a la preoperatoria en 10,95 puntos.",
+        "Sin la variabilidad de las diferencias apareadas u otro resultado inferencial pertinente, no puede concluirse significación poblacional."
+      ],
+      "options": [
+        "La cirugía causó una mejora poblacional significativa.",
+        "La media observada aumentó en la muestra; falta una prueba para concluir sobre la población.",
+        "H₀ fue rechazada al 5 %.",
+        "El 100 % de los pacientes mejoró."
+      ],
+      "answer": 1
+    },
+    {
+      "id": "M8.H2.12",
+      "type": "choice",
+      "title": "Parcial 2026: impulsividad",
+      "prompt": "Para una prueba adecuada de reducción de impulsividad se informa p = 0,02 con α = 0,05. ¿Cuál es la conclusión estadística?",
+      "source": "Adaptación pedagógica · Segundo parcial presencial 2026, tema 1, ejercicio 2",
+      "hints": [
+        "Buscá los dos números: p y α.",
+        "Se rechaza cuando p es menor o igual que α.",
+        "0,02 ≤ 0,05; interpretá solo lo que permite el contraste."
+      ],
+      "solution": [
+        "Se cumple la condición de rechazo: 0,02 ≤ 0,05.",
+        "Se rechaza H₀ al 5 %. Los resultados aportan evidencia de reducción media de impulsividad en la población estudiada; no garantizan mejora de cada individuo."
+      ],
+      "options": [
+        "No rechazar H₀ porque 0,02 es positivo.",
+        "Rechazar H₀: hay evidencia estadística de reducción, bajo las condiciones de la prueba.",
+        "Aceptar H₀: se probó que no cambia.",
+        "Rechazar H₀ y afirmar que todos mejoraron."
+      ],
+      "answer": 1
+    },
+    {
+      "id": "M8.H2.13",
+      "type": "choice",
+      "title": "Parcial 2026: dependencia al teléfono",
+      "prompt": "En otra intervención se obtiene p = 0,06 para la hipótesis de reducción, con α = 0,05. ¿Qué corresponde concluir?",
+      "source": "Adaptación pedagógica · Segundo parcial presencial 2026, tema 2, ejercicio 2",
+      "hints": [
+        "No confundas «casi» con el criterio fijado.",
+        "Compará p con α sin modificar el umbral.",
+        "0,06 es mayor que 0,05."
+      ],
+      "solution": [
+        "Como p = 0,06 > α = 0,05, no se rechaza H₀.",
+        "No hay evidencia estadística suficiente al 5 % para sostener la reducción; no equivale a demostrar ausencia de efecto."
+      ],
+      "options": [
+        "Rechazar H₀ porque p es cercano a 0,05.",
+        "No rechazar H₀: no hay evidencia suficiente al 5 % para afirmar una reducción.",
+        "Aceptar H₀ y probar que el taller no sirve.",
+        "Cambiar α a 0,10 después de ver p."
+      ],
+      "answer": 1
+    },
+    {
+      "id": "M8.H2.14",
+      "type": "choice",
+      "title": "Parcial 2025: estigma",
+      "prompt": "Después de un taller para disminuir el estigma hacia la enfermedad mental se obtuvo p = 0,04 y α = 0,05. ¿Qué decisión corresponde?",
+      "source": "Adaptación pedagógica · Segundo parcial presencial 2025, tema 1, ejercicio 2",
+      "hints": [
+        "Ubicá el valor p en relación con el umbral.",
+        "Menor p que α lleva al rechazo.",
+        "0,04 ≤ 0,05."
+      ],
+      "solution": [
+        "Se cumple 0,04 ≤ 0,05, por lo que se rechaza H₀.",
+        "En el contraste planteado hay evidencia estadística de disminución media del estigma; el valor p no informa la magnitud clínica."
+      ],
+      "options": [
+        "No rechazar H₀: 0,04 < 0,05.",
+        "Rechazar H₀ y sostener evidencia estadística de reducción media, si la prueba era la adecuada.",
+        "Probar que la reducción es grande y clínicamente importante.",
+        "Aceptar H₀ porque se midió antes y después."
+      ],
+      "answer": 1
+    },
+    {
+      "id": "M8.H2.15",
+      "type": "choice",
+      "title": "Parcial 2025: ansiedad social",
+      "prompt": "Se informa p = 0,001 y α = 0,05 para evaluar si un programa TCC reduce la ansiedad social. Elegí la interpretación.",
+      "source": "Adaptación pedagógica · Segundo parcial presencial 2025, tema 2, ejercicio 1",
+      "hints": [
+        "La pregunta es sobre la decisión, no sobre el porcentaje de personas que mejoró.",
+        "Comprobá si 0,001 supera o no 0,05.",
+        "0,001 < 0,05 implica rechazo de H₀."
+      ],
+      "solution": [
+        "0,001 ≤ 0,05: se rechaza H₀ al 5 %.",
+        "La prueba apoya una reducción poblacional media en el sentido planteado; ni causalidad absoluta ni curación individual se desprenden solo del p."
+      ],
+      "options": [
+        "La probabilidad de que H₀ sea verdadera es 0,1 %.",
+        "No rechazar H₀ por tratarse de medidas repetidas.",
+        "Rechazar H₀: los datos respaldan estadísticamente la reducción, sin cuantificar su magnitud.",
+        "Se demostró que el tratamiento cura a todos."
+      ],
+      "answer": 2
+    },
+    {
+      "id": "M8.H2.16",
+      "type": "choice",
+      "title": "Examen oral y presión arterial",
+      "prompt": "Los mismos alumnos fueron evaluados en dos situaciones, y se informa p = 0,03 con α = 0,05 para el contraste adecuado. ¿Cuál es la decisión?",
+      "source": "Adaptación pedagógica · Guía 9, ejercicio 3",
+      "hints": [
+        "Identificá p = 0,03 y α = 0,05.",
+        "Aplicá la misma regla con independencia de que la comparación sea apareada.",
+        "0,03 ≤ 0,05."
+      ],
+      "solution": [
+        "Las dos mediciones corresponden a las mismas personas, por lo que el diseño es apareado.",
+        "Como p = 0,03 ≤ 0,05, se rechaza H₀ para el contraste informado. El p solo no cuantifica la diferencia en presión arterial."
+      ],
+      "options": [
+        "No rechazar H₀ porque las mediciones están apareadas.",
+        "Rechazar H₀; hay evidencia contra la ausencia de diferencia en el contraste realizado.",
+        "Aceptar H₀ porque no se conoce la desviación.",
+        "Afirmar el tamaño exacto del aumento solo a partir de p."
+      ],
+      "answer": 1
+    },
+    {
+      "id": "M8.H2.17",
+      "type": "choice",
+      "title": "Caso límite p = α",
+      "prompt": "En un contraste fijado de antemano en α = 0,05, se obtuvo p = 0,05 sin redondeos adicionales. ¿Cuál es la decisión?",
+      "source": "Ejercicio original de transferencia · no pertenece a ninguna guía",
+      "hints": [
+        "Observá el símbolo de la regla.",
+        "La condición de rechazo usa «menor o igual».",
+        "0,05 ≤ 0,05 se cumple por igualdad."
+      ],
+      "solution": [
+        "La regla fijada es p ≤ α.",
+        "Como p = α = 0,05, se rechaza H₀. Si 0,05 fuera un redondeo, habría que comprobar el p sin redondear antes de decidir."
+      ],
+      "options": [
+        "Rechazar H₀",
+        "No rechazar H₀",
+        "Aceptar H₀",
+        "Es imposible decidir aun con p y α"
+      ],
+      "answer": 0
+    },
+    {
+      "id": "M8.H2.18",
+      "type": "truefalse",
+      "title": "El mismo p con dos niveles",
+      "prompt": "Se obtuvo un valor p = 0,04. Evaluá las cuatro afirmaciones sin cambiar el valor observado.",
+      "source": "Ejercicio original de transferencia · no pertenece a ninguna guía",
+      "hints": [
+        "La comparación depende del α indicado en cada frase.",
+        "Calculá tres desigualdades distintas usando el mismo 0,04.",
+        "0,04 > 0,01, pero 0,04 ≤ 0,05 y 0,04 ≤ 0,10."
+      ],
+      "solution": [
+        "1 F: no rechazo a 1 %. 2 V: rechazo a 5 %. 3 F: rechazo a 10 %.",
+        "4 F: α cambia el umbral de decisión, no el valor p del mismo análisis."
+      ],
+      "claims": [
+        {
+          "text": "Con α = 0,01 corresponde rechazar H₀.",
+          "answer": false,
+          "explanation": "0,04 > 0,01; no se rechaza."
+        },
+        {
+          "text": "Con α = 0,05 corresponde rechazar H₀.",
+          "answer": true,
+          "explanation": "0,04 ≤ 0,05; se rechaza."
+        },
+        {
+          "text": "Con α = 0,10 corresponde no rechazar H₀.",
+          "answer": false,
+          "explanation": "0,04 ≤ 0,10; se rechaza."
+        },
+        {
+          "text": "El valor p calculado cambia automáticamente cuando el investigador elige un α diferente.",
+          "answer": false,
+          "explanation": "Para el mismo contraste y datos, el p no cambia por modificar α."
+        }
+      ]
+    },
+    {
+      "id": "M8.H2.19",
+      "type": "truefalse",
+      "title": "Qué expresa el valor p",
+      "prompt": "Clasificá interpretaciones frecuentes del valor p.",
+      "source": "Ejercicio original de transferencia · no pertenece a ninguna guía",
+      "hints": [
+        "Preguntate cuál es la condición a partir de la cual se calcula p.",
+        "p describe datos extremos suponiendo H₀, no probabilidad de la hipótesis.",
+        "Distinguí P(datos extremos | H₀) de P(H₀ | datos)."
+      ],
+      "solution": [
+        "1 V y 4 V: p se calcula bajo H₀ con una prueba definida.",
+        "2 F y 3 F: ni cuantifica la probabilidad de H₀ ni demuestra efecto cero."
+      ],
+      "claims": [
+        {
+          "text": "Un valor p pequeño indica resultados relativamente extremos bajo H₀ y el modelo de prueba.",
+          "answer": true,
+          "explanation": "Se interpreta condicionalmente a H₀ y a los supuestos."
+        },
+        {
+          "text": "p = 0,03 implica que hay un 3 % de probabilidades de que H₀ sea verdadera.",
+          "answer": false,
+          "explanation": "La prueba frecuentista no calcula P(H₀ | datos)."
+        },
+        {
+          "text": "Un valor p grande demuestra que el efecto es exactamente cero.",
+          "answer": false,
+          "explanation": "No rechazo no demuestra efecto nulo."
+        },
+        {
+          "text": "El valor p depende de la prueba y de la dirección alternativa especificada.",
+          "answer": true,
+          "explanation": "Cambiar de bilateral a unilateral puede cambiar la probabilidad de extremos que se calcula."
+        }
+      ]
+    },
+    {
+      "id": "M8.H2.20",
+      "type": "choice",
+      "title": "Faltan los resultados de la prueba",
+      "prompt": "Dos grupos de estudiantes muestran medias muestrales distintas, pero no se proporciona p ni información para calcularlo. ¿Qué se puede sostener?",
+      "source": "Ejercicio original de transferencia · no pertenece a ninguna guía",
+      "hints": [
+        "Separá descripción de inferencia.",
+        "Una diferencia observada puede aparecer por variabilidad muestral.",
+        "Para decidir necesitás un contraste apropiado y su p o estadístico con criterio de rechazo."
+      ],
+      "solution": [
+        "Las medias distintas describen los datos disponibles.",
+        "No se puede afirmar significación estadística sin la información necesaria para la prueba."
+      ],
+      "options": [
+        "La diferencia es significativa porque las medias no coinciden.",
+        "No hay diferencia poblacional porque falta p.",
+        "La diferencia muestral existe; falta evidencia inferencial suficiente para decidir sobre H₀.",
+        "Se rechaza H₀ si el grupo 1 tiene mayor media."
+      ],
+      "answer": 2
+    },
+    {
+      "id": "M8.H2.21",
+      "type": "truefalse",
+      "title": "Decisión y redacción precisa",
+      "prompt": "Elegí V o F en estos enunciados sobre conclusiones.",
+      "source": "Ejercicio original de transferencia · no pertenece a ninguna guía",
+      "hints": [
+        "Una decisión correcta no debe exceder la evidencia disponible.",
+        "Aplicá p ≤ α; luego revisá el significado de «demostró» y «causa».",
+        "Calculá 0,009 ≤ 0,01 y 0,08 > 0,05."
+      ],
+      "solution": [
+        "1 V: rechazo al 1 %. 2 F: no rechazo no demuestra igualdad.",
+        "3 F: la significación no garantiza causalidad. 4 V: la conclusión debe ser contextual."
+      ],
+      "claims": [
+        {
+          "text": "Si p = 0,009 y α = 0,01, se rechaza H₀.",
+          "answer": true,
+          "explanation": "0,009 ≤ 0,01."
+        },
+        {
+          "text": "Si p = 0,08 y α = 0,05, es correcto escribir «se demostró que los grupos son iguales».",
+          "answer": false,
+          "explanation": "Solo corresponde no rechazar H₀."
+        },
+        {
+          "text": "Al rechazar H₀ se concluye automáticamente que el tratamiento causa el efecto.",
+          "answer": false,
+          "explanation": "La causalidad depende también del diseño y sus supuestos."
+        },
+        {
+          "text": "La conclusión en Psicología debe mencionar la variable, los grupos o momentos y la dirección estudiada.",
+          "answer": true,
+          "explanation": "La regla se informa junto a la interpretación contextual pertinente."
+        }
+      ]
+    },
+    {
+      "id": "M8.H2.22",
+      "type": "choice",
+      "title": "P y riesgo: no son sinónimos",
+      "prompt": "Un estudiante sostiene: «Al obtener p = 0,02, hay exactamente 2 % de probabilidad de cometer error tipo I en esta decisión». ¿Cuál es la corrección?",
+      "source": "Ejercicio original de transferencia · no pertenece a ninguna guía",
+      "hints": [
+        "Diferenciá un umbral elegido antes del análisis de un resultado del análisis.",
+        "La tasa de error tipo I del procedimiento se controla mediante α.",
+        "El p depende de los datos; no se interpreta como la probabilidad de que esta decisión sea errónea."
+      ],
+      "solution": [
+        "α controla la probabilidad de rechazo cuando H₀ es verdadera, bajo los supuestos de la prueba.",
+        "p = 0,02 expresa el resultado del contraste bajo H₀; no es una probabilidad posterior de haber cometido error tipo I."
+      ],
+      "options": [
+        "Correcto: p es siempre la tasa de error tipo I.",
+        "Incorrecto: α es el nivel de error tipo I fijado por el procedimiento; p mide extremidad de datos bajo H₀.",
+        "Incorrecto: el error tipo I es β.",
+        "Correcto solo cuando H₁ es bilateral."
+      ],
+      "answer": 1
+    },
+    {
+      "id": "M8.H3.23",
+      "type": "choice",
+      "title": "Fotocopias: error de actuar",
+      "prompt": "Se alquila la fotocopiadora porque se rechazó H₀, pero el promedio poblacional real NO supera 1000 copias diarias. ¿Qué error se cometió?",
+      "source": "Adaptación pedagógica · Teoría original M8, ejemplo 2 (fotocopias)",
+      "hints": [
+        "Identificá qué decisión se tomó.",
+        "Se rechazó H₀ aunque la condición de rentabilidad no era verdadera.",
+        "Rechazar una H₀ verdadera es error tipo I."
+      ],
+      "solution": [
+        "H₀ establece μ ≤ 1000 y en realidad esa condición se cumple.",
+        "Como se rechazó H₀ verdadera, se cometió un error tipo I."
+      ],
+      "options": [
+        "Tipo II",
+        "Tipo I",
+        "Ninguno: siempre que se rechaza se acierta.",
+        "No puede haber error con α fijado."
+      ],
+      "answer": 1
+    },
+    {
+      "id": "M8.H3.24",
+      "type": "choice",
+      "title": "Fotocopias: efecto no detectado",
+      "prompt": "El negocio no se alquila porque no se rechazó H₀, pero la media poblacional realmente es superior a 1000 copias diarias. ¿Qué clase de error ocurrió?",
+      "source": "Adaptación pedagógica · Teoría original M8, ejemplo 2 (fotocopias)",
+      "hints": [
+        "Identificá primero qué afirma la realidad.",
+        "La alternativa era verdadera, pero se decidió no rechazar H₀.",
+        "No rechazar una H₀ falsa es error tipo II."
+      ],
+      "solution": [
+        "La realidad μ > 1000 hace falsa a H₀: μ ≤ 1000.",
+        "No rechazarla fue un error tipo II."
+      ],
+      "options": [
+        "Tipo II",
+        "Tipo I",
+        "Se demostró H₀.",
+        "No hay error si p > α."
+      ],
+      "answer": 0
+    },
+    {
+      "id": "M8.H3.25",
+      "type": "truefalse",
+      "title": "Los cuatro escenarios de decisión",
+      "prompt": "Para cada combinación de realidad y decisión, marcá V o F.",
+      "source": "Ejercicio original de transferencia · no pertenece a ninguna guía",
+      "hints": [
+        "Separá dos hechos: qué es verdadero y qué se decidió.",
+        "Error I: rechazo falso; error II: no rechazo falso.",
+        "Armá mentalmente una tabla de 2 realidades por 2 decisiones."
+      ],
+      "solution": [
+        "Tipo I = rechazar H₀ verdadera. Tipo II = no rechazar H₀ falsa.",
+        "Las otras dos combinaciones son decisiones correctas: no rechazo de H₀ verdadera y rechazo de H₀ falsa."
+      ],
+      "claims": [
+        {
+          "text": "H₀ verdadera y rechazo de H₀: error tipo I.",
+          "answer": true,
+          "explanation": "Se rechaza una nula que era verdadera."
+        },
+        {
+          "text": "H₀ falsa y no rechazo de H₀: error tipo II.",
+          "answer": true,
+          "explanation": "No se detecta una alternativa verdadera."
+        },
+        {
+          "text": "H₀ verdadera y no rechazo de H₀: error tipo II.",
+          "answer": false,
+          "explanation": "No rechazar una H₀ verdadera es una decisión correcta."
+        },
+        {
+          "text": "H₀ falsa y rechazo de H₀: error tipo I.",
+          "answer": false,
+          "explanation": "Rechazar una H₀ falsa es una decisión correcta."
+        }
+      ]
+    },
+    {
+      "id": "M8.H3.26",
+      "type": "choice",
+      "title": "Un tratamiento que sí funciona",
+      "prompt": "En la población un taller reduce realmente la ansiedad media, pero en una muestra la prueba no rechaza H₀. ¿Cuál es el diagnóstico correcto?",
+      "source": "Ejercicio original de transferencia · no pertenece a ninguna guía",
+      "hints": [
+        "Separá lo que ocurrió en la población de la conclusión muestral.",
+        "La hipótesis de reducción es verdadera, pero la prueba no la detectó.",
+        "Cuando H₀ es falsa y no se rechaza, el error es tipo II."
+      ],
+      "solution": [
+        "La reducción real vuelve falsa la nula de ausencia de reducción.",
+        "No rechazar H₀ fue un error tipo II: un falso negativo inferencial."
+      ],
+      "options": [
+        "Error tipo I",
+        "Error tipo II",
+        "Potencia igual a 1",
+        "Demostración de que H₀ es verdadera"
+      ],
+      "answer": 1
+    },
+    {
+      "id": "M8.H3.27",
+      "type": "numeric",
+      "title": "Potencia a partir de β",
+      "prompt": "Para un efecto poblacional específico, una prueba tiene β = 0,15. ¿Cuál es su potencia?",
+      "source": "Ejercicio original de transferencia · no pertenece a ninguna guía",
+      "hints": [
+        "La potencia y β se refieren a la situación en que la alternativa es verdadera.",
+        "Son cantidades complementarias.",
+        "Sustituí en potencia = 1 − β; usá β = 0,15."
+      ],
+      "solution": [
+        "Potencia = 1 − β = 1 − 0,15 = 0,85 = 85 %.",
+        "Bajo el efecto especificado, el procedimiento rechaza H₀ con probabilidad 85 %."
+      ],
+      "answer": 0.85,
+      "options": [
+        0.15,
+        0.75,
+        0.85,
+        1.15
+      ],
+      "tolerance": 0.001
+    },
+    {
+      "id": "M8.H3.28",
+      "type": "truefalse",
+      "title": "Riesgos y potencia",
+      "prompt": "Evaluá cada afirmación acerca de α, β y potencia.",
+      "source": "Ejercicio original de transferencia · no pertenece a ninguna guía",
+      "hints": [
+        "Diferenciá las probabilidades según cuál hipótesis sea verdadera.",
+        "α corresponde a tipo I y β a tipo II.",
+        "La potencia complementa a β, no a α."
+      ],
+      "solution": [
+        "1 V y 2 V son las definiciones de los errores.",
+        "3 F: potencia = 1 − β. 4 V: un α menor suele volver más difícil el rechazo, ceteris paribus."
+      ],
+      "claims": [
+        {
+          "text": "α = P(rechazar H₀ | H₀ verdadera).",
+          "answer": true,
+          "explanation": "Definición de nivel de error tipo I."
+        },
+        {
+          "text": "β = P(no rechazar H₀ | H₀ falsa), para la alternativa considerada.",
+          "answer": true,
+          "explanation": "Definición de riesgo tipo II."
+        },
+        {
+          "text": "La potencia de una prueba es 1 − α.",
+          "answer": false,
+          "explanation": "Potencia = 1 − β."
+        },
+        {
+          "text": "Para un contraste fijo, reducir α suele reducir la facilidad de rechazar H₀ y puede disminuir la potencia.",
+          "answer": true,
+          "explanation": "Umbral más exigente puede elevar el riesgo tipo II si todo lo demás se mantiene fijo."
+        }
+      ]
+    },
+    {
+      "id": "M8.H3.29",
+      "type": "choice",
+      "title": "Error al concluir eficacia",
+      "prompt": "Se rechaza H₀ y se informa que una intervención es eficaz, pero en realidad no produce ninguna mejora poblacional. ¿Qué tipo de error describe el caso?",
+      "source": "Ejercicio original de transferencia · no pertenece a ninguna guía",
+      "hints": [
+        "Identificá si la decisión fue rechazo o no rechazo.",
+        "Se anunció un efecto que realmente no existe.",
+        "El rechazo de una nula verdadera es tipo I."
+      ],
+      "solution": [
+        "La afirmación de eficacia surgió de rechazar H₀ cuando la nula era verdadera.",
+        "Corresponde error tipo I; α es la probabilidad de este tipo de error bajo H₀."
+      ],
+      "options": [
+        "Tipo II por no detectar mejoría.",
+        "Tipo I por afirmar mejoría inexistente.",
+        "Un simple error de cálculo, nunca inferencial.",
+        "Una decisión correcta con poca potencia."
+      ],
+      "answer": 1
+    },
+    {
+      "id": "M8.H3.30",
+      "type": "choice",
+      "title": "Interpretar la potencia",
+      "prompt": "Una prueba está diseñada con potencia de 0,80 para detectar una reducción media de 4 puntos en una población determinada. ¿Qué significa?",
+      "source": "Ejercicio original de transferencia · no pertenece a ninguna guía",
+      "hints": [
+        "La potencia se refiere al comportamiento del procedimiento al repetirse.",
+        "Se condiciona a un efecto de magnitud específica, no a cada persona.",
+        "1 − β = 0,80 indica rechazo correcto bajo esa alternativa."
+      ],
+      "solution": [
+        "Potencia 0,80 significa P(rechazar H₀ | alternativa especificada verdadera) = 0,80.",
+        "No cuantifica mejoría individual, ni P(H₀), ni fija el valor p de cada estudio."
+      ],
+      "options": [
+        "El 80 % de los participantes mejorará exactamente 4 puntos.",
+        "Hay un 80 % de probabilidad de que H₀ sea verdadera.",
+        "Si esa reducción poblacional existe y se cumplen los supuestos, la prueba la detectaría con probabilidad 0,80 en estudios repetidos.",
+        "El valor p será siempre 0,20."
+      ],
+      "answer": 2
+    },
+    {
+      "id": "M8.H3.31",
+      "type": "truefalse",
+      "title": "Evidencia, efecto y causalidad",
+      "prompt": "Verdadero o falso: distinciones necesarias para concluir correctamente.",
+      "source": "Ejercicio original de transferencia · no pertenece a ninguna guía",
+      "hints": [
+        "Buscá palabras absolutas como «basta» y «garantiza».",
+        "Diferenciá significación, tamaño del efecto, validez externa y causalidad.",
+        "Un valor p solo resume evidencia bajo un modelo; no reemplaza el diseño de investigación."
+      ],
+      "solution": [
+        "1 F: significación ≠ importancia clínica. 2 V: no rechazo ≠ ausencia de efecto.",
+        "3 F: el sesgo no desaparece con una prueba. 4 V: la causalidad exige condiciones adicionales."
+      ],
+      "claims": [
+        {
+          "text": "Un p significativo basta para demostrar un efecto clínicamente importante.",
+          "answer": false,
+          "explanation": "El p no cuantifica importancia clínica ni tamaño del efecto."
+        },
+        {
+          "text": "Un p no significativo no garantiza que no exista efecto en la población.",
+          "answer": true,
+          "explanation": "Puede faltar potencia o información."
+        },
+        {
+          "text": "La inferencia estadística elimina por sí misma los sesgos de selección de la muestra.",
+          "answer": false,
+          "explanation": "La calidad muestral y del diseño debe evaluarse aparte."
+        },
+        {
+          "text": "Para hablar de causalidad, además de la prueba deben considerarse diseño y factores de confusión.",
+          "answer": true,
+          "explanation": "La significación no garantiza una inferencia causal."
+        }
+      ]
+    },
+    {
+      "id": "M8.H3.32",
+      "type": "choice",
+      "title": "Caso de transferencia integral",
+      "prompt": "En dos grupos independientes se mide un puntaje numérico de bienestar (más puntos = mejor). Se propone que A supera a B. La prueba unilateral apropiada da p = 0,047 con α = 0,05. ¿Cuál informe combina hipótesis y conclusión correctas?",
+      "source": "Ejercicio original de transferencia · no pertenece a ninguna guía",
+      "hints": [
+        "Detectá el parámetro: puntaje numérico → medias poblacionales.",
+        "La dirección es A mayor que B; compará p con α.",
+        "H₁: μA > μB; 0,047 ≤ 0,05."
+      ],
+      "solution": [
+        "Como se comparan puntajes en dos grupos, la alternativa es H₁: μA > μB y la nula H₀: μA ≤ μB.",
+        "0,047 ≤ 0,05: se rechaza H₀. Hay evidencia estadística de una media poblacional mayor en A bajo el contraste supuesto; no se demuestra causalidad."
+      ],
+      "options": [
+        "H₁: μA < μB; no rechazar H₀.",
+        "H₁: μA > μB; rechazar H₀ y reportar evidencia de mayor media de bienestar en A.",
+        "H₁: μA ≠ μB; aceptar H₀.",
+        "H₁: πA > πB; demostrar causalidad."
+      ],
+      "answer": 1
+    },
+    {
+      "id": "M8.H3.33",
+      "type": "choice",
+      "title": "Cuándo no se puede decidir",
+      "prompt": "En una muestra de adolescentes, una intervención arroja un promedio de ansiedad 3 puntos menor que antes. No se informa valor p, tamaño de muestra ni dispersión de las diferencias. ¿Qué respuesta es defendible?",
+      "source": "Ejercicio original de transferencia · no pertenece a ninguna guía",
+      "hints": [
+        "Se puede describir la dirección del cambio sin hacer inferencia.",
+        "La significación depende de tamaño de muestra y variabilidad, no solo de diferencia de medias.",
+        "Sin información suficiente para un contraste, no es posible aplicar la regla de decisión."
+      ],
+      "solution": [
+        "El promedio muestral disminuyó 3 puntos, lo cual es un resultado descriptivo.",
+        "Faltan datos o resultados de la prueba apropiada para afirmar o descartar significación en la población."
+      ],
+      "options": [
+        "La intervención redujo significativamente la ansiedad en la población.",
+        "Como el cambio fue negativo, no puede ser significativo.",
+        "Se observó una reducción descriptiva; con lo dado no se puede evaluar si es estadísticamente significativa.",
+        "Se comprobó que la hipótesis alternativa es falsa."
+      ],
+      "answer": 2
+    }
+  ],
   "extras": {},
   "cheats": [],
-  "cheatBlocks": [],
+  "cheatBlocks": [
+    {
+      "type": "heading",
+      "text": "Inferencia"
+    },
+    {
+      "type": "list",
+      "items": [
+        {
+          "label": "Muestra",
+          "text": "personas medidas; sus resultados varían entre muestras."
+        },
+        {
+          "label": "Población",
+          "text": "conjunto sobre el que se quiere concluir."
+        },
+        {
+          "label": "Parámetro (μ, π)",
+          "text": "característica poblacional; no confundir con media o proporción observada."
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "Hipótesis"
+    },
+    {
+      "type": "comparison",
+      "columns": [
+        {
+          "label": "H₀",
+          "items": [
+            "Referencia: ausencia de cambio o diferencia; puede incluir ≤ o ≥.",
+            "No rechazar ≠ confirmar."
+          ]
+        },
+        {
+          "label": "H₁",
+          "items": [
+            "Lo que se busca evidenciar.",
+            "«Mayor» > · «menor» < · «diferente» ≠."
+          ]
+        }
+      ]
+    },
+    {
+      "type": "formula",
+      "expression": "H₀: μd ≥ 0     H₁: μd < 0",
+      "symbols": []
+    },
+    {
+      "type": "note",
+      "text": "Ejemplo: d = después − antes en una escala donde más puntos = peor estado. Menor puntuación después implica μd < 0."
+    },
+    {
+      "type": "list",
+      "items": [
+        {
+          "label": "Resta invertida",
+          "text": "d = antes − después: la misma reducción implica μd > 0."
+        },
+        {
+          "label": "Sin dirección anticipada",
+          "text": "H₁: μd ≠ 0 (bilateral)."
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "Qué diferencia se evalúa"
+    },
+    {
+      "type": "comparison",
+      "columns": [
+        {
+          "label": "Relacionadas",
+          "items": [
+            "Mismas personas antes/después.",
+            "Media de las diferencias d."
+          ]
+        },
+        {
+          "label": "Independientes",
+          "items": [
+            "Dos grupos de personas distintas.",
+            "μA − μB en puntajes; πA − πB en sí/no."
+          ]
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "Decisión"
+    },
+    {
+      "type": "formula",
+      "expression": "p ≤ α → rechazar H₀      p > α → no rechazar H₀",
+      "symbols": []
+    },
+    {
+      "type": "list",
+      "items": [
+        {
+          "label": "α",
+          "text": "umbral fijado antes de analizar; riesgo tipo I controlado."
+        },
+        {
+          "label": "p",
+          "text": "extremos de los datos bajo H₀; no es P(H₀ verdadera)."
+        },
+        {
+          "label": "Igualdad",
+          "text": "p = α se incluye en rechazo."
+        }
+      ]
+    },
+    {
+      "type": "steps",
+      "items": [
+        "Escribir H₀/H₁ y el sentido de la resta.",
+        "Leer p y α; compararlos.",
+        "Dar decisión y conclusión contextual sin «aceptar H₀»."
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "Errores y potencia"
+    },
+    {
+      "type": "table",
+      "headers": [
+        "Realidad",
+        "Rechazo H₀",
+        "No rechazo"
+      ],
+      "rows": [
+        [
+          "H₀ verdadera",
+          "Tipo I (α)",
+          "Correcto"
+        ],
+        [
+          "H₀ falsa",
+          "Correcto",
+          "Tipo II (β)"
+        ]
+      ]
+    },
+    {
+      "type": "formula",
+      "expression": "Potencia = 1 − β",
+      "symbols": []
+    },
+    {
+      "type": "note",
+      "text": "Potencia: detectar un efecto de magnitud especificada cuando existe. No es 1 − α."
+    },
+    {
+      "type": "heading",
+      "text": "Límites de la conclusión"
+    },
+    {
+      "type": "list",
+      "items": [
+        {
+          "label": "Significativo",
+          "text": "evidencia estadística ≠ efecto grande o clínicamente importante."
+        },
+        {
+          "label": "No significativo",
+          "text": "evidencia insuficiente ≠ efecto inexistente."
+        },
+        {
+          "label": "Causalidad",
+          "text": "requiere un diseño capaz de sostenerla; p no la prueba."
+        },
+        {
+          "label": "Sin p ni datos necesarios",
+          "text": "plantear prueba, pero dejar pendiente la decisión."
+        }
+      ]
+    }
+  ],
   "numericOptions": {},
   "multiOptions": {},
   "trueFalse": {},
   "review": {
-    "currentVersion": "placeholder-v3",
-    "academicValidation": "pending",
-    "sourceCoverage": "pending"
+    "currentVersion": "m8-content-v2-20261117",
+    "academicValidation": "checked_original_sources_and_independent_decision_arithmetic",
+    "sourceCoverage": "H1_H2_H3_with_related_p2_exam_and_guides;no_separate_M8_exercise_guide",
+    "editorialBasis": "MANUAL_DE_PRODUCCION_V2; CONTRATO_DE_EDICION_V3; PROMPT_UNIDAD",
+    "originalUnitSource": {
+      "kind": "Google Doc original",
+      "title": "M8 · Introducción a la inferencia estadística",
+      "url": "https://docs.google.com/document/d/195fhiKiA0CjRQWWSjs35_28-Bghd4sLK7DM1tIo-TTA/edit",
+      "inspection": "Texto y 8 gráficos/esquemas revisados en PDF exportado (8 páginas); los ejercicios de práctica son adaptaciones, no citas textuales."
+    },
+    "sourceRefs": [
+      {
+        "key": "P2-26",
+        "title": "Segundo parcial presencial 2026 · temas 1 y 2 · ejercicio 2",
+        "url": "https://docs.google.com/document/d/11Pp0VH9ECRYMxH4Qr2zisPKurqujCHec/edit"
+      },
+      {
+        "key": "P2-25",
+        "title": "Segundo parcial presencial 2025 · temas 1 y 2 · ejercicio 2 y ejercicio 1",
+        "url": "https://docs.google.com/document/d/1zDWiuvNvNxXbDhYFMJFB8rRYqe8rM5-4/edit"
+      },
+      {
+        "key": "P2-I",
+        "title": "Integrador segundo parcial · E9-E12",
+        "url": "https://drive.google.com/file/d/1ueQeBauNYJO_BPII0l6J0jtRYAzpHa4H/view"
+      },
+      {
+        "key": "M9",
+        "title": "Guía 9 · E2-E4",
+        "url": "https://drive.google.com/file/d/1T0337Y__PpOv9xiVe0CrR17C6BkxRi7X/view"
+      },
+      {
+        "key": "M10",
+        "title": "Guía 10 · E4(b)",
+        "url": "https://drive.google.com/file/d/14e76LlUQIu029f_babrhcj76OyNwHL_i/view"
+      }
+    ],
+    "patternCoverage": [
+      {
+        "id": "H1",
+        "description": "Hipótesis nula/alternativa, signos, orden de resta, unilateral/bilateral, medias y proporciones",
+        "originalIncisos": [
+          "M8 teoría ejemplo 2",
+          "P2-26 T1-E2(a,c) y T2-E2(a,c)",
+          "P2-25 T1-E2(a,c), T2-E1(a,c)",
+          "P2-I E9(b), E10(c), E11(b), E12(a)",
+          "M9 E2(a), E4(bii)"
+        ],
+        "practices": [
+          "M8.H1.01",
+          "M8.H1.02",
+          "M8.H1.03",
+          "M8.H1.04",
+          "M8.H1.05",
+          "M8.H1.06",
+          "M8.H1.07",
+          "M8.H1.08",
+          "M8.H1.09",
+          "M8.H1.10",
+          "M8.H1.11"
+        ]
+      },
+      {
+        "id": "H2",
+        "description": "Valor p, α, condición de rechazo y conclusión contextual",
+        "originalIncisos": [
+          "M8 teoría ejemplo 2",
+          "P2-26 T1-E2(d) y T2-E2(d)",
+          "P2-25 T1-E2(d) y T2-E1(d)",
+          "M9 E3",
+          "P2-I E10(d), E12(b)"
+        ],
+        "practices": [
+          "M8.H2.12",
+          "M8.H2.13",
+          "M8.H2.14",
+          "M8.H2.15",
+          "M8.H2.16",
+          "M8.H2.17",
+          "M8.H2.18",
+          "M8.H2.19",
+          "M8.H2.20",
+          "M8.H2.21",
+          "M8.H2.22"
+        ]
+      },
+      {
+        "id": "H3",
+        "description": "Error de tipo I/II, α, β, potencia y límites de interpretación",
+        "originalIncisos": [
+          "M8 teoría sobre errores",
+          "M10 E4(b)"
+        ],
+        "practices": [
+          "M8.H3.23",
+          "M8.H3.24",
+          "M8.H3.25",
+          "M8.H3.26",
+          "M8.H3.27",
+          "M8.H3.28",
+          "M8.H3.29",
+          "M8.H3.30",
+          "M8.H3.31",
+          "M8.H3.32",
+          "M8.H3.33"
+        ]
+      }
+    ],
+    "verifiedChecks": [
+      "Interpretaciones y signos de H₁ cotejados con los contextos originales; los ejemplos de transferencia son nuevos.",
+      "Todos los pares p y α de los parciales reutilizados se cotejaron con las fuentes y la regla p ≤ α.",
+      "Cálculos manuales de diferencias muestrales: 24,96 − 14,01 = 10,95; potencia 1 − 0,15 = 0,85.",
+      "Todas las respuestas, opciones y claves V/F revisadas por consistencia lógica y por unicidad de opciones."
+    ],
+    "blocked": [
+      {
+        "status": "BLOCKED",
+        "scope": "Guía propia M8",
+        "reason": "La fuente suministrada para M8 es teoría, no una guía independiente de ejercicios; la práctica se construyó de forma pedagógica con referencias trazables a M9, M10 y parciales."
+      },
+      {
+        "status": "BLOCKED",
+        "scope": "M10 E4(b) error efectivamente cometido",
+        "reason": "La pregunta original alude a una decisión del inciso (a), pero el 37 % de 130 es 48,1 y no permite reconstruir un conteo entero exacto; no se asigna una respuesta numérica original ni se declara un tipo de error efectivamente cometido sin conocer la verdad poblacional. Los ejercicios sobre error tipo I/II son situaciones hipotéticas nuevas."
+      },
+      {
+        "status": "CONFLICT",
+        "scope": "M9 E4(biii)",
+        "reason": "El índice privado marca contradicción en solucionario respecto del valor p/conclusión. No se utilizó esa respuesta como clave; solo el planteo direccional de E4(bii)."
+      },
+      {
+        "status": "LIMITATION",
+        "scope": "Supuestos de pruebas de M9 y M10",
+        "reason": "M8 enseña la lógica inferencial común; los cálculos de t, z, varianzas y sus supuestos detallados pertenecen a M9/M10. No se presentan cálculos inventados como resultados de esas guías."
+      }
+    ],
+    "indexAudit": {
+      "hPatternRows": 39,
+      "onlyM8OriginalRows": 1,
+      "source": "auditoria/INDICE_282.json (pack privado v2)",
+      "note": "El índice identifica y ubica incisos, pero no certifica las soluciones."
+    }
   }
 }
