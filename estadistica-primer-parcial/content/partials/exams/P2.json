@@ -1,7 +1,7 @@
 {
   "schema": "psicologia-up.statistics.exam-archive.v1",
   "partial": "2",
-  "notice": "Resoluciones de todos los ejercicios de los exámenes presenciales accesibles del segundo parcial 2025-2 y 2026-1, ambos temas. Los enunciados están parafraseados, con vínculo a la fuente; no son copias literales.",
+  "notice": "Ejercicios de los parciales presenciales accesibles de 2025 y 2026, ambos temas, más los doce del integrador oficial del segundo parcial. Enunciados parafraseados y resueltos por inciso; los datos ausentes se señalan.",
   "cases": [
     {
       "id": "P2-2026-T1-E1",
@@ -514,6 +514,451 @@
           16,
           32
         ]
+      ]
+    },
+    {
+      "id": "P2-INT-E1",
+      "label": "Integrador · E1 · Uso de redes y normal",
+      "context": "Horas diarias de redes sociales aproximadamente normales con media 5,5 y desvío 0,5 horas.",
+      "sourceUrl": "https://drive.google.com/file/d/1ueQeBauNYJO_BPII0l6J0jtRYAzpHa4H/view",
+      "topic": "Distribución normal",
+      "parts": [
+        {
+          "ask": "a) Probabilidad de uso inferior a 4,2 horas.",
+          "steps": [
+            "z=(4,2−5,5)/0,5=−2,6. Φ(−2,6)≈0,00466=0,47 %."
+          ],
+          "status": "solved"
+        },
+        {
+          "ask": "b) Tiempo máximo del 70 % que menos utiliza redes.",
+          "steps": [
+            "Corresponde P70: z≈0,5244. x=5,5+0,5244×0,5≈5,76 horas."
+          ],
+          "status": "solved"
+        }
+      ]
+    },
+    {
+      "id": "P2-INT-E2",
+      "label": "Integrador · E2 · MMPI-2 y grupos extremos",
+      "context": "Puntajes de introversión con distribución normal, media 50 y desvío 10. Introversión ≤40 y extroversión >60.",
+      "sourceUrl": "https://drive.google.com/file/d/1ueQeBauNYJO_BPII0l6J0jtRYAzpHa4H/view",
+      "topic": "Distribución normal",
+      "parts": [
+        {
+          "ask": "a) Qué porcentaje cae en cada grupo extremo.",
+          "steps": [
+            "Para 40: z=(40−50)/10=−1; Φ(−1)=15,87 % introvertidos.",
+            "Para 60: z=+1; 1−Φ(+1)=15,87 % extrovertidos."
+          ],
+          "status": "solved"
+        },
+        {
+          "ask": "b) Puntaje mínimo del 80 % mejor situado.",
+          "steps": [
+            "Se interpreta como límite inferior del 80 % superior: P20.",
+            "z20≈−0,8416; x=50−0,8416×10≈41,58 puntos. Si la consigna se interpreta de otra forma, explicitar cuál área se está usando."
+          ],
+          "status": "solved"
+        }
+      ]
+    },
+    {
+      "id": "P2-INT-E3",
+      "label": "Integrador · E3 · Felicidad y tablas",
+      "context": "Encuesta: 239 hombres y 225 mujeres eligieron «felicidad»; «amor» 192 y 278; «otros» 75 y 83. Totales: 506 hombres, 586 mujeres, N=1092.",
+      "sourceUrl": "https://drive.google.com/file/d/1ueQeBauNYJO_BPII0l6J0jtRYAzpHa4H/view",
+      "topic": "Probabilidad y comparación de grupos",
+      "parts": [
+        {
+          "ask": "a) Probabilidad de que NO elijan ni felicidad ni amor.",
+          "steps": [
+            "«Otros» suma 75+83=158. 158/1092≈0,1447=14,47 %."
+          ],
+          "status": "solved"
+        },
+        {
+          "ask": "b) Entre qué grupo es más frecuente elegir felicidad.",
+          "steps": [
+            "Hombres: 239/506≈47,23 %. Mujeres: 225/586≈38,40 %. Mayor proporción en hombres."
+          ],
+          "status": "solved"
+        },
+        {
+          "ask": "c) Dependencia de la elección respecto de edad.",
+          "steps": [
+            "En 18–34 años, 115/220≈52,27 % eligió felicidad; en mayores, 120/310≈38,71 %. Las proporciones observadas difieren.",
+            "Con un contraste de dos proporciones bilateral de estos subconjuntos, z≈3,10 y p≈0,002 bajo supuestos habituales. La asociación estadística no demuestra que la edad cause la preferencia."
+          ],
+          "status": "solved"
+        }
+      ],
+      "table": [
+        [
+          "Elección",
+          "Hombres",
+          "Mujeres",
+          "Total"
+        ],
+        [
+          "Felicidad",
+          239,
+          225,
+          464
+        ],
+        [
+          "Amor",
+          192,
+          278,
+          470
+        ],
+        [
+          "Otros",
+          75,
+          83,
+          158
+        ],
+        [
+          "Total",
+          506,
+          586,
+          1092
+        ]
+      ]
+    },
+    {
+      "id": "P2-INT-E4",
+      "label": "Integrador · E4 · Formación y contratación",
+      "context": "De 86 postulantes, 56 requieren capacitación (A) y 30 son contratados directamente (B). Bachiller: 27 A, 6 B; Perito: 19 A, 9 B; Técnico: 10 A, 15 B.",
+      "sourceUrl": "https://drive.google.com/file/d/1ueQeBauNYJO_BPII0l6J0jtRYAzpHa4H/view",
+      "topic": "Probabilidad y comparación de grupos",
+      "parts": [
+        {
+          "ask": "a) Probabilidad de contratación directa.",
+          "steps": [
+            "30/86≈34,88 %."
+          ],
+          "status": "solved"
+        },
+        {
+          "ask": "b) Contratación directa Y perito.",
+          "steps": [
+            "9/86≈10,47 %: intersección respecto del total."
+          ],
+          "status": "solved"
+        },
+        {
+          "ask": "c) Con qué formación es más probable contratación directa.",
+          "steps": [
+            "Bachiller: 6/33≈18,18 %; perito: 9/28≈32,14 %; técnico: 15/25=60 %. Mayor entre técnicos."
+          ],
+          "status": "solved"
+        },
+        {
+          "ask": "d) Probabilidad técnico O contratación directa.",
+          "steps": [
+            "P(T∪B)=(25+30−15)/86=40/86≈46,51 %. La intersección técnico y B se resta una vez."
+          ],
+          "status": "solved"
+        }
+      ],
+      "table": [
+        [
+          "Formación",
+          "Capacitación A",
+          "Directo B",
+          "Total"
+        ],
+        [
+          "Bachiller",
+          27,
+          6,
+          33
+        ],
+        [
+          "Perito",
+          19,
+          9,
+          28
+        ],
+        [
+          "Técnico",
+          10,
+          15,
+          25
+        ],
+        [
+          "Total",
+          56,
+          30,
+          86
+        ]
+      ]
+    },
+    {
+      "id": "P2-INT-E5",
+      "label": "Integrador · E5 · Medicamentos y superposición",
+      "context": "El 30 % utiliza medicamento A, el 60 % G y el 5 % ambos.",
+      "sourceUrl": "https://drive.google.com/file/d/1ueQeBauNYJO_BPII0l6J0jtRYAzpHa4H/view",
+      "topic": "Unión y complemento",
+      "parts": [
+        {
+          "ask": "a) Probabilidad de tomar al menos uno.",
+          "steps": [
+            "P(A∪G)=0,30+0,60−0,05=0,85=85 %."
+          ],
+          "status": "solved"
+        },
+        {
+          "ask": "b) Probabilidad de no tomar ninguno.",
+          "steps": [
+            "1−0,85=0,15=15 %."
+          ],
+          "status": "solved"
+        },
+        {
+          "ask": "c) Probabilidad de tomar solamente A.",
+          "steps": [
+            "P(solo A)=0,30−0,05=0,25=25 %."
+          ],
+          "status": "solved"
+        }
+      ]
+    },
+    {
+      "id": "P2-INT-E6",
+      "label": "Integrador · E6 · Impresoras y hojas correctas",
+      "context": "Impresora A: 500 hojas/h, 25 defectuosas. B: 800 hojas/h, 30 defectuosas. Se elige una hoja al azar.",
+      "sourceUrl": "https://drive.google.com/file/d/1ueQeBauNYJO_BPII0l6J0jtRYAzpHa4H/view",
+      "topic": "Probabilidad condicionada",
+      "parts": [
+        {
+          "ask": "a) Probabilidad de una hoja correctamente impresa.",
+          "steps": [
+            "Buenas A=500−25=475; buenas B=800−30=770; buenas total=1245.",
+            "P(buena)=1245/1300≈0,95769=95,77 %."
+          ],
+          "status": "solved"
+        },
+        {
+          "ask": "b) Entre hojas buenas, probabilidad de origen A.",
+          "steps": [
+            "P(A|buena)=475/1245≈0,38153=38,15 %. El denominador es hojas buenas, no todas las hojas A."
+          ],
+          "status": "solved"
+        },
+        {
+          "ask": "c) ¿Una hoja puede venir de ambas impresoras?",
+          "steps": [
+            "Una hoja individual proviene de A o B, no de ambas: sucesos de origen mutuamente excluyentes. Eso no significa que sean independientes."
+          ],
+          "status": "solved"
+        }
+      ]
+    },
+    {
+      "id": "P2-INT-E7",
+      "label": "Integrador · E7 · Operar con sucesos A y B",
+      "context": "Se conoce P(no A)=0,625; P(B)=0,908; P(no A y no B)=0,011.",
+      "sourceUrl": "https://drive.google.com/file/d/1ueQeBauNYJO_BPII0l6J0jtRYAzpHa4H/view",
+      "topic": "Unión y probabilidad condicionada",
+      "parts": [
+        {
+          "ask": "a) P(A dado B).",
+          "steps": [
+            "P(A)=1−0,625=0,375. P(A∪B)=1−0,011=0,989.",
+            "P(A∩B)=0,375+0,908−0,989=0,294. P(A|B)=0,294/0,908≈0,3238."
+          ],
+          "status": "solved"
+        },
+        {
+          "ask": "b) P(B dado A).",
+          "steps": [
+            "P(B|A)=0,294/0,375=0,784."
+          ],
+          "status": "solved"
+        },
+        {
+          "ask": "c) P(A).",
+          "steps": [
+            "P(A)=0,375."
+          ],
+          "status": "solved"
+        },
+        {
+          "ask": "d) P(A o B).",
+          "steps": [
+            "P(A∪B)=0,989."
+          ],
+          "status": "solved"
+        },
+        {
+          "ask": "e) ¿Son independientes?",
+          "steps": [
+            "Si lo fueran, P(A∩B)=0,375×0,908=0,3405; la intersección real es 0,294.",
+            "No son independientes."
+          ],
+          "status": "solved"
+        }
+      ]
+    },
+    {
+      "id": "P2-INT-E8",
+      "label": "Integrador · E8 · Días de internación y normal",
+      "context": "Duración normal con media 60 días y desvío 15 días.",
+      "sourceUrl": "https://drive.google.com/file/d/1ueQeBauNYJO_BPII0l6J0jtRYAzpHa4H/view",
+      "topic": "Distribución normal",
+      "parts": [
+        {
+          "ask": "a) Más de 50 días.",
+          "steps": [
+            "z=(50−60)/15=−0,6667; P(X>50)≈0,7475=74,75 %."
+          ],
+          "status": "solved"
+        },
+        {
+          "ask": "b) A lo sumo 73 días.",
+          "steps": [
+            "z=(73−60)/15≈0,8667; Φ(z)≈0,8069=80,69 %."
+          ],
+          "status": "solved"
+        },
+        {
+          "ask": "c) Entre 30 y 60 días.",
+          "steps": [
+            "z30=−2; z60=0; Φ(0)−Φ(−2)≈0,47725=47,73 %."
+          ],
+          "status": "solved"
+        },
+        {
+          "ask": "d) Por lo menos 46 días.",
+          "steps": [
+            "z=(46−60)/15≈−0,9333; P(X≥46)≈0,8247=82,47 %."
+          ],
+          "status": "solved"
+        },
+        {
+          "ask": "e) Duración mínima del 99 % de los internados.",
+          "steps": [
+            "Si se interpreta como el mínimo superado por el 99 %, se busca P1: z≈−2,3263 y x≈25,10 días.",
+            "La expresión puede ser ambigua: para el corte bajo el cual cae el 99 % se obtendría P99≈94,90 días. Escribí la interpretación elegida y verificá el criterio del docente."
+          ],
+          "status": "solved"
+        }
+      ]
+    },
+    {
+      "id": "P2-INT-E9",
+      "label": "Integrador · E9 · Opinión antes y después de un debate",
+      "context": "Las mismas personas informan un puntaje de empatía hacia un candidato político antes y después de presenciar un debate.",
+      "sourceUrl": "https://drive.google.com/file/d/1ueQeBauNYJO_BPII0l6J0jtRYAzpHa4H/view",
+      "topic": "Pruebas de hipótesis",
+      "parts": [
+        {
+          "ask": "a) Elegir la prueba.",
+          "steps": [
+            "Respuesta: puntaje cuantitativo 0–10; observaciones apareadas por tratarse de las mismas personas.",
+            "t apareada sobre las diferencias, si se cumplen sus supuestos."
+          ],
+          "status": "solved"
+        },
+        {
+          "ask": "b) Hipótesis nula y alternativa.",
+          "steps": [
+            "Si solo se investiga si CAMBIA, d=post−pre: H₀: μd=0, H₁: μd≠0 (bilateral).",
+            "No decidir una dirección positiva o negativa sin que lo indique la hipótesis."
+          ],
+          "status": "solved"
+        }
+      ]
+    },
+    {
+      "id": "P2-INT-E10",
+      "label": "Integrador · E10 · Violencia en internos",
+      "context": "Se comparan 23 internos impulsivos con 27 premeditados; la respuesta es puntaje de violencia 0–10 y se espera mayor violencia en impulsivos. El integrador informa p=0,006, α=0,05.",
+      "sourceUrl": "https://drive.google.com/file/d/1ueQeBauNYJO_BPII0l6J0jtRYAzpHa4H/view",
+      "topic": "Pruebas de medias",
+      "parts": [
+        {
+          "ask": "a) Identificar explicativa y respuesta.",
+          "steps": [
+            "Explicativa: tipo de interno (impulsivo/premeditado), variable nominal.",
+            "Respuesta: puntaje de violencia física, cuantitativo."
+          ],
+          "status": "solved"
+        },
+        {
+          "ask": "b) Elegir prueba.",
+          "steps": [
+            "Dos grupos de sujetos distintos y puntaje numérico → t para independientes (considerar Welch y supuestos)."
+          ],
+          "status": "solved"
+        },
+        {
+          "ask": "c) Formular H₀ y H₁.",
+          "steps": [
+            "H₁: μimpulsivos>μpremeditados; H₀: μimpulsivos≤μpremeditados."
+          ],
+          "status": "solved"
+        },
+        {
+          "ask": "d) Conclusión con p=0,006.",
+          "steps": [
+            "0,006<0,05: rechazar H₀. Evidencia estadística de mayor puntaje medio en impulsivos bajo el análisis indicado."
+          ],
+          "status": "solved"
+        }
+      ]
+    },
+    {
+      "id": "P2-INT-E11",
+      "label": "Integrador · E11 · Rinoplastia y satisfacción",
+      "context": "Treinta y cinco personas califican satisfacción antes y después de cirugía con una escala ROE. Media preoperatoria 14,01 (DE 2,04); postoperatoria 24,96 (DE 5,68).",
+      "sourceUrl": "https://drive.google.com/file/d/1ueQeBauNYJO_BPII0l6J0jtRYAzpHa4H/view",
+      "topic": "Pruebas apareadas",
+      "parts": [
+        {
+          "ask": "a) Objetivo, unidad y variable.",
+          "steps": [
+            "Objetivo: investigar si cambia o mejora satisfacción tras cirugía. Unidad: cada paciente. Variable: puntaje ROE de satisfacción, cuantitativa."
+          ],
+          "status": "solved"
+        },
+        {
+          "ask": "b) ¿Mejoró en la población? Qué prueba e hipótesis.",
+          "steps": [
+            "Cambio observado de medias: 24,96−14,01=10,95 puntos.",
+            "Si d=post−pre y se espera mejora: H₁: μd>0; H₀: μd≤0. Corresponde t apareada.",
+            "La prueba exacta NO se puede calcular solo con desvíos pre y post: falta el desvío de las diferencias (o los datos pareados/correlación). No afirmar significación basándose en 10,95 solamente."
+          ],
+          "status": "needs_data"
+        }
+      ]
+    },
+    {
+      "id": "P2-INT-E12",
+      "label": "Integrador · E12 · Proporciones en dos tratamientos",
+      "context": "En grupo TCC, 42 de 120 presentan ansiedad clínica; en mindfulness, 20 de 100. Se pregunta si las proporciones difieren, con p=0,014 y α=0,05.",
+      "sourceUrl": "https://drive.google.com/file/d/1ueQeBauNYJO_BPII0l6J0jtRYAzpHa4H/view",
+      "topic": "Diferencia de proporciones",
+      "parts": [
+        {
+          "ask": "a) Hipótesis nula y alternativa.",
+          "steps": [
+            "pTCC=42/120=0,35; pMindfulness=20/100=0,20.",
+            "H₀: πTCC=πMindfulness; H₁: πTCC≠πMindfulness (bilateral, por «difieren»)."
+          ],
+          "status": "solved"
+        },
+        {
+          "ask": "b) Conclusión con p=0,014.",
+          "steps": [
+            "0,014<0,05: rechazar H₀; hay evidencia estadística de proporciones diferentes.",
+            "En estas muestras la proporción con ansiedad clínica es mayor bajo TCC (35 %) que mindfulness (20 %). No inferir eficacia causal definitiva solo por esa diferencia."
+          ],
+          "status": "solved"
+        }
       ]
     }
   ]
