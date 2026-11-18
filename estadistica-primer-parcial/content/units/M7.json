@@ -3,7 +3,7 @@
   "moduleId": "M7",
   "id": "07",
   "partial": "P2",
-  "status": "draft",
+  "status": "ready",
   "title": "Distribución normal",
   "intro": "Normal: puntajes, áreas, percentiles y comparaciones",
   "source": "Fuente privada: paquete académico v2",
@@ -1117,6 +1117,671 @@
         "G3"
       ],
       "provenance": "PARAPHRASED_OR_CREATED"
+    },
+    {
+      "id": "M7.21",
+      "type": "multi",
+      "title": "Sueño: dos límites de riesgo",
+      "prompt": "Modelo normal de sueño: μ = 7,5 h, σ = 0,5 h. Se considera riesgo por debajo de P15 o por encima de P95. Calculá ambos cortes.",
+      "source": "Guía original M7 E7(a), paráfrasis.",
+      "fields": [
+        {
+          "label": "P15, horas",
+          "answer": 6.98,
+          "options": [
+            6.98,
+            7.18,
+            7.25,
+            6.5
+          ],
+          "tolerance": 0.01
+        },
+        {
+          "label": "P95, horas",
+          "answer": 8.32,
+          "options": [
+            8.32,
+            7.82,
+            8.14,
+            8.5
+          ],
+          "tolerance": 0.01
+        }
+      ],
+      "hints": [
+        "Hay dos colas, no un intervalo continuo.",
+        "Calculá xq = μ + σ · Φ⁻¹(q) para q = 0,15 y 0,95.",
+        "P15: 7,5 + 0,5 · (−1,0364); P95: 7,5 + 0,5 · 1,6449."
+      ],
+      "solution": [
+        "P15 ≈ 6,98 h; P95 ≈ 8,32 h.",
+        "Las zonas de riesgo son inferiores a 6,98 h y superiores a 8,32 h."
+      ],
+      "patterns": [
+        "G3"
+      ],
+      "provenance": "SOURCE_PARAPHRASE_OR_NEW"
+    },
+    {
+      "id": "M7.22",
+      "type": "numeric",
+      "title": "Sueño: cuántas personas supera",
+      "prompt": "Una persona duerme 8 h; en el grupo, μ = 7,5 h, σ = 0,5 h, n = 160. ¿A cuántas personas se espera que supere? Redondeá.",
+      "source": "Guía original M7 E7(b), paráfrasis.",
+      "answer": 135,
+      "options": [
+        135,
+        25,
+        80,
+        151
+      ],
+      "tolerance": 0.01,
+      "hints": [
+        "Superar significa contar a quienes quedan por debajo.",
+        "Hallá la acumulada izquierda y multiplicala por 160.",
+        "z8 = (8 − 7,5)/0,5 = 1; calculá 160 · Φ(1)."
+      ],
+      "solution": [
+        "Φ(1) ≈ 0,841345; 160 · 0,841345 ≈ 134,62.",
+        "Respuesta: aproximadamente 135 personas, no un recuento observado."
+      ],
+      "patterns": [
+        "G1",
+        "G2",
+        "G4"
+      ],
+      "provenance": "SOURCE_PARAPHRASE_OR_NEW"
+    },
+    {
+      "id": "M7.23",
+      "type": "numeric",
+      "title": "Sueño: percentil 90",
+      "prompt": "Con μ = 7,5 h y σ = 0,5 h, ¿cuál es el puntaje de horas correspondiente a P90?",
+      "source": "Guía original M7 E7(c), paráfrasis.",
+      "answer": 8.14,
+      "options": [
+        8.14,
+        6.86,
+        7.95,
+        8.32
+      ],
+      "tolerance": 0.01,
+      "hints": [
+        "El resultado debe ser horas, no porcentaje.",
+        "Usá la función inversa Φ⁻¹(0,90).",
+        "Calculá 7,5 + 0,5 · 1,28155."
+      ],
+      "solution": [
+        "P90 = 7,5 + 0,5 · 1,28155 ≈ 8,14 h.",
+        "El 90 % queda por debajo del corte teórico."
+      ],
+      "patterns": [
+        "G3"
+      ],
+      "provenance": "SOURCE_PARAPHRASE_OR_NEW"
+    },
+    {
+      "id": "M7.24",
+      "type": "numeric",
+      "title": "Sueño: entre 7 y 8 horas",
+      "prompt": "Con μ = 7,5 h y σ = 0,5 h, ¿qué porcentaje duerme entre 7 y 8 horas?",
+      "source": "Guía original M7 E7(d), paráfrasis.",
+      "answer": 68.27,
+      "options": [
+        68.27,
+        31.73,
+        84.13,
+        50
+      ],
+      "tolerance": 0.01,
+      "hints": [
+        "Los extremos están simétricamente alrededor de la media.",
+        "Restá acumuladas para la región interior.",
+        "z7 = −1 y z8 = +1; usá Φ(1) − Φ(−1)."
+      ],
+      "solution": [
+        "Φ(1) − Φ(−1) ≈ 0,682689.",
+        "Respuesta: 68,27 %."
+      ],
+      "patterns": [
+        "G2"
+      ],
+      "provenance": "SOURCE_PARAPHRASE_OR_NEW"
+    },
+    {
+      "id": "M7.25",
+      "type": "truefalse",
+      "title": "Analía: cuatro afirmaciones",
+      "prompt": "Perfeccionismo: x = 30, μ = 28, σ = 2. Afabilidad: x = 50, μ = 54, σ = 5. Clasificá cada afirmación.",
+      "source": "Guía original M7 E8(a–d), paráfrasis; clave de E8(a) en conflicto.",
+      "claims": [
+        {
+          "text": "El puntaje directo de Perfeccionismo está dos puntos por encima de la media.",
+          "answer": true,
+          "explanation": "30 − 28 = 2. Es verdadero."
+        },
+        {
+          "text": "Analía está por debajo de la media en los dos rasgos.",
+          "answer": false,
+          "explanation": "Z perfeccionismo = +1, Z afabilidad = −0,8."
+        },
+        {
+          "text": "El puntaje bruto de Afabilidad es mayor que el de Perfeccionismo.",
+          "answer": true,
+          "explanation": "50 es mayor que 30, aunque las escalas no se pueden comparar directamente."
+        },
+        {
+          "text": "Su posición estandarizada es igual en ambos rasgos.",
+          "answer": false,
+          "explanation": "Los Z son distintos: +1 y −0,8."
+        }
+      ],
+      "hints": [
+        "Separá puntajes directos de relativos.",
+        "Calculá un Z para cada escala.",
+        "Usá (30 − 28)/2 y (50 − 54)/5."
+      ],
+      "solution": [
+        "zP = +1; zA = −0,8.",
+        "Respuestas V, F, V, F.",
+        "E8(a) resulta VERDADERA con los datos de la consigna, pese a la alerta de clave previa."
+      ],
+      "patterns": [
+        "G1",
+        "G5"
+      ],
+      "provenance": "SOURCE_PARAPHRASE_OR_NEW"
+    },
+    {
+      "id": "M7.26",
+      "type": "multi",
+      "title": "Analía: dos puntajes Z",
+      "prompt": "Con los mismos datos de Analía, calculá los Z de Perfeccionismo y Afabilidad.",
+      "source": "Guía original M7 E8, práctica derivada.",
+      "fields": [
+        {
+          "label": "Z Perfeccionismo",
+          "answer": 1,
+          "options": [
+            1,
+            -1,
+            2,
+            0.5
+          ],
+          "tolerance": 0.01
+        },
+        {
+          "label": "Z Afabilidad",
+          "answer": -0.8,
+          "options": [
+            -0.8,
+            0.8,
+            -4,
+            -1.25
+          ],
+          "tolerance": 0.01
+        }
+      ],
+      "hints": [
+        "Cada escala tiene su propia media y desvío.",
+        "Estandarizá los puntajes por separado.",
+        "Aplicá zP = (30 − 28)/2 y zA = (50 − 54)/5."
+      ],
+      "solution": [
+        "zP = +1; zA = −0,8.",
+        "En Perfeccionismo su posición relativa es más alta."
+      ],
+      "patterns": [
+        "G1",
+        "G5"
+      ],
+      "provenance": "SOURCE_PARAPHRASE_OR_NEW"
+    },
+    {
+      "id": "M7.27",
+      "type": "multi",
+      "title": "Parcial 2026 T1: cortes de resiliencia",
+      "prompt": "Resiliencia: μ = 68, σ = 9. Calculá el límite inferior P10 y el superior P90.",
+      "source": "Parcial presencial 2026 T1-E1(a), paráfrasis.",
+      "fields": [
+        {
+          "label": "P10",
+          "answer": 56.47,
+          "options": [
+            56.47,
+            79.53,
+            59,
+            49.53
+          ],
+          "tolerance": 0.01
+        },
+        {
+          "label": "P90",
+          "answer": 79.53,
+          "options": [
+            79.53,
+            56.47,
+            76,
+            86.47
+          ],
+          "tolerance": 0.01
+        }
+      ],
+      "hints": [
+        "Los dos límites son simétricos respecto de la media.",
+        "Usá la inversa de Φ con q = 0,10 y 0,90.",
+        "x = 68 + 9 · z, con z = −1,28155 y +1,28155."
+      ],
+      "solution": [
+        "P10 = 68 − 9 · 1,28155 ≈ 56,47.",
+        "P90 = 68 + 9 · 1,28155 ≈ 79,53."
+      ],
+      "patterns": [
+        "G3"
+      ],
+      "provenance": "SOURCE_PARAPHRASE_OR_NEW"
+    },
+    {
+      "id": "M7.28",
+      "type": "numeric",
+      "title": "Parcial T1: superior a 74",
+      "prompt": "Resiliencia: μ = 68, σ = 9. ¿Qué porcentaje obtiene más de 74 puntos?",
+      "source": "Parcial presencial 2026 T1-E1(b), paráfrasis.",
+      "answer": 25.25,
+      "options": [
+        25.25,
+        74.75,
+        66.67,
+        34.75
+      ],
+      "tolerance": 0.01,
+      "hints": [
+        "Se pide la cola derecha.",
+        "Estandarizá 74 y calculá 1 − Φ.",
+        "z74 = (74 − 68)/9 = 0,6667."
+      ],
+      "solution": [
+        "1 − Φ(0,6667) ≈ 0,2524925.",
+        "Resultado: 25,25 %."
+      ],
+      "patterns": [
+        "G1",
+        "G2"
+      ],
+      "provenance": "SOURCE_PARAPHRASE_OR_NEW"
+    },
+    {
+      "id": "M7.29",
+      "type": "numeric",
+      "title": "Parcial T1: entre 65 y 72",
+      "prompt": "Resiliencia: μ = 68, σ = 9. ¿Qué porcentaje obtiene entre 65 y 72 puntos?",
+      "source": "Parcial presencial 2026 T1-E1(c), paráfrasis.",
+      "answer": 30.22,
+      "options": [
+        30.22,
+        69.78,
+        43.34,
+        56.66
+      ],
+      "tolerance": 0.01,
+      "hints": [
+        "El área queda entre dos cortes.",
+        "Restá el acumulado inferior del superior.",
+        "z65 = −3/9; z72 = 4/9; usá Φ(4/9) − Φ(−3/9)."
+      ],
+      "solution": [
+        "Φ(0,4444) − Φ(−0,3333) ≈ 0,302198.",
+        "Resultado: 30,22 %."
+      ],
+      "patterns": [
+        "G1",
+        "G2"
+      ],
+      "provenance": "SOURCE_PARAPHRASE_OR_NEW"
+    },
+    {
+      "id": "M7.30",
+      "type": "multi",
+      "title": "Parcial 2026 T2: P25 y P75",
+      "prompt": "Autorregulación: μ = 55, σ = 7. Calculá los percentiles 25 y 75.",
+      "source": "Parcial presencial 2026 T2-E1(a), paráfrasis.",
+      "fields": [
+        {
+          "label": "P25",
+          "answer": 50.28,
+          "options": [
+            50.28,
+            59.72,
+            51.5,
+            47
+          ],
+          "tolerance": 0.01
+        },
+        {
+          "label": "P75",
+          "answer": 59.72,
+          "options": [
+            59.72,
+            50.28,
+            58.5,
+            62
+          ],
+          "tolerance": 0.01
+        }
+      ],
+      "hints": [
+        "La pregunta pide valores de corte.",
+        "Para cada q aplicá μ + σ · Φ⁻¹(q).",
+        "Usá z25 = −0,67449 y z75 = +0,67449."
+      ],
+      "solution": [
+        "P25 = 55 − 7 · 0,67449 ≈ 50,28.",
+        "P75 = 55 + 7 · 0,67449 ≈ 59,72."
+      ],
+      "patterns": [
+        "G3"
+      ],
+      "provenance": "SOURCE_PARAPHRASE_OR_NEW"
+    },
+    {
+      "id": "M7.31",
+      "type": "numeric",
+      "title": "Parcial T2: menos de 50",
+      "prompt": "Autorregulación: μ = 55, σ = 7. ¿Qué porcentaje obtiene menos de 50?",
+      "source": "Parcial presencial 2026 T2-E1(b), paráfrasis.",
+      "answer": 23.75,
+      "options": [
+        23.75,
+        76.25,
+        28.57,
+        35.71
+      ],
+      "tolerance": 0.01,
+      "hints": [
+        "La palabra 'menos' señala área izquierda.",
+        "Calculá Φ(z50).",
+        "z50 = (50 − 55)/7 ≈ −0,71429."
+      ],
+      "solution": [
+        "Φ(−0,7142857) ≈ 0,237525.",
+        "Resultado: 23,75 %."
+      ],
+      "patterns": [
+        "G1",
+        "G2"
+      ],
+      "provenance": "SOURCE_PARAPHRASE_OR_NEW"
+    },
+    {
+      "id": "M7.32",
+      "type": "numeric",
+      "title": "Parcial T2: intervalo 54–61",
+      "prompt": "Autorregulación: μ = 55, σ = 7. ¿Qué porcentaje obtiene entre 54 y 61?",
+      "source": "Parcial presencial 2026 T2-E1(c), paráfrasis.",
+      "answer": 36.11,
+      "options": [
+        36.11,
+        63.89,
+        22.26,
+        45.45
+      ],
+      "tolerance": 0.01,
+      "hints": [
+        "No se pide una cola, sino un intervalo.",
+        "Calculá las dos acumuladas y restalas.",
+        "z54 = −1/7; z61 = 6/7."
+      ],
+      "solution": [
+        "Φ(6/7) − Φ(−1/7) ≈ 0,3611155.",
+        "Resultado: 36,11 %."
+      ],
+      "patterns": [
+        "G1",
+        "G2"
+      ],
+      "provenance": "SOURCE_PARAPHRASE_OR_NEW"
+    },
+    {
+      "id": "M7.33",
+      "type": "numeric",
+      "title": "Integrador: internación",
+      "prompt": "Una duración de internación sigue μ = 60 días y σ = 15. ¿Qué porcentaje supera 50 días?",
+      "source": "Integrador P2 E8(a), paráfrasis.",
+      "answer": 74.75,
+      "options": [
+        74.75,
+        25.25,
+        66.67,
+        84.13
+      ],
+      "tolerance": 0.01,
+      "hints": [
+        "50 es menor que la media; la cola superior supera 50 %.",
+        "Estandarizá 50 y tomá 1 − Φ.",
+        "z50 = (50 − 60)/15 = −0,6667."
+      ],
+      "solution": [
+        "P(X > 50) = 1 − Φ(−0,6667) ≈ 0,747507.",
+        "Resultado: 74,75 %."
+      ],
+      "patterns": [
+        "G1",
+        "G2"
+      ],
+      "provenance": "SOURCE_PARAPHRASE_OR_NEW"
+    },
+    {
+      "id": "M7.34",
+      "type": "numeric",
+      "title": "Transferencia: 10 % superior",
+      "prompt": "ESCALA NUEVA: μ = 53 y σ = 8. ¿Qué puntaje delimita el 10 % superior?",
+      "source": "Práctica nueva de transferencia G3.",
+      "answer": 63.25,
+      "options": [
+        63.25,
+        42.75,
+        59.4,
+        61
+      ],
+      "tolerance": 0.01,
+      "hints": [
+        "Debajo queda el 90 %.",
+        "Buscá P90, no P10.",
+        "x = 53 + 8 · 1,28155."
+      ],
+      "solution": [
+        "P90 = 53 + 8 · 1,28155 ≈ 63,25.",
+        "Por encima de ese corte queda 10 %."
+      ],
+      "patterns": [
+        "G3"
+      ],
+      "provenance": "SOURCE_PARAPHRASE_OR_NEW"
+    },
+    {
+      "id": "M7.35",
+      "type": "numeric",
+      "title": "Transferencia: varianza y cola",
+      "prompt": "ESCALA NUEVA: X ~ N(30; 36), segundo parámetro varianza. ¿Qué porcentaje supera 36?",
+      "source": "Práctica nueva de transferencia G1–G2.",
+      "answer": 15.87,
+      "options": [
+        15.87,
+        84.13,
+        50,
+        2.28
+      ],
+      "tolerance": 0.01,
+      "hints": [
+        "Antes de Z convertí la varianza a desvío.",
+        "σ = √36; después 1 − Φ(z).",
+        "z36 = (36 − 30)/6 = 1."
+      ],
+      "solution": [
+        "σ = 6; P(X > 36) = 1 − Φ(1) ≈ 0,158655.",
+        "Resultado: 15,87 %."
+      ],
+      "patterns": [
+        "G1",
+        "G2"
+      ],
+      "provenance": "SOURCE_PARAPHRASE_OR_NEW"
+    },
+    {
+      "id": "M7.36",
+      "type": "numeric",
+      "title": "Transferencia: recuento esperado",
+      "prompt": "En una población NUEVA el 15,8655 % supera cierto corte. Si n = 250, ¿cuántas personas se esperan? Redondeá.",
+      "source": "Práctica nueva de transferencia G4.",
+      "answer": 40,
+      "options": [
+        40,
+        16,
+        210,
+        4
+      ],
+      "tolerance": 0.001,
+      "hints": [
+        "Pasá del porcentaje a proporción.",
+        "Luego multiplicá por n y redondeá.",
+        "250 · 0,158655."
+      ],
+      "solution": [
+        "250 · 0,158655 = 39,66375.",
+        "Respuesta aproximada: 40 personas."
+      ],
+      "patterns": [
+        "G4"
+      ],
+      "provenance": "SOURCE_PARAPHRASE_OR_NEW"
+    },
+    {
+      "id": "M7.37",
+      "type": "choice",
+      "title": "Transferencia: comparar rasgos",
+      "prompt": "Prueba A: x = 74, μ = 70, σ = 8. Prueba B: x = 70, μ = 58, σ = 6. ¿En cuál ocupa una posición relativa mayor?",
+      "source": "Práctica nueva de transferencia G5.",
+      "options": [
+        "A, porque 74 es el puntaje directo mayor.",
+        "B, porque su Z es 2 frente a 0,5.",
+        "La posición es idéntica.",
+        "Los Z no se pueden comparar."
+      ],
+      "answer": 1,
+      "hints": [
+        "Las dos pruebas tienen diferentes parámetros.",
+        "Calculá ambos Z antes de decidir.",
+        "zA = (74 − 70)/8; zB = (70 − 58)/6."
+      ],
+      "solution": [
+        "zA = 0,5 y zB = 2.",
+        "La posición relativa es mayor en B."
+      ],
+      "patterns": [
+        "G1",
+        "G5"
+      ],
+      "provenance": "SOURCE_PARAPHRASE_OR_NEW"
+    },
+    {
+      "id": "M7.38",
+      "type": "truefalse",
+      "title": "Transferencia: V o F",
+      "prompt": "Evaluá cuatro confusiones frecuentes sobre distribución normal.",
+      "source": "Práctica nueva de transferencia G1–G4.",
+      "claims": [
+        {
+          "text": "Para obtener un percentil a partir de q se usa Φ⁻¹.",
+          "answer": true,
+          "explanation": "La inversa recupera el Z cuyo acumulado es q."
+        },
+        {
+          "text": "Por encima de P90 está el 90 % de la población.",
+          "answer": false,
+          "explanation": "Solo el 10 % queda por encima de P90."
+        },
+        {
+          "text": "Si la varianza es 49, el desvío es 7.",
+          "answer": true,
+          "explanation": "σ = √49 = 7."
+        },
+        {
+          "text": "Si n = 200 y P = 0,40, la cantidad esperada es 8000.",
+          "answer": false,
+          "explanation": "200 · 0,40 = 80."
+        }
+      ],
+      "hints": [
+        "Separá percentil, área y cantidad esperada.",
+        "Recordá los roles de Φ, Φ⁻¹, σ² y n · P.",
+        "Revisá el área derecha de P90 y el cálculo 200 · 0,40."
+      ],
+      "solution": [
+        "Secuencia V, F, V, F.",
+        "El 10 % supera P90; √49 = 7; 200 · 0,40 = 80."
+      ],
+      "patterns": [
+        "G1",
+        "G2",
+        "G3",
+        "G4"
+      ],
+      "provenance": "SOURCE_PARAPHRASE_OR_NEW"
+    },
+    {
+      "id": "M7.39",
+      "type": "choice",
+      "title": "Transferencia: superado por 60 %",
+      "prompt": "Una persona es superada por el 60 % de la población. ¿Qué acumulada izquierda q se usa para hallar su puntaje con Φ⁻¹?",
+      "source": "Práctica nueva de transferencia G3.",
+      "options": [
+        "q = 0,60",
+        "q = 0,40",
+        "q = 0,20",
+        "q = 0,06"
+      ],
+      "answer": 1,
+      "hints": [
+        "60 % queda a su derecha.",
+        "q debe representar el área a la izquierda.",
+        "q = 1 − 0,60."
+      ],
+      "solution": [
+        "El 40 % está por debajo: se usa q = 0,40.",
+        "Corresponde al percentil 40."
+      ],
+      "patterns": [
+        "G3"
+      ],
+      "provenance": "SOURCE_PARAPHRASE_OR_NEW"
+    },
+    {
+      "id": "M7.40",
+      "type": "numeric",
+      "title": "Transferencia: leer Φ",
+      "prompt": "Una calculadora informa Φ(z) = 0,84 para cierto corte. ¿Qué porcentaje queda a su derecha?",
+      "source": "Práctica nueva de transferencia G2.",
+      "answer": 16,
+      "options": [
+        16,
+        84,
+        68,
+        0.16
+      ],
+      "tolerance": 0.001,
+      "hints": [
+        "Φ es el área izquierda.",
+        "El área derecha es su complemento.",
+        "Calculá (1 − 0,84) · 100."
+      ],
+      "solution": [
+        "1 − 0,84 = 0,16.",
+        "El área a la derecha es 16 %."
+      ],
+      "patterns": [
+        "G2"
+      ],
+      "provenance": "SOURCE_PARAPHRASE_OR_NEW"
     }
   ],
   "extras": {},
@@ -1244,8 +1909,61 @@
   "multiOptions": {},
   "trueFalse": {},
   "review": {
-    "currentVersion": "m7-20261117-stage2",
-    "academicValidation": "PENDING_FINAL_TRANSFER_QA",
-    "sourceCoverage": "13 conceptos y machete construidos; prácticas en preparación"
+    "currentVersion": "M7-integral-v2-20261117",
+    "academicValidation": "SOURCE_CONFIRMED_AND_INDEPENDENTLY_CALCULATED_FOR_PUBLISHED_PRACTICE",
+    "sourceCoverage": "Guía M7 E1–E8: 27 incisos inventariados. Parcial presencial P2-26 T1 y T2 E1(a–c): seis incisos. Integrador P2-I E8(a). Prácticas complementarias de transferencia originales.",
+    "patterns": [
+      "G1",
+      "G2",
+      "G3",
+      "G4",
+      "G5"
+    ],
+    "counts": {
+      "concepts": 13,
+      "practice": 40,
+      "patterns": 5,
+      "originalGuideIncisos": 27,
+      "examNormalIncisos": 6
+    },
+    "sources": [
+      "M7: https://drive.google.com/file/d/1Wn4uAHpJrKtbHLJ0ylcU0ix6G1s2UaN4/view",
+      "P2-26: https://docs.google.com/document/d/11Pp0VH9ECRYMxH4Qr2zisPKurqujCHec/edit",
+      "P2-I: https://drive.google.com/file/d/1ueQeBauNYJO_BPII0l6J0jtRYAzpHa4H/view",
+      "SIM: https://docs.google.com/document/d/1IHA1G8D31zAL69g600TXhOyBN5tS50OuI6LOCwPzsyY/edit"
+    ],
+    "issues": [
+      {
+        "source": "M7 E8(a)",
+        "state": "CONFLICT",
+        "detail": "La afirmación es verdadera: 30 − 28 = 2 puntos sobre la media. El índice privado advertía una clave contradictoria."
+      },
+      {
+        "source": "M7 E5(a,c)",
+        "state": "BLOCKED",
+        "detail": "Las categorías originales de creatividad no delimitan claramente todos los intervalos exclusivos. Las prácticas de clasificación usan límites nuevos explícitos; no se declara verificada la clave oficial."
+      },
+      {
+        "source": "M7 E7(a)",
+        "state": "CLARIFIED",
+        "detail": "Riesgo por debajo de P15 o por encima de P95: son dos colas, no un intervalo continuo."
+      },
+      {
+        "source": "M7, título de la guía",
+        "state": "SCOPE_NOTE",
+        "detail": "Aunque el encabezado menciona t-Student, E1–E8 examinados se centran en normal; no se inventan problemas t."
+      }
+    ],
+    "provenance": "Ejercicios publicados redactados como paráfrasis o prácticas nuevas, no transcripciones ni soluciones oficiales.",
+    "qa": {
+      "jsonRoundtrip": true,
+      "idsUnique": true,
+      "allThreeHints": true,
+      "allSolutions": true,
+      "oneCorrectNumericOption": true,
+      "allPatternsCovered": true,
+      "numericalCalculationsChecked": true,
+      "browserLiveCheck": "PENDING"
+    }
   }
 }
