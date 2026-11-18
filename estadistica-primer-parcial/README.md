@@ -12,3 +12,7 @@ Este proyecto deja separado el contenido académico (nueve JSON individuales) de
 - Cambios editoriales: solo `content/units/Mn.json`.
 - Verificar antes de publicar: `node tests/validate-content.mjs` o `node tests/validate-content.mjs M2`.
 - Mantener los IDs de preguntas y el almacenamiento de progreso cuando no cambie la clave; ejercicios académicos originales con datos faltantes quedan sin verificarse hasta recuperar fuentes.
+
+## Resúmenes compactos por parcial
+
+Las vistas agregadas leen `content/partials/P1.json` y `content/partials/P2.json`. Son recorridos breves de teoría, práctica seleccionada y machete, no concatenaciones de unidades. El estudio completo permanece disponible. Revisar `docs/RESUMENES_PARCIALES.md` y validar con `node tests/validate-partials.mjs`.
