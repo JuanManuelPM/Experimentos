@@ -29,7 +29,13 @@ export async function loadStudyContent(){
       included.push(q);
     }
     available.forEach(u=>{Object.assign(EXTRAS,u.extras||{});CHEATS[u.id]=u.cheats||[];Object.assign(NUM,u.numericOptions||{});Object.assign(MULTI,u.multiOptions||{});Object.assign(TF,u.trueFalse||{})});
-    return {id:p.id,title:p.title,units:available,summary:{...summaryDoc,practice:included},ready:available.length>0};
+    const fullBank=new Map([...included,...(Array.isArray(summaryDoc.extraPractice)?summaryDoc.extraPractice:[])].map(q=>[q.id,q]));
+    const shortPractice=Array.isArray(summaryDoc.practiceGroups)&&summaryDoc.practiceGroups.length
+      ?summaryDoc.practiceGroups.flatMap(g=>(g.ids||[]).map(id=>{
+        const q=fullBank.get(id);if(!q)console.warn('Ejercicio sin referencia:',p.id,g.theoryId,id);return q;
+      }).filter(Boolean))
+      :[...fullBank.values()];
+    return {id:p.id,title:p.title,units:available,summary:{...summaryDoc,practice:shortPractice},ready:available.length>0};
   });
   return {PARTIALS,EXTRAS,CHEATS,NUM,MULTI,TF,storageKey:m.legacyStorageKey};
 }

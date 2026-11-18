@@ -193,3 +193,30 @@ body{background:var(--bg);color:var(--text);font-family:Inter,-apple-system,Blin
 .partial-summary-head~.cheats .block-formula{font-size:18px;line-height:1.55;margin:8px 0;overflow-wrap:anywhere}
 .partial-summary-head~.cheats .block-paragraph{font-size:13.5px;margin:5px 0 10px}
 @media(max-width:390px){.partial-summary-head h1{font-size:20px}.partial-summary-head span{font-size:11px}}
+
+/* Guía de examen: un tema, sus ejercicios, continuar. */
+.partial-summary-head~.concept{scroll-margin-top:72px}
+.lesson-practice{margin:12px 0 1px}
+.lesson-practice-button{width:100%;display:flex;justify-content:space-between;align-items:center;text-align:left;gap:10px;padding:11px 13px;background:#f1f3f0;border:1px solid #e1e7df;border-radius:10px;color:#36423a;font-weight:640;font-size:13px;letter-spacing:-.005em}
+.lesson-practice-meta{font-weight:460;color:#647166;font-size:12px;white-space:nowrap;display:flex;align-items:center;gap:11px}
+.lesson-practice-meta span{font-size:19px;line-height:12px;font-weight:400;color:#6c786b}
+.lesson-practice-button:active{background:#e8ece7}
+.lesson-practice-button:focus-visible,.practice-toolbar button:focus-visible{outline:2px solid #7f91b1;outline-offset:2px}
+.practice-dialog{position:fixed;inset:3vh 8px 2vh;max-height:95vh;width:min(620px,calc(100vw - 16px));max-width:none;margin:auto;border:1px solid #dce4db;border-radius:16px;background:#fbfcfb;color:var(--text);box-shadow:0 24px 90px #0003;padding:0;overflow:hidden}
+.practice-dialog::backdrop{background:rgba(25,35,28,.40)}
+.practice-toolbar{display:flex;justify-content:space-between;gap:15px;align-items:center;border-bottom:1px solid #e3e9e2;padding:12px 18px;background:#fafbfa}
+.practice-toolbar-title{min-width:0;display:flex;flex-direction:column;gap:2px}
+.practice-toolbar-title small{font-size:11px;color:#7d897f;letter-spacing:0}
+.practice-toolbar-title strong{font-size:15px;font-weight:650;letter-spacing:-.02em;line-height:1.25}
+.practice-toolbar button{border:0;background:transparent;color:#546158;font-weight:550;font-size:12.5px;padding:10px 0 10px 8px;white-space:nowrap}
+.practice-dialog-content{overflow:auto;max-height:calc(95vh - 68px);padding:8px 19px 30px;overscroll-behavior:contain}
+.practice-dialog-content .exercise{margin-inline:-9px;padding-inline:9px;scroll-margin-top:12px}
+.practice-dialog-content .exercise:first-child{padding-top:14px}
+.practice-dialog-content .exercise h2{font-size:16px}
+.practice-dialog-content .review-controls{gap:15px}
+.practice-dialog-content .review-panel{max-width:100%}
+@media(max-width:390px){
+  .practice-dialog{inset:2vh 5px 1vh;max-height:97vh;width:calc(100vw - 10px);border-radius:13px}
+  .practice-dialog-content{max-height:calc(97vh - 68px);padding-inline:17px}
+  .practice-toolbar{padding-inline:15px}
+}
