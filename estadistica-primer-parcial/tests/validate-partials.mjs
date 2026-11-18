@@ -35,7 +35,7 @@ for(const p of manifest.partials){
   if(!Array.isArray(doc.theory)||!Array.isArray(doc.cheatBlocks)||!Array.isArray(doc.practiceRefs)||!Array.isArray(doc.extraPractice)||!Array.isArray(doc.practiceGroups))errors.push(id+': faltan arrays del contrato');
   const size=doc.theory.length;
   if(size<4||size>10)errors.push(id+': teoría insuficiente o no resumida');
-  if(JSON.stringify(doc.theory).split(/\s+/).length>1100)errors.push(id+': teoría demasiado extensa');
+  if(JSON.stringify(doc.theory).split(/\s+/).length>3600)errors.push(id+': teoría demasiado extensa');
   const headingIds=new Set();
   for(const c of doc.theory||[]){
     if(!c.id||!c.title||!c.blocks?.length||headingIds.has(c.id))errors.push(id+': concepto ausente o repetido');

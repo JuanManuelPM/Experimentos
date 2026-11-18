@@ -16,16 +16,29 @@
       "blocks": [
         {
           "type": "paragraph",
-          "text": "Primero distinguí el objetivo de la investigación, la población a la que apunta y la muestra efectivamente observada. La unidad de análisis es cada persona o caso medido; n es su cantidad, no la duración ni el rango del test."
+          "text": "En el examen te dan un relato de investigación y tenés que transformarlo en una ficha. No memorices nombres aislados: identificá a quiénes estudian, qué intervención reciben, qué observan y en qué momento."
         },
         {
-          "type": "list",
+          "type": "steps",
           "items": [
-            "Experimental: el investigador asigna una intervención. Observacional: registra condiciones sin asignarlas.",
-            "Transversal: una medición por persona. Longitudinal: seguimiento de las mismas personas.",
-            "Grupos distintos son independientes; antes/después en la misma persona son datos apareados.",
-            "Asignación aleatoria de tratamientos no garantiza que la muestra represente a la población."
+            "Objetivo o fenómeno: ¿qué relación quieren investigar? Escribilo como una comparación o pregunta concreta.",
+            "Población: a quiénes se quieren aplicar las conclusiones. Muestra: quienes efectivamente participaron. Unidad de análisis: cada persona o registro. Si no dicen cuántos participaron, no inventes n.",
+            "Experimental si el investigador asigna el tratamiento; observacional si observa grupos o características ya existentes.",
+            "Transversal si cada sujeto aporta una medición; longitudinal si lo miden en varios momentos. La duración de un tratamiento no demuestra por sí sola mediciones repetidas.",
+            "Grupos distintos: datos independientes entre grupos. Una persona medida antes y después: datos apareados, aunque haya también un grupo control."
           ]
+        },
+        {
+          "type": "worked",
+          "title": "Caso de parcial 2026: mindfulness y ansiedad",
+          "problem": "Pacientes con TAG se asignan a mindfulness o tratamiento estándar; ocho semanas después se mide GAD-7.",
+          "steps": [
+            "Objetivo: contrastar el resultado de ansiedad según el tratamiento.",
+            "Población de interés: pacientes con TAG. Unidad: cada paciente. El enunciado no informa el tamaño de muestra.",
+            "Se asigna un tratamiento: experimental. Se describe una medición final de GAD-7, no puntajes iniciales."
+          ],
+          "result": "Conclusión de diseño: dos grupos independientes para la comparación entre tratamientos; no puede inferirse representatividad ni mejora individual pre/post sin más datos.",
+          "interpretation": "En una respuesta a desarrollar, justificá cada etiqueta con una frase del caso."
         }
       ]
     },
@@ -35,16 +48,29 @@
       "blocks": [
         {
           "type": "paragraph",
-          "text": "En un estudio sobre mindfulness y ansiedad, el tratamiento es una variable explicativa categórica nominal; el puntaje de ansiedad es una respuesta cuantitativa. El instrumento es la escala utilizada para producir ese puntaje, no la variable misma."
+          "text": "Una variable es lo que cambia entre personas o mediciones. Primero decí QUÉ se registra; después clasificá. La escala o inventario de medición no es la variable: es el instrumento."
         },
         {
           "type": "list",
           "items": [
-            "Nominal: categorías sin orden (grupo o tratamiento). Ordinal: categorías ordenadas (bajo, medio, alto).",
-            "Discreta: conteos. Continua: mediciones; el número de decimales no decide por sí solo el tipo.",
-            "Una hipótesis debe predecir una relación comprobable: por ejemplo, distinto puntaje de ansiedad según tratamiento.",
-            "Que un test empiece en cero no demuestra que cero signifique ausencia absoluta del rasgo."
+            "Explicativa (X): variable usada para comparar o explicar, como tipo de tratamiento. Respuesta (Y): resultado que se mide, como puntaje de ansiedad.",
+            "Nominal: categorías sin orden (mindfulness/control). Ordinal: categorías ordenadas (bajo/medio/alto).",
+            "Cuantitativa discreta: cantidad contada, como materias recursadas. Cuantitativa continua: medida física o temporal, como tiempo de reacción.",
+            "Un puntaje psicométrico numérico suele analizarse como de intervalo según la consigna; NO des por hecho escala de razón solo porque permite escribir un cero.",
+            "Hipótesis de investigación: predicción comprobable, no resultados inventados. Ejemplo: «el puntaje medio de ansiedad difiere entre ambos tratamientos»."
           ]
+        },
+        {
+          "type": "worked",
+          "title": "Caso de parcial 2026: autoestima",
+          "problem": "Un grupo recibe un programa y otro no; al final se aplica una escala numérica de autoestima.",
+          "steps": [
+            "Variable explicativa: participación en programa (sí/no), categórica nominal.",
+            "Variable respuesta: puntaje de autoestima, cuantitativo. Instrumento: escala de Rosenberg.",
+            "Hipótesis: el promedio de autoestima será diferente entre grupos; si se espera mejoría, plantear dirección de forma previa."
+          ],
+          "result": "No escribas «el programa mejoró la autoestima» como resultado si el enunciado no presenta cifras.",
+          "interpretation": "Separá fenómeno, variable, instrumento, población y muestra. En exámenes suelen pedir varias cosas en el mismo inciso."
         }
       ]
     },
@@ -54,15 +80,101 @@
       "blocks": [
         {
           "type": "paragraph",
-          "text": "FA cuenta casos; FR expresa la parte respecto de un total. FAA suma las FA hasta una categoría ordenada; FRA expresa esa acumulación relativa. Las acumuladas solo tienen interpretación cuando existe un orden significativo."
+          "text": "Una tabla de frecuencias resume cuántas observaciones aparecen en cada valor o intervalo. Cuatro columnas se obtienen con solo dos operaciones: dividir por el total y acumular de arriba abajo."
         },
         {
           "type": "formula",
-          "expression": "N = ΣFA    ·    FR = FA/N    ·    FAAᵢ = Σₖ≤ᵢ FAₖ    ·    FRA = FAA/N"
+          "lines": [
+            {
+              "left": "FR =",
+              "numerator": "FA",
+              "denominator": "N"
+            },
+            {
+              "left": "FR % =",
+              "numerator": "FA × 100",
+              "denominator": "N"
+            },
+            {
+              "left": "FRA =",
+              "numerator": "FAA",
+              "denominator": "N"
+            }
+          ],
+          "symbols": [
+            {
+              "symbol": "FA",
+              "meaning": "frecuencia absoluta, número de casos de la fila"
+            },
+            {
+              "symbol": "FAA",
+              "meaning": "suma de las FA hasta esa fila inclusive"
+            },
+            {
+              "symbol": "N",
+              "meaning": "cantidad total de casos"
+            }
+          ]
+        },
+        {
+          "type": "steps",
+          "items": [
+            "Sumá todas las FA para obtener N. Si falta una casilla: N menos las FA conocidas.",
+            "FR = FA/N. Si la piden en porcentaje, multiplicá por 100.",
+            "FAA = suma acumulada de FA; FRA = FAA/N. La última FAA debe dar N y la última FRA debe dar 1 (o 100 %).",
+            "Interpretá la fila con el intervalo exacto y el denominador: «100 de 350 casos (28,57 %) están entre 60 y menos de 90 minutos; 210 (60 %) acumulan menos de 90»."
+          ]
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Minutos",
+            "FA",
+            "FR %",
+            "FAA",
+            "FRA %"
+          ],
+          "rows": [
+            [
+              "0–30",
+              "50",
+              "14,29",
+              "50",
+              "14,29"
+            ],
+            [
+              "30–60",
+              "60",
+              "17,14",
+              "110",
+              "31,43"
+            ],
+            [
+              "60–90",
+              "100",
+              "28,57",
+              "210",
+              "60,00"
+            ],
+            [
+              "90–120",
+              "110",
+              "31,43",
+              "320",
+              "91,43"
+            ],
+            [
+              "120–150",
+              "30",
+              "8,57",
+              "350",
+              "100,00"
+            ]
+          ]
         },
         {
           "type": "paragraph",
-          "text": "En una tabla de doble entrada, el denominador depende de la pregunta: «del total» usa N; «de quienes recibieron tratamiento» usa el tamaño de ese grupo. Interpretar una fila exige mencionar la categoría, cantidad o porcentaje y base de comparación."
+          "text": "Para una tabla cruzada distinguí «del total» (N general), «dentro del tratamiento» (total de ese tratamiento) y «entre quienes tienen X» (total de la condición X). Las frecuencias acumuladas requieren categorías ordenables."
         }
       ]
     },
@@ -72,15 +184,43 @@
       "blocks": [
         {
           "type": "paragraph",
-          "text": "La media usa todos los valores y es sensible a extremos. La mediana deja aproximadamente la mitad de observaciones a cada lado. La moda es el valor más frecuente y puede haber más de una."
+          "text": "Las tres medidas de centro responden preguntas diferentes. Elegí la que exige la consigna, antes de calcular."
         },
         {
           "type": "list",
           "items": [
-            "P10: cerca del 10 % queda en o por debajo del corte; P90 delimita el 10 % con puntajes superiores.",
-            "«El 10 % con mayor ansiedad supera…» se responde con P90, no P10.",
-            "Si tenés datos agrupados o una base, no inventes una mediana, una moda o un percentil a partir de la descripción del estudio."
+            "Media: suma de puntajes dividida por n; cambia si hay valores extremos.",
+            "Mediana: valor del medio de datos ordenados; si n es par, promedio de los dos centrales.",
+            "Moda: valor con mayor frecuencia; puede haber varias.",
+            "Percentil Pk: punto que deja aproximadamente k % de observaciones a su izquierda (según convención y datos). P90 es el corte del 10 % superior, P10 el 10 % inferior."
           ]
+        },
+        {
+          "type": "formula",
+          "lines": [
+            {
+              "left": "Media =",
+              "numerator": "Σx",
+              "denominator": "n"
+            }
+          ],
+          "symbols": []
+        },
+        {
+          "type": "worked",
+          "title": "Serie corta: 2, 4, 4, 6, 9",
+          "problem": "Calcular media, mediana y moda.",
+          "steps": [
+            "Los datos ya están ordenados. Sumá 2+4+4+6+9=25; hay 5 observaciones.",
+            "Media = 25/5 = 5.",
+            "Mediana: tercer valor = 4. Moda: el 4 aparece dos veces, los demás una."
+          ],
+          "result": "Media 5; mediana 4; moda 4.",
+          "interpretation": "Si el parcial pide «la mayoría obtuvo ...», buscá la moda. Si pide «el 10 % más alto superó ...», buscá P90 en la base o los datos."
+        },
+        {
+          "type": "paragraph",
+          "text": "Los percentiles de una base real se calculan sobre los puntajes reales y según el procedimiento de la materia. Si el examen menciona una planilla que no está disponible, no se puede inventar el valor de P90."
         }
       ]
     },
@@ -90,15 +230,43 @@
       "blocks": [
         {
           "type": "paragraph",
-          "text": "Desvío estándar y varianza miden dispersión; el desvío está en las mismas unidades que los datos. Para comparar grupos con medias de diferente escala suele pedirse variación relativa."
+          "text": "La varianza y el desvío describen cuánto se separan los datos de su media. El CV compara esa dispersión con el nivel medio; por eso sirve para contrastar grupos con medias distintas."
         },
         {
           "type": "formula",
-          "expression": "CV = (s / media) × 100 %"
+          "lines": [
+            {
+              "left": "Varianza muestral s² =",
+              "numerator": "Σ(x − media)²",
+              "denominator": "n − 1"
+            },
+            {
+              "left": "Desvío s =",
+              "right": "√s²"
+            },
+            {
+              "left": "CV (%) =",
+              "numerator": "s × 100",
+              "denominator": "media"
+            }
+          ],
+          "symbols": []
+        },
+        {
+          "type": "worked",
+          "title": "Misma serie: 2, 4, 4, 6, 9",
+          "problem": "La media es 5. Calcular varianza, desvío y CV.",
+          "steps": [
+            "Distancias al centro: −3, −1, −1, 1 y 4. Cuadrados: 9+1+1+1+16 = 28.",
+            "Varianza muestral = 28/(5−1)=7. Desvío s=√7≈2,65.",
+            "CV=2,6458/5 ×100≈52,92 %. Si otro grupo tiene media 10 y s=1, su CV es 10 %."
+          ],
+          "result": "La primera serie tiene mayor dispersión RELATIVA (52,92 % frente a 10 %).",
+          "interpretation": "Cuando comparás tratamientos, citá los dos CV y qué significa mayor dispersión. Si la media es cero o una escala sin razón significativa, cuidado al interpretar CV."
         },
         {
           "type": "paragraph",
-          "text": "Mayor CV significa mayor dispersión relativa, no necesariamente mayor desvío absoluto. Media > mediana > moda puede sugerir asimetría positiva; el orden inverso, negativa. Confirmá esa lectura con la distribución y no afirmes una forma exacta usando solo tres números."
+          "text": "Asimetría: cola hacia valores altos suele asociarse con media por encima de mediana; hacia valores bajos, media por debajo. El orden media/mediana/moda es una pista, no demostración suficiente: contrastalo con el histograma y medidas de asimetría."
         }
       ]
     },
@@ -108,27 +276,77 @@
       "blocks": [
         {
           "type": "paragraph",
-          "text": "r mide dirección e intensidad de una asociación lineal y está entre −1 y +1. R² representa la proporción de variabilidad de Y que explica el ajuste lineal: para expresarla en porcentaje, multiplicá por 100."
+          "text": "Correlación y regresión son procedimientos relacionados, pero NO iguales. r describe si X e Y tienden a subir juntas o en sentidos opuestos. La recta predice un valor de Y según X. R² indica qué proporción de la variación de Y se explica mediante esa recta."
         },
         {
           "type": "formula",
-          "expression": "ŷ = a + bx    ·    b = Σ(x−x̄)(y−ȳ) / Σ(x−x̄)²    ·    a = ȳ − bx̄"
-        },
-        {
-          "type": "formula",
-          "expression": "r = Sxy / √(Sxx·Syy)   ·   Sxy = Σ(x−x̄)(y−ȳ)   ·   Sxx = Σ(x−x̄)²   ·   Syy = Σ(y−ȳ)²"
-        },
-        {
-          "type": "paragraph",
-          "text": "Para calcular r y la pendiente, mantené aparejados los datos (x,y) de cada persona; calculá las medias, los desvíos respecto de ellas y sus productos. Si r es negativo, a valores altos de X tienden a corresponder valores bajos de Y."
-        },
-        {
-          "type": "list",
-          "items": [
-            "Pendiente b: cambio predicho en Y por cada unidad adicional de X. Intercepto a: predicción para X=0, solo interpretable si tiene sentido en el contexto.",
-            "Para predecir, reemplazá X en la recta. Revisá si el valor está dentro del rango observado: extrapolar aumenta el riesgo.",
-            "Una correlación muy fuerte no demuestra causalidad."
+          "lines": [
+            {
+              "left": "r =",
+              "numerator": "Sxy",
+              "denominator": "√(Sxx × Syy)"
+            },
+            {
+              "left": "R² % =",
+              "right": "100 × r²"
+            }
+          ],
+          "symbols": [
+            {
+              "symbol": "Sxy",
+              "meaning": "suma de productos de las distancias de cada X e Y a sus medias"
+            },
+            {
+              "symbol": "Sxx",
+              "meaning": "suma de cuadrados de (x − media X)"
+            },
+            {
+              "symbol": "Syy",
+              "meaning": "suma de cuadrados de (y − media Y)"
+            }
           ]
+        },
+        {
+          "type": "formula",
+          "lines": [
+            {
+              "left": "Pendiente b =",
+              "numerator": "Sxy",
+              "denominator": "Sxx"
+            },
+            {
+              "left": "Intercepto a =",
+              "right": "media Y − b × media X"
+            },
+            {
+              "left": "Predicción ŷ =",
+              "right": "a + b × x"
+            }
+          ],
+          "symbols": []
+        },
+        {
+          "type": "steps",
+          "items": [
+            "Identificá X (variable explicativa) e Y (la que querés predecir). Mantené juntos los pares de la misma persona.",
+            "Calculá la media de X y la media de Y. Después Sxx, Sxy y Syy usando las diferencias respecto de las medias.",
+            "Obtené r y R². Para la recta calculá b=Sxy/Sxx y a=media(Y)−b×media(X).",
+            "Para predecir, reemplazá x por el valor pedido. La pendiente dice cuánto cambia Y esperada si X sube una unidad."
+          ]
+        },
+        {
+          "type": "worked",
+          "title": "Parcial real 2026: estrés y horas de sueño",
+          "problem": "Nueve pares de estrés X y horas de sueño Y. Se pide r, recta y predicción para estrés = 7.",
+          "steps": [
+            "Media de X≈6,667; media de Y≈5,778. Sumatorias: Sxx=20; Sxy≈−13,667; Syy≈9,556.",
+            "r=−13,667/√(20×9,556)≈−0,9886: asociación lineal negativa muy fuerte.",
+            "R²≈0,9773, es decir, alrededor del 97,73 % de variación observada de Y explicada por la recta.",
+            "b=−13,667/20≈−0,6833; a=5,778−(−0,6833×6,667)≈10,333.",
+            "Recta: sueño predicho = 10,333−0,6833×estrés. Para estrés=7: 10,333−0,6833×7=5,55 horas."
+          ],
+          "result": "r≈−0,9886; R²≈97,73 %; recta ŷ≈10,333−0,6833x; ŷ(7)=5,55 horas.",
+          "interpretation": "Por cada punto extra de estrés, el modelo predice unas 0,68 horas MENOS de sueño en promedio. No afirmes causalidad solo por la correlación ni extrapoles a valores de estrés fuera de los observados."
         }
       ]
     }
@@ -141,11 +359,10 @@
     {
       "type": "list",
       "items": [
-        "Población: conjunto objetivo. Muestra: casos observados. Unidad: cada caso. n: tamaño de la muestra.",
-        "Experimental = intervención asignada; observacional = condición registrada.",
-        "Transversal = una medición/caso; longitudinal = mismas personas seguidas.",
-        "Independientes = grupos distintos; apareados = observaciones vinculadas.",
-        "Nominal = categorías sin orden; ordinal = orden; discreta = conteos; continua = mediciones."
+        "Población = sujetos sobre los que se quiere concluir. Muestra = participantes medidos. Unidad = cada caso. Si no se informa n, no se puede deducir.",
+        "Experimental: intervención asignada. Observacional: condición registrada.",
+        "Transversal: una medición por sujeto; longitudinal: seguimiento. Grupos independientes: sujetos distintos; apareados: mismos sujetos en dos momentos.",
+        "Explicativa = posible predictor; respuesta = resultado; nominal = categorías sin orden; ordinal = orden; discreta = conteo; continua = medición."
       ]
     },
     {
@@ -154,15 +371,32 @@
     },
     {
       "type": "formula",
-      "expression": "FR = FA/N    ·    FR% = 100·FA/N"
+      "lines": [
+        {
+          "left": "FR =",
+          "numerator": "FA",
+          "denominator": "N"
+        },
+        {
+          "left": "FR % =",
+          "numerator": "FA × 100",
+          "denominator": "N"
+        },
+        {
+          "left": "FRA =",
+          "numerator": "FAA",
+          "denominator": "N"
+        }
+      ],
+      "symbols": []
     },
     {
-      "type": "formula",
-      "expression": "FAAᵢ = suma de FA hasta i    ·    FRA = FAA/N"
-    },
-    {
-      "type": "paragraph",
-      "text": "Para «dentro del grupo» dividí por el total del grupo, no por N global. La última FAA = N y la suma de FR = 1."
+      "type": "list",
+      "items": [
+        "FAA: sumar FA de arriba a abajo; última FAA = N; última FRA = 1.",
+        "En tabla cruzada: «del total» → N; «dentro del grupo» → total del grupo.",
+        "Interpretar una fila = categoría o intervalo + FA/FR + acumulación con base."
+      ]
     },
     {
       "type": "heading",
@@ -170,14 +404,36 @@
     },
     {
       "type": "formula",
-      "expression": "media = Σx/n    ·    s² = Σ(x−media)²/(n−1)    ·    s = √s²"
+      "lines": [
+        {
+          "left": "Media =",
+          "numerator": "Σx",
+          "denominator": "n"
+        },
+        {
+          "left": "s² =",
+          "numerator": "Σ(x − media)²",
+          "denominator": "n − 1"
+        },
+        {
+          "left": "s =",
+          "right": "√s²"
+        },
+        {
+          "left": "CV % =",
+          "numerator": "s × 100",
+          "denominator": "media"
+        }
+      ],
+      "symbols": []
     },
     {
       "type": "list",
       "items": [
-        "Moda = más frecuente; mediana = centro ordenado; P90 = corte del 10 % superior.",
-        "CV = 100·s/media. Mayor CV = mayor variabilidad relativa.",
-        "Media > mediana puede sugerir cola derecha; media < mediana, cola izquierda. Revisar gráfico."
+        "Mediana = centro ordenado; moda = valor más frecuente.",
+        "P90 = punto de corte del 10 % superior; P10 = corte del 10 % inferior.",
+        "Comparar variabilidad relativa con CV, no solo s. Mayor CV = mayor dispersión relativa.",
+        "Media > mediana puede sugerir cola derecha; verificar con los datos."
       ]
     },
     {
@@ -186,22 +442,39 @@
     },
     {
       "type": "formula",
-      "expression": "−1 ≤ r ≤ 1    ·    R²% = 100·r²"
-    },
-    {
-      "type": "formula",
-      "expression": "r = Sxy / √(Sxx·Syy)    ·    Sxy = Σ(x−x̄)(y−ȳ)"
-    },
-    {
-      "type": "formula",
-      "expression": "ŷ = a+bx    ·    b = Sxy/Sxx    ·    a = ȳ−bx̄"
+      "lines": [
+        {
+          "left": "r =",
+          "numerator": "Sxy",
+          "denominator": "√(Sxx × Syy)"
+        },
+        {
+          "left": "R² % =",
+          "right": "100 × r²"
+        },
+        {
+          "left": "b =",
+          "numerator": "Sxy",
+          "denominator": "Sxx"
+        },
+        {
+          "left": "a =",
+          "right": "media Y − b × media X"
+        },
+        {
+          "left": "ŷ =",
+          "right": "a + b × x"
+        }
+      ],
+      "symbols": []
     },
     {
       "type": "list",
       "items": [
-        "b: cambio esperado de Y al subir X una unidad. a: valor predicho en X=0.",
-        "Predicción: sustituir X y mirar si hay extrapolación.",
-        "Asociación ≠ causalidad."
+        "Sxy = suma de (x−media X)(y−media Y). Sxx/Syy = suma de cuadrados de cada variable.",
+        "r entre −1 y +1; signo = dirección, tamaño = intensidad lineal.",
+        "b = cambio predicho en Y por una unidad de X; a = predicción para X=0 si tiene sentido.",
+        "Predicción: sustituir x. Asociación NO prueba causalidad."
       ]
     }
   ],
