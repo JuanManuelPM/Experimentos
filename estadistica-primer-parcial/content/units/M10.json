@@ -337,7 +337,7 @@
         },
         {
           "type": "note",
-          "text": "Los dos escenarios son compatibles con redondeos a porcentajes enteros, pero no son conteos confirmados. Para E3 la conclusión original exacta está bloqueada. La guía especifica α = 5 %; la mención de 8 % en el solucionario es contradictoria."
+          "text": "El solucionario original informa p ≈ 0,046 y propone rechazar H₀, resultado consistente con calcular usando los porcentajes publicados como si fueran exactos. Pero faltan conteos enteros: dos reconstrucciones compatibles con los redondeos cambian la decisión al 5 %. Se mantiene CONFLICT/BLOCKED para la clave exacta. El enunciado fija α = 5 % y la respuesta menciona erróneamente 8 %."
         }
       ]
     },
@@ -775,7 +775,8 @@
         "En A, Z ≈ 1,611; en B, Z ≈ 1,719. La cola derecha de cada uno queda cerca de 0,05."
       ],
       "solution": [
-        "Escenario A: Z ≈ 1,6110; p ≈ 0,05359, no se rechaza. Escenario B: Z ≈ 1,7193; p ≈ 0,04278, sí se rechaza. Son reconstrucciones hipotéticas compatibles con porcentajes redondeados, no hechos informados. La conclusión exacta del E3 permanece BLOCKED/CONFLICT."
+        "Escenario A: Z ≈ 1,6110; p ≈ 0,05359, no se rechaza. Escenario B: Z ≈ 1,7193; p ≈ 0,04278, sí se rechaza. Son reconstrucciones hipotéticas compatibles con porcentajes redondeados, no hechos informados. La conclusión exacta del E3 permanece BLOCKED/CONFLICT.",
+        "El solucionario de la guía comunica p≈0,046, que coincide con tomar literalmente 61 % y 51 % como proporciones; no resuelve la indeterminación de los conteos enteros."
       ],
       "options": [
         "A no rechaza H₀ y B sí: falta dato para una conclusión exacta única.",
@@ -1565,6 +1566,14 @@
           "Tema1 E3d",
           "Tema2 E3d"
         ]
+      },
+      {
+        "id": "M10-RESP",
+        "state": "SOURCE_CONFIRMED",
+        "url": "https://drive.google.com/file/d/1ratXa7AW8TFWOMzXhtr0h3oZW39kBKb5/view",
+        "items": [
+          "E1–E4 y claves reportadas"
+        ]
       }
     ],
     "patterns": [
@@ -1632,15 +1641,17 @@
             "p": 0.04277666,
             "decision": "rechazar"
           }
-        ]
+        ],
+        "publishedSolution": "El solucionario original comunica p=0,046, rechazo al 5%, pero dice «8 % de error» y no aporta los conteos enteros necesarios para certificar esa clave."
       },
       {
         "source": "M10 E4",
         "state": "CALCULATED_APPROXIMATE",
-        "detail": "B informa 37% de n=130 sin conteo exacto. Z≈1,024 y p≈0,153 son aproximaciones a partir del porcentaje publicado."
+        "detail": "B informa 37% de n=130 sin conteo exacto. Z≈1,024 y p≈0,153 son aproximaciones a partir del porcentaje publicado.",
+        "publishedSolution": "El solucionario informa p=0,153 y error posible tipo II; coincide con el cálculo aproximado."
       }
     ],
-    "verification": "Cálculos propios de proporciones, tasas, Z, EE₀ y p; comparación independiente con distribución normal estándar. Todas las variantes con datos nuevos están identificadas como transferencia.",
+    "verification": "Cálculos independientes de proporciones, EE₀, Z y colas; cotejo directo con consignas y respuestas originales de M10, integrador P2 y parciales 2026. Ejercicios originales con porcentajes redondeados se diferencian de conteos confirmados y de variantes creadas.",
     "readiness": "Teoría, machete y 25 ejercicios utilizables; el caso ambiguo M10 E3 permanece explícitamente bloqueado para conclusión exacta."
   }
 }
