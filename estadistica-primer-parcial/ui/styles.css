@@ -172,3 +172,24 @@ body{background:var(--bg);color:var(--text);font-family:Inter,-apple-system,Blin
 .cheat-dialog-scroll{max-height:calc(90vh - 51px)}
 @media(max-width:390px){.reader{padding-inline:18px}.navline{padding-inline:14px}.exercise{margin-inline:-10px;padding-inline:10px}.exercise .vf-row{grid-template-columns:minmax(0,1fr) 76px;gap:9px}.exercise h2{font-size:16.3px}.exercise .review-controls{column-gap:17px}}
 @media(prefers-reduced-motion:reduce){.exercise,.exercise .choice{transition:none}}
+
+/* Vistas curadas: tres hojas breves, sin concatenar unidades. */
+.partial-summary-head{display:flex;align-items:baseline;justify-content:space-between;gap:8px;padding:7px 0 18px;border-bottom:1px solid var(--line);margin-bottom:7px}
+.partial-summary-head h1{font-size:22px;line-height:1.18;letter-spacing:-.045em;font-weight:620;margin:0}
+.partial-summary-head span{font-size:11.5px;color:var(--muted);white-space:nowrap}
+.partial-summary-head+.concept{border-top:0}
+.partial-summary-head+.exercise{border-top:0}
+.partial-summary-head+.cheats{padding-top:3px}
+.partial-summary-head~.concept{padding-top:17px;padding-bottom:18px}
+.partial-summary-head~.concept h2{font-size:17px;margin-bottom:9px}
+.partial-summary-head~.concept .block-paragraph{font-size:14px;line-height:1.56;margin:7px 0 10px}
+.partial-summary-head~.concept .block-list{margin:8px 0 10px}
+.partial-summary-head~.concept .block-list li{font-size:13.7px;line-height:1.5;margin:5px 0}
+.partial-summary-head~.concept .block-comparison{margin:10px 0}
+.partial-summary-head~.concept .block-formula{font-size:19px;margin:9px 0;line-height:1.5}
+.partial-summary-head~.cheats .block-heading{margin:15px 0 7px;font-size:15px}
+.partial-summary-head~.cheats .block-list{margin:8px 0 12px}
+.partial-summary-head~.cheats .block-list li{font-size:13.5px;line-height:1.45;margin:3px 0}
+.partial-summary-head~.cheats .block-formula{font-size:18px;line-height:1.55;margin:8px 0;overflow-wrap:anywhere}
+.partial-summary-head~.cheats .block-paragraph{font-size:13.5px;margin:5px 0 10px}
+@media(max-width:390px){.partial-summary-head h1{font-size:20px}.partial-summary-head span{font-size:11px}}

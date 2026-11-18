@@ -1,5 +1,5 @@
-import {loadStudyContent} from './data.js';
-import {createRenderers} from './components.js?v=editorial-practice-v5-20261117';
+import {loadStudyContent} from './data.js?v=partial-summary-v1-20261118';
+import {createRenderers} from './components.js?v=partial-summary-v1-20261118';
 import {TAB_ORDER,buildRouteURL,routeFromLocation,bindGestures} from './navigation.js?v=speedrun-20261117a';
 // UI orchestration, no course content or exercise keys in this file.
 (async function(){'use strict';
@@ -23,14 +23,19 @@ window.addEventListener('scroll',readProgress,{passive:true});window.addEventLis
 function updateControls(){let active=view==='unit'||view==='partial';HEAD.hidden=!active;if(active){UNIT_TRIGGER.textContent=view==='partial'?'P'+PARTIALS[partial].id:PARTIALS[partial].units[unit].id;UNIT_TRIGGER.setAttribute('aria-label','Ver unidades');for(const b of TABS.querySelectorAll('[data-tab]')){const yes=b.dataset.tab===tab;b.classList.toggle('active',yes);b.setAttribute('aria-selected',String(yes));b.tabIndex=yes?0:-1}}}
 function homePage(){navigate({view:'units',partial},true)}
 function openUnit(i,t='theory'){navigate({view:'unit',partial,unit:Number(i),tab:t},true)}
-function changeTab(t){if((view==='unit'||view==='partial')&&t!==tab)navigate({view:'unit',partial,unit,tab:t},true)}
+function changeTab(t){if((view==='unit'||view==='partial')&&t!==tab)navigate({view,partial,unit,tab:t},true)}
 function getRoute(){return {view,partial,unit,tab}}
 function keyOf(r){return [r.view,r.partial,r.unit,r.tab].join(':')}
 function savePosition(){previousScroll.set(keyOf(getRoute()),window.scrollY)}
 function navigate(next,push=true){if(view==='unit'||view==='partial'||view==='units'||view==='partials')savePosition();const r={...getRoute(),...next};if(!PARTIALS[r.partial])r.partial=0;if(r.view==='unit'&&!PARTIALS[r.partial].units[r.unit])r.view='units';if(r.view==='partial'&&!PARTIALS[r.partial].ready)r.view='units';if(!TAB_ORDER.includes(r.tab))r.tab='theory';({view,partial,unit,tab}=r);if(push)history.pushState(getRoute(),' ',getURL(getRoute()));render();const prior=previousScroll.get(keyOf(getRoute()))||0;requestAnimationFrame(()=>{window.scrollTo({top:prior,behavior:'instant'});readProgress()})}
 function render(){updateControls();document.title=(view==='unit'?PARTIALS[partial].units[unit].title+' · ':view==='units'||view==='partial'?PARTIALS[partial].title+' · ':'')+'Estadística';if(view==='partials'){MAIN.innerHTML=`<div class="indexhead"><h1>Estadística</h1></div><div class="index-list">${PARTIALS.map((p,i)=>`<button type="button" class="index-unit" data-partial="${i}" ${p.ready===false?'disabled aria-disabled="true"':''}><span class="inum">${String(i+1).padStart(2,'0')}</span><span><strong>${escapeHTML(p.title)}</strong>${p.ready===false?'<small>Próximamente</small>':''}</span><span class="arr">›</span></button>`).join('')}</div>`;readProgress();return}
-if(view==='units'){const p=PARTIALS[partial];MAIN.innerHTML=`<div class="indexhead"><div class="indexline"><button class="levelback" data-view="partials" aria-label="Volver a parciales">‹</button><h1>${escapeHTML(p.title)}</h1></div></div><div class="index-list"><button type="button" class="index-unit index-all" data-all="1"><span class="inum">∞</span><span><strong>Todo el parcial</strong><small>Teoría · Práctica · Machete</small></span><span class="arr">›</span></button>${p.units.map((u,i)=>`<button class="index-unit" data-unit="${i}"><span class="inum">${escapeHTML(u.id)}</span><span><strong>${escapeHTML(u.title)}</strong><small>${u.practice.length} ejercicios · ${u.theory.length} conceptos</small></span><span class="arr">›</span></button>`).join('')}</div>`;readProgress();return}
-if(view==='partial'){const p=PARTIALS[partial];MAIN.innerHTML=p.units.map(u=>'<section class="aggregate-unit"><h2 class="aggregate-heading">'+escapeHTML(u.id)+' · '+escapeHTML(u.title)+'</h2>'+(tab==='theory'?theory(u):tab==='practice'?practices(u):cheat(u))+'</section>').join('');finalizePractice();readProgress();return}
+if(view==='units'){const p=PARTIALS[partial];MAIN.innerHTML=`<div class="indexhead"><div class="indexline"><button class="levelback" data-view="partials" aria-label="Volver a parciales">‹</button><h1>${escapeHTML(p.title)}</h1></div></div><div class="index-list"><button type="button" class="index-unit index-all" data-all="1"><span class="inum">∞</span><span><strong>Resumen del parcial</strong><small>Teoría · Práctica · Machete</small></span><span class="arr">›</span></button>${p.units.map((u,i)=>`<button class="index-unit" data-unit="${i}"><span class="inum">${escapeHTML(u.id)}</span><span><strong>${escapeHTML(u.title)}</strong><small>${u.practice.length} ejercicios · ${u.theory.length} conceptos</small></span><span class="arr">›</span></button>`).join('')}</div>`;readProgress();return}
+if(view==='partial'){
+  const p=PARTIALS[partial],s=p.summary;
+  const head='<div class="partial-summary-head"><h1>'+escapeHTML(p.title)+'</h1>'+(tab==='practice'?'<span>'+s.practice.length+' ejercicios seleccionados</span>':'')+'</div>';
+  MAIN.innerHTML=head+(tab==='theory'?theory(s):tab==='practice'?practices(s):cheat(s));
+  finalizePractice();readProgress();return;
+}
 const u=PARTIALS[partial].units[unit];MAIN.innerHTML=tab==='theory'?theory(u):tab==='practice'?practices(u):cheat(u);finalizePractice();readProgress();}
 function finalizePractice(){
   if(tab!=='practice')return;
@@ -122,7 +127,7 @@ function showCheat(id){
   }
   if(best&&score>0)requestAnimationFrame(()=>{cheatContent.scrollTop=Math.max(0,best.offsetTop-cheatContent.offsetTop-12)});
 }
-MAIN.addEventListener('click',e=>{const btn=e.target.closest('[data-view],[data-partial],[data-unit],[data-all],[data-key],[data-reveal],[data-next],[data-cheat]');if(!btn)return;if(btn.dataset.view==='partials'){navigate({view:'partials'},true);return}if(btn.dataset.partial!==undefined){const p=Number(btn.dataset.partial);if(PARTIALS[p]?.ready===false)return;navigate({view:'units',partial:p,unit:0,tab:'theory'},true);return}if(btn.dataset.all!==undefined){navigate({view:'partial',tab:'practice'},true);return}if(btn.dataset.unit!==undefined){openUnit(btn.dataset.unit);return}if(btn.dataset.key){patchCard(btn.dataset.key,btn.dataset.choice);return}if(btn.dataset.reveal){toggleReview(btn.dataset.reveal);return}if(btn.dataset.next){goNext(btn.dataset.next);return}if(btn.dataset.cheat){showCheat(btn.dataset.cheat);return}});
+MAIN.addEventListener('click',e=>{const btn=e.target.closest('[data-view],[data-partial],[data-unit],[data-all],[data-key],[data-reveal],[data-next],[data-cheat]');if(!btn)return;if(btn.dataset.view==='partials'){navigate({view:'partials'},true);return}if(btn.dataset.partial!==undefined){const p=Number(btn.dataset.partial);if(PARTIALS[p]?.ready===false)return;navigate({view:'units',partial:p,unit:0,tab:'theory'},true);return}if(btn.dataset.all!==undefined){navigate({view:'partial',tab:'theory'},true);return}if(btn.dataset.unit!==undefined){openUnit(btn.dataset.unit);return}if(btn.dataset.key){patchCard(btn.dataset.key,btn.dataset.choice);return}if(btn.dataset.reveal){toggleReview(btn.dataset.reveal);return}if(btn.dataset.next){goNext(btn.dataset.next);return}if(btn.dataset.cheat){showCheat(btn.dataset.cheat);return}});
 function getURL(r){return buildRouteURL(r,PARTIALS)}
 bindGestures(MAIN,direction=>{if(view==='unit'||view==='partial'){const next=TAB_ORDER.indexOf(tab)+(direction==='left'?1:-1);if(next<0)navigate({view:'units'},true);else if(next<TAB_ORDER.length)changeTab(TAB_ORDER[next]);}else if(view==='units'){if(direction==='right')navigate({view:'partials'},true);else if(PARTIALS[partial].units.length)openUnit(unit)}else if(view==='partials'&&direction==='left')navigate({view:'units'},true)});
 UNIT_TRIGGER.addEventListener('click',()=>navigate({view:'units'},true));
