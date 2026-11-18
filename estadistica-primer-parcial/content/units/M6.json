@@ -3,21 +3,2155 @@
   "moduleId": "M6",
   "id": "06",
   "partial": "P2",
-  "status": "draft",
+  "status": "ready",
   "title": "Probabilidades",
   "intro": "Identificar sucesos y denominadores",
   "source": "Fuente privada: paquete académico v2",
-  "theory": [],
-  "practice": [],
+  "theory": [
+    {
+      "id": "06.01",
+      "title": "Qué significa una probabilidad",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Una probabilidad es la proporción de casos que cumplen una condición dentro de un universo definido. Vale entre 0 y 1: 0 es imposible, 1 es seguro; 0,25 equivale a 25 %."
+        },
+        {
+          "type": "definition",
+          "term": "Suceso",
+          "text": "Un resultado o conjunto de resultados que interesa contar.",
+          "example": "A: presentar síntomas de aislamiento. No A: no presentar esos síntomas."
+        },
+        {
+          "type": "formula",
+          "expression": "P(A) = casos que cumplen A / total de casos posibles",
+          "symbols": [
+            {
+              "symbol": "A",
+              "meaning": "el suceso que se quiere estudiar"
+            }
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            {
+              "label": "Universo",
+              "text": "Antes de dividir, identificá de qué personas se está hablando."
+            },
+            {
+              "label": "Suceso simple",
+              "text": "Una condición, como vivir solo."
+            },
+            {
+              "label": "Suceso conjunto",
+              "text": "Dos condiciones simultáneas, como vivir solo y presentar aislamiento."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "En el parcial de 2026, 13 de 30 estudiantes presentaban aislamiento: P(aislamiento)=13/30≈0,4333. El denominador es 30 porque se elige entre todos."
+        }
+      ]
+    },
+    {
+      "id": "06.02",
+      "title": "Leer una tabla sin cambiar el denominador",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "En una tabla de contingencia, cada celda cuenta la coincidencia de dos categorías; los extremos de filas y columnas son totales marginales; la esquina del total general es N."
+        },
+        {
+          "type": "table",
+          "headers": [
+            "",
+            "Aislamiento",
+            "Sin aislamiento",
+            "Total"
+          ],
+          "rows": [
+            [
+              "Vive solo",
+              "9",
+              "6",
+              "15"
+            ],
+            [
+              "Con familia",
+              "4",
+              "11",
+              "15"
+            ],
+            [
+              "Total",
+              "13",
+              "17",
+              "30"
+            ]
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            {
+              "label": "Marginal",
+              "text": "P(aislamiento)=13/30; reúne las dos filas de la columna."
+            },
+            {
+              "label": "Conjunta",
+              "text": "P(solo y aislamiento)=9/30; usa la celda compartida."
+            },
+            {
+              "label": "No conjunta",
+              "text": "P(solo)=15/30; no confundas el total de la fila con una celda."
+            }
+          ]
+        },
+        {
+          "type": "formula",
+          "expression": "P(A ∩ B) = n(A ∩ B) / N",
+          "symbols": [
+            {
+              "symbol": "∩",
+              "meaning": "A y B, ocurren juntos"
+            },
+            {
+              "symbol": "N",
+              "meaning": "total general de la tabla"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Esto permite resolver las preguntas que dicen «al elegir una persona al azar de toda la muestra». Si el enunciado restringe a un grupo, ya no alcanza con dividir por N."
+        }
+      ]
+    },
+    {
+      "id": "06.03",
+      "title": "Probabilidad condicional: cambia el universo",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Una probabilidad condicional pregunta por un suceso solo entre personas que ya cumplen otra condición. La barra vertical se lee «dado que»."
+        },
+        {
+          "type": "formula",
+          "expression": "P(A | B) = n(A ∩ B) / n(B)",
+          "symbols": [
+            {
+              "symbol": "A",
+              "meaning": "lo que se quiere saber"
+            },
+            {
+              "symbol": "B",
+              "meaning": "la condición que ya se sabe; fija el denominador"
+            }
+          ]
+        },
+        {
+          "type": "steps",
+          "items": [
+            "Ubicar la condición introducida por «entre quienes», «de los que» o «dado que».",
+            "Tomar su total como denominador.",
+            "Contar dentro de ese grupo cuántos también cumplen el suceso pedido."
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Entre los 17 estudiantes sin aislamiento, 11 viven con su familia. P(familia | sin aislamiento)=11/17≈64,71 %. Dividir por 30 respondería otra pregunta."
+        },
+        {
+          "type": "note",
+          "text": "La intersección se divide por el total general; la condicional se divide por el total condicionado. Esa diferencia es uno de los errores principales del parcial."
+        }
+      ]
+    },
+    {
+      "id": "06.04",
+      "title": "Comparar grupos y no confundir sentidos",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Para saber dónde es más probable un resultado, calculá el porcentaje del resultado dentro de cada grupo. Comparar únicamente cantidad de casos engaña cuando los grupos tienen tamaños distintos."
+        },
+        {
+          "type": "formula",
+          "expression": "P(resultado | grupo 1) frente a P(resultado | grupo 2)",
+          "symbols": []
+        },
+        {
+          "type": "paragraph",
+          "text": "En el parcial: aislamiento entre quienes viven solos = 9/15=60 %; entre quienes viven con familia = 4/15≈26,67 %. La proporción observada es mayor entre quienes viven solos."
+        },
+        {
+          "type": "comparison",
+          "columns": [
+            {
+              "label": "P(A | B)",
+              "items": [
+                "Pregunta por A dentro de B.",
+                "El denominador es n(B)."
+              ]
+            },
+            {
+              "label": "P(B | A)",
+              "items": [
+                "Pregunta por B dentro de A.",
+                "El denominador es n(A)."
+              ]
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Aunque ambas condicionales utilizan la misma intersección, normalmente no son iguales. Comparar proporciones observadas tampoco demuestra que la variable de grupo sea causa del resultado."
+        }
+      ]
+    },
+    {
+      "id": "06.05",
+      "title": "Unión, intersección y complemento",
+      "blocks": [
+        {
+          "type": "comparison",
+          "columns": [
+            {
+              "label": "A ∩ B",
+              "items": [
+                "Se cumplen A y B.",
+                "Cuenta la parte compartida una sola vez."
+              ]
+            },
+            {
+              "label": "A ∪ B",
+              "items": [
+                "Se cumple A o B o ambas.",
+                "La «o» estadística usual es inclusiva."
+              ]
+            },
+            {
+              "label": "Aᶜ",
+              "items": [
+                "No sucede A.",
+                "A y su complemento abarcan todos los casos."
+              ]
+            }
+          ]
+        },
+        {
+          "type": "formula",
+          "expression": "P(A ∪ B) = P(A) + P(B) − P(A ∩ B)",
+          "symbols": []
+        },
+        {
+          "type": "formula",
+          "expression": "P(ninguno) = 1 − P(A ∪ B)",
+          "symbols": []
+        },
+        {
+          "type": "paragraph",
+          "text": "Si 40 % presenta ansiedad, 30 % depresión y 15 % ambas, la unión es 0,40+0,30−0,15=0,55. Si no se resta la coincidencia, se cuenta dos veces a las mismas personas."
+        },
+        {
+          "type": "paragraph",
+          "text": "El 45 % restante no presenta ninguna de las dos condiciones. Para hallar unión a partir de dos marginales hace falta conocer además la intersección o una condición que permita calcularla."
+        }
+      ]
+    },
+    {
+      "id": "06.06",
+      "title": "Solo uno, exactamente uno y ninguno",
+      "blocks": [
+        {
+          "type": "formula",
+          "expression": "P(solo A) = P(A) − P(A ∩ B)",
+          "symbols": []
+        },
+        {
+          "type": "formula",
+          "expression": "P(exactamente uno) = P(A)+P(B)−2P(A ∩ B)",
+          "symbols": []
+        },
+        {
+          "type": "list",
+          "items": [
+            {
+              "label": "Solo A",
+              "text": "Se excluyen los casos que también cumplen B."
+            },
+            {
+              "label": "Exactamente uno",
+              "text": "Se suman «solo A» y «solo B», sin quienes cumplen ambos."
+            },
+            {
+              "label": "Ninguno",
+              "text": "Es el complemento de «al menos uno»."
+            },
+            {
+              "label": "Por lo menos uno",
+              "text": "Es la unión, no la suma simple si hay superposición."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Con A=0,30, B=0,60 y ambas=0,05: solo A=0,25; exactamente uno=0,80; al menos uno=0,85; ninguno=0,15. La formulación cambia la cuenta aun con los mismos datos."
+        }
+      ]
+    },
+    {
+      "id": "06.07",
+      "title": "Excluyentes, independientes, exhaustivos",
+      "blocks": [
+        {
+          "type": "comparison",
+          "columns": [
+            {
+              "label": "Mutuamente excluyentes",
+              "items": [
+                "No pueden ocurrir juntos.",
+                "P(A ∩ B)=0."
+              ]
+            },
+            {
+              "label": "Independientes",
+              "items": [
+                "Conocer un suceso no cambia la probabilidad del otro.",
+                "P(A ∩ B)=P(A)×P(B)."
+              ]
+            },
+            {
+              "label": "Exhaustivos",
+              "items": [
+                "Al menos uno tiene que ocurrir.",
+                "P(A ∪ B)=1."
+              ]
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Son propiedades diferentes. «Ser mujer» y «practicar autocuidado» no son excluyentes porque una misma persona puede cumplir ambas. No son necesariamente independientes."
+        },
+        {
+          "type": "formula",
+          "expression": "P(A ∩ B) = P(A) + P(B) − P(A ∪ B)",
+          "symbols": []
+        },
+        {
+          "type": "paragraph",
+          "text": "Si P(A)=0,65, P(B)=0,40 y P(A ∪ B)=0,79, la intersección es 0,26. Como 0,65×0,40=0,26 son independientes; como la intersección no es 0, no son excluyentes."
+        },
+        {
+          "type": "note",
+          "text": "Cuando A y B tienen probabilidades positivas, no pueden ser a la vez independientes y mutuamente excluyentes. Dos sucesos complementarios son excluyentes y exhaustivos."
+        }
+      ]
+    },
+    {
+      "id": "06.08",
+      "title": "Construir una tabla a partir de porcentajes",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Una proporción como «70 % de los varones» usa el total de varones, no el total general. Primero encontrá cuántas personas hay en cada grupo; después calculá sus celdas."
+        },
+        {
+          "type": "steps",
+          "items": [
+            "Convertir porcentajes en proporciones; por ejemplo, 40 % = 0,40.",
+            "Calcular n(grupo)=N×P(grupo).",
+            "Calcular la celda «sí» de cada grupo = n(grupo)×P(sí | grupo).",
+            "Calcular la celda «no» por diferencia y cerrar los totales de filas y columnas.",
+            "Comprobar que todas las celdas suman N antes de calcular probabilidades."
+          ]
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Ejemplo: N=200",
+            "Autocuidado",
+            "Sin autocuidado",
+            "Total"
+          ],
+          "rows": [
+            [
+              "Grupo A",
+              "44",
+              "36",
+              "80"
+            ],
+            [
+              "Grupo B",
+              "78",
+              "42",
+              "120"
+            ],
+            [
+              "Total",
+              "122",
+              "78",
+              "200"
+            ]
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "El grupo A es 40 % del total, y dentro de él 55 % practica autocuidado: 80×0,55=44. En el grupo B, 65 % de 120 equivale a 78. Por tanto, P(autocuidado)=122/200=61 %."
+        },
+        {
+          "type": "note",
+          "text": "Si un porcentaje está redondeado y al multiplicarlo resulta 50,4 personas, el conteo requiere aproximación y revisión de los márgenes; no se puede afirmar que sean 50,4 personas observadas."
+        }
+      ]
+    },
+    {
+      "id": "06.09",
+      "title": "Volver de resultados a grupos: condicional inversa",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Que una prueba o conducta sea frecuente en un grupo no dice directamente qué proporción de los resultados corresponde a ese grupo. El denominador cambia según qué se conoce."
+        },
+        {
+          "type": "table",
+          "headers": [
+            "",
+            "Prueba +",
+            "Prueba −",
+            "Total"
+          ],
+          "rows": [
+            [
+              "Con condición",
+              "18",
+              "6",
+              "24"
+            ],
+            [
+              "Sin condición",
+              "7",
+              "69",
+              "76"
+            ],
+            [
+              "Total",
+              "25",
+              "75",
+              "100"
+            ]
+          ]
+        },
+        {
+          "type": "comparison",
+          "columns": [
+            {
+              "label": "P(positivo | condición)",
+              "items": [
+                "18/24 = 75 %.",
+                "De quienes tienen la condición, ¿cuántos dan positivo?"
+              ]
+            },
+            {
+              "label": "P(condición | positivo)",
+              "items": [
+                "18/25 = 72 %.",
+                "De quienes dieron positivo, ¿cuántos tienen la condición?"
+              ]
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Ambos usan la misma celda 18. Sirve para entender cuestionarios, tamizajes y cualquier pregunta que invierte el grupo conocido. Ninguna de las dos probabilidades por sí sola indica causalidad."
+        }
+      ]
+    },
+    {
+      "id": "06.10",
+      "title": "Interpretar sin afirmar más que los datos",
+      "blocks": [
+        {
+          "type": "list",
+          "items": [
+            {
+              "label": "Dato descriptivo",
+              "text": "Un porcentaje describe a la muestra o población indicada; no demuestra una causa."
+            },
+            {
+              "label": "Independencia estadística",
+              "text": "La igualdad entre probabilidades muestra una propiedad de esa distribución, no que una intervención funcione."
+            },
+            {
+              "label": "Decisión aplicada",
+              "text": "Preferir un servicio o recomendar una intervención requiere además beneficios, costos, objetivos y evidencia pertinente."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "En la guía, la condicional «asiste a grupos | usa apps» es 0,10/0,18≈55,56 %, no 10 %. El 10 % representa la coincidencia de ambas conductas en el conjunto general."
+        },
+        {
+          "type": "note",
+          "text": "El solucionario de la guía M6 E5(c) imprime 0,10, pero el enunciado pide una condicional. Se conserva el conflicto de fuente y se usa la operación correspondiente a la pregunta."
+        }
+      ]
+    }
+  ],
+  "practice": [
+    {
+      "id": "M6-P01",
+      "type": "numeric",
+      "title": "Conjunta en el parcial",
+      "prompt": "Se elige al azar un estudiante de la tabla. ¿Qué probabilidad hay de que viva solo Y presente aislamiento?",
+      "source": "Parcial P2 2026, tema 1, E3(a) · datos originales; redacción reformulada",
+      "hints": [
+        "Buscá la intersección de la fila «Vive solo» y la columna «Aislamiento».",
+        "«Y» indica probabilidad conjunta: celda dividida por el total general.",
+        "La celda tiene 9 personas y N=30; calculá 9÷30."
+      ],
+      "solution": [
+        "La intersección es 9. Se elige entre 30 personas: P(solo ∩ aislamiento)=9/30=0,30, es decir, 30 %."
+      ],
+      "pattern": "E1",
+      "stage": "guiada",
+      "answer": 0.3,
+      "tolerance": 0.0005,
+      "options": [
+        0.3,
+        0.6,
+        0.4333,
+        0.6923
+      ],
+      "table": [
+        [
+          "",
+          "Aislamiento",
+          "Sin aislamiento",
+          "Total"
+        ],
+        [
+          "Vive solo",
+          9,
+          6,
+          15
+        ],
+        [
+          "Vive con familia",
+          4,
+          11,
+          15
+        ],
+        [
+          "Total",
+          13,
+          17,
+          30
+        ]
+      ]
+    },
+    {
+      "id": "M6-P02",
+      "type": "numeric",
+      "title": "Conjunta en otro tema",
+      "prompt": "En la tabla del tema 2, ¿cuál es P(sin tutorías Y ansiedad elevada) al elegir un estudiante del total?",
+      "source": "Parcial P2 2026, tema 2, E3(a) · datos originales; redacción reformulada",
+      "hints": [
+        "La tabla contiene grupos distintos y una condición sí/no.",
+        "Buscá la celda «Sin tutorías» ∩ «Ansiedad elevada» y dividí por N.",
+        "La celda es 11 y el total 36; calculá 11÷36."
+      ],
+      "solution": [
+        "P(sin tutorías ∩ ansiedad elevada)=11/36≈0,3056 (30,56 %). No se usa 18: la pregunta no restringe a quienes no tienen tutorías."
+      ],
+      "pattern": "E1",
+      "stage": "transferencia",
+      "answer": 0.3055555555555556,
+      "tolerance": 0.0005,
+      "options": [
+        0.3056,
+        0.6111,
+        0.6875,
+        0.4444
+      ],
+      "table": [
+        [
+          "",
+          "Ansiedad elevada",
+          "Sin ansiedad",
+          "Total"
+        ],
+        [
+          "Con tutorías",
+          5,
+          13,
+          18
+        ],
+        [
+          "Sin tutorías",
+          11,
+          7,
+          18
+        ],
+        [
+          "Total",
+          16,
+          20,
+          36
+        ]
+      ]
+    },
+    {
+      "id": "M6-P03",
+      "type": "numeric",
+      "title": "Marginal del total",
+      "prompt": "En la tabla de aislamiento, ¿qué probabilidad hay de presentar aislamiento, sin importar con quién vive el estudiante?",
+      "source": "Parcial P2 2026, tema 1, E3 · marginal",
+      "hints": [
+        "Solo interesa la columna de aislamiento.",
+        "Sumá las dos celdas de aislamiento o leé su total y dividí por N.",
+        "El total de la columna es 13; el total general, 30."
+      ],
+      "solution": [
+        "P(aislamiento)=13/30≈0,4333. Es marginal: 9+4=13, no solamente la celda de quienes viven solos."
+      ],
+      "pattern": "E1",
+      "stage": "guiada",
+      "answer": 0.43333333333333335,
+      "tolerance": 0.0005,
+      "options": [
+        0.4333,
+        0.3,
+        0.6,
+        0.5667
+      ],
+      "table": [
+        [
+          "",
+          "Aislamiento",
+          "Sin aislamiento",
+          "Total"
+        ],
+        [
+          "Vive solo",
+          9,
+          6,
+          15
+        ],
+        [
+          "Vive con familia",
+          4,
+          11,
+          15
+        ],
+        [
+          "Total",
+          13,
+          17,
+          30
+        ]
+      ]
+    },
+    {
+      "id": "M6-P04",
+      "type": "numeric",
+      "title": "Dos condiciones simultáneas",
+      "prompt": "De 1000 evaluaciones de un programa, 335 estiman adhesión alta, y 234 de ellas emiten opinión no neutral. ¿Cuál es P(alta Y no neutral)?",
+      "source": "Guía M6 E1(d) · valores oficiales; enunciado abreviado",
+      "hints": [
+        "«Y» refiere a quienes cumplen ambas condiciones.",
+        "El dato 234 ya cuenta la coincidencia; el universo es la muestra entera.",
+        "Calculá 234÷1000."
+      ],
+      "solution": [
+        "P(alta ∩ no neutral)=234/1000=0,234 (23,4 %). Dividir por 335 calcularía otra probabilidad: no neutral dado que la adhesión es alta."
+      ],
+      "pattern": "E1",
+      "stage": "guiada",
+      "answer": 0.234,
+      "tolerance": 0.0005,
+      "options": [
+        0.234,
+        0.335,
+        0.6985,
+        0.101
+      ]
+    },
+    {
+      "id": "M6-P05",
+      "type": "numeric",
+      "title": "Complemento de una categoría",
+      "prompt": "En 1000 opiniones, 425 son neutrales. ¿Qué porcentaje NO es neutral, expresado como probabilidad?",
+      "source": "Guía M6 E1(b) · valores oficiales; redacción propia",
+      "hints": [
+        "La categoría «no neutral» incluye todas menos las neutrales.",
+        "Restá la probabilidad de neutral a 1.",
+        "P(neutral)=425/1000; calculá 1−425/1000."
+      ],
+      "solution": [
+        "P(no neutral)=(1000−425)/1000=575/1000=0,575; equivale a 57,5 %."
+      ],
+      "pattern": "E1/E3",
+      "stage": "guiada",
+      "answer": 0.575,
+      "tolerance": 0.0005,
+      "options": [
+        0.575,
+        0.425,
+        0.665,
+        0.234
+      ]
+    },
+    {
+      "id": "M6-P06",
+      "type": "multi",
+      "title": "Tabla de proporciones",
+      "prompt": "En un registro de 100 estudiantes, los seis grupos tienen estas proporciones. Calculá la conjunta de «frecuente y regular» y el marginal «frecuente».",
+      "source": "Guía M6 E2 · estructura y proporciones originales; consigna abreviada",
+      "hints": [
+        "Las celdas son proporciones del total, no frecuencias condicionales.",
+        "La conjunta es una sola celda; el marginal es la suma de su fila.",
+        "La celda F/R vale 0,47. La fila frecuente suma 0,47+0,15+0,06."
+      ],
+      "solution": [
+        "Conjunta F∩R: 0,47 (47 %). Marginal F: 0,47+0,15+0,06=0,68 (68 %). El marginal agrega todas las formas de asistencia."
+      ],
+      "pattern": "E1",
+      "stage": "guiada",
+      "fields": [
+        {
+          "label": "P(frecuente y regular)",
+          "answer": 0.47,
+          "tolerance": 0.0005,
+          "options": [
+            0.47,
+            0.59,
+            0.68,
+            0.32
+          ]
+        },
+        {
+          "label": "P(frecuente)",
+          "answer": 0.68,
+          "tolerance": 0.0005,
+          "options": [
+            0.68,
+            0.47,
+            0.32,
+            0.59
+          ]
+        }
+      ],
+      "table": [
+        [
+          "",
+          "Regular",
+          "Eventual",
+          "Nunca",
+          "Total"
+        ],
+        [
+          "Frecuente",
+          0.47,
+          0.15,
+          0.06,
+          0.68
+        ],
+        [
+          "Ocasional",
+          0.12,
+          0.13,
+          0.07,
+          0.32
+        ],
+        [
+          "Total",
+          0.59,
+          0.28,
+          0.13,
+          1
+        ]
+      ]
+    },
+    {
+      "id": "M6-P07",
+      "type": "numeric",
+      "title": "Condicional del parcial",
+      "prompt": "Entre quienes NO presentan aislamiento, ¿qué proporción vive con su familia?",
+      "source": "Parcial P2 2026, tema 1, E3(b)",
+      "hints": [
+        "«Entre quienes» señala el universo restringido.",
+        "Tomá la intersección familia/sin aislamiento y dividí por el total sin aislamiento.",
+        "Se cuentan 11 estudiantes de un grupo de 17: 11÷17."
+      ],
+      "solution": [
+        "P(familia | sin aislamiento)=11/17≈0,6471 (64,71 %). No es 11/30, porque la condición restringe a 17 estudiantes."
+      ],
+      "pattern": "E2",
+      "stage": "guiada",
+      "answer": 0.6470588235294118,
+      "tolerance": 0.0005,
+      "options": [
+        0.6471,
+        0.3667,
+        0.7333,
+        0.4231
+      ],
+      "table": [
+        [
+          "",
+          "Aislamiento",
+          "Sin aislamiento",
+          "Total"
+        ],
+        [
+          "Vive solo",
+          9,
+          6,
+          15
+        ],
+        [
+          "Vive con familia",
+          4,
+          11,
+          15
+        ],
+        [
+          "Total",
+          13,
+          17,
+          30
+        ]
+      ]
+    },
+    {
+      "id": "M6-P08",
+      "type": "numeric",
+      "title": "Condicional con tutorías",
+      "prompt": "Entre quienes NO tienen ansiedad elevada, ¿qué proporción participa en tutorías?",
+      "source": "Parcial P2 2026, tema 2, E3(b)",
+      "hints": [
+        "La condición es «no ansiedad elevada», no «con tutorías».",
+        "Identificá el total de la columna sin ansiedad y la celda con tutorías.",
+        "Hay 13 con tutorías dentro de los 20 sin ansiedad; calculá 13÷20."
+      ],
+      "solution": [
+        "P(tutorías | no ansiedad elevada)=13/20=0,65 (65 %). 13/36 sería conjunta, no condicional."
+      ],
+      "pattern": "E2",
+      "stage": "transferencia",
+      "answer": 0.65,
+      "tolerance": 0.0005,
+      "options": [
+        0.65,
+        0.3611,
+        0.7222,
+        0.8125
+      ],
+      "table": [
+        [
+          "",
+          "Ansiedad elevada",
+          "Sin ansiedad",
+          "Total"
+        ],
+        [
+          "Con tutorías",
+          5,
+          13,
+          18
+        ],
+        [
+          "Sin tutorías",
+          11,
+          7,
+          18
+        ],
+        [
+          "Total",
+          16,
+          20,
+          36
+        ]
+      ]
+    },
+    {
+      "id": "M6-P09",
+      "type": "choice",
+      "title": "Comparación de grupos",
+      "prompt": "¿En cuál de estos dos grupos se observa mayor proporción de aislamiento?",
+      "source": "Parcial P2 2026, tema 1, E3(c)",
+      "hints": [
+        "Necesitás dos proporciones, una por grupo.",
+        "Calculá P(aislamiento | vive solo) y P(aislamiento | con familia).",
+        "Compará 9/15 con 4/15."
+      ],
+      "solution": [
+        "Vive solo: 9/15=60 %. Con familia: 4/15≈26,67 %. Es mayor en quienes viven solos. La tabla no prueba que vivir solo cause aislamiento."
+      ],
+      "pattern": "E2",
+      "stage": "guiada",
+      "options": [
+        "Entre quienes viven solos, 60 %",
+        "Entre quienes viven con familia, 26,67 %",
+        "Igual, porque ambos grupos tienen 15 personas",
+        "No se puede comparar porque el total es 30"
+      ],
+      "answer": 0,
+      "table": [
+        [
+          "",
+          "Aislamiento",
+          "Sin aislamiento",
+          "Total"
+        ],
+        [
+          "Vive solo",
+          9,
+          6,
+          15
+        ],
+        [
+          "Vive con familia",
+          4,
+          11,
+          15
+        ],
+        [
+          "Total",
+          13,
+          17,
+          30
+        ]
+      ]
+    },
+    {
+      "id": "M6-P10",
+      "type": "multi",
+      "title": "Dos condicionales inversas",
+      "prompt": "En una población, 18 % utiliza aplicaciones de bienestar, 12 % asiste a grupos de apoyo y 10 % realiza ambas actividades. Calculá cada condicional.",
+      "source": "Guía M6 E5(a,b,c) · datos oficiales; reformulación",
+      "hints": [
+        "La intersección se mantiene en 0,10 en ambas cuentas.",
+        "Al condicionar por aplicaciones, dividí por 0,18; al condicionar por grupos, por 0,12.",
+        "Calculá 0,10÷0,18 y 0,10÷0,12. Son preguntas distintas."
+      ],
+      "solution": [
+        "P(grupos | aplicaciones)=0,10/0,18≈0,5556. P(aplicaciones | grupos)=0,10/0,12≈0,8333. La inversión de la condición cambia la probabilidad."
+      ],
+      "pattern": "E2",
+      "stage": "guiada",
+      "fields": [
+        {
+          "label": "P(grupos | aplicaciones)",
+          "answer": 0.5555555555555556,
+          "tolerance": 0.0005,
+          "options": [
+            0.5556,
+            0.1,
+            0.8333,
+            0.18
+          ]
+        },
+        {
+          "label": "P(aplicaciones | grupos)",
+          "answer": 0.8333333333333334,
+          "tolerance": 0.0005,
+          "options": [
+            0.8333,
+            0.5556,
+            0.12,
+            0.1
+          ]
+        }
+      ]
+    },
+    {
+      "id": "M6-P11",
+      "type": "choice",
+      "title": "Detectar la clave errónea",
+      "prompt": "La consigna pide P(asiste a grupos | usa aplicaciones), con P(ambas)=0,10 y P(usa aplicaciones)=0,18. ¿Qué respuesta corresponde realmente?",
+      "source": "Guía M6 E5(c) y respuestas oficiales · CONFLICT: 0,10 es conjunta",
+      "hints": [
+        "Identificá la condición después de la barra.",
+        "Una condicional no se divide por el total general, sino por el total del grupo dado.",
+        "Usá 0,10/0,18, no solo 0,10."
+      ],
+      "solution": [
+        "La consigna exige P(grupos | aplicaciones)=0,10/0,18≈0,5556, es decir, 55,56 %. El solucionario imprime 0,10, que corresponde a P(grupos ∩ aplicaciones), no a lo solicitado."
+      ],
+      "pattern": "E2",
+      "stage": "guiada",
+      "options": [
+        "0,5556: probabilidad condicional",
+        "0,10: probabilidad conjunta",
+        "0,8333: la condicional inversa",
+        "0,18: la probabilidad de usar aplicaciones"
+      ],
+      "answer": 0
+    },
+    {
+      "id": "M6-P12",
+      "type": "numeric",
+      "title": "Condicional desde información incompleta",
+      "prompt": "35 % presenta estrés alto; 14 % tiene estrés alto y mejora; 46 % no tiene estrés alto y mejora. Si una persona NO mejoró, ¿qué probabilidad hay de que tenga estrés alto?",
+      "source": "Guía M6 E7(b) · datos oficiales; consigna abreviada",
+      "hints": [
+        "Necesitás el grupo «no mejora», que no está escrito directamente.",
+        "Primero hallá P(mejora), después P(no mejora) y P(estrés alto y no mejora).",
+        "P(mejora)=0,14+0,46; P(alto y no mejora)=0,35−0,14."
+      ],
+      "solution": [
+        "P(mejora)=0,60; P(no mejora)=0,40. P(alto y no mejora)=0,35−0,14=0,21. Por tanto P(alto | no mejora)=0,21/0,40=0,525 (52,5 %)."
+      ],
+      "pattern": "E2/E5",
+      "stage": "guiada",
+      "answer": 0.525,
+      "tolerance": 0.0005,
+      "options": [
+        0.525,
+        0.21,
+        0.35,
+        0.6
+      ]
+    },
+    {
+      "id": "M6-P13",
+      "type": "numeric",
+      "title": "Condicional con grupos desiguales",
+      "prompt": "En un estudio nuevo hay 90 personas en el grupo A y 50 en B. Presentan una conducta 36 del A y 25 del B. ¿Cuál es P(conducta | B)?",
+      "source": "Práctica original de transferencia · patrón E2",
+      "hints": [
+        "La condición B restringe el universo a un solo grupo.",
+        "Usá la cantidad con conducta dentro de B sobre el total de B.",
+        "En B son 25 de 50; no dividás por los 140 del estudio."
+      ],
+      "solution": [
+        "P(conducta | B)=25/50=0,50 (50 %). El grupo A tiene 36/90=0,40, así que B tiene mayor proporción aunque menos casos absolutos."
+      ],
+      "pattern": "E2",
+      "stage": "transferencia",
+      "answer": 0.5,
+      "tolerance": 0.0005,
+      "options": [
+        0.5,
+        0.1786,
+        0.2571,
+        0.4
+      ]
+    },
+    {
+      "id": "M6-P14",
+      "type": "multi",
+      "title": "Unión, solo una y ninguna",
+      "prompt": "La proporción con ansiedad es 0,40, con depresión 0,30 y con ambas 0,15. Calculá unión, solo ansiedad y ninguna.",
+      "source": "Guía M6 E4(a–c) · datos oficiales; consigna abreviada",
+      "hints": [
+        "La intersección ya está incluida dentro de ambos porcentajes.",
+        "Para «o», sumá marginales y restá la intersección. «Solo A» resta ambas; «ninguna» complementa la unión.",
+        "Calculá 0,40+0,30−0,15; 0,40−0,15; 1−P(unión)."
+      ],
+      "solution": [
+        "P(A∪D)=0,40+0,30−0,15=0,55. P(solo ansiedad)=0,40−0,15=0,25. P(ninguna)=1−0,55=0,45."
+      ],
+      "pattern": "E3",
+      "stage": "guiada",
+      "fields": [
+        {
+          "label": "Ansiedad o depresión",
+          "answer": 0.55,
+          "tolerance": 0.0005,
+          "options": [
+            0.55,
+            0.7,
+            0.25,
+            0.45
+          ]
+        },
+        {
+          "label": "Solo ansiedad",
+          "answer": 0.25,
+          "tolerance": 0.0005,
+          "options": [
+            0.25,
+            0.4,
+            0.15,
+            0.55
+          ]
+        },
+        {
+          "label": "Ninguna",
+          "answer": 0.45,
+          "tolerance": 0.0005,
+          "options": [
+            0.45,
+            0.15,
+            0.3,
+            0.55
+          ]
+        }
+      ]
+    },
+    {
+      "id": "M6-P15",
+      "type": "numeric",
+      "title": "Unión con tres datos",
+      "prompt": "En 1000 opiniones, 335 califican adhesión alta, 303 opinan favorablemente y 173 cumplen ambas. ¿Cuál es P(alta O favorable)?",
+      "source": "Guía M6 E1(i) · datos oficiales; redacción abreviada",
+      "hints": [
+        "La «o» incluye quienes cumplen uno o los dos sucesos.",
+        "Restá la intersección al sumar las dos categorías.",
+        "Calculá (335+303−173)÷1000."
+      ],
+      "solution": [
+        "P(alta ∪ favorable)=(335+303−173)/1000=465/1000=0,465. Restar 173 evita contar dos veces a quienes cumplen ambas."
+      ],
+      "pattern": "E3",
+      "stage": "guiada",
+      "answer": 0.465,
+      "tolerance": 0.0005,
+      "options": [
+        0.465,
+        0.638,
+        0.173,
+        0.335
+      ]
+    },
+    {
+      "id": "M6-P16",
+      "type": "numeric",
+      "title": "Exactamente una característica",
+      "prompt": "En una tabla de 75 líderes, 16 son innovadores sin inteligencia emocional y 13 tienen inteligencia emocional sin ser innovadores. ¿Cuál es la probabilidad de exactamente UNA característica?",
+      "source": "Guía M6 E3(b) · cantidades oficiales; redacción abreviada",
+      "hints": [
+        "«Exactamente una» excluye a quien tiene las dos.",
+        "Sumá las dos celdas que no se superponen.",
+        "Hay 16+13 casos entre 75."
+      ],
+      "solution": [
+        "P(exactamente una)=(16+13)/75=29/75≈0,3867. Quienes tienen ambas características no entran en este resultado."
+      ],
+      "pattern": "E3",
+      "stage": "guiada",
+      "answer": 0.38666666666666666,
+      "tolerance": 0.0005,
+      "options": [
+        0.3867,
+        0.4933,
+        0.88,
+        0.12
+      ]
+    },
+    {
+      "id": "M6-P17",
+      "type": "numeric",
+      "title": "Al menos una característica",
+      "prompt": "En el mismo registro de 75 líderes, 53 son innovadores, 50 tienen inteligencia emocional y 37 tienen ambas. ¿Cuál es P(al menos una)?",
+      "source": "Guía M6 E3(c) · cantidades oficiales; reformulación",
+      "hints": [
+        "«Al menos una» incluye quienes tienen ambas.",
+        "Sumá los dos totales y restá la coincidencia.",
+        "Calculá (53+50−37)÷75."
+      ],
+      "solution": [
+        "P(innovación ∪ inteligencia emocional)=(53+50−37)/75=66/75=0,88. El complemento, ninguna característica, es 9/75=0,12."
+      ],
+      "pattern": "E3",
+      "stage": "guiada",
+      "answer": 0.88,
+      "tolerance": 0.0005,
+      "options": [
+        0.88,
+        1.3733,
+        0.4933,
+        0.3867
+      ]
+    },
+    {
+      "id": "M6-P18",
+      "type": "multi",
+      "title": "Medicamentos, tres operaciones",
+      "prompt": "En una muestra: 30 % usa tratamiento A; 60 %, tratamiento B; 5 %, ambos. Calculá al menos uno, ninguno y solo A.",
+      "source": "Integrador P2 E5(a–c) · proporciones originales; enunciado reformulado",
+      "hints": [
+        "Unión, complemento y «solo A» son tres cuentas diferentes.",
+        "Usá la unión inclusiva, su complemento y el marginal A menos la intersección.",
+        "Calculá 0,30+0,60−0,05; 1−unión; 0,30−0,05."
+      ],
+      "solution": [
+        "Al menos uno: 0,30+0,60−0,05=0,85. Ninguno: 1−0,85=0,15. Solo A: 0,30−0,05=0,25."
+      ],
+      "pattern": "E3",
+      "stage": "transferencia",
+      "fields": [
+        {
+          "label": "Al menos uno",
+          "answer": 0.85,
+          "tolerance": 0.0005,
+          "options": [
+            0.85,
+            0.9,
+            0.65,
+            0.25
+          ]
+        },
+        {
+          "label": "Ninguno",
+          "answer": 0.15,
+          "tolerance": 0.0005,
+          "options": [
+            0.15,
+            0.1,
+            0.05,
+            0.85
+          ]
+        },
+        {
+          "label": "Solo A",
+          "answer": 0.25,
+          "tolerance": 0.0005,
+          "options": [
+            0.25,
+            0.3,
+            0.35,
+            0.05
+          ]
+        }
+      ]
+    },
+    {
+      "id": "M6-P19",
+      "type": "choice",
+      "title": "Falta la intersección",
+      "prompt": "Se informa P(A)=0,40 y P(B)=0,30. No se conoce si A y B se superponen. ¿Qué valor puede determinarse para P(A∪B)?",
+      "source": "Práctica original de transferencia · límite de datos E3",
+      "hints": [
+        "La suma simple supone que nadie cumple ambas condiciones.",
+        "La fórmula general de unión necesita también P(A∩B).",
+        "Considerá qué ocurre si la intersección vale 0 o si vale 0,20."
+      ],
+      "solution": [
+        "No hay una única unión. Si no se superponen, P(A∪B)=0,70; si la intersección es 0,20, P(A∪B)=0,50. Hace falta conocer la intersección u otra condición."
+      ],
+      "pattern": "E3",
+      "stage": "transferencia",
+      "options": [
+        "No se puede determinar un único valor",
+        "0,70, siempre",
+        "0,12, siempre",
+        "0,50, siempre"
+      ],
+      "answer": 0
+    },
+    {
+      "id": "M6-P20",
+      "type": "multi",
+      "title": "Deducir si son independientes",
+      "prompt": "Se conocen P(A)=0,65; P(B)=0,40; P(A∪B)=0,79. Calculá intersección y producto de marginales.",
+      "source": "Guía M6 E6 · valores y decisión original",
+      "hints": [
+        "Podés recuperar la intersección aunque no figure explícita.",
+        "Despejá de la unión: P(A∩B)=P(A)+P(B)−P(A∪B).",
+        "Para comparar, calculá también 0,65×0,40."
+      ],
+      "solution": [
+        "P(A∩B)=0,65+0,40−0,79=0,26. P(A)×P(B)=0,65×0,40=0,26. Son independientes; no excluyentes, ya que la intersección es positiva."
+      ],
+      "pattern": "E4",
+      "stage": "guiada",
+      "fields": [
+        {
+          "label": "Intersección",
+          "answer": 0.26,
+          "tolerance": 0.0005,
+          "options": [
+            0.26,
+            0.79,
+            0.39,
+            0
+          ]
+        },
+        {
+          "label": "Producto marginales",
+          "answer": 0.26,
+          "tolerance": 0.0005,
+          "options": [
+            0.26,
+            0.65,
+            0.4,
+            0.79
+          ]
+        }
+      ]
+    },
+    {
+      "id": "M6-P21",
+      "type": "choice",
+      "title": "No confundir propiedades",
+      "prompt": "Dados P(A)=0,65; P(B)=0,40; P(A∩B)=0,26, ¿qué afirmación es correcta?",
+      "source": "Guía M6 E6 · comparación derivada de la cuenta oficial",
+      "hints": [
+        "Hay dos criterios distintos: intersección nula y producto de marginales.",
+        "Verificá primero si la intersección vale 0; después si es igual a 0,65×0,40.",
+        "El producto es 0,26 y la intersección no es 0."
+      ],
+      "solution": [
+        "Son independientes porque 0,65×0,40=0,26. No son mutuamente excluyentes, pues P(A∩B)=0,26>0. Tampoco son exhaustivos: la unión vale 0,79."
+      ],
+      "pattern": "E4",
+      "stage": "guiada",
+      "options": [
+        "Independientes, pero no excluyentes",
+        "Excluyentes, pero no independientes",
+        "Excluyentes e independientes",
+        "Exhaustivos porque la suma de marginales supera 1"
+      ],
+      "answer": 0
+    },
+    {
+      "id": "M6-P22",
+      "type": "truefalse",
+      "title": "Cuatro propiedades en contraste",
+      "prompt": "Para cada afirmación, marcá verdadero o falso.",
+      "source": "Guía M6 E1(e–h), E6 y E8(c) · afirmaciones didácticas nuevas",
+      "hints": [
+        "No uses independencia como sinónimo de no superposición.",
+        "Para cada frase, buscá la igualdad apropiada: intersección cero, producto o unión igual a uno.",
+        "Recordá que A y no A son complementarios, pero A y B pueden coexistir."
+      ],
+      "solution": [
+        "1. V: si son excluyentes, no ocurren juntos. 2. F: independencia no exige intersección 0. 3. V: una unión de probabilidad 1 es exhaustiva. 4. F: que dos sucesos sean exhaustivos no implica independencia. 5. V: A y su complemento son excluyentes y exhaustivos."
+      ],
+      "pattern": "E4",
+      "stage": "guiada",
+      "claims": [
+        {
+          "text": "Si A y B son mutuamente excluyentes, P(A∩B)=0.",
+          "answer": true,
+          "explanation": "No pueden ocurrir simultáneamente."
+        },
+        {
+          "text": "Si A y B son independientes, su intersección necesariamente vale 0.",
+          "answer": false,
+          "explanation": "Para independientes la intersección es P(A)P(B), positiva si ambas probabilidades son positivas."
+        },
+        {
+          "text": "Si P(A∪B)=1, los sucesos son exhaustivos.",
+          "answer": true,
+          "explanation": "Su unión abarca todo el universo."
+        },
+        {
+          "text": "Si los sucesos son exhaustivos, por eso son independientes.",
+          "answer": false,
+          "explanation": "Exhaustividad e independencia son condiciones diferentes."
+        },
+        {
+          "text": "A y su complemento son excluyentes y exhaustivos.",
+          "answer": true,
+          "explanation": "No se superponen y juntos cubren el universo."
+        }
+      ]
+    },
+    {
+      "id": "M6-P23",
+      "type": "choice",
+      "title": "Excluyentes pero no independientes",
+      "prompt": "De 100 participantes, 30 cumplen A, 20 cumplen B y nadie cumple ambas. ¿Cómo son A y B?",
+      "source": "Práctica original de transferencia · patrón E4",
+      "hints": [
+        "La intersección es cero.",
+        "Independencia exige que la intersección coincida con P(A)×P(B).",
+        "Compará 0 con 0,30×0,20=0,06."
+      ],
+      "solution": [
+        "Son excluyentes: intersección cero. No son independientes: P(A)P(B)=0,06, distinto de 0. Tampoco son exhaustivos: P(A∪B)=0,50."
+      ],
+      "pattern": "E4",
+      "stage": "transferencia",
+      "options": [
+        "Excluyentes, no independientes ni exhaustivos",
+        "Independientes porque nadie cumple ambos",
+        "Exhaustivos porque hay dos sucesos",
+        "Complementarios"
+      ],
+      "answer": 0
+    },
+    {
+      "id": "M6-P24",
+      "type": "multi",
+      "title": "Armar una tabla con conteos enteros",
+      "prompt": "Se estudian 200 personas. El 40 % pertenece al grupo A; en A, 55 % practica autocuidado; en el grupo B, 65 % practica autocuidado. Calculá las celdas y el total de autocuidado.",
+      "source": "Práctica original de transferencia de la Guía M6 E8 · números nuevos sin redondeos",
+      "hints": [
+        "Primero calculá el tamaño de cada grupo.",
+        "La proporción de autocuidado se multiplica por el tamaño DEL grupo.",
+        "n(A)=200×0,40; n(B)=200−n(A); sí en A=0,55×n(A); sí en B=0,65×n(B)."
+      ],
+      "solution": [
+        "A=80 y B=120. En A, 80×0,55=44 con autocuidado; en B, 120×0,65=78. Total con autocuidado=44+78=122; sin autocuidado=78. Las cuatro celdas son 44,36,78,42."
+      ],
+      "pattern": "E5",
+      "stage": "transferencia",
+      "fields": [
+        {
+          "label": "Personas grupo A",
+          "answer": 80,
+          "tolerance": 0.0005,
+          "options": [
+            80,
+            40,
+            120,
+            55
+          ]
+        },
+        {
+          "label": "Autocuidado en A",
+          "answer": 44,
+          "tolerance": 0.0005,
+          "options": [
+            44,
+            55,
+            80,
+            36
+          ]
+        },
+        {
+          "label": "Autocuidado en B",
+          "answer": 78,
+          "tolerance": 0.0005,
+          "options": [
+            78,
+            65,
+            120,
+            42
+          ]
+        },
+        {
+          "label": "Total autocuidado",
+          "answer": 122,
+          "tolerance": 0.0005,
+          "options": [
+            122,
+            78,
+            44,
+            200
+          ]
+        }
+      ]
+    },
+    {
+      "id": "M6-P25",
+      "type": "numeric",
+      "title": "Cuando el porcentaje no da personas enteras",
+      "prompt": "Una encuesta tiene N=120; 40 % son mujeres. Practican autocuidado 50 % de las mujeres y 70 % de los varones. Se pide la cantidad aproximada con autocuidado y la probabilidad sobre N. ¿Cuál es esa probabilidad aproximada?",
+      "source": "Guía M6 E8(a) · datos originales con redondeo explícito",
+      "hints": [
+        "Primero encontrá cuántas mujeres y varones hay.",
+        "Aplicá los porcentajes dentro de cada grupo y redondeá los conteos coherentemente.",
+        "Mujeres: 48 y 24 con autocuidado. Varones: 72 y 50,4≈50 con autocuidado. Sumá y dividí por 120."
+      ],
+      "solution": [
+        "Total aproximado=24+50=74 personas. P(autocuidado)≈74/120≈0,6167 (61,67 %). El 50,4 previo al redondeo es una expectativa aritmética, no una cantidad observada exacta."
+      ],
+      "pattern": "E5",
+      "stage": "guiada",
+      "answer": 0.6166666666666667,
+      "tolerance": 0.0005,
+      "options": [
+        0.6167,
+        0.7,
+        0.5,
+        0.74
+      ]
+    },
+    {
+      "id": "M6-P26",
+      "type": "truefalse",
+      "title": "Exclusión e independencia en autocuidado",
+      "prompt": "Usá el conteo aproximado de la guía: 120 personas; 48 mujeres; 74 con autocuidado; 24 mujeres con autocuidado.",
+      "source": "Guía M6 E8(c) · recuentos del solucionario, aproximados",
+      "hints": [
+        "Todos los enunciados dependen de los eventos mujer y autocuidado.",
+        "Calculá intersección 24/120, marginales 48/120 y 74/120 y unión (48+74−24)/120.",
+        "Compará P(M∩A) con cero, con P(M)P(A), y P(M∪A) con 1."
+      ],
+      "solution": [
+        "P(M∩A)=24/120=0,20. P(M)P(A)=0,40×74/120≈0,2467, no coinciden: no independientes. P(M∪A)=98/120≈0,8167, no exhaustivos. Como la intersección es positiva, tampoco son excluyentes."
+      ],
+      "pattern": "E4/E5",
+      "stage": "guiada",
+      "claims": [
+        {
+          "text": "«Mujer» y «autocuidado» son mutuamente excluyentes.",
+          "answer": false,
+          "explanation": "Hay 24 personas que cumplen ambos sucesos."
+        },
+        {
+          "text": "Los dos sucesos no son independientes.",
+          "answer": true,
+          "explanation": "0,20 no coincide con 0,40×(74/120)≈0,2467."
+        },
+        {
+          "text": "Los dos sucesos son exhaustivos.",
+          "answer": false,
+          "explanation": "La unión es 98/120, menor que 1."
+        },
+        {
+          "text": "P(autocuidado | mujer)=24/48=0,50.",
+          "answer": true,
+          "explanation": "La condición mujer fija el denominador en 48."
+        }
+      ]
+    },
+    {
+      "id": "M6-P27",
+      "type": "numeric",
+      "title": "Condicional en una tabla mayor",
+      "prompt": "Entre 200 adolescentes con mala regulación ocasional, 70 utilizan estrategias emocionales. ¿Qué probabilidad de estrategia emocional hay dentro de ese grupo?",
+      "source": "Guía M6 E9(b) · datos originales; enunciado reformulado",
+      "hints": [
+        "«Entre 200» define el grupo condicionado.",
+        "Usá casos con estrategia emocional en ese grupo sobre su total.",
+        "Calculá 70÷200."
+      ],
+      "solution": [
+        "P(emocional | mala regulación ocasional)=70/200=0,35 (35 %). No se divide por 630, que es el total de todos los adolescentes."
+      ],
+      "pattern": "E2",
+      "stage": "guiada",
+      "answer": 0.35,
+      "tolerance": 0.0005,
+      "options": [
+        0.35,
+        0.1111,
+        0.3175,
+        0.7
+      ]
+    },
+    {
+      "id": "M6-P28",
+      "type": "choice",
+      "title": "Comprobar independencia numéricamente",
+      "prompt": "En 630 registros: 340 muestran mala regulación frecuente; 200 usan estrategia emocional; 100 cumplen ambas. ¿Es independiente el tipo de estrategia emocional de la mala regulación frecuente?",
+      "source": "Guía M6 E9(c) · datos originales; redacción reformulada",
+      "hints": [
+        "Hay que contrastar la conjunta con el producto de marginales.",
+        "Compará 100/630 con (340/630)×(200/630).",
+        "Las cuentas dan aprox. 0,1587 y 0,1713."
+      ],
+      "solution": [
+        "No son independientes: P(F∩E)=100/630≈0,1587, mientras P(F)P(E)=(340/630)(200/630)≈0,1713. La diferencia describe una asociación en los datos; no implica causalidad."
+      ],
+      "pattern": "E4",
+      "stage": "guiada",
+      "options": [
+        "No: 0,1587 difiere de aproximadamente 0,1713",
+        "Sí: ambos sucesos aparecen en la tabla",
+        "Sí: 100 es menor que 340 y 200",
+        "No: porque necesariamente son excluyentes"
+      ],
+      "answer": 0
+    },
+    {
+      "id": "M6-P29",
+      "type": "multi",
+      "title": "Tabla reconstruida y margen final",
+      "prompt": "Con N=200, grupo A=80 con 44 personas con autocuidado y grupo B=120 con 78 con autocuidado, calculá los restantes y la probabilidad global.",
+      "source": "Transferencia posterior a M6-P24 · datos nuevos",
+      "hints": [
+        "Las celdas «sin autocuidado» se obtienen restando en cada grupo.",
+        "Completá primero ambas filas; después sumá la columna «sí».",
+        "Sin autocuidado A=80−44; B=120−78. P(total sí)=(44+78)/200."
+      ],
+      "solution": [
+        "Sin autocuidado en A=36; en B=42; total sin=78. P(autocuidado)=122/200=0,61 (61 %). La tabla cuadra: 44+36+78+42=200."
+      ],
+      "pattern": "E5",
+      "stage": "transferencia",
+      "fields": [
+        {
+          "label": "No autocuidado en A",
+          "answer": 36,
+          "tolerance": 0.0005,
+          "options": [
+            36,
+            44,
+            80,
+            42
+          ]
+        },
+        {
+          "label": "No autocuidado en B",
+          "answer": 42,
+          "tolerance": 0.0005,
+          "options": [
+            42,
+            78,
+            120,
+            36
+          ]
+        },
+        {
+          "label": "P(autocuidado) total",
+          "answer": 0.61,
+          "tolerance": 0.0005,
+          "options": [
+            0.61,
+            0.44,
+            0.65,
+            0.78
+          ]
+        }
+      ]
+    },
+    {
+      "id": "M6-P30",
+      "type": "choice",
+      "title": "Trampa de tamaño desigual",
+      "prompt": "Hay 36 personas con la conducta entre 90 del grupo A, y 25 entre 50 del grupo B. ¿En qué grupo es más probable observarla?",
+      "source": "Transferencia: comparación por grupos de distinto tamaño E2",
+      "hints": [
+        "El número absoluto de casos puede ser mayor en el grupo más grande.",
+        "Calculá 36/90 y 25/50, cada uno dentro de su propio grupo.",
+        "Los resultados son 0,40 y 0,50."
+      ],
+      "solution": [
+        "P(conducta | A)=36/90=0,40; P(conducta | B)=25/50=0,50. Es más probable dentro de B, aunque A tenga más casos absolutos."
+      ],
+      "pattern": "E2",
+      "stage": "transferencia",
+      "options": [
+        "En B: 50 % frente a 40 % en A",
+        "En A: tiene 36 casos frente a 25",
+        "Son iguales porque ambos tienen casos",
+        "No puede compararse si los grupos tienen tamaños distintos"
+      ],
+      "answer": 0
+    },
+    {
+      "id": "M6-P31",
+      "type": "multi",
+      "title": "Sensibilidad no es valor predictivo",
+      "prompt": "En una tabla nueva, de 24 personas con cierta condición, 18 dan positivo. Otras 7 personas sin la condición también dan positivo. Calculá dos condicionales distintas.",
+      "source": "Transferencia del patrón E2 · ejemplo didáctico nuevo",
+      "hints": [
+        "Una pregunta condiciona por quienes TIENEN la condición; la otra por quienes DAN positivo.",
+        "Para sensibilidad dividí 18 por 24; para valor predictivo positivo dividí 18 por todos los positivos.",
+        "El total de positivos es 18+7=25; calculá 18/24 y 18/25."
+      ],
+      "solution": [
+        "P(positivo | condición)=18/24=0,75 (sensibilidad). P(condición | positivo)=18/25=0,72 (valor predictivo positivo). No son lo mismo aunque compartan numerador."
+      ],
+      "pattern": "E2",
+      "stage": "transferencia",
+      "fields": [
+        {
+          "label": "P(positivo | condición)",
+          "answer": 0.75,
+          "tolerance": 0.0005,
+          "options": [
+            0.75,
+            0.72,
+            0.18,
+            0.24
+          ]
+        },
+        {
+          "label": "P(condición | positivo)",
+          "answer": 0.72,
+          "tolerance": 0.0005,
+          "options": [
+            0.72,
+            0.75,
+            0.25,
+            0.18
+          ]
+        }
+      ],
+      "table": [
+        [
+          "",
+          "Positivo",
+          "Negativo",
+          "Total"
+        ],
+        [
+          "Con condición",
+          18,
+          6,
+          24
+        ],
+        [
+          "Sin condición",
+          7,
+          69,
+          76
+        ],
+        [
+          "Total",
+          25,
+          75,
+          100
+        ]
+      ]
+    },
+    {
+      "id": "M6-P32",
+      "type": "multi",
+      "title": "Recuperar intersección y condicional",
+      "prompt": "En una situación nueva P(A)=0,47; P(B)=0,38 y P(A∪B)=0,67. Calculá intersección, ninguno y P(A | B).",
+      "source": "Transferencia integradora de E2, E3 y E4 · datos nuevos",
+      "hints": [
+        "La intersección se obtiene despejando la unión.",
+        "El complemento de la unión es «ninguno»; la condicional usa B como denominador.",
+        "Intersección=0,47+0,38−0,67; ninguno=1−0,67; condicional=intersección/0,38."
+      ],
+      "solution": [
+        "P(A∩B)=0,18. P(ninguno)=0,33. P(A | B)=0,18/0,38≈0,4737. Control: la intersección es menor que ambas marginales."
+      ],
+      "pattern": "E2/E3/E4",
+      "stage": "transferencia",
+      "fields": [
+        {
+          "label": "Intersección",
+          "answer": 0.18,
+          "tolerance": 0.0005,
+          "options": [
+            0.18,
+            0.67,
+            0.85,
+            0.29
+          ]
+        },
+        {
+          "label": "Ninguno",
+          "answer": 0.33,
+          "tolerance": 0.0005,
+          "options": [
+            0.33,
+            0.15,
+            0.67,
+            0.47
+          ]
+        },
+        {
+          "label": "P(A | B)",
+          "answer": 0.47368421052631576,
+          "tolerance": 0.0005,
+          "options": [
+            0.4737,
+            0.383,
+            0.18,
+            0.3829
+          ]
+        }
+      ]
+    },
+    {
+      "id": "M6-P33",
+      "type": "truefalse",
+      "title": "Control de coherencia",
+      "prompt": "Verificá estas afirmaciones sobre probabilidades y tablas.",
+      "source": "Guía M6 E1–E9 · comprobaciones nuevas",
+      "hints": [
+        "Una intersección es siempre parte de cada suceso.",
+        "Una probabilidad válida no supera 1, pero una suma de marginales sí puede hacerlo si se superponen.",
+        "Para comparar un resultado entre dos grupos, respetá el denominador de cada uno."
+      ],
+      "solution": [
+        "1. F: no puede haber más casos con A y B que casos con A. 2. V: para «no A» se resta de 1. 3. F: la conjunta es sobre N; la condicional sobre el grupo dado. 4. V: comparar P(resultado | grupo) corrige por tamaños de grupo. 5. F: las cifras de una muestra no prueban causalidad."
+      ],
+      "pattern": "E1/E2/E3/E4",
+      "stage": "transferencia",
+      "claims": [
+        {
+          "text": "P(A∩B) puede ser mayor que P(A).",
+          "answer": false,
+          "explanation": "La intersección es subconjunto de A, por lo que nunca supera su probabilidad."
+        },
+        {
+          "text": "P(no A)=1−P(A).",
+          "answer": true,
+          "explanation": "A y su complemento suman exactamente 1."
+        },
+        {
+          "text": "P(A y B) y P(A | B) siempre tienen el mismo denominador.",
+          "answer": false,
+          "explanation": "La primera divide por N y la segunda por n(B)."
+        },
+        {
+          "text": "Conviene comparar P(resultado | grupo) si los grupos tienen tamaños diferentes.",
+          "answer": true,
+          "explanation": "Cada proporción usa el tamaño de su propio grupo."
+        },
+        {
+          "text": "Si una conducta es más frecuente en un grupo, esa pertenencia causó la conducta.",
+          "answer": false,
+          "explanation": "Asociación descriptiva no demuestra causalidad."
+        }
+      ]
+    },
+    {
+      "id": "M6-P34",
+      "type": "choice",
+      "title": "Qué concluyen realmente los porcentajes",
+      "prompt": "En una encuesta se observan P(grupos | aplicaciones)=0,5556 y P(aplicaciones | grupos)=0,8333. ¿Qué conclusión está justificada?",
+      "source": "Guía M6 E5(d) · interpretación crítica derivada; no copia la recomendación del solucionario",
+      "hints": [
+        "Los dos porcentajes usan poblaciones condicionadas diferentes.",
+        "Una condicional no es una comparación directa de eficacia o rentabilidad.",
+        "Elegí una afirmación que describa los datos sin inventar efectos causales."
+      ],
+      "solution": [
+        "Dentro de quienes van a grupos, aproximadamente 83,33 % usa aplicaciones; entre usuarios de apps, 55,56 % va a grupos. Es una descripción de hábitos. Para decidir qué servicio lanzar primero hacen falta objetivos, costos y otra evidencia."
+      ],
+      "pattern": "E2",
+      "stage": "transferencia",
+      "options": [
+        "Son proporciones descriptivas; no deciden por sí solas qué servicio lanzar",
+        "Los grupos son causalmente más efectivos que las apps",
+        "Conviene lanzar grupos primero con certeza estadística",
+        "La aplicación necesariamente reduce la necesidad de grupos"
+      ],
+      "answer": 0
+    },
+    {
+      "id": "M6-P35",
+      "type": "multi",
+      "title": "Independencia aplicada a una variante",
+      "prompt": "En una población se sabe que A y B son independientes, P(A)=0,20 y P(B)=0,50. Calculá la probabilidad de ambas y de ninguna.",
+      "source": "Transferencia del patrón E3/E4 · datos creados",
+      "hints": [
+        "Si hay independencia se puede obtener la intersección multiplicando.",
+        "Una vez calculada la conjunta, hallá la unión y su complemento.",
+        "Intersección=0,20×0,50; unión=0,20+0,50−intersección."
+      ],
+      "solution": [
+        "P(A∩B)=0,20×0,50=0,10. P(A∪B)=0,20+0,50−0,10=0,60. P(ninguno)=1−0,60=0,40."
+      ],
+      "pattern": "E3/E4",
+      "stage": "transferencia",
+      "fields": [
+        {
+          "label": "Ambos",
+          "answer": 0.1,
+          "tolerance": 0.0005,
+          "options": [
+            0.1,
+            0.7,
+            0,
+            0.2
+          ]
+        },
+        {
+          "label": "Ninguno",
+          "answer": 0.4,
+          "tolerance": 0.0005,
+          "options": [
+            0.4,
+            0.6,
+            0.3,
+            0.5
+          ]
+        }
+      ]
+    }
+  ],
   "extras": {},
   "cheats": [],
-  "cheatBlocks": [],
+  "cheatBlocks": [
+    {
+      "type": "heading",
+      "text": "Sucesos y denominadores"
+    },
+    {
+      "type": "list",
+      "items": [
+        {
+          "label": "P(A)",
+          "text": "total con A / N"
+        },
+        {
+          "label": "P(A ∩ B)",
+          "text": "celda compartida / N"
+        },
+        {
+          "label": "P(A | B)",
+          "text": "celda compartida / total B"
+        },
+        {
+          "label": "P(B | A)",
+          "text": "misma celda / total A"
+        }
+      ]
+    },
+    {
+      "type": "comparison",
+      "columns": [
+        {
+          "label": "Conjunta",
+          "items": [
+            "Ambas condiciones.",
+            "Denominador: N."
+          ]
+        },
+        {
+          "label": "Condicional",
+          "items": [
+            "A dentro del grupo B.",
+            "Denominador: n(B)."
+          ]
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "Operaciones entre sucesos"
+    },
+    {
+      "type": "formula",
+      "expression": "P(A ∪ B) = P(A) + P(B) − P(A ∩ B)",
+      "symbols": []
+    },
+    {
+      "type": "formula",
+      "expression": "P(Aᶜ) = 1 − P(A)",
+      "symbols": []
+    },
+    {
+      "type": "list",
+      "items": [
+        {
+          "label": "Solo A",
+          "text": "P(A)−P(A∩B)"
+        },
+        {
+          "label": "Solo B",
+          "text": "P(B)−P(A∩B)"
+        },
+        {
+          "label": "Exactamente uno",
+          "text": "P(A)+P(B)−2P(A∩B)"
+        },
+        {
+          "label": "Ninguno",
+          "text": "1−P(A∪B)"
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "Tres propiedades distintas"
+    },
+    {
+      "type": "list",
+      "items": [
+        {
+          "label": "Excluyentes",
+          "text": "P(A∩B)=0"
+        },
+        {
+          "label": "Independientes",
+          "text": "P(A∩B)=P(A)×P(B)"
+        },
+        {
+          "label": "Exhaustivos",
+          "text": "P(A∪B)=1"
+        },
+        {
+          "label": "Complementarios",
+          "text": "Excluyentes y exhaustivos"
+        }
+      ]
+    },
+    {
+      "type": "note",
+      "text": "Si ambos sucesos tienen probabilidad positiva, ser excluyentes impide ser independientes."
+    },
+    {
+      "type": "heading",
+      "text": "Tablas de contingencia"
+    },
+    {
+      "type": "steps",
+      "items": [
+        "Localizar la celda de coincidencia y los totales de fila/columna.",
+        "Determinar el universo antes de elegir el denominador.",
+        "Comparar grupos con P(resultado | cada grupo), nunca con recuentos brutos de tamaños diferentes."
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "Reconstrucción desde porcentajes"
+    },
+    {
+      "type": "formula",
+      "expression": "n(grupo) = N × proporción del grupo",
+      "symbols": []
+    },
+    {
+      "type": "formula",
+      "expression": "n(sí y grupo) = n(grupo) × P(sí | grupo)",
+      "symbols": []
+    },
+    {
+      "type": "list",
+      "items": [
+        {
+          "label": "Celda «no»",
+          "text": "total de fila − celda «sí»"
+        },
+        {
+          "label": "Columna total",
+          "text": "suma de las celdas"
+        },
+        {
+          "label": "Control",
+          "text": "todas las celdas deben sumar N"
+        }
+      ]
+    },
+    {
+      "type": "note",
+      "text": "Personas fraccionarias a partir de porcentajes redondeados: resultado aproximado, no conteo exacto."
+    },
+    {
+      "type": "heading",
+      "text": "Dos comprobaciones"
+    },
+    {
+      "type": "list",
+      "items": [
+        {
+          "label": "P(A∩B)",
+          "text": "No puede superar a P(A) ni a P(B)."
+        },
+        {
+          "label": "Probabilidades",
+          "text": "Cada una debe quedar entre 0 y 1; al convertir a %, multiplicar por 100."
+        }
+      ]
+    },
+    {
+      "type": "note",
+      "text": "La condicional «grupos | usa app» de M6 E5(c) vale 0,10/0,18≈0,5556. El solucionario da 0,10, que es la conjunta, no la condicional."
+    }
+  ],
   "numericOptions": {},
   "multiOptions": {},
   "trueFalse": {},
   "review": {
-    "currentVersion": "placeholder-v3",
-    "academicValidation": "pending",
-    "sourceCoverage": "pending"
+    "currentVersion": "M6-v2-2026-11-17",
+    "academicValidation": "SOURCE_CONFIRMED_AND_INDEPENDENTLY_CALCULATED",
+    "sourceCoverage": "Guía M6 E1–E9: 35 incisos indexados en 5 patrones; parcial presencial P2 2026 T1/T2 E3(a–c): 6 incisos de probabilidades. E3(d) de cada tema corresponde a pruebas t de otra unidad.",
+    "sourceUrls": [
+      "https://drive.google.com/file/d/15dyh_FMht_C7sa5gWw2hQCGEwe6_fdHu/view",
+      "https://drive.google.com/file/d/1-JKUlEht4J9_j7s9CDLcC1_yRVFKXBoh/view",
+      "https://docs.google.com/document/d/11Pp0VH9ECRYMxH4Qr2zisPKurqujCHec/edit",
+      "https://drive.google.com/file/d/1ueQeBauNYJO_BPII0l6J0jtRYAzpHa4H/view"
+    ],
+    "patterns": [
+      {
+        "id": "E1",
+        "topic": "Probabilidad simple y conjunta",
+        "references": "Guía E1–E3; parcial 2026 T1/T2 E3a",
+        "examples": [
+          "M6-P01",
+          "M6-P02",
+          "M6-P03",
+          "M6-P04",
+          "M6-P05",
+          "M6-P06"
+        ]
+      },
+      {
+        "id": "E2",
+        "topic": "Condicional y comparación de grupos",
+        "references": "Guía E5, E7, E8, E9; parcial 2026 T1/T2 E3b–c",
+        "examples": [
+          "M6-P07",
+          "M6-P08",
+          "M6-P09",
+          "M6-P10",
+          "M6-P11",
+          "M6-P12",
+          "M6-P13",
+          "M6-P27",
+          "M6-P30",
+          "M6-P31"
+        ]
+      },
+      {
+        "id": "E3",
+        "topic": "Unión, complemento y exactamente uno",
+        "references": "Guía E1, E3, E4, E6; integrador P2 E5",
+        "examples": [
+          "M6-P14",
+          "M6-P15",
+          "M6-P16",
+          "M6-P17",
+          "M6-P18",
+          "M6-P19",
+          "M6-P32"
+        ]
+      },
+      {
+        "id": "E4",
+        "topic": "Independencia, exclusión y exhaustividad",
+        "references": "Guía E1, E6, E8, E9",
+        "examples": [
+          "M6-P20",
+          "M6-P21",
+          "M6-P22",
+          "M6-P23",
+          "M6-P26",
+          "M6-P28",
+          "M6-P33",
+          "M6-P35"
+        ]
+      },
+      {
+        "id": "E5",
+        "topic": "Reconstruir tablas desde porcentajes",
+        "references": "Guía E7–E8",
+        "examples": [
+          "M6-P24",
+          "M6-P25",
+          "M6-P26",
+          "M6-P29"
+        ]
+      }
+    ],
+    "verifiedSourceIssues": [
+      {
+        "source": "M6 E5(c)",
+        "status": "CONFLICT",
+        "issue": "Consigna pide P(grupos | apps); solucionario responde P(grupos ∩ apps)=0,10.",
+        "corrected": "0,10/0,18=0,555555…; documentado en M6-P10/P11."
+      },
+      {
+        "source": "M6 E8",
+        "status": "APPROXIMATION",
+        "issue": "70 % de 72 varones = 50,4; no representa un conteo exacto.",
+        "corrected": "La guía solicita redondeo; 50 aprox. y P(autocuidado)≈74/120=0,6167."
+      },
+      {
+        "source": "M6 E5(d)",
+        "status": "INTERPRETATION_LIMIT",
+        "issue": "La orientación comercial de la clave no se infiere solo de probabilidades condicionales.",
+        "corrected": "Se explica que los porcentajes no demuestran eficacia ni determinan la conveniencia del lanzamiento."
+      }
+    ],
+    "exerciseTypeCoverage": {
+      "numeric": 14,
+      "multi": 10,
+      "choice": 8,
+      "truefalse": 3
+    },
+    "notes": "Preguntas para web reformuladas o creadas; no se publican enunciados originales íntegros. El esquema de la UI ofrece alternativas numéricas, no escritura libre. Sin autorizar modificaciones a otras unidades ni a la interfaz. El estado ready describe el contenido y no implica que se haya probado la interfaz navegando."
   }
 }
