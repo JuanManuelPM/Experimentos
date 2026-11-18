@@ -1,0 +1,568 @@
+{
+  "id": "02",
+  "title": "Tablas y frecuencias",
+  "intro": "Pasar de cantidades a porcentajes, acumulados y comparaciones.",
+  "source": "M2 · Presentación de datos",
+  "theory": [
+    {
+      "id": "02.1",
+      "title": "Frecuencia absoluta",
+      "what": "La frecuencia absoluta (FA) indica cuántos casos pertenecen a una categoría o intervalo.",
+      "use": "Se usa para contestar «¿cuántos?» y para encontrar el total sumando todas las filas.",
+      "example": "Si 100 estudiantes usan redes sociales entre 60 y 90 minutos por día, la FA de ese intervalo es 100.",
+      "formula": "N = suma de las FA"
+    },
+    {
+      "id": "02.2",
+      "title": "Frecuencia relativa",
+      "what": "La frecuencia relativa (FR) indica qué parte del total representa una categoría.",
+      "use": "Sirve para comparar grupos de tamaños diferentes y transformar cantidades en porcentajes.",
+      "example": "Si 100 de 350 estudiantes están en un intervalo, la FR es 100 ÷ 350 = 0,286, es decir 28,6 %.",
+      "formula": "FR = FA ÷ N"
+    },
+    {
+      "id": "02.3",
+      "title": "Frecuencia acumulada",
+      "what": "La frecuencia absoluta acumulada (FAA) suma los casos desde el primer intervalo hasta el que estás mirando.",
+      "use": "Aparece cuando preguntan cuántos tuvieron «hasta» un valor determinado.",
+      "example": "Con 50, 60 y 100 casos en los tres primeros intervalos, la tercera FAA es 50 + 60 + 100 = 210.",
+      "formula": "FAA = suma hasta esa fila"
+    },
+    {
+      "id": "02.4",
+      "title": "Frecuencia relativa acumulada",
+      "what": "La FRA transforma la cantidad acumulada en una parte del total.",
+      "use": "Te permite saber qué proporción queda por debajo de un límite de la tabla.",
+      "example": "Si hasta 90 minutos hay 210 de 350 estudiantes, la FRA es 210 ÷ 350 = 0,60: el 60 %.",
+      "formula": "FRA = FAA ÷ N"
+    },
+    {
+      "id": "02.5",
+      "title": "Tablas de dos variables",
+      "what": "Una tabla cruzada reparte a las personas según dos características al mismo tiempo.",
+      "use": "Antes de sacar porcentajes hay que encontrar si el enunciado habla del total general, de una fila o de una columna.",
+      "example": "«Entre las mujeres, ¿cuántas trabajan en diagnóstico?» se calcula usando el total de mujeres, no todo el personal.",
+      "formula": null
+    },
+    {
+      "id": "02.6",
+      "title": "Gráficos y porcentajes",
+      "what": "Un gráfico muestra los mismos datos que una tabla, pero resumidos en barras, sectores o líneas.",
+      "use": "En el parcial te pueden pedir que identifiques un porcentaje, una categoría frecuente o una representación engañosa.",
+      "example": "Si una barra se ve más alta solo por un eje recortado, la diferencia visual puede parecer mucho mayor que la real.",
+      "formula": null
+    }
+  ],
+  "practice": [
+    {
+      "id": "M2-P01",
+      "type": "numeric",
+      "title": "Encontrá el total",
+      "prompt": "La tabla muestra cuántas personas usan redes sociales durante cada intervalo. ¿Cuántas fueron consultadas?",
+      "label": "N",
+      "answer": 350,
+      "tolerance": 0.001,
+      "solution": [
+        "N = 50 + 60 + 100 + 110 + 30 = <b>350 personas</b>."
+      ],
+      "source": "M2 · E2(a)",
+      "hints": [
+        "Sumá todas las frecuencias absolutas.",
+        "No sumes los límites de minutos; sumá la columna FA."
+      ],
+      "table": [
+        [
+          "Minutos diarios",
+          "FA"
+        ],
+        [
+          "0–30",
+          "50"
+        ],
+        [
+          "30–60",
+          "60"
+        ],
+        [
+          "60–90",
+          "100"
+        ],
+        [
+          "90–120",
+          "110"
+        ],
+        [
+          "120–150",
+          "30"
+        ]
+      ],
+      "pairs": null,
+      "unit": null
+    },
+    {
+      "id": "M2-P02",
+      "type": "numeric",
+      "title": "Frecuencia relativa",
+      "prompt": "¿Qué porcentaje corresponde al intervalo de <b>60 a 90 minutos</b>?",
+      "label": "FR en %",
+      "answer": 28.57142857142857,
+      "tolerance": 0.06,
+      "solution": [
+        "FA = 100; N = 350.",
+        "FR = 100 ÷ 350 = 0,2857 = <b>28,57 %</b>."
+      ],
+      "source": "M2 · E2(b)",
+      "hints": [
+        "La parte es 100 y el total 350.",
+        "Dividí 100 por 350 y multiplicá por 100."
+      ],
+      "table": [
+        [
+          "Minutos diarios",
+          "FA"
+        ],
+        [
+          "0–30",
+          "50"
+        ],
+        [
+          "30–60",
+          "60"
+        ],
+        [
+          "60–90",
+          "100"
+        ],
+        [
+          "90–120",
+          "110"
+        ],
+        [
+          "120–150",
+          "30"
+        ]
+      ],
+      "pairs": null,
+      "unit": null
+    },
+    {
+      "id": "M2-P03",
+      "type": "numeric",
+      "title": "Frecuencia acumulada",
+      "prompt": "¿Cuántas personas usan redes hasta el final del intervalo <b>60–90 minutos</b>?",
+      "label": "FAA",
+      "answer": 210,
+      "tolerance": 0.001,
+      "solution": [
+        "Sumás <b>todas las filas anteriores incluida esa fila</b>: 50 + 60 + 100 = <b>210</b>."
+      ],
+      "source": "M2 · E2(b)",
+      "hints": [
+        "«Acumulada» significa sumar desde el principio.",
+        "Sumá las tres primeras FA."
+      ],
+      "table": [
+        [
+          "Minutos diarios",
+          "FA"
+        ],
+        [
+          "0–30",
+          "50"
+        ],
+        [
+          "30–60",
+          "60"
+        ],
+        [
+          "60–90",
+          "100"
+        ],
+        [
+          "90–120",
+          "110"
+        ],
+        [
+          "120–150",
+          "30"
+        ]
+      ],
+      "pairs": null,
+      "unit": null
+    },
+    {
+      "id": "M2-P04",
+      "type": "numeric",
+      "title": "Proporción acumulada",
+      "prompt": "¿Qué porcentaje corresponde a una FAA de <b>210</b> sobre un total de <b>350</b>?",
+      "label": "FRA en %",
+      "answer": 60,
+      "tolerance": 0.015,
+      "solution": [
+        "FRA = 210 ÷ 350 = 0,60.",
+        "En porcentaje: <b>60 %</b>."
+      ],
+      "source": "M2 · E2(b)",
+      "hints": [
+        "Dividí el acumulado por el total.",
+        "210 ÷ 350 = 0,60. Falta expresarlo como porcentaje."
+      ],
+      "table": null,
+      "pairs": null,
+      "unit": null
+    },
+    {
+      "id": "M2-P05",
+      "type": "numeric",
+      "title": "Completá la celda faltante",
+      "prompt": "Una tabla de entrevistas tiene total 196. Las otras filas registran 6, 9, 72 y 95 entrevistas. ¿Cuál es la frecuencia que falta?",
+      "label": "FA faltante",
+      "answer": 14,
+      "tolerance": 0.001,
+      "solution": [
+        "Las filas conocidas suman 6 + 9 + 72 + 95 = 182.",
+        "196 − 182 = <b>14</b>."
+      ],
+      "source": "M2 · E3(b)",
+      "hints": [
+        "Todas las FA juntas deben sumar el total.",
+        "Restá del total la suma de las otras cuatro."
+      ],
+      "table": null,
+      "pairs": null,
+      "unit": null
+    },
+    {
+      "id": "M2-P06",
+      "type": "multi",
+      "title": "Una fila completa",
+      "prompt": "Para la tercera fila de la tabla (60–90), completá los cuatro valores. Escribí FR y FRA como porcentajes.",
+      "fields": [
+        {
+          "label": "FA",
+          "answer": 100,
+          "tolerance": 0.001
+        },
+        {
+          "label": "FR %",
+          "answer": 28.57142857142857,
+          "tolerance": 0.06
+        },
+        {
+          "label": "FAA",
+          "answer": 210,
+          "tolerance": 0.001
+        },
+        {
+          "label": "FRA %",
+          "answer": 60,
+          "tolerance": 0.015
+        }
+      ],
+      "solution": [
+        "FA = <b>100</b>.",
+        "FR = 100/350 = <b>28,57 %</b>.",
+        "FAA = 50+60+100 = <b>210</b>.",
+        "FRA = 210/350 = <b>60 %</b>."
+      ],
+      "source": "Simulacro P1 · E2(c)",
+      "hints": [
+        "FA es la cantidad de la fila y FAA la suma hasta esa fila.",
+        "FR divide FA por N; FRA divide FAA por N."
+      ],
+      "table": [
+        [
+          "Minutos diarios",
+          "FA"
+        ],
+        [
+          "0–30",
+          "50"
+        ],
+        [
+          "30–60",
+          "60"
+        ],
+        [
+          "60–90",
+          "100"
+        ],
+        [
+          "90–120",
+          "110"
+        ],
+        [
+          "120–150",
+          "30"
+        ]
+      ],
+      "pairs": null
+    },
+    {
+      "id": "M2-P07",
+      "type": "numeric",
+      "title": "Porcentajes entre grupos",
+      "prompt": "En orientación trabajan 10 mujeres y 6 hombres. ¿Qué porcentaje del sector son mujeres?",
+      "label": "Mujeres (%)",
+      "answer": 62.5,
+      "tolerance": 0.015,
+      "solution": [
+        "Total del sector = 10 + 6 = 16.",
+        "10 ÷ 16 × 100 = <b>62,5 %</b>."
+      ],
+      "source": "M2 · E6, adaptación",
+      "hints": [
+        "El denominador es el personal de ese sector.",
+        "10 ÷ (10 + 6) × 100."
+      ],
+      "table": null,
+      "pairs": null,
+      "unit": null
+    },
+    {
+      "id": "M2-P08",
+      "type": "choice",
+      "title": "Leé un gráfico",
+      "prompt": "En un gráfico hay tres categorías A, B y C. ¿Cuál contiene la mitad de los casos?",
+      "options": [
+        "A",
+        "B",
+        "C"
+      ],
+      "answer": 2,
+      "solution": [
+        "Total = 12 + 8 + 20 = 40.",
+        "La categoría C tiene 20: <b>20/40 = 50 %</b>."
+      ],
+      "source": "Ejercicio nuevo basado en M2 · E1/E5",
+      "hints": [
+        "Sumá las tres barras.",
+        "La mitad del total 40 es 20."
+      ],
+      "table": null,
+      "chart": [
+        [
+          "A",
+          12
+        ],
+        [
+          "B",
+          8
+        ],
+        [
+          "C",
+          20
+        ]
+      ]
+    },
+    {
+      "id": "M2-P09",
+      "type": "choice",
+      "title": "¿Se puede acumular?",
+      "prompt": "Una tabla contiene «terapia individual», «terapia grupal» y «sin terapia». ¿Tiene sentido calcular FAA siguiendo ese orden arbitrario?",
+      "options": [
+        "Sí, siempre",
+        "No, son categorías nominales",
+        "Sí, si hay tres filas"
+      ],
+      "answer": 1,
+      "solution": [
+        "El acumulado supone un <b>orden con significado</b>. Esas categorías son nominales; acumularlas según un orden arbitrario no produce una medida útil."
+      ],
+      "source": "M2 · Interpretación de tablas, ejercicio adaptado",
+      "hints": [
+        "¿El orden de las opciones expresa más o menos cantidad?",
+        "Las categorías son nominales."
+      ],
+      "table": null,
+      "chart": null
+    }
+  ],
+  "schema": "psicologia-up.statistics.unit.v3",
+  "moduleId": "M2",
+  "partial": "P1",
+  "status": "ready",
+  "extras": {},
+  "cheats": [
+    [
+      "Frecuencias",
+      [
+        [
+          "FA",
+          "Cantidad de casos en una fila."
+        ],
+        [
+          "FR",
+          "Parte del total que corresponde a una fila."
+        ],
+        [
+          "FAA",
+          "Suma de FA hasta la fila (inclusive)."
+        ],
+        [
+          "FRA",
+          "Parte del total acumulada hasta la fila."
+        ]
+      ]
+    ],
+    [
+      "Cálculos",
+      [
+        [
+          "N = ΣFA",
+          "Total de casos."
+        ],
+        [
+          "FR = FA / N",
+          "Multiplicá por 100 para expresarla en porcentaje."
+        ],
+        [
+          "FAAᵢ = FA₁ + … + FAᵢ",
+          "Acumular todas las filas hasta la indicada."
+        ],
+        [
+          "FRA = FAA / N",
+          "En porcentaje: FRA × 100."
+        ]
+      ]
+    ],
+    [
+      "Comprobaciones",
+      [
+        [
+          "Última FAA = N",
+          "Si no coincide, revisá las sumas."
+        ],
+        [
+          "ΣFR = 1 = 100 %",
+          "Todas las categorías juntas."
+        ],
+        [
+          "Última FRA = 1 = 100 %",
+          "Solo cuando la acumulación tiene sentido."
+        ]
+      ]
+    ],
+    [
+      "Tablas cruzadas",
+      [
+        [
+          "«Entre las mujeres…»",
+          "Denominador = total de mujeres."
+        ],
+        [
+          "«Del total…»",
+          "Denominador = total general."
+        ],
+        [
+          "Celda faltante",
+          "Total − suma de celdas conocidas."
+        ]
+      ]
+    ],
+    [
+      "Gráficos",
+      [
+        [
+          "Barras",
+          "Comparar cantidades por categoría."
+        ],
+        [
+          "Porcentaje",
+          "FA ÷ N × 100."
+        ],
+        [
+          "Categorías nominales",
+          "No acumular en un orden arbitrario."
+        ]
+      ]
+    ]
+  ],
+  "numericOptions": {
+    "M2-P01": [
+      350,
+      300,
+      250,
+      100
+    ],
+    "M2-P02": [
+      28.57,
+      60,
+      0.286,
+      71.43
+    ],
+    "M2-P03": [
+      210,
+      100,
+      160,
+      350
+    ],
+    "M2-P04": [
+      60,
+      0.6,
+      40,
+      210
+    ],
+    "M2-P05": [
+      14,
+      24,
+      182,
+      6
+    ],
+    "M2-P07": [
+      62.5,
+      50,
+      37.5,
+      160
+    ]
+  },
+  "multiOptions": {
+    "M2-P06": [
+      [
+        100,
+        60,
+        210
+      ],
+      [
+        28.57,
+        60,
+        0.286
+      ],
+      [
+        210,
+        100,
+        160
+      ],
+      [
+        60,
+        28.57,
+        0.6
+      ]
+    ]
+  },
+  "trueFalse": {
+    "M2-P09": [
+      [
+        "Acumular categorías nominales en orden arbitrario permite una FAA interpretable.",
+        0,
+        "La acumulación requiere orden con significado."
+      ],
+      [
+        "Bajo, medio y alto sí tienen un orden.",
+        1,
+        "Se trata de categorías ordinales."
+      ],
+      [
+        "La última frecuencia relativa de una tabla exhaustiva debe sumar el 100 %.",
+        1,
+        "La suma de las FR de todas las filas es 1."
+      ]
+    ]
+  },
+  "review": {
+    "currentVersion": "migration-v3",
+    "academicValidation": "legacy-content-preserved",
+    "sourceCoverage": "adapted; not all original keys independently verified"
+  },
+  "cheatBlocks": []
+}

@@ -1,0 +1,506 @@
+{
+  "id": "03",
+  "title": "Medidas descriptivas",
+  "intro": "Encontrar el valor típico y entender qué tan dispersos están los datos.",
+  "source": "M3 · Medidas de resumen",
+  "theory": [
+    {
+      "id": "03.1",
+      "title": "Media",
+      "what": "La media es el valor que resultaría si repartieras el total de los puntajes en partes iguales.",
+      "use": "En el examen puede aparecer calculada o te pueden pedir obtenerla de datos o de Jamovi.",
+      "example": "Un grupo con notas 2, 4 y 9 tiene media 5 aunque nadie haya sacado exactamente 5.",
+      "formula": "Media = suma de datos ÷ cantidad"
+    },
+    {
+      "id": "03.2",
+      "title": "Mediana y moda",
+      "what": "La mediana divide los datos ordenados en dos mitades; la moda es el valor que más se repite.",
+      "use": "Te permite contestar dos preguntas distintas: qué deja a la mitad de los casos a cada lado y qué puntuación es más frecuente.",
+      "example": "En 2, 4, 4, 6, 9, la mediana es 4 y la moda también es 4; si el 9 cambiara por 90, la mediana seguiría siendo 4.",
+      "formula": null
+    },
+    {
+      "id": "03.3",
+      "title": "Percentiles",
+      "what": "Un percentil marca un punto de corte: P80 deja aproximadamente al 80 % de los datos por debajo o en ese valor.",
+      "use": "En las guías te preguntan por el «10 % más alto» o el «30 % más bajo» sin nombrar directamente el percentil.",
+      "example": "El 10 % de personas con más ansiedad comienza cerca de P90, no de P10.",
+      "formula": "10 % superior → P90"
+    },
+    {
+      "id": "03.4",
+      "title": "Desvío estándar",
+      "what": "El desvío estándar resume cuánto se alejan, en general, los valores respecto de la media.",
+      "use": "Sirve para distinguir dos grupos con el mismo promedio pero puntajes más concentrados o más dispersos.",
+      "example": "Dos cursos pueden promediar 7; si uno tiene notas casi todas entre 6 y 8 y el otro entre 2 y 10, el segundo tendrá mayor desvío.",
+      "formula": "s = raíz de la varianza muestral"
+    },
+    {
+      "id": "03.5",
+      "title": "Varianza y CV",
+      "what": "La varianza promedia desviaciones al cuadrado; el coeficiente de variación (CV) expresa el desvío en relación con la media.",
+      "use": "El parcial puede pedirte calcular s² o comparar qué grupo es relativamente más variable aunque sus promedios sean distintos.",
+      "example": "Un grupo con media 10 y desvío 1 tiene CV 10 %; otro con media 5 y desvío 2 tiene CV 40 %.",
+      "formula": "CV = 100 × s ÷ media"
+    },
+    {
+      "id": "03.6",
+      "title": "Asimetría",
+      "what": "Una distribución es asimétrica cuando presenta una cola más extendida hacia valores altos o bajos.",
+      "use": "Te ayuda a interpretar por qué unas pocas puntuaciones extremas pueden desplazar la media respecto de la mediana.",
+      "example": "En un grupo donde casi todos puntúan 10 y una sola persona 90, ese valor extremo eleva la media y estira la cola hacia la derecha.",
+      "formula": null
+    }
+  ],
+  "practice": [
+    {
+      "id": "M3-P01",
+      "type": "numeric",
+      "title": "Calculá la media",
+      "prompt": "Cinco estudiantes obtuvieron estos puntajes: <b>2, 4, 4, 6 y 9</b>. ¿Cuál es la media?",
+      "label": "Media",
+      "answer": 5,
+      "tolerance": 0.001,
+      "solution": [
+        "Sumá: 2 + 4 + 4 + 6 + 9 = 25.",
+        "Dividí entre 5: <b>media = 5</b>."
+      ],
+      "source": "Simulacro P1 · E3(a)",
+      "hints": [
+        "La media usa todos los valores.",
+        "Sumá 25 y dividí por 5."
+      ],
+      "table": null,
+      "pairs": null,
+      "unit": null
+    },
+    {
+      "id": "M3-P02",
+      "type": "choice",
+      "title": "Mediana y moda",
+      "prompt": "Para los datos <b>2, 4, 4, 6, 9</b>, ¿cuál es la mediana y cuál la moda?",
+      "options": [
+        "Mediana 5 · moda 4",
+        "Mediana 4 · moda 4",
+        "Mediana 4 · moda 9",
+        "Mediana 6 · moda 5"
+      ],
+      "answer": 1,
+      "solution": [
+        "La mediana es el <b>valor del medio</b> de cinco datos ordenados: 4.",
+        "La moda es el que más se repite: <b>4</b>."
+      ],
+      "source": "Simulacro P1 · E3(a)",
+      "hints": [
+        "Hay cinco datos ordenados: el tercero es el central.",
+        "¿Qué número aparece dos veces?"
+      ],
+      "table": null,
+      "chart": null
+    },
+    {
+      "id": "M3-P03",
+      "type": "numeric",
+      "title": "Varianza muestral",
+      "prompt": "Para 2, 4, 4, 6, 9, la media es 5. ¿Cuál es la varianza <b>muestral</b>?",
+      "label": "s²",
+      "answer": 7,
+      "tolerance": 0.001,
+      "solution": [
+        "Desviaciones al cuadrado: 9, 1, 1, 1, 16; total = 28.",
+        "Dividí por n−1 = 4: <b>s² = 28/4 = 7</b>."
+      ],
+      "source": "Simulacro P1 · E3(b)",
+      "hints": [
+        "Primero restá la media a cada dato y elevá al cuadrado.",
+        "La suma es 28. Como es muestral, dividí por 4, no por 5."
+      ],
+      "table": null,
+      "pairs": null,
+      "unit": null
+    },
+    {
+      "id": "M3-P04",
+      "type": "numeric",
+      "title": "Coeficiente de variación",
+      "prompt": "La media del grupo es 5 y el desvío muestral es √7 ≈ 2,646. ¿Qué CV tiene?",
+      "label": "CV en %",
+      "answer": 52.91502622129182,
+      "tolerance": 0.08,
+      "solution": [
+        "CV = 100 × desvío ÷ media.",
+        "CV = 100 × 2,6458 ÷ 5 ≈ <b>52,92 %</b>."
+      ],
+      "source": "Simulacro P1 · E3(c)",
+      "hints": [
+        "En el CV, el desvío va arriba y la media abajo.",
+        "Calculá 2,646 ÷ 5 y multiplicá por 100."
+      ],
+      "table": null,
+      "pairs": null,
+      "unit": null
+    },
+    {
+      "id": "M3-P05",
+      "type": "choice",
+      "title": "¿Qué percentil usar?",
+      "prompt": "Queremos saber a partir de qué puntuación comienza el <b>10 % con mayor ansiedad</b>.",
+      "options": [
+        "P10",
+        "P50",
+        "P90",
+        "P100"
+      ],
+      "answer": 2,
+      "solution": [
+        "Si buscás el 10 % superior, dejás el <b>90 % por debajo</b>. El corte es P90."
+      ],
+      "source": "M3 · E3 y parcial P1 2026 E1(d)",
+      "hints": [
+        "El porcentaje indicado está arriba, no abajo.",
+        "100 % − 10 % = 90 %."
+      ],
+      "table": null,
+      "chart": null
+    },
+    {
+      "id": "M3-P06",
+      "type": "choice",
+      "title": "Interpretá medidas dadas",
+      "prompt": "Un informe indica media = 17,8, mediana = 15 y moda = 12. ¿Qué sugiere ese orden?",
+      "options": [
+        "Asimetría positiva",
+        "Simetría perfecta",
+        "Asimetría negativa",
+        "Que el valor 17,8 es la moda"
+      ],
+      "answer": 0,
+      "solution": [
+        "El orden media > mediana > moda <b>sugiere una cola hacia valores altos</b>.",
+        "Para confirmarlo, conviene consultar el gráfico o el coeficiente de asimetría."
+      ],
+      "source": "M3 · E3, adaptación",
+      "hints": [
+        "¿Hacia dónde pueden estar estirando la media unos valores extremos altos?",
+        "Media mayor que mediana suele sugerir sesgo positivo."
+      ],
+      "table": null,
+      "chart": null
+    },
+    {
+      "id": "M3-P07",
+      "type": "choice",
+      "title": "¿Qué grupo es más variable?",
+      "prompt": "Grupo A: media 10, desvío 1. Grupo B: media 5, desvío 2. ¿Cuál tiene mayor <b>variabilidad relativa</b>?",
+      "options": [
+        "A, porque la media es mayor",
+        "B, porque su CV es mayor",
+        "Tienen igual CV"
+      ],
+      "answer": 1,
+      "solution": [
+        "CV(A) = 1 ÷ 10 × 100 = <b>10 %</b>.",
+        "CV(B) = 2 ÷ 5 × 100 = <b>40 %</b>.",
+        "B es relativamente más variable."
+      ],
+      "source": "Simulacro P1 · E3(d), variante",
+      "hints": [
+        "No compares solo los desvíos ni las medias.",
+        "Calculá s/media para cada grupo."
+      ],
+      "table": null,
+      "chart": null
+    },
+    {
+      "id": "M3-P08",
+      "type": "choice",
+      "title": "¿Qué medida estoy leyendo?",
+      "prompt": "Un informe dice: «La mitad de los 130 alumnos obtuvo una nota de 7 o menos». ¿Qué medida está interpretando?",
+      "options": [
+        "Moda",
+        "Media",
+        "Mediana",
+        "Desvío"
+      ],
+      "answer": 2,
+      "solution": [
+        "La mediana separa las observaciones ordenadas en dos mitades. No indica el valor que más se repite."
+      ],
+      "source": "M3 · E6, adaptación",
+      "hints": [
+        "La expresión importante es «la mitad».",
+        "¿Qué medida divide en dos partes?"
+      ],
+      "table": null,
+      "chart": null
+    },
+    {
+      "id": "M3-P09",
+      "type": "choice",
+      "title": "¿Qué requiere datos que faltan?",
+      "prompt": "Un parcial pide la media de ansiedad por tratamiento, pero solo presenta la descripción del experimento y nombra una base externa que no está adjunta. ¿Qué corresponde hacer?",
+      "options": [
+        "Inventar los puntajes probables",
+        "Calcular la media a partir del número de pacientes",
+        "Necesitar los valores de la base o su salida estadística"
+      ],
+      "answer": 2,
+      "solution": [
+        "No se puede calcular una media sin <b>puntajes observados</b> o un resultado equivalente.",
+        "En los parciales reales, algunas tablas dependen de las bases nombradas en las consignas."
+      ],
+      "source": "Parcial P1 2026 E1(b), criterio de datos",
+      "hints": [
+        "¿El tamaño de muestra alcanza para conocer la media?",
+        "La media necesita puntajes, no solo el total de personas."
+      ],
+      "table": null,
+      "chart": null
+    }
+  ],
+  "schema": "psicologia-up.statistics.unit.v3",
+  "moduleId": "M3",
+  "partial": "P1",
+  "status": "ready",
+  "extras": {
+    "03.2": [
+      [
+        "Mediana",
+        "Valor del centro de los datos ordenados."
+      ],
+      [
+        "Moda",
+        "Valor que aparece más veces."
+      ]
+    ],
+    "03.5": [
+      [
+        "Varianza (s²)",
+        "Dispersión en unidades al cuadrado."
+      ],
+      [
+        "Desvío (s)",
+        "Dispersión en las mismas unidades que los datos."
+      ],
+      [
+        "CV",
+        "Desvío relativo al promedio, en porcentaje."
+      ]
+    ]
+  },
+  "cheats": [
+    [
+      "Tendencia central",
+      [
+        [
+          "Media (x̄)",
+          "Suma de valores ÷ n. Sensible a extremos."
+        ],
+        [
+          "Mediana (Me)",
+          "Valor central de los datos ordenados. Si n es par: promedio de los dos centrales."
+        ],
+        [
+          "Moda (Mo)",
+          "Valor más frecuente; puede haber más de una."
+        ]
+      ]
+    ],
+    [
+      "Posición",
+      [
+        [
+          "P80",
+          "Deja aproximadamente 80 % debajo del corte."
+        ],
+        [
+          "10 % superior",
+          "Corte P90."
+        ],
+        [
+          "20 % superior",
+          "Corte P80."
+        ],
+        [
+          "30 % inferior",
+          "Corte P30."
+        ]
+      ]
+    ],
+    [
+      "Dispersión",
+      [
+        [
+          "Varianza muestral",
+          "s² = Σ(x − x̄)² / (n − 1)."
+        ],
+        [
+          "Desvío estándar",
+          "s = √s², en las mismas unidades que los datos."
+        ],
+        [
+          "Coeficiente de variación",
+          "CV = 100 × s / |x̄|. Interpretar con cuidado cerca de media cero."
+        ],
+        [
+          "Mayor CV",
+          "Mayor dispersión relativa (si la comparación es pertinente)."
+        ]
+      ]
+    ],
+    [
+      "Forma",
+      [
+        [
+          "Media > mediana > moda",
+          "Sugiere asimetría hacia valores altos; conviene mirar la distribución."
+        ],
+        [
+          "Valores extremos",
+          "Pueden desplazar la media sin cambiar mucho la mediana."
+        ]
+      ]
+    ],
+    [
+      "Si faltan datos",
+      [
+        [
+          "Solo figura el nombre de una base",
+          "No inventar medias ni desviaciones: hace falta la tabla o salida estadística."
+        ]
+      ]
+    ]
+  ],
+  "numericOptions": {
+    "M3-P01": [
+      5,
+      4,
+      6.25,
+      25
+    ],
+    "M3-P03": [
+      7,
+      5.6,
+      28,
+      14
+    ],
+    "M3-P04": [
+      52.92,
+      40,
+      18.9,
+      2.646
+    ]
+  },
+  "multiOptions": {},
+  "trueFalse": {
+    "M3-P02": [
+      [
+        "En 2, 4, 4, 6, 9 la mediana es 4.",
+        1,
+        "Es el valor central de cinco datos ordenados."
+      ],
+      [
+        "La media y la mediana son siempre iguales.",
+        0,
+        "Pueden diferir, sobre todo con valores extremos."
+      ],
+      [
+        "La moda de esos datos es 4.",
+        1,
+        "El 4 aparece más veces que los demás."
+      ]
+    ],
+    "M3-P05": [
+      [
+        "El 10 % superior comienza alrededor de P90.",
+        1,
+        "El 90 % queda por debajo."
+      ],
+      [
+        "P10 identifica el 10 % de valores más altos.",
+        0,
+        "P10 deja el 10 % por debajo, no por arriba."
+      ],
+      [
+        "P50 coincide con la mediana.",
+        1,
+        "Es el punto de corte central."
+      ]
+    ],
+    "M3-P06": [
+      [
+        "Media mayor que mediana puede sugerir cola hacia valores altos.",
+        1,
+        "Los valores grandes tienden a elevar el promedio."
+      ],
+      [
+        "La relación entre media y mediana prueba por sí sola la forma completa.",
+        0,
+        "Se necesita mirar la distribución o medidas de asimetría."
+      ],
+      [
+        "Con media 17,8 y moda 12, la media no es la moda.",
+        1,
+        "Son medidas con definiciones diferentes."
+      ]
+    ],
+    "M3-P07": [
+      [
+        "El CV permite comparar dispersión relativa.",
+        1,
+        "Relaciona el desvío con el promedio."
+      ],
+      [
+        "El grupo A tiene CV 10 %.",
+        1,
+        "1 ÷ 10 × 100 = 10 %."
+      ],
+      [
+        "El grupo B tiene menor variabilidad relativa que A.",
+        0,
+        "El CV de B es 40 %, mayor que 10 %."
+      ]
+    ],
+    "M3-P08": [
+      [
+        "La mediana divide los datos ordenados en dos mitades.",
+        1,
+        "Es la definición operativa de mediana."
+      ],
+      [
+        "«La mitad tiene 7 o menos» describe la moda.",
+        0,
+        "La moda es el valor más frecuente."
+      ],
+      [
+        "La media necesariamente es igual a 7.",
+        0,
+        "La mediana no determina el valor de la media."
+      ]
+    ],
+    "M3-P09": [
+      [
+        "Se puede hallar una media sin conocer puntajes ni estadísticas equivalentes.",
+        0,
+        "Faltan los datos necesarios."
+      ],
+      [
+        "El número de participantes basta para calcular la media de ansiedad.",
+        0,
+        "Conocer n no revela la suma de los puntajes."
+      ],
+      [
+        "Una salida estadística que informe la media podría resolver esa parte.",
+        1,
+        "Permitiría recuperar el resultado calculado."
+      ]
+    ]
+  },
+  "review": {
+    "currentVersion": "migration-v3",
+    "academicValidation": "legacy-content-preserved",
+    "sourceCoverage": "adapted; not all original keys independently verified"
+  },
+  "cheatBlocks": []
+}

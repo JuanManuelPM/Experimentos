@@ -1,0 +1,634 @@
+{
+  "id": "04",
+  "title": "Correlación y regresión",
+  "intro": "Encontrar relaciones entre dos variables y hacer predicciones justificadas.",
+  "source": "M4 · Análisis de regresión y correlación",
+  "theory": [
+    {
+      "id": "04.1",
+      "title": "Dos variables relacionadas",
+      "what": "Cada persona aporta un par de valores: uno para X y otro para Y. La relación describe cómo cambian juntos.",
+      "use": "Antes de calcular hay que saber qué variable se utiliza para predecir y cuál se quiere estimar.",
+      "example": "Si X es estrés y Y son horas de sueño, cada estudiante aporta un nivel de estrés y un número de horas; no se pueden mezclar filas.",
+      "formula": null
+    },
+    {
+      "id": "04.2",
+      "title": "Correlación r",
+      "what": "La correlación r indica la dirección y la fuerza de la relación <em>lineal</em> entre dos variables.",
+      "use": "En los ejercicios te pueden pedir decidir si es positiva o negativa, calcular r o interpretar un valor ya dado.",
+      "example": "Si r = −0,80, los estudiantes con más X suelen tener menos Y; el signo no dice que X cause Y.",
+      "formula": "−1 ≤ r ≤ 1"
+    },
+    {
+      "id": "04.3",
+      "title": "Coeficiente de determinación",
+      "what": "R² indica qué proporción de la variabilidad de Y está asociada al ajuste de la recta.",
+      "use": "Se usa para interpretar cuánto explican los cambios de X dentro del modelo, sin confundirlo con causalidad.",
+      "example": "Con r = −0,80, R² = 0,64: el modelo lineal explica el 64 % de la variación de Y en esos datos.",
+      "formula": "R² = r²"
+    },
+    {
+      "id": "04.4",
+      "title": "Recta de regresión",
+      "what": "La recta resume la tendencia mediante un punto de partida a y un cambio b por cada unidad de X.",
+      "use": "Sirve para estimar un valor de Y, interpretar una pendiente y entender el intercepto.",
+      "example": "En ŷ = 47 − 4x, cada hora adicional de deporte se asocia con 4 puntos menos de estrés esperado.",
+      "formula": "ŷ = a + bx"
+    },
+    {
+      "id": "04.5",
+      "title": "Calcular la recta",
+      "what": "La pendiente compara cómo varían juntos X e Y con cuánto varía X por sí sola; el intercepto posiciona la recta sobre los datos.",
+      "use": "En los ejercicios con pares numéricos podés calcular a y b a partir de los datos o recuperarlos de la salida estadística.",
+      "example": "Si b = −0,68 y a = 10,33, para X=7 la predicción es 10,33 − 0,68×7 ≈ 5,55 horas.",
+      "formula": "b = cov(X,Y) ÷ var(X) · a = ȳ − b x̄"
+    },
+    {
+      "id": "04.6",
+      "title": "Causalidad y extrapolación",
+      "what": "Dos variables pueden moverse juntas por otros motivos, y una recta solo se estimó con el rango de datos disponible.",
+      "use": "El parcial suele preguntar si un resultado permite afirmar causalidad o si una predicción fuera del rango es confiable.",
+      "example": "Observar menos sueño con más estrés no prueba qué lo causó; predecir X=80 a partir de datos entre X=4 y 9 sería extrapolar.",
+      "formula": null
+    }
+  ],
+  "practice": [
+    {
+      "id": "M4-P01",
+      "type": "choice",
+      "title": "¿Qué dirección tiene?",
+      "prompt": "En un grupo, cuando aumenta el estrés suelen disminuir las horas de sueño. ¿Qué signo esperás para r?",
+      "options": [
+        "Positivo",
+        "Negativo",
+        "Necesariamente cero"
+      ],
+      "answer": 1,
+      "solution": [
+        "La tendencia va en sentidos opuestos: <b>correlación negativa</b>."
+      ],
+      "source": "M4 · E5/E8, adaptación",
+      "hints": [
+        "Una variable sube mientras la otra baja.",
+        "Cuando se mueven en sentidos contrarios, r tiene signo negativo."
+      ],
+      "table": null,
+      "chart": null
+    },
+    {
+      "id": "M4-P02",
+      "type": "choice",
+      "title": "¿Puede existir ese valor?",
+      "prompt": "Se informa una correlación de <b>r = 1,09</b>. ¿Qué problema hay?",
+      "options": [
+        "Es muy positiva, pero válida",
+        "No es posible: r debe estar entre −1 y 1",
+        "El problema es que falta el porcentaje"
+      ],
+      "answer": 1,
+      "solution": [
+        "El coeficiente de Pearson siempre está en <b>[−1, 1]</b>.",
+        "1,09 queda fuera de ese rango y no puede ser una correlación válida."
+      ],
+      "source": "M4 · E6(a)",
+      "hints": [
+        "Recordá los límites posibles de r.",
+        "Ni una relación perfecta supera 1 en valor absoluto."
+      ],
+      "table": null,
+      "chart": null
+    },
+    {
+      "id": "M4-P03",
+      "type": "numeric",
+      "title": "Convertí r en R²",
+      "prompt": "Si r = −0,80, ¿qué porcentaje de variación explica la recta?",
+      "label": "R² en %",
+      "answer": 64,
+      "tolerance": 0.001,
+      "solution": [
+        "R² = (−0,80)² = 0,64.",
+        "Expresado como porcentaje: <b>64 %</b>. El signo desaparece al elevar al cuadrado."
+      ],
+      "source": "M4 · E4(b), adaptación",
+      "hints": [
+        "Elevá r al cuadrado.",
+        "(−0,8)² = 0,64; multiplicá por 100."
+      ],
+      "table": null,
+      "pairs": null,
+      "unit": null
+    },
+    {
+      "id": "M4-P04",
+      "type": "numeric",
+      "title": "Hacé una predicción",
+      "prompt": "La recta es <b>ŷ = 47 − 4x</b>. ¿Cuál es la predicción para x = 8?",
+      "label": "ŷ",
+      "answer": 15,
+      "tolerance": 0.001,
+      "solution": [
+        "Reemplazá x por 8: ŷ = 47 − 4×8.",
+        "ŷ = 47 − 32 = <b>15</b>."
+      ],
+      "source": "Integrador P1 · E2(b)",
+      "hints": [
+        "No necesitás calcular una nueva recta: ya está dada.",
+        "Sustituí x=8 en 47−4x."
+      ],
+      "table": null,
+      "pairs": null,
+      "unit": null
+    },
+    {
+      "id": "M4-P05",
+      "type": "choice",
+      "title": "Interpretá la pendiente",
+      "prompt": "En ŷ = 47 − 4x, X mide horas de deporte y Y un puntaje de estrés. ¿Qué significa b = −4?",
+      "options": [
+        "Por cada hora de deporte, el estrés esperado es 4 puntos menor",
+        "A las 4 horas el estrés es 0",
+        "El estrés causa más deporte"
+      ],
+      "answer": 0,
+      "solution": [
+        "La pendiente describe un <b>cambio esperado de −4 en Y por cada unidad adicional de X</b>.",
+        "La recta expresa asociación, no causalidad demostrada."
+      ],
+      "source": "Integrador P1 · E2(a)",
+      "hints": [
+        "La pendiente dice cuánto cambia Y al aumentar X una unidad.",
+        "El signo es negativo."
+      ],
+      "table": null,
+      "chart": null
+    },
+    {
+      "id": "M4-P06",
+      "type": "choice",
+      "title": "¿Qué significa el intercepto?",
+      "prompt": "En ŷ = 47 − 4x, ¿qué representa a = 47?",
+      "options": [
+        "La predicción de Y cuando X=0",
+        "El máximo valor que Y puede tomar",
+        "Que hay 47 participantes"
+      ],
+      "answer": 0,
+      "solution": [
+        "El intercepto es la predicción de Y para <b>X = 0</b>.",
+        "Que sea interpretable en la realidad depende de si ese valor de X tiene sentido y está dentro del rango pertinente."
+      ],
+      "source": "M4 · E9 / Integrador P1 E2(a)",
+      "hints": [
+        "Pensá qué queda de la fórmula si x=0.",
+        "47−4×0 = 47."
+      ],
+      "table": null,
+      "chart": null
+    },
+    {
+      "id": "M4-P07",
+      "type": "multi",
+      "title": "Leé una regresión completa",
+      "prompt": "Estos son los pares de datos del simulacro de estrés y sueño. Completá los resultados aproximados de la regresión de sueño (Y) sobre estrés (X).",
+      "fields": [
+        {
+          "label": "r",
+          "answer": -0.9885977854493444,
+          "tolerance": 0.015
+        },
+        {
+          "label": "R² en %",
+          "answer": 97.7325581395348,
+          "tolerance": 0.12
+        },
+        {
+          "label": "Pendiente b",
+          "answer": -0.6833333333333333,
+          "tolerance": 0.015
+        },
+        {
+          "label": "Intercepto a",
+          "answer": 10.333333333333334,
+          "tolerance": 0.035
+        }
+      ],
+      "solution": [
+        "Para cada par (xᵢ,yᵢ), se mantienen juntos los datos del mismo estudiante.",
+        "Las medias son x̄ ≈ 6,667 e ȳ ≈ 5,778.",
+        "b = Σ[(x−x̄)(y−ȳ)] / Σ[(x−x̄)²] ≈ <b>−0,6833</b>.",
+        "a = ȳ − b·x̄ ≈ <b>10,3333</b>.",
+        "r ≈ <b>−0,9886</b> y R² ≈ <b>97,73 %</b>.",
+        "Recta: <b>ŷ = 10,3333 − 0,6833x</b>."
+      ],
+      "source": "Simulacro P1 · E4 / Parcial 2026 · E2",
+      "hints": [
+        "Buscá la asociación negativa: r debe quedar cerca de −1.",
+        "Para R² elevá r al cuadrado. Para la recta, primero pendiente y después intercepto."
+      ],
+      "table": null,
+      "pairs": [
+        [
+          "x · Estrés",
+          "9",
+          "8",
+          "7",
+          "6",
+          "5",
+          "8",
+          "7",
+          "6",
+          "4"
+        ],
+        [
+          "y · Sueño",
+          "4",
+          "5",
+          "5,5",
+          "6",
+          "7",
+          "5",
+          "5,5",
+          "6,5",
+          "7,5"
+        ]
+      ]
+    },
+    {
+      "id": "M4-P08",
+      "type": "numeric",
+      "title": "Usá la recta calculada",
+      "prompt": "La regresión de sueño sobre estrés fue <b>ŷ = 10,3333 − 0,6833x</b>. ¿Cuántas horas de sueño se predicen si el estrés vale 7?",
+      "label": "Sueño predicho (h)",
+      "answer": 5.55,
+      "tolerance": 0.03,
+      "solution": [
+        "ŷ = 10,3333 − 0,6833 × 7.",
+        "ŷ ≈ <b>5,55 horas</b>.",
+        "La predicción usa X=7, que está dentro del rango observado."
+      ],
+      "source": "Simulacro P1 · E4(d) / Parcial 2026 · E2(d)",
+      "hints": [
+        "La recta ya está dada, no vuelvas a calcular r.",
+        "Multiplicá −0,6833 por 7 y sumá 10,3333."
+      ],
+      "table": null,
+      "pairs": null,
+      "unit": null
+    },
+    {
+      "id": "M4-P09",
+      "type": "choice",
+      "title": "¿Hay causalidad?",
+      "prompt": "Una correlación de r = −0,99 entre estrés y sueño permite afirmar que el estrés <b>causa</b> menos horas de sueño.",
+      "options": [
+        "Sí, porque |r| es casi 1",
+        "No; asociación no prueba causalidad",
+        "Sí, porque la pendiente es negativa"
+      ],
+      "answer": 1,
+      "solution": [
+        "Una correlación muy fuerte puede deberse a otros factores o a relaciones complejas.",
+        "Sin un diseño adecuado no se puede concluir que X <b>cause</b> Y."
+      ],
+      "source": "M4 · E2(d), E5(e) y Simulacro P1 · E4(e)",
+      "hints": [
+        "La fuerza de la relación no establece su causa.",
+        "¿El estudio asignó experimentalmente el nivel de estrés?"
+      ],
+      "table": null,
+      "chart": null
+    },
+    {
+      "id": "M4-P10",
+      "type": "choice",
+      "title": "¿Es una predicción razonable?",
+      "prompt": "Calculaste una recta usando valores de X entre 4 y 9. Te piden predecir Y para <b>X = 50</b>. ¿Cuál es el principal problema?",
+      "options": [
+        "No hay ninguno si r es fuerte",
+        "La predicción extrapola demasiado fuera del rango medido",
+        "Siempre debemos usar X=50"
+      ],
+      "answer": 1,
+      "solution": [
+        "Predecir X=50 cuando solo se observaron valores de 4 a 9 es una <b>extrapolación extrema</b>.",
+        "Aunque el ajuste sea fuerte dentro del rango, fuera de él la predicción puede no ser válida."
+      ],
+      "source": "M4 · E5(e), variante",
+      "hints": [
+        "Compará el X pedido con los X observados.",
+        "La recta no fue contrastada cerca de 50."
+      ],
+      "table": null,
+      "chart": null
+    }
+  ],
+  "schema": "psicologia-up.statistics.unit.v3",
+  "moduleId": "M4",
+  "partial": "P1",
+  "status": "ready",
+  "extras": {
+    "04.1": [
+      [
+        "X",
+        "Valor con el que se quiere explicar o predecir."
+      ],
+      [
+        "Y",
+        "Valor que se observa o desea estimar."
+      ]
+    ],
+    "04.2": [
+      [
+        "r positivo",
+        "Cuando X aumenta, Y tiende a aumentar."
+      ],
+      [
+        "r negativo",
+        "Cuando X aumenta, Y tiende a disminuir."
+      ],
+      [
+        "r cercano a cero",
+        "Relación lineal débil o inexistente."
+      ]
+    ],
+    "04.4": [
+      [
+        "a · intercepto",
+        "Valor predicho para X = 0 (si ese valor es pertinente)."
+      ],
+      [
+        "b · pendiente",
+        "Cambio predicho en Y por una unidad adicional de X."
+      ]
+    ],
+    "04.6": [
+      [
+        "Asociación",
+        "Dos variables cambian juntas; no prueba causa."
+      ],
+      [
+        "Extrapolación",
+        "Predecir por fuera del rango de X observado; menor fiabilidad."
+      ]
+    ]
+  },
+  "cheats": [
+    [
+      "Datos y dirección",
+      [
+        [
+          "Pares (x, y)",
+          "Cada fila contiene dos valores de la misma persona."
+        ],
+        [
+          "X",
+          "Variable predictora."
+        ],
+        [
+          "Y",
+          "Variable que se quiere estimar."
+        ],
+        [
+          "r > 0",
+          "Relación lineal directa."
+        ],
+        [
+          "r < 0",
+          "Relación lineal inversa."
+        ],
+        [
+          "−1 ≤ r ≤ 1",
+          "Fuera de ese intervalo es imposible."
+        ]
+      ]
+    ],
+    [
+      "Correlación y determinación",
+      [
+        [
+          "r",
+          "Dirección y fuerza de asociación lineal."
+        ],
+        [
+          "R² = r²",
+          "Proporción de variabilidad de Y explicada por la recta."
+        ],
+        [
+          "R² en %",
+          "Multiplicar r² por 100. El signo de r desaparece."
+        ]
+      ]
+    ],
+    [
+      "Recta de regresión",
+      [
+        [
+          "ŷ = a + bx",
+          "Predicción de Y según X."
+        ],
+        [
+          "b",
+          "Cambio esperado en Y cuando X aumenta una unidad."
+        ],
+        [
+          "a",
+          "Predicción de Y cuando X = 0."
+        ],
+        [
+          "Predicción",
+          "Sustituir X en la recta; no reemplazar Y."
+        ]
+      ]
+    ],
+    [
+      "Calcular con pares de datos",
+      [
+        [
+          "Pendiente b",
+          "Σ[(x − x̄)(y − ȳ)] / Σ[(x − x̄)²]."
+        ],
+        [
+          "Intercepto a",
+          "ȳ − b × x̄."
+        ],
+        [
+          "r",
+          "Covariación estandarizada; se interpreta entre −1 y 1."
+        ]
+      ]
+    ],
+    [
+      "Interpretación crítica",
+      [
+        [
+          "Correlación ≠ causalidad",
+          "No alcanza con r alto para demostrar un efecto."
+        ],
+        [
+          "Extrapolación",
+          "Predecir muy fuera del rango de X observado puede ser poco fiable."
+        ],
+        [
+          "Intercepto",
+          "Puede no tener sentido práctico si X = 0 queda fuera del rango."
+        ]
+      ]
+    ]
+  ],
+  "numericOptions": {
+    "M4-P03": [
+      64,
+      -64,
+      80,
+      0.64
+    ],
+    "M4-P04": [
+      15,
+      79,
+      -15,
+      43
+    ],
+    "M4-P08": [
+      5.55,
+      15.12,
+      7.62,
+      10.33
+    ]
+  },
+  "multiOptions": {
+    "M4-P07": [
+      [
+        -0.9886,
+        0.9886,
+        -0.6833
+      ],
+      [
+        97.73,
+        98.86,
+        0.9773
+      ],
+      [
+        -0.6833,
+        0.6833,
+        -0.9886
+      ],
+      [
+        10.3333,
+        5.7778,
+        -10.3333
+      ]
+    ]
+  },
+  "trueFalse": {
+    "M4-P01": [
+      [
+        "Si X sube e Y tiende a bajar, r suele ser negativo.",
+        1,
+        "La tendencia es inversa."
+      ],
+      [
+        "El signo de r indica causalidad.",
+        0,
+        "La dirección de asociación no demuestra una causa."
+      ],
+      [
+        "r = 0 implica que no hay relación lineal detectada.",
+        1,
+        "No descarta relaciones no lineales."
+      ]
+    ],
+    "M4-P02": [
+      [
+        "r = 1,09 es imposible para Pearson.",
+        1,
+        "r está limitado al intervalo [−1, 1]."
+      ],
+      [
+        "r = −1 indica una relación lineal negativa perfecta.",
+        1,
+        "Todos los puntos estarían alineados con pendiente negativa."
+      ],
+      [
+        "r = 0,9 significa que Y aumenta exactamente 0,9 por cada X.",
+        0,
+        "Esa interpretación corresponde a una pendiente, no a r."
+      ]
+    ],
+    "M4-P05": [
+      [
+        "En ŷ = 47 − 4x la pendiente es −4.",
+        1,
+        "Es el número que multiplica X."
+      ],
+      [
+        "Una unidad más de X predice cuatro unidades menos de Y.",
+        1,
+        "Es el cambio estimado por unidad de X."
+      ],
+      [
+        "La pendiente negativa prueba que el deporte reduce causalmente el estrés.",
+        0,
+        "La recta sola no demuestra causalidad."
+      ]
+    ],
+    "M4-P06": [
+      [
+        "El intercepto es la predicción para X = 0.",
+        1,
+        "El término a fija el punto inicial de la recta."
+      ],
+      [
+        "El intercepto representa el tamaño de la muestra.",
+        0,
+        "No es un recuento de participantes."
+      ],
+      [
+        "El intercepto siempre tiene interpretación práctica.",
+        0,
+        "Depende de si X = 0 tiene sentido y está dentro del rango pertinente."
+      ]
+    ],
+    "M4-P09": [
+      [
+        "Una correlación fuerte implica necesariamente causalidad.",
+        0,
+        "Pueden existir factores no controlados."
+      ],
+      [
+        "|r| próximo a 1 significa asociación lineal fuerte.",
+        1,
+        "La magnitud absoluta refleja fuerza lineal."
+      ],
+      [
+        "El signo negativo significa que las variables tienden en sentidos opuestos.",
+        1,
+        "Cuando una aumenta, la otra tiende a disminuir."
+      ]
+    ],
+    "M4-P10": [
+      [
+        "Predecir X = 50 con datos solo entre 4 y 9 es extrapolar.",
+        1,
+        "Se sale mucho del rango observado."
+      ],
+      [
+        "Un r alto garantiza predicciones seguras fuera del rango.",
+        0,
+        "El ajuste dentro del rango no garantiza extrapolación."
+      ],
+      [
+        "Una predicción dentro del rango medido se llama interpolación.",
+        1,
+        "Se estima dentro del dominio observado."
+      ]
+    ]
+  },
+  "review": {
+    "currentVersion": "migration-v3",
+    "academicValidation": "legacy-content-preserved",
+    "sourceCoverage": "adapted; not all original keys independently verified"
+  },
+  "cheatBlocks": []
+}
