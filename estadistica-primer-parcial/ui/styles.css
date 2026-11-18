@@ -220,3 +220,31 @@ body{background:var(--bg);color:var(--text);font-family:Inter,-apple-system,Blin
   .practice-dialog-content{max-height:calc(97vh - 68px);padding-inline:17px}
   .practice-toolbar{padding-inline:15px}
 }
+
+/* Fórmulas legibles, incluso en pantallas angostas. Fracciones nativas, sin CDN. */
+.block-formula,.partial-summary-head~.concept .block-formula,.partial-summary-head~.cheats .block-formula{
+  display:grid;gap:10px;max-width:100%;min-width:0;margin:14px 0;
+  padding:3px 0 5px;color:#27352b;font-family:inherit;font-size:16px;
+  font-weight:590;letter-spacing:0;line-height:1.45;overflow-wrap:anywhere;white-space:normal;
+}
+.math-row{display:flex;align-items:center;gap:9px;flex-wrap:wrap;min-width:0;max-width:100%;font-size:16px}
+.math-row.math-plain{display:block;max-width:100%;font-size:15.5px;line-height:1.6;overflow-wrap:anywhere}
+.math-left{font-weight:660;white-space:nowrap;max-width:100%}
+.math-frac{display:inline-flex;flex-direction:column;align-items:center;max-width:100%;font-variant-numeric:tabular-nums;font-weight:560;font-size:15px;line-height:1.28;text-align:center;vertical-align:middle}
+.math-frac>span{display:block;max-width:100%;padding:3px 6px;overflow-wrap:anywhere;min-width:37px}
+.math-frac>span+span{border-top:1.5px solid currentColor;padding-top:5px}
+.math-symbol{display:flex;align-items:baseline;gap:10px;margin:4px 0;font-size:13px;line-height:1.5}
+.math-symbol b{font-size:14px;min-width:31px;color:#3c5841}
+.math-symbol span{color:#546259}
+.formula-note-text{margin:4px 0 12px;font-size:13px;color:#687269;line-height:1.5}
+.block-worked{border-left:2px solid #c4d3c7;padding:3px 0 3px 14px;margin:17px 0;color:#3b473d;font-size:14px;line-height:1.55}
+.block-worked .worked-title{font-size:13.5px;font-weight:690;color:#344738;margin:0 0 7px}
+.block-worked p{margin:5px 0 8px}
+.block-worked ol{padding-left:19px;margin:8px 0 10px}
+.block-worked li{padding-left:3px;margin:5px 0}
+.block-worked .worked-result{font-weight:680;color:#273d2d;margin:9px 0}
+.partial-summary-head~.concept .block-worked p{font-size:14px;line-height:1.5}
+.partial-summary-head~.concept .block-worked li{font-size:13.5px;line-height:1.5}
+.partial-summary-head~.cheats .block-formula{gap:7px;margin:12px 0}
+.partial-summary-head~.cheats .math-row{font-size:15px}
+@media(max-width:390px){.math-row{font-size:15px;gap:6px}.math-frac{font-size:14px}.block-formula{margin:12px 0}}

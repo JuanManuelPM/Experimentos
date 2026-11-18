@@ -6,7 +6,7 @@ const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const read=p=>JSON.parse(fs.readFileSync(path.join(root,p),'utf8'));
 const manifest=read('content/manifest.json');
 const errors=[],reports=[];
-const blocks=new Set(['heading','paragraph','list','steps','comparison','definition','formula','note','decision','table']);
+const blocks=new Set(['heading','paragraph','list','steps','comparison','definition','formula','worked','note','decision','table']);
 const types=new Set(['choice','truefalse','numeric','multi','mark']);
 const allIDs=new Set();
 

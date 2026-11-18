@@ -6,14 +6,14 @@ const read=p=>JSON.parse(fs.readFileSync(path.join(root,p),'utf8'));
 const manifest=read('content/manifest.json');
 const ids=manifest.partials.flatMap(p=>p.units);const target=process.argv[2];
 if(target&&!ids.includes(target))throw Error('Unidad no registrada: '+target);
-const blocks=new Set(['heading','paragraph','definition','list','steps','comparison','formula','decision','table','note']);
+const blocks=new Set(['heading','paragraph','definition','list','steps','comparison','formula','worked','decision','table','note']);
 const errors=[];const report=[];const allIDs=new Set();
 for(const moduleId of ids){const u=read('content/units/'+moduleId+'.json');if(u.schema!=='psicologia-up.statistics.unit.v3'||u.moduleId!==moduleId)errors.push(moduleId+': schema/ID');
 if(!['ready','draft'].includes(u.status))errors.push(moduleId+': status');
 if(!Array.isArray(u.theory)||!Array.isArray(u.practice)||!Array.isArray(u.cheats)||!Array.isArray(u.cheatBlocks))errors.push(moduleId+': arrays');
 if(u.status==='ready'&&(!u.theory.length||!u.practice.length))errors.push(moduleId+': ready incompleto');
 if(target&&target!==moduleId)continue;
-const checkBlocks=(arr,where)=>{for(const b of arr||[]){if(!blocks.has(b.type))errors.push(where+': bloque desconocido');if(b.type==='formula'&&!b.expression)errors.push(where+': fórmula vacía');}};
+const checkBlocks=(arr,where)=>{for(const b of arr||[]){if(!blocks.has(b.type))errors.push(where+': bloque desconocido');if(b.type==='formula'&&!b.expression&&!b.lines?.length)errors.push(where+': fórmula vacía');}};
 checkBlocks(u.cheatBlocks,moduleId);
 for(const c of u.theory){if(!c.id||!c.title)errors.push(moduleId+': teoría incompleta');checkBlocks(c.blocks,moduleId+'/'+c.id)}
 for(const q of u.practice){

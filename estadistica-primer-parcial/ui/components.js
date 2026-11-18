@@ -4,6 +4,31 @@ function escapeHTML(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':
 function niceNum(v){if(Number.isInteger(v))return String(v);let n=Number(v);return String(Math.round((n+Number.EPSILON)*10000)/10000).replace('.',',')}
 function toDisplayValue(x){return typeof x==='number'?niceNum(x):escapeHTML(x)}
 // Optional semantic blocks let each unit choose its own note format without UI changes.
+
+function mathFormula(b){
+  // Native typography, no network fonts or runtime dependency.
+  const lines=(Array.isArray(b.lines)&&b.lines.length?b.lines:[b.expression||''])
+    .flatMap(line=>typeof line==='string'?line.split(/\s+·\s+(?=[A-Za-zÁ-ÿŷμσΣPFr]+(?:[₀-₉²%]*)(?:\s|=))/u):[line]);
+  const parts=lines.map(line=>{
+    if(typeof line==='string')return '<div class="math-row math-plain">'+escapeHTML(line.trim())+'</div>';
+    const lhs=escapeHTML(line.left||''),num=escapeHTML(line.numerator||''),den=escapeHTML(line.denominator||'');
+    const fraction=(num&&den)?'<span class="math-frac"><span>'+num+'</span><span>'+den+'</span></span>':'';
+    const right=escapeHTML(line.right||'');
+    return '<div class="math-row"><span class="math-left">'+lhs+'</span>'+fraction+(right?'<span>'+right+'</span>':'')+'</div>';
+  }).join('');
+  const details=(b.symbols||[]).map(x=>'<div class="math-symbol"><b>'+escapeHTML(x.symbol||'')+'</b><span>'+escapeHTML(x.meaning||'')+'</span></div>').join('');
+  return '<div class="block-formula" role="group" aria-label="Fórmula">'+parts+'</div>'+(details?'<div class="block-symbols">'+details+'</div>':'')+(b.note?'<p class="formula-note-text">'+escapeHTML(b.note)+'</p>':'');
+}
+function workedExample(b){
+  const steps=(b.steps||[]).map(v=>'<li>'+escapeHTML(typeof v==='string'?v:v.text||'')+'</li>').join('');
+  return '<div class="block-worked"><p class="worked-title">'+escapeHTML(b.title||'Ejemplo resuelto')+'</p>'+
+    (b.problem?'<p>'+escapeHTML(b.problem)+'</p>':'')+
+    (steps?'<ol>'+steps+'</ol>':'')+
+    (b.result?'<p class="worked-result">'+escapeHTML(b.result)+'</p>':'')+
+    (b.interpretation?'<p>'+escapeHTML(b.interpretation)+'</p>':'')+
+  '</div>';
+}
+
 function renderBlocks(blocks){return (blocks||[]).map(b=>{
   const type=b.type;
   if(type==='heading')return `<h3 class="block-heading">${escapeHTML(b.text||'')}</h3>`;
@@ -12,7 +37,8 @@ function renderBlocks(blocks){return (blocks||[]).map(b=>{
   if(type==='list')return `<ul class="block-list">${(b.items||[]).map(x=>typeof x==='string'?`<li>${escapeHTML(x)}</li>`:`<li><strong>${escapeHTML(x.label||'')}</strong>${x.text?' · '+escapeHTML(x.text):''}</li>`).join('')}</ul>`;
   if(type==='steps')return `<ol class="block-steps">${(b.items||[]).map(x=>`<li>${escapeHTML(typeof x==='string'?x:(x.text||''))}</li>`).join('')}</ol>`;
   if(type==='comparison')return `<div class="block-comparison">${(b.columns||[]).map(c=>`<section><strong>${escapeHTML(c.label||'')}</strong>${(c.items||[]).map(t=>`<p>${escapeHTML(t)}</p>`).join('')}</section>`).join('')}</div>`;
-  if(type==='formula')return `<div class="block-formula">${escapeHTML(b.expression||'')}</div>${(b.symbols||[]).length?`<div class="block-symbols">${b.symbols.map(x=>`<p><strong>${escapeHTML(x.symbol)}</strong> · ${escapeHTML(x.meaning)}</p>`).join('')}</div>`:''}`;
+  if(type==='formula')return mathFormula(b);
+  if(type==='worked')return workedExample(b);
   if(type==='decision')return `<div class="block-decision"><strong>${escapeHTML(b.if||'')}</strong><span>${escapeHTML(b.then||'')}</span></div>`;
   if(type==='table')return `<div class="tablewrap"><table class="datatab"><thead><tr>${(b.headers||[]).map(h=>`<th>${escapeHTML(h)}</th>`).join('')}</tr></thead><tbody>${(b.rows||[]).map(row=>`<tr>${row.map(cell=>`<td>${escapeHTML(cell)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
   if(type==='note')return `<p class="block-note">${escapeHTML(b.text||'')}</p>`;

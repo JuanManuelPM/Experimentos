@@ -1,5 +1,5 @@
 import {loadStudyContent} from './data.js?v=exam-walkthrough-v3-20261118';
-import {createRenderers} from './components.js?v=exam-walkthrough-v2-20261118';
+import {createRenderers} from './components.js?v=math-clean-v1-20261118';
 import {TAB_ORDER,buildRouteURL,routeFromLocation,bindGestures} from './navigation.js?v=speedrun-20261117a';
 // UI orchestration, no course content or exercise keys in this file.
 (async function(){'use strict';
