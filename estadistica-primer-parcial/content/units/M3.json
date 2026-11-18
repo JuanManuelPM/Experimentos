@@ -332,7 +332,7 @@
         },
         {
           "type": "paragraph",
-          "text": "Media 17,8; mediana 15; moda 12: ese orden es compatible con sesgo positivo. No es una demostración universal de la forma de la distribución."
+          "text": "En un estudio de edades de inicio (moda 15, mediana 17, media 18,3 años), el orden es compatible con una cola hacia edades más altas. Ese orden por sí solo no demuestra la forma de la distribución."
         },
         {
           "type": "list",
@@ -432,6 +432,10 @@
         {
           "type": "note",
           "text": "Describir un subgrupo de riesgo exige distinguir observación descriptiva de diagnóstico individual o causalidad."
+        },
+        {
+          "type": "note",
+          "text": "Advertencia sobre la guía E3: se informa media 17,8, mediana 15 y una escala limitada a 0–20. Como al menos la mitad de los casos debería estar en o por debajo de 15 y ninguno puede superar 20, la media no podría superar aproximadamente 17,5. Los estadísticos presentados son incompatibles como resumen de un mismo conjunto de observaciones. Se conservan las cifras textuales como fuente, no como datos verificados."
         }
       ]
     },
@@ -645,16 +649,16 @@
       "id": "M3-P06",
       "type": "choice",
       "title": "Asimetría sugerida por tres medidas",
-      "prompt": "Media 17,8; mediana 15; moda 12. ¿Qué lectura es prudente?",
-      "source": "Guía 3 UP · E3 (medidas originales; pregunta adaptada)",
+      "prompt": "Edad de inicio del consumo: media 18,3 años; mediana 17; moda 15. ¿Qué lectura es prudente?",
+      "source": "Guía 3 UP · E4(d) (medidas originales; pregunta adaptada)",
       "hints": [
-        "Compará dónde queda la media respecto del centro.",
-        "Valores extremos altos pueden arrastrar la media hacia la derecha.",
-        "Media > mediana > moda sugiere sesgo positivo, pero verificá la forma con un gráfico."
+        "Compará la posición de la media respecto de la mediana.",
+        "Edades de inicio relativamente altas pueden elevar el promedio.",
+        "18,3 > 17 > 15 sugiere cola derecha, que conviene verificar gráficamente."
       ],
       "solution": [
-        "17,8 > 15 > 12: orden compatible con cola derecha (asimetría positiva).",
-        "Es un indicio, no una prueba matemática de la distribución entera."
+        "18,3 > 17 > 15: orden compatible con cola hacia edades mayores (asimetría positiva).",
+        "Es un indicio; para describir la forma con certeza hace falta inspeccionar la distribución."
       ],
       "options": [
         "Sugiere asimetría positiva; conviene comprobarla",
@@ -1181,7 +1185,8 @@
       "solution": [
         "La puntuación más frecuente es la moda: 12.",
         "El corte de la mitad es la mediana: 15.",
-        "El 20 % superior empieza aproximadamente en P80 = 18."
+        "El 20 % superior empieza aproximadamente en P80 = 18.",
+        "Control de fuente: la guía también da media 17,8 y escala 0–20 junto con mediana 15; esas estadísticas no pueden corresponder simultáneamente a la misma distribución. Este ejercicio solo identifica las medidas comunicadas."
       ],
       "fields": [
         {
@@ -1577,28 +1582,49 @@
       "pattern": "A2 A4 C1 C4"
     },
     {
-      "id": "M3-P36",
-      "type": "choice",
-      "title": "Transferencia: centro, no causalidad",
-      "prompt": "Dos grupos muestran la misma media de estrés, pero uno tiene desvío mayor. ¿Qué conclusión es válida?",
-      "source": "Práctica creada · transferencia de Guía 3 E7(c,d); transferencia",
+      "id": "M3-P36-V2",
+      "type": "truefalse",
+      "title": "Hipótesis, población y diseño con humor",
+      "prompt": "Se comparan actitudes hacia Estadística en alumnos cuyos profesores ya usan humor y alumnos cuyos profesores no lo usan; se seleccionaron 20 alumnos al azar de clases observadas. Evaluá.",
+      "source": "Guía 3 UP · E5(a) (diseño original; afirmaciones adaptadas)",
       "hints": [
-        "Media y desvío miden propiedades diferentes.",
-        "Mayor desvío implica mayor variación absoluta en la misma escala.",
-        "Un resumen descriptivo no demuestra causa del estrés."
+        "Separá selección aleatoria de personas de asignación aleatoria de tratamientos.",
+        "Observacional: se clasifica el uso de humor existente, no se lo asigna.",
+        "La hipótesis propone una diferencia esperada; los 20 alumnos forman la muestra, no toda la población."
       ],
       "solution": [
-        "Con media igual y misma escala, el grupo con mayor desvío tiene más dispersión.",
-        "No se concluye que la ocupación sea la causa sin analizar el diseño y otros factores."
+        "La unidad de análisis es cada alumno; la actitud hacia Estadística es el puntaje de respuesta. Uso de humor del docente: variable de grupo.",
+        "Hipótesis posible: alumnos con profesor que usa humor tendrían mayor puntaje medio de actitud.",
+        "Es observacional si el equipo no asignó a los docentes al uso/no uso de humor; elegir alumnos al azar no transforma automáticamente el diseño en experimental."
       ],
-      "options": [
-        "Tienen distribuciones idénticas",
-        "El grupo de mayor s tiene más dispersión absoluta",
-        "El grupo de mayor s tiene necesariamente mayor media",
-        "El desvío prueba que la ocupación causa estrés"
-      ],
-      "answer": 1,
-      "pattern": "C3 C4"
+      "pattern": "A1 A2 A4 C1",
+      "claims": [
+        {
+          "text": "Elegir alumnos al azar convierte necesariamente al estudio en experimental.",
+          "answer": false,
+          "explanation": "La asignación de intervención y la selección de participantes son procedimientos diferentes."
+        },
+        {
+          "text": "La variable respuesta es el puntaje de actitud hacia Estadística.",
+          "answer": true,
+          "explanation": "Es el resultado medido en alumnos."
+        },
+        {
+          "text": "Es razonable plantear que el grupo expuesto a humor tenga actitudes más positivas.",
+          "answer": true,
+          "explanation": "Es una hipótesis de investigación; no declara que se haya demostrado."
+        },
+        {
+          "text": "La muestra observada está formada por 20 alumnos.",
+          "answer": true,
+          "explanation": "Ese es el tamaño informado por la consigna."
+        },
+        {
+          "text": "Los 20 alumnos constituyen necesariamente toda la población universitaria de CABA.",
+          "answer": false,
+          "explanation": "La muestra es un subconjunto de una población objetivo que debe delimitarse."
+        }
+      ]
     }
   ],
   "schema": "psicologia-up.statistics.unit.v3",
@@ -1718,15 +1744,16 @@
   "multiOptions": {},
   "trueFalse": {},
   "review": {
-    "currentVersion": "M3-v2.1-editorial-20261117",
-    "academicValidation": "SOURCE_CONFIRMED_AND_CREATED_ANSWERS_CALCULATED; external-base keys BLOCKED",
+    "currentVersion": "M3-v2.2-editorial-source-conflict-20261117",
+    "academicValidation": "SOURCE_CONFIRMED, CREATED_ANSWERS_CALCULATED, M3_E3_CONFLICT, EXTERNAL_BASES_BLOCKED",
     "sourceCoverage": "Guía original M3 E1-E9, integrador P1 E1, parcial 2026 T1/T2 E1 y simulacro P1 bloque 3 inspeccionados. Consignas públicas abreviadas/adaptadas, no transcripción íntegra.",
     "coverageMap": {
       "C1": "M3 E2(a,b), E3, E4(d), E6(a,b), E7(e) (procedimiento), E8, E9; P1 E1, simulacro P1 3",
       "C2": "M3 E3, E4(c,d), E5(b) (procedimiento), E8, E9; parcial 2026 E1(b,d)",
       "C3": "M3 E1/E5(b)/E7(c,d) (procedimiento), E6(c), E8, E9; parcial 2026 E1(b,d)",
       "C4": "M3 E3,E4(d),E6(c),E9; parcial 2026 E1(d)",
-      "A2 A4 B1": "M3 E4(a,b), E5(a) (transferencia contextual), E7(a,b), E8 FAA"
+      "A2 A4 B1": "M3 E4(a,b), E5(a) (transferencia contextual), E7(a,b), E8 FAA",
+      "A1 A2 A4 B1": "M3 E4(a,b), E5(a), E7(a,b), E8 FAA; diseño, hipótesis y variables por grupos."
     },
     "blocked": [
       {
@@ -1751,10 +1778,18 @@
       "M3 E8: P30 delimita el 70 % superior; P70 el 30 % superior. «Muy/poco variable» requiere criterio contextual.",
       "M3 E3/E4: orden media-mediana-moda sugiere asimetría, pero no demuestra la forma.",
       "Percentiles empíricos pueden diferir según empates y método de interpolación.",
-      "CV en escalas de puntajes sin cero significativo puede no ser una comparación interpretable."
+      "CV en escalas de puntajes sin cero significativo puede no ser una comparación interpretable.",
+      "CONFLICT M3 E3: media 17,8 y mediana 15 son incompatibles con la escala limitada a 0–20. Solo interpretar las cifras dadas por separado."
     ],
     "provenance": "Cifras identificadas como «Guía 3» o «Simulacro» fueron cotejadas con los documentos; el resto son ejemplos y prácticas nuevas expresamente etiquetadas.",
-    "verification": "Validación algorítmica de estructura/opciones y comprobación manual de operaciones independientes; no se ejecutó Jamovi ni se cotejaron bases externas."
+    "verification": "Validación algorítmica de estructura/opciones y comprobación manual de operaciones independientes; no se ejecutó Jamovi ni se cotejaron bases externas.",
+    "conflicts": [
+      {
+        "source": "Guía 3 E3",
+        "status": "CONFLICT",
+        "detail": "Escala depresión 0–20, mediana 15 y media 17,8: no pueden coexistir en los mismos datos. La media máxima compatible con al menos 50 % de valores ≤15 y el resto ≤20 es 17,5. Los percentiles informados también restringen el máximo. Mantener cifras literales, no inventar corrección."
+      }
+    ]
   },
   "cheatBlocks": [
     {
