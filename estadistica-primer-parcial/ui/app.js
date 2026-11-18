@@ -8,10 +8,10 @@ const {PARTIALS,EXTRAS,CHEATS,NUM,MULTI,TF,storageKey}=await loadStudyContent();
 const MAIN=document.getElementById('main'),HEAD=document.getElementById('header'),TABS=document.getElementById('tabs'),UNIT_TRIGGER=document.getElementById('unit-trigger'),PERCENT=document.getElementById('percent');
 const STORAGE=storageKey;
 let unit=0,tab='theory',view='units',partial=0,answers={};
-const previousScroll=new Map(),helpState=new Map();
+const previousScroll=new Map();
 try{answers=JSON.parse(localStorage.getItem(STORAGE)||'{}')}catch{answers={}}
 function save(){try{localStorage.setItem(STORAGE,JSON.stringify(answers))}catch{}}
-const {theory,cheat,practices}=createRenderers({EXTRAS,CHEATS,NUM,MULTI,TF,answers});
+const {theory,cheat,practices,reviewAnswer}=createRenderers({EXTRAS,CHEATS,NUM,MULTI,TF,answers});
 function escapeHTML(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function textSafe(s){return escapeHTML(s)}
 function store(k,v){answers[k]=v;save()}
@@ -31,9 +31,52 @@ function navigate(next,push=true){if(view==='unit'||view==='units'||view==='part
 function render(){updateControls();document.title=(view==='unit'?PARTIALS[partial].units[unit].title+' · ':view==='units'?PARTIALS[partial].title+' · ':'')+'Estadística';if(view==='partials'){MAIN.innerHTML=`<div class="indexhead"><h1>Estadística</h1></div><div class="index-list">${PARTIALS.map((p,i)=>`<button type="button" class="index-unit" data-partial="${i}" ${p.ready===false?'disabled aria-disabled="true"':''}><span class="inum">${String(i+1).padStart(2,'0')}</span><span><strong>${escapeHTML(p.title)}</strong>${p.ready===false?'<small>Próximamente</small>':''}</span><span class="arr">›</span></button>`).join('')}</div>`;readProgress();return}
 if(view==='units'){const p=PARTIALS[partial];MAIN.innerHTML=`<div class="indexhead"><div class="indexline"><button class="levelback" data-view="partials" aria-label="Volver a parciales">‹</button><h1>${escapeHTML(p.title)}</h1></div></div><div class="index-list">${p.units.map((u,i)=>`<button class="index-unit" data-unit="${i}"><span class="inum">${escapeHTML(u.id)}</span><span><strong>${escapeHTML(u.title)}</strong><small>${u.practice.length} ejercicios · ${u.theory.length} conceptos</small></span><span class="arr">›</span></button>`).join('')}</div>`;readProgress();return}
 const u=PARTIALS[partial].units[unit];MAIN.innerHTML=tab==='theory'?theory(u):tab==='practice'?practices(u):cheat(u);readProgress();}
-function patchCard(key,chosen){const selector='[data-key="'+CSS.escape(key)+'"]';const buttons=MAIN.querySelectorAll(selector);if(!buttons.length)return;const correct=String(buttons[0].dataset.correct);store(key,key.endsWith(':mark')?String(chosen):Number(chosen));buttons.forEach(b=>{let yes=String(b.dataset.choice)===String(chosen);b.classList.toggle('selected',yes);b.classList.toggle('correct',yes&&String(chosen)===correct);b.classList.toggle('wrong',yes&&String(chosen)!==correct);b.setAttribute('aria-pressed',String(yes))});const group=buttons[0].closest('.vf-item')||buttons[0].closest('.multirow')||buttons[0].closest('.exercise');if(!group)return;const feed=group.querySelector('.feedback');if(!feed)return;const right=String(chosen)===correct;feed.className='feedback '+(right?'good':'bad');if(key.includes(':vf:')){let [id,idx]=key.split(':vf:');let why=TF[id]?.[Number(idx)]?.[2]||PARTIALS[partial].units[unit].practice.find(q=>q.id===id)?.claims?.[Number(idx)]?.explanation||'';feed.textContent=(right?'✓ ':'✕ ')+why;}else{feed.textContent=right?'✓ Correcto':'✕ Revisá la respuesta';}}
-function toggleHelp(id,mode){const q=PARTIALS[partial].units[unit].practice.find(x=>x.id===id);if(!q)return;const item=MAIN.querySelector('[data-assist="'+CSS.escape(id)+'"]');if(!item)return;const box=item.querySelector('[data-help-body]');const prev=helpState.get(id);let next;if(prev?.mode===mode){if(mode==='hint'&&prev.step+1<(q.hints||[]).length){next={mode,step:prev.step+1}}else next=null}else next={mode,step:0};if(!next)helpState.delete(id);else helpState.set(id,next);box.hidden=!next;box.innerHTML=!next?'':next.mode==='hint'?`<p>${escapeHTML((q.hints||[])[next.step]||'')}</p>`:(q.solution||[]).map(s=>`<p>${s}</p>`).join('');item.querySelectorAll('[data-help]').forEach(b=>{const active=next?.mode===b.dataset.helpMode;b.classList.toggle('active',!!active);b.setAttribute('aria-pressed',String(!!active));b.textContent=b.dataset.helpMode==='hint'&&active&&next.step+1<(q.hints||[]).length?'Otra pista':b.dataset.helpMode==='hint'?'Pista':'Resolución'})}
-MAIN.addEventListener('click',e=>{const btn=e.target.closest('[data-view],[data-partial],[data-unit],[data-key],[data-help]');if(!btn)return;if(btn.dataset.view==='partials'){navigate({view:'partials'},true);return}if(btn.dataset.partial!==undefined){const p=Number(btn.dataset.partial);if(PARTIALS[p]?.ready===false)return;navigate({view:'units',partial:p,unit:0,tab:'theory'},true);return}if(btn.dataset.unit!==undefined){openUnit(btn.dataset.unit);return}if(btn.dataset.key){patchCard(btn.dataset.key,btn.dataset.choice);return}if(btn.dataset.help){toggleHelp(btn.dataset.help,btn.dataset.helpMode);return}});
+function patchCard(key,chosen){
+  const selector='[data-key="'+CSS.escape(key)+'"]';
+  const buttons=MAIN.querySelectorAll(selector);
+  if(!buttons.length)return;
+  const card=buttons[0].closest('.exercise');
+  if(!card||answers['__grade__:'+card.id])return;
+  store(key,key.endsWith(':mark')?String(chosen):Number(chosen));
+  buttons.forEach(b=>{
+    const yes=String(b.dataset.choice)===String(chosen);
+    b.classList.toggle('selected',yes);
+    b.classList.remove('correct','wrong');
+    b.setAttribute('aria-pressed',String(yes));
+  });
+}
+function toggleReview(id){
+  const q=PARTIALS[partial].units[unit].practice.find(x=>x.id===id);
+  if(!q)return;
+  const card=MAIN.querySelector('.exercise[id="'+CSS.escape(id)+'"]');
+  if(!card)return;
+  const box=card.querySelector('[data-review-panel]');
+  const button=card.querySelector('[data-reveal]');
+  if(!box||!button)return;
+  if(!box.hidden){
+    box.hidden=true;
+    button.textContent='Ver respuesta';
+    button.setAttribute('aria-expanded','false');
+    return;
+  }
+  const stateKey='__grade__:'+id;
+  if(!answers[stateKey]){
+    const expected=new Map();
+    for(const opt of card.querySelectorAll('[data-key][data-correct]')){
+      if(!expected.has(opt.dataset.key))expected.set(opt.dataset.key,String(opt.dataset.correct));
+    }
+    const isCorrect=expected.size>0&&[...expected].every(([key,right])=>answers[key]!==undefined&&String(answers[key])===right);
+    store(stateKey,isCorrect?'correct':'incorrect');
+  }
+  const correct=answers[stateKey]==='correct';
+  card.classList.toggle('review-correct',correct);
+  card.classList.toggle('review-incorrect',!correct);
+  box.innerHTML=reviewAnswer(q);
+  box.hidden=false;
+  button.textContent='Ocultar respuesta';
+  button.setAttribute('aria-expanded','true');
+}
+MAIN.addEventListener('click',e=>{const btn=e.target.closest('[data-view],[data-partial],[data-unit],[data-key],[data-reveal]');if(!btn)return;if(btn.dataset.view==='partials'){navigate({view:'partials'},true);return}if(btn.dataset.partial!==undefined){const p=Number(btn.dataset.partial);if(PARTIALS[p]?.ready===false)return;navigate({view:'units',partial:p,unit:0,tab:'theory'},true);return}if(btn.dataset.unit!==undefined){openUnit(btn.dataset.unit);return}if(btn.dataset.key){patchCard(btn.dataset.key,btn.dataset.choice);return}if(btn.dataset.reveal){toggleReview(btn.dataset.reveal);return}});
 function getURL(r){return buildRouteURL(r,PARTIALS)}
 bindGestures(MAIN,direction=>{if(view==='unit'){const next=TAB_ORDER.indexOf(tab)+(direction==='left'?1:-1);if(next<0)navigate({view:'units'},true);else if(next<TAB_ORDER.length)changeTab(TAB_ORDER[next]);}else if(view==='units'){if(direction==='right')navigate({view:'partials'},true);else if(PARTIALS[partial].units.length)openUnit(unit)}else if(view==='partials'&&direction==='left')navigate({view:'units'},true)});
 UNIT_TRIGGER.addEventListener('click',()=>navigate({view:'units'},true));

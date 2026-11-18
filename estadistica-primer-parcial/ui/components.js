@@ -25,16 +25,40 @@ return `<div class="cheats">${(CHEATS[u.id]||[]).map(([title,items])=>`<section 
 function table(q){if(q.table?.length){const [header,...rows]=q.table;return `<div class="tablewrap"><table class="datatab"><thead><tr>${header.map(v=>`<th>${escapeHTML(v)}</th>`).join('')}</tr></thead><tbody>${rows.map(row=>`<tr>${row.map(v=>`<td>${escapeHTML(v)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`}return ''}
 function pairs(q){if(!q.pairs?.length)return '';let rows=q.pairs;return `<div class="tablewrap"><table class="datatab"><tbody>${rows.map(row=>`<tr>${row.map(v=>`<td>${escapeHTML(v)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`}
 function chart(q){if(!q.chart?.length)return '';let m=Math.max(...q.chart.map(x=>x[1]));return `<div class="bargraph">${q.chart.map(([k,v])=>`<div class="barrow"><span>${escapeHTML(k)}</span><div class="bartrack"><span style="width:${v/m*100}%"></span></div><span>${v}</span></div>`).join('')}</div>`}
-function feedbackFor(key,correct,explain){const current=answers[key];if(current===undefined)return '<span class="feedback" aria-live="polite"></span>';return `<span class="feedback ${current===correct?'good':'bad'}" aria-live="polite">${current===correct?'✓':'✕'} ${escapeHTML(explain)}</span>`}
-function optionList(q,key,values,correctIndex,part='single'){return `<div class="optionlist" role="group" aria-label="Elegí una respuesta">${values.map((v,i)=>{const selected=answers[key]===i;return `<button type="button" class="choice${selected?' selected '+(i===correctIndex?'correct':'wrong'):''}" data-key="${escapeHTML(key)}" data-choice="${i}" data-q="${escapeHTML(q.id)}" data-correct="${correctIndex}" aria-pressed="${selected}">${toDisplayValue(v)}</button>`}).join('')}</div>${feedbackFor(key,correctIndex,answers[key]===correctIndex?'Correcto.': 'Revisá el cálculo o consultá la resolución.')}`}
+function feedbackFor(){return ''}
+function optionList(q,key,values,correctIndex,part='single'){return `<div class="optionlist" role="group" aria-label="Elegí una respuesta">${values.map((v,i)=>{const selected=answers[key]===i;return `<button type="button" class="choice${selected?' selected':''}" data-key="${escapeHTML(key)}" data-choice="${i}" data-q="${escapeHTML(q.id)}" data-correct="${correctIndex}" aria-pressed="${selected}">${toDisplayValue(v)}</button>`}).join('')}</div>${feedbackFor(key,correctIndex,answers[key]===correctIndex?'Correcto.': 'Revisá el cálculo o consultá la resolución.')}`}
 function makeChoices(q){let raw=(Array.isArray(q.options)&&q.options.length?q.options:null)||NUM[q.id]||[q.answer,q.answer*2,q.answer/2,q.answer+1];return raw.map(Number)}
-function practiceBody(q){if((q.type==='choice'||q.type==='truefalse')&&(TF[q.id]||q.claims)){const claims=TF[q.id]||(q.claims||[]).map(v=>[v.text,v.answer?1:0,v.explanation]);return `<div class="vf">${claims.map(([claim,v,why],i)=>{let key=q.id+':vf:'+i;let selected=answers[key];return `<div class="vf-item"><div class="vf-row"><div class="vf-claim">${escapeHTML(claim)}</div><div class="vf-controls">${[[1,'V'],[0,'F']].map(([chosen,label])=>`<button class="choice${selected===chosen?' selected '+(chosen===v?'correct':'wrong'):''}" data-key="${key}" data-choice="${chosen}" data-q="${q.id}" data-correct="${v}" aria-label="${label==='V'?'Verdadero':'Falso'}" aria-pressed="${selected===chosen}">${label}</button>`).join('')}</div></div>${feedbackFor(key,v,why)}</div>`}).join('')}</div>`}
-if(q.type==='mark'){let key=q.id+':mark';let parts=q.parts.map(p=>typeof p==='string'?p:`<button class="choice" style="padding:4px 10px;min-height:30px" data-key="${key}" data-choice="${escapeHTML(p.value)}" data-q="${q.id}" data-correct="${q.answer}" aria-pressed="${answers[key]===p.value}">${escapeHTML(p.text)}</button>`).join('');return `<div class="statement">${parts}</div>${feedbackFor(key,q.answer,q.feedback||'Revisá los datos del enunciado.')}`}
+function practiceBody(q){if((q.type==='choice'||q.type==='truefalse')&&(TF[q.id]||q.claims)){const claims=TF[q.id]||(q.claims||[]).map(v=>[v.text,v.answer?1:0,v.explanation]);return `<div class="vf">${claims.map(([claim,v,why],i)=>{let key=q.id+':vf:'+i;let selected=answers[key];return `<div class="vf-item"><div class="vf-row"><div class="vf-claim">${escapeHTML(claim)}</div><div class="vf-controls">${[[1,'V'],[0,'F']].map(([chosen,label])=>`<button class="choice${selected===chosen?' selected':''}" data-key="${key}" data-choice="${chosen}" data-q="${q.id}" data-correct="${v}" aria-label="${label==='V'?'Verdadero':'Falso'}" aria-pressed="${selected===chosen}">${label}</button>`).join('')}</div></div>${feedbackFor(key,v,why)}</div>`}).join('')}</div>`}
+if(q.type==='mark'){let key=q.id+':mark';let parts=q.parts.map(p=>typeof p==='string'?p:`<button class="choice${String(answers[key])===String(p.value)?' selected':''}" style="padding:4px 10px;min-height:30px" data-key="${key}" data-choice="${escapeHTML(p.value)}" data-q="${q.id}" data-correct="${q.answer}" aria-pressed="${answers[key]===p.value}">${escapeHTML(p.text)}</button>`).join('');return `<div class="statement">${parts}</div>${feedbackFor(key,q.answer,q.feedback||'Revisá los datos del enunciado.')}`}
 if(q.type==='numeric'){let values=makeChoices(q),correctIndex=values.findIndex(n=>Math.abs(n-q.answer)<=Math.max(q.tolerance||0,0.005));return `<div class="sublabel">${q.label?escapeHTML(q.label):'Elegí el resultado'}</div>${optionList(q,q.id+':number',values,correctIndex<0?0:correctIndex)}`}
 if(q.type==='multi'){return q.fields.map((f,i)=>{let opts=f.options||MULTI[q.id]?.[i]||[f.answer,f.answer*2,f.answer/2];let correct=opts.findIndex(n=>Math.abs(n-f.answer)<=Math.max(f.tolerance||0,0.01));return `<div class="multirow"><div class="multilabel">${escapeHTML(f.label)}</div>${optionList(q,q.id+':multi:'+i,opts,Math.max(0,correct))}</div>`}).join('')}
 if(q.type==='choice')return optionList(q,q.id+':choice',q.options,q.answer);
 return '<p class="quiet-note">Tipo de actividad no reconocido.</p>'}
-function practices(u){return u.practice.map((q,i)=>`<section class="exercise" id="${escapeHTML(q.id)}"><h2><span class="ex-index" aria-label="Ejercicio ${i+1}">${String(i+1).padStart(2,'0')}</span>${escapeHTML(q.title)}</h2>${q.prompt?`<p class="statement">${q.prompt}</p>`:''}${table(q)}${chart(q)}${pairs(q)}${practiceBody(q)}<div class="assist" data-assist="${escapeHTML(q.id)}"><div class="assist-controls"><button class="assist-btn" type="button" data-help="${escapeHTML(q.id)}" data-help-mode="hint">Pista</button><button class="assist-btn" type="button" data-help="${escapeHTML(q.id)}" data-help-mode="solution">Resolución</button></div><div class="assist-body" data-help-body="${escapeHTML(q.id)}" hidden aria-live="polite"></div></div><span class="sr-only">Fuente: ${escapeHTML(q.source||'Ejercicio adaptado')}</span></section>`).join('') }
-return {theory,cheat,practices};
+function reviewAnswer(q){
+  const claims=TF[q.id]||(q.claims||[]).map(v=>[v.text,v.answer?1:0,v.explanation]);
+  let correct='';
+  if((q.type==='choice'||q.type==='truefalse')&&claims.length){
+    correct='<div class="review-key"><strong>Respuestas</strong><div class="review-values">'+claims.map((c,i)=>'<span>'+(i+1)+'. '+(Number(c[1])?'V':'F')+'</span>').join('')+'</div></div>';
+  }else if(q.type==='multi'){
+    correct='<div class="review-key"><strong>Respuestas</strong><ul class="review-list">'+q.fields.map(f=>'<li><b>'+escapeHTML(f.label)+':</b> '+toDisplayValue(f.answer)+'</li>').join('')+'</ul></div>';
+  }else if(q.type==='mark'){
+    const found=(q.parts||[]).find(p=>p&&typeof p==='object'&&String(p.value)===String(q.answer));
+    correct='<div class="review-key"><strong>Respuesta</strong><p>'+escapeHTML(found?.text||q.answer)+'</p></div>';
+  }else if(q.type==='numeric'){
+    correct='<div class="review-key"><strong>Respuesta</strong><p>'+toDisplayValue(q.answer)+(q.label?' · '+escapeHTML(q.label):'')+'</p></div>';
+  }else if(q.type==='choice'){
+    correct='<div class="review-key"><strong>Respuesta</strong><p>'+escapeHTML(q.options?.[q.answer]??q.answer)+'</p></div>';
+  }
+  const explanation=(q.solution||[]).map(x=>'<p>'+x+'</p>').join('');
+  const fallback=!explanation&&claims.length?claims.map((c,i)=>'<p>'+(i+1)+'. '+escapeHTML(c[2]||'')+'</p>').join(''):'';
+  return correct+(explanation||fallback?'<div class="review-explanation">'+(explanation||fallback)+'</div>':'');
+}
+function practices(u){return u.practice.map((q,i)=>{
+  const grade=answers['__grade__:'+q.id];
+  const state=grade==='correct'?' review-correct':grade==='incorrect'?' review-incorrect':'';
+  return '<section class="exercise'+state+'" id="'+escapeHTML(q.id)+'"><h2><span class="ex-index" aria-label="Ejercicio '+(i+1)+'">'+String(i+1).padStart(2,'0')+'</span>'+escapeHTML(q.title)+'</h2>'+(q.prompt?'<p class="statement">'+q.prompt+'</p>':'')+table(q)+chart(q)+pairs(q)+practiceBody(q)+'<div class="review-controls"><button type="button" class="review-toggle" data-reveal="'+escapeHTML(q.id)+'" aria-expanded="false">Ver respuesta</button></div><div class="review-panel" data-review-panel="'+escapeHTML(q.id)+'" hidden></div><span class="sr-only">Fuente: '+escapeHTML(q.source||'Ejercicio adaptado')+'</span></section>'
+}).join('') }
+
+return {theory,cheat,practices,reviewAnswer};
 }
 

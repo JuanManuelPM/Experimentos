@@ -60,3 +60,23 @@
 .block-decision strong{font-weight:650;min-width:70px}
 .block-note{margin:13px 0;color:var(--secondary);font-size:13px;line-height:1.5}
 @media(max-width:370px){.block-comparison{gap:8px}.block-comparison section{padding-left:7px}}
+
+/* Práctica: selección neutral; corrección por ejercicio, solo a pedido. */
+.exercise{border-radius:10px;margin-inline:-10px;padding-inline:10px;transition:background-color .14s ease}
+.exercise.review-correct{background:#f1f8f1}
+.exercise.review-incorrect{background:#fff8e6}
+.exercise .choice.selected{background:var(--wash);border-color:var(--accent);color:#403a89}
+.exercise .choice.correct,.exercise .choice.wrong{background:var(--wash);border-color:var(--accent);color:#403a89}
+.exercise .feedback,.exercise .assist{display:none!important}
+.review-controls{margin-top:9px}
+.review-toggle{border:0;background:transparent;color:#66736b;font-size:13px;font-weight:580;padding:7px 2px 7px 0;line-height:1.4}
+.review-toggle:active{opacity:.65}
+.review-panel{border-top:1px solid #e0e6dd;margin-top:8px;padding:13px 0 4px;color:var(--text);font-size:13.5px;line-height:1.6}
+.review-panel[hidden]{display:none!important}
+.review-key strong{display:block;font-weight:660;font-size:13.5px;margin-bottom:4px}
+.review-key p,.review-explanation p{margin:4px 0 7px}
+.review-values{display:flex;gap:10px 17px;flex-wrap:wrap;font-variant-numeric:tabular-nums}
+.review-list{padding-left:17px;margin:4px 0 9px}
+.review-list li{margin:3px 0}
+.review-explanation{margin-top:8px}
+.review-explanation:first-child{margin-top:0}
