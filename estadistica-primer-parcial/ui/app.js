@@ -102,6 +102,11 @@ function showCheat(id){
   const heads=[...cheatContent.querySelectorAll('.block-heading,.cheat-section h2')];
   if(!heads.length)return;
   const q=found.q,query=keywords([q.title,q.prompt,...(q.solution||[])].join(' '));
+  // Enlace editorial exacto cuando la unidad ya declaró su sección pertinente.
+  if(typeof q.cheatSection==='string'&&q.cheatSection.trim()){
+    const exact=heads.find(h=>h.textContent.trim().toLocaleLowerCase('es')===q.cheatSection.trim().toLocaleLowerCase('es'));
+    if(exact){requestAnimationFrame(()=>{cheatContent.scrollTop=Math.max(0,exact.offsetTop-cheatContent.offsetTop-12)});return}
+  }
   // Prioriza la sección del machete que comparte conceptos con el enunciado y su solución.
   let best=null,score=0;
   for(const h of heads){
