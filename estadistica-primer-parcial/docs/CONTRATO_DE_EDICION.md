@@ -34,3 +34,12 @@ Cada práctica lleva `id,type,title,source,hints:[...],solution:[...]`, más los
 
 ## Concurrencia, verificación y publicación
 Recuperar las fuentes privadas para ese módulo en `JuanManuelPM/pruebas` rama `candidate/estadistica-up-content-pack-20261117`; no atribuir fuentes no leídas. Verificar números y claves sin tomar solucionarios inconsistentes por autoridad. Ejecutar `node tests/validate-content.mjs MN` cuando tengas terminal; si no, validar equivalentes. Guardar SOLO el JSON de la unidad con su SHA actual usando el conector GitHub. Ante conflicto, no forzar. GitHub Pages sigue siempre en el mismo enlace.
+
+
+## Práctica rápida y relación con el machete (UI V4)
+
+Cada ejercicio conserva su formato y clave, y ahora presenta **un único «Ver respuesta»**, junto con «Machete» y un avance «Siguiente» tras corregir. V/F múltiples se corrigen juntos. No guardar colores, HTML ni botones en los archivos de contenido. Las respuestas elegidas pueden modificarse después de corregir; la UI actualiza el fondo verde o amarillo.
+
+Para que la ventana «Machete» abra exactamente en el apartado útil al ejercicio, agregá opcionalmente en cada ejercicio `"cheatSection": "Título exacto del apartado"`, copiando el texto de un bloque `{"type":"heading","text":"Título exacto del apartado"}` del **mismo** `cheatBlocks` de la unidad. Es una referencia editorial, no un identificador de UI. La ausencia de `cheatSection` es válida: se hace una búsqueda aproximada por texto y, si no encuentra coincidencias, se muestra el machete completo. Nunca inventes una relación temática.
+
+Las vistas agregadas de **todo el parcial** leen automáticamente las unidades del manifiesto; no duplicar contenido en otro JSON.
