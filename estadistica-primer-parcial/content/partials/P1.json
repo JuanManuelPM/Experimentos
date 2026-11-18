@@ -200,15 +200,7 @@
     },
     {
       "unit": "M1",
-      "id": "M1-V2-25"
-    },
-    {
-      "unit": "M1",
-      "id": "M1-V2-29"
-    },
-    {
-      "unit": "M1",
-      "id": "M1-V2-30"
+      "id": "M1-V2-23"
     },
     {
       "unit": "M2",
@@ -223,14 +215,6 @@
       "id": "M2-P14"
     },
     {
-      "unit": "M2",
-      "id": "M2-P29"
-    },
-    {
-      "unit": "M3",
-      "id": "M3-P21"
-    },
-    {
       "unit": "M3",
       "id": "M3-P26"
     },
@@ -240,15 +224,7 @@
     },
     {
       "unit": "M4",
-      "id": "M4-P05"
-    },
-    {
-      "unit": "M4",
       "id": "M4-P07"
-    },
-    {
-      "unit": "M4",
-      "id": "M4-P08"
     },
     {
       "unit": "M4",
@@ -260,5 +236,216 @@
     "M2": "Frecuencias",
     "M3": "Medidas",
     "M4": "Correlación y regresión"
-  }
+  },
+  "extraPractice": [
+    {
+      "id": "P1-EX-01",
+      "unit": "M1",
+      "title": "Caso completo · Mindfulness y TAG",
+      "prompt": "En el parcial presencial de 2026 se comparan pacientes con TAG asignados al azar a mindfulness durante 8 semanas o a tratamiento farmacológico estándar. Al final se mide ansiedad con GAD-7 (0–21; valores altos indican más ansiedad). Evaluá el diseño y su interpretación.",
+      "type": "truefalse",
+      "claims": [
+        {
+          "text": "La unidad de análisis es cada paciente evaluado.",
+          "answer": true,
+          "explanation": "Cada paciente aporta un registro de ansiedad."
+        },
+        {
+          "text": "Como se asigna el tratamiento al azar, se trata de un diseño experimental.",
+          "answer": true,
+          "explanation": "La intervención es asignada, no observada pasivamente."
+        },
+        {
+          "text": "Se puede deducir el tamaño exacto de muestra a partir de las 8 semanas de tratamiento.",
+          "answer": false,
+          "explanation": "La duración no informa el número de pacientes."
+        },
+        {
+          "text": "El estudio es longitudinal necesariamente porque el tratamiento dura ocho semanas.",
+          "answer": false,
+          "explanation": "El enunciado solo indica una medición final; no informa seguimiento de puntajes."
+        },
+        {
+          "text": "Asignar tratamientos al azar garantiza que los pacientes representen a todos los adultos con TAG.",
+          "answer": false,
+          "explanation": "Aleatorizar tratamientos y muestrear representativamente son procesos distintos."
+        }
+      ],
+      "solution": [
+        "Se evalúa un caso experimental con dos grupos de tratamiento y GAD-7 al finalizar. La población de interés son pacientes con TAG; no se informa n. La asignación aleatoria favorece la comparabilidad entre tratamientos, pero no equivale a selección aleatoria de la población."
+      ],
+      "source": "Adaptación de Primer parcial presencial UP 2026-1, tema 1, ejercicio 1(a–b); escenario oficial, afirmaciones nuevas.",
+      "hints": [
+        "Revisá qué información aporta el diseño y qué conclusión está justificada."
+      ],
+      "stage": "exam"
+    },
+    {
+      "id": "P1-EX-02",
+      "unit": "M1",
+      "title": "Variables y conclusiones · Autoestima",
+      "prompt": "En el otro tema del parcial 2026, estudiantes universitarios son asignados a un programa de habilidades socioemocionales o a un grupo control. Al finalizar se mide autoestima con un puntaje de Rosenberg. Clasificá cada afirmación.",
+      "type": "truefalse",
+      "claims": [
+        {
+          "text": "El tipo de intervención asignada es una variable explicativa nominal.",
+          "answer": true,
+          "explanation": "Distingue programa y control sin orden numérico."
+        },
+        {
+          "text": "El puntaje de autoestima es la variable respuesta y se registra numéricamente.",
+          "answer": true,
+          "explanation": "El test ofrece puntajes de autoestima."
+        },
+        {
+          "text": "Rosenberg es el instrumento, no la población objetivo.",
+          "answer": true,
+          "explanation": "La escala registra el resultado; la población son los sujetos a los que pretende generalizarse."
+        },
+        {
+          "text": "Los puntajes más altos prueban, por sí solos, la eficacia estadísticamente significativa del programa.",
+          "answer": false,
+          "explanation": "Se necesita comparar datos y realizar el análisis correspondiente."
+        },
+        {
+          "text": "Como la escala produce puntajes numéricos, necesariamente tiene cero absoluto y es de razón.",
+          "answer": false,
+          "explanation": "Un cero numérico no prueba ausencia absoluta de autoestima."
+        }
+      ],
+      "solution": [
+        "Tratamiento: explicativa nominal. Puntaje de autoestima: respuesta cuantitativa. Escala de Rosenberg: instrumento. Una diferencia descriptiva no demuestra por sí sola significación estadística."
+      ],
+      "source": "Adaptación de Primer parcial presencial UP 2026-1, tema 2, ejercicio 1(a–b); escenario oficial, afirmaciones nuevas.",
+      "hints": [
+        "Revisá qué información aporta el diseño y qué conclusión está justificada."
+      ],
+      "stage": "exam"
+    },
+    {
+      "id": "P1-EX-03",
+      "unit": "M3",
+      "title": "CV · Comparar dos tratamientos",
+      "prompt": "En un ejemplo nuevo de repaso, dos grupos muestran estos descriptivos de un test: A tiene media 8 y desvío 2; B tiene media 11 y desvío 4. Calculá el CV (%) de ambos grupos antes de decidir cuál tiene mayor variabilidad relativa.",
+      "type": "multi",
+      "fields": [
+        {
+          "label": "CV de A (%)",
+          "answer": 25,
+          "options": [
+            25,
+            16,
+            12.5,
+            40
+          ]
+        },
+        {
+          "label": "CV de B (%)",
+          "answer": 36.36,
+          "options": [
+            36.36,
+            27.27,
+            44,
+            18.18
+          ]
+        }
+      ],
+      "solution": [
+        "CV(A)=100×2/8=25 %. CV(B)=100×4/11≈36,36 %.",
+        "El grupo B tiene mayor variabilidad relativa, aunque su media también es más alta. Los datos son creados para practicar; no corresponden a una base original."
+      ],
+      "source": "Ejercicio de transferencia creado para la evaluación de CV y comparación de grupos del parcial UP 2026; no pertenece al examen.",
+      "hints": [
+        "Determiná el denominador, la operación y las unidades antes de elegir."
+      ],
+      "stage": "exam"
+    },
+    {
+      "id": "P1-EX-04",
+      "unit": "M3",
+      "title": "Interpretar un informe · Percentiles y dispersión",
+      "prompt": "En un informe creado para practicar, el grupo A tiene media 8, desvío 2 y CV 25 %. El grupo B tiene media 11, desvío 4, CV 36,36 % y P90=17. Evaluá qué conclusiones están respaldadas.",
+      "type": "truefalse",
+      "claims": [
+        {
+          "text": "En B, aproximadamente el 10 % de puntajes supera el corte 17.",
+          "answer": true,
+          "explanation": "P90 deja cerca del 90 % de puntajes hasta ese valor y el 10 % superior encima."
+        },
+        {
+          "text": "B tiene mayor dispersión relativa que A según sus CV.",
+          "answer": true,
+          "explanation": "36,36 % es mayor que 25 %."
+        },
+        {
+          "text": "A presenta un desvío estándar absoluto mayor que B.",
+          "answer": false,
+          "explanation": "A tiene 2 y B tiene 4."
+        },
+        {
+          "text": "El P90 permite identificar el promedio de B.",
+          "answer": false,
+          "explanation": "Un percentil de posición no determina la media."
+        },
+        {
+          "text": "Las medias distintas bastan para concluir una diferencia poblacional estadísticamente significativa.",
+          "answer": false,
+          "explanation": "Se requieren tamaño muestral, variabilidad y procedimiento inferencial apropiado."
+        }
+      ],
+      "solution": [
+        "P90: corte superior, no promedio. CV: dispersión relativa; desvío estándar: dispersión en unidades originales. Diferencias de medias descriptivas no bastan para afirmar significación."
+      ],
+      "source": "Ejercicio de transferencia creado para la interpretación contextual del parcial UP 2026; cifras ficticias, no examen.",
+      "hints": [
+        "Revisá qué información aporta el diseño y qué conclusión está justificada."
+      ],
+      "stage": "exam"
+    }
+  ],
+  "practiceGroups": [
+    {
+      "theoryId": "P1-S01",
+      "ids": [
+        "P1-EX-01",
+        "M1-V2-08"
+      ]
+    },
+    {
+      "theoryId": "P1-S02",
+      "ids": [
+        "P1-EX-02",
+        "M1-V2-23"
+      ]
+    },
+    {
+      "theoryId": "P1-S03",
+      "ids": [
+        "M2-P06",
+        "M2-P11",
+        "M2-P14"
+      ]
+    },
+    {
+      "theoryId": "P1-S04",
+      "ids": [
+        "M3-P26",
+        "M3-P35"
+      ]
+    },
+    {
+      "theoryId": "P1-S05",
+      "ids": [
+        "P1-EX-03",
+        "P1-EX-04"
+      ]
+    },
+    {
+      "theoryId": "P1-S06",
+      "ids": [
+        "M4-P07",
+        "M4-P29"
+      ]
+    }
+  ]
 }

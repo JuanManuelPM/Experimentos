@@ -230,7 +230,7 @@
   "practiceRefs": [
     {
       "unit": "M6",
-      "id": "M6-P09"
+      "id": "M6-P24"
     },
     {
       "unit": "M6",
@@ -254,19 +254,11 @@
     },
     {
       "unit": "M8",
-      "id": "M8.H1.02"
+      "id": "M8.H2.19"
     },
     {
-      "unit": "M8",
-      "id": "M8.H2.12"
-    },
-    {
-      "unit": "M8",
-      "id": "M8.H2.13"
-    },
-    {
-      "unit": "M9",
-      "id": "M9.02"
+      "unit": "M10",
+      "id": "M10-U10-20"
     },
     {
       "unit": "M9",
@@ -277,20 +269,8 @@
       "id": "M9.15"
     },
     {
-      "unit": "M9",
-      "id": "M9.24"
-    },
-    {
-      "unit": "M10",
-      "id": "M10-U10-02"
-    },
-    {
       "unit": "M10",
       "id": "M10-U10-04"
-    },
-    {
-      "unit": "M10",
-      "id": "M10-U10-20"
     }
   ],
   "cheatByUnit": {
@@ -299,5 +279,226 @@
     "M8": "Hipótesis",
     "M9": "Elección de prueba",
     "M10": "Estadísticos"
-  }
+  },
+  "extraPractice": [
+    {
+      "id": "P2-EX-01",
+      "unit": "M6",
+      "title": "Caso presencial · Aislamiento y vivienda",
+      "prompt": "Parcial presencial 2026, tema 1: entre 30 estudiantes, 15 viven solos (9 con aislamiento y 6 sin él); otros 15 viven con familia (4 con aislamiento y 11 sin él). Calculá probabilidades conjuntas y condicionales respetando cada denominador.",
+      "type": "multi",
+      "fields": [
+        {
+          "label": "P(solo y aislamiento)",
+          "answer": 0.3,
+          "options": [
+            0.3,
+            0.6,
+            0.6923,
+            0.4333
+          ]
+        },
+        {
+          "label": "P(familia | sin aislamiento) (%)",
+          "answer": 64.71,
+          "options": [
+            64.71,
+            36.67,
+            26.67,
+            73.33
+          ]
+        },
+        {
+          "label": "P(aislamiento | solo) (%)",
+          "answer": 60,
+          "options": [
+            60,
+            30,
+            69.23,
+            26.67
+          ]
+        },
+        {
+          "label": "P(aislamiento | familia) (%)",
+          "answer": 26.67,
+          "options": [
+            26.67,
+            13.33,
+            40,
+            73.33
+          ]
+        }
+      ],
+      "solution": [
+        "Conjunta: 9/30 = 0,30. Sin aislamiento hay 6+11=17, por eso P(familia | sin aislamiento)=11/17≈64,71 %.",
+        "P(aislamiento | solo)=9/15=60 %; P(aislamiento | familia)=4/15≈26,67 %. Cambiar la condición cambia el denominador."
+      ],
+      "source": "Adaptación numérica del Segundo parcial presencial UP 2026-1, tema 1, ejercicio 3(a–c); tabla y valores del examen.",
+      "hints": [
+        "Determiná el denominador, la operación y las unidades antes de elegir."
+      ],
+      "stage": "exam",
+      "table": [
+        [
+          "",
+          "Aislamiento",
+          "Sin aislamiento",
+          "Total"
+        ],
+        [
+          "Vive solo",
+          9,
+          6,
+          15
+        ],
+        [
+          "Vive con familia",
+          4,
+          11,
+          15
+        ],
+        [
+          "Total",
+          13,
+          17,
+          30
+        ]
+      ]
+    },
+    {
+      "id": "P2-EX-02",
+      "unit": "M8",
+      "title": "Caso presencial · Antes/después y decisión",
+      "prompt": "Segundo parcial presencial UP 2026, tema 1: se mide impulsividad en las mismas 26 personas antes y después de una intervención, con puntajes mayores = mayor impulsividad. La hipótesis prevé reducción y el contraste adecuado informa p=0,02 con α=0,05. Definí d = después − antes.",
+      "type": "truefalse",
+      "claims": [
+        {
+          "text": "Para evaluar el cambio medio del puntaje corresponde considerar una prueba t apareada, si se cumplen sus supuestos.",
+          "answer": true,
+          "explanation": "Son los mismos 26 pacientes en dos momentos."
+        },
+        {
+          "text": "Si la intervención reduce impulsividad, la hipótesis alternativa es μd < 0.",
+          "answer": true,
+          "explanation": "Con d=después−antes, reducir implica diferencia negativa."
+        },
+        {
+          "text": "Como 0,02 es menor que 0,05, se rechaza H₀ bajo la prueba especificada.",
+          "answer": true,
+          "explanation": "p≤α es la regla de decisión."
+        },
+        {
+          "text": "El resultado implica que exactamente el 98 % de los pacientes redujo su impulsividad.",
+          "answer": false,
+          "explanation": "El p no es una proporción de pacientes que mejoraron."
+        },
+        {
+          "text": "Con estos datos se prueba que toda posible disminución se debe exclusivamente a la intervención.",
+          "answer": false,
+          "explanation": "Una prueba de significación no demuestra exclusividad causal."
+        }
+      ],
+      "solution": [
+        "t apareada, alternativa de reducción μd<0, y p=0,02<α=0,05: rechazar H₀ y concluir evidencia estadística de reducción media. No confundir significación con causalidad automática ni con mejora individual universal."
+      ],
+      "source": "Adaptación de Segundo parcial presencial UP 2026-1, tema 1, ejercicio 2(a–d), incluye valor p del examen.",
+      "hints": [
+        "Revisá qué información aporta el diseño y qué conclusión está justificada."
+      ],
+      "stage": "exam"
+    },
+    {
+      "id": "P2-EX-03",
+      "unit": "M9",
+      "title": "Elegir la prueba sin confundir variables",
+      "prompt": "Segundo parcial presencial 2026: en dos grupos de estudiantes (con y sin tutorías) se mide un puntaje de ansiedad 0–100; por separado, una tabla registra presencia o ausencia de ansiedad elevada. Otro estudio mide a las mismas personas antes y después de un taller.",
+      "type": "truefalse",
+      "claims": [
+        {
+          "text": "Para comparar puntajes 0–100 en grupos distintos puede corresponder una t para independientes.",
+          "answer": true,
+          "explanation": "Respuesta cuantitativa y sujetos de grupos diferentes; verificar supuestos."
+        },
+        {
+          "text": "Para comparar porcentajes de ansiedad elevada entre grupos se requiere un procedimiento para datos binarios, no una t de medias de puntajes ausentes.",
+          "answer": true,
+          "explanation": "La variable sí/no es categórica."
+        },
+        {
+          "text": "Si son las mismas personas antes/después, las observaciones son apareadas.",
+          "answer": true,
+          "explanation": "Existe dependencia de las mediciones."
+        },
+        {
+          "text": "La prueba de Levene sirve para contrastar directamente si las medias de dos grupos son iguales.",
+          "answer": false,
+          "explanation": "Levene se emplea para examinar igualdad de varianzas."
+        },
+        {
+          "text": "El hecho de que dos grupos tengan el mismo n los convierte en muestras apareadas.",
+          "answer": false,
+          "explanation": "El apareamiento depende de la vinculación de sujetos, no de n."
+        },
+        {
+          "text": "Si no se informan puntajes, una tabla sí/no permite calcular la t de diferencia de medias de un puntaje 0–100.",
+          "answer": false,
+          "explanation": "Se necesitarían los puntajes o resúmenes numéricos adecuados."
+        }
+      ],
+      "solution": [
+        "Puntaje + grupos distintos: t independiente. Puntaje + mismos sujetos antes/después: t apareada. Sí/no + dos grupos: proporciones. Levene se refiere a varianzas, no a medias."
+      ],
+      "source": "Adaptación conceptual del Segundo parcial presencial UP 2026-1, tema 1 ejercicio 3(d) y tema 2 ejercicio 3(d); situaciones y variables originales.",
+      "hints": [
+        "Revisá qué información aporta el diseño y qué conclusión está justificada."
+      ],
+      "stage": "exam"
+    }
+  ],
+  "practiceGroups": [
+    {
+      "theoryId": "P2-S01",
+      "ids": [
+        "P2-EX-01",
+        "M6-P24"
+      ]
+    },
+    {
+      "theoryId": "P2-S02",
+      "ids": [
+        "M6-P10",
+        "M6-P14"
+      ]
+    },
+    {
+      "theoryId": "P2-S03",
+      "ids": [
+        "M7.27",
+        "M7.28",
+        "M7.29"
+      ]
+    },
+    {
+      "theoryId": "P2-S04",
+      "ids": [
+        "P2-EX-02",
+        "M8.H2.19"
+      ]
+    },
+    {
+      "theoryId": "P2-S05",
+      "ids": [
+        "P2-EX-03",
+        "M10-U10-20"
+      ]
+    },
+    {
+      "theoryId": "P2-S06",
+      "ids": [
+        "M9.04",
+        "M9.15",
+        "M10-U10-04"
+      ]
+    }
+  ]
 }
