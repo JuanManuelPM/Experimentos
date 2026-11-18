@@ -5,19 +5,655 @@
   "partial": "P2",
   "status": "draft",
   "title": "Distribución normal",
-  "intro": "Normal, áreas y puntajes",
+  "intro": "Normal: puntajes, áreas, percentiles y comparaciones",
   "source": "Fuente privada: paquete académico v2",
-  "theory": [],
+  "theory": [
+    {
+      "id": "M7.T01",
+      "title": "La distribución normal",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "En una distribución normal se concentran más casos cerca de la media y cada vez menos al alejarse de ella. La curva es simétrica; toda el área bajo la curva equivale al 100 % de la población modelada."
+        },
+        {
+          "type": "list",
+          "items": [
+            {
+              "label": "Media μ",
+              "text": "Centro de la curva; la mitad del área queda a cada lado."
+            },
+            {
+              "label": "Desvío σ",
+              "text": "Distancia típica de los puntajes respecto del promedio."
+            },
+            {
+              "label": "X",
+              "text": "Puntaje, tiempo u otra medida de cada caso."
+            }
+          ]
+        },
+        {
+          "type": "formula",
+          "expression": "X ~ N(μ, σ²)",
+          "symbols": [
+            {
+              "symbol": "μ",
+              "meaning": "media"
+            },
+            {
+              "symbol": "σ²",
+              "meaning": "varianza, no desvío estándar"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Por ejemplo, con μ = 68 y σ = 14, un puntaje 82 se sitúa un desvío por encima del promedio. Eso permite ubicarlo, pero todavía no indica qué proporción lo supera."
+        },
+        {
+          "type": "note",
+          "text": "En una escala acotada, la normal es una aproximación. El modelo matemático puede asignar probabilidad teórica fuera de los límites de puntuación."
+        }
+      ]
+    },
+    {
+      "id": "M7.T02",
+      "title": "Varianza y desvío no son lo mismo",
+      "blocks": [
+        {
+          "type": "comparison",
+          "columns": [
+            {
+              "label": "Varianza σ²",
+              "items": [
+                "En N(68; 196), el segundo parámetro es 196.",
+                "Las unidades aparecen elevadas al cuadrado."
+              ]
+            },
+            {
+              "label": "Desvío estándar σ",
+              "items": [
+                "σ = √196 = 14.",
+                "Se expresa en las unidades originales del puntaje."
+              ]
+            }
+          ]
+        },
+        {
+          "type": "formula",
+          "expression": "σ = √(σ²)",
+          "symbols": []
+        },
+        {
+          "type": "paragraph",
+          "text": "En Z se divide por el desvío 14, nunca por la varianza 196. Confundirlos cambia el resultado y todas las probabilidades posteriores."
+        }
+      ]
+    },
+    {
+      "id": "M7.T03",
+      "title": "Puntaje Z: posición relativa",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Z mide cuántos desvíos estándar separan a un puntaje del promedio. Sirve para interpretar si está alto o bajo respecto de su propia escala."
+        },
+        {
+          "type": "formula",
+          "expression": "z = (x − μ) / σ",
+          "symbols": [
+            {
+              "symbol": "x",
+              "meaning": "puntaje observado"
+            },
+            {
+              "symbol": "μ",
+              "meaning": "media"
+            },
+            {
+              "symbol": "σ",
+              "meaning": "desvío estándar"
+            }
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            {
+              "label": "z = 0",
+              "text": "coincide con la media."
+            },
+            {
+              "label": "z positivo",
+              "text": "está por encima de la media."
+            },
+            {
+              "label": "z negativo",
+              "text": "está por debajo de la media."
+            },
+            {
+              "label": "|z| = 2",
+              "text": "está a dos desvíos de la media."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "En SAT-9, x = 90, μ = 68 y σ = 14: z = 22/14 ≈ 1,57. Significa 1,57 desvíos por encima de la media, no 1,57 % de los casos."
+        }
+      ]
+    },
+    {
+      "id": "M7.T04",
+      "title": "El área bajo la curva es probabilidad",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Una probabilidad normal se representa por el área de la curva en la región indicada. Una calculadora de normal suele devolver el área acumulada a la izquierda del corte."
+        },
+        {
+          "type": "formula",
+          "expression": "Φ(z) = P(Z ≤ z)",
+          "symbols": [
+            {
+              "symbol": "Φ",
+              "meaning": "probabilidad acumulada izquierda"
+            },
+            {
+              "symbol": "Z",
+              "meaning": "normal estándar con μ = 0 y σ = 1"
+            }
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            {
+              "label": "Área total",
+              "text": "1 = 100 %."
+            },
+            {
+              "label": "Simetría",
+              "text": "Φ(−z) = 1 − Φ(z)."
+            },
+            {
+              "label": "Un punto exacto",
+              "text": "para una variable continua, P(X = x) = 0."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Antes de calcular, identificá si se requiere una cola, un intervalo entre dos cortes o la operación inversa de percentiles."
+        }
+      ]
+    },
+    {
+      "id": "M7.T05",
+      "title": "Cola izquierda, cola derecha y complemento",
+      "blocks": [
+        {
+          "type": "comparison",
+          "columns": [
+            {
+              "label": "Menos de x",
+              "items": [
+                "Área a la izquierda.",
+                "P(X < x) = Φ(zx)."
+              ]
+            },
+            {
+              "label": "Más de x",
+              "items": [
+                "Área a la derecha.",
+                "P(X > x) = 1 − Φ(zx)."
+              ]
+            }
+          ]
+        },
+        {
+          "type": "formula",
+          "expression": "zx = (x − μ)/σ",
+          "symbols": []
+        },
+        {
+          "type": "paragraph",
+          "text": "Con μ = 30, σ = 5 y corte x = 28, z = −0,4. Debajo de 28 está el 34,46 %; por encima, el 65,54 %. Cambiar 'menor' por 'mayor' invierte la cola."
+        }
+      ]
+    },
+    {
+      "id": "M7.T06",
+      "title": "Probabilidad entre dos puntajes",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "La región entre a y b se obtiene quitando del acumulado hasta b el acumulado hasta a. Deben usarse la misma media y el mismo desvío para ambos."
+        },
+        {
+          "type": "formula",
+          "expression": "P(a < X < b) = Φ((b − μ)/σ) − Φ((a − μ)/σ)",
+          "symbols": []
+        },
+        {
+          "type": "steps",
+          "items": [
+            "Estandarizá los dos extremos: za y zb.",
+            "Buscá Φ(za) y Φ(zb).",
+            "Restá el acumulado menor del mayor.",
+            "Multiplicá por 100 únicamente si te piden porcentaje."
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "En SAT-9 con μ = 68 y σ = 14, los límites 60 y 80 dan Z de −0,5714 y 0,8571; el área comprendida es aproximadamente 52,05 %."
+        }
+      ]
+    },
+    {
+      "id": "M7.T07",
+      "title": "Percentiles: del porcentaje al puntaje",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Un percentil es un valor que deja a su izquierda una proporción determinada de la población. Ahora la incógnita es el puntaje X, no el porcentaje."
+        },
+        {
+          "type": "formula",
+          "expression": "xq = μ + σ · Φ⁻¹(q)",
+          "symbols": [
+            {
+              "symbol": "q",
+              "meaning": "acumulada izquierda, de 0 a 1"
+            },
+            {
+              "symbol": "Φ⁻¹(q)",
+              "meaning": "Z que deja q de área a la izquierda"
+            }
+          ]
+        },
+        {
+          "type": "comparison",
+          "columns": [
+            {
+              "label": "Percentil 10",
+              "items": [
+                "10 % por debajo.",
+                "90 % por encima."
+              ]
+            },
+            {
+              "label": "Percentil 90",
+              "items": [
+                "90 % por debajo.",
+                "10 % por encima."
+              ]
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Con μ = 60 y σ = 15, el 20 % superior comienza en P80: x = 60 + 15 · 0,8416 ≈ 72,62."
+        }
+      ]
+    },
+    {
+      "id": "M7.T08",
+      "title": "Leer expresiones de percentiles",
+      "blocks": [
+        {
+          "type": "list",
+          "items": [
+            {
+              "label": "20 % superior",
+              "text": "P80: 80 % queda a la izquierda."
+            },
+            {
+              "label": "Superado por el 60 %",
+              "text": "P40: 60 % queda a la derecha."
+            },
+            {
+              "label": "Máximo del 70 % inferior",
+              "text": "P70."
+            },
+            {
+              "label": "Por encima de P95",
+              "text": "queda 5 % de la distribución."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "No confundas 'dame el corte que deja arriba al 20 %' con 'qué porcentaje supera un corte conocido'. El primero usa la inversa de Φ; el segundo una probabilidad."
+        },
+        {
+          "type": "note",
+          "text": "Para un porcentaje indicado como población superior, primero calculá la acumulada q = 1 − proporción superior."
+        }
+      ]
+    },
+    {
+      "id": "M7.T09",
+      "title": "Cantidad esperada de personas",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Una probabilidad normal representa una proporción. Para estimar cuántos casos de un grupo n quedan en esa región, multiplicá n por la proporción."
+        },
+        {
+          "type": "formula",
+          "expression": "Cantidad esperada = n · P(evento)",
+          "symbols": [
+            {
+              "symbol": "n",
+              "meaning": "número de casos"
+            },
+            {
+              "symbol": "P",
+              "meaning": "probabilidad expresada entre 0 y 1"
+            }
+          ]
+        },
+        {
+          "type": "steps",
+          "items": [
+            "Calculá primero la probabilidad normal.",
+            "Convertí 43,32 % en 0,4332.",
+            "Multiplicá por n; redondeá a personas cuando corresponda."
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "120 · 0,43319 ≈ 51,98: unas 52 personas esperadas, no exactamente 52 observadas."
+        }
+      ]
+    },
+    {
+      "id": "M7.T10",
+      "title": "Categorías y límites",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Una escala puede describir categorías mediante regiones: menores que un valor, mayores que otro o entre dos. Identificá los límites antes de calcular la probabilidad o clasificar un puntaje."
+        },
+        {
+          "type": "steps",
+          "items": [
+            "Traducí cada categoría a su intervalo numérico.",
+            "Estandarizá los límites con su propia μ y σ.",
+            "Aplicá cola izquierda, cola derecha o diferencia de acumuladas.",
+            "Si las categorías deberían dividir a toda la población, verificá que no haya huecos ni solapamientos."
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Si 'muy alto' se define como X > 85 y μ = 65, σ = 10, la región equivale a Z > 2 y representa aproximadamente 2,28 %."
+        },
+        {
+          "type": "note",
+          "text": "En M7 E5 las categorías de creatividad están redactadas de forma ambigua. No se atribuye a la guía una partición completa sin aclaración oficial."
+        }
+      ]
+    },
+    {
+      "id": "M7.T11",
+      "title": "Comparar dos pruebas con Z",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Los puntajes brutos de pruebas diferentes no son comparables directamente. Calculá el Z de cada rasgo con su propia media y desvío."
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Rasgo",
+            "Puntaje",
+            "Media",
+            "Desvío",
+            "Z"
+          ],
+          "rows": [
+            [
+              "Perfeccionismo",
+              "30",
+              "28",
+              "2",
+              "+1"
+            ],
+            [
+              "Afabilidad",
+              "50",
+              "54",
+              "5",
+              "−0,8"
+            ]
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            {
+              "label": "Brutos",
+              "text": "50 es mayor que 30, pero son escalas distintas."
+            },
+            {
+              "label": "Relativos",
+              "text": "Z = +1 queda por encima de su grupo; Z = −0,8 queda por debajo."
+            },
+            {
+              "label": "Significado",
+              "text": "Un Z mayor indica mayor posición en el rasgo medido, no que ese rasgo sea mejor."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "El ejercicio 8(a) tiene una alerta de clave contradictoria. Los datos originales son inequívocos: 30 − 28 = 2, es decir, dos puntos por encima de la media."
+        }
+      ]
+    },
+    {
+      "id": "M7.T12",
+      "title": "Elegir la operación correcta",
+      "blocks": [
+        {
+          "type": "table",
+          "headers": [
+            "Conocés",
+            "Buscás",
+            "Procedimiento"
+          ],
+          "rows": [
+            [
+              "x, μ, σ",
+              "posición",
+              "z = (x − μ)/σ"
+            ],
+            [
+              "x, μ, σ",
+              "área inferior",
+              "Φ(z)"
+            ],
+            [
+              "x, μ, σ",
+              "área superior",
+              "1 − Φ(z)"
+            ],
+            [
+              "a, b, μ, σ",
+              "área entre cortes",
+              "Φ(zb) − Φ(za)"
+            ],
+            [
+              "q, μ, σ",
+              "valor de percentil",
+              "μ + σ · Φ⁻¹(q)"
+            ],
+            [
+              "n y P",
+              "cantidad esperada",
+              "n · P"
+            ]
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Estandarizar es solo un paso cuando el examen pide una probabilidad, un percentil o una cantidad. La respuesta final necesita la operación e interpretación que correspondan."
+        }
+      ]
+    },
+    {
+      "id": "M7.T13",
+      "title": "Modelo resuelto: tres incisos del parcial",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "En una escala de resiliencia con μ = 68 y σ = 9 se piden el límite del 10 % inferior, la proporción superior a 74 y la proporción entre 65 y 72."
+        },
+        {
+          "type": "steps",
+          "items": [
+            "P10 = 68 + 9 · (−1,28155) ≈ 56,47.",
+            "z74 = (74 − 68)/9 ≈ 0,6667; 1 − Φ(z74) ≈ 0,2525 = 25,25 %.",
+            "z65 = −0,3333; z72 = 0,4444; Φ(z72) − Φ(z65) ≈ 0,3022 = 30,22 %."
+          ]
+        },
+        {
+          "type": "note",
+          "text": "Modelo de resolución adaptado del parcial presencial 2026, tema 1, ejercicio 1. Es una explicación propia, no la clave oficial transcrita."
+        }
+      ]
+    }
+  ],
   "practice": [],
   "extras": {},
   "cheats": [],
-  "cheatBlocks": [],
+  "cheatBlocks": [
+    {
+      "type": "heading",
+      "text": "Parámetros y ubicación"
+    },
+    {
+      "type": "list",
+      "items": [
+        {
+          "label": "μ",
+          "text": "media."
+        },
+        {
+          "label": "σ",
+          "text": "desvío; si dan varianza σ², extraer raíz."
+        },
+        {
+          "label": "Z positivo",
+          "text": "arriba de μ."
+        },
+        {
+          "label": "Z negativo",
+          "text": "debajo de μ."
+        }
+      ]
+    },
+    {
+      "type": "formula",
+      "expression": "z = (x − μ)/σ",
+      "symbols": []
+    },
+    {
+      "type": "heading",
+      "text": "Áreas normales"
+    },
+    {
+      "type": "formula",
+      "expression": "Izquierda: Φ(z)   ·   Derecha: 1 − Φ(z)",
+      "symbols": []
+    },
+    {
+      "type": "formula",
+      "expression": "Entre a y b: Φ(zb) − Φ(za)",
+      "symbols": []
+    },
+    {
+      "type": "list",
+      "items": [
+        {
+          "label": "Total",
+          "text": "1 = 100 %."
+        },
+        {
+          "label": "Simetría",
+          "text": "Φ(−z) = 1 − Φ(z)."
+        },
+        {
+          "label": "Intervalo",
+          "text": "estandarizar ambos cortes."
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "Percentiles"
+    },
+    {
+      "type": "formula",
+      "expression": "xq = μ + σ · Φ⁻¹(q)",
+      "symbols": []
+    },
+    {
+      "type": "comparison",
+      "columns": [
+        {
+          "label": "Superior 20 %",
+          "items": [
+            "Usar P80."
+          ]
+        },
+        {
+          "label": "Superado por 60 %",
+          "items": [
+            "Usar P40."
+          ]
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "Cantidad y comparación"
+    },
+    {
+      "type": "formula",
+      "expression": "Esperados = n · P(evento)",
+      "symbols": []
+    },
+    {
+      "type": "list",
+      "items": [
+        {
+          "label": "Convertir",
+          "text": "40 % = 0,40 antes de multiplicar por n."
+        },
+        {
+          "label": "Dos escalas",
+          "text": "comparar los Z, no los puntajes brutos."
+        },
+        {
+          "label": "Ejemplo",
+          "text": "Perfeccionismo: +1 Z; Afabilidad: −0,8 Z."
+        }
+      ]
+    },
+    {
+      "type": "note",
+      "text": "Z es distancia en desvíos; Φ da probabilidad; Φ⁻¹ permite hallar un puntaje de corte."
+    }
+  ],
   "numericOptions": {},
   "multiOptions": {},
   "trueFalse": {},
   "review": {
-    "currentVersion": "placeholder-v3",
-    "academicValidation": "pending",
-    "sourceCoverage": "pending"
+    "currentVersion": "m7-20261117-stage1",
+    "academicValidation": "PENDING_PRACTICE",
+    "sourceCoverage": "13 conceptos y machete construidos; prácticas en preparación"
   }
 }
