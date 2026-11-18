@@ -9,18 +9,23 @@ export async function loadStudyContent(){
   })));
   const summaries=Object.fromEntries(await Promise.all(m.partials.map(async p=>{
     const id='P'+p.id;
-    const document=await fetch('./content/partials/'+id+'.json',{cache:'no-store'}).then(getJSON);
-    if(document.partial!==p.id||!Array.isArray(document.practiceRefs)||!Array.isArray(document.theory)||!Array.isArray(document.cheatBlocks))throw Error('Resumen inválido: '+id);
-    return [id,document];
+    try{
+      const document=await fetch('./content/partials/'+id+'.json',{cache:'no-store'}).then(getJSON);
+      if(document.partial!==p.id||!Array.isArray(document.practiceRefs)||!Array.isArray(document.theory)||!Array.isArray(document.cheatBlocks))throw Error('Estructura de resumen inválida: '+id);
+      return [id,document];
+    }catch(error){
+      console.error('No se pudo leer el resumen '+id,error);
+      return [id,null];
+    }
   })));
   const EXTRAS={},CHEATS={},NUM={},MULTI={},TF={};
   const PARTIALS=m.partials.map(p=>{
     const available=p.units.map(id=>units[id]).filter(u=>u&&u.status==='ready'&&u.theory?.length&&u.practice?.length);
-    const summaryDoc=summaries['P'+p.id],included=[];
+    const summaryDoc=summaries['P'+p.id]||{partial:p.id,title:p.title,theory:[],cheatBlocks:[],practiceRefs:[]},included=[];
     for(const ref of summaryDoc.practiceRefs){
       const unit=available.find(u=>u.moduleId===ref.unit||u.id===ref.unit||('M'+String(u.id).replace(/^0/,''))===ref.unit);
       const q=unit?.practice.find(q=>q.id===ref.id);
-      if(!q)throw Error('Falta ejercicio del resumen: '+ref.unit+' / '+ref.id);
+      if(!q){console.warn('Referencia pendiente del resumen:',p.id,ref.unit,ref.id);continue}
       included.push(q);
     }
     available.forEach(u=>{Object.assign(EXTRAS,u.extras||{});CHEATS[u.id]=u.cheats||[];Object.assign(NUM,u.numericOptions||{});Object.assign(MULTI,u.multiOptions||{});Object.assign(TF,u.trueFalse||{})});
