@@ -14,7 +14,7 @@ Por cada unidad, construir una matriz interna (no sustituir correcciones con una
 - Cobertura de todos los patrones/incisos relevantes y referencia trazable.
 - Teoría: definición exacta, para qué sirve, matices, distinciones, ejemplo útil, dificultad real, orden de lectura, ausencia de relleno.
 - Machete: notas continuas, fórmulas correctas, procedimiento, reglas de elección, excepciones, comparaciones y accesibilidad desde práctica. El diseño es responsabilidad del componente común, no del JSON.
-- Práctica: razonamiento no trivial, formatos móviles sin escritura, distractores plausibles y no duplicados, respuesta y retroalimentación verificables, cálculo independiente, unidades y tolerancias correctas, consistencia V/F individuales y en conjunto, pista/resolución fundamentadas. No validar solo que el JSON parsea.
+- Práctica: razonamiento no trivial, formatos móviles sin escritura, distractores plausibles y no duplicados, respuesta y retroalimentación verificables, cálculo independiente, unidades y tolerancias correctas, consistencia V/F individuales y en conjunto, resolución única fundamentada. No validar solo que el JSON parsea. Agregar `cheatSection` por ejercicio cuando exista correspondencia inequívoca con un título de `cheatBlocks` de esa unidad; confirmar cada enlace. El botón «Machete» reutiliza esas referencias para abrir en la sección correcta.
 - Estado: `draft` para incompleto; `ready` solo para unidades utilizables con todo lo exigible validado. Distinguir públicamente `verified`, `adapted`, `blocked` cuando proceda y documentarlo en `review`.
 - Validación técnica: `node tests/validate-content.mjs Mx` para todas las unidades, tests de claves, navegación, representación, opciones, corrección y acceso web público tras despliegue.
 
