@@ -526,7 +526,599 @@
       ]
     }
   ],
-  "practice": [],
+  "practice": [
+    {
+      "id": "M7.01",
+      "type": "numeric",
+      "title": "SAT-9: estandarizar",
+      "prompt": "En la normal N(68; 196), un paciente obtuvo 90 puntos. ¿Cuál es su Z aproximado?",
+      "source": "Guía M7, E1(a). Paráfrasis.",
+      "answer": 1.57,
+      "options": [
+        1.57,
+        0.11,
+        1.13,
+        22
+      ],
+      "tolerance": 0.02,
+      "label": "Elegí el resultado",
+      "hints": [
+        "En N(μ; σ²), 196 es varianza.",
+        "Primero obtené σ = √196 y luego estandarizá.",
+        "Aplicá (90 − 68)/√196; respondé con dos decimales."
+      ],
+      "solution": [
+        "σ = √196 = 14.",
+        "z = (90 − 68)/14 ≈ 1,57.",
+        "El puntaje está 1,57 desvíos por encima de la media."
+      ],
+      "patterns": [
+        "G1"
+      ],
+      "provenance": "PARAPHRASED_OR_CREATED"
+    },
+    {
+      "id": "M7.02",
+      "type": "numeric",
+      "title": "SAT-9: ¿cuál es el desvío?",
+      "prompt": "El puntaje sigue N(68; 196). ¿Qué valor corresponde al desvío estándar σ?",
+      "source": "Guía M7, E1. Ejercicio derivado.",
+      "answer": 14,
+      "options": [
+        14,
+        196,
+        13,
+        98
+      ],
+      "tolerance": 0.001,
+      "label": "Desvío estándar",
+      "hints": [
+        "La notación indica σ² como segundo parámetro.",
+        "Se necesita la raíz cuadrada de la varianza.",
+        "Calculá √196."
+      ],
+      "solution": [
+        "La varianza es 196 puntos², por lo tanto σ = √196 = 14 puntos."
+      ],
+      "patterns": [
+        "G1"
+      ],
+      "provenance": "PARAPHRASED_OR_CREATED"
+    },
+    {
+      "id": "M7.03",
+      "type": "numeric",
+      "title": "SAT-9: más de 70",
+      "prompt": "En SAT-9, μ = 68 y σ = 14. ¿Qué porcentaje supera 70 puntos?",
+      "source": "Guía M7, E1(b.i). Paráfrasis.",
+      "answer": 44.32,
+      "options": [
+        44.32,
+        55.68,
+        5.68,
+        94.32
+      ],
+      "tolerance": 0.02,
+      "label": "Elegí el resultado",
+      "hints": [
+        "Superar equivale a estar a la derecha de 70.",
+        "Primero estandarizá, después calculá 1 − Φ(z).",
+        "z70 = (70 − 68)/14 ≈ 0,1429."
+      ],
+      "solution": [
+        "z70 ≈ 0,1429.",
+        "P(X > 70) = 1 − Φ(0,1429) ≈ 0,443201.",
+        "Respuesta: 44,32 %."
+      ],
+      "patterns": [
+        "G1",
+        "G2"
+      ],
+      "provenance": "PARAPHRASED_OR_CREATED"
+    },
+    {
+      "id": "M7.04",
+      "type": "numeric",
+      "title": "SAT-9: menos de 50",
+      "prompt": "Con μ = 68 y σ = 14, ¿qué porcentaje obtiene menos de 50 puntos?",
+      "source": "Guía M7, E1(b.ii). Paráfrasis.",
+      "answer": 9.93,
+      "options": [
+        9.93,
+        90.07,
+        49.93,
+        15.87
+      ],
+      "tolerance": 0.02,
+      "label": "Elegí el resultado",
+      "hints": [
+        "Menos de 50 es una región izquierda.",
+        "Calculá la acumulada Φ(z50).",
+        "z50 = (50 − 68)/14 ≈ −1,2857."
+      ],
+      "solution": [
+        "z50 ≈ −1,2857.",
+        "P(X < 50) = Φ(z50) ≈ 0,099271.",
+        "Respuesta: 9,93 %."
+      ],
+      "patterns": [
+        "G1",
+        "G2"
+      ],
+      "provenance": "PARAPHRASED_OR_CREATED"
+    },
+    {
+      "id": "M7.05",
+      "type": "numeric",
+      "title": "SAT-9: entre 60 y 80",
+      "prompt": "Con μ = 68 y σ = 14, ¿qué porcentaje obtiene entre 60 y 80 puntos?",
+      "source": "Guía M7, E1(b.iii). Paráfrasis.",
+      "answer": 52.05,
+      "options": [
+        52.05,
+        72.12,
+        27.95,
+        47.95
+      ],
+      "tolerance": 0.02,
+      "label": "Elegí el resultado",
+      "hints": [
+        "El evento tiene dos cortes.",
+        "Restá la acumulada inferior a la superior.",
+        "z60 = −8/14; z80 = 12/14; buscá Φ(z80) − Φ(z60)."
+      ],
+      "solution": [
+        "z60 ≈ −0,5714; z80 ≈ 0,8571.",
+        "Φ(0,8571) − Φ(−0,5714) ≈ 0,520462.",
+        "Respuesta: 52,05 %."
+      ],
+      "patterns": [
+        "G1",
+        "G2"
+      ],
+      "provenance": "PARAPHRASED_OR_CREATED"
+    },
+    {
+      "id": "M7.06",
+      "type": "numeric",
+      "title": "SAT-9: 20 % más alto",
+      "prompt": "Con μ = 68 y σ = 14, ¿qué puntaje de corte teórico deja por encima al 20 % de la población?",
+      "source": "Guía M7, E1(c). Paráfrasis.",
+      "answer": 79.78,
+      "options": [
+        79.78,
+        56.22,
+        70.8,
+        82
+      ],
+      "tolerance": 0.02,
+      "label": "Elegí el resultado",
+      "hints": [
+        "Si el 20 % queda arriba, el 80 % queda abajo.",
+        "Necesitás el percentil 80.",
+        "x = 68 + 14 · Φ⁻¹(0,80), con Φ⁻¹(0,80) ≈ 0,8416."
+      ],
+      "solution": [
+        "P80 = 68 + 14 · 0,841621 ≈ 79,78.",
+        "Si los puntajes son enteros, el primer puntaje que lo supera es 80."
+      ],
+      "patterns": [
+        "G3"
+      ],
+      "provenance": "PARAPHRASED_OR_CREATED"
+    },
+    {
+      "id": "M7.07",
+      "type": "numeric",
+      "title": "ISO-30: alto riesgo",
+      "prompt": "En un modelo normal con μ = 30 y σ = 5, el grupo de riesgo alto supera 46 puntos. ¿Qué porcentaje representa aproximadamente?",
+      "source": "Guía M7, E2(a). Paráfrasis.",
+      "answer": 0.07,
+      "options": [
+        0.07,
+        99.93,
+        0.69,
+        3.2
+      ],
+      "tolerance": 0.005,
+      "label": "Porcentaje",
+      "hints": [
+        "El corte 46 queda muy por encima de la media.",
+        "Se necesita la cola derecha.",
+        "z = (46 − 30)/5 = 3,2; usá 100 · [1 − Φ(3,2)]."
+      ],
+      "solution": [
+        "z = 3,2.",
+        "P(X > 46) ≈ 0,0006871 = 0,0687 %.",
+        "Respuesta: aproximadamente 0,07 %."
+      ],
+      "patterns": [
+        "G1",
+        "G2"
+      ],
+      "provenance": "PARAPHRASED_OR_CREATED"
+    },
+    {
+      "id": "M7.08",
+      "type": "numeric",
+      "title": "ISO-30: bajo riesgo",
+      "prompt": "Con μ = 30 y σ = 5, la categoría de bajo riesgo corresponde a puntajes menores que 28. ¿Qué porcentaje se estima?",
+      "source": "Guía M7, E2(b). Paráfrasis.",
+      "answer": 34.46,
+      "options": [
+        34.46,
+        65.54,
+        15.87,
+        40
+      ],
+      "tolerance": 0.02,
+      "label": "Elegí el resultado",
+      "hints": [
+        "El área está a la izquierda del corte 28.",
+        "Primero Z y luego Φ(Z).",
+        "z = (28 − 30)/5 = −0,4."
+      ],
+      "solution": [
+        "z = −0,4.",
+        "Φ(−0,4) ≈ 0,344578 = 34,46 %."
+      ],
+      "patterns": [
+        "G1",
+        "G2"
+      ],
+      "provenance": "PARAPHRASED_OR_CREATED"
+    },
+    {
+      "id": "M7.09",
+      "type": "numeric",
+      "title": "ISO-30: Z igual a −2",
+      "prompt": "Con μ = 30 y σ = 5, ¿qué puntaje directo corresponde a Z = −2?",
+      "source": "Guía M7, E2(c). Práctica derivada.",
+      "answer": 20,
+      "options": [
+        20,
+        40,
+        28,
+        -10
+      ],
+      "tolerance": 0.001,
+      "label": "Elegí el resultado",
+      "hints": [
+        "Z negativo indica un puntaje por debajo de la media.",
+        "Despejá x = μ + σ · z.",
+        "Usá x = 30 + 5 · (−2)."
+      ],
+      "solution": [
+        "x = 30 − 10 = 20.",
+        "Está dos desvíos por debajo de la media; no significa puntaje directo negativo."
+      ],
+      "patterns": [
+        "G1"
+      ],
+      "provenance": "PARAPHRASED_OR_CREATED"
+    },
+    {
+      "id": "M7.10",
+      "type": "numeric",
+      "title": "Enojo: cola superior",
+      "prompt": "Un test tiene μ = 25 y σ = 2. ¿Qué porcentaje obtiene más de 30 puntos?",
+      "source": "Guía M7, E3(a). Paráfrasis.",
+      "answer": 0.62,
+      "options": [
+        0.62,
+        99.38,
+        2.5,
+        6.21
+      ],
+      "tolerance": 0.02,
+      "label": "Elegí el resultado",
+      "hints": [
+        "Más de 30 señala una cola derecha.",
+        "Estandarizá y tomá el complemento de Φ.",
+        "z30 = (30 − 25)/2 = 2,5."
+      ],
+      "solution": [
+        "P(X > 30) = 1 − Φ(2,5) ≈ 0,006210.",
+        "Respuesta: 0,62 %."
+      ],
+      "patterns": [
+        "G1",
+        "G2"
+      ],
+      "provenance": "PARAPHRASED_OR_CREATED"
+    },
+    {
+      "id": "M7.11",
+      "type": "numeric",
+      "title": "Enojo: contar el intervalo",
+      "prompt": "En el mismo test (μ = 25, σ = 2), de n = 120 personas, ¿cuántas se esperan entre 25 y 28 puntos? Redondeá.",
+      "source": "Guía M7, E3(b). Paráfrasis.",
+      "answer": 52,
+      "options": [
+        52,
+        68,
+        100,
+        18
+      ],
+      "tolerance": 0.001,
+      "label": "Personas esperadas",
+      "hints": [
+        "Primero calculá el área del intervalo.",
+        "La proporción se multiplica por n = 120.",
+        "z25 = 0; z28 = 1,5; calculá 120 · [Φ(1,5) − Φ(0)]."
+      ],
+      "solution": [
+        "Φ(1,5) − Φ(0) ≈ 0,433193.",
+        "120 · 0,433193 ≈ 51,98.",
+        "Se esperan unas 52 personas, no necesariamente 52 observadas."
+      ],
+      "patterns": [
+        "G2",
+        "G4"
+      ],
+      "provenance": "PARAPHRASED_OR_CREATED"
+    },
+    {
+      "id": "M7.12",
+      "type": "numeric",
+      "title": "Enojo: percentil 30",
+      "prompt": "Si μ = 25 y σ = 2, ¿cuál es el percentil 30 del test?",
+      "source": "Guía M7, E3(c). Paráfrasis.",
+      "answer": 23.95,
+      "options": [
+        23.95,
+        26.05,
+        25.3,
+        24.4
+      ],
+      "tolerance": 0.02,
+      "label": "Elegí el resultado",
+      "hints": [
+        "El 30 % debe quedar a la izquierda.",
+        "Usá Φ⁻¹(0,30), que es negativo.",
+        "Calculá 25 + 2 · (−0,5244)."
+      ],
+      "solution": [
+        "P30 = 25 + 2 · Φ⁻¹(0,30) ≈ 23,95.",
+        "Por debajo del corte queda aproximadamente el 30 %."
+      ],
+      "patterns": [
+        "G3"
+      ],
+      "provenance": "PARAPHRASED_OR_CREATED"
+    },
+    {
+      "id": "M7.13",
+      "type": "numeric",
+      "title": "OSI: ausencia de estrés",
+      "prompt": "En una población normal μ = 50 y σ = 10, n = 200. Se clasifica como ausencia de estrés a T menor que 39,5. ¿Cuántos empleados se esperan, redondeando?",
+      "source": "Guía M7, E4(a). Paráfrasis.",
+      "answer": 29,
+      "options": [
+        29,
+        171,
+        20,
+        39
+      ],
+      "tolerance": 0.001,
+      "label": "Empleados esperados",
+      "hints": [
+        "El grupo es una cola izquierda.",
+        "Convertí la probabilidad en cantidad con n · P.",
+        "z = (39,5 − 50)/10 = −1,05; 200 · Φ(−1,05)."
+      ],
+      "solution": [
+        "Φ(−1,05) ≈ 0,146859.",
+        "200 · 0,146859 ≈ 29,37; unas 29 personas esperadas."
+      ],
+      "patterns": [
+        "G2",
+        "G4"
+      ],
+      "provenance": "PARAPHRASED_OR_CREATED"
+    },
+    {
+      "id": "M7.14",
+      "type": "numeric",
+      "title": "OSI: estrés leve",
+      "prompt": "Con μ = 50 y σ = 10, el estrés leve corresponde a 59,5–69,5 puntos. ¿Qué porcentaje ocupa ese intervalo?",
+      "source": "Guía M7, E4(b). Paráfrasis.",
+      "answer": 14.55,
+      "options": [
+        14.55,
+        82.88,
+        17.12,
+        2.56
+      ],
+      "tolerance": 0.02,
+      "label": "Elegí el resultado",
+      "hints": [
+        "No es una cola: hay dos límites.",
+        "Restá las acumuladas Φ del límite mayor y menor.",
+        "z59,5 = 0,95 y z69,5 = 1,95; usá Φ(1,95) − Φ(0,95)."
+      ],
+      "solution": [
+        "Φ(1,95) − Φ(0,95) ≈ 0,145468.",
+        "Respuesta: 14,55 %."
+      ],
+      "patterns": [
+        "G2"
+      ],
+      "provenance": "PARAPHRASED_OR_CREATED"
+    },
+    {
+      "id": "M7.15",
+      "type": "choice",
+      "title": "OSI: superado por 60 %",
+      "prompt": "Con μ = 50 y σ = 10, una persona es superada por el 60 % de la población. ¿Qué nivel tiene? Ausencia: T menor que 39,5; normal: 39,5–59,5; leve: 59,5–69,5; fuerte: mayor que 69,5.",
+      "source": "Guía M7, E4(c). Paráfrasis.",
+      "options": [
+        "Ausencia",
+        "Normal",
+        "Leve",
+        "Fuerte"
+      ],
+      "answer": 1,
+      "hints": [
+        "Si 60 % queda por encima, 40 % queda por debajo.",
+        "Calculá el percentil 40.",
+        "x = 50 + 10 · Φ⁻¹(0,40); ubicá el valor en las categorías."
+      ],
+      "solution": [
+        "P40 ≈ 50 + 10 · (−0,253347) = 47,47.",
+        "47,47 está dentro del intervalo normal."
+      ],
+      "patterns": [
+        "G3"
+      ],
+      "provenance": "PARAPHRASED_OR_CREATED"
+    },
+    {
+      "id": "M7.16",
+      "type": "numeric",
+      "title": "Creatividad: cola y recuento",
+      "prompt": "Un test se modela con μ = 65, σ = 10 y n = 600. En esta práctica se define 'muy alto' como X > 85. ¿Cuántas personas se esperan? Redondeá.",
+      "source": "Guía M7, E5(a). Práctica nueva con categoría explícita.",
+      "answer": 14,
+      "options": [
+        14,
+        286,
+        300,
+        60
+      ],
+      "tolerance": 0.001,
+      "label": "Elegí el resultado",
+      "hints": [
+        "El corte está dos desvíos por encima de la media.",
+        "Tomá la cola superior y multiplicá por 600.",
+        "600 · [1 − Φ((85 − 65)/10)] = 600 · [1 − Φ(2)]."
+      ],
+      "solution": [
+        "P(X > 85) ≈ 0,022750.",
+        "600 · 0,022750 ≈ 13,65, es decir, 14 personas esperadas.",
+        "La clasificación original del E5 requiere aclaración; este corte fue fijado expresamente aquí."
+      ],
+      "patterns": [
+        "G2",
+        "G4"
+      ],
+      "provenance": "PARAPHRASED_OR_CREATED"
+    },
+    {
+      "id": "M7.17",
+      "type": "numeric",
+      "title": "Creatividad: 2 % superior",
+      "prompt": "Con μ = 65 y σ = 10, ¿cuál es el corte teórico del 2 % superior?",
+      "source": "Guía M7, E5(b). Paráfrasis.",
+      "answer": 85.54,
+      "options": [
+        85.54,
+        44.46,
+        75,
+        84.6
+      ],
+      "tolerance": 0.02,
+      "label": "Elegí el resultado",
+      "hints": [
+        "Arriba queda 2 %, debajo 98 %.",
+        "Necesitás el percentil 98.",
+        "Usá x = 65 + 10 · Φ⁻¹(0,98), con Z ≈ 2,05375."
+      ],
+      "solution": [
+        "P98 = 65 + 10 · 2,05375 ≈ 85,54.",
+        "El umbral del 2 % más alto está en torno a 85,54 puntos."
+      ],
+      "patterns": [
+        "G3"
+      ],
+      "provenance": "PARAPHRASED_OR_CREATED"
+    },
+    {
+      "id": "M7.18",
+      "type": "choice",
+      "title": "Creatividad: categoría no ambigua",
+      "prompt": "Esta práctica NUEVA define bajo X < 45; medio 45 ≤ X < 65; alto 65 ≤ X ≤ 85; muy alto X > 85. ¿Dónde corresponde el puntaje 80?",
+      "source": "Práctica nueva derivada de Guía M7, E5(c), con intervalos exclusivos.",
+      "options": [
+        "Bajo",
+        "Medio",
+        "Alto",
+        "Muy alto"
+      ],
+      "answer": 2,
+      "hints": [
+        "Los límites están definidos en este enunciado.",
+        "Ubicá 80 respecto de 65 y 85.",
+        "Comprobá 65 ≤ 80 ≤ 85."
+      ],
+      "solution": [
+        "80 pertenece a la categoría alta de esta práctica.",
+        "No se presume que estas categorías sean las del solucionario de M7 E5."
+      ],
+      "patterns": [
+        "G1"
+      ],
+      "provenance": "PARAPHRASED_OR_CREATED"
+    },
+    {
+      "id": "M7.19",
+      "type": "numeric",
+      "title": "Creatividad: percentil 70",
+      "prompt": "Con μ = 65 y σ = 10, ¿qué puntaje marca el percentil 70?",
+      "source": "Guía M7, E5(d). Paráfrasis.",
+      "answer": 70.24,
+      "options": [
+        70.24,
+        59.76,
+        72,
+        74.5
+      ],
+      "tolerance": 0.02,
+      "label": "Elegí el resultado",
+      "hints": [
+        "El 70 % queda por debajo del corte.",
+        "Usá la inversa de Φ con q = 0,70.",
+        "x = 65 + 10 · 0,5244."
+      ],
+      "solution": [
+        "P70 = 65 + 10 · Φ⁻¹(0,70) ≈ 70,24.",
+        "El 70 % de los puntajes queda por debajo de ese valor teórico."
+      ],
+      "patterns": [
+        "G3"
+      ],
+      "provenance": "PARAPHRASED_OR_CREATED"
+    },
+    {
+      "id": "M7.20",
+      "type": "numeric",
+      "title": "Cupo del 20 % superior",
+      "prompt": "Los puntajes de un examen siguen μ = 60 y σ = 15. Solo entra el 20 % más alto. ¿Cuál es el corte teórico?",
+      "source": "Guía M7, E6. Paráfrasis.",
+      "answer": 72.62,
+      "options": [
+        72.62,
+        47.38,
+        75,
+        63
+      ],
+      "tolerance": 0.02,
+      "label": "Elegí el resultado",
+      "hints": [
+        "El cupo está en una cola superior del 20 %.",
+        "Corresponde buscar P80, no P20.",
+        "x = 60 + 15 · Φ⁻¹(0,80), con z ≈ 0,8416."
+      ],
+      "solution": [
+        "P80 = 60 + 15 · 0,841621 ≈ 72,62.",
+        "Si el examen solo permite notas enteras, el menor entero por encima de ese corte es 73."
+      ],
+      "patterns": [
+        "G3"
+      ],
+      "provenance": "PARAPHRASED_OR_CREATED"
+    }
+  ],
   "extras": {},
   "cheats": [],
   "cheatBlocks": [
@@ -652,8 +1244,8 @@
   "multiOptions": {},
   "trueFalse": {},
   "review": {
-    "currentVersion": "m7-20261117-stage1",
-    "academicValidation": "PENDING_PRACTICE",
+    "currentVersion": "m7-20261117-stage2",
+    "academicValidation": "PENDING_FINAL_TRANSFER_QA",
     "sourceCoverage": "13 conceptos y machete construidos; prácticas en preparación"
   }
 }
