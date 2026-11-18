@@ -95,12 +95,34 @@ function exercisePrompt(q){
   else if(!hasTask&&q.type==='multi')instruction=' Calculá los valores indicados.';
   return '<p class="statement">'+raw+instruction+'</p>';
 }
+
+function examArchive(cases,notice){
+  if(!Array.isArray(cases)||!cases.length)return '';
+  const parts=cases.map(c=>{
+    const sections=(c.parts||[]).map((p,i)=>{
+      const steps=(p.steps||[]).map(v=>'<li>'+escapeHTML(v)+'</li>').join('');
+      return '<li class="exam-inciso"><p class="exam-question">'+escapeHTML(p.ask||'')+'</p>'+
+        '<details class="exam-solution"><summary>Ver resolución</summary>'+
+        (p.status==='needs_data'?'<p class="exam-data-needed">La consigna requiere una base de datos externa que no figura en este archivo.</p>':'')+
+        '<ol>'+steps+'</ol></details></li>';
+    }).join('');
+    const source=(c.sourceUrl&&/^https:\/\/(?:docs\.google\.com|drive\.google\.com)\//.test(c.sourceUrl))
+      ?'<a class="exam-source" href="'+escapeHTML(c.sourceUrl)+'" target="_blank" rel="noopener noreferrer">Consultar documento original</a>':'';
+    return '<details class="exam-case"><summary>'+escapeHTML(c.label||'Caso del examen')+'</summary>'+
+      '<p class="exam-context">'+escapeHTML(c.context||'')+'</p>'+table(c)+
+      '<ol class="exam-incisos">'+sections+'</ol>'+source+'</details>';
+  }).join('');
+  return '<details class="exam-archive"><summary><span>Parciales anteriores resueltos</span><small>'+cases.length+' casos · abrir</small></summary>'+
+    (notice?'<p class="exam-intro">'+escapeHTML(notice)+'</p>':'')+
+    parts+'</details>';
+}
+
 function practices(u){return u.practice.map((q,i)=>{
   const grade=answers['__grade__:'+q.id];
   const state=grade==='correct'?' review-correct':grade==='incorrect'?' review-incorrect':'';
   return '<section class="exercise'+state+'" id="'+escapeHTML(q.id)+'"><h2><span class="ex-index" aria-label="Ejercicio '+(i+1)+'">'+String(i+1).padStart(2,'0')+'</span>'+escapeHTML(q.title)+'</h2>'+exercisePrompt(q)+table(q)+chart(q)+pairs(q)+practiceBody(q)+'<div class="review-controls"><button type="button" class="review-toggle" data-reveal="'+escapeHTML(q.id)+'" aria-expanded="false">Ver respuesta</button><button type="button" class="review-cheat" data-cheat="'+escapeHTML(q.id)+'">Machete</button><button type="button" class="review-next" data-next="'+escapeHTML(q.id)+'"'+(grade?'':' hidden')+'>Siguiente ›</button></div><div class="review-panel" data-review-panel="'+escapeHTML(q.id)+'" hidden></div><span class="sr-only">Fuente: '+escapeHTML(q.source||'Ejercicio adaptado')+'</span></section>'
 }).join('') }
 
-return {theory,cheat,practices,reviewAnswer};
+return {theory,cheat,practices,reviewAnswer,examArchive};
 }
 

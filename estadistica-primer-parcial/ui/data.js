@@ -18,6 +18,14 @@ export async function loadStudyContent(){
       return [id,null];
     }
   })));
+  const archives=Object.fromEntries(await Promise.all(m.partials.map(async p=>{
+    const id='P'+p.id;
+    try{
+      const doc=await fetch('./content/partials/exams/'+id+'.json',{cache:'no-store'}).then(getJSON);
+      if(doc.partial!==p.id||!Array.isArray(doc.cases))throw Error('Archivo de exámenes inválido');
+      return [id,doc];
+    }catch(error){console.warn('No se cargaron los parciales anteriores '+id,error);return [id,{cases:[],notice:''}]}
+  })));
   const EXTRAS={},CHEATS={},NUM={},MULTI={},TF={};
   const PARTIALS=m.partials.map(p=>{
     const available=p.units.map(id=>units[id]).filter(u=>u&&u.status==='ready'&&u.theory?.length&&u.practice?.length);
@@ -35,7 +43,7 @@ export async function loadStudyContent(){
         const q=fullBank.get(id);if(!q)console.warn('Ejercicio sin referencia:',p.id,g.theoryId,id);return q;
       }).filter(Boolean))
       :[...fullBank.values()];
-    return {id:p.id,title:p.title,units:available,summary:{...summaryDoc,practice:shortPractice},ready:available.length>0};
+    return {id:p.id,title:p.title,units:available,summary:{...summaryDoc,practice:shortPractice,examCases:archives['P'+p.id].cases,examNotice:archives['P'+p.id].notice},ready:available.length>0};
   });
   return {PARTIALS,EXTRAS,CHEATS,NUM,MULTI,TF,storageKey:m.legacyStorageKey};
 }

@@ -248,3 +248,26 @@ body{background:var(--bg);color:var(--text);font-family:Inter,-apple-system,Blin
 .partial-summary-head~.cheats .block-formula{gap:7px;margin:12px 0}
 .partial-summary-head~.cheats .math-row{font-size:15px}
 @media(max-width:390px){.math-row{font-size:15px;gap:6px}.math-frac{font-size:14px}.block-formula{margin:12px 0}}
+
+/* Exámenes previos: plegados hasta necesitarlos. No alargar el repaso esencial. */
+.exam-archive{border-top:1px solid #d9e1da;margin:24px 0 36px;padding:10px 0}
+.exam-archive>summary{display:flex;align-items:center;justify-content:space-between;gap:12px;list-style:none;cursor:pointer;min-height:48px;font-size:15px;font-weight:670;letter-spacing:-.015em;color:#354239}
+.exam-archive>summary::-webkit-details-marker,.exam-case>summary::-webkit-details-marker{display:none}
+.exam-archive>summary small{font-size:12px;color:#7d897e;font-weight:470;white-space:nowrap}
+.exam-intro{font-size:12.5px;line-height:1.55;color:#647166;margin:5px 0 18px}
+.exam-case{border-top:1px solid #e0e7df;padding:4px 0}
+.exam-case>summary{font-size:14px;font-weight:580;line-height:1.46;padding:13px 2px;cursor:pointer;list-style:none}
+.exam-case[open]>summary{color:#273f2e;font-weight:675}
+.exam-context{font-size:13px;line-height:1.55;color:#515d54;margin:2px 0 12px}
+.exam-incisos{list-style:none;counter-reset:exam;margin:7px 0 16px;padding:0}
+.exam-inciso{padding:13px 0;border-top:1px solid #e7ebe6;counter-increment:exam}
+.exam-question{font-size:13.7px;line-height:1.5;color:#29362e;margin:0 0 7px;font-weight:540}
+.exam-solution>summary{display:inline-block;cursor:pointer;color:#52715b;font-weight:630;padding:6px 0;font-size:12.5px}
+.exam-solution>ol{padding:2px 0 3px 18px;margin:5px 0 10px;color:#46554a;font-size:13px;line-height:1.56}
+.exam-solution>ol li{padding-left:3px;margin:6px 0}
+.exam-data-needed{color:#886e41;background:#faf5e9;padding:9px 12px;border-radius:7px;font-size:12.3px;line-height:1.5}
+.exam-source{display:inline-block;font-size:12px;padding:9px 0 17px;text-decoration:underline;text-underline-offset:3px;color:#4f6956}
+.exam-case .tablewrap{max-width:100%;overflow-x:auto;margin:10px 0}
+.exam-case .datatab{width:max-content;min-width:100%;font-size:12px}
+.exam-case .datatab th,.exam-case .datatab td{padding:6px 7px}
+@media(max-width:390px){.exam-archive>summary{font-size:14px}.exam-archive>summary small{font-size:11px}.exam-case>summary{font-size:13.5px}}

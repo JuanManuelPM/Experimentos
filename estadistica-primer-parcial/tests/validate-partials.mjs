@@ -5,6 +5,8 @@ import {fileURLToPath} from 'node:url';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const read=p=>JSON.parse(fs.readFileSync(path.join(root,p),'utf8'));
 const manifest=read('content/manifest.json');
+const examArchives=Object.fromEntries(manifest.partials.map(p=>['P'+p.id,read('content/partials/exams/P'+p.id+'.json')]));
+
 const errors=[],reports=[];
 const blocks=new Set(['heading','paragraph','list','steps','comparison','definition','formula','worked','note','decision','table']);
 const types=new Set(['choice','truefalse','numeric','multi','mark']);
@@ -31,6 +33,15 @@ function inspectQuestion(q,ref){
 for(const p of manifest.partials){
   const id='P'+p.id;
   const doc=read('content/partials/'+id+'.json');
+  const archive=examArchives[id];
+  if(archive.partial!==p.id||!Array.isArray(archive.cases)||!archive.cases.length)errors.push(id+': exámenes anteriores vacíos');
+  const caseIds=new Set();
+  for(const c of archive.cases||[]){
+    if(!c.id||caseIds.has(c.id)||!c.context||!c.sourceUrl||!c.parts?.length)errors.push(id+': caso previo incompleto/duplicado '+c.id);
+    caseIds.add(c.id);
+    for(const v of c.parts||[])if(!v.ask||!Array.isArray(v.steps)||!v.steps.length)errors.push(c.id+': inciso sin resolución');
+  }
+
   if(doc.partial!==p.id)errors.push(id+': parcial incorrecto');
   if(!Array.isArray(doc.theory)||!Array.isArray(doc.cheatBlocks)||!Array.isArray(doc.practiceRefs)||!Array.isArray(doc.extraPractice)||!Array.isArray(doc.practiceGroups))errors.push(id+': faltan arrays del contrato');
   const size=doc.theory.length;
@@ -72,7 +83,7 @@ for(const p of manifest.partials){
     if(allIDs.has(qid))errors.push('Ejercicio repetido entre parciales: '+qid);
     allIDs.add(qid);
   }
-  reports.push({partial:id,theory:doc.theory.length,practice:groupedIds.length,sourceQuestions:doc.practiceRefs.length,newCases:doc.extraPractice.length,groups:doc.practiceGroups.map(g=>g.ids.length)});
+  reports.push({partial:id,theory:doc.theory.length,practice:groupedIds.length,sourceQuestions:doc.practiceRefs.length,newCases:doc.extraPractice.length,examCases:archive.cases.length,groups:doc.practiceGroups.map(g=>g.ids.length)});
 }
 console.log(JSON.stringify({ok:errors.length===0,reports,errors},null,2));
 if(errors.length)process.exitCode=1;

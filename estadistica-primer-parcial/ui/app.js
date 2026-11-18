@@ -1,5 +1,5 @@
-import {loadStudyContent} from './data.js?v=exam-walkthrough-v3-20261118';
-import {createRenderers} from './components.js?v=math-clean-v1-20261118';
+import {loadStudyContent} from './data.js?v=exam-archive-v1-20261118';
+import {createRenderers} from './components.js?v=exam-archive-v1-20261118';
 import {TAB_ORDER,buildRouteURL,routeFromLocation,bindGestures} from './navigation.js?v=speedrun-20261117a';
 // UI orchestration, no course content or exercise keys in this file.
 (async function(){'use strict';
@@ -11,7 +11,7 @@ let unit=0,tab='theory',view='units',partial=0,answers={};
 const previousScroll=new Map();
 try{answers=JSON.parse(localStorage.getItem(STORAGE)||'{}')}catch{answers={}}
 function save(){try{localStorage.setItem(STORAGE,JSON.stringify(answers))}catch{}}
-const {theory,cheat,practices,reviewAnswer}=createRenderers({EXTRAS,CHEATS,NUM,MULTI,TF,answers});
+const {theory,cheat,practices,reviewAnswer,examArchive}=createRenderers({EXTRAS,CHEATS,NUM,MULTI,TF,answers});
 function escapeHTML(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function textSafe(s){return escapeHTML(s)}
 function store(k,v){answers[k]=v;save()}
@@ -33,7 +33,7 @@ if(view==='units'){const p=PARTIALS[partial];MAIN.innerHTML=`<div class="indexhe
 if(view==='partial'){
   const p=PARTIALS[partial],s=p.summary;
   const head='<div class="partial-summary-head"><h1>'+escapeHTML(p.title)+'</h1>'+(tab==='practice'?'<span>'+s.practice.length+' ejercicios seleccionados</span>':'')+'</div>';
-  MAIN.innerHTML=head+(tab==='theory'?theory(s):tab==='practice'?practices(s):cheat(s));
+  MAIN.innerHTML=head+(tab==='theory'?theory(s):tab==='practice'?practices(s)+examArchive(s.examCases,s.examNotice):cheat(s));
   if(tab==='theory')decorateTheory(s);
   finalizePractice();readProgress();return;
 }
