@@ -36,27 +36,43 @@ if(q.type==='choice')return optionList(q,q.id+':choice',q.options,q.answer);
 return '<p class="quiet-note">Tipo de actividad no reconocido.</p>'}
 function reviewAnswer(q){
   const claims=TF[q.id]||(q.claims||[]).map(v=>[v.text,v.answer?1:0,v.explanation]);
-  let correct='';
+  let key='';
   if((q.type==='choice'||q.type==='truefalse')&&claims.length){
-    correct='<div class="review-key"><strong>Respuestas</strong><div class="review-values">'+claims.map((c,i)=>'<span>'+(i+1)+'. '+(Number(c[1])?'V':'F')+'</span>').join('')+'</div></div>';
+    key='<div class="answer-sequence">'+claims.map((c,i)=>'<span><small>'+(i+1)+'.</small> '+(Number(c[1])?'V':'F')+'</span>').join('')+'</div>';
   }else if(q.type==='multi'){
-    correct='<div class="review-key"><strong>Respuestas</strong><ul class="review-list">'+q.fields.map(f=>'<li><b>'+escapeHTML(f.label)+':</b> '+toDisplayValue(f.answer)+'</li>').join('')+'</ul></div>';
-  }else if(q.type==='mark'){
-    const found=(q.parts||[]).find(p=>p&&typeof p==='object'&&String(p.value)===String(q.answer));
-    correct='<div class="review-key"><strong>Respuesta</strong><p>'+escapeHTML(found?.text||q.answer)+'</p></div>';
-  }else if(q.type==='numeric'){
-    correct='<div class="review-key"><strong>Respuesta</strong><p>'+toDisplayValue(q.answer)+(q.label?' · '+escapeHTML(q.label):'')+'</p></div>';
-  }else if(q.type==='choice'){
-    correct='<div class="review-key"><strong>Respuesta</strong><p>'+escapeHTML(q.options?.[q.answer]??q.answer)+'</p></div>';
+    key='<div class="answer-values">'+(q.fields||[]).map(f=>'<p><span>'+escapeHTML(f.label)+':</span> <strong>'+toDisplayValue(f.answer)+'</strong></p>').join('')+'</div>';
   }
-  const explanation=(q.solution||[]).map(x=>'<p>'+x+'</p>').join('');
-  const fallback=!explanation&&claims.length?claims.map((c,i)=>'<p>'+(i+1)+'. '+escapeHTML(c[2]||'')+'</p>').join(''):'';
-  return correct+(explanation||fallback?'<div class="review-explanation">'+(explanation||fallback)+'</div>':'');
+  const paragraphs=(q.solution||[]).filter(x=>typeof x==='string'&&x.trim()).map(x=>'<p>'+x+'</p>');
+  if(!paragraphs.length){
+    let value='';
+    if(q.type==='mark'){
+      const found=(q.parts||[]).find(p=>p&&typeof p==='object'&&String(p.value)===String(q.answer));
+      value=escapeHTML(found?.text||q.answer);
+    }else if(q.type==='numeric')value=toDisplayValue(q.answer)+(q.label?' '+escapeHTML(q.label):'');
+    else if(q.type==='choice'&&!claims.length)value=escapeHTML(q.options?.[q.answer]??q.answer);
+    if(value)paragraphs.push('<p><strong>'+value+'</strong></p>');
+    else if(claims.length)paragraphs.push(...claims.filter(c=>c[2]).map(c=>'<p>'+escapeHTML(c[2])+'</p>'));
+  }
+  return key+(paragraphs.length?'<div class="review-explanation">'+paragraphs.join('')+'</div>':'');
+}
+function exercisePrompt(q){
+  const raw=typeof q.prompt==='string'?q.prompt.trim():'';
+  if(!raw){
+    const fallback=q.type==='mark'?'Señalá el fragmento que corresponde al título.':q.type==='truefalse'||q.claims?'Indicá V o F para cada afirmación.':q.type==='multi'?'Calculá los valores indicados.':'Elegí la alternativa correcta.';
+    return '<p class="statement">'+fallback+'</p>';
+  }
+  const plain=raw.replace(/<[^>]*>/g,' ').trim();
+  const hasTask=/[¿?]|\b(?:eleg[ií]|marc[aá]|indic[aá]|seleccion[aá]|señal[aá]|calcul[aá]|hall[aá]|identific[aá]|estim[aá]|obten[eé]|compar[aá]|evalu[aá]|decid[ií]|determin[aá]|complet[aá]|formul[aá]|interpret[aá]|juzg[aá]|verific[aá]|clasific[aá]|cu[aá]l|cu[aá]nto|qu[eé])\b/i.test(plain);
+  let instruction='';
+  if(!hasTask && q.type==='choice'&&!q.claims&&!TF[q.id])instruction=' Elegí la opción correcta.';
+  else if(!hasTask&&q.type==='numeric')instruction=' Calculá '+escapeHTML(q.label||'el resultado')+'.';
+  else if(!hasTask&&q.type==='multi')instruction=' Calculá los valores indicados.';
+  return '<p class="statement">'+raw+instruction+'</p>';
 }
 function practices(u){return u.practice.map((q,i)=>{
   const grade=answers['__grade__:'+q.id];
   const state=grade==='correct'?' review-correct':grade==='incorrect'?' review-incorrect':'';
-  return '<section class="exercise'+state+'" id="'+escapeHTML(q.id)+'"><h2><span class="ex-index" aria-label="Ejercicio '+(i+1)+'">'+String(i+1).padStart(2,'0')+'</span>'+escapeHTML(q.title)+'</h2>'+(q.prompt?'<p class="statement">'+q.prompt+'</p>':'')+table(q)+chart(q)+pairs(q)+practiceBody(q)+'<div class="review-controls"><button type="button" class="review-toggle" data-reveal="'+escapeHTML(q.id)+'" aria-expanded="false">Ver respuesta</button><button type="button" class="review-cheat" data-cheat="'+escapeHTML(q.id)+'">Machete</button><button type="button" class="review-next" data-next="'+escapeHTML(q.id)+'"'+(grade?'':' hidden')+'>Siguiente ›</button></div><div class="review-panel" data-review-panel="'+escapeHTML(q.id)+'" hidden></div><span class="sr-only">Fuente: '+escapeHTML(q.source||'Ejercicio adaptado')+'</span></section>'
+  return '<section class="exercise'+state+'" id="'+escapeHTML(q.id)+'"><h2><span class="ex-index" aria-label="Ejercicio '+(i+1)+'">'+String(i+1).padStart(2,'0')+'</span>'+escapeHTML(q.title)+'</h2>'+exercisePrompt(q)+table(q)+chart(q)+pairs(q)+practiceBody(q)+'<div class="review-controls"><button type="button" class="review-toggle" data-reveal="'+escapeHTML(q.id)+'" aria-expanded="false">Ver respuesta</button><button type="button" class="review-cheat" data-cheat="'+escapeHTML(q.id)+'">Machete</button><button type="button" class="review-next" data-next="'+escapeHTML(q.id)+'"'+(grade?'':' hidden')+'>Siguiente ›</button></div><div class="review-panel" data-review-panel="'+escapeHTML(q.id)+'" hidden></div><span class="sr-only">Fuente: '+escapeHTML(q.source||'Ejercicio adaptado')+'</span></section>'
 }).join('') }
 
 return {theory,cheat,practices,reviewAnswer};

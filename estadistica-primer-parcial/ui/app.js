@@ -1,5 +1,5 @@
 import {loadStudyContent} from './data.js';
-import {createRenderers} from './components.js?v=speedrun-20261117a';
+import {createRenderers} from './components.js?v=editorial-practice-v5-20261117';
 import {TAB_ORDER,buildRouteURL,routeFromLocation,bindGestures} from './navigation.js?v=speedrun-20261117a';
 // UI orchestration, no course content or exercise keys in this file.
 (async function(){'use strict';
