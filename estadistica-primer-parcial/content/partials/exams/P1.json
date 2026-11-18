@@ -1,0 +1,377 @@
+{
+  "schema": "psicologia-up.statistics.exam-archive.v1",
+  "partial": "1",
+  "notice": "Consignas de parciales 2026 e integrador UP, resumidas por inciso y acompañadas de resolución. Las bases externas mencionadas por la fuente no están incluidas; no se inventan resultados.",
+  "cases": [
+    {
+      "id": "P1-2026-T1-E1",
+      "label": "2026 · Tema 1 · Estudio de TAG",
+      "context": "Se estudia un programa de mindfulness de ocho semanas frente a tratamiento farmacológico estándar, con pacientes asignados aleatoriamente. Se registra GAD-7 al finalizar; mayor puntaje significa más ansiedad. El examen usa una base externa llamada ANSIEDAD GAD7.",
+      "sourceUrl": "https://drive.google.com/file/d/1iykAUJewwwRgp5pRRudHCdRa0WRrma4B/view",
+      "topic": "Investigación, frecuencias y medidas",
+      "parts": [
+        {
+          "ask": "a) Formular hipótesis, población y tipo de estudio.",
+          "steps": [
+            "Hipótesis contrastable: el puntaje medio de ansiedad difiere entre mindfulness y tratamiento estándar (o es menor con mindfulness si esa dirección se planteó previamente).",
+            "Población objetivo: pacientes con TAG; unidad de análisis: cada paciente; diseño experimental con dos grupos asignados aleatoriamente. El enunciado no fija n."
+          ],
+          "status": "solved"
+        },
+        {
+          "ask": "b) Clasificar variables y completar media, P10, P90, CV, moda y mediana por tratamiento.",
+          "steps": [
+            "Tratamiento = variable explicativa nominal; puntaje GAD-7 = respuesta cuantitativa, normalmente analizada como intervalo; GAD-7 es el instrumento.",
+            "Para cada grupo, filtrar los puntajes de esa base; calcular media y mediana, moda, P10, P90 y CV = 100×s/media. Para «Total» usar todas las observaciones.",
+            "No pueden completarse cifras reales sin la base externa ANSIEDAD GAD7."
+          ],
+          "status": "needs_data"
+        },
+        {
+          "ask": "c) Elaborar tabla FA, FR, FAA y FRA del grupo mindfulness; interpretar una fila.",
+          "steps": [
+            "Filtrar mindfulness. Contar cada puntaje o intervalo para FA; FR=FA/N del grupo; FAA acumula FA; FRA=FAA/N.",
+            "Interpretar una fila citando el intervalo, el porcentaje del grupo y el acumulado; no hay números de tabla verificables sin los registros."
+          ],
+          "status": "needs_data"
+        },
+        {
+          "ask": "d) Completar moda, corte superior del 10 %, mayor CV y asimetría.",
+          "steps": [
+            "«La mayoría obtuvo...» → moda. «El 10 % con mayor ansiedad superó...» → P90.",
+            "Mayor dispersión relativa → grupo con CV mayor. Asimetría: observar forma y relación entre medidas; no inventar su signo.",
+            "Se requieren los valores de la base para completar cada respuesta numérica."
+          ],
+          "status": "needs_data"
+        }
+      ]
+    },
+    {
+      "id": "P1-2026-T1-E2",
+      "label": "2026 · Tema 1 · Estrés y sueño",
+      "context": "Nueve estudiantes registran estrés X y horas de sueño Y durante exámenes. La fuente incluye todos los pares numéricos, así que se puede resolver completamente.",
+      "sourceUrl": "https://drive.google.com/file/d/1iykAUJewwwRgp5pRRudHCdRa0WRrma4B/view",
+      "topic": "Correlación y regresión",
+      "parts": [
+        {
+          "ask": "a) ¿Es razonable aplicar regresión lineal?",
+          "steps": [
+            "Los pares muestran una tendencia descendente muy próxima a una recta. Es razonable como modelo descriptivo dentro del rango de estrés observado (4 a 9). No demuestra causalidad."
+          ],
+          "status": "solved"
+        },
+        {
+          "ask": "b) Calcular r e interpretarlo.",
+          "steps": [
+            "Media X≈6,6667; media Y≈5,7778. Sxx=20, Sxy≈−13,6667 y Syy≈9,5556.",
+            "r=Sxy/√(Sxx×Syy)≈−0,9886; relación lineal negativa muy fuerte. R²≈0,9773 (97,73 %)."
+          ],
+          "status": "solved"
+        },
+        {
+          "ask": "c) Recta e interpretación de coeficientes.",
+          "steps": [
+            "b=Sxy/Sxx≈−0,6833; a=mediaY−b×mediaX≈10,3333.",
+            "Recta: horas predichas = 10,3333−0,6833×estrés.",
+            "Por cada punto adicional de estrés, se predicen ≈0,68 horas menos de sueño. El intercepto en estrés=0 está fuera del rango observado y requiere cautela."
+          ],
+          "status": "solved"
+        },
+        {
+          "ask": "d) Predecir horas para estrés=7.",
+          "steps": [
+            "ŷ(7)=10,3333−0,6833×7≈5,55 horas."
+          ],
+          "status": "solved"
+        }
+      ],
+      "table": [
+        [
+          "Variable",
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        [
+          "Estrés X",
+          9,
+          8,
+          7,
+          6,
+          5,
+          8,
+          7,
+          6,
+          4
+        ],
+        [
+          "Sueño Y",
+          4,
+          5,
+          5.5,
+          6,
+          7,
+          5,
+          5.5,
+          6.5,
+          7.5
+        ]
+      ]
+    },
+    {
+      "id": "P1-2026-T2-E1",
+      "label": "2026 · Tema 2 · Programa y autoestima",
+      "context": "Estudiantes universitarios asignados a un programa de habilidades socioemocionales frente a grupo control; se mide autoestima con la escala de Rosenberg al finalizar. La fuente remite a la base externa AUTOESTIMA.",
+      "sourceUrl": "https://drive.google.com/file/d/1iykAUJewwwRgp5pRRudHCdRa0WRrma4B/view",
+      "topic": "Investigación, frecuencias y medidas",
+      "parts": [
+        {
+          "ask": "a) Fenómeno, población y estudio.",
+          "steps": [
+            "Fenómeno: eficacia del programa sobre puntajes de autoestima. Población: estudiantes universitarios de interés. Unidad: cada estudiante.",
+            "Experimental, asignación aleatoria de programa/control; dos grupos de personas distintas. El número de alumnos no aparece en el escenario."
+          ],
+          "status": "solved"
+        },
+        {
+          "ask": "b) Variables, escalas y medidas por grupo.",
+          "steps": [
+            "Grupo programa/control = explicativa nominal; autoestima = puntaje cuantitativo registrado mediante Rosenberg.",
+            "Media, P10, P90, CV, moda y mediana se calculan con los puntajes reales de AUTOESTIMA, por grupo y en total. No hay resultados numéricos sin esa base."
+          ],
+          "status": "needs_data"
+        },
+        {
+          "ask": "c) Tabla de frecuencias de autoestima dentro de programa.",
+          "steps": [
+            "FA=conteo en cada valor o clase; FR=FA/n_programa; FAA=suma acumulada; FRA=FAA/n_programa.",
+            "No hay valores calculables en el documento sin la base."
+          ],
+          "status": "needs_data"
+        },
+        {
+          "ask": "d) Moda, P90, mayor variabilidad y asimetría.",
+          "steps": [
+            "Valor más frecuente=moda; corte del 10 % superior=P90; mayor variabilidad relativa=mayor CV; la forma se interpreta con los datos/gráfico.",
+            "Los resultados concretos quedan pendientes de AUTOESTIMA."
+          ],
+          "status": "needs_data"
+        }
+      ]
+    },
+    {
+      "id": "P1-2026-T2-E2",
+      "label": "2026 · Tema 2 · Autoestima y promedio académico",
+      "context": "Nueve pares de autoestima X y rendimiento académico Y. Se pide correlación, recta e inferencia de promedio cuando X=24.",
+      "sourceUrl": "https://drive.google.com/file/d/1iykAUJewwwRgp5pRRudHCdRa0WRrma4B/view",
+      "topic": "Correlación y regresión",
+      "parts": [
+        {
+          "ask": "a) ¿Sirve un modelo lineal?",
+          "steps": [
+            "Los datos siguen una tendencia creciente prácticamente lineal; la recta es una buena descripción en el rango X de 18 a 27. No es prueba de causalidad."
+          ],
+          "status": "solved"
+        },
+        {
+          "ask": "b) Coeficiente r.",
+          "steps": [
+            "Media X≈22,1111 y media Y≈7,1444; Sxx≈68,8889; Sxy≈20,0556; Syy≈5,8822.",
+            "r≈+0,9963: relación positiva muy fuerte; R²≈0,9926 (99,26 %)."
+          ],
+          "status": "solved"
+        },
+        {
+          "ask": "c) Escribir recta e interpretar.",
+          "steps": [
+            "Pendiente b=20,0556/68,8889≈0,2911. Intercepto a≈0,7073.",
+            "Recta de rendimiento: ŷ≈0,7073+0,2911×autoestima.",
+            "Por un punto adicional en autoestima, se predicen aproximadamente 0,291 puntos más de promedio; asociación, no causalidad."
+          ],
+          "status": "solved"
+        },
+        {
+          "ask": "d) Predecir promedio para autoestima=24.",
+          "steps": [
+            "ŷ(24)≈0,7073+0,2911×24≈7,69."
+          ],
+          "status": "solved"
+        }
+      ],
+      "table": [
+        [
+          "Variable",
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        [
+          "Autoestima X",
+          18,
+          20,
+          22,
+          25,
+          27,
+          19,
+          23,
+          24,
+          21
+        ],
+        [
+          "Promedio Y",
+          6,
+          6.5,
+          7,
+          8,
+          8.5,
+          6.2,
+          7.5,
+          7.8,
+          6.8
+        ]
+      ]
+    },
+    {
+      "id": "P1-INT-E1",
+      "label": "Integrador · E1 · Fobia social",
+      "context": "Ensayo con clonazepam frente a placebo y medición con escala de Liebowitz al final; el integrador solicita ficha del estudio y completar tablas e informe usando una base externa «Ansiedad social».",
+      "sourceUrl": "https://drive.google.com/file/d/1VQ3gGH1YAfrZfn3-juFSd_jat2y4NrHS/view",
+      "topic": "Investigación, frecuencias y medidas",
+      "parts": [
+        {
+          "ask": "a) Fenómeno, población, unidad y tipo de estudio.",
+          "steps": [
+            "Fenómeno: relación entre clonazepam y gravedad de ansiedad social. Población: pacientes con fobia social. Unidad: cada paciente.",
+            "Diseño experimental, dos grupos con tratamiento asignado aleatoriamente. Puntaje de ansiedad: variable respuesta numérica; tratamiento: explicativa nominal."
+          ],
+          "status": "solved"
+        },
+        {
+          "ask": "b) Tabla de variables, descriptivos e informe con conteos, moda, percentiles y tratamientos.",
+          "steps": [
+            "Se requiere la planilla «Ansiedad social» para conocer n, proporción que recibió medicación, puntajes ≤50, moda, P70 y CV o valores por grupo.",
+            "Procedimiento: filtrar cada grupo, calcular sus medidas y luego interpretar los cortes en contexto. No inventar cifras. El corte «30 % superior» corresponde a P70."
+          ],
+          "status": "needs_data"
+        }
+      ]
+    },
+    {
+      "id": "P1-INT-E2",
+      "label": "Integrador · E2 · Actividad y estrés",
+      "context": "Se da la recta de predicción de estrés según horas semanales de deporte: ŷ=47−4x; rango observado X entre 0 y 10 horas, y R²=0,37.",
+      "sourceUrl": "https://drive.google.com/file/d/1VQ3gGH1YAfrZfn3-juFSd_jat2y4NrHS/view",
+      "topic": "Correlación y regresión",
+      "parts": [
+        {
+          "ask": "a) Interpretar pendiente e intercepto.",
+          "steps": [
+            "a=47: estrés predicho para cero horas de deporte. b=−4: una hora más de deporte se asocia con 4 puntos menos de estrés esperado según la recta.",
+            "No afirmar causalidad solo con una regresión observacional."
+          ],
+          "status": "solved"
+        },
+        {
+          "ask": "b) Predecir estrés a las 8 horas.",
+          "steps": [
+            "ŷ(8)=47−4×8=15 puntos de estrés. X=8 está dentro del rango observado [0,10]."
+          ],
+          "status": "solved"
+        },
+        {
+          "ask": "c) Interpretar R²=0,37.",
+          "steps": [
+            "La recta explica el 37 % de la variabilidad observada de Y en el modelo lineal. El restante 63 % no queda explicado por esta recta; no son necesariamente «errores»."
+          ],
+          "status": "solved"
+        },
+        {
+          "ask": "d) Recuperar r e interpretar.",
+          "steps": [
+            "Como la pendiente es negativa, r también es negativo; r=−√0,37≈−0,6083.",
+            "Se observa asociación lineal negativa moderada, no perfecta."
+          ],
+          "status": "solved"
+        }
+      ]
+    },
+    {
+      "id": "P1-INT-E3",
+      "label": "Integrador · E3 · Edad y patinaje",
+      "context": "En nueve menores de 9 a 13 años se registran edad X y tiempo en segundos para completar diez metros en patines Y, después de entrenamiento psicológico. El integrador pide correlación, recta, R² y predicción para 8 años.",
+      "sourceUrl": "https://drive.google.com/file/d/1VQ3gGH1YAfrZfn3-juFSd_jat2y4NrHS/view",
+      "topic": "Correlación y regresión",
+      "parts": [
+        {
+          "ask": "a) Dispersograma, correlación y R².",
+          "steps": [
+            "La relación es descendente: a mayor edad se observan tiempos generalmente menores.",
+            "r≈−0,8880; R²≈0,7886 (78,86 %), calculados sobre los nueve pares de la guía."
+          ],
+          "status": "solved"
+        },
+        {
+          "ask": "b) ¿Es válido predecir para 8 años?",
+          "steps": [
+            "La edad mínima observada es 9 y el máximo 13. Estimar para 8 años es EXTRAPOLAR; el valor matemático puede obtenerse, pero la predicción es menos confiable."
+          ],
+          "status": "solved"
+        },
+        {
+          "ask": "c) Escribir la recta e interpretarla.",
+          "steps": [
+            "Pendiente b≈−0,1673 segundos/año; intercepto a≈4,3659 segundos.",
+            "ŷ≈4,3659−0,1673×edad: el modelo predice aproximadamente 0,167 segundos menos al aumentar un año la edad dentro del rango observado."
+          ],
+          "status": "solved"
+        },
+        {
+          "ask": "d) Predicción para edad 8.",
+          "steps": [
+            "ŷ(8)=4,3659−0,1673×8≈3,03 segundos.",
+            "Advertir que la edad 8 cae fuera del rango de datos."
+          ],
+          "status": "solved"
+        }
+      ],
+      "table": [
+        [
+          "Edad X",
+          13,
+          12,
+          12,
+          11,
+          11,
+          12,
+          10,
+          10,
+          9
+        ],
+        [
+          "Tiempo Y",
+          2.22,
+          2.25,
+          2.33,
+          2.4,
+          2.42,
+          2.54,
+          2.79,
+          2.8,
+          2.81
+        ]
+      ]
+    }
+  ]
+}
