@@ -406,7 +406,476 @@
       ]
     }
   ],
-  "practice": [],
+  "practice": [
+    {
+      "id": "M10-U10-01",
+      "type": "choice",
+      "title": "Elegir la prueba",
+      "prompt": "Se comparan personas distintas de dos lugares y cada una responde sí/no ante una experiencia. ¿Qué prueba permitiría contrastar las proporciones poblacionales?",
+      "source": "Adaptación · Guía 10, ejercicio 1; datos comprobados en la consigna.",
+      "hints": [
+        "Mirá qué resultado aporta cada persona.",
+        "La variable observada tiene solo dos estados y los grupos son distintos.",
+        "Cada grupo aporta un conteo de sí y un total; se contrastan proporciones."
+      ],
+      "solution": [
+        "Corresponde Z de dos proporciones independientes, si se cumplen sus supuestos. Una prueba t compara puntajes, no casos sí/no."
+      ],
+      "options": [
+        "Z para dos proporciones independientes",
+        "t apareada de puntajes",
+        "t independiente de medias",
+        "Correlación entre dos puntajes"
+      ],
+      "answer": 0,
+      "pattern": "K1",
+      "stage": "guiada"
+    },
+    {
+      "id": "M10-U10-02",
+      "type": "multi",
+      "title": "Dos grupos, dos denominadores",
+      "prompt": "Guía 10, E1: Provincia tiene 763 respuestas afirmativas entre 2180 personas; CABA tiene 672 entre 2100. Orden: Provincia menos CABA.",
+      "source": "Adaptación · Guía 10, ejercicio 1; datos comprobados en la consigna.",
+      "hints": [
+        "Separá los casos afirmativos y el total de cada lugar.",
+        "Calculá x/n para cada grupo; después restalos.",
+        "Usá 763/2180 y 672/2100; el total combinado no va en los denominadores individuales."
+      ],
+      "solution": [
+        "Provincia = 763/2180 = 0,35. CABA = 672/2100 = 0,32. La diferencia observada es 0,03, equivalente a 3 puntos porcentuales."
+      ],
+      "fields": [
+        {
+          "label": "p̂ Provincia",
+          "answer": 0.35,
+          "tolerance": 0.0001,
+          "options": [
+            0.35,
+            0.32,
+            0.33528,
+            0.65
+          ]
+        },
+        {
+          "label": "p̂ CABA",
+          "answer": 0.32,
+          "tolerance": 0.0001,
+          "options": [
+            0.32,
+            0.35,
+            0.68,
+            0.03
+          ]
+        },
+        {
+          "label": "Diferencia de proporciones",
+          "answer": 0.03,
+          "tolerance": 0.0001,
+          "options": [
+            0.03,
+            0.3,
+            0.003,
+            0.67
+          ]
+        }
+      ],
+      "pattern": "K1",
+      "stage": "guiada"
+    },
+    {
+      "id": "M10-U10-03",
+      "type": "choice",
+      "title": "Traducir «mayor» a H₁",
+      "prompt": "Se quiere evaluar si Provincia supera a CABA en proporción poblacional. Grupo 1 = Provincia; grupo 2 = CABA. Elegí H₁.",
+      "source": "Adaptación · Guía 10, ejercicio 1; datos comprobados en la consigna.",
+      "hints": [
+        "Conservá el orden que define la consigna.",
+        "«Mayor» define una alternativa unilateral, no bilateral.",
+        "El grupo 1 es Provincia; su proporción se espera mayor que la del grupo 2."
+      ],
+      "solution": [
+        "H₁: pProvincia > pCABA, con cola derecha para Z calculado como Provincia menos CABA. La frontera de H₀ es pProvincia = pCABA."
+      ],
+      "options": [
+        "p₁ > p₂",
+        "p₁ < p₂",
+        "p₁ ≠ p₂",
+        "p̂₁ = p̂₂"
+      ],
+      "answer": 0,
+      "pattern": "H1",
+      "stage": "guiada"
+    },
+    {
+      "id": "M10-U10-04",
+      "type": "multi",
+      "title": "Proporción conjunta, EE y Z",
+      "prompt": "Continuá el E1 con Provincia 763/2180 y CABA 672/2100. Calculá el contraste bajo H₀ de igualdad.",
+      "source": "Adaptación · Guía 10, ejercicio 1; datos comprobados en la consigna.",
+      "hints": [
+        "La proporción conjunta junta los éxitos, no promedia sin ponderación.",
+        "A partir de p̂ conjunta, obtené EE₀ y recién después Z.",
+        "p̂=(763+672)/(2180+2100); EE₀=√[p̂(1−p̂)(1/2180+1/2100)]; Z=0,03/EE₀."
+      ],
+      "solution": [
+        "p̂ = 1435/4280 ≈ 0,335280. EE₀ ≈ 0,0144347. Z ≈ 2,07833. El signo positivo corresponde a mayor proporción observada en Provincia."
+      ],
+      "fields": [
+        {
+          "label": "Proporción conjunta",
+          "answer": 0.33528,
+          "tolerance": 0.0001,
+          "options": [
+            0.33528,
+            0.35,
+            0.32,
+            0.6706
+          ]
+        },
+        {
+          "label": "Error estándar",
+          "answer": 0.014435,
+          "tolerance": 0.0001,
+          "options": [
+            0.014435,
+            0.14435,
+            0.03,
+            0.069
+          ]
+        },
+        {
+          "label": "Z (Provincia − CABA)",
+          "answer": 2.07833,
+          "tolerance": 0.0001,
+          "options": [
+            2.07833,
+            -2.07833,
+            1.64485,
+            0.20783
+          ]
+        }
+      ],
+      "pattern": "K2",
+      "stage": "guiada"
+    },
+    {
+      "id": "M10-U10-05",
+      "type": "numeric",
+      "title": "Elegir la cola correcta",
+      "prompt": "Para E1 se obtuvo Z ≈ 2,07833 y H₁ es Provincia mayor que CABA. ¿Qué valor p corresponde?",
+      "source": "Adaptación · Guía 10, ejercicio 1; datos comprobados en la consigna.",
+      "hints": [
+        "La hipótesis señala una dirección concreta.",
+        "Provincia mayor corresponde a cola derecha.",
+        "Calculá 1 − Φ(2,07833), sin duplicar el área."
+      ],
+      "solution": [
+        "Con cola derecha, p = P(Z ≥ 2,07833) ≈ 0,01884. El doble, 0,03768, correspondería al contraste bilateral, que no es el planteado."
+      ],
+      "answer": 0.01884,
+      "tolerance": 0.0001,
+      "options": [
+        0.01884,
+        0.03768,
+        0.98116,
+        0.1627
+      ],
+      "pattern": "K2",
+      "stage": "guiada"
+    },
+    {
+      "id": "M10-U10-06",
+      "type": "truefalse",
+      "title": "Concluir sin exagerar",
+      "prompt": "En E1, p ≈ 0,01884 y α = 0,05. Clasificá cada afirmación.",
+      "source": "Adaptación · Guía 10, ejercicio 1; datos comprobados en la consigna.",
+      "hints": [
+        "Separá el cálculo muestral de la conclusión poblacional.",
+        "Aplicá la regla p frente a α y evitá deducciones individuales.",
+        "Compará 0,01884 con 0,05; la diferencia descriptiva fue 0,35 − 0,32."
+      ],
+      "solution": [
+        "Se rechaza H₀ al 5 % a favor de mayor proporción reportada en Provincia, con los supuestos del modelo. Diferencia observada: 3 puntos porcentuales; no se demuestra causalidad ni riesgo de cada individuo."
+      ],
+      "claims": [
+        {
+          "text": "Se rechaza H₀ al 5 %.",
+          "answer": true,
+          "explanation": "El valor p es inferior a α."
+        },
+        {
+          "text": "La diferencia de la muestra equivale a 3 puntos porcentuales.",
+          "answer": true,
+          "explanation": "35 % menos 32 % son 3 puntos porcentuales."
+        },
+        {
+          "text": "El contraste demuestra el riesgo individual de todas las personas de cada lugar.",
+          "answer": false,
+          "explanation": "Los grupos se comparan estadísticamente, no se describe el riesgo de cada individuo."
+        },
+        {
+          "text": "p = 0,01884 significa que H₀ tiene 1,884 % de probabilidad de ser cierta.",
+          "answer": false,
+          "explanation": "El valor p no asigna probabilidad a H₀."
+        }
+      ],
+      "pattern": "K3",
+      "stage": "comprobacion"
+    },
+    {
+      "id": "M10-U10-07",
+      "type": "multi",
+      "title": "Continuidad de tratamientos",
+      "prompt": "E2: continúan 327/545 de los pacientes presenciales y 285/500 de los virtuales. Orden del contraste: presencial − virtual.",
+      "source": "Adaptación · Guía 10, ejercicio 2; datos comprobados en la consigna.",
+      "hints": [
+        "«Continuar» es el resultado binario de interés.",
+        "Calculá las dos proporciones y luego la proporción conjunta.",
+        "p̂₁=327/545; p̂₂=285/500; p̂=(327+285)/(545+500); Z=(p̂₁−p̂₂)/EE₀."
+      ],
+      "solution": [
+        "p̂ presencial = 0,60; p̂ virtual = 0,57; p̂ conjunta = 612/1045 ≈ 0,585646; EE₀ ≈ 0,030506; Z ≈ 0,98343."
+      ],
+      "fields": [
+        {
+          "label": "p̂ presencial",
+          "answer": 0.6,
+          "tolerance": 0.0001,
+          "options": [
+            0.6,
+            0.57,
+            0.327,
+            0.4
+          ]
+        },
+        {
+          "label": "p̂ virtual",
+          "answer": 0.57,
+          "tolerance": 0.0001,
+          "options": [
+            0.57,
+            0.6,
+            0.285,
+            0.43
+          ]
+        },
+        {
+          "label": "Z observado",
+          "answer": 0.98343,
+          "tolerance": 0.0001,
+          "options": [
+            0.98343,
+            -0.98343,
+            1.645,
+            2.07833
+          ]
+        }
+      ],
+      "pattern": "K1/K2",
+      "stage": "guiada"
+    },
+    {
+      "id": "M10-U10-08",
+      "type": "numeric",
+      "title": "Calcular p en el E2",
+      "prompt": "Se pregunta si la continuidad presencial supera la virtual. Z ≈ 0,98343; α = 0,10. Seleccioná el valor p unilateral.",
+      "source": "Adaptación · Guía 10, ejercicio 2; datos comprobados en la consigna.",
+      "hints": [
+        "La alternativa apunta a mayor continuidad presencial.",
+        "La cola es derecha, con Z positivo.",
+        "Usá 1 − Φ(0,98343) y luego compará el resultado con 0,10."
+      ],
+      "solution": [
+        "p unilateral ≈ 0,16270. Como es superior a α = 0,10, no se rechaza H₀: evidencia insuficiente de que la continuidad presencial sea mayor."
+      ],
+      "answer": 0.1627,
+      "tolerance": 0.0001,
+      "options": [
+        0.1627,
+        0.3254,
+        0.8373,
+        0.01884
+      ],
+      "pattern": "K2/K3",
+      "stage": "guiada"
+    },
+    {
+      "id": "M10-U10-09",
+      "type": "choice",
+      "title": "Conclusión en salud",
+      "prompt": "En E2 se observó 60 % de continuidad presencial y 57 % virtual; el contraste unilateral arroja p ≈ 0,1627 con α = 0,10. ¿Cuál conclusión es admisible?",
+      "source": "Adaptación · Guía 10, ejercicio 2; datos comprobados en la consigna.",
+      "hints": [
+        "Una diferencia en la muestra no alcanza para una diferencia significativa.",
+        "No rechazar no demuestra equivalencia.",
+        "p supera 0,10 y la intervención clínica necesita datos adicionales."
+      ],
+      "solution": [
+        "No se rechaza H₀. La muestra muestra 3 puntos porcentuales más de continuidad presencial, pero p ≈ 0,1627 no supera el criterio estadístico de α = 0,10. El contraste no decide por sí solo una estrategia clínica."
+      ],
+      "options": [
+        "No se rechaza H₀; decidir seguimiento virtual requiere evidencia adicional.",
+        "Las modalidades son exactamente equivalentes porque p es grande.",
+        "Se rechaza H₀: debe eliminarse la modalidad virtual.",
+        "Hay superioridad poblacional probada de presencial porque 60 es mayor que 57."
+      ],
+      "answer": 0,
+      "pattern": "K3",
+      "stage": "comprobacion"
+    },
+    {
+      "id": "M10-U10-10",
+      "type": "truefalse",
+      "title": "Redondeos que no cierran",
+      "prompt": "E3 informa 51 % de 125 pacientes en terapia individual y 61 % de 158 en terapia combinada. Evaluá lo que permiten esos datos.",
+      "source": "Análisis de fuente · Guía 10, ejercicio 3; conteos no especificados.",
+      "hints": [
+        "Multiplicá cada porcentaje por su tamaño.",
+        "Si el resultado no es entero, el porcentaje es una aproximación.",
+        "Revisá 0,51×125 y 0,61×158; probá 96/158 y 97/158."
+      ],
+      "solution": [
+        "Los productos 63,75 y 96,38 no son conteos válidos de personas. Hay recuentos enteros compatibles con lo publicado. El 5 % de la consigna prevalece sobre la mención contradictoria de 8 % en el solucionario."
+      ],
+      "claims": [
+        {
+          "text": "El conteo individual exacto es 63,75 personas.",
+          "answer": false,
+          "explanation": "Las personas se cuentan con enteros; 63,75 es solo el producto 0,51×125."
+        },
+        {
+          "text": "La guía fija α = 0,05.",
+          "answer": true,
+          "explanation": "El enunciado usa el 5 % de significación, no el 8 %."
+        },
+        {
+          "text": "Con los porcentajes publicados se conoce unívocamente el conteo combinado.",
+          "answer": false,
+          "explanation": "Tanto 96/158 como 97/158 redondean aproximadamente a 61 %."
+        },
+        {
+          "text": "Una diferencia observada de 10 puntos garantiza rechazo de H₀.",
+          "answer": false,
+          "explanation": "Hace falta calcular el contraste y considerar la precisión de los datos."
+        }
+      ],
+      "pattern": "K1/K3",
+      "stage": "guiada"
+    },
+    {
+      "id": "M10-U10-11",
+      "type": "choice",
+      "title": "Una persona cambia la clave",
+      "prompt": "Análisis de sensibilidad del E3, NO conteos originales confirmados: individual = 64/125; escenario A combinado = 96/158; B combinado = 97/158. Alternativa combinada mayor, α = 0,05. ¿Qué pasa?",
+      "source": "Análisis de fuente · Guía 10, ejercicio 3; conteos no especificados.",
+      "hints": [
+        "Las proporciones publicadas están redondeadas.",
+        "Calculá p unilateral en cada escenario y compará con α.",
+        "En A, Z ≈ 1,611; en B, Z ≈ 1,719. La cola derecha de cada uno queda cerca de 0,05."
+      ],
+      "solution": [
+        "Escenario A: Z ≈ 1,6110; p ≈ 0,05359, no se rechaza. Escenario B: Z ≈ 1,7193; p ≈ 0,04278, sí se rechaza. Son reconstrucciones hipotéticas compatibles con porcentajes redondeados, no hechos informados. La conclusión exacta del E3 permanece BLOCKED/CONFLICT."
+      ],
+      "options": [
+        "A no rechaza H₀ y B sí: falta dato para una conclusión exacta única.",
+        "Ambas rechazan H₀.",
+        "Ninguna rechaza H₀.",
+        "A rechaza H₀ y B no."
+      ],
+      "answer": 0,
+      "pattern": "K2/K3",
+      "stage": "comprobacion"
+    },
+    {
+      "id": "M10-U10-12",
+      "type": "numeric",
+      "title": "La proporción de A",
+      "prompt": "E4: 42 de 96 personas de la modalidad A recordaron correctamente las pautas. Elegí la proporción observada.",
+      "source": "Adaptación · Guía 10, ejercicio 4(a–b); porcentaje de B publicado sin conteo entero.",
+      "hints": [
+        "Identificá la cantidad que recordó las pautas.",
+        "Dividí los casos positivos por el total de A.",
+        "Realizá 42/96 y luego, si lo necesitás, expresalo como porcentaje."
+      ],
+      "solution": [
+        "p̂A = 42/96 = 0,4375 = 43,75 %. Para B se publica 37 %, no un conteo exacto. La diferencia descriptiva aproximada es 6,75 puntos porcentuales."
+      ],
+      "answer": 0.4375,
+      "tolerance": 0.0001,
+      "options": [
+        0.4375,
+        0.37,
+        0.5625,
+        0.3231
+      ],
+      "pattern": "K1",
+      "stage": "guiada"
+    },
+    {
+      "id": "M10-U10-13",
+      "type": "choice",
+      "title": "Contraste aproximado en E4",
+      "prompt": "Modalidad A: 42/96; B: 37 % de 130 (porcentaje publicado). H₁: pA > pB; α = 0,10. Al usar las proporciones comunicadas como aproximación, Z ≈ 1,024 y p ≈ 0,153. ¿Qué conclusión corresponde?",
+      "source": "Adaptación · Guía 10, ejercicio 4(a–b); porcentaje de B publicado sin conteo entero.",
+      "hints": [
+        "Diferencia muestral no equivale a significación.",
+        "El criterio es p comparado con α.",
+        "El p aproximado 0,153 es mayor que 0,10."
+      ],
+      "solution": [
+        "El cálculo con porcentajes comunicados da p ≈ 0,15281, superior a 0,10. No se rechaza H₀. El 37 % de 130 no determina un conteo exacto, por lo que se comunica como aproximación y no como clave numérica exacta."
+      ],
+      "options": [
+        "No rechazar H₀; no hay evidencia suficiente de superioridad de A al 10 %.",
+        "Rechazar H₀ porque el porcentaje de A es mayor.",
+        "Rechazar H₀ porque 0,153 es menor que 0,10.",
+        "Probar que A y B tienen proporciones exactamente iguales."
+      ],
+      "answer": 0,
+      "pattern": "K2/K3",
+      "stage": "guiada"
+    },
+    {
+      "id": "M10-U10-14",
+      "type": "truefalse",
+      "title": "Tipo de error posible",
+      "prompt": "En E4 la decisión es no rechazar H₀ acerca de igualdad de proporciones. Evaluá los errores que podrían estar involucrados.",
+      "source": "Adaptación · Guía 10, ejercicio 4(a–b); porcentaje de B publicado sin conteo entero.",
+      "hints": [
+        "Identificá primero cuál fue la decisión efectivamente tomada.",
+        "El tipo II ocurre si no se rechazó una nula falsa.",
+        "La decisión fue no rechazar. Considerá que quizá haya una diferencia real no detectada."
+      ],
+      "solution": [
+        "Si A realmente es superior pero el contraste no lo detecta, el error posible en esta decisión es el tipo II. El error tipo I ocurre al rechazar una H₀ verdadera. α no equivale a la probabilidad de que una conclusión particular sea falsa."
+      ],
+      "claims": [
+        {
+          "text": "Si realmente A fuese superior y la prueba no lo detectó, sería error tipo II.",
+          "answer": true,
+          "explanation": "Tipo II: no rechazar una H₀ falsa."
+        },
+        {
+          "text": "No rechazar demuestra que ambas modalidades funcionan igual.",
+          "answer": false,
+          "explanation": "Evidencia insuficiente no demuestra igualdad."
+        },
+        {
+          "text": "Tipo I significa rechazar H₀ cuando era verdadera.",
+          "answer": true,
+          "explanation": "Definición del error de tipo I."
+        },
+        {
+          "text": "α = 0,10 significa que la decisión particular tiene 10 % de probabilidad de estar equivocada.",
+          "answer": false,
+          "explanation": "α controla una tasa del procedimiento, no una probabilidad posterior sobre la decisión."
+        }
+      ],
+      "pattern": "K3",
+      "stage": "comprobacion"
+    }
+  ],
   "extras": {},
   "cheats": [],
   "cheatBlocks": [
@@ -582,7 +1051,7 @@
   "multiOptions": {},
   "trueFalse": {},
   "review": {
-    "currentVersion": "unit10-work-in-progress-v2",
+    "currentVersion": "unit10-work-in-progress-practice-part1",
     "academicValidation": "DRAFT_PENDING_PRACTICE",
     "sourceCoverage": "Guía 10 E1–E4; Integrador P2 E3 y E12; parcial presencial 2026 pregunta 3(d)."
   }
