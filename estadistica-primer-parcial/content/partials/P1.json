@@ -1,0 +1,258 @@
+{
+  "schema": "psicologia-up.statistics.partial-summary.v1",
+  "partial": "1",
+  "title": "Primer parcial",
+  "revision": "2026-11-18",
+  "selection": "Ejercicios seleccionados de las unidades, con enunciados adaptados; no son una reproducción literal del examen.",
+  "sources": [
+    "Primer parcial presencial UP 2026 (ambos temas)",
+    "Integrador del primer parcial",
+    "Guías UP 1–4"
+  ],
+  "theory": [
+    {
+      "id": "P1-S01",
+      "title": "Investigación y diseño",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Primero distinguí el objetivo de la investigación, la población a la que apunta y la muestra efectivamente observada. La unidad de análisis es cada persona o caso medido; n es su cantidad, no la duración ni el rango del test."
+        },
+        {
+          "type": "list",
+          "items": [
+            "Experimental: el investigador asigna una intervención. Observacional: registra condiciones sin asignarlas.",
+            "Transversal: una medición por persona. Longitudinal: seguimiento de las mismas personas.",
+            "Grupos distintos son independientes; antes/después en la misma persona son datos apareados.",
+            "Asignación aleatoria de tratamientos no garantiza que la muestra represente a la población."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "P1-S02",
+      "title": "Variables e hipótesis",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "En un estudio sobre mindfulness y ansiedad, el tratamiento es una variable explicativa categórica nominal; el puntaje de ansiedad es una respuesta cuantitativa. El instrumento es la escala utilizada para producir ese puntaje, no la variable misma."
+        },
+        {
+          "type": "list",
+          "items": [
+            "Nominal: categorías sin orden (grupo o tratamiento). Ordinal: categorías ordenadas (bajo, medio, alto).",
+            "Discreta: conteos. Continua: mediciones; el número de decimales no decide por sí solo el tipo.",
+            "Una hipótesis debe predecir una relación comprobable: por ejemplo, distinto puntaje de ansiedad según tratamiento.",
+            "Que un test empiece en cero no demuestra que cero signifique ausencia absoluta del rasgo."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "P1-S03",
+      "title": "Frecuencias y tablas",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "FA cuenta casos; FR expresa la parte respecto de un total. FAA suma las FA hasta una categoría ordenada; FRA expresa esa acumulación relativa. Las acumuladas solo tienen interpretación cuando existe un orden significativo."
+        },
+        {
+          "type": "formula",
+          "expression": "N = ΣFA    ·    FR = FA/N    ·    FAAᵢ = Σₖ≤ᵢ FAₖ    ·    FRA = FAA/N"
+        },
+        {
+          "type": "paragraph",
+          "text": "En una tabla de doble entrada, el denominador depende de la pregunta: «del total» usa N; «de quienes recibieron tratamiento» usa el tamaño de ese grupo. Interpretar una fila exige mencionar la categoría, cantidad o porcentaje y base de comparación."
+        }
+      ]
+    },
+    {
+      "id": "P1-S04",
+      "title": "Centro y percentiles",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "La media usa todos los valores y es sensible a extremos. La mediana deja aproximadamente la mitad de observaciones a cada lado. La moda es el valor más frecuente y puede haber más de una."
+        },
+        {
+          "type": "list",
+          "items": [
+            "P10: cerca del 10 % queda en o por debajo del corte; P90 delimita el 10 % con puntajes superiores.",
+            "«El 10 % con mayor ansiedad supera…» se responde con P90, no P10.",
+            "Si tenés datos agrupados o una base, no inventes una mediana, una moda o un percentil a partir de la descripción del estudio."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "P1-S05",
+      "title": "Dispersión y forma",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Desvío estándar y varianza miden dispersión; el desvío está en las mismas unidades que los datos. Para comparar grupos con medias de diferente escala suele pedirse variación relativa."
+        },
+        {
+          "type": "formula",
+          "expression": "CV = (s / media) × 100 %"
+        },
+        {
+          "type": "paragraph",
+          "text": "Mayor CV significa mayor dispersión relativa, no necesariamente mayor desvío absoluto. Media > mediana > moda puede sugerir asimetría positiva; el orden inverso, negativa. Confirmá esa lectura con la distribución y no afirmes una forma exacta usando solo tres números."
+        }
+      ]
+    },
+    {
+      "id": "P1-S06",
+      "title": "Correlación y regresión",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "r mide dirección e intensidad de una asociación lineal y está entre −1 y +1. R² representa la proporción de variabilidad de Y que explica el ajuste lineal: para expresarla en porcentaje, multiplicá por 100."
+        },
+        {
+          "type": "formula",
+          "expression": "ŷ = a + bx    ·    b = Σ(x−x̄)(y−ȳ) / Σ(x−x̄)²    ·    a = ȳ − bx̄"
+        },
+        {
+          "type": "list",
+          "items": [
+            "Pendiente b: cambio predicho en Y por cada unidad adicional de X. Intercepto a: predicción para X=0, solo interpretable si tiene sentido en el contexto.",
+            "Para predecir, reemplazá X en la recta. Revisá si el valor está dentro del rango observado: extrapolar aumenta el riesgo.",
+            "Una correlación muy fuerte no demuestra causalidad."
+          ]
+        }
+      ]
+    }
+  ],
+  "cheatBlocks": [
+    {
+      "type": "heading",
+      "text": "Estudio"
+    },
+    {
+      "type": "list",
+      "items": [
+        "Población: conjunto objetivo. Muestra: casos observados. Unidad: cada caso. n: tamaño de la muestra.",
+        "Experimental = intervención asignada; observacional = condición registrada.",
+        "Transversal = una medición/caso; longitudinal = mismas personas seguidas.",
+        "Independientes = grupos distintos; apareados = observaciones vinculadas.",
+        "Nominal = categorías sin orden; ordinal = orden; discreta = conteos; continua = mediciones."
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "Frecuencias"
+    },
+    {
+      "type": "formula",
+      "expression": "FR = FA/N    ·    FR% = 100·FA/N"
+    },
+    {
+      "type": "formula",
+      "expression": "FAAᵢ = suma de FA hasta i    ·    FRA = FAA/N"
+    },
+    {
+      "type": "paragraph",
+      "text": "Para «dentro del grupo» dividí por el total del grupo, no por N global. La última FAA = N y la suma de FR = 1."
+    },
+    {
+      "type": "heading",
+      "text": "Medidas"
+    },
+    {
+      "type": "formula",
+      "expression": "media = Σx/n    ·    s² = Σ(x−media)²/(n−1)    ·    s = √s²"
+    },
+    {
+      "type": "list",
+      "items": [
+        "Moda = más frecuente; mediana = centro ordenado; P90 = corte del 10 % superior.",
+        "CV = 100·s/media. Mayor CV = mayor variabilidad relativa.",
+        "Media > mediana puede sugerir cola derecha; media < mediana, cola izquierda. Revisar gráfico."
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "Correlación y regresión"
+    },
+    {
+      "type": "formula",
+      "expression": "−1 ≤ r ≤ 1    ·    R²% = 100·r²"
+    },
+    {
+      "type": "formula",
+      "expression": "ŷ = a+bx    ·    b = Sxy/Sxx    ·    a = ȳ−bx̄"
+    },
+    {
+      "type": "list",
+      "items": [
+        "b: cambio esperado de Y al subir X una unidad. a: valor predicho en X=0.",
+        "Predicción: sustituir X y mirar si hay extrapolación.",
+        "Asociación ≠ causalidad."
+      ]
+    }
+  ],
+  "practiceRefs": [
+    {
+      "unit": "M1",
+      "id": "M1-V2-08"
+    },
+    {
+      "unit": "M1",
+      "id": "M1-V2-25"
+    },
+    {
+      "unit": "M1",
+      "id": "M1-V2-29"
+    },
+    {
+      "unit": "M1",
+      "id": "M1-V2-30"
+    },
+    {
+      "unit": "M2",
+      "id": "M2-P06"
+    },
+    {
+      "unit": "M2",
+      "id": "M2-P11"
+    },
+    {
+      "unit": "M2",
+      "id": "M2-P14"
+    },
+    {
+      "unit": "M2",
+      "id": "M2-P29"
+    },
+    {
+      "unit": "M3",
+      "id": "M3-P21"
+    },
+    {
+      "unit": "M3",
+      "id": "M3-P26"
+    },
+    {
+      "unit": "M3",
+      "id": "M3-P35"
+    },
+    {
+      "unit": "M4",
+      "id": "M4-P05"
+    },
+    {
+      "unit": "M4",
+      "id": "M4-P07"
+    },
+    {
+      "unit": "M4",
+      "id": "M4-P08"
+    },
+    {
+      "unit": "M4",
+      "id": "M4-P29"
+    }
+  ]
+}

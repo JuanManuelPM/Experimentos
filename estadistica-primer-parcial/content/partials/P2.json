@@ -1,0 +1,296 @@
+{
+  "schema": "psicologia-up.statistics.partial-summary.v1",
+  "partial": "2",
+  "title": "Segundo parcial",
+  "revision": "2026-11-18",
+  "selection": "Ejercicios seleccionados de las unidades, con enunciados adaptados; no son una reproducción literal del examen.",
+  "sources": [
+    "Segundo parcial presencial UP 2026 y 2025 (ambos temas)",
+    "Integrador del segundo parcial",
+    "Guías UP 6–10"
+  ],
+  "theory": [
+    {
+      "id": "P2-S01",
+      "title": "Tablas y probabilidades",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Una probabilidad es una proporción respecto de un universo claramente definido. En tablas de dos variables, los totales marginales y las intersecciones permiten contestar distintas preguntas, pero cambiar la condición cambia el denominador."
+        },
+        {
+          "type": "formula",
+          "expression": "P(A) = casos de A / N    ·    P(A∩B) = casos de A y B / N"
+        },
+        {
+          "type": "paragraph",
+          "text": "«De quienes viven solos, ¿cuántos tienen aislamiento?» divide por el total de quienes viven solos. «Entre quienes tienen aislamiento, ¿cuántos viven solos?» invierte la condición y, por tanto, el denominador."
+        }
+      ]
+    },
+    {
+      "id": "P2-S02",
+      "title": "Unión, condicional e independencia",
+      "blocks": [
+        {
+          "type": "formula",
+          "expression": "P(A∪B) = P(A)+P(B)−P(A∩B)"
+        },
+        {
+          "type": "formula",
+          "expression": "P(A|B) = P(A∩B)/P(B)    ·    P(no A) = 1−P(A)"
+        },
+        {
+          "type": "list",
+          "items": [
+            "«A o B»: unión; «A y B»: intersección; «ninguno»: complemento de la unión.",
+            "Independencia: P(A∩B)=P(A)P(B). Exclusión: P(A∩B)=0. No son sinónimos.",
+            "Probabilidad condicional: siempre comprobá qué grupo aparece después de «dado que»."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "P2-S03",
+      "title": "Distribución normal",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "La normal se describe por media μ y desvío estándar σ. Si te dan la varianza σ², primero obtené σ. Para hallar proporciones, convertí X en z y consultá la probabilidad acumulada izquierda Φ(z)."
+        },
+        {
+          "type": "formula",
+          "expression": "z = (x−μ)/σ    ·    P(X>x)=1−Φ(z)"
+        },
+        {
+          "type": "list",
+          "items": [
+            "Entre dos valores: Φ(z superior)−Φ(z inferior).",
+            "Para encontrar un percentil, partí de su área izquierda y calculá x=μ+z·σ.",
+            "P10 normal usa z≈−1,2816; P90 usa z≈+1,2816. P25 y P75 usan ±0,6745.",
+            "Revisá el sentido de los puntajes: en tiempo de reacción, un valor menor puede significar mejor rendimiento."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "P2-S04",
+      "title": "Hipótesis y valor p",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "H₀ representa la referencia contra la que se contrasta; H₁ es la alternativa formulada antes de mirar los datos. Una hipótesis sobre «diferencia» suele ser bilateral (≠); sobre «mayor» o «menor», unilateral (> o <)."
+        },
+        {
+          "type": "formula",
+          "expression": "p ≤ α → rechazar H₀    ·    p > α → no rechazar H₀"
+        },
+        {
+          "type": "paragraph",
+          "text": "No rechazar H₀ no demuestra igualdad ni ausencia de efecto. El valor p tampoco es la probabilidad de que H₀ sea verdadera. Error I: rechazar una H₀ verdadera (riesgo α). Error II: no rechazar una H₀ falsa (riesgo β); potencia=1−β."
+        }
+      ]
+    },
+    {
+      "id": "P2-S05",
+      "title": "Qué prueba elegir",
+      "blocks": [
+        {
+          "type": "comparison",
+          "columns": [
+            {
+              "label": "Resultado cuantitativo",
+              "items": [
+                "Mismas personas antes/después → t apareada sobre diferencias.",
+                "Dos grupos independientes → t de muestras independientes; revisar supuestos y varianzas (Welch cuando corresponda)."
+              ]
+            },
+            {
+              "label": "Resultado sí/no",
+              "items": [
+                "Se comparan porcentajes de dos grupos → contraste de proporciones.",
+                "Una tabla categórica no permite calcular una t sobre puntajes no informados."
+              ]
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Si d=después−antes, una reducción implica H₁: μd<0. Si invertís el orden de la resta, se invierte el signo. La prueba y la conclusión deben referirse a la variable efectivamente medida."
+        }
+      ]
+    },
+    {
+      "id": "P2-S06",
+      "title": "Pruebas de medias y proporciones",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "En una t apareada, primero calculás la diferencia de cada persona, luego su media y su desvío. En una t independiente, el error estándar usa la variabilidad de los dos grupos."
+        },
+        {
+          "type": "formula",
+          "expression": "t apareada = media(d) / (s_d/√n)"
+        },
+        {
+          "type": "paragraph",
+          "text": "Para dos proporciones, calculá p̂₁=x₁/n₁ y p̂₂=x₂/n₂. Bajo H₀ de igualdad, el error estándar del Z habitual usa la proporción combinada (x₁+x₂)/(n₁+n₂). Después elegí una o dos colas según H₁, no según el signo observado."
+        },
+        {
+          "type": "formula",
+          "expression": "Z = (p̂₁−p̂₂) / √[p̂(1−p̂)(1/n₁+1/n₂)]"
+        }
+      ]
+    }
+  ],
+  "cheatBlocks": [
+    {
+      "type": "heading",
+      "text": "Tablas y probabilidad"
+    },
+    {
+      "type": "formula",
+      "expression": "P(A)=n(A)/N    ·    P(A∩B)=n(A y B)/N"
+    },
+    {
+      "type": "formula",
+      "expression": "P(A|B)=n(A y B)/n(B)"
+    },
+    {
+      "type": "list",
+      "items": [
+        "«Dado B» → denominador n(B). Invertir A|B cambia la base.",
+        "Unión = suma de marginales − intersección; ninguno = 1 − unión.",
+        "Excluyentes: intersección 0. Independientes: intersección = producto."
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "Normal"
+    },
+    {
+      "type": "formula",
+      "expression": "z=(x−μ)/σ    ·    x=μ+z·σ"
+    },
+    {
+      "type": "list",
+      "items": [
+        "Izquierda: Φ(z). Derecha: 1−Φ(z). Entre a y b: Φ(z_b)−Φ(z_a).",
+        "P10/P90: z=∓1,2816. P25/P75: z=∓0,6745.",
+        "Si te dan varianza, σ=√varianza. Áreas siempre entre 0 y 1."
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "Hipótesis"
+    },
+    {
+      "type": "list",
+      "items": [
+        "«Diferente»: H₁ ≠; «supera»: H₁ >; «reduce»: H₁ < (según orden de la resta).",
+        "p≤α → rechazar H₀; p>α → no rechazar.",
+        "Error I: rechazar H₀ verdadera; error II: no rechazar H₀ falsa.",
+        "No rechazar ≠ aceptar H₀; significación ≠ importancia clínica."
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "Elección de prueba"
+    },
+    {
+      "type": "list",
+      "items": [
+        "Mismas personas dos momentos + puntaje → t apareada.",
+        "Dos grupos distintos + puntaje → t independiente (Welch si corresponde).",
+        "Dos grupos distintos + sí/no → diferencia de proporciones.",
+        "Solo tabla categórica: no calcules t sin puntajes."
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "Estadísticos"
+    },
+    {
+      "type": "formula",
+      "expression": "t pareada = media(d)/(s_d/√n)"
+    },
+    {
+      "type": "formula",
+      "expression": "p̂₁=x₁/n₁    ·    p̂₂=x₂/n₂"
+    },
+    {
+      "type": "formula",
+      "expression": "p̂=(x₁+x₂)/(n₁+n₂)    ·    Z=(p̂₁−p̂₂)/√[p̂(1−p̂)(1/n₁+1/n₂)]"
+    },
+    {
+      "type": "paragraph",
+      "text": "Para hipótesis unilaterales, la dirección de la alternativa determina la cola del valor p."
+    }
+  ],
+  "practiceRefs": [
+    {
+      "unit": "M6",
+      "id": "M6-P09"
+    },
+    {
+      "unit": "M6",
+      "id": "M6-P10"
+    },
+    {
+      "unit": "M6",
+      "id": "M6-P14"
+    },
+    {
+      "unit": "M7",
+      "id": "M7.27"
+    },
+    {
+      "unit": "M7",
+      "id": "M7.28"
+    },
+    {
+      "unit": "M7",
+      "id": "M7.29"
+    },
+    {
+      "unit": "M8",
+      "id": "M8.H1.02"
+    },
+    {
+      "unit": "M8",
+      "id": "M8.H2.12"
+    },
+    {
+      "unit": "M8",
+      "id": "M8.H2.13"
+    },
+    {
+      "unit": "M9",
+      "id": "M9.02"
+    },
+    {
+      "unit": "M9",
+      "id": "M9.04"
+    },
+    {
+      "unit": "M9",
+      "id": "M9.15"
+    },
+    {
+      "unit": "M9",
+      "id": "M9.24"
+    },
+    {
+      "unit": "M10",
+      "id": "M10-U10-02"
+    },
+    {
+      "unit": "M10",
+      "id": "M10-U10-04"
+    },
+    {
+      "unit": "M10",
+      "id": "M10-U10-20"
+    }
+  ]
+}
