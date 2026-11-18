@@ -115,6 +115,14 @@
           "expression": "ŷ = a + bx    ·    b = Σ(x−x̄)(y−ȳ) / Σ(x−x̄)²    ·    a = ȳ − bx̄"
         },
         {
+          "type": "formula",
+          "expression": "r = Sxy / √(Sxx·Syy)   ·   Sxy = Σ(x−x̄)(y−ȳ)   ·   Sxx = Σ(x−x̄)²   ·   Syy = Σ(y−ȳ)²"
+        },
+        {
+          "type": "paragraph",
+          "text": "Para calcular r y la pendiente, mantené aparejados los datos (x,y) de cada persona; calculá las medias, los desvíos respecto de ellas y sus productos. Si r es negativo, a valores altos de X tienden a corresponder valores bajos de Y."
+        },
+        {
           "type": "list",
           "items": [
             "Pendiente b: cambio predicho en Y por cada unidad adicional de X. Intercepto a: predicción para X=0, solo interpretable si tiene sentido en el contexto.",
@@ -179,6 +187,10 @@
     {
       "type": "formula",
       "expression": "−1 ≤ r ≤ 1    ·    R²% = 100·r²"
+    },
+    {
+      "type": "formula",
+      "expression": "r = Sxy / √(Sxx·Syy)    ·    Sxy = Σ(x−x̄)(y−ȳ)"
     },
     {
       "type": "formula",
@@ -256,9 +268,9 @@
           "explanation": "La intervención es asignada, no observada pasivamente."
         },
         {
-          "text": "Se puede deducir el tamaño exacto de muestra a partir de las 8 semanas de tratamiento.",
-          "answer": false,
-          "explanation": "La duración no informa el número de pacientes."
+          "text": "Como se informa una medición final, no se puede calcular el cambio individual de GAD-7 respecto del inicio solo con este enunciado.",
+          "answer": true,
+          "explanation": "Para evaluar un cambio dentro de cada paciente se requieren valores antes y después."
         },
         {
           "text": "El estudio es longitudinal necesariamente porque el tratamiento dura ocho semanas.",
@@ -298,9 +310,9 @@
           "explanation": "El test ofrece puntajes de autoestima."
         },
         {
-          "text": "Rosenberg es el instrumento, no la población objetivo.",
+          "text": "El diseño permite plantear una hipótesis comparativa sobre el puntaje medio de autoestima en ambos grupos.",
           "answer": true,
-          "explanation": "La escala registra el resultado; la población son los sujetos a los que pretende generalizarse."
+          "explanation": "La pregunta es si la distribución de puntajes difiere según el tratamiento asignado."
         },
         {
           "text": "Los puntajes más altos prueban, por sí solos, la eficacia estadísticamente significativa del programa.",

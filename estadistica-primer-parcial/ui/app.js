@@ -1,4 +1,4 @@
-import {loadStudyContent} from './data.js?v=exam-walkthrough-v2-20261118';
+import {loadStudyContent} from './data.js?v=exam-walkthrough-v3-20261118';
 import {createRenderers} from './components.js?v=exam-walkthrough-v2-20261118';
 import {TAB_ORDER,buildRouteURL,routeFromLocation,bindGestures} from './navigation.js?v=speedrun-20261117a';
 // UI orchestration, no course content or exercise keys in this file.
@@ -54,7 +54,7 @@ function decorateTheory(summary){
   const d=document.createElement('dialog');
   d.id='practice-dialog';d.className='practice-dialog';
   d.setAttribute('aria-labelledby','practice-dialog-title');
-  d.innerHTML='<div class="practice-toolbar"><div class="practice-toolbar-title"><small>Práctica de este tema</small><strong id="practice-dialog-title"></strong></div><button type="button" data-practice-close="1" aria-label="Cerrar ejercicios">Cerrar ×</button></div><div class="practice-dialog-content"></div>';
+  d.innerHTML='<div class="practice-toolbar"><div class="practice-toolbar-title"><strong id="practice-dialog-title"></strong></div><button type="button" data-practice-close="1" aria-label="Cerrar ejercicios">Cerrar ×</button></div><div class="practice-dialog-content"></div>';
   d.addEventListener('click',e=>{if(e.target===d)d.close()});
   MAIN.append(d);
 }
