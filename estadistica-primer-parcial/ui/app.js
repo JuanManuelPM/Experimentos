@@ -1,5 +1,5 @@
 import {loadStudyContent} from './data.js';
-import {createRenderers} from './components.js';
+import {createRenderers} from './components.js?v=practice-review-64aedbe3';
 import {TAB_ORDER,buildRouteURL,routeFromLocation,bindGestures} from './navigation.js';
 // UI orchestration, no course content or exercise keys in this file.
 (async function(){'use strict';
