@@ -3,7 +3,7 @@
   "moduleId": "M10",
   "id": "10",
   "partial": "P2",
-  "status": "draft",
+  "status": "ready",
   "title": "Comparación de proporciones",
   "intro": "Dos grupos, respuestas sí/no. Hipótesis, contraste Z y errores de interpretación.",
   "source": "Guía 10 e integrador del segundo parcial, Universidad de Palermo. Contenidos redactados como adaptaciones didácticas, no transcripciones.",
@@ -874,6 +874,485 @@
       ],
       "pattern": "K3",
       "stage": "comprobacion"
+    },
+    {
+      "id": "M10-U10-15",
+      "type": "choice",
+      "title": "Hipótesis sin dirección",
+      "prompt": "Integrador E12: el porcentaje con ansiedad clínica se compara entre TCC (A) y mindfulness (B); pregunta si las proporciones poblacionales son diferentes, sin dirección.",
+      "source": "Adaptación · Integrador del segundo parcial, ejercicio 12(a–b); datos y valor p cotejados.",
+      "hints": [
+        "«Diferentes» no afirma cuál grupo debería ser mayor.",
+        "Escribí una alternativa bilateral sobre proporciones poblacionales.",
+        "Igualdad en H₀, diferencia en cualquiera de los dos sentidos en H₁."
+      ],
+      "solution": [
+        "H₀: pTCC = pMindfulness. H₁: pTCC ≠ pMindfulness. Es bilateral, aunque las proporciones observadas terminen siendo desiguales."
+      ],
+      "options": [
+        "H₀: pA = pB; H₁: pA ≠ pB",
+        "H₀: pA > pB; H₁: pA < pB",
+        "H₀: p̂A = 0,35; H₁: p̂B = 0,20",
+        "H₀: μA = μB; H₁: μA ≠ μB"
+      ],
+      "answer": 0,
+      "pattern": "H1",
+      "stage": "guiada"
+    },
+    {
+      "id": "M10-U10-16",
+      "type": "multi",
+      "title": "Contraste del integrador",
+      "prompt": "Integrador E12: TCC = 42 de 120 con ansiedad clínica; mindfulness = 20 de 100. Calculá Z con orden TCC − mindfulness y p bilateral.",
+      "source": "Adaptación · Integrador del segundo parcial, ejercicio 12(a–b); datos y valor p cotejados.",
+      "hints": [
+        "Calculá las proporciones de cada tratamiento usando su propio tamaño.",
+        "La proporción conjunta usa 62 casos sobre 220 personas; la cola es bilateral.",
+        "p̂=62/220; EE₀=√[p̂(1−p̂)(1/120+1/100)]; Z=(0,35−0,20)/EE₀."
+      ],
+      "solution": [
+        "TCC: 42/120=0,35; mindfulness: 20/100=0,20. p̂ conjunta=62/220≈0,281818; EE₀≈0,060915; Z≈2,46246. p bilateral≈0,01380; coincide por redondeo con el p=0,014 informado en el integrador."
+      ],
+      "fields": [
+        {
+          "label": "Proporción conjunta",
+          "answer": 0.281818,
+          "tolerance": 0.0001,
+          "options": [
+            0.281818,
+            0.35,
+            0.2,
+            0.55
+          ]
+        },
+        {
+          "label": "Error estándar",
+          "answer": 0.060915,
+          "tolerance": 0.0001,
+          "options": [
+            0.060915,
+            0.15,
+            0.02818,
+            0.092
+          ]
+        },
+        {
+          "label": "Z",
+          "answer": 2.462458,
+          "tolerance": 0.0001,
+          "options": [
+            2.462458,
+            -2.462458,
+            1.644854,
+            0.15
+          ]
+        },
+        {
+          "label": "p bilateral",
+          "answer": 0.013799,
+          "tolerance": 0.0001,
+          "options": [
+            0.013799,
+            0.027598,
+            0.986201,
+            0.162698
+          ]
+        }
+      ],
+      "pattern": "K2/H2",
+      "stage": "guiada"
+    },
+    {
+      "id": "M10-U10-17",
+      "type": "truefalse",
+      "title": "Región crítica y lectura clínica",
+      "prompt": "Integrador E12(b): se informa p = 0,014 con α = 0,05; H₁: pTCC ≠ pMindfulness. Evaluá.",
+      "source": "Adaptación · Integrador del segundo parcial, ejercicio 12(a–b); datos y valor p cotejados.",
+      "hints": [
+        "La región crítica corresponde a ambos extremos, no a un solo extremo.",
+        "Usá p frente a α o el valor absoluto de Z frente a 1,96.",
+        "p=0,014 frente a 0,05; Z≈2,462 está fuera del intervalo central de −1,96 a 1,96."
+      ],
+      "solution": [
+        "Región crítica bilateral: |Z| ≥ 1,96. Con Z≈2,462 y p=0,014 se rechaza H₀. Hay evidencia estadística de proporciones poblacionales diferentes entre tratamientos. En la muestra: 35 % en TCC y 20 % en mindfulness; no se demuestra causalidad."
+      ],
+      "claims": [
+        {
+          "text": "Se rechaza H₀ al 5 %.",
+          "answer": true,
+          "explanation": "0,014 es menor que 0,05."
+        },
+        {
+          "text": "Para Z bilateral al 5 %, la región crítica aproximada es |Z| ≥ 1,96.",
+          "answer": true,
+          "explanation": "Cada cola tiene 2,5 %; |2,462| supera 1,96."
+        },
+        {
+          "text": "Queda demostrado que TCC provoca ansiedad clínica.",
+          "answer": false,
+          "explanation": "La comparación no demuestra causalidad."
+        },
+        {
+          "text": "Los porcentajes poblacionales son exactamente 35 % y 20 %.",
+          "answer": false,
+          "explanation": "Esos valores son estimaciones muestrales."
+        }
+      ],
+      "pattern": "K3/H2",
+      "stage": "comprobacion"
+    },
+    {
+      "id": "M10-U10-18",
+      "type": "multi",
+      "title": "Comparar tasas, no cantidades",
+      "prompt": "Integrador E3(b): 239/506 hombres y 225/586 mujeres eligieron «felicidad». Elegí las proporciones correspondientes.",
+      "source": "Adaptación · Integrador del segundo parcial, ejercicio 3(b–c); conteos cotejados.",
+      "hints": [
+        "No dividas ambos conteos por el total combinado.",
+        "Compará la misma respuesta dentro del total de cada sexo.",
+        "Dividí 239/506 y 225/586."
+      ],
+      "solution": [
+        "En hombres: 239/506 ≈ 0,47233, o 47,23 %. En mujeres: 225/586 ≈ 0,38396, o 38,40 %. Descriptivamente, elegir «felicidad» fue más frecuente en hombres. El inciso no solicita prueba inferencial."
+      ],
+      "fields": [
+        {
+          "label": "Proporción en hombres",
+          "answer": 0.472332,
+          "tolerance": 0.0001,
+          "options": [
+            0.472332,
+            0.425,
+            0.35,
+            0.526
+          ]
+        },
+        {
+          "label": "Proporción en mujeres",
+          "answer": 0.383959,
+          "tolerance": 0.0001,
+          "options": [
+            0.383959,
+            0.225,
+            0.416,
+            0.617
+          ]
+        }
+      ],
+      "pattern": "K1",
+      "stage": "guiada"
+    },
+    {
+      "id": "M10-U10-19",
+      "type": "multi",
+      "title": "Edad y dos proporciones",
+      "prompt": "Integrador E3(c): 115 de 220 personas de 18–34 y 120 de 310 mayores eligieron «felicidad». Se quiere saber si las proporciones poblacionales son diferentes; α = 0,05.",
+      "source": "Adaptación · Integrador del segundo parcial, ejercicio 3(b–c); conteos cotejados.",
+      "hints": [
+        "Este inciso usa grupos de edades, no los totales de la tabla por sexo.",
+        "Calculá dos proporciones y un Z de igualdad bilateral.",
+        "p̂=(115+120)/(220+310); EE₀ con 220 y 310; dividí (115/220−120/310) por EE₀."
+      ],
+      "solution": [
+        "Jóvenes: 115/220≈0,52273; mayores: 120/310≈0,38710. p̂ conjunta=235/530≈0,443396; EE₀≈0,043794; Z≈3,0970. p bilateral≈0,001955: se rechaza H₀ al 5 %, suponiendo condiciones de inferencia adecuadas."
+      ],
+      "fields": [
+        {
+          "label": "p̂ jóvenes",
+          "answer": 0.522727,
+          "tolerance": 0.0001,
+          "options": [
+            0.522727,
+            0.387097,
+            0.443396,
+            0.25
+          ]
+        },
+        {
+          "label": "p̂ mayores",
+          "answer": 0.387097,
+          "tolerance": 0.0001,
+          "options": [
+            0.387097,
+            0.522727,
+            0.612903,
+            0.443396
+          ]
+        },
+        {
+          "label": "Z (jóvenes − mayores)",
+          "answer": 3.09701,
+          "tolerance": 0.0001,
+          "options": [
+            3.09701,
+            -3.09701,
+            1.95996,
+            0.13563
+          ]
+        },
+        {
+          "label": "p bilateral",
+          "answer": 0.001955,
+          "tolerance": 0.0001,
+          "options": [
+            0.001955,
+            0.01,
+            0.098,
+            0.998045
+          ]
+        }
+      ],
+      "pattern": "K2/K3",
+      "stage": "comprobacion"
+    },
+    {
+      "id": "M10-U10-20",
+      "type": "truefalse",
+      "title": "Selector de pruebas del parcial",
+      "prompt": "En la pregunta 3 de los parciales 2026 aparece una tabla de presencia/ausencia y, en otro inciso, un puntaje de 0 a 100 evaluado en dos grupos independientes.",
+      "source": "Adaptación conceptual · segundo parcial presencial 2026, pregunta 3(d), temas 1 y 2.",
+      "hints": [
+        "Fijate qué resultado pide comparar cada inciso.",
+        "La prueba depende del tipo de variable y de si los grupos comparten personas.",
+        "Binario en grupos distintos: proporciones; puntaje entre personas distintas: medias independientes; puntaje repetido: medias apareadas."
+      ],
+      "solution": [
+        "No se selecciona Z solo porque el enunciado incluya una tabla sí/no. Las comparaciones de puntajes 0–100 entre muestras independientes son de medias, habitualmente t independiente. Los porcentajes de una tabla pueden pedirse solo de forma descriptiva."
+      ],
+      "claims": [
+        {
+          "text": "Para comparar medias de un puntaje en dos grupos distintos suele corresponder t independiente.",
+          "answer": true,
+          "explanation": "El resultado es cuantitativo y los grupos son independientes."
+        },
+        {
+          "text": "Tener una tabla binaria obliga a usar Z en todos los incisos.",
+          "answer": false,
+          "explanation": "Algunos incisos son descriptivos y otro usa un puntaje."
+        },
+        {
+          "text": "Para comparar sí/no entre grupos distintos puede corresponder Z de dos proporciones.",
+          "answer": true,
+          "explanation": "Depende de que se solicite inferencia sobre proporciones y se cumplan los supuestos."
+        },
+        {
+          "text": "Antes/después del mismo puntaje en las mismas personas es una prueba de proporciones.",
+          "answer": false,
+          "explanation": "Es un diseño apareado de puntajes."
+        }
+      ],
+      "pattern": "K1",
+      "stage": "comprobacion"
+    },
+    {
+      "id": "M10-U10-21",
+      "type": "multi",
+      "title": "Transferencia: mejora en A",
+      "prompt": "Datos nuevos: en servicio A mejoran 44/80 personas y en B 40/100. H₁: pA > pB; α = 0,05.",
+      "source": "Transferencia creada para la unidad 10; datos nuevos y solución recalculada.",
+      "hints": [
+        "Calculá las tasas individuales antes de agrupar.",
+        "Agrupá bajo H₀ y elegí cola derecha.",
+        "p̂=84/180; Z=(0,55−0,40)/√[p̂(1−p̂)(1/80+1/100)]."
+      ],
+      "solution": [
+        "p̂A=0,55; p̂B=0,40; p̂ conjunta=84/180≈0,466667; EE₀≈0,074833; Z≈2,00446; p unilateral≈0,02251. Como p es menor que 0,05, se rechaza H₀ a favor de mayor proporción en A."
+      ],
+      "fields": [
+        {
+          "label": "Proporción conjunta",
+          "answer": 0.466667,
+          "tolerance": 0.0001,
+          "options": [
+            0.466667,
+            0.55,
+            0.4,
+            0.15
+          ]
+        },
+        {
+          "label": "Z",
+          "answer": 2.00446,
+          "tolerance": 0.0001,
+          "options": [
+            2.00446,
+            -2.00446,
+            1.28155,
+            0.20045
+          ]
+        },
+        {
+          "label": "p unilateral",
+          "answer": 0.02251,
+          "tolerance": 0.0001,
+          "options": [
+            0.02251,
+            0.04502,
+            0.97749,
+            0.1627
+          ]
+        }
+      ],
+      "pattern": "K1/K2/K3",
+      "stage": "transferencia"
+    },
+    {
+      "id": "M10-U10-22",
+      "type": "multi",
+      "title": "Transferencia: cola izquierda",
+      "prompt": "Datos nuevos: el grupo A presenta 45 casos entre 150 personas; B presenta 45 entre 120. H₁: pA < pB y α = 0,05.",
+      "source": "Transferencia creada para la unidad 10; datos nuevos y solución recalculada.",
+      "hints": [
+        "Los conteos son iguales, pero los tamaños no.",
+        "Como A es menor, Z calculado A−B debe ser negativo.",
+        "p̂A=45/150; p̂B=45/120; p̂ conjunta=90/270; buscá Φ(Z), cola izquierda."
+      ],
+      "solution": [
+        "p̂A=0,30 y p̂B=0,375. p̂ conjunta=1/3; EE₀≈0,057735; Z≈−1,29904; p izquierda≈0,09697. No se rechaza H₀ al 5 %. Con α=0,10 la decisión sí cambiaría."
+      ],
+      "fields": [
+        {
+          "label": "Z (A − B)",
+          "answer": -1.299038,
+          "tolerance": 0.0001,
+          "options": [
+            -1.299038,
+            1.299038,
+            -2.42594,
+            -0.075
+          ]
+        },
+        {
+          "label": "p de cola izquierda",
+          "answer": 0.096965,
+          "tolerance": 0.0001,
+          "options": [
+            0.096965,
+            0.19393,
+            0.903035,
+            0.02251
+          ]
+        }
+      ],
+      "pattern": "K2/K3",
+      "stage": "transferencia"
+    },
+    {
+      "id": "M10-U10-23",
+      "type": "multi",
+      "title": "Transferencia: bilateral y negativo",
+      "prompt": "Datos nuevos: 27/90 de A y 44/110 de B presentan síntomas. H₁: pA ≠ pB; α = 0,05.",
+      "source": "Transferencia creada para la unidad 10; datos nuevos y solución recalculada.",
+      "hints": [
+        "«Difieren» define dos colas, aunque Z resulte negativo.",
+        "Primero calculá Z; después tomá ambas colas igualmente extremas.",
+        "p̂=71/200=0,355; EE₀=√[p̂(1−p̂)(1/90+1/110)]; p=2×Φ(−|Z|)."
+      ],
+      "solution": [
+        "p̂A=0,30 y p̂B=0,40; p̂ conjunta=0,355; EE₀≈0,068013; Z≈−1,47031; p bilateral≈0,14148. No se rechaza H₀ al 5 %."
+      ],
+      "fields": [
+        {
+          "label": "Z (A − B)",
+          "answer": -1.47031,
+          "tolerance": 0.0001,
+          "options": [
+            -1.47031,
+            1.47031,
+            -0.1,
+            -2.07833
+          ]
+        },
+        {
+          "label": "p bilateral",
+          "answer": 0.14148,
+          "tolerance": 0.0001,
+          "options": [
+            0.14148,
+            0.07074,
+            0.85852,
+            0.02251
+          ]
+        }
+      ],
+      "pattern": "K2/K3",
+      "stage": "transferencia"
+    },
+    {
+      "id": "M10-U10-24",
+      "type": "choice",
+      "title": "Transferencia: cambiar alfa",
+      "prompt": "Datos nuevos: A 26/50, B 30/80. H₁: pA > pB. El contraste da p≈0,05216. ¿Cómo se decide para dos niveles distintos?",
+      "source": "Transferencia creada para la unidad 10; datos nuevos y solución recalculada.",
+      "hints": [
+        "No confundas p con α.",
+        "Compará 0,05216 por separado con ambos niveles.",
+        "0,05216 supera 0,05 y es menor que 0,10."
+      ],
+      "solution": [
+        "p̂A=0,52; p̂B=0,375; p̂ conjunta=56/130≈0,43077. EE₀≈0,08927; Z≈1,62428; p derecha≈0,05216. No rechazar al 5 %; rechazar al 10 %. El nivel se establece antes del análisis."
+      ],
+      "options": [
+        "No rechazar con α=0,05; rechazar con α=0,10.",
+        "Rechazar con ambos niveles.",
+        "No rechazar con ambos niveles.",
+        "Rechazar con α=0,05 y no con α=0,10."
+      ],
+      "answer": 0,
+      "pattern": "K3/H2",
+      "stage": "transferencia"
+    },
+    {
+      "id": "M10-U10-25",
+      "type": "multi",
+      "title": "Transferencia: resolver en dos colas",
+      "prompt": "Datos nuevos: A registra 40/100 casos y B 30/120. H₁: pA ≠ pB; α = 0,05.",
+      "source": "Transferencia creada para la unidad 10; datos nuevos y solución recalculada.",
+      "hints": [
+        "Aunque A sea más grande, la hipótesis no establece dirección.",
+        "Calculá Z bajo igualdad y duplicá una cola en la magnitud |Z|.",
+        "p̂=70/220; EE₀=√[p̂(1−p̂)(1/100+1/120)]; Z=(0,40−0,25)/EE₀."
+      ],
+      "solution": [
+        "p̂A=0,40; p̂B=0,25; p̂ conjunta≈0,318182; EE₀≈0,063066; Z≈2,37847. p bilateral≈0,01738, por lo que se rechaza H₀ al 5 % en favor de una diferencia de proporciones."
+      ],
+      "fields": [
+        {
+          "label": "Proporción conjunta",
+          "answer": 0.318182,
+          "tolerance": 0.0001,
+          "options": [
+            0.318182,
+            0.4,
+            0.25,
+            0.15
+          ]
+        },
+        {
+          "label": "Z (A − B)",
+          "answer": 2.378475,
+          "tolerance": 0.0001,
+          "options": [
+            2.378475,
+            -2.378475,
+            1.644854,
+            0.23785
+          ]
+        },
+        {
+          "label": "p bilateral",
+          "answer": 0.017384,
+          "tolerance": 0.0001,
+          "options": [
+            0.017384,
+            0.034768,
+            0.982616,
+            0.141478
+          ]
+        }
+      ],
+      "pattern": "K2/K3",
+      "stage": "transferencia"
     }
   ],
   "extras": {},
@@ -1051,8 +1530,117 @@
   "multiOptions": {},
   "trueFalse": {},
   "review": {
-    "currentVersion": "unit10-work-in-progress-practice-part1",
-    "academicValidation": "DRAFT_PENDING_PRACTICE",
-    "sourceCoverage": "Guía 10 E1–E4; Integrador P2 E3 y E12; parcial presencial 2026 pregunta 3(d)."
+    "currentVersion": "editorial-v2-unit10-20261117",
+    "academicValidation": "VERIFIED_WITH_DOCUMENTED_CONFLICT",
+    "sourceCoverage": "Guía 10 E1, E2, E3, E4a/b; Integrador P2 E3b/c, E12a/b; selector de pruebas de los parciales 2026 Q3d. Integrador E3a pertenece al patrón de probabilidades globales, no se presenta como prueba de proporciones.",
+    "sources": [
+      {
+        "id": "M10",
+        "state": "SOURCE_CONFIRMED",
+        "url": "https://drive.google.com/file/d/14e76LlUQIu029f_babrhcj76OyNwHL_i/view",
+        "items": [
+          "E1",
+          "E2",
+          "E3",
+          "E4a",
+          "E4b"
+        ]
+      },
+      {
+        "id": "P2-I",
+        "state": "SOURCE_CONFIRMED",
+        "url": "https://drive.google.com/file/d/1ueQeBauNYJO_BPII0l6J0jtRYAzpHa4H/view",
+        "items": [
+          "E3b",
+          "E3c",
+          "E12a",
+          "E12b"
+        ]
+      },
+      {
+        "id": "P2-26",
+        "state": "SOURCE_CONFIRMED",
+        "url": "https://docs.google.com/document/d/11Pp0VH9ECRYMxH4Qr2zisPKurqujCHec/edit",
+        "items": [
+          "Tema1 E3d",
+          "Tema2 E3d"
+        ]
+      }
+    ],
+    "patterns": [
+      {
+        "id": "K1",
+        "name": "Resultado binario, muestras independientes, proporciones por grupo",
+        "activities": [
+          "M10-U10-01",
+          "M10-U10-02",
+          "M10-U10-07",
+          "M10-U10-12",
+          "M10-U10-18",
+          "M10-U10-20",
+          "M10-U10-21"
+        ]
+      },
+      {
+        "id": "K2",
+        "name": "Formulación y contraste Z con cola correcta",
+        "activities": [
+          "M10-U10-03",
+          "M10-U10-04",
+          "M10-U10-05",
+          "M10-U10-08",
+          "M10-U10-11",
+          "M10-U10-13",
+          "M10-U10-15",
+          "M10-U10-16",
+          "M10-U10-19",
+          "M10-U10-22",
+          "M10-U10-23",
+          "M10-U10-25"
+        ]
+      },
+      {
+        "id": "K3",
+        "name": "Interpretación, errores y límites de la información",
+        "activities": [
+          "M10-U10-06",
+          "M10-U10-09",
+          "M10-U10-10",
+          "M10-U10-11",
+          "M10-U10-13",
+          "M10-U10-14",
+          "M10-U10-17",
+          "M10-U10-24"
+        ]
+      }
+    ],
+    "conflicts": [
+      {
+        "source": "M10 E3",
+        "state": "CONFLICT/BLOCKED",
+        "detail": "No se publican cantidades de éxitos enteras; el redondeo de 61% de n=158 admite 96 o 97, lo que cambia la decisión al 5% si individual es 64 de 125. El catálogo del solucionario menciona erróneamente 8% mientras la consigna dice 5%.",
+        "hypotheticalResults": [
+          {
+            "combined": 96,
+            "individual": 64,
+            "p": 0.05358842,
+            "decision": "no rechazar"
+          },
+          {
+            "combined": 97,
+            "individual": 64,
+            "p": 0.04277666,
+            "decision": "rechazar"
+          }
+        ]
+      },
+      {
+        "source": "M10 E4",
+        "state": "CALCULATED_APPROXIMATE",
+        "detail": "B informa 37% de n=130 sin conteo exacto. Z≈1,024 y p≈0,153 son aproximaciones a partir del porcentaje publicado."
+      }
+    ],
+    "verification": "Cálculos propios de proporciones, tasas, Z, EE₀ y p; comparación independiente con distribución normal estándar. Todas las variantes con datos nuevos están identificadas como transferencia.",
+    "readiness": "Teoría, machete y 25 ejercicios utilizables; el caso ambiguo M10 E3 permanece explícitamente bloqueado para conclusión exacta."
   }
 }
