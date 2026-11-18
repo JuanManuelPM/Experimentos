@@ -61,7 +61,7 @@ function exercisePrompt(q){
     const fallback=q.type==='mark'?'Señalá el fragmento que corresponde al título.':q.type==='truefalse'||q.claims?'Indicá V o F para cada afirmación.':q.type==='multi'?'Calculá los valores indicados.':'Elegí la alternativa correcta.';
     return '<p class="statement">'+fallback+'</p>';
   }
-  const plain=raw.replace(/<[^>]*>/g,' ').trim();
+  const plain=raw.replace(/<[^>]*>/g,' ').normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim();
   const hasTask=/[¿?]|\b(?:eleg[ií]|marc[aá]|indic[aá]|seleccion[aá]|señal[aá]|calcul[aá]|hall[aá]|identific[aá]|estim[aá]|obten[eé]|compar[aá]|evalu[aá]|decid[ií]|determin[aá]|complet[aá]|formul[aá]|interpret[aá]|juzg[aá]|verific[aá]|clasific[aá]|cu[aá]l|cu[aá]nto|qu[eé])\b/i.test(plain);
   let instruction='';
   if(!hasTask && q.type==='choice'&&!q.claims&&!TF[q.id])instruction=' Elegí la opción correcta.';
