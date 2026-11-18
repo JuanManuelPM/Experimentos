@@ -37,3 +37,11 @@ No incluir preguntas que se resuelvan por contraste entre una opción lógica y 
 - Ejecutá `node tests/validate-content.mjs` y `node tests/validate-partials.mjs`.
 - Comprobá que `?all=1` y `?partial=2&all=1` abren la teoría; sus pestañas Práctica/Machete mantienen el mismo parcial; cada botón Practicar abre un conjunto no vacío; al responder/revelar, se actualiza la corrección y el color de fondo.
 - GitHub Pages exitoso solo confirma despliegue, no prueba todas las interacciones; documentar por separado las pruebas efectivamente realizadas.
+
+## Revisión pedagógica y tipográfica · 18-11-2026
+
+- En `content/partials/P1.json` y `P2.json`, teoría y machete usan fracciones estructuradas `{type:"formula",lines:[{left,numerator,denominator}]}` y ejemplos resueltos `{type:"worked",title,problem,steps,result,interpretation}`. Nunca concatenar cuatro ecuaciones con puntos en una sola línea gigante. Los componentes se reutilizan también para unidades individuales.
+- La teoría enseña a identificar datos, escoger procedimiento, sustituir valores, calcular e interpretar. El machete conserva las reglas en formato de recordatorio, no reemplaza la explicación.
+- Además de 13/14 ejercicios rápidos, la práctica contiene un archivo PLEGADO con exámenes de fuentes accesibles: `content/partials/exams/P1.json` (7 casos, 2026 e integrador) y `content/partials/exams/P2.json` (24 casos, 2025, 2026 e integrador). Las respuestas se revelan por inciso.
+- Los casos de exámenes reales están parafraseados y enlazan el documento de origen. Algunas tablas descriptivas del primer parcial 2026 y del integrador requieren bases externas no encontradas en los archivos accesibles. No declarar esas cifras resueltas ni inventarlas.
+- Verificación: sintaxis de JS, recuperación de datos del manifiesto, referencias de los ejercicios, renderización de fórmulas y respuestas, y resultado de GitHub Pages. Un build correcto no prueba automáticamente la experiencia táctil en todos los Android.
