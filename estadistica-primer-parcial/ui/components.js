@@ -64,21 +64,21 @@ function reviewAnswer(q){
   const claims=TF[q.id]||(q.claims||[]).map(v=>[v.text,v.answer?1:0,v.explanation]);
   let key='';
   if((q.type==='choice'||q.type==='truefalse')&&claims.length){
-    key='<div class="answer-sequence">'+claims.map((c,i)=>'<span><small>'+(i+1)+'.</small> '+(Number(c[1])?'V':'F')+'</span>').join('')+'</div>';
+    key='<ol class="review-claims">'+claims.map((c,i)=>{
+      const verdict=Number(c[1])?'V':'F';
+      return '<li><b>'+verdict+'</b>'+(c[2]?'<span>'+escapeHTML(c[2])+'</span>': '<span>'+escapeHTML(c[0]||'')+'</span>')+'</li>';
+    }).join('')+'</ol>';
   }else if(q.type==='multi'){
     key='<div class="answer-values">'+(q.fields||[]).map(f=>'<p><span>'+escapeHTML(f.label)+':</span> <strong>'+toDisplayValue(f.answer)+'</strong></p>').join('')+'</div>';
+  }else if(q.type==='numeric'&&Number.isFinite(q.answer)){
+    key='<div class="review-result">'+toDisplayValue(q.answer)+(q.answerUnit?' '+escapeHTML(q.answerUnit):'')+'</div>';
+  }else if(q.type==='choice'&&Array.isArray(q.options)&&q.options[q.answer]!==undefined){
+    key='<div class="review-result">'+toDisplayValue(q.options[q.answer])+'</div>';
+  }else if(q.type==='mark'){
+    const item=(q.parts||[]).find(p=>p&&typeof p==='object'&&String(p.value)===String(q.answer));
+    if(item)key='<div class="review-result">'+escapeHTML(item.text)+'</div>';
   }
   const paragraphs=(q.solution||[]).filter(x=>typeof x==='string'&&x.trim()).map(x=>'<p>'+x+'</p>');
-  if(!paragraphs.length){
-    let value='';
-    if(q.type==='mark'){
-      const found=(q.parts||[]).find(p=>p&&typeof p==='object'&&String(p.value)===String(q.answer));
-      value=escapeHTML(found?.text||q.answer);
-    }else if(q.type==='numeric')value=toDisplayValue(q.answer)+(q.label?' '+escapeHTML(q.label):'');
-    else if(q.type==='choice'&&!claims.length)value=escapeHTML(q.options?.[q.answer]??q.answer);
-    if(value)paragraphs.push('<p><strong>'+value+'</strong></p>');
-    else if(claims.length)paragraphs.push(...claims.filter(c=>c[2]).map(c=>'<p>'+escapeHTML(c[2])+'</p>'));
-  }
   return key+(paragraphs.length?'<div class="review-explanation">'+paragraphs.join('')+'</div>':'');
 }
 function exercisePrompt(q){
