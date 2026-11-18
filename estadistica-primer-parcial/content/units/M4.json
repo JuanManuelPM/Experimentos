@@ -6,98 +6,492 @@
   "theory": [
     {
       "id": "04.1",
-      "title": "Dos variables relacionadas",
-      "what": "Cada persona aporta un par de valores: uno para X y otro para Y. La relación describe cómo cambian juntos.",
-      "use": "Antes de calcular hay que saber qué variable se utiliza para predecir y cuál se quiere estimar.",
-      "example": "Si X es estrés y Y son horas de sueño, cada estudiante aporta un nivel de estrés y un número de horas; no se pueden mezclar filas.",
-      "formula": null
+      "title": "Los pares (X, Y)",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Cada observación aporta dos medidas de una misma persona u objeto. Conservar cada par es imprescindible: al desordenar una fila de datos, cambia la relación."
+        },
+        {
+          "type": "comparison",
+          "columns": [
+            {
+              "label": "X · predictora",
+              "items": [
+                "Dato conocido con el que se estima la respuesta.",
+                "Ejemplo: puntaje de estrés."
+              ]
+            },
+            {
+              "label": "Y · respuesta",
+              "items": [
+                "Dato que queremos explicar o predecir.",
+                "Ejemplo: horas de sueño del mismo estudiante."
+              ]
+            }
+          ]
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Estudiante",
+            "Estrés X",
+            "Sueño Y"
+          ],
+          "rows": [
+            [
+              "A",
+              "9",
+              "4 h"
+            ],
+            [
+              "B",
+              "5",
+              "7 h"
+            ],
+            [
+              "C",
+              "4",
+              "7,5 h"
+            ]
+          ]
+        },
+        {
+          "type": "note",
+          "text": "Invertir X e Y cambia la recta que se ajusta, aunque no cambia r."
+        }
+      ]
     },
     {
       "id": "04.2",
-      "title": "Correlación r",
-      "what": "La correlación r indica la dirección y la fuerza de la relación <em>lineal</em> entre dos variables.",
-      "use": "En los ejercicios te pueden pedir decidir si es positiva o negativa, calcular r o interpretar un valor ya dado.",
-      "example": "Si r = −0,80, los estudiantes con más X suelen tener menos Y; el signo no dice que X cause Y.",
-      "formula": "−1 ≤ r ≤ 1"
+      "title": "Dispersograma: ver la relación",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Un punto representa un par (x,y). La nube permite evaluar si Y tiende a crecer o disminuir cuando X crece y si esa tendencia se aproxima a una línea recta."
+        },
+        {
+          "type": "comparison",
+          "columns": [
+            {
+              "label": "Ascendente",
+              "items": [
+                "Asociación lineal positiva."
+              ]
+            },
+            {
+              "label": "Descendente",
+              "items": [
+                "Asociación lineal negativa."
+              ]
+            },
+            {
+              "label": "Curva o nube dispersa",
+              "items": [
+                "Una recta puede describir mal la relación; r puede ser pequeño aunque exista una asociación no lineal."
+              ]
+            }
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            {
+              "label": "Ajuste razonable",
+              "text": "Tendencia aproximadamente lineal en el rango observado."
+            },
+            {
+              "label": "Precauciones",
+              "text": "Buscar curvaturas, puntos extremos y subgrupos antes de afirmar que el ajuste sirve para predecir."
+            }
+          ]
+        },
+        {
+          "type": "note",
+          "text": "Una nube muy alineada no prueba causalidad ni garantiza predicciones individuales exactas."
+        }
+      ]
     },
     {
       "id": "04.3",
-      "title": "Coeficiente de determinación",
-      "what": "R² indica qué proporción de la variabilidad de Y está asociada al ajuste de la recta.",
-      "use": "Se usa para interpretar cuánto explican los cambios de X dentro del modelo, sin confundirlo con causalidad.",
-      "example": "Con r = −0,80, R² = 0,64: el modelo lineal explica el 64 % de la variación de Y en esos datos.",
-      "formula": "R² = r²"
+      "title": "Correlación de Pearson (r)",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "r mide dirección e intensidad de la asociación LINEAL. No es una pendiente, no tiene unidades y no cambia al intercambiar X e Y."
+        },
+        {
+          "type": "formula",
+          "expression": "−1 ≤ r ≤ +1",
+          "symbols": []
+        },
+        {
+          "type": "list",
+          "items": [
+            {
+              "label": "r positivo",
+              "text": "Y tiende a subir cuando X sube."
+            },
+            {
+              "label": "r negativo",
+              "text": "Y tiende a bajar cuando X sube."
+            },
+            {
+              "label": "|r| cerca de 1",
+              "text": "Asociación lineal fuerte."
+            },
+            {
+              "label": "|r| cerca de 0",
+              "text": "Asociación lineal débil; no demuestra ausencia de una relación curva."
+            }
+          ]
+        },
+        {
+          "type": "formula",
+          "expression": "r = Sxy / √(Sxx · Syy)",
+          "symbols": [
+            {
+              "symbol": "Sxy",
+              "meaning": "Σ(xᵢ−x̄)(yᵢ−ȳ)"
+            },
+            {
+              "symbol": "Sxx",
+              "meaning": "Σ(xᵢ−x̄)²"
+            },
+            {
+              "symbol": "Syy",
+              "meaning": "Σ(yᵢ−ȳ)²"
+            }
+          ]
+        },
+        {
+          "type": "definition",
+          "term": "Comparación",
+          "text": "r = −0,90 indica asociación inversa fuerte; r = +0,10 indica asociación lineal directa muy débil.",
+          "example": "Ninguno informa cuántas unidades cambia Y por cada unidad de X."
+        },
+        {
+          "type": "note",
+          "text": "r = 1,09 es imposible. Tampoco corresponde informar r = 0,23 hectolitros."
+        }
+      ]
     },
     {
       "id": "04.4",
-      "title": "Recta de regresión",
-      "what": "La recta resume la tendencia mediante un punto de partida a y un cambio b por cada unidad de X.",
-      "use": "Sirve para estimar un valor de Y, interpretar una pendiente y entender el intercepto.",
-      "example": "En ŷ = 47 − 4x, cada hora adicional de deporte se asocia con 4 puntos menos de estrés esperado.",
-      "formula": "ŷ = a + bx"
+      "title": "R²: variabilidad explicada",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "En la regresión lineal simple usual con intercepto, R² expresa qué proporción de la variabilidad observada de Y queda explicada por la recta; no atribuye causas."
+        },
+        {
+          "type": "formula",
+          "expression": "R² = r²",
+          "symbols": []
+        },
+        {
+          "type": "list",
+          "items": [
+            {
+              "label": "Porcentaje",
+              "text": "R² × 100."
+            },
+            {
+              "label": "Ejemplo",
+              "text": "r = −0,80 → R² = 0,64 = 64 % de variabilidad explicada."
+            },
+            {
+              "label": "Signo",
+              "text": "Se pierde al elevar al cuadrado: R² no dice si la relación sube o baja."
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "text": "Si te dan R² y piden r"
+        },
+        {
+          "type": "steps",
+          "items": [
+            "Calcular |r| = √R².",
+            "Determinar el signo observando b o la tendencia de la nube.",
+            "Con R²=0,37 y b negativa, r=−√0,37≈−0,6083."
+          ]
+        },
+        {
+          "type": "note",
+          "text": "R²=r² no debe generalizarse a cualquier regresión distinta de una lineal simple con intercepto."
+        }
+      ]
     },
     {
       "id": "04.5",
-      "title": "Calcular la recta",
-      "what": "La pendiente compara cómo varían juntos X e Y con cuánto varía X por sí sola; el intercepto posiciona la recta sobre los datos.",
-      "use": "En los ejercicios con pares numéricos podés calcular a y b a partir de los datos o recuperarlos de la salida estadística.",
-      "example": "Si b = −0,68 y a = 10,33, para X=7 la predicción es 10,33 − 0,68×7 ≈ 5,55 horas.",
-      "formula": "b = cov(X,Y) ÷ var(X) · a = ȳ − b x̄"
+      "title": "Recta de regresión",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "La recta aproxima el valor medio esperado de Y para un X determinado. Una persona puede tener un Y real distinto del pronosticado."
+        },
+        {
+          "type": "formula",
+          "expression": "ŷ = a + bx",
+          "symbols": [
+            {
+              "symbol": "ŷ",
+              "meaning": "Y predicha"
+            },
+            {
+              "symbol": "a",
+              "meaning": "intercepto, pronóstico para X=0"
+            },
+            {
+              "symbol": "b",
+              "meaning": "pendiente, variación estimada de Y por cada unidad de X"
+            }
+          ]
+        },
+        {
+          "type": "comparison",
+          "columns": [
+            {
+              "label": "b = −4",
+              "items": [
+                "Si X son horas de deporte e Y puntaje de estrés, se estiman 4 puntos menos de estrés por una hora adicional."
+              ]
+            },
+            {
+              "label": "a = 47",
+              "items": [
+                "Con X=0, la recta estima 47 puntos; solo interpretable si X=0 tiene sentido en el estudio."
+              ]
+            }
+          ]
+        },
+        {
+          "type": "definition",
+          "term": "Predicción",
+          "text": "En ŷ=47−4x, con x=8: ŷ=47−4×8=15.",
+          "example": "La asociación no prueba que el deporte cause una reducción de estrés."
+        },
+        {
+          "type": "note",
+          "text": "El intercepto puede ser negativo e inaplicable porque X=0 está fuera del rango medido, sin invalidar automáticamente la recta dentro del rango."
+        }
+      ]
     },
     {
       "id": "04.6",
-      "title": "Causalidad y extrapolación",
-      "what": "Dos variables pueden moverse juntas por otros motivos, y una recta solo se estimó con el rango de datos disponible.",
-      "use": "El parcial suele preguntar si un resultado permite afirmar causalidad o si una predicción fuera del rango es confiable.",
-      "example": "Observar menos sueño con más estrés no prueba qué lo causó; predecir X=80 a partir de datos entre X=4 y 9 sería extrapolar.",
-      "formula": null
+      "title": "Calcular r y la recta desde datos",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Con pares completos, calcular las medias y las sumas de desviaciones es una forma de reconstruir tanto la correlación como la recta sin confundir sus coeficientes."
+        },
+        {
+          "type": "formula",
+          "expression": "Sxx = Σ(xᵢ−x̄)²     Syy = Σ(yᵢ−ȳ)²",
+          "symbols": []
+        },
+        {
+          "type": "formula",
+          "expression": "Sxy = Σ(xᵢ−x̄)(yᵢ−ȳ)",
+          "symbols": []
+        },
+        {
+          "type": "formula",
+          "expression": "b = Sxy/Sxx     a = ȳ−b x̄",
+          "symbols": []
+        },
+        {
+          "type": "formula",
+          "expression": "r = Sxy/√(Sxx·Syy)",
+          "symbols": []
+        },
+        {
+          "type": "steps",
+          "items": [
+            "Conservar cada par; calcular x̄ e ȳ.",
+            "Hallar Sxx, Syy y Sxy.",
+            "Obtener b y a; escribir ŷ=a+bx.",
+            "Obtener r, R² si se pide, y el pronóstico para X indicado."
+          ]
+        },
+        {
+          "type": "definition",
+          "term": "Ejemplo de la guía E1",
+          "text": "En seis pares sueño X y ansiedad Y: x̄=6,5; ȳ≈15,8333; Sxx=17,5; Sxy=−69,5.",
+          "example": "b≈−3,9714; a≈41,6476. Para 4,5 horas de sueño, ŷ≈23,78 puntos de ansiedad."
+        },
+        {
+          "type": "note",
+          "text": "En una salida de software, no confundas la fila del intercepto con la pendiente de X. Las cuentas de esta unidad pueden reproducirse con estas fórmulas."
+        }
+      ]
+    },
+    {
+      "id": "04.7",
+      "title": "Predicción, interpolación y extrapolación",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Predecir es sustituir el valor X solicitado en una recta ya calculada. Siempre se indica la unidad de Y y se revisa si el X solicitado pertenece al rango observado."
+        },
+        {
+          "type": "steps",
+          "items": [
+            "Identificar X e Y.",
+            "Tomar a y b de la recta.",
+            "Calcular ŷ=a+b·X y dar el resultado con su unidad.",
+            "Comparar X con el mínimo y máximo de la muestra."
+          ]
+        },
+        {
+          "type": "comparison",
+          "columns": [
+            {
+              "label": "Interpolación",
+              "items": [
+                "Estimar para un X dentro del rango observado.",
+                "Estrés=7, cuando X observado fue de 4 a 9."
+              ]
+            },
+            {
+              "label": "Extrapolación",
+              "items": [
+                "Estimar para un X fuera del rango observado.",
+                "Edad=8 cuando solo se estudiaron 9 a 13 años."
+              ]
+            }
+          ]
+        },
+        {
+          "type": "note",
+          "text": "Interpolación no garantiza precisión; extrapolación requiere mayor cautela incluso con r fuerte."
+        }
+      ]
+    },
+    {
+      "id": "04.8",
+      "title": "Qué limita el modelo",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Una correlación refleja asociación estadística, no la dirección de una causa. Los valores de X e Y también pueden depender de condiciones no medidas."
+        },
+        {
+          "type": "list",
+          "items": [
+            {
+              "label": "Causalidad",
+              "text": "Sin diseño adecuado no se puede afirmar que cambiar X produzca un cambio en Y."
+            },
+            {
+              "label": "Terceros factores",
+              "text": "Edad, contexto, gravedad inicial o hábitos pueden influir en ambas variables."
+            },
+            {
+              "label": "Forma de la relación",
+              "text": "Curvas, subgrupos y valores extremos pueden engañar a una recta."
+            },
+            {
+              "label": "Extrapolación",
+              "text": "La tendencia estimada podría no mantenerse fuera del intervalo estudiado."
+            }
+          ]
+        },
+        {
+          "type": "definition",
+          "term": "Sesiones y autonomía",
+          "text": "Observar mayor autonomía en pacientes con más sesiones no demuestra que las sesiones hayan causado esa diferencia.",
+          "example": "Para explorar otros factores se puede evaluar regresión múltiple con predictores adicionales, revisando diseño y supuestos."
+        },
+        {
+          "type": "note",
+          "text": "Ni un R² alto ni un r próximo a ±1 transforman un estudio observacional en experimental."
+        }
+      ]
+    },
+    {
+      "id": "04.9",
+      "title": "Qué procedimiento elegir",
+      "blocks": [
+        {
+          "type": "table",
+          "headers": [
+            "Pedido",
+            "Operación"
+          ],
+          "rows": [
+            [
+              "Dirección o fuerza",
+              "signo de r y tamaño de |r|"
+            ],
+            [
+              "% explicado",
+              "R²=r² y ×100"
+            ],
+            [
+              "Recta desde datos",
+              "Sxx, Sxy → b y a"
+            ],
+            [
+              "Predicción",
+              "ŷ=a+bx con el X solicitado"
+            ],
+            [
+              "¿Tiene sentido?",
+              "rango, linealidad, diseño, variables omitidas"
+            ]
+          ]
+        },
+        {
+          "type": "note",
+          "text": "Un mismo ejercicio puede pedir varios de estos pasos. La cuenta no sustituye la interpretación de signos y unidades."
+        }
+      ]
     }
   ],
   "practice": [
     {
       "id": "M4-P01",
-      "type": "choice",
+      "type": "truefalse",
       "title": "¿Qué dirección tiene?",
-      "prompt": "En un grupo, cuando aumenta el estrés suelen disminuir las horas de sueño. ¿Qué signo esperás para r?",
-      "options": [
-        "Positivo",
-        "Negativo",
-        "Necesariamente cero"
-      ],
-      "answer": 1,
+      "prompt": "Evaluá cada afirmación sobre dirección de la asociación.",
       "solution": [
         "La tendencia va en sentidos opuestos: <b>correlación negativa</b>."
       ],
       "source": "M4 · E5/E8, adaptación",
       "hints": [
-        "Una variable sube mientras la otra baja.",
-        "Cuando se mueven en sentidos contrarios, r tiene signo negativo."
+        "Identificá la dirección conjunta de las variables.",
+        "Signo y fuerza lineal no son lo mismo.",
+        "Cuando una sube y otra baja, la asociación lineal es negativa; r≈0 solo indica poca linealidad."
       ],
       "table": null,
-      "chart": null
+      "chart": null,
+      "patterns": [
+        "D1"
+      ]
     },
     {
       "id": "M4-P02",
-      "type": "choice",
+      "type": "truefalse",
       "title": "¿Puede existir ese valor?",
-      "prompt": "Se informa una correlación de <b>r = 1,09</b>. ¿Qué problema hay?",
-      "options": [
-        "Es muy positiva, pero válida",
-        "No es posible: r debe estar entre −1 y 1",
-        "El problema es que falta el porcentaje"
-      ],
-      "answer": 1,
+      "prompt": "Evaluá los límites del coeficiente de Pearson.",
       "solution": [
         "El coeficiente de Pearson siempre está en <b>[−1, 1]</b>.",
         "1,09 queda fuera de ese rango y no puede ser una correlación válida."
       ],
       "source": "M4 · E6(a)",
       "hints": [
-        "Recordá los límites posibles de r.",
-        "Ni una relación perfecta supera 1 en valor absoluto."
+        "Recordá los límites y las unidades de r.",
+        "r pertenece a [−1,1] y es adimensional.",
+        "La pendiente, no r, indica cuántas unidades cambia Y por X."
       ],
       "table": null,
-      "chart": null
+      "chart": null,
+      "patterns": [
+        "D1"
+      ]
     },
     {
       "id": "M4-P03",
@@ -113,12 +507,16 @@
       ],
       "source": "M4 · E4(b), adaptación",
       "hints": [
-        "Elevá r al cuadrado.",
-        "(−0,8)² = 0,64; multiplicá por 100."
+        "Distinguí r de variabilidad explicada.",
+        "R²=r² y el porcentaje es 100R².",
+        "Elevá −0,8 al cuadrado y expresá la proporción como porcentaje."
       ],
       "table": null,
       "pairs": null,
-      "unit": null
+      "unit": null,
+      "patterns": [
+        "D2"
+      ]
     },
     {
       "id": "M4-P04",
@@ -134,58 +532,58 @@
       ],
       "source": "Integrador P1 · E2(b)",
       "hints": [
-        "No necesitás calcular una nueva recta: ya está dada.",
-        "Sustituí x=8 en 47−4x."
+        "La recta está dada, no hace falta recalcular coeficientes.",
+        "Usá ŷ=a+bx.",
+        "Reemplazá X=8 en 47−4x y operá."
       ],
       "table": null,
       "pairs": null,
-      "unit": null
+      "unit": null,
+      "patterns": [
+        "D3"
+      ]
     },
     {
       "id": "M4-P05",
-      "type": "choice",
+      "type": "truefalse",
       "title": "Interpretá la pendiente",
-      "prompt": "En ŷ = 47 − 4x, X mide horas de deporte y Y un puntaje de estrés. ¿Qué significa b = −4?",
-      "options": [
-        "Por cada hora de deporte, el estrés esperado es 4 puntos menor",
-        "A las 4 horas el estrés es 0",
-        "El estrés causa más deporte"
-      ],
-      "answer": 0,
+      "prompt": "Evaluá qué significa la pendiente de la recta.",
       "solution": [
         "La pendiente describe un <b>cambio esperado de −4 en Y por cada unidad adicional de X</b>.",
         "La recta expresa asociación, no causalidad demostrada."
       ],
       "source": "Integrador P1 · E2(a)",
       "hints": [
-        "La pendiente dice cuánto cambia Y al aumentar X una unidad.",
-        "El signo es negativo."
+        "Identificá el número que multiplica X.",
+        "b describe el cambio esperado de Y por unidad de X.",
+        "b=−4 indica cuatro puntos menos de estrés esperado por hora adicional."
       ],
       "table": null,
-      "chart": null
+      "chart": null,
+      "patterns": [
+        "D3"
+      ]
     },
     {
       "id": "M4-P06",
-      "type": "choice",
+      "type": "truefalse",
       "title": "¿Qué significa el intercepto?",
-      "prompt": "En ŷ = 47 − 4x, ¿qué representa a = 47?",
-      "options": [
-        "La predicción de Y cuando X=0",
-        "El máximo valor que Y puede tomar",
-        "Que hay 47 participantes"
-      ],
-      "answer": 0,
+      "prompt": "Evaluá el significado del intercepto.",
       "solution": [
         "El intercepto es la predicción de Y para <b>X = 0</b>.",
         "Que sea interpretable en la realidad depende de si ese valor de X tiene sentido y está dentro del rango pertinente."
       ],
       "source": "M4 · E9 / Integrador P1 E2(a)",
       "hints": [
-        "Pensá qué queda de la fórmula si x=0.",
-        "47−4×0 = 47."
+        "Ubicá la constante a.",
+        "a es Y esperada con X=0, no el máximo.",
+        "Sustituí 0 en la recta; evaluá si X=0 es un valor pertinente."
       ],
       "table": null,
-      "chart": null
+      "chart": null,
+      "patterns": [
+        "D3"
+      ]
     },
     {
       "id": "M4-P07",
@@ -224,8 +622,9 @@
       ],
       "source": "Simulacro P1 · E4 / Parcial 2026 · E2",
       "hints": [
-        "Buscá la asociación negativa: r debe quedar cerca de −1.",
-        "Para R² elevá r al cuadrado. Para la recta, primero pendiente y después intercepto."
+        "Revisá que cada X coincida con su Y.",
+        "Para b necesitás Sxx y Sxy; para r, también Syy.",
+        "x̄≈6,6667; ȳ≈5,7778; Sxx=20 y Sxy≈−13,6667."
       ],
       "table": null,
       "pairs": [
@@ -253,6 +652,12 @@
           "6,5",
           "7,5"
         ]
+      ],
+      "patterns": [
+        "D1",
+        "D2",
+        "D3",
+        "D4"
       ]
     },
     {
@@ -270,58 +675,1151 @@
       ],
       "source": "Simulacro P1 · E4(d) / Parcial 2026 · E2(d)",
       "hints": [
-        "La recta ya está dada, no vuelvas a calcular r.",
-        "Multiplicá −0,6833 por 7 y sumá 10,3333."
+        "¿Qué variable se pronostica?",
+        "Sustituí X=7 en ŷ=a+bx.",
+        "Calculá 10,3333−0,6833×7, expresado en horas."
       ],
       "table": null,
       "pairs": null,
-      "unit": null
+      "unit": null,
+      "patterns": [
+        "D3"
+      ]
     },
     {
       "id": "M4-P09",
-      "type": "choice",
+      "type": "truefalse",
       "title": "¿Hay causalidad?",
-      "prompt": "Una correlación de r = −0,99 entre estrés y sueño permite afirmar que el estrés <b>causa</b> menos horas de sueño.",
-      "options": [
-        "Sí, porque |r| es casi 1",
-        "No; asociación no prueba causalidad",
-        "Sí, porque la pendiente es negativa"
-      ],
-      "answer": 1,
+      "prompt": "Evaluá correlación y causalidad.",
       "solution": [
         "Una correlación muy fuerte puede deberse a otros factores o a relaciones complejas.",
         "Sin un diseño adecuado no se puede concluir que X <b>cause</b> Y."
       ],
       "source": "M4 · E2(d), E5(e) y Simulacro P1 · E4(e)",
       "hints": [
-        "La fuerza de la relación no establece su causa.",
-        "¿El estudio asignó experimentalmente el nivel de estrés?"
+        "Distinguí asociación de relación causal.",
+        "Una correlación fuerte no demuestra qué fenómeno causó al otro.",
+        "Considerá si se controlaron terceros factores y el tipo de diseño."
       ],
       "table": null,
-      "chart": null
+      "chart": null,
+      "patterns": [
+        "D5"
+      ]
     },
     {
       "id": "M4-P10",
-      "type": "choice",
+      "type": "truefalse",
       "title": "¿Es una predicción razonable?",
-      "prompt": "Calculaste una recta usando valores de X entre 4 y 9. Te piden predecir Y para <b>X = 50</b>. ¿Cuál es el principal problema?",
-      "options": [
-        "No hay ninguno si r es fuerte",
-        "La predicción extrapola demasiado fuera del rango medido",
-        "Siempre debemos usar X=50"
-      ],
-      "answer": 1,
+      "prompt": "Evaluá el rango y la extrapolación.",
       "solution": [
         "Predecir X=50 cuando solo se observaron valores de 4 a 9 es una <b>extrapolación extrema</b>.",
         "Aunque el ajuste sea fuerte dentro del rango, fuera de él la predicción puede no ser válida."
       ],
       "source": "M4 · E5(e), variante",
       "hints": [
-        "Compará el X pedido con los X observados.",
-        "La recta no fue contrastada cerca de 50."
+        "Compará el valor solicitado con el rango observado.",
+        "Fuera del intervalo se trata de extrapolación.",
+        "X=50 no está entre 4 y 9: revisá si la recta puede aplicarse."
       ],
       "table": null,
-      "chart": null
+      "chart": null,
+      "patterns": [
+        "D5"
+      ]
+    },
+    {
+      "id": "M4-P11",
+      "type": "numeric",
+      "title": "Ansiedad predicha",
+      "prompt": "La recta de ansiedad (Y) sobre sueño (X) es ŷ≈41,6476−3,9714x. ¿Qué predice para 4,5 horas?",
+      "answer": 23.78,
+      "options": [
+        23.78,
+        41.65,
+        17.87,
+        5.79
+      ],
+      "tolerance": 0.012,
+      "label": "Elegí el resultado",
+      "source": "Guía 4 UP · E1(d) (datos originales; práctica reformulada)",
+      "hints": [
+        "X son horas de sueño.",
+        "Sustituí 4,5 en la recta.",
+        "Restá 3,9714×4,5 de 41,6476."
+      ],
+      "solution": [
+        "ŷ(4,5) ≈ 41,6476−3,9714×4,5 = <b>23,78 puntos</b> de ansiedad.",
+        "Es interpolación: 4,5 h está dentro de las 4 a 9 h observadas."
+      ],
+      "patterns": [
+        "D3"
+      ]
+    },
+    {
+      "id": "M4-P12",
+      "type": "multi",
+      "title": "Ajustá ansiedad desde sueño",
+      "prompt": "Calculá r, b y a para ansiedad (Y) en función de horas de sueño (X).",
+      "fields": [
+        {
+          "label": "r",
+          "answer": -0.9949,
+          "options": [
+            -0.9949,
+            0.9949,
+            -0.85,
+            -0.41
+          ],
+          "tolerance": 0.004
+        },
+        {
+          "label": "Pendiente b",
+          "answer": -3.9714,
+          "options": [
+            -3.9714,
+            3.9714,
+            -0.9949,
+            -2.4
+          ],
+          "tolerance": 0.012
+        },
+        {
+          "label": "Intercepto a",
+          "answer": 41.6476,
+          "options": [
+            41.6476,
+            15.8333,
+            -41.6476,
+            25
+          ],
+          "tolerance": 0.012
+        }
+      ],
+      "source": "Guía 4 UP · E1(b,c) (datos originales; práctica reformulada)",
+      "hints": [
+        "Conservá los seis pares.",
+        "Calculá x̄,ȳ,Sxx,Sxy y Syy.",
+        "x̄=6,5; ȳ≈15,8333; Sxx=17,5; Sxy=−69,5."
+      ],
+      "solution": [
+        "Syy≈278,8333; r=−69,5/√(17,5×278,8333)≈<b>−0,9949</b>.",
+        "b=−69,5/17,5≈<b>−3,9714</b>; a=15,8333−b×6,5≈<b>41,6476</b>.",
+        "La recta es ŷ≈41,6476−3,9714x."
+      ],
+      "patterns": [
+        "D1",
+        "D3",
+        "D4"
+      ],
+      "pairs": [
+        [
+          "Sueño X",
+          "4",
+          "6",
+          "8",
+          "5",
+          "9",
+          "7"
+        ],
+        [
+          "Ansiedad Y",
+          "25",
+          "18",
+          "10",
+          "22",
+          "5",
+          "15"
+        ]
+      ]
+    },
+    {
+      "id": "M4-P13",
+      "type": "multi",
+      "title": "Autoestima e interacciones",
+      "prompt": "Calculá b, a y la cantidad de interacciones predicha (Y) con autoestima X=20.",
+      "fields": [
+        {
+          "label": "Pendiente b",
+          "answer": 0.5147,
+          "options": [
+            0.5147,
+            -0.5147,
+            1.94,
+            0.9953
+          ],
+          "tolerance": 0.012
+        },
+        {
+          "label": "Intercepto a",
+          "answer": -3.0696,
+          "options": [
+            -3.0696,
+            3.0696,
+            6.4,
+            12
+          ],
+          "tolerance": 0.012
+        },
+        {
+          "label": "ŷ(20)",
+          "answer": 7.22,
+          "options": [
+            7.22,
+            10.29,
+            6.4,
+            -3.07
+          ],
+          "tolerance": 0.02
+        }
+      ],
+      "source": "Guía 4 UP · E2(b,c) (datos originales; práctica reformulada)",
+      "hints": [
+        "Autoestima es X, interacciones Y.",
+        "Calculá b=Sxy/Sxx y a=ȳ−b x̄.",
+        "x̄=18,4; ȳ=6,4; Sxx=109,2; Sxy=56,2."
+      ],
+      "solution": [
+        "b=56,2/109,2≈<b>0,5147</b>; a≈<b>−3,0696</b>.",
+        "ŷ(20)≈−3,0696+0,5147×20=<b>7,22 interacciones</b>.",
+        "El intercepto negativo carece de sentido práctico para X=0, fuera del rango 12–25."
+      ],
+      "patterns": [
+        "D3",
+        "D4",
+        "D5"
+      ],
+      "pairs": [
+        [
+          "Autoestima X",
+          "12",
+          "15",
+          "18",
+          "22",
+          "25"
+        ],
+        [
+          "Interacciones Y",
+          "3",
+          "5",
+          "6",
+          "8",
+          "10"
+        ]
+      ]
+    },
+    {
+      "id": "M4-P14",
+      "type": "choice",
+      "title": "Reconocé r y la recta",
+      "prompt": "La nube de nueve pares es ascendente y está concentrada alrededor de una recta que pasa cerca de Y=2 al acercarse X a 0. ¿Qué combinación elegirías?",
+      "options": [
+        "r≈−0,90; ŷ=2,03−0,72x",
+        "r≈+0,92; ŷ=2,03+0,37x",
+        "r≈+0,30; ŷ=5,53+0,37x",
+        "r≈−0,10; ŷ=2,30−1,37x"
+      ],
+      "answer": 1,
+      "source": "Guía 4 UP · E3(b) (datos originales; práctica reformulada)",
+      "hints": [
+        "La dirección es ascendente.",
+        "La asociación es fuerte y la pendiente positiva.",
+        "La recta debe pasar cerca de los valores Y alrededor de 3 a 4 para X=3 a 5."
+      ],
+      "solution": [
+        "r≈<b>+0,9247</b>; b≈0,3761; a≈2,0294.",
+        "Corresponde <b>ŷ≈2,03+0,37x</b>."
+      ],
+      "patterns": [
+        "D1",
+        "D3",
+        "D4"
+      ],
+      "pairs": [
+        [
+          "X",
+          "1",
+          "1",
+          "2",
+          "3",
+          "4",
+          "4",
+          "5",
+          "6",
+          "6"
+        ],
+        [
+          "Y",
+          "2.1",
+          "2.5",
+          "3.1",
+          "3",
+          "3.8",
+          "3.2",
+          "4.3",
+          "3.9",
+          "4.4"
+        ]
+      ]
+    },
+    {
+      "id": "M4-P15",
+      "type": "numeric",
+      "title": "Predicción interpolada",
+      "prompt": "Con ŷ≈2,0294+0,3761x, ¿qué valor se predice para X=3,5?",
+      "answer": 3.35,
+      "options": [
+        3.35,
+        2.4,
+        4.75,
+        5.53
+      ],
+      "tolerance": 0.012,
+      "label": "Elegí el resultado",
+      "source": "Guía 4 UP · E3(c) (datos originales; práctica reformulada)",
+      "hints": [
+        "La recta ya está dada.",
+        "Reemplazá X=3,5.",
+        "Sumá 2,0294+0,3761×3,5."
+      ],
+      "solution": [
+        "ŷ(3,5)≈<b>3,35</b>. Está dentro del rango observado 1–6."
+      ],
+      "patterns": [
+        "D3"
+      ]
+    },
+    {
+      "id": "M4-P16",
+      "type": "multi",
+      "title": "Urbanización y esperanza de vida",
+      "prompt": "Calculá r y R² (%) para los ocho países de la guía.",
+      "fields": [
+        {
+          "label": "r",
+          "answer": 0.8742,
+          "options": [
+            0.8742,
+            -0.8742,
+            0.7642,
+            0.42
+          ],
+          "tolerance": 0.012
+        },
+        {
+          "label": "R² en %",
+          "answer": 76.42,
+          "options": [
+            76.42,
+            87.42,
+            23.58,
+            0.7642
+          ],
+          "tolerance": 0.02
+        }
+      ],
+      "source": "Guía 4 UP · E4(a,b) (datos originales; práctica reformulada)",
+      "hints": [
+        "Mirá la tendencia ascendente.",
+        "Para r calculá Sxx, Sxy y Syy; luego R²=r².",
+        "Sxx=4537,5; Sxy=1919; Syy=1062."
+      ],
+      "solution": [
+        "r=1919/√(4537,5×1062)≈<b>+0,8742</b>.",
+        "R²≈<b>76,42 %</b> de la variabilidad observada de Y explicada por la recta.",
+        "No demuestra que urbanizar provoque más años de vida."
+      ],
+      "patterns": [
+        "D1",
+        "D2",
+        "D4",
+        "D5"
+      ],
+      "pairs": [
+        [
+          "Urbanización X",
+          "94",
+          "24",
+          "65",
+          "25",
+          "73",
+          "53",
+          "57",
+          "27"
+        ],
+        [
+          "Esperanza de vida Y",
+          "78",
+          "59",
+          "74",
+          "55",
+          "81",
+          "67",
+          "61",
+          "45"
+        ]
+      ]
+    },
+    {
+      "id": "M4-P17",
+      "type": "multi",
+      "title": "Estrés y sueño: guía 4",
+      "prompt": "Con los cinco pares, elegí r, R² y la predicción de horas de sueño para estrés X=30.",
+      "fields": [
+        {
+          "label": "r",
+          "answer": -0.9955,
+          "options": [
+            -0.9955,
+            0.9955,
+            -0.118,
+            -0.5
+          ],
+          "tolerance": 0.004
+        },
+        {
+          "label": "R² en %",
+          "answer": 99.1,
+          "options": [
+            99.1,
+            0.991,
+            95.5,
+            88.2
+          ],
+          "tolerance": 0.02
+        },
+        {
+          "label": "ŷ(30) en horas",
+          "answer": 5.79,
+          "options": [
+            5.79,
+            9.33,
+            6.5,
+            4.35
+          ],
+          "tolerance": 0.02
+        }
+      ],
+      "source": "Guía 4 UP · E5(b,c,d) (datos originales; práctica reformulada)",
+      "hints": [
+        "La asociación es descendente.",
+        "Calculá r, R² y la recta b=Sxy/Sxx; a=ȳ−b x̄.",
+        "x̄=24, ȳ=6,5; Sxx=178; Sxy=−21; Syy=2,5."
+      ],
+      "solution": [
+        "r=−21/√(178×2,5)≈<b>−0,9955</b>; R²≈<b>99,10 %</b>.",
+        "b≈−0,1180 y a≈9,3315; ŷ(30)≈<b>5,79 horas</b>.",
+        "X=0 queda fuera del rango observado 15–32: el intercepto no necesariamente tiene interpretación práctica."
+      ],
+      "patterns": [
+        "D1",
+        "D2",
+        "D3",
+        "D4",
+        "D5"
+      ],
+      "pairs": [
+        [
+          "Estrés X",
+          "32",
+          "28",
+          "25",
+          "20",
+          "15"
+        ],
+        [
+          "Sueño Y",
+          "5.5",
+          "6",
+          "6.5",
+          "7",
+          "7.5"
+        ]
+      ]
+    },
+    {
+      "id": "M4-P18",
+      "type": "truefalse",
+      "title": "Los tres errores de correlación",
+      "prompt": "Elegí V o F para cada interpretación.",
+      "claims": [
+        {
+          "text": "Un r=1,09 es posible para muestras grandes.",
+          "answer": false,
+          "explanation": "Pearson siempre satisface −1≤r≤1."
+        },
+        {
+          "text": "La correlación r se expresa en hectolitros si una de las variables los utiliza.",
+          "answer": false,
+          "explanation": "r es adimensional."
+        },
+        {
+          "text": "r próximo a 0 demuestra una asociación inversa fuerte.",
+          "answer": false,
+          "explanation": "r próximo a cero describe asociación lineal débil."
+        },
+        {
+          "text": "r=−0,69 representa una asociación lineal de signo negativo.",
+          "answer": true,
+          "explanation": "El signo negativo indica dirección inversa."
+        }
+      ],
+      "source": "Guía 4 UP · E6(a,b,c) y 11(b) (datos originales; práctica reformulada)",
+      "hints": [
+        "Revisá límites y unidades.",
+        "Distinguí coeficiente r de pendiente b.",
+        "Correlación pequeña no equivale a relación inversa fuerte."
+      ],
+      "solution": [
+        "r fuera de [−1,1] es imposible; r no lleva unidades.",
+        "r cerca de cero no significa asociación negativa fuerte."
+      ],
+      "patterns": [
+        "D1",
+        "D5"
+      ]
+    },
+    {
+      "id": "M4-P19",
+      "type": "numeric",
+      "title": "Sesiones y autonomía",
+      "prompt": "Con la recta ŷ≈12,0701+5,6051x, ¿qué autonomía se predice para 9 sesiones?",
+      "answer": 62.52,
+      "options": [
+        62.52,
+        92.52,
+        50.45,
+        5.61
+      ],
+      "tolerance": 0.012,
+      "label": "Elegí el resultado",
+      "source": "Guía 4 UP · E7(b) (datos originales; práctica reformulada)",
+      "hints": [
+        "Sesiones = X.",
+        "Usá ŷ=a+bx.",
+        "12,0701+5,6051×9."
+      ],
+      "solution": [
+        "ŷ(9)≈<b>62,52 puntos de autonomía</b>. Es interpolación: 9 está dentro de 5–15 sesiones."
+      ],
+      "patterns": [
+        "D3"
+      ]
+    },
+    {
+      "id": "M4-P20",
+      "type": "choice",
+      "title": "Terceras variables en un tratamiento",
+      "prompt": "La autonomía podría relacionarse tanto con las sesiones como con la edad o la gravedad inicial. ¿Cómo evaluarías conjuntamente esas asociaciones?",
+      "options": [
+        "Regresión múltiple con predictores pertinentes, diseño y supuestos revisados",
+        "Elevar r al cuadrado para probar causa",
+        "Ignorar las variables adicionales",
+        "Intercambiar X e Y y declarar causalidad"
+      ],
+      "answer": 0,
+      "source": "Guía 4 UP · E7(c) (datos originales; práctica reformulada)",
+      "hints": [
+        "Identificá posibles variables omitidas.",
+        "Se puede incluir más de una predictora en un modelo.",
+        "La regresión múltiple permite asociaciones ajustadas, no pruebas automáticas de causalidad."
+      ],
+      "solution": [
+        "Un modelo de <b>regresión múltiple</b> podría incorporar sesiones, edad y gravedad inicial.",
+        "Aun así es necesario revisar supuestos, diseño y posibles sesgos."
+      ],
+      "patterns": [
+        "D5"
+      ]
+    },
+    {
+      "id": "M4-P21",
+      "type": "multi",
+      "title": "Redes y concentración",
+      "prompt": "Ajustá concentración (Y) en función de horas de redes (X) y predecí con X=3,5.",
+      "fields": [
+        {
+          "label": "r",
+          "answer": -0.9902,
+          "options": [
+            -0.9902,
+            0.9902,
+            -0.9805,
+            -0.45
+          ],
+          "tolerance": 0.004
+        },
+        {
+          "label": "Pendiente b",
+          "answer": -2.2195,
+          "options": [
+            -2.2195,
+            2.2195,
+            -0.9902,
+            -1.54
+          ],
+          "tolerance": 0.012
+        },
+        {
+          "label": "ŷ(3,5)",
+          "answer": 4.51,
+          "options": [
+            4.51,
+            12.28,
+            3.5,
+            7.77
+          ],
+          "tolerance": 0.02
+        }
+      ],
+      "source": "Guía 4 UP · E8(a–d) (datos originales; práctica reformulada)",
+      "hints": [
+        "La nube es descendente.",
+        "Calculá Sxx,Sxy,Syy, después b,a y ŷ.",
+        "x̄=3,1; ȳ=5,4; Sxx=8,2; Sxy=−18,2."
+      ],
+      "solution": [
+        "Syy=41,2; r≈<b>−0,9902</b>; R²≈98,05 %.",
+        "b≈<b>−2,2195</b>; a≈12,2805; ŷ(3,5)≈<b>4,51 puntos</b>.",
+        "La asociación no establece un efecto causal de las redes."
+      ],
+      "patterns": [
+        "D1",
+        "D2",
+        "D3",
+        "D4",
+        "D5"
+      ],
+      "pairs": [
+        [
+          "Redes X",
+          "1.5",
+          "2",
+          "3",
+          "4",
+          "5"
+        ],
+        [
+          "Concentración Y",
+          "9",
+          "8",
+          "5",
+          "4",
+          "1"
+        ]
+      ]
+    },
+    {
+      "id": "M4-P22",
+      "type": "multi",
+      "title": "Leé tres coeficientes",
+      "prompt": "La recta de manejo de emociones es ŷ=3,4+0,6x con X=número de sesión. Elegí a, b y el valor previsto para la sesión 3.",
+      "fields": [
+        {
+          "label": "a",
+          "answer": 3.4,
+          "options": [
+            3.4,
+            0.6,
+            4,
+            5.2
+          ],
+          "tolerance": 0.012
+        },
+        {
+          "label": "b",
+          "answer": 0.6,
+          "options": [
+            0.6,
+            3.4,
+            1.6,
+            -0.6
+          ],
+          "tolerance": 0.012
+        },
+        {
+          "label": "ŷ(3)",
+          "answer": 5.2,
+          "options": [
+            5.2,
+            10.2,
+            3.6,
+            1.8
+          ],
+          "tolerance": 0.012
+        }
+      ],
+      "source": "Guía 4 UP · E9 (datos originales; práctica reformulada)",
+      "hints": [
+        "Separá constante y coeficiente de X.",
+        "El intercepto corresponde a X=0; la pendiente al cambio por sesión.",
+        "3,4+0,6×3."
+      ],
+      "solution": [
+        "a=<b>3,4</b> puntos; b=<b>+0,6</b> puntos por sesión.",
+        "ŷ(3)=<b>5,2 puntos</b>. Si las mediciones son sesiones 1 a 8, X=0 exige cautela."
+      ],
+      "patterns": [
+        "D3",
+        "D5"
+      ]
+    },
+    {
+      "id": "M4-P23",
+      "type": "choice",
+      "title": "Gráfico y tres condiciones",
+      "prompt": "El E10 tiene tres gráficos: primero tendencia ascendente dispersa, segundo tendencia descendente, tercero tendencia ascendente concentrada con intercepto positivo. ¿Cuál satisface b=+5, r=+0,80, a>0?",
+      "options": [
+        "Primero",
+        "Segundo",
+        "Tercero",
+        "Ninguno"
+      ],
+      "answer": 2,
+      "source": "Guía 4 UP · E10, gráficos p.5 inspeccionados; descripción adaptada",
+      "hints": [
+        "La pendiente es positiva.",
+        "r=0,80 es asociación ascendente bastante fuerte.",
+        "Compará la concentración alrededor de la recta y su intercepto."
+      ],
+      "solution": [
+        "<b>Tercero</b>: el gráfico derecho es ascendente, relativamente concentrado e intercepta Y por encima de cero.",
+        "No se reproducen aquí las figuras originales."
+      ],
+      "patterns": [
+        "D1",
+        "D3"
+      ]
+    },
+    {
+      "id": "M4-P24",
+      "type": "choice",
+      "title": "Tres figuras, tres valores de r",
+      "prompt": "En E12, la figura 1 muestra nube claramente ascendente; la 2, descendente; la 3, muy dispersa con leve ascenso. Asigná respectivamente 0,92, −0,88 y 0,22.",
+      "options": [
+        "+0,92 ; −0,88 ; +0,22",
+        "−0,88 ; +0,92 ; +0,22",
+        "+0,22 ; −0,88 ; +0,92",
+        "+0,92 ; +0,22 ; −0,88"
+      ],
+      "answer": 0,
+      "source": "Guía 4 UP · E12, gráficos p.6 inspeccionados; descripción adaptada",
+      "hints": [
+        "Primero identificá signos.",
+        "Después compará fuerza por |r|.",
+        "La figura 3 es la más débil; las otras dos difieren en signo."
+      ],
+      "solution": [
+        "Figura 1: <b>+0,92</b>, asociación más fuerte; figura 2: <b>−0,88</b>; figura 3: <b>+0,22</b>, más débil."
+      ],
+      "patterns": [
+        "D1"
+      ]
+    },
+    {
+      "id": "M4-P25",
+      "type": "truefalse",
+      "title": "Correlación y contexto",
+      "prompt": "Evaluá dos casos de la guía.",
+      "claims": [
+        {
+          "text": "r=0,02 entre estatura y razonamiento indica asociación lineal casi nula.",
+          "answer": true,
+          "explanation": "|r| muy próximo a cero."
+        },
+        {
+          "text": "r=−0,80 entre bienestar y estrés representa asociación lineal inversa fuerte.",
+          "answer": true,
+          "explanation": "Signo negativo, magnitud alta."
+        },
+        {
+          "text": "r=−0,80 significa 0,8 puntos menos de estrés por punto adicional de bienestar.",
+          "answer": false,
+          "explanation": "La variación por unidad corresponde a b, no a r."
+        },
+        {
+          "text": "Un r alto demuestra que aumentar el bienestar causa menor estrés.",
+          "answer": false,
+          "explanation": "Una correlación no establece causalidad."
+        }
+      ],
+      "source": "Guía 4 UP · E13 (datos originales; práctica reformulada)",
+      "hints": [
+        "Leé el signo y la magnitud.",
+        "r no es pendiente: no tiene unidades.",
+        "Ningún r observacional por sí solo prueba causalidad."
+      ],
+      "solution": [
+        "Estatura/razonamiento: r=0,02, asociación lineal prácticamente nula.",
+        "Bienestar/estrés: r=−0,80, fuerte e inversa; no indica efecto causal ni cambio por unidad."
+      ],
+      "patterns": [
+        "D1",
+        "D5"
+      ]
+    },
+    {
+      "id": "M4-P26",
+      "type": "numeric",
+      "title": "R² dado, signo perdido",
+      "prompt": "El integrador informa ŷ=47−4x y R²=0,37. Calculá r con su signo.",
+      "answer": -0.6083,
+      "options": [
+        -0.6083,
+        0.6083,
+        -0.37,
+        -0.1369
+      ],
+      "tolerance": 0.012,
+      "label": "Elegí el resultado",
+      "source": "Integrador P1 UP · E2(c,d) (adaptación)",
+      "hints": [
+        "R² es un cuadrado.",
+        "|r|=√0,37.",
+        "El signo coincide con la pendiente negativa."
+      ],
+      "solution": [
+        "r = <b>−√0,37 ≈ −0,6083</b>, asociación lineal negativa.",
+        "R² significa 37 % de variabilidad de estrés explicada por el ajuste."
+      ],
+      "patterns": [
+        "D1",
+        "D2",
+        "D3"
+      ]
+    },
+    {
+      "id": "M4-P27",
+      "type": "numeric",
+      "title": "Patinaje: extrapolación numérica",
+      "prompt": "La recta de segundos en 10 m (Y) según edad X es ŷ≈4,36586−0,16733x. ¿Qué valor calcula para 8 años?",
+      "answer": 3.03,
+      "options": [
+        3.03,
+        2.51,
+        2.22,
+        1.67
+      ],
+      "tolerance": 0.012,
+      "label": "Elegí el resultado",
+      "source": "Integrador P1 UP · E3(d), coeficientes recalculados desde pares originales (adaptación)",
+      "hints": [
+        "X es edad.",
+        "Reemplazá X=8.",
+        "4,36586−0,16733×8; revisá el rango 9–13 años."
+      ],
+      "solution": [
+        "ŷ(8)≈<b>3,03 segundos</b>.",
+        "8 años está fuera del intervalo 9–13 observado: extrapolación cuya fiabilidad no está garantizada."
+      ],
+      "patterns": [
+        "D3",
+        "D5"
+      ]
+    },
+    {
+      "id": "M4-P28",
+      "type": "choice",
+      "title": "Patinaje: validez",
+      "prompt": "Una recta ajustada a edades 9–13 predice 3,03 segundos para un niño de 8 años. ¿Qué se puede afirmar?",
+      "options": [
+        "Es extrapolación; la cuenta no asegura una predicción confiable",
+        "La predicción es exacta porque r es elevado",
+        "Es interpolación",
+        "El modelo demuestra que la edad causa el resultado"
+      ],
+      "answer": 0,
+      "source": "Integrador P1 UP · E3(b,d) (adaptación)",
+      "hints": [
+        "Compará edad consultada y edades medidas.",
+        "Fuera del rango es extrapolación.",
+        "Diferenciá resultado matemático de validez empírica."
+      ],
+      "solution": [
+        "X=8 está fuera del intervalo observado (9–13).",
+        "La estimación algebraica no garantiza validez ni permite afirmar causalidad."
+      ],
+      "patterns": [
+        "D3",
+        "D5"
+      ]
+    },
+    {
+      "id": "M4-P29",
+      "type": "multi",
+      "title": "Parcial 2026, tema 2",
+      "prompt": "Calculá correlación y recta de rendimiento académico (Y) según autoestima (X); predecí el promedio para X=24.",
+      "fields": [
+        {
+          "label": "r",
+          "answer": 0.9963,
+          "options": [
+            0.9963,
+            -0.9963,
+            0.89,
+            0.2911
+          ],
+          "tolerance": 0.003
+        },
+        {
+          "label": "b",
+          "answer": 0.2911,
+          "options": [
+            0.2911,
+            0.9963,
+            -0.2911,
+            0.7073
+          ],
+          "tolerance": 0.012
+        },
+        {
+          "label": "a",
+          "answer": 0.7073,
+          "options": [
+            0.7073,
+            7.1444,
+            -0.7073,
+            6.2
+          ],
+          "tolerance": 0.012
+        },
+        {
+          "label": "ŷ(24)",
+          "answer": 7.69,
+          "options": [
+            7.69,
+            5.99,
+            8.5,
+            0.71
+          ],
+          "tolerance": 0.02
+        }
+      ],
+      "source": "Parcial original 2026 UP · T2-E2(a–d) (adaptación)",
+      "hints": [
+        "X es autoestima; Y es el promedio.",
+        "Calculá medias, Sxx,Sxy,Syy; de allí r,b,a.",
+        "x̄≈22,1111; ȳ≈7,1444; Sxx≈68,8889 y Sxy≈20,0556."
+      ],
+      "solution": [
+        "Syy≈5,8822; r≈<b>+0,9963</b>.",
+        "b≈<b>0,2911</b>; a≈<b>0,7073</b>; ŷ≈0,7073+0,2911x.",
+        "Para X=24 se predice <b>7,69 puntos</b> (interpolación, rango 18–27)."
+      ],
+      "patterns": [
+        "D1",
+        "D3",
+        "D4",
+        "D5"
+      ],
+      "pairs": [
+        [
+          "Autoestima X",
+          "18",
+          "20",
+          "22",
+          "25",
+          "27",
+          "19",
+          "23",
+          "24",
+          "21"
+        ],
+        [
+          "Promedio Y",
+          "6",
+          "6.5",
+          "7",
+          "8",
+          "8.5",
+          "6.2",
+          "7.5",
+          "7.8",
+          "6.8"
+        ]
+      ]
+    },
+    {
+      "id": "M4-P30",
+      "type": "multi",
+      "title": "Transferencia sin repetir datos",
+      "prompt": "Datos NUEVOS de práctica (no pertenecen a la guía): X=2,4,6,8; Y=11,8,9,4. Obtené b, a, r y la predicción para X=7.",
+      "fields": [
+        {
+          "label": "b",
+          "answer": -1,
+          "options": [
+            -1,
+            1,
+            -0.8771,
+            -2
+          ],
+          "tolerance": 0.012
+        },
+        {
+          "label": "a",
+          "answer": 13,
+          "options": [
+            13,
+            8,
+            6.6,
+            -13
+          ],
+          "tolerance": 0.012
+        },
+        {
+          "label": "r",
+          "answer": -0.8771,
+          "options": [
+            -0.8771,
+            0.8771,
+            -0.7692,
+            -1
+          ],
+          "tolerance": 0.004
+        },
+        {
+          "label": "ŷ(7)",
+          "answer": 6,
+          "options": [
+            6,
+            7,
+            8,
+            4
+          ],
+          "tolerance": 0.012
+        }
+      ],
+      "source": "Transferencia V2 · datos ficticios creados; no atribuidos a UP",
+      "hints": [
+        "Alineá pares y calculá x̄,ȳ.",
+        "Calculá Sxx,Sxy,Syy y luego las fórmulas.",
+        "x̄=5; ȳ=8; Sxx=20; Sxy=−20; Syy=26."
+      ],
+      "solution": [
+        "b=−20/20=<b>−1</b>; a=8−(−1×5)=<b>13</b>.",
+        "r=−20/√520≈<b>−0,8771</b>; R²≈76,92 %.",
+        "ŷ(7)=13−7=<b>6</b>, interpolación."
+      ],
+      "patterns": [
+        "D1",
+        "D2",
+        "D3",
+        "D4"
+      ],
+      "pairs": [
+        [
+          "X",
+          "2",
+          "4",
+          "6",
+          "8"
+        ],
+        [
+          "Y",
+          "11",
+          "8",
+          "9",
+          "4"
+        ]
+      ]
+    },
+    {
+      "id": "M4-P31",
+      "type": "numeric",
+      "title": "Transferencia de R²",
+      "prompt": "En un ejemplo nuevo R²=0,49 y la pendiente es positiva. ¿Cuál es r?",
+      "answer": 0.7,
+      "options": [
+        0.7,
+        -0.7,
+        0.49,
+        -0.49
+      ],
+      "tolerance": 0.012,
+      "label": "Elegí el resultado",
+      "source": "Transferencia V2 · caso ficticio",
+      "hints": [
+        "R² elimina el signo.",
+        "|r|=√0,49.",
+        "El signo coincide con b en regresión lineal simple."
+      ],
+      "solution": [
+        "|r|=0,7; como la pendiente es positiva, <b>r=+0,70</b>."
+      ],
+      "patterns": [
+        "D1",
+        "D2"
+      ]
+    },
+    {
+      "id": "M4-P32",
+      "type": "choice",
+      "title": "¿Se puede invertir la regresión?",
+      "prompt": "Se ajustó ŷ=8+2x para predecir Y según X. Ahora se desea estimar X según Y. ¿Qué procedimiento corresponde?",
+      "options": [
+        "Ajustar una nueva regresión de X sobre Y",
+        "Usar x̂=8+2y",
+        "Intercambiar los nombres sin recalcular coeficientes",
+        "Tomar r² como pendiente"
+      ],
+      "answer": 0,
+      "source": "Transferencia V2 · ejercicio conceptual creado",
+      "hints": [
+        "r sí es simétrico.",
+        "Las rectas de Y sobre X y X sobre Y no son intercambiables.",
+        "Un cambio de variable respuesta exige otro ajuste."
+      ],
+      "solution": [
+        "Hay que <b>ajustar X sobre Y</b>; la recta original predice Y, no X."
+      ],
+      "patterns": [
+        "D3",
+        "D4"
+      ]
+    },
+    {
+      "id": "M4-P33",
+      "type": "truefalse",
+      "title": "Límites del ajuste lineal",
+      "prompt": "Evaluá cuatro conclusiones de un informe.",
+      "claims": [
+        {
+          "text": "Un r muy cercano a −1 garantiza predicciones individuales exactas.",
+          "answer": false,
+          "explanation": "Siempre puede existir variación individual y límites del modelo."
+        },
+        {
+          "text": "El intercepto puede carecer de sentido si X=0 nunca se observó.",
+          "answer": true,
+          "explanation": "Puede representar extrapolación."
+        },
+        {
+          "text": "Una relación curva puede tener r cercano a cero.",
+          "answer": true,
+          "explanation": "Pearson mide asociación lineal."
+        },
+        {
+          "text": "R²=0,90 demuestra un efecto causal del 90 %.",
+          "answer": false,
+          "explanation": "Mide ajuste, no causalidad."
+        }
+      ],
+      "source": "Transferencia V2 · casos ficticios inspirados en las precauciones de la guía 4",
+      "hints": [
+        "Distinguí estimación y certeza.",
+        "Revisá X=0 y posibles curvaturas.",
+        "Causalidad requiere evidencia adicional al ajuste."
+      ],
+      "solution": [
+        "La recta no garantiza valores individuales ni causalidad.",
+        "El intercepto puede extrapolar; un r bajo no descarta relación no lineal."
+      ],
+      "patterns": [
+        "D1",
+        "D2",
+        "D5"
+      ]
     }
   ],
   "schema": "psicologia-up.statistics.unit.v3",
@@ -626,9 +2124,223 @@
     ]
   },
   "review": {
-    "currentVersion": "migration-v3",
-    "academicValidation": "legacy-content-preserved",
-    "sourceCoverage": "adapted; not all original keys independently verified"
+    "currentVersion": "m4-integral-v2-20261117",
+    "academicValidation": "Fuentes originales M4, integrador y parcial 2026 revisadas; respuestas numéricas de práctica recalculadas, no se certifica el solucionario oficial íntegro.",
+    "sourcesRead": [
+      "Guía 4 original, incluyendo imágenes E10 p.5 y E12 p.6",
+      "Integrador P1 original",
+      "Parcial presencial 2026, temas 1 y 2",
+      "Simulacro P1 con claves",
+      "Paquete privado V2 y auditoría 282"
+    ],
+    "patternCoverage": {
+      "D1": 17,
+      "D2": 9,
+      "D3": 21,
+      "D4": 10,
+      "D5": 14
+    },
+    "originalGuideCoverage": "E1–E13 por patrones y adaptaciones; figuras E10/E12 se inspeccionaron pero no se reproducen por derechos.",
+    "transferExercises": [
+      "M4-P30",
+      "M4-P31",
+      "M4-P32",
+      "M4-P33"
+    ],
+    "originalPracticeIDsPreserved": [
+      "M4-P01",
+      "M4-P02",
+      "M4-P03",
+      "M4-P04",
+      "M4-P05",
+      "M4-P06",
+      "M4-P07",
+      "M4-P08",
+      "M4-P09",
+      "M4-P10"
+    ],
+    "openIssues": [
+      "No se ejecutó Jamovi ni se inspeccionaron sus menús.",
+      "La adaptación textual de E10/E12 no reemplaza un ejercicio con imágenes reales.",
+      "No se resolvieron ni cotejaron las bases de datos externas de los otros incisos de P1."
+    ],
+    "verificationMethod": "Sxx/Sxy/Syy cotejados con cálculo NumPy; opciones revisadas individualmente contra tolerancia."
   },
-  "cheatBlocks": []
+  "cheatBlocks": [
+    {
+      "type": "heading",
+      "text": "Pares y nube"
+    },
+    {
+      "type": "list",
+      "items": [
+        {
+          "label": "(xᵢ,yᵢ)",
+          "text": "medidas de la misma unidad; conservar columnas alineadas."
+        },
+        {
+          "label": "X",
+          "text": "predictora; Y es respuesta."
+        },
+        {
+          "label": "Ascendente",
+          "text": "r positivo."
+        },
+        {
+          "label": "Descendente",
+          "text": "r negativo."
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "Correlación"
+    },
+    {
+      "type": "formula",
+      "expression": "−1 ≤ r ≤ +1",
+      "symbols": []
+    },
+    {
+      "type": "list",
+      "items": [
+        {
+          "label": "r",
+          "text": "signo = dirección; |r| = fuerza lineal."
+        },
+        {
+          "label": "r≈0",
+          "text": "linealidad débil, no ausencia de toda relación."
+        },
+        {
+          "label": "r",
+          "text": "sin unidades; no mide pendiente ni causalidad."
+        }
+      ]
+    },
+    {
+      "type": "formula",
+      "expression": "r = Sxy / √(Sxx·Syy)",
+      "symbols": []
+    },
+    {
+      "type": "heading",
+      "text": "Determinación"
+    },
+    {
+      "type": "formula",
+      "expression": "R² = r²",
+      "symbols": []
+    },
+    {
+      "type": "list",
+      "items": [
+        {
+          "label": "R² × 100",
+          "text": "porcentaje de variabilidad de Y explicado por la recta."
+        },
+        {
+          "label": "R² dado",
+          "text": "|r|=√R²; signo según b o nube."
+        }
+      ]
+    },
+    {
+      "type": "note",
+      "text": "r=−0,8 → R²=0,64=64 %. R² no conserva el signo."
+    },
+    {
+      "type": "heading",
+      "text": "Regresión"
+    },
+    {
+      "type": "formula",
+      "expression": "ŷ = a + bx",
+      "symbols": []
+    },
+    {
+      "type": "list",
+      "items": [
+        {
+          "label": "b",
+          "text": "cambio estimado de Y por 1 de X; unidades de Y/X."
+        },
+        {
+          "label": "a",
+          "text": "predicción con X=0; puede carecer de sentido práctico."
+        },
+        {
+          "label": "ŷ",
+          "text": "Y predicha, no valor garantizado."
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "Ajuste con pares"
+    },
+    {
+      "type": "formula",
+      "expression": "Sxx = Σ(xᵢ−x̄)²",
+      "symbols": []
+    },
+    {
+      "type": "formula",
+      "expression": "Sxy = Σ(xᵢ−x̄)(yᵢ−ȳ)",
+      "symbols": []
+    },
+    {
+      "type": "formula",
+      "expression": "Syy = Σ(yᵢ−ȳ)²",
+      "symbols": []
+    },
+    {
+      "type": "formula",
+      "expression": "b = Sxy/Sxx     a = ȳ−b x̄",
+      "symbols": []
+    },
+    {
+      "type": "steps",
+      "items": [
+        "Alinear pares y hallar medias.",
+        "Calcular Sxx, Syy, Sxy.",
+        "Obtener r, b y a; escribir ŷ.",
+        "Reemplazar X y expresar Y con unidades."
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "Límites"
+    },
+    {
+      "type": "comparison",
+      "columns": [
+        {
+          "label": "Dentro del rango",
+          "items": [
+            "Interpolación: revisar ajuste."
+          ]
+        },
+        {
+          "label": "Fuera del rango",
+          "items": [
+            "Extrapolación: mayor incertidumbre."
+          ]
+        }
+      ]
+    },
+    {
+      "type": "list",
+      "items": [
+        {
+          "label": "Correlación ≠ causalidad",
+          "text": "considerar diseño y variables omitidas."
+        },
+        {
+          "label": "Nube curva",
+          "text": "Pearson puede ser pequeño pese a existir asociación."
+        }
+      ]
+    }
+  ]
 }
