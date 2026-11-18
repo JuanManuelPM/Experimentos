@@ -1,4 +1,4 @@
-import {loadStudyContent} from './data.js?v=partial-summary-v1-20261118';
+import {loadStudyContent} from './data.js?v=partial-summary-v2-20261118';
 import {createRenderers} from './components.js?v=partial-summary-v1-20261118';
 import {TAB_ORDER,buildRouteURL,routeFromLocation,bindGestures} from './navigation.js?v=speedrun-20261117a';
 // UI orchestration, no course content or exercise keys in this file.
@@ -101,15 +101,18 @@ function keywords(s){
 }
 function showCheat(id){
   const found=findExercise(id);if(!found)return;
-  cheatCaption.textContent='Machete · '+found.u.id;
-  cheatContent.innerHTML=cheat(found.u);
+  const summaryMode=view==='partial'&&PARTIALS[partial].summary;
+  const sheet=summaryMode?PARTIALS[partial].summary:found.u;
+  cheatCaption.textContent='Machete · '+(summaryMode?'P'+PARTIALS[partial].id:found.u.id);
+  cheatContent.innerHTML=cheat(sheet);
   cheatDialog.showModal();
   const heads=[...cheatContent.querySelectorAll('.block-heading,.cheat-section h2')];
   if(!heads.length)return;
   const q=found.q,query=keywords([q.title,q.prompt,...(q.solution||[])].join(' '));
   // Enlace editorial exacto cuando la unidad ya declaró su sección pertinente.
-  if(typeof q.cheatSection==='string'&&q.cheatSection.trim()){
-    const exact=heads.find(h=>h.textContent.trim().toLocaleLowerCase('es')===q.cheatSection.trim().toLocaleLowerCase('es'));
+  const section=summaryMode?sheet.cheatByUnit?.[found.u.moduleId||('M'+String(found.u.id).replace(/^0/,''))]:q.cheatSection;
+  if(typeof section==='string'&&section.trim()){
+    const exact=heads.find(h=>h.textContent.trim().toLocaleLowerCase('es')===section.trim().toLocaleLowerCase('es'));
     if(exact){requestAnimationFrame(()=>{cheatContent.scrollTop=Math.max(0,exact.offsetTop-cheatContent.offsetTop-12)});return}
   }
   // Prioriza la sección del machete que comparte conceptos con el enunciado y su solución.
