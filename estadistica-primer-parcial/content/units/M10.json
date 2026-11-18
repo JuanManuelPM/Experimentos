@@ -5,19 +5,585 @@
   "partial": "P2",
   "status": "draft",
   "title": "Comparación de proporciones",
-  "intro": "Proporciones entre grupos",
-  "source": "Fuente privada: paquete académico v2",
-  "theory": [],
+  "intro": "Dos grupos, respuestas sí/no. Hipótesis, contraste Z y errores de interpretación.",
+  "source": "Guía 10 e integrador del segundo parcial, Universidad de Palermo. Contenidos redactados como adaptaciones didácticas, no transcripciones.",
+  "theory": [
+    {
+      "id": "10.01",
+      "title": "Qué se compara realmente",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Una proporción describe qué parte de un grupo cumple una condición definida como sí/no. Cada persona aporta un resultado binario, aunque el éxito estadístico sea un síntoma desfavorable."
+        },
+        {
+          "type": "definition",
+          "term": "Éxito estadístico",
+          "text": "El resultado que se decidió contar.",
+          "example": "En el integrador se cuenta «presentar ansiedad clínica»; no significa que tener ansiedad sea deseable."
+        },
+        {
+          "type": "comparison",
+          "columns": [
+            {
+              "label": "Proporciones",
+              "items": [
+                "Se registran casos sí/no.",
+                "Se comparan porcentajes de dos grupos."
+              ]
+            },
+            {
+              "label": "Medias",
+              "items": [
+                "Se registran puntajes cuantitativos.",
+                "Se comparan promedios, no porcentajes."
+              ]
+            }
+          ]
+        },
+        {
+          "type": "note",
+          "text": "El nombre del tratamiento no determina la prueba: importa qué resultado se observó."
+        }
+      ]
+    },
+    {
+      "id": "10.02",
+      "title": "Contar en cada grupo",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Primero identificá n, total de personas de cada grupo, y x, cantidad con el resultado. Para comparar grupos, cada proporción lleva su propio denominador."
+        },
+        {
+          "type": "formula",
+          "expression": "p̂₁ = x₁ / n₁      p̂₂ = x₂ / n₂",
+          "symbols": [
+            {
+              "symbol": "x₁, x₂",
+              "meaning": "casos afirmativos por grupo"
+            },
+            {
+              "symbol": "n₁, n₂",
+              "meaning": "personas de cada grupo"
+            },
+            {
+              "symbol": "p̂₁, p̂₂",
+              "meaning": "proporciones muestrales estimadas"
+            }
+          ]
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Grupo",
+            "n",
+            "x",
+            "p̂"
+          ],
+          "rows": [
+            [
+              "Provincia",
+              "2180",
+              "763",
+              "763/2180 = 0,35"
+            ],
+            [
+              "CABA",
+              "2100",
+              "672",
+              "672/2100 = 0,32"
+            ]
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "La diferencia observada es 0,35 − 0,32 = 0,03, o 3 puntos porcentuales. Esto describe la muestra; la prueba pregunta si hay evidencia de una diferencia poblacional."
+        }
+      ]
+    },
+    {
+      "id": "10.03",
+      "title": "Cuándo usar Z de dos proporciones",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Se compara un resultado sí/no entre dos grupos de observaciones independientes. La hipótesis debe hablar de las proporciones poblacionales."
+        },
+        {
+          "type": "list",
+          "items": [
+            {
+              "label": "Diseño",
+              "text": "Los casos de un grupo no son mediciones repetidas de los casos del otro."
+            },
+            {
+              "label": "Muestreo",
+              "text": "La representatividad y la independencia de observaciones condicionan las inferencias."
+            },
+            {
+              "label": "Aproximación normal",
+              "text": "Se esperan suficientes sí y no bajo H₀ en cada grupo; referencia operativa: al menos 5 de cada uno."
+            }
+          ]
+        },
+        {
+          "type": "note",
+          "text": "Una tabla con un sí/no puede exigir solamente porcentajes. No calcules Z si no se pide inferencia."
+        }
+      ]
+    },
+    {
+      "id": "10.04",
+      "title": "Hipótesis, orden y colas",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Especificá primero qué representa el grupo 1. Las hipótesis se escriben con p poblacionales, no con p̂ observadas."
+        },
+        {
+          "type": "comparison",
+          "columns": [
+            {
+              "label": "Una dirección",
+              "items": [
+                "Mayor: H₁ p₁ > p₂ (cola derecha).",
+                "Menor: H₁ p₁ < p₂ (cola izquierda)."
+              ]
+            },
+            {
+              "label": "Diferencia en cualquier sentido",
+              "items": [
+                "H₁ p₁ ≠ p₂ (bilateral).",
+                "No convertirla en unilateral después de observar las muestras."
+              ]
+            }
+          ]
+        },
+        {
+          "type": "formula",
+          "expression": "H₀: p₁ = p₂   (frontera del contraste)",
+          "symbols": []
+        },
+        {
+          "type": "note",
+          "text": "Para una alternativa unilateral, la nula completa incluye también el sentido opuesto. Invertir el orden de la resta invierte el signo de Z."
+        }
+      ]
+    },
+    {
+      "id": "10.05",
+      "title": "Proporción conjunta bajo H₀",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "La hipótesis de igualdad postula una proporción común. Se estima juntando todos los éxitos y los tamaños; no con el promedio simple de dos porcentajes cuando los tamaños difieren."
+        },
+        {
+          "type": "formula",
+          "expression": "p̂ = (x₁ + x₂) / (n₁ + n₂)",
+          "symbols": []
+        },
+        {
+          "type": "paragraph",
+          "text": "Ejercicio 1: p̂ = (763 + 672)/(2180 + 2100) = 1435/4280 ≈ 0,33528."
+        },
+        {
+          "type": "note",
+          "text": "La proporción conjunta se utiliza para el error estándar del contraste de igualdad, no para reemplazar las proporciones por grupo."
+        }
+      ]
+    },
+    {
+      "id": "10.06",
+      "title": "Error estándar y Z",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "El error estándar expresa cuánto podría variar la diferencia de porcentajes por muestreo si H₀ fuese cierta. Una diferencia de 0,03 no tiene siempre el mismo peso estadístico."
+        },
+        {
+          "type": "formula",
+          "expression": "EE₀ = √[p̂(1 − p̂)(1/n₁ + 1/n₂)]",
+          "symbols": []
+        },
+        {
+          "type": "formula",
+          "expression": "Z = (p̂₁ − p̂₂) / EE₀",
+          "symbols": []
+        },
+        {
+          "type": "steps",
+          "items": [
+            "Calcular proporciones de cada grupo.",
+            "Calcular la proporción conjunta bajo H₀.",
+            "Calcular EE₀ con ambos tamaños.",
+            "Dividir la diferencia observada por EE₀."
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Ejercicio 1: EE₀ ≈ 0,014435; Z = (0,35 − 0,32)/0,014435 ≈ 2,0783."
+        },
+        {
+          "type": "note",
+          "text": "El signo de Z depende del orden elegido. No confundas este error estándar con el desvío estándar de un puntaje."
+        }
+      ]
+    },
+    {
+      "id": "10.07",
+      "title": "Valor p, alfa y conclusión",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "El valor p mide cuán extremo sería un resultado como el observado bajo el modelo de H₀. No es la probabilidad de que H₀ sea verdadera."
+        },
+        {
+          "type": "comparison",
+          "columns": [
+            {
+              "label": "Una cola",
+              "items": [
+                "H₁ p₁ > p₂: p = P(Z ≥ z).",
+                "H₁ p₁ < p₂: p = P(Z ≤ z)."
+              ]
+            },
+            {
+              "label": "Dos colas",
+              "items": [
+                "H₁ p₁ ≠ p₂: p = 2×P(Z ≥ |z|)."
+              ]
+            }
+          ]
+        },
+        {
+          "type": "decision",
+          "if": "p ≤ α",
+          "then": "Rechazar H₀: evidencia estadística a favor de la alternativa."
+        },
+        {
+          "type": "decision",
+          "if": "p > α",
+          "then": "No rechazar H₀: evidencia insuficiente, sin demostrar igualdad."
+        },
+        {
+          "type": "paragraph",
+          "text": "Ejercicio 1: Z ≈ 2,0783, cola derecha, p ≈ 0,01884. Con α = 0,05 se rechaza H₀."
+        }
+      ]
+    },
+    {
+      "id": "10.08",
+      "title": "Errores de tipo I y II",
+      "blocks": [
+        {
+          "type": "table",
+          "headers": [
+            "Decisión tomada",
+            "Error posible"
+          ],
+          "rows": [
+            [
+              "Rechazar H₀",
+              "Tipo I si H₀ era verdadera."
+            ],
+            [
+              "No rechazar H₀",
+              "Tipo II si H₀ era falsa."
+            ]
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "α es la tasa máxima de error de tipo I del procedimiento bajo sus supuestos, fijada antes del análisis. No es la probabilidad de que una conclusión particular esté equivocada."
+        },
+        {
+          "type": "paragraph",
+          "text": "En el ejercicio 4, si no se rechaza H₀ y A realmente supera a B en la población, se habría cometido un error de tipo II."
+        }
+      ]
+    },
+    {
+      "id": "10.09",
+      "title": "Un porcentaje no siempre da un conteo",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Para una prueba Z exacta se necesitan conteos enteros o proporciones suficientemente precisas. Un porcentaje entero puede estar redondeado."
+        },
+        {
+          "type": "paragraph",
+          "text": "Guía 10, ejercicio 3: 51 % de 125 da 63,75 personas y 61 % de 158 da 96,38. Ninguno es un conteo entero."
+        },
+        {
+          "type": "comparison",
+          "columns": [
+            {
+              "label": "Si se supone 64/125 y 96/158",
+              "items": [
+                "p unilateral ≈ 0,05359.",
+                "No se rechaza H₀ al 5 %."
+              ]
+            },
+            {
+              "label": "Si se supone 64/125 y 97/158",
+              "items": [
+                "p unilateral ≈ 0,04278.",
+                "Se rechaza H₀ al 5 %."
+              ]
+            }
+          ]
+        },
+        {
+          "type": "note",
+          "text": "Los dos escenarios son compatibles con redondeos a porcentajes enteros, pero no son conteos confirmados. Para E3 la conclusión original exacta está bloqueada. La guía especifica α = 5 %; la mención de 8 % en el solucionario es contradictoria."
+        }
+      ]
+    },
+    {
+      "id": "10.10",
+      "title": "Qué permite afirmar el resultado",
+      "blocks": [
+        {
+          "type": "comparison",
+          "columns": [
+            {
+              "label": "Conclusión estadística",
+              "items": [
+                "La muestra aporta, o no, evidencia de diferencia de proporciones al nivel α.",
+                "Debe respetar el sentido de H₁."
+              ]
+            },
+            {
+              "label": "Decisión clínica",
+              "items": [
+                "Implica eficacia, riesgos, causalidad y magnitud relevante.",
+                "No la demuestra por sí solo un valor p."
+              ]
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Ejercicio 2: si el contraste no es significativo, eso no demuestra que presencial y virtual sean equivalentes ni determina de forma automática una política de seguimiento."
+        },
+        {
+          "type": "note",
+          "text": "La asignación a los tratamientos y el muestreo importan para afirmar causalidad o generalizar."
+        }
+      ]
+    },
+    {
+      "id": "10.11",
+      "title": "Elegir prueba según resultado y diseño",
+      "blocks": [
+        {
+          "type": "list",
+          "items": [
+            {
+              "label": "Personas diferentes, respuesta sí/no",
+              "text": "Comparar proporciones; Z si hay pregunta inferencial y supuestos suficientes."
+            },
+            {
+              "label": "Personas diferentes, puntaje numérico",
+              "text": "Comparar medias; habitualmente t independiente."
+            },
+            {
+              "label": "Mismas personas antes y después, puntaje",
+              "text": "Comparar diferencias apareadas; habitualmente t apareada."
+            },
+            {
+              "label": "Tabla y «entre quienes…»",
+              "text": "Calcular proporción condicional con denominador del grupo indicado; no necesariamente Z."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Parcial 2026, pregunta 3(d): aun cuando exista una tabla sí/no, al preguntar por puntajes de 0 a 100 en dos grupos distintos corresponde comparar medias."
+        }
+      ]
+    }
+  ],
   "practice": [],
   "extras": {},
   "cheats": [],
-  "cheatBlocks": [],
+  "cheatBlocks": [
+    {
+      "type": "heading",
+      "text": "Datos y diseño"
+    },
+    {
+      "type": "list",
+      "items": [
+        {
+          "label": "Resultado",
+          "text": "Sí/no en dos grupos independientes."
+        },
+        {
+          "label": "nᵢ",
+          "text": "Total del grupo i."
+        },
+        {
+          "label": "xᵢ",
+          "text": "Casos positivos de ese grupo."
+        },
+        {
+          "label": "p̂ᵢ",
+          "text": "Proporción muestral; pᵢ es poblacional."
+        }
+      ]
+    },
+    {
+      "type": "formula",
+      "expression": "p̂₁ = x₁/n₁       p̂₂ = x₂/n₂",
+      "symbols": []
+    },
+    {
+      "type": "note",
+      "text": "Cada grupo tiene SU denominador. Una diferencia 0,03 equivale a 3 puntos porcentuales."
+    },
+    {
+      "type": "heading",
+      "text": "Hipótesis y dirección"
+    },
+    {
+      "type": "comparison",
+      "columns": [
+        {
+          "label": "Unilateral",
+          "items": [
+            "H₁ p₁ > p₂ → derecha.",
+            "H₁ p₁ < p₂ → izquierda."
+          ]
+        },
+        {
+          "label": "Bilateral",
+          "items": [
+            "H₁ p₁ ≠ p₂ → dos colas.",
+            "No elegir dirección según el resultado."
+          ]
+        }
+      ]
+    },
+    {
+      "type": "formula",
+      "expression": "H₀: p₁ = p₂   (frontera de la prueba)",
+      "symbols": []
+    },
+    {
+      "type": "heading",
+      "text": "Contraste Z"
+    },
+    {
+      "type": "steps",
+      "items": [
+        "Proporciones por grupo.",
+        "Proporción conjunta bajo H₀.",
+        "Error estándar EE₀.",
+        "Z y valor p de la cola correcta.",
+        "Decisión y conclusión contextual."
+      ]
+    },
+    {
+      "type": "formula",
+      "expression": "p̂ = (x₁ + x₂)/(n₁ + n₂)",
+      "symbols": []
+    },
+    {
+      "type": "formula",
+      "expression": "EE₀ = √[p̂(1 − p̂)(1/n₁ + 1/n₂)]",
+      "symbols": []
+    },
+    {
+      "type": "formula",
+      "expression": "Z = (p̂₁ − p̂₂)/EE₀",
+      "symbols": []
+    },
+    {
+      "type": "comparison",
+      "columns": [
+        {
+          "label": "Una cola",
+          "items": [
+            "Derecha: P(Z ≥ z).",
+            "Izquierda: P(Z ≤ z)."
+          ]
+        },
+        {
+          "label": "Dos colas",
+          "items": [
+            "2×P(Z ≥ |z|)."
+          ]
+        }
+      ]
+    },
+    {
+      "type": "decision",
+      "if": "p ≤ α",
+      "then": "Rechazar H₀."
+    },
+    {
+      "type": "decision",
+      "if": "p > α",
+      "then": "No rechazar H₀, sin demostrar igualdad."
+    },
+    {
+      "type": "heading",
+      "text": "Errores, límites y selector"
+    },
+    {
+      "type": "list",
+      "items": [
+        {
+          "label": "Tipo I",
+          "text": "Rechazar una H₀ verdadera."
+        },
+        {
+          "label": "Tipo II",
+          "text": "No rechazar una H₀ falsa."
+        },
+        {
+          "label": "Condiciones",
+          "text": "Independencia, muestreo pertinente y recuentos esperados suficientes de sí/no."
+        }
+      ]
+    },
+    {
+      "type": "note",
+      "text": "M10 E3: α = 0,05 y los porcentajes redondeados no determinan una conclusión exacta única."
+    },
+    {
+      "type": "note",
+      "text": "Valor p ≠ P(H₀ verdadera). Significativo ≠ superioridad clínica demostrada."
+    },
+    {
+      "type": "comparison",
+      "columns": [
+        {
+          "label": "Resultado sí/no",
+          "items": [
+            "Grupos distintos: proporciones.",
+            "Tabla descriptiva: tasa simple o condicional."
+          ]
+        },
+        {
+          "label": "Resultado puntaje",
+          "items": [
+            "Grupos distintos: t independiente.",
+            "Mismas personas: t apareada."
+          ]
+        }
+      ]
+    }
+  ],
   "numericOptions": {},
   "multiOptions": {},
   "trueFalse": {},
   "review": {
-    "currentVersion": "placeholder-v3",
-    "academicValidation": "pending",
-    "sourceCoverage": "pending"
+    "currentVersion": "unit10-work-in-progress-v2",
+    "academicValidation": "DRAFT_PENDING_PRACTICE",
+    "sourceCoverage": "Guía 10 E1–E4; Integrador P2 E3 y E12; parcial presencial 2026 pregunta 3(d)."
   }
 }
