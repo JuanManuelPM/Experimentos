@@ -56,7 +56,7 @@ function reviewAnswer(q){
 function practices(u){return u.practice.map((q,i)=>{
   const grade=answers['__grade__:'+q.id];
   const state=grade==='correct'?' review-correct':grade==='incorrect'?' review-incorrect':'';
-  return '<section class="exercise'+state+'" id="'+escapeHTML(q.id)+'"><h2><span class="ex-index" aria-label="Ejercicio '+(i+1)+'">'+String(i+1).padStart(2,'0')+'</span>'+escapeHTML(q.title)+'</h2>'+(q.prompt?'<p class="statement">'+q.prompt+'</p>':'')+table(q)+chart(q)+pairs(q)+practiceBody(q)+'<div class="review-controls"><button type="button" class="review-toggle" data-reveal="'+escapeHTML(q.id)+'" aria-expanded="false">Ver respuesta</button></div><div class="review-panel" data-review-panel="'+escapeHTML(q.id)+'" hidden></div><span class="sr-only">Fuente: '+escapeHTML(q.source||'Ejercicio adaptado')+'</span></section>'
+  return '<section class="exercise'+state+'" id="'+escapeHTML(q.id)+'"><h2><span class="ex-index" aria-label="Ejercicio '+(i+1)+'">'+String(i+1).padStart(2,'0')+'</span>'+escapeHTML(q.title)+'</h2>'+(q.prompt?'<p class="statement">'+q.prompt+'</p>':'')+table(q)+chart(q)+pairs(q)+practiceBody(q)+'<div class="review-controls"><button type="button" class="review-toggle" data-reveal="'+escapeHTML(q.id)+'" aria-expanded="false">Ver respuesta</button><button type="button" class="review-cheat" data-cheat="'+escapeHTML(q.id)+'">Machete</button><button type="button" class="review-next" data-next="'+escapeHTML(q.id)+'"'+(grade?'':' hidden')+'>Siguiente ›</button></div><div class="review-panel" data-review-panel="'+escapeHTML(q.id)+'" hidden></div><span class="sr-only">Fuente: '+escapeHTML(q.source||'Ejercicio adaptado')+'</span></section>'
 }).join('') }
 
 return {theory,cheat,practices,reviewAnswer};
