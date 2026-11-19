@@ -1,0 +1,45 @@
+name: Cocina Umbria 002 candidate WebGL QA
+on:
+  push:
+    branches:
+      - candidate/cocina-umbria-002-production-20261119
+    paths-ignore:
+      - 'prometeo/cocina-umbria-002/qa/evidence/**'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  visual-qa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install Chromium + Playwright for real local WebGL
+        run: |
+          npm install --no-save playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Exercise scene and FORJA against genuine GLBs
+        id: probe
+        continue-on-error: true
+        run: node prometeo/cocina-umbria-002/qa/visual-probe.mjs
+      - name: Store screenshot evidence as downloadable artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: umbria-002-candidate-webgl-evidence
+          path: prometeo/cocina-umbria-002/qa/evidence/
+          if-no-files-found: warn
+      - name: Persist all evidence on isolated candidate branch only
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -f prometeo/cocina-umbria-002/qa/evidence/ || true
+          git diff --cached --quiet || git commit -m "qa: preserve Umbria 002 Chromium evidence on candidate only"
+          git push
+      - name: Preserve test failure status
+        if: steps.probe.outcome == 'failure'
+        run: exit 1
