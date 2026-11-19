@@ -217,11 +217,13 @@ function pose(time){
  if(seg.segment.mode==='turn'&&front){
   const d=Math.atan2(Math.sin(h2-h1),Math.cos(h2-h1));yaw=h1+d*seg.u;
  }else if(time>=second.from)yaw=h2;
+ const mode=seg.segment.mode==='walk'?'walk':seg.segment.mode==='interact'?'interact':'idle';
+ if((mode==='walk'||seg.segment.mode==='turn')&&(!front||!animWalk)){
+  rootActor.position.set(config.actor.route[0].a[0],0,config.actor.route[0].a[1]);changeClip('idle');
+  telemetry.motion.blockedBy=!front?'FRONT_UNRESOLVED':'WALK_CLIP_MISSING';return;
+ }
  rootActor.position.set(seg.x,0,seg.z);
  if(front&&yaw!==null)rootActor.rotation.y=yaw;
- const mode=seg.segment.mode==='walk'?'walk':seg.segment.mode==='interact'?'interact':'idle';
- if(mode==='walk'&&!front){changeClip('idle');status('EJE FRONTAL SIN MEDIR · caminata no aprobada');return;}
- if(mode==='walk'&&!animWalk){changeClip('idle');log('WALK_CLIP_MISSING');return;}
  changeClip(mode);
  if(mode==='walk'&&front){
   const dx=seg.segment.b[0]-seg.segment.a[0],dz=seg.segment.b[1]-seg.segment.a[1],d=new THREE.Vector3(dx,0,dz).normalize();
