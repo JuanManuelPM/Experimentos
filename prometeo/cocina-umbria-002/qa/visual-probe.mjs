@@ -55,6 +55,20 @@ async function runCase(kind,viewport,mobile){
     await fs.writeFile(path.join(OUT,kind+'-'+label+'.jpg.b64.txt'),data.toString('base64'));
    }
   }
+  if(kind==='desktop'){
+   for(const view of ['front','profile','back']){
+    await page.locator('#seek').evaluate(el=>{el.value='5';el.dispatchEvent(new Event('input',{bubbles:true}));});
+    const ok=await page.evaluate(v=>window.__UMBRIA_TEST__?.cameraView(v),view);
+    if(!ok){result.errors.push('QA_CAMERA_'+view+'_FAILED');continue;}
+    await page.waitForTimeout(250);
+    await page.screenshot({path:path.join(OUT,'desktop-facing-'+view+'.png')});
+    const jpg=await page.screenshot({type:'jpeg',quality:73});
+    await fs.writeFile(path.join(OUT,'desktop-facing-'+view+'.jpg'),jpg);
+    await fs.writeFile(path.join(OUT,'desktop-facing-'+view+'.jpg.b64.txt'),jpg.toString('base64'));
+    result.captures.push({label:'facing-'+view,second:5,sample:await page.evaluate(()=>window.__UMBRIA_TEST__?.sample())});
+   }
+   await page.evaluate(()=>window.__UMBRIA_TEST__?.reset());
+  }
   await page.locator('#mode').click();const editor=await page.evaluate(()=>window.__UMBRIA_QA__?.().roof);
   await page.screenshot({path:path.join(OUT,kind+'-cutaway.png'),animations:'disabled'});
   await page.locator('#mode').click();
@@ -87,11 +101,26 @@ async function forjaCase(){
  }catch(e){result.status='FAIL';result.error=String(e)}
  await page.close();return result;
 }
+async function variantCase(){
+ const page=await browser.newPage({viewport:{width:1280,height:800}});
+ const result={status:'NOT_RUN',expectedRadioPosition:[-1.85,.96,-2.18]};
+ try{
+  await page.goto('http://127.0.0.1:8879/prometeo/cocina-umbria-002/?variant=b',{waitUntil:'domcontentloaded',timeout:50000});
+  await page.waitForFunction(()=>window.__UMBRIA_QA__?.().actor.loaded===true,null,{timeout:120000});
+  const info=await page.evaluate(()=>window.__UMBRIA_QA__?.()||null);
+  result.actualRadioPosition=info?.variantRadioPosition;
+  result.variant=info?.configVariant;
+  result.status=JSON.stringify(result.actualRadioPosition)===JSON.stringify(result.expectedRadioPosition)?'CONFIG_ONLY_VARIANT_LOADED':'FAIL';
+  await page.screenshot({path:path.join(OUT,'variant-radio.png')});
+ }catch(e){result.status='FAIL';result.error=String(e)}
+ await page.close();return result;
+}
 try{
  browser=await chromium.launch({headless:true,args:['--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader','--no-sandbox','--disable-gpu-sandbox','--disable-dev-shm-usage']});
  report.attempts.desktop=await runCase('desktop',{width:1280,height:800},false);
  report.attempts.mobile=await runCase('mobile',{width:390,height:844},true);
  report.attempts.forja=await forjaCase();
+ report.attempts.variant=await variantCase();
  report.status=Object.values(report.attempts).every(x=>!['FAIL','NOT_RUN'].includes(x.status))?'BROWSER_CANARY_OBSERVED_NOT_ART_APPROVED':'BROWSER_CANARY_PARTIAL_OR_FAILED';
 }catch(e){report.status='BROWSER_LAUNCH_FAILED';report.errors.push(String(e))}
 finally{

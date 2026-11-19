@@ -87,6 +87,7 @@ export function attachPilot({state,replaceScene,toast}){
  $('pilot-axis').onchange=e=>{axis=e.target.value;lastStatus='FRONT_CALIBRATION_REQUIRED';seek(t)};
  $('pilot-camera').onchange=()=>{cinematic=true;seek(t)};
  state.transform?.addEventListener('dragging-changed',e=>{if(e.value)pauseForEdit()});
+ if(new URLSearchParams(location.search).get('umbria')==='002')$('pilot-collapse').click();
  display();
  return{tick,loadScene,swapActor,seek,restore,snapshot:cinemaSnapshot,
   shouldAdvanceMixer:e=>shouldAdvanceActorMixer(e?.asset?.id,actorId,cinematic,playing),onSceneChanged,pauseForEdit,diagnostic:()=>({t,playing,cinematic,actorPresent:!!currentActor(),lastStatus,actorId,frontAxis:axis,frontVerified:false,interactionVerified:false,shot:lastShot,missing})};

@@ -434,6 +434,7 @@ async function initCatalog(){
    if(!ok)throw Error('UMBRIA_FORJA_IMPORT_FAILED');
    state.history=[snapshot()];state.cursor=0;historyButtons();
    status('COCINA UMBRÍA 002 · ESCENA EDITABLE · TIMELINE DE CINE EN ../SHOTS.json');
+   state.camera.position.set(5.7,5.0,7.7);state.controls.target.set(0,1.1,0);state.controls.update();
   }else{
   let prev=null;try{prev=JSON.parse(localStorage.getItem(STORAGE)||'null')}catch{}
   if(prev?.schema===SCHEMA&&prev.items?.length){

@@ -18,6 +18,7 @@ const telemetry={schema:'prometeo.cocina-umbria-002/live-qa/1',flowVersionUsed:'
 window.__UMBRIA_QA__=()=>JSON.parse(JSON.stringify(telemetry));
 let scene,renderer,camera,controls,config,shotlist,rootActor,mixer,animIdle,animWalk,animInteract,activeAction,actor,front=null;
 let roof,film=true,playing=false,t=0,prev=0,lastFrame=performance.now(),selected=null,propModels=[],roomModels=[],lastFeet=null;
+let qaCamera=null;
 const mat={
  wall:new THREE.MeshStandardMaterial({color:0x4a5b50,roughness:1,side:THREE.DoubleSide}),
  ceiling:new THREE.MeshStandardMaterial({color:0x393f37,roughness:.96,side:THREE.DoubleSide}),
@@ -42,7 +43,15 @@ function roofVisibility(){if(roof)roof.visible=film;telemetry.roof.cutaway=!film
 function architecture(){
  scene.background=new THREE.Color('#0d171c');
  scene.fog=new THREE.FogExp2('#101b1d',.016);
- addBox('Suelo estructural',8.75,.2,8.55,0,-.13,0,new THREE.MeshStandardMaterial({color:0x535d55,roughness:1}));
+ const textureCanvas=document.createElement('canvas');textureCanvas.width=256;textureCanvas.height=256;
+ const ctx=textureCanvas.getContext('2d');
+ for(let iy=0;iy<8;iy++)for(let ix=0;ix<8;ix++){
+  ctx.fillStyle=(ix+iy)%2===0?'#566359':'#606a60';ctx.fillRect(ix*32,iy*32,32,32);
+  ctx.strokeStyle='#445349';ctx.lineWidth=1;ctx.strokeRect(ix*32+.5,iy*32+.5,31,31);
+ }
+ const tileTexture=new THREE.CanvasTexture(textureCanvas);tileTexture.colorSpace=THREE.SRGBColorSpace;
+ tileTexture.wrapS=tileTexture.wrapT=THREE.RepeatWrapping;tileTexture.repeat.set(3,3);
+ addBox('Suelo estructural',8.75,.2,8.55,0,-.13,0,new THREE.MeshStandardMaterial({map:tileTexture,roughness:.95}));
  // Four genuine closing walls, with physical window and door voids.
  addBox('Norte izquierda',3.17,3.55,.19,-2.79,1.775,-4.1,mat.wall);
  addBox('Norte derecha',2.6,3.55,.19,3.06,1.775,-4.1,mat.wall);
@@ -238,12 +247,12 @@ function pose(time){
  if(seg.segment.mode==='turn'&&front){
   const d=Math.atan2(Math.sin(h2-h1),Math.cos(h2-h1));yaw=h1+d*seg.u;
  }else if(time>=second.from)yaw=h2;
- if(front&&time>=17){
+ if(front&&time>=13){
   const focus=config.props.find(p=>p.id==='radio');
   if(focus){const targetYaw=facingYaw(focus.p[0]-seg.x,focus.p[2]-seg.z,front);
-   const delta=Math.atan2(Math.sin(targetYaw-h2),Math.cos(targetYaw-h2));yaw=h2+delta*clamp((time-17)/1.2,0,1);}
+   const delta=Math.atan2(Math.sin(targetYaw-h2),Math.cos(targetYaw-h2));yaw=h2+delta*clamp((time-13)/1.0,0,1);}
  }
- const mode=seg.segment.mode==='walk'?'walk':seg.segment.mode==='interact'?'interact':'idle';
+ const mode=seg.segment.mode==='walk'?'walk':seg.segment.mode==='interact'&&time>=14?'interact':'idle';
  if((mode==='walk'||seg.segment.mode==='turn')&&(!front||!animWalk)){
   rootActor.position.set(config.actor.route[0].a[0],0,config.actor.route[0].a[1]);changeClip('idle');
   telemetry.motion.blockedBy=!front?'FRONT_UNRESOLVED':'WALK_CLIP_MISSING';return;
@@ -286,15 +295,38 @@ function measureCollisions(){
   telemetry.collisions.push('CHAIR_CHAIR_AABB');
 }
 function applyCamera(time){
- if(!film||!camera||!rootActor)return;
+ if(!film||qaCamera||!camera||!rootActor)return;
  const p=rootActor.position.toArray(),anchors=semanticAnchors({height:1.74,origin:p,object:[0,1.3,0]});
  const radio=config.props.find(p=>p.id==='radio');if(radio)anchors.interaction=[radio.p[0],radio.p[1]+.08,radio.p[2]];
  const f=sampleFrame(shotlist,Math.floor(time*24),anchors,'civil');
  camera.position.fromArray(f.position);controls.target.fromArray(f.target);
- camera.fov=f.fov;camera.updateProjectionMatrix();controls.update();
+ camera.fov=f.fov;
+ if(camera.aspect<.85&&['A','E'].includes(f.shotId)){
+  // Actual narrow-device reframing, not simply cropping the wide shot.
+  controls.target.set(rootActor.position.x,1.02,rootActor.position.z);
+  camera.fov=Math.min(83,f.fov+19);
+ }
+ camera.updateProjectionMatrix();controls.update();
  telemetry.shots[f.shotId]={seen:true,frame:f.frame,faceSafe:safeSubject(f,anchors,'face',camera.aspect,.08).safe};
  $('shot').textContent=f.label||f.shotId;
 }
+window.__UMBRIA_TEST__={
+ cameraView(side){
+  if(!rootActor||!front||!camera)return false;
+  const dir=worldForward(rootActor.rotation.y,front);
+  const right=new THREE.Vector3(dir.z,0,-dir.x);
+  const p=rootActor.position.clone().add(new THREE.Vector3(0,1.38,0));
+  if(side==='front')p.addScaledVector(dir,2.35);
+  else if(side==='back')p.addScaledVector(dir,-2.35);
+  else if(side==='profile')p.addScaledVector(right,2.45);
+  else return false;
+  qaCamera=side;camera.position.copy(p);
+  controls.target.copy(rootActor.position).add(new THREE.Vector3(0,1.0,0));
+  camera.fov=53;camera.updateProjectionMatrix();controls.update();return true;
+ },
+ reset(){qaCamera=null;applyCamera(t);},
+ sample(){return {time:t,phase:telemetry.motion.phase,front:telemetry.actorOrientation,footSlipSamples:telemetry.motion.footSlipSamples.slice(-16)};}
+};
 function resize(){if(!camera)return;const w=window.innerWidth,h=window.innerHeight;
  renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.5));renderer.setSize(w,h,false);
  camera.aspect=w/h;camera.updateProjectionMatrix();
@@ -306,7 +338,7 @@ function loop(){
  if(playing&&rootActor){t=Math.min(20,t+dt);if(t>=20)playing=false;}
  if(mixer&&playing)mixer.update(dt);
  if(rootActor){pose(t);if(playing)footContactSample(t)}
- if(film&&rootActor)applyCamera(t);
+ if(film&&rootActor&&!qaCamera)applyCamera(t);
  if(renderer){controls.update();renderer.render(scene,camera);telemetry.frames++;}
  $('seek').value=String(t);$('time').textContent=formatTime(t)+' / 00:20';
  $('play').textContent=playing?'Ⅱ PAUSAR':'▶ REPRODUCIR';
@@ -327,6 +359,7 @@ async function loadScene(){
  const variation=new URLSearchParams(location.search).get('variant')==='b'?'SCENE_VARIANT.json':'SCENE.json';
  config=await(await fetch('./'+variation,{cache:'no-store'})).json();
  telemetry.configVariant=variation;
+ telemetry.variantRadioPosition=config.props.find(p=>p.id==='radio')?.p||null;
  shotlist=await(await fetch('./SHOTS.json',{cache:'no-store'})).json();
  const validity=validateShotlist(shotlist);if(!validity.ok)throw Error('INVALID_CAMERA_DIRECTOR:'+validity.errors.join(','));
  scene=new THREE.Scene();architecture();
