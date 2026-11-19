@@ -1,0 +1,121 @@
+{
+  "schema": "prometeo.3d.flow-presentation/v1",
+  "uiVersion": "2.1.0",
+  "styleFile": "style.css",
+  "description": "No stage IDs, labels, positioning or art styles hardwired to app.js. Repaint by editing style.css; regroup editorial map by PRESENTATION.json; change rules only in an immutable flow version.",
+  "defaultView": "route",
+  "defaultMapStage": "orientation",
+  "labels": {
+    "universal": "Ruta de producción",
+    "issues": "Errores",
+    "planned": "Proyecto previsto",
+    "notRegistered": "Flujo no registrado",
+    "notRun": "Sin comprobar",
+    "route": "Ruta",
+    "versions": "Versiones",
+    "uiName": "Interfaz",
+    "flowName": "Flujo universal",
+    "documents": "Consultar referencia"
+  },
+  "stageNames": {
+    "scope": "Objetivo",
+    "recovery": "Recuperar",
+    "planning": "Planear",
+    "acquisition": "Recursos",
+    "classification": "Clasificar",
+    "humanoid": "Personajes",
+    "props": "Objetos",
+    "environment": "Espacios",
+    "fx": "Materiales y FX",
+    "assembly": "Montar",
+    "orientation": "Orientar",
+    "acting": "Actuar",
+    "cinema": "Filmar",
+    "qa": "Verificar",
+    "repair": "Corregir",
+    "persistence": "Guardar",
+    "publish": "Publicar"
+  },
+  "route": [
+    {
+      "kind": "sequence",
+      "stages": [
+        "scope",
+        "recovery",
+        "planning",
+        "acquisition",
+        "classification"
+      ]
+    },
+    {
+      "kind": "parallel",
+      "stages": [
+        "humanoid",
+        "props",
+        "environment",
+        "fx"
+      ]
+    },
+    {
+      "kind": "sequence",
+      "stages": [
+        "assembly",
+        "orientation",
+        "acting",
+        "cinema",
+        "qa"
+      ]
+    },
+    {
+      "kind": "review",
+      "stage": "repair",
+      "returnTo": "qa"
+    },
+    {
+      "kind": "sequence",
+      "stages": [
+        "persistence",
+        "publish"
+      ]
+    }
+  ],
+  "layout": {
+    "overview": {
+      "width": 990,
+      "nodeWidth": 218,
+      "nodeHeight": 73,
+      "centerX": 496,
+      "top": 28,
+      "rowGap": 115,
+      "parallelTopGap": 26,
+      "parallelGap": 15,
+      "reviewOffsetX": 300,
+      "reviewOffsetY": 40,
+      "bottom": 35
+    },
+    "stage": {
+      "worldWidth": 920,
+      "nodeWidth": 184,
+      "nodeHeight": 65,
+      "maxColumns": 4,
+      "gapX": 32,
+      "gapY": 42,
+      "headingHeight": 96,
+      "bottom": 60
+    },
+    "map": {
+      "nodeRadius": 8,
+      "overviewRadius": 9,
+      "defaultZoomMobile": 480,
+      "defaultZoomDesktop": 700
+    },
+    "text": {
+      "maxNodeChars": 24
+    }
+  },
+  "secondaryViews": [
+    "issues",
+    "map",
+    "versions"
+  ]
+}
