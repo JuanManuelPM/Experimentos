@@ -27,6 +27,7 @@ export function attachPilot({state,replaceScene,toast}){
   const fallback=clipKind==='interact'&&hit.index<0?chooseClip(e.clips,'idle'):hit;
   if(fallback.index<0){lastStatus='CLIP_REQUIRED_MISSING:'+clipKind;return lastStatus}
   if(mode===newMode&&entry===e)return hit.index<0?hit.verifiedMode:'OK';
+  if(entry!==e){e.mixer.stopAllAction();activeAction=null;}
   const action=e.mixer.clipAction(e.clips[fallback.index]);
   if(activeAction&&activeAction!==action)activeAction.fadeOut(.18);
   action.reset().fadeIn(.18).play();activeAction=action;mode=newMode;entry=e;
