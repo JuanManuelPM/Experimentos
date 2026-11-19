@@ -1,26 +1,57 @@
 <!doctype html>
-<html lang="es"><head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0e1518"><meta name="description" content="El flujo de producción 3D de PROMETEO, con un diagrama completo, trazabilidad por nodo y creaciones versionadas.">
-<title>PROMETEO · Flujo de producción 3D</title>
-<link rel="stylesheet" href="./style.css">
-<script defer src="./app.js"></script>
-</head><body>
-<header class="site-head"><div class="brand"><a href="../estudios/3d/" class="brand-home" aria-label="Volver al estudio 3D">◈ PROMETEO <span> / ESTUDIO 3D</span></a><span class="head-sep">/</span><strong>FLUJO DE PRODUCCIÓN</strong></div><div class="head-actions"><span id="current-version" class="version">v1.0.0 · ACTUAL</span><a href="../project-explorer/" class="toplink">Proyectos</a><a href="../forja/" class="toplink">FORJA</a></div></header>
-<div class="intro"><div class="intro-title"><div class="eyebrow">SISTEMA DE PRODUCCIÓN · TRAZABILIDAD</div><h1>De la idea a la escena.<br><em>Sin decisiones a ciegas.</em></h1><p>Un solo flujo para crear, orientar, animar, verificar y aprender de cada producción 3D.</p></div><div class="metrics"><div><b id="n-stages">17</b><span>ETAPAS</span></div><div><b id="n-nodes">224</b><span>NODOS</span></div><div><b id="n-edges">288</b><span>CONEXIONES</span></div></div></div>
-<nav class="tabs" aria-label="Vistas del flujo"><button class="tab active" data-view="map" aria-selected="true">DIAGRAMA COMPLETO</button><button class="tab" data-view="creations" aria-selected="false">CREACIONES <span id="count-creations">2</span></button><button class="tab" data-view="versions" aria-selected="false">VERSIONES</button></nav>
-<main>
-<section id="view-map" class="view active" aria-label="Diagrama de flujo">
- <div class="app-layout">
-  <aside class="sidebar"><div class="sidebar-top"><h2>ETAPAS DEL FLUJO</h2><span id="step-count">01—17</span></div><div class="sidebar-list" id="stage-list" aria-label="Navegar etapas"></div><div class="side-footer"><button type="button" id="show-all" class="side-button">↗ Ver mapa entero</button><button type="button" id="focus-failures" class="side-button">● Errores detectados</button></div></aside>
-  <div class="workspace"><div class="workspace-toolbar"><div class="tool-title"><strong id="map-title">Flujo completo</strong><span id="map-subtitle">Desplazá y ampliá para inspeccionar el diagrama</span></div><div class="tools"><label class="search"><span aria-hidden="true">⌕</span><input id="search" placeholder="Buscar nodo o concepto" aria-label="Buscar en los 224 nodos" autocomplete="off"></label><button id="zoom-out" title="Alejar" aria-label="Alejar">−</button><button id="zoom-in" title="Acercar" aria-label="Acercar">＋</button><button id="fit" title="Ver todo" aria-label="Ver diagrama completo">⛶</button></div></div>
-  <div class="map-frame" id="map-frame"><svg id="graph" role="img" aria-label="Diagrama de producción 3D de diecisiete etapas, con decisiones y caminos de corrección" viewBox="0 0 1600 1000"><defs><marker id="arrow" markerWidth="7" markerHeight="7" refX="6" refY="3" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L6,3 L0,6" fill="none" stroke="#7f9793" stroke-width="1.2"/></marker><marker id="arrow-strong" markerWidth="7" markerHeight="7" refX="6" refY="3" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L6,3 L0,6" fill="none" stroke="#d7bf9b" stroke-width="1.4"/></marker></defs><g id="bands"></g><g id="edges"></g><g id="nodes"></g></svg><div class="map-helper" id="map-helper">ARRASTRÁ EL MAPA · PELLIZCÁ PARA ACERCAR · TOCÁ UN NODO</div></div>
-  <div class="footbar"><span id="map-status" aria-live="polite">Leyendo el flujo versionado…</span><button id="clear-selection" type="button">Limpiar selección</button></div></div>
-  <aside class="inspector" id="inspector" aria-label="Detalle de nodo"><div class="inspector-head"><span>FICHA DE NODO</span><button id="detail-close" type="button" aria-label="Cerrar detalle">×</button></div><div id="node-detail" class="node-detail"><div class="empty-detail"><span class="detail-glyph">⌖</span><h3>Todo el proceso, una decisión a la vez.</h3><p>Seleccioná un nodo del diagrama o elegí una etapa. Cada nodo tiene un identificador persistente y documentación asociada.</p></div></div></aside>
- </div>
-</section>
-<section id="view-creations" class="view content-view" aria-label="Creaciones y trazabilidad"><div class="content-head"><div><div class="eyebrow">REVISIÓN Y APRENDIZAJE</div><h2>Qué creó cada versión.</h2><p>Cada producción puede guardar su versión de flujo, resultados por nodo, errores, evidencia y nuevas iteraciones. Las creaciones históricas no se atribuyen retrospectivamente.</p></div></div><div id="creation-list" class="creation-list"></div><section class="compare" id="compare"><h3>Comparar resultados</h3><div id="comparison"></div></section><div class="registry-note"><h3>Cómo se vincula una creación nueva</h3><p>El agente guarda <code>flowVersionUsed</code>, <code>flowSha256</code>, commit, resultados PASS / FAIL / NOT_RUN por nodo y capturas. El visor lee ese registro de GitHub; no simula un guardado remoto desde tu navegador.</p><a href="./CREATION_RECORD.example.json" download>↓ Plantilla de registro JSON</a></div></section>
-<section id="view-versions" class="view content-view" aria-label="Versiones del flujo"><div class="content-head"><div class="eyebrow">SISTEMA EVOLUTIVO</div><h2>El flujo actual. Y los anteriores.</h2><p>Cada versión publicada queda congelada. Las mejoras se documentan con los errores detectados, las diferencias de nodos y pruebas comparables.</p></div><div id="version-list" class="version-list"></div><div class="registry-note"><h3>Regla de versiones</h3><p>Una corrección nueva crea un archivo <code>versions/X.Y.Z/flow.json</code>; no reescribe versiones antiguas. Los proyectos vinculan siempre versión y huella SHA-256 del flujo. El campo <em>actual</em> indica qué edición debe usar una producción nueva.</p><div class="download-links"><a href="./FLOW_3D_MASTER.json">Abrir JSON del flujo</a><a href="./FLOW_3D_MASTER.md">Abrir documentación completa</a><a href="./CHANGELOG.md">Leer historial</a></div></div></section>
+<html lang="es">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0b0e0d"><meta name="description" content="Ruta visual del flujo de producción 3D de PROMETEO, con nodos, errores y versiones comprobables.">
+<title>PROMETEO · Flujo 3D</title>
+<link rel="stylesheet" href="./style.css?v=2.0.0"><script defer src="./app.js?v=2.0.0"></script>
+</head>
+<body>
+<header class="topbar">
+ <a class="back" href="../estudios/3d/" title="Estudio 3D" aria-label="Volver al Estudio 3D">‹</a>
+ <div class="identity"><span class="mark">PROMETEO</span><span class="slash">/</span><strong>FLUJO</strong></div>
+ <div class="top-actions"><span id="flow-version">v1.0.0</span><button id="top-more" aria-label="Más opciones" aria-expanded="false">···</button></div>
+</header>
+<nav class="tabs" aria-label="Vistas del flujo">
+ <button data-view="route" class="active" aria-selected="true">Ruta</button>
+ <button data-view="issues" aria-selected="false">Errores <i id="issue-badge" hidden></i></button>
+ <button data-view="map" aria-selected="false">Mapa</button>
+ <button data-view="versions" aria-selected="false">Versiones</button>
+</nav>
+<main id="main">
+ <section class="view active" data-screen="route" aria-label="Ruta del flujo">
+  <div class="route-head"><h1 id="route-title">Ruta de producción</h1><button id="route-reset" class="quiet" type="button" title="Ver ruta universal">Universal ↗</button></div>
+  <div id="route" class="route" aria-label="Etapas de la producción 3D"></div>
+ </section>
+ <section class="view" data-screen="issues" aria-label="Errores históricos">
+  <div class="issues-head"><h1 id="issues-title">Errores</h1><select id="project-select" aria-label="Elegir creación"></select></div>
+  <div id="issues-list" class="issue-list"></div>
+ </section>
+ <section class="view map-screen" data-screen="map" aria-label="Mapa detallado">
+  <div class="map-toolbar">
+    <div id="stage-strip" class="stage-strip" aria-label="Etapas del mapa"></div>
+    <div class="map-actions"><button id="map-reset" title="Centrar" aria-label="Centrar mapa">⌗</button><button id="map-search-button" title="Buscar nodo" aria-label="Buscar nodo">⌕</button></div>
+  </div>
+  <div id="map-search-panel" class="map-search" hidden><input id="map-search" placeholder="ID o nodo" aria-label="Buscar nodo" autocomplete="off"/><div id="search-results"></div></div>
+  <div id="graph-viewport" class="graph-viewport" tabindex="0" aria-label="Diagrama interactivo; arrastrar y pellizcar para navegar">
+   <svg id="graph" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Diagrama del proceso" preserveAspectRatio="xMidYMid meet"></svg>
+   <button id="map-fit" aria-label="Ajustar encuadre" title="Ajustar encuadre">⛶</button>
+  </div>
+ </section>
+ <section class="view" data-screen="versions" aria-label="Historial de versiones">
+   <div class="route-head"><h1>Versiones</h1></div><div id="versions-list" class="version-list"></div>
+ </section>
 </main>
-<div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
-<footer class="page-footer"><span>PROMETEO · Estudio 3D · Flujo versionado, no aprobación artística automática</span><a href="../estudios/3d/">Volver al Estudio 3D</a></footer>
+<div id="more-popover" class="popover" hidden>
+ <a href="./FLOW_3D_MASTER.md" target="_blank" rel="noopener">Documentación ↗</a>
+ <a href="../project-explorer/">Creaciones ↗</a>
+ <a href="../forja/">FORJA ↗</a>
+</div>
+<div id="sheet-backdrop" class="sheet-backdrop" hidden></div>
+<aside id="sheet" class="sheet" role="dialog" aria-modal="true" aria-label="Detalles del flujo" aria-hidden="true">
+ <header class="sheet-head"><span id="sheet-kicker"></span><button id="sheet-close" aria-label="Cerrar detalle">×</button></header>
+ <h2 id="sheet-title"></h2>
+ <div id="sheet-content" class="sheet-content"></div>
+</aside>
+<div id="toast" class="toast" role="status" hidden></div>
 </body></html>
