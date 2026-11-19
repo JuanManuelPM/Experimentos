@@ -1,0 +1,95 @@
+{
+  "schema": "prometeo.forja-v2.qa/v1",
+  "date": "2026-11-18",
+  "scope": "ISOLATED_CANDIDATE_NOT_GH_PAGES",
+  "status": "STRUCTURAL_AND_DOM_PASS_VISUAL_NOT_VERIFIED",
+  "gates": [
+    {
+      "id": "NODE_NATIVE_PILOT_CORE",
+      "status": "PASS",
+      "result": "9/9",
+      "scope": "Local pilot-core semantic-equivalent; generated source adjustments kept same operations; not remote CI"
+    },
+    {
+      "id": "GITHUB_PERSISTED_SOURCE_V8_CHECK",
+      "status": "PASS",
+      "result": "17/17",
+      "scope": "Actual GitHub readback: module parser + timeline, orientation dot, clip missing cases, source SHA guard, public CSS identity, DOM IDs"
+    },
+    {
+      "id": "CHROMIUM_MOCK_DOM_DESKTOP",
+      "status": "PASS",
+      "viewport": "1280x800",
+      "result": "Load 14 simulated entries, seek at 9 s, swap actor, collapse/reopen; mock GLB and renderer"
+    },
+    {
+      "id": "CHROMIUM_MOCK_DOM_MOBILE",
+      "status": "PASS",
+      "viewport": "390x844",
+      "result": "Same actions and no pageerror; mock GLB and renderer"
+    },
+    {
+      "id": "GITHUB_NPC_ACTUAL_GLB_EXISTENCE",
+      "status": "PASS",
+      "scope": "GitHub API public gh-pages tree metadata proves civil_azul & civil_granate bytes exist; BUILD_REPORT declares 24 animations and SHA256"
+    },
+    {
+      "id": "BROWSER_ACTUAL_GLTF_LOADING",
+      "status": "NOT_RUN",
+      "why": "Container/browser network blocked; 2 authentic public actor GLBs not transferred to local runtime"
+    },
+    {
+      "id": "BROWSER_WEBGL2",
+      "status": "FAIL",
+      "why": "Local Chromium software WebGL2 probe returned null"
+    },
+    {
+      "id": "TRUE_VISUAL_FACING",
+      "status": "NOT_RUN",
+      "why": "Four-axis support tested by math only; chosen +Z is a hypothesis pending real model check"
+    },
+    {
+      "id": "FOOT_PLANT_SKELETAL",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "MESH_CLOTH_CLIPPING",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "INTERACTION_HAND_OBJECT",
+      "status": "NOT_RUN",
+      "why": "If no compatible interaction clip, runtime explicitly reports INTERACTION_NOT_VERIFIED; no fabricated grip"
+    },
+    {
+      "id": "KITCHEN_GLTF_HERO_LOADED",
+      "status": "NOT_RUN",
+      "why": "Pilot uses authenticated Kenney kitchen furniture; authored kitchen hero GLB private/missing browser-accessible persistent binary"
+    },
+    {
+      "id": "BROWSER_FULL_FORJA",
+      "status": "NOT_RUN",
+      "why": "CDN Three.js and raw assets inaccessible from local sandbox"
+    },
+    {
+      "id": "PHYSICAL_ANDROID",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "ARTISTIC_APPROVAL",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "GH_PAGES_PUBLIC_RELEASE",
+      "status": "NOT_RUN",
+      "why": "No deployment without browser asset/render test"
+    }
+  ],
+  "baseline": {
+    "originalRepo": "JuanManuelPM/Experimentos",
+    "originalBranch": "gh-pages",
+    "originalForjaFileGitBlob": "34e926c7dea0081c16fde867e7249528ea6f6307",
+    "originalCssGitBlob": "e92c0fd2967c8ff839b1a53c68f8f232fefaec03",
+    "unchangedOriginalPath": "prometeo/forja/"
+  }
+}

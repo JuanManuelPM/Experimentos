@@ -1,0 +1,6 @@
+# METHOD_DELTA · FORJA V2 18/11
+**Cambio probado:** desde editor catálogo+gizmo a editor existente + actor externo fijado por SHA256 + core timeline/cámara puramente determinista + panel responsive. No se reconstruyó FORJA ni su repositorio de assets.
+**Fallos históricos prevenidos parcialmente:** moonwalk => cuatro ejes calibrables y dot de desplazamiento; su frente real NO inspeccionado. Falso agarre => sólo acción si hay clip válido. Pantalla negra => error de GPU y fuente visible, no sustituir GLB por cubo. Pérdida de clips exportados => bloqueo GLB con personaje rigged, JSON conserva referencias. Imports parciales => gate antes de historyPush.
+**Fallo nuevo/limitación:** modelo 3D del civil y ambiente completo no pudimos verlos en WebGL local por restricciones reales del navegador y de red. Las capturas DOM con mocks no prueban ninguna animación/escena artística. El kit de muebles no equivale a la cocina hero real.
+**Alternativas:** fusionar #9 habría arrastrado múltiples PR inestables y orígenes distintos; se eligió fork aditivo de FORJA gh-pages sin merge, más fácil de volver atrás. Para habilitar película auténtica faltan browser, assets y revisión visual.
+**Próximo:** test de entorno conectado y corrección in situ, no crear otro frontend paralelo.

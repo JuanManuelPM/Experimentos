@@ -1,0 +1,26 @@
+{
+  "schema": "prometeo.3d.capability-proposal/v1",
+  "id": "3d/editor/forja-cinema-pilot",
+  "version": "0.1.0-candidate",
+  "owner": "release:",
+  "status": "SOURCE_IMPLEMENTED_LOGIC_AND_DOM_TESTED_WEBGL_BLOCKED",
+  "source": {
+    "repo": "JuanManuelPM/Experimentos",
+    "branch": "candidate/forja-v2-pilot-integracion-20261118",
+    "path": "prometeo/forja-v2-pilot/",
+    "coreGitBlob": "3046042bc91ac0bafe22f3d3ac7e671c4b79c0dc",
+    "forgeGitBlob": "068899204632f149229aba1dd0c49f5fe9d4f2c5",
+    "pilotGitBlob": "8c6f28dbc4710a8758ec1625d5414b5afc4e5273"
+  },
+  "consumers": [
+    "isolated FORJA candidate"
+  ],
+  "gates": {
+    "logical": "PASS",
+    "uiMock": "PASS",
+    "webgl": "NOT_RUN",
+    "art": "NOT_APPROVED",
+    "globalActivation": "PROHIBITED_WITHOUT_CUTOVER"
+  },
+  "recommendation": "Keep as owner pilot, do not insert into shared/CAPABILITIES_3D yet"
+}

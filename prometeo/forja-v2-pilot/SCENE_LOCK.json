@@ -1,0 +1,53 @@
+{
+  "schema": "prometeo.forja-v2.scene-lock/1",
+  "date": "2026-11-18",
+  "id": "FORJA-V2-KITCHEN-ACTOR-001",
+  "status": "TECHNICAL_CANDIDATE",
+  "sceneSchema": "prometeo.forja.scene/v1",
+  "cinemaSchema": "prometeo.forja.cinema/v2",
+  "engine": {
+    "original": "prometeo/forja/forge.mjs",
+    "originalGitBlob": "34e926c7dea0081c16fde867e7249528ea6f6307",
+    "fork": "prometeo/forja-v2-pilot/forge.mjs",
+    "forkGitBlob": "068899204632f149229aba1dd0c49f5fe9d4f2c5"
+  },
+  "atlas": {
+    "repo": "Hidencod/tge-assets",
+    "gitCommit": "3ddcc695adbba9fb918cf31b7c139b3f95b76910",
+    "modelRights": "Kenney CC0 per original",
+    "note": "Catalog 1883 indexed; local editor loads a subset on demand, assets may fail on network"
+  },
+  "actors": [
+    {
+      "id": "prometeo/civil_azul",
+      "sourceCommit": "01e585a57e19c56443c63eaea69bd498236b703b",
+      "path": "prometeo/3d-npc-civilian-v1/dist/civil_azul.glb",
+      "sha256": "8bec29e84c9f0d082cc8ac08fd8cbe898dfcaa82abc9e1fa1bb13de46bfa5e4b",
+      "rights": "Quaternius CC0 + PROMETEO edit"
+    },
+    {
+      "id": "prometeo/civil_granate",
+      "sourceCommit": "01e585a57e19c56443c63eaea69bd498236b703b",
+      "path": "prometeo/3d-npc-civilian-v1/dist/civil_granate.glb",
+      "sha256": "09c5cb4646059bff4547849c332a87273203d193a31637974be4ff1d8bca0e3b",
+      "rights": "Quaternius CC0 + PROMETEO edit"
+    }
+  ],
+  "camera": {
+    "shots": [
+      "GENERAL",
+      "SEGUIMIENTO",
+      "ROSTRO",
+      "OBJETO",
+      "CIERRE"
+    ],
+    "seconds": 20,
+    "frontAxisInitially": "+Z",
+    "axisCalibration": "NOT_VISUALLY_VERIFIED"
+  },
+  "export": {
+    "sceneJSON": "SUPPORTED",
+    "cinemaMetadata": "SUPPORTED",
+    "animatedGLB": "DISABLED_FAIL_CLOSED"
+  }
+}
