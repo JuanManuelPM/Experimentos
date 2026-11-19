@@ -318,10 +318,10 @@ async function replaceScene(data,{remember=true}={}){
    }
   });await Promise.all(tasks);
   const loaded=state.objects.length;
+  if(loaded!==safe.items.length)throw Error('SCENE_PARTIAL_LOAD_ROLLBACK');
   metrics();renderObjects();resetCamera();
   if(remember){state.busy=false;historyPush();state.busy=true}else saveLocal();
   toast('ESCENA LISTA: '+loaded+' / '+safe.items.length+' OBJETOS');
-  if(loaded!==safe.items.length)throw Error('SCENE_PARTIAL_LOAD_ROLLBACK');
   status('ESCENA EDITABLE · '+loaded+' OBJETOS');
   pilot?.onSceneChanged();
   return true;
