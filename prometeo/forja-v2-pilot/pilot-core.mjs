@@ -1,4 +1,5 @@
 /** FORJA V2 pilot: deterministic choreography & camera math. Tests are NOT visual QA. */
+import {validateShotlist,sampleFrame,semanticAnchors} from './vendor/semantic-director.mjs';
 export const DURATION=20;
 export const ACTOR_ID='prometeo/civil_azul';
 export const ACTOR_ALT='prometeo/civil_granate';
@@ -31,16 +32,25 @@ export function sampleActor(time,axis='+Z'){
  const dx=part.to[0]-part.from[0],dz=part.to[1]-part.from[1];
  return{time:t,phase:part.name,mode:part.mode,position:[x,0,z],yaw,frontDot:part.mode==='walk'?frontDot(yaw,dx,dz,axis):null}
 }
+/** Reuses the original camera:semantic-director@0.1.0 verbatim, MIT, exact Git blob 43b8138... */
+export const OWNER_SHOTLIST={
+ schema:'prometeo.3d.semantic-director/1',
+ fps:{num:24,den:1},totalFrames:480,
+ shots:[
+ {id:'GENERAL',label:'Cocina vacía',startFrame:0,endFrame:96,camera:{origin:'object',lookAt:'object',from:[5.4,3.1,8.4],to:[5.4,3.1,8.4],fov:53},subtitle:'',transition:{type:'cut',frames:0}},
+ {id:'SEGUIMIENTO',label:'Entrada civil',startFrame:96,endFrame:240,camera:{origin:'root',lookAt:'root',from:[2.6,1.9,4],to:[2.6,1.9,4],fov:46},subtitle:'',transition:{type:'cut',frames:0}},
+ {id:'ROSTRO',label:'Rostro',startFrame:240,endFrame:312,camera:{origin:'face',lookAt:'face',from:[1,.4,2],to:[1,.4,2],fov:34},subtitle:'',transition:{type:'cut',frames:0}},
+ {id:'OBJETO',label:'Taza / radio',startFrame:312,endFrame:384,camera:{origin:'interaction',lookAt:'interaction',from:[.9,.9,2.5],to:[.9,.9,2.5],fov:41},subtitle:'',transition:{type:'cut',frames:0}},
+ {id:'CIERRE',label:'Salida',startFrame:384,endFrame:480,camera:{origin:'object',lookAt:'object',from:[5.6,2.6,5.4],to:[5.6,2.6,5.4],fov:55},subtitle:'',transition:{type:'cut',frames:0}}
+ ]};
+export function ownerCameraCheck(){return validateShotlist(OWNER_SHOTLIST)}
 export function sampleCamera(time,actor){
- const t=clamp(time,0,DURATION),shot=SHOTS.find(s=>t>=s.start&&t<s.end)||SHOTS.at(-1),p=actor.position;
- const arr=(x,y,z)=>[x,y,z];
- switch(shot.id){
- case 'GENERAL':return{shot:shot.id,fov:shot.fov,position:arr(5.4,4.1,7.5),target:arr(0,1,-.9)};
- case 'SEGUIMIENTO':return{shot:shot.id,fov:shot.fov,position:arr(p[0]+2.6,2.7,p[2]+4),target:arr(p[0],1,p[2]-.9)};
- case 'ROSTRO':return{shot:shot.id,fov:shot.fov,position:arr(p[0]+1,1.95,p[2]+2),target:arr(p[0],1.52,p[2])};
- case 'OBJETO':return{shot:shot.id,fov:shot.fov,position:arr(2.8,1.75,.7),target:arr(1.9,.92,-1.8)};
- default:return{shot:shot.id,fov:shot.fov,position:arr(5.6,3.6,4.5),target:arr(.5,1,-1.2)};
- }}
+ const origin=actor.position;
+ const anchors=semanticAnchors({height:1.75,origin,object:[1.9,.92,-1.8]});
+ // The original director owns frame sequencing, origins, cuts, target, and projection.
+ const s=sampleFrame(OWNER_SHOTLIST,Math.floor(clamp(time,0,DURATION)*24),anchors,'civil');
+ return{shot:s.shotId,fov:s.fov,position:s.position,target:s.target,cutIn:s.cutIn,alpha:s.alpha,frame:s.frame}
+}
 export function chooseClip(clips,mode){
  const arr=Array.isArray(clips)?clips:[],names=arr.map(c=>typeof c==='string'?c:c.name);
  const priorities=mode==='walk'?[/^walk(?:ing)?$/i,/walk/i]:mode==='interact'?[/pick|interact|grab/i,/wave|gesture|talk/i]:[/^idle$/i,/idle|stand|breath/i];
