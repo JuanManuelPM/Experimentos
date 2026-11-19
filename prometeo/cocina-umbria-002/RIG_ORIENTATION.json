@@ -1,0 +1,21 @@
+{
+  "schema": "prometeo.3d.asset-orientation/v1",
+  "civil": {
+    "asset": "civil_azul.glb",
+    "sha256": "8bec29e84c9f0d082cc8ac08fd8cbe898dfcaa82abc9e1fa1bb13de46bfa5e4b",
+    "frontAxisLocal": null,
+    "status": "RUNTIME_GEOMETRY_INFERENCE_PENDING_VISUAL_CERTIFICATION",
+    "algorithm": "bilateral toe-ankle bone vectors, else eye material surface/head volume; false-negative leaves unresolved",
+    "notAllowed": "blind global +Z or 180-degree shim"
+  },
+  "chair": {
+    "asset": "chair.glb",
+    "sha256": "c8a11eec93e89e31250ba91afc1b8d56c3bec7ae86640fd1239f595ff4180883",
+    "seatFrontLocal": null,
+    "status": "RUNTIME_BACKREST_VERTEX_INFERENCE_PENDING_VISUAL_CERTIFICATION",
+    "algorithm": "upper 24% geometric vertices form backrest, seat center minus backrest centroid",
+    "target": "tableCenter",
+    "toleranceDegrees": 25
+  },
+  "persistAfterMeasured": true
+}
