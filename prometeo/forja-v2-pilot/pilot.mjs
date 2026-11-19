@@ -83,7 +83,7 @@ export function attachPilot({state,replaceScene,toast}){
  $('pilot-rewind').onclick=()=>{playing=false;seek(0)};
  $('pilot-seek').oninput=e=>{playing=false;seek(e.target.value)};
  $('pilot-axis').onchange=e=>{axis=e.target.value;lastStatus='FRONT_CALIBRATION_REQUIRED';seek(t)};
- $('pilot-camera').onchange=e=>{cinematic=e.target.value==='film';seek(t)};
+ $('pilot-camera').onchange=()=>{cinematic=true;seek(t)};
  state.transform?.addEventListener('dragging-changed',e=>{if(e.value)pauseForEdit()});
  display();
  return{tick,loadScene,swapActor,seek,restore,snapshot:cinemaSnapshot,onSceneChanged,pauseForEdit,diagnostic:()=>({t,playing,cinematic,actorPresent:!!currentActor(),lastStatus,actorId,frontAxis:axis,frontVerified:false,interactionVerified:false,shot:lastShot,missing})};

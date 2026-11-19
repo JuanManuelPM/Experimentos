@@ -53,7 +53,7 @@ export function sampleCamera(time,actor){
 }
 export function chooseClip(clips,mode){
  const arr=Array.isArray(clips)?clips:[],names=arr.map(c=>typeof c==='string'?c:c.name);
- const priorities=mode==='walk'?[/^walk(?:ing)?$/i,/walk/i]:mode==='interact'?[/pick|interact|grab/i,/wave|gesture|talk/i]:[/^idle$/i,/idle|stand|breath/i];
+ const priorities=mode==='walk'?[/^walk(?:ing)?$/i,/walk/i]:mode==='interact'?[/pick|interact|grab/i]:[/^idle$/i,/idle|stand|breath/i];
  for(const re of priorities){const i=names.findIndex(s=>re.test(s||''));if(i!==-1)return{index:i,name:names[i],verifiedMode:mode==='walk'?'WALK_CLIP_PRESENT':mode==='interact'?'ACTION_CLIP_PRESENT':'IDLE_CLIP_PRESENT'}}
  return{index:-1,name:null,verifiedMode:'MISSING_'+mode.toUpperCase()+'_CLIP'}
 }

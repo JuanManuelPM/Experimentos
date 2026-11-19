@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {DURATION,ACTOR_ID,SCRIPT,SHOTS,validateScript,sampleActor,sampleCamera,frontDot,yawForDirection,chooseClip,makeScene} from './pilot-core.mjs';
+import {DURATION,ACTOR_ID,SCRIPT,SHOTS,ownerCameraCheck,validateScript,sampleActor,sampleCamera,frontDot,yawForDirection,chooseClip,makeScene} from './pilot-core.mjs';
 test('Action and camera sequences cover exactly 20 seconds',()=>{
  assert.equal(validateScript().pass,true);assert.equal(SCRIPT.at(-1).end,DURATION);assert.equal(SHOTS.at(-1).end,DURATION);
 });
@@ -36,4 +36,11 @@ test('Missing external actor never creates a geometric replacement',()=>{
 });
 test('Unknown forward calibration fails closed',()=>{
  assert.throws(()=>yawForDirection(1,0,'DIAGONAL'),/FRONT_AXIS_UNCALIBRATED/);
+});
+
+test('Reuses version-pinned original semantic camera director',()=>{
+ const gate=ownerCameraCheck();assert.equal(gate.ok,true);assert.equal(gate.durationSeconds,20);
+});
+test('Generic waving or talking is not accepted as grasping an object',()=>{
+ assert.equal(chooseClip(['Idle','Walk','Wave','Talk'],'interact').index,-1);
 });
