@@ -1,5 +1,5 @@
 import {ACTOR_ID,ACTOR_ALT,DURATION,SHOTS,makeScene,sampleActor,sampleCamera,chooseClip,clamp} from './pilot-core.mjs';
-const MODEL_ROOT='https://juanmanuelpm.github.io/Experimentos/prometeo/3d-npc-civilian-v1/dist/';
+const MODEL_ROOT='https://raw.githubusercontent.com/JuanManuelPM/Experimentos/01e585a57e19c56443c63eaea69bd498236b703b/prometeo/3d-npc-civilian-v1/dist/';
 const ASSETS=[
 {id:ACTOR_ID,file:'civil_azul.glb',pack:'prometeo-civilian',packName:'PROMETEO · NPC civil',name:'Civil / azul',uri:MODEL_ROOT+'civil_azul.glb',thumb:'https://juanmanuelpm.github.io/Experimentos/prometeo/3d-npc-civilian-v1/evidence/full_azul.jpg',size:1649028,rights:'Quaternius CC0; PROMETEO edits',sha256:'8bec29e84c9f0d082cc8ac08fd8cbe898dfcaa82abc9e1fa1bb13de46bfa5e4b'},
 {id:ACTOR_ALT,file:'civil_granate.glb',pack:'prometeo-civilian',packName:'PROMETEO · NPC civil',name:'Civil / granate',uri:MODEL_ROOT+'civil_granate.glb',thumb:'https://juanmanuelpm.github.io/Experimentos/prometeo/3d-npc-civilian-v1/evidence/full_granate.jpg',size:1649036,rights:'Quaternius CC0; PROMETEO edits',sha256:'09c5cb4646059bff4547849c332a87273203d193a31637974be4ff1d8bca0e3b'}];
