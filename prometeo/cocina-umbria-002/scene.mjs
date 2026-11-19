@@ -173,6 +173,22 @@ function measureActorFront(model){
  if(v.length()<.9)return{status:'UNRESOLVED',method:'NO_RELIABLE_NATIVE_FACE_AXIS',toeSamples:directions.length};
  return{status:'GEOMETRY_INFERRED_NOT_VISUALLY_CERTIFIED',method,local:[+v.x.toFixed(6),0,+v.z.toFixed(6)],toeSamples:directions.length};
 }
+function inspectActorGeometry(model){
+ const out={meshes:[],bones:[]};
+ model.updateMatrixWorld(true);
+ model.traverse(o=>{
+  if(o.isBone&&/foot|PT|head|neck|eye|hip|chest/i.test(o.name)){
+   const p=o.getWorldPosition(new THREE.Vector3());
+   out.bones.push({name:o.name,parent:o.parent?.name,position:p.toArray().map(x=>+x.toFixed(5))});
+  }
+  if(o.isMesh||o.isSkinnedMesh){
+   const bounds=new THREE.Box3().setFromObject(o);
+   const mats=(Array.isArray(o.material)?o.material:[o.material]).map(m=>m?.name);
+   out.meshes.push({name:o.name,materials:mats,center:bounds.getCenter(new THREE.Vector3()).toArray().map(x=>+x.toFixed(5)),size:bounds.getSize(new THREE.Vector3()).toArray().map(x=>+x.toFixed(5)),groups:o.geometry?.groups?.slice(0,15).map(g=>({start:g.start,count:g.count,materialIndex:g.materialIndex})),vertices:o.geometry?.attributes?.position?.count});
+  }
+ });
+ return out;
+}
 function chooseClip(clips,kind){
  const re=kind==='walk'?[/^walk(?:ing)?$/i,/walk/i]:kind==='interact'?[/pick|grab|interact|reach/i]:[/^idle$/i,/idle|stand|breath/i];
  for(const r of re){const hit=clips.find(c=>r.test(c.name));if(hit)return hit}
@@ -181,7 +197,8 @@ function chooseClip(clips,kind){
 async function loadActor(){
  const gl=await loadAsset('civil_azul',config.actor.sha256,true);
  actor=gl.scene;normalizeModel(actor,1.74);
- const profile=measureActorFront(actor);telemetry.actorOrientation={...profile,asset:'civil_azul.glb',sha256:config.actor.sha256};
+ const profile=measureActorFront(actor);
+ telemetry.actorGeometry=inspectActorGeometry(actor);telemetry.actorOrientation={...profile,asset:'civil_azul.glb',sha256:config.actor.sha256};
  if(profile.local)front=profile.local;
  rootActor=new THREE.Group();rootActor.name='PERSONAJE_CIVIL_REAL';rootActor.add(actor);scene.add(rootActor);
  actor.traverse(o=>{if(o.isBone)telemetry.actor.bones++;if(o.isMesh||o.isSkinnedMesh){o.castShadow=true;o.receiveShadow=true;}});
