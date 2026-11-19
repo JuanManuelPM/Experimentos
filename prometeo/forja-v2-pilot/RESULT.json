@@ -1,0 +1,55 @@
+{
+  "schema": "prometeo.forja-v2.pilot-result/v1",
+  "date": "2026-11-18",
+  "status": "CANDIDATE_SOURCE_AND_TECHNICAL_QA_PASS_VISUAL_ART_BLOCKED",
+  "product": "FORJA V2 · Cocina / NPC civil · Cinematic Pilot",
+  "path": "prometeo/forja-v2-pilot/",
+  "publicUrl": null,
+  "publicRelease": "NOT_PUBLISHED_CANDIDATE_ONLY",
+  "reused": [
+    "FORJA gh-pages original editor/index/css/forge.mjs",
+    "Kenney asset catalog 1883 indexed",
+    "existing civil GLBs azul+granate SHA256 pinned",
+    "original scene object IDs from cocina-umbria-001",
+    "existing character rig/24 animations carried by published GLB"
+  ],
+  "implemented": [
+    "asset registration with pinned URL and SHA256 runtime check",
+    "14-item kitchen technical furniture stage (13 Kenney GLBs, 1 actual civilian GLB), no authored kitchen hero",
+    "20-second 5-shot deterministic cinematography core",
+    "5-phase movement with real root translation and turn + selectable front axis",
+    "clip-driven animation selection fails closed on missing Walk",
+    "interaction reports blocked absent compatible clip, no synthetic grip",
+    "editor UI responsive controls/timeline/seek/swap",
+    "separate localStorage key, v1 scene JSON with cinema metadata",
+    "block unsafe GLB export when rig actor present",
+    "reject partial scene imports before writing scene history"
+  ],
+  "actualEvidence": {
+    "nodeLocal": "9/9 pilot-core tests PASS; source revised to preserve furniture Y, same math canary",
+    "githubReadback": "17/17 JS source/identity invariants PASS",
+    "chromiumMock": "desktop 1280x800 + mobile 390x844, load/seek/swap/panel, zero pageerrors",
+    "cpuSamples": "FRAME_SAMPLES.json from exact pinned source, 14 time samples",
+    "webglReal": "FAIL local Chromium WebGL2 null",
+    "remoteActorLoaded": "NOT_RUN",
+    "animationFacingVisual": "NOT_RUN",
+    "contactFeet": "NOT_RUN",
+    "grip": "NOT_RUN",
+    "heroKitchenAsset": "NOT_RUN",
+    "androidPhysical": "NOT_RUN",
+    "artApproval": "NOT_RUN"
+  },
+  "branch": "candidate/forja-v2-pilot-integracion-20261118",
+  "qa": "QA_RECEIPT.json",
+  "next": "NEXT_ACTION.json",
+  "noChanges": [
+    "prometeo/forja/ on gh-pages",
+    "main",
+    "owner character",
+    "owner environment",
+    "WORK BUS",
+    "prometeo/control",
+    "FORJA PR#4..#12"
+  ],
+  "condition": "A completed artistic film requires real WebGL/GLB load, frontal axis verification, foot slip, grabbable IK/clip, and human art review; this does not yet meet that condition."
+}
