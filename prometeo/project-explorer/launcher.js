@@ -45,6 +45,7 @@ button:focus-visible,a:focus-visible,summary:focus-visible{outline:2px solid #e9
 #screen.home #mask{display:none}
 #screen.home #sheet{left:0;right:0;margin:0 auto;width:min(100vw,650px);border:0;box-shadow:none}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
+#flow-shortcut{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:14px 15px;margin:8px 0 17px;min-height:50px;border:1px solid #526e5c;border-radius:9px;background:#192b20;color:#f1f1e8!important;text-decoration:none!important;font:650 15px system-ui}#flow-shortcut span{font:20px system-ui;color:#d3e0cc}#flow-shortcut:hover{background:#2b4130}
 </style>
 <button id="launcher" title="Carpetas del Estudio 3D" aria-label="Abrir proyectos 3D">ⓘ</button>
 <div id="screen" role="dialog" aria-label="Carpetas de proyectos del Estudio 3D" aria-modal="true">
@@ -52,12 +53,19 @@ button:focus-visible,a:focus-visible,summary:focus-visible{outline:2px solid #e9
   <div id="sheet">
     <div id="top"><div><div id="eyebrow">PROMETEO / ESTUDIO 3D</div><h1>Proyectos</h1></div><button id="close" aria-label="Cerrar">×</button></div>
     <div id="desc">Carpetas ordenadas por la última actualización pública.</div>
+    <a id="flow-shortcut" href="#">Flujo <span aria-hidden="true">↗</span></a>
     <div id="list">Cargando proyectos…</div>
     <div id="status" aria-live="polite">Abriendo registro…</div>
     <div id="footer">Fecha = último commit público de la carpeta, no aprobación artística. No se muestran proyectos privados.<a id="all">Ver el índice completo</a><a id="global">Todos los estudios</a></div>
   </div>
 </div>`;
 const el=id=>shadow.getElementById(id),screen=el('screen'),button=el('launcher'),status=el('status');
+const flowShortcut=el('flow-shortcut');
+const flowMatch=location.pathname.match(/\/prometeo\/([a-z0-9_/-]+)\/?$/i);
+const flowContext=flowMatch?.[1]||'';
+const flowTarget=new URL('../3d-flow/',base);
+if(flowContext&&!['3d-flow','asset-atlas','project-explorer','forja','estudios/3d'].includes(flowContext)&&!flowContext.startsWith('site/'))flowTarget.searchParams.set('project',flowContext);
+flowShortcut.href=flowTarget.href;
 const safe=id=>typeof id==='string'&&/^[a-z0-9_/-]+$/.test(id)&&!id.includes('..');
 const date=iso=>{try{return iso?new Intl.DateTimeFormat('es-AR',{timeZone:'America/Argentina/Buenos_Aires',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit',hour12:false}).format(new Date(iso)):'sin fecha';}catch{return 'sin fecha';}};
 const url=id=>new URL('../'+id+'/',base).href;
