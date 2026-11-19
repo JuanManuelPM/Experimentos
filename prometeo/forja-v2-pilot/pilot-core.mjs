@@ -81,3 +81,7 @@ export function makeScene(knownIds){
  const items=props.filter(([id])=>knownIds.has(id)).map(([id,x,y,z,h,r],i)=>({uid:'pilot-'+i,id,p:[x,y,z],r,h,s:[1,1,1]}));
  return{schema:'prometeo.forja.scene/v1',name:'Cocina · ensayo cinematográfico 20s',items}
 }
+
+/** Actor only: freeze skeletal animation while paused cinematic root is frozen. */
+export const shouldAdvanceActorMixer=(id,actorId,cinematic,playing)=>!(cinematic&&id===actorId&&!playing);
+export const phaseElapsed=(t,phase)=>{const s=SCRIPT.find(x=>x.name===phase);if(!s)throw Error('UNKNOWN_PHASE');return clamp(t-s.start,0,s.end-s.start)};

@@ -152,7 +152,7 @@ function init3D(){
    if(!state.webgl)return;
    const dt=Math.min(.08,clock.getDelta());
    pilot?.tick(dt);
-   if(state.playing)for(const o of state.objects)o.mixer?.update(dt);
+   if(state.playing)for(const o of state.objects){if(pilot?.shouldAdvanceMixer(o)===false)continue;o.mixer?.update(dt)}
    state.controls.update();
    state.renderer.render(state.scene,state.camera);
   }

@@ -1,4 +1,4 @@
-import {ACTOR_ID,ACTOR_ALT,DURATION,SHOTS,makeScene,sampleActor,sampleCamera,chooseClip,clamp} from './pilot-core.mjs';
+import {ACTOR_ID,ACTOR_ALT,DURATION,SHOTS,makeScene,sampleActor,sampleCamera,chooseClip,clamp,shouldAdvanceActorMixer,phaseElapsed} from './pilot-core.mjs';
 const MODEL_ROOT='https://raw.githubusercontent.com/JuanManuelPM/Experimentos/01e585a57e19c56443c63eaea69bd498236b703b/prometeo/3d-npc-civilian-v1/dist/';
 const ASSETS=[
 {id:ACTOR_ID,file:'civil_azul.glb',pack:'prometeo-civilian',packName:'PROMETEO · NPC civil',name:'Civil / azul',uri:MODEL_ROOT+'civil_azul.glb',thumb:'https://juanmanuelpm.github.io/Experimentos/prometeo/3d-npc-civilian-v1/evidence/full_azul.jpg',size:1649028,rights:'Quaternius CC0; PROMETEO edits',sha256:'8bec29e84c9f0d082cc8ac08fd8cbe898dfcaa82abc9e1fa1bb13de46bfa5e4b'},
@@ -20,25 +20,27 @@ export function attachPilot({state,replaceScene,toast}){
   $('pilot-play').textContent=playing?'Ⅱ PAUSAR':'▶ REPRODUCIR';
   $('pilot-qa').textContent=lastStatus+' · '+(missing.length?missing.join(', '):'sin faltantes del catálogo')+' · FRENTE POR VERIFICAR';
  }
- function changeAnimation(e,newMode){
+ function changeAnimation(e,newMode,scrub=false){
   if(!e?.mixer)return 'NO_MIXER';
   const clipKind=newMode==='walk'?'walk':newMode==='interact'?'interact':'idle';
   const hit=chooseClip(e.clips,clipKind);
   const fallback=clipKind==='interact'&&hit.index<0?chooseClip(e.clips,'idle'):hit;
   if(fallback.index<0){lastStatus='CLIP_REQUIRED_MISSING:'+clipKind;return lastStatus}
-  if(mode===newMode&&entry===e)return hit.index<0?hit.verifiedMode:'OK';
-  if(entry!==e){e.mixer.stopAllAction();activeAction=null;}
+  if(mode===newMode&&entry===e&&!scrub)return hit.index<0?hit.verifiedMode:'OK';
+  if(entry!==e||scrub){e.mixer.stopAllAction();activeAction=null;}
   const action=e.mixer.clipAction(e.clips[fallback.index]);
   if(activeAction&&activeAction!==action)activeAction.fadeOut(.18);
-  action.reset().fadeIn(.18).play();activeAction=action;mode=newMode;entry=e;
+  if(scrub){action.reset().play();action.setEffectiveWeight?.(1)}
+  else action.reset().fadeIn(.18).play();activeAction=action;mode=newMode;entry=e;
   return hit.index<0?hit.verifiedMode:'OK';
  }
- function applyTime(){
+ function applyTime(scrub=false){
   const e=currentActor(),phase=sampleActor(t,axis);
   if(!e){lastStatus='ACTOR_NOT_LOADED';$('pilot-phase').textContent='Falta el GLB real: sin personaje de sustitución';display();return}
   if(phase.mode==='walk'&&chooseClip(e.clips,'walk').index<0){lastStatus='MISSING_WALK_CLIP';$('pilot-phase').textContent='Sin clip WALK real, movimiento detenido';playing=false;display();return}
   e.root.position.set(...phase.position);e.root.rotation.y=phase.yaw;
-  const clipStatus=changeAnimation(e,phase.mode),interact=phase.mode==='interact';
+  const clipStatus=changeAnimation(e,phase.mode,scrub),interact=phase.mode==='interact';
+  if(scrub&&e.mixer?.setTime)e.mixer.setTime(phaseElapsed(t,phase.phase));
   lastStatus=interact&&clipStatus!=='OK'?'INTERACTION_NOT_VERIFIED':'KINEMATIC_PREVIEW_ONLY';
   $('pilot-phase').textContent=phase.phase+' · '+phase.mode.toUpperCase()+' · '+(interact&&clipStatus!=='OK'?'SIN CLIP DE INTERACCIÓN':'toma técnica')+' · dot='+(phase.frontDot===null?'—':phase.frontDot.toFixed(3));
   if(cinematic&&state.camera&&state.controls&&$('pilot-camera').value==='film'){
@@ -47,7 +49,7 @@ export function attachPilot({state,replaceScene,toast}){
    state.camera.fov=pose.fov;state.camera.updateProjectionMatrix();state.controls.update();lastShot=pose.shot;
   }display();
  }
- const seek=time=>{t=clamp(Number(time)||0,0,DURATION);applyTime()};
+ const seek=(time,scrub=true)=>{t=clamp(Number(time)||0,0,DURATION);applyTime(scrub)};
  async function loadScene(nextActor=ACTOR_ID){
   if(state.busy){toast('FORJA ESTÁ OCUPADA');return false}
   const known=new Set(state.byId.keys()),data=makeScene(known);
@@ -61,7 +63,7 @@ export function attachPilot({state,replaceScene,toast}){
  async function swapActor(){const desired=actorId===ACTOR_ID?ACTOR_ALT:ACTOR_ID;const ok=await loadScene(desired);if(!ok)toast('NO SE PUDO CAMBIAR EL PERSONAJE');return ok}
  function tick(dt){if(!cinematic||!playing||!state.webgl)return;
   if(!currentActor()){playing=false;lastStatus='ACTOR_NOT_LOADED';display();return}
-  const next=Math.min(DURATION,t+Math.max(0,Math.min(.075,dt)));seek(next);if(next>=DURATION){playing=false;display()}
+  const next=Math.min(DURATION,t+Math.max(0,Math.min(.075,dt)));seek(next,false);if(next>=DURATION){playing=false;display()}
  }
  function onSceneChanged(){entry=null;mode=null;activeAction=null;const e=currentActor();
   if(e){lastStatus='ACTOR_PRESENT';if(!e.clips.some(c=>/walk/i.test(c.name)))lastStatus='NO_WALK_CLIP'}
@@ -86,5 +88,6 @@ export function attachPilot({state,replaceScene,toast}){
  $('pilot-camera').onchange=()=>{cinematic=true;seek(t)};
  state.transform?.addEventListener('dragging-changed',e=>{if(e.value)pauseForEdit()});
  display();
- return{tick,loadScene,swapActor,seek,restore,snapshot:cinemaSnapshot,onSceneChanged,pauseForEdit,diagnostic:()=>({t,playing,cinematic,actorPresent:!!currentActor(),lastStatus,actorId,frontAxis:axis,frontVerified:false,interactionVerified:false,shot:lastShot,missing})};
+ return{tick,loadScene,swapActor,seek,restore,snapshot:cinemaSnapshot,
+  shouldAdvanceMixer:e=>shouldAdvanceActorMixer(e?.asset?.id,actorId,cinematic,playing),onSceneChanged,pauseForEdit,diagnostic:()=>({t,playing,cinematic,actorPresent:!!currentActor(),lastStatus,actorId,frontAxis:axis,frontVerified:false,interactionVerified:false,shot:lastShot,missing})};
 }

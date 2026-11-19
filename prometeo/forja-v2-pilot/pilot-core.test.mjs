@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {DURATION,ACTOR_ID,SCRIPT,SHOTS,ownerCameraCheck,validateScript,sampleActor,sampleCamera,frontDot,yawForDirection,chooseClip,makeScene} from './pilot-core.mjs';
+import {DURATION,ACTOR_ID,SCRIPT,SHOTS,ownerCameraCheck,validateScript,sampleActor,sampleCamera,frontDot,yawForDirection,chooseClip,makeScene,shouldAdvanceActorMixer,phaseElapsed} from './pilot-core.mjs';
 test('Action and camera sequences cover exactly 20 seconds',()=>{
  assert.equal(validateScript().pass,true);assert.equal(SCRIPT.at(-1).end,DURATION);assert.equal(SHOTS.at(-1).end,DURATION);
 });
@@ -43,4 +43,20 @@ test('Reuses version-pinned original semantic camera director',()=>{
 });
 test('Generic waving or talking is not accepted as grasping an object',()=>{
  assert.equal(chooseClip(['Idle','Walk','Wave','Talk'],'interact').index,-1);
+});
+
+test('Paused cinematic actor skeleton freezes, other model animations still advance',()=>{
+ for(const actor of [ACTOR_ID,'prometeo/civil_granate']){
+  assert.equal(shouldAdvanceActorMixer(actor,actor,true,false),false);
+  assert.equal(shouldAdvanceActorMixer(actor,actor,true,true),true);
+  assert.equal(shouldAdvanceActorMixer(actor,actor,false,false),true);
+  assert.equal(shouldAdvanceActorMixer('furniture-kit/chair',actor,true,false),true);
+ }
+});
+test('Timeline scrubbing is relative to each phase and rejects unknown phases',()=>{
+ assert.equal(phaseElapsed(9,'APROXIMACIÓN'),2);
+ assert.equal(phaseElapsed(13,'OBJETO'),2);
+ assert.equal(phaseElapsed(2,'ENTRADA'),0);
+ assert.equal(phaseElapsed(17,'CIERRE'),0);
+ assert.throws(()=>phaseElapsed(2,'UNKNOWN'),/UNKNOWN_PHASE/);
 });

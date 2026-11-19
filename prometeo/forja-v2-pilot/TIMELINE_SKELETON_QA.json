@@ -1,0 +1,29 @@
+{
+  "schema": "prometeo.forja-v2.timeline-skeleton-pause/1",
+  "date": "2026-11-19",
+  "status": "PATCHED_SOURCE_AND_V8_TESTED_WEBGL_NOT_RUN",
+  "baseCommit": "793ebea6ffdf2b1b7d5fa324b1247faae8f170be",
+  "bug": "Pause froze actor root path but original FORJA render loop continued advancing actor skeleton mixer. Scrubbing moved root without synchronizing the GLB's skeletal pose.",
+  "correction": "Pilot now owns mixer clock in paused cinema; only actor mixer stops while unrelated props continue. Manual seek resets the actual clip and sets mixer time to elapsed time in matching phase. Realtime tick still runs animation clock.",
+  "tests": {
+    "existingAuthored": 11,
+    "added": 2,
+    "v8RuntimePass": 13,
+    "v8RuntimeFail": 0,
+    "parser": "PASS candidate three modules",
+    "nativeNode": "NOT_RUN",
+    "webgl": "NOT_RUN",
+    "actorModel": "NOT_RUN",
+    "art": "NOT_APPROVED"
+  },
+  "newTestNames": [
+    "Paused cinematic actor skeleton freezes, other model animations still advance",
+    "Timeline scrubbing is relative to each phase and rejects unknown phases"
+  ],
+  "limitations": [
+    "actual AnimationMixer transition pixels and easing untested",
+    "calibration of local forward +Z unverified",
+    "no GLB loaded",
+    "no public release"
+  ]
+}
