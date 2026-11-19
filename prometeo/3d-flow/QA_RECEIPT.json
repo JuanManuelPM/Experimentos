@@ -1,0 +1,23 @@
+{
+  "schema": "prometeo.3d.flow-viewer-qa/v1",
+  "date": "2026-11-19",
+  "scope": "FLOW_VISUALIZATION_ONLY",
+  "sourceCategory": "PROCESS_FLOW_AND_HISTORY",
+  "tests": {
+    "nodeSyntax": "PASS_JS_NODE_CHECK",
+    "flowGraph": "PASS_224_NODES_288_EDGES_17_STAGES",
+    "graphReachability": "PASS_ALL_224_REACHABLE",
+    "versionDigest": "PASS_SHA256_MATCHES_ARCHIVE",
+    "historicalAttribution": "PASS_FLOW_VERSION_NULL_FOR_PREEXISTING",
+    "documentationCoverage": "PASS_ALL_NODE_IDS_DOCUMENTED",
+    "nativeNodeTests": "PASS_6_OF_6",
+    "chromiumDesktop": "PASS_1440x900_WITH_STUBBED_LOCAL_STATIC_RESPONSES",
+    "chromiumMobile": "PASS_390x844_WITH_STUBBED_LOCAL_STATIC_RESPONSES",
+    "creationIssuesHighlight": "PASS_24_RELATED_PLUS_ONE_SELECTED",
+    "viewerNoRuntimeJSExceptions": "PASS_IN_TESTS",
+    "externalGitHubPagesHTTP": "NOT_RUN_AT_LOCAL_QA",
+    "real3DWebGL": "NOT_APPLICABLE_FLOW_DIAGRAM_NO_3D",
+    "userVisualApproval": "NOT_RUN"
+  },
+  "notes": "Chromium used real HTML, JS and CSS, but intercepted the three static JSON fetches to bypass blocked localhost/network. Not a verified production deploy. No claims about actual scene material quality. The site should be checked again after publishing."
+}
