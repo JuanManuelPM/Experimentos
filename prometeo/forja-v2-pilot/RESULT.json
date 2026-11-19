@@ -11,7 +11,8 @@
     "Kenney asset catalog 1883 indexed",
     "existing civil GLBs azul+granate SHA256 pinned",
     "original scene object IDs from cocina-umbria-001",
-    "existing character rig/24 animations carried by published GLB"
+    "existing character rig/24 animations carried by published GLB",
+    "Existing MIT 3d/cinema/semantic-director@0.1.0 exact same Git blob 43b8138bf9d0a8b9181bebd61c7c2730ca9f10b0, imported from PROMETEO and sampled directly"
   ],
   "implemented": [
     "asset registration with pinned URL and SHA256 runtime check",
@@ -23,7 +24,9 @@
     "editor UI responsive controls/timeline/seek/swap",
     "separate localStorage key, v1 scene JSON with cinema metadata",
     "block unsafe GLB export when rig actor present",
-    "reject partial scene imports before writing scene history"
+    "reject partial scene imports before writing scene history",
+    "Native semantic-owner shotlist, 480 frames/24 fps, 5 shots, no duplicate camera algorithm",
+    "Free-camera mode preserves actor timeline and wave/talk cannot count as object grip"
   ],
   "actualEvidence": {
     "nodeLocal": "9/9 pilot-core tests PASS; source revised to preserve furniture Y, same math canary",
@@ -37,7 +40,10 @@
     "grip": "NOT_RUN",
     "heroKitchenAsset": "NOT_RUN",
     "androidPhysical": "NOT_RUN",
-    "artApproval": "NOT_RUN"
+    "artApproval": "NOT_RUN",
+    "cameraReused": "PASS: original owner Git SHA identical in vendor; sampleFrame and semanticAnchors executed on real source",
+    "currentCodeMode": "PASS 15/15 exact V8 semantic checks; 14 numerical frames re-generated as FRAME_SAMPLES v2",
+    "currentNativeNode": "NOT_RUN: 11 native tests authored, prior native 9/9 pertains earlier source revision"
   },
   "branch": "candidate/forja-v2-pilot-integracion-20261118",
   "qa": "QA_RECEIPT.json",
@@ -51,5 +57,10 @@
     "prometeo/control",
     "FORJA PR#4..#12"
   ],
-  "condition": "A completed artistic film requires real WebGL/GLB load, frontal axis verification, foot slip, grabbable IK/clip, and human art review; this does not yet meet that condition."
+  "condition": "A completed artistic film requires real WebGL/GLB load, frontal axis verification, foot slip, grabbable IK/clip, and human art review; this does not yet meet that condition.",
+  "latestSources": {
+    "pilotCore": "cfd22d21f0d697cd981a34d0f1c0ac9caf490092",
+    "pilot": "82393caca2412e0015b182d2d19cdc353ed262bc",
+    "semanticDirector": "43b8138bf9d0a8b9181bebd61c7c2730ca9f10b0"
+  }
 }
