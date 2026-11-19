@@ -8,9 +8,9 @@
     "repo": "JuanManuelPM/Experimentos",
     "branch": "candidate/forja-v2-pilot-integracion-20261118",
     "path": "prometeo/forja-v2-pilot/",
-    "coreGitBlob": "3046042bc91ac0bafe22f3d3ac7e671c4b79c0dc",
+    "coreGitBlob": "cfd22d21f0d697cd981a34d0f1c0ac9caf490092",
     "forgeGitBlob": "068899204632f149229aba1dd0c49f5fe9d4f2c5",
-    "pilotGitBlob": "8c6f28dbc4710a8758ec1625d5414b5afc4e5273"
+    "pilotGitBlob": "82393caca2412e0015b182d2d19cdc353ed262bc"
   },
   "consumers": [
     "isolated FORJA candidate"
@@ -20,7 +20,19 @@
     "uiMock": "PASS",
     "webgl": "NOT_RUN",
     "art": "NOT_APPROVED",
-    "globalActivation": "PROHIBITED_WITHOUT_CUTOVER"
+    "globalActivation": "PROHIBITED_WITHOUT_CUTOVER",
+    "currentV8": "PASS_15_15",
+    "nodeLatest": "NOT_RUN",
+    "ownerCameraIdentity": "PASS"
   },
-  "recommendation": "Keep as owner pilot, do not insert into shared/CAPABILITIES_3D yet"
+  "recommendation": "Keep as owner pilot, do not insert into shared/CAPABILITIES_3D yet",
+  "dependencies": [
+    {
+      "id": "3d/cinema/semantic-director",
+      "version": "0.1.0",
+      "owner": "camera:",
+      "sourceGitBlob": "43b8138bf9d0a8b9181bebd61c7c2730ca9f10b0",
+      "kind": "MIT exact owner module copied read-only"
+    }
+  ]
 }
