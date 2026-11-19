@@ -146,32 +146,36 @@ function findBone(model,re){
  let found=null;model.traverse(o=>{if(o.isBone&&re.test(o.name))found=o});return found;
 }
 function measureActorFront(model){
+ // Actual geometry: the exposed Eye, Eyebrows, FaceMouth layer must protrude from the upper Skin head shell.
+ // No assumed +Z; a dominant projection axis is measured from the SHA-pinned GLB.
+ const eyes=[],brows=[],mouth=[],headSkin=[];
  model.updateMatrixWorld(true);
- // Native toe-to-ankle offsets on the real skeleton, with two independent foot samples.
- const directions=[];for(const side of ['L','R']){
-  const ankle=findBone(model,new RegExp('^Foot[.]'+side+'$','i'));
-  const toe=findBone(model,new RegExp('^(PT|Toe)[.]'+side+'$','i'));
-  if(ankle&&toe){let a=new THREE.Vector3(),b=new THREE.Vector3();ankle.getWorldPosition(a);toe.getWorldPosition(b);
-   const d=b.sub(a);d.y=0;if(d.length()>.005)directions.push(d.normalize());}
- }
- let v=new THREE.Vector3(),method='';
- if(directions.length===2&&directions[0].dot(directions[1])>.85){
-  v.add(directions[0]).add(directions[1]).normalize();method='BILATERAL_TOE_TO_ANKLE_BONE';
- }else{
-  // If eye materials are separate primitives, their surface is in front of the head shell.
-  const eyes=[],headBoxes=[];
-  model.traverse(o=>{if(!o.isMesh&&!o.isSkinnedMesh)return;
-   const names=(Array.isArray(o.material)?o.material:[o.material]).map(m=>m?.name||'');
-   const box=new THREE.Box3().setFromObject(o);
-   if(names.some(n=>/eye|pupil/i.test(n)))eyes.push(box.getCenter(new THREE.Vector3()));
-   if(/head/i.test(o.name))headBoxes.push(box);
-  });
-  if(eyes.length&&headBoxes.length){const eye=new THREE.Vector3();for(const e of eyes)eye.add(e);eye.divideScalar(eyes.length);
-   const head=new THREE.Box3();for(const b of headBoxes)head.union(b);
-   const d=eye.sub(head.getCenter(new THREE.Vector3()));d.y=0;if(d.length()>.01){v=d.normalize();method='EYE_SURFACE_TO_HEAD_VOLUME';}}
- }
- if(v.length()<.9)return{status:'UNRESOLVED',method:'NO_RELIABLE_NATIVE_FACE_AXIS',toeSamples:directions.length};
- return{status:'GEOMETRY_INFERRED_NOT_VISUALLY_CERTIFIED',method,local:[+v.x.toFixed(6),0,+v.z.toFixed(6)],toeSamples:directions.length};
+ model.traverse(o=>{
+  if(!(o.isMesh||o.isSkinnedMesh))return;
+  const mats=(Array.isArray(o.material)?o.material:[o.material]).map(m=>m?.name||'');
+  const box=new THREE.Box3().setFromObject(o),center=box.getCenter(new THREE.Vector3());
+  if(mats.some(n=>/^Eye$/i.test(n)))eyes.push(center);
+  if(mats.some(n=>/Eyebrows/i.test(n)))brows.push(center);
+  if(mats.some(n=>/FaceMouth/i.test(n)))mouth.push(center);
+  if(mats.some(n=>/^Skin$/i.test(n))&&center.y>1.3)headSkin.push(center);
+ });
+ if(!eyes.length||!headSkin.length)return{status:'UNRESOLVED',method:'HEAD_FACE_MATERIALS_MISSING',
+  eyeSamples:eyes.length,headSkinSamples:headSkin.length};
+ const ave=a=>a.reduce((out,p)=>out.add(p),new THREE.Vector3()).divideScalar(a.length);
+ const skin=ave(headSkin),eye=ave(eyes);
+ const relative=eye.clone().sub(skin);relative.y=0;
+ if(Math.hypot(relative.x,relative.z)<.025)return{status:'UNRESOLVED',method:'EYE_AND_HEAD_TOO_CLOSE'};
+ const secondary=[...brows,...mouth];
+ const secondaryRelative=secondary.length?ave(secondary).sub(skin):null;
+ if(secondaryRelative&&relative.z*secondaryRelative.z<0)return{status:'UNRESOLVED',method:'FACE_MATERIAL_DIRECTION_DISAGREES'};
+ const mainAxis=Math.abs(relative.z)>Math.abs(relative.x)*2.5?[0,0,Math.sign(relative.z)]:
+  Math.abs(relative.x)>Math.abs(relative.z)*2.5?[Math.sign(relative.x),0,0]:null;
+ if(!mainAxis)return{status:'UNRESOLVED',method:'NON_AXIS_ALIGNED_FACE',relative:relative.toArray()};
+ return{status:'GEOMETRY_MEASURED_PENDING_VISUAL',method:'EYE_EYEBROWS_MOUTH_RELATIVE_TO_HEAD_SKIN',
+  local:mainAxis,eyeCenter:eye.toArray().map(x=>+x.toFixed(5)),
+  headSkinCenter:skin.toArray().map(x=>+x.toFixed(5)),
+  measuredVector:relative.toArray().map(x=>+x.toFixed(5)),
+  corroboration:secondaryRelative?.toArray().map(x=>+x.toFixed(5)),materialSamples:{eyes:eyes.length,brows:brows.length,mouth:mouth.length,headSkin:headSkin.length}};
 }
 function inspectActorGeometry(model){
  const out={meshes:[],bones:[]};
@@ -234,6 +238,11 @@ function pose(time){
  if(seg.segment.mode==='turn'&&front){
   const d=Math.atan2(Math.sin(h2-h1),Math.cos(h2-h1));yaw=h1+d*seg.u;
  }else if(time>=second.from)yaw=h2;
+ if(front&&time>=17){
+  const focus=config.props.find(p=>p.id==='radio');
+  if(focus){const targetYaw=facingYaw(focus.p[0]-seg.x,focus.p[2]-seg.z,front);
+   const delta=Math.atan2(Math.sin(targetYaw-h2),Math.cos(targetYaw-h2));yaw=h2+delta*clamp((time-17)/1.2,0,1);}
+ }
  const mode=seg.segment.mode==='walk'?'walk':seg.segment.mode==='interact'?'interact':'idle';
  if((mode==='walk'||seg.segment.mode==='turn')&&(!front||!animWalk)){
   rootActor.position.set(config.actor.route[0].a[0],0,config.actor.route[0].a[1]);changeClip('idle');
@@ -252,7 +261,7 @@ function pose(time){
 }
 function footContactSample(time){
  if(!rootActor||!mixer||!front)return;
- const l=findBone(actor,/^Foot[.]L$/i),r=findBone(actor,/^Foot[.]R$/i);
+ const l=findBone(actor,/^Foot(?:[.]?L)$/i),r=findBone(actor,/^Foot(?:[.]?R)$/i);
  if(!l||!r)return;
  const feet=[l,r].map(b=>b.getWorldPosition(new THREE.Vector3()));
  const cur=feet.map(f=>({x:f.x,y:f.y,z:f.z}));
@@ -279,7 +288,7 @@ function measureCollisions(){
 function applyCamera(time){
  if(!film||!camera||!rootActor)return;
  const p=rootActor.position.toArray(),anchors=semanticAnchors({height:1.74,origin:p,object:[0,1.3,0]});
- anchors.interaction=[-1.85,.97,-1.8];
+ const radio=config.props.find(p=>p.id==='radio');if(radio)anchors.interaction=[radio.p[0],radio.p[1]+.08,radio.p[2]];
  const f=sampleFrame(shotlist,Math.floor(time*24),anchors,'civil');
  camera.position.fromArray(f.position);controls.target.fromArray(f.target);
  camera.fov=f.fov;camera.updateProjectionMatrix();controls.update();
@@ -315,7 +324,9 @@ function inspect(event){
  $('object-info').textContent='GLB auténtico: '+o.userData.asset+' · Posición '+o.position.toArray().map(n=>n.toFixed(2)).join(', ')+' · giro '+o.rotation.y.toFixed(3);
 }
 async function loadScene(){
- config=await(await fetch('./SCENE.json',{cache:'no-store'})).json();
+ const variation=new URLSearchParams(location.search).get('variant')==='b'?'SCENE_VARIANT.json':'SCENE.json';
+ config=await(await fetch('./'+variation,{cache:'no-store'})).json();
+ telemetry.configVariant=variation;
  shotlist=await(await fetch('./SHOTS.json',{cache:'no-store'})).json();
  const validity=validateShotlist(shotlist);if(!validity.ok)throw Error('INVALID_CAMERA_DIRECTOR:'+validity.errors.join(','));
  scene=new THREE.Scene();architecture();

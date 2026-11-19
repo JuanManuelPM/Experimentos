@@ -49,6 +49,11 @@ async function runCase(kind,viewport,mobile){
    const q=await page.evaluate(()=>window.__UMBRIA_QA__?.()||null);
    result.captures.push({label,second,shot:await page.locator('#shot').innerText(),phase:q?.motion?.phase,actorOrientation:q?.actorOrientation,frontDotMin:q?.motion?.frontDotMin,chairs:q?.chairProfiles,roof:q?.roof,collisions:q?.collisions,errors:q?.errors});
    await page.screenshot({path:path.join(OUT,kind+'-'+label+'.png'),animations:'disabled'});
+   if((kind==='desktop'&&['general','walk','turn','hands','final'].includes(label))||(kind==='mobile'&&label==='general')){
+    const data=await page.screenshot({type:'jpeg',quality:68,animations:'disabled'});
+    await fs.writeFile(path.join(OUT,kind+'-'+label+'.jpg'),data);
+    await fs.writeFile(path.join(OUT,kind+'-'+label+'.jpg.b64.txt'),data.toString('base64'));
+   }
   }
   await page.locator('#mode').click();const editor=await page.evaluate(()=>window.__UMBRIA_QA__?.().roof);
   await page.screenshot({path:path.join(OUT,kind+'-cutaway.png'),animations:'disabled'});
@@ -72,6 +77,9 @@ async function forjaCase(){
   result.first=await page.evaluate(()=>window.__FORJA__?.diagnostic?.()||null);
   result.status='EDITABLE_17_INSTANCES_OBSERVED';
   await page.screenshot({path:path.join(OUT,'forja-editable.png')});
+  const jpg=await page.screenshot({type:'jpeg',quality:68});
+  await fs.writeFile(path.join(OUT,'forja-editable.jpg'),jpg);
+  await fs.writeFile(path.join(OUT,'forja-editable.jpg.b64.txt'),jpg.toString('base64'));
   await page.reload({waitUntil:'domcontentloaded',timeout:50000});
   await page.waitForFunction(()=>window.__FORJA__?.diagnostic?.().instances>=17,{timeout:MAX});
   result.second=await page.evaluate(()=>window.__FORJA__?.diagnostic?.()||null);
