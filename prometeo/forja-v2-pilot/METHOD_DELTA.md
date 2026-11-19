@@ -4,3 +4,6 @@
 **Fallo nuevo/limitación:** modelo 3D del civil y ambiente completo no pudimos verlos en WebGL local por restricciones reales del navegador y de red. Las capturas DOM con mocks no prueban ninguna animación/escena artística. El kit de muebles no equivale a la cocina hero real.
 **Alternativas:** fusionar #9 habría arrastrado múltiples PR inestables y orígenes distintos; se eligió fork aditivo de FORJA gh-pages sin merge, más fácil de volver atrás. Para habilitar película auténtica faltan browser, assets y revisión visual.
 **Próximo:** test de entorno conectado y corrección in situ, no crear otro frontend paralelo.
+
+## Corrección posterior: un único director de cámaras, no dos
+Se importó byte a byte el módulo existente MIT `3d/cinema/semantic-director@0.1.0`, Git blob `43b8138bf9d0a8b9181bebd61c7c2730ca9f10b0`, y `pilot-core` ahora **lo usa** para validación y muestreo de 5 planos/480 fotogramas. La nueva `FRAME_SAMPLES.json` v2 corresponde a la fuente efectiva. Se corrigió modo cámara libre para que no congele movimiento y `Wave/Talk` no se acepta como agarre de un objeto. QA actual de fuente: V8 15/15 PASS; Node nativo de nueva revisión NOT_RUN; WebGL real y arte NOT_RUN. Se conserva el dueño original sin cambios.
