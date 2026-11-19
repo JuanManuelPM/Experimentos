@@ -1,13 +1,13 @@
 {
   "schema": "prometeo.3d.production-flow/v1",
   "id": "prometeo-3d-production",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "publishedAt": "2026-11-19",
   "status": "CURRENT_CANDIDATE",
   "scope": "studio-3d",
   "title": "Flujo maestro de producción 3D",
   "description": "Diagrama operacional grande y auditable desde pedido hasta publicación. Conserva rutas por especialidad, orientación semántica y gates visuales. La publicación de un diagrama no aprueba automáticamente los productos.",
-  "sourceOfTruth": "PROMETEO/spaces/studio-3d/production-flow/v1",
+  "sourceOfTruth": "PROMETEO/spaces/studio-3d/production-flow/v1.1.0",
   "stages": [
     {
       "id": "scope",
@@ -997,7 +997,8 @@
     },
     {
       "id": "E8",
-      "stage": "environment",      "label": "Comprobar exterior solo por aberturas",
+      "stage": "environment",
+      "label": "Comprobar exterior solo por aberturas",
       "type": "action",
       "detail": "Comprobar exterior solo por aberturas",
       "docRef": "FLOW_3D_MASTER.md#e8",
@@ -1996,7 +1997,8 @@
     {
       "id": "G5",
       "stage": "persistence",
-      "label": "Guardar perfiles de orientación por asset",      "type": "action",
+      "label": "Guardar perfiles de orientación por asset",
+      "type": "action",
       "detail": "Guardar perfiles de orientación por asset",
       "docRef": "FLOW_3D_MASTER.md#g5",
       "gate": null
@@ -2126,6 +2128,346 @@
       "detail": "FIN · Publicado con evidencias y trazabilidad",
       "docRef": "FLOW_3D_MASTER.md#end1",
       "gate": null
+    },
+    {
+      "id": "D29",
+      "stage": "qa",
+      "label": "¿Derechos, SHA y procedencia verificados?",
+      "type": "decision",
+      "detail": "Cada GLB, textura y clip tiene fuente legal, ID y SHA verificado, sin copia comercial.",
+      "docRef": "FLOW_3D_MASTER.md#d29",
+      "gate": {
+        "id": "source-and-license",
+        "requiredEvidence": "Asset manifest con hash y licencia real",
+        "passCondition": "La carpeta privada o registro identifica origen, derechos y versiones de todos los activos",
+        "onFailure": "QA18",
+        "onNotRun": "QA17",
+        "receiptFields": [
+          "status",
+          "evidenceRefs",
+          "sourceSha",
+          "measuredAt"
+        ]
+      }
+    },
+    {
+      "id": "QA18",
+      "stage": "qa",
+      "label": "FAIL_SOURCE_AND_LICENSE",
+      "type": "action",
+      "detail": "Bloqueo: Cada GLB, textura y clip tiene fuente legal, ID y SHA verificado, sin copia comercial.",
+      "docRef": "FLOW_3D_MASTER.md#qa18",
+      "gate": {
+        "id": "source-and-license",
+        "onFailure": "FIX0",
+        "onNotRun": "QA17"
+      }
+    },
+    {
+      "id": "D30",
+      "stage": "qa",
+      "label": "¿Escala, pivotes, distancias y colisiones verificados?",
+      "type": "decision",
+      "detail": "La escala, pivote, gravedad, suelos y distancias de interacción coinciden con la escena física.",
+      "docRef": "FLOW_3D_MASTER.md#d30",
+      "gate": {
+        "id": "geometry-clearance",
+        "requiredEvidence": "Planta/colliders + mediciones y capturas reales",
+        "passCondition": "Sin intersección no intencional entre silla/mesa, suelo/pies, puerta/paso y objetos de acción",
+        "onFailure": "QA19",
+        "onNotRun": "QA17",
+        "receiptFields": [
+          "status",
+          "evidenceRefs",
+          "sourceSha",
+          "measuredAt"
+        ]
+      }
+    },
+    {
+      "id": "QA19",
+      "stage": "qa",
+      "label": "FAIL_GEOMETRY_CLEARANCE",
+      "type": "action",
+      "detail": "Bloqueo: La escala, pivote, gravedad, suelos y distancias de interacción coinciden con la escena física.",
+      "docRef": "FLOW_3D_MASTER.md#qa19",
+      "gate": {
+        "id": "geometry-clearance",
+        "onFailure": "FIX0",
+        "onNotRun": "QA17"
+      }
+    },
+    {
+      "id": "D31",
+      "stage": "qa",
+      "label": "¿Materiales, UV y legibilidad verificados?",
+      "type": "decision",
+      "detail": "Texturas y materiales preservan UV, semántica, seams y contraste a las vistas de película.",
+      "docRef": "FLOW_3D_MASTER.md#d31",
+      "gate": {
+        "id": "material-uv",
+        "requiredEvidence": "Capturas detalle antes/después; shader y textura verificada",
+        "passCondition": "No hay superficies perdidas, UV invertidas, seams obvios ni materiales sin correspondencia",
+        "onFailure": "QA20",
+        "onNotRun": "QA17",
+        "receiptFields": [
+          "status",
+          "evidenceRefs",
+          "sourceSha",
+          "measuredAt"
+        ]
+      }
+    },
+    {
+      "id": "QA20",
+      "stage": "qa",
+      "label": "FAIL_MATERIAL_UV",
+      "type": "action",
+      "detail": "Bloqueo: Texturas y materiales preservan UV, semántica, seams y contraste a las vistas de película.",
+      "docRef": "FLOW_3D_MASTER.md#qa20",
+      "gate": {
+        "id": "material-uv",
+        "onFailure": "FIX0",
+        "onNotRun": "QA17"
+      }
+    },
+    {
+      "id": "D32",
+      "stage": "qa",
+      "label": "¿Cerramiento, estructura y clima verificados?",
+      "type": "decision",
+      "detail": "Los interiores tienen techo físico, muros continuos, puertas/ventanas reales y luz coherente.",
+      "docRef": "FLOW_3D_MASTER.md#d32",
+      "gate": {
+        "id": "room-closure",
+        "requiredEvidence": "Capturas interior, exterior, planta y corte",
+        "passCondition": "No aparece cielo fuera de aberturas; techo en cine y corte opcional en edición",
+        "onFailure": "QA21",
+        "onNotRun": "QA17",
+        "receiptFields": [
+          "status",
+          "evidenceRefs",
+          "sourceSha",
+          "measuredAt"
+        ]
+      }
+    },
+    {
+      "id": "QA21",
+      "stage": "qa",
+      "label": "FAIL_ROOM_CLOSURE",
+      "type": "action",
+      "detail": "Bloqueo: Los interiores tienen techo físico, muros continuos, puertas/ventanas reales y luz coherente.",
+      "docRef": "FLOW_3D_MASTER.md#qa21",
+      "gate": {
+        "id": "room-closure",
+        "onFailure": "FIX0",
+        "onNotRun": "QA17"
+      }
+    },
+    {
+      "id": "D33",
+      "stage": "qa",
+      "label": "¿Frentes reales y sentido de uso verificados?",
+      "type": "decision",
+      "detail": "Actor y muebles tienen frente local medido sobre GLB y reglas semánticas hacia sus targets.",
+      "docRef": "FLOW_3D_MASTER.md#d33",
+      "gate": {
+        "id": "semantic-orientation",
+        "requiredEvidence": "Perfil orientation SHA + toma frontal/perfil + dot medido",
+        "passCondition": "dot(miradaReal,velocidad)>0.90 en Walk; sillas seatForward hacia mesa y respaldo afuera",
+        "onFailure": "QA22",
+        "onNotRun": "QA17",
+        "receiptFields": [
+          "status",
+          "evidenceRefs",
+          "sourceSha",
+          "measuredAt"
+        ]
+      }
+    },
+    {
+      "id": "QA22",
+      "stage": "qa",
+      "label": "FAIL_SEMANTIC_ORIENTATION",
+      "type": "action",
+      "detail": "Bloqueo: Actor y muebles tienen frente local medido sobre GLB y reglas semánticas hacia sus targets.",
+      "docRef": "FLOW_3D_MASTER.md#qa22",
+      "gate": {
+        "id": "semantic-orientation",
+        "onFailure": "FIX0",
+        "onNotRun": "QA17"
+      }
+    },
+    {
+      "id": "D34",
+      "stage": "qa",
+      "label": "¿Animación, contactos y giro verificados?",
+      "type": "decision",
+      "detail": "La locomoción coincide con trayectoria, pose y clips; ambos pies no deslizan ni atraviesan suelo.",
+      "docRef": "FLOW_3D_MASTER.md#d34",
+      "gate": {
+        "id": "motion",
+        "requiredEvidence": "Video/capturas en 4 tiempos y mediciones de root/feet",
+        "passCondition": "No moonwalk, rotaciones continuas, contactos medidos, idle final correcto",
+        "onFailure": "QA23",
+        "onNotRun": "QA17",
+        "receiptFields": [
+          "status",
+          "evidenceRefs",
+          "sourceSha",
+          "measuredAt"
+        ]
+      }
+    },
+    {
+      "id": "QA23",
+      "stage": "qa",
+      "label": "FAIL_MOTION",
+      "type": "action",
+      "detail": "Bloqueo: La locomoción coincide con trayectoria, pose y clips; ambos pies no deslizan ni atraviesan suelo.",
+      "docRef": "FLOW_3D_MASTER.md#qa23",
+      "gate": {
+        "id": "motion",
+        "onFailure": "FIX0",
+        "onNotRun": "QA17"
+      }
+    },
+    {
+      "id": "D35",
+      "stage": "qa",
+      "label": "¿Interacción demostrada verificados?",
+      "type": "decision",
+      "detail": "La interacción usa clip/socket/IK real y no una simulación de cortes que esconda el fallo.",
+      "docRef": "FLOW_3D_MASTER.md#d35",
+      "gate": {
+        "id": "interaction",
+        "requiredEvidence": "Plano manos+objeto con joints/attachments comprobados",
+        "passCondition": "Contacto auténtico y sin penetración; si no hay clip, NOT_RUN y no anunciar agarre",
+        "onFailure": "QA24",
+        "onNotRun": "QA17",
+        "receiptFields": [
+          "status",
+          "evidenceRefs",
+          "sourceSha",
+          "measuredAt"
+        ]
+      }
+    },
+    {
+      "id": "QA24",
+      "stage": "qa",
+      "label": "FAIL_INTERACTION",
+      "type": "action",
+      "detail": "Bloqueo: La interacción usa clip/socket/IK real y no una simulación de cortes que esconda el fallo.",
+      "docRef": "FLOW_3D_MASTER.md#qa24",
+      "gate": {
+        "id": "interaction",
+        "onFailure": "FIX0",
+        "onNotRun": "QA17"
+      }
+    },
+    {
+      "id": "D36",
+      "stage": "qa",
+      "label": "¿Cámaras, luz y narrativa verificados?",
+      "type": "decision",
+      "detail": "Planos muestran acciones, continuidad, encuadres legibles y luz con exposición adecuada.",
+      "docRef": "FLOW_3D_MASTER.md#d36",
+      "gate": {
+        "id": "cinematography",
+        "requiredEvidence": "Contacto visual de 5 tomas + timeline exportado",
+        "passCondition": "No se recortan sujetos importantes, escenas legibles en móvil y cortes sin esconder errores",
+        "onFailure": "QA25",
+        "onNotRun": "QA17",
+        "receiptFields": [
+          "status",
+          "evidenceRefs",
+          "sourceSha",
+          "measuredAt"
+        ]
+      }
+    },
+    {
+      "id": "QA25",
+      "stage": "qa",
+      "label": "FAIL_CINEMATOGRAPHY",
+      "type": "action",
+      "detail": "Bloqueo: Planos muestran acciones, continuidad, encuadres legibles y luz con exposición adecuada.",
+      "docRef": "FLOW_3D_MASTER.md#qa25",
+      "gate": {
+        "id": "cinematography",
+        "onFailure": "FIX0",
+        "onNotRun": "QA17"
+      }
+    },
+    {
+      "id": "D37",
+      "stage": "qa",
+      "label": "¿Rendimiento y experiencia móvil verificados?",
+      "type": "decision",
+      "detail": "El visor carga en Chromium real y un navegador móvil; fps, interacción y controles aceptables.",
+      "docRef": "FLOW_3D_MASTER.md#d37",
+      "gate": {
+        "id": "mobile-performance",
+        "requiredEvidence": "Chromium móvil y desktop, memoria y registros de errores",
+        "passCondition": "No pantalla negra ni errores JS, controles tocables, WebGL y recursos efectivos",
+        "onFailure": "QA26",
+        "onNotRun": "QA17",
+        "receiptFields": [
+          "status",
+          "evidenceRefs",
+          "sourceSha",
+          "measuredAt"
+        ]
+      }
+    },
+    {
+      "id": "QA26",
+      "stage": "qa",
+      "label": "FAIL_MOBILE_PERFORMANCE",
+      "type": "action",
+      "detail": "Bloqueo: El visor carga en Chromium real y un navegador móvil; fps, interacción y controles aceptables.",
+      "docRef": "FLOW_3D_MASTER.md#qa26",
+      "gate": {
+        "id": "mobile-performance",
+        "onFailure": "FIX0",
+        "onNotRun": "QA17"
+      }
+    },
+    {
+      "id": "D38",
+      "stage": "qa",
+      "label": "¿Guardar, reabrir y reproducir verificados?",
+      "type": "decision",
+      "detail": "La escena puede exportarse, versionarse, reabrirse y reproducirse sin cambiar IDs/poses.",
+      "docRef": "FLOW_3D_MASTER.md#d38",
+      "gate": {
+        "id": "reopen-roundtrip",
+        "requiredEvidence": "Roundtrip de JSON + GLB/clips por SHA + screenshots repetidos",
+        "passCondition": "Dos aperturas sobre versión fijada reproducen objetos, materiales, acciones y cámaras",
+        "onFailure": "QA27",
+        "onNotRun": "QA17",
+        "receiptFields": [
+          "status",
+          "evidenceRefs",
+          "sourceSha",
+          "measuredAt"
+        ]
+      }
+    },
+    {
+      "id": "QA27",
+      "stage": "qa",
+      "label": "FAIL_REOPEN_ROUNDTRIP",
+      "type": "action",
+      "detail": "Bloqueo: La escena puede exportarse, versionarse, reabrirse y reproducirse sin cambiar IDs/poses.",
+      "docRef": "FLOW_3D_MASTER.md#qa27",
+      "gate": {
+        "id": "reopen-roundtrip",
+        "onFailure": "FIX0",
+        "onNotRun": "QA17"
+      }
     }
   ],
   "edges": [
@@ -2995,7 +3337,8 @@
     },
     {
       "from": "D11",
-      "to": "F6",      "label": "Textura",
+      "to": "F6",
+      "label": "Textura",
       "kind": "decision"
     },
     {
@@ -3461,12 +3804,6 @@
       "kind": "main"
     },
     {
-      "from": "QA5",
-      "to": "D19",
-      "label": "",
-      "kind": "normal"
-    },
-    {
       "from": "D19",
       "to": "QA6",
       "label": "No",
@@ -3855,6 +4192,252 @@
       "to": "END0",
       "label": "Si no hay nueva prueba",
       "kind": "normal"
+    },
+    {
+      "from": "QA5",
+      "to": "D29",
+      "label": "Continuar QA",
+      "kind": "main"
+    },
+    {
+      "from": "D29",
+      "to": "QA18",
+      "label": "FAIL",
+      "kind": "decision"
+    },
+    {
+      "from": "D29",
+      "to": "QA17",
+      "label": "NOT_RUN",
+      "kind": "decision"
+    },
+    {
+      "from": "QA18",
+      "to": "FIX0",
+      "label": "Corregir",
+      "kind": "repair"
+    },
+    {
+      "from": "D29",
+      "to": "D30",
+      "label": "PASS",
+      "kind": "main"
+    },
+    {
+      "from": "D30",
+      "to": "QA19",
+      "label": "FAIL",
+      "kind": "decision"
+    },
+    {
+      "from": "D30",
+      "to": "QA17",
+      "label": "NOT_RUN",
+      "kind": "decision"
+    },
+    {
+      "from": "QA19",
+      "to": "FIX0",
+      "label": "Corregir",
+      "kind": "repair"
+    },
+    {
+      "from": "D30",
+      "to": "D31",
+      "label": "PASS",
+      "kind": "main"
+    },
+    {
+      "from": "D31",
+      "to": "QA20",
+      "label": "FAIL",
+      "kind": "decision"
+    },
+    {
+      "from": "D31",
+      "to": "QA17",
+      "label": "NOT_RUN",
+      "kind": "decision"
+    },
+    {
+      "from": "QA20",
+      "to": "FIX0",
+      "label": "Corregir",
+      "kind": "repair"
+    },
+    {
+      "from": "D31",
+      "to": "D32",
+      "label": "PASS",
+      "kind": "main"
+    },
+    {
+      "from": "D32",
+      "to": "QA21",
+      "label": "FAIL",
+      "kind": "decision"
+    },
+    {
+      "from": "D32",
+      "to": "QA17",
+      "label": "NOT_RUN",
+      "kind": "decision"
+    },
+    {
+      "from": "QA21",
+      "to": "FIX0",
+      "label": "Corregir",
+      "kind": "repair"
+    },
+    {
+      "from": "D32",
+      "to": "D33",
+      "label": "PASS",
+      "kind": "main"
+    },
+    {
+      "from": "D33",
+      "to": "QA22",
+      "label": "FAIL",
+      "kind": "decision"
+    },
+    {
+      "from": "D33",
+      "to": "QA17",
+      "label": "NOT_RUN",
+      "kind": "decision"
+    },
+    {
+      "from": "QA22",
+      "to": "FIX0",
+      "label": "Corregir",
+      "kind": "repair"
+    },
+    {
+      "from": "D33",
+      "to": "D34",
+      "label": "PASS",
+      "kind": "main"
+    },
+    {
+      "from": "D34",
+      "to": "QA23",
+      "label": "FAIL",
+      "kind": "decision"
+    },
+    {
+      "from": "D34",
+      "to": "QA17",
+      "label": "NOT_RUN",
+      "kind": "decision"
+    },
+    {
+      "from": "QA23",
+      "to": "FIX0",
+      "label": "Corregir",
+      "kind": "repair"
+    },
+    {
+      "from": "D34",
+      "to": "D35",
+      "label": "PASS",
+      "kind": "main"
+    },
+    {
+      "from": "D35",
+      "to": "QA24",
+      "label": "FAIL",
+      "kind": "decision"
+    },
+    {
+      "from": "D35",
+      "to": "QA17",
+      "label": "NOT_RUN",
+      "kind": "decision"
+    },
+    {
+      "from": "QA24",
+      "to": "FIX0",
+      "label": "Corregir",
+      "kind": "repair"
+    },
+    {
+      "from": "D35",
+      "to": "D36",
+      "label": "PASS",
+      "kind": "main"
+    },
+    {
+      "from": "D36",
+      "to": "QA25",
+      "label": "FAIL",
+      "kind": "decision"
+    },
+    {
+      "from": "D36",
+      "to": "QA17",
+      "label": "NOT_RUN",
+      "kind": "decision"
+    },
+    {
+      "from": "QA25",
+      "to": "FIX0",
+      "label": "Corregir",
+      "kind": "repair"
+    },
+    {
+      "from": "D36",
+      "to": "D37",
+      "label": "PASS",
+      "kind": "main"
+    },
+    {
+      "from": "D37",
+      "to": "QA26",
+      "label": "FAIL",
+      "kind": "decision"
+    },
+    {
+      "from": "D37",
+      "to": "QA17",
+      "label": "NOT_RUN",
+      "kind": "decision"
+    },
+    {
+      "from": "QA26",
+      "to": "FIX0",
+      "label": "Corregir",
+      "kind": "repair"
+    },
+    {
+      "from": "D37",
+      "to": "D38",
+      "label": "PASS",
+      "kind": "main"
+    },
+    {
+      "from": "D38",
+      "to": "QA27",
+      "label": "FAIL",
+      "kind": "decision"
+    },
+    {
+      "from": "D38",
+      "to": "QA17",
+      "label": "NOT_RUN",
+      "kind": "decision"
+    },
+    {
+      "from": "QA27",
+      "to": "FIX0",
+      "label": "Corregir",
+      "kind": "repair"
+    },
+    {
+      "from": "D38",
+      "to": "D19",
+      "label": "PASS",
+      "kind": "main"
     }
   ],
   "knownIssues": [
@@ -3930,5 +4513,22 @@
     ]
   },
   "evidence": "diagnosis only; source visual failures from user screenshots; no new scene fix",
-  "sha256Canonical": "366506432cd5aa015efd1bff5a2e7d2fc26f91b5121b5b9450b7bef5469deaa7"
+  "revision": {
+    "previous": "1.0.0",
+    "changes": "10 mandatory scene gates with PASS/FAIL/NOT_RUN edges; historic nodes retained",
+    "riskPolicy": "NEVER_PROMOTE_VISUAL_WITH_NOT_RUN",
+    "gateIds": [
+      "source-and-license",
+      "geometry-clearance",
+      "material-uv",
+      "room-closure",
+      "semantic-orientation",
+      "motion",
+      "interaction",
+      "cinematography",
+      "mobile-performance",
+      "reopen-roundtrip"
+    ]
+  },
+  "sha256Canonical": "ca3b18c0fd745676a8100950549ec6c6b81271fb2552f83dc5c3358b72cd1b16"
 }

@@ -1455,3 +1455,147 @@ FIN · Publicado con evidencias y trazabilidad
 ## Plantilla de registro por creación
 
 Consultar `CREATION_RECORD.example.json`. Cada publicación debe fijar IDs de nodos probados, fallidos y NOT_RUN, URLs de prueba, versión del flujo y commit. Si el flujo fue asignado después del hecho: conservar `flowVersionUsed:null`.
+
+### D29 · ¿Derechos, SHA y procedencia verificados?
+
+**Regla:** Cada GLB, textura y clip tiene fuente legal, ID y SHA verificado, sin copia comercial.
+
+**Evidencia obligatoria:** Asset manifest con hash y licencia real
+
+**PASS:** La carpeta privada o registro identifica origen, derechos y versiones de todos los activos
+
+**FAIL:** QA18 → FIX0. **NOT_RUN:** QA17 → persistir candidato, prohibido PASS visual.
+
+### QA18 · Fallo de Derechos, SHA y procedencia
+
+Registrar fuente exacta, captura, causa comprobada y regreso a CALIBRAR, nunca cambiar sólo el síntoma.
+
+### D30 · ¿Escala, pivotes, distancias y colisiones verificados?
+
+**Regla:** La escala, pivote, gravedad, suelos y distancias de interacción coinciden con la escena física.
+
+**Evidencia obligatoria:** Planta/colliders + mediciones y capturas reales
+
+**PASS:** Sin intersección no intencional entre silla/mesa, suelo/pies, puerta/paso y objetos de acción
+
+**FAIL:** QA19 → FIX0. **NOT_RUN:** QA17 → persistir candidato, prohibido PASS visual.
+
+### QA19 · Fallo de Escala, pivotes, distancias y colisiones
+
+Registrar fuente exacta, captura, causa comprobada y regreso a CALIBRAR, nunca cambiar sólo el síntoma.
+
+### D31 · ¿Materiales, UV y legibilidad verificados?
+
+**Regla:** Texturas y materiales preservan UV, semántica, seams y contraste a las vistas de película.
+
+**Evidencia obligatoria:** Capturas detalle antes/después; shader y textura verificada
+
+**PASS:** No hay superficies perdidas, UV invertidas, seams obvios ni materiales sin correspondencia
+
+**FAIL:** QA20 → FIX0. **NOT_RUN:** QA17 → persistir candidato, prohibido PASS visual.
+
+### QA20 · Fallo de Materiales, UV y legibilidad
+
+Registrar fuente exacta, captura, causa comprobada y regreso a CALIBRAR, nunca cambiar sólo el síntoma.
+
+### D32 · ¿Cerramiento, estructura y clima verificados?
+
+**Regla:** Los interiores tienen techo físico, muros continuos, puertas/ventanas reales y luz coherente.
+
+**Evidencia obligatoria:** Capturas interior, exterior, planta y corte
+
+**PASS:** No aparece cielo fuera de aberturas; techo en cine y corte opcional en edición
+
+**FAIL:** QA21 → FIX0. **NOT_RUN:** QA17 → persistir candidato, prohibido PASS visual.
+
+### QA21 · Fallo de Cerramiento, estructura y clima
+
+Registrar fuente exacta, captura, causa comprobada y regreso a CALIBRAR, nunca cambiar sólo el síntoma.
+
+### D33 · ¿Frentes reales y sentido de uso verificados?
+
+**Regla:** Actor y muebles tienen frente local medido sobre GLB y reglas semánticas hacia sus targets.
+
+**Evidencia obligatoria:** Perfil orientation SHA + toma frontal/perfil + dot medido
+
+**PASS:** dot(miradaReal,velocidad)>0.90 en Walk; sillas seatForward hacia mesa y respaldo afuera
+
+**FAIL:** QA22 → FIX0. **NOT_RUN:** QA17 → persistir candidato, prohibido PASS visual.
+
+### QA22 · Fallo de Frentes reales y sentido de uso
+
+Registrar fuente exacta, captura, causa comprobada y regreso a CALIBRAR, nunca cambiar sólo el síntoma.
+
+### D34 · ¿Animación, contactos y giro verificados?
+
+**Regla:** La locomoción coincide con trayectoria, pose y clips; ambos pies no deslizan ni atraviesan suelo.
+
+**Evidencia obligatoria:** Video/capturas en 4 tiempos y mediciones de root/feet
+
+**PASS:** No moonwalk, rotaciones continuas, contactos medidos, idle final correcto
+
+**FAIL:** QA23 → FIX0. **NOT_RUN:** QA17 → persistir candidato, prohibido PASS visual.
+
+### QA23 · Fallo de Animación, contactos y giro
+
+Registrar fuente exacta, captura, causa comprobada y regreso a CALIBRAR, nunca cambiar sólo el síntoma.
+
+### D35 · ¿Interacción demostrada verificados?
+
+**Regla:** La interacción usa clip/socket/IK real y no una simulación de cortes que esconda el fallo.
+
+**Evidencia obligatoria:** Plano manos+objeto con joints/attachments comprobados
+
+**PASS:** Contacto auténtico y sin penetración; si no hay clip, NOT_RUN y no anunciar agarre
+
+**FAIL:** QA24 → FIX0. **NOT_RUN:** QA17 → persistir candidato, prohibido PASS visual.
+
+### QA24 · Fallo de Interacción demostrada
+
+Registrar fuente exacta, captura, causa comprobada y regreso a CALIBRAR, nunca cambiar sólo el síntoma.
+
+### D36 · ¿Cámaras, luz y narrativa verificados?
+
+**Regla:** Planos muestran acciones, continuidad, encuadres legibles y luz con exposición adecuada.
+
+**Evidencia obligatoria:** Contacto visual de 5 tomas + timeline exportado
+
+**PASS:** No se recortan sujetos importantes, escenas legibles en móvil y cortes sin esconder errores
+
+**FAIL:** QA25 → FIX0. **NOT_RUN:** QA17 → persistir candidato, prohibido PASS visual.
+
+### QA25 · Fallo de Cámaras, luz y narrativa
+
+Registrar fuente exacta, captura, causa comprobada y regreso a CALIBRAR, nunca cambiar sólo el síntoma.
+
+### D37 · ¿Rendimiento y experiencia móvil verificados?
+
+**Regla:** El visor carga en Chromium real y un navegador móvil; fps, interacción y controles aceptables.
+
+**Evidencia obligatoria:** Chromium móvil y desktop, memoria y registros de errores
+
+**PASS:** No pantalla negra ni errores JS, controles tocables, WebGL y recursos efectivos
+
+**FAIL:** QA26 → FIX0. **NOT_RUN:** QA17 → persistir candidato, prohibido PASS visual.
+
+### QA26 · Fallo de Rendimiento y experiencia móvil
+
+Registrar fuente exacta, captura, causa comprobada y regreso a CALIBRAR, nunca cambiar sólo el síntoma.
+
+### D38 · ¿Guardar, reabrir y reproducir verificados?
+
+**Regla:** La escena puede exportarse, versionarse, reabrirse y reproducirse sin cambiar IDs/poses.
+
+**Evidencia obligatoria:** Roundtrip de JSON + GLB/clips por SHA + screenshots repetidos
+
+**PASS:** Dos aperturas sobre versión fijada reproducen objetos, materiales, acciones y cámaras
+
+**FAIL:** QA27 → FIX0. **NOT_RUN:** QA17 → persistir candidato, prohibido PASS visual.
+
+### QA27 · Fallo de Guardar, reabrir y reproducir
+
+Registrar fuente exacta, captura, causa comprobada y regreso a CALIBRAR, nunca cambiar sólo el síntoma.
+
+### Contrato de comprobación
+
+Cada decisión D29–D38 requiere STATUS PASS/FAIL/NOT_RUN, evidencia con fuente SHA y medida/visual real. Ningún NOT_RUN puede promoverse a aprobación artística.
