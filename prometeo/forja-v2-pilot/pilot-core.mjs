@@ -54,20 +54,20 @@ export function validateScript(){
 }
 export function makeScene(knownIds){
  const props=[
- ['furniture-kit/kitchencabinet',-2.45,-2.6,1,0],
- ['furniture-kit/kitchenstove',-1.55,-2.6,1,0],
- ['furniture-kit/kitchencabinetdrawer',-.6,-2.6,1,0],
- ['furniture-kit/kitchensink',.3,-2.6,1,0],
- ['furniture-kit/kitchenfridge',-3.15,-2.1,1.9,0],
- ['furniture-kit/kitchencabinetupper',-2.3,-2.65,.7,0],
- ['furniture-kit/kitchenmicrowave',-1.55,-2.4,.35,0],
- ['furniture-kit/kitchencoffeemachine',-.25,-2.55,.25,0],
- ['furniture-kit/table',2,-1.8,.86,0],
- ['furniture-kit/chair',2,-.65,.9,Math.PI],
- ['furniture-kit/chair',3.05,-1.75,.9,-Math.PI/2],
- ['furniture-kit/lampsquareceiling',1.3,-1.5,.5,0],
- ['furniture-kit/radio',1.95,-1.78,.28,0],
- [ACTOR_ID,-1.25,2.65,1.75,0]];
- const items=props.filter(([id])=>knownIds.has(id)).map(([id,x,z,h,r],i)=>({uid:'pilot-'+i,id,p:[x,0,z],r,h,s:[1,1,1]}));
+ ['furniture-kit/kitchencabinet',-2.45,0,-2.6,1,0],
+ ['furniture-kit/kitchenstove',-1.55,0,-2.6,1,0],
+ ['furniture-kit/kitchencabinetdrawer',-.6,0,-2.6,1,0],
+ ['furniture-kit/kitchensink',.3,0,-2.6,1,0],
+ ['furniture-kit/kitchenfridge',-3.15,0,-2.1,1.9,0],
+ ['furniture-kit/kitchencabinetupper',-2.3,1.65,-2.65,.7,0],
+ ['furniture-kit/kitchenmicrowave',-1.55,.93,-2.4,.35,0],
+ ['furniture-kit/kitchencoffeemachine',-.25,.91,-2.55,.25,0],
+ ['furniture-kit/table',2,0,-1.8,.86,0],
+ ['furniture-kit/chair',2,0,-.65,.9,Math.PI],
+ ['furniture-kit/chair',3.05,0,-1.75,.9,-Math.PI/2],
+ ['furniture-kit/lampsquareceiling',1.3,2.62,-1.5,.5,0],
+ ['furniture-kit/radio',1.95,.86,-1.78,.28,0],
+ [ACTOR_ID,-1.25,0,2.65,1.75,0]];
+ const items=props.filter(([id])=>knownIds.has(id)).map(([id,x,y,z,h,r],i)=>({uid:'pilot-'+i,id,p:[x,y,z],r,h,s:[1,1,1]}));
  return{schema:'prometeo.forja.scene/v1',name:'Cocina · ensayo cinematográfico 20s',items}
 }
