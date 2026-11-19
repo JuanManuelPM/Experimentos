@@ -7,7 +7,7 @@ import {registerPilotAssets,attachPilot} from './pilot.mjs';
 
 const SOURCE_SHA='3ddcc695adbba9fb918cf31b7c139b3f95b76910';
 const ROOT='https://raw.githubusercontent.com/Hidencod/tge-assets/'+SOURCE_SHA+'/';
-const STORAGE='prometeo.forja.v2.pilot.scene.v1';
+const STORAGE='prometeo.forja.v2.cocina-umbria-002.scene.v1';
 const SCHEMA='prometeo.forja.scene/v1';
 const $=id=>document.getElementById(id);
 const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
@@ -426,12 +426,21 @@ async function initCatalog(){
   }
   $('model-total').textContent='1.883 GLB · 19 COLECCIONES';
   renderLibrary();status(state.webgl?'CATÁLOGO REAL · 1.883 RECURSOS':'CATÁLOGO 2D · WEBGL2 NO DISPONIBLE');
+  if(new URLSearchParams(location.search).get('umbria')==='002'){
+   const res2=await fetch('../FORJA_SCENE.json',{cache:'no-store'});
+   if(!res2.ok)throw Error('UMBRIA_SCENE_JSON_HTTP_'+res2.status);
+   const project=await res2.json();
+   const ok=await replaceScene(project,{remember:false});
+   if(!ok)throw Error('UMBRIA_FORJA_IMPORT_FAILED');
+   state.history=[snapshot()];state.cursor=0;historyButtons();
+   status('COCINA UMBRÍA 002 · ESCENA EDITABLE · TIMELINE DE CINE EN ../SHOTS.json');
+  }else{
   let prev=null;try{prev=JSON.parse(localStorage.getItem(STORAGE)||'null')}catch{}
   if(prev?.schema===SCHEMA&&prev.items?.length){
-   await replaceScene(prev,{remember:false});
-   pilot?.restore(prev.cinema);
+   await replaceScene(prev,{remember:false});pilot?.restore(prev.cinema);
    state.history=[snapshot()];state.cursor=0;historyButtons();
-  }else{state.history=[snapshot()];state.cursor=0;historyButtons();if(state.webgl&&!new URLSearchParams(location.search).has('empty'))await pilot?.loadScene()}
+  }else{state.history=[snapshot()];state.cursor=0;historyButtons();if(state.webgl&&!new URLSearchParams(location.search).has('empty'))await pilot?.loadScene()}}
+
  }catch(e){status('FALLÓ EL CATÁLOGO · '+e.message);toast('NO PUDO LEER EL CATÁLOGO');console.error(e)}
 }
 function wire(){
