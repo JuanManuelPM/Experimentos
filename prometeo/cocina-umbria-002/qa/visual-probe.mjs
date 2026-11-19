@@ -37,7 +37,7 @@ async function runCase(kind,viewport,mobile){
   await page.waitForFunction(()=>{
     const q=window.__UMBRIA_QA__?.();
     return q && (q.actor.loaded || q.actor.loadError || q.errors.length>10);
-  },{timeout:MAX});
+  },null,{timeout:MAX});
   await page.waitForTimeout(2500);
   const q=await page.evaluate(()=>window.__UMBRIA_QA__?.()||null);
   result.initialTelemetry=q;
