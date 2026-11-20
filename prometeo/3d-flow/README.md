@@ -1,17 +1,17 @@
-# PROMETEO · Estudio 3D · Flujo actual 1.4.0
+# PROMETEO · Estudio 3D · Flujo de producción 2.0.0
 
-**El usuario NO debería escribir prompts técnicos nuevos por escena.** Escribe un brief corto en lenguaje humano, lo congela por ID/SHA y el flujo lo convierte internamente en plan de producción. La misma entrada se ejecuta bajo distintas versiones del método; los errores corrigen EL FLUJO, no el brief.
+**Entrada 3D universal dentro del estudio.** Una palabra registrada o un brief humano breve se convierte en el contrato completo de escena. El flujo, no el prompt, decide arte, herramientas, materiales, cámara, FX, animación, publicación y aprendizaje.
 
-- Fuente: `FLOW_INDEX.json` → `versions/1.4.0/flow.json`, SHA `267130c29bacef26ed2e41ba855b5f20166300a73d8cffef82d36b051f44ca7d`.
-- Contrato: [METHOD_CONTRACT.md](versions/1.4.0/METHOD_CONTRACT.md).
-- Prueba de calidad transferible: [QUALITY_TRANSFER.json](versions/1.4.0/QUALITY_TRANSFER.json) (Arcade, Cruce, Ascensor, Ventilador, Entrevista, Submarino, con limitaciones).
-- Problemas de Ola 001: [USER_REVIEW_WAVE001.json](versions/1.4.0/USER_REVIEW_WAVE001.json).
-- Registro por las 17 etapas: [STAGE_TRACE.schema.json](versions/1.4.0/STAGE_TRACE.schema.json) + [validate-trace.mjs](versions/1.4.0/validate-trace.mjs).
-- Inspección de boot móvil: [browser-check.mjs](versions/1.4.0/browser-check.mjs), [WEB_RUNTIME_CONTRACT.md](versions/1.4.0/WEB_RUNTIME_CONTRACT.md).
-- Benchmarks humanos: [BENCHMARK_BRIEFS.v1.json](versions/1.4.0/BENCHMARK_BRIEFS.v1.json) (candidatos aún no aprobados como originales).
+**Método actual:** `FLOW_INDEX.json` → `versions/2.0.0/flow.json`, SHA-256 `27c96cac84056dd8b1f2a952cdb8f0f2f7f8136ef322280f34f510f24c239682`.
 
-**Contrato de ejecución intacto:** producción completa siempre, incluso con defectos; un primer artículo o falta de WebGL no termina la obra. No revisar artísticamente en ese mismo turno. Publicar preview candidata honesta y conservar fuente.
+- **[Manual operativo completo](versions/2.0.0/METHOD.md)**: instrucciones de las 17 etapas, cómo investigar recursos reales y construir todo.
+- [Operaciones profundas para las 17 etapas](versions/2.0.0/STAGE_OPERATIONS.json), reutilizadas por **269 nodos** vía `procedureRef`; no duplicar instrucciones.
+- [Calidad por componente](versions/2.0.0/COMPONENT_REFERENCE_MATRIX.json): Arcade gabinete/pantalla SÍ, fondo/cámara NO; Cruce actor SÍ, calle/cámara NO.
+- [Compilador mínimo](versions/2.0.0/scene-compiler.mjs) y [Catálogo de diez proyectos](versions/2.0.0/SCENE_INTENT_CATALOG.json), aún **NO aprobados como briefs fijos**.
+- [Toolchain](versions/2.0.0/TOOLCHAIN_ROUTING.json), [12 interfaces de conexión](versions/2.0.0/ADAPTER_INTERFACES.json) y [selección segura](versions/2.0.0/adapter-routing.mjs).
+- [Arranque web robusto](versions/2.0.0/browser-boot.mjs), [análisis de loader](versions/2.0.0/browser-check.mjs).
+- [Auditoría del flujo](versions/2.0.0/flow-audit.mjs) y [trazas de etapa](versions/2.0.0/validate-trace.mjs).
 
-**Estado:** flujo publicado, pruebas de código/estructura; comportamiento artístico en una nueva tanda = NOT_RUN.
+**Principio:** entregar intento **íntegro y visible** aunque tenga defectos. No cancelar por QA artística o primer artículo. Evaluación humana después, mejoras generales en la versión siguiente sin editar el brief original.
 
-Esquemas para ejecutar el **mismo brief** con diferentes flujos: [HUMAN_BRIEF.schema.json](versions/1.4.0/HUMAN_BRIEF.schema.json) y [COMPILED_PLAN.schema.json](versions/1.4.0/COMPILED_PLAN.schema.json).
+**Madurez:** código y tests; ejecución de nuevas diez escenas/QA Android y aprobación artística todavía NOT_RUN. 1.0 a 1.4 continúan archivadas e inmutables.

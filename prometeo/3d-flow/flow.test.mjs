@@ -3,47 +3,30 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {createHash} from 'node:crypto';
 import {validateReceipt} from './validate-run.mjs';
-const read=x=>JSON.parse(readFileSync(new URL(x,import.meta.url),'utf8'));
-const f=read('./FLOW_3D_MASTER.json'),v14=read('./versions/1.4.0/flow.json'),idx=read('./FLOW_INDEX.json'),v13=read('./versions/1.3.0/flow.json');
-const sort=v=>Array.isArray(v)?v.map(sort):v&&typeof v==='object'?Object.fromEntries(Object.keys(v).sort().map(k=>[k,sort(v[k])])):v;
-const sha=f=>{const {sha256Canonical,...obj}=f;return createHash('sha256').update(JSON.stringify(sort(obj))).digest('hex');};
-const node=id=>f.nodes.find(x=>x.id===id);
-const route=(from,to)=>f.edges.some(x=>x.from===from&&x.to===to);
-test('flow 1.4 is current and cryptographically locked',()=>{
- assert.equal(idx.current,'1.4.0');assert.equal(f.version,'1.4.0');assert.deepEqual(f,v14);
- assert.equal(sha(f),f.sha256Canonical);assert.equal(idx.sha256Canonical,f.sha256Canonical);
- assert.equal(v13.version,'1.3.0');assert.equal(v13.nodes.length,257);
+import {auditOperationalFlow} from './versions/2.0.0/flow-audit.mjs';
+const load=path=>JSON.parse(readFileSync(new URL(path,import.meta.url),'utf8'));
+const sort=x=>Array.isArray(x)?x.map(sort):x&&typeof x==='object'?Object.fromEntries(Object.keys(x).sort().map(k=>[k,sort(x[k])])):x;
+const dig=o=>{const {sha256Canonical,...rest}=o;return createHash('sha256').update(JSON.stringify(sort(rest))).digest('hex')};
+const f=load('./FLOW_3D_MASTER.json'),v2=load('./versions/2.0.0/flow.json'),idx=load('./FLOW_INDEX.json'),v14=load('./versions/1.4.0/flow.json');
+const ops=load('./versions/2.0.0/STAGE_OPERATIONS.json'),cat=load('./versions/2.0.0/SCENE_INTENT_CATALOG.json'),q=load('./versions/2.0.0/COMPONENT_REFERENCE_MATRIX.json'),t=load('./versions/2.0.0/TOOLCHAIN_ROUTING.json');
+test('current method 2.0.0 is exactly equal to immutable snapshot and hash',()=>{
+ assert.equal(f.version,'2.0.0');assert.deepEqual(f,v2);assert.equal(idx.current,'2.0.0');assert.equal(idx.sha256Canonical,f.sha256Canonical);
+ assert.equal(dig(f),f.sha256Canonical);assert.equal(v14.version,'1.4.0');assert.equal(dig(v14),v14.sha256Canonical);
 });
-test('one graph, 17 original stages, 262 nodes, 352 edges, all reachable',()=>{
- assert.equal(f.stages.length,17);assert.equal(f.nodes.length,262);assert.equal(f.edges.length,352);
- const g=new Map(f.nodes.map(n=>[n.id,[]]));for(const e of f.edges){assert.ok(g.has(e.from));assert.ok(g.has(e.to));g.get(e.from).push(e.to)}
- const seen=new Set(['I0']),stack=['I0'];while(stack.length){for(const t of g.get(stack.pop()))if(!seen.has(t)){seen.add(t);stack.push(t)}}
- assert.equal(seen.size,262);
- assert.deepEqual([...g].filter(([k,a])=>a.length===0).map(x=>x[0]).sort(),['END0','END1']);
+test('269 nodes reference actual 17 stage procedures, no dead nodes',()=>{
+ const s=auditOperationalFlow(f,ops,cat,q,t);assert.equal(s.ok,true,JSON.stringify(s));assert.equal(s.counts.reachable,269);
 });
-test('immutable human brief precedes compiled planning and quality reference',()=>{
- assert.ok(route('I1','BR0'));assert.ok(route('BR0','I2'));
- assert.ok(route('P0','BR1'));assert.ok(route('BR1','P1'));
- assert.ok(route('PF3','QL0'));assert.ok(route('QL0','D39'));
- assert.equal(f.humanBriefPolicy.immutable,true);assert.equal(f.humanBriefPolicy.singleBriefMultipleFlows,true);
+test('artistic failure or lack of evidence does not forbid human review of the attempt',()=>{
+ const receipt={schema:'prometeo.3d.flow-run/v1',creationId:'bad-but-visible',flow:{id:f.id,version:f.version,sha256Canonical:f.sha256Canonical},status:'READY_FOR_ART_REVIEW',buildScope:'FULL_ATTEMPT',cameraMode:'MOVING',
+ nodeResults:[{nodeId:'D40',status:'FAIL'}],provenance:{sourceRepo:'test',sourceRef:'candidate',sourceCommit:'a'.repeat(40)},scopeAudit:{scopeStatus:'DELIVERED_WITH_GAPS',missing:['city']},artApproval:'NOT_REVIEWED'};
+ const r=validateReceipt(receipt,f);assert.equal(r.ok,true);assert.ok(r.warnings.includes('SCOPE_GAPS_VISIBLE__DO_NOT_CENSOR'));
+ assert.equal(validateReceipt({...receipt,status:'VERIFIED'},f).ok,false);
 });
-test('browser checks during build, telemetry during persistence',()=>{
- assert.ok(route('S0','WEB0'));assert.ok(route('WEB0','S1'));
- assert.ok(route('G0','TR0'));assert.ok(route('TR0','G1'));
- assert.equal(f.stageInstrumentation.stages.length,17);
+test('a single first article may be shown, but must be honestly labeled incomplete',()=>{
+ const receipt={schema:'prometeo.3d.flow-run/v1',creationId:'canary-only',flow:{id:f.id,version:f.version,sha256Canonical:f.sha256Canonical},status:'CANDIDATE',buildScope:'FIRST_ARTICLE',nodeResults:[],provenance:{sourceRepo:'test',sourceRef:'candidate',sourceCommit:'a'.repeat(40)}};
+ const r=validateReceipt(receipt,f);assert.equal(r.ok,true);assert.ok(r.warnings.includes('FIRST_ARTICLE_NOT_FULL_SCENE__PUBLISH_AS_PARTIAL_NOT_COMPLETE'));
 });
-test('quality reference is transferable not palette copy',()=>{
- assert.equal(f.qualityTransfer.secondConsumerRequiredForReusablePromotion,true);
- assert.ok(f.qualityTransfer.principle.includes('not copying'));
- assert.equal(f.subflows.length,9);
-});
-test('no cancellation via failed first article and scene incomplete',()=>{
- assert.ok(route('PP2','B0'));assert.ok(route('PP3','B0'));
- for(const id of ['D39','D40','D41','D42'])assert.equal(node(id).preflightGate.blocking,false);
-});
-test('candidate with artistic FAIL and missing trace can still be delivered',()=>{
- const r={schema:'prometeo.3d.flow-run/v1',creationId:'scene-full',flow:{id:f.id,version:f.version,sha256Canonical:f.sha256Canonical},status:'CANDIDATE',buildScope:'FULL_ATTEMPT',cameraMode:'MOVING',nodeResults:[{nodeId:'D40',status:'FAIL'}],provenance:{sourceCommit:'a'.repeat(40)}};
- const q=validateReceipt(r,f);assert.equal(q.ok,true);assert.equal(q.mustContinueProduction,true);
- assert.ok(q.warnings.includes('BRIEF_LOCK_MISSING__COMPARE_WITH_CAUTION'));
- assert.ok(q.warnings.includes('STAGE_TRACE_MISSING__LEARNING_INCOMPLETE'));
+test('real source proof and user art approval required before VERIFIED',()=>{
+ const receipt={schema:'prometeo.3d.flow-run/v1',creationId:'unknown',flow:{id:f.id,version:f.version,sha256Canonical:f.sha256Canonical},status:'VERIFIED',nodeResults:[],provenance:{sourceRepo:'r',sourceRef:'x',sourceCommit:'a'.repeat(40)}};
+ const r=validateReceipt(receipt,f);assert.equal(r.ok,false);assert.ok(r.errors.includes('ART_APPROVAL_REQUIRED'));
 });

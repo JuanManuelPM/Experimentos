@@ -17,7 +17,7 @@ export function validateReceipt(receipt,flow){
   if(!['PASS','FAIL','NOT_RUN',...(isPrevention&&r.nodeId==='D42'?['NOT_APPLICABLE']:[])].includes(r.status))errors.push('INVALID_STATUS_'+r.nodeId);
   if(r.status==='PASS'&&(!Array.isArray(r.evidenceRefs)||!r.evidenceRefs.length))errors.push('PASS_MISSING_EVIDENCE_'+r.nodeId);
  }
- const ready=['READY_FOR_ART_REVIEW','VERIFIED'].includes(receipt?.status);
+ const ready=flow.version==='2.0.0'?receipt?.status==='VERIFIED':['READY_FOR_ART_REVIEW','VERIFIED'].includes(receipt?.status);
  const scale=false; // v1.3: artistic diagnostics cannot cancel FULL_ATTEMPT delivery.
  if(isPrevention&&receipt?.status!=='NOT_STARTED'){
    if(!['FIRST_ARTICLE','SCALED','FULL_ATTEMPT'].includes(receipt?.buildScope))errors.push('BUILD_SCOPE_REQUIRED');
@@ -49,9 +49,17 @@ export function validateReceipt(receipt,flow){
   if(!/^https:\/\//.test(receipt.url||''))errors.push('PUBLIC_URL_REQUIRED');
   if(receipt.publicHTTPVerified!==true)errors.push('PUBLIC_HTTP_NOT_VERIFIED');
  }
- if(flow.version==='1.4.0'){
+ if(['1.4.0','2.0.0'].includes(flow.version)){
   if(!receipt?.briefLock?.briefId||!receipt?.briefLock?.sha256)warnings.push('BRIEF_LOCK_MISSING__COMPARE_WITH_CAUTION');
   if(!receipt?.stageTrace?.path)warnings.push('STAGE_TRACE_MISSING__LEARNING_INCOMPLETE');
+ }
+ if(flow.version==='2.0.0'){
+  if(!receipt?.compiledContract?.path)warnings.push('COMPILED_CONTRACT_MISSING');
+  if(receipt?.buildScope==='FIRST_ARTICLE')warnings.push('FIRST_ARTICLE_NOT_FULL_SCENE__PUBLISH_AS_PARTIAL_NOT_COMPLETE');
+  if(!receipt?.scopeAudit?.scopeStatus)warnings.push('SCOPE_AUDIT_MISSING');
+  if(receipt?.scopeAudit?.scopeStatus==='DELIVERED_WITH_GAPS')warnings.push('SCOPE_GAPS_VISIBLE__DO_NOT_CENSOR');
+  if(!receipt?.componentReview?.path)warnings.push('COMPONENT_REVIEW_MISSING');
+  if(receipt?.status==='READY_FOR_ART_REVIEW'&&receipt?.buildScope==='FIRST_ARTICLE')warnings.push('REVIEWABLE_BUT_PARTIAL');
  }
  return{ok:errors.length===0,errors,warnings,mustContinueProduction:true,requiredGateIds:qaGates.map(x=>x.id),earlyGateIds:isPrevention?earlyIds:[]};
 }

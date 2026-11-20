@@ -1,3 +1,14 @@
+# Evolución del método 3D
+
+## 2.0.0 · 2026-11-20 · CURRENT_CANDIDATE
+- 269 nodos / 359 aristas / 17 etapas / 10 subflujos, operaciones profundas por etapa en lugar de duplicación textual.
+- Compilador de briefs mínimos y cobertura completa; catálogo de diez proyectos, pero briefs todavía NO congelados.
+- Calidad por componente: Arcade héroe/pantalla vs mal ambiente/cámara; Cruce actor/HUD vs calle/cámara, Ascensor luces; prohibición de copiar buenos y malos de una escena indiscriminadamente.
+- Toolchain real y licencias, 12 interfaces extensibles + selección que nunca inventa herramientas conectadas; validador de assets con comprobantes de bytes/uso.
+- WebGL2 moderno (no falso WebGL1 en Three r163+), boot por fases, errores separados, fallback honesto, context loss.
+- Cobertura real de escena vs faltantes **sin autocensura artística**, QA por componente, traza y aprendizaje post-entrega.
+- Contrato y tests de integración; resultados visuales nuevos **NOT_RUN**.
+
 # Changelog del flujo de producción 3D
 
 ## 1.4.0 · 2026-11-20 · CURRENT_CANDIDATE
