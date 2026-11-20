@@ -3,7 +3,10 @@
 const canvas=document.getElementById('stage'),gl=canvas.getContext('webgl2',{antialias:true,alpha:false,preserveDrawingBuffer:true});
 if(!gl){document.getElementById('error').style.display='flex';return}
 const AT=window.AssemblyKit,TAU=Math.PI*2, CY=2.6;
-// Source of names, stage decomposition and offsets is a separate scene-specific configuration.\nconst partData=(window.FAN_PARTS||[]).map(p=>[p.id,p.name,p.short,p.explode]);\nif(!partData.length)throw Error('parts.js V2 no cargado');\nconst parts=partData.map(([id,name,short,explode])=>({id,name,short,explode}));
+// Source of names, stage decomposition and offsets is a separate scene-specific configuration.
+const partData=(window.FAN_PARTS||[]).map(p=>[p.id,p.name,p.short,p.explode]);
+if(!partData.length)throw Error('parts.js V2 no cargado');
+const parts=partData.map(([id,name,short,explode])=>({id,name,short,explode}));
 const model=AT.createPresenter({parts,assemblyOrder:['base','neck','motor','stator','rotor','shaft','rear-guard','blades','latches','front-guard']});
 const material={body:[.18,.42,.43],base:[.20,.34,.36],dark:[.13,.20,.21],guard:[.50,.61,.59],silver:[.67,.74,.72],copper:[.90,.52,.27],blue:[.27,.70,.67],cream:[.93,.88,.75],accent:[.97,.75,.38],floor:[.84,.84,.81],magnet:[.30,.55,.59]};
 const v3=(x=0,y=0,z=0)=>[x,y,z],sub=(a,b)=>a.map((v,i)=>v-b[i]),cross=(a,b)=>[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]],normal=a=>{let n=Math.hypot(...a)||1;return a.map(v=>v/n)};
