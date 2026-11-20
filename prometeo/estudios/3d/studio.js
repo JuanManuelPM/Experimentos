@@ -34,20 +34,20 @@ async function discoverReleases(){
   finally{clearTimeout(timeout)}
   if(!response.ok)return;
   const listing=await response.json();if(!Array.isArray(listing.tree)||listing.truncated)return;
-  const known=new Set(state.all.map(p=>p.id));const fresh=[];
+  const known=new Set(state.all.map(p=>p.id));const fresh=[];let promoted=false;
   for(const item of listing.tree){
    if(item.type!=='blob')continue;
    const match=/^prometeo\/([a-z0-9-]+)\/index\.html$/.exec(item.path);
    if(!match)continue;
    const id=match[1];if(['project-explorer','3d-flow','forja','asset-atlas'].includes(id))continue;
-   if(known.has(id)){const existing=state.all.find(x=>x.id===id);if(existing&&!existing.url){existing.url=path(id+'/');existing.status='PUBLICADO · QA POR REVISAR';existing.thumbnail=null;$('#latest').hidden=true;fresh.push(existing)}continue;}
+   if(known.has(id)){const existing=state.all.find(x=>x.id===id);if(existing&&!existing.url){existing.url=path(id+'/');existing.status='PUBLICADO · QA POR REVISAR';existing.thumbnail=null;$('#latest').hidden=true;promoted=true}continue;}
    known.add(id);
    fresh.push({id,title:id.replace(/-/g,' ').replace(/\b\w/g,c=>c.toUpperCase()),description:'Nueva página pública. Revisión artística sin registrar.',kind:'animation',status:'PUBLICADO · SIN QA REGISTRADA',glyph:'▤',url:path(id+'/'),updatedAt:null,creation:state.records.get(id)||null});
   }
-  if(!fresh.length)return;
+  if(!fresh.length&&!promoted)return;
   state.all.push(...fresh);state.all.sort(sort);render();
   $('#updated').textContent='Proyectos nuevos detectados desde GitHub Pages. La falta de QA no es aprobación.';
-  if(fresh.some(x=>x.id===state.meta.candidate?.id))$('#latest').hidden=true;
+  if(fresh.some(x=>x.id===state.meta.candidate?.id)||promoted)$('#latest').hidden=true;
  }catch(e){console.info('Detección de nuevas publicaciones no disponible',e)}
 }
 function render(){

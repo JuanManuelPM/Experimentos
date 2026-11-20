@@ -11,7 +11,7 @@ shadow.innerHTML=`
 <style>
 :host{all:initial;font-family:system-ui,-apple-system,'Segoe UI',Arial,sans-serif;color:#eef3ef}
 *{box-sizing:border-box}[hidden]{display:none!important}
-#launcher{position:fixed;right:max(12px,env(safe-area-inset-right));top:max(75px,env(safe-area-inset-top));z-index:2147483000;border:1px solid #657b68;border-radius:25px;min-height:46px;display:flex;align-items:center;justify-content:center;padding:0 16px;background:#17281ff2;color:#f9f3e5!important;text-decoration:none!important;font:700 13px system-ui;box-shadow:0 4px 17px #0008;cursor:pointer}
+#launcher{position:fixed;right:max(12px,env(safe-area-inset-right));top:max(110px,env(safe-area-inset-top));z-index:2147483000;border:1px solid #657b68;border-radius:25px;min-height:46px;display:flex;align-items:center;justify-content:center;padding:0 16px;background:#17281ff2;color:#f9f3e5!important;text-decoration:none!important;font:700 13px system-ui;box-shadow:0 4px 17px #0008;cursor:pointer}
 #screen{position:fixed;inset:0;z-index:2147483001;display:none}
 #screen.active{display:block}
 #mask{position:absolute;inset:0;background:#01060ac4}
