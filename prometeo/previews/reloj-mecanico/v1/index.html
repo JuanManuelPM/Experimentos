@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0b1117"><title>Reloj mecánico · PROMETEO</title>
+<style>
+:root{color-scheme:dark}*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#0a1016;color:#e9d6ad;font:13px system-ui,sans-serif}
+canvas{position:fixed;inset:0;width:100%;height:100%;touch-action:none;cursor:grab}canvas:active{cursor:grabbing}
+header{position:fixed;top:25px;left:27px;pointer-events:none;letter-spacing:.20em;font-size:11px;font-weight:700;text-shadow:0 1px 8px #000}
+header b{display:block;font-size:10px;font-weight:400;letter-spacing:.3em;color:#8f8979;margin-top:6px}
+aside{position:fixed;right:24px;top:26px;display:flex;gap:8px}
+button{border:1px solid #d3b98a3c;background:#171d21d8;color:#e7d7b2;border-radius:22px;min-height:45px;padding:0 18px;font:600 11px system-ui;cursor:pointer;touch-action:manipulation;backdrop-filter:blur(12px)}
+button.active{background:#d0ae6a;color:#182024;border-color:#d0ae6a}
+#bar{position:fixed;bottom:max(20px,env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);display:flex;gap:4px;background:#111b20cb;padding:5px;border:1px solid #c6ac7135;border-radius:28px;backdrop-filter:blur(13px)}
+#bar button{min-width:83px;border:0;background:transparent;padding:0 12px}
+#bar button.active{background:#d0ae6a;color:#172029}
+#error{position:fixed;inset:0;display:none;place-items:center;padding:20px;text-align:center;background:#10171d;font-size:14px;line-height:1.5}
+#type{position:fixed;left:30px;bottom:100px;font-size:10px;letter-spacing:.2em;color:#a2a394;pointer-events:none}
+@media(max-width:700px){header{top:12px;left:14px;font-size:9px}header b{font-size:8px}aside{top:11px;right:10px;gap:4px}aside button{min-height:38px;padding:0 11px}#bar{bottom:8px;gap:0;padding:4px;max-width:calc(100vw - 8px)}#bar button{min-width:0;min-height:39px;font-size:9px;padding:0 9px}#type{display:none}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style></head><body><canvas id="scene" aria-label="Modelo tridimensional interactivo de un reloj de bolsillo con dos engranajes coordinados"></canvas>
+<header>RELOJ MECÁNICO<b>V1 · CANARIO TÉCNICO</b></header><aside><button id="pause" aria-label="Pausar o continuar">Ⅱ</button><button id="reset" aria-label="Recentrar cámara">↺</button></aside>
+<div id="type">ARRASTRAR · GIRAR &nbsp; / &nbsp; RUEDA · ZOOM</div><div id="bar" role="group" aria-label="Secuencia de despiece">
+<button data-mode="0" class="active">ENTERO</button><button data-mode="1">DESPIECE</button><button data-mode="2">DENTADO</button><button data-mode="3">MONTAJE</button><button data-mode="4">MARCHA</button></div>
+<div id="error" role="alert"></div>
+<script>
+/* Mechanical canary, original geometry and independent WebGL renderer · MIT · no engine rewrite.
+   The original assembly-presenter@0.1.0 is read from the OWNER'S EXISTING public fan preview,
+   verified against source Git blob SHA before use. It is NOT duplicated in this artwork. */
+(async()=>{
+'use strict';
+const canvas=document.querySelector('#scene'),gl=canvas.getContext('webgl2',{antialias:true,alpha:false,depth:true});
+function fail(s){const e=document.querySelector('#error');e.textContent=s;e.style.display='grid';throw Error(s)}
+if(!gl)fail('Este dispositivo no permite iniciar WebGL2.');
+const TAU=Math.PI*2, clamp=(x,a,b)=>Math.max(a,Math.min(b,x)), mix=(a,b,t)=>a+(b-a)*t;
+async function presenterFromOwner(){
+ const url='/Experimentos/prometeo/previews/ventilador-explicado-001/index.html';
+ const r=await fetch(url,{cache:'no-store'});if(!r.ok)throw Error('Fuente pública del ventilador no disponible');
+ const doc=new DOMParser().parseFromString(await r.text(),'text/html');
+ const script=[...doc.scripts].find(s=>s.textContent.includes('Technical Assembly Presenter 0.1.0'));
+ if(!script)throw Error('No se encontró assembly-presenter original');
+ const source=script.textContent.trim()+'\n', enc=new TextEncoder(), body=enc.encode(source), prefix=enc.encode('blob '+body.length+'\0');
+ const bytes=new Uint8Array(prefix.length+body.length);bytes.set(prefix);bytes.set(body,prefix.length);
+ const hash=[...new Uint8Array(await crypto.subtle.digest('SHA-1',bytes))].map(v=>v.toString(16).padStart(2,'0')).join('');
+ if(hash!=='0fc5b227892669b087c20a2ae77249d860f77739')throw Error('El SHA de assembly-presenter cambió: '+hash);
+ const tag=document.createElement('script');tag.textContent=source;document.head.appendChild(tag);
+ if(!window.AssemblyKit||window.AssemblyKit.version!=='0.1.0')throw Error('Presenter incompatible');
+ return window.AssemblyKit;
+}
+let Kit;try{Kit=await presenterFromOwner()}catch(e){fail('No se pudo consumir el módulo original verificado del ventilador: '+e.message)}
+const specs=[
+{id:'chassis',explode:[0,0,-0.38]},
+{id:'lid',explode:[0,0,-0.76]},
+{id:'gear12',explode:[0,0,1.32]},
+{id:'gear24',explode:[0,0,2.04]}];
+const assembly=Kit.createPresenter({parts:specs,assemblyOrder:['chassis','lid','gear24','gear12']});
+const v=(x,y,z)=>[x,y,z],rot=(a,p)=>[p[0]*Math.cos(a)-p[1]*Math.sin(a),p[0]*Math.sin(a)+p[1]*Math.cos(a),p[2]];
+const cols={gold:[.78,.53,.23],brass:[.64,.36,.18],light:[.92,.73,.40],dark:[.15,.19,.18],engrave:[.38,.31,.21]};
+const groups=new Map();
+function tri(id,a,b,c,color){if(!groups.has(id))groups.set(id,[]);groups.get(id).push([a,b,c,color])}
+function disc(id,r,depth,color){
+ const n=72,top=depth/2,bot=-depth/2;
+ for(let i=0;i<n;i++){let x=i*TAU/n,y=(i+1)*TAU/n,ta=v(r*Math.cos(x),r*Math.sin(x),top),tb=v(r*Math.cos(y),r*Math.sin(y),top),ba=v(ta[0],ta[1],bot),bb=v(tb[0],tb[1],bot);
+ tri(id,v(0,0,top),ta,tb,color);tri(id,v(0,0,bot),bb,ba,color);tri(id,ta,ba,bb,color);tri(id,ta,bb,tb,color)}
+}
+function torus(id,r,tub,z,color){
+ const n=96,k=8;
+ for(let i=0;i<n;i++)for(let j=0;j<k;j++){
+ const a=i*TAU/n,b=(i+1)*TAU/n,c=j*TAU/k,d=(j+1)*TAU/k;
+ const p=(t,q)=>v((r+tub*Math.cos(q))*Math.cos(t),(r+tub*Math.cos(q))*Math.sin(t),z+tub*Math.sin(q));
+ let A=p(a,c),B=p(b,c),C=p(b,d),D=p(a,d);tri(id,A,B,C,color);tri(id,A,C,D,color);
+ }
+}
+function gear(id,teeth,module,color) {
+ const pitch=teeth*module/2,root=pitch-1.25*module,tip=pitch+.4*module,step=TAU/teeth,outline=[];
+ for(let k=0;k<teeth;k++)for(let [f,r] of [[-.5,root],[-.3,pitch],[-.13,tip],[.13,tip],[.3,pitch],[.5,root]]){
+ const t=(k+f)*step;outline.push([Math.cos(t)*(r-.015),Math.sin(t)*(r-.015)])}
+ const n=outline.length,h=.10;
+ for(let i=0;i<n;i++){let j=(i+1)%n,[ax,ay]=outline[i],[bx,by]=outline[j];
+ let a=v(ax,ay,h),b=v(bx,by,h),c=v(ax,ay,-h),d=v(bx,by,-h);
+ tri(id,v(0,0,h),a,b,color);tri(id,v(0,0,-h),d,c,color);tri(id,a,c,d,color);tri(id,a,d,b,color)}
+ disc(id,.19,.27,cols.light);torus(id,.27,.025,.14,cols.engrave);
+}
+disc('chassis',2.76,.13,cols.dark);
+torus('chassis',2.79,.07,-.28,cols.gold);torus('chassis',2.64,.036,-.23,cols.light);
+torus('lid',2.76,.060,-.49,cols.gold);torus('lid',2.62,.030,-.48,cols.light);torus('lid',2.49,.018,-.48,cols.engrave);
+disc('chassis',.17,.20,cols.light);
+gear('gear12',12,.11,cols.light);gear('gear24',24,.11,cols.brass);
+const partLoc={chassis:[0,0,-.35],lid:[-5.56,0,0],gear12:[-.99,0,.05],gear24:[.99,0,.05]};
+const phase={gear12:Math.PI/12,gear24:Math.PI};
+const shader=(type,src)=>{let s=gl.createShader(type);gl.shaderSource(s,src);gl.compileShader(s);if(!gl.getShaderParameter(s,gl.COMPILE_STATUS))fail(gl.getShaderInfoLog(s));return s};
+let p=gl.createProgram();gl.attachShader(p,shader(gl.VERTEX_SHADER,'attribute vec3 aPos;attribute vec3 aColor;varying vec3 col;void main(){gl_Position=vec4(aPos,1.0);col=aColor;}'));
+gl.attachShader(p,shader(gl.FRAGMENT_SHADER,'precision mediump float;varying vec3 col;void main(){gl_FragColor=vec4(pow(col,vec3(0.93)),1.0);}'));gl.linkProgram(p);
+if(!gl.getProgramParameter(p,gl.LINK_STATUS))fail(gl.getProgramInfoLog(p));
+gl.useProgram(p);
+let buffer=gl.createBuffer(),cBuffer=gl.createBuffer(),aPos=gl.getAttribLocation(p,'aPos'),aCol=gl.getAttribLocation(p,'aColor');
+gl.enable(gl.DEPTH_TEST);gl.depthFunc(gl.LEQUAL);gl.disable(gl.CULL_FACE);gl.clearColor(.036,.051,.066,1);
+let mode=0, paused=false, elapsed=0,yaw=-1.18,elevation=.76,dist=15.8,offsetX=-2.22,orbiting=false,prev=null,last=performance.now();
+function change(n){mode=n;assembly.setStage(n);if(n===2)assembly.select('gear12');else assembly.select(null);
+document.querySelectorAll('#bar button').forEach(b=>b.classList.toggle('active',+b.dataset.mode===n));
+if(n===3)assembly.resetAssembly();}
+document.querySelectorAll('#bar button').forEach(b=>b.onclick=()=>change(+b.dataset.mode));
+document.querySelector('#pause').onclick=()=>{paused=!paused;document.querySelector('#pause').textContent=paused?'▶':'Ⅱ'};
+document.querySelector('#reset').onclick=()=>{yaw=-1.18;elevation=.76;dist=15.8;offsetX=-2.22};
+canvas.addEventListener('pointerdown',e=>{orbiting=true;prev=[e.clientX,e.clientY];canvas.setPointerCapture(e.pointerId)});
+canvas.addEventListener('pointermove',e=>{if(!orbiting||!prev)return;let dx=e.clientX-prev[0],dy=e.clientY-prev[1];yaw+=dx*.006;elevation=clamp(elevation+dy*.005,.16,1.42);prev=[e.clientX,e.clientY]});
+canvas.addEventListener('pointerup',()=>orbiting=false);canvas.addEventListener('pointercancel',()=>orbiting=false);
+canvas.addEventListener('wheel',e=>{e.preventDefault();dist=clamp(dist*Math.exp(e.deltaY*.0011),7,27)},{passive:false});
+let gesture=null;canvas.addEventListener('touchstart',e=>{if(e.touches.length===2){gesture=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY)}},{passive:true});
+canvas.addEventListener('touchmove',e=>{if(e.touches.length===2&&gesture){let d=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);dist=clamp(dist*gesture/d,7,27);gesture=d}},{passive:true});
+canvas.addEventListener('touchend',()=>gesture=null);
+const sub=(a,b)=>[a[0]-b[0],a[1]-b[1],a[2]-b[2]],dot=(a,b)=>a[0]*b[0]+a[1]*b[1]+a[2]*b[2],cross=(a,b)=>[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2]],norm=a=>{let l=Math.hypot(...a)||1;return a.map(v=>v/l)};
+function draw(now){
+ const dt=Math.min((now-last)/1000,.05);last=now;if(!paused){elapsed+=dt;assembly.update(dt)}
+ let W=Math.max(1,Math.floor(canvas.clientWidth*Math.min(devicePixelRatio,1.7))),H=Math.max(1,Math.floor(canvas.clientHeight*Math.min(devicePixelRatio,1.7)));
+ if(canvas.width!==W||canvas.height!==H){canvas.width=W;canvas.height=H;gl.viewport(0,0,W,H)}
+ const looking=(mode===2)?-.25:offsetX,r=mode===2?dist*.79:dist;
+ const target=v(looking,0,mode===1?0.65:0);
+ const ey=v(target[0]+r*Math.cos(elevation)*Math.cos(yaw),target[1]+r*Math.cos(elevation)*Math.sin(yaw),target[2]+r*Math.sin(elevation));
+ const forward=norm(sub(target,ey)),right=norm(cross(forward,v(0,0,1))),up=norm(cross(right,forward));
+ const focal=1/Math.tan(44*Math.PI/360),aspect=W/H,pts=[],colors=[];
+ const project=q=>{let V=sub(q,ey),z=Math.max(.2,dot(V,forward));return [dot(V,right)*focal/aspect/z,dot(V,up)*focal/z,-.94+1.9*(z/70)]};
+ const light=norm([-3,-5,9]);
+ for(let [id,faces] of groups){
+   const t=assembly.pose(id),loc=partLoc[id],spin=id==='gear12'?phase.gear12+(paused?0:elapsed*.78):id==='gear24'?phase.gear24-(paused?0:elapsed*.39):0;
+   const activeSpin=mode===0||mode===4||mode===2?spin:phase[id]||0;
+   let shift=t?.position||[0,0,0];const matrixPoint=q=>{let q2=rot(activeSpin,q);return v(q2[0]+loc[0]+shift[0],q2[1]+loc[1]+shift[1],q2[2]+loc[2]+shift[2])};
+   for(let face of faces){let [a,b,c,color]=face,A=matrixPoint(a),B=matrixPoint(b),C=matrixPoint(c);
+     const n=norm(cross(sub(B,A),sub(C,A))),shade=.40+.56*Math.max(0,dot(n,light))+.10*Math.pow(Math.max(0,dot(n,norm([.4,-.6,.7]))),8);
+     const fade=(mode===2&&id!=='gear12'&&id!=='gear24')?.30:1;
+     const col=color.map(x=>clamp(x*shade*fade+.023,0,1));
+     for(let q of [A,B,C]){pts.push(...project(q));colors.push(...col)}
+   }
+ }
+ gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);
+ gl.bindBuffer(gl.ARRAY_BUFFER,buffer);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(pts),gl.DYNAMIC_DRAW);gl.enableVertexAttribArray(aPos);gl.vertexAttribPointer(aPos,3,gl.FLOAT,false,0,0);
+ gl.bindBuffer(gl.ARRAY_BUFFER,cBuffer);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(colors),gl.DYNAMIC_DRAW);gl.enableVertexAttribArray(aCol);gl.vertexAttribPointer(aCol,3,gl.FLOAT,false,0,0);
+ gl.drawArrays(gl.TRIANGLES,0,pts.length/3);
+ window.__relojDiagnostics={renderer:'WebGL2',ownerPresenterVerified:true,gears:[12,24],ratio:-.5,stage:mode,frameTriangles:pts.length/9,canvas:[W,H]};
+ requestAnimationFrame(draw);
+}
+requestAnimationFrame(draw);
+})().catch(e=>{document.getElementById('error').style.display='grid';document.getElementById('error').textContent='No se pudo iniciar el reloj: '+e.message});
+</script></body></html>
