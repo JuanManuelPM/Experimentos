@@ -1,13 +1,13 @@
 {
   "schema": "prometeo.3d.production-flow/v1",
   "id": "prometeo-3d-production",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "publishedAt": "2026-11-20",
   "status": "CURRENT_CANDIDATE",
   "scope": "studio-3d",
-  "title": "Flujo maestro 3D · Obra íntegra y calibración humana posterior",
-  "description": "La IA produce el encargo completo en su primer intento. El preflight orienta, jamás cancela, recorta a canario o bloquea por gusto artístico o falta de GPU. El usuario observa el resultado y mejora el flujo entre rondas.",
-  "sourceOfTruth": "FLOW_INDEX.json + versions/1.3.0/{flow.json,preflight.mjs,PRODUCTION_CONTRACT.md}",
+  "title": "Estudio 3D · brief humano fijo, calidad transferible y trazas por etapa",
+  "description": "El mismo encargo humano atraviesa distintas versiones del flujo; el chat expande internamente, produce obra entera, registra actuaciones por etapa y aplica principios de calidad de ejemplos exitosos sin copiar su estilo. Diagnósticos no bloquean.",
+  "sourceOfTruth": "FLOW_INDEX.json → versions/1.4.0/flow.json + METHOD_CONTRACT.md + STAGE_TRACE.schema.json + QUALITY_TRANSFER.json + BENCHMARK_BRIEFS.v1.json",
   "stages": [
     {
       "id": "scope",
@@ -127,7 +127,7 @@
       "stage": "scope",
       "label": "Interpretar objetivo y resultado observable",
       "type": "action",
-      "detail": "Interpretar objetivo y resultado observable",
+      "detail": "Interpretar objetivo y resultado observable Obtener objetivo humano tal como fue escrito y requerimientos absolutos. No convertir la traducción a IA en otro prompt manual. Se conserva antes de compilar por BR0.",
       "docRef": "FLOW_3D_MASTER.md#i1",
       "gate": null
     },
@@ -361,7 +361,7 @@
       "stage": "planning",
       "label": "Definir plan y gates por evidencia",
       "type": "action",
-      "detail": "Definir plan y gates por evidencia",
+      "detail": "Definir plan y gates por evidencia Breve decisión técnica desde brief fijo: plan es salida del sistema, NO una segunda instrucción mejorada por el humano.",
       "docRef": "FLOW_3D_MASTER.md#p0",
       "gate": null
     },
@@ -694,7 +694,7 @@
       "stage": "humanoid",
       "label": "Comprobar malla, escala y proporciones",
       "type": "action",
-      "detail": "Comprobar malla, escala y proporciones",
+      "detail": "Comprobar malla, escala y proporciones La estrategia de personajes depende de distancia y papel en cámara; preferir modelos con malla, UV, rig, expresión adecuada. Preservar procedencia (p.ej. Cesium CC BY attribution) cuando se reutiliza un actor real.",
       "docRef": "FLOW_3D_MASTER.md#h1",
       "gate": null
     },
@@ -703,7 +703,7 @@
       "stage": "humanoid",
       "label": "Inspeccionar rostro, cabello, ropa y manos",
       "type": "action",
-      "detail": "Inspeccionar rostro, cabello, ropa y manos Personajes visibles: preferir malla texturada/UV o impostor adecuado; prueba de rostro/ropa antes de crowd.",
+      "detail": "Inspeccionar rostro, cabello, ropa y manos Personajes visibles: preferir malla texturada/UV o impostor adecuado; prueba de rostro/ropa antes de crowd. Evitar cara y manos construidas con formas improvisadas en primer plano aunque exista un GLB cualquiera. Variantes de cuerpo/textura/rig aptas para plano requerido; no bloquear entrega por falla.",
       "docRef": "FLOW_3D_MASTER.md#h2",
       "gate": null
     },
@@ -811,7 +811,7 @@
       "stage": "props",
       "label": "Inspeccionar pivote, escala y bounds",
       "type": "action",
-      "detail": "Inspeccionar pivote, escala y bounds Mobiliario HERO: evaluar silla/modelado/UV versus cubos en serie; mecanismo técnico admite paramétrico justificado.",
+      "detail": "Inspeccionar pivote, escala y bounds Mobiliario HERO: evaluar silla/modelado/UV versus cubos en serie; mecanismo técnico admite paramétrico justificado. Adoptar geometría de silueta intencional, extrusión/perfil para muebles y gabinetes, UV/atlas y microdetalles localizados. Las primitivas se usan para arquitectura y soporte cuando corresponden, no uniformemente prohibidas.",
       "docRef": "FLOW_3D_MASTER.md#o1",
       "gate": null
     },
@@ -1108,7 +1108,7 @@
       "stage": "assembly",
       "label": "Construir escena sobre recursos reales",
       "type": "action",
-      "detail": "Construir escena sobre recursos reales",
+      "detail": "Construir escena sobre recursos reales La escena completa no puede sustituirse por un héroe aislado: reusar asset de alta calidad y multiplicar con instancias, cambios de atlas, LOD y composición, cuidando variedad y rendimiento.",
       "docRef": "FLOW_3D_MASTER.md#s0",
       "gate": null
     },
@@ -1540,7 +1540,7 @@
       "stage": "cinema",
       "label": "Dirección cinematográfica reutilizable",
       "type": "action",
-      "detail": "Dirección cinematográfica reutilizable Diseñar velocidad, continuidad de mirada y pausa/corte intencional.",
+      "detail": "Dirección cinematográfica reutilizable Diseñar velocidad, continuidad de mirada y pausa/corte intencional. Plan de cámara explícito: lenguaje cinematográfico con rail continuo para historia, libertad de rotación/orbit cuando el objetivo sea inspección; en modo guiado añadir entrada de usuario para examinar la escena cuando factible, sin sacrificar ritmo.",
       "docRef": "FLOW_3D_MASTER.md#c1",
       "gate": null
     },
@@ -1639,7 +1639,7 @@
       "stage": "qa",
       "label": "Correr QA independiente sobre resultado real",
       "type": "action",
-      "detail": "Verificación técnica posterior para registrar fallas, nunca reescritura artística del mismo intento.",
+      "detail": "Verificación técnica posterior para registrar fallas, nunca reescritura artística del mismo intento. Después de entregar, observaciones técnicas factuales. Revisiones artísticas posteriores por usuario, nunca autocensurar un resultado deficiente.",
       "docRef": "FLOW_3D_MASTER.md#qa0",
       "gate": null
     },
@@ -1954,7 +1954,7 @@
       "stage": "persistence",
       "label": "Persistir resultado sin exagerar madurez",
       "type": "action",
-      "detail": "Persistir resultado sin exagerar madurez",
+      "detail": "Persistir resultado sin exagerar madurez Guardar escena, versión, fuente, artefactos y su STAGE_TRACE; la traza no puede sustituir la obra.",
       "docRef": "FLOW_3D_MASTER.md#g0",
       "gate": null
     },
@@ -2062,7 +2062,7 @@
       "stage": "publish",
       "label": "Evaluar madurez y derechos",
       "type": "action",
-      "detail": "Persistir la obra completa y publicar preview técnico aunque tenga defectos artísticos.",
+      "detail": "Persistir la obra completa y publicar preview técnico aunque tenga defectos artísticos. Publicar preview candidata aun con defectos; prevención de error de carga de navegador via WEB0, sin alegar render validado sin prueba.",
       "docRef": "FLOW_3D_MASTER.md#pub0",
       "gate": null
     },
@@ -2098,7 +2098,7 @@
       "stage": "publish",
       "label": "Registrar enlace, commit, QA y limitaciones",
       "type": "action",
-      "detail": "Guardar URL, fuente, artefactos y defectos para revisión externa.",
+      "detail": "Guardar URL, fuente, artefactos y defectos para revisión externa. La vista pública debe poder abrirse incluso en navegador modesto con diagnóstico preciso, enlaces a versión y evidencia del resultado; no suponer que GitHub commit equivale a cargar correctamente.",
       "docRef": "FLOW_3D_MASTER.md#pub3",
       "gate": null
     },
@@ -2523,7 +2523,7 @@
       "stage": "planning",
       "label": "Escribir aceptación positiva y contraejemplo engañoso",
       "type": "action",
-      "detail": "Escribir criterios positivos y contraejemplos de manera breve, sin detenerse a replanificar eternamente.",
+      "detail": "Escribir criterios positivos y contraejemplos de manera breve, sin detenerse a replanificar eternamente. Criterios positivos y contraejemplos son patrones internos del flujo: no se añadirá ninguna lista nueva al benchmark humano.",
       "docRef": "versions/1.2.0/PREVENTION_CONTRACT.md#pf1",
       "gate": null
     },
@@ -2532,7 +2532,7 @@
       "stage": "planning",
       "label": "Elegir origen y representación idónea",
       "type": "action",
-      "detail": "Comparar técnicas/recursos; si no hay asset ideal, construir lo mejor posible con medios legales.",
+      "detail": "Comparar técnicas/recursos; si no hay asset ideal, construir lo mejor posible con medios legales. Calidad first: comparar mallas reales y editables, UV y texturas, mecanismos paramétricos según rol. Un GLB por sí solo no garantiza rostros buenos; evaluar idoneidad en el plano previsto sin vetar obra.",
       "docRef": "versions/1.2.0/PREVENTION_CONTRACT.md#pf2",
       "gate": null
     },
@@ -2665,6 +2665,51 @@
         "continueEvenOnFail": true,
         "continueEvenIfNotRun": true
       }
+    },
+    {
+      "id": "BR0",
+      "stage": "scope",
+      "label": "Congelar brief humano literal",
+      "type": "action",
+      "detail": "Guardar el texto del usuario exactamente una vez, ID y SHA. Sin recomendaciones de técnica dentro del brief. Debe usarse byte-por-byte con v1.2, v1.3, v1.4... para comparar método; proponer cambios implica NUEVA benchmark, no editar texto viejo.",
+      "docRef": "versions/1.4.0/METHOD_CONTRACT.md#br0",
+      "gate": null
+    },
+    {
+      "id": "BR1",
+      "stage": "planning",
+      "label": "Compilar encargo a plan técnico internamente",
+      "type": "action",
+      "detail": "El agente interpreta el brief utilizando el flujo vigente, no un prompt optimizado de 3000 palabras. Descomponer escena, escena completa, cámara, acciones, opciones de assets, riesgo artístico, interactividad y tiempo. El plan compilado se registra pero no altera el brief.",
+      "docRef": "versions/1.4.0/METHOD_CONTRACT.md#br1",
+      "gate": null
+    },
+    {
+      "id": "QL0",
+      "stage": "planning",
+      "label": "Elegir patrones de calidad desde referencias exitosas",
+      "type": "action",
+      "detail": "Consultar biblioteca de capacidades: analizar por qué una escena fue buena en silueta, arte UV, luz, cámara, presencia, interfaz, sin copiar colores ni estética a proyectos ajenos. Reutilización real por API y pruebas de segundo consumidor, no simple afirmación.",
+      "docRef": "versions/1.4.0/METHOD_CONTRACT.md#ql0",
+      "gate": null
+    },
+    {
+      "id": "WEB0",
+      "stage": "assembly",
+      "label": "Arranque web portable antes de publicar",
+      "type": "action",
+      "detail": "Inspeccionar empaquetado web, entradas JS no sólo comprimidas, módulos ES directos, detección de WebGL y fallback honesto para dispositivos incompatibles. No abortar por incompatibilidad: producir contenido y dejar diagnóstico real.",
+      "docRef": "versions/1.4.0/METHOD_CONTRACT.md#web0",
+      "gate": null
+    },
+    {
+      "id": "TR0",
+      "stage": "persistence",
+      "label": "Guardar trazas de decisiones por etapa y lecciones",
+      "type": "action",
+      "detail": "Crear STAGE_TRACE.json junto a producto: cada una de 17 etapas con acción ejecutada, decisión, evidencia y aprendizaje, o N/A con motivo. Debe servir para mapear comentarios del usuario a etapa y mejorar solo el subflujo que corresponda en la siguiente tanda; documentación compacta.",
+      "docRef": "versions/1.4.0/METHOD_CONTRACT.md#tr0",
+      "gate": null
     }
   ],
   "edges": [
@@ -2676,7 +2721,7 @@
     },
     {
       "from": "I1",
-      "to": "I2",
+      "to": "BR0",
       "label": "",
       "kind": "main"
     },
@@ -2886,7 +2931,7 @@
     },
     {
       "from": "P0",
-      "to": "P1",
+      "to": "BR1",
       "label": "",
       "kind": "main"
     },
@@ -3546,7 +3591,7 @@
     },
     {
       "from": "S0",
-      "to": "S1",
+      "to": "WEB0",
       "label": "",
       "kind": "main"
     },
@@ -4248,7 +4293,7 @@
     },
     {
       "from": "G0",
-      "to": "G1",
+      "to": "TR0",
       "label": "",
       "kind": "main"
     },
@@ -4656,7 +4701,7 @@
     },
     {
       "from": "PF3",
-      "to": "D39",
+      "to": "QL0",
       "label": "",
       "kind": "normal"
     },
@@ -4749,6 +4794,36 @@
       "to": "FIX0",
       "label": "Sólo CALIBRAR de ronda FUTURA ordenada por usuario",
       "kind": "reference"
+    },
+    {
+      "from": "BR0",
+      "to": "I2",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "BR1",
+      "to": "P1",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "QL0",
+      "to": "D39",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "WEB0",
+      "to": "S1",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "TR0",
+      "to": "G1",
+      "label": "",
+      "kind": "main"
     }
   ],
   "knownIssues": [
@@ -4877,6 +4952,64 @@
       ],
       "status": "OBSERVED_WAVE001",
       "rootCause": "1.2 falsely treated negative aesthetic judgment/missing GPU as permission to stop working instead of delivering the full original commission."
+    },
+    {
+      "id": "STATION-MOBILE-001",
+      "title": "Estación preview reports cannot run in user browser",
+      "nodes": [
+        "WEB0",
+        "PUB0",
+        "PUB3"
+      ],
+      "status": "USER_REPORTED_CAUSE_UNVERIFIED",
+      "rootCause": "Potential sole gzip DecompressionStream + Blob module chain and/or WebGL2 context failure; HTML collapses all errors into one WebGL message. No physical trace yet."
+    },
+    {
+      "id": "ARCADE-TRANSFER-001",
+      "title": "Arcade was best visual reference but only one machine",
+      "nodes": [
+        "QL0",
+        "O1",
+        "S0",
+        "G0"
+      ],
+      "status": "USER_REVIEW_PLUS_CODE_INSPECTED",
+      "rootCause": "Strong contoured UV-designed cabinet, physically integrated interactive CRT and deliberate light; absence of whole room due prior first-article limit."
+    },
+    {
+      "id": "CROSS-TRANSFER-001",
+      "title": "Cruce with appealing character, scene data and informational overlay but restricted viewpoint",
+      "nodes": [
+        "QL0",
+        "H1",
+        "C1",
+        "WEB0"
+      ],
+      "status": "USER_REVIEW_PLUS_CODE_INSPECTED",
+      "rootCause": "Real Cesium textured GLBs and driven timeline helped presence; cameraPose cinematic and no user-controlled orbital look."
+    },
+    {
+      "id": "INTERVIEW-CLOSEUP-001",
+      "title": "Interview looks artificial or still and did not reproduce full dialog",
+      "nodes": [
+        "H1",
+        "H2",
+        "C1",
+        "S0"
+      ],
+      "status": "USER_REVIEW",
+      "rootCause": "GLB asset present but role/closeup suitability and expressive performance did not meet user impression. Need richer facial technique, not claim source is primitive faces without verified inspection."
+    },
+    {
+      "id": "SUBMARINE-DEPTH-001",
+      "title": "Underwater backdrop reads flat 2D",
+      "nodes": [
+        "QL0",
+        "F1",
+        "S0"
+      ],
+      "status": "USER_REVIEW_PLUS_CODE_INSPECTED",
+      "rootCause": "Gradient/fog shaders produce visual atmosphere but lack clear layered parallax and real 3D spatial cues when viewed from current camera."
     }
   ],
   "historyPolicy": {
@@ -4894,9 +5027,9 @@
   },
   "evidence": "diagnosis only; source visual failures from user screenshots; no new scene fix",
   "revision": {
-    "previous": "1.2.0",
-    "changes": "Remove first-article stop, no self-rejection, nonblocking diagnostics, complete one-pass production, publish honest technical candidates",
-    "riskPolicy": "NO_EARLY_ABORT_NO_CANARY_AS_DELIVERY",
+    "previous": "1.3.0",
+    "changes": "5 explicit nodes for immutable human brief, compiler, quality reference selection, web portability, and per-stage evidence log; shared quality learnings from Arcade/Crossing/Elevator; no content reduction",
+    "riskPolicy": "KEEP_PROMPT_FIXED_IMPROVE_FLOW",
     "gateIds": [
       "source-and-license",
       "geometry-clearance",
@@ -5029,6 +5162,17 @@
         "D41"
       ],
       "policy": "evidencia, versiones y errores generales"
+    },
+    {
+      "id": "web-runtime-portability",
+      "owner": "web-publish",
+      "start": "WEB0",
+      "stages": [
+        "assembly",
+        "publish"
+      ],
+      "earlyGates": [],
+      "policy": "Progressive enhancement with direct JS modules, no gzip-only/Blob-only boot, explicit errors and honest fallback; user can still inspect result"
     }
   ],
   "qualityArchitecture": {
@@ -5051,5 +5195,85 @@
     "safety": "Licensing/privacy/security real blockers still apply; preserve full original source privately if publication impossible.",
     "progress": "Best effort full production, not empty loops or false claims of background work."
   },
-  "sha256Canonical": "66dc6c74ea3b734369347e797c5ca3ede41f280d0a6c1a7d6abc372b42b51223"
+  "stageInstrumentation": {
+    "schema": "prometeo.3d.stage-trace/v1",
+    "stages": [
+      "scope",
+      "recovery",
+      "planning",
+      "acquisition",
+      "classification",
+      "humanoid",
+      "props",
+      "environment",
+      "fx",
+      "assembly",
+      "orientation",
+      "acting",
+      "cinema",
+      "qa",
+      "repair",
+      "persistence",
+      "publish"
+    ],
+    "capture": "at stage exit or at most once when reporting, factual actions/decisions/evidence/conclusions; SKIPPED requires reason",
+    "path": "STAGE_TRACE.json",
+    "validator": "versions/1.4.0/validate-trace.mjs",
+    "maxWordsPerStage": 45,
+    "nonBlocking": true,
+    "doNotSynthesizeAchievements": true,
+    "analysisUse": "Link each user-reported issue to stage/subflow; aggregate across scenes and adjust flow next version, never changes benchmark brief."
+  },
+  "humanBriefPolicy": {
+    "immutable": true,
+    "unit": "verbatim user natural-language brief",
+    "idRule": "SHA256 of exact UTF-8 brief content",
+    "savedWithWork": "BRIEF.md + BRIEF_LOCK.json",
+    "whatFlowCompiles": "Creative/technical instruction including shot plan, resources and UI; not part of human brief",
+    "benchmarkChanges": "only user-approved new revision, never retroactively edit old brief",
+    "singleBriefMultipleFlows": true,
+    "referenceFile": "versions/1.4.0/BENCHMARK_BRIEFS.v1.json"
+  },
+  "qualityTransfer": {
+    "principle": "Quality is multi-attribute, not copying a reference's aesthetic",
+    "referenceFile": "versions/1.4.0/QUALITY_TRANSFER.json",
+    "sources": [
+      "GOOD_USER_REVIEW",
+      "SOURCE_INSPECTED",
+      "UNVERIFIED_VISUAL"
+    ],
+    "principles": [
+      "hero silhouette",
+      "purposeful material atlas",
+      "light/fog/tone mapping",
+      "expressive framing",
+      "world-integrated screens",
+      "tactile inputs",
+      "asset rig suitability",
+      "scene density with variations",
+      "2D/3D parallax honest representation"
+    ],
+    "perSceneRecipe": true,
+    "secondConsumerRequiredForReusablePromotion": true
+  },
+  "browserPortability": {
+    "policy": "No one fragile boot path / no gzip-only JS loader when avoidable / do not emit generic WebGL error for decompression failure",
+    "sourceCheck": "versions/1.4.0/browser-check.mjs",
+    "userReportIssue": "STATION-MOBILE-001",
+    "runtimeRequirements": [
+      "feature detection for WebGL1/2",
+      "specific module-fetch-decompress-WebGL error classes",
+      "context-loss recovery or clear diagnostic",
+      "static resource availability",
+      "honest 2D or still frame when compatible, not pretend 3D",
+      "never stop full artwork because a target browser cannot run"
+    ]
+  },
+  "waveLearn": {
+    "input": "STAGE_TRACE.json + user review + brief hash + flow hash + source code + actual preview",
+    "categorize": "ART_DIRECTION|SCOPE|RUNTIME|CAMERA|ACTOR|ENVIRONMENT|TECHNICAL|ASSET|INTERACTION",
+    "frequency": "Aggregate across ten projects after user reviews; do not change frozen flow mid-wave",
+    "reasonForChange": "Record exact stage, old policy, failure, new general rule, expected transfer result"
+  },
+  "sha256Canonical": "267130c29bacef26ed2e41ba855b5f20166300a73d8cffef82d36b051f44ca7d"
 }

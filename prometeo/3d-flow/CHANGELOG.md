@@ -1,17 +1,21 @@
-# Historia del flujo 3D
+# Changelog del flujo de producción 3D
 
-## 1.3.0 · 2026-11-20 · CURRENT_CANDIDATE
-- Calibración de la ronda 001: se **prohíbe el veto artístico, la cancelación por D40/D41 y las entregas canario como sustituto del encargo completo**.
-- Primera pasada completa, máxima capacidad y publicación candidata honesta; el usuario evalúa resultados imperfectos.
-- Preflight y QA preservan diagnóstico, no son puertas de permiso para construir.
-- FIX0 sólo se considera en rondas futuras autorizadas; no repetir la producción después de rendirla.
-- Flujo versionado e inmutable con 17 etapas y 257 nodos.
+## 1.4.0 · 2026-11-20 · CURRENT_CANDIDATE
+- BR0: conservar brief humano literal, fijo entre versiones; BR1: la IA genera la planificación desde el flujo.
+- QL0: catalogar patrones estéticos/implementativos de Arcade (favorito), Cruce (favorito), Ascensor (bueno), Ventilador (mecánica) y críticos de Entrevista y Submarino.
+- WEB0: detectar empaquetado web frágil, ruta única gzip/Blob y errores mezclados como «WebGL», registrar compatibilidad y fallback honesto.
+- TR0: traza factual compacta de cada una de las 17 etapas para identificar dónde se originan errores y sintetizar patrones entre proyectos.
+- 262 nodos, 352 conexiones, 17 etapas, 9 subflujos. Producción completa y no cancelación heredadas de 1.3.
+- Los diez briefs propuestos son CANDIDATOS, no falsos «prompts originales» de Ola 001.
+
+## 1.3.0 · 2026-11-20 · IMMUTABLE
+- Producción completa sin veto artístico o canario como producto.
 
 ## 1.2.0 · 2026-11-20 · IMMUTABLE
-- Primera prevención con D39–D42, pero erróneamente detuvo/limitó proyectos ante fallos. 257 nodos y 347 conexiones.
+- Prevención inicial pero con error de detención por primer artículo.
 
 ## 1.1.0 · 2026-11-19 · IMMUTABLE
-- 10 gates D29–D38, 244 nodos, 328 conexiones.
+- Diez gates de QA final.
 
 ## 1.0.0 · 2026-11-19 · IMMUTABLE
-- Primer flujo: 224 nodos, 288 enlaces.
+- Primera versión del flujo universal.

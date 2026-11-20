@@ -1,3 +1,14 @@
+# PROMETEO 3D · FLUJO VIGENTE 1.4.0
+
+**No optimizar prompts por proyecto; congelar BRIEF.md y usarlo idéntico entre versiones del método.** La IA compila planes técnicos desde el flujo. Se produce la escena completa con el mejor esfuerzo y se muestra el resultado, incluso defectuoso; la crítica humana alimenta una versión posterior del método.
+
+[Contrato 1.4.0](versions/1.4.0/METHOD_CONTRACT.md) · [Flujo 1.4.0](versions/1.4.0/flow.json) · [Referencia de calidad](versions/1.4.0/QUALITY_TRANSFER.json) · [Trazas](versions/1.4.0/STAGE_TRACE.schema.json)
+
+BR0, BR1, QL0, WEB0 y TR0 son nodos nuevos para brief inmutable, compilación técnica, selección de patrones de calidad, robustez web y registro por etapa. 262 nodos/352 enlaces, 17 etapas y 9 subflujos.
+
+---
+# HISTÓRICO, NO POLÍTICA VIGENTE
+
 # Flujo actual 3D 1.3.0 · SE PRODUCE TODO EL ENCARGO
 
 **Leer antes de producir:** [contrato de entrega íntegra](versions/1.3.0/PRODUCTION_CONTRACT.md).

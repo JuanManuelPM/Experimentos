@@ -152,6 +152,37 @@
           "pattern": "^[a-f0-9]{40}$"
         }
       }
+    },
+    "briefLock": {
+      "type": "object",
+      "required": [
+        "briefId",
+        "sha256"
+      ],
+      "properties": {
+        "briefId": {
+          "type": "string"
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      }
+    },
+    "stageTrace": {
+      "type": "object",
+      "required": [
+        "path"
+      ],
+      "properties": {
+        "path": {
+          "type": "string"
+        },
+        "gitBlob": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        }
+      }
     }
   },
   "additionalProperties": true,
@@ -179,5 +210,6 @@
         ]
       }
     }
-  ]
+  ],
+  "description": "Flow 1.4 recommends briefLock and stageTrace as comparison evidence. Missing trace never authorizes artistic cancellation; retain honest preview."
 }

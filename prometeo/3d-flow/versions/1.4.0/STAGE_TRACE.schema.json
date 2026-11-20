@@ -1,0 +1,183 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "PROMETEO 3D · One compact factual account per flow stage",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "projectId",
+    "version",
+    "flow",
+    "briefLock",
+    "stages",
+    "product"
+  ],
+  "properties": {
+    "schema": {
+      "const": "prometeo.3d.stage-trace/v1"
+    },
+    "projectId": {
+      "type": "string",
+      "minLength": 3
+    },
+    "version": {
+      "type": "string",
+      "minLength": 2
+    },
+    "flow": {
+      "type": "object",
+      "required": [
+        "version",
+        "sha256Canonical"
+      ],
+      "properties": {
+        "version": {
+          "const": "1.4.0"
+        },
+        "sha256Canonical": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      }
+    },
+    "briefLock": {
+      "type": "object",
+      "required": [
+        "briefId",
+        "rawText",
+        "sha256"
+      ],
+      "properties": {
+        "briefId": {
+          "type": "string"
+        },
+        "rawText": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "origin": {
+          "type": "string"
+        }
+      }
+    },
+    "product": {
+      "type": "object",
+      "required": [
+        "sourceRef",
+        "scopeDelivered",
+        "previewStatus"
+      ],
+      "properties": {
+        "sourceRef": {
+          "type": "string"
+        },
+        "scopeDelivered": {
+          "type": "string"
+        },
+        "previewStatus": {
+          "enum": [
+            "PUBLIC_PREVIEW",
+            "SOURCE_ONLY_TECHNICAL_BLOCKER",
+            "NOT_PUBLISHED_WITH_REASON"
+          ]
+        },
+        "previewUrl": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "stages": {
+      "type": "array",
+      "minItems": 17,
+      "maxItems": 17,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "stage",
+          "status",
+          "action",
+          "decision",
+          "conclusion",
+          "evidenceLevel",
+          "evidenceRefs"
+        ],
+        "properties": {
+          "stage": {
+            "enum": [
+              "scope",
+              "recovery",
+              "planning",
+              "acquisition",
+              "classification",
+              "humanoid",
+              "props",
+              "environment",
+              "fx",
+              "assembly",
+              "orientation",
+              "acting",
+              "cinema",
+              "qa",
+              "repair",
+              "persistence",
+              "publish"
+            ]
+          },
+          "status": {
+            "enum": [
+              "EXECUTED",
+              "SKIPPED",
+              "NOT_RUN"
+            ]
+          },
+          "action": {
+            "type": "string"
+          },
+          "decision": {
+            "type": "string"
+          },
+          "conclusion": {
+            "type": "string"
+          },
+          "evidenceLevel": {
+            "enum": [
+              "SOURCE_READ",
+              "CODE_TEST",
+              "GPU_RENDER",
+              "MOBILE_REAL",
+              "USER_REVIEW",
+              "INFERENCE",
+              "NONE"
+            ]
+          },
+          "evidenceRefs": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "reusedCapabilities": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "issues": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  }
+}

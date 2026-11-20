@@ -2,7 +2,7 @@ import {readFileSync} from 'node:fs';
 import {fileURLToPath} from 'node:url';
 
 export function validateReceipt(receipt,flow){
- const errors=[];
+ const errors=[],warnings=[];
  const qaGates=flow.nodes.filter(n=>n.stage==='qa'&&n.type==='decision'&&n.gate&&/^D(29|3[0-8])$/.test(n.id));
  const earlyIds=['D39','D40','D41'],isPrevention=flow.version==='1.2.0';
  if(receipt?.schema!=='prometeo.3d.flow-run/v1')errors.push('SCHEMA');
@@ -49,7 +49,11 @@ export function validateReceipt(receipt,flow){
   if(!/^https:\/\//.test(receipt.url||''))errors.push('PUBLIC_URL_REQUIRED');
   if(receipt.publicHTTPVerified!==true)errors.push('PUBLIC_HTTP_NOT_VERIFIED');
  }
- return{ok:errors.length===0,errors,requiredGateIds:qaGates.map(x=>x.id),earlyGateIds:isPrevention?earlyIds:[]};
+ if(flow.version==='1.4.0'){
+  if(!receipt?.briefLock?.briefId||!receipt?.briefLock?.sha256)warnings.push('BRIEF_LOCK_MISSING__COMPARE_WITH_CAUTION');
+  if(!receipt?.stageTrace?.path)warnings.push('STAGE_TRACE_MISSING__LEARNING_INCOMPLETE');
+ }
+ return{ok:errors.length===0,errors,warnings,mustContinueProduction:true,requiredGateIds:qaGates.map(x=>x.id),earlyGateIds:isPrevention?earlyIds:[]};
 }
 if(process.argv[1]===fileURLToPath(import.meta.url)&&process.argv[2]){
  const r=JSON.parse(readFileSync(process.argv[2],'utf8'));
