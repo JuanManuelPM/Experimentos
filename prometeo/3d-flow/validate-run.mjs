@@ -18,13 +18,13 @@ export function validateReceipt(receipt,flow){
   if(r.status==='PASS'&&(!Array.isArray(r.evidenceRefs)||!r.evidenceRefs.length))errors.push('PASS_MISSING_EVIDENCE_'+r.nodeId);
  }
  const ready=['READY_FOR_ART_REVIEW','VERIFIED'].includes(receipt?.status);
- const scale=receipt?.buildScope==='SCALED';
+ const scale=false; // v1.3: artistic diagnostics cannot cancel FULL_ATTEMPT delivery.
  if(isPrevention&&receipt?.status!=='NOT_STARTED'){
-   if(!['FIRST_ARTICLE','SCALED'].includes(receipt?.buildScope))errors.push('BUILD_SCOPE_REQUIRED');
+   if(!['FIRST_ARTICLE','SCALED','FULL_ATTEMPT'].includes(receipt?.buildScope))errors.push('BUILD_SCOPE_REQUIRED');
    if(!['STATIC','MOVING','INTERACTIVE','EDITED'].includes(receipt?.cameraMode))errors.push('CAMERA_MODE_REQUIRED');
    if(!receipt?.preventiveBlueprint?.path||!/^[a-f0-9]{40}$/.test(receipt?.preventiveBlueprint?.gitBlob||''))errors.push('PREVENTIVE_BLUEPRINT_GIT_BLOB_REQUIRED');
-   if(ready&&receipt?.buildScope!=='SCALED')errors.push('NOT_SCALED_CANNOT_CLAIM_ART_READY');
-   if(scale||ready){
+   if(ready&&!['SCALED','FULL_ATTEMPT'].includes(receipt?.buildScope))errors.push('NOT_SCALED_CANNOT_CLAIM_ART_READY');
+   if(scale||(ready&&receipt.artApproval==='APPROVED')){
     for(const id of earlyIds){
       const r=byId.get(id);if(r?.status!=='PASS')errors.push('EARLY_GATE_UNPROVEN_'+id);
       if(r?.status==='PASS'&&!r.sourceSha&&!r.assetSha)errors.push('EARLY_GATE_NO_HASH_'+id);

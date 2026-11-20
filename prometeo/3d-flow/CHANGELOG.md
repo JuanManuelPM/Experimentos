@@ -1,16 +1,17 @@
-# Historia de versiones del flujo 3D
+# Historia del flujo 3D
 
-## 1.2.0 · 2026-11-20 · CURRENT_CANDIDATE
-- 13 nodos preventivos de producción `PF*, PP*, CAM0, D39-D42`.
-- Test-first en representación y selección de recursos: evitar la interpretación literal mediocre.
-- Un primer artículo visible antes de replicar humanos, mobiliario u objetos hero.
-- Cámara MOVING con continuidad temporal, velocidades y pausas intencionales.
-- Mecanismos paramétricos permitidos con contrato de encaje, sin prohibir geometría útil.
-- Subflujos con dueño, versión de obra/flujo/capacidad separadas.
-- Diez gates de QA final y 17 etapas heredadas intactos.
+## 1.3.0 · 2026-11-20 · CURRENT_CANDIDATE
+- Calibración de la ronda 001: se **prohíbe el veto artístico, la cancelación por D40/D41 y las entregas canario como sustituto del encargo completo**.
+- Primera pasada completa, máxima capacidad y publicación candidata honesta; el usuario evalúa resultados imperfectos.
+- Preflight y QA preservan diagnóstico, no son puertas de permiso para construir.
+- FIX0 sólo se considera en rondas futuras autorizadas; no repetir la producción después de rendirla.
+- Flujo versionado e inmutable con 17 etapas y 257 nodos.
+
+## 1.2.0 · 2026-11-20 · IMMUTABLE
+- Primera prevención con D39–D42, pero erróneamente detuvo/limitó proyectos ante fallos. 257 nodos y 347 conexiones.
 
 ## 1.1.0 · 2026-11-19 · IMMUTABLE
-- Diez gates D29-D38. 244 nodos / 328 conexiones. FAIL/NOT_RUN distintos de PASS.
+- 10 gates D29–D38, 244 nodos, 328 conexiones.
 
 ## 1.0.0 · 2026-11-19 · IMMUTABLE
-- Primer flujo maestro: 17 etapas, 224 nodos, 288 conexiones, orientación y cerramiento.
+- Primer flujo: 224 nodos, 288 enlaces.

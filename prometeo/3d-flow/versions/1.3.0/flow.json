@@ -1,0 +1,5055 @@
+{
+  "schema": "prometeo.3d.production-flow/v1",
+  "id": "prometeo-3d-production",
+  "version": "1.3.0",
+  "publishedAt": "2026-11-20",
+  "status": "CURRENT_CANDIDATE",
+  "scope": "studio-3d",
+  "title": "Flujo maestro 3D · Obra íntegra y calibración humana posterior",
+  "description": "La IA produce el encargo completo en su primer intento. El preflight orienta, jamás cancela, recorta a canario o bloquea por gusto artístico o falta de GPU. El usuario observa el resultado y mejora el flujo entre rondas.",
+  "sourceOfTruth": "FLOW_INDEX.json + versions/1.3.0/{flow.json,preflight.mjs,PRODUCTION_CONTRACT.md}",
+  "stages": [
+    {
+      "id": "scope",
+      "number": "01",
+      "title": "Objetivo y encargo",
+      "description": "Definir qué se va a producir, para quién y bajo qué restricciones."
+    },
+    {
+      "id": "recovery",
+      "number": "02",
+      "title": "Recuperación y fuentes",
+      "description": "Conservar trabajo versionado, identificar propietarios y evitar duplicaciones."
+    },
+    {
+      "id": "planning",
+      "number": "03",
+      "title": "Producción y dependencias",
+      "description": "Planear frentes, costos, riesgo, bloqueos y puertas de calidad."
+    },
+    {
+      "id": "acquisition",
+      "number": "04",
+      "title": "Adquisición de recursos",
+      "description": "Buscar o generar piezas reales con derechos y pruebas."
+    },
+    {
+      "id": "classification",
+      "number": "05",
+      "title": "Clasificar piezas",
+      "description": "Elegir el contrato correcto para cada tipo de asset."
+    },
+    {
+      "id": "humanoid",
+      "number": "06",
+      "title": "Personajes y rigs",
+      "description": "Calibrar cuerpo, cara, esqueleto, frente nativo y clips."
+    },
+    {
+      "id": "props",
+      "number": "07",
+      "title": "Objetos y muebles",
+      "description": "Registrar frente funcional, anclajes y relaciones entre objetos."
+    },
+    {
+      "id": "environment",
+      "number": "08",
+      "title": "Arquitectura y cerramiento",
+      "description": "Volúmenes, techo, aberturas, navegación y cámara de edición."
+    },
+    {
+      "id": "fx",
+      "number": "09",
+      "title": "Materiales, luz y FX",
+      "description": "Controlar textura, atmósfera, visibilidad y rendimiento."
+    },
+    {
+      "id": "assembly",
+      "number": "10",
+      "title": "Montaje de escena",
+      "description": "Posición, escala, pivote, relaciones y conservación del proyecto."
+    },
+    {
+      "id": "orientation",
+      "number": "11",
+      "title": "Orientación semántica",
+      "description": "No confundir ubicación con facing funcional o de locomoción."
+    },
+    {
+      "id": "acting",
+      "number": "12",
+      "title": "Locomoción e interacción",
+      "description": "Acción real, root motion, pies y contacto con props."
+    },
+    {
+      "id": "cinema",
+      "number": "13",
+      "title": "Cine y cámaras",
+      "description": "Planos verificables, cortes, timeline y objetivos de mirada."
+    },
+    {
+      "id": "qa",
+      "number": "14",
+      "title": "Verificación integral",
+      "description": "PASS, FAIL y NOT_RUN específicos, prueba visual independiente."
+    },
+    {
+      "id": "repair",
+      "number": "15",
+      "title": "CALIBRAR y corrección",
+      "description": "Encontrar la causa, corregirla y volver a probar el gate."
+    },
+    {
+      "id": "persistence",
+      "number": "16",
+      "title": "Persistencia y versiones",
+      "description": "Guardar scene lock, evidencias, perfiles, reglas y uso del flujo."
+    },
+    {
+      "id": "publish",
+      "number": "17",
+      "title": "Publicar y aprender",
+      "description": "Promover únicamente lo demostrado y vincular la obra al flujo."
+    }
+  ],
+  "nodes": [
+    {
+      "id": "I0",
+      "stage": "scope",
+      "label": "INICIO · nuevo pedido 3D",
+      "type": "action",
+      "detail": "INICIO · nuevo pedido 3D",
+      "docRef": "FLOW_3D_MASTER.md#i0",
+      "gate": null
+    },
+    {
+      "id": "I1",
+      "stage": "scope",
+      "label": "Interpretar objetivo y resultado observable",
+      "type": "action",
+      "detail": "Interpretar objetivo y resultado observable",
+      "docRef": "FLOW_3D_MASTER.md#i1",
+      "gate": null
+    },
+    {
+      "id": "I2",
+      "stage": "scope",
+      "label": "Definir destinatario, plataforma y restricciones",
+      "type": "action",
+      "detail": "Definir destinatario, plataforma y restricciones",
+      "docRef": "FLOW_3D_MASTER.md#i2",
+      "gate": null
+    },
+    {
+      "id": "D0",
+      "stage": "scope",
+      "label": "¿Qué especialidad principal requiere?",
+      "type": "decision",
+      "detail": "¿Qué especialidad principal requiere?",
+      "docRef": "FLOW_3D_MASTER.md#d0",
+      "gate": null
+    },
+    {
+      "id": "T1",
+      "stage": "scope",
+      "label": "Escena / set",
+      "type": "action",
+      "detail": "Escena / set",
+      "docRef": "FLOW_3D_MASTER.md#t1",
+      "gate": null
+    },
+    {
+      "id": "T2",
+      "stage": "scope",
+      "label": "Personaje / vestuario",
+      "type": "action",
+      "detail": "Personaje / vestuario",
+      "docRef": "FLOW_3D_MASTER.md#t2",
+      "gate": null
+    },
+    {
+      "id": "T3",
+      "stage": "scope",
+      "label": "Animación / actuación",
+      "type": "action",
+      "detail": "Animación / actuación",
+      "docRef": "FLOW_3D_MASTER.md#t3",
+      "gate": null
+    },
+    {
+      "id": "T4",
+      "stage": "scope",
+      "label": "Cámara / montaje",
+      "type": "action",
+      "detail": "Cámara / montaje",
+      "docRef": "FLOW_3D_MASTER.md#t4",
+      "gate": null
+    },
+    {
+      "id": "T5",
+      "stage": "scope",
+      "label": "Material / UV",
+      "type": "action",
+      "detail": "Material / UV",
+      "docRef": "FLOW_3D_MASTER.md#t5",
+      "gate": null
+    },
+    {
+      "id": "T6",
+      "stage": "scope",
+      "label": "Luz / FX",
+      "type": "action",
+      "detail": "Luz / FX",
+      "docRef": "FLOW_3D_MASTER.md#t6",
+      "gate": null
+    },
+    {
+      "id": "T7",
+      "stage": "scope",
+      "label": "Integración / FORJA",
+      "type": "action",
+      "detail": "Integración / FORJA",
+      "docRef": "FLOW_3D_MASTER.md#t7",
+      "gate": null
+    },
+    {
+      "id": "I3",
+      "stage": "scope",
+      "label": "Definir qué NO se va a modificar",
+      "type": "action",
+      "detail": "Definir qué NO se va a modificar",
+      "docRef": "FLOW_3D_MASTER.md#i3",
+      "gate": null
+    },
+    {
+      "id": "I4",
+      "stage": "scope",
+      "label": "Distinguir arte aprobado, canario y documentación",
+      "type": "action",
+      "detail": "Distinguir arte aprobado, canario y documentación",
+      "docRef": "FLOW_3D_MASTER.md#i4",
+      "gate": null
+    },
+    {
+      "id": "R0",
+      "stage": "recovery",
+      "label": "Recuperar PROMETEO y espacio dueño",
+      "type": "action",
+      "detail": "Recuperar PROMETEO y espacio dueño",
+      "docRef": "FLOW_3D_MASTER.md#r0",
+      "gate": null
+    },
+    {
+      "id": "R1",
+      "stage": "recovery",
+      "label": "Leer bootstrap, handoff y control instalado",
+      "type": "action",
+      "detail": "Leer bootstrap, handoff y control instalado",
+      "docRef": "FLOW_3D_MASTER.md#r1",
+      "gate": null
+    },
+    {
+      "id": "R2",
+      "stage": "recovery",
+      "label": "Consultar ramas, HEAD y últimas evidencias",
+      "type": "action",
+      "detail": "Consultar ramas, HEAD y últimas evidencias",
+      "docRef": "FLOW_3D_MASTER.md#r2",
+      "gate": null
+    },
+    {
+      "id": "R3",
+      "stage": "recovery",
+      "label": "Inspeccionar Atlas, FORJA y catálogo shared",
+      "type": "action",
+      "detail": "Inspeccionar Atlas, FORJA y catálogo shared",
+      "docRef": "FLOW_3D_MASTER.md#r3",
+      "gate": null
+    },
+    {
+      "id": "D1",
+      "stage": "recovery",
+      "label": "¿Existe capacidad reutilizable?",
+      "type": "decision",
+      "detail": "¿Existe capacidad reutilizable?",
+      "docRef": "FLOW_3D_MASTER.md#d1",
+      "gate": null
+    },
+    {
+      "id": "R4",
+      "stage": "recovery",
+      "label": "Reutilizar capacidad verificada",
+      "type": "action",
+      "detail": "Reutilizar capacidad verificada",
+      "docRef": "FLOW_3D_MASTER.md#r4",
+      "gate": null
+    },
+    {
+      "id": "R5",
+      "stage": "recovery",
+      "label": "Aprovechar base parcial y documentar faltantes",
+      "type": "action",
+      "detail": "Aprovechar base parcial y documentar faltantes",
+      "docRef": "FLOW_3D_MASTER.md#r5",
+      "gate": null
+    },
+    {
+      "id": "R6",
+      "stage": "recovery",
+      "label": "Investigar necesidad ausente",
+      "type": "action",
+      "detail": "Investigar necesidad ausente",
+      "docRef": "FLOW_3D_MASTER.md#r6",
+      "gate": null
+    },
+    {
+      "id": "R7",
+      "stage": "recovery",
+      "label": "Fijar licencia, owner, versión y SHA",
+      "type": "action",
+      "detail": "Fijar licencia, owner, versión y SHA",
+      "docRef": "FLOW_3D_MASTER.md#r7",
+      "gate": null
+    },
+    {
+      "id": "R8",
+      "stage": "recovery",
+      "label": "Investigar fuentes oficiales y pruebas reales",
+      "type": "action",
+      "detail": "Investigar fuentes oficiales y pruebas reales",
+      "docRef": "FLOW_3D_MASTER.md#r8",
+      "gate": null
+    },
+    {
+      "id": "R9",
+      "stage": "recovery",
+      "label": "Comparar al menos dos alternativas",
+      "type": "action",
+      "detail": "Comparar al menos dos alternativas",
+      "docRef": "FLOW_3D_MASTER.md#r9",
+      "gate": null
+    },
+    {
+      "id": "D2",
+      "stage": "recovery",
+      "label": "¿Hay método más sólido disponible?",
+      "type": "decision",
+      "detail": "¿Hay método más sólido disponible?",
+      "docRef": "FLOW_3D_MASTER.md#d2",
+      "gate": null
+    },
+    {
+      "id": "R10",
+      "stage": "recovery",
+      "label": "Adoptar asset / motor adecuado",
+      "type": "action",
+      "detail": "Adoptar asset / motor adecuado",
+      "docRef": "FLOW_3D_MASTER.md#r10",
+      "gate": null
+    },
+    {
+      "id": "R11",
+      "stage": "recovery",
+      "label": "Diseñar solución nueva justificada",
+      "type": "action",
+      "detail": "Diseñar solución nueva justificada",
+      "docRef": "FLOW_3D_MASTER.md#r11",
+      "gate": null
+    },
+    {
+      "id": "P0",
+      "stage": "planning",
+      "label": "Definir plan y gates por evidencia",
+      "type": "action",
+      "detail": "Definir plan y gates por evidencia",
+      "docRef": "FLOW_3D_MASTER.md#p0",
+      "gate": null
+    },
+    {
+      "id": "P1",
+      "stage": "planning",
+      "label": "Descomponer en frentes",
+      "type": "action",
+      "detail": "Descomponer en frentes",
+      "docRef": "FLOW_3D_MASTER.md#p1",
+      "gate": null
+    },
+    {
+      "id": "P2",
+      "stage": "planning",
+      "label": "Frente escena",
+      "type": "action",
+      "detail": "Frente escena",
+      "docRef": "FLOW_3D_MASTER.md#p2",
+      "gate": null
+    },
+    {
+      "id": "P3",
+      "stage": "planning",
+      "label": "Frente actor",
+      "type": "action",
+      "detail": "Frente actor",
+      "docRef": "FLOW_3D_MASTER.md#p3",
+      "gate": null
+    },
+    {
+      "id": "P4",
+      "stage": "planning",
+      "label": "Frente movimiento",
+      "type": "action",
+      "detail": "Frente movimiento",
+      "docRef": "FLOW_3D_MASTER.md#p4",
+      "gate": null
+    },
+    {
+      "id": "P5",
+      "stage": "planning",
+      "label": "Frente cine",
+      "type": "action",
+      "detail": "Frente cine",
+      "docRef": "FLOW_3D_MASTER.md#p5",
+      "gate": null
+    },
+    {
+      "id": "P6",
+      "stage": "planning",
+      "label": "Frente materiales",
+      "type": "action",
+      "detail": "Frente materiales",
+      "docRef": "FLOW_3D_MASTER.md#p6",
+      "gate": null
+    },
+    {
+      "id": "P7",
+      "stage": "planning",
+      "label": "Frente FX",
+      "type": "action",
+      "detail": "Frente FX",
+      "docRef": "FLOW_3D_MASTER.md#p7",
+      "gate": null
+    },
+    {
+      "id": "P8",
+      "stage": "planning",
+      "label": "Frente QA y publicación",
+      "type": "action",
+      "detail": "Frente QA y publicación",
+      "docRef": "FLOW_3D_MASTER.md#p8",
+      "gate": null
+    },
+    {
+      "id": "D3",
+      "stage": "planning",
+      "label": "¿Dependencias permiten paralelismo?",
+      "type": "decision",
+      "detail": "¿Dependencias permiten paralelismo?",
+      "docRef": "FLOW_3D_MASTER.md#d3",
+      "gate": null
+    },
+    {
+      "id": "W0",
+      "stage": "planning",
+      "label": "Separar owners y contratos sin pisar fuentes",
+      "type": "action",
+      "detail": "Separar owners y contratos sin pisar fuentes",
+      "docRef": "FLOW_3D_MASTER.md#w0",
+      "gate": null
+    },
+    {
+      "id": "W1",
+      "stage": "planning",
+      "label": "Encadenar trabajos en el mismo chat",
+      "type": "action",
+      "detail": "Encadenar trabajos en el mismo chat",
+      "docRef": "FLOW_3D_MASTER.md#w1",
+      "gate": null
+    },
+    {
+      "id": "P9",
+      "stage": "planning",
+      "label": "Registrar entradas, salidas y rollback",
+      "type": "action",
+      "detail": "Registrar entradas, salidas y rollback",
+      "docRef": "FLOW_3D_MASTER.md#p9",
+      "gate": null
+    },
+    {
+      "id": "A0",
+      "stage": "acquisition",
+      "label": "Identificar recursos existentes necesarios",
+      "type": "action",
+      "detail": "Identificar recursos existentes necesarios",
+      "docRef": "FLOW_3D_MASTER.md#a0",
+      "gate": null
+    },
+    {
+      "id": "A1",
+      "stage": "acquisition",
+      "label": "Armar manifiesto mínimo",
+      "type": "action",
+      "detail": "Armar manifiesto mínimo",
+      "docRef": "FLOW_3D_MASTER.md#a1",
+      "gate": null
+    },
+    {
+      "id": "D4",
+      "stage": "acquisition",
+      "label": "¿Qué tipo de recurso falta?",
+      "type": "decision",
+      "detail": "¿Qué tipo de recurso falta?",
+      "docRef": "FLOW_3D_MASTER.md#d4",
+      "gate": null
+    },
+    {
+      "id": "A2",
+      "stage": "acquisition",
+      "label": "Modelos / geometría",
+      "type": "action",
+      "detail": "Modelos / geometría",
+      "docRef": "FLOW_3D_MASTER.md#a2",
+      "gate": null
+    },
+    {
+      "id": "A3",
+      "stage": "acquisition",
+      "label": "Personajes",
+      "type": "action",
+      "detail": "Personajes",
+      "docRef": "FLOW_3D_MASTER.md#a3",
+      "gate": null
+    },
+    {
+      "id": "A4",
+      "stage": "acquisition",
+      "label": "Animaciones / rigs",
+      "type": "action",
+      "detail": "Animaciones / rigs",
+      "docRef": "FLOW_3D_MASTER.md#a4",
+      "gate": null
+    },
+    {
+      "id": "A5",
+      "stage": "acquisition",
+      "label": "Texturas / atlas",
+      "type": "action",
+      "detail": "Texturas / atlas",
+      "docRef": "FLOW_3D_MASTER.md#a5",
+      "gate": null
+    },
+    {
+      "id": "A6",
+      "stage": "acquisition",
+      "label": "Audio y licencias si aplica",
+      "type": "action",
+      "detail": "Audio y licencias si aplica",
+      "docRef": "FLOW_3D_MASTER.md#a6",
+      "gate": null
+    },
+    {
+      "id": "A7",
+      "stage": "acquisition",
+      "label": "VFX y materiales",
+      "type": "action",
+      "detail": "VFX y materiales",
+      "docRef": "FLOW_3D_MASTER.md#a7",
+      "gate": null
+    },
+    {
+      "id": "A8",
+      "stage": "acquisition",
+      "label": "Verificar formato, licencia y calidad",
+      "type": "action",
+      "detail": "Verificar formato, licencia y calidad La comprobación incluye técnica idónea para planos exigentes, no sólo licencia y formato.",
+      "docRef": "FLOW_3D_MASTER.md#a8",
+      "gate": null
+    },
+    {
+      "id": "D5",
+      "stage": "acquisition",
+      "label": "¿Asset supera gate mínimo?",
+      "type": "decision",
+      "detail": "¿Asset supera gate mínimo?",
+      "docRef": "FLOW_3D_MASTER.md#d5",
+      "gate": null
+    },
+    {
+      "id": "A9",
+      "stage": "acquisition",
+      "label": "Descartar con causa persistente",
+      "type": "action",
+      "detail": "Descartar con causa persistente",
+      "docRef": "FLOW_3D_MASTER.md#a9",
+      "gate": null
+    },
+    {
+      "id": "A10",
+      "stage": "acquisition",
+      "label": "Registrar URL, commit, hash y licencia",
+      "type": "action",
+      "detail": "Registrar URL, commit, hash y licencia",
+      "docRef": "FLOW_3D_MASTER.md#a10",
+      "gate": null
+    },
+    {
+      "id": "A11",
+      "stage": "acquisition",
+      "label": "Importar y verificar bytes reales",
+      "type": "action",
+      "detail": "Importar y verificar bytes reales",
+      "docRef": "FLOW_3D_MASTER.md#a11",
+      "gate": null
+    },
+    {
+      "id": "A12",
+      "stage": "acquisition",
+      "label": "Bloquear reemplazo visual ficticio",
+      "type": "action",
+      "detail": "Bloquear reemplazo visual ficticio Un placeholder nunca reemplaza silenciosamente un modelo protagonista.",
+      "docRef": "FLOW_3D_MASTER.md#a12",
+      "gate": null
+    },
+    {
+      "id": "B0",
+      "stage": "classification",
+      "label": "Clasificar pieza por comportamiento y uso",
+      "type": "action",
+      "detail": "Clasificar pieza por comportamiento y uso",
+      "docRef": "FLOW_3D_MASTER.md#b0",
+      "gate": null
+    },
+    {
+      "id": "D6",
+      "stage": "classification",
+      "label": "¿Cuál es la familia semántica?",
+      "type": "decision",
+      "detail": "¿Cuál es la familia semántica?",
+      "docRef": "FLOW_3D_MASTER.md#d6",
+      "gate": null
+    },
+    {
+      "id": "H0",
+      "stage": "classification",
+      "label": "Humanoide",
+      "type": "action",
+      "detail": "Humanoide",
+      "docRef": "FLOW_3D_MASTER.md#h0",
+      "gate": null
+    },
+    {
+      "id": "Q0",
+      "stage": "classification",
+      "label": "Cuadrúpedo / no humano",
+      "type": "action",
+      "detail": "Cuadrúpedo / no humano",
+      "docRef": "FLOW_3D_MASTER.md#q0",
+      "gate": null
+    },
+    {
+      "id": "O0",
+      "stage": "classification",
+      "label": "Mueble / objeto / prop",
+      "type": "action",
+      "detail": "Mueble / objeto / prop",
+      "docRef": "FLOW_3D_MASTER.md#o0",
+      "gate": null
+    },
+    {
+      "id": "E0",
+      "stage": "classification",
+      "label": "Arquitectura / ambiente",
+      "type": "action",
+      "detail": "Arquitectura / ambiente",
+      "docRef": "FLOW_3D_MASTER.md#e0",
+      "gate": null
+    },
+    {
+      "id": "F0",
+      "stage": "classification",
+      "label": "Material / luz / FX",
+      "type": "action",
+      "detail": "Material / luz / FX",
+      "docRef": "FLOW_3D_MASTER.md#f0",
+      "gate": null
+    },
+    {
+      "id": "C0",
+      "stage": "classification",
+      "label": "Recurso de cámara",
+      "type": "action",
+      "detail": "Recurso de cámara",
+      "docRef": "FLOW_3D_MASTER.md#c0",
+      "gate": null
+    },
+    {
+      "id": "B1",
+      "stage": "classification",
+      "label": "Exigir contrato específico o bloquear",
+      "type": "action",
+      "detail": "Exigir contrato específico o bloquear",
+      "docRef": "FLOW_3D_MASTER.md#b1",
+      "gate": null
+    },
+    {
+      "id": "H1",
+      "stage": "humanoid",
+      "label": "Comprobar malla, escala y proporciones",
+      "type": "action",
+      "detail": "Comprobar malla, escala y proporciones",
+      "docRef": "FLOW_3D_MASTER.md#h1",
+      "gate": null
+    },
+    {
+      "id": "H2",
+      "stage": "humanoid",
+      "label": "Inspeccionar rostro, cabello, ropa y manos",
+      "type": "action",
+      "detail": "Inspeccionar rostro, cabello, ropa y manos Personajes visibles: preferir malla texturada/UV o impostor adecuado; prueba de rostro/ropa antes de crowd.",
+      "docRef": "FLOW_3D_MASTER.md#h2",
+      "gate": null
+    },
+    {
+      "id": "H3",
+      "stage": "humanoid",
+      "label": "Inspeccionar skeleton, pivote, bind pose",
+      "type": "action",
+      "detail": "Inspeccionar skeleton, pivote, bind pose",
+      "docRef": "FLOW_3D_MASTER.md#h3",
+      "gate": null
+    },
+    {
+      "id": "H4",
+      "stage": "humanoid",
+      "label": "Observar frente físico del GLB en 3 vistas",
+      "type": "action",
+      "detail": "La geometría facial, huesos, rig y prueba frontal determinan el frente; nunca inferir +Z por convención.",
+      "docRef": "FLOW_3D_MASTER.md#h4",
+      "gate": null
+    },
+    {
+      "id": "D7",
+      "stage": "humanoid",
+      "label": "¿Frente nativo verificado con evidencia?",
+      "type": "decision",
+      "detail": "Se debe inspeccionar el frente REAL del modelo (cara/ojos/espalda) en vistas ortogonales y el esqueleto/clip. No asumir +Z. Registrar perfil por asset SHA. Si no se puede, FAIL/NOT_RUN, no aprobar.",
+      "docRef": "FLOW_3D_MASTER.md#d7",
+      "gate": null
+    },
+    {
+      "id": "H5",
+      "stage": "humanoid",
+      "label": "Calibrar frontLocal y bindYawOffset",
+      "type": "action",
+      "detail": "Calibrar frente nativo y offset de bind pose por GLB, con captura. No girar todo a ciegas 180°.",
+      "docRef": "FLOW_3D_MASTER.md#h5",
+      "gate": null
+    },
+    {
+      "id": "H6",
+      "stage": "humanoid",
+      "label": "Recuperar perfil exacto por SHA",
+      "type": "action",
+      "detail": "Recuperar perfil exacto por SHA",
+      "docRef": "FLOW_3D_MASTER.md#h6",
+      "gate": null
+    },
+    {
+      "id": "H7",
+      "stage": "humanoid",
+      "label": "Persistir perfil de identidad + orientación",
+      "type": "action",
+      "detail": "Perfil persistido y validado, no un número arbitrario por escena.",
+      "docRef": "FLOW_3D_MASTER.md#h7",
+      "gate": null
+    },
+    {
+      "id": "H8",
+      "stage": "humanoid",
+      "label": "Inspeccionar Idle, Walk, Turn, Interact",
+      "type": "action",
+      "detail": "Inspeccionar Idle, Walk, Turn, Interact",
+      "docRef": "FLOW_3D_MASTER.md#h8",
+      "gate": null
+    },
+    {
+      "id": "D8",
+      "stage": "humanoid",
+      "label": "¿Clips válidos para acción pretendida?",
+      "type": "decision",
+      "detail": "¿Clips válidos para acción pretendida?",
+      "docRef": "FLOW_3D_MASTER.md#d8",
+      "gate": null
+    },
+    {
+      "id": "H9",
+      "stage": "humanoid",
+      "label": "Buscar clips compatibles y derechos",
+      "type": "action",
+      "detail": "Buscar clips compatibles y derechos",
+      "docRef": "FLOW_3D_MASTER.md#h9",
+      "gate": null
+    },
+    {
+      "id": "H10",
+      "stage": "humanoid",
+      "label": "Retarget / adaptar y probar deformación",
+      "type": "action",
+      "detail": "Retarget / adaptar y probar deformación",
+      "docRef": "FLOW_3D_MASTER.md#h10",
+      "gate": null
+    },
+    {
+      "id": "H11",
+      "stage": "humanoid",
+      "label": "Confirmar actor compatible para puesta",
+      "type": "action",
+      "detail": "Confirmar actor compatible para puesta",
+      "docRef": "FLOW_3D_MASTER.md#h11",
+      "gate": null
+    },
+    {
+      "id": "O1",
+      "stage": "props",
+      "label": "Inspeccionar pivote, escala y bounds",
+      "type": "action",
+      "detail": "Inspeccionar pivote, escala y bounds Mobiliario HERO: evaluar silla/modelado/UV versus cubos en serie; mecanismo técnico admite paramétrico justificado.",
+      "docRef": "FLOW_3D_MASTER.md#o1",
+      "gate": null
+    },
+    {
+      "id": "O2",
+      "stage": "props",
+      "label": "Distinguir frente visual, respaldo y frente funcional",
+      "type": "action",
+      "detail": "Distinguir frente visual, respaldo y frente funcional",
+      "docRef": "FLOW_3D_MASTER.md#o2",
+      "gate": null
+    },
+    {
+      "id": "D9",
+      "stage": "props",
+      "label": "¿Clase funcional del objeto?",
+      "type": "decision",
+      "detail": "¿Clase funcional del objeto?",
+      "docRef": "FLOW_3D_MASTER.md#d9",
+      "gate": null
+    },
+    {
+      "id": "O3",
+      "stage": "props",
+      "label": "Silla: reconocer asiento y respaldo",
+      "type": "action",
+      "detail": "Silla: reconocer asiento y respaldo",
+      "docRef": "FLOW_3D_MASTER.md#o3",
+      "gate": null
+    },
+    {
+      "id": "O4",
+      "stage": "props",
+      "label": "Mesa: centro, superficie y zona de uso",
+      "type": "action",
+      "detail": "Mesa: centro, superficie y zona de uso",
+      "docRef": "FLOW_3D_MASTER.md#o4",
+      "gate": null
+    },
+    {
+      "id": "O5",
+      "stage": "props",
+      "label": "Decoración libre sin lookAt automático",
+      "type": "action",
+      "detail": "Decoración libre sin lookAt automático",
+      "docRef": "FLOW_3D_MASTER.md#o5",
+      "gate": null
+    },
+    {
+      "id": "O6",
+      "stage": "props",
+      "label": "Electrodoméstico: lado operable",
+      "type": "action",
+      "detail": "Electrodoméstico: lado operable",
+      "docRef": "FLOW_3D_MASTER.md#o6",
+      "gate": null
+    },
+    {
+      "id": "O7",
+      "stage": "props",
+      "label": "Lámpara: anclaje y dirección de luz",
+      "type": "action",
+      "detail": "Lámpara: anclaje y dirección de luz",
+      "docRef": "FLOW_3D_MASTER.md#o7",
+      "gate": null
+    },
+    {
+      "id": "O8",
+      "stage": "props",
+      "label": "Persistir seatFrontLocal / backLocal",
+      "type": "action",
+      "detail": "Persistir seatFrontLocal / backLocal",
+      "docRef": "FLOW_3D_MASTER.md#o8",
+      "gate": null
+    },
+    {
+      "id": "O9",
+      "stage": "props",
+      "label": "Persistir tableCenter / interactionZone",
+      "type": "action",
+      "detail": "Persistir tableCenter / interactionZone",
+      "docRef": "FLOW_3D_MASTER.md#o9",
+      "gate": null
+    },
+    {
+      "id": "O10",
+      "stage": "props",
+      "label": "Persistir libertad de rotación",
+      "type": "action",
+      "detail": "Persistir libertad de rotación",
+      "docRef": "FLOW_3D_MASTER.md#o10",
+      "gate": null
+    },
+    {
+      "id": "O11",
+      "stage": "props",
+      "label": "Persistir functionalFront / gripSockets",
+      "type": "action",
+      "detail": "Persistir functionalFront / gripSockets",
+      "docRef": "FLOW_3D_MASTER.md#o11",
+      "gate": null
+    },
+    {
+      "id": "O12",
+      "stage": "props",
+      "label": "Persistir anchor rules y superficies",
+      "type": "action",
+      "detail": "Persistir anchor rules y superficies",
+      "docRef": "FLOW_3D_MASTER.md#o12",
+      "gate": null
+    },
+    {
+      "id": "E1",
+      "stage": "environment",
+      "label": "Definir tipo de recinto y escala",
+      "type": "action",
+      "detail": "Definir tipo de recinto y escala",
+      "docRef": "FLOW_3D_MASTER.md#e1",
+      "gate": null
+    },
+    {
+      "id": "E2",
+      "stage": "environment",
+      "label": "Construir suelo real y colisiones",
+      "type": "action",
+      "detail": "Construir suelo real y colisiones",
+      "docRef": "FLOW_3D_MASTER.md#e2",
+      "gate": null
+    },
+    {
+      "id": "E3",
+      "stage": "environment",
+      "label": "Construir paredes y encuentros",
+      "type": "action",
+      "detail": "Construir paredes y encuentros",
+      "docRef": "FLOW_3D_MASTER.md#e3",
+      "gate": null
+    },
+    {
+      "id": "E4",
+      "stage": "environment",
+      "label": "Definir puertas y ventanas reales",
+      "type": "action",
+      "detail": "Definir puertas y ventanas reales",
+      "docRef": "FLOW_3D_MASTER.md#e4",
+      "gate": null
+    },
+    {
+      "id": "E5",
+      "stage": "environment",
+      "label": "Definir techo o cubierta",
+      "type": "action",
+      "detail": "La lámpara de techo no constituye techo. En interiores debe existir superficie física de cubierta y continuidad de muros.",
+      "docRef": "FLOW_3D_MASTER.md#e5",
+      "gate": null
+    },
+    {
+      "id": "D10",
+      "stage": "environment",
+      "label": "¿Interior cerrado o escena intencionalmente abierta?",
+      "type": "decision",
+      "detail": "¿Interior cerrado o escena intencionalmente abierta?",
+      "docRef": "FLOW_3D_MASTER.md#d10",
+      "gate": null
+    },
+    {
+      "id": "E6",
+      "stage": "environment",
+      "label": "Interior: exigir cerramiento completo",
+      "type": "action",
+      "detail": "Interior: exigir cerramiento completo",
+      "docRef": "FLOW_3D_MASTER.md#e6",
+      "gate": null
+    },
+    {
+      "id": "E7",
+      "stage": "environment",
+      "label": "Exterior: documentar cielo abierto",
+      "type": "action",
+      "detail": "Exterior: documentar cielo abierto",
+      "docRef": "FLOW_3D_MASTER.md#e7",
+      "gate": null
+    },
+    {
+      "id": "E8",
+      "stage": "environment",
+      "label": "Comprobar exterior solo por aberturas",
+      "type": "action",
+      "detail": "Comprobar exterior solo por aberturas",
+      "docRef": "FLOW_3D_MASTER.md#e8",
+      "gate": null
+    },
+    {
+      "id": "E9",
+      "stage": "environment",
+      "label": "Zonas navegables / puntos de acción",
+      "type": "action",
+      "detail": "Zonas navegables / puntos de acción",
+      "docRef": "FLOW_3D_MASTER.md#e9",
+      "gate": null
+    },
+    {
+      "id": "E10",
+      "stage": "environment",
+      "label": "Modo film con techo / modo editor cutaway",
+      "type": "action",
+      "detail": "Modo PRODUCCIÓN presenta techo y cerramiento. Modo EDICIÓN habilita corte sin cambiar el recurso de producción.",
+      "docRef": "FLOW_3D_MASTER.md#e10",
+      "gate": null
+    },
+    {
+      "id": "F1",
+      "stage": "fx",
+      "label": "Elegir función de luz, material o FX",
+      "type": "action",
+      "detail": "Elegir función de luz, material o FX",
+      "docRef": "FLOW_3D_MASTER.md#f1",
+      "gate": null
+    },
+    {
+      "id": "D11",
+      "stage": "fx",
+      "label": "¿Qué tratamiento se necesita?",
+      "type": "decision",
+      "detail": "¿Qué tratamiento se necesita?",
+      "docRef": "FLOW_3D_MASTER.md#d11",
+      "gate": null
+    },
+    {
+      "id": "F2",
+      "stage": "fx",
+      "label": "Lluvia con profundidad física",
+      "type": "action",
+      "detail": "Lluvia con profundidad física",
+      "docRef": "FLOW_3D_MASTER.md#f2",
+      "gate": null
+    },
+    {
+      "id": "F3",
+      "stage": "fx",
+      "label": "Niebla y distancia",
+      "type": "action",
+      "detail": "Niebla y distancia",
+      "docRef": "FLOW_3D_MASTER.md#f3",
+      "gate": null
+    },
+    {
+      "id": "F4",
+      "stage": "fx",
+      "label": "Humo y volumen",
+      "type": "action",
+      "detail": "Humo y volumen",
+      "docRef": "FLOW_3D_MASTER.md#f4",
+      "gate": null
+    },
+    {
+      "id": "F5",
+      "stage": "fx",
+      "label": "Iluminación y parpadeo",
+      "type": "action",
+      "detail": "Iluminación y parpadeo",
+      "docRef": "FLOW_3D_MASTER.md#f5",
+      "gate": null
+    },
+    {
+      "id": "F6",
+      "stage": "fx",
+      "label": "UV / textura / PBR",
+      "type": "action",
+      "detail": "UV / textura / PBR",
+      "docRef": "FLOW_3D_MASTER.md#f6",
+      "gate": null
+    },
+    {
+      "id": "F7",
+      "stage": "fx",
+      "label": "Comprobar rendimiento y coherencia",
+      "type": "action",
+      "detail": "Comprobar rendimiento y coherencia",
+      "docRef": "FLOW_3D_MASTER.md#f7",
+      "gate": null
+    },
+    {
+      "id": "F8",
+      "stage": "fx",
+      "label": "Verificar materiales importados y derechos",
+      "type": "action",
+      "detail": "Verificar materiales importados y derechos",
+      "docRef": "FLOW_3D_MASTER.md#f8",
+      "gate": null
+    },
+    {
+      "id": "S0",
+      "stage": "assembly",
+      "label": "Construir escena sobre recursos reales",
+      "type": "action",
+      "detail": "Construir escena sobre recursos reales",
+      "docRef": "FLOW_3D_MASTER.md#s0",
+      "gate": null
+    },
+    {
+      "id": "S1",
+      "stage": "assembly",
+      "label": "Ubicar actor con escala y pivote",
+      "type": "action",
+      "detail": "Ubicar actor con escala y pivote",
+      "docRef": "FLOW_3D_MASTER.md#s1",
+      "gate": null
+    },
+    {
+      "id": "S2",
+      "stage": "assembly",
+      "label": "Ubicar muebles principales",
+      "type": "action",
+      "detail": "Ubicar muebles principales",
+      "docRef": "FLOW_3D_MASTER.md#s2",
+      "gate": null
+    },
+    {
+      "id": "S3",
+      "stage": "assembly",
+      "label": "Agregar muebles secundarios sin ruido",
+      "type": "action",
+      "detail": "Agregar muebles secundarios sin ruido",
+      "docRef": "FLOW_3D_MASTER.md#s3",
+      "gate": null
+    },
+    {
+      "id": "S4",
+      "stage": "assembly",
+      "label": "Aplicar materiales editables",
+      "type": "action",
+      "detail": "Aplicar materiales editables",
+      "docRef": "FLOW_3D_MASTER.md#s4",
+      "gate": null
+    },
+    {
+      "id": "S5",
+      "stage": "assembly",
+      "label": "Montar luces y ambiente",
+      "type": "action",
+      "detail": "Montar luces y ambiente",
+      "docRef": "FLOW_3D_MASTER.md#s5",
+      "gate": null
+    },
+    {
+      "id": "S6",
+      "stage": "assembly",
+      "label": "Aplicar FX sin tapar geometría",
+      "type": "action",
+      "detail": "Aplicar FX sin tapar geometría",
+      "docRef": "FLOW_3D_MASTER.md#s6",
+      "gate": null
+    },
+    {
+      "id": "S7",
+      "stage": "assembly",
+      "label": "Definir blocking / rutas libres",
+      "type": "action",
+      "detail": "Definir blocking / rutas libres",
+      "docRef": "FLOW_3D_MASTER.md#s7",
+      "gate": null
+    },
+    {
+      "id": "D12",
+      "stage": "assembly",
+      "label": "¿Todos colocados y orientados funcionalmente?",
+      "type": "decision",
+      "detail": "¿Todos colocados y orientados funcionalmente?",
+      "docRef": "FLOW_3D_MASTER.md#d12",
+      "gate": null
+    },
+    {
+      "id": "S8",
+      "stage": "assembly",
+      "label": "Derivar a calibración semántica",
+      "type": "action",
+      "detail": "Derivar a calibración semántica",
+      "docRef": "FLOW_3D_MASTER.md#s8",
+      "gate": null
+    },
+    {
+      "id": "S9",
+      "stage": "assembly",
+      "label": "Guardar escena candidata editable",
+      "type": "action",
+      "detail": "Guardar escena candidata editable",
+      "docRef": "FLOW_3D_MASTER.md#s9",
+      "gate": null
+    },
+    {
+      "id": "OR0",
+      "stage": "orientation",
+      "label": "Revisar orientación de cada asset relevante",
+      "type": "action",
+      "detail": "Revisar orientación de cada asset relevante",
+      "docRef": "FLOW_3D_MASTER.md#or0",
+      "gate": null
+    },
+    {
+      "id": "D13",
+      "stage": "orientation",
+      "label": "¿Qué relación semántica debe cumplir?",
+      "type": "decision",
+      "detail": "¿Qué relación semántica debe cumplir?",
+      "docRef": "FLOW_3D_MASTER.md#d13",
+      "gate": null
+    },
+    {
+      "id": "OR1",
+      "stage": "orientation",
+      "label": "Actor: frente hacia velocidad / objetivo",
+      "type": "action",
+      "detail": "Actor: frente hacia velocidad / objetivo",
+      "docRef": "FLOW_3D_MASTER.md#or1",
+      "gate": null
+    },
+    {
+      "id": "OR2",
+      "stage": "orientation",
+      "label": "Silla: asiento apunta a mesa",
+      "type": "action",
+      "detail": "Calcular dirección desde silla hacia mesa; orientar seatFrontLocal certificado. El respaldo debe apuntar hacia afuera; permitir override manual explícito, nunca auto-lookAt indiscriminado.",
+      "docRef": "FLOW_3D_MASTER.md#or2",
+      "gate": null
+    },
+    {
+      "id": "OR3",
+      "stage": "orientation",
+      "label": "Prop: cara funcional mira al usuario",
+      "type": "action",
+      "detail": "Prop: cara funcional mira al usuario",
+      "docRef": "FLOW_3D_MASTER.md#or3",
+      "gate": null
+    },
+    {
+      "id": "OR4",
+      "stage": "orientation",
+      "label": "Lámpara: orientación según anclaje",
+      "type": "action",
+      "detail": "Lámpara: orientación según anclaje",
+      "docRef": "FLOW_3D_MASTER.md#or4",
+      "gate": null
+    },
+    {
+      "id": "OR5",
+      "stage": "orientation",
+      "label": "Decoración: libertad artística explícita",
+      "type": "action",
+      "detail": "Decoración: libertad artística explícita",
+      "docRef": "FLOW_3D_MASTER.md#or5",
+      "gate": null
+    },
+    {
+      "id": "OR6",
+      "stage": "orientation",
+      "label": "Vincular frente humano a SHA del rig",
+      "type": "action",
+      "detail": "Vincular frente humano a SHA del rig",
+      "docRef": "FLOW_3D_MASTER.md#or6",
+      "gate": null
+    },
+    {
+      "id": "OR7",
+      "stage": "orientation",
+      "label": "Vincular respaldo al target de asiento",
+      "type": "action",
+      "detail": "Vincular respaldo al target de asiento",
+      "docRef": "FLOW_3D_MASTER.md#or7",
+      "gate": null
+    },
+    {
+      "id": "OR8",
+      "stage": "orientation",
+      "label": "Vincular cara funcional a interacción",
+      "type": "action",
+      "detail": "Vincular cara funcional a interacción",
+      "docRef": "FLOW_3D_MASTER.md#or8",
+      "gate": null
+    },
+    {
+      "id": "OR9",
+      "stage": "orientation",
+      "label": "Vincular anclaje real a superficie",
+      "type": "action",
+      "detail": "Vincular anclaje real a superficie",
+      "docRef": "FLOW_3D_MASTER.md#or9",
+      "gate": null
+    },
+    {
+      "id": "OR10",
+      "stage": "orientation",
+      "label": "Guardar orientación libre y justificación",
+      "type": "action",
+      "detail": "Guardar orientación libre y justificación",
+      "docRef": "FLOW_3D_MASTER.md#or10",
+      "gate": null
+    },
+    {
+      "id": "D14",
+      "stage": "orientation",
+      "label": "¿Hay evidencia de orientación real?",
+      "type": "decision",
+      "detail": "¿Hay evidencia de orientación real?",
+      "docRef": "FLOW_3D_MASTER.md#d14",
+      "gate": null
+    },
+    {
+      "id": "OR11",
+      "stage": "orientation",
+      "label": "Crear vistas frontal, lateral y planta",
+      "type": "action",
+      "detail": "Guardar 3 capturas con mismo asset, frente, lateral y planta. Para muebles comprobar respaldo/operador. Para persona observar nariz y feet pose.",
+      "docRef": "FLOW_3D_MASTER.md#or11",
+      "gate": null
+    },
+    {
+      "id": "OR12",
+      "stage": "orientation",
+      "label": "Comparar facing y target / colisiones",
+      "type": "action",
+      "detail": "Comprobar dot >= cos(25°) para asiento→mesa, dot >= 0.9 para rostro→velocidad, intersecciones y contacto.",
+      "docRef": "FLOW_3D_MASTER.md#or12",
+      "gate": null
+    },
+    {
+      "id": "D15",
+      "stage": "orientation",
+      "label": "¿Apunta correctamente con fuente real?",
+      "type": "decision",
+      "detail": "¿Apunta correctamente con fuente real?",
+      "docRef": "FLOW_3D_MASTER.md#d15",
+      "gate": null
+    },
+    {
+      "id": "OR13",
+      "stage": "orientation",
+      "label": "Corregir eje, pivot o yaw con causa",
+      "type": "action",
+      "detail": "Corregir eje, pivot o yaw con causa",
+      "docRef": "FLOW_3D_MASTER.md#or13",
+      "gate": null
+    },
+    {
+      "id": "OR14",
+      "stage": "orientation",
+      "label": "Registrar comprobación y evidencia",
+      "type": "action",
+      "detail": "Registrar comprobación y evidencia",
+      "docRef": "FLOW_3D_MASTER.md#or14",
+      "gate": null
+    },
+    {
+      "id": "M0",
+      "stage": "acting",
+      "label": "Definir acción narrativa e intención",
+      "type": "action",
+      "detail": "Definir acción narrativa e intención",
+      "docRef": "FLOW_3D_MASTER.md#m0",
+      "gate": null
+    },
+    {
+      "id": "M1",
+      "stage": "acting",
+      "label": "Elegir actor y clips REALES",
+      "type": "action",
+      "detail": "Elegir actor y clips REALES",
+      "docRef": "FLOW_3D_MASTER.md#m1",
+      "gate": null
+    },
+    {
+      "id": "M2",
+      "stage": "acting",
+      "label": "Crear secuencia temporal editable",
+      "type": "action",
+      "detail": "Crear secuencia temporal editable",
+      "docRef": "FLOW_3D_MASTER.md#m2",
+      "gate": null
+    },
+    {
+      "id": "M3",
+      "stage": "acting",
+      "label": "Idle inicial",
+      "type": "action",
+      "detail": "Idle inicial",
+      "docRef": "FLOW_3D_MASTER.md#m3",
+      "gate": null
+    },
+    {
+      "id": "M4",
+      "stage": "acting",
+      "label": "Trayecto uno y contacto de pies",
+      "type": "action",
+      "detail": "Trayecto uno y contacto de pies",
+      "docRef": "FLOW_3D_MASTER.md#m4",
+      "gate": null
+    },
+    {
+      "id": "M5",
+      "stage": "acting",
+      "label": "Giro con interpolación de yaw",
+      "type": "action",
+      "detail": "Giro con interpolación de yaw",
+      "docRef": "FLOW_3D_MASTER.md#m5",
+      "gate": null
+    },
+    {
+      "id": "M6",
+      "stage": "acting",
+      "label": "Trayecto dos / evitar moonwalk",
+      "type": "action",
+      "detail": "Trayecto dos / evitar moonwalk",
+      "docRef": "FLOW_3D_MASTER.md#m6",
+      "gate": null
+    },
+    {
+      "id": "M7",
+      "stage": "acting",
+      "label": "Aproximación al prop",
+      "type": "action",
+      "detail": "Aproximación al prop",
+      "docRef": "FLOW_3D_MASTER.md#m7",
+      "gate": null
+    },
+    {
+      "id": "M8",
+      "stage": "acting",
+      "label": "Interacción: manos/IK/socket/clip",
+      "type": "action",
+      "detail": "Interacción: manos/IK/socket/clip",
+      "docRef": "FLOW_3D_MASTER.md#m8",
+      "gate": null
+    },
+    {
+      "id": "M9",
+      "stage": "acting",
+      "label": "Idle final mirando objetivo",
+      "type": "action",
+      "detail": "Idle final mirando objetivo",
+      "docRef": "FLOW_3D_MASTER.md#m9",
+      "gate": null
+    },
+    {
+      "id": "D16",
+      "stage": "acting",
+      "label": "¿Facing real coherente con velocidad?",
+      "type": "decision",
+      "detail": "¿Facing real coherente con velocidad?",
+      "docRef": "FLOW_3D_MASTER.md#d16",
+      "gate": null
+    },
+    {
+      "id": "M10",
+      "stage": "acting",
+      "label": "Recalcular heading desde trayectoria y frente",
+      "type": "action",
+      "detail": "Usar Δpos para calcular heading en mundo y sumar offset del eje local calibrado para la malla. No hardcodear yaw absoluto para todas las mallas.",
+      "docRef": "FLOW_3D_MASTER.md#m10",
+      "gate": null
+    },
+    {
+      "id": "M11",
+      "stage": "acting",
+      "label": "Distinguir root motion vs in-place",
+      "type": "action",
+      "detail": "Distinguir traslación por animación y por código. Evitar doble movimiento, clip in-place contra root motion.",
+      "docRef": "FLOW_3D_MASTER.md#m11",
+      "gate": null
+    },
+    {
+      "id": "M12",
+      "stage": "acting",
+      "label": "Medir slip y hundimiento de pies",
+      "type": "action",
+      "detail": "Medir desplazamiento de pies en fase de apoyo y penetración de suelo. Test matemático de facing no prueba calidad.",
+      "docRef": "FLOW_3D_MASTER.md#m12",
+      "gate": null
+    },
+    {
+      "id": "M13",
+      "stage": "acting",
+      "label": "Corregir pose final y blending",
+      "type": "action",
+      "detail": "Corregir pose final y blending",
+      "docRef": "FLOW_3D_MASTER.md#m13",
+      "gate": null
+    },
+    {
+      "id": "M14",
+      "stage": "acting",
+      "label": "Repetir playback y medición",
+      "type": "action",
+      "detail": "Repetir playback y medición",
+      "docRef": "FLOW_3D_MASTER.md#m14",
+      "gate": null
+    },
+    {
+      "id": "D17",
+      "stage": "acting",
+      "label": "¿Interacción demostrada con clip/IK real?",
+      "type": "decision",
+      "detail": "¿Interacción demostrada con clip/IK real?",
+      "docRef": "FLOW_3D_MASTER.md#d17",
+      "gate": null
+    },
+    {
+      "id": "M15",
+      "stage": "acting",
+      "label": "Validar agarre/contacto",
+      "type": "action",
+      "detail": "Un saludo o una cámara que oculta la mano NO equivale a agarrar un objeto. Requiere clip compatible o IK y contacto medido.",
+      "docRef": "FLOW_3D_MASTER.md#m15",
+      "gate": null
+    },
+    {
+      "id": "M16",
+      "stage": "acting",
+      "label": "Marcar interacción pendiente sin fingirla",
+      "type": "action",
+      "detail": "Marcar interacción pendiente sin fingirla",
+      "docRef": "FLOW_3D_MASTER.md#m16",
+      "gate": null
+    },
+    {
+      "id": "C1",
+      "stage": "cinema",
+      "label": "Dirección cinematográfica reutilizable",
+      "type": "action",
+      "detail": "Dirección cinematográfica reutilizable Diseñar velocidad, continuidad de mirada y pausa/corte intencional.",
+      "docRef": "FLOW_3D_MASTER.md#c1",
+      "gate": null
+    },
+    {
+      "id": "C2",
+      "stage": "cinema",
+      "label": "Plano general y ubicación espacial",
+      "type": "action",
+      "detail": "Plano general y ubicación espacial",
+      "docRef": "FLOW_3D_MASTER.md#c2",
+      "gate": null
+    },
+    {
+      "id": "C3",
+      "stage": "cinema",
+      "label": "Plano de seguimiento",
+      "type": "action",
+      "detail": "Plano de seguimiento",
+      "docRef": "FLOW_3D_MASTER.md#c3",
+      "gate": null
+    },
+    {
+      "id": "C4",
+      "stage": "cinema",
+      "label": "Plano medio de acción",
+      "type": "action",
+      "detail": "Plano medio de acción",
+      "docRef": "FLOW_3D_MASTER.md#c4",
+      "gate": null
+    },
+    {
+      "id": "C5",
+      "stage": "cinema",
+      "label": "Primer plano de rostro",
+      "type": "action",
+      "detail": "Primer plano de rostro",
+      "docRef": "FLOW_3D_MASTER.md#c5",
+      "gate": null
+    },
+    {
+      "id": "C6",
+      "stage": "cinema",
+      "label": "Plano manos / prop verificable",
+      "type": "action",
+      "detail": "Plano manos / prop verificable",
+      "docRef": "FLOW_3D_MASTER.md#c6",
+      "gate": null
+    },
+    {
+      "id": "C7",
+      "stage": "cinema",
+      "label": "Plano final y continuidad",
+      "type": "action",
+      "detail": "Plano final y continuidad",
+      "docRef": "FLOW_3D_MASTER.md#c7",
+      "gate": null
+    },
+    {
+      "id": "C8",
+      "stage": "cinema",
+      "label": "Timeline, subtítulos y cortes exactos",
+      "type": "action",
+      "detail": "Timeline, subtítulos y cortes exactos",
+      "docRef": "FLOW_3D_MASTER.md#c8",
+      "gate": null
+    },
+    {
+      "id": "D18",
+      "stage": "cinema",
+      "label": "¿Cámara muestra acción real o la oculta?",
+      "type": "decision",
+      "detail": "¿Cámara muestra acción real o la oculta?",
+      "docRef": "FLOW_3D_MASTER.md#d18",
+      "gate": null
+    },
+    {
+      "id": "C9",
+      "stage": "cinema",
+      "label": "Rechazar montaje engañoso",
+      "type": "action",
+      "detail": "Rechazar montaje engañoso",
+      "docRef": "FLOW_3D_MASTER.md#c9",
+      "gate": null
+    },
+    {
+      "id": "C10",
+      "stage": "cinema",
+      "label": "Guardar shotlist versionada",
+      "type": "action",
+      "detail": "Guardar shotlist versionada",
+      "docRef": "FLOW_3D_MASTER.md#c10",
+      "gate": null
+    },
+    {
+      "id": "QA0",
+      "stage": "qa",
+      "label": "Correr QA independiente sobre resultado real",
+      "type": "action",
+      "detail": "Verificación técnica posterior para registrar fallas, nunca reescritura artística del mismo intento.",
+      "docRef": "FLOW_3D_MASTER.md#qa0",
+      "gate": null
+    },
+    {
+      "id": "QA1",
+      "stage": "qa",
+      "label": "Validar estructura y procedencia GLB",
+      "type": "action",
+      "detail": "Validar estructura y procedencia GLB",
+      "docRef": "FLOW_3D_MASTER.md#qa1",
+      "gate": null
+    },
+    {
+      "id": "QA2",
+      "stage": "qa",
+      "label": "Inspeccionar píxeles WebGL / render",
+      "type": "action",
+      "detail": "Exigir screenshot/video WebGL real cuando objetivo es artístico. Si WebGL falta marcar NOT_RUN; no convertir Node PASS en VISUAL PASS.",
+      "docRef": "FLOW_3D_MASTER.md#qa2",
+      "gate": null
+    },
+    {
+      "id": "QA3",
+      "stage": "qa",
+      "label": "Validar relaciones semánticas",
+      "type": "action",
+      "detail": "Validar relaciones semánticas",
+      "docRef": "FLOW_3D_MASTER.md#qa3",
+      "gate": null
+    },
+    {
+      "id": "QA4",
+      "stage": "qa",
+      "label": "Validar código, clips y timeline",
+      "type": "action",
+      "detail": "Validar código, clips y timeline",
+      "docRef": "FLOW_3D_MASTER.md#qa4",
+      "gate": null
+    },
+    {
+      "id": "QA5",
+      "stage": "qa",
+      "label": "Verificar móvil, controles y memoria",
+      "type": "action",
+      "detail": "Verificar móvil, controles y memoria",
+      "docRef": "FLOW_3D_MASTER.md#qa5",
+      "gate": null
+    },
+    {
+      "id": "D19",
+      "stage": "qa",
+      "label": "¿Arquitectura y recursos completos?",
+      "type": "decision",
+      "detail": "¿Arquitectura y recursos completos?",
+      "docRef": "FLOW_3D_MASTER.md#d19",
+      "gate": null
+    },
+    {
+      "id": "QA6",
+      "stage": "qa",
+      "label": "FAIL_ROOM_CLOSURE o faltantes",
+      "type": "action",
+      "detail": "Error observado, registrar sin autocorrección; continuar hasta entrega.",
+      "docRef": "FLOW_3D_MASTER.md#qa6",
+      "gate": null
+    },
+    {
+      "id": "D20",
+      "stage": "qa",
+      "label": "¿Actor y props orientados correctamente?",
+      "type": "decision",
+      "detail": "¿Actor y props orientados correctamente?",
+      "docRef": "FLOW_3D_MASTER.md#d20",
+      "gate": null
+    },
+    {
+      "id": "QA8",
+      "stage": "qa",
+      "label": "FAIL_ACTOR_FACING",
+      "type": "action",
+      "detail": "Error observado, registrar sin autocorrección; continuar hasta entrega.",
+      "docRef": "FLOW_3D_MASTER.md#qa8",
+      "gate": null
+    },
+    {
+      "id": "QA9",
+      "stage": "qa",
+      "label": "FAIL_PROP_ORIENTATION",
+      "type": "action",
+      "detail": "Error observado, registrar sin autocorrección; continuar hasta entrega.",
+      "docRef": "FLOW_3D_MASTER.md#qa9",
+      "gate": null
+    },
+    {
+      "id": "D21",
+      "stage": "qa",
+      "label": "¿Locomoción sin defectos visibles?",
+      "type": "decision",
+      "detail": "¿Locomoción sin defectos visibles?",
+      "docRef": "FLOW_3D_MASTER.md#d21",
+      "gate": null
+    },
+    {
+      "id": "QA10",
+      "stage": "qa",
+      "label": "FAIL_FOOT_SLIP",
+      "type": "action",
+      "detail": "Error observado, registrar sin autocorrección; continuar hasta entrega.",
+      "docRef": "FLOW_3D_MASTER.md#qa10",
+      "gate": null
+    },
+    {
+      "id": "QA11",
+      "stage": "qa",
+      "label": "FAIL_ROOT_MOTION",
+      "type": "action",
+      "detail": "Error observado, registrar sin autocorrección; continuar hasta entrega.",
+      "docRef": "FLOW_3D_MASTER.md#qa11",
+      "gate": null
+    },
+    {
+      "id": "D22",
+      "stage": "qa",
+      "label": "¿Interacción realmente demostrada?",
+      "type": "decision",
+      "detail": "¿Interacción realmente demostrada?",
+      "docRef": "FLOW_3D_MASTER.md#d22",
+      "gate": null
+    },
+    {
+      "id": "QA12",
+      "stage": "qa",
+      "label": "FAIL_INTERACTION",
+      "type": "action",
+      "detail": "Error observado, registrar sin autocorrección; continuar hasta entrega.",
+      "docRef": "FLOW_3D_MASTER.md#qa12",
+      "gate": null
+    },
+    {
+      "id": "D23",
+      "stage": "qa",
+      "label": "¿Cámara cubre correctamente?",
+      "type": "decision",
+      "detail": "¿Cámara cubre correctamente?",
+      "docRef": "FLOW_3D_MASTER.md#d23",
+      "gate": null
+    },
+    {
+      "id": "QA13",
+      "stage": "qa",
+      "label": "FAIL_CAMERA_COVERAGE",
+      "type": "action",
+      "detail": "Error observado, registrar sin autocorrección; continuar hasta entrega.",
+      "docRef": "FLOW_3D_MASTER.md#qa13",
+      "gate": null
+    },
+    {
+      "id": "D24",
+      "stage": "qa",
+      "label": "¿Arte y móvil alcanzan criterios?",
+      "type": "decision",
+      "detail": "¿Arte y móvil alcanzan criterios?",
+      "docRef": "FLOW_3D_MASTER.md#d24",
+      "gate": null
+    },
+    {
+      "id": "QA14",
+      "stage": "qa",
+      "label": "FAIL_ART_DIRECTION",
+      "type": "action",
+      "detail": "Error observado, registrar sin autocorrección; continuar hasta entrega.",
+      "docRef": "FLOW_3D_MASTER.md#qa14",
+      "gate": null
+    },
+    {
+      "id": "QA15",
+      "stage": "qa",
+      "label": "FAIL_MOBILE_USABILITY",
+      "type": "action",
+      "detail": "Error observado, registrar sin autocorrección; continuar hasta entrega.",
+      "docRef": "FLOW_3D_MASTER.md#qa15",
+      "gate": null
+    },
+    {
+      "id": "QA16",
+      "stage": "qa",
+      "label": "PASS técnico + visual según evidencia",
+      "type": "action",
+      "detail": "PASS técnico + visual según evidencia",
+      "docRef": "FLOW_3D_MASTER.md#qa16",
+      "gate": null
+    },
+    {
+      "id": "QA17",
+      "stage": "qa",
+      "label": "NOT_RUN si entorno impide la prueba",
+      "type": "action",
+      "detail": "NOT_RUN no es PASS ni permiso para ocultar. Entregar todo lo producido.",
+      "docRef": "FLOW_3D_MASTER.md#qa17",
+      "gate": null
+    },
+    {
+      "id": "FIX0",
+      "stage": "repair",
+      "label": "CALIBRAR: registrar error concreto",
+      "type": "action",
+      "detail": "Rama de corrección exclusiva de una próxima ronda autorizada por el usuario, nunca autocorrección del primer intento.",
+      "docRef": "FLOW_3D_MASTER.md#fix0",
+      "gate": null
+    },
+    {
+      "id": "FIX1",
+      "stage": "repair",
+      "label": "Reproducir con evidencia y condiciones",
+      "type": "action",
+      "detail": "Reproducir con evidencia y condiciones",
+      "docRef": "FLOW_3D_MASTER.md#fix1",
+      "gate": null
+    },
+    {
+      "id": "FIX2",
+      "stage": "repair",
+      "label": "Localizar línea, asset y suposiciones",
+      "type": "action",
+      "detail": "Localizar línea, asset y suposiciones",
+      "docRef": "FLOW_3D_MASTER.md#fix2",
+      "gate": null
+    },
+    {
+      "id": "D25",
+      "stage": "repair",
+      "label": "¿Origen principal del fallo?",
+      "type": "decision",
+      "detail": "¿Origen principal del fallo?",
+      "docRef": "FLOW_3D_MASTER.md#d25",
+      "gate": null
+    },
+    {
+      "id": "FIX3",
+      "stage": "repair",
+      "label": "Asset: reparar o reemplazar legalmente",
+      "type": "action",
+      "detail": "Asset: reparar o reemplazar legalmente",
+      "docRef": "FLOW_3D_MASTER.md#fix3",
+      "gate": null
+    },
+    {
+      "id": "FIX4",
+      "stage": "repair",
+      "label": "Código: arreglar pose/cámara/carga",
+      "type": "action",
+      "detail": "Código: arreglar pose/cámara/carga",
+      "docRef": "FLOW_3D_MASTER.md#fix4",
+      "gate": null
+    },
+    {
+      "id": "FIX5",
+      "stage": "repair",
+      "label": "Supuesto: medir eje/pivote real",
+      "type": "action",
+      "detail": "Supuesto: medir eje/pivote real",
+      "docRef": "FLOW_3D_MASTER.md#fix5",
+      "gate": null
+    },
+    {
+      "id": "FIX6",
+      "stage": "repair",
+      "label": "QA: agregar gate obligatorio",
+      "type": "action",
+      "detail": "Error UMBRIA-QA-004: publicación anterior basó la aceptación en estructura sin probar píxeles visuales.",
+      "docRef": "FLOW_3D_MASTER.md#fix6",
+      "gate": null
+    },
+    {
+      "id": "FIX7",
+      "stage": "repair",
+      "label": "Composición: corregir blocking",
+      "type": "action",
+      "detail": "Composición: corregir blocking",
+      "docRef": "FLOW_3D_MASTER.md#fix7",
+      "gate": null
+    },
+    {
+      "id": "FIX8",
+      "stage": "repair",
+      "label": "Correr prueba original y nueva regresión",
+      "type": "action",
+      "detail": "Correr prueba original y nueva regresión",
+      "docRef": "FLOW_3D_MASTER.md#fix8",
+      "gate": null
+    },
+    {
+      "id": "D26",
+      "stage": "repair",
+      "label": "¿El fallo se resolvió de verdad?",
+      "type": "decision",
+      "detail": "¿El fallo se resolvió de verdad?",
+      "docRef": "FLOW_3D_MASTER.md#d26",
+      "gate": null
+    },
+    {
+      "id": "FIX9",
+      "stage": "repair",
+      "label": "Comparar método alternativo",
+      "type": "action",
+      "detail": "Comparar método alternativo",
+      "docRef": "FLOW_3D_MASTER.md#fix9",
+      "gate": null
+    },
+    {
+      "id": "G0",
+      "stage": "persistence",
+      "label": "Persistir resultado sin exagerar madurez",
+      "type": "action",
+      "detail": "Persistir resultado sin exagerar madurez",
+      "docRef": "FLOW_3D_MASTER.md#g0",
+      "gate": null
+    },
+    {
+      "id": "G1",
+      "stage": "persistence",
+      "label": "Guardar escena, fuentes y proyecto editable",
+      "type": "action",
+      "detail": "Guardar escena, fuentes y proyecto editable",
+      "docRef": "FLOW_3D_MASTER.md#g1",
+      "gate": null
+    },
+    {
+      "id": "G2",
+      "stage": "persistence",
+      "label": "Fijar manifiesto SHA de assets",
+      "type": "action",
+      "detail": "Fijar manifiesto SHA de assets",
+      "docRef": "FLOW_3D_MASTER.md#g2",
+      "gate": null
+    },
+    {
+      "id": "G3",
+      "stage": "persistence",
+      "label": "Guardar RESULT, QA y clips ejecutados",
+      "type": "action",
+      "detail": "Guardar RESULT, QA y clips ejecutados",
+      "docRef": "FLOW_3D_MASTER.md#g3",
+      "gate": null
+    },
+    {
+      "id": "G4",
+      "stage": "persistence",
+      "label": "Registrar issues + causa + patch",
+      "type": "action",
+      "detail": "Registrar issues + causa + patch",
+      "docRef": "FLOW_3D_MASTER.md#g4",
+      "gate": null
+    },
+    {
+      "id": "G5",
+      "stage": "persistence",
+      "label": "Guardar perfiles de orientación por asset",
+      "type": "action",
+      "detail": "Guardar perfiles de orientación por asset",
+      "docRef": "FLOW_3D_MASTER.md#g5",
+      "gate": null
+    },
+    {
+      "id": "G6",
+      "stage": "persistence",
+      "label": "Proponer capacidad reusable con propietario",
+      "type": "action",
+      "detail": "Proponer capacidad reusable con propietario",
+      "docRef": "FLOW_3D_MASTER.md#g6",
+      "gate": null
+    },
+    {
+      "id": "G7",
+      "stage": "persistence",
+      "label": "Guardar NEXT_ACTION y rollback",
+      "type": "action",
+      "detail": "Guardar NEXT_ACTION y rollback",
+      "docRef": "FLOW_3D_MASTER.md#g7",
+      "gate": null
+    },
+    {
+      "id": "G8",
+      "stage": "persistence",
+      "label": "Vincular creación al flujo y versión exacta",
+      "type": "action",
+      "detail": "Toda creación nueva debe conservar flowId, flowVersion, flowSha256, commit/archivo de resultado, QA de nodos y lineage. Obras anteriores: flowVersionUsed = null (desconocido), no atribuir flujo nuevo retroactivamente.",
+      "docRef": "FLOW_3D_MASTER.md#g8",
+      "gate": null
+    },
+    {
+      "id": "D27",
+      "stage": "persistence",
+      "label": "¿Capacidad demostrada en otro consumidor?",
+      "type": "decision",
+      "detail": "¿Capacidad demostrada en otro consumidor?",
+      "docRef": "FLOW_3D_MASTER.md#d27",
+      "gate": null
+    },
+    {
+      "id": "G9",
+      "stage": "persistence",
+      "label": "Propuesta compartida con QA autónomo",
+      "type": "action",
+      "detail": "Propuesta compartida con QA autónomo",
+      "docRef": "FLOW_3D_MASTER.md#g9",
+      "gate": null
+    },
+    {
+      "id": "G10",
+      "stage": "persistence",
+      "label": "Mantener como artefacto propio",
+      "type": "action",
+      "detail": "Mantener como artefacto propio",
+      "docRef": "FLOW_3D_MASTER.md#g10",
+      "gate": null
+    },
+    {
+      "id": "PUB0",
+      "stage": "publish",
+      "label": "Evaluar madurez y derechos",
+      "type": "action",
+      "detail": "Persistir la obra completa y publicar preview técnico aunque tenga defectos artísticos.",
+      "docRef": "FLOW_3D_MASTER.md#pub0",
+      "gate": null
+    },
+    {
+      "id": "D28",
+      "stage": "publish",
+      "label": "¿Hay prueba REAL suficiente para publicar como validado?",
+      "type": "decision",
+      "detail": "¿Hay prueba REAL suficiente para publicar como validado?",
+      "docRef": "FLOW_3D_MASTER.md#d28",
+      "gate": null
+    },
+    {
+      "id": "PUB1",
+      "stage": "publish",
+      "label": "Dejar candidato / no fingir PASS",
+      "type": "action",
+      "detail": "Si no se verificó render/Android, publicar igualmente candidato técnico con advertencia, cuando sea legal y viable. Nunca esconder la obra; archivar fuente íntegra si una limitación real impide publicar.",
+      "docRef": "FLOW_3D_MASTER.md#pub1",
+      "gate": null
+    },
+    {
+      "id": "PUB2",
+      "stage": "publish",
+      "label": "Publicar demo aislada y verificable",
+      "type": "action",
+      "detail": "Publicar vista validada sin inventar aprobación artística.",
+      "docRef": "FLOW_3D_MASTER.md#pub2",
+      "gate": null
+    },
+    {
+      "id": "PUB3",
+      "stage": "publish",
+      "label": "Registrar enlace, commit, QA y limitaciones",
+      "type": "action",
+      "detail": "Guardar URL, fuente, artefactos y defectos para revisión externa.",
+      "docRef": "FLOW_3D_MASTER.md#pub3",
+      "gate": null
+    },
+    {
+      "id": "PUB4",
+      "stage": "publish",
+      "label": "Capturar aprendizaje para versión siguiente del flujo",
+      "type": "action",
+      "detail": "Un nuevo fallo propone versión NUEVA del flujo, conserva versiones anteriores inmutables y compara en misma tarea y evidencia. No sobrescribir histórico ni decir mejora si no hay corrida comparable.",
+      "docRef": "FLOW_3D_MASTER.md#pub4",
+      "gate": null
+    },
+    {
+      "id": "END0",
+      "stage": "publish",
+      "label": "FIN · Candidato o bloqueo documentado",
+      "type": "terminal",
+      "detail": "Obra completa persistida; publicación imposible sólo por causa legal/técnica real, nunca por D41 artístico.",
+      "docRef": "FLOW_3D_MASTER.md#end0",
+      "gate": null
+    },
+    {
+      "id": "END1",
+      "stage": "publish",
+      "label": "FIN · Publicado con evidencias y trazabilidad",
+      "type": "terminal",
+      "detail": "Obra íntegra persistida; el usuario la evalúa después.",
+      "docRef": "FLOW_3D_MASTER.md#end1",
+      "gate": null
+    },
+    {
+      "id": "D29",
+      "stage": "qa",
+      "label": "¿Derechos, SHA y procedencia verificados?",
+      "type": "decision",
+      "detail": "Cada GLB, textura y clip tiene fuente legal, ID y SHA verificado, sin copia comercial.",
+      "docRef": "FLOW_3D_MASTER.md#d29",
+      "gate": {
+        "id": "source-and-license",
+        "requiredEvidence": "Asset manifest con hash y licencia real",
+        "passCondition": "La carpeta privada o registro identifica origen, derechos y versiones de todos los activos",
+        "onFailure": "QA18",
+        "onNotRun": "QA17",
+        "receiptFields": [
+          "status",
+          "evidenceRefs",
+          "sourceSha",
+          "measuredAt"
+        ],
+        "blocking": false,
+        "reportOnly": true,
+        "continueEvenOnFail": true,
+        "continueEvenIfNotRun": true
+      }
+    },
+    {
+      "id": "QA18",
+      "stage": "qa",
+      "label": "FAIL_SOURCE_AND_LICENSE",
+      "type": "action",
+      "detail": "Registrar error de D29, seguir con informe, sin reparación en la misma producción.",
+      "docRef": "FLOW_3D_MASTER.md#qa18",
+      "gate": {
+        "id": "source-and-license",
+        "onFailure": "FIX0",
+        "onNotRun": "QA17"
+      }
+    },
+    {
+      "id": "D30",
+      "stage": "qa",
+      "label": "¿Escala, pivotes, distancias y colisiones verificados?",
+      "type": "decision",
+      "detail": "La escala, pivote, gravedad, suelos y distancias de interacción coinciden con la escena física.",
+      "docRef": "FLOW_3D_MASTER.md#d30",
+      "gate": {
+        "id": "geometry-clearance",
+        "requiredEvidence": "Planta/colliders + mediciones y capturas reales",
+        "passCondition": "Sin intersección no intencional entre silla/mesa, suelo/pies, puerta/paso y objetos de acción",
+        "onFailure": "QA19",
+        "onNotRun": "QA17",
+        "receiptFields": [
+          "status",
+          "evidenceRefs",
+          "sourceSha",
+          "measuredAt"
+        ],
+        "blocking": false,
+        "reportOnly": true,
+        "continueEvenOnFail": true,
+        "continueEvenIfNotRun": true
+      }
+    },
+    {
+      "id": "QA19",
+      "stage": "qa",
+      "label": "FAIL_GEOMETRY_CLEARANCE",
+      "type": "action",
+      "detail": "Registrar error de D30, seguir con informe, sin reparación en la misma producción.",
+      "docRef": "FLOW_3D_MASTER.md#qa19",
+      "gate": {
+        "id": "geometry-clearance",
+        "onFailure": "FIX0",
+        "onNotRun": "QA17"
+      }
+    },
+    {
+      "id": "D31",
+      "stage": "qa",
+      "label": "¿Materiales, UV y legibilidad verificados?",
+      "type": "decision",
+      "detail": "Texturas y materiales preservan UV, semántica, seams y contraste a las vistas de película.",
+      "docRef": "FLOW_3D_MASTER.md#d31",
+      "gate": {
+        "id": "material-uv",
+        "requiredEvidence": "Capturas detalle antes/después; shader y textura verificada",
+        "passCondition": "No hay superficies perdidas, UV invertidas, seams obvios ni materiales sin correspondencia",
+        "onFailure": "QA20",
+        "onNotRun": "QA17",
+        "receiptFields": [
+          "status",
+          "evidenceRefs",
+          "sourceSha",
+          "measuredAt"
+        ],
+        "blocking": false,
+        "reportOnly": true,
+        "continueEvenOnFail": true,
+        "continueEvenIfNotRun": true
+      }
+    },
+    {
+      "id": "QA20",
+      "stage": "qa",
+      "label": "FAIL_MATERIAL_UV",
+      "type": "action",
+      "detail": "Registrar error de D31, seguir con informe, sin reparación en la misma producción.",
+      "docRef": "FLOW_3D_MASTER.md#qa20",
+      "gate": {
+        "id": "material-uv",
+        "onFailure": "FIX0",
+        "onNotRun": "QA17"
+      }
+    },
+    {
+      "id": "D32",
+      "stage": "qa",
+      "label": "¿Cerramiento, estructura y clima verificados?",
+      "type": "decision",
+      "detail": "Los interiores tienen techo físico, muros continuos, puertas/ventanas reales y luz coherente.",
+      "docRef": "FLOW_3D_MASTER.md#d32",
+      "gate": {
+        "id": "room-closure",
+        "requiredEvidence": "Capturas interior, exterior, planta y corte",
+        "passCondition": "No aparece cielo fuera de aberturas; techo en cine y corte opcional en edición",
+        "onFailure": "QA21",
+        "onNotRun": "QA17",
+        "receiptFields": [
+          "status",
+          "evidenceRefs",
+          "sourceSha",
+          "measuredAt"
+        ],
+        "blocking": false,
+        "reportOnly": true,
+        "continueEvenOnFail": true,
+        "continueEvenIfNotRun": true
+      }
+    },
+    {
+      "id": "QA21",
+      "stage": "qa",
+      "label": "FAIL_ROOM_CLOSURE",
+      "type": "action",
+      "detail": "Registrar error de D32, seguir con informe, sin reparación en la misma producción.",
+      "docRef": "FLOW_3D_MASTER.md#qa21",
+      "gate": {
+        "id": "room-closure",
+        "onFailure": "FIX0",
+        "onNotRun": "QA17"
+      }
+    },
+    {
+      "id": "D33",
+      "stage": "qa",
+      "label": "¿Frentes reales y sentido de uso verificados?",
+      "type": "decision",
+      "detail": "Actor y muebles tienen frente local medido sobre GLB y reglas semánticas hacia sus targets.",
+      "docRef": "FLOW_3D_MASTER.md#d33",
+      "gate": {
+        "id": "semantic-orientation",
+        "requiredEvidence": "Perfil orientation SHA + toma frontal/perfil + dot medido",
+        "passCondition": "dot(miradaReal,velocidad)>0.90 en Walk; sillas seatForward hacia mesa y respaldo afuera",
+        "onFailure": "QA22",
+        "onNotRun": "QA17",
+        "receiptFields": [
+          "status",
+          "evidenceRefs",
+          "sourceSha",
+          "measuredAt"
+        ],
+        "blocking": false,
+        "reportOnly": true,
+        "continueEvenOnFail": true,
+        "continueEvenIfNotRun": true
+      }
+    },
+    {
+      "id": "QA22",
+      "stage": "qa",
+      "label": "FAIL_SEMANTIC_ORIENTATION",
+      "type": "action",
+      "detail": "Registrar error de D33, seguir con informe, sin reparación en la misma producción.",
+      "docRef": "FLOW_3D_MASTER.md#qa22",
+      "gate": {
+        "id": "semantic-orientation",
+        "onFailure": "FIX0",
+        "onNotRun": "QA17"
+      }
+    },
+    {
+      "id": "D34",
+      "stage": "qa",
+      "label": "¿Animación, contactos y giro verificados?",
+      "type": "decision",
+      "detail": "La locomoción coincide con trayectoria, pose y clips; ambos pies no deslizan ni atraviesan suelo.",
+      "docRef": "FLOW_3D_MASTER.md#d34",
+      "gate": {
+        "id": "motion",
+        "requiredEvidence": "Video/capturas en 4 tiempos y mediciones de root/feet",
+        "passCondition": "No moonwalk, rotaciones continuas, contactos medidos, idle final correcto",
+        "onFailure": "QA23",
+        "onNotRun": "QA17",
+        "receiptFields": [
+          "status",
+          "evidenceRefs",
+          "sourceSha",
+          "measuredAt"
+        ],
+        "blocking": false,
+        "reportOnly": true,
+        "continueEvenOnFail": true,
+        "continueEvenIfNotRun": true
+      }
+    },
+    {
+      "id": "QA23",
+      "stage": "qa",
+      "label": "FAIL_MOTION",
+      "type": "action",
+      "detail": "Registrar error de D34, seguir con informe, sin reparación en la misma producción.",
+      "docRef": "FLOW_3D_MASTER.md#qa23",
+      "gate": {
+        "id": "motion",
+        "onFailure": "FIX0",
+        "onNotRun": "QA17"
+      }
+    },
+    {
+      "id": "D35",
+      "stage": "qa",
+      "label": "¿Interacción demostrada verificados?",
+      "type": "decision",
+      "detail": "La interacción usa clip/socket/IK real y no una simulación de cortes que esconda el fallo.",
+      "docRef": "FLOW_3D_MASTER.md#d35",
+      "gate": {
+        "id": "interaction",
+        "requiredEvidence": "Plano manos+objeto con joints/attachments comprobados",
+        "passCondition": "Contacto auténtico y sin penetración; si no hay clip, NOT_RUN y no anunciar agarre",
+        "onFailure": "QA24",
+        "onNotRun": "QA17",
+        "receiptFields": [
+          "status",
+          "evidenceRefs",
+          "sourceSha",
+          "measuredAt"
+        ],
+        "blocking": false,
+        "reportOnly": true,
+        "continueEvenOnFail": true,
+        "continueEvenIfNotRun": true
+      }
+    },
+    {
+      "id": "QA24",
+      "stage": "qa",
+      "label": "FAIL_INTERACTION",
+      "type": "action",
+      "detail": "Registrar error de D35, seguir con informe, sin reparación en la misma producción.",
+      "docRef": "FLOW_3D_MASTER.md#qa24",
+      "gate": {
+        "id": "interaction",
+        "onFailure": "FIX0",
+        "onNotRun": "QA17"
+      }
+    },
+    {
+      "id": "D36",
+      "stage": "qa",
+      "label": "¿Cámaras, luz y narrativa verificados?",
+      "type": "decision",
+      "detail": "Planos muestran acciones, continuidad, encuadres legibles y luz con exposición adecuada.",
+      "docRef": "FLOW_3D_MASTER.md#d36",
+      "gate": {
+        "id": "cinematography",
+        "requiredEvidence": "Contacto visual de 5 tomas + timeline exportado",
+        "passCondition": "No se recortan sujetos importantes, escenas legibles en móvil y cortes sin esconder errores",
+        "onFailure": "QA25",
+        "onNotRun": "QA17",
+        "receiptFields": [
+          "status",
+          "evidenceRefs",
+          "sourceSha",
+          "measuredAt"
+        ],
+        "blocking": false,
+        "reportOnly": true,
+        "continueEvenOnFail": true,
+        "continueEvenIfNotRun": true
+      }
+    },
+    {
+      "id": "QA25",
+      "stage": "qa",
+      "label": "FAIL_CINEMATOGRAPHY",
+      "type": "action",
+      "detail": "Registrar error de D36, seguir con informe, sin reparación en la misma producción.",
+      "docRef": "FLOW_3D_MASTER.md#qa25",
+      "gate": {
+        "id": "cinematography",
+        "onFailure": "FIX0",
+        "onNotRun": "QA17"
+      }
+    },
+    {
+      "id": "D37",
+      "stage": "qa",
+      "label": "¿Rendimiento y experiencia móvil verificados?",
+      "type": "decision",
+      "detail": "El visor carga en Chromium real y un navegador móvil; fps, interacción y controles aceptables.",
+      "docRef": "FLOW_3D_MASTER.md#d37",
+      "gate": {
+        "id": "mobile-performance",
+        "requiredEvidence": "Chromium móvil y desktop, memoria y registros de errores",
+        "passCondition": "No pantalla negra ni errores JS, controles tocables, WebGL y recursos efectivos",
+        "onFailure": "QA26",
+        "onNotRun": "QA17",
+        "receiptFields": [
+          "status",
+          "evidenceRefs",
+          "sourceSha",
+          "measuredAt"
+        ],
+        "blocking": false,
+        "reportOnly": true,
+        "continueEvenOnFail": true,
+        "continueEvenIfNotRun": true
+      }
+    },
+    {
+      "id": "QA26",
+      "stage": "qa",
+      "label": "FAIL_MOBILE_PERFORMANCE",
+      "type": "action",
+      "detail": "Registrar error de D37, seguir con informe, sin reparación en la misma producción.",
+      "docRef": "FLOW_3D_MASTER.md#qa26",
+      "gate": {
+        "id": "mobile-performance",
+        "onFailure": "FIX0",
+        "onNotRun": "QA17"
+      }
+    },
+    {
+      "id": "D38",
+      "stage": "qa",
+      "label": "¿Guardar, reabrir y reproducir verificados?",
+      "type": "decision",
+      "detail": "La escena puede exportarse, versionarse, reabrirse y reproducirse sin cambiar IDs/poses.",
+      "docRef": "FLOW_3D_MASTER.md#d38",
+      "gate": {
+        "id": "reopen-roundtrip",
+        "requiredEvidence": "Roundtrip de JSON + GLB/clips por SHA + screenshots repetidos",
+        "passCondition": "Dos aperturas sobre versión fijada reproducen objetos, materiales, acciones y cámaras",
+        "onFailure": "QA27",
+        "onNotRun": "QA17",
+        "receiptFields": [
+          "status",
+          "evidenceRefs",
+          "sourceSha",
+          "measuredAt"
+        ],
+        "blocking": false,
+        "reportOnly": true,
+        "continueEvenOnFail": true,
+        "continueEvenIfNotRun": true
+      }
+    },
+    {
+      "id": "QA27",
+      "stage": "qa",
+      "label": "FAIL_REOPEN_ROUNDTRIP",
+      "type": "action",
+      "detail": "Registrar error de D38, seguir con informe, sin reparación en la misma producción.",
+      "docRef": "FLOW_3D_MASTER.md#qa27",
+      "gate": {
+        "id": "reopen-roundtrip",
+        "onFailure": "FIX0",
+        "onNotRun": "QA17"
+      }
+    },
+    {
+      "id": "PF0",
+      "stage": "planning",
+      "label": "Detectar entidades protagonistas y visibilidad",
+      "type": "action",
+      "detail": "Elegir la técnica adecuada por entidad antes de construir, sin acortar el encargo.",
+      "docRef": "versions/1.2.0/PREVENTION_CONTRACT.md#pf0",
+      "gate": null
+    },
+    {
+      "id": "PF1",
+      "stage": "planning",
+      "label": "Escribir aceptación positiva y contraejemplo engañoso",
+      "type": "action",
+      "detail": "Escribir criterios positivos y contraejemplos de manera breve, sin detenerse a replanificar eternamente.",
+      "docRef": "versions/1.2.0/PREVENTION_CONTRACT.md#pf1",
+      "gate": null
+    },
+    {
+      "id": "PF2",
+      "stage": "planning",
+      "label": "Elegir origen y representación idónea",
+      "type": "action",
+      "detail": "Comparar técnicas/recursos; si no hay asset ideal, construir lo mejor posible con medios legales.",
+      "docRef": "versions/1.2.0/PREVENTION_CONTRACT.md#pf2",
+      "gate": null
+    },
+    {
+      "id": "PF3",
+      "stage": "planning",
+      "label": "Plan temprano de encuadre, ritmo, luz y tolerancias",
+      "type": "action",
+      "detail": "Planear escena, cámara, ritmo y recursos completos, no sólo primer artículo.",
+      "docRef": "versions/1.2.0/PREVENTION_CONTRACT.md#pf3",
+      "gate": null
+    },
+    {
+      "id": "D39",
+      "stage": "planning",
+      "label": "¿Plan preventivo probado antes de generar mallas?",
+      "type": "decision",
+      "detail": "Diagnóstico del plan, NO veto: PASS o FAIL permiten continuar a adquisición y producción completas.",
+      "docRef": "versions/1.2.0/PREVENTION_CONTRACT.md#d39",
+      "gate": null,
+      "preflightGate": {
+        "id": "before-build",
+        "validator": "preflight.mjs#validatePreflightPlan",
+        "requiredEvidence": "preventive blueprint with counterexamples",
+        "phase": "BEFORE_BUILD",
+        "blocking": false,
+        "reportOnly": true,
+        "continueEvenOnFail": true,
+        "continueEvenIfNotRun": true
+      }
+    },
+    {
+      "id": "PP0",
+      "stage": "acquisition",
+      "label": "Verificar que protagonista usa recurso apropiado",
+      "type": "action",
+      "detail": "Documentar recursos reales y técnica empleada como señales, no excusa para parar.",
+      "docRef": "versions/1.2.0/PREVENTION_CONTRACT.md#pp0",
+      "gate": null
+    },
+    {
+      "id": "D40",
+      "stage": "acquisition",
+      "label": "¿Asset/representación sirve al plano protagonista?",
+      "type": "decision",
+      "detail": "Diagnóstico de asset: PASS y FAIL siguen produciendo la escena completa; no fingir licencia o modelo.",
+      "docRef": "versions/1.2.0/PREVENTION_CONTRACT.md#d40",
+      "gate": null,
+      "preflightGate": {
+        "id": "technique-suitability",
+        "validator": "preflight.mjs#validateAcquiredAssets",
+        "requiredEvidence": "preventive blueprint with counterexamples",
+        "phase": "BEFORE_CINEMATIC",
+        "blocking": false,
+        "reportOnly": true,
+        "continueEvenOnFail": true,
+        "continueEvenIfNotRun": true
+      }
+    },
+    {
+      "id": "PP1",
+      "stage": "acquisition",
+      "label": "Construir UN primer artículo visible antes de replicar",
+      "type": "action",
+      "detail": "Primer artículo visual opcional y breve, nunca techo del encargo.",
+      "docRef": "versions/1.2.0/PREVENTION_CONTRACT.md#pp1",
+      "gate": null
+    },
+    {
+      "id": "D41",
+      "stage": "acquisition",
+      "label": "¿Primer artículo real apto para escalar?",
+      "type": "decision",
+      "detail": "Evaluación temprana no bloqueante: PASS/FAIL/NOT_RUN continúan al desarrollo del conjunto pedido.",
+      "docRef": "versions/1.2.0/PREVENTION_CONTRACT.md#d41",
+      "gate": null,
+      "preflightGate": {
+        "id": "before-replication",
+        "validator": "preflight.mjs#validateFirstArticle",
+        "requiredEvidence": "real rendered first-article+asset SHA",
+        "phase": "BEFORE_REPLICATION",
+        "blocking": false,
+        "reportOnly": true,
+        "continueEvenOnFail": true,
+        "continueEvenIfNotRun": true
+      }
+    },
+    {
+      "id": "PP2",
+      "stage": "acquisition",
+      "label": "Descartar estrategia fallida y reacquirir",
+      "type": "action",
+      "detail": "Registrar defecto temprano y continuar al cuerpo de la escena. No reiniciar, no cancelar, no dejarlo en canario.",
+      "docRef": "versions/1.2.0/PREVENTION_CONTRACT.md#pp2",
+      "gate": null
+    },
+    {
+      "id": "PP3",
+      "stage": "acquisition",
+      "label": "Sin prueba visual: sólo canario acotado",
+      "type": "action",
+      "detail": "Aunque falte GPU, completar toda la escena; entregar vista técnica candidata y marcar límites, no sólo una muestra.",
+      "docRef": "versions/1.2.0/PREVENTION_CONTRACT.md#pp3",
+      "gate": null
+    },
+    {
+      "id": "CAM0",
+      "stage": "cinema",
+      "label": "Definir velocidad, enfoque y continuidad antes de timeline largo",
+      "type": "action",
+      "detail": "Planear cámara para la película íntegra, no cuatro segundos de muestra.",
+      "docRef": "versions/1.2.0/PREVENTION_CONTRACT.md#cam0",
+      "gate": null
+    },
+    {
+      "id": "D42",
+      "stage": "cinema",
+      "label": "¿Ritmo continuo o cortes intencionales comprobados?",
+      "type": "decision",
+      "detail": "Cámara diagnosticada, pero si falla no se cancela ni se reduce el metraje.",
+      "docRef": "versions/1.2.0/PREVENTION_CONTRACT.md#d42",
+      "gate": null,
+      "preflightGate": {
+        "id": "camera-preflight",
+        "validator": "preflight.mjs#validatePreflightPlan",
+        "requiredEvidence": "preventive blueprint with counterexamples",
+        "phase": "BEFORE_CINEMATIC",
+        "blocking": false,
+        "reportOnly": true,
+        "continueEvenOnFail": true,
+        "continueEvenIfNotRun": true
+      }
+    }
+  ],
+  "edges": [
+    {
+      "from": "I0",
+      "to": "I1",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "I1",
+      "to": "I2",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "I2",
+      "to": "D0",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "D0",
+      "to": "T1",
+      "label": "Escena",
+      "kind": "decision"
+    },
+    {
+      "from": "D0",
+      "to": "T2",
+      "label": "Personaje",
+      "kind": "decision"
+    },
+    {
+      "from": "D0",
+      "to": "T3",
+      "label": "Movimiento",
+      "kind": "decision"
+    },
+    {
+      "from": "D0",
+      "to": "T4",
+      "label": "Cine",
+      "kind": "decision"
+    },
+    {
+      "from": "D0",
+      "to": "T5",
+      "label": "Texturas",
+      "kind": "decision"
+    },
+    {
+      "from": "D0",
+      "to": "T6",
+      "label": "FX",
+      "kind": "decision"
+    },
+    {
+      "from": "D0",
+      "to": "T7",
+      "label": "Integración",
+      "kind": "decision"
+    },
+    {
+      "from": "T1",
+      "to": "I3",
+      "label": "",
+      "kind": "normal"
+    },
+    {
+      "from": "T2",
+      "to": "I3",
+      "label": "",
+      "kind": "normal"
+    },
+    {
+      "from": "T3",
+      "to": "I3",
+      "label": "",
+      "kind": "normal"
+    },
+    {
+      "from": "T4",
+      "to": "I3",
+      "label": "",
+      "kind": "normal"
+    },
+    {
+      "from": "T5",
+      "to": "I3",
+      "label": "",
+      "kind": "normal"
+    },
+    {
+      "from": "T6",
+      "to": "I3",
+      "label": "",
+      "kind": "normal"
+    },
+    {
+      "from": "T7",
+      "to": "I3",
+      "label": "",
+      "kind": "normal"
+    },
+    {
+      "from": "I3",
+      "to": "I4",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "I4",
+      "to": "R0",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "R0",
+      "to": "R1",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "R1",
+      "to": "R2",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "R2",
+      "to": "R3",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "R3",
+      "to": "D1",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "D1",
+      "to": "R4",
+      "label": "Sí",
+      "kind": "decision"
+    },
+    {
+      "from": "D1",
+      "to": "R5",
+      "label": "Parcial",
+      "kind": "decision"
+    },
+    {
+      "from": "D1",
+      "to": "R6",
+      "label": "No",
+      "kind": "decision"
+    },
+    {
+      "from": "R4",
+      "to": "R7",
+      "label": "",
+      "kind": "normal"
+    },
+    {
+      "from": "R5",
+      "to": "R7",
+      "label": "",
+      "kind": "normal"
+    },
+    {
+      "from": "R6",
+      "to": "R8",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "R8",
+      "to": "R9",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "R9",
+      "to": "D2",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "D2",
+      "to": "R10",
+      "label": "Sí",
+      "kind": "decision"
+    },
+    {
+      "from": "D2",
+      "to": "R11",
+      "label": "No",
+      "kind": "decision"
+    },
+    {
+      "from": "R7",
+      "to": "P0",
+      "label": "",
+      "kind": "normal"
+    },
+    {
+      "from": "R10",
+      "to": "P0",
+      "label": "",
+      "kind": "normal"
+    },
+    {
+      "from": "R11",
+      "to": "P0",
+      "label": "",
+      "kind": "normal"
+    },
+    {
+      "from": "P0",
+      "to": "P1",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "P1",
+      "to": "P2",
+      "label": "",
+      "kind": "normal"
+    },
+    {
+      "from": "P2",
+      "to": "D3",
+      "label": "",
+      "kind": "normal"
+    },
+    {
+      "from": "P1",
+      "to": "P3",
+      "label": "",
+      "kind": "normal"
+    },
+    {
+      "from": "P3",
+      "to": "D3",
+      "label": "",
+      "kind": "normal"
+    },
+    {
+      "from": "P1",
+      "to": "P4",
+      "label": "",
+      "kind": "normal"
+    },
+    {
+      "from": "P4",
+      "to": "D3",
+      "label": "",
+      "kind": "normal"
+    },
+    {
+      "from": "P1",
+      "to": "P5",
+      "label": "",
+      "kind": "normal"
+    },
+    {
+      "from": "P5",
+      "to": "D3",
+      "label": "",
+      "kind": "normal"
+    },
+    {
+      "from": "P1",
+      "to": "P6",
+      "label": "",
+      "kind": "normal"
+    },
+    {
+      "from": "P6",
+      "to": "D3",
+      "label": "",
+      "kind": "normal"
+    },
+    {
+      "from": "P1",
+      "to": "P7",
+      "label": "",
+      "kind": "normal"
+    },
+    {
+      "from": "P7",
+      "to": "D3",
+      "label": "",
+      "kind": "normal"
+    },
+    {
+      "from": "P1",
+      "to": "P8",
+      "label": "",
+      "kind": "normal"
+    },
+    {
+      "from": "P8",
+      "to": "D3",
+      "label": "",
+      "kind": "normal"
+    },
+    {
+      "from": "D3",
+      "to": "W0",
+      "label": "Sí",
+      "kind": "decision"
+    },
+    {
+      "from": "D3",
+      "to": "W1",
+      "label": "No",
+      "kind": "decision"
+    },
+    {
+      "from": "W0",
+      "to": "P9",
+      "label": "",
+      "kind": "normal"
+    },
+    {
+      "from": "W1",
+      "to": "P9",
+      "label": "",
+      "kind": "normal"
+    },
+    {
+      "from": "A0",
+      "to": "A1",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "A1",
+      "to": "D4",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "D4",
+      "to": "A2",
+      "label": "Modelos",
+      "kind": "decision"
+    },
+    {
+      "from": "A2",
+      "to": "A8",
+      "label": "",
+      "kind": "normal"
+    },
+    {
+      "from": "D4",
+      "to": "A3",
+      "label": "Personajes",
+      "kind": "decision"
+    },
+    {
+      "from": "A3",
+      "to": "A8",
+      "label": "",
+      "kind": "normal"
+    },
+    {
+      "from": "D4",
+      "to": "A4",
+      "label": "Clips",
+      "kind": "decision"
+    },
+    {
+      "from": "A4",
+      "to": "A8",
+      "label": "",
+      "kind": "normal"
+    },
+    {
+      "from": "D4",
+      "to": "A5",
+      "label": "Texturas",
+      "kind": "decision"
+    },
+    {
+      "from": "A5",
+      "to": "A8",
+      "label": "",
+      "kind": "normal"
+    },
+    {
+      "from": "D4",
+      "to": "A6",
+      "label": "Audio",
+      "kind": "decision"
+    },
+    {
+      "from": "A6",
+      "to": "A8",
+      "label": "",
+      "kind": "normal"
+    },
+    {
+      "from": "D4",
+      "to": "A7",
+      "label": "Efectos",
+      "kind": "decision"
+    },
+    {
+      "from": "A7",
+      "to": "A8",
+      "label": "",
+      "kind": "normal"
+    },
+    {
+      "from": "A8",
+      "to": "D5",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "D5",
+      "to": "A9",
+      "label": "No",
+      "kind": "decision"
+    },
+    {
+      "from": "D5",
+      "to": "A10",
+      "label": "Sí",
+      "kind": "decision"
+    },
+    {
+      "from": "A9",
+      "to": "A0",
+      "label": "Buscar alternativa",
+      "kind": "repair"
+    },
+    {
+      "from": "A10",
+      "to": "A11",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "A11",
+      "to": "A12",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "B0",
+      "to": "D6",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "D6",
+      "to": "H0",
+      "label": "Humanoide",
+      "kind": "decision"
+    },
+    {
+      "from": "D6",
+      "to": "Q0",
+      "label": "Animal",
+      "kind": "decision"
+    },
+    {
+      "from": "D6",
+      "to": "O0",
+      "label": "Prop",
+      "kind": "decision"
+    },
+    {
+      "from": "D6",
+      "to": "E0",
+      "label": "Arquitectura",
+      "kind": "decision"
+    },
+    {
+      "from": "D6",
+      "to": "F0",
+      "label": "FX",
+      "kind": "decision"
+    },
+    {
+      "from": "D6",
+      "to": "C0",
+      "label": "Cámara",
+      "kind": "decision"
+    },
+    {
+      "from": "Q0",
+      "to": "B1",
+      "label": "Perfil de rig propio",
+      "kind": "normal"
+    },
+    {
+      "from": "B1",
+      "to": "H1",
+      "label": "Si se adapta",
+      "kind": "normal"
+    },
+    {
+      "from": "H0",
+      "to": "H1",
+      "label": "",
+      "kind": "normal"
+    },
+    {
+      "from": "O0",
+      "to": "O1",
+      "label": "",
+      "kind": "normal"
+    },
+    {
+      "from": "E0",
+      "to": "E1",
+      "label": "",
+      "kind": "normal"
+    },
+    {
+      "from": "F0",
+      "to": "F1",
+      "label": "",
+      "kind": "normal"
+    },
+    {
+      "from": "C0",
+      "to": "C1",
+      "label": "",
+      "kind": "normal"
+    },
+    {
+      "from": "H1",
+      "to": "H2",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "H2",
+      "to": "H3",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "H3",
+      "to": "H4",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "H4",
+      "to": "D7",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "D7",
+      "to": "H5",
+      "label": "No",
+      "kind": "decision"
+    },
+    {
+      "from": "D7",
+      "to": "H6",
+      "label": "Sí",
+      "kind": "decision"
+    },
+    {
+      "from": "H5",
+      "to": "H7",
+      "label": "",
+      "kind": "normal"
+    },
+    {
+      "from": "H6",
+      "to": "H7",
+      "label": "",
+      "kind": "normal"
+    },
+    {
+      "from": "H7",
+      "to": "H8",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "H8",
+      "to": "D8",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "D8",
+      "to": "H11",
+      "label": "Sí",
+      "kind": "decision"
+    },
+    {
+      "from": "D8",
+      "to": "H9",
+      "label": "No",
+      "kind": "decision"
+    },
+    {
+      "from": "H9",
+      "to": "H10",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "H10",
+      "to": "H11",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "H11",
+      "to": "S0",
+      "label": "",
+      "kind": "normal"
+    },
+    {
+      "from": "O1",
+      "to": "O2",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "O2",
+      "to": "D9",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "D9",
+      "to": "O3",
+      "label": "Silla",
+      "kind": "decision"
+    },
+    {
+      "from": "O3",
+      "to": "O8",
+      "label": "",
+      "kind": "normal"
+    },
+    {
+      "from": "O8",
+      "to": "S0",
+      "label": "",
+      "kind": "normal"
+    },
+    {
+      "from": "D9",
+      "to": "O4",
+      "label": "Mesa",
+      "kind": "decision"
+    },
+    {
+      "from": "O4",
+      "to": "O9",
+      "label": "",
+      "kind": "normal"
+    },
+    {
+      "from": "O9",
+      "to": "S0",
+      "label": "",
+      "kind": "normal"
+    },
+    {
+      "from": "D9",
+      "to": "O5",
+      "label": "Libre",
+      "kind": "decision"
+    },
+    {
+      "from": "O5",
+      "to": "O10",
+      "label": "",
+      "kind": "normal"
+    },
+    {
+      "from": "O10",
+      "to": "S0",
+      "label": "",
+      "kind": "normal"
+    },
+    {
+      "from": "D9",
+      "to": "O6",
+      "label": "Funcional",
+      "kind": "decision"
+    },
+    {
+      "from": "O6",
+      "to": "O11",
+      "label": "",
+      "kind": "normal"
+    },
+    {
+      "from": "O11",
+      "to": "S0",
+      "label": "",
+      "kind": "normal"
+    },
+    {
+      "from": "D9",
+      "to": "O7",
+      "label": "Luz",
+      "kind": "decision"
+    },
+    {
+      "from": "O7",
+      "to": "O12",
+      "label": "",
+      "kind": "normal"
+    },
+    {
+      "from": "O12",
+      "to": "S0",
+      "label": "",
+      "kind": "normal"
+    },
+    {
+      "from": "E1",
+      "to": "E2",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "E2",
+      "to": "E3",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "E3",
+      "to": "E4",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "E4",
+      "to": "E5",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "E5",
+      "to": "D10",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "D10",
+      "to": "E6",
+      "label": "Interior",
+      "kind": "decision"
+    },
+    {
+      "from": "D10",
+      "to": "E7",
+      "label": "Exterior",
+      "kind": "decision"
+    },
+    {
+      "from": "E6",
+      "to": "E8",
+      "label": "",
+      "kind": "normal"
+    },
+    {
+      "from": "E7",
+      "to": "E8",
+      "label": "",
+      "kind": "normal"
+    },
+    {
+      "from": "E8",
+      "to": "E9",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "E9",
+      "to": "E10",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "E10",
+      "to": "S0",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "F1",
+      "to": "D11",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "D11",
+      "to": "F2",
+      "label": "Lluvia",
+      "kind": "decision"
+    },
+    {
+      "from": "F2",
+      "to": "F7",
+      "label": "",
+      "kind": "normal"
+    },
+    {
+      "from": "D11",
+      "to": "F3",
+      "label": "Niebla",
+      "kind": "decision"
+    },
+    {
+      "from": "F3",
+      "to": "F7",
+      "label": "",
+      "kind": "normal"
+    },
+    {
+      "from": "D11",
+      "to": "F4",
+      "label": "Humo",
+      "kind": "decision"
+    },
+    {
+      "from": "F4",
+      "to": "F7",
+      "label": "",
+      "kind": "normal"
+    },
+    {
+      "from": "D11",
+      "to": "F5",
+      "label": "Luz",
+      "kind": "decision"
+    },
+    {
+      "from": "F5",
+      "to": "F7",
+      "label": "",
+      "kind": "normal"
+    },
+    {
+      "from": "D11",
+      "to": "F6",
+      "label": "Textura",
+      "kind": "decision"
+    },
+    {
+      "from": "F6",
+      "to": "F7",
+      "label": "",
+      "kind": "normal"
+    },
+    {
+      "from": "F7",
+      "to": "F8",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "F8",
+      "to": "S0",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "S0",
+      "to": "S1",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "S1",
+      "to": "S2",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "S2",
+      "to": "S3",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "S3",
+      "to": "S4",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "S4",
+      "to": "S5",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "S5",
+      "to": "S6",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "S6",
+      "to": "S7",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "S7",
+      "to": "D12",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "D12",
+      "to": "S8",
+      "label": "No",
+      "kind": "decision"
+    },
+    {
+      "from": "D12",
+      "to": "S9",
+      "label": "Sí",
+      "kind": "decision"
+    },
+    {
+      "from": "S8",
+      "to": "OR0",
+      "label": "",
+      "kind": "normal"
+    },
+    {
+      "from": "S9",
+      "to": "OR0",
+      "label": "",
+      "kind": "normal"
+    },
+    {
+      "from": "OR0",
+      "to": "D13",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "D13",
+      "to": "OR1",
+      "label": "Actor",
+      "kind": "decision"
+    },
+    {
+      "from": "OR1",
+      "to": "OR6",
+      "label": "",
+      "kind": "normal"
+    },
+    {
+      "from": "OR6",
+      "to": "D14",
+      "label": "",
+      "kind": "normal"
+    },
+    {
+      "from": "D13",
+      "to": "OR2",
+      "label": "Silla",
+      "kind": "decision"
+    },
+    {
+      "from": "OR2",
+      "to": "OR7",
+      "label": "",
+      "kind": "normal"
+    },
+    {
+      "from": "OR7",
+      "to": "D14",
+      "label": "",
+      "kind": "normal"
+    },
+    {
+      "from": "D13",
+      "to": "OR3",
+      "label": "Funcional",
+      "kind": "decision"
+    },
+    {
+      "from": "OR3",
+      "to": "OR8",
+      "label": "",
+      "kind": "normal"
+    },
+    {
+      "from": "OR8",
+      "to": "D14",
+      "label": "",
+      "kind": "normal"
+    },
+    {
+      "from": "D13",
+      "to": "OR4",
+      "label": "Anclaje",
+      "kind": "decision"
+    },
+    {
+      "from": "OR4",
+      "to": "OR9",
+      "label": "",
+      "kind": "normal"
+    },
+    {
+      "from": "OR9",
+      "to": "D14",
+      "label": "",
+      "kind": "normal"
+    },
+    {
+      "from": "D13",
+      "to": "OR5",
+      "label": "Libre",
+      "kind": "decision"
+    },
+    {
+      "from": "OR5",
+      "to": "OR10",
+      "label": "",
+      "kind": "normal"
+    },
+    {
+      "from": "OR10",
+      "to": "D14",
+      "label": "",
+      "kind": "normal"
+    },
+    {
+      "from": "D14",
+      "to": "OR11",
+      "label": "No",
+      "kind": "decision"
+    },
+    {
+      "from": "D14",
+      "to": "OR14",
+      "label": "Sí",
+      "kind": "decision"
+    },
+    {
+      "from": "OR11",
+      "to": "OR12",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "OR12",
+      "to": "D15",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "D15",
+      "to": "OR13",
+      "label": "No",
+      "kind": "decision"
+    },
+    {
+      "from": "D15",
+      "to": "OR14",
+      "label": "Sí",
+      "kind": "decision"
+    },
+    {
+      "from": "OR13",
+      "to": "OR11",
+      "label": "Reinspección",
+      "kind": "repair"
+    },
+    {
+      "from": "OR14",
+      "to": "M0",
+      "label": "",
+      "kind": "normal"
+    },
+    {
+      "from": "M0",
+      "to": "M1",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "M1",
+      "to": "M2",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "M2",
+      "to": "M3",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "M3",
+      "to": "M4",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "M4",
+      "to": "M5",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "M5",
+      "to": "M6",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "M6",
+      "to": "M7",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "M7",
+      "to": "M8",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "M8",
+      "to": "M9",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "M9",
+      "to": "D16",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "D16",
+      "to": "M10",
+      "label": "No",
+      "kind": "decision"
+    },
+    {
+      "from": "D16",
+      "to": "D17",
+      "label": "Sí",
+      "kind": "decision"
+    },
+    {
+      "from": "M10",
+      "to": "M11",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "M11",
+      "to": "M12",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "M12",
+      "to": "M13",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "M13",
+      "to": "M14",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "M14",
+      "to": "D16",
+      "label": "Reprueba",
+      "kind": "repair"
+    },
+    {
+      "from": "D17",
+      "to": "M15",
+      "label": "Sí",
+      "kind": "decision"
+    },
+    {
+      "from": "D17",
+      "to": "M16",
+      "label": "No",
+      "kind": "decision"
+    },
+    {
+      "from": "M15",
+      "to": "C1",
+      "label": "",
+      "kind": "normal"
+    },
+    {
+      "from": "M16",
+      "to": "C1",
+      "label": "",
+      "kind": "normal"
+    },
+    {
+      "from": "C2",
+      "to": "C3",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "C3",
+      "to": "C4",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "C4",
+      "to": "C5",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "C5",
+      "to": "C6",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "C6",
+      "to": "C7",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "C7",
+      "to": "C8",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "C8",
+      "to": "D18",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "D18",
+      "to": "C9",
+      "label": "Oculta error",
+      "kind": "decision"
+    },
+    {
+      "from": "D18",
+      "to": "C10",
+      "label": "Muestra accion",
+      "kind": "decision"
+    },
+    {
+      "from": "C9",
+      "to": "M0",
+      "label": "Reparar actuación",
+      "kind": "repair"
+    },
+    {
+      "from": "C10",
+      "to": "QA0",
+      "label": "",
+      "kind": "normal"
+    },
+    {
+      "from": "QA0",
+      "to": "QA1",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "QA1",
+      "to": "QA2",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "QA2",
+      "to": "QA3",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "QA3",
+      "to": "QA4",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "QA4",
+      "to": "QA5",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "D19",
+      "to": "QA6",
+      "label": "No",
+      "kind": "decision"
+    },
+    {
+      "from": "D19",
+      "to": "D20",
+      "label": "Sí",
+      "kind": "decision"
+    },
+    {
+      "from": "QA6",
+      "to": "D20",
+      "label": "Registrar y seguir",
+      "kind": "normal"
+    },
+    {
+      "from": "D20",
+      "to": "QA8",
+      "label": "Actor",
+      "kind": "decision"
+    },
+    {
+      "from": "D20",
+      "to": "QA9",
+      "label": "Props",
+      "kind": "decision"
+    },
+    {
+      "from": "D20",
+      "to": "D21",
+      "label": "Sí",
+      "kind": "decision"
+    },
+    {
+      "from": "QA8",
+      "to": "D21",
+      "label": "Registrar y seguir",
+      "kind": "normal"
+    },
+    {
+      "from": "QA9",
+      "to": "D21",
+      "label": "Registrar y seguir",
+      "kind": "normal"
+    },
+    {
+      "from": "D21",
+      "to": "QA10",
+      "label": "Pies",
+      "kind": "decision"
+    },
+    {
+      "from": "D21",
+      "to": "QA11",
+      "label": "Raíz",
+      "kind": "decision"
+    },
+    {
+      "from": "D21",
+      "to": "D22",
+      "label": "Sí",
+      "kind": "decision"
+    },
+    {
+      "from": "QA10",
+      "to": "D22",
+      "label": "Registrar y seguir",
+      "kind": "normal"
+    },
+    {
+      "from": "QA11",
+      "to": "D22",
+      "label": "Registrar y seguir",
+      "kind": "normal"
+    },
+    {
+      "from": "D22",
+      "to": "QA12",
+      "label": "No",
+      "kind": "decision"
+    },
+    {
+      "from": "D22",
+      "to": "D23",
+      "label": "Sí",
+      "kind": "decision"
+    },
+    {
+      "from": "QA12",
+      "to": "D23",
+      "label": "Registrar y seguir",
+      "kind": "normal"
+    },
+    {
+      "from": "D23",
+      "to": "QA13",
+      "label": "No",
+      "kind": "decision"
+    },
+    {
+      "from": "D23",
+      "to": "D24",
+      "label": "Sí",
+      "kind": "decision"
+    },
+    {
+      "from": "QA13",
+      "to": "D24",
+      "label": "Registrar y seguir",
+      "kind": "normal"
+    },
+    {
+      "from": "D24",
+      "to": "QA14",
+      "label": "Arte",
+      "kind": "decision"
+    },
+    {
+      "from": "D24",
+      "to": "QA15",
+      "label": "Móvil",
+      "kind": "decision"
+    },
+    {
+      "from": "D24",
+      "to": "QA16",
+      "label": "Sí",
+      "kind": "decision"
+    },
+    {
+      "from": "QA14",
+      "to": "QA16",
+      "label": "Registrar y seguir",
+      "kind": "normal"
+    },
+    {
+      "from": "QA15",
+      "to": "QA16",
+      "label": "Registrar y seguir",
+      "kind": "normal"
+    },
+    {
+      "from": "QA2",
+      "to": "QA17",
+      "label": "WebGL no disponible",
+      "kind": "conditional"
+    },
+    {
+      "from": "QA17",
+      "to": "D30",
+      "label": "NOT_RUN registrado",
+      "kind": "normal"
+    },
+    {
+      "from": "QA16",
+      "to": "G0",
+      "label": "",
+      "kind": "normal"
+    },
+    {
+      "from": "FIX0",
+      "to": "FIX1",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "FIX1",
+      "to": "FIX2",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "FIX2",
+      "to": "D25",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "D25",
+      "to": "FIX3",
+      "label": "Asset",
+      "kind": "decision"
+    },
+    {
+      "from": "FIX3",
+      "to": "FIX8",
+      "label": "",
+      "kind": "normal"
+    },
+    {
+      "from": "D25",
+      "to": "FIX4",
+      "label": "Código",
+      "kind": "decision"
+    },
+    {
+      "from": "FIX4",
+      "to": "FIX8",
+      "label": "",
+      "kind": "normal"
+    },
+    {
+      "from": "D25",
+      "to": "FIX5",
+      "label": "Supuesto",
+      "kind": "decision"
+    },
+    {
+      "from": "FIX5",
+      "to": "FIX8",
+      "label": "",
+      "kind": "normal"
+    },
+    {
+      "from": "D25",
+      "to": "FIX6",
+      "label": "QA",
+      "kind": "decision"
+    },
+    {
+      "from": "FIX6",
+      "to": "FIX8",
+      "label": "",
+      "kind": "normal"
+    },
+    {
+      "from": "D25",
+      "to": "FIX7",
+      "label": "Layout",
+      "kind": "decision"
+    },
+    {
+      "from": "FIX7",
+      "to": "FIX8",
+      "label": "",
+      "kind": "normal"
+    },
+    {
+      "from": "FIX8",
+      "to": "D26",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "D26",
+      "to": "QA0",
+      "label": "Sí",
+      "kind": "decision"
+    },
+    {
+      "from": "D26",
+      "to": "FIX9",
+      "label": "No",
+      "kind": "decision"
+    },
+    {
+      "from": "FIX9",
+      "to": "R8",
+      "label": "Investigar otra ruta",
+      "kind": "repair"
+    },
+    {
+      "from": "G0",
+      "to": "G1",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "G1",
+      "to": "G2",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "G2",
+      "to": "G3",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "G3",
+      "to": "G4",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "G4",
+      "to": "G5",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "G5",
+      "to": "G6",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "G6",
+      "to": "G7",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "G7",
+      "to": "G8",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "G8",
+      "to": "D27",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "D27",
+      "to": "G9",
+      "label": "Sí",
+      "kind": "decision"
+    },
+    {
+      "from": "D27",
+      "to": "G10",
+      "label": "No",
+      "kind": "decision"
+    },
+    {
+      "from": "G9",
+      "to": "PUB0",
+      "label": "",
+      "kind": "normal"
+    },
+    {
+      "from": "G10",
+      "to": "PUB0",
+      "label": "",
+      "kind": "normal"
+    },
+    {
+      "from": "PUB0",
+      "to": "D28",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "D28",
+      "to": "PUB1",
+      "label": "No",
+      "kind": "decision"
+    },
+    {
+      "from": "D28",
+      "to": "PUB2",
+      "label": "Sí",
+      "kind": "decision"
+    },
+    {
+      "from": "PUB1",
+      "to": "PUB4",
+      "label": "",
+      "kind": "normal"
+    },
+    {
+      "from": "PUB2",
+      "to": "PUB3",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "PUB3",
+      "to": "PUB4",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "PUB4",
+      "to": "END1",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "PUB1",
+      "to": "END0",
+      "label": "Sólo impedimento legal/técnico REAL, fuente íntegra preservada",
+      "kind": "normal"
+    },
+    {
+      "from": "QA5",
+      "to": "D29",
+      "label": "Continuar QA",
+      "kind": "main"
+    },
+    {
+      "from": "D29",
+      "to": "QA18",
+      "label": "FAIL",
+      "kind": "decision"
+    },
+    {
+      "from": "D29",
+      "to": "QA17",
+      "label": "NOT_RUN",
+      "kind": "decision"
+    },
+    {
+      "from": "QA18",
+      "to": "D30",
+      "label": "Registrar y seguir",
+      "kind": "normal"
+    },
+    {
+      "from": "D29",
+      "to": "D30",
+      "label": "PASS",
+      "kind": "main"
+    },
+    {
+      "from": "D30",
+      "to": "QA19",
+      "label": "FAIL",
+      "kind": "decision"
+    },
+    {
+      "from": "D30",
+      "to": "D31",
+      "label": "NOT_RUN",
+      "kind": "normal"
+    },
+    {
+      "from": "QA19",
+      "to": "D31",
+      "label": "Registrar y seguir",
+      "kind": "normal"
+    },
+    {
+      "from": "D30",
+      "to": "D31",
+      "label": "PASS",
+      "kind": "main"
+    },
+    {
+      "from": "D31",
+      "to": "QA20",
+      "label": "FAIL",
+      "kind": "decision"
+    },
+    {
+      "from": "D31",
+      "to": "D32",
+      "label": "NOT_RUN",
+      "kind": "normal"
+    },
+    {
+      "from": "QA20",
+      "to": "D32",
+      "label": "Registrar y seguir",
+      "kind": "normal"
+    },
+    {
+      "from": "D31",
+      "to": "D32",
+      "label": "PASS",
+      "kind": "main"
+    },
+    {
+      "from": "D32",
+      "to": "QA21",
+      "label": "FAIL",
+      "kind": "decision"
+    },
+    {
+      "from": "D32",
+      "to": "D33",
+      "label": "NOT_RUN",
+      "kind": "normal"
+    },
+    {
+      "from": "QA21",
+      "to": "D33",
+      "label": "Registrar y seguir",
+      "kind": "normal"
+    },
+    {
+      "from": "D32",
+      "to": "D33",
+      "label": "PASS",
+      "kind": "main"
+    },
+    {
+      "from": "D33",
+      "to": "QA22",
+      "label": "FAIL",
+      "kind": "decision"
+    },
+    {
+      "from": "D33",
+      "to": "D34",
+      "label": "NOT_RUN",
+      "kind": "normal"
+    },
+    {
+      "from": "QA22",
+      "to": "D34",
+      "label": "Registrar y seguir",
+      "kind": "normal"
+    },
+    {
+      "from": "D33",
+      "to": "D34",
+      "label": "PASS",
+      "kind": "main"
+    },
+    {
+      "from": "D34",
+      "to": "QA23",
+      "label": "FAIL",
+      "kind": "decision"
+    },
+    {
+      "from": "D34",
+      "to": "D35",
+      "label": "NOT_RUN",
+      "kind": "normal"
+    },
+    {
+      "from": "QA23",
+      "to": "D35",
+      "label": "Registrar y seguir",
+      "kind": "normal"
+    },
+    {
+      "from": "D34",
+      "to": "D35",
+      "label": "PASS",
+      "kind": "main"
+    },
+    {
+      "from": "D35",
+      "to": "QA24",
+      "label": "FAIL",
+      "kind": "decision"
+    },
+    {
+      "from": "D35",
+      "to": "D36",
+      "label": "NOT_RUN",
+      "kind": "normal"
+    },
+    {
+      "from": "QA24",
+      "to": "D36",
+      "label": "Registrar y seguir",
+      "kind": "normal"
+    },
+    {
+      "from": "D35",
+      "to": "D36",
+      "label": "PASS",
+      "kind": "main"
+    },
+    {
+      "from": "D36",
+      "to": "QA25",
+      "label": "FAIL",
+      "kind": "decision"
+    },
+    {
+      "from": "D36",
+      "to": "D37",
+      "label": "NOT_RUN",
+      "kind": "normal"
+    },
+    {
+      "from": "QA25",
+      "to": "D37",
+      "label": "Registrar y seguir",
+      "kind": "normal"
+    },
+    {
+      "from": "D36",
+      "to": "D37",
+      "label": "PASS",
+      "kind": "main"
+    },
+    {
+      "from": "D37",
+      "to": "QA26",
+      "label": "FAIL",
+      "kind": "decision"
+    },
+    {
+      "from": "D37",
+      "to": "D38",
+      "label": "NOT_RUN",
+      "kind": "normal"
+    },
+    {
+      "from": "QA26",
+      "to": "D38",
+      "label": "Registrar y seguir",
+      "kind": "normal"
+    },
+    {
+      "from": "D37",
+      "to": "D38",
+      "label": "PASS",
+      "kind": "main"
+    },
+    {
+      "from": "D38",
+      "to": "QA27",
+      "label": "FAIL",
+      "kind": "decision"
+    },
+    {
+      "from": "D38",
+      "to": "D19",
+      "label": "NOT_RUN",
+      "kind": "normal"
+    },
+    {
+      "from": "QA27",
+      "to": "D19",
+      "label": "Registrar y seguir",
+      "kind": "normal"
+    },
+    {
+      "from": "D38",
+      "to": "D19",
+      "label": "PASS",
+      "kind": "main"
+    },
+    {
+      "from": "P9",
+      "to": "PF0",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "A12",
+      "to": "PP0",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "C1",
+      "to": "CAM0",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "PF0",
+      "to": "PF1",
+      "label": "",
+      "kind": "normal"
+    },
+    {
+      "from": "PF1",
+      "to": "PF2",
+      "label": "",
+      "kind": "normal"
+    },
+    {
+      "from": "PF2",
+      "to": "PF3",
+      "label": "",
+      "kind": "normal"
+    },
+    {
+      "from": "PF3",
+      "to": "D39",
+      "label": "",
+      "kind": "normal"
+    },
+    {
+      "from": "PP0",
+      "to": "D40",
+      "label": "",
+      "kind": "normal"
+    },
+    {
+      "from": "PP1",
+      "to": "D41",
+      "label": "",
+      "kind": "normal"
+    },
+    {
+      "from": "CAM0",
+      "to": "D42",
+      "label": "",
+      "kind": "normal"
+    },
+    {
+      "from": "D39",
+      "to": "A0",
+      "label": "PASS",
+      "kind": "decision"
+    },
+    {
+      "from": "D39",
+      "to": "A0",
+      "label": "FAIL",
+      "kind": "normal"
+    },
+    {
+      "from": "D40",
+      "to": "PP1",
+      "label": "PASS",
+      "kind": "decision"
+    },
+    {
+      "from": "D40",
+      "to": "PP1",
+      "label": "FAIL",
+      "kind": "normal"
+    },
+    {
+      "from": "D41",
+      "to": "B0",
+      "label": "PASS",
+      "kind": "decision"
+    },
+    {
+      "from": "D41",
+      "to": "PP2",
+      "label": "FAIL",
+      "kind": "repair"
+    },
+    {
+      "from": "D41",
+      "to": "PP3",
+      "label": "NOT_RUN",
+      "kind": "decision"
+    },
+    {
+      "from": "PP2",
+      "to": "B0",
+      "label": "RESELECT",
+      "kind": "normal"
+    },
+    {
+      "from": "PP3",
+      "to": "B0",
+      "label": "CONTINUAR_ESCENA_COMPLETA",
+      "kind": "normal"
+    },
+    {
+      "from": "D42",
+      "to": "C2",
+      "label": "PASS",
+      "kind": "decision"
+    },
+    {
+      "from": "D42",
+      "to": "C2",
+      "label": "FAIL",
+      "kind": "normal"
+    },
+    {
+      "from": "PUB4",
+      "to": "FIX0",
+      "label": "Sólo CALIBRAR de ronda FUTURA ordenada por usuario",
+      "kind": "reference"
+    }
+  ],
+  "knownIssues": [
+    {
+      "id": "UMBRIA-ORIENT-001",
+      "title": "Actor de espaldas",
+      "nodes": [
+        "H4",
+        "D7",
+        "H5",
+        "OR1",
+        "OR6",
+        "D14",
+        "M10",
+        "D16",
+        "QA8"
+      ],
+      "status": "FAIL observado",
+      "rootCause": "Frente local +Z supuesto, no certificado; yaw fijo"
+    },
+    {
+      "id": "UMBRIA-ORIENT-002",
+      "title": "Sillas al revés",
+      "nodes": [
+        "O3",
+        "O8",
+        "OR2",
+        "OR7",
+        "OR12",
+        "QA9"
+      ],
+      "status": "FAIL observado",
+      "rootCause": "Rotaciones manuales sin seatFrontLocal ni target"
+    },
+    {
+      "id": "UMBRIA-ARCH-003",
+      "title": "Cocina sin techo",
+      "nodes": [
+        "E5",
+        "D10",
+        "E6",
+        "E10",
+        "QA6"
+      ],
+      "status": "FAIL observado",
+      "rootCause": "Sin malla de techo en world()"
+    },
+    {
+      "id": "UMBRIA-QA-004",
+      "title": "Aprobación sin visión real",
+      "nodes": [
+        "QA2",
+        "QA17",
+        "FIX6",
+        "PUB0",
+        "D28"
+      ],
+      "status": "FAIL proceso",
+      "rootCause": "Se publicó sin validar WebGL, frente, pies ni cierre de habitación"
+    },
+    {
+      "id": "TRANSIT-ART-001",
+      "title": "Muñecos de plastilina y sillas de bloques",
+      "nodes": [
+        "PF0",
+        "PF1",
+        "PF2",
+        "D39",
+        "PP0",
+        "D40",
+        "PP1",
+        "D41",
+        "H2",
+        "O1"
+      ],
+      "status": "USER_REJECTED",
+      "rootCause": "Tests de conteo y layout no evitan representar NPCs con esferas; faltó decisión visual antes de replicar."
+    },
+    {
+      "id": "TRANSIT-CAMERA-002",
+      "title": "Trayectorias por pausas",
+      "nodes": [
+        "PF3",
+        "CAM0",
+        "D42",
+        "C1",
+        "D36"
+      ],
+      "status": "USER_REJECTED",
+      "rootCause": "Plan validaba posición pero no continuidad de velocidad entre beats."
+    },
+    {
+      "id": "RESPAWN-BLACK-001",
+      "title": "Preview negra del respawn",
+      "nodes": [
+        "PF3",
+        "PP1",
+        "D41",
+        "QA2",
+        "D37"
+      ],
+      "status": "USER_OBSERVED_CAUSE_UNVERIFIED",
+      "rootCause": "Visual no probado en navegador real antes de publicar."
+    },
+    {
+      "id": "FAN-FIT-001",
+      "title": "Carcasa incompleta de ventilador",
+      "nodes": [
+        "PF1",
+        "PP1",
+        "D41",
+        "O1",
+        "D30"
+      ],
+      "status": "USER_OBSERVED",
+      "rootCause": "Faltó contrato de encaje mecánico antes de ensamblaje."
+    },
+    {
+      "id": "FLOW-ABORT-001",
+      "title": "D41 truncated ten requested works to canaries/source only",
+      "nodes": [
+        "D41",
+        "PP2",
+        "PP3",
+        "PUB1"
+      ],
+      "status": "OBSERVED_WAVE001",
+      "rootCause": "1.2 falsely treated negative aesthetic judgment/missing GPU as permission to stop working instead of delivering the full original commission."
+    }
+  ],
+  "historyPolicy": {
+    "immutableVersions": true,
+    "currentPointer": "FLOW_INDEX.json",
+    "newVersionRequires": "immutable versioned flow + prevention contracts + regression tests + QA receipts; no retroactive attribution",
+    "creationAttribution": "strict evidence; null if older/unrecorded",
+    "statusVocabulary": [
+      "PASS",
+      "FAIL",
+      "NOT_RUN",
+      "BLOCKED",
+      "NOT_APPLICABLE"
+    ]
+  },
+  "evidence": "diagnosis only; source visual failures from user screenshots; no new scene fix",
+  "revision": {
+    "previous": "1.2.0",
+    "changes": "Remove first-article stop, no self-rejection, nonblocking diagnostics, complete one-pass production, publish honest technical candidates",
+    "riskPolicy": "NO_EARLY_ABORT_NO_CANARY_AS_DELIVERY",
+    "gateIds": [
+      "source-and-license",
+      "geometry-clearance",
+      "material-uv",
+      "room-closure",
+      "semantic-orientation",
+      "motion",
+      "interaction",
+      "cinematography",
+      "mobile-performance",
+      "reopen-roundtrip",
+      "before-build",
+      "technique-suitability",
+      "before-replication",
+      "camera-preflight"
+    ],
+    "operationMode": "FULL_ATTEMPT_ALWAYS"
+  },
+  "subflows": [
+    {
+      "id": "representation",
+      "owner": "prop+character+material",
+      "start": "PF0",
+      "stages": [
+        "planning",
+        "acquisition",
+        "classification"
+      ],
+      "earlyGates": [
+        "D39",
+        "D40",
+        "D41"
+      ],
+      "policy": "selección asset-first por saliencia y encuadre"
+    },
+    {
+      "id": "characters",
+      "owner": "character",
+      "start": "H1",
+      "stages": [
+        "humanoid",
+        "orientation",
+        "acting"
+      ],
+      "earlyGates": [
+        "D40",
+        "D41"
+      ],
+      "policy": "identidad, UV, silueta y rig"
+    },
+    {
+      "id": "objects-sets",
+      "owner": "prop+environment",
+      "start": "O1",
+      "stages": [
+        "props",
+        "environment"
+      ],
+      "earlyGates": [
+        "D40",
+        "D41"
+      ],
+      "policy": "modelo/sockets/escala, no geometría improvisada para protagonista"
+    },
+    {
+      "id": "materials-vfx",
+      "owner": "material+light+vfx",
+      "start": "F1",
+      "stages": [
+        "fx"
+      ],
+      "earlyGates": [
+        "D39",
+        "D41"
+      ],
+      "policy": "materiales/UV/iluminación y visibilidad"
+    },
+    {
+      "id": "movement",
+      "owner": "character+vehicle",
+      "start": "M0",
+      "stages": [
+        "acting"
+      ],
+      "earlyGates": [
+        "D39",
+        "D41"
+      ],
+      "policy": "clips reales/contacto y movimiento"
+    },
+    {
+      "id": "camera",
+      "owner": "camera",
+      "start": "C1",
+      "stages": [
+        "cinema"
+      ],
+      "earlyGates": [
+        "D39",
+        "D42"
+      ],
+      "policy": "continuidad y decisiones rítmicas"
+    },
+    {
+      "id": "technical-assembly",
+      "owner": "prop+camera",
+      "start": "PF2",
+      "stages": [
+        "props",
+        "cinema"
+      ],
+      "earlyGates": [
+        "D39",
+        "D41"
+      ],
+      "policy": "despiece paramétrico + encaje"
+    },
+    {
+      "id": "release-learning",
+      "owner": "release+qa",
+      "start": "S0",
+      "stages": [
+        "assembly",
+        "qa",
+        "repair",
+        "persistence",
+        "publish"
+      ],
+      "earlyGates": [
+        "D41"
+      ],
+      "policy": "evidencia, versiones y errores generales"
+    }
+  ],
+  "qualityArchitecture": {
+    "principle": "FULL_FIRST_ATTEMPT_BEST_EFFORT",
+    "productionMode": "FULL_ATTEMPT_ALWAYS",
+    "neverStopBecause": [
+      "bad look",
+      "missing ideal asset",
+      "first article rejected",
+      "no browser GPU",
+      "QA NOT_RUN",
+      "unapproved art",
+      "imperfect camera"
+    ],
+    "preproduction": "Brief positive artistic requirements and bad-outcome counterexamples; choose best available technique; no iteration delays.",
+    "production": "Complete all requested major shots/components in one sustained attempt; never scale down to canary-only as final.",
+    "earlyDiagnostics": "D39..D42 advisory, NEVER a permission gate",
+    "postProduction": "No artistic self-review/rework by model; user performs comparison between waves.",
+    "publishing": "Technical preview even when imperfect and unverified, with honest label; publish only rights-safe original materials.",
+    "safety": "Licensing/privacy/security real blockers still apply; preserve full original source privately if publication impossible.",
+    "progress": "Best effort full production, not empty loops or false claims of background work."
+  },
+  "sha256Canonical": "66dc6c74ea3b734369347e797c5ca3ede41f280d0a6c1a7d6abc372b42b51223"
+}
