@@ -1,0 +1,96 @@
+{
+  "schema": "prometeo.3d.flow-qa/v1",
+  "flowId": "prometeo-3d-production",
+  "version": "1.2.0",
+  "date": "2026-11-20",
+  "status": "PREVENTION_LOGIC_TESTED__ARTISTIC_TRANSFER_UNVERIFIED",
+  "canonicalSha256": "4b3f6076c7f38b3e999b259e63ed78ae52af30ac99f70f41a972bc45d92e4c84",
+  "sourceBranch": "candidate/prometeo-3d-flow-prevention-v1-2-20261120",
+  "sourceFiles": [
+    "prometeo/3d-flow/versions/1.2.0/flow.json",
+    "prometeo/3d-flow/versions/1.2.0/preflight.mjs",
+    "prometeo/3d-flow/versions/1.2.0/preflight.test.mjs",
+    "prometeo/3d-flow/validate-run.mjs"
+  ],
+  "checks": [
+    {
+      "id": "V8_PREVENTIVE_SUITE_FROM_COMMITTED_CODE",
+      "status": "PASS",
+      "passed": 16,
+      "failed": 0,
+      "method": "Execute body of committed preflight.test.mjs with assert/test compatibility harness on exact committed preflight.mjs; Node CLI not used"
+    },
+    {
+      "id": "V8_ACQUISITION_CANARIES",
+      "status": "PASS",
+      "passed": 7,
+      "failed": 0,
+      "method": "Actual V8 execution of acquired-asset and first-article validators, including mismatched usedTechnique, unloaded instance, pending rights and non-render"
+    },
+    {
+      "id": "GITHUB_GRAPH_AND_SCHEMA_READBACK",
+      "status": "PASS",
+      "passed": 21,
+      "failed": 0,
+      "method": "Source readback and V8 structural regression: 257 nodes, 346 edges, 17 stages, all reachable, 10 inherited QA gates, four early gates, old immutable references"
+    },
+    {
+      "id": "GITHUB_SOURCE_READBACK",
+      "status": "PASS",
+      "method": "Fetched exact GitHub blobs in candidate; 1.2 master and immutable version aliases, index version/hash consistent"
+    },
+    {
+      "id": "NATIVE_NODE_CLI_TEST_SUITE",
+      "status": "NOT_RUN",
+      "reason": "Current Node container has no GitHub network to materialize repo; V8 JS tests and independent graph/schema checks executed instead"
+    },
+    {
+      "id": "BROWSER_FLOW_VIEWER",
+      "status": "NOT_RUN",
+      "reason": "No verified actual browser load or screenshot of flow UI"
+    },
+    {
+      "id": "WEBGL_SCENE_ART_QUALITY",
+      "status": "NOT_RUN",
+      "reason": "Flow changes not yet consumed by any 1.2.0 scene"
+    },
+    {
+      "id": "ANDROID_PHYSICAL",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "TEN_WORK_PRODUCTION_RESULTS",
+      "status": "NOT_RUN"
+    }
+  ],
+  "regressions": [
+    {
+      "case": "TRANSIT-ART-001",
+      "status": "EARLY_PLAN_AND_SOURCE_ROUTE_REJECTED_IN_FIXTURE",
+      "evidence": "hero humanoid primitive composite or technique mismatch blocked before bulk; actual V2 scene not produced"
+    },
+    {
+      "case": "TRANSIT-CAMERA-002",
+      "status": "EARLY_STUTTER_FIXTURE_REJECTED",
+      "evidence": "zero velocity at automatic segment boundary flagged, intentional hold accepted"
+    },
+    {
+      "case": "RESPAWN-BLACK-001",
+      "status": "MISSING_RENDER_EVIDENCE_BLOCKED",
+      "evidence": "first article and scene frame NOT_RUN cannot enable bulk; root of actual black frame not diagnosed by this flow"
+    },
+    {
+      "case": "FAN-FIT-001",
+      "status": "MECHANISM_FIT_CONTRACT_REQUIRED",
+      "evidence": "mechanical parametric pass with fit/assembly plan, missing casing/clearance contract fails"
+    }
+  ],
+  "limitations": [
+    "These checks test decision contracts and metadata; neither a Git blob string nor a renderRef proves images are high-quality without inspecting actual pixels.",
+    "Not an artistic approval of any current scene, nor a guarantee that future AI workers obey a preflight without executing it.",
+    "GitHub Pages HTTP CDN and Android physical QA pending; future workers must run independent first article.",
+    "Future 10 projects are recorded PREPARED_NOT_LAUNCHED, not created."
+  ],
+  "owner": "studio-3d",
+  "scope": "prometeo/3d-flow only"
+}
