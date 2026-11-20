@@ -106,7 +106,7 @@ async function compileModule(path, seen = new Set()) {
       cursor = match.index + match[0].length;
     }
     result += source.slice(cursor);
-    return 'data:text/javascript;charset=utf-8,' + encodeURIComponent(result);
+    return 'data:text/javascript;charset=utf-8,' + encodeURIComponent(result).replace(/'/g,'%27');
   })();
   moduleCache.set(cacheKey, task);
   try { return await task; } catch(e) { moduleCache.delete(cacheKey); throw e; }
