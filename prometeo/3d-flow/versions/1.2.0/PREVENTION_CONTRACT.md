@@ -36,7 +36,7 @@ Declarar la imagen temprana que se necesita, plataforma, mínimo visible; para c
 Comprobar que las alternativas aprobadas tienen bytes/fontes y derechos adecuados y que se usarán realmente, no sustitutos de color/forma arbitrarios.
 
 ### D40
-La técnica elegida debe ser apta para la cámara y papel visual. Si no lo es, volver al catálogo/autoría, no avanzar con un falso positivo estructural.
+Ejecutar `validateAcquiredAssets`: requiere SHA de fuente, licencia comprobada, un vínculo a la instancia real y técnica utilizada coincidente. La técnica elegida debe ser apta para la cámara y papel visual. Si no lo es, volver al catálogo/autoría, no avanzar con un falso positivo estructural.
 
 ### PP1
 Una muestra (first article), con objeto y cámara representativos, antes de clonar. Verificar caso más exigente, no sólo vista lejana que disimula defectos.

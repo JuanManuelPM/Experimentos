@@ -53,11 +53,24 @@ function checkBase(plan){
  return [...new Set(errors)];
 }
 export function validatePreflightPlan(plan){const errors=checkBase(plan);return{ok:errors.length===0,errors,phase:'BEFORE_BUILD',mayScale:false};}
-export function validateFirstArticle(plan){
+const placeholderLicense=s=>typeof s==='string'&&/(pending|pendiente|unknown|desconocid|por verificar|sin comproba|tbd|no verific)/i.test(s);
+export function validateAcquiredAssets(plan){
  const errors=checkBase(plan);
  for(const e of plan?.entities||[]){
    if(!high(e))continue;
-   if(!hash40(e?.proof?.sourceGitBlob)||!nonempty(e?.proof?.license)||!nonempty(e?.proof?.artifactPath))errors.push('ASSET_BYTES_AND_RIGHTS_UNPROVEN_'+e.id);
+   const p=e.proof||{};
+   if(!hash40(p.sourceGitBlob)||!nonempty(p.license)||!nonempty(p.artifactPath)||placeholderLicense(p.license))errors.push('ASSET_BYTES_AND_RIGHTS_UNPROVEN_'+e.id);
+   if(!nonempty(p.instanceRef))errors.push('ACTUAL_INSTANCE_NOT_LINKED_'+e.id);
+   if(p.usedTechnique!==e.technique)errors.push('DECLARED_TECHNIQUE_NOT_ACTUALLY_USED_'+e.id);
+   if(e.technique==='LICENSED_TEXTURED_ASSET'&&placeholderLicense(e.asset?.rights))errors.push('RIGHTS_STILL_PENDING_'+e.id);
+   if(e.technique==='MECHANICAL_PARAMETRIC'&&!nonempty(p.fitEvidence))errors.push('MECHANICAL_FIT_NOT_MEASURED_'+e.id);
+ }
+ return{ok:errors.length===0,errors:[...new Set(errors)],phase:'AFTER_ACQUISITION',mayBuildFirstArticle:errors.length===0};
+}
+export function validateFirstArticle(plan){
+ const errors=[...validateAcquiredAssets(plan).errors];
+ for(const e of plan?.entities||[]){
+   if(!high(e))continue;
    if(!nonempty(e?.proof?.renderRef)||e?.proof?.renderStatus!=='PASS')errors.push('FIRST_ARTICLE_NOT_VISUALLY_VERIFIED_'+e.id);
    if(e?.proof?.acceptance!==true)errors.push('FIRST_ARTICLE_NOT_ACCEPTED_'+e.id);
  }

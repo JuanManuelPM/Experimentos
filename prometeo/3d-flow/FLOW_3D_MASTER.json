@@ -2534,12 +2534,12 @@
       "stage": "acquisition",
       "label": "¿Asset/representación sirve al plano protagonista?",
       "type": "decision",
-      "detail": "No basta que sea 3D ni que el layout pase; exige calidad de representación viable según rol y encuadre.",
+      "detail": "No basta que sea 3D ni que el layout pase; exige calidad de representación viable según rol y encuadre. Requerir hash del asset, licencia real, traza de instancia y técnica efectivamente usada, no una promesa de usar GLB.",
       "docRef": "versions/1.2.0/PREVENTION_CONTRACT.md#d40",
       "gate": null,
       "preflightGate": {
         "id": "technique-suitability",
-        "validator": "preflight.mjs#validatePreflightPlan",
+        "validator": "preflight.mjs#validateAcquiredAssets",
         "requiredEvidence": "preventive blueprint with counterexamples",
         "phase": "BEFORE_CINEMATIC"
       }
@@ -4977,7 +4977,12 @@
     ],
     "notRunPath": "PP3 allows only SOURCE_ONLY reduced; no bulk/visual approval",
     "intent": "Positive acceptance and adversarial literal-compliance test before geometry",
-    "limitations": "No textual preflight substitutes a verified frame or taste judgment; D29-D38 remain for release."
+    "limitations": "No textual preflight substitutes a verified frame or taste judgment; D29-D38 remain for release.",
+    "afterAcquisition": [
+      "PP0",
+      "D40",
+      "preflight.mjs#validateAcquiredAssets"
+    ]
   },
-  "sha256Canonical": "057aac6208f2077c2b6061e73c738119b40873775b3f9fa988f43f4613772c88"
+  "sha256Canonical": "4b3f6076c7f38b3e999b259e63ed78ae52af30ac99f70f41a972bc45d92e4c84"
 }

@@ -1,13 +1,13 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {validatePreflightPlan,validateFirstArticle} from './preflight.mjs';
+import {validatePreflightPlan,validateAcquiredAssets,validateFirstArticle} from './preflight.mjs';
 const entity=()=>({
  id:'passenger-hero',kind:'npc',visibility:'CLOSEUP',technique:'LICENSED_TEXTURED_ASSET',
  intent:'Persona texturada legible en primer plano',rejectionRisk:'Collage de esferas/plastilina',
  closeupAcceptance:'Rostro ropa manos y silueta coherentes',firstArticleShot:'1 pasajero sentado visto desde pasillo',
  alternatives:[{option:'asset GLB libre',reason:'UV real y rig comprobable'},{option:'malla editable',reason:'silueta diseñada y UV atlas'}],
  asset:{origin:'model pack rights',rights:'CC0',editableOrGlb:'actor.glb'},
- proof:{sourceGitBlob:'a'.repeat(40),license:'CC0',artifactPath:'actor.glb',renderRef:'evidence/first-article.png',renderStatus:'PASS',acceptance:true}
+ proof:{sourceGitBlob:'a'.repeat(40),license:'CC0',artifactPath:'actor.glb',instanceRef:'train/passenger01 -> actor.glb',usedTechnique:'LICENSED_TEXTURED_ASSET',renderRef:'evidence/first-article.png',renderStatus:'PASS',acceptance:true}
 });
 const good=()=>({
  schema:'prometeo.3d.preventive-blueprint/v1',sceneId:'transporte-retro-002',
@@ -63,4 +63,23 @@ test('a 2.5D cutout is permitted with disclosed supported angles',()=>{
 test('approval before bulk requires BOTH source and real render evidence',()=>{
  const x=good();assert.equal(validateFirstArticle(x).mayScale,true);
  x.earlyRender.minimumVisible='';assert.equal(validateFirstArticle(x).mayScale,false);
+});
+
+test('acquisition checks actual instance, not merely a perfect promise',()=>{
+ const x=good();x.entities[0].proof.instanceRef='';
+ assert.ok(validatePreflightPlan(x).ok);
+ assert.ok(validateAcquiredAssets(x).errors.includes('ACTUAL_INSTANCE_NOT_LINKED_passenger-hero'));
+});
+test('a textured model declared but primitive build used is rejected',()=>{
+ const x=good();x.entities[0].proof.usedTechnique='RUNTIME_PRIMITIVE_COMPOSITE';
+ assert.ok(validateAcquiredAssets(x).errors.includes('DECLARED_TECHNIQUE_NOT_ACTUALLY_USED_passenger-hero'));
+});
+test('license pending is not a license',()=>{
+ const x=good();x.entities[0].asset.rights='Pendiente de verificar';
+ assert.ok(validateAcquiredAssets(x).errors.includes('RIGHTS_STILL_PENDING_passenger-hero'));
+});
+test('acquisition gate does not demand a finished render, but scaling does',()=>{
+ const x=good();x.entities[0].proof.renderRef='';x.earlyRender.renderRef='';
+ assert.equal(validateAcquiredAssets(x).ok,true);
+ assert.equal(validateFirstArticle(x).mayScale,false);
 });
