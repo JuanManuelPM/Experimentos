@@ -13,7 +13,10 @@ try{
  renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.32;
  renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
  root.appendChild(renderer.domElement);q.webgl=true;
-}catch(e){fail("WEBGL NO DISPONIBLE: "+e.message);throw e;}
+}catch(e){
+ const {startFallback}=await import("./fallback.mjs");startFallback(root,q,String(e.message));
+}
+if(renderer){
 const scene=new THREE.Scene();scene.background=new THREE.Color(0x100e19);scene.fog=new THREE.FogExp2(0x100e19,.095);
 const camera=new THREE.PerspectiveCamera(51,1,.08,80);
 const cab=makeCabinet();scene.add(cab.group);q.model=cab.modelId;
@@ -96,3 +99,4 @@ function animate(){
  if(t>1)document.getElementById("boot").style.opacity="0";
 }
 animate();
+}
