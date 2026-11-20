@@ -1,0 +1,38 @@
+{
+  "schema": "prometeo.viewer.qa/v1",
+  "date": "2026-11-20",
+  "status": "CODE_PRESENT_AND_HELPER_TESTS_PASS_BROWSER_E2E_NOT_RUN",
+  "implemented": {
+    "static_site": true,
+    "private_github_rest_api": true,
+    "token_memory_only": true,
+    "scoped_read_only_bridge": true,
+    "sandbox_without_allow_same_origin": true,
+    "html_css_js_esm_preview": true,
+    "media_preview": true,
+    "public_demo_button": true
+  },
+  "tests": {
+    "app_javascript_syntax": "PASS",
+    "sandbox_bridge_generated_syntax": "PASS",
+    "normalized_paths": "PASS",
+    "directory_boundary": "PASS",
+    "nested_module_quote_safe": "PASS",
+    "github_readback": "PASS",
+    "helper_contracts_11_of_11": "PASS",
+    "live_github_private_token_in_browser": "NOT_RUN",
+    "live_3d_webgl_android": "NOT_RUN",
+    "independent_security_review": "NOT_RUN",
+    "production_pages_http": "NOT_RUN"
+  },
+  "known_limitations": [
+    "No GitHub OAuth, fine-grained read-only token entered manually in viewer",
+    "Token not stored across refresh, credentials never sent to preview iframe",
+    "Nested circular/dynamic ESM imports and import.meta.url-relative assets unsupported",
+    "Relative file requests must remain under selected HTML directory",
+    "External private raw GitHub URLs will not be authenticated",
+    "Pages shows public viewer code but not private project contents",
+    "Source JS inside the sandbox may make network requests; open trusted works only"
+  ],
+  "releasePolicy": "Isolated viewer path only; do not change other Pages products, migration, canon or skills"
+}
