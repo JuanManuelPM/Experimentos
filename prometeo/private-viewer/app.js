@@ -143,6 +143,10 @@ async function prepareHtml(path) {
   const html = await getText(path);
   const doc = new DOMParser().parseFromString(html, 'text/html');
   for (const base of doc.querySelectorAll('base')) base.remove();
+  // Relative Request() URLs in WebGL loaders resolve against a synthetic base.
+  const virtualBase = doc.createElement('base');
+  virtualBase.setAttribute('href', 'https://prometeo-viewer.invalid/' + (activeRoot ? activeRoot + '/' : ''));
+  doc.head.insertBefore(virtualBase, doc.head.firstChild);
   for (const link of Array.from(doc.querySelectorAll('link[rel="stylesheet"][href]'))) {
     const src = link.getAttribute('href');
     if (!isRelative(src)) continue;
