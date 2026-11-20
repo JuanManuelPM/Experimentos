@@ -130,4 +130,4 @@ $('tableX').oninput=e=>{tX=Number(e.target.value);draw()};$('reset').onclick=()=
 $('copy').onclick=async()=>{const patch={schema:'prometeo.3d.composition-patch/1',sceneId:scene.id,sourceGitBlob:scene.source.gitBlob,kind:'DRAFT_ASSUMPTION_NOT_APPLIED',parameters:{tableX:Number(tX.toFixed(2))},note:'No modifica el prefab fuente; revisar colisiones y render real antes de aplicar'};try{await navigator.clipboard.writeText(JSON.stringify(patch,null,2));$('copy-state').textContent='Propuesta copiada; ningún archivo fue modificado.';}catch{$('copy-state').textContent=JSON.stringify(patch)}};
 if(!checks.pass)console.error('COMPOSITION_PREFLIGHT',checks);
 draw();window.__COMPOSITION_QA__=()=>({shots:plan.shots.length,objects:scene.objects.length,check:checks,active:active.id,tableX:tX,sourceHash:scene.source.gitBlob});
-</script></body></html>
+</script><script defer src="../project-explorer/launcher.js?v=2.2.0" data-prometeo-3d-nav="1"></script></body></html>
