@@ -30,7 +30,7 @@ button[data-control=fire]{height:66px;width:66px;color:#fce8c1;background:rgba(1
 <div id="controls"><button data-control="left" aria-label="Joystick izquierda">‹</button><button data-control="right" aria-label="Joystick derecha">›</button><button data-control="fire" aria-label="Disparar">●</button></div>
 <div id="notice" role="alert"></div>
 <script>
-window.addEventListener("error",e=>{const n=document.getElementById("notice");if(n){n.textContent="NO SE PUDO INICIAR EL RENDER 3D: "+e.message;n.classList.add("show");}});
+window.addEventListener("error",e=>{const n=document.getElementById("notice");if(n){n.textContent="NO SE PUDO INICIAR EL RENDER 3D: "+(e.error?.stack||e.message);n.classList.add("show");}});
 window.addEventListener("unhandledrejection",e=>{const n=document.getElementById("notice");if(n){n.textContent="ERROR DE CARGA: "+(e.reason?.message||e.reason);n.classList.add("show");}});
 </script>
 <script type="module" src="./app.mjs"></script>
