@@ -77,8 +77,7 @@
     crypto.getRandomValues(bytes);
     return Array.from(bytes,b=>b.toString(16).padStart(2,'0')).join('');
   }
-  $('oauth-start').addEventListener('click', async () => {
-    await readiness;
+  $('oauth-start').addEventListener('click', () => {
     if (!configured) {
       authMessage('La conexión automática todavía no está activada. Es necesario registrar una GitHub App de solo lectura una única vez. La demostración funciona sin iniciar sesión.');
       return;
