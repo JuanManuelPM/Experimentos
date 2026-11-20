@@ -1,13 +1,13 @@
 {
   "schema": "prometeo.3d.production-flow/v1",
   "id": "prometeo-3d-production",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "publishedAt": "2026-11-20",
   "status": "CURRENT_CANDIDATE",
   "scope": "studio-3d",
-  "title": "Flujo maestro 3D · Prevención antes de construir",
-  "description": "Test-first, source-first, first-article y cámara fluida; impedir replicar decisiones visuales equivocadas. QA final complementa, no reemplaza prevención.",
-  "sourceOfTruth": "FLOW_INDEX.json + versions/1.2.0/flow.json + versions/1.2.0/PREVENTION_CONTRACT.md",
+  "title": "Flujo maestro 3D · Obra íntegra y calibración humana posterior",
+  "description": "La IA produce el encargo completo en su primer intento. El preflight orienta, jamás cancela, recorta a canario o bloquea por gusto artístico o falta de GPU. El usuario observa el resultado y mejora el flujo entre rondas.",
+  "sourceOfTruth": "FLOW_INDEX.json + versions/1.3.0/{flow.json,preflight.mjs,PRODUCTION_CONTRACT.md}",
   "stages": [
     {
       "id": "scope",
@@ -1639,7 +1639,7 @@
       "stage": "qa",
       "label": "Correr QA independiente sobre resultado real",
       "type": "action",
-      "detail": "Correr QA independiente sobre resultado real",
+      "detail": "Verificación técnica posterior para registrar fallas, nunca reescritura artística del mismo intento.",
       "docRef": "FLOW_3D_MASTER.md#qa0",
       "gate": null
     },
@@ -1702,7 +1702,7 @@
       "stage": "qa",
       "label": "FAIL_ROOM_CLOSURE o faltantes",
       "type": "action",
-      "detail": "Error UMBRIA-ARCH-003: cielo visible encima de paredes por no existir techo.",
+      "detail": "Error observado, registrar sin autocorrección; continuar hasta entrega.",
       "docRef": "FLOW_3D_MASTER.md#qa6",
       "gate": null
     },
@@ -1720,7 +1720,7 @@
       "stage": "qa",
       "label": "FAIL_ACTOR_FACING",
       "type": "action",
-      "detail": "Error UMBRIA-ORIENT-001: actor se desplaza de espaldas; incidencia vinculada al modelo y código reales.",
+      "detail": "Error observado, registrar sin autocorrección; continuar hasta entrega.",
       "docRef": "FLOW_3D_MASTER.md#qa8",
       "gate": null
     },
@@ -1729,7 +1729,7 @@
       "stage": "qa",
       "label": "FAIL_PROP_ORIENTATION",
       "type": "action",
-      "detail": "Error UMBRIA-ORIENT-002: sillas orientadas con ángulos arbitrarios en lugar de hacia mesa.",
+      "detail": "Error observado, registrar sin autocorrección; continuar hasta entrega.",
       "docRef": "FLOW_3D_MASTER.md#qa9",
       "gate": null
     },
@@ -1747,7 +1747,7 @@
       "stage": "qa",
       "label": "FAIL_FOOT_SLIP",
       "type": "action",
-      "detail": "FAIL_FOOT_SLIP",
+      "detail": "Error observado, registrar sin autocorrección; continuar hasta entrega.",
       "docRef": "FLOW_3D_MASTER.md#qa10",
       "gate": null
     },
@@ -1756,7 +1756,7 @@
       "stage": "qa",
       "label": "FAIL_ROOT_MOTION",
       "type": "action",
-      "detail": "FAIL_ROOT_MOTION",
+      "detail": "Error observado, registrar sin autocorrección; continuar hasta entrega.",
       "docRef": "FLOW_3D_MASTER.md#qa11",
       "gate": null
     },
@@ -1774,7 +1774,7 @@
       "stage": "qa",
       "label": "FAIL_INTERACTION",
       "type": "action",
-      "detail": "FAIL_INTERACTION",
+      "detail": "Error observado, registrar sin autocorrección; continuar hasta entrega.",
       "docRef": "FLOW_3D_MASTER.md#qa12",
       "gate": null
     },
@@ -1792,7 +1792,7 @@
       "stage": "qa",
       "label": "FAIL_CAMERA_COVERAGE",
       "type": "action",
-      "detail": "FAIL_CAMERA_COVERAGE",
+      "detail": "Error observado, registrar sin autocorrección; continuar hasta entrega.",
       "docRef": "FLOW_3D_MASTER.md#qa13",
       "gate": null
     },
@@ -1810,7 +1810,7 @@
       "stage": "qa",
       "label": "FAIL_ART_DIRECTION",
       "type": "action",
-      "detail": "FAIL_ART_DIRECTION Este gate final no reemplaza el primer artículo y las condiciones de prevención.",
+      "detail": "Error observado, registrar sin autocorrección; continuar hasta entrega.",
       "docRef": "FLOW_3D_MASTER.md#qa14",
       "gate": null
     },
@@ -1819,7 +1819,7 @@
       "stage": "qa",
       "label": "FAIL_MOBILE_USABILITY",
       "type": "action",
-      "detail": "FAIL_MOBILE_USABILITY",
+      "detail": "Error observado, registrar sin autocorrección; continuar hasta entrega.",
       "docRef": "FLOW_3D_MASTER.md#qa15",
       "gate": null
     },
@@ -1837,7 +1837,7 @@
       "stage": "qa",
       "label": "NOT_RUN si entorno impide la prueba",
       "type": "action",
-      "detail": "NOT_RUN si entorno impide la prueba Sin GPU, fuente y canario, NO multiplicar como resultado artístico.",
+      "detail": "NOT_RUN no es PASS ni permiso para ocultar. Entregar todo lo producido.",
       "docRef": "FLOW_3D_MASTER.md#qa17",
       "gate": null
     },
@@ -1846,7 +1846,7 @@
       "stage": "repair",
       "label": "CALIBRAR: registrar error concreto",
       "type": "action",
-      "detail": "CALIBRAR: registrar error concreto",
+      "detail": "Rama de corrección exclusiva de una próxima ronda autorizada por el usuario, nunca autocorrección del primer intento.",
       "docRef": "FLOW_3D_MASTER.md#fix0",
       "gate": null
     },
@@ -2062,7 +2062,7 @@
       "stage": "publish",
       "label": "Evaluar madurez y derechos",
       "type": "action",
-      "detail": "Evaluar madurez y derechos",
+      "detail": "Persistir la obra completa y publicar preview técnico aunque tenga defectos artísticos.",
       "docRef": "FLOW_3D_MASTER.md#pub0",
       "gate": null
     },
@@ -2080,7 +2080,7 @@
       "stage": "publish",
       "label": "Dejar candidato / no fingir PASS",
       "type": "action",
-      "detail": "Dejar candidato / no fingir PASS",
+      "detail": "Si no se verificó render/Android, publicar igualmente candidato técnico con advertencia, cuando sea legal y viable. Nunca esconder la obra; archivar fuente íntegra si una limitación real impide publicar.",
       "docRef": "FLOW_3D_MASTER.md#pub1",
       "gate": null
     },
@@ -2089,7 +2089,7 @@
       "stage": "publish",
       "label": "Publicar demo aislada y verificable",
       "type": "action",
-      "detail": "Publicar demo aislada y verificable",
+      "detail": "Publicar vista validada sin inventar aprobación artística.",
       "docRef": "FLOW_3D_MASTER.md#pub2",
       "gate": null
     },
@@ -2098,7 +2098,7 @@
       "stage": "publish",
       "label": "Registrar enlace, commit, QA y limitaciones",
       "type": "action",
-      "detail": "Registrar enlace, commit, QA y limitaciones",
+      "detail": "Guardar URL, fuente, artefactos y defectos para revisión externa.",
       "docRef": "FLOW_3D_MASTER.md#pub3",
       "gate": null
     },
@@ -2116,7 +2116,7 @@
       "stage": "publish",
       "label": "FIN · Candidato o bloqueo documentado",
       "type": "terminal",
-      "detail": "FIN · Candidato o bloqueo documentado",
+      "detail": "Obra completa persistida; publicación imposible sólo por causa legal/técnica real, nunca por D41 artístico.",
       "docRef": "FLOW_3D_MASTER.md#end0",
       "gate": null
     },
@@ -2125,7 +2125,7 @@
       "stage": "publish",
       "label": "FIN · Publicado con evidencias y trazabilidad",
       "type": "terminal",
-      "detail": "FIN · Publicado con evidencias y trazabilidad",
+      "detail": "Obra íntegra persistida; el usuario la evalúa después.",
       "docRef": "FLOW_3D_MASTER.md#end1",
       "gate": null
     },
@@ -2147,7 +2147,11 @@
           "evidenceRefs",
           "sourceSha",
           "measuredAt"
-        ]
+        ],
+        "blocking": false,
+        "reportOnly": true,
+        "continueEvenOnFail": true,
+        "continueEvenIfNotRun": true
       }
     },
     {
@@ -2155,7 +2159,7 @@
       "stage": "qa",
       "label": "FAIL_SOURCE_AND_LICENSE",
       "type": "action",
-      "detail": "Bloqueo: Cada GLB, textura y clip tiene fuente legal, ID y SHA verificado, sin copia comercial.",
+      "detail": "Registrar error de D29, seguir con informe, sin reparación en la misma producción.",
       "docRef": "FLOW_3D_MASTER.md#qa18",
       "gate": {
         "id": "source-and-license",
@@ -2181,7 +2185,11 @@
           "evidenceRefs",
           "sourceSha",
           "measuredAt"
-        ]
+        ],
+        "blocking": false,
+        "reportOnly": true,
+        "continueEvenOnFail": true,
+        "continueEvenIfNotRun": true
       }
     },
     {
@@ -2189,7 +2197,7 @@
       "stage": "qa",
       "label": "FAIL_GEOMETRY_CLEARANCE",
       "type": "action",
-      "detail": "Bloqueo: La escala, pivote, gravedad, suelos y distancias de interacción coinciden con la escena física.",
+      "detail": "Registrar error de D30, seguir con informe, sin reparación en la misma producción.",
       "docRef": "FLOW_3D_MASTER.md#qa19",
       "gate": {
         "id": "geometry-clearance",
@@ -2215,7 +2223,11 @@
           "evidenceRefs",
           "sourceSha",
           "measuredAt"
-        ]
+        ],
+        "blocking": false,
+        "reportOnly": true,
+        "continueEvenOnFail": true,
+        "continueEvenIfNotRun": true
       }
     },
     {
@@ -2223,7 +2235,7 @@
       "stage": "qa",
       "label": "FAIL_MATERIAL_UV",
       "type": "action",
-      "detail": "Bloqueo: Texturas y materiales preservan UV, semántica, seams y contraste a las vistas de película.",
+      "detail": "Registrar error de D31, seguir con informe, sin reparación en la misma producción.",
       "docRef": "FLOW_3D_MASTER.md#qa20",
       "gate": {
         "id": "material-uv",
@@ -2249,7 +2261,11 @@
           "evidenceRefs",
           "sourceSha",
           "measuredAt"
-        ]
+        ],
+        "blocking": false,
+        "reportOnly": true,
+        "continueEvenOnFail": true,
+        "continueEvenIfNotRun": true
       }
     },
     {
@@ -2257,7 +2273,7 @@
       "stage": "qa",
       "label": "FAIL_ROOM_CLOSURE",
       "type": "action",
-      "detail": "Bloqueo: Los interiores tienen techo físico, muros continuos, puertas/ventanas reales y luz coherente.",
+      "detail": "Registrar error de D32, seguir con informe, sin reparación en la misma producción.",
       "docRef": "FLOW_3D_MASTER.md#qa21",
       "gate": {
         "id": "room-closure",
@@ -2283,7 +2299,11 @@
           "evidenceRefs",
           "sourceSha",
           "measuredAt"
-        ]
+        ],
+        "blocking": false,
+        "reportOnly": true,
+        "continueEvenOnFail": true,
+        "continueEvenIfNotRun": true
       }
     },
     {
@@ -2291,7 +2311,7 @@
       "stage": "qa",
       "label": "FAIL_SEMANTIC_ORIENTATION",
       "type": "action",
-      "detail": "Bloqueo: Actor y muebles tienen frente local medido sobre GLB y reglas semánticas hacia sus targets.",
+      "detail": "Registrar error de D33, seguir con informe, sin reparación en la misma producción.",
       "docRef": "FLOW_3D_MASTER.md#qa22",
       "gate": {
         "id": "semantic-orientation",
@@ -2317,7 +2337,11 @@
           "evidenceRefs",
           "sourceSha",
           "measuredAt"
-        ]
+        ],
+        "blocking": false,
+        "reportOnly": true,
+        "continueEvenOnFail": true,
+        "continueEvenIfNotRun": true
       }
     },
     {
@@ -2325,7 +2349,7 @@
       "stage": "qa",
       "label": "FAIL_MOTION",
       "type": "action",
-      "detail": "Bloqueo: La locomoción coincide con trayectoria, pose y clips; ambos pies no deslizan ni atraviesan suelo.",
+      "detail": "Registrar error de D34, seguir con informe, sin reparación en la misma producción.",
       "docRef": "FLOW_3D_MASTER.md#qa23",
       "gate": {
         "id": "motion",
@@ -2351,7 +2375,11 @@
           "evidenceRefs",
           "sourceSha",
           "measuredAt"
-        ]
+        ],
+        "blocking": false,
+        "reportOnly": true,
+        "continueEvenOnFail": true,
+        "continueEvenIfNotRun": true
       }
     },
     {
@@ -2359,7 +2387,7 @@
       "stage": "qa",
       "label": "FAIL_INTERACTION",
       "type": "action",
-      "detail": "Bloqueo: La interacción usa clip/socket/IK real y no una simulación de cortes que esconda el fallo.",
+      "detail": "Registrar error de D35, seguir con informe, sin reparación en la misma producción.",
       "docRef": "FLOW_3D_MASTER.md#qa24",
       "gate": {
         "id": "interaction",
@@ -2385,7 +2413,11 @@
           "evidenceRefs",
           "sourceSha",
           "measuredAt"
-        ]
+        ],
+        "blocking": false,
+        "reportOnly": true,
+        "continueEvenOnFail": true,
+        "continueEvenIfNotRun": true
       }
     },
     {
@@ -2393,7 +2425,7 @@
       "stage": "qa",
       "label": "FAIL_CINEMATOGRAPHY",
       "type": "action",
-      "detail": "Bloqueo: Planos muestran acciones, continuidad, encuadres legibles y luz con exposición adecuada.",
+      "detail": "Registrar error de D36, seguir con informe, sin reparación en la misma producción.",
       "docRef": "FLOW_3D_MASTER.md#qa25",
       "gate": {
         "id": "cinematography",
@@ -2419,7 +2451,11 @@
           "evidenceRefs",
           "sourceSha",
           "measuredAt"
-        ]
+        ],
+        "blocking": false,
+        "reportOnly": true,
+        "continueEvenOnFail": true,
+        "continueEvenIfNotRun": true
       }
     },
     {
@@ -2427,7 +2463,7 @@
       "stage": "qa",
       "label": "FAIL_MOBILE_PERFORMANCE",
       "type": "action",
-      "detail": "Bloqueo: El visor carga en Chromium real y un navegador móvil; fps, interacción y controles aceptables.",
+      "detail": "Registrar error de D37, seguir con informe, sin reparación en la misma producción.",
       "docRef": "FLOW_3D_MASTER.md#qa26",
       "gate": {
         "id": "mobile-performance",
@@ -2453,7 +2489,11 @@
           "evidenceRefs",
           "sourceSha",
           "measuredAt"
-        ]
+        ],
+        "blocking": false,
+        "reportOnly": true,
+        "continueEvenOnFail": true,
+        "continueEvenIfNotRun": true
       }
     },
     {
@@ -2461,7 +2501,7 @@
       "stage": "qa",
       "label": "FAIL_REOPEN_ROUNDTRIP",
       "type": "action",
-      "detail": "Bloqueo: La escena puede exportarse, versionarse, reabrirse y reproducirse sin cambiar IDs/poses.",
+      "detail": "Registrar error de D38, seguir con informe, sin reparación en la misma producción.",
       "docRef": "FLOW_3D_MASTER.md#qa27",
       "gate": {
         "id": "reopen-roundtrip",
@@ -2474,7 +2514,7 @@
       "stage": "planning",
       "label": "Detectar entidades protagonistas y visibilidad",
       "type": "action",
-      "detail": "Identificar HERO/CLOSEUP/SUPPORT/BACKGROUND/BLOCKING/TECHNICAL. Usuarios evalúan aspecto de humanos, muebles y props hero, no sólo conteo y ubicación.",
+      "detail": "Elegir la técnica adecuada por entidad antes de construir, sin acortar el encargo.",
       "docRef": "versions/1.2.0/PREVENTION_CONTRACT.md#pf0",
       "gate": null
     },
@@ -2483,7 +2523,7 @@
       "stage": "planning",
       "label": "Escribir aceptación positiva y contraejemplo engañoso",
       "type": "action",
-      "detail": "Antes de código: qué se debe VER, cuál sería el cumplimiento literal horrible (NPC de esferas), qué no se permite y con qué plano lo veremos.",
+      "detail": "Escribir criterios positivos y contraejemplos de manera breve, sin detenerse a replanificar eternamente.",
       "docRef": "versions/1.2.0/PREVENTION_CONTRACT.md#pf1",
       "gate": null
     },
@@ -2492,7 +2532,7 @@
       "stage": "planning",
       "label": "Elegir origen y representación idónea",
       "type": "action",
-      "detail": "Comparar al menos dos alternativas por elemento principal: asset real texturado, modelo editable con UV, cutout con límites de ángulo, geometría paramétrica sólo cuando es apropiada para mecanismo. Ningún fallback a blob.",
+      "detail": "Comparar técnicas/recursos; si no hay asset ideal, construir lo mejor posible con medios legales.",
       "docRef": "versions/1.2.0/PREVENTION_CONTRACT.md#pf2",
       "gate": null
     },
@@ -2501,7 +2541,7 @@
       "stage": "planning",
       "label": "Plan temprano de encuadre, ritmo, luz y tolerancias",
       "type": "action",
-      "detail": "Primera captura requerida, luz/visibilidad, travelling y pausas intencionales, clearances del objeto, coste USD0, evidencia y punto de NO-GO por clase.",
+      "detail": "Planear escena, cámara, ritmo y recursos completos, no sólo primer artículo.",
       "docRef": "versions/1.2.0/PREVENTION_CONTRACT.md#pf3",
       "gate": null
     },
@@ -2510,14 +2550,18 @@
       "stage": "planning",
       "label": "¿Plan preventivo probado antes de generar mallas?",
       "type": "decision",
-      "detail": "Validar PREVENTIVE_BLUEPRINT.json antes del primer build; si falla no seguir generando geometría",
+      "detail": "Diagnóstico del plan, NO veto: PASS o FAIL permiten continuar a adquisición y producción completas.",
       "docRef": "versions/1.2.0/PREVENTION_CONTRACT.md#d39",
       "gate": null,
       "preflightGate": {
         "id": "before-build",
         "validator": "preflight.mjs#validatePreflightPlan",
         "requiredEvidence": "preventive blueprint with counterexamples",
-        "phase": "BEFORE_BUILD"
+        "phase": "BEFORE_BUILD",
+        "blocking": false,
+        "reportOnly": true,
+        "continueEvenOnFail": true,
+        "continueEvenIfNotRun": true
       }
     },
     {
@@ -2525,7 +2569,7 @@
       "stage": "acquisition",
       "label": "Verificar que protagonista usa recurso apropiado",
       "type": "action",
-      "detail": "Tras adquirir recursos comprobar derechos, bytes, textura/UV y estrategia elegida. Para humanos, un collage de primitivas no es un asset final.",
+      "detail": "Documentar recursos reales y técnica empleada como señales, no excusa para parar.",
       "docRef": "versions/1.2.0/PREVENTION_CONTRACT.md#pp0",
       "gate": null
     },
@@ -2534,14 +2578,18 @@
       "stage": "acquisition",
       "label": "¿Asset/representación sirve al plano protagonista?",
       "type": "decision",
-      "detail": "No basta que sea 3D ni que el layout pase; exige calidad de representación viable según rol y encuadre. Requerir hash del asset, licencia real, traza de instancia y técnica efectivamente usada, no una promesa de usar GLB.",
+      "detail": "Diagnóstico de asset: PASS y FAIL siguen produciendo la escena completa; no fingir licencia o modelo.",
       "docRef": "versions/1.2.0/PREVENTION_CONTRACT.md#d40",
       "gate": null,
       "preflightGate": {
         "id": "technique-suitability",
         "validator": "preflight.mjs#validateAcquiredAssets",
         "requiredEvidence": "preventive blueprint with counterexamples",
-        "phase": "BEFORE_CINEMATIC"
+        "phase": "BEFORE_CINEMATIC",
+        "blocking": false,
+        "reportOnly": true,
+        "continueEvenOnFail": true,
+        "continueEvenIfNotRun": true
       }
     },
     {
@@ -2549,7 +2597,7 @@
       "stage": "acquisition",
       "label": "Construir UN primer artículo visible antes de replicar",
       "type": "action",
-      "detail": "Uno de los pasajeros en silla verdadera desde plano crítico; una carcasa respecto del barrido de aspas; un plano respawn iluminado. Sólo después multiplicar.",
+      "detail": "Primer artículo visual opcional y breve, nunca techo del encargo.",
       "docRef": "versions/1.2.0/PREVENTION_CONTRACT.md#pp1",
       "gate": null
     },
@@ -2558,14 +2606,18 @@
       "stage": "acquisition",
       "label": "¿Primer artículo real apto para escalar?",
       "type": "decision",
-      "detail": "PASS: evidencia render y fuente. FAIL: cambiar técnica, no arreglar nueve muñecos. NOT_RUN: prototipo SOURCE_ONLY reducido, nunca escala visual aprobada.",
+      "detail": "Evaluación temprana no bloqueante: PASS/FAIL/NOT_RUN continúan al desarrollo del conjunto pedido.",
       "docRef": "versions/1.2.0/PREVENTION_CONTRACT.md#d41",
       "gate": null,
       "preflightGate": {
         "id": "before-replication",
         "validator": "preflight.mjs#validateFirstArticle",
         "requiredEvidence": "real rendered first-article+asset SHA",
-        "phase": "BEFORE_REPLICATION"
+        "phase": "BEFORE_REPLICATION",
+        "blocking": false,
+        "reportOnly": true,
+        "continueEvenOnFail": true,
+        "continueEvenIfNotRun": true
       }
     },
     {
@@ -2573,7 +2625,7 @@
       "stage": "acquisition",
       "label": "Descartar estrategia fallida y reacquirir",
       "type": "action",
-      "detail": "Registrar riesgo rechazado, cambiar modelo/autoría/licencia y volver al banco de recursos; no postproceso para ocultar figura pobre.",
+      "detail": "Registrar defecto temprano y continuar al cuerpo de la escena. No reiniciar, no cancelar, no dejarlo en canario.",
       "docRef": "versions/1.2.0/PREVENTION_CONTRACT.md#pp2",
       "gate": null
     },
@@ -2582,7 +2634,7 @@
       "stage": "acquisition",
       "label": "Sin prueba visual: sólo canario acotado",
       "type": "action",
-      "detail": "Si WebGL falla, guardar fuente y una muestra reducida. No replicar objetos con técnica no verificada; nada de PREVIEW artísticamente aprobado.",
+      "detail": "Aunque falte GPU, completar toda la escena; entregar vista técnica candidata y marcar límites, no sólo una muestra.",
       "docRef": "versions/1.2.0/PREVENTION_CONTRACT.md#pp3",
       "gate": null
     },
@@ -2591,7 +2643,7 @@
       "stage": "cinema",
       "label": "Definir velocidad, enfoque y continuidad antes de timeline largo",
       "type": "action",
-      "detail": "Rail y beats con velocidad/target continuos; hold motivado o corte explícito. No insertar pausas automáticas al cambiar de shot.",
+      "detail": "Planear cámara para la película íntegra, no cuatro segundos de muestra.",
       "docRef": "versions/1.2.0/PREVENTION_CONTRACT.md#cam0",
       "gate": null
     },
@@ -2600,14 +2652,18 @@
       "stage": "cinema",
       "label": "¿Ritmo continuo o cortes intencionales comprobados?",
       "type": "decision",
-      "detail": "Probar beats (tiempo contiguo, sin frenadas automáticas) antes de animar un recorrido entero.",
+      "detail": "Cámara diagnosticada, pero si falla no se cancela ni se reduce el metraje.",
       "docRef": "versions/1.2.0/PREVENTION_CONTRACT.md#d42",
       "gate": null,
       "preflightGate": {
         "id": "camera-preflight",
         "validator": "preflight.mjs#validatePreflightPlan",
         "requiredEvidence": "preventive blueprint with counterexamples",
-        "phase": "BEFORE_CINEMATIC"
+        "phase": "BEFORE_CINEMATIC",
+        "blocking": false,
+        "reportOnly": true,
+        "continueEvenOnFail": true,
+        "continueEvenIfNotRun": true
       }
     }
   ],
@@ -3940,8 +3996,8 @@
     },
     {
       "from": "QA6",
-      "to": "FIX0",
-      "label": "Corregir",
+      "to": "D20",
+      "label": "Registrar y seguir",
       "kind": "normal"
     },
     {
@@ -3964,14 +4020,14 @@
     },
     {
       "from": "QA8",
-      "to": "FIX0",
-      "label": "",
+      "to": "D21",
+      "label": "Registrar y seguir",
       "kind": "normal"
     },
     {
       "from": "QA9",
-      "to": "FIX0",
-      "label": "",
+      "to": "D21",
+      "label": "Registrar y seguir",
       "kind": "normal"
     },
     {
@@ -3994,14 +4050,14 @@
     },
     {
       "from": "QA10",
-      "to": "FIX0",
-      "label": "",
+      "to": "D22",
+      "label": "Registrar y seguir",
       "kind": "normal"
     },
     {
       "from": "QA11",
-      "to": "FIX0",
-      "label": "",
+      "to": "D22",
+      "label": "Registrar y seguir",
       "kind": "normal"
     },
     {
@@ -4018,8 +4074,8 @@
     },
     {
       "from": "QA12",
-      "to": "FIX0",
-      "label": "",
+      "to": "D23",
+      "label": "Registrar y seguir",
       "kind": "normal"
     },
     {
@@ -4036,8 +4092,8 @@
     },
     {
       "from": "QA13",
-      "to": "FIX0",
-      "label": "",
+      "to": "D24",
+      "label": "Registrar y seguir",
       "kind": "normal"
     },
     {
@@ -4060,14 +4116,14 @@
     },
     {
       "from": "QA14",
-      "to": "FIX0",
-      "label": "",
+      "to": "QA16",
+      "label": "Registrar y seguir",
       "kind": "normal"
     },
     {
       "from": "QA15",
-      "to": "FIX0",
-      "label": "",
+      "to": "QA16",
+      "label": "Registrar y seguir",
       "kind": "normal"
     },
     {
@@ -4078,8 +4134,8 @@
     },
     {
       "from": "QA17",
-      "to": "G0",
-      "label": "Persistir bloqueo sin PASS",
+      "to": "D30",
+      "label": "NOT_RUN registrado",
       "kind": "normal"
     },
     {
@@ -4313,7 +4369,7 @@
     {
       "from": "PUB1",
       "to": "END0",
-      "label": "Si no hay nueva prueba",
+      "label": "Sólo impedimento legal/técnico REAL, fuente íntegra preservada",
       "kind": "normal"
     },
     {
@@ -4336,9 +4392,9 @@
     },
     {
       "from": "QA18",
-      "to": "FIX0",
-      "label": "Corregir",
-      "kind": "repair"
+      "to": "D30",
+      "label": "Registrar y seguir",
+      "kind": "normal"
     },
     {
       "from": "D29",
@@ -4354,15 +4410,15 @@
     },
     {
       "from": "D30",
-      "to": "QA17",
+      "to": "D31",
       "label": "NOT_RUN",
-      "kind": "decision"
+      "kind": "normal"
     },
     {
       "from": "QA19",
-      "to": "FIX0",
-      "label": "Corregir",
-      "kind": "repair"
+      "to": "D31",
+      "label": "Registrar y seguir",
+      "kind": "normal"
     },
     {
       "from": "D30",
@@ -4378,15 +4434,15 @@
     },
     {
       "from": "D31",
-      "to": "QA17",
+      "to": "D32",
       "label": "NOT_RUN",
-      "kind": "decision"
+      "kind": "normal"
     },
     {
       "from": "QA20",
-      "to": "FIX0",
-      "label": "Corregir",
-      "kind": "repair"
+      "to": "D32",
+      "label": "Registrar y seguir",
+      "kind": "normal"
     },
     {
       "from": "D31",
@@ -4402,15 +4458,15 @@
     },
     {
       "from": "D32",
-      "to": "QA17",
+      "to": "D33",
       "label": "NOT_RUN",
-      "kind": "decision"
+      "kind": "normal"
     },
     {
       "from": "QA21",
-      "to": "FIX0",
-      "label": "Corregir",
-      "kind": "repair"
+      "to": "D33",
+      "label": "Registrar y seguir",
+      "kind": "normal"
     },
     {
       "from": "D32",
@@ -4426,15 +4482,15 @@
     },
     {
       "from": "D33",
-      "to": "QA17",
+      "to": "D34",
       "label": "NOT_RUN",
-      "kind": "decision"
+      "kind": "normal"
     },
     {
       "from": "QA22",
-      "to": "FIX0",
-      "label": "Corregir",
-      "kind": "repair"
+      "to": "D34",
+      "label": "Registrar y seguir",
+      "kind": "normal"
     },
     {
       "from": "D33",
@@ -4450,15 +4506,15 @@
     },
     {
       "from": "D34",
-      "to": "QA17",
+      "to": "D35",
       "label": "NOT_RUN",
-      "kind": "decision"
+      "kind": "normal"
     },
     {
       "from": "QA23",
-      "to": "FIX0",
-      "label": "Corregir",
-      "kind": "repair"
+      "to": "D35",
+      "label": "Registrar y seguir",
+      "kind": "normal"
     },
     {
       "from": "D34",
@@ -4474,15 +4530,15 @@
     },
     {
       "from": "D35",
-      "to": "QA17",
+      "to": "D36",
       "label": "NOT_RUN",
-      "kind": "decision"
+      "kind": "normal"
     },
     {
       "from": "QA24",
-      "to": "FIX0",
-      "label": "Corregir",
-      "kind": "repair"
+      "to": "D36",
+      "label": "Registrar y seguir",
+      "kind": "normal"
     },
     {
       "from": "D35",
@@ -4498,15 +4554,15 @@
     },
     {
       "from": "D36",
-      "to": "QA17",
+      "to": "D37",
       "label": "NOT_RUN",
-      "kind": "decision"
+      "kind": "normal"
     },
     {
       "from": "QA25",
-      "to": "FIX0",
-      "label": "Corregir",
-      "kind": "repair"
+      "to": "D37",
+      "label": "Registrar y seguir",
+      "kind": "normal"
     },
     {
       "from": "D36",
@@ -4522,15 +4578,15 @@
     },
     {
       "from": "D37",
-      "to": "QA17",
+      "to": "D38",
       "label": "NOT_RUN",
-      "kind": "decision"
+      "kind": "normal"
     },
     {
       "from": "QA26",
-      "to": "FIX0",
-      "label": "Corregir",
-      "kind": "repair"
+      "to": "D38",
+      "label": "Registrar y seguir",
+      "kind": "normal"
     },
     {
       "from": "D37",
@@ -4546,15 +4602,15 @@
     },
     {
       "from": "D38",
-      "to": "QA17",
+      "to": "D19",
       "label": "NOT_RUN",
-      "kind": "decision"
+      "kind": "normal"
     },
     {
       "from": "QA27",
-      "to": "FIX0",
-      "label": "Corregir",
-      "kind": "repair"
+      "to": "D19",
+      "label": "Registrar y seguir",
+      "kind": "normal"
     },
     {
       "from": "D38",
@@ -4630,9 +4686,9 @@
     },
     {
       "from": "D39",
-      "to": "PF1",
+      "to": "A0",
       "label": "FAIL",
-      "kind": "repair"
+      "kind": "normal"
     },
     {
       "from": "D40",
@@ -4642,9 +4698,9 @@
     },
     {
       "from": "D40",
-      "to": "A0",
+      "to": "PP1",
       "label": "FAIL",
-      "kind": "repair"
+      "kind": "normal"
     },
     {
       "from": "D41",
@@ -4666,14 +4722,14 @@
     },
     {
       "from": "PP2",
-      "to": "A0",
+      "to": "B0",
       "label": "RESELECT",
-      "kind": "repair"
+      "kind": "normal"
     },
     {
       "from": "PP3",
       "to": "B0",
-      "label": "SOURCE_ONLY_REDUCED",
+      "label": "CONTINUAR_ESCENA_COMPLETA",
       "kind": "normal"
     },
     {
@@ -4684,9 +4740,15 @@
     },
     {
       "from": "D42",
-      "to": "CAM0",
+      "to": "C2",
       "label": "FAIL",
-      "kind": "repair"
+      "kind": "normal"
+    },
+    {
+      "from": "PUB4",
+      "to": "FIX0",
+      "label": "Sólo CALIBRAR de ronda FUTURA ordenada por usuario",
+      "kind": "reference"
     }
   ],
   "knownIssues": [
@@ -4803,6 +4865,18 @@
       ],
       "status": "USER_OBSERVED",
       "rootCause": "Faltó contrato de encaje mecánico antes de ensamblaje."
+    },
+    {
+      "id": "FLOW-ABORT-001",
+      "title": "D41 truncated ten requested works to canaries/source only",
+      "nodes": [
+        "D41",
+        "PP2",
+        "PP3",
+        "PUB1"
+      ],
+      "status": "OBSERVED_WAVE001",
+      "rootCause": "1.2 falsely treated negative aesthetic judgment/missing GPU as permission to stop working instead of delivering the full original commission."
     }
   ],
   "historyPolicy": {
@@ -4820,9 +4894,9 @@
   },
   "evidence": "diagnosis only; source visual failures from user screenshots; no new scene fix",
   "revision": {
-    "previous": "1.1.0",
-    "changes": "13 new preventative nodes; test-first strategy, first article, early asset gate, camera continuity; 17 original stages and 10 QA gates preserved",
-    "riskPolicy": "PREVENT_FIRST_NOT_REPAIR_LAST",
+    "previous": "1.2.0",
+    "changes": "Remove first-article stop, no self-rejection, nonblocking diagnostics, complete one-pass production, publish honest technical candidates",
+    "riskPolicy": "NO_EARLY_ABORT_NO_CANARY_AS_DELIVERY",
     "gateIds": [
       "source-and-license",
       "geometry-clearance",
@@ -4838,7 +4912,8 @@
       "technique-suitability",
       "before-replication",
       "camera-preflight"
-    ]
+    ],
+    "operationMode": "FULL_ATTEMPT_ALWAYS"
   },
   "subflows": [
     {
@@ -4957,32 +5032,24 @@
     }
   ],
   "qualityArchitecture": {
-    "principle": "PREVENT_DEFECT_BEFORE_COSTLY_REPLICATION",
-    "beforeBuild": [
-      "PF0",
-      "PF1",
-      "PF2",
-      "PF3",
-      "D39"
+    "principle": "FULL_FIRST_ATTEMPT_BEST_EFFORT",
+    "productionMode": "FULL_ATTEMPT_ALWAYS",
+    "neverStopBecause": [
+      "bad look",
+      "missing ideal asset",
+      "first article rejected",
+      "no browser GPU",
+      "QA NOT_RUN",
+      "unapproved art",
+      "imperfect camera"
     ],
-    "beforeReplication": [
-      "PP0",
-      "D40",
-      "PP1",
-      "D41"
-    ],
-    "beforeLongCamera": [
-      "CAM0",
-      "D42"
-    ],
-    "notRunPath": "PP3 allows only SOURCE_ONLY reduced; no bulk/visual approval",
-    "intent": "Positive acceptance and adversarial literal-compliance test before geometry",
-    "limitations": "No textual preflight substitutes a verified frame or taste judgment; D29-D38 remain for release.",
-    "afterAcquisition": [
-      "PP0",
-      "D40",
-      "preflight.mjs#validateAcquiredAssets"
-    ]
+    "preproduction": "Brief positive artistic requirements and bad-outcome counterexamples; choose best available technique; no iteration delays.",
+    "production": "Complete all requested major shots/components in one sustained attempt; never scale down to canary-only as final.",
+    "earlyDiagnostics": "D39..D42 advisory, NEVER a permission gate",
+    "postProduction": "No artistic self-review/rework by model; user performs comparison between waves.",
+    "publishing": "Technical preview even when imperfect and unverified, with honest label; publish only rights-safe original materials.",
+    "safety": "Licensing/privacy/security real blockers still apply; preserve full original source privately if publication impossible.",
+    "progress": "Best effort full production, not empty loops or false claims of background work."
   },
-  "sha256Canonical": "4b3f6076c7f38b3e999b259e63ed78ae52af30ac99f70f41a972bc45d92e4c84"
+  "sha256Canonical": "66dc6c74ea3b734369347e797c5ca3ede41f280d0a6c1a7d6abc372b42b51223"
 }

@@ -1,3 +1,14 @@
+# Flujo actual 3D 1.3.0 · SE PRODUCE TODO EL ENCARGO
+
+**Leer antes de producir:** [contrato de entrega íntegra](versions/1.3.0/PRODUCTION_CONTRACT.md).
+**Importante:** la descripción histórica de la versión 1.2.0 que sigue debajo ya **NO es operativa** en nuevas rondas; especialmente las instrucciones de detenerse al fallar D41 o entregar sólo un canario.
+**Fuente:** `FLOW_INDEX.json` fija `versions/1.3.0/flow.json` y SHA-256.
+**Regla:** primer intento completo + publicación candidata honesta, incluso con fallos; QA artística y revisión sólo después, por el usuario.
+
+---
+
+# ARCHIVO HISTÓRICO 1.2.0 (NO SEGUIR SU POLÍTICA DE ABORTAR)
+
 # PROMETEO 3D · FLUJO MAESTRO ACTUAL v1.2.0
 
 **Entrada vigente:** `FLOW_INDEX.json` → `versions/1.2.0/flow.json` → `versions/1.2.0/PREVENTION_CONTRACT.md`.
