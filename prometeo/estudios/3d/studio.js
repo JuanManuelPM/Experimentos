@@ -73,10 +73,10 @@ function renderDetailTab(){
   para(dest,p.description||'Proyecto de estudio 3D.');
   if(p.qa)para(dest,p.qa);
   if(p.snapshotCommit)para(dest,'Estado registrado en commit '+p.snapshotCommit.slice(0,9)+'. Los avances pueden ser posteriores.');
-  if(p.url)para(dest,'Disponible en el catálogo público. La publicación no implica aprobación artística.');
+  if(p.url)para(dest,p.id==='cocina-umbria-002'?'Vista previa interactiva. La obra final todavía no fue aprobada.':'Visor público. La publicación no implica aprobación artística.');
   else para(dest,'Obra todavía no publicada como resultado final.');
  } else if(state.tab==='issues'){
-  const issues=r?.issues||[];if(issues.length){para(dest,'Problemas registrados en la revisión de esta versión:');const ul=create('ul');issues.forEach(s=>ul.append(create('li',null,s)));dest.append(ul)}
+  const issues=[...(r?.issues||[]),...(r?.pendingDetailed||[])];if(issues.length){const ul=create('ul');issues.forEach(s=>ul.append(create('li',null,s)));dest.append(ul)}
   else if(p.id==='cocina-umbria-002'){para(dest,'Pendientes conocidos: encuadre móvil, continuidad de pies, contacto real con objetos y guardado completo desde FORJA. El recibo de QA sigue siendo candidato.')}
   else para(dest,'No hay errores asociados en el registro del flujo. Esto no certifica que la obra esté libre de problemas.');
  } else{
@@ -88,13 +88,22 @@ function renderDetailTab(){
   if(r?.source?.sourceBlob)para(dest,'Blob de fuente: '+r.source.sourceBlob);
  }
 }
-function setViewer(p){const holder=$('#viewer');holder.replaceChildren();const initial=create('div','viewer-idle');initial.append(create('div','viewer-mark','◇'),create('p',null,p.url?'Visor real disponible':'Prueba todavía no publicada'));
- if(p.url){const btn=create('button',null,'Cargar vista real ↗');btn.type='button';btn.onclick=()=>{const url=safeURL(p.url);if(!url)return;holder.replaceChildren();const frame=create('iframe');frame.src=url;frame.title='Visor 3D · '+p.title;frame.loading='eager';frame.allow='fullscreen';holder.append(frame)};initial.append(btn)}
- else if(p.sourceUrl){if(p.thumbnail){const photo=create('img');photo.src=new URL(p.thumbnail,location.href).href;photo.alt=p.caption||'Fotograma de QA no aprobado';photo.className='qa-photo';initial.append(photo,create('p',null,p.caption||'Prueba no aprobada'))}const a=create('a',null,'Examinar pruebas en GitHub ↗');a.href=safeURL(p.sourceUrl)||'#';a.target='_blank';a.rel='noopener';a.style='color:#e8d5b3;text-decoration:underline';initial.append(a)}
- holder.append(initial)}
+function setViewer(p){
+ const holder=$('#viewer');holder.replaceChildren();
+ const url=safeURL(p.url);
+ if(url){
+  const frame=create('iframe');frame.src=url;frame.title='Obra 3D · '+p.title;
+  frame.loading='eager';frame.allow='fullscreen';holder.append(frame);return;
+ }
+ const empty=create('div','viewer-idle');
+ empty.append(create('div','viewer-mark','◇'),create('p',null,'Sin visor publicado'));
+ if(p.sourceUrl){const link=create('a',null,'Ver fuente ↗');link.href=safeURL(p.sourceUrl)||'#';link.target='_blank';link.rel='noopener';empty.append(link)}
+ holder.append(empty);
+}
 function open(p,historyEntry=true){
  state.previousFocus=document.activeElement;state.selected=p;state.tab='summary';
- $('#detail-title').textContent=p.title;$('#detail-desc').textContent=p.description||'';
+ $('#detail-title').textContent=p.title;$('#compact-title').textContent=p.title;$('#detail-desc').textContent=p.description||'';
+ $('#detail-extras').hidden=true;$('#details-toggle').setAttribute('aria-expanded','false');
  $('#detail-meta').textContent=(kindName[p.kind]||'Proyecto')+' · '+(p.status||'REGISTRADO');
  const url=safeURL(p.url);$('#detail-visit').hidden=!url;if(url)$('#detail-visit').href=url;
  const flow=path('3d-flow/?project='+encodeURIComponent(p.id));$('#detail-flow').href=flow;
@@ -104,6 +113,8 @@ function open(p,historyEntry=true){
 }
 function close(fromHistory=false){$('#overlay').hidden=true;$('#viewer').replaceChildren();state.selected=null;document.body.style.overflow='';if(!fromHistory){const u=new URL(location.href);u.searchParams.delete('obra');history.replaceState(null,'',u)}state.previousFocus?.focus?.()}
 $('#close').onclick=()=>close();$('#detail-close').onclick=()=>close();$('#shade').onclick=()=>close();
+$('#details-toggle').onclick=()=>{const p=$('#detail-extras');p.hidden=!p.hidden;$('#details-toggle').setAttribute('aria-expanded',String(!p.hidden))};
+$('#filter-toggle').onclick=()=>{const p=$('#filters-panel');p.hidden=!p.hidden;$('#filter-toggle').setAttribute('aria-expanded',String(!p.hidden));if(!p.hidden)$('#search').focus()};
 document.querySelectorAll('.detail-tabs button').forEach(b=>b.addEventListener('click',()=>changeTab(b.dataset.tab)));
 document.querySelectorAll('#filters button').forEach(b=>b.addEventListener('click',()=>{state.filter=b.dataset.kind;document.querySelectorAll('#filters button').forEach(x=>{const on=x===b;x.classList.toggle('selected',on);x.setAttribute('aria-pressed',String(on))});render()}));
 $('#search').addEventListener('input',e=>{state.query=e.target.value.trim().toLocaleLowerCase('es');render()});
