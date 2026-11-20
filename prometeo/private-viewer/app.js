@@ -301,3 +301,4 @@ $('fullscreen').addEventListener('click', () => {
 });
 window.addEventListener('pagehide',()=> { token=''; });
 status('Listo. Conectá GitHub o abrí la demo pública.');
+window.PrometeoViewer = { browse, openFile, hasVisibleFile(name) { return Array.from($files.querySelectorAll('button.file')).some(x => x.textContent.includes(name)); } };
