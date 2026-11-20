@@ -42,7 +42,7 @@ function normItem(v){
  return {uid:importedUid||'obj-'+(++idCounter),
   id:v.id,p:[clamp(finite(p[0]),-250,250),clamp(finite(p[1]),-80,150),clamp(finite(p[2]),-250,250)],
   r:clamp(finite(v.r),-Math.PI*8,Math.PI*8),s:(Array.isArray(v.s)?v.s:[v.s,v.s,v.s]).map(x=>clamp(finite(x,1),.05,20)),
-  h:clamp(finite(v.h,2),.02,90)};
+  h:clamp(finite(v.h,2),.02,90),clip:typeof v.clip==='string'?v.clip.slice(0,120):null,clipTime:clamp(finite(v.clipTime),0,3600)};
 }
 function defaultHeight(asset){
  if(asset.pack==='city-kit-commercial'||asset.pack==='city-kit-suburban')return 6.5;
@@ -55,7 +55,7 @@ function defaultHeight(asset){
 }
 function itemOf(e){
  return {uid:e.uid,id:e.asset.id,p:e.root.position.toArray().map(x=>Number(x.toFixed(4))),
-  r:Number(e.root.rotation.y.toFixed(5)),s:e.root.scale.toArray().map(x=>Number((x/e.baseScale).toFixed(5))),h:e.h};
+  r:Number(e.root.rotation.y.toFixed(5)),s:e.root.scale.toArray().map(x=>Number((x/e.baseScale).toFixed(5))),h:e.h,clip:e.clipName||null,clipTime:Number((e.mixer?.time||0).toFixed(3))};
 }
 function snapshot(){return {schema:SCHEMA,name:state.sceneName,items:state.objects.map(itemOf)}}
 function saveLocal(){
@@ -150,6 +150,8 @@ function init3D(){
    if(!state.webgl)return;
    const dt=Math.min(.08,clock.getDelta());
    if(state.playing)for(const o of state.objects)o.mixer?.update(dt);
+   const active=state.objects.find(o=>o.uid===state.selected);
+   if(active?.mixer&&!$('clip-editor').hidden&&state.playing){const clip=active.clips.find(c=>c.name===active.clipName);if(clip?.duration>0){const value=active.mixer.time%clip.duration;$('clip-time').value=String(value);$('clip-time-label').textContent=value.toFixed(2)+' s'}}
    state.controls.update();
    state.renderer.render(state.scene,state.camera);
   }
@@ -194,8 +196,9 @@ async function addAsset(asset,opts={},silent=false){
   const components=Array.isArray(opts.s)?opts.s:[opts.s,opts.s,opts.s];
   root.scale.set(...components.map(x=>baseScale*clamp(finite(x,1),.05,20)));
   const mixer=data.animations.length?new THREE.AnimationMixer(model):null;
-  if(mixer){const clip=data.animations.find(x=>/idle|walk|run/i.test(x.name))||data.animations[0];mixer.clipAction(clip).play()}
-  const entry={uid,asset,h,root,baseScale,mixer,clips:data.animations};
+  const activeClip=mixer?(data.animations.find(x=>x.name===opts.clip)||data.animations.find(x=>/idle|walk|run/i.test(x.name))||data.animations[0]):null;
+  if(mixer){mixer.clipAction(activeClip).play();mixer.setTime(clamp(finite(opts.clipTime),0,activeClip.duration))}
+  const entry={uid,asset,h,root,baseScale,mixer,clips:data.animations,clipName:activeClip?.name||null};
   state.world.add(root);state.objects.push(entry);
   if(!silent){select(uid);historyPush();status('MODELO AÑADIDO · '+short(asset.id));toast('AÑADIDO: '+short(asset.id))}
   metrics();renderObjects();return entry;
@@ -217,6 +220,28 @@ function updateInspector(){
  const values=e?[e.root.position.x,e.root.position.y,e.root.position.z,THREE.MathUtils.radToDeg(e.root.rotation.y),e.root.scale.x/e.baseScale]:[];
  inputs.forEach((id,i)=>{$(id).disabled=!e;$(id).value=e?String(Number(values[i].toFixed(3))):''});
  for(const id of ['delete','duplicate','focus'])$(id).disabled=!e;
+ updateClipInspector(e);
+}
+function updateClipInspector(e){
+ const panel=$('clip-editor');if(!panel)return;panel.hidden=!e||!e.clips?.length;if(panel.hidden)return;
+ const sel=$('clip-select');sel.replaceChildren();
+ for(const c of e.clips){const opt=document.createElement('option');opt.value=c.name;opt.textContent=c.name;sel.append(opt)}
+ sel.value=e.clipName||e.clips[0].name;
+ const clip=e.clips.find(c=>c.name===sel.value)||e.clips[0];
+ $('clip-time').max=String(clip.duration);$('clip-time').value=String(Math.min(clip.duration,e.mixer?.time||0));
+ $('clip-duration').textContent=clip.duration.toFixed(2)+' s';$('clip-time-label').textContent=(e.mixer?.time||0).toFixed(2)+' s';
+}
+function selectClip(name){
+ const e=state.objects.find(x=>x.uid===state.selected);if(!e?.mixer)return;
+ const clip=e.clips.find(c=>c.name===name);if(!clip)return;
+ e.mixer.stopAllAction();e.mixer.time=0;e.clipName=clip.name;e.mixer.clipAction(clip).reset().play();
+ updateClipInspector(e);historyPush();
+}
+function scrubClip(value){
+ const e=state.objects.find(x=>x.uid===state.selected);if(!e?.mixer)return;
+ const clip=e.clips.find(c=>c.name===e.clipName);if(!clip)return;
+ state.playing=false;e.mixer.setTime(clamp(finite(value),0,clip.duration));
+ $('clip-time-label').textContent=e.mixer.time.toFixed(2)+' s';metrics();
 }
 function updateProperty(){
  const e=state.objects.find(x=>x.uid===state.selected);if(!e)return;
@@ -369,7 +394,7 @@ async function exportGLB(){
  }catch(e){console.error(e);toast('ERROR DE EXPORTACIÓN GLB: '+e.message)}
  finally{b.disabled=false;b.textContent='↓ EXPORTAR GLB'}
 }
-let pageSize=60;
+let pageSize=12;
 function renderLibrary(){
  const q=$('search').value.toLowerCase().trim();
  const pack=$('pack').value;
@@ -418,14 +443,17 @@ async function initCatalog(){
  }catch(e){status('FALLÓ EL CATÁLOGO · '+e.message);toast('NO PUDO LEER EL CATÁLOGO');console.error(e)}
 }
 function wire(){
- $('search').addEventListener('input',()=>{pageSize=60;renderLibrary()});
- $('pack').addEventListener('change',()=>{pageSize=60;renderLibrary()});
- $('more-assets').addEventListener('click',()=>{pageSize+=60;renderLibrary()});
+ $('search').addEventListener('input',()=>{pageSize=12;renderLibrary()});
+ $('pack').addEventListener('change',()=>{pageSize=12;renderLibrary()});
+ $('more-assets').addEventListener('click',()=>{pageSize+=12;renderLibrary()});
  document.querySelectorAll('[data-preset]').forEach(b=>b.addEventListener('click',()=>{if(state.busy)return;replaceScene(makePreset(b.dataset.preset))}));
  document.querySelectorAll('[data-mode]').forEach(b=>b.addEventListener('click',()=>setMode(b.dataset.mode)));
  $('snap').addEventListener('click',snap);
  $('camera-reset').addEventListener('click',resetCamera);
  $('play-animations').addEventListener('click',()=>{state.playing=!state.playing;metrics()});
+ $('clip-select').addEventListener('change',e=>selectClip(e.target.value));
+ $('clip-time').addEventListener('input',e=>scrubClip(e.target.value));
+ $('clip-time').addEventListener('change',historyPush);
  $('scene-name').addEventListener('change',e=>{state.sceneName=(e.target.value.trim()||'Escena sin título').slice(0,64);historyPush();metrics()});
  for(const id of ['pos-x','pos-y','pos-z','rot','scale'])$(id).addEventListener('change',updateProperty);
  $('undo').addEventListener('click',async()=>{if(state.busy||state.cursor<=0)return;state.cursor--;await replaceScene(state.history[state.cursor],{remember:false});historyButtons()});

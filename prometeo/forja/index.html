@@ -33,11 +33,11 @@
     <div class="view-label"><span class="live-dot"></span><b>FORJA / EDITOR REAL</b><small id="status">INICIANDO BIBLIOTECA</small></div>
     <div class="scene-metrics"><span id="world-count">0 OBJETOS</span><span id="clip-count">0 ANIMACIONES</span><span id="render-status">GPU · —</span></div>
   </div>
-  <div class="empty-state" id="empty-state"><span class="empty-mark">◈</span><h1>UN MUNDO EN BLANCO<br><em>NO SE CONSTRUYE SOLO.</em></h1><p>Elegí una escena inicial o agregá modelos desde la biblioteca. Podés convertir los recursos disponibles en algo propio.</p><div class="presets" id="presets">
+  <div class="empty-state" id="empty-state"><span class="empty-mark">◈</span><h1>Una escena nueva.</h1><p>Buscá un recurso o abrí un proyecto guardado.</p><details class="presets-fold"><summary>Escenas de ejemplo</summary><div class="presets" id="presets">
     <button type="button" data-preset="barrio">▥ BARRIO NOCTURNO</button>
     <button type="button" data-preset="interior">⌂ INTERIOR</button>
     <button type="button" data-preset="bosque">♣ BOSQUE</button>
-  </div></div>
+  </div></details></div>
   <div id="loading-overlay" class="loading-overlay" hidden><span id="loading-text">CARGANDO MODELOS...</span><div class="load-bar"><div id="loading-progress"></div></div></div>
   <div class="stage-bottom">
     <div class="mode-tools" role="group" aria-label="Herramientas de transformación">
@@ -69,12 +69,20 @@
     <label><span>ESCALA ×</span><input id="scale" type="number" min=".05" max="20" step=".1" inputmode="decimal"></label>
    </div>
    <div class="selection-actions"><button id="focus" type="button">◎ ENFOCAR</button><button id="duplicate" type="button">⊞ DUPLICAR</button><button id="delete" type="button" class="danger">× BORRAR</button></div>
+   <section class="clip-editor" id="clip-editor" hidden aria-label="Clip del objeto seleccionado">
+    <div class="clip-top"><strong>ANIMACIÓN</strong><span id="clip-duration">—</span></div>
+    <label class="clip-select-label" for="clip-select">Clip disponible</label>
+    <select id="clip-select" aria-label="Elegir clip"></select>
+    <label class="clip-time-label" for="clip-time">Tiempo <output id="clip-time-label">0.00 s</output></label>
+    <input id="clip-time" type="range" min="0" max="1" step=".02" value="0" aria-label="Mover tiempo del clip">
+    <p>Reproducí con ANIMAR. El clip seleccionado se conserva en el proyecto JSON.</p>
+   </section>
   </div>
   <div class="export-actions"><button id="export-glb" class="secondary" type="button">↓ EXPORTAR GLB</button><button id="reset-scene" class="subtle" type="button">REINICIAR AUTO-GUARDADO</button></div>
   <div class="inspector-footer">1.883 GLB CC0 · FUENTE PINNED<br>ESCENA JSON LOCAL + AUTOGUARDADO<br><a href="../asset-atlas/" target="_blank" rel="noopener">BIBLIOTECA ORIGINAL ↗</a> · <a href="./README.md" target="_blank" rel="noopener">SOBRE FORJA</a></div>
  </aside>
 </div>
-<footer class="footer"><span>FORJA / EDICIÓN DE IMPULSO 001</span><span>ALT + ARRASTRAR PARA ORBITAR · W MOVER · E ROTAR · R ESCALA</span><button id="toggle-inspector" type="button" class="mobile-only">⚙ OBJETOS</button></footer>
+<footer class="footer"><span>FORJA / EDITOR 3D</span><span>ALT + ARRASTRAR PARA ORBITAR · W MOVER · E ROTAR · R ESCALA</span><button id="toggle-inspector" type="button" class="mobile-only">⚙ OBJETOS</button></footer>
 </div>
 <script type="module" src="./forge.mjs"></script>
 <script defer src="../project-explorer/launcher.js" data-prometeo-3d-nav="1"></script>
