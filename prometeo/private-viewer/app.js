@@ -131,7 +131,7 @@ function bridgeSource(id, directory) {
     + 'if(m.error){job.reject(new Error(m.error));return;}job.resolve(new Response(m.bytes,{status:200,headers:{"Content-Type":m.mime||"application/octet-stream"}}));});'
     + 'window.fetch=function(input,opts){const raw=typeof input==="string"?input:(input&&input.url);if(!raw)return nativeFetch(input,opts);'
     + 'const method=(opts&&opts.method)||(input&&input.method)||"GET";if(method.toUpperCase()!=="GET")return nativeFetch(input,opts);'
-    + 'if(/^(?:https?:|data:|blob:|\/\/)/i.test(raw)&&!raw.startsWith("https://prometeo-viewer.invalid/"))return nativeFetch(input,opts);'
+    + 'if((/^(?:https?:|data:|blob:)/i.test(raw)||raw.startsWith("//"))&&!raw.startsWith("https://prometeo-viewer.invalid/"))return nativeFetch(input,opts);'
     + 'let path;try{path=new URL(raw,"https://prometeo-viewer.invalid/"+cfg.dir).pathname.slice(1);}catch(e){return Promise.reject(e);}'
     + 'return new Promise(function(resolve,reject){const n=++index;const timer=setTimeout(()=>{jobs.delete(n);reject(new Error("Tiempo agotado al cargar "+path));},30000);jobs.set(n,{resolve,reject,timer});parent.postMessage({kind:"pv:fetch",id:cfg.id,n,path},"*");});'
     + '};window.__PROMETEO_VIEWER__={mode:"sandboxed",private:true,version:1};})();';
