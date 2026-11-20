@@ -4,9 +4,28 @@
 export const DOOR_KIT_ID = 'prometeo.door-portal@0.1.0';
 export function createDoorPortal(T, cfg={}) {
   const P={width:1.08,height:2.66,thickness:0.078,closedGap:0.028,travel:1.14,frameHalfWidth:1.195, ...cfg};
-  const wood=new T.MeshStandardMaterial({color:P.woodColor||0x231d23,roughness:.46,metalness:.10});
-  const dark=new T.MeshStandardMaterial({color:P.doorColor||0x33383e,roughness:.37,metalness:.61});
-  const inset=new T.MeshStandardMaterial({color:P.insetColor||0x131c24,roughness:.32,metalness:.64});
+  // Authorial UV-aligned canvas materials (no borrowed photo textures).
+  const texture=(kind)=>{
+    const c=document.createElement('canvas');c.width=256;c.height=512;
+    const g=c.getContext('2d');const base={wood:'#3a2227',steel:'#4b555d',inset:'#15212a'}[kind];
+    g.fillStyle=base;g.fillRect(0,0,c.width,c.height);
+    let seed=kind==='wood'?191:kind==='steel'?223:307;
+    const rand=()=>{seed=(1664525*seed+1013904223)>>>0;return seed/4294967296;};
+    for(let i=0;i<4600;i++){
+      const x=rand()*256,y=rand()*512,len=4+rand()*(kind==='wood'?110:30);
+      g.fillStyle=kind==='wood'?(rand()>.4?'rgba(220,157,87,.045)':'rgba(8,2,2,.09)')
+         :(rand()>.5?'rgba(255,233,196,.030)':'rgba(0,7,12,.085)');
+      g.fillRect(x,y,kind==='steel'?.35+rand()*.9:1+rand()*1.2,len);
+    }
+    if(kind==='wood')for(let x=0;x<256;x+=23){g.strokeStyle='rgba(195,119,70,.09)';g.beginPath();g.moveTo(x,0);g.bezierCurveTo(x+8,180,x-7,400,x+5,512);g.stroke();}
+    if(kind==='inset')for(let y=0;y<512;y+=48){g.fillStyle='rgba(120,184,173,.035)';g.fillRect(0,y,256,2);}
+    const t=new T.CanvasTexture(c);t.colorSpace=T.SRGBColorSpace;t.anisotropy=4;t.wrapS=t.wrapT=T.RepeatWrapping;
+    return t;
+  };
+  const brushed=texture('steel'),walnut=texture('wood'),darkGlass=texture('inset');
+  const wood=new T.MeshStandardMaterial({color:P.woodColor||0x766063,map:walnut,roughness:.46,metalness:.10});
+  const dark=new T.MeshStandardMaterial({color:P.doorColor||0x9b9f9f,map:brushed,roughness:.37,metalness:.61});
+  const inset=new T.MeshStandardMaterial({color:P.insetColor||0xb7d4de,map:darkGlass,roughness:.32,metalness:.64});
   const brass=new T.MeshStandardMaterial({color:P.brassColor||0xc8a56b,roughness:.27,metalness:.81});
   const patina=new T.MeshStandardMaterial({color:P.patinaColor||0x6d6652,roughness:.47,metalness:.68});
   const black=new T.MeshStandardMaterial({color:0x0d1118,roughness:.27,metalness:.45});
