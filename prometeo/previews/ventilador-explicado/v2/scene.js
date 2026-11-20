@@ -101,7 +101,7 @@ add('floor','floor',g=>{quad(g,[-10,.001,-9],[-10,.001,9],[10,.001,9],[10,.001,-
 // V2: do not draw a speculative power circuit or unsafe mains connection.
 
 // airflow appears ONLY when motor runs: particles travel forwards (not CFD)
-const flows=[];for(let i=0;i<12;i++){const r=.28+(i%4)*.20,ang=i*TAU/12;let g=geom();tube(g,Array.from({length:9},(_,j)=>[r*Math.cos(ang+.10*j),CY+r*Math.sin(ang+.10*j),.8+j*.13]),.010);flows.push({g,color:i%3?material.blue:material.silver})}
+const flows=[];for(let i=0;i<12;i++){const r=.28+(i%4)*.20,ang=i*TAU/12;let g=geom();tube(g,Array.from({length:9},(_,j)=>[r*Math.cos(ang+.10*j),CY+r*Math.sin(ang+.10*j),.8+j*.13]),.010);const v=new Float32Array(g.verts),n=new Float32Array(g.norms),vb=gl.createBuffer(),nb=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,vb);gl.bufferData(gl.ARRAY_BUFFER,v,gl.STATIC_DRAW);gl.bindBuffer(gl.ARRAY_BUFFER,nb);gl.bufferData(gl.ARRAY_BUFFER,n,gl.STATIC_DRAW);flows.push({mesh:{vb,nb,count:v.length/3,color:i%3?material.blue:material.silver,metal:0}})}
 const vs=`#version 300 es\nprecision highp float;in vec3 aPos;in vec3 aNor;uniform mat4 uView,uProj;uniform vec3 uOffset;uniform float uSpin;out vec3 vNormal;out vec3 vWorld;void main(){vec3 p=aPos;vec3 n=aNor;float c=cos(uSpin),s=sin(uSpin);p.y-=2.6;vec2 t=vec2(p.x*c-p.y*s,p.x*s+p.y*c);p.x=t.x;p.y=t.y+2.6;vec2 tn=vec2(n.x*c-n.y*s,n.x*s+n.y*c);n.x=tn.x;n.y=tn.y;p+=uOffset;vNormal=normalize(n);vWorld=p;gl_Position=uProj*uView*vec4(p,1.);}`;
 const fs=`#version 300 es\nprecision highp float;in vec3 vNormal;in vec3 vWorld;uniform vec3 uColor;uniform float uAlpha,uMetal,uSelected;out vec4 outColor;void main(){vec3 N=normalize(vNormal);vec3 L=normalize(vec3(-.5,1.4,2.2));float d=.56+.40*abs(dot(N,L));float hemi=.06*max(0.,N.y);float rim=.07*pow(1.-abs(dot(N,normalize(vec3(.2,.6,1.5)))),3.);vec3 col=uColor*(d+hemi)+vec3(.70,.8,.75)*(rim+uMetal*.085);col=mix(col,vec3(.94,.64,.19),uSelected*.40);outColor=vec4(pow(clamp(col,0.,1.),vec3(.94)),uAlpha);}`;
 function shader(type,src){let s=gl.createShader(type);gl.shaderSource(s,src);gl.compileShader(s);if(!gl.getShaderParameter(s,gl.COMPILE_STATUS))throw Error(gl.getShaderInfoLog(s));return s}
@@ -137,7 +137,7 @@ gl.enable(gl.BLEND);gl.blendFunc(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA);gl.depthMa
 for(let o of transparent)renderMesh(o.m,o.off,o.alpha,o.selected,o.spin);
 gl.depthMask(true);gl.disable(gl.BLEND);
 // airflow visual (short moving streaks); original geometry belongs to renderer, not fluid simulation
-if(fanSpeed>.08){for(let i=0;i<12;i++){let g=flows[i].g,offZ=((ms*.0009*(.3+fanSpeed)+i*.137)%2.7);let v=new Float32Array(g.verts),n=new Float32Array(g.norms),vb=gl.createBuffer(),nb=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,vb);gl.bufferData(gl.ARRAY_BUFFER,v,gl.STREAM_DRAW);gl.bindBuffer(gl.ARRAY_BUFFER,nb);gl.bufferData(gl.ARRAY_BUFFER,n,gl.STREAM_DRAW);renderMesh({vb,nb,count:v.length/3,color:flows[i].color,metal:0},[0,0,offZ],.22*fanSpeed,false,0);gl.deleteBuffer(vb);gl.deleteBuffer(nb)}}
+if(fanSpeed>.08){gl.enable(gl.BLEND);gl.blendFunc(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA);gl.depthMask(false);for(let i=0;i<12;i++){const offZ=((ms*.0009*(.3+fanSpeed)+i*.137)%2.7);renderMesh(flows[i].mesh,[0,0,offZ],.22*fanSpeed,false,0)}gl.depthMask(true);gl.disable(gl.BLEND)}
 if(s.stage===3&&ms-uiUpdate>150){uiUpdate=ms;T('counter').textContent=`${Math.min(parts.length,Math.floor(s.phase*parts.length))} / ${parts.length}`}
 requestAnimationFrame(frame)}
 refreshUI();requestAnimationFrame(frame);
