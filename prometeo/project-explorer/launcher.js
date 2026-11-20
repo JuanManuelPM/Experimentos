@@ -11,7 +11,7 @@ shadow.innerHTML=`
 <style>
 :host{all:initial;font-family:system-ui,-apple-system,'Segoe UI',Arial,sans-serif;color:#eef3ef}
 *{box-sizing:border-box}[hidden]{display:none!important}
-#launcher{position:fixed;right:max(12px,env(safe-area-inset-right));top:max(12px,env(safe-area-inset-top));z-index:2147483000;border:1px solid #607979;border-radius:12px;width:43px;height:43px;background:#13242be8;color:#fff;font-size:23px;box-shadow:0 3px 15px #0008;cursor:pointer}
+#launcher{position:fixed;right:max(12px,env(safe-area-inset-right));top:max(75px,env(safe-area-inset-top));z-index:2147483000;border:1px solid #657b68;border-radius:25px;min-height:46px;display:flex;align-items:center;justify-content:center;padding:0 16px;background:#17281ff2;color:#f9f3e5!important;text-decoration:none!important;font:700 13px system-ui;box-shadow:0 4px 17px #0008;cursor:pointer}
 #screen{position:fixed;inset:0;z-index:2147483001;display:none}
 #screen.active{display:block}
 #mask{position:absolute;inset:0;background:#01060ac4}
@@ -47,16 +47,16 @@ button:focus-visible,a:focus-visible,summary:focus-visible{outline:2px solid #e9
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
 #flow-shortcut{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:14px 15px;margin:8px 0 17px;min-height:50px;border:1px solid #526e5c;border-radius:9px;background:#192b20;color:#f1f1e8!important;text-decoration:none!important;font:650 15px system-ui}#flow-shortcut span{font:20px system-ui;color:#d3e0cc}#flow-shortcut:hover{background:#2b4130}
 </style>
-<button id="launcher" title="Carpetas del Estudio 3D" aria-label="Abrir proyectos 3D">ⓘ</button>
+<a id="launcher" title="Volver a la Biblioteca 3D" aria-label="Volver a Biblioteca 3D" href="#">⌂ Biblioteca</a>
 <div id="screen" role="dialog" aria-label="Carpetas de proyectos del Estudio 3D" aria-modal="true">
   <div id="mask"></div>
   <div id="sheet">
     <div id="top"><div><div id="eyebrow">PROMETEO / ESTUDIO 3D</div><h1>Proyectos</h1></div><button id="close" aria-label="Cerrar">×</button></div>
-    <div id="desc">Carpetas ordenadas por la última actualización pública.</div>
+    <div id="desc">Proyectos públicos actualizados.</div><a id="studio-home" href="#" style="display:block;margin:10px 0 15px;padding:14px;border:1px solid #647a68;border-radius:9px;background:#28392e;color:#f2f3e9;text-decoration:none;font:650 15px system-ui">⌂ Biblioteca visual ↗</a>
     <a id="flow-shortcut" href="#">Flujo <span aria-hidden="true">↗</span></a>
     <div id="list">Cargando proyectos…</div>
     <div id="status" aria-live="polite">Abriendo registro…</div>
-    <div id="footer">Fecha = último commit público de la carpeta, no aprobación artística. No se muestran proyectos privados.<a id="all">Ver el índice completo</a><a id="global">Todos los estudios</a></div>
+    <div id="footer">Fecha = último commit público de la carpeta, no aprobación artística. No se muestran proyectos privados.<a id="all">Biblioteca visual</a><a id="global">Todos los estudios</a></div>
   </div>
 </div>`;
 const el=id=>shadow.getElementById(id),screen=el('screen'),button=el('launcher'),status=el('status');
@@ -88,14 +88,13 @@ function paint(){
  });
 }
 function open(){opened=true;screen.classList.add('active');button.hidden=true;const old=document.getElementById('drawer');if(old)old.hidden=true;if(!projects.length)load();else refresh();}
-function close(){if(home)return;opened=false;screen.classList.remove('active');if(!document.getElementById('toggle-info'))button.hidden=false;}
-button.addEventListener('click',open);el('mask').addEventListener('click',close);el('close').addEventListener('click',close);
+function close(){if(home)return;opened=false;screen.classList.remove('active');button.hidden=false;}
+el('mask').addEventListener('click',close);el('close').addEventListener('click',close);
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&opened&&!home)close();});
-el('all').href=base.href;el('global').href=new URL('../',base).href;if(home){button.hidden=true;el('close').hidden=true;el('all').hidden=true;screen.classList.add('active','home');opened=true;}
+button.href=new URL('../estudios/3d/',base).href;el('studio-home').href=button.href;el('all').href=button.href;el('global').href=new URL('../',base).href;if(home){button.hidden=true;el('close').hidden=true;el('all').hidden=true;screen.classList.add('active','home');opened=true;}
 const info=document.getElementById('toggle-info');
 if(info&&!home){
  info.setAttribute('aria-label','Ver proyectos 3D');info.setAttribute('title','Carpetas de proyectos');
- button.hidden=true;
  document.addEventListener('click',e=>{if(e.target===info||info.contains(e.target)){e.preventDefault();e.stopImmediatePropagation();opened?close():open();}},true);
 }
 function cached(){try{const c=JSON.parse(localStorage.getItem('prometeo_3d_explorer_v1')||'null');return c&&Array.isArray(c.projects)?c:null;}catch{return null;}}
