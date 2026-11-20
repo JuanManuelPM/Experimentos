@@ -1,0 +1,84 @@
+{
+  "schema": "prometeo.3d.preventive-blueprint/v1",
+  "sceneId": "transporte-retro-002",
+  "flowVersion": "1.2.0",
+  "status": "PLANNED",
+  "entities": [
+    {
+      "id": "passenger-front-row",
+      "kind": "npc",
+      "visibility": "CLOSEUP",
+      "technique": "LICENSED_TEXTURED_ASSET",
+      "intent": "Pasajero con silueta humana, ropa, rostro y manos texturados visibles en plano medio",
+      "rejectionRisk": "Cumplir nueve pasajeros con esferas de plastilina sería visualmente inaceptable",
+      "closeupAcceptance": "Silueta, cabeza, cara y ropa claramente propias de un NPC real estilizado",
+      "firstArticleShot": "Plano pasillo/primer pasajero junto a asiento",
+      "alternatives": [
+        {
+          "option": "GLB texturado CC0 verificable",
+          "reason": "malla/UV/rig pensados para cámara cercana"
+        },
+        {
+          "option": "Malla original editable con UV pintada",
+          "reason": "permitir vestuario y variación de identidad"
+        }
+      ],
+      "asset": {
+        "origin": "Fuente concreta a verificar durante adquisición, NO descargada aún",
+        "rights": "Licencia pendiente de comprobar: no se puede distribuir hasta verificar",
+        "editableOrGlb": "Modelo seleccionado, aún sin hash"
+      }
+    },
+    {
+      "id": "train-seat",
+      "kind": "furniture",
+      "visibility": "HERO",
+      "technique": "EDITABLE_MODELED_ASSET",
+      "intent": "Asiento con silueta propia, respaldo y material texturado (no cinco cajas)",
+      "rejectionRisk": "No aprobar silla de rectángulos visibles sin diseño o textura",
+      "closeupAcceptance": "Reconocible en silueta y primeros planos con material coherente",
+      "firstArticleShot": "Perfil 3/4 del primer asiento",
+      "alternatives": [
+        {
+          "option": "Modelo de transporte verificable",
+          "reason": "reutilización y look auténtico"
+        },
+        {
+          "option": "Modelar con Blender y atlas",
+          "reason": "silueta diseñada para kit modular"
+        }
+      ],
+      "asset": {
+        "editableSource": "PLANNED_model_in_blender.blend",
+        "texturePlan": "Atlas UV propio con variaciones",
+        "tool": "Blender, verificar runtime disponible"
+      }
+    }
+  ],
+  "camera": {
+    "mode": "MOVING",
+    "motionPolicy": "CONTINUITY_OR_INTENTIONAL_CUT",
+    "beats": [
+      {
+        "kind": "TRAVEL",
+        "start": 0,
+        "end": 3,
+        "startVelocity": 0.1,
+        "endVelocity": 0.5
+      },
+      {
+        "kind": "TRAVEL",
+        "start": 3,
+        "end": 9,
+        "startVelocity": 0.5,
+        "endVelocity": 0.2
+      }
+    ]
+  },
+  "earlyRender": {
+    "targetPlatform": "Android WebGL",
+    "shot": "Pasajero + primer asiento + ventana",
+    "minimumVisible": "Rostro y silueta, asiento texturado, perspectiva limpia",
+    "renderStatus": "NOT_RUN"
+  }
+}

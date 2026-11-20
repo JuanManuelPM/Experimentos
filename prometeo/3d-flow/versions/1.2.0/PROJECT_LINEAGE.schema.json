@@ -1,0 +1,90 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "PROMETEO studio-3d · Versioned Project Lineage",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "projectId",
+    "versions"
+  ],
+  "properties": {
+    "schema": {
+      "const": "prometeo.studio-3d.project-lineage/v1"
+    },
+    "projectId": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{2,60}$"
+    },
+    "currentVersion": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "versions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "version",
+          "sourceCommit",
+          "flowVersionUsed",
+          "flowSha256",
+          "status",
+          "previewUrl"
+        ],
+        "properties": {
+          "version": {
+            "type": "string",
+            "pattern": "^V[0-9]+$"
+          },
+          "sourceCommit": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{40}$"
+          },
+          "flowVersionUsed": {
+            "type": "string"
+          },
+          "flowSha256": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "status": {
+            "enum": [
+              "SOURCE_ONLY",
+              "PREVIEW_CANDIDATE",
+              "REJECTED",
+              "ART_APPROVED"
+            ]
+          },
+          "previewUrl": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "parentVersion": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "capabilityRefs": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "issueRefs": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  }
+}

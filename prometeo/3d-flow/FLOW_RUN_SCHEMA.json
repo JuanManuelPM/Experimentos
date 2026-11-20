@@ -120,7 +120,63 @@
     },
     "publicHTTPVerified": {
       "type": "boolean"
+    },
+    "buildScope": {
+      "enum": [
+        "FIRST_ARTICLE",
+        "SCALED"
+      ]
+    },
+    "cameraMode": {
+      "enum": [
+        "STATIC",
+        "MOVING",
+        "INTERACTIVE",
+        "EDITED"
+      ]
+    },
+    "preventiveBlueprint": {
+      "type": "object",
+      "required": [
+        "path",
+        "gitBlob"
+      ],
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "gitBlob": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{40}$"
+        }
+      }
     }
   },
-  "additionalProperties": true
+  "additionalProperties": true,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "flow": {
+            "required": [
+              "version"
+            ],
+            "properties": {
+              "version": {
+                "const": "1.2.0"
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "buildScope",
+          "cameraMode",
+          "preventiveBlueprint"
+        ]
+      }
+    }
+  ]
 }

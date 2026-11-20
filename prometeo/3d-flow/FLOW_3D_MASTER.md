@@ -1,3 +1,35 @@
+# PROMETEO 3D · FLUJO MAESTRO ACTUAL v1.2.0
+
+**Entrada vigente:** `FLOW_INDEX.json` → `versions/1.2.0/flow.json` → `versions/1.2.0/PREVENTION_CONTRACT.md`.
+**13 nodos preventivos nuevos**, 17 etapas preservadas, 257 nodos y 346 enlaces en el grafo. Los diez gates D29-D38 siguen vigentes. El historial 1.0/1.1 no se reescribe.
+**No se fabrican diez obras ni se aprueba arte por actualizar este archivo.**
+
+Ruta: `P9 → PF0 → PF1 → PF2 → PF3 → D39 → A0`, seguida por `A12 → PP0 → D40 → PP1 → D41 → B0`. Si el primer artículo falla, volver al recurso/técnica; si no hay render, SOURCE_ONLY acotado. En cine: `C1 → CAM0 → D42 → C2`, para impedir paradas automáticas.
+
+**Regla fundamental:** primero fijar una intención visual y su contraprueba, después elegir técnica idónea, producir un único ejemplar visible, y sólo entonces multiplicar. Los NPCs no pueden resolverse con esferas como arte final. Mecánica con paramétricos sí cuando el diseño requiere encaje.
+
+## Nuevos nodos preventivos
+- [PF0](versions/1.2.0/PREVENTION_CONTRACT.md#pf0)
+- [PF1](versions/1.2.0/PREVENTION_CONTRACT.md#pf1)
+- [PF2](versions/1.2.0/PREVENTION_CONTRACT.md#pf2)
+- [PF3](versions/1.2.0/PREVENTION_CONTRACT.md#pf3)
+- [D39](versions/1.2.0/PREVENTION_CONTRACT.md#d39)
+- [PP0](versions/1.2.0/PREVENTION_CONTRACT.md#pp0)
+- [D40](versions/1.2.0/PREVENTION_CONTRACT.md#d40)
+- [PP1](versions/1.2.0/PREVENTION_CONTRACT.md#pp1)
+- [D41](versions/1.2.0/PREVENTION_CONTRACT.md#d41)
+- [PP2](versions/1.2.0/PREVENTION_CONTRACT.md#pp2)
+- [PP3](versions/1.2.0/PREVENTION_CONTRACT.md#pp3)
+- [CAM0](versions/1.2.0/PREVENTION_CONTRACT.md#cam0)
+- [D42](versions/1.2.0/PREVENTION_CONTRACT.md#d42)
+
+## Registro y madurez
+La versión de flujo de cada escena es la utilizada para construirla, no la que exista hoy. El registro debe declarar `buildScope` FIRST_ARTICLE/SCALED, `cameraMode`, referencia al plano preventivo con Git SHA y evidencia de las cuatro puertas tempranas. El arte requiere revisión de imágenes reales.
+
+---
+
+## DOCUMENTACIÓN HISTÓRICA DE 1.0 / 1.1 (NO RUTA OPERATIVA ACTUAL)
+
 # PROMETEO 3D · Flujo maestro de producción v1.0.0
 
 > **Estado:** CURRENT_CANDIDATE, creado 2026-11-19. 17 etapas, 224 nodos y 288 conexiones. SHA-256 canónico del JSON sin campo `sha256Canonical`: `366506432cd5aa015efd1bff5a2e7d2fc26f91b5121b5b9450b7bef5469deaa7`.

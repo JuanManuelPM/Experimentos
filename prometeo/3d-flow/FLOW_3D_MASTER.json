@@ -1,13 +1,13 @@
 {
   "schema": "prometeo.3d.production-flow/v1",
   "id": "prometeo-3d-production",
-  "version": "1.1.0",
-  "publishedAt": "2026-11-19",
+  "version": "1.2.0",
+  "publishedAt": "2026-11-20",
   "status": "CURRENT_CANDIDATE",
   "scope": "studio-3d",
-  "title": "Flujo maestro de producción 3D",
-  "description": "Diagrama operacional grande y auditable desde pedido hasta publicación. Conserva rutas por especialidad, orientación semántica y gates visuales. La publicación de un diagrama no aprueba automáticamente los productos.",
-  "sourceOfTruth": "PROMETEO/spaces/studio-3d/production-flow/v1.1.0",
+  "title": "Flujo maestro 3D · Prevención antes de construir",
+  "description": "Test-first, source-first, first-article y cámara fluida; impedir replicar decisiones visuales equivocadas. QA final complementa, no reemplaza prevención.",
+  "sourceOfTruth": "FLOW_INDEX.json + versions/1.2.0/flow.json + versions/1.2.0/PREVENTION_CONTRACT.md",
   "stages": [
     {
       "id": "scope",
@@ -559,7 +559,7 @@
       "stage": "acquisition",
       "label": "Verificar formato, licencia y calidad",
       "type": "action",
-      "detail": "Verificar formato, licencia y calidad",
+      "detail": "Verificar formato, licencia y calidad La comprobación incluye técnica idónea para planos exigentes, no sólo licencia y formato.",
       "docRef": "FLOW_3D_MASTER.md#a8",
       "gate": null
     },
@@ -604,7 +604,7 @@
       "stage": "acquisition",
       "label": "Bloquear reemplazo visual ficticio",
       "type": "action",
-      "detail": "Bloquear reemplazo visual ficticio",
+      "detail": "Bloquear reemplazo visual ficticio Un placeholder nunca reemplaza silenciosamente un modelo protagonista.",
       "docRef": "FLOW_3D_MASTER.md#a12",
       "gate": null
     },
@@ -703,7 +703,7 @@
       "stage": "humanoid",
       "label": "Inspeccionar rostro, cabello, ropa y manos",
       "type": "action",
-      "detail": "Inspeccionar rostro, cabello, ropa y manos",
+      "detail": "Inspeccionar rostro, cabello, ropa y manos Personajes visibles: preferir malla texturada/UV o impostor adecuado; prueba de rostro/ropa antes de crowd.",
       "docRef": "FLOW_3D_MASTER.md#h2",
       "gate": null
     },
@@ -811,7 +811,7 @@
       "stage": "props",
       "label": "Inspeccionar pivote, escala y bounds",
       "type": "action",
-      "detail": "Inspeccionar pivote, escala y bounds",
+      "detail": "Inspeccionar pivote, escala y bounds Mobiliario HERO: evaluar silla/modelado/UV versus cubos en serie; mecanismo técnico admite paramétrico justificado.",
       "docRef": "FLOW_3D_MASTER.md#o1",
       "gate": null
     },
@@ -1540,7 +1540,7 @@
       "stage": "cinema",
       "label": "Dirección cinematográfica reutilizable",
       "type": "action",
-      "detail": "Dirección cinematográfica reutilizable",
+      "detail": "Dirección cinematográfica reutilizable Diseñar velocidad, continuidad de mirada y pausa/corte intencional.",
       "docRef": "FLOW_3D_MASTER.md#c1",
       "gate": null
     },
@@ -1810,7 +1810,7 @@
       "stage": "qa",
       "label": "FAIL_ART_DIRECTION",
       "type": "action",
-      "detail": "FAIL_ART_DIRECTION",
+      "detail": "FAIL_ART_DIRECTION Este gate final no reemplaza el primer artículo y las condiciones de prevención.",
       "docRef": "FLOW_3D_MASTER.md#qa14",
       "gate": null
     },
@@ -1837,7 +1837,7 @@
       "stage": "qa",
       "label": "NOT_RUN si entorno impide la prueba",
       "type": "action",
-      "detail": "NOT_RUN si entorno impide la prueba",
+      "detail": "NOT_RUN si entorno impide la prueba Sin GPU, fuente y canario, NO multiplicar como resultado artístico.",
       "docRef": "FLOW_3D_MASTER.md#qa17",
       "gate": null
     },
@@ -2468,6 +2468,147 @@
         "onFailure": "FIX0",
         "onNotRun": "QA17"
       }
+    },
+    {
+      "id": "PF0",
+      "stage": "planning",
+      "label": "Detectar entidades protagonistas y visibilidad",
+      "type": "action",
+      "detail": "Identificar HERO/CLOSEUP/SUPPORT/BACKGROUND/BLOCKING/TECHNICAL. Usuarios evalúan aspecto de humanos, muebles y props hero, no sólo conteo y ubicación.",
+      "docRef": "versions/1.2.0/PREVENTION_CONTRACT.md#pf0",
+      "gate": null
+    },
+    {
+      "id": "PF1",
+      "stage": "planning",
+      "label": "Escribir aceptación positiva y contraejemplo engañoso",
+      "type": "action",
+      "detail": "Antes de código: qué se debe VER, cuál sería el cumplimiento literal horrible (NPC de esferas), qué no se permite y con qué plano lo veremos.",
+      "docRef": "versions/1.2.0/PREVENTION_CONTRACT.md#pf1",
+      "gate": null
+    },
+    {
+      "id": "PF2",
+      "stage": "planning",
+      "label": "Elegir origen y representación idónea",
+      "type": "action",
+      "detail": "Comparar al menos dos alternativas por elemento principal: asset real texturado, modelo editable con UV, cutout con límites de ángulo, geometría paramétrica sólo cuando es apropiada para mecanismo. Ningún fallback a blob.",
+      "docRef": "versions/1.2.0/PREVENTION_CONTRACT.md#pf2",
+      "gate": null
+    },
+    {
+      "id": "PF3",
+      "stage": "planning",
+      "label": "Plan temprano de encuadre, ritmo, luz y tolerancias",
+      "type": "action",
+      "detail": "Primera captura requerida, luz/visibilidad, travelling y pausas intencionales, clearances del objeto, coste USD0, evidencia y punto de NO-GO por clase.",
+      "docRef": "versions/1.2.0/PREVENTION_CONTRACT.md#pf3",
+      "gate": null
+    },
+    {
+      "id": "D39",
+      "stage": "planning",
+      "label": "¿Plan preventivo probado antes de generar mallas?",
+      "type": "decision",
+      "detail": "Validar PREVENTIVE_BLUEPRINT.json antes del primer build; si falla no seguir generando geometría",
+      "docRef": "versions/1.2.0/PREVENTION_CONTRACT.md#d39",
+      "gate": null,
+      "preflightGate": {
+        "id": "before-build",
+        "validator": "preflight.mjs#validatePreflightPlan",
+        "requiredEvidence": "preventive blueprint with counterexamples",
+        "phase": "BEFORE_BUILD"
+      }
+    },
+    {
+      "id": "PP0",
+      "stage": "acquisition",
+      "label": "Verificar que protagonista usa recurso apropiado",
+      "type": "action",
+      "detail": "Tras adquirir recursos comprobar derechos, bytes, textura/UV y estrategia elegida. Para humanos, un collage de primitivas no es un asset final.",
+      "docRef": "versions/1.2.0/PREVENTION_CONTRACT.md#pp0",
+      "gate": null
+    },
+    {
+      "id": "D40",
+      "stage": "acquisition",
+      "label": "¿Asset/representación sirve al plano protagonista?",
+      "type": "decision",
+      "detail": "No basta que sea 3D ni que el layout pase; exige calidad de representación viable según rol y encuadre.",
+      "docRef": "versions/1.2.0/PREVENTION_CONTRACT.md#d40",
+      "gate": null,
+      "preflightGate": {
+        "id": "technique-suitability",
+        "validator": "preflight.mjs#validatePreflightPlan",
+        "requiredEvidence": "preventive blueprint with counterexamples",
+        "phase": "BEFORE_CINEMATIC"
+      }
+    },
+    {
+      "id": "PP1",
+      "stage": "acquisition",
+      "label": "Construir UN primer artículo visible antes de replicar",
+      "type": "action",
+      "detail": "Uno de los pasajeros en silla verdadera desde plano crítico; una carcasa respecto del barrido de aspas; un plano respawn iluminado. Sólo después multiplicar.",
+      "docRef": "versions/1.2.0/PREVENTION_CONTRACT.md#pp1",
+      "gate": null
+    },
+    {
+      "id": "D41",
+      "stage": "acquisition",
+      "label": "¿Primer artículo real apto para escalar?",
+      "type": "decision",
+      "detail": "PASS: evidencia render y fuente. FAIL: cambiar técnica, no arreglar nueve muñecos. NOT_RUN: prototipo SOURCE_ONLY reducido, nunca escala visual aprobada.",
+      "docRef": "versions/1.2.0/PREVENTION_CONTRACT.md#d41",
+      "gate": null,
+      "preflightGate": {
+        "id": "before-replication",
+        "validator": "preflight.mjs#validateFirstArticle",
+        "requiredEvidence": "real rendered first-article+asset SHA",
+        "phase": "BEFORE_REPLICATION"
+      }
+    },
+    {
+      "id": "PP2",
+      "stage": "acquisition",
+      "label": "Descartar estrategia fallida y reacquirir",
+      "type": "action",
+      "detail": "Registrar riesgo rechazado, cambiar modelo/autoría/licencia y volver al banco de recursos; no postproceso para ocultar figura pobre.",
+      "docRef": "versions/1.2.0/PREVENTION_CONTRACT.md#pp2",
+      "gate": null
+    },
+    {
+      "id": "PP3",
+      "stage": "acquisition",
+      "label": "Sin prueba visual: sólo canario acotado",
+      "type": "action",
+      "detail": "Si WebGL falla, guardar fuente y una muestra reducida. No replicar objetos con técnica no verificada; nada de PREVIEW artísticamente aprobado.",
+      "docRef": "versions/1.2.0/PREVENTION_CONTRACT.md#pp3",
+      "gate": null
+    },
+    {
+      "id": "CAM0",
+      "stage": "cinema",
+      "label": "Definir velocidad, enfoque y continuidad antes de timeline largo",
+      "type": "action",
+      "detail": "Rail y beats con velocidad/target continuos; hold motivado o corte explícito. No insertar pausas automáticas al cambiar de shot.",
+      "docRef": "versions/1.2.0/PREVENTION_CONTRACT.md#cam0",
+      "gate": null
+    },
+    {
+      "id": "D42",
+      "stage": "cinema",
+      "label": "¿Ritmo continuo o cortes intencionales comprobados?",
+      "type": "decision",
+      "detail": "Probar beats (tiempo contiguo, sin frenadas automáticas) antes de animar un recorrido entero.",
+      "docRef": "versions/1.2.0/PREVENTION_CONTRACT.md#d42",
+      "gate": null,
+      "preflightGate": {
+        "id": "camera-preflight",
+        "validator": "preflight.mjs#validatePreflightPlan",
+        "requiredEvidence": "preventive blueprint with counterexamples",
+        "phase": "BEFORE_CINEMATIC"
+      }
     }
   ],
   "edges": [
@@ -2802,12 +2943,6 @@
       "kind": "normal"
     },
     {
-      "from": "P9",
-      "to": "A0",
-      "label": "",
-      "kind": "normal"
-    },
-    {
       "from": "A0",
       "to": "A1",
       "label": "",
@@ -2924,12 +3059,6 @@
     {
       "from": "A11",
       "to": "A12",
-      "label": "",
-      "kind": "main"
-    },
-    {
-      "from": "A12",
-      "to": "B0",
       "label": "",
       "kind": "main"
     },
@@ -3702,12 +3831,6 @@
       "kind": "normal"
     },
     {
-      "from": "C1",
-      "to": "C2",
-      "label": "",
-      "kind": "main"
-    },
-    {
       "from": "C2",
       "to": "C3",
       "label": "",
@@ -4438,6 +4561,132 @@
       "to": "D19",
       "label": "PASS",
       "kind": "main"
+    },
+    {
+      "from": "P9",
+      "to": "PF0",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "A12",
+      "to": "PP0",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "C1",
+      "to": "CAM0",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "PF0",
+      "to": "PF1",
+      "label": "",
+      "kind": "normal"
+    },
+    {
+      "from": "PF1",
+      "to": "PF2",
+      "label": "",
+      "kind": "normal"
+    },
+    {
+      "from": "PF2",
+      "to": "PF3",
+      "label": "",
+      "kind": "normal"
+    },
+    {
+      "from": "PF3",
+      "to": "D39",
+      "label": "",
+      "kind": "normal"
+    },
+    {
+      "from": "PP0",
+      "to": "D40",
+      "label": "",
+      "kind": "normal"
+    },
+    {
+      "from": "PP1",
+      "to": "D41",
+      "label": "",
+      "kind": "normal"
+    },
+    {
+      "from": "CAM0",
+      "to": "D42",
+      "label": "",
+      "kind": "normal"
+    },
+    {
+      "from": "D39",
+      "to": "A0",
+      "label": "PASS",
+      "kind": "decision"
+    },
+    {
+      "from": "D39",
+      "to": "PF1",
+      "label": "FAIL",
+      "kind": "repair"
+    },
+    {
+      "from": "D40",
+      "to": "PP1",
+      "label": "PASS",
+      "kind": "decision"
+    },
+    {
+      "from": "D40",
+      "to": "A0",
+      "label": "FAIL",
+      "kind": "repair"
+    },
+    {
+      "from": "D41",
+      "to": "B0",
+      "label": "PASS",
+      "kind": "decision"
+    },
+    {
+      "from": "D41",
+      "to": "PP2",
+      "label": "FAIL",
+      "kind": "repair"
+    },
+    {
+      "from": "D41",
+      "to": "PP3",
+      "label": "NOT_RUN",
+      "kind": "decision"
+    },
+    {
+      "from": "PP2",
+      "to": "A0",
+      "label": "RESELECT",
+      "kind": "repair"
+    },
+    {
+      "from": "PP3",
+      "to": "B0",
+      "label": "SOURCE_ONLY_REDUCED",
+      "kind": "normal"
+    },
+    {
+      "from": "D42",
+      "to": "C2",
+      "label": "PASS",
+      "kind": "decision"
+    },
+    {
+      "from": "D42",
+      "to": "CAM0",
+      "label": "FAIL",
+      "kind": "repair"
     }
   ],
   "knownIssues": [
@@ -4497,12 +4746,69 @@
       ],
       "status": "FAIL proceso",
       "rootCause": "Se publicó sin validar WebGL, frente, pies ni cierre de habitación"
+    },
+    {
+      "id": "TRANSIT-ART-001",
+      "title": "Muñecos de plastilina y sillas de bloques",
+      "nodes": [
+        "PF0",
+        "PF1",
+        "PF2",
+        "D39",
+        "PP0",
+        "D40",
+        "PP1",
+        "D41",
+        "H2",
+        "O1"
+      ],
+      "status": "USER_REJECTED",
+      "rootCause": "Tests de conteo y layout no evitan representar NPCs con esferas; faltó decisión visual antes de replicar."
+    },
+    {
+      "id": "TRANSIT-CAMERA-002",
+      "title": "Trayectorias por pausas",
+      "nodes": [
+        "PF3",
+        "CAM0",
+        "D42",
+        "C1",
+        "D36"
+      ],
+      "status": "USER_REJECTED",
+      "rootCause": "Plan validaba posición pero no continuidad de velocidad entre beats."
+    },
+    {
+      "id": "RESPAWN-BLACK-001",
+      "title": "Preview negra del respawn",
+      "nodes": [
+        "PF3",
+        "PP1",
+        "D41",
+        "QA2",
+        "D37"
+      ],
+      "status": "USER_OBSERVED_CAUSE_UNVERIFIED",
+      "rootCause": "Visual no probado en navegador real antes de publicar."
+    },
+    {
+      "id": "FAN-FIT-001",
+      "title": "Carcasa incompleta de ventilador",
+      "nodes": [
+        "PF1",
+        "PP1",
+        "D41",
+        "O1",
+        "D30"
+      ],
+      "status": "USER_OBSERVED",
+      "rootCause": "Faltó contrato de encaje mecánico antes de ensamblaje."
     }
   ],
   "historyPolicy": {
     "immutableVersions": true,
     "currentPointer": "FLOW_INDEX.json",
-    "newVersionRequires": "new immutable versions/X.Y.Z/flow.json + CHANGELOG + qa + creation runs",
+    "newVersionRequires": "immutable versioned flow + prevention contracts + regression tests + QA receipts; no retroactive attribution",
     "creationAttribution": "strict evidence; null if older/unrecorded",
     "statusVocabulary": [
       "PASS",
@@ -4514,9 +4820,9 @@
   },
   "evidence": "diagnosis only; source visual failures from user screenshots; no new scene fix",
   "revision": {
-    "previous": "1.0.0",
-    "changes": "10 mandatory scene gates with PASS/FAIL/NOT_RUN edges; historic nodes retained",
-    "riskPolicy": "NEVER_PROMOTE_VISUAL_WITH_NOT_RUN",
+    "previous": "1.1.0",
+    "changes": "13 new preventative nodes; test-first strategy, first article, early asset gate, camera continuity; 17 original stages and 10 QA gates preserved",
+    "riskPolicy": "PREVENT_FIRST_NOT_REPAIR_LAST",
     "gateIds": [
       "source-and-license",
       "geometry-clearance",
@@ -4527,8 +4833,151 @@
       "interaction",
       "cinematography",
       "mobile-performance",
-      "reopen-roundtrip"
+      "reopen-roundtrip",
+      "before-build",
+      "technique-suitability",
+      "before-replication",
+      "camera-preflight"
     ]
   },
-  "sha256Canonical": "ca3b18c0fd745676a8100950549ec6c6b81271fb2552f83dc5c3358b72cd1b16"
+  "subflows": [
+    {
+      "id": "representation",
+      "owner": "prop+character+material",
+      "start": "PF0",
+      "stages": [
+        "planning",
+        "acquisition",
+        "classification"
+      ],
+      "earlyGates": [
+        "D39",
+        "D40",
+        "D41"
+      ],
+      "policy": "selección asset-first por saliencia y encuadre"
+    },
+    {
+      "id": "characters",
+      "owner": "character",
+      "start": "H1",
+      "stages": [
+        "humanoid",
+        "orientation",
+        "acting"
+      ],
+      "earlyGates": [
+        "D40",
+        "D41"
+      ],
+      "policy": "identidad, UV, silueta y rig"
+    },
+    {
+      "id": "objects-sets",
+      "owner": "prop+environment",
+      "start": "O1",
+      "stages": [
+        "props",
+        "environment"
+      ],
+      "earlyGates": [
+        "D40",
+        "D41"
+      ],
+      "policy": "modelo/sockets/escala, no geometría improvisada para protagonista"
+    },
+    {
+      "id": "materials-vfx",
+      "owner": "material+light+vfx",
+      "start": "F1",
+      "stages": [
+        "fx"
+      ],
+      "earlyGates": [
+        "D39",
+        "D41"
+      ],
+      "policy": "materiales/UV/iluminación y visibilidad"
+    },
+    {
+      "id": "movement",
+      "owner": "character+vehicle",
+      "start": "M0",
+      "stages": [
+        "acting"
+      ],
+      "earlyGates": [
+        "D39",
+        "D41"
+      ],
+      "policy": "clips reales/contacto y movimiento"
+    },
+    {
+      "id": "camera",
+      "owner": "camera",
+      "start": "C1",
+      "stages": [
+        "cinema"
+      ],
+      "earlyGates": [
+        "D39",
+        "D42"
+      ],
+      "policy": "continuidad y decisiones rítmicas"
+    },
+    {
+      "id": "technical-assembly",
+      "owner": "prop+camera",
+      "start": "PF2",
+      "stages": [
+        "props",
+        "cinema"
+      ],
+      "earlyGates": [
+        "D39",
+        "D41"
+      ],
+      "policy": "despiece paramétrico + encaje"
+    },
+    {
+      "id": "release-learning",
+      "owner": "release+qa",
+      "start": "S0",
+      "stages": [
+        "assembly",
+        "qa",
+        "repair",
+        "persistence",
+        "publish"
+      ],
+      "earlyGates": [
+        "D41"
+      ],
+      "policy": "evidencia, versiones y errores generales"
+    }
+  ],
+  "qualityArchitecture": {
+    "principle": "PREVENT_DEFECT_BEFORE_COSTLY_REPLICATION",
+    "beforeBuild": [
+      "PF0",
+      "PF1",
+      "PF2",
+      "PF3",
+      "D39"
+    ],
+    "beforeReplication": [
+      "PP0",
+      "D40",
+      "PP1",
+      "D41"
+    ],
+    "beforeLongCamera": [
+      "CAM0",
+      "D42"
+    ],
+    "notRunPath": "PP3 allows only SOURCE_ONLY reduced; no bulk/visual approval",
+    "intent": "Positive acceptance and adversarial literal-compliance test before geometry",
+    "limitations": "No textual preflight substitutes a verified frame or taste judgment; D29-D38 remain for release."
+  },
+  "sha256Canonical": "057aac6208f2077c2b6061e73c738119b40873775b3f9fa988f43f4613772c88"
 }

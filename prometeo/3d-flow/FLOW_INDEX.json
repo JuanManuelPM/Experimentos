@@ -1,9 +1,9 @@
 {
   "schema": "prometeo.3d.production-flow-index/v1",
   "flowId": "prometeo-3d-production",
-  "current": "1.1.0",
-  "currentFile": "./versions/1.1.0/flow.json",
-  "sha256Canonical": "ca3b18c0fd745676a8100950549ec6c6b81271fb2552f83dc5c3358b72cd1b16",
+  "current": "1.2.0",
+  "currentFile": "./versions/1.2.0/flow.json",
+  "sha256Canonical": "057aac6208f2077c2b6061e73c738119b40873775b3f9fa988f43f4613772c88",
   "versions": [
     {
       "version": "1.0.0",
@@ -17,9 +17,19 @@
       "version": "1.1.0",
       "file": "./versions/1.1.0/flow.json",
       "sha256Canonical": "ca3b18c0fd745676a8100950549ec6c6b81271fb2552f83dc5c3358b72cd1b16",
-      "status": "CURRENT_CANDIDATE",
+      "status": "SUPERSEDED_IMMUTABLE",
       "introduced": "2026-11-19",
       "notes": "Diez gates verificables de escena; FAIL→CALIBRAR, NOT_RUN→candidato sin aprobación ficticia."
+    },
+    {
+      "version": "1.2.0",
+      "file": "./versions/1.2.0/flow.json",
+      "sha256Canonical": "057aac6208f2077c2b6061e73c738119b40873775b3f9fa988f43f4613772c88",
+      "status": "CURRENT_CANDIDATE",
+      "introduced": "2026-11-20",
+      "notes": "Prevención primero: representación idónea, prueba de primer artículo, cámara sin frenadas implícitas, mecanismos con tolerancias; los 10 gates QA previos permanecen.",
+      "preflight": "./versions/1.2.0/preflight.mjs",
+      "contract": "./versions/1.2.0/PREVENTION_CONTRACT.md"
     }
   ],
   "immutable": true
