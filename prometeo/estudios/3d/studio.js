@@ -22,8 +22,32 @@ async function boot(){
   if(m.candidate&&m.candidate.id){const item=m.candidate;
    if(!state.all.some(x=>x.id===item.id)){const latest=$('#latest');latest.hidden=false;$('#latest-title').textContent=item.title;$('#latest-desc').textContent=item.description;$('#latest-open').onclick=()=>open(item);}
   }
-  render();const id=new URL(location.href).searchParams.get('obra');if(id){const candidate=m.candidate?.id===id?m.candidate:null;const p=state.all.find(x=>x.id===id)||candidate;if(p)open(p,false)}
+  render();discoverReleases();const id=new URL(location.href).searchParams.get('obra');if(id){const candidate=m.candidate?.id===id?m.candidate:null;const p=state.all.find(x=>x.id===id)||candidate;if(p)open(p,false)}
  }catch(err){setEmpty('No se pudo recuperar el catálogo. Abrí la biblioteca clásica mientras se restablece el registro.');$('#updated').replaceChildren(create('a',null,'Biblioteca clásica ↗'));$('#updated').firstChild.href=path('project-explorer/');console.warn('PROMETEO: catálogo no disponible',err)}
+}
+async function discoverReleases(){
+ // Read-only GitHub page discovery; publishing another scene does not require editing UI code.
+ try{
+  const controller=new AbortController();const timeout=setTimeout(()=>controller.abort(),6500);
+  let response;
+  try{response=await fetch('https://api.github.com/repos/JuanManuelPM/Experimentos/git/trees/gh-pages?recursive=1',{signal:controller.signal,cache:'no-store',headers:{Accept:'application/vnd.github+json'}})}
+  finally{clearTimeout(timeout)}
+  if(!response.ok)return;
+  const listing=await response.json();if(!Array.isArray(listing.tree)||listing.truncated)return;
+  const known=new Set(state.all.map(p=>p.id));const fresh=[];
+  for(const item of listing.tree){
+   if(item.type!=='blob')continue;
+   const match=/^prometeo\/([a-z0-9-]+)\/index\.html$/.exec(item.path);
+   if(!match)continue;
+   const id=match[1];if(['project-explorer','3d-flow','forja','asset-atlas'].includes(id)||known.has(id))continue;
+   known.add(id);
+   fresh.push({id,title:id.replace(/-/g,' ').replace(/\b\w/g,c=>c.toUpperCase()),description:'Nueva página pública. Revisión artística sin registrar.',kind:'animation',status:'PUBLICADO · SIN QA REGISTRADA',glyph:'▤',url:path(id+'/'),updatedAt:null,creation:state.records.get(id)||null});
+  }
+  if(!fresh.length)return;
+  state.all.push(...fresh);state.all.sort(sort);render();
+  $('#updated').textContent='Proyectos nuevos detectados desde GitHub Pages. La falta de QA no es aprobación.';
+  if(fresh.some(x=>x.id===state.meta.candidate?.id))$('#latest').hidden=true;
+ }catch(e){console.info('Detección de nuevas publicaciones no disponible',e)}
 }
 function render(){
  const filtered=state.all.filter(p=>(state.filter==='all'||p.kind===state.filter)&&((p.title+' '+(p.description||'')).toLocaleLowerCase('es').includes(state.query)));
