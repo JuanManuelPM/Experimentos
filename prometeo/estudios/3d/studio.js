@@ -1,7 +1,7 @@
 (()=>{'use strict';
 const $=s=>document.querySelector(s),root=new URL('../../',location.href);
 const path=(s)=>new URL(s,root).href;
-const state={all:[],records:new Map(),selected:null,filter:'all',query:'',tab:'summary',previousFocus:null,meta:{}};
+const state={all:[],records:new Map(),selected:null,filter:'creations',query:'',tab:'summary',previousFocus:null,meta:{}};
 const create=(name,cls,txt)=>{const el=document.createElement(name);if(cls)el.className=cls;if(txt!==undefined)el.textContent=txt;return el};
 const kindName={world:'Mundo 3D',animation:'Animación',character:'Personaje',tool:'Herramienta'};
 const kindFromFolder={personajes:'character',escenarios:'world',videos:'animation',herramientas:'tool',pruebas:'animation'};
@@ -51,7 +51,7 @@ async function discoverReleases(){
  }catch(e){console.info('Detección de nuevas publicaciones no disponible',e)}
 }
 function render(){
- const filtered=state.all.filter(p=>(state.filter==='all'||p.kind===state.filter)&&((p.title+' '+(p.description||'')).toLocaleLowerCase('es').includes(state.query)));
+ const filtered=state.all.filter(p=>(state.filter==='all'||state.filter==='creations'&&p.kind!=='tool'||p.kind===state.filter)&&((p.title+' '+(p.description||'')).toLocaleLowerCase('es').includes(state.query)));
  $('#count').textContent=filtered.length+' proyectos';
  const grid=$('#grid');grid.replaceChildren();
  if(!filtered.length){setEmpty('No hay proyectos para ese filtro.');return}
