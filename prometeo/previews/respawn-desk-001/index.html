@@ -1,11 +1,11 @@
 <!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#090c16"><title>Respawn Desk · PROMETEO</title><style>
 *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#070b13;font-family:system-ui,sans-serif}canvas{display:block;width:100vw;height:100dvh;touch-action:pan-y}#bar{position:fixed;left:22px;right:22px;bottom:calc(15px + env(safe-area-inset-bottom));height:2px;background:#ffffff3d;cursor:pointer;z-index:3}#fill{height:100%;width:0;background:#e6e3d3;box-shadow:0 0 8px #d3e8fd}#play{position:fixed;left:24px;bottom:calc(31px + env(safe-area-inset-bottom));border:0;border-radius:99px;background:#0007;color:#fff;font-size:22px;width:42px;height:42px;cursor:pointer;backdrop-filter:blur(8px);z-index:3}#replay{position:fixed;right:24px;bottom:calc(31px + env(safe-area-inset-bottom));border:0;border-radius:99px;background:#0007;color:#fff;font-size:23px;width:42px;height:42px;cursor:pointer;backdrop-filter:blur(8px);z-index:3}#fail{display:none;position:fixed;inset:0;align-items:center;justify-content:center;color:#eee;font-size:14px;text-align:center;background:#080b14}#pulse{position:fixed;inset:0;pointer-events:none;opacity:0;background:#d1efff;z-index:2}button:focus-visible{outline:2px solid #fff}
-</style></head><body><a href="../../estudios/3d/" aria-label="Biblioteca 3D" title="Biblioteca" style="position:fixed;z-index:4000;left:12px;top:12px;width:40px;height:40px;display:grid;place-items:center;border-radius:100%;border:1px solid #aaa8;background:#14201bd9;color:#fff;text-decoration:none;font:28px/1 system-ui">‹</a><canvas id="stage" aria-label="Escena tridimensional cinematográfica reproducible"></canvas><div id="pulse"></div><button id="play" aria-label="Pausar">Ⅱ</button><button id="replay" aria-label="Repetir">↻</button><div id="bar" role="slider" aria-label="Progreso" tabindex="0" aria-valuemin="0" aria-valuemax="21.5" aria-valuenow="0"><div id="fill"></div></div><div id="fail">Este dispositivo no pudo iniciar el visor 3D.</div><script type="module">
+</style></head><body><canvas id="stage" aria-label="Escena tridimensional cinematográfica reproducible"></canvas><div id="pulse"></div><button id="play" aria-label="Pausar">Ⅱ</button><button id="replay" aria-label="Repetir">↻</button><div id="bar" role="slider" aria-label="Progreso" tabindex="0" aria-valuemin="0" aria-valuemax="21.5" aria-valuenow="0"><div id="fill"></div></div><div id="fail">Este dispositivo no pudo iniciar el visor 3D.</div><script type="module">
 /** PROMETEO 3D · camera/world-to-scene-rails@0.1.0
  * Standalone deterministic normalized-time shot sampler. Original MIT.
  * No Three.js, DOM, renderer, actor, tile service, or network dependency.
  */
-const VERSION='0.1.0';
+const VERSION='0.1.1';
 const vec=a=>Array.isArray(a)&&a.length===3&&a.every(Number.isFinite);
 const finite=Number.isFinite;
 const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
@@ -43,12 +43,32 @@ function sampleRail(plan,seconds){const q=validateRail(plan);if(!q.ok)throw new 
 }
 function sampleFrame(plan,frame){if(!Number.isInteger(frame)||frame<0)throw new Error('INVALID_FRAME');return sampleRail(plan,frame/plan.fps);}
 
+/** Verified right-handed cross product: never truncate the third component. */
+function cross3(a,b){
+ if(!vec(a)||!vec(b))throw Error('INVALID_CROSS_INPUT');
+ return [a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]];
+}
+/** Column-major 4×4 view matrix for Y-up renderer. Throws on degenerate direction. */
+function viewMatrix(eye,target){
+ if(!vec(eye)||!vec(target))throw Error('INVALID_CAMERA_VECTOR');
+ const sub=(a,b)=>a.map((v,i)=>v-b[i]);const dot=(a,b)=>a.reduce((n,x,i)=>n+x*b[i],0);
+ const unit=a=>{const len=Math.hypot(...a);if(!(len>1e-7))throw Error('DEGENERATE_CAMERA_DIRECTION');return a.map(v=>v/len)};
+ const z=unit(sub(eye,target)), x=unit(cross3([0,1,0],z)), y=cross3(z,x);
+ const m=[x[0],y[0],z[0],0,x[1],y[1],z[1],0,x[2],y[2],z[2],0,-dot(x,eye),-dot(y,eye),-dot(z,eye),1];
+ if(!m.every(Number.isFinite))throw Error('CAMERA_MATRIX_NOT_FINITE');return m;
+}
+function perspectiveMatrix(fov,aspect,near=.06,far=1400){
+ if(![fov,aspect,near,far].every(Number.isFinite)||fov<=0||fov>=179||aspect<=0||near<=0||far<=near)throw Error('INVALID_PERSPECTIVE');
+ const f=1/Math.tan(fov*Math.PI/360),nf=1/(near-far);
+ return [f/aspect,0,0,0,0,f,0,0,0,0,(far+near)*nf,-1,0,0,2*far*near*nf,0];
+}
+
 /** 21.5-second cinematographic plan; meters in right-handed +Y-up frame. */
 const SHOTLIST={
  schema:'prometeo.3d.world-to-scene-rail/v1',fps:24,
  layers:{city:{mode:'out',range:[9.2,11.5]},roof:{mode:'out',range:[9.1,11.3]},room:{mode:'in',range:[6.7,9.7]}},
  shots:[
-  {id:'S01_ORBITAL',from:0,to:4.2,ease:'inQuad',transition:'continuous',camera:[[240,690,540],[178,410,320]],target:[[0,0,0],[0,4,0]],fov:[49,46]},
+  {id:'S01_ORBITAL',from:0,to:4.2,ease:'inQuad',transition:'continuous',camera:[[190,550,440],[178,410,320]],target:[[0,0,0],[0,4,0]],fov:[49,46]},
   {id:'S02_DISTRICT',from:4.2,to:7.6,ease:'smoother',transition:'continuous',camera:[[178,410,320],[120,190,170],[57,74,87]],target:[[0,4,0],[0,4,0],[0,5,0]],fov:[46,44]},
   {id:'S03_BUILDING',from:7.6,to:10.0,ease:'inQuad',transition:'continuous',camera:[[57,74,87],[33,43,49],[11,13,16]],target:[[0,5,0],[0,4.7,0],[0,2,0]],fov:[44,48]},
   {id:'S04_THRESHOLD',from:10.0,to:12.15,ease:'smoother',transition:'continuous',camera:[[11,13,16],[5.4,5.1,7.4],[1.55,2.35,3.5]],target:[[0,2,0],[0,1.7,-.7],[0,1.48,-1.2]],fov:[48,42]},
@@ -56,7 +76,6 @@ const SHOTLIST={
   {id:'S06_PORTRAIT',from:16.4,to:21.5,ease:'smoother',transition:'cut',camera:[[1.15,1.96,-.92],[.87,1.99,-1.06]],target:[[0,1.91,.47],[0,1.9,.47]],fov:[38,34]}
  ]
 };
-
 
 
 
@@ -68,7 +87,7 @@ if(!validateRail(SHOTLIST).ok)throw Error('Invalid shotlist');
 // All meshes are original scene-local geometry. The anonymous actor is intentionally NOT a likeness.
 const C={night:[.028,.041,.078],road:[.018,.028,.046],tower:[.079,.116,.158],towerAlt:[.11,.13,.163],trim:[.25,.29,.33],blue:[.19,.61,.76],gold:[.95,.53,.23],window:[.76,.51,.24],cream:[.73,.68,.54],wall:[.15,.19,.22],wood:[.26,.16,.115],woodHi:[.43,.26,.16],metal:[.22,.29,.33],black:[.07,.087,.105],screen:[.15,.61,.66],rug:[.24,.22,.22],fabric:[.21,.33,.34],skin:[.72,.62,.49],hair:[.08,.10,.12],plant:[.1,.31,.23]};
 let seed=19112026;const rand=()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296};
-const vadd=(a,b)=>a.map((x,i)=>x+b[i]),vsub=(a,b)=>a.map((x,i)=>x-b[i]),vmul=(a,n)=>a.map(x=>x*n),dot=(a,b)=>a.reduce((s,v,i)=>s+v*b[i],0),cross=(a,b)=>[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2]],unit=a=>{let l=Math.hypot(...a)||1;return a.map(x=>x/l)};
+const vadd=(a,b)=>a.map((x,i)=>x+b[i]),vsub=(a,b)=>a.map((x,i)=>x-b[i]),vmul=(a,n)=>a.map(x=>x*n),dot=(a,b)=>a.reduce((s,v,i)=>s+v*b[i],0),cross=cross3,unit=a=>{let l=Math.hypot(...a)||1;return a.map(x=>x/l)};
 class Batch{
  constructor(){this.p=[];this.n=[];this.c=[];this.e=[]}
  vert(p,n,c,e=0){this.p.push(...p);this.n.push(...n);this.c.push(...c);this.e.push(e)}
@@ -85,7 +104,7 @@ class Batch{
  disk(center,r,c,e=0){this.cyl([center[0],center[1]-.015,center[2]],[center[0],center[1]+.015,center[2]],r,r,c,e,20)}
  serialize(){return {positions:new Float32Array(this.p),normals:new Float32Array(this.n),colors:new Float32Array(this.c),emissives:new Float32Array(this.e),count:this.e.length}}
 }
-const city=new Batch(),room=new Batch();
+const city=new Batch(),room=new Batch(),roof=new Batch();
 // Architectural city, original procedural district. 23 × 23 block grid; no map tiles, no commercial content.
 for(let i=-12;i<=12;i++){city.box(i*20,-.22,0,5.4,.14,550,C.road);city.box(0,-.22,i*20,550,.14,5.4,C.road);for(let j=-12;j<=12;j++){city.box(i*20,-.133,j*20,1.0,.035,1.0,(i+j)%3===0?C.gold:C.trim,.2)}}
 const towerPalette=[[.075,.10,.14],[.065,.095,.12],[.12,.12,.15],[.1,.14,.165],[.14,.095,.11]];
@@ -114,7 +133,7 @@ city.box(0,5.77,0,3.4,.85,2.5,[.15,.18,.2]);city.cyl([0,5.85,0],[0,12,0],.055,.0
 room.box(0,-.17,0,8.2,.34,8.2,C.wood);
 room.box(-4,1.85,0,.25,3.7,8.2,C.wall);room.box(4,1.85,0,.25,3.7,8.2,C.wall);
 room.box(0,1.85,-4,8.2,3.7,.25,C.wall);room.box(0,1.85,4,8.2,3.7,.25,C.wall);
-room.box(0,3.78,0,8.4,.19,8.4,[.095,.112,.15]);
+roof.box(0,3.78,0,8.4,.19,8.4,[.095,.112,.15]);
 // Brick accent wall and dark crown molding.
 for(let y=.35;y<3.3;y+=.34)for(let x=-3.9;x<3.75;x+=.88){let offset=(Math.round(y/.34)%2)*.43;room.box(x+offset,y,-3.83,.77,.275,.05,[.175+rand()*.055,.115+rand()*.025,.105+rand()*.024])}
 room.box(0,3.47,-3.87,8.1,.15,.12,C.black);room.box(0,.18,-3.87,8.1,.14,.12,C.black);
@@ -185,37 +204,35 @@ uniform mat4 u_vp;out vec3 v_n;out vec3 v_col;out vec3 v_p;out float v_e;
 void main(){v_n=a_norm;v_col=a_col;v_p=a_pos;v_e=a_emit;gl_Position=u_vp*vec4(a_pos,1.0);}`;
 const frag=`#version 300 es
 precision highp float;in vec3 v_n;in vec3 v_col;in vec3 v_p;in float v_e;
-uniform vec3 u_camera;uniform float u_alpha;uniform float u_fog;uniform vec3 u_fogColor;out vec4 outColor;
+uniform vec3 u_camera;uniform float u_alpha;uniform float u_fog;uniform vec3 u_fogColor;uniform float u_exposure;out vec4 outColor;
 void main(){vec3 n=normalize(v_n), sun=normalize(vec3(-0.53,0.89,0.33));float lam=max(dot(n,sun),0.0);
 float candle=2.0/(1.0+0.6*pow(distance(v_p,vec3(-1.2,2.2,-2.2)),2.0));
 float screen=1.7/(1.0+1.5*pow(distance(v_p,vec3(0.0,1.7,-1.6)),2.0));
 vec3 lit=v_col*(0.42+0.49*lam+0.35*candle)+v_col*vec3(.3,.72,.88)*screen*.37+v_col*v_e*1.7;
 float fog=1.0-exp(-distance(v_p,u_camera)*u_fog);
-vec3 col=mix(lit,u_fogColor,clamp(fog,0.,.93));col=col/(vec3(1.0)+col*.42);
+vec3 col=mix(lit*u_exposure,u_fogColor,clamp(fog,0.,.87));col=col/(vec3(1.0)+col*.42);
 outColor=vec4(pow(col,vec3(0.88)),u_alpha);}`;
 const shader=(type,code)=>{const sh=gl.createShader(type);gl.shaderSource(sh,code);gl.compileShader(sh);if(!gl.getShaderParameter(sh,gl.COMPILE_STATUS))throw Error(gl.getShaderInfoLog(sh));return sh};
 const program=gl.createProgram();gl.attachShader(program,shader(gl.VERTEX_SHADER,vert));gl.attachShader(program,shader(gl.FRAGMENT_SHADER,frag));gl.linkProgram(program);if(!gl.getProgramParameter(program,gl.LINK_STATUS))throw Error(gl.getProgramInfoLog(program));gl.useProgram(program);
 const attr=['a_pos','a_norm','a_col','a_emit'].map(k=>gl.getAttribLocation(program,k));const unif=n=>gl.getUniformLocation(program,n);
-const uVP=unif('u_vp'),uCam=unif('u_camera'),uAlpha=unif('u_alpha'),uFog=unif('u_fog'),uFogC=unif('u_fogColor');
-function upload(batch){const data=batch.serialize(),out={count:data.count,buffers:[]};for(const field of ['positions','normals','colors','emissives']){const b=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,b);gl.bufferData(gl.ARRAY_BUFFER,data[field],gl.STATIC_DRAW);out.buffers.push(b)}return out}
-const cityMesh=upload(city),roomMesh=upload(room);city.p=city.n=city.c=city.e=null;room.p=room.n=room.c=room.e=null;
-function draw(mesh,alpha){if(alpha<.005)return;gl.uniform1f(uAlpha,alpha);for(let i=0;i<4;i++){gl.bindBuffer(gl.ARRAY_BUFFER,mesh.buffers[i]);gl.enableVertexAttribArray(attr[i]);gl.vertexAttribPointer(attr[i],i===3?1:3,gl.FLOAT,false,0,0)}gl.drawArrays(gl.TRIANGLES,0,mesh.count)}
-function lookAt(eye,target){let z=unit(vsub(eye,target)),x=unit(cross([0,1,0],z)),y=cross(z,x);return [x[0],y[0],z[0],0,x[1],y[1],z[1],0,x[2],y[2],z[2],0,-dot(x,eye),-dot(y,eye),-dot(z,eye),1]}
-function perspective(fov,aspect,near,far){let f=1/Math.tan(fov*Math.PI/360),nf=1/(near-far);return [f/aspect,0,0,0,0,f,0,0,0,0,(far+near)*nf,-1,0,0,2*far*near*nf,0]}
+const uVP=unif('u_vp'),uCam=unif('u_camera'),uAlpha=unif('u_alpha'),uFog=unif('u_fog'),uFogC=unif('u_fogColor'),uExposure=unif('u_exposure');
+function upload(batch){const data=batch.serialize();if(data.normals.length!==data.positions.length||data.colors.length!==data.positions.length||data.emissives.length*3!==data.positions.length)throw Error('INVALID_VERTEX_STREAM_LENGTH');if(![...data.positions,...data.normals].every(Number.isFinite))throw Error('INVALID_VERTEX_STREAM_NAN');const out={count:data.count,buffers:[]};for(const field of ['positions','normals','colors','emissives']){const b=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,b);gl.bufferData(gl.ARRAY_BUFFER,data[field],gl.STATIC_DRAW);out.buffers.push(b)}return out}
+const cityMesh=upload(city),roomMesh=upload(room),roofMesh=upload(roof);city.p=city.n=city.c=city.e=null;room.p=room.n=room.c=room.e=null;roof.p=roof.n=roof.c=roof.e=null;
+function draw(mesh,alpha,exposure=1){if(alpha<.005)return;gl.uniform1f(uAlpha,alpha);gl.uniform1f(uExposure,exposure);for(let i=0;i<4;i++){gl.bindBuffer(gl.ARRAY_BUFFER,mesh.buffers[i]);gl.enableVertexAttribArray(attr[i]);gl.vertexAttribPointer(attr[i],i===3?1:3,gl.FLOAT,false,0,0)}gl.drawArrays(gl.TRIANGLES,0,mesh.count);const error=gl.getError();if(error!==gl.NO_ERROR){fail.textContent='No se pudo dibujar la escena 3D';fail.style.display='flex';throw Error('WEBGL_DRAW_ERROR_'+error)}}
 function mul4(a,b){const c=new Array(16);for(let col=0;col<4;col++)for(let row=0;row<4;row++)c[col*4+row]=a[row]*b[col*4]+a[4+row]*b[col*4+1]+a[8+row]*b[col*4+2]+a[12+row]*b[col*4+3];return c}
 let time=0,playing=true,last=0,frame=0;
 function resize(){const dpr=Math.min(1.65,devicePixelRatio||1),w=Math.round(innerWidth*dpr),h=Math.round(innerHeight*dpr);if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h;gl.viewport(0,0,w,h)}}
 function render(now){if(!last)last=now;const dt=Math.min(.07,(now-last)/1000);last=now;if(playing)time=Math.min(21.5,time+dt);if(time===21.5&&playing){playing=false;play.textContent='▶';play.setAttribute('aria-label','Reproducir')}
- resize();const state=sampleRail(SHOTLIST,time);gl.clearColor(.014,.021,.042,1);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);
+ resize();const state=sampleRail(SHOTLIST,time);gl.clearColor(.038,.056,.088,1);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);
  gl.enable(gl.DEPTH_TEST);gl.depthFunc(gl.LEQUAL);gl.enable(gl.CULL_FACE);gl.cullFace(gl.BACK);gl.enable(gl.BLEND);gl.blendFunc(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA);
- const vp=mul4(perspective(state.fov,canvas.width/canvas.height,.06,1400),lookAt(state.position,state.target));
- gl.uniformMatrix4fv(uVP,false,new Float32Array(vp));gl.uniform3fv(uCam,state.position);gl.uniform3fv(uFogC,new Float32Array([.018,.026,.048]));gl.uniform1f(uFog,time<10?.00039:.0014);
+ const vp=mul4(perspectiveMatrix(state.fov,canvas.width/canvas.height,.06,1400),viewMatrix(state.position,state.target));
+ if(vp.length!==16||!vp.every(Number.isFinite)){fail.textContent='Error de cámara 3D';fail.style.display='flex';throw Error('CAMERA_MATRIX_NOT_FINITE')}gl.uniformMatrix4fv(uVP,false,new Float32Array(vp));gl.uniform3fv(uCam,state.position);gl.uniform3fv(uFogC,new Float32Array([.038,.056,.088]));gl.uniform1f(uFog,time<10?.00022:.0010);
  // Rendering city first with depth write disabled while it dissolves through the roof.
- if(state.layers.city>.005){gl.depthMask(state.layers.city>.995);draw(cityMesh,state.layers.city)}
- gl.depthMask(true);draw(roomMesh,time<8?0:Math.min(1,(time-8)/2));
+ if(state.layers.city>.005){gl.depthMask(state.layers.city>.995);draw(cityMesh,state.layers.city,2.45)}
+ gl.depthMask(true);draw(roomMesh,time<8?0:Math.min(1,(time-8)/2),1.48);draw(roofMesh,(time<8?0:Math.min(1,(time-8)/2))*state.layers.roof,1.48);
  fill.style.width=`${(time/21.5)*100}%`;bar.setAttribute('aria-valuenow',time.toFixed(2));
  pulse.style.opacity= time>16.37&&time<16.57?String(.38*(1-Math.abs(time-16.47)/.1)): '0';
- window.__PROMETEO3D={ready:true,sceneId:'respawn-desk-001',time,shot:state.shotId,cityTriangles:cityMesh.count/3,roomTriangles:roomMesh.count/3,frame:frame++};
+ window.__PROMETEO3D={ready:true,sceneId:'respawn-desk-001',time,shot:state.shotId,cityTriangles:cityMesh.count/3,roomTriangles:roomMesh.count/3,roofTriangles:roofMesh.count/3,frame:frame++};
  requestAnimationFrame(render)}
 requestAnimationFrame(render);
 function setPlaying(v){playing=v;play.textContent=v?'Ⅱ':'▶';play.setAttribute('aria-label',v?'Pausar':'Reproducir')}

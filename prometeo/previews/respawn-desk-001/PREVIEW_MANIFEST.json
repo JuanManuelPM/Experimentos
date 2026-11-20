@@ -6,17 +6,22 @@
   "origin": {
     "repo": "JuanManuelPM/pruebas",
     "ref": "candidate/3d-scene-respawn-desk-001",
-    "commit": "509f0e874d42e652496c3b6eb8700f860e4dd8c2"
+    "commit": "861172245f98b2aaf2c76ea19974be1f956c0745"
   },
   "sourceStatus": "SOURCE_ONLY",
   "browserQA": "NOT_RUN",
   "androidQA": "NOT_RUN",
   "artApproval": "NOT_REVIEWED",
-  "verified": "Source bytes fetched from pinned GitHub commit and copied into isolated preview; public HTTP/WebGL rendering not verified",
-  "qaSummary": "D35 FAIL; WebGL/Android NOT_RUN",
-  "format": "standalone HTML/WebGL2",
+  "fix": "Fixed incomplete XYZ cross product (invalid normal stream and NaN viewMatrix), exposure and roof-layer fade; HTML deterministically built from modular source.",
+  "offlineEvidence": {
+    "status": "PASS_OFFLINE_3D_NOT_WEBGL",
+    "repo": "JuanManuelPM/pruebas",
+    "ref": "candidate/3d-scene-respawn-desk-001",
+    "path": "PROMETEO/spaces/studio-3d/scenes/respawn-desk-001/qa/evidence/offline-vtk-frames.jpg",
+    "sha": "1ae6fc161d1d0f9540ef62299892cd048410069f"
+  },
   "limitations": [
-    "No claim of visual readiness, working browser execution, Android compatibility or artist approval.",
-    "The private authoring branch is unchanged. Preview does not set final release."
+    "Published HTML source and GitHub blob verified. Public HTTP and WebGL2/Android pixels not independently measured.",
+    "No approval of artistic quality. Anonymous placeholder remains. WebGL draw errors now explicitly detected."
   ]
 }
