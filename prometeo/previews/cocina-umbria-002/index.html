@@ -1,7 +1,13 @@
 <!doctype html>
 <html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#101a18"><meta name="robots" content="noindex"><title>Cocina Umbría V2 · Vista previa</title>
-<link rel="stylesheet" href="./style.css">
+<link rel="stylesheet" href="./style.css"><style>
+/* Preview chrome only. The production scene code is untouched. */
+#head{left:72px;top:16px}#head .eyebrow{display:none}
+#head strong{font-size:clamp(17px,2.8vw,26px);margin:0 0 4px}
+#head #status{font-size:10px}
+@media(max-width:650px){#head{left:70px;top:17px}#shot{top:73px;left:12px;right:auto}}
+</style>
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.181.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.181.0/examples/jsm/"}}</script></head>
 <body><a href="../../estudios/3d/" aria-label="Volver a la biblioteca" style="position:fixed;z-index:35;top:12px;left:12px;display:grid;place-items:center;width:46px;height:46px;border-radius:50%;border:1px solid #c6d7c477;background:#0d1919dc;color:#fff;text-decoration:none;font:30px/1 Georgia,serif">‹</a><main id="stage"><canvas id="canvas" aria-label="Cocina Umbría 002, escenario tridimensional con mobiliario real y personaje civil"></canvas></main>
 <div id="shade" aria-hidden="true"></div>
