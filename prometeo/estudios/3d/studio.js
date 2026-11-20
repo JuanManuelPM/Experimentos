@@ -1,0 +1,88 @@
+(()=>{'use strict';
+const $=s=>document.querySelector(s),root=new URL('../../',location.href);
+const path=(s)=>new URL(s,root).href;
+const state={all:[],records:new Map(),selected:null,filter:'all',query:'',tab:'summary',previousFocus:null,meta:{}};
+const create=(name,cls,txt)=>{const el=document.createElement(name);if(cls)el.className=cls;if(txt!==undefined)el.textContent=txt;return el};
+const kindName={world:'Mundo 3D',animation:'Animación',character:'Personaje',tool:'Herramienta'};
+const kindFromFolder={personajes:'character',escenarios:'world',videos:'animation',herramientas:'tool',pruebas:'animation'};
+const safeURL=url=>{try{const u=new URL(url,location.href);return u.protocol==='https:'&&(['juanmanuelpm.github.io','github.com'].includes(u.hostname))?u.href:null}catch{return null}};
+function setEmpty(message){const grid=$('#grid');grid.replaceChildren(create('p','empty',message))}
+function sort(a,b){return (Date.parse(b.updatedAt)||0)-(Date.parse(a.updatedAt)||0)||a.title.localeCompare(b.title,'es')}
+async function read(url){const r=await fetch(url,{cache:'no-store'});if(!r.ok)throw Error('HTTP '+r.status);return r.json()}
+async function boot(){
+ try{
+  const [p,c,m]=await Promise.all([read(path('project-explorer/projects.json')),read(path('3d-flow/CREATIONS.json')),read('./catalog.json')]);
+  if(!Array.isArray(p.projects)||!Array.isArray(c.records))throw Error('Registro de proyectos no válido');
+  state.records=new Map(c.records.map(r=>[r.id,r]));state.meta=m;
+  const overrides=m.overrides||{};
+  state.all=p.projects.filter(r=>/^[a-z0-9_/-]+$/.test(r.id)&&!r.id.includes('..')&&safeURL(r.url)).map(r=>{
+   const extra=overrides[r.id]||{};
+   return {...r,kind:extra.kind||kindFromFolder[r.folder]||'animation',status:extra.status||'PUBLICADO · QA VARIABLE',glyph:extra.glyph||'◇',thumbnail:extra.thumbnail||null,creation:state.records.get(r.id)||null};
+  }).sort(sort);
+  if(m.candidate&&m.candidate.id){const item=m.candidate;
+   if(!state.all.some(x=>x.id===item.id)){const latest=$('#latest');latest.hidden=false;$('#latest-title').textContent=item.title;$('#latest-desc').textContent=item.description;$('#latest-open').onclick=()=>open(item);}
+  }
+  render();const id=new URL(location.href).searchParams.get('obra');if(id){const candidate=m.candidate?.id===id?m.candidate:null;const p=state.all.find(x=>x.id===id)||candidate;if(p)open(p,false)}
+ }catch(err){setEmpty('No se pudo recuperar el catálogo. Abrí la biblioteca clásica mientras se restablece el registro.');$('#updated').replaceChildren(create('a',null,'Biblioteca clásica ↗'));$('#updated').firstChild.href=path('project-explorer/');console.warn('PROMETEO: catálogo no disponible',err)}
+}
+function render(){
+ const filtered=state.all.filter(p=>(state.filter==='all'||p.kind===state.filter)&&((p.title+' '+(p.description||'')).toLocaleLowerCase('es').includes(state.query)));
+ $('#count').textContent=filtered.length+' proyectos';
+ const grid=$('#grid');grid.replaceChildren();
+ if(!filtered.length){setEmpty('No hay proyectos para ese filtro.');return}
+ for(const p of filtered){
+  const btn=create('button','card');btn.type='button';btn.setAttribute('aria-label','Abrir '+p.title);
+  const cover=create('div','cover cover-'+p.kind);
+  if(p.thumbnail){const img=create('img');img.src=new URL(p.thumbnail,location.href).href;img.alt='Captura real de '+p.title;img.loading='lazy';img.onerror=()=>{img.remove();cover.append(create('span','cover-note','Sin captura disponible'))};cover.append(img)}
+  else{cover.append(create('span','cover-symbol',p.glyph),create('span','cover-note','Abrir proyecto para ver'))}
+  cover.append(create('span','cover-index',kindName[p.kind]||'Proyecto'));
+  const body=create('div','card-body');body.append(create('div','card-kicker',p.status),create('div','card-title',p.title),create('p','card-desc',p.description||'Proyecto 3D registrado.'));
+  const bottom=create('div','card-bottom');bottom.append(create('span',null,'Ver detalles'),create('span','arrow','↗'));body.append(bottom);btn.append(cover,body);btn.onclick=()=>open(p);grid.append(btn)
+ }
+}
+function changeTab(tab){state.tab=tab;document.querySelectorAll('.detail-tabs button').forEach(b=>{const on=b.dataset.tab===tab;b.classList.toggle('on',on);b.setAttribute('aria-selected',String(on))});renderDetailTab()}
+function para(parent,s){parent.append(create('p',null,s))}
+function renderDetailTab(){
+ const p=state.selected;if(!p)return;const dest=$('#detail-content');dest.replaceChildren();const r=p.creation;
+ if(state.tab==='summary'){
+  para(dest,p.description||'Proyecto de estudio 3D.');
+  if(p.qa)para(dest,p.qa);
+  if(p.snapshotCommit)para(dest,'Estado registrado en commit '+p.snapshotCommit.slice(0,9)+'. Los avances pueden ser posteriores.');
+  if(p.url)para(dest,'Disponible en el catálogo público. La publicación no implica aprobación artística.');
+  else para(dest,'Obra todavía no publicada como resultado final.');
+ } else if(state.tab==='issues'){
+  const issues=r?.issues||[];if(issues.length){para(dest,'Problemas registrados en la revisión de esta versión:');const ul=create('ul');issues.forEach(s=>ul.append(create('li',null,s)));dest.append(ul)}
+  else if(p.id==='cocina-umbria-002'){para(dest,'Pendientes conocidos: encuadre móvil, continuidad de pies, contacto real con objetos y guardado completo desde FORJA. El recibo de QA sigue siendo candidato.')}
+  else para(dest,'No hay errores asociados en el registro del flujo. Esto no certifica que la obra esté libre de problemas.');
+ } else{
+  if(r?.flowVersionUsed){para(dest,'Producido con el flujo universal v'+r.flowVersionUsed+'.')}
+  else if(r?.flowVersionPlanned){para(dest,'Flujo previsto v'+r.flowVersionPlanned+'. No consta una ejecución histórica completa.')}
+  else if(p.flowVersion){para(dest,'Flujo anclado v'+p.flowVersion+' en recibo candidato.')}
+  else para(dest,'No existe una versión histórica del flujo asignada a esta creación. Conservamos el origen sin inventar una versión.');
+  if(r?.attribution)para(dest,'Registro: '+r.attribution.replaceAll('_',' '));
+  if(r?.source?.sourceBlob)para(dest,'Blob de fuente: '+r.source.sourceBlob);
+ }
+}
+function setViewer(p){const holder=$('#viewer');holder.replaceChildren();const initial=create('div','viewer-idle');initial.append(create('div','viewer-mark','◇'),create('p',null,p.url?'Visor real disponible':'Prueba todavía no publicada'));
+ if(p.url){const btn=create('button',null,'Cargar vista real ↗');btn.type='button';btn.onclick=()=>{const url=safeURL(p.url);if(!url)return;holder.replaceChildren();const frame=create('iframe');frame.src=url;frame.title='Visor 3D · '+p.title;frame.loading='eager';frame.allow='fullscreen';holder.append(frame)};initial.append(btn)}
+ else if(p.sourceUrl){const a=create('a',null,'Examinar pruebas en GitHub ↗');a.href=safeURL(p.sourceUrl)||'#';a.target='_blank';a.rel='noopener';a.style='color:#e8d5b3;text-decoration:underline';initial.append(a)}
+ holder.append(initial)}
+function open(p,historyEntry=true){
+ state.previousFocus=document.activeElement;state.selected=p;state.tab='summary';
+ $('#detail-title').textContent=p.title;$('#detail-desc').textContent=p.description||'';
+ $('#detail-meta').textContent=(kindName[p.kind]||'Proyecto')+' · '+(p.status||'REGISTRADO');
+ const url=safeURL(p.url);$('#detail-visit').hidden=!url;if(url)$('#detail-visit').href=url;
+ const flow=path('3d-flow/?project='+encodeURIComponent(p.id));$('#detail-flow').href=flow;
+ setViewer(p);changeTab('summary');$('#overlay').hidden=false;document.body.style.overflow='hidden';
+ if(historyEntry){const u=new URL(location.href);u.searchParams.set('obra',p.id);history.pushState({obra:p.id},'',u)}
+ $('#close').focus();
+}
+function close(fromHistory=false){$('#overlay').hidden=true;$('#viewer').replaceChildren();state.selected=null;document.body.style.overflow='';if(!fromHistory){const u=new URL(location.href);u.searchParams.delete('obra');history.replaceState(null,'',u)}state.previousFocus?.focus?.()}
+$('#close').onclick=()=>close();$('#detail-close').onclick=()=>close();$('#shade').onclick=()=>close();
+document.querySelectorAll('.detail-tabs button').forEach(b=>b.addEventListener('click',()=>changeTab(b.dataset.tab)));
+document.querySelectorAll('#filters button').forEach(b=>b.addEventListener('click',()=>{state.filter=b.dataset.kind;document.querySelectorAll('#filters button').forEach(x=>{const on=x===b;x.classList.toggle('selected',on);x.setAttribute('aria-pressed',String(on))});render()}));
+$('#search').addEventListener('input',e=>{state.query=e.target.value.trim().toLocaleLowerCase('es');render()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#overlay').hidden){e.preventDefault();close()}});
+window.addEventListener('popstate',()=>{const id=new URL(location.href).searchParams.get('obra');if(!id){if(!$('#overlay').hidden)close(true)}else{const p=state.all.find(x=>x.id===id)||((state.meta.candidate?.id===id)?state.meta.candidate:null);if(p)open(p,false)}});
+boot();
+})();
