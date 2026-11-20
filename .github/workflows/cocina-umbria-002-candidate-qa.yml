@@ -11,16 +11,16 @@ permissions:
 jobs:
   visual-qa:
     runs-on: ubuntu-24.04
-    timeout-minutes: 18
+    timeout-minutes: 12
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Install Chromium + Playwright for real local WebGL
+      - name: Use preinstalled Google Chrome + Playwright WebGL
         run: |
           npm install --no-save playwright@1.56.1
-          npx playwright install --with-deps chromium
+          google-chrome --version
       - name: Exercise scene and FORJA against genuine GLBs
         id: probe
         continue-on-error: true

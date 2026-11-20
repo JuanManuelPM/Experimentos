@@ -116,7 +116,7 @@ async function variantCase(){
  await page.close();return result;
 }
 try{
- browser=await chromium.launch({headless:true,args:['--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader','--no-sandbox','--disable-gpu-sandbox','--disable-dev-shm-usage']});
+ browser=await chromium.launch({headless:true,channel:'chrome',args:['--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader','--no-sandbox','--disable-gpu-sandbox','--disable-dev-shm-usage']});
  report.attempts.desktop=await runCase('desktop',{width:1280,height:800},false);
  report.attempts.mobile=await runCase('mobile',{width:390,height:844},true);
  report.attempts.forja=await forjaCase();
