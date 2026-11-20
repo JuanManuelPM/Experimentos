@@ -1,44 +1,29 @@
-# PROMETEO VIEWER V1
+# PROMETEO VIEWER · V2
 
-**Propietario:** Ideas / gobierno de PROMETEO. **Código:** público e independiente. **Datos de las obras:** privados cuando provienen de un repositorio privado. El visor no publica ni modifica obras.
+Visor público minimalista para explorar y previsualizar archivos provenientes de repositorios GitHub privados, sin publicar esas obras.
 
-## Implementado
+## Interfaz
 
-- Aplicación estática HTML + CSS + JavaScript que puede alojarse gratis en GitHub Pages.
-- Acceso a carpetas y archivos de ramas arbitrarias mediante GitHub REST Contents API.
-- Repositorios privados con un token fino de solo lectura introducido directamente en la página. La sesión de github.com no se hereda.
-- Previsualización de HTML, CSS, imports ES de rutas relativas, archivos solicitados con fetch relativo, imágenes, música, vídeo, PDF y texto.
-- Página ejecutada en iframe sandboxed con scripts permitidos, pero SIN permitir same-origin. La página no puede leer el token de la aplicación.
-- Puente de recursos con postMessage que valida ventana, sesión, carpeta seleccionada, ruta y extensión. Sin POST al repositorio.
-- Token, código recuperado y caches mantenidos exclusivamente en la memoria de la pestaña. Al recargar o cerrar se pierde la sesión.
-- Demo pública con Cocina Umbría 002 candidata; no modifica su rama ni la publica en gh-pages.
+Pantalla inicial: marca, una acción Continuar con GitHub, demostración pública. Explorador y configuraciones solo después de entrar en el espacio de trabajo. Modo visual oscuro y visor a pantalla completa. La entrada por PAT está oculta en Acceso alternativo.
 
-## Pasos en el celular
+## Autenticación real
 
-1. Abrí el enlace del visor.
-2. Para leer un repositorio privado, creá un fine-grained personal access token de GitHub: https://github.com/settings/personal-access-tokens/new
-3. Seleccioná Repository access: Only select repositories, elegí JuanManuelPM/pruebas y concedé SOLO Contents: Read-only. Elegí vencimiento corto y no des permisos de escritura.
-4. Pegá el token exclusivamente dentro del visor y pulsá Conectar. Nunca lo envíes al chat, a un commit ni a un enlace.
-5. Ingresá la rama en la que existe el HTML ejecutable, pulsá Explorar, entrá a la carpeta y abrí index.html.
-6. Para probar sin token, pulsá Demo pública 3D.
+El inicio automático con GitHub está preparado en shell.js y auth-worker.mjs, pero NO operativo hasta registrar una GitHub App de solo lectura, instalarla en los repositorios autorizados, desplegar el callback gratuito y configurar auth.json. La sesión de github.com no puede ser compartida directamente con un sitio github.io. Google tampoco concede permiso sobre repositorios privados de GitHub.
 
-**Aviso:** el botón de autorización OAuth automática con sesión de GitHub no está implementado. Una web en Pages no puede heredar tu sesión de github.com y una app OAuth con client secret requiere un intercambio seguro del lado servidor. Esta versión no necesita ese servidor, pero sí el token.
+El archivo AUTH_SETUP.md contiene los pasos humanos únicos. Nunca subir client secret, tokens, cookies ni credenciales a GitHub. El callback entrega token temporal a la ventana originadora por postMessage y verificación de state y origin. El frontend lo conserva solo en memoria.
 
-## Limitaciones reales
+## Estado de calidad
 
-- La privacidad depende de que las obras ejecutables estén realmente en un repo privado. Las ramas candidatas del repo público Experimentos también son públicas.
-- La reproducción no está garantizada para importaciones circulares, importaciones dinámicas no literales, Web Workers, rutas de recursos dinámicas, srcset o aplicaciones SPA complejas.
-- Recursos absolutos que apunten a repositorios privados de GitHub no adquieren autenticación automáticamente. Preferir rutas relativas dentro de la carpeta del HTML.
-- Tamaño máximo por archivo: 24 MiB en V1; se aplican las cuotas de la API de GitHub.
-- El contenido de una obra ejecuta JavaScript dentro de su iframe. No accede al token, pero una obra maliciosa podría enviar contenidos de su propia carpeta a terceros. Usar solo proyectos confiables.
-- No hay almacenamiento persistente de tokens, porque representa una exposición innecesaria.
-- No hay motor de render 3D en el servidor. WebGL y WebAudio se ejecutan en el navegador, con los límites del dispositivo.
-- Sin prueba manual real en Chrome Android y un repositorio privado de prueba no debe declararse aprobada la compatibilidad end-to-end ni la revisión de seguridad.
+Controles de UI y sintaxis: pruebas estáticas satisfactorias. QA Chrome Android y autenticación real: NOT_RUN. Login automático: NOT_CONFIGURED. Ver QA_RECEIPT.json.
 
-## Publicación
+## Demo
 
-Branch candidata: JuanManuelPM/Experimentos@candidate/prometeo-private-viewer-v1-20261120
+Ver demostración carga una candidata pública 3D de Cocina Umbría 002. Es una prueba de compatibilidad, no una garantía de que WebGL y todos los recursos funcionen en Chrome Android. El script del visor se ejecuta en iframe sin allow-same-origin para aislar credenciales. El motor de módulos no cubre importaciones circulares, import.meta.url y todas las estrategias de cargas dinámicas.
 
-Carpeta: prometeo/private-viewer/
+## Uso actual sin GitHub App
 
-Publicar solo los archivos del visor, sin credenciales ni carpetas privadas. No editar otros productos, ni el control canónico, ni las skills o automatizaciones. Si una obra tiene defectos de empaquetado, corregirla en su estudio dueño.
+Acceso alternativo: usar un fine-grained personal access token limitado a solo Contents: Read-only del repositorio deseado. No se guarda entre recargas, no se pega en chats, enlaces ni commits.
+
+## Dueño
+
+Ideas · Gobierno de PROMETEO. Rama candidata candidate/prometeo-private-viewer-v2-minimal-auth-20261120. Publicación única en prometeo/private-viewer/; sin cambios en otros estudios o publicaciones.
