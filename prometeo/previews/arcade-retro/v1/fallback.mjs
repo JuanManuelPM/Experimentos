@@ -61,7 +61,7 @@ export function startFallback(root,q,reason){
    // A visible truthful status, not a screenshot masquerading as a WebGL render.
    ctx.fillStyle="rgba(10,12,20,.67)";ctx.fillRect(10,10,190,24);ctx.fillStyle="#dfc6a7";ctx.font="11px Arial";ctx.fillText("PREVIEW 2D · SIN WEBGL",19,26);
  }
- function animate(now){const dt=Math.min(.05,(now-last)/1000);last=now;updateSurface(state,dt);paintSurface(sx,640,480,state);draw();q.frames++;q.pulseCount=state.pulseCount;requestAnimationFrame(animate);}
+ function animate(now){const dt=Math.max(0,Math.min(.05,(now-last)/1000));last=now;updateSurface(state,dt);paintSurface(sx,640,480,state);draw();q.frames++;q.pulseCount=state.pulseCount;requestAnimationFrame(animate);}
  document.querySelectorAll("[data-control]").forEach(b=>b.addEventListener("pointerdown",e=>{e.preventDefault();inputSurface(state,b.dataset.control);q.inputs++;}));
  window.addEventListener("keydown",e=>{const a=e.key==="ArrowLeft"?"left":e.key==="ArrowRight"?"right":e.key===" "||e.key==="Enter"?"fire":null;if(a){inputSurface(state,a);q.inputs++;}});
  requestAnimationFrame(animate);
