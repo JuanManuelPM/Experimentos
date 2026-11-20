@@ -20,7 +20,7 @@ async function boot(){
    return {...r,kind:extra.kind||kindFromFolder[r.folder]||'animation',status:extra.status||'PUBLICADO · QA VARIABLE',glyph:extra.glyph||'◇',thumbnail:extra.thumbnail||null,creation:state.records.get(r.id)||null};
   }).sort(sort);
   if(m.candidate&&m.candidate.id){const item=m.candidate;
-   if(!state.all.some(x=>x.id===item.id)){const latest=$('#latest');latest.hidden=false;$('#latest-title').textContent=item.title;$('#latest-desc').textContent=item.description;$('#latest-open').onclick=()=>open(item);}
+   if(!state.all.some(x=>x.id===item.id)){state.all.push({...item,glyph:'⌂',creation:state.records.get(item.id)||null});state.all.sort(sort);const latest=$('#latest');latest.hidden=false;$('#latest-title').textContent=item.title;$('#latest-desc').textContent=item.description;$('#latest-open').onclick=()=>open(item);}
   }
   render();discoverReleases();const id=new URL(location.href).searchParams.get('obra');if(id){const candidate=m.candidate?.id===id?m.candidate:null;const p=state.all.find(x=>x.id===id)||candidate;if(p)open(p,false)}
  }catch(err){setEmpty('No se pudo recuperar el catálogo. Abrí la biblioteca clásica mientras se restablece el registro.');$('#updated').replaceChildren(create('a',null,'Biblioteca clásica ↗'));$('#updated').firstChild.href=path('project-explorer/');console.warn('PROMETEO: catálogo no disponible',err)}
@@ -39,7 +39,8 @@ async function discoverReleases(){
    if(item.type!=='blob')continue;
    const match=/^prometeo\/([a-z0-9-]+)\/index\.html$/.exec(item.path);
    if(!match)continue;
-   const id=match[1];if(['project-explorer','3d-flow','forja','asset-atlas'].includes(id)||known.has(id))continue;
+   const id=match[1];if(['project-explorer','3d-flow','forja','asset-atlas'].includes(id))continue;
+   if(known.has(id)){const existing=state.all.find(x=>x.id===id);if(existing&&!existing.url){existing.url=path(id+'/');existing.status='PUBLICADO · QA POR REVISAR';existing.thumbnail=null;$('#latest').hidden=true;fresh.push(existing)}continue;}
    known.add(id);
    fresh.push({id,title:id.replace(/-/g,' ').replace(/\b\w/g,c=>c.toUpperCase()),description:'Nueva página pública. Revisión artística sin registrar.',kind:'animation',status:'PUBLICADO · SIN QA REGISTRADA',glyph:'▤',url:path(id+'/'),updatedAt:null,creation:state.records.get(id)||null});
   }
@@ -89,7 +90,7 @@ function renderDetailTab(){
 }
 function setViewer(p){const holder=$('#viewer');holder.replaceChildren();const initial=create('div','viewer-idle');initial.append(create('div','viewer-mark','◇'),create('p',null,p.url?'Visor real disponible':'Prueba todavía no publicada'));
  if(p.url){const btn=create('button',null,'Cargar vista real ↗');btn.type='button';btn.onclick=()=>{const url=safeURL(p.url);if(!url)return;holder.replaceChildren();const frame=create('iframe');frame.src=url;frame.title='Visor 3D · '+p.title;frame.loading='eager';frame.allow='fullscreen';holder.append(frame)};initial.append(btn)}
- else if(p.sourceUrl){const a=create('a',null,'Examinar pruebas en GitHub ↗');a.href=safeURL(p.sourceUrl)||'#';a.target='_blank';a.rel='noopener';a.style='color:#e8d5b3;text-decoration:underline';initial.append(a)}
+ else if(p.sourceUrl){if(p.thumbnail){const photo=create('img');photo.src=new URL(p.thumbnail,location.href).href;photo.alt=p.caption||'Fotograma de QA no aprobado';photo.className='qa-photo';initial.append(photo,create('p',null,p.caption||'Prueba no aprobada'))}const a=create('a',null,'Examinar pruebas en GitHub ↗');a.href=safeURL(p.sourceUrl)||'#';a.target='_blank';a.rel='noopener';a.style='color:#e8d5b3;text-decoration:underline';initial.append(a)}
  holder.append(initial)}
 function open(p,historyEntry=true){
  state.previousFocus=document.activeElement;state.selected=p;state.tab='summary';
