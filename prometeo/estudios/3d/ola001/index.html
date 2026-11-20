@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0e1115">
+<title>PROMETEO · Revisión rápida · Ola 001</title>
+<style>
+:root{color-scheme:dark;--bg:#0e1115;--surface:#1a2026;--ink:#f5f1e9;--dim:#aeb4b8;--border:#ffffff29;--accent:#e8b67b}
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+button,a,select,textarea{font:inherit}
+button{border:1px solid var(--border);background:var(--surface);color:var(--ink);cursor:pointer;border-radius:10px}
+button:focus-visible,a:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid var(--accent);outline-offset:1px}
+a{color:inherit;text-decoration:none}
+#app{height:100dvh;display:flex;flex-direction:column}
+.top{height:51px;flex:none;display:flex;align-items:center;gap:8px;padding:5px 9px;border-bottom:1px solid var(--border);min-width:0}
+.back{white-space:nowrap;color:var(--dim);font-size:12px;padding:10px;border-radius:8px}
+.top button{min-width:44px;min-height:40px;font-size:24px;line-height:1}
+.top .navButton{background:#2a3036}
+.titleBox{flex:1;min-width:0;display:flex;flex-direction:column}
+.titleBox strong{font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.titleBox small{color:var(--dim);font-size:10px;letter-spacing:.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#version{font-size:12px;padding:8px;border-radius:7px;background:#20272d;border:1px solid var(--border);color:var(--ink);width:62px}
+#direct{display:grid;place-items:center;width:41px;height:40px;background:#252d30;border:1px solid var(--border);border-radius:9px;font-size:23px}
+#direct[aria-disabled=true]{opacity:.3;pointer-events:none}
+.stage{position:relative;min-height:0;flex:1;background:#090b10}
+#sceneFrame{position:absolute;inset:0;width:100%;height:100%;border:0;background:#090b10}
+#blank{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:30px;gap:11px;background:radial-gradient(ellipse at center,#222e32 0%,#101417 70%)}
+#blank[hidden],#sceneFrame[hidden],#loader[hidden]{display:none}
+#blank .symbol{font-size:38px;color:var(--accent);line-height:1}
+#blank h2{font-size:18px;font-weight:650;margin:0}
+#blank p{font-size:13px;max-width:480px;color:#c0c7c9;margin:0;line-height:1.5}
+#blank a{border:1px solid #ffffff50;background:#ffffff14;border-radius:9px;padding:12px;font-size:12px}
+#loader{position:absolute;top:12px;left:50%;transform:translateX(-50%);border-radius:99px;background:#0b1213e9;border:1px solid #ffffff36;padding:7px 14px;font-size:11px;color:#dbdde0;pointer-events:none}
+#loader[hidden]{display:none}
+#frameNavLeft,#frameNavRight{position:absolute;top:50%;transform:translateY(-50%);width:40px;height:58px;border-radius:8px;background:#111820b8;font-size:32px;color:#fff;border:1px solid #ffffff30;z-index:2}
+#frameNavLeft{left:5px}#frameNavRight{right:5px}
+.foot{flex:none;border-top:1px solid var(--border);background:#11171b;padding:6px 7px max(6px,env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:6px}
+#strip{display:flex;gap:5px;overflow-x:auto;overscroll-behavior-inline:contain;scrollbar-width:none}
+#strip::-webkit-scrollbar{display:none}
+.tile{flex:none;display:flex;align-items:center;gap:6px;max-width:190px;min-height:37px;background:#242b32;color:#d5d9da;padding:0 10px;border:1px solid transparent;border-radius:8px;text-align:left;font-size:11px;white-space:nowrap}
+.tile.active{border-color:var(--accent);background:#3b342c;color:#fff}
+.tile .num{font-weight:800;font-variant-numeric:tabular-nums;color:var(--accent);font-size:12px}
+.tile .word{overflow:hidden;text-overflow:ellipsis}
+.tile .dot{width:6px;height:6px;background:#7da991;border-radius:50%;flex:none}
+.tile .dot.off{background:#cb916e}
+.bottom{display:flex;align-items:center;gap:8px;justify-content:space-between;color:var(--dim);font-size:11px}
+.bottom .actions{display:flex;gap:6px}
+.bottom button{min-height:35px;padding:0 10px;font-size:11px}
+#notesButton.active{background:#423324}
+#notes{position:absolute;z-index:5;right:8px;bottom:94px;width:min(440px,calc(100vw - 16px));border:1px solid #ffffff50;background:#161d23f5;border-radius:14px;padding:12px;box-shadow:0 12px 45px #000b;display:flex;flex-direction:column;gap:8px}
+#notes[hidden]{display:none}
+#notes header{display:flex;align-items:center;justify-content:space-between;gap:8px}
+#notes header strong{font-size:13px}
+#notes header button{padding:6px 9px}
+#noteText{min-height:68px;max-height:130px;width:100%;background:#090e12;color:#f2f2f2;border:1px solid var(--border);border-radius:9px;padding:10px;resize:vertical;font-size:13px}
+#tags{display:flex;gap:5px;flex-wrap:wrap}
+.tag{font-size:11px;padding:7px;background:#263139}
+.tag.on{background:#57432d;border-color:#cca26e}
+#notes small{color:#aab3b6;font-size:10px}
+#notesFooter{display:flex;justify-content:flex-end;gap:8px}
+#notesFooter button{font-size:12px;padding:9px}
+@media(max-width:660px){.top{gap:3px;padding:4px}.back{font-size:0;padding:0;display:grid;place-items:center;width:30px;height:40px}.back:before{content:'⌂';font-size:22px}.top button{min-width:38px}.titleBox strong{font-size:12px}.tile{max-width:145px;padding:0 7px}#frameNavLeft,#frameNavRight{width:29px;height:48px;font-size:25px}.bottom{font-size:10px}.bottom button{padding:0 7px}}
+@media(max-height:400px){.top{height:43px}.top button,#direct{height:35px;min-height:35px}.foot{gap:3px;padding-top:4px}.tile{min-height:32px}.bottom button{min-height:27px}#notes{bottom:75px}}
+</style>
+</head>
+<body>
+<div id="app">
+<header class="top">
+<a class="back" href="../" title="Biblioteca 3D">‹ Biblioteca</a>
+<button class="navButton" id="prev" aria-label="Proyecto anterior">‹</button>
+<div class="titleBox"><strong id="title">Revisión de la ronda</strong><small id="subtitle">PROMETEO · 3D · Ola 001</small></div>
+<button class="navButton" id="next" aria-label="Proyecto siguiente">›</button>
+<select id="version" aria-label="Versión de la obra"></select>
+<a id="direct" aria-label="Abrir escena sola en pantalla completa" title="Abrir la escena completa" target="_blank" rel="noopener" href="#">↗</a>
+</header>
+<main class="stage" id="stage">
+<iframe id="sceneFrame" title="Vista de la escena 3D" allow="autoplay; fullscreen" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+<div id="blank" hidden><div class="symbol">◇</div><h2 id="blankTitle">Sin vista pública</h2><p id="blankReason"></p><a id="blankSource" href="#" target="_blank" rel="noopener">Ver fuente privada en GitHub</a></div>
+<div id="loader" hidden>Abriendo página de la escena…</div>
+<button id="frameNavLeft" aria-label="Anterior">‹</button><button id="frameNavRight" aria-label="Siguiente">›</button>
+</main>
+<footer class="foot">
+<nav id="strip" aria-label="Cambiar entre los 10 proyectos"></nav>
+<div class="bottom"><span id="counter">8 vistas públicas · 2 pendientes</span><div class="actions"><button id="notesButton">✎ Anotar error</button><button id="copyButton">Copiar observaciones</button><button id="autoButton" aria-pressed="false">▶ Auto</button></div></div>
+</footer>
+<section id="notes" hidden aria-label="Observaciones de la escena">
+<header><strong id="notesTitle">Observaciones</strong><button id="notesClose" aria-label="Cerrar observaciones">×</button></header>
+<div id="tags"></div>
+<textarea id="noteText" placeholder="¿Qué falla? Ej.: rostros, cámara, iluminación, movimiento, textura..."></textarea>
+<small>Se guarda sólo en este navegador. «Copiar observaciones» prepara el resumen para enviarlo a ChatGPT.</small>
+<div id="notesFooter"><button id="noteSave">Guardar</button><button id="noteNext">Guardar y siguiente ›</button></div>
+</section>
+</div>
+<script id="reviewData" type="application/json">{"schema":"prometeo.studio-3d.wave-review/v1","waveId":"studio-3d-wave-001-prevention","flowVersion":"1.2.0","sourceFlowHash":"4b3f6076c7f38b3e999b259e63ed78ae52af30ac99f70f41a972bc45d92e4c84","state":"REVIEW_NOT_ART_APPROVED","publishedPathVerification":"GitHub git tree contains index.html; no HTTP/WebGL/Android test run in this review","lastCheckedOn":"2026-11-20","projects":[{"id":"respawn-desk","name":"Respawn · Escritorio","kind":"cine · personaje","variants":[{"v":"V2","state":"SOURCE_ONLY","reason":"V2 no publicada. La nueva escena tiene imágenes CPU, pero el flujo detectó fallos de técnica en fachada/escritorio (D40) y falta verificar WebGL (D41).","source":"https://github.com/JuanManuelPM/pruebas/tree/candidate/3d-respawn-desk-v2-wave001-20261120/PROMETEO/spaces/studio-3d/scenes/respawn-desk-v2"},{"v":"V1","state":"PREVIEW","url":"https://juanmanuelpm.github.io/Experimentos/prometeo/previews/respawn-desk-001/","reason":"Vista anterior pública. No equivale a V2."}]},{"id":"transporte-retro","name":"Transporte retro","kind":"NPC · cámara","variants":[{"v":"V2","state":"REJECTED_CANARY","reason":"V2 frenada por el control preventivo: pasajero y asiento no alcanzaron la calidad de primer plano. Sólo canario y fuente privada; no hay escena completa V2 ni preview pública.","source":"https://github.com/JuanManuelPM/pruebas/tree/candidate/3d-transporte-retro-v2-wave001-20261120/PROMETEO/spaces/studio-3d/parallel-productions/v2/scenes/transporte-retro/v2"},{"v":"V1","state":"PREVIEW","url":"https://juanmanuelpm.github.io/Experimentos/prometeo/previews/transporte-retro-001/","reason":"Vista original con personajes geométricos. No es V2."}]},{"id":"ventilador-explicado","name":"Ventilador explicado","kind":"despiece · mecanismos","variants":[{"v":"V2","state":"PREVIEW","url":"https://juanmanuelpm.github.io/Experimentos/prometeo/previews/ventilador-explicado/v2/","reason":"Vista técnica publicada. La aprobación artística y Android siguen pendientes."},{"v":"V1","state":"PREVIEW","url":"https://juanmanuelpm.github.io/Experimentos/prometeo/previews/ventilador-explicado-001/","reason":"Vista anterior pública para comparar la carcasa y el despiece."}]},{"id":"estacion-servicio-tormenta","name":"Estación bajo tormenta","kind":"lluvia · iluminación","variants":[{"v":"V1","state":"PREVIEW","url":"https://juanmanuelpm.github.io/Experimentos/prometeo/previews/estacion-servicio-tormenta/v1/","reason":"Vista técnica publicada. No implica QA artístico aprobado."}]},{"id":"ascensor-retro","name":"Ascensor retro","kind":"puertas · transición","variants":[{"v":"V1","state":"PREVIEW","url":"https://juanmanuelpm.github.io/Experimentos/prometeo/previews/ascensor-retro/v1/","reason":"Vista técnica publicada; incluye prueba de primera pieza."}]},{"id":"entrevista-nocturna","name":"Entrevista nocturna","kind":"personajes · actuación","variants":[{"v":"V1","state":"PREVIEW","url":"https://juanmanuelpm.github.io/Experimentos/prometeo/previews/entrevista-nocturna/v1/","reason":"Página pública de primera pieza, no necesariamente entrevista completa."}]},{"id":"reloj-mecanico","name":"Reloj mecánico","kind":"engranajes · despiece","variants":[{"v":"V1","state":"PREVIEW","url":"https://juanmanuelpm.github.io/Experimentos/prometeo/previews/reloj-mecanico/v1/","reason":"Vista técnica publicada. Revisar visualmente precisión y montaje."}]},{"id":"laboratorio-submarino","name":"Laboratorio submarino","kind":"agua · ambiente","variants":[{"v":"V1","state":"PREVIEW","url":"https://juanmanuelpm.github.io/Experimentos/prometeo/previews/laboratorio-submarino/v1/","reason":"Vista técnica publicada. No implica QA visual final."}]},{"id":"arcade-retro","name":"Arcade retro","kind":"pantallas · props","variants":[{"v":"V1","state":"PREVIEW","url":"https://juanmanuelpm.github.io/Experimentos/prometeo/previews/arcade-retro/v1/","reason":"Vista pública de primera pieza. No asumir arcade completo."}]},{"id":"cruce-urbano","name":"Cruce urbano vivo","kind":"tráfico · peatones","variants":[{"v":"V1","state":"PREVIEW","url":"https://juanmanuelpm.github.io/Experimentos/prometeo/previews/cruce-urbano/v1/","reason":"Vista pública de primera pieza. No asumir tráfico completo."}]}]}</script>
+<script>
+(()=>{'use strict';
+const data=JSON.parse(document.getElementById('reviewData').textContent),items=data.projects;
+const $=id=>document.getElementById(id);
+const storageKey='prometeo.3d.wave001.review.v1';
+let notes={},index=2,chosen={},autoTimer=null,frameToken=0,loadTimeout=null;
+const tagNames=['Pantalla negra','Primitivas','Personajes','Objetos','Cámara','Movimiento','Iluminación','Texturas','Audio','Otro'];
+try{notes=JSON.parse(localStorage.getItem(storageKey)||'{}')||{}}catch{}
+function save(){try{localStorage.setItem(storageKey,JSON.stringify(notes))}catch{}}
+function key(){return items[index].id+'@'+currentVariant().v}
+function currentVariant(){return items[index].variants[chosen[items[index].id]||0]}
+function note(){return notes[key()]||{tags:[],text:''}}
+function setNote(n){notes[key()]=n;save()}
+function option(tag,text){const x=document.createElement(tag);x.textContent=text;return x}
+function metaTitle(){return (index+1).toString().padStart(2,'0')+' / '+items.length}
+function loadNote(){
+ const n=note();$('notesTitle').textContent=metaTitle()+' · '+items[index].name+' '+currentVariant().v;
+ $('noteText').value=n.text||'';
+ const holder=$('tags');holder.replaceChildren();
+ for(const tag of tagNames){
+  const b=option('button',tag);b.type='button';b.className='tag'+(n.tags.includes(tag)?' on':'');
+  b.setAttribute('aria-pressed',String(n.tags.includes(tag)));
+  b.onclick=()=>{const now=note();now.tags=now.tags.includes(tag)?now.tags.filter(x=>x!==tag):[...now.tags,tag];setNote(now);loadNote()};
+  holder.append(b);
+ }
+}
+function updateNoteText(){const n=note();n.text=$('noteText').value;setNote(n)}
+function statusText(item,variant){
+ if(variant.state==='REJECTED_CANARY')return 'V2 · CANARIO RECHAZADO';
+ if(variant.state==='SOURCE_ONLY')return 'V2 · SOLO FUENTE';
+ return variant.v+' · VISTA PÚBLICA · ARTE NO APROBADO';
+}
+function render(){
+ const scene=items[index],v=currentVariant();
+ $('title').textContent=scene.name;
+ $('subtitle').textContent=metaTitle()+' · '+statusText(scene,v);
+ const sel=$('version');sel.replaceChildren();
+ scene.variants.forEach((variant,i)=>{const opt=option('option',variant.v+(variant.url?' · ver':' · pendiente'));opt.value=String(i);sel.append(opt)});
+ sel.value=String(chosen[scene.id]||0);
+ const yes=!!v.url;$('sceneFrame').hidden=!yes;$('blank').hidden=yes;$('loader').hidden=!yes;
+ $('direct').setAttribute('aria-disabled',String(!yes));$('direct').href=yes?v.url:'#';
+ if(yes){
+  const token=++frameToken;
+  $('sceneFrame').src=v.url;
+  $('sceneFrame').onload=()=>{if(token===frameToken){$('loader').hidden=true;clearTimeout(loadTimeout)}};
+  clearTimeout(loadTimeout);
+  loadTimeout=setTimeout(()=>{if(token===frameToken){$('loader').textContent='La página tarda en cargar. Podés anotar el problema.';setTimeout(()=>{if(token===frameToken)$('loader').hidden=true},3000)}},12000);
+  $('loader').textContent='Abriendo página de la escena…';
+ }else{
+  ++frameToken;clearTimeout(loadTimeout);$('sceneFrame').src='about:blank';
+  $('blankTitle').textContent=v.state==='REJECTED_CANARY'?'Primera pieza rechazada':'Esta versión no se publicó';
+  $('blankReason').textContent=v.reason;
+  $('blankSource').hidden=!v.source;if(v.source)$('blankSource').href=v.source;
+ }
+ const chipbar=$('strip');chipbar.replaceChildren();
+ items.forEach((s,i)=>{
+  const button=option('button','');button.className='tile'+(i===index?' active':'');button.type='button';button.setAttribute('aria-label',String(i+1)+' '+s.name);button.setAttribute('aria-current',i===index?'true':'false');
+  const number=option('span',(i+1).toString().padStart(2,'0'));number.className='num';
+  const word=option('span',s.name);word.className='word';
+  const dot=option('span','');dot.className='dot'+(s.variants[0].url?'':' off');
+  button.append(number,word,dot);button.onclick=()=>select(i);
+  chipbar.append(button);
+ });
+ const active=chipbar.children[index];active?.scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'});
+ const count=items.filter(x=>!!x.variants[0].url).length;
+ $('counter').textContent=count+' vistas públicas · '+(items.length-count)+' sólo fuente · flechas para recorrer';
+ const currentUrl=new URL(location.href);currentUrl.searchParams.set('scene',scene.id);currentUrl.searchParams.set('v',v.v.toLowerCase());history.replaceState(null,'',currentUrl);
+ if(!$('notes').hidden)loadNote();
+}
+function select(i){index=(i+items.length)%items.length;render()}
+function step(delta){select(index+delta)}
+function nextAvailable(){for(let n=1;n<=items.length;n++){const i=(index+n)%items.length;if(items[i].variants[0].url){select(i);return}}}
+function stopAuto(){if(autoTimer)clearInterval(autoTimer);autoTimer=null;$('autoButton').setAttribute('aria-pressed','false');$('autoButton').textContent='▶ Auto'}
+$('autoButton').onclick=()=>{if(autoTimer){stopAuto();return} $('autoButton').setAttribute('aria-pressed','true');$('autoButton').textContent='Ⅱ Auto';autoTimer=setInterval(nextAvailable,18000)};
+$('prev').onclick=()=>{stopAuto();step(-1)};
+$('next').onclick=()=>{stopAuto();step(1)};
+$('frameNavLeft').onclick=()=>{stopAuto();step(-1)};
+$('frameNavRight').onclick=()=>{stopAuto();step(1)};
+$('version').onchange=()=>{chosen[items[index].id]=Number($('version').value);stopAuto();render()};
+$('notesButton').onclick=()=>{$('notes').hidden=!$('notes').hidden;$('notesButton').classList.toggle('active',!$('notes').hidden);if(!$('notes').hidden){loadNote();$('noteText').focus()}};
+$('notesClose').onclick=()=>{$('notes').hidden=true;$('notesButton').classList.remove('active')};
+$('noteText').addEventListener('input',updateNoteText);
+$('noteSave').onclick=()=>{$('notes').hidden=true;$('notesButton').classList.remove('active')};
+$('noteNext').onclick=()=>{updateNoteText();$('notes').hidden=true;$('notesButton').classList.remove('active');step(1)};
+function summary(){
+ const lines=['PROMETEO · ESTUDIO 3D · OLA 001 · REVISIÓN DE ERRORES','Flujo utilizado: 1.2.0',''];
+ for(const s of items){for(const v of s.variants){const n=notes[s.id+'@'+v.v];if(!n||!n.text?.trim()&&!n.tags?.length)continue;lines.push('['+s.name+' '+v.v+']'+(n.tags?.length?' '+n.tags.join(', '):''));if(n.text?.trim())lines.push(n.text.trim());lines.push('')}}
+ return lines.join('\n');
+}
+$('copyButton').onclick=async()=>{
+ const content=summary(),btn=$('copyButton');
+ try{
+  await navigator.clipboard.writeText(content);
+  btn.textContent='✓ Copiado';setTimeout(()=>btn.textContent='Copiar observaciones',1600);
+ }catch{
+  const a=document.createElement('a'),blob=new Blob([content],{type:'text/plain;charset=utf-8'});a.href=URL.createObjectURL(blob);a.download='prometeo-ola001-observaciones.txt';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+ }
+};
+document.addEventListener('keydown',e=>{
+ const tag=document.activeElement?.tagName||'';
+ if(['INPUT','TEXTAREA','SELECT'].includes(tag))return;
+ if(e.key==='ArrowRight'){e.preventDefault();stopAuto();step(1)}
+ if(e.key==='ArrowLeft'){e.preventDefault();stopAuto();step(-1)}
+ if(e.key==='Escape'&&!$('notes').hidden){$('notes').hidden=true;$('notesButton').classList.remove('active')}
+});
+let touchStart=null;
+for(const el of [document.querySelector('.top'),$('strip')]){
+ el.addEventListener('touchstart',e=>{if(e.touches.length===1)touchStart={x:e.touches[0].clientX,y:e.touches[0].clientY}}, {passive:true});
+ el.addEventListener('touchend',e=>{if(!touchStart)return;const dx=e.changedTouches[0].clientX-touchStart.x,dy=e.changedTouches[0].clientY-touchStart.y;touchStart=null;if(Math.abs(dx)>85&&Math.abs(dx)>Math.abs(dy)*1.5){stopAuto();step(dx<0?1:-1)}},{passive:true});
+}
+const qs=new URLSearchParams(location.search),at=items.findIndex(x=>x.id===qs.get('scene'));if(at>=0)index=at;
+const requested=qs.get('v');if(requested){const i=items[index].variants.findIndex(x=>x.v.toLowerCase()===requested.toLowerCase());if(i>=0)chosen[items[index].id]=i}
+render();
+})();
+</script>
+</body></html>

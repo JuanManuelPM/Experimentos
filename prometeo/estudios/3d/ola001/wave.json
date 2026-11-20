@@ -1,0 +1,159 @@
+{
+  "schema": "prometeo.studio-3d.wave-review/v1",
+  "waveId": "studio-3d-wave-001-prevention",
+  "flowVersion": "1.2.0",
+  "sourceFlowHash": "4b3f6076c7f38b3e999b259e63ed78ae52af30ac99f70f41a972bc45d92e4c84",
+  "state": "REVIEW_NOT_ART_APPROVED",
+  "publishedPathVerification": "GitHub git tree contains index.html; no HTTP/WebGL/Android test run in this review",
+  "lastCheckedOn": "2026-11-20",
+  "projects": [
+    {
+      "id": "respawn-desk",
+      "name": "Respawn · Escritorio",
+      "kind": "cine · personaje",
+      "variants": [
+        {
+          "v": "V2",
+          "state": "SOURCE_ONLY",
+          "reason": "V2 no publicada. La nueva escena tiene imágenes CPU, pero el flujo detectó fallos de técnica en fachada/escritorio (D40) y falta verificar WebGL (D41).",
+          "source": "https://github.com/JuanManuelPM/pruebas/tree/candidate/3d-respawn-desk-v2-wave001-20261120/PROMETEO/spaces/studio-3d/scenes/respawn-desk-v2"
+        },
+        {
+          "v": "V1",
+          "state": "PREVIEW",
+          "url": "https://juanmanuelpm.github.io/Experimentos/prometeo/previews/respawn-desk-001/",
+          "reason": "Vista anterior pública. No equivale a V2."
+        }
+      ]
+    },
+    {
+      "id": "transporte-retro",
+      "name": "Transporte retro",
+      "kind": "NPC · cámara",
+      "variants": [
+        {
+          "v": "V2",
+          "state": "REJECTED_CANARY",
+          "reason": "V2 frenada por el control preventivo: pasajero y asiento no alcanzaron la calidad de primer plano. Sólo canario y fuente privada; no hay escena completa V2 ni preview pública.",
+          "source": "https://github.com/JuanManuelPM/pruebas/tree/candidate/3d-transporte-retro-v2-wave001-20261120/PROMETEO/spaces/studio-3d/parallel-productions/v2/scenes/transporte-retro/v2"
+        },
+        {
+          "v": "V1",
+          "state": "PREVIEW",
+          "url": "https://juanmanuelpm.github.io/Experimentos/prometeo/previews/transporte-retro-001/",
+          "reason": "Vista original con personajes geométricos. No es V2."
+        }
+      ]
+    },
+    {
+      "id": "ventilador-explicado",
+      "name": "Ventilador explicado",
+      "kind": "despiece · mecanismos",
+      "variants": [
+        {
+          "v": "V2",
+          "state": "PREVIEW",
+          "url": "https://juanmanuelpm.github.io/Experimentos/prometeo/previews/ventilador-explicado/v2/",
+          "reason": "Vista técnica publicada. La aprobación artística y Android siguen pendientes."
+        },
+        {
+          "v": "V1",
+          "state": "PREVIEW",
+          "url": "https://juanmanuelpm.github.io/Experimentos/prometeo/previews/ventilador-explicado-001/",
+          "reason": "Vista anterior pública para comparar la carcasa y el despiece."
+        }
+      ]
+    },
+    {
+      "id": "estacion-servicio-tormenta",
+      "name": "Estación bajo tormenta",
+      "kind": "lluvia · iluminación",
+      "variants": [
+        {
+          "v": "V1",
+          "state": "PREVIEW",
+          "url": "https://juanmanuelpm.github.io/Experimentos/prometeo/previews/estacion-servicio-tormenta/v1/",
+          "reason": "Vista técnica publicada. No implica QA artístico aprobado."
+        }
+      ]
+    },
+    {
+      "id": "ascensor-retro",
+      "name": "Ascensor retro",
+      "kind": "puertas · transición",
+      "variants": [
+        {
+          "v": "V1",
+          "state": "PREVIEW",
+          "url": "https://juanmanuelpm.github.io/Experimentos/prometeo/previews/ascensor-retro/v1/",
+          "reason": "Vista técnica publicada; incluye prueba de primera pieza."
+        }
+      ]
+    },
+    {
+      "id": "entrevista-nocturna",
+      "name": "Entrevista nocturna",
+      "kind": "personajes · actuación",
+      "variants": [
+        {
+          "v": "V1",
+          "state": "PREVIEW",
+          "url": "https://juanmanuelpm.github.io/Experimentos/prometeo/previews/entrevista-nocturna/v1/",
+          "reason": "Página pública de primera pieza, no necesariamente entrevista completa."
+        }
+      ]
+    },
+    {
+      "id": "reloj-mecanico",
+      "name": "Reloj mecánico",
+      "kind": "engranajes · despiece",
+      "variants": [
+        {
+          "v": "V1",
+          "state": "PREVIEW",
+          "url": "https://juanmanuelpm.github.io/Experimentos/prometeo/previews/reloj-mecanico/v1/",
+          "reason": "Vista técnica publicada. Revisar visualmente precisión y montaje."
+        }
+      ]
+    },
+    {
+      "id": "laboratorio-submarino",
+      "name": "Laboratorio submarino",
+      "kind": "agua · ambiente",
+      "variants": [
+        {
+          "v": "V1",
+          "state": "PREVIEW",
+          "url": "https://juanmanuelpm.github.io/Experimentos/prometeo/previews/laboratorio-submarino/v1/",
+          "reason": "Vista técnica publicada. No implica QA visual final."
+        }
+      ]
+    },
+    {
+      "id": "arcade-retro",
+      "name": "Arcade retro",
+      "kind": "pantallas · props",
+      "variants": [
+        {
+          "v": "V1",
+          "state": "PREVIEW",
+          "url": "https://juanmanuelpm.github.io/Experimentos/prometeo/previews/arcade-retro/v1/",
+          "reason": "Vista pública de primera pieza. No asumir arcade completo."
+        }
+      ]
+    },
+    {
+      "id": "cruce-urbano",
+      "name": "Cruce urbano vivo",
+      "kind": "tráfico · peatones",
+      "variants": [
+        {
+          "v": "V1",
+          "state": "PREVIEW",
+          "url": "https://juanmanuelpm.github.io/Experimentos/prometeo/previews/cruce-urbano/v1/",
+          "reason": "Vista pública de primera pieza. No asumir tráfico completo."
+        }
+      ]
+    }
+  ]
+}
