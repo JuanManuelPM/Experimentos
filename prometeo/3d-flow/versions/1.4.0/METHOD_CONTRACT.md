@@ -55,3 +55,8 @@ Mismo `briefSha256`, distinto `flowSha256`, comparar videos/previews y resultado
 - `synthesize-wave.mjs`: sintetiza patrones sin modificar automáticamente otra versión.
 
 **Límite:** este método está probado estructuralmente, pero su transferencia estética y la compatibilidad WebGL/Android no están demostradas hasta una nueva tanda con el mismo brief.
+
+## Interfaces verificables del brief y la compilación
+- [HUMAN_BRIEF.schema.json](HUMAN_BRIEF.schema.json) guarda `BRIEF.md`, texto literal y SHA-256 calculado; no incluye ningún parámetro artístico generado por el flujo.
+- [COMPILED_PLAN.schema.json](COMPILED_PLAN.schema.json) es la salida interna de BR1, con el objetivo completo, lista de componentes, técnica de recursos, receta de calidad por distancia/función, cámara e interactividad. `delivery.scope=FULL_SCENE`; no se puede marcar como plan completo un único primer artículo cuando se pidió un mundo entero.
+- `validate-trace.mjs` compara el hash SHA-256 real del texto del brief, no sólo la forma del campo. Si el brief cambia, el ensayo debe identificarse como un nuevo benchmark.

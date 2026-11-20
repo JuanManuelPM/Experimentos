@@ -13,3 +13,5 @@
 **Contrato de ejecución intacto:** producción completa siempre, incluso con defectos; un primer artículo o falta de WebGL no termina la obra. No revisar artísticamente en ese mismo turno. Publicar preview candidata honesta y conservar fuente.
 
 **Estado:** flujo publicado, pruebas de código/estructura; comportamiento artístico en una nueva tanda = NOT_RUN.
+
+Esquemas para ejecutar el **mismo brief** con diferentes flujos: [HUMAN_BRIEF.schema.json](versions/1.4.0/HUMAN_BRIEF.schema.json) y [COMPILED_PLAN.schema.json](versions/1.4.0/COMPILED_PLAN.schema.json).

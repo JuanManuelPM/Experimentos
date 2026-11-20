@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Exact human brief reused with multiple method versions",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "projectId",
+    "briefId",
+    "rawText",
+    "sha256",
+    "locked"
+  ],
+  "properties": {
+    "schema": {
+      "const": "prometeo.3d.human-brief-lock/v1"
+    },
+    "projectId": {
+      "type": "string",
+      "minLength": 3
+    },
+    "briefId": {
+      "type": "string",
+      "minLength": 3
+    },
+    "rawText": {
+      "type": "string",
+      "minLength": 10
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "locked": {
+      "const": true
+    },
+    "origin": {
+      "type": "string"
+    },
+    "createdFrom": {
+      "type": "string"
+    }
+  }
+}

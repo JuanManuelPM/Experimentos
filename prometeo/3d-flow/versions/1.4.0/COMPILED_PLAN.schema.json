@@ -1,0 +1,185 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Derived AI technical plan, NOT part of immutable human brief",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "projectId",
+    "briefId",
+    "briefSha256",
+    "flowVersion",
+    "flowSha256",
+    "sceneGoal",
+    "fullSceneElements",
+    "qualityRecipe",
+    "navigationMode",
+    "sourceChoices",
+    "delivery"
+  ],
+  "properties": {
+    "schema": {
+      "const": "prometeo.3d.compiled-plan/v1"
+    },
+    "projectId": {
+      "type": "string"
+    },
+    "briefId": {
+      "type": "string"
+    },
+    "briefSha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "flowVersion": {
+      "const": "1.4.0"
+    },
+    "flowSha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "sceneGoal": {
+      "type": "string",
+      "minLength": 10
+    },
+    "fullSceneElements": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "element",
+          "role",
+          "targetImplementation"
+        ],
+        "properties": {
+          "element": {
+            "type": "string"
+          },
+          "role": {
+            "type": "string"
+          },
+          "targetImplementation": {
+            "type": "string"
+          },
+          "repetitions": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    "qualityRecipe": {
+      "type": "object",
+      "required": [
+        "silhouette",
+        "materials",
+        "lighting",
+        "spatialDepth",
+        "camera",
+        "interactivity",
+        "referenceTransfer"
+      ],
+      "properties": {
+        "silhouette": {
+          "type": "string"
+        },
+        "materials": {
+          "type": "string"
+        },
+        "lighting": {
+          "type": "string"
+        },
+        "spatialDepth": {
+          "type": "string"
+        },
+        "camera": {
+          "type": "string"
+        },
+        "interactivity": {
+          "type": "string"
+        },
+        "referenceTransfer": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "sourceId",
+              "principleToTransfer",
+              "whyItFits",
+              "whatNotToCopy"
+            ],
+            "properties": {
+              "sourceId": {
+                "type": "string"
+              },
+              "principleToTransfer": {
+                "type": "string"
+              },
+              "whyItFits": {
+                "type": "string"
+              },
+              "whatNotToCopy": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "navigationMode": {
+      "enum": [
+        "CINEMATIC_GUIDED",
+        "FREE_LOOK",
+        "HYBRID",
+        "STATIC_INSPECTION"
+      ]
+    },
+    "sourceChoices": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "role",
+          "sourceType",
+          "licenceOrOrigin"
+        ],
+        "properties": {
+          "role": {
+            "type": "string"
+          },
+          "sourceType": {
+            "type": "string"
+          },
+          "licenceOrOrigin": {
+            "type": "string"
+          },
+          "sourceRef": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "delivery": {
+      "type": "object",
+      "required": [
+        "scope",
+        "noArtAbort",
+        "candidateVisible"
+      ],
+      "properties": {
+        "scope": {
+          "const": "FULL_SCENE"
+        },
+        "noArtAbort": {
+          "const": true
+        },
+        "candidateVisible": {
+          "const": true
+        },
+        "sourceRepo": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}
