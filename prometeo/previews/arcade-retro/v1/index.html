@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<title>PROMETEO · Signal 86 · First article</title>
+<meta name="theme-color" content="#100e19"><meta name="description" content="Arcade retro: primer gabinete 3D de comprobación.">
+<style>
+:root{color-scheme:dark;font-family:Arial,Helvetica,sans-serif}*{box-sizing:border-box}
+html,body{padding:0;margin:0;width:100%;height:100%;background:#100e19;overflow:hidden;touch-action:none;color:#f2dfba}
+#stage{position:absolute;inset:0}#stage canvas{display:block;width:100%;height:100%}
+#boot{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none;font-size:12px;letter-spacing:.35em;color:#d9af9a;transition:opacity 1s}
+#top{position:absolute;top:max(17px,env(safe-area-inset-top));left:20px;display:flex;align-items:center;gap:9px;letter-spacing:.24em;font-size:10px;color:#ecd0a5;opacity:.7;pointer-events:none}
+#top:before{content:"";width:8px;height:8px;background:#6ae7c6;border-radius:50%;box-shadow:0 0 12px #70edca}
+#info{position:absolute;bottom:max(16px,env(safe-area-inset-bottom));left:20px;letter-spacing:.2em;font-size:9px;color:#a68fa5;pointer-events:none}
+#controls{position:absolute;bottom:max(22px,env(safe-area-inset-bottom));right:18px;display:flex;align-items:center;gap:9px}
+button{background:rgba(19,24,34,.73);border:1px solid rgba(217,199,164,.38);color:#f4dca7;border-radius:100px;height:54px;width:54px;font-weight:800;font-size:21px;touch-action:manipulation;backdrop-filter:blur(6px);cursor:pointer}
+button:active{background:#58404e;border-color:#eac798;transform:scale(.95)}
+button[data-control=fire]{height:66px;width:66px;color:#fce8c1;background:rgba(109,45,75,.78);box-shadow:0 0 25px rgba(231,83,155,.19)}
+#pulse{position:absolute;inset:0;pointer-events:none;opacity:0;background:radial-gradient(ellipse at 48% 50%,transparent 65%,rgba(143,242,215,.13))}
+#pulse.flash{animation:pulse .2s ease-out}@keyframes pulse{0%{opacity:1}100%{opacity:0}}
+#notice{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);max-width:85%;display:none;padding:20px;background:#150e1d;border:1px solid #a35d68;line-height:1.5;font-size:14px;text-align:center}
+#notice.show{display:block}
+@media(max-width:520px){#top{font-size:8px}#info{bottom:9px;left:12px;font-size:8px;max-width:45%}#controls{right:10px;bottom:12px;gap:7px}button{width:44px;height:44px}button[data-control=fire]{width:58px;height:58px}}
+</style>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.181.0/build/three.module.js"}}</script>
+</head><body>
+<main id="stage" aria-label="Prototipo 3D de gabinete arcade"></main>
+<div id="boot">S I G N A L · 8 6</div>
+<div id="top">PROMETEO / FIRST ARTICLE</div>
+<div id="info">ARCADE 09 · V1 CANDIDATE</div>
+<div id="pulse"></div>
+<div id="controls"><button data-control="left" aria-label="Joystick izquierda">‹</button><button data-control="right" aria-label="Joystick derecha">›</button><button data-control="fire" aria-label="Disparar">●</button></div>
+<div id="notice" role="alert"></div>
+<script>
+window.addEventListener("error",e=>{const n=document.getElementById("notice");if(n){n.textContent="NO SE PUDO INICIAR EL RENDER 3D: "+e.message;n.classList.add("show");}});
+window.addEventListener("unhandledrejection",e=>{const n=document.getElementById("notice");if(n){n.textContent="ERROR DE CARGA: "+(e.reason?.message||e.reason);n.classList.add("show");}});
+</script>
+<script type="module" src="./app.mjs"></script>
+</body></html>
