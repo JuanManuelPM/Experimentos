@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#0c0f12">
+  <title>PROMETEO · Visor privado</title>
+  <link rel="stylesheet" href="./styles.css">
+  <script src="./app.js" defer></script>
+</head>
+<body>
+  <header class="top">
+    <div class="brand"><span class="brand-mark">P</span><div><strong>PROMETEO</strong><span>VISOR / V1</span></div></div>
+    <div class="top-right"><span class="online" id="auth-state">Sin conectar</span><a target="_blank" rel="noopener noreferrer" href="https://github.com/JuanManuelPM/pruebas">GITHUB</a></div>
+  </header>
+  <main class="layout">
+    <aside class="sidebar">
+      <section class="connection">
+        <div class="section-head"><h2>Acceso</h2><span class="micro">SOLO LECTURA</span></div>
+        <label for="token">Token de GitHub</label>
+        <div class="token-row"><input id="token" type="password" autocomplete="off" spellcheck="false" placeholder="github_pat_…" aria-label="Token de acceso solo lectura"><button id="connect">Conectar</button></div>
+        <div class="line-actions"><a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener noreferrer">Crear token de lectura</a><button id="disconnect" class="text-button" type="button">Desconectar</button></div>
+        <p class="hint">Solo permiso <b>Contents: Read-only</b> para el repositorio elegido. El token vive en memoria y se pierde al cerrar o recargar. Nunca se publica ni se guarda en GitHub.</p>
+      </section>
+      <section class="repo-section">
+        <div class="section-head"><h2>Repositorio</h2><span class="micro">PRIVADO / PÚBLICO</span></div>
+        <label for="repository">Propietario / repositorio</label>
+        <input id="repository" spellcheck="false" value="JuanManuelPM/pruebas">
+        <label for="branch">Rama o SHA</label>
+        <input id="branch" spellcheck="false" value="prometeo/control">
+        <div class="buttons"><button id="browse" class="primary">Explorar</button><button id="demo" class="secondary">Demo pública 3D</button></div>
+      </section>
+      <section class="files-section">
+        <div class="section-head"><h2>Archivos</h2><span id="count" class="micro"></span></div>
+        <div id="location" class="location">/</div>
+        <div id="files" class="files" aria-live="polite">
+          <div class="empty">Elegí un repositorio y tocá Explorar. Podés ver ramas privadas sin publicarlas.</div>
+        </div>
+      </section>
+      <div class="sidebar-footer">El código de este visor es público. Tus archivos privados no se publican. <span>PROTOTIPO</span></div>
+    </aside>
+    <section class="workspace">
+      <div class="workspace-bar">
+        <div class="crumb"><small>VISTA PREVIA</small><strong id="title">Ningún archivo abierto</strong><span id="subtitle">El HTML se ejecuta aislado en este dispositivo</span></div>
+        <div class="tools"><button id="reload" class="secondary" disabled aria-label="Recargar">↻</button><button id="fullscreen" class="secondary" disabled>Pantalla completa</button></div>
+      </div>
+      <div id="stage" class="stage">
+        <div id="welcome" class="welcome"><div class="glyph">⌘</div><h1>Una ventana a todos tus proyectos.</h1><p>Sin publicar obras. Sin descargar ZIP. Sin servidores de aplicación.</p><p class="small">Seleccioná un <code>index.html</code> para construir una vista privada en el navegador.</p></div>
+        <iframe id="preview" title="Vista previa de proyecto" sandbox="allow-scripts allow-pointer-lock allow-downloads" referrerpolicy="no-referrer" hidden></iframe>
+      </div>
+      <div class="bottom"><span id="status" role="status">Preparado</span><span id="version">V1 · EXPERIENCIA CANDIDATA</span></div>
+    </section>
+  </main>
+</body>
+</html>
