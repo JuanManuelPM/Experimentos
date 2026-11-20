@@ -15,5 +15,16 @@
 </style></head><body>
 <div id="gate"><button id="go" aria-label="Reproducir"><svg viewBox="0 0 24 24"><path d="M6 3 L21 12 L6 21 Z"/></svg></button></div>
 <div id="controls"><button id="toggle" aria-label="Pausar o reproducir">Ⅱ</button><input id="timeline" aria-label="Tiempo" type="range" min="0" max="22.7" step=".01" value="0"><span id="clock">00:00</span><button id="sound" aria-label="Silenciar">♪</button></div>
-<div id="fault"></div><script type="module" src="./app.mjs"></script>
+<div id="fault"></div>
+<script>
+(function(){
+ const show=()=>{const f=document.getElementById('fault');if(!f)return;
+ f.textContent='No se pudo iniciar WebGL o cargar los módulos 3D. Abrí esta página con Chrome actualizado y conexión a internet.';
+ f.style.display='flex';
+ };
+ window.addEventListener('error',e=>{if(e?.message||e?.target?.tagName==='SCRIPT')show()},true);
+ window.addEventListener('unhandledrejection',show);
+})();
+</script>
+<script type="module" src="./app.mjs"></script>
 </body></html>
