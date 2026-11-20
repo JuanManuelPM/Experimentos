@@ -79,7 +79,7 @@ async function fetchBytes(path) {
 async function getText(path) { return decoder.decode(await fetchBytes(path)); }
 async function dataURL(path) { return 'data:' + mime(path) + ';base64,' + bytesB64(await fetchBytes(path)); }
 function isRelative(url) { return /^(?:\.{1,2}\/|[^/#.:?][^:]*$)/.test(url) && !url.startsWith('//'); }
-function withinRoot(path) { return path === activeRoot || path.startsWith(activeRoot + '/'); }
+function withinRoot(path) { return !activeRoot || path === activeRoot || path.startsWith(activeRoot + '/'); }
 function assertAsset(path) {
   path = normalizePath(path);
   if (!withinRoot(path)) throw Error('Recurso fuera de la carpeta abierta: ' + path);
