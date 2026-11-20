@@ -1,13 +1,13 @@
 {
   "schema": "prometeo.3d.production-flow/v1",
   "id": "prometeo-3d-production",
-  "version": "1.4.0",
+  "version": "2.0.0",
   "publishedAt": "2026-11-20",
   "status": "CURRENT_CANDIDATE",
   "scope": "studio-3d",
-  "title": "Estudio 3D · brief humano fijo, calidad transferible y trazas por etapa",
-  "description": "El mismo encargo humano atraviesa distintas versiones del flujo; el chat expande internamente, produce obra entera, registra actuaciones por etapa y aplica principios de calidad de ejemplos exitosos sin copiar su estilo. Diagnósticos no bloquean.",
-  "sourceOfTruth": "FLOW_INDEX.json → versions/1.4.0/flow.json + METHOD_CONTRACT.md + STAGE_TRACE.schema.json + QUALITY_TRANSFER.json + BENCHMARK_BRIEFS.v1.json",
+  "title": "PROMETEO Estudio 3D · Método operativo universal, producción íntegra + componentes excelentes",
+  "description": "Brief humano fijo y opcional alias mínimo; compilación a contrato de escena íntegra; recuperar recursos y fábricas; producir 3D de calidad por componente (hero/entorno/actor/cámara); publicar sin censura estética; trazar etapa y reutilizar hallazgos.",
+  "sourceOfTruth": "FLOW_INDEX.json → versions/2.0.0/flow.json + METHOD.md + STAGE_OPERATIONS.json + scene-compiler.mjs",
   "stages": [
     {
       "id": "scope",
@@ -120,7 +120,10 @@
       "type": "action",
       "detail": "INICIO · nuevo pedido 3D",
       "docRef": "FLOW_3D_MASTER.md#i0",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/scope",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "I1",
@@ -129,7 +132,10 @@
       "type": "action",
       "detail": "Interpretar objetivo y resultado observable Obtener objetivo humano tal como fue escrito y requerimientos absolutos. No convertir la traducción a IA en otro prompt manual. Se conserva antes de compilar por BR0.",
       "docRef": "FLOW_3D_MASTER.md#i1",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/scope",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "I2",
@@ -138,7 +144,10 @@
       "type": "action",
       "detail": "Definir destinatario, plataforma y restricciones",
       "docRef": "FLOW_3D_MASTER.md#i2",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/scope",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "D0",
@@ -147,7 +156,11 @@
       "type": "decision",
       "detail": "¿Qué especialidad principal requiere?",
       "docRef": "FLOW_3D_MASTER.md#d0",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/scope",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "decisionPolicy": "REPORT_NONBLOCKING; KEEP_GOING; RIGHTS/SECURITY_EXCEPTIONS_REAL",
+      "componentAwareness": null
     },
     {
       "id": "T1",
@@ -156,7 +169,10 @@
       "type": "action",
       "detail": "Escena / set",
       "docRef": "FLOW_3D_MASTER.md#t1",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/scope",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "T2",
@@ -165,7 +181,10 @@
       "type": "action",
       "detail": "Personaje / vestuario",
       "docRef": "FLOW_3D_MASTER.md#t2",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/scope",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "T3",
@@ -174,7 +193,10 @@
       "type": "action",
       "detail": "Animación / actuación",
       "docRef": "FLOW_3D_MASTER.md#t3",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/scope",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "T4",
@@ -183,7 +205,10 @@
       "type": "action",
       "detail": "Cámara / montaje",
       "docRef": "FLOW_3D_MASTER.md#t4",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/scope",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "T5",
@@ -192,7 +217,10 @@
       "type": "action",
       "detail": "Material / UV",
       "docRef": "FLOW_3D_MASTER.md#t5",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/scope",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "T6",
@@ -201,7 +229,10 @@
       "type": "action",
       "detail": "Luz / FX",
       "docRef": "FLOW_3D_MASTER.md#t6",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/scope",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "T7",
@@ -210,7 +241,10 @@
       "type": "action",
       "detail": "Integración / FORJA",
       "docRef": "FLOW_3D_MASTER.md#t7",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/scope",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "I3",
@@ -219,7 +253,10 @@
       "type": "action",
       "detail": "Definir qué NO se va a modificar",
       "docRef": "FLOW_3D_MASTER.md#i3",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/scope",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "I4",
@@ -228,7 +265,10 @@
       "type": "action",
       "detail": "Distinguir arte aprobado, canario y documentación",
       "docRef": "FLOW_3D_MASTER.md#i4",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/scope",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "R0",
@@ -237,7 +277,10 @@
       "type": "action",
       "detail": "Recuperar PROMETEO y espacio dueño",
       "docRef": "FLOW_3D_MASTER.md#r0",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/recovery",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "R1",
@@ -246,7 +289,10 @@
       "type": "action",
       "detail": "Leer bootstrap, handoff y control instalado",
       "docRef": "FLOW_3D_MASTER.md#r1",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/recovery",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "R2",
@@ -255,7 +301,10 @@
       "type": "action",
       "detail": "Consultar ramas, HEAD y últimas evidencias",
       "docRef": "FLOW_3D_MASTER.md#r2",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/recovery",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "R3",
@@ -264,7 +313,10 @@
       "type": "action",
       "detail": "Inspeccionar Atlas, FORJA y catálogo shared",
       "docRef": "FLOW_3D_MASTER.md#r3",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/recovery",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "D1",
@@ -273,7 +325,11 @@
       "type": "decision",
       "detail": "¿Existe capacidad reutilizable?",
       "docRef": "FLOW_3D_MASTER.md#d1",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/recovery",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "decisionPolicy": "REPORT_NONBLOCKING; KEEP_GOING; RIGHTS/SECURITY_EXCEPTIONS_REAL",
+      "componentAwareness": null
     },
     {
       "id": "R4",
@@ -282,7 +338,10 @@
       "type": "action",
       "detail": "Reutilizar capacidad verificada",
       "docRef": "FLOW_3D_MASTER.md#r4",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/recovery",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "R5",
@@ -291,7 +350,10 @@
       "type": "action",
       "detail": "Aprovechar base parcial y documentar faltantes",
       "docRef": "FLOW_3D_MASTER.md#r5",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/recovery",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "R6",
@@ -300,7 +362,10 @@
       "type": "action",
       "detail": "Investigar necesidad ausente",
       "docRef": "FLOW_3D_MASTER.md#r6",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/recovery",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "R7",
@@ -309,7 +374,10 @@
       "type": "action",
       "detail": "Fijar licencia, owner, versión y SHA",
       "docRef": "FLOW_3D_MASTER.md#r7",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/recovery",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "R8",
@@ -318,7 +386,10 @@
       "type": "action",
       "detail": "Investigar fuentes oficiales y pruebas reales",
       "docRef": "FLOW_3D_MASTER.md#r8",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/recovery",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "R9",
@@ -327,7 +398,10 @@
       "type": "action",
       "detail": "Comparar al menos dos alternativas",
       "docRef": "FLOW_3D_MASTER.md#r9",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/recovery",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "D2",
@@ -336,7 +410,11 @@
       "type": "decision",
       "detail": "¿Hay método más sólido disponible?",
       "docRef": "FLOW_3D_MASTER.md#d2",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/recovery",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "decisionPolicy": "REPORT_NONBLOCKING; KEEP_GOING; RIGHTS/SECURITY_EXCEPTIONS_REAL",
+      "componentAwareness": null
     },
     {
       "id": "R10",
@@ -345,7 +423,10 @@
       "type": "action",
       "detail": "Adoptar asset / motor adecuado",
       "docRef": "FLOW_3D_MASTER.md#r10",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/recovery",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "R11",
@@ -354,7 +435,10 @@
       "type": "action",
       "detail": "Diseñar solución nueva justificada",
       "docRef": "FLOW_3D_MASTER.md#r11",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/recovery",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "P0",
@@ -363,7 +447,10 @@
       "type": "action",
       "detail": "Definir plan y gates por evidencia Breve decisión técnica desde brief fijo: plan es salida del sistema, NO una segunda instrucción mejorada por el humano.",
       "docRef": "FLOW_3D_MASTER.md#p0",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/planning",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "P1",
@@ -372,7 +459,10 @@
       "type": "action",
       "detail": "Descomponer en frentes",
       "docRef": "FLOW_3D_MASTER.md#p1",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/planning",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "P2",
@@ -381,7 +471,10 @@
       "type": "action",
       "detail": "Frente escena",
       "docRef": "FLOW_3D_MASTER.md#p2",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/planning",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "P3",
@@ -390,7 +483,10 @@
       "type": "action",
       "detail": "Frente actor",
       "docRef": "FLOW_3D_MASTER.md#p3",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/planning",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "P4",
@@ -399,7 +495,10 @@
       "type": "action",
       "detail": "Frente movimiento",
       "docRef": "FLOW_3D_MASTER.md#p4",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/planning",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "P5",
@@ -408,7 +507,10 @@
       "type": "action",
       "detail": "Frente cine",
       "docRef": "FLOW_3D_MASTER.md#p5",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/planning",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "P6",
@@ -417,7 +519,10 @@
       "type": "action",
       "detail": "Frente materiales",
       "docRef": "FLOW_3D_MASTER.md#p6",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/planning",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "P7",
@@ -426,7 +531,10 @@
       "type": "action",
       "detail": "Frente FX",
       "docRef": "FLOW_3D_MASTER.md#p7",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/planning",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "P8",
@@ -435,7 +543,10 @@
       "type": "action",
       "detail": "Frente QA y publicación",
       "docRef": "FLOW_3D_MASTER.md#p8",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/planning",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "D3",
@@ -444,7 +555,11 @@
       "type": "decision",
       "detail": "¿Dependencias permiten paralelismo?",
       "docRef": "FLOW_3D_MASTER.md#d3",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/planning",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "decisionPolicy": "REPORT_NONBLOCKING; KEEP_GOING; RIGHTS/SECURITY_EXCEPTIONS_REAL",
+      "componentAwareness": null
     },
     {
       "id": "W0",
@@ -453,7 +568,10 @@
       "type": "action",
       "detail": "Separar owners y contratos sin pisar fuentes",
       "docRef": "FLOW_3D_MASTER.md#w0",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/planning",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "W1",
@@ -462,7 +580,10 @@
       "type": "action",
       "detail": "Encadenar trabajos en el mismo chat",
       "docRef": "FLOW_3D_MASTER.md#w1",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/planning",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "P9",
@@ -471,7 +592,10 @@
       "type": "action",
       "detail": "Registrar entradas, salidas y rollback",
       "docRef": "FLOW_3D_MASTER.md#p9",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/planning",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "A0",
@@ -480,7 +604,10 @@
       "type": "action",
       "detail": "Identificar recursos existentes necesarios",
       "docRef": "FLOW_3D_MASTER.md#a0",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/acquisition",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "A1",
@@ -489,7 +616,10 @@
       "type": "action",
       "detail": "Armar manifiesto mínimo",
       "docRef": "FLOW_3D_MASTER.md#a1",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/acquisition",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "D4",
@@ -498,7 +628,11 @@
       "type": "decision",
       "detail": "¿Qué tipo de recurso falta?",
       "docRef": "FLOW_3D_MASTER.md#d4",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/acquisition",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "decisionPolicy": "REPORT_NONBLOCKING; KEEP_GOING; RIGHTS/SECURITY_EXCEPTIONS_REAL",
+      "componentAwareness": null
     },
     {
       "id": "A2",
@@ -507,7 +641,10 @@
       "type": "action",
       "detail": "Modelos / geometría",
       "docRef": "FLOW_3D_MASTER.md#a2",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/acquisition",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "A3",
@@ -516,7 +653,10 @@
       "type": "action",
       "detail": "Personajes",
       "docRef": "FLOW_3D_MASTER.md#a3",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/acquisition",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "A4",
@@ -525,7 +665,10 @@
       "type": "action",
       "detail": "Animaciones / rigs",
       "docRef": "FLOW_3D_MASTER.md#a4",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/acquisition",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "A5",
@@ -534,7 +677,10 @@
       "type": "action",
       "detail": "Texturas / atlas",
       "docRef": "FLOW_3D_MASTER.md#a5",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/acquisition",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "A6",
@@ -543,7 +689,10 @@
       "type": "action",
       "detail": "Audio y licencias si aplica",
       "docRef": "FLOW_3D_MASTER.md#a6",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/acquisition",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "A7",
@@ -552,7 +701,10 @@
       "type": "action",
       "detail": "VFX y materiales",
       "docRef": "FLOW_3D_MASTER.md#a7",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/acquisition",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "A8",
@@ -561,7 +713,10 @@
       "type": "action",
       "detail": "Verificar formato, licencia y calidad La comprobación incluye técnica idónea para planos exigentes, no sólo licencia y formato.",
       "docRef": "FLOW_3D_MASTER.md#a8",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/acquisition",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "D5",
@@ -570,7 +725,11 @@
       "type": "decision",
       "detail": "¿Asset supera gate mínimo?",
       "docRef": "FLOW_3D_MASTER.md#d5",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/acquisition",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "decisionPolicy": "REPORT_NONBLOCKING; KEEP_GOING; RIGHTS/SECURITY_EXCEPTIONS_REAL",
+      "componentAwareness": null
     },
     {
       "id": "A9",
@@ -579,7 +738,10 @@
       "type": "action",
       "detail": "Descartar con causa persistente",
       "docRef": "FLOW_3D_MASTER.md#a9",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/acquisition",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "A10",
@@ -588,7 +750,10 @@
       "type": "action",
       "detail": "Registrar URL, commit, hash y licencia",
       "docRef": "FLOW_3D_MASTER.md#a10",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/acquisition",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "A11",
@@ -597,7 +762,10 @@
       "type": "action",
       "detail": "Importar y verificar bytes reales",
       "docRef": "FLOW_3D_MASTER.md#a11",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/acquisition",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "A12",
@@ -606,7 +774,10 @@
       "type": "action",
       "detail": "Bloquear reemplazo visual ficticio Un placeholder nunca reemplaza silenciosamente un modelo protagonista.",
       "docRef": "FLOW_3D_MASTER.md#a12",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/acquisition",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "B0",
@@ -615,7 +786,10 @@
       "type": "action",
       "detail": "Clasificar pieza por comportamiento y uso",
       "docRef": "FLOW_3D_MASTER.md#b0",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/classification",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "D6",
@@ -624,7 +798,11 @@
       "type": "decision",
       "detail": "¿Cuál es la familia semántica?",
       "docRef": "FLOW_3D_MASTER.md#d6",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/classification",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "decisionPolicy": "REPORT_NONBLOCKING; KEEP_GOING; RIGHTS/SECURITY_EXCEPTIONS_REAL",
+      "componentAwareness": null
     },
     {
       "id": "H0",
@@ -633,7 +811,10 @@
       "type": "action",
       "detail": "Humanoide",
       "docRef": "FLOW_3D_MASTER.md#h0",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/classification",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "Q0",
@@ -642,7 +823,10 @@
       "type": "action",
       "detail": "Cuadrúpedo / no humano",
       "docRef": "FLOW_3D_MASTER.md#q0",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/classification",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "O0",
@@ -651,7 +835,10 @@
       "type": "action",
       "detail": "Mueble / objeto / prop",
       "docRef": "FLOW_3D_MASTER.md#o0",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/classification",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "E0",
@@ -660,7 +847,10 @@
       "type": "action",
       "detail": "Arquitectura / ambiente",
       "docRef": "FLOW_3D_MASTER.md#e0",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/classification",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "F0",
@@ -669,7 +859,10 @@
       "type": "action",
       "detail": "Material / luz / FX",
       "docRef": "FLOW_3D_MASTER.md#f0",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/classification",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "C0",
@@ -678,16 +871,22 @@
       "type": "action",
       "detail": "Recurso de cámara",
       "docRef": "FLOW_3D_MASTER.md#c0",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/classification",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "B1",
       "stage": "classification",
-      "label": "Exigir contrato específico o bloquear",
+      "label": "Adaptar contrato de entidad y continuar",
       "type": "action",
-      "detail": "Exigir contrato específico o bloquear",
+      "detail": "Exigir contrato específico o bloquear\nV2: la producción completa continúa aunque el diagnóstico sea FAIL o NOT_RUN. La evidencia artística la evalúa el usuario después.",
       "docRef": "FLOW_3D_MASTER.md#b1",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/classification",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "H1",
@@ -696,7 +895,10 @@
       "type": "action",
       "detail": "Comprobar malla, escala y proporciones La estrategia de personajes depende de distancia y papel en cámara; preferir modelos con malla, UV, rig, expresión adecuada. Preservar procedencia (p.ej. Cesium CC BY attribution) cuando se reutiliza un actor real.",
       "docRef": "FLOW_3D_MASTER.md#h1",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/humanoid",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": "ACTOR_FACE_SHOT_SCALE"
     },
     {
       "id": "H2",
@@ -705,7 +907,10 @@
       "type": "action",
       "detail": "Inspeccionar rostro, cabello, ropa y manos Personajes visibles: preferir malla texturada/UV o impostor adecuado; prueba de rostro/ropa antes de crowd. Evitar cara y manos construidas con formas improvisadas en primer plano aunque exista un GLB cualquiera. Variantes de cuerpo/textura/rig aptas para plano requerido; no bloquear entrega por falla.",
       "docRef": "FLOW_3D_MASTER.md#h2",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/humanoid",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": "ACTOR_FACE_SHOT_SCALE"
     },
     {
       "id": "H3",
@@ -714,7 +919,10 @@
       "type": "action",
       "detail": "Inspeccionar skeleton, pivote, bind pose",
       "docRef": "FLOW_3D_MASTER.md#h3",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/humanoid",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": "ACTOR_FACE_SHOT_SCALE"
     },
     {
       "id": "H4",
@@ -723,7 +931,10 @@
       "type": "action",
       "detail": "La geometría facial, huesos, rig y prueba frontal determinan el frente; nunca inferir +Z por convención.",
       "docRef": "FLOW_3D_MASTER.md#h4",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/humanoid",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": "ACTOR_FACE_SHOT_SCALE"
     },
     {
       "id": "D7",
@@ -732,7 +943,11 @@
       "type": "decision",
       "detail": "Se debe inspeccionar el frente REAL del modelo (cara/ojos/espalda) en vistas ortogonales y el esqueleto/clip. No asumir +Z. Registrar perfil por asset SHA. Si no se puede, FAIL/NOT_RUN, no aprobar.",
       "docRef": "FLOW_3D_MASTER.md#d7",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/humanoid",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "decisionPolicy": "REPORT_NONBLOCKING; KEEP_GOING; RIGHTS/SECURITY_EXCEPTIONS_REAL",
+      "componentAwareness": "ACTOR_FACE_SHOT_SCALE"
     },
     {
       "id": "H5",
@@ -741,7 +956,10 @@
       "type": "action",
       "detail": "Calibrar frente nativo y offset de bind pose por GLB, con captura. No girar todo a ciegas 180°.",
       "docRef": "FLOW_3D_MASTER.md#h5",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/humanoid",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": "ACTOR_FACE_SHOT_SCALE"
     },
     {
       "id": "H6",
@@ -750,7 +968,10 @@
       "type": "action",
       "detail": "Recuperar perfil exacto por SHA",
       "docRef": "FLOW_3D_MASTER.md#h6",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/humanoid",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": "ACTOR_FACE_SHOT_SCALE"
     },
     {
       "id": "H7",
@@ -759,7 +980,10 @@
       "type": "action",
       "detail": "Perfil persistido y validado, no un número arbitrario por escena.",
       "docRef": "FLOW_3D_MASTER.md#h7",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/humanoid",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": "ACTOR_FACE_SHOT_SCALE"
     },
     {
       "id": "H8",
@@ -768,7 +992,10 @@
       "type": "action",
       "detail": "Inspeccionar Idle, Walk, Turn, Interact",
       "docRef": "FLOW_3D_MASTER.md#h8",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/humanoid",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": "ACTOR_FACE_SHOT_SCALE"
     },
     {
       "id": "D8",
@@ -777,7 +1004,11 @@
       "type": "decision",
       "detail": "¿Clips válidos para acción pretendida?",
       "docRef": "FLOW_3D_MASTER.md#d8",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/humanoid",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "decisionPolicy": "REPORT_NONBLOCKING; KEEP_GOING; RIGHTS/SECURITY_EXCEPTIONS_REAL",
+      "componentAwareness": "ACTOR_FACE_SHOT_SCALE"
     },
     {
       "id": "H9",
@@ -786,7 +1017,10 @@
       "type": "action",
       "detail": "Buscar clips compatibles y derechos",
       "docRef": "FLOW_3D_MASTER.md#h9",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/humanoid",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": "ACTOR_FACE_SHOT_SCALE"
     },
     {
       "id": "H10",
@@ -795,7 +1029,10 @@
       "type": "action",
       "detail": "Retarget / adaptar y probar deformación",
       "docRef": "FLOW_3D_MASTER.md#h10",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/humanoid",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": "ACTOR_FACE_SHOT_SCALE"
     },
     {
       "id": "H11",
@@ -804,7 +1041,10 @@
       "type": "action",
       "detail": "Confirmar actor compatible para puesta",
       "docRef": "FLOW_3D_MASTER.md#h11",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/humanoid",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": "ACTOR_FACE_SHOT_SCALE"
     },
     {
       "id": "O1",
@@ -813,7 +1053,10 @@
       "type": "action",
       "detail": "Inspeccionar pivote, escala y bounds Mobiliario HERO: evaluar silla/modelado/UV versus cubos en serie; mecanismo técnico admite paramétrico justificado. Adoptar geometría de silueta intencional, extrusión/perfil para muebles y gabinetes, UV/atlas y microdetalles localizados. Las primitivas se usan para arquitectura y soporte cuando corresponden, no uniformemente prohibidas.",
       "docRef": "FLOW_3D_MASTER.md#o1",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/props",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": "HERO_VS_SUPPORT"
     },
     {
       "id": "O2",
@@ -822,7 +1065,10 @@
       "type": "action",
       "detail": "Distinguir frente visual, respaldo y frente funcional",
       "docRef": "FLOW_3D_MASTER.md#o2",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/props",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": "HERO_VS_SUPPORT"
     },
     {
       "id": "D9",
@@ -831,7 +1077,11 @@
       "type": "decision",
       "detail": "¿Clase funcional del objeto?",
       "docRef": "FLOW_3D_MASTER.md#d9",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/props",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "decisionPolicy": "REPORT_NONBLOCKING; KEEP_GOING; RIGHTS/SECURITY_EXCEPTIONS_REAL",
+      "componentAwareness": "HERO_VS_SUPPORT"
     },
     {
       "id": "O3",
@@ -840,7 +1090,10 @@
       "type": "action",
       "detail": "Silla: reconocer asiento y respaldo",
       "docRef": "FLOW_3D_MASTER.md#o3",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/props",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": "HERO_VS_SUPPORT"
     },
     {
       "id": "O4",
@@ -849,7 +1102,10 @@
       "type": "action",
       "detail": "Mesa: centro, superficie y zona de uso",
       "docRef": "FLOW_3D_MASTER.md#o4",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/props",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": "HERO_VS_SUPPORT"
     },
     {
       "id": "O5",
@@ -858,7 +1114,10 @@
       "type": "action",
       "detail": "Decoración libre sin lookAt automático",
       "docRef": "FLOW_3D_MASTER.md#o5",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/props",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": "HERO_VS_SUPPORT"
     },
     {
       "id": "O6",
@@ -867,7 +1126,10 @@
       "type": "action",
       "detail": "Electrodoméstico: lado operable",
       "docRef": "FLOW_3D_MASTER.md#o6",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/props",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": "HERO_VS_SUPPORT"
     },
     {
       "id": "O7",
@@ -876,7 +1138,10 @@
       "type": "action",
       "detail": "Lámpara: anclaje y dirección de luz",
       "docRef": "FLOW_3D_MASTER.md#o7",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/props",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": "HERO_VS_SUPPORT"
     },
     {
       "id": "O8",
@@ -885,7 +1150,10 @@
       "type": "action",
       "detail": "Persistir seatFrontLocal / backLocal",
       "docRef": "FLOW_3D_MASTER.md#o8",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/props",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": "HERO_VS_SUPPORT"
     },
     {
       "id": "O9",
@@ -894,7 +1162,10 @@
       "type": "action",
       "detail": "Persistir tableCenter / interactionZone",
       "docRef": "FLOW_3D_MASTER.md#o9",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/props",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": "HERO_VS_SUPPORT"
     },
     {
       "id": "O10",
@@ -903,7 +1174,10 @@
       "type": "action",
       "detail": "Persistir libertad de rotación",
       "docRef": "FLOW_3D_MASTER.md#o10",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/props",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": "HERO_VS_SUPPORT"
     },
     {
       "id": "O11",
@@ -912,7 +1186,10 @@
       "type": "action",
       "detail": "Persistir functionalFront / gripSockets",
       "docRef": "FLOW_3D_MASTER.md#o11",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/props",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": "HERO_VS_SUPPORT"
     },
     {
       "id": "O12",
@@ -921,7 +1198,10 @@
       "type": "action",
       "detail": "Persistir anchor rules y superficies",
       "docRef": "FLOW_3D_MASTER.md#o12",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/props",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": "HERO_VS_SUPPORT"
     },
     {
       "id": "E1",
@@ -930,7 +1210,10 @@
       "type": "action",
       "detail": "Definir tipo de recinto y escala",
       "docRef": "FLOW_3D_MASTER.md#e1",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/environment",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": "FULL_WORLD_SPATIAL_DEPTH"
     },
     {
       "id": "E2",
@@ -939,7 +1222,10 @@
       "type": "action",
       "detail": "Construir suelo real y colisiones",
       "docRef": "FLOW_3D_MASTER.md#e2",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/environment",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": "FULL_WORLD_SPATIAL_DEPTH"
     },
     {
       "id": "E3",
@@ -948,7 +1234,10 @@
       "type": "action",
       "detail": "Construir paredes y encuentros",
       "docRef": "FLOW_3D_MASTER.md#e3",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/environment",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": "FULL_WORLD_SPATIAL_DEPTH"
     },
     {
       "id": "E4",
@@ -957,7 +1246,10 @@
       "type": "action",
       "detail": "Definir puertas y ventanas reales",
       "docRef": "FLOW_3D_MASTER.md#e4",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/environment",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": "FULL_WORLD_SPATIAL_DEPTH"
     },
     {
       "id": "E5",
@@ -966,7 +1258,10 @@
       "type": "action",
       "detail": "La lámpara de techo no constituye techo. En interiores debe existir superficie física de cubierta y continuidad de muros.",
       "docRef": "FLOW_3D_MASTER.md#e5",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/environment",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": "FULL_WORLD_SPATIAL_DEPTH"
     },
     {
       "id": "D10",
@@ -975,7 +1270,11 @@
       "type": "decision",
       "detail": "¿Interior cerrado o escena intencionalmente abierta?",
       "docRef": "FLOW_3D_MASTER.md#d10",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/environment",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "decisionPolicy": "REPORT_NONBLOCKING; KEEP_GOING; RIGHTS/SECURITY_EXCEPTIONS_REAL",
+      "componentAwareness": "FULL_WORLD_SPATIAL_DEPTH"
     },
     {
       "id": "E6",
@@ -984,7 +1283,10 @@
       "type": "action",
       "detail": "Interior: exigir cerramiento completo",
       "docRef": "FLOW_3D_MASTER.md#e6",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/environment",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": "FULL_WORLD_SPATIAL_DEPTH"
     },
     {
       "id": "E7",
@@ -993,7 +1295,10 @@
       "type": "action",
       "detail": "Exterior: documentar cielo abierto",
       "docRef": "FLOW_3D_MASTER.md#e7",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/environment",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": "FULL_WORLD_SPATIAL_DEPTH"
     },
     {
       "id": "E8",
@@ -1002,7 +1307,10 @@
       "type": "action",
       "detail": "Comprobar exterior solo por aberturas",
       "docRef": "FLOW_3D_MASTER.md#e8",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/environment",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": "FULL_WORLD_SPATIAL_DEPTH"
     },
     {
       "id": "E9",
@@ -1011,7 +1319,10 @@
       "type": "action",
       "detail": "Zonas navegables / puntos de acción",
       "docRef": "FLOW_3D_MASTER.md#e9",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/environment",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": "FULL_WORLD_SPATIAL_DEPTH"
     },
     {
       "id": "E10",
@@ -1020,7 +1331,10 @@
       "type": "action",
       "detail": "Modo PRODUCCIÓN presenta techo y cerramiento. Modo EDICIÓN habilita corte sin cambiar el recurso de producción.",
       "docRef": "FLOW_3D_MASTER.md#e10",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/environment",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": "FULL_WORLD_SPATIAL_DEPTH"
     },
     {
       "id": "F1",
@@ -1029,7 +1343,10 @@
       "type": "action",
       "detail": "Elegir función de luz, material o FX",
       "docRef": "FLOW_3D_MASTER.md#f1",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/fx",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": "LOOK_NOT_FILTER"
     },
     {
       "id": "D11",
@@ -1038,7 +1355,11 @@
       "type": "decision",
       "detail": "¿Qué tratamiento se necesita?",
       "docRef": "FLOW_3D_MASTER.md#d11",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/fx",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "decisionPolicy": "REPORT_NONBLOCKING; KEEP_GOING; RIGHTS/SECURITY_EXCEPTIONS_REAL",
+      "componentAwareness": "LOOK_NOT_FILTER"
     },
     {
       "id": "F2",
@@ -1047,7 +1368,10 @@
       "type": "action",
       "detail": "Lluvia con profundidad física",
       "docRef": "FLOW_3D_MASTER.md#f2",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/fx",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": "LOOK_NOT_FILTER"
     },
     {
       "id": "F3",
@@ -1056,7 +1380,10 @@
       "type": "action",
       "detail": "Niebla y distancia",
       "docRef": "FLOW_3D_MASTER.md#f3",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/fx",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": "LOOK_NOT_FILTER"
     },
     {
       "id": "F4",
@@ -1065,7 +1392,10 @@
       "type": "action",
       "detail": "Humo y volumen",
       "docRef": "FLOW_3D_MASTER.md#f4",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/fx",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": "LOOK_NOT_FILTER"
     },
     {
       "id": "F5",
@@ -1074,7 +1404,10 @@
       "type": "action",
       "detail": "Iluminación y parpadeo",
       "docRef": "FLOW_3D_MASTER.md#f5",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/fx",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": "LOOK_NOT_FILTER"
     },
     {
       "id": "F6",
@@ -1083,7 +1416,10 @@
       "type": "action",
       "detail": "UV / textura / PBR",
       "docRef": "FLOW_3D_MASTER.md#f6",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/fx",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": "LOOK_NOT_FILTER"
     },
     {
       "id": "F7",
@@ -1092,7 +1428,10 @@
       "type": "action",
       "detail": "Comprobar rendimiento y coherencia",
       "docRef": "FLOW_3D_MASTER.md#f7",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/fx",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": "LOOK_NOT_FILTER"
     },
     {
       "id": "F8",
@@ -1101,7 +1440,10 @@
       "type": "action",
       "detail": "Verificar materiales importados y derechos",
       "docRef": "FLOW_3D_MASTER.md#f8",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/fx",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": "LOOK_NOT_FILTER"
     },
     {
       "id": "S0",
@@ -1110,7 +1452,10 @@
       "type": "action",
       "detail": "Construir escena sobre recursos reales La escena completa no puede sustituirse por un héroe aislado: reusar asset de alta calidad y multiplicar con instancias, cambios de atlas, LOD y composición, cuidando variedad y rendimiento.",
       "docRef": "FLOW_3D_MASTER.md#s0",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/assembly",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "S1",
@@ -1119,7 +1464,10 @@
       "type": "action",
       "detail": "Ubicar actor con escala y pivote",
       "docRef": "FLOW_3D_MASTER.md#s1",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/assembly",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "S2",
@@ -1128,7 +1476,10 @@
       "type": "action",
       "detail": "Ubicar muebles principales",
       "docRef": "FLOW_3D_MASTER.md#s2",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/assembly",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "S3",
@@ -1137,7 +1488,10 @@
       "type": "action",
       "detail": "Agregar muebles secundarios sin ruido",
       "docRef": "FLOW_3D_MASTER.md#s3",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/assembly",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "S4",
@@ -1146,7 +1500,10 @@
       "type": "action",
       "detail": "Aplicar materiales editables",
       "docRef": "FLOW_3D_MASTER.md#s4",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/assembly",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "S5",
@@ -1155,7 +1512,10 @@
       "type": "action",
       "detail": "Montar luces y ambiente",
       "docRef": "FLOW_3D_MASTER.md#s5",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/assembly",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "S6",
@@ -1164,7 +1524,10 @@
       "type": "action",
       "detail": "Aplicar FX sin tapar geometría",
       "docRef": "FLOW_3D_MASTER.md#s6",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/assembly",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "S7",
@@ -1173,7 +1536,10 @@
       "type": "action",
       "detail": "Definir blocking / rutas libres",
       "docRef": "FLOW_3D_MASTER.md#s7",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/assembly",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "D12",
@@ -1182,7 +1548,11 @@
       "type": "decision",
       "detail": "¿Todos colocados y orientados funcionalmente?",
       "docRef": "FLOW_3D_MASTER.md#d12",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/assembly",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "decisionPolicy": "REPORT_NONBLOCKING; KEEP_GOING; RIGHTS/SECURITY_EXCEPTIONS_REAL",
+      "componentAwareness": null
     },
     {
       "id": "S8",
@@ -1191,7 +1561,10 @@
       "type": "action",
       "detail": "Derivar a calibración semántica",
       "docRef": "FLOW_3D_MASTER.md#s8",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/assembly",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "S9",
@@ -1200,7 +1573,10 @@
       "type": "action",
       "detail": "Guardar escena candidata editable",
       "docRef": "FLOW_3D_MASTER.md#s9",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/assembly",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "OR0",
@@ -1209,7 +1585,10 @@
       "type": "action",
       "detail": "Revisar orientación de cada asset relevante",
       "docRef": "FLOW_3D_MASTER.md#or0",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/orientation",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "D13",
@@ -1218,7 +1597,11 @@
       "type": "decision",
       "detail": "¿Qué relación semántica debe cumplir?",
       "docRef": "FLOW_3D_MASTER.md#d13",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/orientation",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "decisionPolicy": "REPORT_NONBLOCKING; KEEP_GOING; RIGHTS/SECURITY_EXCEPTIONS_REAL",
+      "componentAwareness": null
     },
     {
       "id": "OR1",
@@ -1227,7 +1610,10 @@
       "type": "action",
       "detail": "Actor: frente hacia velocidad / objetivo",
       "docRef": "FLOW_3D_MASTER.md#or1",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/orientation",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "OR2",
@@ -1236,7 +1622,10 @@
       "type": "action",
       "detail": "Calcular dirección desde silla hacia mesa; orientar seatFrontLocal certificado. El respaldo debe apuntar hacia afuera; permitir override manual explícito, nunca auto-lookAt indiscriminado.",
       "docRef": "FLOW_3D_MASTER.md#or2",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/orientation",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "OR3",
@@ -1245,7 +1634,10 @@
       "type": "action",
       "detail": "Prop: cara funcional mira al usuario",
       "docRef": "FLOW_3D_MASTER.md#or3",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/orientation",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "OR4",
@@ -1254,7 +1646,10 @@
       "type": "action",
       "detail": "Lámpara: orientación según anclaje",
       "docRef": "FLOW_3D_MASTER.md#or4",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/orientation",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "OR5",
@@ -1263,7 +1658,10 @@
       "type": "action",
       "detail": "Decoración: libertad artística explícita",
       "docRef": "FLOW_3D_MASTER.md#or5",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/orientation",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "OR6",
@@ -1272,7 +1670,10 @@
       "type": "action",
       "detail": "Vincular frente humano a SHA del rig",
       "docRef": "FLOW_3D_MASTER.md#or6",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/orientation",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "OR7",
@@ -1281,7 +1682,10 @@
       "type": "action",
       "detail": "Vincular respaldo al target de asiento",
       "docRef": "FLOW_3D_MASTER.md#or7",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/orientation",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "OR8",
@@ -1290,7 +1694,10 @@
       "type": "action",
       "detail": "Vincular cara funcional a interacción",
       "docRef": "FLOW_3D_MASTER.md#or8",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/orientation",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "OR9",
@@ -1299,7 +1706,10 @@
       "type": "action",
       "detail": "Vincular anclaje real a superficie",
       "docRef": "FLOW_3D_MASTER.md#or9",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/orientation",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "OR10",
@@ -1308,7 +1718,10 @@
       "type": "action",
       "detail": "Guardar orientación libre y justificación",
       "docRef": "FLOW_3D_MASTER.md#or10",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/orientation",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "D14",
@@ -1317,7 +1730,11 @@
       "type": "decision",
       "detail": "¿Hay evidencia de orientación real?",
       "docRef": "FLOW_3D_MASTER.md#d14",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/orientation",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "decisionPolicy": "REPORT_NONBLOCKING; KEEP_GOING; RIGHTS/SECURITY_EXCEPTIONS_REAL",
+      "componentAwareness": null
     },
     {
       "id": "OR11",
@@ -1326,7 +1743,10 @@
       "type": "action",
       "detail": "Guardar 3 capturas con mismo asset, frente, lateral y planta. Para muebles comprobar respaldo/operador. Para persona observar nariz y feet pose.",
       "docRef": "FLOW_3D_MASTER.md#or11",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/orientation",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "OR12",
@@ -1335,7 +1755,10 @@
       "type": "action",
       "detail": "Comprobar dot >= cos(25°) para asiento→mesa, dot >= 0.9 para rostro→velocidad, intersecciones y contacto.",
       "docRef": "FLOW_3D_MASTER.md#or12",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/orientation",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "D15",
@@ -1344,7 +1767,11 @@
       "type": "decision",
       "detail": "¿Apunta correctamente con fuente real?",
       "docRef": "FLOW_3D_MASTER.md#d15",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/orientation",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "decisionPolicy": "REPORT_NONBLOCKING; KEEP_GOING; RIGHTS/SECURITY_EXCEPTIONS_REAL",
+      "componentAwareness": null
     },
     {
       "id": "OR13",
@@ -1353,7 +1780,10 @@
       "type": "action",
       "detail": "Corregir eje, pivot o yaw con causa",
       "docRef": "FLOW_3D_MASTER.md#or13",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/orientation",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "OR14",
@@ -1362,7 +1792,10 @@
       "type": "action",
       "detail": "Registrar comprobación y evidencia",
       "docRef": "FLOW_3D_MASTER.md#or14",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/orientation",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "M0",
@@ -1371,7 +1804,10 @@
       "type": "action",
       "detail": "Definir acción narrativa e intención",
       "docRef": "FLOW_3D_MASTER.md#m0",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/acting",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "M1",
@@ -1380,7 +1816,10 @@
       "type": "action",
       "detail": "Elegir actor y clips REALES",
       "docRef": "FLOW_3D_MASTER.md#m1",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/acting",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "M2",
@@ -1389,7 +1828,10 @@
       "type": "action",
       "detail": "Crear secuencia temporal editable",
       "docRef": "FLOW_3D_MASTER.md#m2",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/acting",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "M3",
@@ -1398,7 +1840,10 @@
       "type": "action",
       "detail": "Idle inicial",
       "docRef": "FLOW_3D_MASTER.md#m3",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/acting",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "M4",
@@ -1407,7 +1852,10 @@
       "type": "action",
       "detail": "Trayecto uno y contacto de pies",
       "docRef": "FLOW_3D_MASTER.md#m4",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/acting",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "M5",
@@ -1416,7 +1864,10 @@
       "type": "action",
       "detail": "Giro con interpolación de yaw",
       "docRef": "FLOW_3D_MASTER.md#m5",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/acting",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "M6",
@@ -1425,7 +1876,10 @@
       "type": "action",
       "detail": "Trayecto dos / evitar moonwalk",
       "docRef": "FLOW_3D_MASTER.md#m6",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/acting",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "M7",
@@ -1434,7 +1888,10 @@
       "type": "action",
       "detail": "Aproximación al prop",
       "docRef": "FLOW_3D_MASTER.md#m7",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/acting",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "M8",
@@ -1443,7 +1900,10 @@
       "type": "action",
       "detail": "Interacción: manos/IK/socket/clip",
       "docRef": "FLOW_3D_MASTER.md#m8",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/acting",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "M9",
@@ -1452,7 +1912,10 @@
       "type": "action",
       "detail": "Idle final mirando objetivo",
       "docRef": "FLOW_3D_MASTER.md#m9",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/acting",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "D16",
@@ -1461,7 +1924,11 @@
       "type": "decision",
       "detail": "¿Facing real coherente con velocidad?",
       "docRef": "FLOW_3D_MASTER.md#d16",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/acting",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "decisionPolicy": "REPORT_NONBLOCKING; KEEP_GOING; RIGHTS/SECURITY_EXCEPTIONS_REAL",
+      "componentAwareness": null
     },
     {
       "id": "M10",
@@ -1470,7 +1937,10 @@
       "type": "action",
       "detail": "Usar Δpos para calcular heading en mundo y sumar offset del eje local calibrado para la malla. No hardcodear yaw absoluto para todas las mallas.",
       "docRef": "FLOW_3D_MASTER.md#m10",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/acting",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "M11",
@@ -1479,7 +1949,10 @@
       "type": "action",
       "detail": "Distinguir traslación por animación y por código. Evitar doble movimiento, clip in-place contra root motion.",
       "docRef": "FLOW_3D_MASTER.md#m11",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/acting",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "M12",
@@ -1488,7 +1961,10 @@
       "type": "action",
       "detail": "Medir desplazamiento de pies en fase de apoyo y penetración de suelo. Test matemático de facing no prueba calidad.",
       "docRef": "FLOW_3D_MASTER.md#m12",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/acting",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "M13",
@@ -1497,7 +1973,10 @@
       "type": "action",
       "detail": "Corregir pose final y blending",
       "docRef": "FLOW_3D_MASTER.md#m13",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/acting",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "M14",
@@ -1506,7 +1985,10 @@
       "type": "action",
       "detail": "Repetir playback y medición",
       "docRef": "FLOW_3D_MASTER.md#m14",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/acting",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "D17",
@@ -1515,7 +1997,11 @@
       "type": "decision",
       "detail": "¿Interacción demostrada con clip/IK real?",
       "docRef": "FLOW_3D_MASTER.md#d17",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/acting",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "decisionPolicy": "REPORT_NONBLOCKING; KEEP_GOING; RIGHTS/SECURITY_EXCEPTIONS_REAL",
+      "componentAwareness": null
     },
     {
       "id": "M15",
@@ -1524,7 +2010,10 @@
       "type": "action",
       "detail": "Un saludo o una cámara que oculta la mano NO equivale a agarrar un objeto. Requiere clip compatible o IK y contacto medido.",
       "docRef": "FLOW_3D_MASTER.md#m15",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/acting",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "M16",
@@ -1533,7 +2022,10 @@
       "type": "action",
       "detail": "Marcar interacción pendiente sin fingirla",
       "docRef": "FLOW_3D_MASTER.md#m16",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/acting",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "C1",
@@ -1542,7 +2034,10 @@
       "type": "action",
       "detail": "Dirección cinematográfica reutilizable Diseñar velocidad, continuidad de mirada y pausa/corte intencional. Plan de cámara explícito: lenguaje cinematográfico con rail continuo para historia, libertad de rotación/orbit cuando el objetivo sea inspección; en modo guiado añadir entrada de usuario para examinar la escena cuando factible, sin sacrificar ritmo.",
       "docRef": "FLOW_3D_MASTER.md#c1",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/cinema",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": "GUIDED_VS_FREELOOK"
     },
     {
       "id": "C2",
@@ -1551,7 +2046,10 @@
       "type": "action",
       "detail": "Plano general y ubicación espacial",
       "docRef": "FLOW_3D_MASTER.md#c2",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/cinema",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": "GUIDED_VS_FREELOOK"
     },
     {
       "id": "C3",
@@ -1560,7 +2058,10 @@
       "type": "action",
       "detail": "Plano de seguimiento",
       "docRef": "FLOW_3D_MASTER.md#c3",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/cinema",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": "GUIDED_VS_FREELOOK"
     },
     {
       "id": "C4",
@@ -1569,7 +2070,10 @@
       "type": "action",
       "detail": "Plano medio de acción",
       "docRef": "FLOW_3D_MASTER.md#c4",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/cinema",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": "GUIDED_VS_FREELOOK"
     },
     {
       "id": "C5",
@@ -1578,7 +2082,10 @@
       "type": "action",
       "detail": "Primer plano de rostro",
       "docRef": "FLOW_3D_MASTER.md#c5",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/cinema",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": "GUIDED_VS_FREELOOK"
     },
     {
       "id": "C6",
@@ -1587,7 +2094,10 @@
       "type": "action",
       "detail": "Plano manos / prop verificable",
       "docRef": "FLOW_3D_MASTER.md#c6",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/cinema",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": "GUIDED_VS_FREELOOK"
     },
     {
       "id": "C7",
@@ -1596,7 +2106,10 @@
       "type": "action",
       "detail": "Plano final y continuidad",
       "docRef": "FLOW_3D_MASTER.md#c7",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/cinema",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": "GUIDED_VS_FREELOOK"
     },
     {
       "id": "C8",
@@ -1605,7 +2118,10 @@
       "type": "action",
       "detail": "Timeline, subtítulos y cortes exactos",
       "docRef": "FLOW_3D_MASTER.md#c8",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/cinema",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": "GUIDED_VS_FREELOOK"
     },
     {
       "id": "D18",
@@ -1614,7 +2130,11 @@
       "type": "decision",
       "detail": "¿Cámara muestra acción real o la oculta?",
       "docRef": "FLOW_3D_MASTER.md#d18",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/cinema",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "decisionPolicy": "REPORT_NONBLOCKING; KEEP_GOING; RIGHTS/SECURITY_EXCEPTIONS_REAL",
+      "componentAwareness": "GUIDED_VS_FREELOOK"
     },
     {
       "id": "C9",
@@ -1623,7 +2143,10 @@
       "type": "action",
       "detail": "Rechazar montaje engañoso",
       "docRef": "FLOW_3D_MASTER.md#c9",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/cinema",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": "GUIDED_VS_FREELOOK"
     },
     {
       "id": "C10",
@@ -1632,7 +2155,10 @@
       "type": "action",
       "detail": "Guardar shotlist versionada",
       "docRef": "FLOW_3D_MASTER.md#c10",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/cinema",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": "GUIDED_VS_FREELOOK"
     },
     {
       "id": "QA0",
@@ -1641,7 +2167,10 @@
       "type": "action",
       "detail": "Verificación técnica posterior para registrar fallas, nunca reescritura artística del mismo intento. Después de entregar, observaciones técnicas factuales. Revisiones artísticas posteriores por usuario, nunca autocensurar un resultado deficiente.",
       "docRef": "FLOW_3D_MASTER.md#qa0",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/qa",
+      "executePolicy": "ONLY_FACTUAL_DIAGNOSIS_NO_ARTISTIC_CANCEL",
+      "componentAwareness": null
     },
     {
       "id": "QA1",
@@ -1650,7 +2179,10 @@
       "type": "action",
       "detail": "Validar estructura y procedencia GLB",
       "docRef": "FLOW_3D_MASTER.md#qa1",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/qa",
+      "executePolicy": "ONLY_FACTUAL_DIAGNOSIS_NO_ARTISTIC_CANCEL",
+      "componentAwareness": null
     },
     {
       "id": "QA2",
@@ -1659,7 +2191,10 @@
       "type": "action",
       "detail": "Exigir screenshot/video WebGL real cuando objetivo es artístico. Si WebGL falta marcar NOT_RUN; no convertir Node PASS en VISUAL PASS.",
       "docRef": "FLOW_3D_MASTER.md#qa2",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/qa",
+      "executePolicy": "ONLY_FACTUAL_DIAGNOSIS_NO_ARTISTIC_CANCEL",
+      "componentAwareness": null
     },
     {
       "id": "QA3",
@@ -1668,7 +2203,10 @@
       "type": "action",
       "detail": "Validar relaciones semánticas",
       "docRef": "FLOW_3D_MASTER.md#qa3",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/qa",
+      "executePolicy": "ONLY_FACTUAL_DIAGNOSIS_NO_ARTISTIC_CANCEL",
+      "componentAwareness": null
     },
     {
       "id": "QA4",
@@ -1677,7 +2215,10 @@
       "type": "action",
       "detail": "Validar código, clips y timeline",
       "docRef": "FLOW_3D_MASTER.md#qa4",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/qa",
+      "executePolicy": "ONLY_FACTUAL_DIAGNOSIS_NO_ARTISTIC_CANCEL",
+      "componentAwareness": null
     },
     {
       "id": "QA5",
@@ -1686,7 +2227,10 @@
       "type": "action",
       "detail": "Verificar móvil, controles y memoria",
       "docRef": "FLOW_3D_MASTER.md#qa5",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/qa",
+      "executePolicy": "ONLY_FACTUAL_DIAGNOSIS_NO_ARTISTIC_CANCEL",
+      "componentAwareness": null
     },
     {
       "id": "D19",
@@ -1695,7 +2239,11 @@
       "type": "decision",
       "detail": "¿Arquitectura y recursos completos?",
       "docRef": "FLOW_3D_MASTER.md#d19",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/qa",
+      "executePolicy": "ONLY_FACTUAL_DIAGNOSIS_NO_ARTISTIC_CANCEL",
+      "decisionPolicy": "REPORT_NONBLOCKING; KEEP_GOING; RIGHTS/SECURITY_EXCEPTIONS_REAL",
+      "componentAwareness": null
     },
     {
       "id": "QA6",
@@ -1704,7 +2252,10 @@
       "type": "action",
       "detail": "Error observado, registrar sin autocorrección; continuar hasta entrega.",
       "docRef": "FLOW_3D_MASTER.md#qa6",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/qa",
+      "executePolicy": "ONLY_FACTUAL_DIAGNOSIS_NO_ARTISTIC_CANCEL",
+      "componentAwareness": null
     },
     {
       "id": "D20",
@@ -1713,7 +2264,11 @@
       "type": "decision",
       "detail": "¿Actor y props orientados correctamente?",
       "docRef": "FLOW_3D_MASTER.md#d20",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/qa",
+      "executePolicy": "ONLY_FACTUAL_DIAGNOSIS_NO_ARTISTIC_CANCEL",
+      "decisionPolicy": "REPORT_NONBLOCKING; KEEP_GOING; RIGHTS/SECURITY_EXCEPTIONS_REAL",
+      "componentAwareness": null
     },
     {
       "id": "QA8",
@@ -1722,7 +2277,10 @@
       "type": "action",
       "detail": "Error observado, registrar sin autocorrección; continuar hasta entrega.",
       "docRef": "FLOW_3D_MASTER.md#qa8",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/qa",
+      "executePolicy": "ONLY_FACTUAL_DIAGNOSIS_NO_ARTISTIC_CANCEL",
+      "componentAwareness": null
     },
     {
       "id": "QA9",
@@ -1731,7 +2289,10 @@
       "type": "action",
       "detail": "Error observado, registrar sin autocorrección; continuar hasta entrega.",
       "docRef": "FLOW_3D_MASTER.md#qa9",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/qa",
+      "executePolicy": "ONLY_FACTUAL_DIAGNOSIS_NO_ARTISTIC_CANCEL",
+      "componentAwareness": null
     },
     {
       "id": "D21",
@@ -1740,7 +2301,11 @@
       "type": "decision",
       "detail": "¿Locomoción sin defectos visibles?",
       "docRef": "FLOW_3D_MASTER.md#d21",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/qa",
+      "executePolicy": "ONLY_FACTUAL_DIAGNOSIS_NO_ARTISTIC_CANCEL",
+      "decisionPolicy": "REPORT_NONBLOCKING; KEEP_GOING; RIGHTS/SECURITY_EXCEPTIONS_REAL",
+      "componentAwareness": null
     },
     {
       "id": "QA10",
@@ -1749,7 +2314,10 @@
       "type": "action",
       "detail": "Error observado, registrar sin autocorrección; continuar hasta entrega.",
       "docRef": "FLOW_3D_MASTER.md#qa10",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/qa",
+      "executePolicy": "ONLY_FACTUAL_DIAGNOSIS_NO_ARTISTIC_CANCEL",
+      "componentAwareness": null
     },
     {
       "id": "QA11",
@@ -1758,7 +2326,10 @@
       "type": "action",
       "detail": "Error observado, registrar sin autocorrección; continuar hasta entrega.",
       "docRef": "FLOW_3D_MASTER.md#qa11",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/qa",
+      "executePolicy": "ONLY_FACTUAL_DIAGNOSIS_NO_ARTISTIC_CANCEL",
+      "componentAwareness": null
     },
     {
       "id": "D22",
@@ -1767,7 +2338,11 @@
       "type": "decision",
       "detail": "¿Interacción realmente demostrada?",
       "docRef": "FLOW_3D_MASTER.md#d22",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/qa",
+      "executePolicy": "ONLY_FACTUAL_DIAGNOSIS_NO_ARTISTIC_CANCEL",
+      "decisionPolicy": "REPORT_NONBLOCKING; KEEP_GOING; RIGHTS/SECURITY_EXCEPTIONS_REAL",
+      "componentAwareness": null
     },
     {
       "id": "QA12",
@@ -1776,7 +2351,10 @@
       "type": "action",
       "detail": "Error observado, registrar sin autocorrección; continuar hasta entrega.",
       "docRef": "FLOW_3D_MASTER.md#qa12",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/qa",
+      "executePolicy": "ONLY_FACTUAL_DIAGNOSIS_NO_ARTISTIC_CANCEL",
+      "componentAwareness": null
     },
     {
       "id": "D23",
@@ -1785,7 +2363,11 @@
       "type": "decision",
       "detail": "¿Cámara cubre correctamente?",
       "docRef": "FLOW_3D_MASTER.md#d23",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/qa",
+      "executePolicy": "ONLY_FACTUAL_DIAGNOSIS_NO_ARTISTIC_CANCEL",
+      "decisionPolicy": "REPORT_NONBLOCKING; KEEP_GOING; RIGHTS/SECURITY_EXCEPTIONS_REAL",
+      "componentAwareness": null
     },
     {
       "id": "QA13",
@@ -1794,7 +2376,10 @@
       "type": "action",
       "detail": "Error observado, registrar sin autocorrección; continuar hasta entrega.",
       "docRef": "FLOW_3D_MASTER.md#qa13",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/qa",
+      "executePolicy": "ONLY_FACTUAL_DIAGNOSIS_NO_ARTISTIC_CANCEL",
+      "componentAwareness": null
     },
     {
       "id": "D24",
@@ -1803,7 +2388,11 @@
       "type": "decision",
       "detail": "¿Arte y móvil alcanzan criterios?",
       "docRef": "FLOW_3D_MASTER.md#d24",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/qa",
+      "executePolicy": "ONLY_FACTUAL_DIAGNOSIS_NO_ARTISTIC_CANCEL",
+      "decisionPolicy": "REPORT_NONBLOCKING; KEEP_GOING; RIGHTS/SECURITY_EXCEPTIONS_REAL",
+      "componentAwareness": null
     },
     {
       "id": "QA14",
@@ -1812,7 +2401,10 @@
       "type": "action",
       "detail": "Error observado, registrar sin autocorrección; continuar hasta entrega.",
       "docRef": "FLOW_3D_MASTER.md#qa14",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/qa",
+      "executePolicy": "ONLY_FACTUAL_DIAGNOSIS_NO_ARTISTIC_CANCEL",
+      "componentAwareness": null
     },
     {
       "id": "QA15",
@@ -1821,7 +2413,10 @@
       "type": "action",
       "detail": "Error observado, registrar sin autocorrección; continuar hasta entrega.",
       "docRef": "FLOW_3D_MASTER.md#qa15",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/qa",
+      "executePolicy": "ONLY_FACTUAL_DIAGNOSIS_NO_ARTISTIC_CANCEL",
+      "componentAwareness": null
     },
     {
       "id": "QA16",
@@ -1830,16 +2425,23 @@
       "type": "action",
       "detail": "PASS técnico + visual según evidencia",
       "docRef": "FLOW_3D_MASTER.md#qa16",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/qa",
+      "executePolicy": "ONLY_FACTUAL_DIAGNOSIS_NO_ARTISTIC_CANCEL",
+      "componentAwareness": null
     },
     {
       "id": "QA17",
       "stage": "qa",
-      "label": "NOT_RUN si entorno impide la prueba",
+      "label": "Registrar NOT_RUN sin cancelar",
       "type": "action",
-      "detail": "NOT_RUN no es PASS ni permiso para ocultar. Entregar todo lo producido.",
+      "detail": "NOT_RUN no es PASS ni permiso para ocultar. Entregar todo lo producido.\nV2: la producción completa continúa aunque el diagnóstico sea FAIL o NOT_RUN. La evidencia artística la evalúa el usuario después.",
       "docRef": "FLOW_3D_MASTER.md#qa17",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/qa",
+      "executePolicy": "ONLY_FACTUAL_DIAGNOSIS_NO_ARTISTIC_CANCEL",
+      "decisionPolicy": "REPORT_NONBLOCKING; KEEP_GOING; RIGHTS/SECURITY_EXCEPTIONS_REAL",
+      "componentAwareness": null
     },
     {
       "id": "FIX0",
@@ -1848,7 +2450,10 @@
       "type": "action",
       "detail": "Rama de corrección exclusiva de una próxima ronda autorizada por el usuario, nunca autocorrección del primer intento.",
       "docRef": "FLOW_3D_MASTER.md#fix0",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/repair",
+      "executePolicy": "ONLY_FACTUAL_DIAGNOSIS_NO_ARTISTIC_CANCEL",
+      "componentAwareness": null
     },
     {
       "id": "FIX1",
@@ -1857,7 +2462,10 @@
       "type": "action",
       "detail": "Reproducir con evidencia y condiciones",
       "docRef": "FLOW_3D_MASTER.md#fix1",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/repair",
+      "executePolicy": "ONLY_FACTUAL_DIAGNOSIS_NO_ARTISTIC_CANCEL",
+      "componentAwareness": null
     },
     {
       "id": "FIX2",
@@ -1866,7 +2474,10 @@
       "type": "action",
       "detail": "Localizar línea, asset y suposiciones",
       "docRef": "FLOW_3D_MASTER.md#fix2",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/repair",
+      "executePolicy": "ONLY_FACTUAL_DIAGNOSIS_NO_ARTISTIC_CANCEL",
+      "componentAwareness": null
     },
     {
       "id": "D25",
@@ -1875,7 +2486,11 @@
       "type": "decision",
       "detail": "¿Origen principal del fallo?",
       "docRef": "FLOW_3D_MASTER.md#d25",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/repair",
+      "executePolicy": "ONLY_FACTUAL_DIAGNOSIS_NO_ARTISTIC_CANCEL",
+      "decisionPolicy": "REPORT_NONBLOCKING; KEEP_GOING; RIGHTS/SECURITY_EXCEPTIONS_REAL",
+      "componentAwareness": null
     },
     {
       "id": "FIX3",
@@ -1884,7 +2499,10 @@
       "type": "action",
       "detail": "Asset: reparar o reemplazar legalmente",
       "docRef": "FLOW_3D_MASTER.md#fix3",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/repair",
+      "executePolicy": "ONLY_FACTUAL_DIAGNOSIS_NO_ARTISTIC_CANCEL",
+      "componentAwareness": null
     },
     {
       "id": "FIX4",
@@ -1893,7 +2511,10 @@
       "type": "action",
       "detail": "Código: arreglar pose/cámara/carga",
       "docRef": "FLOW_3D_MASTER.md#fix4",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/repair",
+      "executePolicy": "ONLY_FACTUAL_DIAGNOSIS_NO_ARTISTIC_CANCEL",
+      "componentAwareness": null
     },
     {
       "id": "FIX5",
@@ -1902,7 +2523,10 @@
       "type": "action",
       "detail": "Supuesto: medir eje/pivote real",
       "docRef": "FLOW_3D_MASTER.md#fix5",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/repair",
+      "executePolicy": "ONLY_FACTUAL_DIAGNOSIS_NO_ARTISTIC_CANCEL",
+      "componentAwareness": null
     },
     {
       "id": "FIX6",
@@ -1911,7 +2535,10 @@
       "type": "action",
       "detail": "Error UMBRIA-QA-004: publicación anterior basó la aceptación en estructura sin probar píxeles visuales.",
       "docRef": "FLOW_3D_MASTER.md#fix6",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/repair",
+      "executePolicy": "ONLY_FACTUAL_DIAGNOSIS_NO_ARTISTIC_CANCEL",
+      "componentAwareness": null
     },
     {
       "id": "FIX7",
@@ -1920,7 +2547,10 @@
       "type": "action",
       "detail": "Composición: corregir blocking",
       "docRef": "FLOW_3D_MASTER.md#fix7",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/repair",
+      "executePolicy": "ONLY_FACTUAL_DIAGNOSIS_NO_ARTISTIC_CANCEL",
+      "componentAwareness": null
     },
     {
       "id": "FIX8",
@@ -1929,7 +2559,10 @@
       "type": "action",
       "detail": "Correr prueba original y nueva regresión",
       "docRef": "FLOW_3D_MASTER.md#fix8",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/repair",
+      "executePolicy": "ONLY_FACTUAL_DIAGNOSIS_NO_ARTISTIC_CANCEL",
+      "componentAwareness": null
     },
     {
       "id": "D26",
@@ -1938,7 +2571,11 @@
       "type": "decision",
       "detail": "¿El fallo se resolvió de verdad?",
       "docRef": "FLOW_3D_MASTER.md#d26",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/repair",
+      "executePolicy": "ONLY_FACTUAL_DIAGNOSIS_NO_ARTISTIC_CANCEL",
+      "decisionPolicy": "REPORT_NONBLOCKING; KEEP_GOING; RIGHTS/SECURITY_EXCEPTIONS_REAL",
+      "componentAwareness": null
     },
     {
       "id": "FIX9",
@@ -1947,7 +2584,10 @@
       "type": "action",
       "detail": "Comparar método alternativo",
       "docRef": "FLOW_3D_MASTER.md#fix9",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/repair",
+      "executePolicy": "ONLY_FACTUAL_DIAGNOSIS_NO_ARTISTIC_CANCEL",
+      "componentAwareness": null
     },
     {
       "id": "G0",
@@ -1956,7 +2596,10 @@
       "type": "action",
       "detail": "Persistir resultado sin exagerar madurez Guardar escena, versión, fuente, artefactos y su STAGE_TRACE; la traza no puede sustituir la obra.",
       "docRef": "FLOW_3D_MASTER.md#g0",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/persistence",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "G1",
@@ -1965,7 +2608,10 @@
       "type": "action",
       "detail": "Guardar escena, fuentes y proyecto editable",
       "docRef": "FLOW_3D_MASTER.md#g1",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/persistence",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "G2",
@@ -1974,7 +2620,10 @@
       "type": "action",
       "detail": "Fijar manifiesto SHA de assets",
       "docRef": "FLOW_3D_MASTER.md#g2",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/persistence",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "G3",
@@ -1983,7 +2632,10 @@
       "type": "action",
       "detail": "Guardar RESULT, QA y clips ejecutados",
       "docRef": "FLOW_3D_MASTER.md#g3",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/persistence",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "G4",
@@ -1992,7 +2644,10 @@
       "type": "action",
       "detail": "Registrar issues + causa + patch",
       "docRef": "FLOW_3D_MASTER.md#g4",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/persistence",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "G5",
@@ -2001,7 +2656,10 @@
       "type": "action",
       "detail": "Guardar perfiles de orientación por asset",
       "docRef": "FLOW_3D_MASTER.md#g5",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/persistence",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "G6",
@@ -2010,7 +2668,10 @@
       "type": "action",
       "detail": "Proponer capacidad reusable con propietario",
       "docRef": "FLOW_3D_MASTER.md#g6",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/persistence",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "G7",
@@ -2019,7 +2680,10 @@
       "type": "action",
       "detail": "Guardar NEXT_ACTION y rollback",
       "docRef": "FLOW_3D_MASTER.md#g7",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/persistence",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "G8",
@@ -2028,7 +2692,10 @@
       "type": "action",
       "detail": "Toda creación nueva debe conservar flowId, flowVersion, flowSha256, commit/archivo de resultado, QA de nodos y lineage. Obras anteriores: flowVersionUsed = null (desconocido), no atribuir flujo nuevo retroactivamente.",
       "docRef": "FLOW_3D_MASTER.md#g8",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/persistence",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "D27",
@@ -2037,7 +2704,11 @@
       "type": "decision",
       "detail": "¿Capacidad demostrada en otro consumidor?",
       "docRef": "FLOW_3D_MASTER.md#d27",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/persistence",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "decisionPolicy": "REPORT_NONBLOCKING; KEEP_GOING; RIGHTS/SECURITY_EXCEPTIONS_REAL",
+      "componentAwareness": null
     },
     {
       "id": "G9",
@@ -2046,7 +2717,10 @@
       "type": "action",
       "detail": "Propuesta compartida con QA autónomo",
       "docRef": "FLOW_3D_MASTER.md#g9",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/persistence",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "G10",
@@ -2055,7 +2729,10 @@
       "type": "action",
       "detail": "Mantener como artefacto propio",
       "docRef": "FLOW_3D_MASTER.md#g10",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/persistence",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "PUB0",
@@ -2064,7 +2741,10 @@
       "type": "action",
       "detail": "Persistir la obra completa y publicar preview técnico aunque tenga defectos artísticos. Publicar preview candidata aun con defectos; prevención de error de carga de navegador via WEB0, sin alegar render validado sin prueba.",
       "docRef": "FLOW_3D_MASTER.md#pub0",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/publish",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "D28",
@@ -2073,16 +2753,23 @@
       "type": "decision",
       "detail": "¿Hay prueba REAL suficiente para publicar como validado?",
       "docRef": "FLOW_3D_MASTER.md#d28",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/publish",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "decisionPolicy": "REPORT_NONBLOCKING; KEEP_GOING; RIGHTS/SECURITY_EXCEPTIONS_REAL",
+      "componentAwareness": null
     },
     {
       "id": "PUB1",
       "stage": "publish",
-      "label": "Dejar candidato / no fingir PASS",
+      "label": "Publicar candidato no verificado, sin censurar arte",
       "type": "action",
-      "detail": "Si no se verificó render/Android, publicar igualmente candidato técnico con advertencia, cuando sea legal y viable. Nunca esconder la obra; archivar fuente íntegra si una limitación real impide publicar.",
+      "detail": "Si no se verificó render/Android, publicar igualmente candidato técnico con advertencia, cuando sea legal y viable. Nunca esconder la obra; archivar fuente íntegra si una limitación real impide publicar.\nV2: la producción completa continúa aunque el diagnóstico sea FAIL o NOT_RUN. La evidencia artística la evalúa el usuario después.",
       "docRef": "FLOW_3D_MASTER.md#pub1",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/publish",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "PUB2",
@@ -2091,7 +2778,10 @@
       "type": "action",
       "detail": "Publicar vista validada sin inventar aprobación artística.",
       "docRef": "FLOW_3D_MASTER.md#pub2",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/publish",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "PUB3",
@@ -2100,7 +2790,10 @@
       "type": "action",
       "detail": "Guardar URL, fuente, artefactos y defectos para revisión externa. La vista pública debe poder abrirse incluso en navegador modesto con diagnóstico preciso, enlaces a versión y evidencia del resultado; no suponer que GitHub commit equivale a cargar correctamente.",
       "docRef": "FLOW_3D_MASTER.md#pub3",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/publish",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "PUB4",
@@ -2109,16 +2802,22 @@
       "type": "action",
       "detail": "Un nuevo fallo propone versión NUEVA del flujo, conserva versiones anteriores inmutables y compara en misma tarea y evidencia. No sobrescribir histórico ni decir mejora si no hay corrida comparable.",
       "docRef": "FLOW_3D_MASTER.md#pub4",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/publish",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "END0",
       "stage": "publish",
-      "label": "FIN · Candidato o bloqueo documentado",
+      "label": "FIN · Trabajo persistido con impedimento técnico/legal real",
       "type": "terminal",
-      "detail": "Obra completa persistida; publicación imposible sólo por causa legal/técnica real, nunca por D41 artístico.",
+      "detail": "Obra completa persistida; publicación imposible sólo por causa legal/técnica real, nunca por D41 artístico.\nV2: la producción completa continúa aunque el diagnóstico sea FAIL o NOT_RUN. La evidencia artística la evalúa el usuario después.",
       "docRef": "FLOW_3D_MASTER.md#end0",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/publish",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "END1",
@@ -2127,7 +2826,10 @@
       "type": "terminal",
       "detail": "Obra íntegra persistida; el usuario la evalúa después.",
       "docRef": "FLOW_3D_MASTER.md#end1",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/publish",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "D29",
@@ -2152,7 +2854,11 @@
         "reportOnly": true,
         "continueEvenOnFail": true,
         "continueEvenIfNotRun": true
-      }
+      },
+      "procedureRef": "STAGE_OPERATIONS.json#/qa",
+      "executePolicy": "ONLY_FACTUAL_DIAGNOSIS_NO_ARTISTIC_CANCEL",
+      "decisionPolicy": "REPORT_NONBLOCKING; KEEP_GOING; RIGHTS/SECURITY_EXCEPTIONS_REAL",
+      "componentAwareness": null
     },
     {
       "id": "QA18",
@@ -2165,7 +2871,10 @@
         "id": "source-and-license",
         "onFailure": "FIX0",
         "onNotRun": "QA17"
-      }
+      },
+      "procedureRef": "STAGE_OPERATIONS.json#/qa",
+      "executePolicy": "ONLY_FACTUAL_DIAGNOSIS_NO_ARTISTIC_CANCEL",
+      "componentAwareness": null
     },
     {
       "id": "D30",
@@ -2190,7 +2899,11 @@
         "reportOnly": true,
         "continueEvenOnFail": true,
         "continueEvenIfNotRun": true
-      }
+      },
+      "procedureRef": "STAGE_OPERATIONS.json#/qa",
+      "executePolicy": "ONLY_FACTUAL_DIAGNOSIS_NO_ARTISTIC_CANCEL",
+      "decisionPolicy": "REPORT_NONBLOCKING; KEEP_GOING; RIGHTS/SECURITY_EXCEPTIONS_REAL",
+      "componentAwareness": null
     },
     {
       "id": "QA19",
@@ -2203,7 +2916,10 @@
         "id": "geometry-clearance",
         "onFailure": "FIX0",
         "onNotRun": "QA17"
-      }
+      },
+      "procedureRef": "STAGE_OPERATIONS.json#/qa",
+      "executePolicy": "ONLY_FACTUAL_DIAGNOSIS_NO_ARTISTIC_CANCEL",
+      "componentAwareness": null
     },
     {
       "id": "D31",
@@ -2228,7 +2944,11 @@
         "reportOnly": true,
         "continueEvenOnFail": true,
         "continueEvenIfNotRun": true
-      }
+      },
+      "procedureRef": "STAGE_OPERATIONS.json#/qa",
+      "executePolicy": "ONLY_FACTUAL_DIAGNOSIS_NO_ARTISTIC_CANCEL",
+      "decisionPolicy": "REPORT_NONBLOCKING; KEEP_GOING; RIGHTS/SECURITY_EXCEPTIONS_REAL",
+      "componentAwareness": null
     },
     {
       "id": "QA20",
@@ -2241,7 +2961,10 @@
         "id": "material-uv",
         "onFailure": "FIX0",
         "onNotRun": "QA17"
-      }
+      },
+      "procedureRef": "STAGE_OPERATIONS.json#/qa",
+      "executePolicy": "ONLY_FACTUAL_DIAGNOSIS_NO_ARTISTIC_CANCEL",
+      "componentAwareness": null
     },
     {
       "id": "D32",
@@ -2266,7 +2989,11 @@
         "reportOnly": true,
         "continueEvenOnFail": true,
         "continueEvenIfNotRun": true
-      }
+      },
+      "procedureRef": "STAGE_OPERATIONS.json#/qa",
+      "executePolicy": "ONLY_FACTUAL_DIAGNOSIS_NO_ARTISTIC_CANCEL",
+      "decisionPolicy": "REPORT_NONBLOCKING; KEEP_GOING; RIGHTS/SECURITY_EXCEPTIONS_REAL",
+      "componentAwareness": null
     },
     {
       "id": "QA21",
@@ -2279,7 +3006,10 @@
         "id": "room-closure",
         "onFailure": "FIX0",
         "onNotRun": "QA17"
-      }
+      },
+      "procedureRef": "STAGE_OPERATIONS.json#/qa",
+      "executePolicy": "ONLY_FACTUAL_DIAGNOSIS_NO_ARTISTIC_CANCEL",
+      "componentAwareness": null
     },
     {
       "id": "D33",
@@ -2304,7 +3034,11 @@
         "reportOnly": true,
         "continueEvenOnFail": true,
         "continueEvenIfNotRun": true
-      }
+      },
+      "procedureRef": "STAGE_OPERATIONS.json#/qa",
+      "executePolicy": "ONLY_FACTUAL_DIAGNOSIS_NO_ARTISTIC_CANCEL",
+      "decisionPolicy": "REPORT_NONBLOCKING; KEEP_GOING; RIGHTS/SECURITY_EXCEPTIONS_REAL",
+      "componentAwareness": null
     },
     {
       "id": "QA22",
@@ -2317,7 +3051,10 @@
         "id": "semantic-orientation",
         "onFailure": "FIX0",
         "onNotRun": "QA17"
-      }
+      },
+      "procedureRef": "STAGE_OPERATIONS.json#/qa",
+      "executePolicy": "ONLY_FACTUAL_DIAGNOSIS_NO_ARTISTIC_CANCEL",
+      "componentAwareness": null
     },
     {
       "id": "D34",
@@ -2342,7 +3079,11 @@
         "reportOnly": true,
         "continueEvenOnFail": true,
         "continueEvenIfNotRun": true
-      }
+      },
+      "procedureRef": "STAGE_OPERATIONS.json#/qa",
+      "executePolicy": "ONLY_FACTUAL_DIAGNOSIS_NO_ARTISTIC_CANCEL",
+      "decisionPolicy": "REPORT_NONBLOCKING; KEEP_GOING; RIGHTS/SECURITY_EXCEPTIONS_REAL",
+      "componentAwareness": null
     },
     {
       "id": "QA23",
@@ -2355,7 +3096,10 @@
         "id": "motion",
         "onFailure": "FIX0",
         "onNotRun": "QA17"
-      }
+      },
+      "procedureRef": "STAGE_OPERATIONS.json#/qa",
+      "executePolicy": "ONLY_FACTUAL_DIAGNOSIS_NO_ARTISTIC_CANCEL",
+      "componentAwareness": null
     },
     {
       "id": "D35",
@@ -2380,7 +3124,11 @@
         "reportOnly": true,
         "continueEvenOnFail": true,
         "continueEvenIfNotRun": true
-      }
+      },
+      "procedureRef": "STAGE_OPERATIONS.json#/qa",
+      "executePolicy": "ONLY_FACTUAL_DIAGNOSIS_NO_ARTISTIC_CANCEL",
+      "decisionPolicy": "REPORT_NONBLOCKING; KEEP_GOING; RIGHTS/SECURITY_EXCEPTIONS_REAL",
+      "componentAwareness": null
     },
     {
       "id": "QA24",
@@ -2393,7 +3141,10 @@
         "id": "interaction",
         "onFailure": "FIX0",
         "onNotRun": "QA17"
-      }
+      },
+      "procedureRef": "STAGE_OPERATIONS.json#/qa",
+      "executePolicy": "ONLY_FACTUAL_DIAGNOSIS_NO_ARTISTIC_CANCEL",
+      "componentAwareness": null
     },
     {
       "id": "D36",
@@ -2418,7 +3169,11 @@
         "reportOnly": true,
         "continueEvenOnFail": true,
         "continueEvenIfNotRun": true
-      }
+      },
+      "procedureRef": "STAGE_OPERATIONS.json#/qa",
+      "executePolicy": "ONLY_FACTUAL_DIAGNOSIS_NO_ARTISTIC_CANCEL",
+      "decisionPolicy": "REPORT_NONBLOCKING; KEEP_GOING; RIGHTS/SECURITY_EXCEPTIONS_REAL",
+      "componentAwareness": null
     },
     {
       "id": "QA25",
@@ -2431,7 +3186,10 @@
         "id": "cinematography",
         "onFailure": "FIX0",
         "onNotRun": "QA17"
-      }
+      },
+      "procedureRef": "STAGE_OPERATIONS.json#/qa",
+      "executePolicy": "ONLY_FACTUAL_DIAGNOSIS_NO_ARTISTIC_CANCEL",
+      "componentAwareness": null
     },
     {
       "id": "D37",
@@ -2456,7 +3214,11 @@
         "reportOnly": true,
         "continueEvenOnFail": true,
         "continueEvenIfNotRun": true
-      }
+      },
+      "procedureRef": "STAGE_OPERATIONS.json#/qa",
+      "executePolicy": "ONLY_FACTUAL_DIAGNOSIS_NO_ARTISTIC_CANCEL",
+      "decisionPolicy": "REPORT_NONBLOCKING; KEEP_GOING; RIGHTS/SECURITY_EXCEPTIONS_REAL",
+      "componentAwareness": null
     },
     {
       "id": "QA26",
@@ -2469,7 +3231,10 @@
         "id": "mobile-performance",
         "onFailure": "FIX0",
         "onNotRun": "QA17"
-      }
+      },
+      "procedureRef": "STAGE_OPERATIONS.json#/qa",
+      "executePolicy": "ONLY_FACTUAL_DIAGNOSIS_NO_ARTISTIC_CANCEL",
+      "componentAwareness": null
     },
     {
       "id": "D38",
@@ -2494,7 +3259,11 @@
         "reportOnly": true,
         "continueEvenOnFail": true,
         "continueEvenIfNotRun": true
-      }
+      },
+      "procedureRef": "STAGE_OPERATIONS.json#/qa",
+      "executePolicy": "ONLY_FACTUAL_DIAGNOSIS_NO_ARTISTIC_CANCEL",
+      "decisionPolicy": "REPORT_NONBLOCKING; KEEP_GOING; RIGHTS/SECURITY_EXCEPTIONS_REAL",
+      "componentAwareness": null
     },
     {
       "id": "QA27",
@@ -2507,7 +3276,10 @@
         "id": "reopen-roundtrip",
         "onFailure": "FIX0",
         "onNotRun": "QA17"
-      }
+      },
+      "procedureRef": "STAGE_OPERATIONS.json#/qa",
+      "executePolicy": "ONLY_FACTUAL_DIAGNOSIS_NO_ARTISTIC_CANCEL",
+      "componentAwareness": null
     },
     {
       "id": "PF0",
@@ -2516,7 +3288,10 @@
       "type": "action",
       "detail": "Elegir la técnica adecuada por entidad antes de construir, sin acortar el encargo.",
       "docRef": "versions/1.2.0/PREVENTION_CONTRACT.md#pf0",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/planning",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "PF1",
@@ -2525,7 +3300,10 @@
       "type": "action",
       "detail": "Escribir criterios positivos y contraejemplos de manera breve, sin detenerse a replanificar eternamente. Criterios positivos y contraejemplos son patrones internos del flujo: no se añadirá ninguna lista nueva al benchmark humano.",
       "docRef": "versions/1.2.0/PREVENTION_CONTRACT.md#pf1",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/planning",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "PF2",
@@ -2534,7 +3312,10 @@
       "type": "action",
       "detail": "Comparar técnicas/recursos; si no hay asset ideal, construir lo mejor posible con medios legales. Calidad first: comparar mallas reales y editables, UV y texturas, mecanismos paramétricos según rol. Un GLB por sí solo no garantiza rostros buenos; evaluar idoneidad en el plano previsto sin vetar obra.",
       "docRef": "versions/1.2.0/PREVENTION_CONTRACT.md#pf2",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/planning",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "PF3",
@@ -2543,14 +3324,17 @@
       "type": "action",
       "detail": "Planear escena, cámara, ritmo y recursos completos, no sólo primer artículo.",
       "docRef": "versions/1.2.0/PREVENTION_CONTRACT.md#pf3",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/planning",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "D39",
       "stage": "planning",
-      "label": "¿Plan preventivo probado antes de generar mallas?",
+      "label": "Diagnosticar blueprint sin detener producción",
       "type": "decision",
-      "detail": "Diagnóstico del plan, NO veto: PASS o FAIL permiten continuar a adquisición y producción completas.",
+      "detail": "Diagnóstico del plan, NO veto: PASS o FAIL permiten continuar a adquisición y producción completas.\nV2: la producción completa continúa aunque el diagnóstico sea FAIL o NOT_RUN. La evidencia artística la evalúa el usuario después.",
       "docRef": "versions/1.2.0/PREVENTION_CONTRACT.md#d39",
       "gate": null,
       "preflightGate": {
@@ -2562,7 +3346,11 @@
         "reportOnly": true,
         "continueEvenOnFail": true,
         "continueEvenIfNotRun": true
-      }
+      },
+      "procedureRef": "STAGE_OPERATIONS.json#/planning",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "decisionPolicy": "REPORT_NONBLOCKING; KEEP_GOING; RIGHTS/SECURITY_EXCEPTIONS_REAL",
+      "componentAwareness": null
     },
     {
       "id": "PP0",
@@ -2571,14 +3359,17 @@
       "type": "action",
       "detail": "Documentar recursos reales y técnica empleada como señales, no excusa para parar.",
       "docRef": "versions/1.2.0/PREVENTION_CONTRACT.md#pp0",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/acquisition",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "D40",
       "stage": "acquisition",
-      "label": "¿Asset/representación sirve al plano protagonista?",
+      "label": "Diagnosticar representación sin detener producción",
       "type": "decision",
-      "detail": "Diagnóstico de asset: PASS y FAIL siguen produciendo la escena completa; no fingir licencia o modelo.",
+      "detail": "Diagnóstico de asset: PASS y FAIL siguen produciendo la escena completa; no fingir licencia o modelo.\nV2: la producción completa continúa aunque el diagnóstico sea FAIL o NOT_RUN. La evidencia artística la evalúa el usuario después.",
       "docRef": "versions/1.2.0/PREVENTION_CONTRACT.md#d40",
       "gate": null,
       "preflightGate": {
@@ -2590,23 +3381,30 @@
         "reportOnly": true,
         "continueEvenOnFail": true,
         "continueEvenIfNotRun": true
-      }
+      },
+      "procedureRef": "STAGE_OPERATIONS.json#/acquisition",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "decisionPolicy": "REPORT_NONBLOCKING; KEEP_GOING; RIGHTS/SECURITY_EXCEPTIONS_REAL",
+      "componentAwareness": null
     },
     {
       "id": "PP1",
       "stage": "acquisition",
-      "label": "Construir UN primer artículo visible antes de replicar",
+      "label": "Muestra rápida opcional durante producción completa",
       "type": "action",
-      "detail": "Primer artículo visual opcional y breve, nunca techo del encargo.",
+      "detail": "Primer artículo visual opcional y breve, nunca techo del encargo.\nV2: la producción completa continúa aunque el diagnóstico sea FAIL o NOT_RUN. La evidencia artística la evalúa el usuario después.",
       "docRef": "versions/1.2.0/PREVENTION_CONTRACT.md#pp1",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/acquisition",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "D41",
       "stage": "acquisition",
-      "label": "¿Primer artículo real apto para escalar?",
+      "label": "Diagnóstico temprano de primer artículo, no bloqueo",
       "type": "decision",
-      "detail": "Evaluación temprana no bloqueante: PASS/FAIL/NOT_RUN continúan al desarrollo del conjunto pedido.",
+      "detail": "Evaluación temprana no bloqueante: PASS/FAIL/NOT_RUN continúan al desarrollo del conjunto pedido.\nV2: la producción completa continúa aunque el diagnóstico sea FAIL o NOT_RUN. La evidencia artística la evalúa el usuario después.",
       "docRef": "versions/1.2.0/PREVENTION_CONTRACT.md#d41",
       "gate": null,
       "preflightGate": {
@@ -2618,25 +3416,37 @@
         "reportOnly": true,
         "continueEvenOnFail": true,
         "continueEvenIfNotRun": true
-      }
+      },
+      "procedureRef": "STAGE_OPERATIONS.json#/acquisition",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "decisionPolicy": "REPORT_NONBLOCKING; KEEP_GOING; RIGHTS/SECURITY_EXCEPTIONS_REAL",
+      "componentAwareness": null
     },
     {
       "id": "PP2",
       "stage": "acquisition",
-      "label": "Descartar estrategia fallida y reacquirir",
+      "label": "Registrar defecto de técnica y continuar obra",
       "type": "action",
-      "detail": "Registrar defecto temprano y continuar al cuerpo de la escena. No reiniciar, no cancelar, no dejarlo en canario.",
+      "detail": "Registrar defecto temprano y continuar al cuerpo de la escena. No reiniciar, no cancelar, no dejarlo en canario.\nV2: la producción completa continúa aunque el diagnóstico sea FAIL o NOT_RUN. La evidencia artística la evalúa el usuario después.",
       "docRef": "versions/1.2.0/PREVENTION_CONTRACT.md#pp2",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/acquisition",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "decisionPolicy": "REPORT_NONBLOCKING; KEEP_GOING; RIGHTS/SECURITY_EXCEPTIONS_REAL",
+      "componentAwareness": null
     },
     {
       "id": "PP3",
       "stage": "acquisition",
-      "label": "Sin prueba visual: sólo canario acotado",
+      "label": "Sin prueba visual, continuar toda la escena",
       "type": "action",
-      "detail": "Aunque falte GPU, completar toda la escena; entregar vista técnica candidata y marcar límites, no sólo una muestra.",
+      "detail": "Aunque falte GPU, completar toda la escena; entregar vista técnica candidata y marcar límites, no sólo una muestra.\nV2: la producción completa continúa aunque el diagnóstico sea FAIL o NOT_RUN. La evidencia artística la evalúa el usuario después.",
       "docRef": "versions/1.2.0/PREVENTION_CONTRACT.md#pp3",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/acquisition",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "decisionPolicy": "REPORT_NONBLOCKING; KEEP_GOING; RIGHTS/SECURITY_EXCEPTIONS_REAL",
+      "componentAwareness": null
     },
     {
       "id": "CAM0",
@@ -2645,7 +3455,10 @@
       "type": "action",
       "detail": "Planear cámara para la película íntegra, no cuatro segundos de muestra.",
       "docRef": "versions/1.2.0/PREVENTION_CONTRACT.md#cam0",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/cinema",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": "GUIDED_VS_FREELOOK"
     },
     {
       "id": "D42",
@@ -2664,7 +3477,11 @@
         "reportOnly": true,
         "continueEvenOnFail": true,
         "continueEvenIfNotRun": true
-      }
+      },
+      "procedureRef": "STAGE_OPERATIONS.json#/cinema",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "decisionPolicy": "REPORT_NONBLOCKING; KEEP_GOING; RIGHTS/SECURITY_EXCEPTIONS_REAL",
+      "componentAwareness": "GUIDED_VS_FREELOOK"
     },
     {
       "id": "BR0",
@@ -2673,7 +3490,10 @@
       "type": "action",
       "detail": "Guardar el texto del usuario exactamente una vez, ID y SHA. Sin recomendaciones de técnica dentro del brief. Debe usarse byte-por-byte con v1.2, v1.3, v1.4... para comparar método; proponer cambios implica NUEVA benchmark, no editar texto viejo.",
       "docRef": "versions/1.4.0/METHOD_CONTRACT.md#br0",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/scope",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "BR1",
@@ -2682,7 +3502,10 @@
       "type": "action",
       "detail": "El agente interpreta el brief utilizando el flujo vigente, no un prompt optimizado de 3000 palabras. Descomponer escena, escena completa, cámara, acciones, opciones de assets, riesgo artístico, interactividad y tiempo. El plan compilado se registra pero no altera el brief.",
       "docRef": "versions/1.4.0/METHOD_CONTRACT.md#br1",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/planning",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "QL0",
@@ -2691,7 +3514,10 @@
       "type": "action",
       "detail": "Consultar biblioteca de capacidades: analizar por qué una escena fue buena en silueta, arte UV, luz, cámara, presencia, interfaz, sin copiar colores ni estética a proyectos ajenos. Reutilización real por API y pruebas de segundo consumidor, no simple afirmación.",
       "docRef": "versions/1.4.0/METHOD_CONTRACT.md#ql0",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/planning",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "WEB0",
@@ -2700,7 +3526,10 @@
       "type": "action",
       "detail": "Inspeccionar empaquetado web, entradas JS no sólo comprimidas, módulos ES directos, detección de WebGL y fallback honesto para dispositivos incompatibles. No abortar por incompatibilidad: producir contenido y dejar diagnóstico real.",
       "docRef": "versions/1.4.0/METHOD_CONTRACT.md#web0",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/assembly",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     },
     {
       "id": "TR0",
@@ -2709,7 +3538,94 @@
       "type": "action",
       "detail": "Crear STAGE_TRACE.json junto a producto: cada una de 17 etapas con acción ejecutada, decisión, evidencia y aprendizaje, o N/A con motivo. Debe servir para mapear comentarios del usuario a etapa y mejorar solo el subflujo que corresponda en la siguiente tanda; documentación compacta.",
       "docRef": "versions/1.4.0/METHOD_CONTRACT.md#tr0",
-      "gate": null
+      "gate": null,
+      "procedureRef": "STAGE_OPERATIONS.json#/persistence",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
+    },
+    {
+      "id": "COMPLETE0",
+      "stage": "planning",
+      "label": "Compilar contrato de escena íntegra verificable",
+      "detail": "Expandir un brief incluso de una palabra a la obligación completa del proyecto; utilizar SCENE_INTENT_CATALOG en nombres registrados y scene-compiler.mjs; cobertura por componente sin convertir muestras en resultado",
+      "type": "action",
+      "owner": "release+environment",
+      "procedureRef": "STAGE_OPERATIONS.json#/planning",
+      "qualityPolicy": "PRODUCE_FIRST_DIAGNOSE_AFTER_NO_ARTISTIC_VETO",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
+    },
+    {
+      "id": "REFERENCE0",
+      "stage": "planning",
+      "label": "Seleccionar referentes SOLO de componentes aprobados",
+      "detail": "Arcade protagonista/screen sí, entorno/cámara no; Cruce actor/HUD sí, calle/cámara no; Ascensor atmósfera sí. Consultar COMPONENT_REFERENCE_MATRIX, no copiar el color de toda la escena.",
+      "type": "action",
+      "owner": "material+camera+prop",
+      "procedureRef": "STAGE_OPERATIONS.json#/planning",
+      "qualityPolicy": "PRODUCE_FIRST_DIAGNOSE_AFTER_NO_ARTISTIC_VETO",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
+    },
+    {
+      "id": "LOOK0",
+      "stage": "fx",
+      "label": "Definir estilo y materialidad contextual específica",
+      "detail": "Separar silhouette, atlas UV, roughness, key/fill/rim, profundidad espacial y performance; evitar noise y primitivas inadecuadas, cuidar el look a distancia móvil y closeup.",
+      "type": "action",
+      "owner": "material+light",
+      "procedureRef": "STAGE_OPERATIONS.json#/fx",
+      "qualityPolicy": "PRODUCE_FIRST_DIAGNOSE_AFTER_NO_ARTISTIC_VETO",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": "LOOK_NOT_FILTER"
+    },
+    {
+      "id": "FULLSET0",
+      "stage": "assembly",
+      "label": "Producir escena completa con densidad y variación",
+      "detail": "Construir todos los elementos obligatorios, con variación instancing/LOD y distribución espacial. El primer artículo nunca es la producción final; guion y cámara deben enseñar el entorno completo.",
+      "type": "action",
+      "owner": "environment+release",
+      "procedureRef": "STAGE_OPERATIONS.json#/assembly",
+      "qualityPolicy": "PRODUCE_FIRST_DIAGNOSE_AFTER_NO_ARTISTIC_VETO",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
+    },
+    {
+      "id": "INSPECT0",
+      "stage": "cinema",
+      "label": "Elegir explícitamente cine guiado, órbita libre o híbrido",
+      "detail": "Cámara depende de la intención. En exploración habilitar controles táctiles, orbit, focus y reset; en cine shots motivados; comparar solo en vistas reales; sin engañar para ocultar defects.",
+      "type": "action",
+      "owner": "camera",
+      "procedureRef": "STAGE_OPERATIONS.json#/cinema",
+      "qualityPolicy": "PRODUCE_FIRST_DIAGNOSE_AFTER_NO_ARTISTIC_VETO",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": "GUIDED_VS_FREELOOK"
+    },
+    {
+      "id": "BOOT2",
+      "stage": "assembly",
+      "label": "Usar arranque web de módulos estándar y diagnóstico específico",
+      "detail": "Three moderno r163+ necesita WebGL2; no sugerir WebGL1 genérico. Detectar fetch/module/GPU/shader/asset por separado, pérdida de contexto, no gzip-only/Blob-only; fallback honesto no 3D.",
+      "type": "action",
+      "owner": "release",
+      "procedureRef": "STAGE_OPERATIONS.json#/assembly",
+      "qualityPolicy": "PRODUCE_FIRST_DIAGNOSE_AFTER_NO_ARTISTIC_VETO",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
+    },
+    {
+      "id": "LINKTRACE0",
+      "stage": "persistence",
+      "label": "Enlazar decisión exacta con cada etapa y componente",
+      "detail": "Registrar STAGE_TRACE y COMPONENT_REVIEW con fuente y limitación; mapear comentarios artísticos a etapa para sintetizar futura versión, sin completar el trabajo con papeles.",
+      "type": "action",
+      "owner": "qa+release",
+      "procedureRef": "STAGE_OPERATIONS.json#/persistence",
+      "qualityPolicy": "PRODUCE_FIRST_DIAGNOSE_AFTER_NO_ARTISTIC_VETO",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "componentAwareness": null
     }
   ],
   "edges": [
@@ -3513,7 +4429,7 @@
     },
     {
       "from": "F1",
-      "to": "D11",
+      "to": "LOOK0",
       "label": "",
       "kind": "main"
     },
@@ -3591,7 +4507,7 @@
     },
     {
       "from": "S0",
-      "to": "WEB0",
+      "to": "FULLSET0",
       "label": "",
       "kind": "main"
     },
@@ -4677,7 +5593,7 @@
     },
     {
       "from": "C1",
-      "to": "CAM0",
+      "to": "INSPECT0",
       "label": "",
       "kind": "main"
     },
@@ -4803,24 +5719,66 @@
     },
     {
       "from": "BR1",
-      "to": "P1",
+      "to": "COMPLETE0",
       "label": "",
       "kind": "main"
     },
     {
       "from": "QL0",
-      "to": "D39",
+      "to": "REFERENCE0",
       "label": "",
       "kind": "main"
     },
     {
       "from": "WEB0",
-      "to": "S1",
+      "to": "BOOT2",
       "label": "",
       "kind": "main"
     },
     {
       "from": "TR0",
+      "to": "LINKTRACE0",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "COMPLETE0",
+      "to": "P1",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "REFERENCE0",
+      "to": "D39",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "LOOK0",
+      "to": "D11",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "FULLSET0",
+      "to": "WEB0",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "INSPECT0",
+      "to": "CAM0",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "BOOT2",
+      "to": "S1",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "LINKTRACE0",
       "to": "G1",
       "label": "",
       "kind": "main"
@@ -5010,6 +5968,28 @@
       ],
       "status": "USER_REVIEW_PLUS_CODE_INSPECTED",
       "rootCause": "Gradient/fog shaders produce visual atmosphere but lack clear layered parallax and real 3D spatial cues when viewed from current camera."
+    },
+    {
+      "id": "REVIEW_COMPONENT_BIAS_002",
+      "title": "Whole-scene reference selection hides weak elements in favorite scenes",
+      "nodes": [
+        "REFERENCE0",
+        "FULLSET0",
+        "INSPECT0",
+        "LOOK0"
+      ],
+      "status": "USER_REPORTED_AND_SOURCE_INSPECTED",
+      "rootCause": "Arcade cabinet/screen praised but background/camera weak; Crossing actor/HUD praised but street/camera weak. Move to component-level transfer, not global scene quality."
+    },
+    {
+      "id": "WEBGL1_THREE_COMPAT_002",
+      "title": "Stale suggestion to fallback to WebGL1 in modern Three",
+      "nodes": [
+        "BOOT2",
+        "WEB0"
+      ],
+      "status": "OFFICIAL_DOC_RESEARCH_CONFIRMED",
+      "rootCause": "Three WebGLRenderer requires WebGL2 since r163; WebGL1 fallback implies different renderer/older pinned engine and honest adaptation, not automatic getContext('webgl')."
     }
   ],
   "historyPolicy": {
@@ -5027,9 +6007,9 @@
   },
   "evidence": "diagnosis only; source visual failures from user screenshots; no new scene fix",
   "revision": {
-    "previous": "1.3.0",
-    "changes": "5 explicit nodes for immutable human brief, compiler, quality reference selection, web portability, and per-stage evidence log; shared quality learnings from Arcade/Crossing/Elevator; no content reduction",
-    "riskPolicy": "KEEP_PROMPT_FIXED_IMPROVE_FLOW",
+    "previous": "1.4.0",
+    "changes": "7 distinctive nodes for coverage compiler, component-level positive transfer, look, full-set density, camera interaction, modern WebGL2 and stage-linked evidence; stage bundles unify all 269 old/new nodes.",
+    "riskPolicy": "NO_PROMPT_GROWTH_NO_EARLY_ABORT_NO_NEGATIVE_REFERENCE_COPY",
     "gateIds": [
       "source-and-license",
       "geometry-clearance",
@@ -5046,7 +6026,7 @@
       "before-replication",
       "camera-preflight"
     ],
-    "operationMode": "FULL_ATTEMPT_ALWAYS"
+    "operationMode": "FIRST_COMPLETE_DELIVERY"
   },
   "subflows": [
     {
@@ -5173,10 +6153,25 @@
       ],
       "earlyGates": [],
       "policy": "Progressive enhancement with direct JS modules, no gzip-only/Blob-only boot, explicit errors and honest fallback; user can still inspect result"
+    },
+    {
+      "id": "quality-component-review",
+      "owner": "art-direction+qa",
+      "start": "REFERENCE0",
+      "stages": [
+        "planning",
+        "props",
+        "environment",
+        "fx",
+        "cinema",
+        "qa"
+      ],
+      "earlyGates": [],
+      "policy": "Only praised component transfers. Need separate HERO/SET/ACTOR/CAMERA/MATERIAL/INTERACTION verdicts. Never import weak background or camera from otherwise loved scene."
     }
   ],
   "qualityArchitecture": {
-    "principle": "FULL_FIRST_ATTEMPT_BEST_EFFORT",
+    "principle": "EXCELLENT_COMPONENTS_COMPOSE_COMPLETE_SCENE",
     "productionMode": "FULL_ATTEMPT_ALWAYS",
     "neverStopBecause": [
       "bad look",
@@ -5193,7 +6188,17 @@
     "postProduction": "No artistic self-review/rework by model; user performs comparison between waves.",
     "publishing": "Technical preview even when imperfect and unverified, with honest label; publish only rights-safe original materials.",
     "safety": "Licensing/privacy/security real blockers still apply; preserve full original source privately if publication impossible.",
-    "progress": "Best effort full production, not empty loops or false claims of background work."
+    "progress": "Best effort full production, not empty loops or false claims of background work.",
+    "partialQualityExamples": {
+      "arcade": "CABINET/SCREEN GOOD, ENVIRONMENT/CAMERA WEAK",
+      "crossing": "ACTOR/HUD GOOD, ROAD/CAMERA WEAK",
+      "elevator": "LIGHT/ATMOSPHERE GOOD, SOME GEOMETRY IMPROPER"
+    },
+    "fullDelivery": "MANDATORY_FIRST_ATTEMPT even with known defects. Don't mark complete when coverage missing; deliver honestly with gaps.",
+    "artisticReview": "HUMAN_BETWEEN_WAVES",
+    "decisionAtSource": "Map source technique to output role before modeling; don't use a visual filter as substitute for authored form.",
+    "mobileRuntime": "WEBGL2_FOR_MODERN_THREE; direct .mjs boot; error taxonomy and honest fallback",
+    "trace": "17 stages with factual decisions, output first; no bloated admin"
   },
   "stageInstrumentation": {
     "schema": "prometeo.3d.stage-trace/v1",
@@ -5275,5 +6280,22 @@
     "frequency": "Aggregate across ten projects after user reviews; do not change frozen flow mid-wave",
     "reasonForChange": "Record exact stage, old policy, failure, new general rule, expected transfer result"
   },
-  "sha256Canonical": "267130c29bacef26ed2e41ba855b5f20166300a73d8cffef82d36b051f44ca7d"
+  "executionSpec": {
+    "version": "2.0.0",
+    "stageOperations": "versions/2.0.0/STAGE_OPERATIONS.json",
+    "sceneCompiler": "versions/2.0.0/scene-compiler.mjs",
+    "sceneCatalog": "versions/2.0.0/SCENE_INTENT_CATALOG.json",
+    "componentReferences": "versions/2.0.0/COMPONENT_REFERENCE_MATRIX.json",
+    "toolchain": "versions/2.0.0/TOOLCHAIN_ROUTING.json",
+    "browserBoot": "versions/2.0.0/browser-boot.mjs",
+    "nodeCoverage": "ALL_NODES_USE_STAGE_OPERATIONS",
+    "shortBriefMode": "REGISTERED_ALIAS_OR_EXACT_BRIEF",
+    "assetQuality": "ROLE_AND_SHOT_DEPENDENT",
+    "universalToOtherProjects": false,
+    "fullSceneRequired": true,
+    "advisoryOnlyQA": true,
+    "qualityApprovedBy": "USER_AFTER_DELIVERY",
+    "outputContract": "versions/2.0.0/METHOD.md"
+  },
+  "sha256Canonical": "10f33a984f9d7c76a1ccd0db7ff049d2562cd920071ed78dcc4908fa5c7b7a0c"
 }

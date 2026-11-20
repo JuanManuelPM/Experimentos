@@ -1,0 +1,199 @@
+{
+  "schema": "prometeo.3d.component-reference/v2",
+  "status": "USER_EVALUATION_AND_SOURCE_INSPECTION__NOT_BROWSER_ART_QA",
+  "policy": {
+    "granularity": "COMPONENT_NOT_SCENE",
+    "sources": [
+      "USER_VERDICT",
+      "SOURCE_EXAMINED",
+      "RENDER_VERIFIED"
+    ],
+    "neverCopyNegative": "Do not use source scene as whole-scene benchmark when only hero was praised.",
+    "transfer": "Select technique by component/shot scale and prove ownership + license; no universal palette.",
+    "proposedReuseRequires": "two distinct consumers with source proof before shared promotion."
+  },
+  "entries": [
+    {
+      "projectId": "arcade-retro",
+      "component": "CABINET_PROP",
+      "verdict": "USER_EXCELLENT",
+      "observation": "contoured manufactured shell, painted UV atlas, bevels, rims, CRT integrated in prop",
+      "source": {
+        "repository": "JuanManuelPM/Experimentos",
+        "path": "prometeo/previews/arcade-retro/v1/cabinet.mjs",
+        "gitBlob": "eaaf9b24084bfd284e998df96483d7daf6be33aa"
+      },
+      "transferInstruction": "Transfer contour + purposeful UV + mechanical detail; never force arcade colors",
+      "externalVisualValidation": "NOT_RUN_IN_THIS_TURN"
+    },
+    {
+      "projectId": "arcade-retro",
+      "component": "LIVE_SCREEN",
+      "verdict": "USER_EXCELLENT",
+      "observation": "CanvasTexture drawn to curved 3D CRT; stateful buttons and input",
+      "source": {
+        "repository": "JuanManuelPM/Experimentos",
+        "path": "prometeo/previews/arcade-retro/v1/screen-core.mjs",
+        "gitBlob": "7650f0e469dfe3bef2a5de465641e0eafa089e73"
+      },
+      "transferInstruction": "Generalize live-surface adapter for media/apps/game, but video and user media wiring not implemented",
+      "externalVisualValidation": "NOT_RUN_IN_THIS_TURN"
+    },
+    {
+      "projectId": "arcade-retro",
+      "component": "ENVIRONMENT",
+      "verdict": "USER_DISLIKES_OR_INCOMPLETE",
+      "observation": "single cabinet and small background/staging bay, not whole arcade room",
+      "source": {
+        "repository": "JuanManuelPM/Experimentos",
+        "path": "prometeo/previews/arcade-retro/v1/app.mjs",
+        "gitBlob": "3c5f0253de62f573f2f94f34e9578bac89e502f8"
+      },
+      "transferInstruction": "Do NOT mark environment as quality reference: build full space, varied cabinets, depth and ambient set dressing",
+      "externalVisualValidation": "NOT_RUN_IN_THIS_TURN"
+    },
+    {
+      "projectId": "arcade-retro",
+      "component": "CAMERA",
+      "verdict": "USER_NOT_IDEAL",
+      "observation": "near dolly with limited drag orbit; may not serve room exploration",
+      "source": {
+        "repository": "JuanManuelPM/Experimentos",
+        "path": "prometeo/previews/arcade-retro/v1/app.mjs",
+        "gitBlob": "3c5f0253de62f573f2f94f34e9578bac89e502f8"
+      },
+      "transferInstruction": "Add subject-aware FREELOOK/HYBRID when inspection intended, avoid camera locking",
+      "externalVisualValidation": "NOT_RUN_IN_THIS_TURN"
+    },
+    {
+      "projectId": "cruce-urbano",
+      "component": "ACTOR",
+      "verdict": "USER_EXCELLENT",
+      "observation": "actual licensed Cesium-Man skinned GLB, motion/readable silhouette",
+      "source": {
+        "repository": "JuanManuelPM/Experimentos",
+        "path": "prometeo/previews/cruce-urbano/v1/scene.mjs",
+        "gitBlob": "a297cd342c41475f98f6f05cdd1434a991c04751"
+      },
+      "transferInstruction": "Asset-role fit, licenses, animation and facing; preserve CC BY attribution, not identical model for all projects",
+      "externalVisualValidation": "NOT_RUN_IN_THIS_TURN"
+    },
+    {
+      "projectId": "cruce-urbano",
+      "component": "INTERFACE",
+      "verdict": "USER_GOOD",
+      "observation": "world information HUD with traffic phase and time",
+      "source": {
+        "repository": "JuanManuelPM/Experimentos",
+        "path": "prometeo/previews/cruce-urbano/v1/index.html",
+        "gitBlob": "7faeaaf5497535dceb55241449aa049ee6818e55"
+      },
+      "transferInstruction": "Readable contextual HUD optional; avoid overlay where user wants no text",
+      "externalVisualValidation": "NOT_RUN_IN_THIS_TURN"
+    },
+    {
+      "projectId": "cruce-urbano",
+      "component": "ENVIRONMENT",
+      "verdict": "USER_POOR",
+      "observation": "street and blocky background not convincing; flat building blockouts",
+      "source": {
+        "repository": "JuanManuelPM/Experimentos",
+        "path": "prometeo/previews/cruce-urbano/v1/scene.mjs",
+        "gitBlob": "a297cd342c41475f98f6f05cdd1434a991c04751"
+      },
+      "transferInstruction": "Add authored facades, topology, details, wet/dry materials, relation to actors and camera",
+      "externalVisualValidation": "NOT_RUN_IN_THIS_TURN"
+    },
+    {
+      "projectId": "cruce-urbano",
+      "component": "CAMERA",
+      "verdict": "USER_POOR",
+      "observation": "scripted orbit not freely adjustable",
+      "source": {
+        "repository": "JuanManuelPM/Experimentos",
+        "path": "prometeo/previews/cruce-urbano/v1/traffic-core.mjs",
+        "gitBlob": "b33fef69e6c01783e642820b9b4c5ef50d4c05c3"
+      },
+      "transferInstruction": "Need camera and touch orbit when intent is observe city; keep guided cinematic mode too",
+      "externalVisualValidation": "NOT_RUN_IN_THIS_TURN"
+    },
+    {
+      "projectId": "ascensor-retro",
+      "component": "ATMOSPHERE",
+      "verdict": "USER_GOOD",
+      "observation": "warm walnut/brass vs uncanny blue-green, light and architecture motifs",
+      "source": {
+        "repository": "JuanManuelPM/Experimentos",
+        "path": "prometeo/previews/ascensor-retro/v1/scene.json",
+        "gitBlob": "ae82cd9fa7e338e2ba89be82f54c7d15f4df21b2"
+      },
+      "transferInstruction": "Transfer motivated lighting/material coherence, not same color scheme",
+      "externalVisualValidation": "NOT_RUN_IN_THIS_TURN"
+    },
+    {
+      "projectId": "ascensor-retro",
+      "component": "GEOMETRY",
+      "verdict": "USER_MIXED",
+      "observation": "forms sometimes inappropriate although overall cohesive",
+      "source": {
+        "repository": "JuanManuelPM/Experimentos",
+        "path": "prometeo/previews/ascensor-retro/v1/app.mjs",
+        "gitBlob": null
+      },
+      "transferInstruction": "Architectural primitives can work if art-directed; protagonist and closeups need modeled silhouette/material",
+      "externalVisualValidation": "NOT_RUN_IN_THIS_TURN"
+    },
+    {
+      "projectId": "ventilador-explicado",
+      "component": "MECHANICAL_PRESENTATION",
+      "verdict": "USER_ACCEPTABLE",
+      "observation": "exploded parts, reuse possible; visible gains small",
+      "source": {
+        "repository": "JuanManuelPM/pruebas",
+        "path": "PROMETEO/spaces/studio-3d/parallel-productions/v2/scenes/ventilador-explicado/SCENE_RELEASE.json",
+        "gitBlob": null
+      },
+      "transferInstruction": "Art quality upgrades from other domains should keep assembly clarity and source model",
+      "externalVisualValidation": "NOT_RUN_IN_THIS_TURN"
+    },
+    {
+      "projectId": "entrevista-nocturna",
+      "component": "HUMAN_FACE",
+      "verdict": "USER_POOR",
+      "observation": "human looked constructed/artificial and interview did not play",
+      "source": {
+        "repository": "JuanManuelPM/Experimentos",
+        "path": "prometeo/previews/entrevista-nocturna/v1/first-article.mjs",
+        "gitBlob": "c6a426aa289a7ab7ca8a2a5f2102c03d5d60c76c"
+      },
+      "transferInstruction": "Actual code loads rigged CC0 GLB, thus root issue is closeup/face acting quality, not proof it used spheres",
+      "externalVisualValidation": "NOT_RUN_IN_THIS_TURN"
+    },
+    {
+      "projectId": "laboratorio-submarino",
+      "component": "BACKGROUND_DEPTH",
+      "verdict": "USER_POOR",
+      "observation": "2D-like distant ocean plane/gradient lacks parallax impression",
+      "source": {
+        "repository": "JuanManuelPM/Experimentos",
+        "path": "prometeo/previews/laboratorio-submarino/v1/index.html",
+        "gitBlob": "618087551651f1f82083f7e212ac833ead8c9d58"
+      },
+      "transferInstruction": "Use spatial layers/fish volume/directional depth and parallax, poster is allowed only if visually coherent with camera",
+      "externalVisualValidation": "NOT_RUN_IN_THIS_TURN"
+    },
+    {
+      "projectId": "estacion-servicio-tormenta",
+      "component": "WEB_BOOT",
+      "verdict": "USER_FAILURE",
+      "observation": "cannot load in user's browser; gz/Blob runtime chain and generic WebGL2 error",
+      "source": {
+        "repository": "JuanManuelPM/Experimentos",
+        "path": "prometeo/previews/estacion-servicio-tormenta/v1/index.html",
+        "gitBlob": "5be436c201538ba710fa359263d2d6f2cc258cc1"
+      },
+      "transferInstruction": "Static code risks known; exact Android cause unknown; no unsupported claim",
+      "externalVisualValidation": "NOT_RUN_IN_THIS_TURN"
+    }
+  ]
+}
