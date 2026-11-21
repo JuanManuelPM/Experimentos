@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#101215">
+<meta name="description" content="Galería central del Estudio 3D PROMETEO: integradores, personajes y videojuegos en una sola dirección.">
+<title>PROMETEO · Estudio 3D · Galería</title>
+<link rel="stylesheet" href="./style.css?v=1">
+<script defer src="./app.js?v=1"></script>
+</head>
+<body>
+<div class="page">
+<header class="header">
+ <div class="header-inner">
+  <a class="brand" href="../" aria-label="PROMETEO Estudio 3D"><span class="brand-symbol" aria-hidden="true">P</span><span>PROMETEO<span class="brand-dim"> / ESTUDIO 3D</span></span></a>
+  <nav aria-label="Secciones"><a href="../" class="head-link">Flujo</a><a href="../w4/README.md" class="head-link">Tandas</a></nav>
+ </div>
+</header>
+<main>
+ <section class="hero">
+  <div class="hero-above"><span class="eyebrow"><span class="signal-dot"></span> ÁREA DE PRODUCCIÓN 3D</span><span class="edition" id="wave-tag">OLA 004</span></div>
+  <h1>Todas las obras.<br><span>Un solo lugar.</span></h1>
+  <p>Integradores, personajes y videojuegos. Entrá, elegí un proyecto y abrí la escena directamente. Sin perseguir treinta enlaces por treinta conversaciones.</p>
+  <div class="hero-bottom"><div class="stats">
+    <div class="stat"><strong id="total-count">30</strong><span>PROYECTOS</span></div>
+    <div class="stat"><strong id="ready-count">—</strong><span>PUBLICADOS</span></div>
+    <div class="stat"><strong id="pending-count">—</strong><span>PENDIENTES</span></div>
+  </div><div class="refresh-wrap"><button class="refresh" id="refresh" type="button"><span aria-hidden="true">↻</span> Actualizar</button><small id="last-check" aria-live="polite">Preparando galería…</small></div></div>
+ </section>
+ <section class="collection" aria-label="Producciones">
+  <div class="section-top"><div><div class="section-kicker">EXPLORADOR / 3 SERIES</div><h2>Producciones</h2></div><div class="legend"><span><i class="dot green"></i> Publicado</span><span><i class="dot grey"></i> Pendiente</span></div></div>
+  <div class="toolbar">
+   <div class="filters" role="group" aria-label="Filtrar por serie">
+    <button type="button" data-filter="todos" class="active" aria-pressed="true">Todos <span id="count-todos">30</span></button>
+    <button type="button" data-filter="integradores" aria-pressed="false">Integradores <span id="count-integradores">10</span></button>
+    <button type="button" data-filter="personajes" aria-pressed="false">Personajes <span id="count-personajes">10</span></button>
+    <button type="button" data-filter="videojuegos" aria-pressed="false">Videojuegos <span id="count-videojuegos">10</span></button>
+   </div>
+   <label class="search"><span aria-hidden="true">⌕</span><input id="search" type="search" placeholder="Buscar un proyecto" aria-label="Buscar proyectos" autocomplete="off"></label>
+  </div>
+  <div id="catalog" class="catalog" aria-live="polite"><div class="loading">Cargando proyectos…</div></div>
+ </section>
+ <footer><div>PROMETEO <span>·</span> ESTUDIO 3D</div><p>Publicado significa que existe una fuente HTML accesible. No es una certificación de funcionamiento, calidad artística ni ejecución en tu dispositivo. Las obras se evalúan al abrirlas.</p><a href="../w4/MANIFEST.json">Manifiesto de la ola</a></footer>
+</main>
+</div>
+<div id="viewer" class="viewer" role="dialog" aria-modal="true" aria-labelledby="viewer-title" hidden>
+ <div class="viewer-top"><div class="viewer-name"><small id="viewer-kicker">PRODUCCIÓN 3D</small><strong id="viewer-title">Vista de la escena</strong></div><div class="viewer-actions"><a id="viewer-external" href="#" target="_blank" rel="noopener noreferrer">Abrir aparte ↗</a><button id="viewer-close" type="button" aria-label="Cerrar visor">Cerrar <span aria-hidden="true">×</span></button></div></div>
+ <iframe id="viewer-frame" title="Escena o experiencia interactiva 3D" referrerpolicy="strict-origin-when-cross-origin" allow="autoplay; fullscreen; gamepad" loading="lazy"></iframe>
+ <div class="viewer-help">Si la vista no carga en este panel, usá «Abrir aparte».</div>
+</div>
+</body>
+</html>
