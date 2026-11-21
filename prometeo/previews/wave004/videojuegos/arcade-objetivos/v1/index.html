@@ -54,7 +54,7 @@ button:focus-visible{outline:2px solid var(--cyan);outline-offset:3px}
 #play{border:0;background:var(--cyan);color:#062024;padding:16px 23px;min-height:54px;min-width:225px;font-size:12px;font-weight:900;letter-spacing:.13em}
 #hint{margin-top:18px;font-size:11px;color:#8ea3ab;line-height:1.5}
 @media(pointer:coarse){#fire{display:flex}}
-@media(max-width:590px){.brand{font-size:15px}.kicker{font-size:9px;letter-spacing:.16em}.sub{font-size:8px}#stats{gap:8px}.stat b{font-size:17px}.stat small{font-size:8px}#bar{top:78px}#fire{width:82px;height:82px}#bottom{font-size:9px}}
+@media(max-width:590px){#hud{display:block;top:max(7px,env(safe-area-inset-top));height:98px}#hud>div:first-child{position:absolute;left:0;top:0}#stats{position:absolute;top:39px;left:0;right:0;justify-content:space-between;gap:3px}.brand{font-size:15px}.kicker{font-size:9px;letter-spacing:.16em}.sub{font-size:8px}.stat b{font-size:17px}.stat small{font-size:8px}#bar{top:90px}#fire{width:82px;height:82px}#bottom{font-size:9px}}
 @media(max-height:510px){#bar{top:65px}.crest{display:none}#modalTitle{font-size:48px;margin:9px 0}#modalText{font-size:12px;margin-bottom:10px}#mission{margin-bottom:12px}#mission div{padding:5px}#mission b{font-size:18px}#hint{margin-top:8px}#fire{width:70px;height:70px;bottom:9px}}
 @media(prefers-reduced-motion:reduce){.float{animation-duration:.2s}#banner{transition:none}}
 </style>
