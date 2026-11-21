@@ -20,16 +20,16 @@ test('distinct actual per-stage reports do not trigger generic re-use warnings',
  assert.equal(traceDecisionHealth(q).ok,true);
 });
 test('targeted stage patch modifies copy not original or any other stage',()=>{
- const before=JSON.stringify(ops),changed=applyApprovedStagePatch(ops,{fromVersion:'2.0.0',toVersion:'2.1.0',stage:'recovery',instruction:'Consult human negative asset registry',id:'CHAR_BAD_ASSET_001',approval:'USER_CHARACTER_FLOW_CHANGE'});
- assert.equal(JSON.stringify(ops),before);assert.equal(changed.next.version,'2.1.0');
+ const before=JSON.stringify(ops),changed=applyApprovedStagePatch(ops,{fromVersion:'2.1.0',toVersion:'2.2.0',stage:'recovery',instruction:'Consult human negative asset registry',id:'CHAR_BAD_ASSET_001',approval:'USER_CHARACTER_FLOW_CHANGE'});
+ assert.equal(JSON.stringify(ops),before);assert.equal(changed.next.version,'2.2.0');
  assert.ok(changed.next.stages[1].steps.at(-1).includes('CHAR_BAD_ASSET_001'));
  assert.deepEqual(changed.next.stages[6],ops.stages[6]);
 });
 test('cannot patch unrelated camera/environment stage in character-only revision',()=>{
- assert.throws(()=>applyApprovedStagePatch(ops,{fromVersion:'2.0.0',toVersion:'2.1.0',stage:'camera',instruction:'Change camera',id:'X',approval:'USER_CHARACTER_FLOW_CHANGE'}),/STAGE_OUTSIDE/);
+ assert.throws(()=>applyApprovedStagePatch(ops,{fromVersion:'2.1.0',toVersion:'2.2.0',stage:'camera',instruction:'Change camera',id:'X',approval:'USER_CHARACTER_FLOW_CHANGE'}),/STAGE_OUTSIDE/);
 });
 test('unauthorized patch rejected, no GitHub mutation performed',()=>{
- assert.throws(()=>applyApprovedStagePatch(ops,{fromVersion:'2.0.0',toVersion:'2.1.0',stage:'humanoid',instruction:'Inspect assets',id:'X'}),/NO_USER_AUTHORIZATION/);
+ assert.throws(()=>applyApprovedStagePatch(ops,{fromVersion:'2.1.0',toVersion:'2.2.0',stage:'humanoid',instruction:'Inspect assets',id:'X'}),/NO_USER_AUTHORIZATION/);
 });
 test('fixed human prompt fingerprint required for fair flow comparison',()=>{
  const a=reviewFlowDelta({currentVersion:'2.0.0',newVersion:'2.1.0',briefHashBefore:'a'.repeat(64),briefHashAfter:'b'.repeat(64),changedStages:['humanoid'],evidenceRefs:['source']});
