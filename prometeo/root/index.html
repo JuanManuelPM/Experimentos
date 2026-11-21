@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#f7f7f4">
   <meta name="description" content="ROOT. Mensajes, capturas y calibración.">
+  <link rel="stylesheet" href="./rounds-e1.css?v=1">
   <title>root.</title>
   <style>
 :root{color-scheme:light;--bg:#f7f7f4;--fg:#222520;--muted:#81857e;--edge:#ddded8;--surface:#f0f1ec;--accent:#8b9b83;--menu-bg:#eaece5;--lift:#fff;--inv:#f7f7f4}
@@ -38,9 +39,10 @@ main{flex:1;min-width:0}.page{padding:clamp(33px,6vh,74px) 0 85px;min-width:0}.p
     </div>
     <nav id="menu" class="menu" aria-label="Navegación" hidden>
       <button type="button" data-view="mensajes"><span class="menu-num">01</span><span>Mensajes</span><span class="menu-arrow">↗</span></button>
-      <button type="button" data-view="capturas"><span class="menu-num">02</span><span>Capturas</span><span class="menu-arrow">↗</span></button>
-      <button type="button" data-view="calibrar"><span class="menu-num">03</span><span>Calibrar</span><span class="menu-arrow">↗</span></button>
-      <button type="button" data-view="ajustes"><span class="menu-num">04</span><span>Ajustes</span><span class="menu-arrow">↗</span></button>
+      <button type="button" data-view="ronda"><span class="menu-num">02</span><span>Lanzar</span><span class="menu-arrow">↗</span></button>
+      <button type="button" data-view="capturas"><span class="menu-num">03</span><span>Capturas</span><span class="menu-arrow">↗</span></button>
+      <button type="button" data-view="calibrar"><span class="menu-num">04</span><span>Calibrar</span><span class="menu-arrow">↗</span></button>
+      <button type="button" data-view="ajustes"><span class="menu-num">05</span><span>Ajustes</span><span class="menu-arrow">↗</span></button>
     </nav>
   </header>
   <main id="main">
@@ -58,14 +60,29 @@ main{flex:1;min-width:0}.page{padding:clamp(33px,6vh,74px) 0 85px;min-width:0}.p
       <div class="message-older" id="message-older" hidden></div>
     </section>
 
+    <section class="page" id="page-ronda" data-page="ronda" aria-labelledby="title-ronda" hidden>
+      <div class="page-head"><h1 id="title-ronda">Lanzar<span class="period">.</span></h1><div class="counter" id="e1-launch-count">00 / 10</div></div>
+      <div class="e1-bar"><span>E001 · Exploratoria</span><button type="button" id="e1-copy-all">Copiar los 10</button></div>
+      <div id="e1-launchers" class="e1-list"></div>
+    </section>
+
     <section class="page" id="page-capturas" data-page="capturas" aria-labelledby="title-capturas" hidden>
-      <div class="page-head"><h1 id="title-capturas">Capturas<span class="period">.</span></h1><div class="counter" id="capture-counter">00 / 10</div></div>
+      <div class="page-head"><h1 id="title-capturas">Capturas<span class="period">.</span></h1><div class="counter" id="capture-counter" hidden>00 / 10</div><div class="counter" id="e1-capture-counter">00 / 10</div></div>
+      <div class="e1-switch" aria-label="Seleccionar ronda"><button type="button" data-e1-toggle="capture" data-target="e1" aria-pressed="true">E001</button><button type="button" data-e1-toggle="capture" data-target="w1" aria-pressed="false">W001</button></div>
+      <div id="e1-captures"><div id="e1-capture-grid" class="e1-shot-list"></div><div id="e1-capture-empty" class="e1-empty">Sin capturas aún.</div><div id="e1-capture-strip" class="e1-mini" aria-label="Estados de diez variantes"></div></div>
       <div class="gallery" id="gallery"></div>
     </section>
 
     <section class="page" id="page-calibrar" data-page="calibrar" aria-labelledby="title-calibrar" hidden>
       <div class="page-head"><h1 id="title-calibrar">Calibrar<span class="period">.</span></h1><div class="counter" id="calibrar-counter">01 / 10</div></div>
-      <div class="calibrate">
+      <div class="e1-switch" aria-label="Seleccionar revisión"><button type="button" data-e1-toggle="review" data-target="e1" aria-pressed="true">E001</button><button type="button" data-e1-toggle="review" data-target="w1" aria-pressed="false">W001</button></div>
+      <div id="review-e1" class="e1-note">
+        <div id="e1-numbers" class="e1-mini" aria-label="Versión"></div>
+        <label for="e1-note">Nota <span id="e1-current">01</span></label>
+        <textarea id="e1-note" rows="7" placeholder="" spellcheck="true"></textarea>
+        <div class="e1-note-buttons"><button class="primary" type="button" id="e1-copy">Copiar CALIBRAR ↗</button><button class="quiet-action" type="button" id="e1-export">Exportar ↓</button></div>
+      </div>
+      <div class="calibrate" id="review-w1" hidden>
         <div class="number-grid" id="number-grid" aria-label="Elegir versión"></div>
         <label class="field-label" for="note">Observación <span id="note-number">01</span></label>
         <textarea id="note" placeholder="Escribí acá o enviá un audio en ChatGPT." rows="7" spellcheck="true"></textarea>
@@ -112,7 +129,7 @@ const shotFor=n=>S.shots.find(x=>x.number===n)||null;
 const imageFor=n=>{const o=shotFor(n);if(!o)return null;if(o.assetPath){const u=fullPath(o.assetPath);if(u)return u}if(o.screenshotUrl&&/^https:\/\/storage\.googleapis\.com\/firecrawl-scrape-media\//.test(o.screenshotUrl)&&(!o.expiresAt||Date.parse(o.expiresAt)>Date.now()))return o.screenshotUrl;return null};
 const toast=msg=>{const t=$('toast');t.textContent=msg;t.hidden=false;clearTimeout(toast.timer);toast.timer=setTimeout(()=>t.hidden=true,2300)};
 const copy=async s=>{try{await navigator.clipboard.writeText(s);return true}catch(e){const t=elem('textarea');t.value=s;t.style.cssText='position:fixed;opacity:0;pointer-events:none';document.body.append(t);t.select();let ok=false;try{ok=document.execCommand('copy')}catch(err){}t.remove();return ok}};
-const safeView=v=>['mensajes','capturas','calibrar','ajustes'].includes(v)?v:'mensajes';
+const safeView=v=>['mensajes','ronda','capturas','calibrar','ajustes'].includes(v)?v:'mensajes';
 function closeMenu(){$('menu').hidden=true;$('menu-trigger').setAttribute('aria-expanded','false');$('menu-trigger').setAttribute('aria-label','Abrir menú')}
 function openMenu(){$('menu').hidden=false;$('menu-trigger').setAttribute('aria-expanded','true');$('menu-trigger').setAttribute('aria-label','Cerrar menú')}
 function navigate(v,updateHash=true){v=safeView(v);S.view=v;closeMenu();document.querySelectorAll('[data-page]').forEach(p=>p.hidden=p.dataset.page!==v);document.querySelectorAll('[data-view]').forEach(b=>{b.setAttribute('aria-current',b.dataset.view===v?'page':'false')});if(updateHash&&location.hash!=='#'+v)history.replaceState(null,'','#'+v);window.scrollTo(0,0);if(v==='capturas')renderGallery()}
@@ -153,5 +170,6 @@ setInterval(()=>{if(!document.hidden)checkAll()},120000);
 })();
 
 </script>
+<script src="./rounds-e1.js?v=1"></script>
 </body>
 </html>
