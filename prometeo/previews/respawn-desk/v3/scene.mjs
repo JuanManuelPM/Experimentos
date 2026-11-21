@@ -187,7 +187,7 @@ const rise=smooth01((time-21.2)/2.2);
 const walk=smooth01((time-25.2)/5.1);
 const stepEnvelope=smooth01((time-25.1)/.8)*(1-smooth01((time-29.6)/1.3));
 const footPhase=(time-25.2)*7.0;
-const root=translate(0,-.14*(1-rise)+Math.sin(footPhase*2)*.024*stepEnvelope,-.85*walk);
+const root=translate(0,-.14*(1-rise)+Math.sin(footPhase*2)*.024*stepEnvelope,-.52*rise-.52*walk);
 const headNod=tiltHead((1-wake)*.25+Math.sin((time-16.5)*3.2)*.028*wake*(1-rise));
 const headTurn=rotateHead(-.12*wake-.19*walk,0,.47);
 const headModel=mul4(root,mul4(headTurn,headNod));
@@ -197,7 +197,7 @@ draw(actorMeshes.standingTorso,inside*rise,EXPOSURE.actor,1,root);
 draw(actorMeshes.legL,inside*rise,EXPOSURE.actor,1,mul4(root,swingLeg(Math.sin(footPhase)*.26*stepEnvelope)));
 draw(actorMeshes.legR,inside*rise,EXPOSURE.actor,1,mul4(root,swingLeg(-Math.sin(footPhase)*.26*stepEnvelope)));
 draw(actorMeshes.portrait,inside,EXPOSURE.portrait,1,headModel);
-if(time<24.1){draw(actorMeshes.gesture,inside,EXPOSURE.actor,1,root)}
+if(time<21.0){draw(actorMeshes.gesture,inside,EXPOSURE.actor,1,root)}
 else{draw(actorMeshes.walkingArm,inside,EXPOSURE.actor,1,mul4(root,rotateArm(Math.sin(footPhase)*.18*stepEnvelope,0)))}
   gl.enable(gl.CULL_FACE);
  fill.style.width=`${(time/36)*100}%`;bar.setAttribute('aria-valuenow',time.toFixed(2));
