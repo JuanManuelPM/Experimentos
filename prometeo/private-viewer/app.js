@@ -235,6 +235,7 @@ async function listFolder(path) {
   const data = await github(contentsURL(path));
   if (!Array.isArray(data)) throw Error('Ruta no es carpeta');
   folder = path; $('location').textContent = '/' + path;
+  $('repo-section').hidden = false; $('files-section').hidden = false; $('connection').hidden = true;
   $files.replaceChildren();
   if (path) $files.append(fileButton('..','↰','VOLVER',()=>listFolder(dirname(path)).catch(e=>status('Error: '+e.message))));
   const items = data.slice().sort((a,b) => (a.type === b.type ? a.name.localeCompare(b.name) : a.type === 'dir' ? -1 : 1));
@@ -279,13 +280,16 @@ $('connect').addEventListener('click', async () => {
     const data=await github('/repos/JuanManuelPM/pruebas');
     $('auth-state').textContent = data.private ? 'Conectado · privado' : 'Token activo';
     $('auth-state').classList.add('active');
-    status('Token validado para ' + data.full_name + '. No se guardó.');
+    status('Conectado');
+    $('repo-section').hidden=false; $('files-section').hidden=false; $('connection').hidden=true;
+    await browse();
   } catch(e) { token='';$('auth-state').textContent='Sin conectar';$('auth-state').classList.remove('active');status('Conexión fallida: '+e.message); }
 });
 $('disconnect').addEventListener('click', () => {
   token='';fileCache.clear();moduleCache.clear();clearFrame();
   $('auth-state').textContent='Sin conectar';$('auth-state').classList.remove('active');
-  status('Credencial eliminada de memoria. Cerrá la pestaña para completar el cierre.');
+  $('repo-section').hidden=true; $('files-section').hidden=true; $('connection').hidden=false; $('auth-help').hidden=true;
+  status('Sesión cerrada.');
 });
 $('browse').addEventListener('click', () => browse());
 $('demo').addEventListener('click', async () => {
@@ -300,4 +304,5 @@ $('fullscreen').addEventListener('click', () => {
   const stage=$('stage');if (!document.fullscreenElement) stage.requestFullscreen?.().catch(e=>status('Pantalla completa: '+e.message));else document.exitFullscreen?.();
 });
 window.addEventListener('pagehide',()=> { token=''; });
-status('Listo. Conectá GitHub o abrí la demo pública.');
+$('login-info').addEventListener('click',()=>{ $('auth-help').hidden = !$('auth-help').hidden; });
+status('Listo');
