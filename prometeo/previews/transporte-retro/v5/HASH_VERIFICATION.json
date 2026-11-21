@@ -1,0 +1,25 @@
+{
+  "verifiedAtUtc": "2026-11-21",
+  "script": "independent pure-JavaScript SHA-256 with abc control vector",
+  "method": {
+    "source": "prometeo/3d-flow/versions/2.3.0/flow.json",
+    "algorithm": "SHA256(UTF8(stableJSON(removeTopLevelKey(flow,'sha256Canonical'))))",
+    "recursiveSortedObjectKeys": true,
+    "arrayOrderPreserved": true,
+    "separators": ", and :",
+    "expected": "53bc9e2e4b37c99e92d3494af8dfa4461cd4644b15f980e32497a8428b067b3f",
+    "actual": "53bc9e2e4b37c99e92d3494af8dfa4461cd4644b15f980e32497a8428b067b3f",
+    "result": "PASS"
+  },
+  "brief": {
+    "bytes": "Original human sentence in BRIEF.md",
+    "expected": "97be264a6a1e1f53eda64b93a0de18a7f4df63a2e4c90a36c1a12922ccb5b40c",
+    "actual": "97be264a6a1e1f53eda64b93a0de18a7f4df63a2e4c90a36c1a12922ccb5b40c",
+    "result": "PASS"
+  },
+  "controlVector": {
+    "input": "abc",
+    "sha256": "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad",
+    "result": "PASS"
+  }
+}
