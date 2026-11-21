@@ -80,7 +80,7 @@ function renderFrame(which,n){
  if(host.dataset.version===n+'-'+status[n])return;
  host.dataset.version=n+'-'+status[n];host.replaceChildren();
  if(embedded){host.append(element('div','empty','Vista anidada desactivada para evitar bucles de iframes.'));return}
- if(ready){var f=element('iframe');f.title='Preview '+pad(n);f.loading='lazy';f.referrerPolicy='no-referrer';f.src=href(n)+'?embed=1';host.append(f)}
+ if(ready){var f=element('iframe');f.title='Preview '+pad(n);f.loading='lazy';f.referrerPolicy='no-referrer';f.sandbox='allow-scripts allow-popups';f.src=href(n)+'?embed=1';host.append(f)}
  else{var wrap=element('div','empty');wrap.append(element('b','',pad(n)+' · '+stateLabel(status[n])),element('span','',status[n]==='missing'?'Todavía no hay index.html publicado para esta variante.':'La disponibilidad aún no se pudo confirmar.'));host.append(wrap)}
 }
 function syncSlots(){$('slotA').value=String(slotA);$('slotB').value=String(slotB)}
