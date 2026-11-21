@@ -1,0 +1,68 @@
+{
+  "schema": "prometeo.3d.quality-delta/v1",
+  "isRevision": true,
+  "baselineCommit": "70b4a190fce19b8dd8e62bdc608365b5ba82526c",
+  "components": [
+    {
+      "component": "HERO",
+      "status": "NOT_RUN",
+      "reason": "no matched render",
+      "changeRef": "no more GLB/mismatched seated swap"
+    },
+    {
+      "component": "ACTOR",
+      "status": "NOT_RUN",
+      "reason": "no matched render",
+      "changeRef": "profile surface geometry and articulated pose for 11 actors"
+    },
+    {
+      "component": "ENVIRONMENT",
+      "status": "NOT_RUN",
+      "reason": "no matched render",
+      "changeRef": "retained cabin/city, removed floating boarding columns, added grille/rivets"
+    },
+    {
+      "component": "MATERIAL_LIGHT",
+      "status": "NOT_RUN",
+      "reason": "no matched render",
+      "changeRef": "preserved warm/cool lighting; new cast material"
+    },
+    {
+      "component": "MOTION",
+      "status": "NOT_RUN",
+      "reason": "no matched render",
+      "changeRef": "same actor continuous identity and analytic leg/arm poses"
+    },
+    {
+      "component": "CAMERA",
+      "status": "NOT_RUN",
+      "reason": "no matched render",
+      "changeRef": "reframed greeting and sit"
+    },
+    {
+      "component": "INTERACTION",
+      "status": "NOT_RUN",
+      "reason": "no matched render",
+      "changeRef": "pointer cancel and lost capture"
+    },
+    {
+      "component": "MOBILE",
+      "status": "NOT_RUN",
+      "reason": "no matched render",
+      "changeRef": "44px buttons, smaller HUD"
+    }
+  ],
+  "finishPass": {
+    "status": "EXECUTED",
+    "changeRefs": [
+      "scene.mjs: remove floating columns, move road stripes, reframe greeting, pointercancel, touch targets",
+      "cast.mjs: corrected outward winding, pelvis seated height and valid exponent syntax",
+      "motion.mjs: shortened stance excursion to match forward travel",
+      "scene.mjs: pinch zoom, drag threshold and per-pointer cancellation"
+    ],
+    "recheckRefs": [
+      "SOURCE_QA.json"
+    ]
+  },
+  "humanApproval": "NOT_RUN"
+}
