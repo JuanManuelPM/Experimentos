@@ -100,6 +100,7 @@ h2{font-size:clamp(23px,3.5vw,35px);margin:3px 0 0;line-height:1.12;letter-spaci
 .links{display:flex;gap:12px;flex-wrap:wrap;font-size:13px}
 .links a{border-bottom:1px solid var(--muted);padding:3px 0}
 footer{padding:25px 0 38px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:20px;color:var(--muted);font-size:12px;border-top:1px solid var(--line)}
+.embedded .compare{display:none!important}.embedded #revision{display:none!important}
 @media(max-width:960px){.slots{grid-template-columns:repeat(5,minmax(0,1fr))}.slot{padding:12px;min-height:125px}.studies{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:650px){.top{min-height:70px}.logotype span{display:none}.nav a,.nav button{min-height:43px;padding:8px 10px;font-size:12px}.hero .numbermark{display:none}.hero{padding:45px 0 40px}.section{padding:25px 0 40px}.slots{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.slot{min-height:112px;padding:14px}.slotnum{font-size:45px}.compare,.reviewgrid,.proof{grid-template-columns:1fr}.framewrap{height:60vh;min-height:330px;max-height:650px}.studies{grid-template-columns:1fr 1fr}.study{padding:15px;min-height:150px}.study strong{font-size:19px}.editorrow{grid-template-columns:1fr;gap:0}.reviewsidebar{display:grid;grid-template-columns:1fr 1fr;gap:10px}.reviewsidebar .selectfield{margin:0}.review-sidebar-message{grid-column:1 / -1;margin:0}}
 @media(max-width:390px){.studies{grid-template-columns:1fr}.nav a:last-child{display:none}.slotnum{font-size:40px}}
@@ -187,6 +188,7 @@ var BRIEF="558b9babbf23e0fdf1cfeb6b4af7dd0fa7afb9dab5a84b14e280c04b6e2a770a";
 var FLOW="35ee98a3c32538ed02191c1b21917e2d47af9b9bbcdd3e0e03932aa137d1b918";
 var STORAGE="prometeo.root.ui-lab.w001.review.v1";
 var stageIds=["scope","recovery","prevention","alternatives","capabilities","planning","production","integration","persistence","delivery"];
+var embedded=window.self!==window.top;if(embedded)document.documentElement.classList.add("embedded");
 var $=function(id){return document.getElementById(id)};
 var statuses={}; var activeA=4,activeB=1,activeReview=4,scanning=false,attachments={},drafts={};
 var names={ready:"Publicada",pending:"Pendiente",unknown:"Sin confirmar",checking:"Consultando"};
@@ -215,6 +217,7 @@ function renderSlots(){
   });
 }
 function renderViewer(side){
+  if(embedded){$("frame"+side).removeAttribute("src");return}
   var n=side==="A"?activeA:activeB,state=statuses[n]||"checking",ready=state==="ready";
   var frame=$("frame"+side),empty=$("empty"+side),link=$("open"+side),caption=$("caption"+side);
   $("select"+side).value=String(n);frame.hidden=!ready;empty.hidden=ready;link.hidden=!ready;
