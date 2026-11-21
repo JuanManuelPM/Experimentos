@@ -53,7 +53,7 @@ export function createTraveler(T){
  // Deforming continuous sleeve/trouser surfaces, cross-sections following joints.
  function tube(n,m,radii){
   const len=radii.length,N=20,verts=new Float32Array(len*(N+1)*3),inds=[];
-  for(let j=0;j<len-1;j++)for(let i=0;i<N;i++){let a=j*(N+1)+i,b=a+N+1;inds.push(a,b,a+1,b,b+1,a+1)}
+  for(let j=0;j<len-1;j++)for(let i=0;i<N;i++){let a=j*(N+1)+i,b=a+N+1;inds.push(a,a+1,b,b,a+1,b+1)}
   const g=new T.BufferGeometry();g.setAttribute('position',new T.BufferAttribute(verts,3).setUsage(T.DynamicDrawUsage));g.setIndex(inds);const o=mesh(root,n,g,m);o.frustumCulled=false;
   function set(points){for(let j=0;j<len;j++){const p=points[j],q=points[Math.min(j+1,len-1)].clone().sub(points[Math.max(j-1,0)]).normalize();const a=new T.Vector3(1,0,0).addScaledVector(q,-q.x).normalize(),b=new T.Vector3().crossVectors(q,a);
     for(let i=0;i<=N;i++){let t=i/N*Math.PI*2,v=p.clone().addScaledVector(a,Math.cos(t)*radii[j][0]).addScaledVector(b,Math.sin(t)*radii[j][1]);v.toArray(verts,(j*(N+1)+i)*3);}}

@@ -241,7 +241,7 @@ for(const s of [-1,1]){
   const z=-5.0-n*2.82;
   const rim=new THREE.Mesh(new THREE.TorusGeometry(1.045,.12,16,48),steel);rim.position.set(s*2.57,2.34,z);rim.rotation.y=Math.PI/2;abyss.add(rim);
   // The former opaque water disc blocked all views. Removed; fauna is beyond a transparent pane.
-  const seal=cyl(abyss,'outer.glass.glow',.88,.011,s*2.575,2.34,z,bioglow,'x',40);
+  const seal=cyl(abyss,'outer.glass.glow',.98,.011,s*2.575,2.34,z,bioglow,'x',40);
   seal.material=m(0x54b0c2,.38,.10,{transparent:true,opacity:.13,depthWrite:false});
   for(let i=0;i<12;i++){const a=Math.PI*2*i/12;
    sphere(abyss,'window.bolt',.036,s*2.47,2.34+1.1*Math.sin(a),z+1.1*Math.cos(a),gold,8);}
@@ -369,11 +369,11 @@ function update(t,delta=0){
  $('#phase').textContent=time<10?'VESTÍBULO':time<23?'I · INVERNADERO':time<36?'II · BIBLIOTECA':'III · ABISMO';
 }
 function setMode(next){
- mode=next;orbit.enabled=next!=='cine';$('#mode').textContent=next==='cine'?'EXPLORAR':'CINE';
+ const previousMode=mode;mode=next;orbit.enabled=next!=='cine';$('#mode').textContent=next==='cine'?'EXPLORAR':'CINE';
  $('#building').classList.toggle('active',next==='edificio');
  if(next==='cine'){orbit.enabled=false;poseCamera(time);}
  else if(next==='edificio'){camera.position.set(16,14,25);orbit.target.set(0,12,-1);orbit.update();}
- else {const y=cabinHeight(time);orbit.target.set(0,y+1.65,currentFloor(time)===0?1:-9);orbit.update();}
+ else {const y=cabinHeight(time);if(previousMode==='edificio')poseCamera(time);orbit.target.set(0,y+1.65,currentFloor(time)===0?1:-9);orbit.update();}
 }
 function play(){
  sound.activate();
@@ -390,7 +390,7 @@ $('#sound').addEventListener('click',()=>{soundMuted=!soundMuted;sound.setMuted(
 $('#timeline').addEventListener('input',e=>{pause();prevTime=Number(e.target.value);update(prevTime)});
 document.querySelectorAll('[data-floor]').forEach(button=>button.addEventListener('click',()=>{
  pause();time=[18,31,45][Number(button.dataset.floor)];prevTime=time;update(time);
- setMode('libre');$('#tools').removeAttribute('open');
+ poseCamera(time);setMode('libre');$('#tools').removeAttribute('open');
 }));
 addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.5));renderer.setSize(innerWidth,innerHeight)});
 window.addEventListener('keydown',e=>{if(e.code==='Space'){e.preventDefault();playing?pause():play()}});
