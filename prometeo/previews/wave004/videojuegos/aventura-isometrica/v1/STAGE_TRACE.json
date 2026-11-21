@@ -1,0 +1,116 @@
+{
+  "schema": "prometeo.3d.candidate-receipt/v1",
+  "wave": "004",
+  "series": "videojuegos",
+  "number": 7,
+  "projectId": "aventura-isometrica",
+  "version": "V1",
+  "title": "La última luciérnaga",
+  "originalBrief": "Quiero una pequeña aventura 3D isométrica jugable con personaje, entorno con profundidad, NPC, objeto coleccionable, diálogo/decisión y un objetivo final.",
+  "briefSha256": "caf0a604f745cff37eba613af567166753187391eb6bfcbfeef0683d581b375e",
+  "pinnedFlow": {
+    "version": "2.3.0",
+    "sha256": "53bc9e2e4b37c99e92d3494af8dfa4461cd4644b15f980e32497a8428b067b3f"
+  },
+  "candidateStatus": "PUBLISHED_NOT_HUMAN_REVIEWED",
+  "interactiveCoverage": [
+    "3d-webgl-isometric-world",
+    "authored-illustrated-player-fox",
+    "authored-illustrated-owl-npc",
+    "collectible-crystal",
+    "two-dialogue-choices",
+    "two-distinct-endings",
+    "timed-fail-retry",
+    "keyboard-and-tap-move-and-touch-joystick"
+  ],
+  "preventiveDecisions": [
+    "Compared genuine external rigged GLB route vs original illustrated 2.5D characters in real 3D world; selected original editorial illustrations for controlled appearance, rights, memory and consistent mobile load.",
+    "No primitive-built humanoids; animal character silhouettes drawn on CanvasTexture with detailed cloak, face, expressive eyes and accessories.",
+    "Low-poly physical scene with island cliff, trees, paths, pond, lighthouse, light and shadows, fixed isometric camera.",
+    "Single pinned Three.js ES module version; original assets generated locally in canvas to avoid broken third-party textures.",
+    "Touch and mouse click-to-walk plus keyboard and accessible on-screen joystick; dialogue buttons >= 51 CSS px.",
+    "One brief per branch and unique public path; avoid shared flow and manifest edits."
+  ],
+  "stageTrace": [
+    [
+      "scope",
+      "Pinned literal vertical-slice brief with player, depth, NPC, collectible, dialogue/choice and goal."
+    ],
+    [
+      "recovery",
+      "Read launcher 7, W4 manifest and universal 2.3.0 method, stages, contract and concurrency rules."
+    ],
+    [
+      "planning",
+      "Designed complete two-branch loop: explore, collect, consult, decide, activate, success/failure, restart."
+    ],
+    [
+      "acquisition",
+      "Selected self-authored Canvas textures and procedural 3D geometry; Three.js pinned as only external library."
+    ],
+    [
+      "classification",
+      "Character illustrated sprites, environment physical meshes, shrine collectible, quest/state UI."
+    ],
+    [
+      "humanoid",
+      "No human cast. Fox and owl drawn as bespoke 2D illustrations on camera-facing 3D planes."
+    ],
+    [
+      "props",
+      "Original collectable crystal shrine, stones, benches/sign, lanterns, architectural lighthouse."
+    ],
+    [
+      "environment",
+      "Elevated island with depth, pond, trees, flowers, path and water, actual 3D parallax."
+    ],
+    [
+      "fx",
+      "Warm directional shadow lighting, atmospheric fog, luminous crystals, fireflies and ending changes."
+    ],
+    [
+      "assembly",
+      "Playable keyboard, touch joystick, click-to-walk, action, dialogue, clock and end-state code."
+    ],
+    [
+      "orientation",
+      "Billboards face isometric camera; keyboard directions mapped to projected screen axes."
+    ],
+    [
+      "acting",
+      "Player walks/bobs, owl idles, crystal floats, scene reacts to choices."
+    ],
+    [
+      "cinema",
+      "Orthographic 3/4 camera softly tracks player and preserves world-space placement."
+    ],
+    [
+      "qa",
+      "Preventive art/method decision before production; actual browser and Android visual review NOT_RUN."
+    ],
+    [
+      "repair",
+      "No postproduction aesthetic repair loop or shared-flow mutation; human feedback pending."
+    ],
+    [
+      "persistence",
+      "Source code saved in private candidate branch and public isolated path, pinned brief and flow."
+    ],
+    [
+      "publish",
+      "Public candidate intended for GH Pages; no claim of human visual approval."
+    ]
+  ],
+  "verification": {
+    "authoring": "SOURCE_CREATED",
+    "githubPublic": "PENDING_WRITE",
+    "browserWebGL": "NOT_RUN",
+    "mobileAndroid": "NOT_RUN",
+    "humanArtReview": "PENDING"
+  },
+  "licenses": {
+    "game": "Original custom code/illustrations for this project",
+    "threejs": "MIT via pinned npm CDN, https://github.com/mrdoob/three.js/blob/master/LICENSE",
+    "thirdPartyVisualAssets": "None"
+  }
+}
