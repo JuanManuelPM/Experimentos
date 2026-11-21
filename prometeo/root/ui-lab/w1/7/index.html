@@ -165,9 +165,9 @@ async function check(n){
 }
 async function scan(){
  if(busy)return;busy=true;$('refresh').disabled=true;$('scan-state').textContent='Comprobando previews…';
- const next=await Promise.all(Array.from({length:10},(_,i)=>check(i+1)));status=next;$('ready-count').textContent=next.filter(x=>x==='ready').length;
+ const next=await Promise.all(Array.from({length:10},(_,i)=>check(i+1)));const changed=next.some((s,i)=>s!==status[i]);status=next;$('ready-count').textContent=next.filter(x=>x==='ready').length;
  $('scan-state').textContent=next.filter(x=>x==='ready').length+' publicados · '+next.filter(x=>x==='pending').length+' pendientes'+(next.some(x=>x==='unknown')?' · '+next.filter(x=>x==='unknown').length+' sin verificar':'');
- busy=false;$('refresh').disabled=false;draw();
+ busy=false;$('refresh').disabled=false;if(changed)draw();else renderTiles();
 }
 $('refresh').addEventListener('click',scan);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)scan();});
