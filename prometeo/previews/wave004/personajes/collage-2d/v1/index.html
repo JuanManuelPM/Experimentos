@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#101d21">
+<meta name="description" content="Lía, la cartógrafa de las cosas perdidas. Estudio de personaje collage 2.5D animado, ilustración vectorial original y rig reutilizable.">
+<title>Lía · Cartógrafa de lo perdido | PROMETEO 06</title>
+<link rel="stylesheet" href="./style.css">
+<link rel="stylesheet" href="./character.css">
+</head>
+<body>
+<div class="app">
+  <header class="top">
+    <div class="brand"><span class="brand-mark" aria-hidden="true">✳</span> PROMETEO <span style="opacity:.42">/</span> ESTUDIO 3D</div>
+    <div class="serial">PERSONAJES / W04 / 006</div>
+  </header>
+  <main class="layout">
+    <section class="intro" aria-labelledby="title">
+      <div class="count">06<span style="font-size:.3em;vertical-align:top;margin-left:7px">/ 10</span></div>
+      <div class="eyebrow">UN PERSONAJE EN CAPAS</div>
+      <h1 id="title">La cartógrafa<br>de las cosas<br><i>perdidas.</i></h1>
+      <p class="subtitle">Lía colecciona los lugares que desaparecieron de los mapas. Está hecha de papel, retazos y pequeños movimientos.</p>
+      <p class="note">PERSONAJE ORIGINAL / COLLAGE ILUSTRADO<br>Planos articulados en profundidad, expresiones y tres ciclos de movimiento. Sin modelos externos.</p>
+    </section>
+    <section class="scene-col" aria-label="Presentación espacial del personaje">
+      <div class="stage" id="stage" tabindex="0" aria-label="Escenario con Lía. Arrastrá para rotar el personaje. Las teclas de dirección también cambian la perspectiva.">
+        <div class="sun" aria-hidden="true"></div>
+        <div class="paper-cloud" aria-hidden="true"></div>
+        <div class="paper-cloud two" aria-hidden="true"></div>
+        <svg class="line-art" viewBox="0 0 700 800" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+          <g fill="none" stroke="#f8ddac" stroke-width="1.4">
+            <path d="M-30 174 Q120 60 270 162 T710 127"/>
+            <path d="M-20 211 Q135 90 273 193 T707 160"/>
+            <path d="M-17 244 Q144 130 273 226 T710 193"/>
+            <path d="M-10 280 Q150 170 273 261 T709 226"/>
+            <path d="M33 424 Q219 360 380 438 T686 400" stroke-dasharray="5 13"/>
+            <circle cx="583" cy="283" r="63"/><circle cx="583" cy="283" r="85" stroke-dasharray="2 9"/>
+            <path d="M579 204 L579 367 M501 283 L664 283"/>
+          </g>
+          <g fill="#f6ddb3"><circle cx="100" cy="170" r="4"/><circle cx="585" cy="283" r="5"/></g>
+        </svg>
+        <div class="mountain" aria-hidden="true"></div>
+        <div class="mountain front" aria-hidden="true"></div>
+        <div class="back-collage" aria-hidden="true">
+          <div class="tower one"></div><div class="tower two"></div><div class="tower three"></div>
+        </div>
+        <div class="paper-ground" aria-hidden="true"></div>
+        <div class="ground-lines" aria-hidden="true"></div>
+        <div class="puppet-viewport" id="puppet-viewport"></div>
+        <div class="paper-grain" aria-hidden="true"></div>
+        <div class="stage-caption"><span class="dot"></span> ARCHIVO DE LO IMPOSIBLE</div>
+        <span class="index-mark">Lía · 001</span>
+        <span class="drag-hint" id="hint">↔ ARRASTRÁ PARA EXPLORAR LAS CAPAS</span>
+      </div>
+    </section>
+    <aside class="controls" aria-label="Controles del personaje">
+      <div class="eyebrow">DIRECCIÓN DE ACTUACIÓN</div>
+      <h2 class="control-title">Un poco de vida<br>en el papel.</h2>
+      <div class="group">
+        <div class="group-title">01 / EXPRESIÓN <em id="emotion-caption">Curiosa</em></div>
+        <div class="choices" id="expressions">
+          <button type="button" class="choice" data-emotion="curiosa" aria-pressed="true">Curiosa</button>
+          <button type="button" class="choice" data-emotion="alegre" aria-pressed="false">Alegre</button>
+          <button type="button" class="choice" data-emotion="sonolienta" aria-pressed="false">Soñadora</button>
+        </div>
+      </div>
+      <div class="group">
+        <div class="group-title">02 / MOVIMIENTO <em id="action-caption">Respirar</em></div>
+        <div class="choices" id="actions">
+          <button type="button" class="choice" data-action="reposo" aria-pressed="true">Reposo</button>
+          <button type="button" class="choice" data-action="saludar" aria-pressed="false">Saludar</button>
+          <button type="button" class="choice" data-action="caminar" aria-pressed="false">Caminar</button>
+        </div>
+      </div>
+      <div class="group">
+        <div class="group-title">03 / PERSPECTIVA <em id="angle-caption">−9°</em></div>
+        <div class="choices">
+          <button type="button" class="choice" id="reset">Restablecer vista</button>
+          <button type="button" class="choice" id="toggle-motion" aria-pressed="true">Pausar animación</button>
+        </div>
+      </div>
+      <div class="facts">
+        <div><strong>19</strong> PLANOS VECTORIALES</div>
+        <div><strong>03</strong> MOVIMIENTOS</div>
+        <div><strong>03</strong> EXPRESIONES</div>
+        <div><strong>2.5D</strong> PROFUNDIDAD EDITABLE</div>
+      </div>
+    </aside>
+  </main>
+  <footer class="footer">
+    <span>PERSONAJE 06 / WAVE 004 <span style="opacity:.45">·</span> MÉTODO 2.3.0</span>
+    <span>ILUSTRACIÓN ORIGINAL · CC0</span>
+    <a href="./README.md" target="_blank" rel="noopener">Ficha técnica y reutilización</a>
+  </footer>
+</div>
+<script type="module">
+import {mountCharacter,CHARACTER} from './character-kit.mjs';
+
+const stage = document.getElementById('stage');
+const viewport = document.getElementById('puppet-viewport');
+const actor = mountCharacter(viewport, {yaw:-9});
+window.PROMETEO_CHARACTER_06 = actor; // embedding and developer inspection
+const labels = {
+  emotion: {curiosa:'Curiosa', alegre:'Alegre', sonolienta:'Soñadora'},
+  action: {reposo:'Respirar', saludar:'Saludar', caminar:'Caminar'}
+};
+const updateChoices = (selector, attribute, value) => {
+  document.querySelectorAll(selector).forEach(btn => {
+    btn.setAttribute('aria-pressed', String(btn.getAttribute(attribute) === value));
+  });
+};
+document.getElementById('expressions').addEventListener('click', event => {
+  const value = event.target.closest('[data-emotion]')?.dataset.emotion;
+  if (!value || !actor.setEmotion(value)) return;
+  updateChoices('[data-emotion]', 'data-emotion', value);
+  document.getElementById('emotion-caption').textContent = labels.emotion[value];
+});
+document.getElementById('actions').addEventListener('click', event => {
+  const value = event.target.closest('[data-action]')?.dataset.action;
+  if (!value || !actor.setAction(value)) return;
+  updateChoices('[data-action]', 'data-action', value);
+  document.getElementById('action-caption').textContent = labels.action[value];
+});
+
+let yaw = -9, pitch = 0, pointer = null;
+const updateOrbit = () => {
+  actor.setOrbit(yaw, pitch);
+  document.getElementById('angle-caption').textContent = Math.round(yaw) + '°';
+};
+const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+stage.addEventListener('pointerdown', event => {
+  if (event.button !== 0) return;
+  pointer = {id:event.pointerId, x:event.clientX, y:event.clientY, yaw, pitch};
+  stage.classList.add('is-dragging');
+  stage.setPointerCapture(event.pointerId);
+});
+stage.addEventListener('pointermove', event => {
+  if (!pointer || pointer.id !== event.pointerId) return;
+  const scale = Math.max(220, stage.clientWidth);
+  yaw = clamp(pointer.yaw + ((event.clientX - pointer.x) / scale) * 95, -31, 31);
+  pitch = clamp(pointer.pitch - ((event.clientY - pointer.y) / scale) * 45, -13, 13);
+  updateOrbit();
+});
+function finishPointer(event) {
+  if (!pointer || pointer.id !== event.pointerId) return;
+  pointer = null;
+  stage.classList.remove('is-dragging');
+  if (stage.hasPointerCapture(event.pointerId)) stage.releasePointerCapture(event.pointerId);
+}
+stage.addEventListener('pointerup', finishPointer);
+stage.addEventListener('pointercancel', finishPointer);
+stage.addEventListener('lostpointercapture', () => {pointer=null;stage.classList.remove('is-dragging')});
+stage.addEventListener('keydown', event => {
+  if (event.key === 'ArrowLeft') yaw = clamp(yaw-5,-31,31);
+  else if (event.key === 'ArrowRight') yaw = clamp(yaw+5,-31,31);
+  else if (event.key === 'ArrowUp') pitch = clamp(pitch+4,-13,13);
+  else if (event.key === 'ArrowDown') pitch = clamp(pitch-4,-13,13);
+  else if (event.key.toLowerCase() === 'r') { yaw=-9; pitch=0; }
+  else return;
+  event.preventDefault();
+  updateOrbit();
+});
+document.getElementById('reset').addEventListener('click', () => {yaw=-9; pitch=0;updateOrbit()});
+const pause = document.getElementById('toggle-motion');
+let running = true;
+pause.addEventListener('click', () => {
+  running = !running;
+  actor.setAnimate(running);
+  pause.textContent = running ? 'Pausar animación' : 'Reanudar animación';
+  pause.setAttribute('aria-pressed', String(running));
+});
+</script>
+</body></html>
