@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#10151d">
+<meta name="description" content="LUMA: un personaje 3D original adaptado de una malla CC0 de Kenney, con materiales, accesorios y tres animaciones.">
+<title>LUMA · Estudio de personaje 08</title>
+<link rel="stylesheet" href="./style.css">
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
+</head>
+<body>
+<div class="page">
+ <header class="topbar">
+  <div class="monogram" aria-hidden="true">P<span>.</span></div>
+  <div class="topcenter">PROMETEO <span class="slash">/</span> ESTUDIO 3D</div>
+  <div class="topright"><span class="live-dot" aria-hidden="true"></span> PERSONAJES / 08</div>
+ </header>
+ <section class="intro">
+   <div class="eyebrow">PERSONAJE IMPORTADO · REDISEÑO ORIGINAL · OLA 004</div>
+   <div class="introline"><h1>LUMA<span>.</span></h1><div class="subtitle">Mensajera<br>del eclipse.</div></div>
+   <p class="lead">Una silueta recuperada, otra identidad. Tejidos, cobre, luz y movimiento sobre una malla real reutilizable.</p>
+ </section>
+ <div class="workspace">
+   <section class="stage-wrap" id="stage-wrap" aria-label="Visor tridimensional del personaje LUMA">
+    <div class="stage-grain" aria-hidden="true"></div>
+    <div class="stage-meta"><span>FIG. 08 / MALLA IMPORTADA</span><span>ESTUDIO DE MOVIMIENTO</span></div>
+    <canvas id="stage" aria-label="Visor 3D interactivo. Deslizá para rotar y hacé zoom con dos dedos."></canvas>
+    <div class="loading" id="loading" role="status" aria-live="polite"><div class="loading-icon"></div><span id="load-text">Cargando recurso 3D...</span></div>
+    <div class="stage-bottom"><span><i class="drag-glyph" aria-hidden="true">↔</i> ARRASTRÁ PARA GIRAR</span><span>PINCH PARA ACERCAR</span></div>
+    <div class="stage-index" aria-hidden="true">08</div>
+   </section>
+   <aside class="side">
+    <div class="side-top"><div class="kicker">ESTUDIO / 001</div><h2>El personaje,<br>en movimiento.</h2><p>El mismo modelo que podés abrir en tu propio editor 3D. No es una captura ni un maniquí de primitivas.</p></div>
+    <div class="control-group"><div class="group-title"><span>01</span> MOVIMIENTO</div>
+      <button class="clip selected" data-clip="0" type="button"><span>Respirar</span><span class="glyph">↗</span></button>
+      <button class="clip" data-clip="1" type="button"><span>Observar</span><span class="glyph">↗</span></button>
+      <button class="clip" data-clip="2" type="button"><span>Asentir</span><span class="glyph">↗</span></button>
+    </div>
+    <div class="control-group"><div class="group-title"><span>02</span> PALETA EN VIVO</div><div class="swatches">
+      <button type="button" class="swatch current" data-theme="mar" aria-label="Paleta Mareas" title="Mareas"><span style="background:#194353"></span></button>
+      <button type="button" class="swatch" data-theme="ocre" aria-label="Paleta Cobre" title="Cobre"><span style="background:#9b5b43"></span></button>
+      <button type="button" class="swatch" data-theme="noche" aria-label="Paleta Noche" title="Noche"><span style="background:#42405d"></span></button>
+      <span class="swatch-label" id="palette-name">Mareas</span></div></div>
+    <div class="control-group"><div class="group-title"><span>03</span> EXPLORAR</div>
+      <button class="outline" type="button" id="reset"><span>Restablecer cámara</span><span>↺</span></button>
+      <button class="outline" type="button" id="spin"><span>Rotación automática</span><span id="spin-state">ACTIVAR</span></button>
+    </div>
+    <div class="downloads"><div class="group-title"><span>04</span> ARCHIVOS EDITABLES</div>
+     <a class="download-primary" href="./LUMA_character.gltf" download="LUMA_character.gltf"><span>Descargar personaje glTF</span><span>↓</span></a>
+     <a class="source-link" href="./source/character-female-c.obj" download>OBJ de origen <span>↓</span></a>
+     <a class="source-link" href="./source/LICENSE.txt" download>Licencia CC0 <span>↓</span></a>
+    </div>
+   </aside>
+ </div>
+ <footer><div>KENNEY MINI CHARACTERS · CC0 / ADAPTACIÓN LUMA</div><div><span id="status">CANDIDATO · SIN APROBACIÓN ARTÍSTICA</span> · FLUJO 2.3.0</div></footer>
+</div>
+<script type="module" src="./viewer.js"></script>
+</body>
+</html>
