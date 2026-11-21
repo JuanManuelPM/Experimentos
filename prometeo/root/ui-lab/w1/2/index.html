@@ -86,19 +86,19 @@ var states=Array(10).fill("checking");
 var reviews=Array.from({length:10},function(){return {note:"",stage:"",files:[]};});
 var selectParam=Number(new URLSearchParams(location.search).get("v"));
 var selected=Number.isInteger(selectParam)&&selectParam>=1&&selectParam<=10?selectParam:2;
-var sideA=1, sideB=2, compare=false, generation=0;
+var sideA=1, sideB=2, compare=false, generation=0, embedded=window.self!==window.top;
 function el(id){return document.getElementById(id);}
 function pad(n){return String(n).padStart(2,"0");}
 function previewUrl(n){return BASE+n+"/";}
 function stateName(s){return s==="ready"?"Archivo publicado":s==="pending"?"Pendiente":s==="checking"?"Comprobando…":"Sin verificar";}
 function clear(node){while(node.firstChild)node.removeChild(node.firstChild);}
 function labelStatus(n){return pad(n)+" · "+stateName(states[n-1]);}
-function emptyNode(message){
+function emptyNode(message,n){
  var box=document.createElement("div");box.className="empty-preview";
  var disc=document.createElement("div");disc.className="disc";disc.textContent="↗";box.appendChild(disc);
- var title=document.createElement("strong");title.textContent=message==="pending"?"Todavía no se publicó":message==="checking"?"Comprobando preview":message==="unknown"?"Disponibilidad incierta":"Preview no disponible";box.appendChild(title);
- var p=document.createElement("p");p.textContent=message==="pending"?"Este número aún no tiene index.html accesible. Podés volver a comprobar en cualquier momento.":message==="checking"?"Esperando respuesta de la URL pública…":"No se pudo confirmar la publicación. Podés intentar abrir la URL en una pestaña nueva.";box.appendChild(p);
- if(message==="unknown"){var a=document.createElement("a");a.className="open-link";a.href=previewUrl(selected);a.target="_blank";a.rel="noopener noreferrer";a.textContent="Intentar abrir ↗";box.appendChild(a);}
+ var title=document.createElement("strong");title.textContent=message==="pending"?"Todavía no se publicó":message==="checking"?"Comprobando preview":message==="unknown"?"Disponibilidad incierta":message==="self"?"Ya estás viendo esta versión":message==="embedded"?"Vista incrustada protegida":"Preview no disponible";box.appendChild(title);
+ var p=document.createElement("p");p.textContent=message==="pending"?"Este número aún no tiene index.html accesible. Podés volver a comprobar en cualquier momento.":message==="checking"?"Esperando respuesta de la URL pública…":message==="self"?"Esta es la interfaz de la versión 02. Incrustarla aquí sólo produciría un espejo infinito; ya la estás recorriendo.":message==="embedded"?"Para evitar vistas recursivas, abrí la alternativa en una pestaña propia.":"No se pudo confirmar la publicación. Podés intentar abrir la URL en una pestaña nueva.";box.appendChild(p);
+ if(message==="unknown"){var a=document.createElement("a");a.className="open-link";a.href=previewUrl(n||selected);a.target="_blank";a.rel="noopener noreferrer";a.textContent="Intentar abrir ↗";box.appendChild(a);}
  return box;
 }
 function frameNode(n){var frame=document.createElement("iframe");frame.title="Preview ROOT versión "+pad(n);frame.loading="lazy";frame.sandbox="allow-scripts allow-forms allow-popups allow-modals allow-pointer-lock";frame.referrerPolicy="no-referrer";frame.src=previewUrl(n);return frame;}
@@ -119,7 +119,7 @@ function renderSingle(){
  el("review-number").textContent=pad(selected);
  el("preview-state").textContent="Ola 001 / "+stateName(s)+(s==="ready"?" · Publicado no significa probado":"");
  var link=el("open-tab");link.href=previewUrl(selected);link.setAttribute("aria-disabled",String(s==="pending"||s==="checking"));
- if(s==="ready")screen.appendChild(frameNode(selected));else screen.appendChild(emptyNode(s));
+ if(s==="ready"&&selected===2)screen.appendChild(emptyNode("self",selected));else if(s==="ready"&&embedded)screen.appendChild(emptyNode("embedded",selected));else if(s==="ready")screen.appendChild(frameNode(selected));else screen.appendChild(emptyNode(s,selected));
  if(s==="unknown"){link.setAttribute("aria-disabled","false");}
  el("note").value=reviews[selected-1].note;el("stage").value=reviews[selected-1].stage;el("capture").value="";
  renderFiles();
@@ -132,7 +132,7 @@ function renderFiles(){
 }
 function renderCompare(){
  fillOptions("compare-a");fillOptions("compare-b");
- [["screen-a",sideA],["screen-b",sideB]].forEach(function(pair){var screen=el(pair[0]),n=pair[1];clear(screen);if(states[n-1]==="ready")screen.appendChild(frameNode(n));else screen.appendChild(emptyNode(states[n-1]));});
+ [["screen-a",sideA],["screen-b",sideB]].forEach(function(pair){var screen=el(pair[0]),n=pair[1];clear(screen);if(states[n-1]==="ready"&&n===2)screen.appendChild(emptyNode("self",n));else if(states[n-1]==="ready"&&embedded)screen.appendChild(emptyNode("embedded",n));else if(states[n-1]==="ready")screen.appendChild(frameNode(n));else screen.appendChild(emptyNode(states[n-1],n));});
 }
 function render(){renderRuns();renderSingle();if(compare)renderCompare();}
 async function check(n){
