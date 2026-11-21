@@ -287,7 +287,7 @@ lamp(lobby,0xffbe7d,9,11,0,4.5,7);
 
 // Character: original rigged UV-mapped Quaternius-based CC0 GLB reused from the existing studio.
 const actorRoot=new THREE.Group();actorRoot.name='real.glb.actor';scene.add(actorRoot);
-let mixer=null,walk=null,idle=null;
+let mixer=null,walk=null,idle=null,walkingActive=false;
 const actorUrl='https://juanmanuelpm.github.io/Experimentos/prometeo/3d-npc-civilian-v1/dist/civil_azul.glb';
 new GLTFLoader().load(actorUrl,gltf=>{
  const model=gltf.scene,bbox=new THREE.Box3().setFromObject(model),height=bbox.getSize(new THREE.Vector3()).y;
@@ -364,14 +364,15 @@ function update(t,delta=0){
   }else actorRoot.position.set(-.36,0,.44);
   actorRoot.rotation.y=Math.PI;
   if(mixer){mixer.update(delta);const walking=time>=5&&time<8;
-   if(walk&&idle){if(walking&&walk.enabled!==true){walk.enabled=true;walk.reset().play();idle.stop();}
-    else if(!walking&&walk.enabled){walk.enabled=false;walk.stop();idle.reset().play()}}
+   if(walk&&idle&&walking!==walkingActive){walkingActive=walking;
+    if(walking){idle.stop();walk.enabled=true;walk.reset().play();}
+    else {walk.stop();walk.enabled=false;idle.reset().play();}}
   }
  }
  orrery.rotation.y=time*.17;
  planets.forEach(({moon,r,idx})=>{const a=time*(.30/(idx+1))+idx*2;
  moon.position.set(Math.cos(a)*r,Math.sin(a)*.26,Math.sin(a)*r)});
- aquatic.forEach((o,i)=>{o.position.y+=(Math.sin(time*.58+i)*.0015)});
+ aquatic.forEach((o,i)=>{if(o.userData.baseY===undefined)o.userData.baseY=o.position.y;o.position.y=o.userData.baseY+Math.sin(time*.58+i)*.085});
  // Cinema and free inspection share the same physical scene.
  if(mode==='cine')poseCamera(time);
  if(mode!=='cine'){orbit.target.y=mode==='edificio'?12:y+1.9;}
