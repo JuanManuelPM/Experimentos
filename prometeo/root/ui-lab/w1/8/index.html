@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#10120f">
+<meta name="description" content="ROOT UI Lab. Una consigna, diez resultados. Comparación, estudios y revisión humana local.">
+<title>ROOT / Laboratorio 08</title>
+<style>
+:root{color-scheme:dark;--bg:#10120f;--panel:#1b1e19;--panel2:#252920;--edge:#41483b;--ink:#f0f2e9;--muted:#a8afa1;--hot:#dcf49c;--error:#eeada7;--font:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);line-height:1.45}body.dialog-open{overflow:hidden}button,input,select,textarea{font:inherit}button,a,select,input[type=file]{-webkit-tap-highlight-color:transparent}button{cursor:pointer}a{color:inherit}button:focus-visible,a:focus-visible,select:focus-visible,textarea:focus-visible,input:focus-visible{outline:3px solid var(--hot);outline-offset:3px}button:disabled{opacity:.42;cursor:not-allowed}a{text-decoration:none}.wrap{width:min(1320px,calc(100% - 44px));margin:auto}
+header{border-bottom:1px solid var(--edge);background:rgba(16,18,15,.95);position:sticky;z-index:10;top:0;backdrop-filter:blur(14px)}.nav{display:flex;align-items:center;gap:28px;min-height:67px}.brand{font-size:20px;font-weight:950;letter-spacing:-.09em;white-space:nowrap}.brand i{font-style:normal;color:var(--hot)}.navlinks{display:flex;gap:21px;margin-left:auto}.navlinks a{font-size:13px;color:var(--muted)}.navlinks a:hover,.subnav a:hover{color:var(--ink)}.nav .external{border:1px solid var(--edge);padding:10px 15px;border-radius:24px;white-space:nowrap;font-size:12px;font-weight:700}
+.hero{padding:66px 0 53px;border-bottom:1px solid var(--edge)}.eyebrow{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.18em;color:var(--hot);display:flex;align-items:center;gap:12px}.eyebrow:before{content:"";width:24px;height:1px;background:var(--hot)}h1{font-size:clamp(52px,8.6vw,128px);letter-spacing:-.095em;line-height:.94;font-weight:850;margin:22px 0 29px;max-width:1150px}h1 em{color:var(--hot);font-style:normal}.hero-bottom{display:flex;justify-content:space-between;gap:18px;align-items:end}.lede{max-width:650px;font-size:18px;color:var(--muted);margin:0}.mini-meta{font-size:12px;color:var(--muted);text-align:right;white-space:nowrap}.mini-meta strong{color:var(--ink);font-weight:650}
+section{padding:56px 0;border-bottom:1px solid var(--edge);scroll-margin-top:76px}.section-top{display:flex;align-items:end;gap:22px;justify-content:space-between;margin-bottom:27px}.section-top h2{font-size:clamp(26px,4.1vw,52px);letter-spacing:-.065em;line-height:1.05;margin:0}.section-top p{font-size:13px;color:var(--muted);margin:8px 0 0}.controls{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.smallbtn,.action,.tabbtn{border:1px solid var(--edge);background:transparent;color:var(--ink);padding:12px 17px;border-radius:9px;font-weight:700;font-size:13px;min-height:45px}.smallbtn:hover,.action:hover,.tabbtn:hover{border-color:var(--hot)}.action{background:var(--hot);border-color:var(--hot);color:#10120f}.action:hover{background:#efffc9}.smallbtn.selected{background:var(--hot);color:var(--bg);border-color:var(--hot)}
+.counters{display:flex;gap:15px;align-items:center;margin-bottom:18px;flex-wrap:wrap;font-size:12px;color:var(--muted)}.counter-n{font-size:18px;color:var(--ink);font-weight:800}.dots{width:7px;height:7px;border-radius:50%;background:var(--muted);display:inline-block;vertical-align:middle;margin-right:5px}.ready .dots{background:var(--hot)}.missing .dots{background:var(--error)}.grid-runs{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+.run{background:var(--panel);border:1px solid var(--edge);border-radius:14px;padding:16px;min-height:228px;display:flex;flex-direction:column;transition:border-color .15s,background .15s}.run:hover{border-color:#7e8a72;background:var(--panel2)}.run.current{outline:1px solid var(--hot)}.run-num{font-size:clamp(54px,6vw,87px);font-weight:750;line-height:1;letter-spacing:-.105em;margin:9px 0 25px}.run-top{display:flex;justify-content:space-between;align-items:center;font-size:11px;color:var(--muted)}.run-state{font-size:11px;color:var(--muted);display:flex;align-items:center;gap:4px;margin-top:auto}.run-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:15px}.run-actions button,.run-actions a{background:transparent;border:1px solid var(--edge);border-radius:7px;padding:9px 10px;color:var(--ink);font-size:12px;min-height:40px;flex:1;text-align:center;font-weight:700}.run-actions .view{border-color:var(--hot);color:var(--hot)}.run-actions .slot{flex:0 0 auto}.run-actions .slot.on{background:var(--hot);color:var(--bg)}.run-actions a[aria-disabled=true]{opacity:.45;pointer-events:none}.footnote{font-size:12px;color:var(--muted);margin:15px 0 0}
+.compare-head{display:flex;justify-content:space-between;align-items:center;gap:18px;margin-bottom:14px}.compare-picks{display:flex;gap:10px;flex-wrap:wrap}.compare-picks label{display:flex;align-items:center;gap:7px;font-size:13px;color:var(--muted)}select,textarea{background:var(--panel);color:var(--ink);border:1px solid var(--edge);border-radius:8px;padding:11px}.compare-picks select{min-width:88px}.compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.compare-view{min-height:340px;background:var(--panel);border:1px solid var(--edge);border-radius:12px;overflow:hidden;display:flex;flex-direction:column}.compare-label{display:flex;justify-content:space-between;align-items:center;padding:11px 14px;border-bottom:1px solid var(--edge);font-weight:750}.compare-label span{font-size:11px;font-weight:500;color:var(--muted)}.compare-body{height:390px;display:grid;place-items:center;position:relative}.compare-body iframe{width:100%;height:100%;border:0;background:#f7f7f7}.empty{max-width:260px;text-align:center;color:var(--muted);font-size:13px;padding:24px}.empty b{display:block;color:var(--ink);font-size:18px;margin-bottom:8px}
+.studygrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.study{background:var(--panel);border:1px solid var(--edge);border-radius:11px;padding:19px;min-height:154px;display:flex;flex-direction:column}.study h3{font-size:22px;font-weight:780;letter-spacing:-.045em;margin:0 0 7px}.study p{color:var(--muted);font-size:13px;margin:0 0 18px}.study footer{margin-top:auto;display:flex;justify-content:space-between;align-items:center;gap:12px}.study small{font-size:11px;color:var(--muted)}.study a{font-size:12px;font-weight:800;color:var(--hot)}.study.disabled{opacity:.7}.study .tag{font-size:10px;border:1px solid var(--edge);padding:5px 8px;border-radius:4px}
+.lockgrid{display:grid;grid-template-columns:1fr 1fr;gap:11px}.lock{background:var(--panel);padding:19px;border:1px solid var(--edge);border-radius:12px}.lock label{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.1em}.lock h3{font-size:25px;letter-spacing:-.045em;margin:8px 0 13px}.hash{word-break:break-all;color:var(--muted);font-family:ui-monospace,Menlo,monospace;font-size:12px}.subnav{display:flex;gap:15px;flex-wrap:wrap;margin-top:20px;font-size:13px}.subnav a{text-decoration:underline;text-underline-offset:4px;color:var(--hot)}.review-area{background:var(--panel);border:1px solid var(--edge);border-radius:14px;padding:22px;display:flex;align-items:center;gap:28px;justify-content:space-between}.review-area h3{font-size:26px;letter-spacing:-.05em;margin:0 0 9px}.review-area p{color:var(--muted);font-size:13px;max-width:600px;margin:0}.review-actions{display:flex;gap:9px;flex-wrap:wrap}.hidden-input{display:none}
+footer.site-footer{padding:30px 0 65px;color:var(--muted);font-size:12px;display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
+.dialog-backdrop{position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.76);display:none;align-items:center;justify-content:center;padding:15px}.dialog-backdrop.open{display:flex}.dialog{background:#1d211b;border:1px solid #56604b;border-radius:14px;width:min(620px,100%);max-height:calc(100dvh - 30px);overflow:auto;padding:24px;box-shadow:0 30px 90px #000b}.dialog-top{display:flex;justify-content:space-between;gap:20px;align-items:start}.dialog-top h2{font-size:35px;letter-spacing:-.065em;line-height:1.05;margin:0 0 12px}.dialog-top p{color:var(--muted);font-size:12px;margin:0}.iconbtn{height:44px;width:44px;font-size:24px;line-height:1;background:transparent;color:var(--ink);border:1px solid var(--edge);border-radius:8px}.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:19px}.field label{display:block;font-size:12px;margin:0 0 7px;color:var(--muted)}.field select,.field textarea{display:block;width:100%}.field textarea{min-height:160px;resize:vertical}.field{margin-top:16px}.files{display:flex;gap:8px;flex-wrap:wrap}.thumb{display:flex;flex-direction:column;width:100px;gap:4px}.thumb img{width:100%;height:75px;object-fit:cover;border-radius:6px;border:1px solid var(--edge)}.thumb button{font-size:11px;background:transparent;border:1px solid var(--edge);color:var(--ink);border-radius:5px;padding:7px}.dialog-actions{display:flex;justify-content:space-between;gap:10px;margin-top:20px;flex-wrap:wrap}.micro{color:var(--muted);font-size:11px;margin:9px 0}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0}
+@media(max-width:960px){.grid-runs{grid-template-columns:repeat(3,1fr)}.studygrid{grid-template-columns:repeat(2,1fr)}.mini-meta{display:none}}
+@media(max-width:650px){.wrap{width:calc(100% - 28px)}.nav{min-height:60px;gap:12px}.navlinks{display:none}.nav .external{margin-left:auto}.hero{padding:45px 0 38px}h1{font-size:clamp(49px,13.7vw,88px)}.lede{font-size:15px}.section-top{align-items:start;flex-direction:column}section{padding:38px 0}.grid-runs{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.run{min-height:215px;padding:13px}.run-num{font-size:68px}.run-actions button,.run-actions a{font-size:11px;padding:9px 5px}.compare-grid{grid-template-columns:1fr}.compare-body{height:340px}.studygrid,.lockgrid,.form-row{grid-template-columns:1fr}.review-area{display:block}.review-actions{margin-top:20px}.dialog{padding:18px}.dialog-top h2{font-size:30px}}
+body.embedded #comparar{display:none}@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
+</style>
+</head>
+<body>
+<header><div class="nav wrap"><a class="brand" href="#top" aria-label="ROOT inicio">R<i>OO</i>T <span style="font-size:11px;letter-spacing:0;font-weight:500;color:var(--muted)">/ 08</span></a><nav class="navlinks" aria-label="Secciones"><a href="#tanda">Tanda</a><a href="#comparar">Comparar</a><a href="#estudios">Estudios</a><a href="#metodo">Método</a><a href="#revision">Revisión</a></nav><a class="external" href="https://juanmanuelpm.github.io/Experimentos/prometeo/root/">Portal ROOT ↗</a></div></header>
+<main id="top">
+<div class="hero wrap"><div class="eyebrow">Laboratorio ROOT · Ola 001 · Experimento 08</div><h1>UNA<br>CONSIGNA.<br><em>DIEZ</em> RESPUESTAS.</h1><div class="hero-bottom"><p class="lede">Un lugar para ver las diez versiones del mismo encargo, compararlas y señalar qué mejorar antes de repetir la ola.</p><div class="mini-meta">MÉTODO <strong>0.1.1</strong><br>VERSIONES <strong>01—10</strong><br>REVISIÓN <strong>LOCAL</strong></div></div></div>
+<section id="tanda"><div class="wrap"><div class="section-top"><div><h2>Las diez versiones</h2><p>Se comprueba el estado de cada preview. Pendiente no significa fallido.</p></div><div class="controls"><button class="smallbtn" type="button" id="refresh">↻ Actualizar</button></div></div><div class="counters" aria-live="polite"><span><span id="published" class="counter-n">0</span> disponibles</span><span><span id="missing" class="counter-n">0</span> pendientes</span><span id="checking" style="margin-left:auto">Sin comprobar</span></div><div class="grid-runs" id="runGrid" aria-label="Diez variantes"></div><p class="footnote">Se actualiza cada 40 segundos. “Disponible” verifica una respuesta HTTP del archivo público; no certifica la calidad de la obra.</p></div></section>
+<section id="comparar"><div class="wrap"><div class="section-top"><div><h2>Comparación directa</h2><p>Dos resultados en simultáneo, sin capturas inventadas ni imágenes de relleno.</p></div></div><div class="compare-head"><div class="compare-picks"><label>Vista A <select id="slotA" aria-label="Elegir variante A"></select></label><label>Vista B <select id="slotB" aria-label="Elegir variante B"></select></label></div><button class="smallbtn" id="swap" type="button">⇄ Invertir</button></div><div class="compare-grid"><div class="compare-view"><div class="compare-label">A · <b id="nameA">01</b><a id="linkA" href="#" target="_blank" rel="noopener" hidden>Ver completa ↗</a></div><div class="compare-body" id="frameA"></div></div><div class="compare-view"><div class="compare-label">B · <b id="nameB">08</b><a id="linkB" href="#" target="_blank" rel="noopener" hidden>Ver completa ↗</a></div><div class="compare-body" id="frameB"></div></div></div><p class="footnote">Las vistas se abren dentro de un marco; tocá “Ver completa” para comprobar interacción y diseño a tamaño real.</p></div></section>
+<section id="estudios"><div class="wrap"><div class="section-top"><div><h2>Todos los estudios</h2><p>Accesos a registros públicos ya existentes. Sin duplicar obras ni presentar proyectos no publicados.</p></div><a class="smallbtn" href="https://juanmanuelpm.github.io/Experimentos/prometeo/">Ver PROMETEO ↗</a></div><div class="studygrid" id="studyGrid"><p class="footnote">Cargando registro público…</p></div><p class="footnote" id="threeDInfo">3D: consultando el manifiesto público.</p><div class="subnav"><a href="https://juanmanuelpm.github.io/Experimentos/prometeo/3d-flow/galeria/">Galería 3D ↗</a><a href="https://juanmanuelpm.github.io/Experimentos/prometeo/root/">ROOT público ↗</a></div></div></section>
+<section id="metodo"><div class="wrap"><div class="section-top"><div><h2>Lo que permanece fijo</h2><p>La comparación de una ola nueva sólo sirve si se mantiene idéntica la consigna.</p></div></div><div class="lockgrid"><div class="lock"><label>ROOT / método compartido</label><h3>prometeo-root-selfbuild · 0.1.1</h3><div class="hash" id="rootHash">35ee98a3c32538ed02191c1b21917e2d47af9b9bbcdd3e0e03932aa137d1b918</div><button class="smallbtn" data-copy="rootHash" type="button" style="margin-top:14px">Copiar hash</button></div><div class="lock"><label>BRIEF / consigna única</label><h3>La misma para los diez</h3><div class="hash" id="briefHash">558b9babbf23e0fdf1cfeb6b4af7dd0fa7afb9dab5a84b14e280c04b6e2a770a</div><button class="smallbtn" data-copy="briefHash" type="button" style="margin-top:14px">Copiar hash</button></div></div><p class="footnote">Ola 001 · ID: root-ui-benchmark-w001 · diez ejecuciones independientes. Al repetir la ola se conserva el hash de BRIEF y sólo cambia el método común tras revisión en Ideas. Este experimento no modifica ROOT global.</p><p class="footnote" id="programStatus">Portal central: consultá el enlace superior para conocer la etapa vigente.</p></div></section>
+<section id="revision"><div class="wrap"><div class="section-top"><div><h2>Revisión humana</h2><p>Una nota, etapa sospechada y capturas por variante. No se envía información a la red.</p></div></div><div class="review-area"><div><h3 id="reviewCount">0 versiones comentadas</h3><p>Las notas viven en esta pestaña hasta que las exportes. El archivo JSON incluye las imágenes adjuntas y puede importarse de nuevo. CALIBRAR recibe evidencia, no modifica obras automáticamente.</p></div><div class="review-actions"><button class="action" type="button" id="export">↓ Exportar revisión</button><button class="smallbtn" type="button" id="importBtn">↑ Importar</button><input class="hidden-input" type="file" id="importFile" accept=".json,application/json"></div></div><p class="footnote" id="feedback" role="status" aria-live="polite">No hay sincronización automática ni guardado en servidores.</p></div></section>
+</main>
+<footer class="site-footer wrap"><span>ROOT / UI LAB · 08 de 10 · Candidato independiente</span><span>Sin trackers, cookies, cuentas ni bibliotecas externas.</span></footer>
+<div class="dialog-backdrop" id="dialogBackdrop"><div class="dialog" role="dialog" aria-modal="true" aria-labelledby="dialogTitle" tabindex="-1"><div class="dialog-top"><div><div class="eyebrow">Revisión local</div><h2 id="dialogTitle">Versión 08</h2><p>Notas y capturas de esta alternativa. Nada se envía automáticamente.</p></div><button id="closeDialog" type="button" class="iconbtn" aria-label="Cerrar revisión">×</button></div><div class="form-row"><div class="field"><label for="stage">Etapa sospechada (opcional)</label><select id="stage"><option value="">Sin atribuir</option><option value="scope">01 · scope</option><option value="recovery">02 · recovery</option><option value="prevention">03 · prevention</option><option value="alternatives">04 · alternatives</option><option value="capabilities">05 · capabilities</option><option value="planning">06 · planning</option><option value="production">07 · production</option><option value="integration">08 · integration</option><option value="persistence">09 · persistence</option><option value="delivery">10 · delivery</option></select></div><div class="field"><label for="score">Valoración (opcional)</label><select id="score"><option value="">Sin valorar</option><option value="1">1 · Muy débil</option><option value="2">2 · Débil</option><option value="3">3 · Intermedio</option><option value="4">4 · Bueno</option><option value="5">5 · Excelente</option></select></div></div><div class="field"><label for="note">Comentario / observación</label><textarea id="note" placeholder="Qué funciona, qué falla y por qué podría estar ocurriendo…"></textarea></div><div class="field"><label for="shots">Capturas de referencia · PNG, JPG o WEBP · máx. 3 por versión</label><input type="file" id="shots" accept="image/png,image/jpeg,image/webp" multiple><p class="micro">Máximo 3 MB por captura, 18 MB entre todas las versiones.</p><div class="files" id="thumbs"></div></div><div class="dialog-actions"><button type="button" class="smallbtn" id="nextReview">Siguiente versión →</button><button type="button" class="action" id="saveReview">Guardar en esta pestaña</button></div><p class="micro" id="dialogMessage" role="status"></p></div></div>
+<script>
+(function(){
+'use strict';
+var base='https://juanmanuelpm.github.io/Experimentos/';
+var previewBase=base+'prometeo/root/ui-lab/w1/';
+var rootHash='35ee98a3c32538ed02191c1b21917e2d47af9b9bbcdd3e0e03932aa137d1b918';
+var briefHash='558b9babbf23e0fdf1cfeb6b4af7dd0fa7afb9dab5a84b14e280c04b6e2a770a';
+var ids=Array.from({length:10},function(_,i){return i+1});
+var status=Object.fromEntries(ids.map(function(i){return [i,'checking']}));
+var reviews=Object.fromEntries(ids.map(function(i){return [i,{note:'',stage:'',score:'',images:[]}]}));
+var slotA=1,slotB=8,active=8,previousFocus=null,working=false;
+var embedded=new URLSearchParams(window.location.search).has('embed');if(embedded)document.body.classList.add('embedded');
+var $=function(id){return document.getElementById(id)};
+function pad(n){return String(n).padStart(2,'0')}
+function href(n){return previewBase+n+'/index.html'}
+function element(tag,cls,txt){var e=document.createElement(tag);if(cls)e.className=cls;if(txt!==undefined)e.textContent=txt;return e}
+function info(msg){$('feedback').textContent=msg}
+function stateLabel(s){return s==='ready'?'Disponible':s==='missing'?'Pendiente':s==='checking'?'Comprobando…':'Sin verificar'}
+function btn(txt,cls,fn){var e=element('button',cls,txt);e.type='button';e.addEventListener('click',fn);return e}
+function runCard(n){
+ var s=status[n],box=element('article','run '+(s==='ready'?'ready':s==='missing'?'missing':''));if(n===8)box.classList.add('current');
+ var top=element('div','run-top'),name=element('span','',n===8?'ESTA VERSIÓN':'ALTERNATIVA'),mark=element('span','',reviews[n].note||reviews[n].images.length?'● REVISADA':'ROOT 0.1.1');
+ top.append(name,mark);box.append(top,element('div','run-num',pad(n)));
+ var state=element('div','run-state');state.append(element('i','dots'),element('span','',stateLabel(s)));box.append(state);
+ var actions=element('div','run-actions');actions.append(btn('Revisar','',function(){openReview(n)}));
+ var link=element('a','view',s==='ready'?'Abrir ↗':'Sin preview');link.href=s==='ready'?href(n):'#';link.target='_blank';link.rel='noopener noreferrer';if(s!=='ready'){link.setAttribute('aria-disabled','true');link.tabIndex=-1}actions.append(link);
+ actions.append(btn('A','slot'+(slotA===n?' on':''),function(){slotA=n;syncSlots();paint()}));
+ actions.append(btn('B','slot'+(slotB===n?' on':''),function(){slotB=n;syncSlots();paint()}));
+ box.append(actions);return box
+}
+function paint(){
+ var grid=$('runGrid');grid.replaceChildren();ids.forEach(function(n){grid.append(runCard(n))});
+ $('published').textContent=ids.filter(function(n){return status[n]==='ready'}).length;
+ $('missing').textContent=ids.filter(function(n){return status[n]==='missing'}).length;
+ $('checking').textContent=ids.some(function(n){return status[n]==='checking'})?'Comprobando rutas…':'Estado público comprobado';
+ $('reviewCount').textContent=ids.filter(function(n){var r=reviews[n];return r.note.trim()||r.stage||r.score||r.images.length}).length+' versiones comentadas';
+ renderFrame('A',slotA);renderFrame('B',slotB)
+}
+function renderFrame(which,n){
+ var host=$('frame'+which),name=$('name'+which),link=$('link'+which),ready=status[n]==='ready';
+ name.textContent=pad(n);link.hidden=!ready;link.href=ready?href(n):'#';
+ if(host.dataset.version===n+'-'+status[n])return;
+ host.dataset.version=n+'-'+status[n];host.replaceChildren();
+ if(embedded){host.append(element('div','empty','Vista anidada desactivada para evitar bucles de iframes.'));return}
+ if(ready){var f=element('iframe');f.title='Preview '+pad(n);f.loading='lazy';f.referrerPolicy='no-referrer';f.src=href(n)+'?embed=1';host.append(f)}
+ else{var wrap=element('div','empty');wrap.append(element('b','',pad(n)+' · '+stateLabel(status[n])),element('span','',status[n]==='missing'?'Todavía no hay index.html publicado para esta variante.':'La disponibilidad aún no se pudo confirmar.'));host.append(wrap)}
+}
+function syncSlots(){$('slotA').value=String(slotA);$('slotB').value=String(slotB)}
+async function probe(n){
+ try{
+  var response=await fetch(href(n)+'?root-status='+Date.now(),{method:'HEAD',cache:'no-store',credentials:'omit'});
+  if(response.status===405){response=await fetch(href(n)+'?root-status='+Date.now(),{method:'GET',cache:'no-store',credentials:'omit'})}
+  return response.ok?'ready':response.status===404?'missing':'unknown'
+ }catch(e){return 'unknown'}
+}
+async function refresh(){
+ if(working)return;working=true;$('refresh').disabled=true;
+ ids.forEach(function(n){status[n]='checking'});paint();
+ await Promise.all(ids.map(async function(n){status[n]=await probe(n);paint()}));
+ working=false;$('refresh').disabled=false;paint()
+}
+function review(n){return reviews[n]}
+function openReview(n){active=n;previousFocus=document.activeElement;$('dialogTitle').textContent='Versión '+pad(n);$('note').value=review(n).note;$('stage').value=review(n).stage;$('score').value=review(n).score;$('shots').value='';$('dialogMessage').textContent='';renderThumbs();$('dialogBackdrop').classList.add('open');document.body.classList.add('dialog-open');$('closeDialog').focus()}
+function closeReview(){saveInputs();$('dialogBackdrop').classList.remove('open');document.body.classList.remove('dialog-open');paint();if(previousFocus&&document.contains(previousFocus))previousFocus.focus()}
+function saveInputs(){review(active).note=$('note').value;review(active).stage=$('stage').value;review(active).score=$('score').value}
+function renderThumbs(){var host=$('thumbs');host.replaceChildren();review(active).images.forEach(function(im,i){var wrap=element('div','thumb'),photo=element('img');photo.src=im.dataUrl;photo.alt='Captura '+(i+1)+' de la versión '+pad(active);wrap.append(photo,btn('Quitar','',function(){saveInputs();review(active).images.splice(i,1);renderThumbs()}));host.append(wrap)})}
+function totalImages(){return ids.reduce(function(sum,n){return sum+review(n).images.reduce(function(t,i){return t+(i.bytes||0)},0)},0)}
+function readFile(file){return new Promise(function(resolve,reject){var fr=new FileReader();fr.onload=function(){resolve(fr.result)};fr.onerror=function(){reject(new Error('Lectura fallida'))};fr.readAsDataURL(file)})}
+async function addShots(files){
+ saveInputs();var r=review(active),errors=[];
+ for(var file of Array.from(files)){
+  if(r.images.length>=3){errors.push('Máximo de 3 capturas por versión.');break}
+  if(!['image/png','image/jpeg','image/webp'].includes(file.type)){errors.push('Formato no admitido: '+file.name);continue}
+  if(file.size>3*1024*1024){errors.push('Captura demasiado grande: '+file.name);continue}
+  if(totalImages()+file.size>18*1024*1024){errors.push('Límite global de 18 MB alcanzado.');break}
+  try{r.images.push({name:file.name.slice(0,100),mime:file.type,bytes:file.size,dataUrl:await readFile(file)})}catch(e){errors.push('No se pudo leer '+file.name)}
+ }
+ renderThumbs();$('dialogMessage').textContent=errors.length?errors.join(' '):'Capturas añadidas a esta pestaña.';
+}
+function exportReviews(){
+ if($('dialogBackdrop').classList.contains('open'))saveInputs();
+ var entries=ids.map(function(n){var r=review(n);return {variant:n,note:r.note,stage:r.stage,score:r.score,images:r.images}});
+ var payload={schema:'prometeo.root.review/v1',cohortId:'root-ui-benchmark-w001',wave:1,originVariant:8,briefSha256:briefHash,root:{id:'prometeo-root-selfbuild',version:'0.1.1',sha256Canonical:rootHash},createdAt:new Date().toISOString(),privacy:'LOCAL_EXPORT_NO_UPLOAD',entries:entries};
+ var blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=element('a');a.href=url;a.download='ROOT-W001-CALIBRAR-revision.json';document.body.append(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(url)},4000);info('Revisión exportada. El JSON incluye notas y capturas y no se envió a ningún servidor.')
+}
+async function importReviews(file){
+ if(!file)return;
+ if(file.size>32*1024*1024){info('Archivo demasiado grande (máximo 32 MB).');return}
+ try{
+  var data=JSON.parse(await file.text());
+  if(data.schema!=='prometeo.root.review/v1'||data.cohortId!=='root-ui-benchmark-w001'||data.briefSha256!==briefHash||!Array.isArray(data.entries))throw new Error('La revisión no corresponde a esta tanda y brief.');
+  var next=Object.fromEntries(ids.map(function(i){return [i,{note:'',stage:'',score:'',images:[]}]}));
+  var stages=['scope','recovery','prevention','alternatives','capabilities','planning','production','integration','persistence','delivery'];
+  for(var item of data.entries){
+   if(!ids.includes(item.variant))continue;
+   var n=item.variant,images=Array.isArray(item.images)?item.images:[];
+   next[n]={note:typeof item.note==='string'?item.note.slice(0,40000):'',stage:stages.includes(item.stage)?item.stage:'',score:['1','2','3','4','5'].includes(String(item.score))?String(item.score):'',images:images.filter(function(im){return im&&typeof im.dataUrl==='string'&&/^data:image\/(png|jpeg|webp);base64,/.test(im.dataUrl)&&im.dataUrl.length<4200000}).slice(0,3).map(function(im){return {name:String(im.name||'captura').slice(0,100),mime:String(im.mime||''),bytes:Number(im.bytes)||0,dataUrl:im.dataUrl}})}
+  }
+  if(!confirm('¿Reemplazar las notas y capturas de esta pestaña con las importadas?'))return;
+  reviews=next;paint();info('Revisión importada y disponible en esta pestaña. No se envió por red.')
+ }catch(e){info('No se pudo importar: '+e.message)}
+}
+function paintStudios(data){
+ var host=$('studyGrid');host.replaceChildren();
+ var known=[{id:'education',name:'Educación'},{id:'archive',name:'Archivo Vivo'},{id:'phone',name:'Phone'},{id:'ideas',name:'Ideas'}];
+ var list=Array.isArray(data.studios)?data.studios:[];
+ var combined=list.concat(known.map(function(v){return {id:v.id,name:v.name,subtitle:'Sin catálogo público integrado',public_view:null}}));
+ combined.forEach(function(s){
+  var card=element('article','study'+(!s.public_view?' disabled':''));
+  card.append(element('h3','',s.name),element('p','',s.subtitle||'Estudio de PROMETEO'));
+  var foot=element('footer'),tag=element('small','',s.public_view?'Entrada pública':'Sin galería integrada');foot.append(tag);
+  if(s.public_view&&/^prometeo\/[a-z0-9/_-]+\/?$/i.test(s.public_view)){var a=element('a','', 'Abrir ↗');a.href=base+s.public_view;foot.append(a)}
+  else{foot.append(element('span','tag','Pendiente'))}
+  card.append(foot);host.append(card)
+ })
+}
+async function loadStudios(){
+ try{var r=await fetch(base+'prometeo/site/spaces.json',{cache:'no-store'});if(!r.ok)throw new Error('HTTP '+r.status);paintStudios(await r.json())}catch(e){paintStudios({studios:[{name:'Estudio 3D',subtitle:'Abrir la galería existente',public_view:'prometeo/3d-flow/galeria/'}]})}
+ try{var r2=await fetch(base+'prometeo/3d-flow/w4/MANIFEST.json',{cache:'no-store'});if(!r2.ok)throw new Error('HTTP '+r2.status);var data=await r2.json();$('threeDInfo').textContent='3D · Ola 004: '+(Array.isArray(data.tasks)?data.tasks.length:'?')+' encargos registrados, tres series. El registro no acredita que todos estén publicados.'}catch(e){$('threeDInfo').textContent='El manifiesto 3D no pudo comprobarse. Usá la galería pública.'}
+ try{var rr=await fetch(base+'prometeo/root/PROGRAM.json',{cache:'no-store'});if(rr.ok){var p=await rr.json();if(p.active){$('programStatus').textContent='Portal central: '+(p.active.stageId||'fase no indicada')+' · ola '+String(p.active.wave||'no indicada')+'. Esta variante conserva fijada la Ola 001.'}}}catch(e){}
+}
+ids.forEach(function(n){var opt=element('option','',pad(n));opt.value=String(n);$('slotA').append(opt);$('slotB').append(opt.cloneNode(true))});
+syncSlots();$('slotA').addEventListener('change',function(e){slotA=Number(e.target.value);paint()});$('slotB').addEventListener('change',function(e){slotB=Number(e.target.value);paint()});$('swap').addEventListener('click',function(){var x=slotA;slotA=slotB;slotB=x;syncSlots();paint()});$('refresh').addEventListener('click',refresh);
+$('closeDialog').addEventListener('click',closeReview);$('dialogBackdrop').addEventListener('click',function(e){if(e.target===$('dialogBackdrop'))closeReview()});document.addEventListener('keydown',function(e){if(e.key==='Escape'&&$('dialogBackdrop').classList.contains('open'))closeReview()});
+$('saveReview').addEventListener('click',function(){closeReview();info('Nota de la versión '+pad(active)+' guardada en esta pestaña.')});$('nextReview').addEventListener('click',function(){saveInputs();openReview(active===10?1:active+1)});$('shots').addEventListener('change',function(e){addShots(e.target.files);e.target.value=''});$('export').addEventListener('click',exportReviews);$('importBtn').addEventListener('click',function(){$('importFile').click()});$('importFile').addEventListener('change',function(e){importReviews(e.target.files[0]);e.target.value=''});
+document.querySelectorAll('[data-copy]').forEach(function(b){b.addEventListener('click',async function(){var val=$(b.dataset.copy).textContent;try{await navigator.clipboard.writeText(val);b.textContent='Copiado ✓'}catch(e){b.textContent='Seleccioná el hash';var r=document.createRange();r.selectNodeContents($(b.dataset.copy));var s=window.getSelection();s.removeAllRanges();s.addRange(r)}setTimeout(function(){b.textContent='Copiar hash'},1800)})});
+paint();refresh();loadStudios();setInterval(function(){if(!document.hidden)refresh()},40000);
+})();
+</script>
+</body></html>
