@@ -1,0 +1,56 @@
+{
+  "schema": "prometeo.3d.scene-release/v2",
+  "projectId": "estacion-servicio-tormenta",
+  "version": "v2",
+  "status": "PUBLIC_GIT_CANDIDATE_UNREVIEWED",
+  "ownerRepo": "JuanManuelPM/pruebas",
+  "ownerBranch": "candidate/3d-estacion-servicio-tormenta-v2-wave002-20261120",
+  "ownerSource": "PROMETEO/spaces/studio-3d/works/estacion-servicio-tormenta/v2/source/scene.mjs",
+  "sourceBlob": "709180a950a47ed197817c4209cf9e9f63e2f917",
+  "flow": {
+    "name": "prometeo-3d-production",
+    "version": "2.0.0",
+    "sha256Canonical": "27c96cac84056dd8b1f2a952cdb8f0f2f7f8136ef322280f34f510f24c239682"
+  },
+  "briefSHA256": "c8192fd2690021cfe77c4e2d7153034338e6e7aca16e0dea50bc4ec0a0d61d47",
+  "lineage": {
+    "priorVersion": "v1",
+    "priorBranch": "candidate/3d-estacion-servicio-tormenta-v1-wave001-20261120",
+    "priorSourceBlob": "07307d4e19c5a2c0d21ab2e967077a0c12d80520",
+    "approach": "V2 builds on prior creative arrangement, replaces fragile gzip import route and completes previously missing scene scope"
+  },
+  "preview": {
+    "url": "https://juanmanuelpm.github.io/Experimentos/prometeo/previews/estacion-servicio-tormenta/v2/",
+    "repository": "JuanManuelPM/Experimentos",
+    "ref": "gh-pages",
+    "path": "prometeo/previews/estacion-servicio-tormenta/v2/",
+    "commit": "b27b2d6b643e433b9120fd5645c3e2b0d89a7d6a",
+    "codeBlob": "709180a950a47ed197817c4209cf9e9f63e2f917",
+    "gitVerified": true,
+    "httpVerified": false,
+    "webgl2Executed": false,
+    "mobileExecuted": false,
+    "humanArtApproval": "NOT_RUN"
+  },
+  "features": [
+    "Complete 3D service station and retro shop interior",
+    "Two illuminated pumps with original graphic text",
+    "Original modeled sedan with animated driver door and headlights",
+    "Licensed CesiumMan GLB loaded at runtime, person trajectory",
+    "Rain particles, splash rings, lightning, wet asphalt light streaks",
+    "Cinematic 36-second track and touch-friendly free orbit",
+    "Reset, pause/play, rain switch, timeline",
+    "Explicit 2D error panel instead of V1 generic load error",
+    "Visible actor asset failure warning and deterministic animation pause"
+  ],
+  "knownGaps": [
+    "GLB load and animation in browser",
+    "WebGL2 GPU frame and light quality",
+    "Android interaction and memory/performance",
+    "Artistic user acceptance",
+    "Wet pavement shader shows emissive ribbons rather than geometric mirror reflections",
+    "Exterior set dressing and vehicle are procedural meshes and require close-up artistic review",
+    "No GLB or Blender roundtrip for new assets"
+  ],
+  "budgetUSD": 0
+}
