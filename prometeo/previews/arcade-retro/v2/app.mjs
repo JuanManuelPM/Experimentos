@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import {makeCabinet} from "./cabinet.mjs";
+import {startFallback} from "./fallback.mjs";
 
 // Arcade Retro V2, Wave 002. Original room/game, manufactured V1 cabinet reused intact.
 // Rendering requirements: WebGL2 and an ES-module-capable browser. No compressed JS boot.
@@ -152,10 +153,10 @@ function tickGame(dt){if(!game.playing)return;
  if(game.lives<=0){game.playing=false;game.over=true;}
 }
 const rendererReady=(()=>{try{const c=document.createElement("canvas");return !!c.getContext("webgl2");}catch{return false;}})();
-if(!rendererReady){error("WEBGL_CONTEXT",new Error("Se necesita WebGL2. Probá Chrome actualizado o activá aceleración de hardware."));}
+if(!rendererReady){startFallback(root,qa);}
 else {
  qa.browserWebGL2=true;
- try{start3d();}catch(e){error("RUNTIME",e);}
+ try{start3d();}catch(e){error("RUNTIME",e);startFallback(root,qa);}
 }
 function start3d(){
  const renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:"high-performance"});
