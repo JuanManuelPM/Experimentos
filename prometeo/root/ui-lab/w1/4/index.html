@@ -1,0 +1,311 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#111110">
+<meta name="description" content="ROOT de PROMETEO. Una consigna, diez versiones, comparación y revisión local.">
+<title>ROOT / PROMETEO · Ola 001</title>
+<style>
+:root{color-scheme:dark;--bg:#111110;--surface:#1d1d1b;--surface2:#242421;--ink:#f2f0e9;--muted:#a3a29a;--line:#41413c;--bright:#e9e6d8;--safe:#a7bca1;--warn:#c9ba91}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;background:var(--bg)}
+body{margin:0;color:var(--ink);font:16px/1.45 system-ui,-apple-system,Segoe UI,sans-serif}
+button,select,textarea,input{font:inherit}button{cursor:pointer}
+a{color:inherit;text-decoration:none}
+button:focus-visible,a:focus-visible,select:focus-visible,textarea:focus-visible,input:focus-visible,summary:focus-visible{outline:3px solid var(--bright);outline-offset:3px}
+button:disabled{opacity:.4;cursor:not-allowed}
+[hidden]{display:none!important}
+.shell{max-width:1270px;margin:auto;padding:0 clamp(16px,3.5vw,48px)}
+.top{border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:82px}
+.logotype{font-size:17px;font-weight:880;letter-spacing:.08em;white-space:nowrap}
+.logotype span{font-weight:430;color:var(--muted);font-size:13px;letter-spacing:.02em;margin-left:10px}
+.nav{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.nav a,.nav button{border:1px solid var(--line);background:transparent;color:var(--ink);min-height:45px;padding:10px 15px;font-size:13px;font-weight:700}
+.nav a:hover,.nav button:hover,.quiet:hover{background:var(--surface2)}
+.hero{padding:clamp(42px,7vw,96px) 0 50px;position:relative}
+.eyebrow,.micro{font-size:11px;letter-spacing:.15em;text-transform:uppercase;font-weight:780}
+.eyebrow{color:var(--muted)}
+h1{font-weight:760;font-size:clamp(46px,9.5vw,116px);line-height:.98;letter-spacing:-.075em;margin:20px 0 22px}
+.hero .description{color:var(--muted);max-width:590px;font-size:clamp(15px,1.6vw,19px);margin:0}
+.hero .numbermark{position:absolute;right:0;top:50px;font-size:12px;color:var(--muted);letter-spacing:.1em}
+.section{border-top:1px solid var(--line);padding:28px 0 54px}
+.sectionline{display:flex;align-items:start;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:20px}
+h2{font-size:clamp(23px,3.5vw,35px);margin:3px 0 0;line-height:1.12;letter-spacing:-.04em}
+.muted{color:var(--muted)}.small{font-size:13px}
+.quiet{background:transparent;border:1px solid var(--line);color:var(--ink);min-height:46px;padding:11px 17px;font-size:13px;font-weight:730}
+.primary{background:var(--bright);border:1px solid var(--bright);color:#141411;min-height:49px;padding:12px 18px;font-weight:800;font-size:14px}
+.primary:hover{background:white}
+.secondary{background:transparent;border:1px solid var(--line);color:var(--ink);min-height:46px;padding:12px 16px;font-weight:740}
+.statusrow{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.status{font-size:12px;font-weight:760;letter-spacing:.01em}
+.status[data-state=ready]{color:var(--safe)}
+.status[data-state=pending]{color:var(--muted)}
+.status[data-state=unknown]{color:var(--warn)}
+.counter{border:1px solid var(--line);padding:10px 13px;font-variant-numeric:tabular-nums;font-size:12px}
+.slots{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:9px}
+.slot{min-height:147px;display:flex;flex-direction:column;align-items:stretch;justify-content:space-between;text-align:left;border:1px solid var(--line);background:var(--surface);padding:16px;color:var(--ink);transition:background .15s,border-color .15s}
+.slot:hover{background:var(--surface2)}
+.slot.selected{border-color:var(--bright);box-shadow:inset 0 0 0 1px var(--bright)}
+.slothead{display:flex;justify-content:space-between;gap:8px;align-items:start}
+.slotnum{font-size:clamp(30px,4vw,55px);line-height:1;letter-spacing:-.07em;font-weight:760;font-variant-numeric:tabular-nums}
+.slotright{font-size:12px;opacity:.7}
+.slotlabel{font-size:12px;font-weight:650}
+.slotstate{margin-top:5px;font-size:12px;color:var(--muted)}
+.slot[data-state=ready] .slotstate{color:var(--safe)}
+.slot[data-state=unknown] .slotstate{color:var(--warn)}
+.panelnote{font-size:12px;color:var(--muted);margin:14px 0 0}
+.compare{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:22px}
+.viewer{border:1px solid var(--line);background:var(--surface);min-width:0}
+.viewerhead{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;gap:10px;flex-wrap:wrap;border-bottom:1px solid var(--line)}
+.viewername{font-size:12px;letter-spacing:.11em;text-transform:uppercase;font-weight:760}
+.viewercontrols{display:flex;align-items:center;gap:8px}
+.viewercontrols select{background:var(--bg);border:1px solid var(--line);color:var(--ink);min-width:70px;min-height:46px;padding:6px}
+.viewerlink{padding:10px 13px;border:1px solid var(--line);min-height:46px;display:inline-flex;align-items:center;font-weight:700;font-size:12px}
+.viewerlink:hover{background:var(--surface2)}
+.framewrap{height:clamp(340px,39vw,620px);position:relative;background:#0d0d0d}
+.framewrap iframe{width:100%;height:100%;border:0;background:white;display:block}
+.fallback{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:10px;height:100%;padding:24px}
+.fallback strong{font-size:clamp(24px,3.3vw,40px);letter-spacing:-.05em}
+.fallback p{font-size:13px;color:var(--muted);max-width:280px}
+.framenote{border-top:1px solid var(--line);font-size:12px;color:var(--muted);padding:12px 16px;min-height:48px}
+.studies{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
+.study{border:1px solid var(--line);background:var(--surface);padding:20px;min-height:152px;display:flex;flex-direction:column;justify-content:space-between;gap:15px}
+.study strong{font-size:22px;letter-spacing:-.045em}
+.study p{font-size:13px;color:var(--muted);margin:3px 0 0}
+.study a{font-size:13px;font-weight:780;text-decoration:underline;text-underline-offset:4px;align-self:start}
+.study a:hover{color:white}
+.study .muted{font-size:12px}
+.reviewgrid{display:grid;grid-template-columns:220px 1fr;gap:15px}
+.reviewsidebar{border:1px solid var(--line);padding:15px;background:var(--surface);align-self:start}
+.reviewsidebar label{display:block;color:var(--muted);font-size:12px;margin-bottom:7px}
+.selectfield{background:var(--bg);color:var(--ink);border:1px solid var(--line);width:100%;min-height:49px;padding:10px;margin-bottom:14px}
+.review-sidebar-message{font-size:13px;color:var(--muted)}
+.editor{border:1px solid var(--line);padding:clamp(16px,2.8vw,27px);background:var(--surface)}
+.editor label{display:block;font-size:13px;font-weight:760;margin-bottom:8px}
+.editor textarea{width:100%;min-height:150px;resize:vertical;background:var(--bg);color:var(--ink);border:1px solid var(--line);padding:14px;font-size:15px;line-height:1.6}
+.editor textarea::placeholder{color:#8d8c84}
+.editorrow{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin:18px 0}
+.upload{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:6px}
+.upload input{max-width:100%;font-size:13px}
+.fileinfo{color:var(--muted);font-size:12px}
+.editorfoot{border-top:1px solid var(--line);padding-top:18px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.editorfoot .actions{display:flex;gap:9px;flex-wrap:wrap}
+.signal{font-size:13px;color:var(--muted);min-height:19px}
+.proof{display:grid;grid-template-columns:1fr 1fr;gap:15px}
+.proofcard{border:1px solid var(--line);background:var(--surface);padding:20px;min-width:0}
+.proofcard h3{font-size:14px;letter-spacing:.05em;margin:0 0 11px}
+.proofcard p{font-size:13px;color:var(--muted);margin:8px 0}
+.hash{display:block;overflow-wrap:anywhere;font-size:11px;line-height:1.6;color:var(--ink);background:var(--bg);border:1px solid var(--line);padding:11px}
+.links{display:flex;gap:12px;flex-wrap:wrap;font-size:13px}
+.links a{border-bottom:1px solid var(--muted);padding:3px 0}
+footer{padding:25px 0 38px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:20px;color:var(--muted);font-size:12px;border-top:1px solid var(--line)}
+@media(max-width:960px){.slots{grid-template-columns:repeat(5,minmax(0,1fr))}.slot{padding:12px;min-height:125px}.studies{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:650px){.top{min-height:70px}.logotype span{display:none}.nav a,.nav button{min-height:43px;padding:8px 10px;font-size:12px}.hero .numbermark{display:none}.hero{padding:45px 0 40px}.section{padding:25px 0 40px}.slots{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.slot{min-height:112px;padding:14px}.slotnum{font-size:45px}.compare,.reviewgrid,.proof{grid-template-columns:1fr}.framewrap{height:60vh;min-height:330px;max-height:650px}.studies{grid-template-columns:1fr 1fr}.study{padding:15px;min-height:150px}.study strong{font-size:19px}.editorrow{grid-template-columns:1fr;gap:0}.reviewsidebar{display:grid;grid-template-columns:1fr 1fr;gap:10px}.reviewsidebar .selectfield{margin:0}.review-sidebar-message{grid-column:1 / -1;margin:0}}
+@media(max-width:390px){.studies{grid-template-columns:1fr}.nav a:last-child{display:none}.slotnum{font-size:40px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.slot{transition:none}}
+</style>
+</head>
+<body>
+<div class="shell">
+<header class="top">
+  <a class="logotype" href="https://juanmanuelpm.github.io/Experimentos/prometeo/" target="_blank" rel="noopener noreferrer" aria-label="Abrir portal PROMETEO">PROMETEO <span>ROOT / 001</span></a>
+  <nav class="nav" aria-label="Navegación principal">
+    <a href="#versiones">VERSIONES</a><a href="#estudios">ESTUDIOS</a><a href="#revision">REVISIÓN</a>
+    <a href="https://juanmanuelpm.github.io/Experimentos/prometeo/root/ui-lab/" target="_blank" rel="noopener noreferrer" aria-label="Abrir galería fija ROOT">GALERÍA ↗</a>
+  </nav>
+</header>
+<main>
+  <section class="hero" aria-label="Presentación">
+    <div class="numbermark">OLA 001 · EJECUCIÓN 04</div>
+    <div class="eyebrow">Un sistema · Una consigna · Diez ejecuciones</div>
+    <h1>Una raíz.<br>Diez respuestas.</h1>
+    <p class="description">Abrí dos versiones, comparalas y dejá observaciones para la próxima ola. Las obras viven en sus estudios; acá solamente las reunimos.</p>
+  </section>
+  <section class="section" id="versiones">
+    <div class="sectionline">
+      <div><div class="eyebrow">01 / Laboratorio</div><h2>Elegí qué comparar.</h2></div>
+      <div class="statusrow"><span class="counter" id="count" role="status" aria-live="polite">Consultando 0/10</span><button class="quiet" id="refresh" type="button">Actualizar estados ↻</button></div>
+    </div>
+    <div class="slots" id="slots" aria-label="Diez ejecuciones de la misma consigna"></div>
+    <p class="panelnote">«Publicada» significa que el archivo responde, no que pasó una prueba visual. Los resultados pueden aparecer en cualquier orden.</p>
+    <div class="compare" aria-label="Comparador de versiones">
+      <article class="viewer" data-view="a">
+        <div class="viewerhead"><span class="viewername">Vista A</span><div class="viewercontrols"><label class="micro" for="selectA">N.º</label><select id="selectA" aria-label="Versión a la izquierda"></select><a id="openA" class="viewerlink" href="#" target="_blank" rel="noopener noreferrer" hidden>Abrir ↗</a></div></div>
+        <div class="framewrap"><iframe id="frameA" title="Vista previa A de ROOT" sandbox="allow-scripts allow-forms allow-popups allow-downloads" referrerpolicy="no-referrer" loading="lazy" hidden></iframe><div class="fallback" id="emptyA"><strong>Sin publicar</strong><p>Elegí otra alternativa o actualizá los estados.</p></div></div>
+        <div class="framenote" id="captionA">Estado sin confirmar</div>
+      </article>
+      <article class="viewer" data-view="b">
+        <div class="viewerhead"><span class="viewername">Vista B</span><div class="viewercontrols"><label class="micro" for="selectB">N.º</label><select id="selectB" aria-label="Versión a la derecha"></select><a id="openB" class="viewerlink" href="#" target="_blank" rel="noopener noreferrer" hidden>Abrir ↗</a></div></div>
+        <div class="framewrap"><iframe id="frameB" title="Vista previa B de ROOT" sandbox="allow-scripts allow-forms allow-popups allow-downloads" referrerpolicy="no-referrer" loading="lazy" hidden></iframe><div class="fallback" id="emptyB"><strong>Sin publicar</strong><p>Elegí otra alternativa o actualizá los estados.</p></div></div>
+        <div class="framenote" id="captionB">Estado sin confirmar</div>
+      </article>
+    </div>
+  </section>
+  <section class="section" id="estudios">
+    <div class="sectionline"><div><div class="eyebrow">02 / Entradas</div><h2>Todo PROMETEO.</h2></div><span class="small muted">Una entrada, sin duplicar catálogos.</span></div>
+    <div class="studies">
+      <article class="study"><div><strong>Portal común</strong><p>Acceso general a PROMETEO.</p></div><a href="https://juanmanuelpm.github.io/Experimentos/prometeo/" target="_blank" rel="noopener noreferrer">Abrir portal ↗</a></article>
+      <article class="study"><div><strong>Estudio 3D</strong><p>Galería publicada y sus producciones existentes.</p></div><a href="https://juanmanuelpm.github.io/Experimentos/prometeo/3d-flow/galeria/" target="_blank" rel="noopener noreferrer">Abrir galería 3D ↗</a></article>
+      <article class="study"><div><strong>ROOT</strong><p>Portal anterior y galería fija del experimento.</p></div><a href="https://juanmanuelpm.github.io/Experimentos/prometeo/root/" target="_blank" rel="noopener noreferrer">Abrir ROOT ↗</a></article>
+      <article class="study"><div><strong>Música</strong><p>Acceso por portal común; catálogo específico no confirmado.</p></div><a href="https://juanmanuelpm.github.io/Experimentos/prometeo/" target="_blank" rel="noopener noreferrer">Ir al portal ↗</a></article>
+      <article class="study"><div><strong>Video · Imágenes · Web</strong><p>Áreas existentes. No se atribuyen publicaciones no verificadas.</p></div><a href="https://juanmanuelpm.github.io/Experimentos/prometeo/" target="_blank" rel="noopener noreferrer">Ir al portal ↗</a></article>
+      <article class="study"><div><strong>Educación · Archivo · Phone</strong><p>Entradas disponibles a través del portal general.</p></div><a href="https://juanmanuelpm.github.io/Experimentos/prometeo/" target="_blank" rel="noopener noreferrer">Ir al portal ↗</a></article>
+    </div>
+  </section>
+  <section class="section" id="revision">
+    <div class="sectionline"><div><div class="eyebrow">03 / CALIBRAR</div><h2>Registrá lo que falla.</h2></div><span class="small muted">Tus notas y capturas no se envían a ningún servidor.</span></div>
+    <div class="reviewgrid">
+      <aside class="reviewsidebar"><div><label for="reviewN">Versión observada</label><select id="reviewN" class="selectfield"></select></div><p class="review-sidebar-message">Elegí una versión. Podés guardar una nota y una etapa sospechada para cada una.</p></aside>
+      <div class="editor">
+        <label for="note">Observación</label>
+        <textarea id="note" placeholder="¿Qué funciona? ¿Qué falla? ¿Qué te gustaría conservar?" maxlength="12000"></textarea>
+        <div class="editorrow">
+          <div><label for="stage">Etapa sospechada (opcional)</label><select id="stage" class="selectfield"><option value="">No identificada</option><option value="scope">01 · Encargo</option><option value="recovery">02 · Fuentes</option><option value="prevention">03 · Prevención</option><option value="alternatives">04 · Alternativas</option><option value="capabilities">05 · Capacidades</option><option value="planning">06 · Planificación</option><option value="production">07 · Producción</option><option value="integration">08 · Integración</option><option value="persistence">09 · Persistencia</option><option value="delivery">10 · Entrega</option></select></div>
+          <div><label for="images">Capturas de referencia</label><div class="upload"><input id="images" type="file" accept="image/png,image/jpeg,image/webp" multiple aria-describedby="fileinfo"></div><div class="fileinfo" id="fileinfo">Hasta 3 imágenes por versión, de 4 MB cada una. Se adjuntan al archivo exportado.</div></div>
+        </div>
+        <div class="editorfoot"><div class="signal" id="feedback" role="status" aria-live="polite">Notas locales; los adjuntos quedan en memoria hasta exportar.</div><div class="actions"><button class="secondary" id="clearReview" type="button">Limpiar esta versión</button><button class="primary" id="exportReview" type="button">Exportar revisión ↓</button><label class="secondary" for="importReview" style="cursor:pointer">Importar revisión ↑</label><input type="file" id="importReview" accept="application/json,.json" hidden></div></div>
+      </div>
+    </div>
+  </section>
+  <section class="section" id="metodo">
+    <div class="sectionline"><div><div class="eyebrow">04 / Reproducibilidad</div><h2>La consigna no cambia.</h2></div><span class="small muted">Sólo ROOT puede cambiar entre olas, después de CALIBRAR.</span></div>
+    <div class="proof">
+      <div class="proofcard"><h3>BRIEF · W001</h3><p>El mismo encargo literal para las diez versiones.</p><code class="hash">558b9babbf23e0fdf1cfeb6b4af7dd0fa7afb9dab5a84b14e280c04b6e2a770a</code></div>
+      <div class="proofcard"><h3>ROOT · 0.1.1</h3><p>Diez etapas fijas; ninguna rama inventa su propio método.</p><code class="hash">35ee98a3c32538ed02191c1b21917e2d47af9b9bbcdd3e0e03932aa137d1b918</code></div>
+    </div>
+    <div class="links" style="margin-top:18px"><a href="https://juanmanuelpm.github.io/Experimentos/prometeo/root/ui-lab/BATCH.json" target="_blank" rel="noopener noreferrer">Manifiesto de la ola ↗</a><a href="https://juanmanuelpm.github.io/Experimentos/prometeo/3d-flow/galeria/" target="_blank" rel="noopener noreferrer">Producción 3D ↗</a><span class="muted">W002: sin publicar</span></div>
+  </section>
+</main>
+<footer><span>ROOT / UI-LAB · OLA 001 · Versión 04</span><span>Fuentes públicas · Revisión local · Sin cuentas</span></footer>
+</div>
+<script>
+(function(){
+"use strict";
+var ROOT="https://juanmanuelpm.github.io/Experimentos/";
+var BRIEF="558b9babbf23e0fdf1cfeb6b4af7dd0fa7afb9dab5a84b14e280c04b6e2a770a";
+var FLOW="35ee98a3c32538ed02191c1b21917e2d47af9b9bbcdd3e0e03932aa137d1b918";
+var STORAGE="prometeo.root.ui-lab.w001.review.v1";
+var stageIds=["scope","recovery","prevention","alternatives","capabilities","planning","production","integration","persistence","delivery"];
+var $=function(id){return document.getElementById(id)};
+var statuses={}; var activeA=4,activeB=1,activeReview=4,scanning=false,attachments={},drafts={};
+var names={ready:"Publicada",pending:"Pendiente",unknown:"Sin confirmar",checking:"Consultando"};
+var urls=Array.from({length:10},function(_,i){return ROOT+"prometeo/root/ui-lab/w1/"+(i+1)+"/index.html"});
+function format(n){return String(n).padStart(2,"0")}
+function url(n){return urls[n-1]}
+function safeLoad(){try{var x=JSON.parse(localStorage.getItem(STORAGE)||"{}");if(x&&x.schema==="prometeo.root.review.drafts/v1"&&x.notes&&typeof x.notes==="object")drafts=x.notes}catch(e){drafts={}}}
+function save(){try{localStorage.setItem(STORAGE,JSON.stringify({schema:"prometeo.root.review.drafts/v1",notes:drafts}))}catch(e){$("feedback").textContent="Almacenamiento local no disponible; exportá para conservar las notas."}}
+function signal(msg){$("feedback").textContent=msg}
+function makeOption(n){var op=document.createElement("option");op.value=String(n);op.textContent=format(n);return op}
+for(var n=1;n<=10;n++){
+  ["selectA","selectB","reviewN"].forEach(function(id){$(id).appendChild(makeOption(n))});
+  var b=document.createElement("button");b.type="button";b.className="slot";b.dataset.n=String(n);b.dataset.state="checking";
+  b.innerHTML='<span class="slothead"><span class="slotnum">'+format(n)+'</span><span class="slotright">↗</span></span><span><span class="slotlabel">VERSIÓN '+format(n)+'</span><span class="slotstate" aria-live="polite">Consultando</span></span>';
+  b.addEventListener("click",(function(num){return function(){activeA=num;renderSlots();renderViewer("A");$("selectA").value=String(num)}})(n));
+  $("slots").appendChild(b);
+}
+$("selectA").value=String(activeA);$("selectB").value=String(activeB);$("reviewN").value=String(activeReview);
+function renderSlots(){
+  Array.from($("slots").children).forEach(function(b){
+    var n=Number(b.dataset.n),state=statuses[n]||"checking";
+    b.dataset.state=state;
+    b.classList.toggle("selected",n===activeA);
+    b.setAttribute("aria-pressed",String(n===activeA));
+    b.querySelector(".slotstate").textContent=names[state]||names.unknown;
+  });
+}
+function renderViewer(side){
+  var n=side==="A"?activeA:activeB,state=statuses[n]||"checking",ready=state==="ready";
+  var frame=$("frame"+side),empty=$("empty"+side),link=$("open"+side),caption=$("caption"+side);
+  $("select"+side).value=String(n);frame.hidden=!ready;empty.hidden=ready;link.hidden=!ready;
+  if(ready){
+    if(frame.getAttribute("src")!==url(n))frame.setAttribute("src",url(n));
+    link.href=url(n);
+  }else{
+    frame.removeAttribute("src");link.removeAttribute("href");
+    empty.querySelector("strong").textContent=state==="pending"?"Todavía pendiente":state==="checking"?"Consultando":"Sin confirmar";
+    empty.querySelector("p").textContent=state==="pending"?"Esta versión aún no tiene index.html publicado.":state==="checking"?"Comprobando si se publicó.":"No se pudo verificar la disponibilidad. Probá actualizar.";
+  }
+  caption.textContent="Versión "+format(n)+" · "+(names[state]||names.unknown)+(ready?" · Vista aislada; abrí aparte para usar todas las funciones.":"");
+}
+function paint(){renderSlots();renderViewer("A");renderViewer("B")}
+async function check(url){
+  var controller=new AbortController(),timer=setTimeout(function(){controller.abort()},7500);
+  try{var r=await fetch(url,{method:"HEAD",cache:"no-store",signal:controller.signal});return r.ok?"ready":r.status===404?"pending":"unknown"}
+  catch(e){return"unknown"}finally{clearTimeout(timer)}
+}
+async function scan(){
+  if(scanning)return;scanning=true;$("refresh").disabled=true;$("count").textContent="Consultando…";
+  var rows=await Promise.all(urls.map(async function(u,i){return{i:i+1,s:await check(u)}}));
+  rows.forEach(function(r){statuses[r.i]=r.s});
+  var ready=rows.filter(function(r){return r.s==="ready"}).length,unknown=rows.filter(function(r){return r.s==="unknown"}).length;
+  $("count").textContent=ready+"/10 publicadas"+(unknown?" · "+unknown+" sin confirmar":"");
+  scanning=false;$("refresh").disabled=false;paint();
+}
+function loadReview(n){
+  var value=drafts[n]||{};
+  $("reviewN").value=String(n);$("note").value=typeof value.note==="string"?value.note:"";
+  $("stage").value=stageIds.includes(value.stage)?value.stage:"";
+  var files=attachments[n]||[];$("images").value="";
+  $("fileinfo").textContent=files.length?files.length+" captura(s) adjunta(s). Seleccionar nuevas reemplaza las actuales.":"Hasta 3 imágenes por versión, de 4 MB cada una. Se adjuntan al archivo exportado.";
+}
+function saveReview(){drafts[activeReview]={note:$("note").value,stage:$("stage").value};save()}
+$("selectA").addEventListener("change",function(){activeA=Number(this.value);paint()});
+$("selectB").addEventListener("change",function(){activeB=Number(this.value);paint()});
+$("refresh").addEventListener("click",scan);
+$("reviewN").addEventListener("change",function(){saveReview();activeReview=Number(this.value);loadReview(activeReview);signal("Editando versión "+format(activeReview)+".")});
+$("note").addEventListener("input",saveReview);
+$("stage").addEventListener("change",saveReview);
+$("images").addEventListener("change",function(){
+  var picked=Array.from(this.files||[]);
+  if(picked.length>3||picked.some(function(f){return !["image/jpeg","image/png","image/webp"].includes(f.type)||f.size>4*1024*1024})){
+    this.value="";signal("Adjuntos rechazados: máximo 3 imágenes PNG/JPEG/WebP de hasta 4 MB.");return;
+  }
+  attachments[activeReview]=picked;
+  $("fileinfo").textContent=picked.length?picked.length+" captura(s) lista(s) para exportar.":"Sin capturas seleccionadas.";
+  signal("Las capturas sólo permanecen en memoria hasta exportar.");
+});
+$("clearReview").addEventListener("click",function(){
+  delete drafts[activeReview];delete attachments[activeReview];save();loadReview(activeReview);signal("Versión "+format(activeReview)+" limpiada en este dispositivo.");
+});
+function fileToData(file){return new Promise(function(resolve,reject){var reader=new FileReader();reader.onload=function(){resolve(reader.result)};reader.onerror=function(){reject(new Error("No se pudo leer "+file.name))};reader.readAsDataURL(file)})}
+async function exportReview(){
+  saveReview();var button=$("exportReview");button.disabled=true;signal("Preparando archivo local…");
+  try{
+    var reviews=[];
+    for(var n=1;n<=10;n++){
+      var d=drafts[n]||{},at=attachments[n]||[],imgs=[];
+      for(var i=0;i<at.length;i++){var f=at[i];imgs.push({name:f.name,type:f.type,size:f.size,dataUrl:f.dataUrl||await fileToData(f)})}
+      reviews.push({number:n,stage:stageIds.includes(d.stage)?d.stage:null,note:typeof d.note==="string"?d.note:"",captures:imgs});
+    }
+    var documentBody={schema:"prometeo.root.human-review/v1",cohortId:"root-ui-benchmark-w001",wave:1,sourceVersion:4,exportedAt:new Date().toISOString(),briefSha256:BRIEF,root:{id:"prometeo-root-selfbuild",version:"0.1.1",sha256:FLOW},privacy:"Created locally; not sent to a server",reviews:reviews};
+    var blob=new Blob([JSON.stringify(documentBody,null,2)+"\n"],{type:"application/json;charset=utf-8"});
+    var href=URL.createObjectURL(blob),a=document.createElement("a");a.href=href;a.download="PROMETEO_ROOT_W001_REVISION.json";document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(href)},30000);
+    signal("Archivo JSON exportado. Contiene las capturas en formato abierto; no se envió por red.");
+  }catch(e){signal("No se pudo exportar: "+e.message)}
+  finally{button.disabled=false}
+}
+$("exportReview").addEventListener("click",exportReview);
+$("importReview").addEventListener("change",async function(){
+  var file=this.files&&this.files[0];if(!file)return;
+  try{
+    if(file.size>30*1024*1024)throw new Error("Archivo demasiado grande (máximo 30 MB).");
+    var doc=JSON.parse(await file.text());
+    if(doc.schema!=="prometeo.root.human-review/v1"||doc.cohortId!=="root-ui-benchmark-w001"||doc.briefSha256!==BRIEF||!doc.root||doc.root.sha256!==FLOW||!Array.isArray(doc.reviews))throw new Error("Archivo de revisión incompatible.");
+    var notes={},images={};
+    doc.reviews.forEach(function(r){
+      if(!Number.isInteger(r.number)||r.number<1||r.number>10)return;
+      notes[r.number]={note:typeof r.note==="string"?r.note.slice(0,12000):"",stage:stageIds.includes(r.stage)?r.stage:""};
+      images[r.number]=Array.isArray(r.captures)?r.captures.slice(0,3).filter(function(c){return c&&typeof c.dataUrl==="string"&&/^data:image\/(png|jpeg|webp);base64,/.test(c.dataUrl)&&c.dataUrl.length<6*1024*1024}).map(function(c){return{name:String(c.name||"captura").slice(0,160),type:String(c.type||"image/png"),size:Number(c.size)||0,dataUrl:c.dataUrl}}):[];
+    });
+    drafts=notes;attachments=images;save();loadReview(activeReview);signal("Revisión importada localmente. No se envió por red.");
+  }catch(e){signal("No se pudo importar: "+e.message)}
+  finally{this.value=""}
+});
+safeLoad();loadReview(activeReview);paint();scan();
+var lastRefresh=Date.now();
+document.addEventListener("visibilitychange",function(){if(!document.hidden&&Date.now()-lastRefresh>60000){lastRefresh=Date.now();scan()}});
+})();
+</script>
+</body>
+</html>
