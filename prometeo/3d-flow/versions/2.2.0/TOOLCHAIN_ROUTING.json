@@ -1,0 +1,284 @@
+{
+  "schema": "prometeo.3d.toolchain-routing/v2",
+  "scope": "3D_STUDIO",
+  "researchUpdated": "2026-11-20",
+  "policy": [
+    "Confirm tool availability in actual runtime; names in research != installed",
+    "USD0 default; licenses/rights per downloaded asset",
+    "Prefer existing owner factories and real model authoring over custom renderer",
+    "Know capability and version of chosen renderer: Three r163+ WebGL2 only",
+    "Choose pipeline according to actual role and constraints; do not fabricate GPU/browser proof",
+    "Search official docs first, then assets under license: query must include role, rig/UV, format and license; compare 2 when decision materially affects hero quality",
+    "No pipeline enters the studio's approved character library based on rig motion or palette swap; preserve negative visual registry."
+  ],
+  "tools": [
+    {
+      "id": "blender",
+      "job": [
+        "CHARACTER_AUTHORING",
+        "PROP_HERO",
+        "RIG",
+        "FACIAL",
+        "OFFLINE_RENDER",
+        "EXPORT"
+      ],
+      "free": true,
+      "needs": "Blender executable installed and version checked; cli --background example.blend --python script.py; verify output .blend/.glb and render frames",
+      "when": "mesh/UV/sculpt/shape keys/render must be editable or high fidelity",
+      "source": "https://docs.blender.org/manual/en/latest/advanced/command_line/render.html",
+      "status": "RESEARCHED_NOT_INSTALLED_HERE",
+      "license": "GNU GPL Blender software; generated assets have separate provenance",
+      "pitfall": "A Python script full of cubes is still low-quality output; source-first human model quality."
+    },
+    {
+      "id": "blockbench",
+      "job": [
+        "LOWPOLY_AUTHORING",
+        "PIXEL_UV",
+        "RIG",
+        "SHORT_ANIMATION"
+      ],
+      "free": true,
+      "needs": "Model editor availability / desktop or web; verify mesh/UV and actual export file; headless bridge not assumed installed",
+      "when": "purposeful stylized low-poly and custom atlas, not cinematic faces by default",
+      "source": "https://www.blockbench.net/",
+      "status": "RESEARCHED_NOT_INSTALLED_HERE",
+      "license": "Check Blockbench source GPL and plugin license if bundling editor",
+      "pitfall": "Default cubes can give Minecraft look when brief expects crafted silhouettes."
+    },
+    {
+      "id": "threejs",
+      "job": [
+        "WEB_RUNTIME",
+        "INTERACTIVE",
+        "LIVE_SURFACE",
+        "CAMERA",
+        "REALTIME_RENDER"
+      ],
+      "free": true,
+      "needs": "Pin matching three.js and addons revision; r163+ WebGL2 only. Test phone; GLTFLoader and decoder setup",
+      "when": "interactive scene and public browser viewer",
+      "source": "https://threejs.org/docs/pages/WebGLRenderer",
+      "status": "USED_BY_WAVE001",
+      "license": "MIT",
+      "pitfall": "Newer Three no WebGL1 fallback. Code compiles ≠ GPU rendered."
+    },
+    {
+      "id": "gltf-transform",
+      "job": [
+        "GLB_INSPECT",
+        "GLB_OPTIMIZE",
+        "TEXTURE_COMPRESS",
+        "QUANTIZATION"
+      ],
+      "free": true,
+      "needs": "Check CLI availability; keep original source, optimize duplicate, test skin/animation/material roundtrip; decoder config",
+      "when": "asset performance or validity, not for artistic character creation",
+      "source": "https://gltf-transform.dev/cli",
+      "status": "RESEARCHED_NOT_INSTALLED_HERE",
+      "license": "MIT",
+      "pitfall": "Meshopt/Draco compress downloads, not guaranteed FPS gain; decode costs and fallback must be checked."
+    },
+    {
+      "id": "three-instancing",
+      "job": [
+        "CROWD_PROPS",
+        "SET_DENSITY",
+        "PERFORMANCE"
+      ],
+      "free": true,
+      "needs": "Same geometry+material instancing, per-instance transforms/variant textures; preserve separate semantic IDs and variations",
+      "when": "repeating machines, lamps, windows or identical mesh, not a human close-up identity",
+      "source": "https://threejs.org/docs/pages/InstancedMesh.html",
+      "status": "ENGINE_FEATURE_AVAILABLE_IF_THREE_USED",
+      "license": "MIT",
+      "pitfall": "Does not guarantee reduced material complexity or character variety; some skinned bodies need different method."
+    },
+    {
+      "id": "ktx2-loader",
+      "job": [
+        "TEXTURE_COMPRESS",
+        "WEB_RUNTIME"
+      ],
+      "free": true,
+      "needs": "Use matching KTX2Loader, transcoder files and .detectSupport(renderer); setKTX2Loader on GLTFLoader before loading",
+      "when": "GPU texture memory bottleneck measured; retain PNG/WebP fallback where needed",
+      "source": "https://threejs.org/docs/pages/KTX2Loader.html",
+      "status": "API_RESEARCHED_NOT_PROVEN_IN_SCENES",
+      "license": "Review linked transcoder artifact license if bundling",
+      "pitfall": "Don't announce KTX2 compatibility with no transcoder bytes."
+    },
+    {
+      "id": "poly-haven",
+      "job": [
+        "HDRI",
+        "PBR_TEXTURE",
+        "PROP_SOURCE"
+      ],
+      "free": true,
+      "needs": "Download exact file bytes and record source URL, license CC0, SHA and texture maps",
+      "when": "needs physical material light or modeled prop",
+      "source": "https://polyhaven.com/license",
+      "status": "SOURCE_LICENSE_RESEARCHED",
+      "license": "CC0 for site assets",
+      "pitfall": "A listing URL does not prove mesh was acquired or imported."
+    },
+    {
+      "id": "cesium-samples",
+      "job": [
+        "PROVENANCE_EXAMPLE",
+        "ACTOR_EXAMPLE",
+        "VEHICLE_EXAMPLE"
+      ],
+      "free": true,
+      "needs": "Existing sample GLB can be inspected only with correct asset attribution and licensing per asset; preserve CC BY 4.0 credit from prior cruce",
+      "when": "learning source fit and actor rig; not automatic hero choice",
+      "source": "https://github.com/CesiumGS/3d-tiles",
+      "status": "USED_IN_CRUCE_SOURCE",
+      "license": "Source for prior Cesium Man/Truck reported as CC BY 4.0; verify exact asset",
+      "pitfall": "Different license per resource; not entire Cesium repository CC BY."
+    },
+    {
+      "id": "godot",
+      "job": [
+        "ALTERNATIVE_ENGINE",
+        "MOBILE_3D",
+        "PERFORMANCE_REFERENCE"
+      ],
+      "free": true,
+      "needs": "If chosen, verify editor CLI and HTML5 export compatibility; explicit tradeoff vs Three/Blender",
+      "when": "game mechanics dominate over web scene, only if infrastructure exists",
+      "source": "https://docs.godotengine.org/en/stable/tutorials/performance/optimizing_3d_performance.html",
+      "status": "RESEARCH_REFERENCE_ONLY",
+      "license": "MIT engine, verify generated/third-party assets",
+      "pitfall": "No automatic build/deployment assumption and not default."
+    },
+    {
+      "id": "mdn-webgl",
+      "job": [
+        "WEB_BOOT",
+        "CONTEXT_LOSS",
+        "DIAGNOSTICS"
+      ],
+      "free": true,
+      "needs": "Log network/module/asset/GPU errors separately; webglcontextcreationerror and contextlost handlers",
+      "when": "browser scene publication, failure in station",
+      "source": "https://developer.mozilla.org/en-US/docs/Web/API/HTMLCanvasElement/webglcontextcreationerror_event",
+      "status": "RESEARCH_VERIFIED",
+      "license": "Documentation reference only",
+      "pitfall": "Do not blame WebGL for gzip import errors."
+    },
+    {
+      "id": "theatrejs",
+      "job": [
+        "CAMERA_TIMELINE",
+        "ANIMATION_EDITING"
+      ],
+      "free": true,
+      "needs": "Check installed software, core vs studio license; save explicit frame timeline; compare with direct camera animation",
+      "when": "multi-shot animation needs timelines, not mandatory",
+      "source": "https://www.theatrejs.com/",
+      "status": "HISTORIC_RESEARCH_ONLY",
+      "license": "Check core Apache-2 and studio AGPL-3 if bundling/integrating",
+      "pitfall": "Editor licence and bundle size may matter; use only with reason."
+    },
+    {
+      "id": "existing-3d-factories",
+      "job": [
+        "CHARACTER",
+        "MATERIAL",
+        "ENVIRONMENT",
+        "CINEMA",
+        "QA"
+      ],
+      "free": true,
+      "needs": "Read private repo branch candidate/prometeo-3d-specialty-factories-v1-20261116 full path and owner contracts; reuse with exact IDs/SHAs",
+      "when": "any appropriate specialist domain; avoid duplicate implementation",
+      "source": "JuanManuelPM/pruebas@candidate/prometeo-3d-specialty-factories-v1-20261116",
+      "status": "RESEARCH_AND_LOGIC_GATES_CANDIDATE",
+      "license": "Per asset/source",
+      "pitfall": "40 fixture tests are NOT GPU/visual acceptance; no forced STOP in production."
+    },
+    {
+      "id": "mpfb-blender",
+      "job": [
+        "HUMAN_BODY_GENERATION",
+        "CHARACTER_EDITABLE",
+        "RIG"
+      ],
+      "free": true,
+      "needs": "Actual Blender 4.2+ available, MPFB addon installed, generated mesh/material/rig inspected in app and exported; check exact asset licenses",
+      "when": "Source for varied human silhouettes and wardrobe before facial lookdev",
+      "source": "https://www.makehumancommunity.org/mpfb/about.html",
+      "status": "OFFICIAL_RESEARCH_ONLY_NOT_CONNECTED",
+      "license": "MPFB tool source GPL; generated standard assets refer to upstream license, confirm extras separately",
+      "pitfall": "Auto-human generator != approved closeup art; requires authoring and face/skin QA"
+    },
+    {
+      "id": "vroid-three-vrm",
+      "job": [
+        "CUSTOM_FACIAL_CHARACTER",
+        "VRM_RIG",
+        "EXPRESSION"
+      ],
+      "free": true,
+      "needs": "VRoid Studio authoring tool and @pixiv/three-vrm loader plugin installed, exact VRM source/license and clip support verified",
+      "when": "Distinct stylized avatar hypothesis, subject to scene fit",
+      "source": "https://pixiv.github.io/three-vrm/docs/index.html",
+      "status": "OFFICIAL_RESEARCH_ONLY_NOT_CONNECTED",
+      "license": "VRoid Studio model/wardrobe rights vary by imported asset",
+      "pitfall": "VRM needs VRMLoaderPlugin; generic GLTFLoader not enough; anime style may be wrong for realistic scenes"
+    },
+    {
+      "id": "mixamo-rig",
+      "job": [
+        "AUTO_RIG",
+        "MOTION_PACK"
+      ],
+      "free": true,
+      "needs": "User Adobe ID and explicit access to third-party service; verify export and license/redistribution",
+      "when": "Custom model rigging/clip acquisition when user authorized external service",
+      "source": "https://helpx.adobe.com/creative-cloud/faq/mixamo-faq.html",
+      "status": "REQUIRES_USER_ACCOUNT_NOT_CONNECTED",
+      "license": "Adobe service terms apply to exports",
+      "pitfall": "No automated login assumption and no borrowed proprietary game models"
+    },
+    {
+      "id": "kaykit-animation",
+      "job": [
+        "SKELETON_ANIMATION",
+        "ANIMATED_CROWD"
+      ],
+      "free": true,
+      "needs": "Download actual pack bytes and inspect license, skeleton and clips; retarget if needed",
+      "when": "Stylized rig animation hypothesis, not a substitute for face authoring",
+      "source": "https://kaylousberg.com/game-assets/character-animations",
+      "status": "RESEARCHED_NOT_DOWNLOADED_HERE",
+      "license": "Specific free animation pack CC0; verify bytes",
+      "pitfall": "Clips may not match rig and authored look may be too simplified for desired scene"
+    }
+  ],
+  "searchTemplates": {
+    "actor": [
+      "site:quaternius.com humanoid animated GLB CC0 character",
+      "site:kenney.nl assets characters 3d license",
+      "site:polyhaven.com/models humanoid 3d free"
+    ],
+    "prop": [
+      "site:polyhaven.com/models {object} CC0 3d model",
+      "site:kenney.nl/assets {style} {object} 3d"
+    ],
+    "material": [
+      "site:polyhaven.com/textures {surface} PBR CC0"
+    ],
+    "workflow": [
+      "site:threejs.org/docs {feature} WebGLRenderer",
+      "site:docs.blender.org/manual/en/latest {feature} glTF export"
+    ],
+    "reference": [
+      "{scene type} cinematic 3d {lighting} {camera framing} reference"
+    ]
+  },
+  "avoidResearchLoops": "Search until two materially different representations compared OR no credible options; then choose best viable and produce full scene. No extra prompts to user.",
+  "version": "2.1.0"
+}

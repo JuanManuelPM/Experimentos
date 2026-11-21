@@ -1,0 +1,218 @@
+{
+  "schema": "prometeo.3d.method-qa/v2.2",
+  "version": "2.2.0",
+  "runtime": "V8 actual execution of pure functions; synthetic samples only",
+  "fixtures": [
+    {
+      "name": "heading {\"x\":0,\"z\":1}{\"x\":0,\"z\":1}",
+      "status": "PASS"
+    },
+    {
+      "name": "heading {\"x\":0,\"z\":1}{\"x\":0,\"z\":-1}",
+      "status": "PASS"
+    },
+    {
+      "name": "heading {\"x\":0,\"z\":1}{\"x\":1,\"z\":0}",
+      "status": "PASS"
+    },
+    {
+      "name": "heading {\"x\":0,\"z\":1}{\"x\":-1,\"z\":0}",
+      "status": "PASS"
+    },
+    {
+      "name": "heading {\"x\":0,\"z\":-1}{\"x\":0,\"z\":1}",
+      "status": "PASS"
+    },
+    {
+      "name": "heading {\"x\":0,\"z\":-1}{\"x\":0,\"z\":-1}",
+      "status": "PASS"
+    },
+    {
+      "name": "heading {\"x\":0,\"z\":-1}{\"x\":1,\"z\":0}",
+      "status": "PASS"
+    },
+    {
+      "name": "heading {\"x\":0,\"z\":-1}{\"x\":-1,\"z\":0}",
+      "status": "PASS"
+    },
+    {
+      "name": "heading {\"x\":1,\"z\":0}{\"x\":0,\"z\":1}",
+      "status": "PASS"
+    },
+    {
+      "name": "heading {\"x\":1,\"z\":0}{\"x\":0,\"z\":-1}",
+      "status": "PASS"
+    },
+    {
+      "name": "heading {\"x\":1,\"z\":0}{\"x\":1,\"z\":0}",
+      "status": "PASS"
+    },
+    {
+      "name": "heading {\"x\":1,\"z\":0}{\"x\":-1,\"z\":0}",
+      "status": "PASS"
+    },
+    {
+      "name": "heading {\"x\":-1,\"z\":0}{\"x\":0,\"z\":1}",
+      "status": "PASS"
+    },
+    {
+      "name": "heading {\"x\":-1,\"z\":0}{\"x\":0,\"z\":-1}",
+      "status": "PASS"
+    },
+    {
+      "name": "heading {\"x\":-1,\"z\":0}{\"x\":1,\"z\":0}",
+      "status": "PASS"
+    },
+    {
+      "name": "heading {\"x\":-1,\"z\":0}{\"x\":-1,\"z\":0}",
+      "status": "PASS"
+    },
+    {
+      "name": "hero correct, NPC backward fails",
+      "status": "PASS"
+    },
+    {
+      "name": "missing NPC not run",
+      "status": "PASS"
+    },
+    {
+      "name": "all actors correct",
+      "status": "PASS"
+    },
+    {
+      "name": "no walkers correctly N/A",
+      "status": "PASS"
+    },
+    {
+      "name": "unknown actor classification not run",
+      "status": "PASS"
+    },
+    {
+      "name": "route not covered",
+      "status": "PASS"
+    },
+    {
+      "name": "invalid contact evidence",
+      "status": "PASS"
+    },
+    {
+      "name": "sample gap",
+      "status": "PASS"
+    },
+    {
+      "name": "right/left free look",
+      "status": "PASS"
+    },
+    {
+      "name": "up/down free look",
+      "status": "PASS"
+    },
+    {
+      "name": "orbit expected horizontal",
+      "status": "PASS"
+    },
+    {
+      "name": "pinch out zoom",
+      "status": "PASS"
+    },
+    {
+      "name": "turn wrap shortest",
+      "status": "PASS"
+    },
+    {
+      "name": "tap",
+      "status": "PASS"
+    },
+    {
+      "name": "drag never picks",
+      "status": "PASS"
+    },
+    {
+      "name": "cancel never picks",
+      "status": "PASS"
+    },
+    {
+      "name": "lost capture never picks",
+      "status": "PASS"
+    },
+    {
+      "name": "UI excluded",
+      "status": "PASS"
+    },
+    {
+      "name": "pinch gesture",
+      "status": "PASS"
+    },
+    {
+      "name": "multitouch never picks",
+      "status": "PASS"
+    },
+    {
+      "name": "HUD union without duplicate areas",
+      "status": "PASS"
+    },
+    {
+      "name": "minimal UI",
+      "status": "PASS"
+    },
+    {
+      "name": "UI too large",
+      "status": "PASS"
+    },
+    {
+      "name": "focal occluded",
+      "status": "PASS"
+    },
+    {
+      "name": "target too small",
+      "status": "PASS"
+    },
+    {
+      "name": "default modal not allowed",
+      "status": "PASS"
+    },
+    {
+      "name": "screen evidence missing",
+      "status": "PASS"
+    },
+    {
+      "name": "no actor mechanical N/A",
+      "status": "PASS"
+    },
+    {
+      "name": "missing avatar workflow fails",
+      "status": "PASS"
+    },
+    {
+      "name": "clones cannot count as distinct",
+      "status": "PASS"
+    }
+  ],
+  "compilerTests": [
+    [
+      "generic actor activates authoring",
+      true
+    ],
+    [
+      "mechanical clock no forced actor",
+      true
+    ],
+    [
+      "brief preserved exact",
+      true
+    ],
+    [
+      "open strategy",
+      true
+    ]
+  ],
+  "passed": 50,
+  "failed": 0,
+  "notRun": [
+    "native Node CLI",
+    "real WebGL2",
+    "physical Android",
+    "new actor production",
+    "human artistic review"
+  ]
+}
