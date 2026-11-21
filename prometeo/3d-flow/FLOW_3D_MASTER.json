@@ -1,13 +1,13 @@
 {
   "schema": "prometeo.3d.production-flow/v1",
   "id": "prometeo-3d-production",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "publishedAt": "2026-11-21",
   "status": "CURRENT_CANDIDATE",
   "scope": "studio-3d",
-  "title": "PROMETEO Estudio 3D · Autoría de personajes desde cero, interfaz minimalista y cámara táctil",
-  "description": "Autoría abierta por producción, todos los actores, UI escena primero, gestos coherentes y regresión transversal. Brief y full attempt intactos.",
-  "sourceOfTruth": "FLOW_INDEX.json → versions/2.2.0/flow.json + METHOD.md + STAGE_OPERATIONS.json + PRODUCTION_CONTRACT.json + production-gates.mjs",
+  "title": "PROMETEO Estudio 3D · 2.2.1 · Autoría exigente y acabado comparativo",
+  "description": "Exige calidad de producción en todo el alcance inmutable: referencia y baseline, autoría sustancial, revisión visual, reparación y acabado antes de entregar, con comparación por componente.",
+  "sourceOfTruth": "FLOW_INDEX.json → versions/2.2.1/flow.json + METHOD.md + STAGE_OPERATIONS.json + PRODUCTION_CONTRACT.json + quality-finish.mjs",
   "stages": [
     {
       "id": "scope",
@@ -3776,7 +3776,7 @@
       "id": "AV_BUDGET",
       "stage": "planning",
       "label": "Dedicar un frente artístico completo al avatar",
-      "detail": "Asignar esfuerzo comparable en profundidad al escenario: investigación, diseño, cuerpo, cara, ropa, materiales, rig, actuación y prueba. No usar minutos sobrantes.",
+      "detail": "Asignar esfuerzo comparable en profundidad al escenario: investigación, diseño, cuerpo, cara, ropa, materiales, rig, actuación y prueba. No usar minutos sobrantes. [Q221_PLAN] Definir resultado objetivo comparable con una pequeña producción profesional del estilo elegido, por cámara, identidad/silueta, materiales, iluminación, actuación e interacción. Reservar capacidad sustancial de autoría a personajes si existen, con el mismo nivel de desglose y cuidado que el escenario. Presupuestar primero la obra, no los informes; no terminar por haber escrito código o un primer artículo.",
       "type": "action",
       "owner": "character:*",
       "procedureRef": "STAGE_OPERATIONS.json#/stages/2",
@@ -3802,7 +3802,7 @@
       "id": "AV_OPEN",
       "stage": "planning",
       "label": "Explorar dos métodos realmente distintos",
-      "detail": "Cada productor elige su ruta, incluso una nueva no catalogada. Comparar al menos dos alternativas materialmente distintas y disponibles. No fijar estilo, modelo, proveedor ni técnica universal. Catálogo de 2.1 sólo ideas.",
+      "detail": "Cada productor elige su ruta, incluso una nueva no catalogada. Comparar al menos dos alternativas materialmente distintas y disponibles. No fijar estilo, modelo, proveedor ni técnica universal. Catálogo de 2.1 sólo ideas. [Q221_TRIAL] Comparar rutas viables y ejecutar una prueba de representación real para las alternativas de mayor impacto cuando haya herramientas. Si una técnica no permite resultado convincente, cambiar de técnica o insumo; no reciclar el avatar rechazado por comodidad. Guardar artefacto editable y evidencia de prueba, no sólo dos nombres.",
       "type": "action",
       "owner": "character:*",
       "procedureRef": "STAGE_OPERATIONS.json#/stages/2",
@@ -3971,7 +3971,7 @@
       "id": "AV_ITERATE",
       "stage": "humanoid",
       "label": "Comparar y corregir durante autoría",
-      "detail": "Comparar con referencias y segunda vía; corregir mayor defecto observable antes de montaje cuando viable, guardar versión antes/después. No iterar eternamente ni cancelar entrega completa.",
+      "detail": "Comparar con referencias y segunda vía; corregir mayor defecto observable antes de montaje cuando viable, guardar versión antes/después. No iterar eternamente ni cancelar entrega completa. [Q221_CHARACTER] Tratar cada avatar como un producto artístico completo; dedicar una pasada de autoría y una pasada correctiva concreta tras lookdev, antes de integración final. Priorizar mejoras en geometría de rostro/cuerpo, pelo/ropa/materiales y deformación; no contar recolor, cambio de luz o accesorio como corrección estructural. Conservar diversidad por actor, no congelar técnica ni modelo. Si la prueba visual no es posible, registrar NOT_RUN y continuar el mejor intento completo.",
       "type": "action",
       "owner": "character:*",
       "procedureRef": "STAGE_OPERATIONS.json#/stages/5",
@@ -4179,7 +4179,7 @@
       "id": "QA_LATENT",
       "stage": "qa",
       "label": "Matriz transversal de riesgos no observados",
-      "detail": "Comprobar arranque/GLB, espacios cerrados, parallax, escala/sliding/collision, cámara clipping, cortes/pausas, resize, pérdida contexto, audio/autoplay, FPS/memoria, reset. Riesgo no es defecto confirmado.",
+      "detail": "Comprobar arranque/GLB, espacios cerrados, parallax, escala/sliding/collision, cámara clipping, cortes/pausas, resize, pérdida contexto, audio/autoplay, FPS/memoria, reset. Riesgo no es defecto confirmado. [Q221_FINISH] Antes de cerrar, ejecutar revisión comparativa con la versión anterior por componente aplicable: HERO/ACTOR, ENVIRONMENT, MATERIAL/LIGHT, MOTION, CAMERA, INTERACTION y MOBILE. Clasificar MEJORADO_OBSERVABLE, REGRESION, SIN_CAMBIO, NO_COMPARABLE o NOT_RUN. Cada mejora observable exige evidencia comparable de antes/después y cambio implementado, no sólo relato. Los checklists de código no son aprobación de arte.",
       "type": "action",
       "owner": "studio-3d-method",
       "procedureRef": "STAGE_OPERATIONS.json#/stages/13",
@@ -4192,7 +4192,7 @@
       "id": "UX_CAUSE",
       "stage": "repair",
       "label": "Corregir causa, reejecutar prueba",
-      "detail": "Ubicar falla en authoring, rig, eje, clip, ruta, input, layout, runtime. Reparar problemas técnicos verificables antes de entregar sin recortar la escena ni cambiar brief.",
+      "detail": "Ubicar falla en authoring, rig, eje, clip, ruta, input, layout, runtime. Reparar problemas técnicos verificables antes de entregar sin recortar la escena ni cambiar brief. [Q221_POLISH] Incorporar una pasada deliberada de acabado DURANTE la producción, tras primera integración y diagnóstico: reparar al menos los defectos de mayor impacto que sean corregibles, repetir prueba y registrar resultado. No esperar a la ronda siguiente para un defecto conocido reversible. La revisión artística final sigue humana; no auto-vetar ni iterar indefinidamente.",
       "type": "action",
       "owner": "studio-3d-method",
       "procedureRef": "STAGE_OPERATIONS.json#/stages/14",
@@ -4205,7 +4205,7 @@
       "id": "AV_SAVE",
       "stage": "persistence",
       "label": "Conservar variantes y autoría editable",
-      "detail": "Guardar intentos, fuente editable, licencia, rig, clip, capturas, diferencias y decisiones por actor. Biblioteca visual aprobada vacía; no convertir versión provisional en estándar.",
+      "detail": "Guardar intentos, fuente editable, licencia, rig, clip, capturas, diferencias y decisiones por actor. Biblioteca visual aprobada vacía; no convertir versión provisional en estándar. [Q221_RECORD] Guardar QUALITY_DELTA.json con baseline commit, componente, defecto, comparación, intervención concreta, evidencia antes/después y pendiente. Guardar intento completo y archivos de autoría; no premiar la cantidad de texto ni de pasos declarados.",
       "type": "action",
       "owner": "character:*",
       "procedureRef": "STAGE_OPERATIONS.json#/stages/15",
@@ -4218,7 +4218,7 @@
       "id": "AV_REVIEW",
       "stage": "publish",
       "label": "Comparar obras completas y personajes",
-      "detail": "Mostrar personaje en neutral, cara/acción y escena completa. Aprobación humana por apariencia y movimiento; sólo base después de que guste, estándar compartido con segundo consumidor probado.",
+      "detail": "Mostrar personaje en neutral, cara/acción y escena completa. Aprobación humana por apariencia y movimiento; sólo base después de que guste, estándar compartido con segundo consumidor probado. [Q221_RELEASE] Entregar la obra completa y URL aislada, junto a comparación breve y evidencia de qué cambió. Una publicación no equivale a aprobación; si no hubo render o usuario no revisó, declararlo. No detener o esconder un resultado imperfecto.",
       "type": "action",
       "owner": "character:*",
       "procedureRef": "STAGE_OPERATIONS.json#/stages/16",
@@ -6986,8 +6986,8 @@
   },
   "evidence": "diagnosis only; source visual failures from user screenshots; no new scene fix",
   "revision": {
-    "previous": "2.1.0",
-    "changes": "36 nuevos nodos, autoría de personajes, locomoción total, UI y cámara táctil",
+    "previous": "2.2.0",
+    "changes": "Refuerza ejecución de 15 etapas, acabado durante producción, prueba de autoría y comparación observable sin cambiar briefs ni fijar avatar; conserva 316 nodos/406 aristas.",
     "riskPolicy": "NO_REJECTED_VISUAL_REUSE_NO_HUMAN_BRIEF_REWRITE_NO_ART_VETO",
     "gateIds": [
       "source-and-license",
@@ -7008,10 +7008,11 @@
       "cast-motion",
       "minimal-ui",
       "touch-direction",
-      "latent-qa"
+      "latent-qa",
+      "component-quality-delta"
     ],
     "operationMode": "FULL_SCENE_ALWAYS",
-    "patchScope": "STUDIO_3D_CHARACTERS_UI_TOUCH_QA"
+    "patchScope": "STUDIO_3D_QUALITY_ENFORCEMENT_ONLY"
   },
   "subflows": [
     {
@@ -7246,10 +7247,10 @@
       "unapproved art",
       "imperfect camera"
     ],
-    "preproduction": "Brief positive artistic requirements and bad-outcome counterexamples; choose best available technique; no iteration delays.",
-    "production": "Complete all requested major shots/components in one sustained attempt; never scale down to canary-only as final.",
+    "preproduction": "Recover baseline and targeted observable quality; reserve substantial artist work before production.",
+    "production": "Full scope and dedicated authoring; deliberate correction/finish pass before closure; not canary-only or paperwork.",
     "earlyDiagnostics": "D39..D42 advisory, NEVER a permission gate",
-    "postProduction": "No artistic self-review/rework by model; user performs comparison between waves.",
+    "postProduction": "After the in-production finish pass, user supplies final aesthetic judgment. Never use self-review to veto delivery; preserve defects.",
     "publishing": "Technical preview even when imperfect and unverified, with honest label; publish only rights-safe original materials.",
     "safety": "Licensing/privacy/security real blockers still apply; preserve full original source privately if publication impossible.",
     "progress": "Best effort full production, not empty loops or false claims of background work.",
@@ -7266,7 +7267,8 @@
     "characterCorrection": "Open experiment, craft body, face, wardrobe, UV, rig, movement, compare and render. No fixed canonical avatar.",
     "uiPolicy": "Scene first, HUD 12% candidate budget, focal region no overlap",
     "cameraInput": "FREE_LOOK right=>right; ORBIT projected world follows finger",
-    "locomotionPolicy": "ALL_INSTANCE_RUNTIME_SAMPLES"
+    "locomotionPolicy": "ALL_INSTANCE_RUNTIME_SAMPLES",
+    "qualityDelta": "Comparable before/after component evidence; no claim of improvement based only on source or asset count."
   },
   "stageInstrumentation": {
     "schema": "prometeo.3d.stage-trace/v1",
@@ -7349,12 +7351,12 @@
     "reasonForChange": "Record exact stage, old policy, failure, new general rule, expected transfer result"
   },
   "executionSpec": {
-    "version": "2.2.0",
-    "stageOperations": "versions/2.2.0/STAGE_OPERATIONS.json",
-    "sceneCompiler": "versions/2.2.0/scene-compiler.mjs",
-    "sceneCatalog": "versions/2.2.0/SCENE_INTENT_CATALOG.json",
-    "componentReferences": "versions/2.2.0/COMPONENT_REFERENCE_MATRIX.json",
-    "toolchain": "versions/2.2.0/TOOLCHAIN_ROUTING.json",
+    "version": "2.2.1",
+    "stageOperations": "versions/2.2.1/STAGE_OPERATIONS.json",
+    "sceneCompiler": "versions/2.2.1/scene-compiler.mjs",
+    "sceneCatalog": "versions/2.2.1/SCENE_INTENT_CATALOG.json",
+    "componentReferences": "versions/2.2.1/COMPONENT_REFERENCE_MATRIX.json",
+    "toolchain": "versions/2.2.1/TOOLCHAIN_ROUTING.json",
     "browserBoot": "versions/2.0.0/browser-boot.mjs",
     "nodeCoverage": "ALL_NODES_USE_STAGE_OPERATIONS",
     "shortBriefMode": "REGISTERED_ALIAS_OR_EXACT_BRIEF",
@@ -7363,37 +7365,40 @@
     "fullSceneRequired": true,
     "advisoryOnlyQA": true,
     "qualityApprovedBy": "USER_AFTER_DELIVERY",
-    "outputContract": "versions/2.2.0/METHOD.md",
-    "characterStrategies": "versions/2.2.0/CHARACTER_STRATEGIES.json",
-    "characterNegativeRegistry": "versions/2.2.0/NEGATIVE_CHARACTER_REGISTRY.json",
-    "characterStrategyCode": "versions/2.2.0/character-strategy.mjs",
-    "flowRepair": "versions/2.2.0/flow-repair.mjs",
-    "actorComponentSchema": "versions/2.2.0/CHARACTER_COMPONENT.schema.json",
+    "outputContract": "versions/2.2.1/METHOD.md",
+    "characterStrategies": "versions/2.2.1/CHARACTER_STRATEGIES.json",
+    "characterNegativeRegistry": "versions/2.2.1/NEGATIVE_CHARACTER_REGISTRY.json",
+    "characterStrategyCode": "versions/2.2.1/character-strategy.mjs",
+    "flowRepair": "versions/2.2.1/flow-repair.mjs",
+    "actorComponentSchema": "versions/2.2.1/CHARACTER_COMPONENT.schema.json",
     "characterQualityApproved": false,
-    "productionContract": "versions/2.2.0/PRODUCTION_CONTRACT.json",
-    "productionGates": "versions/2.2.0/production-gates.mjs",
+    "productionContract": "versions/2.2.1/PRODUCTION_CONTRACT.json",
+    "productionGates": "versions/2.2.1/production-gates.mjs",
     "requiredOutputs": [
       "AVATAR_EXPERIMENT_RECEIPT when applicable",
       "CAST_MOTION_QA when applicable",
       "UI_TOUCH_QA",
-      "LATENT_RISK_REPORT"
+      "LATENT_RISK_REPORT",
+      "QUALITY_DELTA.json"
     ],
     "requiredRead": [
       "METHOD.md",
       "STAGE_OPERATIONS.json",
       "PRODUCTION_CONTRACT.json",
       "production-gates.mjs",
-      "scene-compiler.mjs"
-    ]
+      "scene-compiler.mjs",
+      "quality-finish.mjs"
+    ],
+    "qualityFinish": "versions/2.2.1/quality-finish.mjs"
   },
   "characterSystem": {
-    "version": "2.2.0",
+    "version": "2.2.1",
     "status": "ZERO_APPROVED_VISUAL_BASE_OPEN_AUTHORING",
     "visualLibraryApprovals": 0,
-    "visualRejectionsPath": "versions/2.2.0/NEGATIVE_CHARACTER_REGISTRY.json",
-    "sourceDecisionAuditPath": "versions/2.2.0/CHARACTER_DECISION_AUDIT.json",
-    "strategyPath": "versions/2.2.0/CHARACTER_STRATEGIES.json",
-    "actorContractPath": "versions/2.2.0/CHARACTER_COMPONENT.schema.json",
+    "visualRejectionsPath": "versions/2.2.1/NEGATIVE_CHARACTER_REGISTRY.json",
+    "sourceDecisionAuditPath": "versions/2.2.1/CHARACTER_DECISION_AUDIT.json",
+    "strategyPath": "versions/2.2.1/CHARACTER_STRATEGIES.json",
+    "actorContractPath": "versions/2.2.1/CHARACTER_COMPONENT.schema.json",
     "visualAndMotionSeparated": true,
     "approvedMotionPacks": 0,
     "partialMotionReference": "Cruce v2 Cesium walk, only smoothness approved partially, not rig or appearance",
@@ -7415,7 +7420,7 @@
     "noRebuildFromScratch": true,
     "fixedStrategy": false,
     "routeAllocation": "NON_BINDING_HYPOTHESES",
-    "authoringContract": "versions/2.2.0/PRODUCTION_CONTRACT.json"
+    "authoringContract": "versions/2.2.1/PRODUCTION_CONTRACT.json"
   },
   "flowRepairSystem": {
     "domain": "STUDIO_3D_CHARACTERS_INPUT_UI_QA",
@@ -7458,5 +7463,5 @@
       "global routers"
     ]
   },
-  "sha256Canonical": "764d5ee400a62dbc1bae1e96cec581c21e44d3d1895392b6283e8357ed3a2263"
+  "sha256Canonical": "18ec70ff09159fbe0b8d50c910e8d5740d08e07866357b4d26d9690c02837263"
 }

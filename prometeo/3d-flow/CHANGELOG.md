@@ -1,3 +1,6 @@
+## 2.2.1 · 2026-11-21
+Pasada de acabado durante producción, comparación de calidad observable, 10 briefs de ola 003 exactos. 14 nuevas comprobaciones de código V8. GPU/Android/art NOT_RUN.
+
 ## 2.2.0 · 2026-11-21
 36 nodos: autoría abierta de personajes, movimiento por actor, UI y cámara touch, riesgos latentes. 56 pruebas de código V8. Arte/Android/GPU pendientes.
 

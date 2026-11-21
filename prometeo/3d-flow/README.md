@@ -1,9 +1,7 @@
-# PROMETEO · Estudio 3D · Flujo vigente 2.2.0
+# PROMETEO · Estudio 3D · Método vigente 2.2.1
 
-**Piso cero de personajes:** autoría propia abierta por escena, no método ni avatar fijo. Control de movimiento de todos los actores, UI minimalista y cámara táctil coherente. Conserva las diez producciones anteriores y sus briefs fijados.
+[Manual](versions/2.2.1/METHOD.md) · [Grafo](versions/2.2.1/flow.json) · [Operaciones](versions/2.2.1/STAGE_OPERATIONS.json) · [Contrato](versions/2.2.1/PRODUCTION_CONTRACT.json) · [Ola 003](w3/README.md)
 
-- [Método](versions/2.2.0/METHOD.md)
-- [Grafo](versions/2.2.0/flow.json) · [17 operaciones](versions/2.2.0/STAGE_OPERATIONS.json) · [Contrato](versions/2.2.0/PRODUCTION_CONTRACT.json)
-- [Módulo de QA](versions/2.2.0/production-gates.mjs) · [56 pruebas V8](versions/2.2.0/QA_2_2_0.json) · [Delta causal](versions/2.2.0/METHOD_DELTA.md)
+Autoría abierta de personajes, movimiento de todo el reparto, UI minimalista, touch y acabado comparativo durante producción. 10/10 briefs intactos. Las pruebas de software no aprueban arte ni garantizan GPU/Android. No hay avatar aprobado.
 
-Hash: `764d5ee400a62dbc1bae1e96cec581c21e44d3d1895392b6283e8357ed3a2263`. 316 nodos, 406 aristas. Arte, GPU y Android NOT_RUN. Las versiones históricas permanecen inmutables. No se relanzan trabajos automáticamente.
+SHA: `18ec70ff09159fbe0b8d50c910e8d5740d08e07866357b4d26d9690c02837263`.

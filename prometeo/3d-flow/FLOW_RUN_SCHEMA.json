@@ -360,6 +360,26 @@
           }
         }
       }
+    },
+    "qualityDelta": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string"
+        },
+        "finishStatus": {
+          "enum": [
+            "EXECUTED",
+            "NOT_RUN"
+          ]
+        },
+        "evidenceRefs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
     }
   },
   "additionalProperties": true,
