@@ -118,7 +118,13 @@ function bolt(x,y,z,parent=scene){const o=mesh(new THREE.SphereGeometry(.035,8,6
 const room=new THREE.Group();scene.add(room);
 box(10.7,.36,9.0,0,-.19,-.15,mat.stone,room);
 for(let i=0;i<12;i++){box(10.2,.012,.012,0,.013,-4.1+i*.72,mat.brass,room);for(let j=-4;j<=4;j++)bolt(j*1.1,.025,-4.1+i*.72,room);}
-box(10.8,5,.36,0,2.48,-4.5,mat.stone,room);
+// The exit is a real aperture, not a decorative door over a solid wall.
+box(7.75,5,.36,-1.525,2.48,-4.5,mat.stone,room);
+box(1.15,5,.36,4.825,2.48,-4.5,mat.stone,room);
+box(1.9,1.45,.36,3.3,4.255,-4.5,mat.stone,room);
+box(1.82,.18,2.8,3.3,-.18,-5.55,mat.stone2,room);
+const exterior=box(1.83,3.54,.02,3.3,1.75,-6.93,new THREE.MeshBasicMaterial({color:0x15334b}),room);
+for(let i=0;i<16;i++){const x=2.5+(i*37%15)/15*1.55,y=.4+(i*29%17)/17*2.8;const star=mesh(new THREE.SphereGeometry(.018+(i%3)*.012,6,6),mat.lamp,room);star.position.set(x,y,-6.9);}
 box(.4,5,8.7,-5.32,2.48,-.25,mat.stone2,room);
 box(.4,5,8.7,5.32,2.48,-.25,mat.stone2,room);
 for(let x=-4.7;x<=4.7;x+=1.35){box(.13,4.8,.13,x,2.45,-4.24,mat.stone2,room);}
