@@ -1,0 +1,119 @@
+{
+  "version": "2.2.0",
+  "schema": "prometeo.3d.production-contract/v2.2",
+  "avatar": {
+    "state": "ZERO_APPROVED_VISUAL_BASE",
+    "noFixedMethod": true,
+    "compareDistinctViableRoutes": 2,
+    "applies": "all visible actors required by brief; do not force actors",
+    "requiredSteps": [
+      "AV_ROLE",
+      "AV_BUDGET",
+      "AV_REF",
+      "AV_OPEN",
+      "AV_TOOL",
+      "AV_DESIGN",
+      "AV_BODY",
+      "AV_FACE",
+      "AV_HANDS",
+      "AV_HAIR",
+      "AV_CLOTH",
+      "AV_MATERIAL",
+      "AV_TOPO",
+      "AV_RIG",
+      "AV_EXPR",
+      "AV_LOOKDEV",
+      "AV_ITERATE",
+      "AV_CAST",
+      "AV_AXIS",
+      "AV_ROUTE",
+      "AV_CLIPS",
+      "AV_ALL_MOTION",
+      "AV_CONTACT",
+      "AV_SAVE",
+      "AV_REVIEW"
+    ],
+    "lookdev": [
+      "FRONT",
+      "PROFILE",
+      "BACK",
+      "THREE_QUARTER",
+      "FACE_IF_CLOSEUP",
+      "TARGET_SHOT",
+      "ACTION_IF_ANIMATED"
+    ],
+    "artifacts": [
+      "editable source",
+      "asset/license hash",
+      "cast roster",
+      "lookdev frames",
+      "variant comparisons",
+      "AVATAR_EXPERIMENT_RECEIPT"
+    ],
+    "promotion": "HUMAN_APPROVED_APPEARANCE_AND_SECOND_CONSUMER_FOR_SHARED_STANDARD"
+  },
+  "motion": {
+    "scope": "ALL_LOCOMOTING_ACTORS_AND_ROUTES",
+    "thresholdDot": 0.8,
+    "minSpeedMps": 0.05,
+    "maxSampleGapSeconds": 0.12,
+    "minMovingSamplesPerRoute": 3,
+    "exceptions": [
+      "BACKPEDAL",
+      "STRAFE"
+    ],
+    "artifact": "CAST_MOTION_QA"
+  },
+  "ui": {
+    "defaultMode": "PRESENTATION",
+    "maxPersistentViewportFraction": 0.12,
+    "maxFocalOverlap": 0,
+    "touchTargetCSSPx": 44,
+    "viewports": [
+      [
+        360,
+        640
+      ],
+      [
+        412,
+        915
+      ],
+      [
+        915,
+        412
+      ]
+    ],
+    "modal": "EXPLICIT_USER_ACTION_ONLY",
+    "artifact": "UI_TOUCH_QA"
+  },
+  "touch": {
+    "freeLook": "SWIPE_RIGHT_LOOK_RIGHT_UP_LOOK_UP",
+    "orbit": "GRAB_WORLD_FOLLOWS_FINGER",
+    "checks": [
+      "four directions",
+      "pinch",
+      "pan",
+      "pointercancel",
+      "lostpointercapture",
+      "tap versus drag",
+      "UI exclusion",
+      "mode switch pose",
+      "reset",
+      "resize"
+    ]
+  },
+  "latentRisks": [
+    "BOOT_ASSETS",
+    "DEPTH_PARALLAX",
+    "SCALE_CLOSURE",
+    "COLLISIONS_CONTACT",
+    "CAMERA_CLIPPING",
+    "ANIMATION_TRANSITIONS",
+    "RESIZE_SAFE_AREA",
+    "CONTEXT_RESTORE",
+    "AUDIO_AUTOPLAY",
+    "FPS_MEMORY",
+    "RESET_RESUME"
+  ],
+  "evidencePolicy": "PASS with actual evidence, FAIL, NOT_RUN, justified N/A; no artistic veto on full attempt"
+}
