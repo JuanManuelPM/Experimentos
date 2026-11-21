@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="theme-color" content="#071218">
+<title>UMBRA / Misión 02 · Sigilo</title>
+<style>
+:root{--ink:#e7f1ec;--muted:#a0b5b7;--aqua:#b8ffdc;--warn:#ffc28d;--red:#ff6770;background:#071218}
+*{box-sizing:border-box}html,body{padding:0;margin:0;width:100%;height:100%;overflow:hidden;font-family:Arial,Helvetica,sans-serif;color:var(--ink);background:#071218;touch-action:none}
+#scene{position:fixed;inset:0;display:block;width:100%;height:100%;outline:none}
+#grain{position:fixed;inset:0;pointer-events:none;opacity:.17;background-image:repeating-linear-gradient(0deg,transparent 0 3px,#001010 4px);mix-blend-mode:overlay}
+#top{position:fixed;z-index:4;left:clamp(14px,3vw,42px);right:clamp(14px,3vw,42px);top:calc(13px + env(safe-area-inset-top));display:flex;align-items:start;justify-content:space-between;gap:12px;pointer-events:none}
+.brand{font-size:10px;letter-spacing:.31em;color:#a9b8b5}.brand strong{font-weight:900;display:block;font-size:23px;letter-spacing:.16em;color:white;margin-top:3px}
+.mission{text-align:right;font-size:10px;letter-spacing:.16em;color:#a4bbb8}.mission strong{display:block;color:#effcf5;font-size:13px;margin:5px 0;letter-spacing:.1em}
+#state{border:1px solid #355454;padding:7px 10px;display:inline-block;white-space:nowrap;background:#071218bb;font-size:9px;letter-spacing:.17em}
+#reticle{position:fixed;z-index:3;left:50%;top:45%;width:18px;height:18px;transform:translate(-50%,-50%);pointer-events:none;opacity:.2}
+#reticle:before,#reticle:after{content:"";display:block;position:absolute;background:#dcf4e5}#reticle:before{width:1px;height:18px;left:9px}#reticle:after{height:1px;width:18px;top:9px}
+#hud{position:fixed;z-index:4;bottom:calc(20px + env(safe-area-inset-bottom));left:clamp(14px,3vw,42px);right:clamp(14px,3vw,42px);display:flex;justify-content:space-between;gap:16px;pointer-events:none}
+#hud .block{max-width:360px}#hud small{display:block;color:#9aafae;font-size:9px;letter-spacing:.21em;margin-bottom:7px}#hud h2{margin:0;color:white;font-size:clamp(15px,2vw,21px);letter-spacing:.045em;font-weight:700}#hud p{margin:7px 0 0;color:#a0b4b2;font-size:11px;line-height:1.5}
+#suspicion{width:min(260px,45vw);height:4px;background:#31505a;margin-top:12px;overflow:hidden}#suspicionFill{height:100%;width:0;background:#c3ffe0;transition:background .2s}
+#distance{font-variant-numeric:tabular-nums;color:var(--aqua);font-size:28px;font-weight:800;letter-spacing:.02em;text-align:right}
+#distance:after{content:" m";font-size:11px;font-weight:400;color:#a4b8b6}
+#mobile{position:fixed;z-index:6;inset:0;pointer-events:none;display:none}
+#joystick{position:absolute;left:23px;bottom:calc(22px + env(safe-area-inset-bottom));width:128px;height:128px;border:1px solid #99c9bb77;border-radius:50%;background:#102c2f60;pointer-events:auto;touch-action:none}
+#nub{width:56px;height:56px;position:absolute;left:35px;top:35px;border-radius:50%;background:#c8ffe1a8;border:1px solid #effff6;box-shadow:0 0 30px #73e0b444;pointer-events:none}
+#actions{position:absolute;right:22px;bottom:calc(38px + env(safe-area-inset-bottom));display:flex;gap:12px;align-items:flex-end;pointer-events:auto}
+.touch{font-size:10px;letter-spacing:.09em;font-weight:800;color:#dffbeb;border:1px solid #9dbbb2aa;background:#0c2a2bbd;border-radius:50%;width:77px;height:77px;touch-action:none}
+.touch[aria-pressed=true]{background:#a7efc7;color:#052221;border-color:#edffed}
+#overlay{position:fixed;z-index:10;inset:0;background:radial-gradient(ellipse at 57% 33%,#18333690,#02080bdc 72%),linear-gradient(90deg,#031015e8,transparent);display:grid;place-items:center;padding:25px}
+#overlay[hidden]{display:none}
+#panel{position:relative;border:1px solid #43605c90;background:#091b2090;padding:clamp(24px,6vw,55px);max-width:590px;width:100%;box-shadow:0 24px 120px #0008;backdrop-filter:blur(9px)}
+.kicker{font-size:11px;color:var(--aqua);letter-spacing:.25em;font-weight:700}
+#title{font-family:Arial,Helvetica,sans-serif;font-weight:900;letter-spacing:-.055em;font-size:clamp(58px,13vw,108px);line-height:.9;margin:16px 0;color:#f3fdf4}
+#subtitle{color:#b0c4c2;font-size:14px;line-height:1.75;max-width:410px;margin:14px 0 30px}
+#play{width:100%;min-height:54px;background:var(--aqua);color:#061d1d;border:0;font-weight:900;letter-spacing:.12em;font-size:12px;cursor:pointer}
+.controls{margin-top:20px;color:#8eaaa9;font-size:11px;line-height:1.9;letter-spacing:.04em}
+.controls b{color:white}
+#hint{position:fixed;z-index:5;top:83px;left:50%;transform:translateX(-50%);font-size:10px;letter-spacing:.16em;background:#082023dc;padding:10px 13px;border:1px solid #2a514f;pointer-events:none;opacity:0;transition:opacity .2s;max-width:80vw;text-align:center}
+#hint.visible{opacity:1}
+#alarmVignette{position:fixed;z-index:2;inset:0;border:0 solid #ef4855;pointer-events:none;transition:border-width .2s;box-shadow:inset 0 0 0 transparent}
+body.alarm #alarmVignette{border-width:9px;box-shadow:inset 0 0 90px #f125344f;animation:warning .5s infinite alternate}
+@keyframes warning{to{opacity:.3}}
+@media(pointer:coarse){#mobile{display:block}#hud{bottom:calc(160px + env(safe-area-inset-bottom))}#hud p{display:none}#suspicion{width:150px}#hud h2{font-size:14px}#hud small{font-size:8px}#distance{font-size:20px}#reticle{display:none}}
+@media(max-width:450px){.brand strong{font-size:19px}#top{top:calc(12px + env(safe-area-inset-top))}#hud{bottom:calc(163px + env(safe-area-inset-bottom))}#panel{padding:24px}#joystick{width:120px;height:120px}#nub{left:32px;top:32px}#actions{right:14px;gap:8px}.touch{width:66px;height:66px;font-size:9px}}
+</style>
+</head>
+<body>
+<canvas id="scene"></canvas><div id="grain"></div><div id="alarmVignette"></div><div id="reticle"></div>
+<header id="top"><div class="brand">ESTUDIO 3D · EXPERIENCIA 02<strong>UMBRA</strong></div><div class="mission">OPERACIÓN / ARCHIVO NEGRO<strong id="missionLabel">INFILTRACIÓN</strong><span id="state">SISTEMA / NORMAL</span></div></header>
+<div id="hint" role="status"></div>
+<section id="hud"><div class="block"><small>OBJETIVO ACTUAL</small><h2 id="objective">ALCANZÁ LA TERMINAL</h2><p id="tip">Ocultate detrás de las coberturas. Los guardias no ven a través de obstáculos.</p><div id="suspicion"><div id="suspicionFill"></div></div></div><div><small style="text-align:right">DISTANCIA / TERMINAL</small><div id="distance">--</div></div></section>
+<div id="mobile"><div id="joystick" aria-label="Palanca de movimiento"><div id="nub"></div></div><div id="actions"><button class="touch" id="crouch" aria-pressed="false">AGACHAR</button><button class="touch" id="run" aria-pressed="false">CORRER</button></div></div>
+<section id="overlay"><div id="panel"><div class="kicker" id="kicker">DOSSIER 02 / ACCESO NO AUTORIZADO</div><h1 id="title">UMBRA.</h1><div id="subtitle">Entrá al complejo, evadí las patrullas y alcanzá la terminal del Archivo Negro. Las cajas y los muros bloquean la visión. Una sola misión, sin segundas oportunidades.</div><button id="play">INICIAR MISIÓN</button><div class="controls"><b>TECLADO</b> · WASD / FLECHAS para moverte · C agacharte · SHIFT correr · R reiniciar<br><b>CELULAR</b> · palanca izquierda · AGACHAR / CORRER a la derecha</div></div></section>
+<script>
+window.addEventListener('error',function(e){if(e.message&&/module|import|fetch|THREE/i.test(e.message)){document.getElementById('subtitle').textContent='No se pudo cargar el motor 3D. Comprobá la conexión: esta versión utiliza Three.js por CDN.';document.getElementById('overlay').hidden=false;}});
+</script>
+<script type="module">
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.1/build/three.module.js';
+const $=id=>document.getElementById(id);
+const canvas=$('scene'), scene=new THREE.Scene();scene.background=new THREE.Color(0x09171e);scene.fog=new THREE.Fog(0x09171e,30,71);
+const renderer=new THREE.WebGLRenderer({canvas,antialias:true,powerPreference:'high-performance'});
+renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.7));renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.5;
+const camera=new THREE.OrthographicCamera(-14,14,10,-10,.1,150);const camTarget=new THREE.Vector3(0,0,0);
+scene.add(new THREE.HemisphereLight(0xc4ecdb,0x12202c,1.65));
+const key=new THREE.DirectionalLight(0xc5f2e4,2.25);key.position.set(-12,26,14);key.castShadow=true;key.shadow.mapSize.set(1024,1024);key.shadow.camera.left=-30;key.shadow.camera.right=30;key.shadow.camera.top=30;key.shadow.camera.bottom=-30;key.shadow.normalBias=.05;scene.add(key);
+function mat(c,rough=.85,metal=0){return new THREE.MeshStandardMaterial({color:c,roughness:rough,metalness:metal});}
+const M={floor:mat(0x152c35),line:mat(0x42605d),wall:mat(0x253f46),wall2:mat(0x334b4c),crate:mat(0x836e58),crateSide:mat(0x4a443e),trim:mat(0xcbb58c,.7,.15),glow:new THREE.MeshBasicMaterial({color:0x9fffd0}),red:new THREE.MeshBasicMaterial({color:0xff626b}),black:mat(0x071619),pillar:mat(0x3d5b5d,.7,.23)};
+function box(w,h,d,x,y,z,material,cast=true){const o=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),material);o.position.set(x,y,z);o.castShadow=cast;o.receiveShadow=true;scene.add(o);return o;}
+box(40,.55,32,0,-.3,0,M.floor,false);
+const gridCanvas=document.createElement('canvas');gridCanvas.width=512;gridCanvas.height=512;const ctx=gridCanvas.getContext('2d');ctx.fillStyle='#203139';ctx.fillRect(0,0,512,512);
+for(let i=0;i<512;i+=64){ctx.strokeStyle='#52696855';ctx.lineWidth=2;ctx.strokeRect(i+.5,.5,63,511);ctx.strokeRect(.5,i+.5,511,63)}
+for(let i=0;i<280;i++){let x=(i*73)%512,y=(i*137)%512;ctx.fillStyle=i%3===0?'#80938d16':'#02090e1e';ctx.fillRect(x,y,3+(i%5),2)}
+const groundTex=new THREE.CanvasTexture(gridCanvas);groundTex.wrapS=groundTex.wrapT=THREE.RepeatWrapping;groundTex.repeat.set(5,4);groundTex.colorSpace=THREE.SRGBColorSpace;
+const tile=new THREE.Mesh(new THREE.PlaneGeometry(40,32),new THREE.MeshStandardMaterial({map:groundTex,roughness:1}));tile.rotation.x=-Math.PI/2;tile.position.y=.004;tile.receiveShadow=true;scene.add(tile);
+const bounds={minX:-18,maxX:18,minZ:-14,maxZ:14};const colliders=[];
+function blocker(x,z,w,d,h,kind){colliders.push({x,z,w,d});const base=box(w,h,d,x,h/2,z,kind==='steel'?M.wall:M.crate);box(w+.08,.10,d+.08,x,h+.04,z,kind==='steel'?M.trim:M.crateSide);
+ if(kind==='steel'){for(let s=-w/2+.35;s<w/2;s+=.85)box(.035,h*.79,.05,x+s,h*.51,z+d/2+.04,M.wall2,false);}
+ else {for(const side of [-1,1]){box(.09,h*.7,.06,x+w*side*.42,h*.54,z+d/2+.036,M.trim,false);box(w*.84,.085,.055,x,h*.76,z+d/2+.038,M.trim,false);}}
+}
+blocker(-10,5,3.3,4.6,2.45,'steel');blocker(-3,8,4.5,2.8,1.75,'crate');
+blocker(6,4,2.2,5.7,3.1,'steel');blocker(-7,-4,5.5,2.2,2.35,'crate');
+blocker(4,-6,4.3,2.0,2.0,'steel');blocker(12,-5,2.1,3.3,2.9,'crate');
+blocker(-1,0,2.3,3.0,1.6,'crate');blocker(-14,-7,2.7,2.5,1.6,'crate');
+for(const [x,z,w,d] of [[0,-15.8,40,1.8],[0,15.8,40,1.8],[-19.8,0,1.8,34],[19.8,0,1.8,34]]){box(w,4.4,d,x,2,z,M.wall);box(w,.13,d,x,4.36,z,M.pillar);}
+for(let x=-17;x<=17;x+=5){for(let z of [-15.8,15.8]){box(.22,3.7,.18,x,2,z+(z<0?1:-1),M.pillar);}}
+for(let z=-13;z<=13;z+=5){for(let x of [-19.8,19.8])box(.23,3.7,.18,x+(x<0?1:-1),2,z,M.pillar);}
+const warnings=new THREE.Group();scene.add(warnings);
+function stripe(x,z,w,d,color=0xbe9d72){const o=new THREE.Mesh(new THREE.PlaneGeometry(w,d),new THREE.MeshBasicMaterial({color,transparent:true,opacity:.59,side:THREE.DoubleSide}));o.rotation.x=-Math.PI/2;o.position.set(x,.03,z);warnings.add(o);}
+for(let x=-16;x<17;x+=2){stripe(x,0,.58,.065,0x9cbaad);stripe(x,-12.55,.76,.12,0xb99775);}
+for(let i=0;i<5;i++){stripe(-15.7+i*.83,12,.42,.15,0x92b8a3);}
+const startRing=new THREE.Mesh(new THREE.RingGeometry(.73,.77,56),new THREE.MeshBasicMaterial({color:0xa6e2c5,side:THREE.DoubleSide,transparent:true,opacity:.8}));startRing.rotation.x=-Math.PI/2;startRing.position.set(-16,.052,12);scene.add(startRing);
+const term=new THREE.Group();term.position.set(15,0,-11.7);scene.add(term);
+function terminalBox(w,h,d,x,y,z,m){const o=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),m);o.position.set(x,y,z);o.castShadow=true;term.add(o);return o;}
+terminalBox(2,.24,1.8,0,.13,0,M.black);terminalBox(1.1,1.3,.75,0,.84,0,M.pillar);terminalBox(.94,.7,.09,0,1.06,.43,new THREE.MeshBasicMaterial({color:0x9efbcc}));terminalBox(.56,.04,.12,0,.83,.51,M.black);
+const halo=new THREE.PointLight(0x7bffc7,2.8,9);halo.position.set(15,2,-11.7);scene.add(halo);
+const beacon=new THREE.Mesh(new THREE.TorusGeometry(1.3,.045,8,70),new THREE.MeshBasicMaterial({color:0x9cffc7,transparent:true,opacity:.75}));beacon.rotation.x=Math.PI/2;beacon.position.set(15,.1,-11.7);scene.add(beacon);
+const sparks=[];for(let i=0;i<18;i++){let mesh=new THREE.Mesh(new THREE.BoxGeometry(.045,.045,.045),M.glow);mesh.position.set(15+Math.cos(i*2.399)*(.4+i%4*.19),.9+(i*.37)%2,-11.7+Math.sin(i*2.399)*(.4+i%4*.19));scene.add(mesh);sparks.push(mesh);}
+function actorSVG(kind){const player=kind==='player';const colors=player?['#96e7c3','#204b55','#e9ddc6','#122b35']:['#e0a77e','#414d58','#f6e1c5','#24313e'];const coat=player?'M47 100 Q72 88 96 100 L113 202 L94 230 L79 201 L64 231 L34 207 Z':'M38 104 L110 104 L112 184 L39 184 Z';
+return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 150 256"><defs><linearGradient id="cloth" x2=".8" y2="1"><stop stop-color="'+colors[0]+'"/><stop offset="1" stop-color="'+colors[1]+'"/></linearGradient><linearGradient id="dark" x2=".7" y2="1"><stop stop-color="'+colors[1]+'"/><stop offset="1" stop-color="'+colors[3]+'"/></linearGradient></defs>'
++'<ellipse cx="76" cy="248" rx="33" ry="5" fill="#000" opacity=".23"/>'
++'<path d="M54 159 L71 163 L67 229 L56 241 L40 237 L45 220Z M82 165 L102 162 L111 234 L92 244 L84 225Z" fill="#13262d" stroke="#0a1922" stroke-width="4"/>'
++'<path d="M40 231 Q52 221 70 235 L69 243 L37 246Z M87 235 Q101 224 116 236 L121 245 L87 245Z" fill="'+colors[1]+'" stroke="#09191f" stroke-width="3"/>'
++'<path d="'+coat+'" fill="url(#cloth)" stroke="#0a242a" stroke-width="5" stroke-linejoin="round"/>'
++'<path d="M47 107 L31 125 L25 169 L39 176 L54 140 Z M98 105 L115 119 L128 168 L112 180 L96 140Z" fill="url(#dark)" stroke="#10252f" stroke-width="5"/>'
++'<path d="M23 164 L41 168 L40 190 L29 194 L20 183Z M109 168 L129 161 L134 182 L124 193 L111 188Z" fill="'+colors[1]+'" stroke="#12222d" stroke-width="4"/>'
++'<path d="M58 105 L76 117 L94 104 L89 149 L80 158 L74 136 L64 155Z" fill="'+(player?'#bfdccb':'#111f29')+'" opacity=".65"/>'
++'<path d="M42 149 L105 149 L110 158 L40 159Z" fill="#0b2732" stroke="'+colors[0]+'" stroke-width="3"/><rect x="80" y="147" width="13" height="12" rx="2" fill="#d9cc99"/>'
++'<path d="M48 59 Q37 81 45 101 L60 113 L89 112 L108 94 L103 60 Z" fill="'+colors[3]+'" stroke="#142933" stroke-width="5"/>'
++(player?'<path d="M41 56 Q47 14 77 13 Q108 15 112 57 L105 74 L95 49 L51 51 L45 77Z" fill="#183d45" stroke="#6cbdac" stroke-width="5"/>':
+'<path d="M39 67 Q38 31 75 22 Q114 25 112 66 L108 80 L39 80Z" fill="#394551" stroke="#d7ad88" stroke-width="5"/><rect x="37" y="61" width="76" height="14" rx="4" fill="#bd856e"/>')
++'<path d="M51 72 Q75 64 100 72 L96 96 Q74 107 54 94Z" fill="'+colors[2]+'"/>'
++'<path d="M49 79 Q74 72 101 79 L96 91 L53 91Z" fill="#0b2229"/>'
++'<path d="M57 83 L69 82 M81 82 L94 83" stroke="'+(player?'#b0ffe1':'#ffcfae')+'" stroke-width="4" stroke-linecap="round"/>'
++'<path d="M76 91 L80 95 L74 98" stroke="#a67967" stroke-width="2" fill="none"/>'
++(player?'<path d="M46 111 L68 126 L80 171 L64 205" stroke="#d6e5c6" stroke-width="4" fill="none" opacity=".8"/><path d="M98 111 L88 143 L111 210" stroke="#4d8f91" stroke-width="4" fill="none"/>':
+'<path d="M40 115 L110 115 L115 137 L36 137Z" fill="#8b6560" opacity=".9"/><rect x="70" y="117" width="14" height="15" rx="2" fill="#f5bb8b"/>')
++'</svg>';}
+function loadSprite(kind,material){const img=new Image();img.onload=()=>{const c=document.createElement('canvas');c.width=300;c.height=512;c.getContext('2d').drawImage(img,0,0,300,512);const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;t.anisotropy=Math.min(8,renderer.capabilities.getMaxAnisotropy());material.map=t;material.color.set(0xffffff);material.needsUpdate=true};img.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(actorSVG(kind));}
+const charMaterials={player:new THREE.MeshBasicMaterial({color:0xa3e3c4,transparent:true,side:THREE.DoubleSide,depthWrite:false,alphaTest:.04}),guard:new THREE.MeshBasicMaterial({color:0xd6a98a,transparent:true,side:THREE.DoubleSide,depthWrite:false,alphaTest:.04})};
+loadSprite('player',charMaterials.player);loadSprite('guard',charMaterials.guard);
+function actor(type,x,z,size=2.35){const group=new THREE.Group();group.position.set(x,0,z);const mesh=new THREE.Mesh(new THREE.PlaneGeometry(size*.64,size),charMaterials[type]);mesh.position.y=size*.52;mesh.castShadow=false;group.add(mesh);const shadow=new THREE.Mesh(new THREE.CircleGeometry(size*.27,32),new THREE.MeshBasicMaterial({color:0x010b11,transparent:true,opacity:.46,depthWrite:false}));shadow.rotation.x=-Math.PI/2;shadow.position.y=.03;shadow.scale.set(1.3,.58,1);group.add(shadow);scene.add(group);return {group,mesh,shadow};}
+const spawn={x:-16,z:12},goal={x:15,z:-11.7};const player=actor('player',spawn.x,spawn.z,2.4);
+const patrols=[
+{pts:[[-15,10],[-7,10],[-7,1],[-15,1]],speed:1.72},
+{pts:[[2,11],[14,11],[14,1],[10,1],[2,2]],speed:1.88},
+{pts:[[-12,-11],[3,-11],[3,-2],[-12,-2]],speed:1.55},
+{pts:[[10,-10],[17,-10],[17,-2],[10,-2]],speed:1.62}
+];
+function makeSight(){const N=26,verts=new Float32Array((N+2)*3);const geo=new THREE.BufferGeometry();geo.setAttribute('position',new THREE.BufferAttribute(verts,3));const faces=[];for(let i=1;i<=N;i++)faces.push(0,i,i+1);geo.setIndex(faces);geo.computeVertexNormals();const m=new THREE.Mesh(geo,new THREE.MeshBasicMaterial({color:0xe2b879,transparent:true,opacity:.13,depthWrite:false,side:THREE.DoubleSide}));m.position.y=.052;scene.add(m);return m;}
+const guards=patrols.map((p,i)=>{let a=actor('guard',p.pts[0][0],p.pts[0][1],2.1),cone=makeSight();return {...p,a,cone,target:1,heading:0,alert:0,id:i};});
+function resetGuards(){for(let g of guards){g.a.group.position.set(g.pts[0][0],0,g.pts[0][1]);g.target=1;g.alert=0;g.heading=Math.atan2(g.pts[1][0]-g.pts[0][0],g.pts[1][1]-g.pts[0][1]);g.cone.material.color.set(0xe2b879);}}
+function blocked(x,z,r=.36){if(x<bounds.minX+r||x>bounds.maxX-r||z<bounds.minZ+r||z>bounds.maxZ-r)return true;return colliders.some(b=>Math.abs(x-b.x)<b.w/2+r&&Math.abs(z-b.z)<b.d/2+r);}
+function visionBlocked(x1,z1,x2,z2){const dx=x2-x1,dz=z2-z1;for(let i=1;i<24;i++){let t=i/24,x=x1+dx*t,z=z1+dz*t;if(colliders.some(b=>Math.abs(x-b.x)<b.w/2+.04&&Math.abs(z-b.z)<b.d/2+.04))return true;}return false;}
+function updateCone(g){const pos=g.cone.geometry.attributes.position;const N=26,reach=7.9;pos.setXYZ(0,0,0,0);for(let i=0;i<=N;i++){const a=g.heading-.63+(i/N)*1.26,ux=Math.sin(a),uz=Math.cos(a);let ray=reach;for(let d=.45;d<=reach;d+=.35){if(visionBlocked(g.a.group.position.x,g.a.group.position.z,g.a.group.position.x+ux*d,g.a.group.position.z+uz*d)){ray=d;break;}}pos.setXYZ(i+1,ux*ray,0,uz*ray);}pos.needsUpdate=true;g.cone.geometry.computeVertexNormals();g.cone.position.x=g.a.group.position.x;g.cone.position.z=g.a.group.position.z;}
+let mode='INTRO',elapsed=0,alarmTimer=0,suspicion=0,crouched=false,runHeld=false;const keys=new Set();let joy={x:0,y:0},pointer=-1;let lastFrame=performance.now();
+function ui(){const p=player.group.position;const d=Math.hypot(goal.x-p.x,goal.z-p.z);$('distance').textContent=d.toFixed(1);$('suspicionFill').style.width=Math.round(suspicion*100)+'%';$('suspicionFill').style.background=suspicion>.65?'#ff5966':suspicion>.25?'#f6bf7e':'#b8ffdc';$('state').textContent=mode==='ALARM'?'ALARMA / DETECTADO':mode==='PLAY'?(crouched?'PERFIL / OCULTO':runHeld||keys.has('Shift')?'PERFIL / RUIDO':'SISTEMA / NORMAL'):'SISTEMA / ESPERA';$('state').style.borderColor=mode==='ALARM'?'#ff626b':'#355454';}
+function overlay(title,kicker,subtitle,button){$('title').textContent=title;$('kicker').textContent=kicker;$('subtitle').textContent=subtitle;$('play').textContent=button;$('overlay').hidden=false;}
+function start(){mode='PLAY';elapsed=0;suspicion=0;alarmTimer=0;crouched=false;runHeld=false;keys.clear();joy.x=joy.y=0;$('crouch').setAttribute('aria-pressed','false');$('run').setAttribute('aria-pressed','false');$('missionLabel').textContent='INFILTRACIÓN';$('objective').textContent='ALCANZÁ LA TERMINAL';$('tip').textContent='La cobertura bloquea la visión. Agacharte reduce la detección.';document.body.classList.remove('alarm');player.group.position.set(spawn.x,0,spawn.z);resetGuards();$('overlay').hidden=true;showHint('EVITÁ LOS CONOS DE VISIÓN',2.3);}
+function showHint(msg,s=1.4){$('hint').textContent=msg;$('hint').classList.add('visible');clearTimeout(showHint.timer);showHint.timer=setTimeout(()=>$('hint').classList.remove('visible'),s*1000);}
+$('play').addEventListener('click',start);
+window.addEventListener('keydown',e=>{if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' '].includes(e.key))e.preventDefault();keys.add(e.key);if(e.key.toLowerCase()==='r'&&mode!=='PLAY')start();if(e.key.toLowerCase()==='c'&&mode==='PLAY'&&!e.repeat){crouched=!crouched;$('crouch').setAttribute('aria-pressed',String(crouched));}});
+window.addEventListener('keyup',e=>keys.delete(e.key));window.addEventListener('blur',()=>{keys.clear();runHeld=false;joy.x=joy.y=0});
+const stick=$('joystick'),nub=$('nub');
+function setStick(e){const b=stick.getBoundingClientRect(),dx=e.clientX-(b.left+b.width/2),dy=e.clientY-(b.top+b.height/2),r=b.width*.35,len=Math.hypot(dx,dy)||1;joy.x=dx/Math.max(r,len);joy.y=dy/Math.max(r,len);nub.style.transform='translate('+(joy.x*r)+'px,'+(joy.y*r)+'px)';}
+function clearStick(){pointer=-1;joy.x=joy.y=0;nub.style.transform='translate(0,0)';}
+stick.addEventListener('pointerdown',e=>{pointer=e.pointerId;stick.setPointerCapture(pointer);setStick(e);e.preventDefault()});
+stick.addEventListener('pointermove',e=>{if(e.pointerId===pointer)setStick(e)});
+for(const ev of ['pointerup','pointercancel','lostpointercapture'])stick.addEventListener(ev,e=>{if(e.pointerId===pointer)clearStick()});
+$('crouch').addEventListener('pointerdown',e=>{e.preventDefault();if(mode==='PLAY'){crouched=!crouched;$('crouch').setAttribute('aria-pressed',String(crouched));}});
+$('run').addEventListener('pointerdown',e=>{e.preventDefault();runHeld=true;$('run').setAttribute('aria-pressed','true');$('run').setPointerCapture(e.pointerId)});
+for(const ev of ['pointerup','pointercancel','lostpointercapture'])$('run').addEventListener(ev,()=>{runHeld=false;$('run').setAttribute('aria-pressed','false')});
+function win(){mode='WIN';$('missionLabel').textContent='MISIÓN COMPLETADA';$('objective').textContent='ARCHIVO RECUPERADO';overlay('EXTRAÍDO.','MISIÓN COMPLETADA / ARCHIVO NEGRO','Llegaste al terminal sin activar la alarma. Podés repetir la infiltración e intentar otra ruta.','VOLVER A JUGAR');}
+function fail(){mode='LOST';$('missionLabel').textContent='OPERACIÓN FALLIDA';$('objective').textContent='OBJETIVO PERDIDO';overlay('DETECTADO.','MISIÓN FALLIDA / ALARMA','Las patrullas confirmaron tu posición. Usá las coberturas, observá los conos de visión e intentá otra ruta.','REINTENTAR MISIÓN');}
+function movePlayer(dt){const p=player.group.position;let x=(keys.has('d')||keys.has('D')||keys.has('ArrowRight')?1:0)-(keys.has('a')||keys.has('A')||keys.has('ArrowLeft')?1:0)+joy.x;let z=(keys.has('s')||keys.has('S')||keys.has('ArrowDown')?1:0)-(keys.has('w')||keys.has('W')||keys.has('ArrowUp')?1:0)+joy.y;const mag=Math.hypot(x,z);if(mag>.02){x/=Math.max(1,mag);z/=Math.max(1,mag);const sprint=runHeld||keys.has('Shift'),speed=crouched?2.3:sprint?6.4:4;const nx=p.x+x*speed*dt,nz=p.z+z*speed*dt;if(!blocked(nx,p.z))p.x=nx;if(!blocked(p.x,nz))p.z=nz;player.mesh.position.y=1.23+Math.sin(elapsed*speed*10)*.045;player.mesh.scale.x=x<-.12?-1:1;}}
+function updateGuards(dt){let delta=0;const p=player.group.position;let seeing=false;for(const g of guards){const gp=g.a.group.position,target=g.pts[g.target],dx=target[0]-gp.x,dz=target[1]-gp.z,dist=Math.hypot(dx,dz);if(dist<.18){g.target=(g.target+1)%g.pts.length;}else{const desired=Math.atan2(dx,dz),da=Math.atan2(Math.sin(desired-g.heading),Math.cos(desired-g.heading));g.heading+=Math.max(-dt*3.4,Math.min(dt*3.4,da));let step=Math.min(dist,dt*g.speed);gp.x+=dx/dist*step;gp.z+=dz/dist*step;}g.a.mesh.position.y=1.11+Math.sin(elapsed*7+g.id)*.032;
+const vx=p.x-gp.x,vz=p.z-gp.z,d=Math.hypot(vx,vz),dot=(Math.sin(g.heading)*vx+Math.cos(g.heading)*vz)/(d||1);const inCone=d<7.7&&dot>Math.cos(.63)&&!visionBlocked(gp.x,gp.z,p.x,p.z);const near=d<1.12;
+const canSee=(inCone||near)&&mode==='PLAY';if(canSee){seeing=true;g.alert=Math.min(1,g.alert+dt*(crouched?.19:runHeld||keys.has('Shift')?.88:.48)*(1.4-d/12));}else g.alert=Math.max(0,g.alert-dt*.26);
+g.cone.material.color.set(g.alert>.40?0xff485e:0xe0b076);g.cone.material.opacity=.12+g.alert*.20;updateCone(g);
+delta=Math.max(delta,g.alert);if(g.alert>=1&&mode==='PLAY'){mode='ALARM';alarmTimer=2.1;document.body.classList.add('alarm');$('missionLabel').textContent='ALERTA DE SEGURIDAD';showHint('¡ALARMA! POSICIÓN COMPROMETIDA',2);}}
+suspicion=Math.max(delta,suspicion-(seeing?0:dt*.48));}
+function step(dt){elapsed+=dt;beacon.rotation.z=elapsed*.19;halo.intensity=2.2+Math.sin(elapsed*3)*.55;for(let i=0;i<sparks.length;i++)sparks[i].position.y=1.2+.75*Math.sin(elapsed*.8+i*.8);
+if(mode==='PLAY'){movePlayer(dt);updateGuards(dt);const p=player.group.position;if(Math.hypot(p.x-goal.x,p.z-goal.z)<1.52)win();}
+else if(mode==='ALARM'){alarmTimer-=dt;if(alarmTimer<=0)fail();}
+ui();}
+function resize(){const w=innerWidth,h=innerHeight,asp=w/h,halfH=Math.max(11.5,10/asp);camera.left=-halfH*asp;camera.right=halfH*asp;camera.top=halfH;camera.bottom=-halfH;camera.updateProjectionMatrix();renderer.setSize(w,h,false);}
+addEventListener('resize',resize);resize();resetGuards();
+function frame(t){requestAnimationFrame(frame);const dt=Math.min(.04,(t-lastFrame)/1000||.016);lastFrame=t;if(!document.hidden)step(dt);const p=player.group.position;const target=new THREE.Vector3(p.x,0,p.z-2),wish=new THREE.Vector3(p.x,25,p.z+20);camera.position.lerp(wish,.055);camTarget.lerp(target,.09);camera.lookAt(camTarget);
+for(const a of [player,...guards.map(g=>g.a)]){const pos=a.group.position;const angle=Math.atan2(camera.position.x-pos.x,camera.position.z-pos.z);a.mesh.rotation.y=angle;}
+renderer.render(scene,camera);}
+requestAnimationFrame(frame);
+</script>
+</body></html>
