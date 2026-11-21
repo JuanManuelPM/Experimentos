@@ -1,0 +1,1 @@
+Cesium Man © 2017 Cesium, CC BY 4.0. Source asset in ../cruce-urbano/v1/assets/cesium-man.glb, Git blob 8586c4e6a59bf8ef585c2a685c50a80d28503216. Original scene geometry/signage by PROMETEO. Three.js is licensed MIT.
