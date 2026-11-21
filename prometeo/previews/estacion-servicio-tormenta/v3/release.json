@@ -2,7 +2,7 @@
   "schema": "prometeo.3d.scene-release/v2",
   "projectId": "estacion-servicio-tormenta",
   "version": "v3",
-  "status": "CANDIDATE_SOURCE_UNREVIEWED",
+  "status": "PUBLIC_GIT_CANDIDATE_UNREVIEWED",
   "ownerRepo": "JuanManuelPM/pruebas",
   "ownerBranch": "candidate/3d-estacion-servicio-tormenta-v3-wave003-20261121",
   "baselineCommit": "7802e59c9473acb6510b43f1c292d9f8a3f51b29",
@@ -13,11 +13,18 @@
   "briefSHA256": "c8192fd2690021cfe77c4e2d7153034338e6e7aca16e0dea50bc4ec0a0d61d47",
   "preview": {
     "url": "https://juanmanuelpm.github.io/Experimentos/prometeo/previews/estacion-servicio-tormenta/v3/",
-    "gitVerified": false,
+    "gitVerified": true,
     "httpVerified": false,
     "webgl2Executed": false,
     "mobileExecuted": false,
-    "humanArtApproval": "NOT_RUN"
+    "humanArtApproval": "NOT_RUN",
+    "commit": "c26dfffe0b91f261565b4d7ed204ea8fe5b101ba",
+    "httpCheck": "NOT_VERIFIED: external web reader could not access Pages endpoint; GitHub contents read back and hashes equal private source.",
+    "sourceBlobs": {
+      "scene": "7abf2cc6721023c04436fe14046dea88c86ab456",
+      "driver": "1ed31377cf14788482d2e08c85d983175a46c281",
+      "index": "b627b233d5d61b14482876aaef9da6903d90576a"
+    }
   },
   "budgetUSD": 0,
   "knownGaps": [
@@ -25,5 +32,6 @@
     "Procedural original character with articulated meshes, not tested skinned GLB",
     "Reflector integration untested; potential GPU cost",
     "No independent local runtime due DNS"
-  ]
+  ],
+  "ownerSourceCommit": "f3b292cfba1ba581596455612058acfc1587c04c"
 }
