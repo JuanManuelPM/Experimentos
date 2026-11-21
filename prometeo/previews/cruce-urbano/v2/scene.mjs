@@ -401,8 +401,10 @@ function moveCamera(dt){
 }
 function boot(){
  try{
-  if(!document.createElement('canvas').getContext('webgl2'))throw Error('WEBGL2_UNAVAILABLE');
-  renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:'high-performance'});
+  const canvas=document.createElement('canvas');
+  const gl=canvas.getContext('webgl2',{antialias:true,alpha:false,powerPreference:'high-performance'});
+  if(!gl)throw Error('WEBGL2_UNAVAILABLE');
+  renderer=new THREE.WebGLRenderer({canvas,context:gl,antialias:true,powerPreference:'high-performance'});
   renderer.setPixelRatio(MAX_DPR);renderer.setSize(innerWidth,innerHeight);
   renderer.outputColorSpace=THREE.SRGBColorSpace;
   renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.20;
