@@ -1,122 +1,17 @@
 <!doctype html>
-<html lang="es">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#f3f2ee">
-<title>PROMETEO</title>
-<link rel="stylesheet" href="./styles.css">
-<script src="./app.js" defer></script>
-<script src="./shell.js" defer></script>
-</head>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0b0d0c"><title>PROMETEO</title><link rel="stylesheet" href="./styles.css"><script src="./app.js" defer></script></head>
 <body>
-<main id="entry" class="entry">
-  <header class="entry-header">
-    <span class="brand"><span class="brand-symbol">P.</span><span>PROMETEO</span></span>
-    <span class="version-mark">VISOR / 02</span>
-  </header>
-  <section class="entry-center">
-    <div class="entry-icon"><span>P</span></div>
-    <h1>PROMETEO</h1>
-    <div class="entry-actions">
-      <button id="sign-in" class="button button-dark" type="button">
-        <svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M12 .8a11.2 11.2 0 0 0-3.54 21.83c.56.11.77-.24.77-.54v-2.1c-3.13.68-3.79-1.33-3.79-1.33-.51-1.29-1.26-1.64-1.26-1.64-1.03-.7.08-.69.08-.69 1.14.08 1.74 1.17 1.74 1.17 1.01 1.73 2.65 1.23 3.3.94.1-.73.4-1.23.72-1.51-2.5-.29-5.14-1.25-5.14-5.56 0-1.23.44-2.24 1.16-3.03-.12-.29-.5-1.43.11-2.98 0 0 .95-.3 3.1 1.15a10.8 10.8 0 0 1 5.65 0c2.15-1.46 3.09-1.15 3.09-1.15.62 1.55.23 2.69.11 2.98.72.79 1.16 1.8 1.16 3.03 0 4.32-2.65 5.27-5.17 5.55.41.36.77 1.06.77 2.14v3.2c0 .3.2.66.78.54A11.2 11.2 0 0 0 12 .8Z"/></svg>
-        Continuar con GitHub
-      </button>
-      <button id="go-demo" class="button-quiet" type="button">Ver demostración <span aria-hidden="true">↗</span></button>
-    </div>
-  </section>
-  <footer class="entry-footer"><span>PROYECTOS PRIVADOS</span><span>20.11.26</span></footer>
-</main>
-
-<main id="workspace" class="workspace-screen" hidden>
-  <header class="viewer-header">
-    <div class="viewer-header-left">
-      <button id="toggle-sidebar" class="icon-button" aria-label="Abrir proyectos" title="Proyectos" type="button">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
-      </button>
-      <button id="return-home" class="brand brand-button" type="button" aria-label="Volver al inicio"><span class="brand-symbol">P.</span><span>PROMETEO</span></button>
-      <span class="viewer-separator"></span>
-      <span class="viewer-location" id="viewer-project-label">PROYECTOS</span>
-    </div>
-    <div class="viewer-actions">
-      <button id="reload" class="icon-button" title="Actualizar" aria-label="Actualizar" disabled type="button">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M20 8v5h-5"/><path d="M19 13a7.5 7.5 0 1 1-1.7-5"/></svg>
-      </button>
-      <button id="fullscreen" class="icon-button" title="Pantalla completa" aria-label="Pantalla completa" disabled type="button">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M9 4H4v5M15 4h5v5M4 15v5h5M20 15v5h-5"/></svg>
-      </button>
-    </div>
-  </header>
-  <div id="viewer-body" class="viewer-body">
-    <aside id="sidebar" class="sidebar">
-      <div class="sidebar-head">
-        <span>ARCHIVOS</span>
-        <button id="close-sidebar" class="icon-button small-close" title="Cerrar" aria-label="Cerrar proyectos" type="button">×</button>
-      </div>
-      <div class="repository-preview"><span class="branch-dot"></span><span id="viewer-repo-label">Repositorio</span></div>
-      <div id="location" class="location">/</div>
-      <div id="files" class="files" aria-live="polite"></div>
-      <div class="sidebar-bottom">
-        <details id="repository-options" class="disclosure">
-          <summary>Repositorio <span aria-hidden="true">⌄</span></summary>
-          <div class="options-fields">
-            <label for="repository">Repositorio</label>
-            <input id="repository" spellcheck="false" value="JuanManuelPM/pruebas" aria-label="Repositorio">
-            <label for="branch">Rama</label>
-            <input id="branch" spellcheck="false" value="prometeo/control" aria-label="Rama">
-            <button id="browse" class="slim-button" type="button">Abrir rama</button>
-            <button id="demo" class="slim-link" type="button">Demo 3D</button>
-          </div>
-        </details>
-        <button id="account-button" class="account-button" type="button">
-          <span id="account-avatar" class="account-avatar">G</span><span id="auth-state">Sin conectar</span><span class="trailing" aria-hidden="true">›</span>
-        </button>
-      </div>
-    </aside>
-    <section class="stage-wrap">
-      <div id="stage" class="stage">
-        <div id="welcome" class="stage-empty">
-          <span class="stage-empty-mark">P</span>
-          <span>Elegí un archivo para verlo.</span>
-        </div>
-        <iframe id="preview" title="Vista previa del proyecto" sandbox="allow-scripts allow-pointer-lock allow-downloads" referrerpolicy="no-referrer" hidden></iframe>
-      </div>
-      <div class="stage-footer">
-        <span id="title">Sin vista abierta</span>
-        <span id="subtitle" class="stage-subtitle"></span>
-        <span id="status" role="status">Preparado</span>
-        <span id="count" hidden></span>
-        <span id="version" hidden>V2</span>
-      </div>
-    </section>
-  </div>
-</main>
-
-<div id="auth-overlay" class="overlay" hidden>
-  <div id="auth-backdrop" class="overlay-backdrop"></div>
-  <section class="auth-card" role="dialog" aria-modal="true" aria-labelledby="auth-heading">
-    <button id="close-auth" class="auth-close" aria-label="Cerrar" type="button">×</button>
-    <div class="auth-glyph"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .8a11.2 11.2 0 0 0-3.54 21.83c.56.11.77-.24.77-.54v-2.1c-3.13.68-3.79-1.33-3.79-1.33-.51-1.29-1.26-1.64-1.26-1.64-1.03-.7.08-.69.08-.69 1.14.08 1.74 1.17 1.74 1.17 1.01 1.73 2.65 1.23 3.3.94.1-.73.4-1.23.72-1.51-2.5-.29-5.14-1.25-5.14-5.56 0-1.23.44-2.24 1.16-3.03-.12-.29-.5-1.43.11-2.98 0 0 .95-.3 3.1 1.15a10.8 10.8 0 0 1 5.65 0c2.15-1.46 3.09-1.15 3.09-1.15.62 1.55.23 2.69.11 2.98.72.79 1.16 1.8 1.16 3.03 0 4.32-2.65 5.27-5.17 5.55.41.36.77 1.06.77 2.14v3.2c0 .3.2.66.78.54A11.2 11.2 0 0 0 12 .8Z"/></svg></div>
-    <h2 id="auth-heading">Acceder a PROMETEO</h2>
-    <p id="auth-explainer" class="auth-caption">Tus archivos siguen en GitHub.</p>
-    <button id="oauth-start" class="button button-dark auth-primary" type="button">
-      Continuar con GitHub
-      <span class="auth-arrow" aria-hidden="true">↗</span>
-    </button>
-    <div id="oauth-message" class="oauth-message" aria-live="polite" hidden></div>
-    <details id="manual-access" class="manual-access">
-      <summary>Acceso alternativo</summary>
-      <div class="manual-form">
-        <label for="token">Clave de acceso de solo lectura</label>
-        <input id="token" type="password" autocomplete="off" spellcheck="false" placeholder="Token de GitHub">
-        <button id="connect" class="slim-button" type="button">Conectar</button>
-        <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener noreferrer">Crear una clave de lectura ↗</a>
-      </div>
-    </details>
-    <div class="auth-foot"><span class="secure-dot"></span> Solo lectura</div>
-    <button id="disconnect" class="disconnect-button" type="button" hidden>Desconectar</button>
-  </section>
-</div>
-</body>
-</html>
+<header class="top"><div class="brand"><span class="brand-mark">P</span><div><strong>PROMETEO</strong><span>PRIVATE VIEWER</span></div></div><div class="top-right"><span id="auth-state">Privado</span><button id="disconnect" class="text-button" type="button" aria-label="Salir">Salir</button></div></header>
+<main class="layout">
+<aside class="sidebar">
+<section class="connection" id="connection">
+<div class="welcome-access"><div class="symbol">P</div><h1>Tu espacio.</h1><p>Todo lo que construís, en un solo lugar.</p></div>
+<button id="login-info" class="primary login-btn" type="button"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="currentColor"><path d="M12 .8a11.2 11.2 0 0 0-3.54 21.83c.56.1.77-.24.77-.54v-2.13c-3.13.68-3.79-1.33-3.79-1.33-.51-1.29-1.25-1.63-1.25-1.63-1.02-.7.08-.69.08-.69 1.13.08 1.73 1.16 1.73 1.16 1.01 1.72 2.65 1.22 3.3.93.1-.73.4-1.23.72-1.51-2.5-.28-5.13-1.25-5.13-5.55 0-1.23.44-2.23 1.16-3.02-.12-.29-.5-1.43.11-2.98 0 0 .95-.3 3.08 1.15a10.7 10.7 0 0 1 5.6 0c2.13-1.45 3.07-1.15 3.07-1.15.62 1.55.24 2.69.12 2.98.72.79 1.15 1.79 1.15 3.02 0 4.31-2.63 5.26-5.14 5.54.4.35.76 1.03.76 2.08v3.08c0 .3.2.65.77.54A11.2 11.2 0 0 0 12 .8Z"/></svg> Conectar GitHub</button>
+<div id="auth-help" hidden><p class="auth-note">El acceso automático todavía necesita una autorización segura. Por ahora, GitHub permite generar una clave de lectura una sola vez para esta sesión.</p><a class="auth-link" href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener noreferrer">Crear acceso de lectura ↗</a><label for="token">Clave de acceso</label><input id="token" type="password" autocomplete="off" spellcheck="false" placeholder="Pegá tu clave aquí"><button id="connect" class="primary">Entrar</button><p class="micro-help">Repositorio: pruebas · permiso Contents: Read-only. La clave no se guarda.</p></div>
+<button id="demo" class="demo-link" type="button">Explorar demostración <span>↗</span></button>
+</section>
+<section class="repo-section" id="repo-section" hidden><div class="section-head"><h2>Biblioteca</h2><span class="micro">GITHUB</span></div><details><summary>Ubicación</summary><label for="repository">Repositorio</label><input id="repository" value="JuanManuelPM/pruebas" spellcheck="false"><label for="branch">Rama</label><input id="branch" value="prometeo/control" spellcheck="false"><button id="browse" class="secondary">Abrir carpeta</button></details></section>
+<section class="files-section" id="files-section" hidden><div class="section-head"><h2>Archivos</h2><span id="count" class="micro"></span></div><div id="location" class="location">/</div><div id="files" class="files" aria-live="polite"></div></section>
+</aside>
+<section class="workspace"><div class="workspace-bar"><div class="crumb"><small>VISTA PREVIA</small><strong id="title">Tu biblioteca privada</strong><span id="subtitle">Elegí un proyecto para abrirlo</span></div><div class="tools"><button id="reload" class="secondary" disabled aria-label="Actualizar">↻</button><button id="fullscreen" class="secondary" disabled aria-label="Pantalla completa">⛶</button></div></div><div id="stage" class="stage"><div id="welcome" class="welcome"><div class="welcome-emblem">P</div></div><iframe id="preview" title="Vista previa" sandbox="allow-scripts allow-pointer-lock allow-downloads" referrerpolicy="no-referrer" hidden></iframe></div><div class="bottom"><span id="status" role="status">Listo</span><span id="version">V2 · PRIVATE VIEWER</span></div></section>
+</main></body></html>
