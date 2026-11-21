@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1">
+<meta name="theme-color" content="#0c1013"><meta name="description" content="Las diez escenas 3D de la Ola 002 en una sola pantalla, con comparador y notas.">
+<title>ESTUDIO 3D · OLA 002</title>
+<style>
+:root{color-scheme:dark;--bg:#0c1013;--ink:#f3f0eb;--muted:#9badaf;--line:#283137;--accent:#a7e6cf}*{box-sizing:border-box}
+html,body{width:100%;height:100%;margin:0;overflow:hidden;background:var(--bg);color:var(--ink);font:13px/1.35 system-ui,-apple-system,Segoe UI,sans-serif}
+button,a{touch-action:manipulation}button{color:inherit;font:inherit;cursor:pointer}button:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+#app{display:flex;flex-direction:column;width:100%;height:100%;height:100dvh;min-height:200px}
+.top{display:flex;align-items:center;gap:8px;height:53px;min-height:53px;padding:4px max(12px,env(safe-area-inset-left));border-bottom:1px solid var(--line);background:#10161a}
+.brand{display:flex;align-items:center;gap:7px;white-space:nowrap;font-weight:850;letter-spacing:.09em;font-size:11px}.brand i{width:7px;height:7px;border-radius:100%;background:var(--accent);box-shadow:0 0 12px #a7e6cf67}.brand b{color:#9bb7b8}
+#title{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:center;font-weight:800;letter-spacing:.05em}
+.action{border:1px solid var(--line);background:#20282d;border-radius:9px;min-width:39px;min-height:37px;padding:0 10px;white-space:nowrap;font-weight:700}
+.action.selected{border-color:#b1e8d486;color:var(--accent)}
+#link{color:var(--ink);display:inline-flex;align-items:center;justify-content:center;text-decoration:none;font-size:19px}
+.frame-wrap{position:relative;flex:1;min-height:0;overflow:hidden;background:#070809}#scene{width:100%;height:100%;border:0;display:block;background:#07090b}
+#load{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:13px;background:#0a0d10;pointer-events:none;transition:opacity .2s}
+#load.hide{opacity:0}#load .ring{width:29px;height:29px;border:2px solid #4d6062;border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}#load small{color:var(--muted);font-size:11px}
+.bottom{display:flex;align-items:center;gap:7px;min-height:65px;height:65px;padding:8px max(10px,env(safe-area-inset-right));border-top:1px solid var(--line);background:#11171b}
+.num-list{flex:1;display:flex;gap:6px;min-width:0;overflow-x:auto;scrollbar-width:none;padding:2px 1px}.num-list::-webkit-scrollbar{display:none}
+.slot{flex:0 0 40px;width:40px;height:41px;border:1px solid #343f42;border-radius:9px;background:#20272b;font-weight:800;font-size:14px}.slot.active{color:#071c16;background:var(--accent);border-color:var(--accent)}
+.nav{height:41px;min-width:38px;background:#20272b;border:1px solid #343f42;border-radius:9px;font-size:20px;line-height:1}.nav:disabled{opacity:.3}
+#shade{position:absolute;inset:0;background:#000a;z-index:10;display:none;align-items:flex-end;justify-content:center}#shade.open{display:flex}
+.sheet{background:#151c21;border-top:1px solid #38464c;border-radius:17px 17px 0 0;width:min(100%,680px);padding:18px;box-shadow:0 -20px 80px #0008;display:flex;flex-direction:column;gap:11px;max-height:90dvh}
+.sheet-head{display:flex;justify-content:space-between;align-items:center;font-weight:850}.sheet-head button{font-size:18px}
+textarea{width:100%;min-height:130px;resize:vertical;background:#0e1316;border:1px solid #38474c;color:#eee;padding:12px;font:14px/1.5 system-ui;border-radius:9px}
+.sheet-actions{display:flex;gap:7px}.sheet-actions button{flex:1}.tip{color:var(--muted);font-size:11px}
+@media(min-width:700px){.bottom{justify-content:center}.num-list{flex:0 1 650px;justify-content:center}.slot{flex-basis:44px;width:44px}.sheet{border-radius:17px;margin-bottom:4vh}}
+@media(max-width:390px){.brand b{display:none}.top{gap:5px;padding:4px 7px}.action{min-width:34px;padding:0 7px}.brand{font-size:10px}}
+</style></head><body>
+<div id="app">
+<header class="top">
+ <div class="brand"><i></i>3D <b>/ 002</b></div>
+ <button class="action" id="compare" aria-label="Ver versión anterior" title="Alternar versión actual y anterior">ACT</button>
+ <strong id="title">01 · Respawn</strong>
+ <button class="action" id="reset" aria-label="Recargar escena" title="Recargar">↻</button>
+ <a class="action" id="link" href="#" target="_blank" rel="noopener" aria-label="Abrir escena a pantalla completa" title="Abrir escena">↗</a>
+ <button class="action" id="notes" aria-label="Anotar corrección" title="Anotar corrección">✎</button>
+</header>
+<main class="frame-wrap">
+ <iframe id="scene" title="Escena 3D seleccionada" allow="fullscreen; autoplay; gamepad; accelerometer" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+ <div id="load" aria-live="polite"><div class="ring"></div><small>Cargando escena…</small></div>
+</main>
+<footer class="bottom" aria-label="Elegir una de diez escenas">
+ <button class="nav" id="prev" aria-label="Escena anterior">‹</button>
+ <div id="numbers" class="num-list" role="group" aria-label="Diez experimentos"></div>
+ <button class="nav" id="next" aria-label="Siguiente escena">›</button>
+</footer>
+</div>
+<div id="shade"><div class="sheet" role="dialog" aria-modal="true" aria-label="Notas de evaluación">
+ <div class="sheet-head"><span id="noteTitle">Observación</span><button class="action" id="close" aria-label="Cerrar">×</button></div>
+ <textarea id="memo" placeholder="¿Qué funciona y qué habría que cambiar en esta escena?"></textarea>
+ <div class="sheet-actions"><button class="action" id="copy">Copiar todas las notas</button><button class="action" id="clear">Borrar esta nota</button></div>
+ <div class="tip">Las notas se guardan sólo en este navegador. Podés dictarlas y copiarlas todas juntas al chat.</div>
+</div></div>
+<script>
+(()=>{
+ 'use strict';
+ const $=s=>document.querySelector(s),frame=$('#scene'),list=$('#numbers'),load=$('#load'),shade=$('#shade');
+ const names=['Respawn','Bondi retro','Ventilador','Estación','Ascensor','Entrevista','Reloj','Submarino','Arcade','Cruce'];
+ const paths=['respawn-desk/v3/','transporte-retro/v3/','ventilador-explicado/v3/','estacion-servicio-tormenta/v2/','ascensor-retro/v2/','entrevista-nocturna/v2/','reloj-mecanico/v2/','laboratorio-submarino/v2/','arcade-retro/v2/','cruce-urbano/v2/'];
+ const olds=['respawn-desk-001/','transporte-retro-001/','ventilador-explicado/v2/','estacion-servicio-tormenta/v1/','ascensor-retro/v1/','entrevista-nocturna/v1/','reloj-mecanico/v1/','laboratorio-submarino/v1/','arcade-retro/v1/','cruce-urbano/v1/'];
+ const base='https://juanmanuelpm.github.io/Experimentos/prometeo/previews/';
+ let current=Math.min(9,Math.max(0,(parseInt(new URLSearchParams(location.search).get('n'))||1)-1)),old=false,seq=0;
+ const storageKey='prometeo_3d_wave002_notes_v1',notes=(()=>{try{return JSON.parse(localStorage.getItem(storageKey)||'{}')}catch{return{}}})();
+ const buttons=names.map((name,i)=>{const b=document.createElement('button');b.className='slot';b.textContent=i+1;b.title=name;b.setAttribute('aria-label',(i+1)+' · '+name);b.onclick=()=>show(i,false);list.append(b);return b});
+ const currentUrl=()=>base+(old?olds[current]:paths[current]);
+ const persist=()=>{try{localStorage.setItem(storageKey,JSON.stringify(notes))}catch{}};
+ function show(index,compare){
+   current=index;old=!!compare;const url=currentUrl();
+   $('#title').textContent=String(current+1).padStart(2,'0')+' · '+names[current];
+   $('#compare').textContent=old?'ANT':'ACT';$('#compare').classList.toggle('selected',old);$('#compare').title=old?'Ver versión actual':'Ver versión anterior';
+   $('#link').href=url;$('#link').title='Abrir escena original';
+   buttons.forEach((b,i)=>{b.classList.toggle('active',i===current);b.setAttribute('aria-pressed',String(i===current))});buttons[current].scrollIntoView({behavior:'smooth',block:'nearest',inline:'nearest'});
+   $('#prev').disabled=current===0;$('#next').disabled=current===9;
+   load.classList.remove('hide');load.style.display='flex';const thisSeq=++seq;
+   frame.onload=()=>{if(seq===thisSeq){load.classList.add('hide');setTimeout(()=>{if(seq===thisSeq)load.style.display='none'},230)}};
+   frame.src=url;frame.title=names[current]+(old?' · anterior':' · actual');
+   const u=new URL(location.href);u.searchParams.set('n',String(current+1));history.replaceState(null,'',u);
+ }
+ $('#prev').onclick=()=>{if(current>0)show(current-1,false)};
+ $('#next').onclick=()=>{if(current<9)show(current+1,false)};
+ $('#compare').onclick=()=>show(current,!old);
+ $('#reset').onclick=()=>show(current,old);
+ $('#notes').onclick=()=>{shade.classList.add('open');$('#noteTitle').textContent=String(current+1).padStart(2,'0')+' · '+names[current];$('#memo').value=notes[current+1]||'';$('#memo').focus()};
+ $('#close').onclick=()=>shade.classList.remove('open');
+ shade.addEventListener('click',e=>{if(e.target===shade)shade.classList.remove('open')});
+ $('#memo').addEventListener('input',e=>{notes[current+1]=e.target.value;persist()});
+ $('#copy').onclick=async()=>{
+  const val=names.map((n,i)=>notes[i+1]?.trim()?String(i+1).padStart(2,'0')+' · '+n+'\n'+notes[i+1].trim():null).filter(Boolean).join('\n\n');
+  if(!val){$('#noteTitle').textContent='Todavía no hay notas';return}
+  try{await navigator.clipboard.writeText('PROMETEO 3D · OLA 002\n\n'+val);$('#noteTitle').textContent='Notas copiadas ✓'}
+  catch{$('#memo').value='PROMETEO 3D · OLA 002\n\n'+val;$('#memo').select()}
+ };
+ $('#clear').onclick=()=>{$('#memo').value='';delete notes[current+1];persist()};
+ document.addEventListener('keydown',e=>{if(shade.classList.contains('open')){if(e.key==='Escape')shade.classList.remove('open');return}if(e.target.closest('button,input,textarea'))return;if(e.key==='ArrowLeft'&&current>0)show(current-1,false);if(e.key==='ArrowRight'&&current<9)show(current+1,false)});
+ show(current,false);
+})();
+</script></body></html>
