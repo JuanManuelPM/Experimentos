@@ -9,3 +9,6 @@ WORK · Estudio 3D · https://github.com/JuanManuelPM/Experimentos/blob/gh-pages
 ```
 Los diez Integradores conservan exactamente los briefs anteriores (hash verificado). Los veinte nuevos investigan personajes o videojuegos de forma focalizada. Cada lanzador prepara un chat, no ejecuta algo automáticamente.
 **Principio:** QA preventivo antes de producir, nada de tests estéticos obligatorios al terminar, errores reportados por el usuario corrigen el método universal. Ver [método](../versions/2.3.0/METHOD.md) y [política de concurrencia](../versions/2.3.0/PARALLEL_WAVES.md).
+
+## Visualizar todas las producciones
+Galería fija: https://juanmanuelpm.github.io/Experimentos/prometeo/3d-flow/galeria/ · detecta las publicaciones de las 3 series y ofrece un visor integrado. El estado PUBLICADO indica únicamente que el archivo HTML existe en Pages.
