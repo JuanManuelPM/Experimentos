@@ -23,13 +23,33 @@ const p=(center,R,t)=>center.map((x,i)=>x+R*(u[i]*Math.cos(t)+v[i]*Math.sin(t)))
 for(let i=0;i<n;i++){let t=i*TAU/n,q=(i+1)*TAU/n,A=p(a,r,t),B=p(a,r,q),C=p(b,r2,q),D=p(b,r2,t);quad(g,A,B,C,D);tri(g,a,B,A);tri(g,b,D,C)}}
 function tube(g,points,r=.016){for(let i=0;i<points.length-1;i++)cylinder(g,points[i],points[i+1],r,8)}
 function ellipsoid(g,c,rad,na=28,nb=14){param(g,na,nb,(u,v)=>{let a=u*TAU,p=v*Math.PI;return [c[0]+rad[0]*Math.sin(p)*Math.cos(a),c[1]+rad[1]*Math.cos(p),c[2]+rad[2]*Math.sin(p)*Math.sin(a)]})}
-function torus(g,c,R,r=.014,plane='xy',n=72,m=8){param(g,n,m,(u,v)=>{let a=u*TAU,b=v*TAU,q=R+r*Math.cos(b),c0=r*Math.sin(b);return plane==='xy'?[c[0]+q*Math.cos(a),c[1]+q*Math.sin(a),c[2]+c0]:[c[0]+q*Math.cos(a),c[1]+c0,c[2]+q*Math.sin(a)]})}
-function box(g,c,sz){let [x,y,z]=c,[a,b,d]=sz.map(v=>v/2),p=[[-a,-b,-d],[a,-b,-d],[a,b,-d],[-a,b,-d],[-a,-b,d],[a,-b,d],[a,b,d],[-a,b,d]].map(q=>[x+q[0],y+q[1],z+q[2]]);for(const [i,j,k,l] of [[0,1,2,3],[4,7,6,5],[0,4,5,1],[3,2,6,7],[0,3,7,4],[1,5,6,2]])quad(g,p[i],p[j],p[k],p[l])}
+function torus(g,c,R,r=.014,plane='xy',n=72,m=8){param(g,n,m,(u,v)=>{let a=u*TAU,b=v*TAU,q=R+r*Math.cos(b),c0=r*Math.sin(b);return plane==='xy'?[c[0]+q*Math.cos(a),c[1]+q*Math.sin(a),c[2]+c0]:[c[0]+q*Math.cos(a),c[1]+c0,c[2]+q*Math.sin(a)]},plane!=='xy')}
+function box(g,c,sz){let [x,y,z]=c,[a,b,d]=sz.map(v=>v/2),p=[[-a,-b,-d],[a,-b,-d],[a,b,-d],[-a,b,-d],[-a,-b,d],[a,-b,d],[a,b,d],[-a,b,d]].map(q=>[x+q[0],y+q[1],z+q[2]]);for(const [i,j,k,l] of [[0,1,2,3],[4,7,6,5],[0,4,5,1],[3,2,6,7],[0,3,7,4],[1,5,6,2]])quad(g,p[i],p[l],p[k],p[j])}
 function blade(g,a){const a0=a,twist=.30;
 const P=(u,v,s)=>{let t=.13+.87*u,r=.18+.78*u;let ang=a0+twist*(1-u),width=.34*Math.pow(Math.sin(Math.PI*Math.pow(u,.78)),.70)+.018;let tang=v*width;let x=r*Math.cos(ang)-tang*Math.sin(ang),y=CY+r*Math.sin(ang)+tang*Math.cos(ang),z=.19+.105*v*(1-.65*u)+.035*Math.sin(u*Math.PI)+s*.012;return [x,y,z]};
 param(g,32,12,(u,v)=>P(u,v*2-1,1),false,false);param(g,32,12,(u,v)=>P(u,v*2-1,-1),true,false);for(let u of [0,1])quad(g,P(u,-1,-1),P(u,1,-1),P(u,1,1),P(u,-1,1));for(let i=0;i<32;i++){let u=i/32,j=(i+1)/32;quad(g,P(u,-1,-1),P(j,-1,-1),P(j,-1,1),P(u,-1,1));quad(g,P(u,1,-1),P(u,1,1),P(j,1,1),P(j,1,-1))}}
 const gstore=[];
-function add(id,mt,build,{spin=false,alpha=1,group=id,metal=0}={}){let g=geom();build(g);if(!g.verts.length)return;let vv=new Float32Array(g.verts),nn=new Float32Array(g.norms),vb=gl.createBuffer(),nb=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,vb);gl.bufferData(gl.ARRAY_BUFFER,vv,gl.STATIC_DRAW);gl.bindBuffer(gl.ARRAY_BUFFER,nb);gl.bufferData(gl.ARRAY_BUFFER,nn,gl.STATIC_DRAW);meshes.push({part:id,group,color:material[mt],metal,spin,alpha,vb,nb,count:vv.length/3});const bounds=[[Infinity,Infinity,Infinity],[-Infinity,-Infinity,-Infinity]];for(let j=0;j<vv.length;j++){let k=j%3;bounds[0][k]=Math.min(bounds[0][k],vv[j]);bounds[1][k]=Math.max(bounds[1][k],vv[j])}gstore.push({part:id,triangles:vv.length/9,bounds})}
+const batches=new Map();
+function add(id,mt,build,{spin=false,alpha=1,group=id,metal=0}={}) {
+ const g=geom();build(g);if(!g.verts.length)return;
+ const bounds=[[Infinity,Infinity,Infinity],[-Infinity,-Infinity,-Infinity]];
+ for(let j=0;j<g.verts.length;j++){let k=j%3;bounds[0][k]=Math.min(bounds[0][k],g.verts[j]);bounds[1][k]=Math.max(bounds[1][k],g.verts[j]);}
+ gstore.push({part:id,triangles:g.verts.length/9,bounds});
+ const key=JSON.stringify([id,mt,spin,alpha,group,metal]);
+ if(!batches.has(key))batches.set(key,{part:id,group,color:material[mt],metal,spin,alpha,chunks:[],length:0});
+ let b=batches.get(key);b.chunks.push(g);b.length+=g.verts.length;
+}
+function flushBatches(){
+ for(const b of batches.values()){
+  let vv=new Float32Array(b.length),nn=new Float32Array(b.length),i=0;
+  for(let g of b.chunks){vv.set(g.verts,i);nn.set(g.norms,i);i+=g.verts.length}
+  let vb=gl.createBuffer(),nb=gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER,vb);gl.bufferData(gl.ARRAY_BUFFER,vv,gl.STATIC_DRAW);
+  gl.bindBuffer(gl.ARRAY_BUFFER,nb);gl.bufferData(gl.ARRAY_BUFFER,nn,gl.STATIC_DRAW);
+  meshes.push({part:b.part,group:b.group,color:b.color,metal:b.metal,spin:b.spin,alpha:b.alpha,vb,nb,count:vv.length/3});
+ }
+ batches.clear();
+}
 // Machined base, discrete rubber plate and selector.
 add('base','body',g=>ellipsoid(g,[0,.175,-.26],[.83,.15,.64],64,22));
 add('base','silver',g=>torus(g,[0,.15,-.26],.70,.012,'xz'),{metal:.53});
@@ -139,6 +159,7 @@ add('set','cream',g=>box(g,[0,4.25,-4.72],[4.3,.03,.16]),{group:'backdrop'});
 for(let j=0;j<6;j++)add('set','dark',g=>box(g,[-2.25+j*.9,2.05,-5.035],[.018,3.1,.012]),{group:'backdrop'});
 // V3 low-voltage brushed motor remains an explanatory schematic, not a build-ready wiring diagram.
 
+flushBatches();
 // airflow appears ONLY when motor runs: particles travel forwards (not CFD)
 const flows=[];for(let i=0;i<12;i++){const r=.28+(i%4)*.20,ang=i*TAU/12;let g=geom();tube(g,Array.from({length:9},(_,j)=>[r*Math.cos(ang+.10*j),CY+r*Math.sin(ang+.10*j),.8+j*.13]),.010);const v=new Float32Array(g.verts),n=new Float32Array(g.norms),vb=gl.createBuffer(),nb=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,vb);gl.bufferData(gl.ARRAY_BUFFER,v,gl.STATIC_DRAW);gl.bindBuffer(gl.ARRAY_BUFFER,nb);gl.bufferData(gl.ARRAY_BUFFER,n,gl.STATIC_DRAW);flows.push({mesh:{vb,nb,count:v.length/3,color:i%3?material.blue:material.silver,metal:0}})}
 const vs="#version 300 es\nprecision highp float;\nin vec3 aPos; in vec3 aNor;\nuniform mat4 uView,uProj; uniform vec3 uOffset; uniform float uSpin,uYaw;\nout vec3 vNormal,vWorld;\nvoid main(){\n vec3 p=aPos,n=aNor;\n float c=cos(uSpin),s=sin(uSpin);\n vec2 r=p.xy-vec2(0.,2.6);\n p.x=r.x*c-r.y*s;p.y=r.x*s+r.y*c+2.6;\n vec2 rn=n.xy;n.x=rn.x*c-rn.y*s;n.y=rn.x*s+rn.y*c;\n float cy=cos(uYaw),sy=sin(uYaw);\n vec2 q=p.xz-vec2(0.,-.42);\n p.x=q.x*cy+q.y*sy;p.z=-q.x*sy+q.y*cy-.42;\n vec2 qn=n.xz;n.x=qn.x*cy+qn.y*sy;n.z=-qn.x*sy+qn.y*cy;\n p+=uOffset;vNormal=normalize(n);vWorld=p;\n gl_Position=uProj*uView*vec4(p,1.);\n}";
@@ -156,7 +177,7 @@ for(let i=0;i<parts.length;i++){let p=parts[i],b=document.createElement('button'
 T('partPicker').onchange=e=>{model.select(e.target.value||null);model.setIsolate(false);refreshUI()};
 function stage(n){model.setStage(n);if(n===3)model.resetAssembly();model.setIsolate(false);if(n===2)model.select('rotor');else model.select(null);if(n>0&&n<4){drive.on=false;fanSpeed=0;headYaw=0}if(n===4)drive.on=true;if(n===1||n===3){target.dist=canvas.clientWidth<680?14.5:11.8;target.az=1.12;target.el=.18}else{target.dist=6.6;target.az=.50;target.el=.18}if(n===2){target.dist=3.6;target.az=.86;target.el=.17}refreshUI()}
 function refreshUI(){let s=model.state();stepButtons.forEach((b,i)=>b.classList.toggle('active',s.stage===i));T('parts').classList.toggle('open',s.stage===2||s.stage===1);T('partPicker').classList.toggle('open',s.stage===2||s.stage===1);T('partPicker').value=s.selection||'';T('op').classList.toggle('open',s.stage===4);T('isolate').style.display=s.selection?'':'none';T('assembly').classList.toggle('open',s.stage===3);T('isolate').classList.toggle('active',s.isolate);T('isolate').title=s.isolate?'Mostrar todo':'Aislar pieza';let p=parts.find(p=>p.id===s.selection);let i=parts.indexOf(p);T('card').classList.toggle('hidden',!p);if(p){T('countLabel').textContent=`${String(i+1).padStart(2,'0')} / ${String(parts.length).padStart(2,'0')}`;T('partName').textContent=p.name;T('partDescription').textContent=p.short}for(let [id,b] of partButtons)b.classList.toggle('active',id===s.selection);if(s.stage===4){T('note').textContent='Aire: representación conceptual · no CFD'}else if(s.stage===2)T('note').textContent='Motor CC con escobillas · esquema didáctico';else T('note').textContent='';controlsUI()}
-stepButtons.forEach(b=>b.onclick=()=>stage(+b.dataset.step));T('isolate').onclick=()=>{if(!model.state().selection)model.select('blades');model.toggleIsolate();refreshUI()};T('reset').onclick=()=>{const n=model.state().stage;target.az=n===1||n===3?1.12:.53;target.el=.18;target.dist=n===2?3.6:n===1||n===3?(canvas.clientWidth<680?14.5:11.8):6.6};T('replay').onclick=()=>{model.resetAssembly();refreshUI()};
+stepButtons.forEach(b=>b.onclick=()=>{tour.on=false;stage(+b.dataset.step)});T('isolate').onclick=()=>{if(!model.state().selection)model.select('blades');model.toggleIsolate();refreshUI()};T('reset').onclick=()=>{const n=model.state().stage;target.az=n===1||n===3?1.12:.53;target.el=.18;target.dist=n===2?3.6:n===1||n===3?(canvas.clientWidth<680?14.5:11.8):6.6};T('replay').onclick=()=>{model.resetAssembly();refreshUI()};
 
 function controlsUI(){
  const running=drive.on&&(model.state().stage===0||model.state().stage===4);
@@ -204,7 +225,7 @@ if(s.stage===3&&ms-uiUpdate>150){uiUpdate=ms;T('counter').textContent=`${Math.mi
 requestAnimationFrame(frame)}
 refreshUI();controlsUI();requestAnimationFrame(frame);
 addEventListener('message',e=>{if(e.data?.type==='FAN_VIEW')window.__FAN_QA__?.setView(e.data.name)});
-window.__FAN_QA__={setView:(name)=>{const angles={frontal:0,perfil:Math.PI/2,trescuartos:.63};if(!(name in angles))return false;target.az=orbit.az=angles[name];target.el=orbit.el=.08;target.dist=orbit.dist=6.7;return true;}, scene:'ventilador-explicado-v4',parts:parts.map(p=>p.id),geometry:gstore,cage,fit:{radial:cage.radius-cage.bladeMaxRadius,rear:cage.bladeMinZ-cage.rearZ,front:cage.frontZ-cage.bladeMaxZ},renderer:'webgl2',getState:()=>model.state(),getPose:id=>model.pose(id),setStage:stage,select:(id)=>{model.select(id);refreshUI()},getDrive:()=>({...drive,spinAngle,fanSpeed,headYaw}),setPower:v=>{drive.on=!!v;controlsUI()},setSpeed:v=>{drive.speed=AT.clamp(Math.round(v),1,3);controlsUI()},setOscillation:v=>{drive.oscillate=!!v;controlsUI()},ready:true};
+window.__FAN_QA__={setView:(name)=>{const angles={frontal:0,perfil:Math.PI/2,trescuartos:.63};if(!(name in angles))return false;target.az=orbit.az=angles[name];target.el=orbit.el=.08;target.dist=orbit.dist=6.7;return true;}, scene:'ventilador-explicado-v4',parts:parts.map(p=>p.id),geometry:gstore,drawBatches:meshes.length,cage,fit:{radial:cage.radius-cage.bladeMaxRadius,rear:cage.bladeMinZ-cage.rearZ,front:cage.frontZ-cage.bladeMaxZ},renderer:'webgl2',getState:()=>model.state(),getPose:id=>model.pose(id),setStage:stage,select:(id)=>{model.select(id);refreshUI()},getDrive:()=>({...drive,spinAngle,fanSpeed,headYaw}),setPower:v=>{drive.on=!!v;controlsUI()},setSpeed:v=>{drive.speed=AT.clamp(Math.round(v),1,3);controlsUI()},setOscillation:v=>{drive.oscillate=!!v;controlsUI()},ready:true};
 })();
 
 //# sourceURL=prometeo-fan-v4.js
