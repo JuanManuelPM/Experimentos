@@ -98,13 +98,13 @@ box(car,2.79,.58,0,.16,.15,1.95,mat.silver);box(car,-2.84,.59,0,.16,.14,1.94,mat
 const carDoor=new THREE.Group();carDoor.position.set(.26,1.52,1.13);car.add(carDoor);
 box(carDoor,-.8,-.2,.03,1.56,.87,.12,mat.paint);box(carDoor,-.8,.27,.03,1.38,.10,.10,mat.silver);
 const headlights=[];for(let z of [-.69,.69]){let l=new THREE.SpotLight(0xffe5ba,9,29,.29,.48,2);world.add(l);world.add(l.target);headlights.push({l,z})}
-let human=null,mixer=null,hasAnim=false;
+let human=null,mixer=null,hasAnim=false,humanError=false;
 new GLTFLoader().load('../../cruce-urbano/v1/assets/cesium-man.glb',gltf=>{
  const o=gltf.scene;const b=new THREE.Box3().setFromObject(o),sz=b.getSize(new THREE.Vector3());o.scale.setScalar(1.84/Math.max(.01,sz.y));
  const b2=new THREE.Box3().setFromObject(o);o.position.y=-b2.min.y;human=new THREE.Group();human.add(o);world.add(human);
  if(gltf.animations.length){mixer=new THREE.AnimationMixer(o);mixer.clipAction(gltf.animations[0]).play();hasAnim=true}
  $('loadText').textContent='Modelo humano GLB cargado';
-},undefined,e=>{console.warn('ASSET_LOAD CESIUM_MAN',e);$('loadText').textContent='Recurso humano externo no disponible'});
+},undefined,e=>{console.warn('ASSET_LOAD CESIUM_MAN',e);humanError=true;$('loadText').textContent='Recurso humano externo no disponible'});
 /* rain lines sit in three-dimensional world space, 900 segments on mobile */
 let seed=33159;const rand=()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296};
 const n=950,coords=new Float32Array(n*6),dr=[];
@@ -124,7 +124,7 @@ function update(t,dt){
  for(let h of headlights){h.l.position.set(x+2.7,1.05,2.8+h.z);h.l.target.position.set(x+16,.9,2.8+h.z)}
  if(human){let p=smooth(12,19,t);human.position.set(-4.7-1.35*p,0,4.2-4.9*p);human.rotation.y=2.8+.6*p;human.visible=t>=11.8;
  if(!hasAnim)human.position.y=(p>0&&p<1)?Math.sin(t*13)*.025:0}
- if(mixer)mixer.update(dt);
+ if(mixer)mixer.setTime(Math.max(0,Math.min(7,t-12)));
  if(!free){const s=smooth(0,total,t);camera.position.copy(positions.getPoint(s));let dest=looks.getPoint(s);camera.lookAt(dest);orbit.target.copy(dest)}else orbit.update();
  const f=t%21,flash=(f>18.2&&f<18.35)?1:((f>18.54&&f<18.61)?.35:0);
  storm.intensity=flash*8;hemi.intensity=2+flash;wetU.flash.value=flash;wetU.t.value=t;
@@ -132,7 +132,7 @@ function update(t,dt){
  coords[j]=d.x;coords[j+1]=d.y;coords[j+2]=d.z;coords[j+3]=d.x+.14;coords[j+4]=d.y-.65;coords[j+5]=d.z+.08}
  rg.attributes.position.needsUpdate=true}
  $('beat').textContent=t<10?'01 · LA CARRETERA':t<12?'02 · LLEGADA':t<20?'03 · EL CONDUCTOR':t<29?'04 · LA ESTACIÓN':'05 · MADRUGADA';
- $('scrub').value=t.toFixed(2);$('time').textContent=String(Math.floor(t)).padStart(2,'0');
+ if(humanError)$('beat').textContent+=' · ACTOR NO CARGADO';$('scrub').value=t.toFixed(2);$('time').textContent=String(Math.floor(t)).padStart(2,'0');
 }
 renderer.domElement.addEventListener('webglcontextlost',e=>{e.preventDefault();playing=false;window.__nFail('CONTEXT_LOST','La GPU perdió su contexto de render')});
 window.addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)});
@@ -142,5 +142,5 @@ $('mode').onclick=()=>{free=!free;orbit.enabled=free;$('mode').textContent=free?
 $('rain').onclick=()=>{raining=!raining;rain.visible=raining;splashes.visible=raining;$('rain').setAttribute('aria-pressed',String(raining))};
 $('scrub').oninput=e=>{time=Math.max(0,Math.min(total,Number(e.target.value)))};
 window.__nReady=true;$('boot').style.display='none';
-function loop(now){let dt=Math.min(.05,Math.max(0,(now-last)/1000));last=now;if(playing){time=Math.min(total,time+dt);if(time>=total){playing=false;$('play').textContent='▶'}}update(time,dt);renderer.render(world,camera);requestAnimationFrame(loop)}
+function loop(now){let dt=Math.min(.05,Math.max(0,(now-last)/1000));last=now;if(playing){time=Math.min(total,time+dt);if(time>=total){playing=false;$('play').textContent='▶'}}try{update(time,dt);renderer.render(world,camera)}catch(e){window.__nFail(/shader/i.test(String(e))?'SHADER_COMPILE':'RUNTIME',String(e));console.error(e);return}requestAnimationFrame(loop)}
 requestAnimationFrame(loop);
