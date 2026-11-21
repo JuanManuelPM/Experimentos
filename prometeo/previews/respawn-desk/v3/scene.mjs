@@ -198,7 +198,7 @@ draw(actorMeshes.legL,inside*rise,EXPOSURE.actor,1,mul4(root,swingLeg(Math.sin(f
 draw(actorMeshes.legR,inside*rise,EXPOSURE.actor,1,mul4(root,swingLeg(-Math.sin(footPhase)*.26*stepEnvelope)));
 draw(actorMeshes.portrait,inside,EXPOSURE.portrait,1,headModel);
 if(time<24.1){draw(actorMeshes.gesture,inside,EXPOSURE.actor,1,root)}
-else{const wave=Math.sin(footPhase)*.015*stepEnvelope;draw(actorMeshes.greeting,inside,EXPOSURE.actor,1,mul4(root,translate(wave,0,0)))}
+else{draw(actorMeshes.walkingArm,inside,EXPOSURE.actor,1,mul4(root,rotateArm(Math.sin(footPhase)*.18*stepEnvelope,0)))}
   gl.enable(gl.CULL_FACE);
  fill.style.width=`${(time/36)*100}%`;bar.setAttribute('aria-valuenow',time.toFixed(2));
  pulse.style.opacity=time>11.5&&time<12.5?String(.12*(1-Math.abs(time-12)/.5)):'0';

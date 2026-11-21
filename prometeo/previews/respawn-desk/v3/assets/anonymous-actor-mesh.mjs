@@ -60,13 +60,17 @@ function jacketBody(mesh,standing=false){
  {x:s*.21,y:.60,z:.28,rx:.17,rz:.18},{x:s*.20,y:.82,z:.38,rx:.21,rz:.23},
  {x:s*.17,y:1.00,z:.54,rx:.22,rz:.24}
  ],shirt,[.52,.47,0,.5],12);
- // Left forearm, with elbow bend and cuff as shaped garment.
- mesh.loft([
+ // Seated left arm has deliberate keyboard contact. Standing arm hangs at side.
+ if(!standing){mesh.loft([
  {x:-.32,y:1.53,z:.53,rx:.16,rz:.16},{x:-.47,y:1.34,z:.25,rx:.145,rz:.14},
  {x:-.40,y:1.19,z:-.21,rx:.119,rz:.115},{x:-.29,y:1.15,z:-.67,rx:.088,rz:.087}
  ],jacket,[0,.5,0,.5],12);
  mesh.loft([{x:-.29,y:1.15,z:-.70,rx:.093,rz:.086},{x:-.29,y:1.13,z:-.78,rx:.088,rz:.079}],skin,[0,.48,.53,.4],12);
- for(let k=0;k<4;k++){const x=-.39+k*.057;mesh.strip([[x,1.13,-.77],[x,1.116,-.93]],.013,skin,[.15,.74]);}
+ for(let k=0;k<4;k++){const x=-.39+k*.057;mesh.strip([[x,1.13,-.77],[x,1.116,-.93]],.013,skin,[.15,.74]);}}
+ else {
+ mesh.loft([{x:-.32,y:1.53,z:.53,rx:.15,rz:.16},{x:-.46,y:1.26,z:.55,rx:.12,rz:.12},{x:-.43,y:.96,z:.57,rx:.088,rz:.085}],jacket,[0,.5,0,.5],14);
+ mesh.loft([{x:-.43,y:.96,z:.57,rx:.083,rz:.079},{x:-.43,y:.79,z:.54,rx:.080,rz:.075}],skin,[0,.48,.53,.4],14);
+ }
 }
 function movingArm(mesh){
  // Origin in same world as scene. Rotates about the right shoulder for hand-to-face gesture.
@@ -144,9 +148,13 @@ function standingLeg(mesh,s){
  ],ink,[.52,.47,0,.5],14);
  mesh.strip([[s*.19,.27,.345],[s*.19,.51,.324],[s*.18,.88,.327]],.010,seam,[.76,.72]);
 }
-export function createActorMeshes(style={}){const body=new Mesh(),portrait=new Mesh(),gesture=new Mesh(),greeting=new Mesh(),standingTorso=new Mesh(),legL=new Mesh(),legR=new Mesh();
- jacketBody(body);jacketBody(standingTorso,true);standingLeg(legL,-1);standingLeg(legR,1);head(portrait);movingArm(gesture);greetingArm(greeting);
- const meshes={body:body.serialize(),portrait:portrait.serialize(),gesture:gesture.serialize(),greeting:greeting.serialize(),standingTorso:standingTorso.serialize(),legL:legL.serialize(),legR:legR.serialize()};
+function walkingArm(mesh){
+ mesh.loft([{x:.32,y:1.53,z:.53,rx:.15,rz:.16},{x:.46,y:1.25,z:.54,rx:.12,rz:.12},{x:.42,y:.96,z:.56,rx:.087,rz:.083}],jacket,[0,.5,0,.5],14);
+ mesh.loft([{x:.42,y:.96,z:.56,rx:.082,rz:.079},{x:.42,y:.79,z:.54,rx:.078,rz:.075}],skin,[0,.48,.53,.4],14);
+}
+export function createActorMeshes(style={}){const body=new Mesh(),portrait=new Mesh(),gesture=new Mesh(),greeting=new Mesh(),standingTorso=new Mesh(),legL=new Mesh(),legR=new Mesh(),walking=new Mesh();
+ jacketBody(body);jacketBody(standingTorso,true);standingLeg(legL,-1);standingLeg(legR,1);head(portrait);movingArm(gesture);greetingArm(greeting);walkingArm(walking);
+ const meshes={body:body.serialize(),portrait:portrait.serialize(),gesture:gesture.serialize(),greeting:greeting.serialize(),standingTorso:standingTorso.serialize(),legL:legL.serialize(),legR:legR.serialize(),walkingArm:walking.serialize()};
  const swaps=[[skin,style.skin],[hair,style.hair],[jacket,style.coat],[shirt,style.shirt]];
  for(const mesh of Object.values(meshes))for(let i=0;i<mesh.colors.length;i+=3){
    for(const [from,to] of swaps)if(Array.isArray(to)&&to.length===3&&to.every(v=>Number.isFinite(v)&&v>=0&&v<=1)&&
