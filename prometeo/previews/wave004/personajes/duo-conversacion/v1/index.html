@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#171b21"><meta name="description" content="Dos personajes ilustrados originales con miradas, reacciones y gestos de conversación. Estudio 3D · Personajes 05.">
+<title>Entre líneas · Dúo de conversación | PROMETEO</title>
+<style>
+:root{color-scheme:dark;--ink:#f0e7d7;--muted:#afa79c;--line:rgba(244,226,199,.22);--accent:#dca781;--bg:#161a20;font-family:system-ui,-apple-system,Segoe UI,sans-serif}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:var(--bg);color:var(--ink)}
+button{font:inherit;cursor:pointer}button:focus-visible{outline:2px solid #f7c79d;outline-offset:3px}
+.shell{max-width:1540px;min-height:100svh;margin:auto;display:flex;flex-direction:column;overflow:hidden}
+.mast{display:flex;align-items:center;justify-content:space-between;padding:20px clamp(22px,4vw,68px) 10px;gap:15px}
+.mark{font-size:10px;letter-spacing:.29em;font-weight:700;color:#e4c49c}.mark span{color:#8f948e}
+.edition{font:11px ui-monospace,monospace;letter-spacing:.11em;color:#aaa69c;text-align:right}
+.heading{display:flex;align-items:flex-end;justify-content:space-between;padding:4px clamp(22px,4vw,68px) 12px;gap:20px}
+.heading h1{font:normal clamp(32px,4.4vw,72px)/.96 Georgia,serif;letter-spacing:-.055em;margin:0}.heading h1 em{color:#d6a784;font-weight:400}
+.lede{max-width:245px;color:#aaa99f;font-size:12px;line-height:1.55;margin:0;text-align:right}
+.viewport{position:relative;flex:1;min-height:400px;isolation:isolate;border-block:1px solid var(--line);background:#23262b;overflow:hidden}
+.viewport svg{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:pan-y}
+.texture{position:absolute;inset:0;pointer-events:none;opacity:.14;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 90 90' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.5' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='90' height='90' filter='url(%23n)' opacity='.28'/%3E%3C/svg%3E");mix-blend-mode:screen}
+.corner{position:absolute;left:clamp(18px,4vw,65px);top:26px;border-left:1px solid #d7b594;padding-left:13px;font:10px/1.8 ui-monospace,monospace;letter-spacing:.15em;color:#e4d0b8;pointer-events:none}
+.corner span{color:#8d918e}
+.progress{position:absolute;left:0;bottom:0;width:100%;height:2px;background:#ffffff13}
+.progress span{display:block;height:100%;background:#e8ae85;width:0;transition:width .12s linear}
+.narration{position:absolute;bottom:33px;left:50%;transform:translateX(-50%);width:min(620px,calc(100% - 32px));display:flex;align-items:flex-start;gap:18px;background:#14171bdc;backdrop-filter:blur(12px);border:1px solid #d1b7a53b;padding:17px 20px;box-shadow:0 20px 60px #0005}
+.narration .who{flex:0 0 92px;font:10px/1.5 ui-monospace,monospace;letter-spacing:.14em;color:#dfb590;padding-top:2px}
+.narration .words{font:italic clamp(14px,1.3vw,19px)/1.35 Georgia,serif;color:#f4e7d9;min-height:24px}
+.control{padding:18px clamp(22px,4vw,68px) 16px;display:flex;gap:22px;align-items:center;justify-content:space-between}
+.controls{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.control button{color:#e9dac9;border:1px solid #595a57;background:transparent;border-radius:0;padding:12px 17px;min-height:45px;text-transform:uppercase;font:600 10px/1.2 ui-monospace,monospace;letter-spacing:.12em;transition:background .2s,border .2s}
+.control button:hover{background:#33383a}.control button.primary{background:#ddaa82;color:#1f1c1b;border-color:#ddaa82}
+.control button.active:not(.primary){border-color:#dca781;color:#f6c59d;background:#46392f}
+.counter{font:11px ui-monospace,monospace;color:#aaa79c;white-space:nowrap}
+.footer{border-top:1px solid var(--line);padding:12px clamp(22px,4vw,68px) 21px;display:flex;justify-content:space-between;gap:15px;flex-wrap:wrap;color:#a7a49e;font:10px/1.5 ui-monospace,monospace;letter-spacing:.09em}
+.footer strong{color:#ead5b8;font-weight:500}
+#ines-head,#teo-head,#ines-arm1,#ines-arm2,#teo-arm1,#teo-arm2,#ines-brow1,#ines-brow2,#teo-brow1,#teo-brow2,#ines-eye1,#ines-eye2,#teo-eye1,#teo-eye2{transition:transform .48s cubic-bezier(.2,.7,.2,1)}
+#ines-mouth,#teo-mouth{transition:opacity .18s}
+@media(max-width:730px){.mast{padding-top:14px}.heading{align-items:start;flex-direction:column;padding-bottom:12px;gap:8px}.heading h1{font-size:clamp(35px,8.5vw,50px)}.lede{text-align:left;max-width:330px}.viewport{min-height:440px}.corner{top:12px}.narration{bottom:17px;padding:12px 14px;gap:7px}.narration .who{flex-basis:62px;font-size:9px}.control{padding:13px 16px;display:block}.controls{justify-content:center}.control button{padding:11px 12px;min-height:44px}.counter{text-align:center;margin-top:12px}.footer{padding:10px 16px 15px}.footer span:last-child{display:none}}
+@media(max-height:630px) and (min-width:730px){.mast{padding-top:7px}.heading{padding-bottom:8px}.heading h1{font-size:38px}.viewport{min-height:250px}.control{padding-block:8px}.footer{padding-block:8px}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
+</style>
+</head>
+<body>
+<main class="shell">
+<header class="mast"><div class="mark">PROMETEO <span>/ ESTUDIO 3D</span></div><div class="edition">PERSONAJES 05&nbsp; · &nbsp;OLA 004<br>ESTUDIO DE ACTUACIÓN / V1</div></header>
+<div class="heading"><h1>Entre <em>líneas.</em></h1><p class="lede">Dos cuerpos, dos edades, dos maneras de escuchar. Una conversación hecha de silencios, ojos y manos.</p></div>
+<section class="viewport" aria-label="Escenario 2.5D con dos personajes animados">
+<svg id="scene" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 790" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Inés, una mujer mayor de cabello plateado y abrigo granate, conversa con Teo, un joven de pelo rizado y chaqueta verde.">
+<defs>
+<linearGradient id="room" x1="0" y1="0" x2=".8" y2="1"><stop stop-color="#151b22"/><stop offset=".55" stop-color="#34353a"/><stop offset="1" stop-color="#22242b"/></linearGradient>
+<radialGradient id="wash"><stop stop-color="#b48b6d" stop-opacity=".29"/><stop offset="1" stop-color="#b48b6d" stop-opacity="0"/></radialGradient>
+<linearGradient id="stone" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#4c4b4b"/><stop offset=".85" stop-color="#26282d"/></linearGradient>
+<linearGradient id="coat" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#8c4c4d"/><stop offset=".55" stop-color="#5f303b"/><stop offset="1" stop-color="#361f2b"/></linearGradient>
+<linearGradient id="skinI" x1=".2" y1="0" x2=".8" y2="1"><stop stop-color="#f2c6a8"/><stop offset=".5" stop-color="#daa185"/><stop offset="1" stop-color="#bc7e69"/></linearGradient>
+<linearGradient id="skinT" x1=".15" y1="0" x2=".8" y2="1"><stop stop-color="#dfa777"/><stop offset=".5" stop-color="#bb7b53"/><stop offset="1" stop-color="#92543d"/></linearGradient>
+<linearGradient id="jacket" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#4a7c75"/><stop offset=".5" stop-color="#2a5755"/><stop offset="1" stop-color="#183a3b"/></linearGradient>
+<filter id="shadow" x="-30%" y="-30%" width="160%" height="180%"><feGaussianBlur stdDeviation="14"/></filter>
+<filter id="actorShadow" x="-40%" y="-30%" width="180%" height="180%"><feGaussianBlur stdDeviation="5"/></filter>
+</defs>
+<!-- set / architectural depth -->
+<rect width="1200" height="790" fill="url(#room)"/>
+<ellipse cx="615" cy="329" rx="550" ry="520" fill="url(#wash)"/>
+<path d="M0 0H1200V487L600 580 0 487Z" fill="#393637" opacity=".16"/>
+<path d="M0 138L602 365 1200 138M0 430L602 365 1200 430" stroke="#ead3b7" stroke-opacity=".08" stroke-width="1.5" fill="none"/>
+<path d="M600 0V568" stroke="#d8bca5" stroke-opacity=".14"/>
+<path d="M90 0V490M1110 0V490" stroke="#e2c8ae" stroke-opacity=".08" stroke-width="2"/>
+<path d="M0 581L600 515 1200 581V790H0Z" fill="url(#stone)"/>
+<path d="M0 581L600 515 1200 581" stroke="#c5a37e" stroke-opacity=".36"/>
+<path d="M0 675H1200M0 738H1200M270 560L185 790M600 515V790M930 560L1020 790" stroke="#d7bb9e" stroke-opacity=".09"/>
+<ellipse cx="393" cy="658" rx="154" ry="27" fill="#000" opacity=".36" filter="url(#shadow)"/>
+<ellipse cx="827" cy="660" rx="153" ry="29" fill="#000" opacity=".4" filter="url(#shadow)"/>
+<!-- Inés: original bespoke illustrated anatomy, age 64, tall and angular -->
+<g id="ines-actor" transform="translate(255 43)">
+<g id="ines-legs">
+<path d="M113 468C111 512 103 564 104 612L94 635 149 637 156 605 163 498Z" fill="#292d3b" stroke="#242330" stroke-width="3"/>
+<path d="M162 490C169 544 168 582 181 617L174 640 227 640 225 612 218 474Z" fill="#343646" stroke="#282632" stroke-width="3"/>
+<path d="M101 609Q127 618 148 610L146 638 97 637Z" fill="#1b1e24"/>
+<path d="M174 616Q200 620 224 612L228 643 174 642Z" fill="#202229"/>
+<path d="M93 629Q115 625 132 631L149 634 149 648Q119 654 80 648Q76 637 93 629Z" fill="#171b22" stroke="#85716a" stroke-width="2"/>
+<path d="M174 635Q200 630 223 637L233 646Q220 655 177 651Q166 645 174 635Z" fill="#171a20" stroke="#85716a" stroke-width="2"/>
+</g>
+<path d="M130 261L147 233 185 232 208 267 226 414 214 505Q183 518 156 513L139 504 119 514 89 505 105 410Z" fill="url(#coat)" stroke="#2a1f29" stroke-width="4"/>
+<path d="M132 251Q158 282 187 252L195 421 162 476 124 426Z" fill="#b28c77"/>
+<path d="M151 277L164 304 177 276 180 421 161 459 143 425Z" fill="#e2ccae"/>
+<path d="M144 289L166 324 153 417 133 383Z" fill="#5b2936" opacity=".8"/>
+<!-- independent sculpted arms -->
+<g id="ines-arm2">
+<path d="M199 269Q227 271 240 313L249 407Q250 426 235 437L216 432 214 361 198 310Z" fill="#6d3742" stroke="#392532" stroke-width="3"/>
+<path d="M230 425Q222 437 230 455L241 471Q246 476 251 469L245 456 252 459 264 470Q270 469 268 464L254 448 263 456Q269 456 269 450L252 432Z" fill="url(#skinI)" stroke="#9d695e" stroke-width="2"/>
+<path d="M214 353Q227 366 242 357" fill="none" stroke="#af6b69" stroke-width="2"/>
+</g>
+<g id="ines-arm1">
+<path d="M125 267Q102 260 86 300L71 398Q68 422 84 430L101 417 106 350 134 307Z" fill="#7c4149" stroke="#3b2731" stroke-width="3"/>
+<path d="M79 420L70 439 64 458Q62 467 69 469L79 452 74 477Q76 484 82 479L90 458 87 477Q92 482 96 475L104 450 103 423Z" fill="url(#skinI)" stroke="#9d695e" stroke-width="2"/>
+<path d="M95 327Q104 342 111 338" stroke="#b37d77" stroke-width="2" fill="none"/>
+</g>
+<!-- collar and stylized handmade folds -->
+<path d="M145 234L161 276 123 330 112 270Z" fill="#a05b60" stroke="#522d39" stroke-width="3"/>
+<path d="M183 230L165 277 205 329 218 276Z" fill="#733846" stroke="#492b37" stroke-width="3"/>
+<path d="M161 280L151 426M178 285L192 434M117 442L131 453M197 456L215 437" fill="none" stroke="#dc9b8c" stroke-opacity=".38" stroke-width="3"/>
+<path d="M160 343L161 512" stroke="#e2ada1" stroke-opacity=".3" stroke-width="2"/>
+<circle cx="160" cy="361" r="3" fill="#d3ba9c"/><circle cx="162" cy="410" r="3" fill="#d3ba9c"/>
+<g id="ines-head">
+<!-- neck / ear / long elegant aged facial planes -->
+<path d="M145 214L145 256Q158 267 181 253L178 213Z" fill="url(#skinI)" stroke="#ae765f" stroke-width="2"/>
+<path d="M127 141Q114 138 116 163Q120 182 134 178L142 155Z" fill="#c78f78" stroke="#a67061" stroke-width="2"/>
+<path d="M204 143Q218 140 215 162Q212 176 202 179L195 154Z" fill="#bf846d" stroke="#996658" stroke-width="2"/>
+<path d="M129 112Q135 76 171 72Q206 84 208 125L206 171Q202 211 181 229Q170 239 158 230Q132 215 126 175Z" fill="url(#skinI)" stroke="#966a5c" stroke-width="2.5"/>
+<!-- structured cheek and aging -->
+<path d="M134 178Q146 194 154 193M190 193Q198 185 204 176M149 209Q164 217 177 212" stroke="#98665c" stroke-opacity=".45" stroke-width="2.2" fill="none"/>
+<path d="M130 142Q153 131 167 139M174 140Q189 133 204 145" stroke="#a56f60" stroke-width="3" fill="none" opacity=".55"/>
+<g id="ines-brow1"><path d="M139 137Q149 131 161 135" stroke="#665b56" stroke-width="4" stroke-linecap="round" fill="none"/></g>
+<g id="ines-brow2"><path d="M180 134Q192 130 202 139" stroke="#665b56" stroke-width="4" stroke-linecap="round" fill="none"/></g>
+<path d="M138 151Q149 147 161 152M181 152Q194 148 203 154" stroke="#503d3b" stroke-width="3" fill="none"/>
+<g id="ines-eye1"><path d="M144 155Q153 161 161 153Q153 164 144 155" fill="#f5dfcb"/><ellipse cx="153" cy="155" rx="2.5" ry="4.5" fill="#343435"/></g>
+<g id="ines-eye2"><path d="M181 154Q192 163 201 156Q192 165 181 154" fill="#f5dfcb"/><ellipse cx="192" cy="156" rx="2.5" ry="4.5" fill="#343435"/></g>
+<!-- nose + mouth -->
+<path d="M170 154Q162 174 167 184L175 187" fill="none" stroke="#a66f5e" stroke-width="3" stroke-linecap="round"/>
+<path id="ines-mouth" d="M154 203Q167 205 181 199" stroke="#824c4d" stroke-width="3" stroke-linecap="round" fill="none"/>
+<!-- slender angular spectacles, actual face details -->
+<path d="M133 143Q148 141 164 143L165 164Q151 173 135 161ZM176 142Q192 140 207 145L205 162Q191 170 178 160Z" fill="#eddfca" fill-opacity=".06" stroke="#d9b999" stroke-width="2.8"/>
+<path d="M165 148Q171 144 176 148M133 146L126 141M207 147L213 143" fill="none" stroke="#d9b999" stroke-width="2.5"/>
+<!-- old silver bob, NOT same hair as other actor -->
+<path d="M124 152Q107 107 122 86Q126 59 159 54Q196 43 218 78Q230 106 210 155L207 125Q193 114 187 92Q170 125 130 118Z" fill="#d0ccc4" stroke="#75787c" stroke-width="3"/>
+<path d="M129 91Q151 68 180 66Q196 71 206 86M120 117Q139 116 153 103M191 71Q205 88 204 107" fill="none" stroke="#f6eee1" stroke-width="6" stroke-linecap="round" opacity=".65"/>
+<path d="M124 125Q119 155 126 184L119 187Q109 165 114 136ZM206 121Q220 150 207 178L203 171Z" fill="#9c9c99"/>
+<path d="M120 178Q122 191 131 198M202 178Q196 201 191 210" fill="none" stroke="#777c7c" stroke-width="4"/>
+<circle cx="120" cy="186" r="5" fill="#d2bd95"/><circle cx="210" cy="183" r="5" fill="#d2bd95"/>
+</g>
+</g>
+<!-- Teo: younger, shorter, broader, warm darker skin, natural curls, streetwear -->
+<g id="teo-actor" transform="translate(710 99)">
+<g id="teo-legs">
+<path d="M106 436Q104 499 101 568L89 607 161 609 166 561 178 450Z" fill="#9c8066" stroke="#513f39" stroke-width="4"/>
+<path d="M170 442Q178 509 190 567L191 607 260 603 244 558 228 426Z" fill="#826951" stroke="#513e36" stroke-width="4"/>
+<path d="M95 590L160 594 157 613 89 617Z" fill="#b59b78" opacity=".5"/>
+<path d="M191 590L250 587 260 609 192 618Z" fill="#b59b78" opacity=".5"/>
+<path d="M85 602Q119 598 155 604L166 627Q149 641 73 636Q66 623 85 602Z" fill="#d1c3a8" stroke="#2c3434" stroke-width="3"/>
+<path d="M186 606Q214 600 251 601Q275 614 277 629Q250 640 185 635Q177 621 186 606Z" fill="#d5c8ae" stroke="#2c3434" stroke-width="3"/>
+<path d="M84 628Q121 637 163 627M187 630Q233 636 274 628" stroke="#526262" stroke-width="3" fill="none"/>
+</g>
+<!-- two shoulders with custom broad chest, fold -->
+<path d="M121 246Q167 224 222 244Q258 267 260 324L248 472Q180 496 105 470L94 327Q97 269 121 246Z" fill="url(#jacket)" stroke="#193b3b" stroke-width="4"/>
+<path d="M142 249Q170 288 203 250L214 461Q179 477 142 456Z" fill="#d2a37c"/>
+<path d="M156 278Q179 292 195 270L213 465Q183 473 150 462Z" fill="#c88e5d"/>
+<path d="M166 292Q182 301 196 291" stroke="#f0bb8a" stroke-width="4" fill="none" opacity=".65"/>
+<!-- arms independent from trunk with anatomically guided Bézier bends -->
+<g id="teo-arm2">
+<path d="M232 259Q261 252 284 300L308 395Q310 414 293 422L274 408 267 338 237 305Z" fill="#326462" stroke="#173d3d" stroke-width="4"/>
+<path d="M288 413Q283 426 294 448L301 457Q309 464 314 456L308 444 316 452Q326 456 327 449L315 435 323 440Q331 437 325 430L309 415Z" fill="url(#skinT)" stroke="#814c36" stroke-width="2.5"/>
+<path d="M266 328Q278 341 290 333" stroke="#80a39a" stroke-opacity=".5" stroke-width="3" fill="none"/>
+</g>
+<g id="teo-arm1">
+<path d="M119 257Q85 255 69 298L59 406Q57 428 73 434L93 421 93 353 125 305Z" fill="#39706a" stroke="#173e3c" stroke-width="4"/>
+<path d="M68 426Q58 439 63 457L70 475Q78 483 82 475L80 453 90 476Q98 483 100 474L91 452 105 466Q111 464 108 458L89 426Z" fill="url(#skinT)" stroke="#815039" stroke-width="2.4"/>
+<path d="M86 332Q98 339 108 333" fill="none" stroke="#8fb2a4" stroke-opacity=".5" stroke-width="3"/>
+</g>
+<!-- seams / hoodie -->
+<path d="M121 245Q133 257 150 264L174 284L143 323L111 296ZM211 245Q199 255 191 263L173 284L205 322 237 292Z" fill="#265250" stroke="#173d3d" stroke-width="3"/>
+<path d="M121 246Q134 236 150 241L173 282 142 291Z" fill="#4f827a" opacity=".6"/>
+<path d="M209 245Q222 239 238 258L205 290 174 283Z" fill="#48766d" opacity=".5"/>
+<path d="M159 295L154 348M194 292L202 346" stroke="#c5d5b2" stroke-width="4" stroke-linecap="round"/>
+<path d="M110 406Q179 429 245 409" stroke="#183b3a" stroke-width="4" fill="none" opacity=".8"/>
+<path d="M125 438Q176 458 223 440" stroke="#9bb0a2" stroke-opacity=".4" stroke-width="2.5" fill="none"/>
+<path d="M109 455Q182 489 248 459" fill="none" stroke="#1c4140" stroke-width="6"/>
+<g id="teo-head">
+<path d="M155 215L153 261Q173 286 203 259L196 209Z" fill="url(#skinT)" stroke="#825039" stroke-width="3"/>
+<path d="M121 133Q110 128 113 155Q120 175 133 170L138 145Z" fill="#ae714e" stroke="#80513a" stroke-width="2"/>
+<path d="M223 136Q240 133 236 158Q229 175 217 169Z" fill="#a06645" stroke="#80513a" stroke-width="2"/>
+<path d="M127 105Q130 66 167 61Q221 56 228 119L222 173Q210 226 185 241Q165 248 145 224Q121 198 123 166Z" fill="url(#skinT)" stroke="#7d4b38" stroke-width="3"/>
+<!-- strong jaw, cheekbone and short beard -->
+<path d="M128 177Q134 214 163 234Q182 248 198 231Q222 201 222 174Q218 202 202 208L189 228 160 229 142 210Z" fill="#4b302c" opacity=".52"/>
+<path d="M139 179Q152 184 159 180M198 182Q209 182 216 179" fill="none" stroke="#8d543d" stroke-width="3" opacity=".65"/>
+<g id="teo-brow1"><path d="M138 134Q152 125 165 133" fill="none" stroke="#352627" stroke-width="6" stroke-linecap="round"/></g>
+<g id="teo-brow2"><path d="M187 133Q202 126 216 136" fill="none" stroke="#352627" stroke-width="6" stroke-linecap="round"/></g>
+<path d="M136 152Q152 147 166 155M189 152Q205 148 217 156" fill="none" stroke="#48312c" stroke-width="3"/>
+<g id="teo-eye1"><path d="M141 156Q152 165 164 155Q153 166 141 156" fill="#ffdcac"/><ellipse cx="155" cy="157" rx="4" ry="5" fill="#212a29"/></g>
+<g id="teo-eye2"><path d="M191 155Q202 165 215 156Q205 165 191 155" fill="#ffdcac"/><ellipse cx="204" cy="157" rx="4" ry="5" fill="#212a29"/></g>
+<path d="M178 155Q167 175 173 187Q179 190 189 185" fill="none" stroke="#8d523a" stroke-width="3.5" stroke-linecap="round"/>
+<path id="teo-mouth" d="M160 207Q180 217 198 207" fill="none" stroke="#5e302e" stroke-width="4" stroke-linecap="round"/>
+<!-- individually drafted curl silhouette & whorls -->
+<path d="M120 148Q100 132 113 116Q96 99 109 86Q105 66 127 62Q127 44 149 45Q160 32 176 42Q192 28 205 47Q225 43 232 65Q248 74 235 91Q248 106 231 119L224 150 215 123 205 115 191 124 174 114 154 125 132 115Z" fill="#211f25" stroke="#1a1b1f" stroke-width="4"/>
+<path d="M122 107Q118 96 131 90Q129 76 146 76M142 113Q148 93 163 93Q167 77 178 83M183 111Q191 94 207 100M212 87Q222 70 232 84M160 55Q171 52 183 61M126 74Q135 64 144 68" fill="none" stroke="#5d4640" stroke-width="7" stroke-linecap="round" opacity=".75"/>
+<path d="M144 63Q146 51 159 50M202 57Q209 53 218 60" fill="none" stroke="#9c7055" stroke-width="2" opacity=".45"/>
+</g>
+</g>
+<path d="M47 746H1153" stroke="#d2ba9b" opacity=".16"/>
+<text x="393" y="745" fill="#d6c2aa" font-family="ui-monospace,monospace" font-size="12" text-anchor="middle" letter-spacing="3">INÉS / 64</text>
+<text x="884" y="745" fill="#d6c2aa" font-family="ui-monospace,monospace" font-size="12" text-anchor="middle" letter-spacing="3">TEO / 27</text>
+</svg>
+<div class="texture" aria-hidden="true"></div>
+<div class="corner">ESCENA 01 <span>/</span> ESCUCHAR<br><span>2.5D · RIG VECTORIAL</span></div>
+<div class="narration" aria-live="polite"><div class="who" id="speaker">INÉS</div><div class="words" id="words">«Hay cosas que se entienden mejor cuando dejamos de hablar.»</div></div>
+<div class="progress" aria-hidden="true"><span id="bar"></span></div>
+</section>
+<div class="control">
+<div class="controls" role="group" aria-label="Control de actuación">
+<button id="play" class="primary" aria-pressed="false">▶ Conversar</button>
+<button id="look">Miradas</button>
+<button id="react">Reacciones</button>
+<button id="hands">Gestos</button>
+<button id="reset">Reiniciar</button>
+</div><div id="counter" class="counter">00:00 / 00:24</div>
+</div>
+<footer class="footer"><span><strong>PERSONAJES EDITABLES.</strong> SVG original + rig de expresiones / sin modelos reciclados.</span><span>FLUJO 2.3.0 &nbsp;·&nbsp; BRIEF 210ADCF… &nbsp;·&nbsp; V1</span></footer>
+</main>
+<script>
+"use strict";
+(function(){
+ const $=id=>document.getElementById(id);
+ const duration=24;let elapsed=0,last=0,playing=false,oneShot=false,shotUntil=0;
+ const actors={
+  ines:{head:$("ines-head"),arm1:$("ines-arm1"),arm2:$("ines-arm2"),b1:$("ines-brow1"),b2:$("ines-brow2"),e1:$("ines-eye1"),e2:$("ines-eye2"),mouth:$("ines-mouth"),mouthIdle:"M154 203Q167 205 181 199",mouthSpeak:"M155 204Q168 219 181 202",mouthSmile:"M153 201Q168 218 183 199",mouthSurprised:"M163 203Q168 211 175 202Q169 198 163 203",axis1:[115,275],axis2:[207,277]},
+  teo:{head:$("teo-head"),arm1:$("teo-arm1"),arm2:$("teo-arm2"),b1:$("teo-brow1"),b2:$("teo-brow2"),e1:$("teo-eye1"),e2:$("teo-eye2"),mouth:$("teo-mouth"),mouthIdle:"M160 207Q180 217 198 207",mouthSpeak:"M161 206Q181 228 198 204",mouthSmile:"M158 205Q181 230 199 205",mouthSurprised:"M172 206Q182 219 192 204Q182 200 172 206",axis1:[122,269],axis2:[240,270]}
+ };
+ const beats=[
+  {at:0,who:"INÉS",line:"«Hay cosas que se entienden mejor cuando dejamos de hablar.»",i:"speak",t:"listen"},
+  {at:4.5,who:"TEO",line:"«¿Incluso cuando no sabemos qué decir?»",i:"listen",t:"speak"},
+  {at:8.5,who:"INÉS",line:"«Sobre todo ahí.»",i:"smile",t:"listen"},
+  {at:11.5,who:"TEO",line:"«Creí que tenías una respuesta para todo.»",i:"react",t:"speak"},
+  {at:16,who:"INÉS",line:"«Para casi todo. Escuchar es lo que todavía practico.»",i:"speak",t:"smile"},
+  {at:21,who:"TEO",line:"«Entonces me quedo un rato más.»",i:"smile",t:"speak"}
+ ];
+ const put=(el,s)=>el.setAttribute("transform",s);
+ function pose(id,state,phase=0){
+  const a=actors[id],isI=id==="ines",swing=Math.sin(phase*5),blink=Math.sin(phase*1.9)>0.994;
+  let right=0,left=0,tilt=0,eyes=isI?3:-3,brow=0,mouth=a.mouthIdle;
+  if(state==="speak"){right=isI?-39:-33;left=isI?9:13;tilt=isI?-2.2:2.8;eyes=isI?3:-3;mouth=(swing>-.05?a.mouthSpeak:a.mouthIdle);}
+  if(state==="listen"){right=isI?-5:7;left=isI?2:4;tilt=isI?3:-3;eyes=isI?6:-6;brow=1}
+  if(state==="smile"){right=isI?-20:-28;left=isI?4:7;tilt=isI?-4:4;eyes=isI?4:-4;mouth=a.mouthSmile;brow=2}
+  if(state==="react"){right=isI?-14:12;left=isI?-14:8;tilt=isI?6:-5;mouth=a.mouthSurprised;brow=-4}
+  if(state==="gesture"){right=isI?-59:-50;left=isI?14:-28;tilt=isI?-3:4;mouth=a.mouthSpeak;brow=2}
+  if(state==="gaze"){right=0;left=0;eyes=isI?7:-7;tilt=isI?5:-4}
+  put(a.head,"rotate("+tilt+" 173 190)");
+  put(a.arm1,"rotate("+left+" "+a.axis1[0]+" "+a.axis1[1]+")");
+  put(a.arm2,"rotate("+right+" "+a.axis2[0]+" "+a.axis2[1]+")");
+  put(a.b1,"translate(0 "+brow+")");put(a.b2,"translate(0 "+brow+")");
+  put(a.e1,"translate("+eyes+" 0)"+(blink?" scale(1 .36)":""));
+  put(a.e2,"translate("+eyes+" 0)"+(blink?" scale(1 .36)":""));
+  a.mouth.setAttribute("d",mouth);
+ }
+ function setLine(who,line){if($("speaker").textContent!==who)$("speaker").textContent=who;if($("words").textContent!==line)$("words").textContent=line}
+ function display(t){
+  let idx=0;for(let n=1;n<beats.length;n++){if(t>=beats[n].at)idx=n;}
+  const b=beats[idx],manual=oneShot&&t<shotUntil;
+  let i=b.i,te=b.t;if(manual){i=b.i;te=b.t}
+  pose("ines",i,t);pose("teo",te,t);
+  setLine(b.who,b.line);
+  $("bar").style.width=(t/duration*100).toFixed(2)+"%";
+  $("counter").textContent="00:"+String(Math.floor(t)).padStart(2,"0")+" / 00:24";
+ }
+ function setPlaying(v){playing=v;$("play").textContent=v?"Ⅱ Pausar":"▶ Conversar";$("play").setAttribute("aria-pressed",String(v));last=0}
+ function tick(ms){if(!last)last=ms;const delta=Math.min((ms-last)/1000,.1);last=ms;
+  if(playing){elapsed+=delta;if(elapsed>=duration){elapsed=0;setPlaying(false)}display(elapsed);}
+  requestAnimationFrame(tick);
+ }
+ function trigger(which){setPlaying(false);oneShot=false;pose("ines",which==="look"?"gaze":which==="hands"?"gesture":"react",elapsed);
+  pose("teo",which==="look"?"gaze":which==="hands"?"gesture":"smile",elapsed);
+  const content={look:["AMBOS","La mirada se sostiene. Los rostros se inclinan para escuchar."],react:["INÉS / TEO","La sorpresa y la sonrisa cambian el gesto de cada cara."],hands:["AMBOS","Cada brazo tiene una articulación propia y gestos distintos."]};
+  const k=content[which];setLine(k[0],k[1]);document.querySelectorAll(".controls button").forEach(b=>b.classList.remove("active"));$(which).classList.add("active");
+ }
+ $("play").addEventListener("click",()=>{document.querySelectorAll(".controls button").forEach(b=>b.classList.remove("active"));if(!playing&&elapsed>=duration-.01)elapsed=0;setPlaying(!playing);if(playing)display(elapsed)});
+ $("look").addEventListener("click",()=>trigger("look"));
+ $("react").addEventListener("click",()=>trigger("react"));
+ $("hands").addEventListener("click",()=>trigger("hands"));
+ $("reset").addEventListener("click",()=>{setPlaying(false);elapsed=0;display(0);document.querySelectorAll(".controls button").forEach(b=>b.classList.remove("active"));setLine("INÉS",beats[0].line);});
+ window.addEventListener("keydown",e=>{if(e.code==="Space"&&e.target.tagName!=="BUTTON"){e.preventDefault();$("play").click()}});
+ display(0);requestAnimationFrame(tick);
+})();
+</script>
+</body></html>
