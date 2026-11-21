@@ -46,7 +46,7 @@ for(let ix=-12;ix<=12;ix++)for(let iz=-12;iz<=12;iz++){
   let lit=rand()>(brighten?.39:.72);if(!lit)continue;
   let wz=x-w/2+1.5+k*(w-3)/3.3;const cy=f*3.4;
   city.box(wz,cy,z+d/2+.016,1.42,1.4,.045,rand()>.83?C.blue:C.window,.9);
-  if(rand()>.6)city.box(wz,cy,z-d/2-.016,1.42,1.4,.045,C.window,.65);
+  if(rand()>.6)city.box(wz,cy,z-d/2-.016,1.42,1.4,.045,C.window,.65);if((f+k+ix+iz)%4===0)city.box(x+w/2+.018,cy,z-d*.37+k*d*.19,.045,1.26,1.21,(k%3===0?C.blue:C.window),.67);
  }
  if(rand()>.89){city.box(x,h+1.2,z,2.5,1.9,2.2,C.metal);city.box(x,h+2.4,z,3.2,.2,2.7,C.gold,.5)}
 }
@@ -61,7 +61,7 @@ for(let k=0;k<210;k++){const x=-760+rand()*1520,y=590+rand()*430,z=-820+rand()*1
  city.box(x,y,z,size,size*.36,size*.36,rand()>.72?[.65,.77,.95]:[.81,.73,.57],1.25);
 }
 // Detailed interior: a closed physical room with furniture, lighting and an anonymous seated actor.
-room.box(0,-.17,0,8.2,.34,8.2,C.wood);
+room.box(0,-.17,0,8.2,.34,8.2,C.wood);for(let i=-9;i<=9;i++){room.box(i*.42,-.002,0,.008,.008,8.1,[.20,.13,.10]);for(let j=-2;j<=2;j++)room.box(i*.42,.002,j*1.55+(i%2)*.73,.40,.005,.012,[.23,.15,.10]);}
 room.box(-4,1.85,0,.25,3.7,8.2,C.wall);room.box(4,1.85,0,.25,3.7,8.2,C.wall);
 room.box(0,1.85,-4,8.2,3.7,.25,C.wall);// Physically open front window aligned with the camera's passage, not an opaque wall.
 room.box(-2.4,1.85,4,3.4,3.7,.25,C.wall);room.box(2.4,1.85,4,3.4,3.7,.25,C.wall);
@@ -79,6 +79,9 @@ for(let j=0;j<7;j++)room.box(2.7,1.50+j*.21,-3.7,1.6,.052,.14,C.metal);
 room.box(-2.96,2.0,-3.25,1.38,.11,.52,C.woodHi);room.box(-2.96,2.68,-3.25,1.38,.11,.52,C.woodHi);
 for(let j=0;j<16;j++){let x=-3.6+j*.081;room.box(x,2.28,-3.26,.066,.37+rand()*.18,.39,[[.5,.24,.21],[.14,.3,.36],[.6,.44,.26]][j%3]);}
 room.box(-3.6,1.1,-1.3,.65,1.9,2.0,C.black);room.box(-3.6,2.12,-1.3,.73,.12,2.08,C.woodHi);
+// Original framed graphic on the reverse portrait wall.
+room.box(-3.84,2.19,.30,.08,1.02,1.35,C.woodHi);room.box(-3.785,2.19,.30,.03,.91,1.23,[.62,.55,.40]);room.box(-3.765,2.36,.30,.02,.38,1.06,[.13,.24,.30]);for(let i=0;i<8;i++)room.box(-3.75,2.08-i*.025,-.17+i*.115,.014,.013,.08,[.29,.23,.17]);
+room.box(-3.84,1.91,2.1,.08,.58,.80,C.black);room.box(-3.79,1.91,2.1,.02,.47,.69,[.28,.36,.37]);for(let i=0;i<5;i++)room.box(-3.77,1.79+i*.06,2.10,.01,.009,.49,C.cream,.12);
 // Carpet and tiles, intentional subtle material variation.
 room.box(0,-.016,.4,3.5,.035,3.2,C.rug);for(let i=-6;i<=6;i++)room.box(i*.25,.007,.4,.012,.01,3.0,[.29,.25,.22]);
 // Desk and brass/wood detailing.
@@ -106,6 +109,8 @@ room.box(.68,1.105,-.81,.2,.035,.3,C.black);
 // Task lamp with proper curved geometry.
 room.cyl([-1.03,1.04,-1.92],[-1.03,1.13,-1.92],.19,.15,C.metal);room.tube([[-1.03,1.17,-1.92],[-1.19,1.55,-2.10],[-.98,1.86,-2.2]],.039,C.gold);
 room.cyl([-.98,1.86,-2.2],[-.76,1.74,-2.02],.16,.10,C.woodHi,.2);room.sphere([-.8,1.77,-2.05],.068,C.gold,1.9);
+// Paper journal, loose note and pencil.
+room.box(-.79,1.085,-1.03,.37,.035,.28,[.18,.23,.22]);room.box(-.79,1.106,-1.03,.34,.012,.25,[.77,.68,.53]);for(let i=0;i<5;i++)room.box(-.79,1.114,-1.115+i*.038,.25,.002,.005,[.32,.32,.28]);room.cyl([-.93,1.13,-.88],[-.63,1.13,-.81],.009,.009,C.gold,0,8);room.box(.83,1.08,-1.8,.30,.018,.23,[.72,.62,.42]);
 // Coffee mug and handle.
 room.cyl([.99,1.07,-1.24],[.99,1.28,-1.24],.12,.13,C.cream);room.cyl([.99,1.28,-1.24],[.99,1.283,-1.24],.10,.10,C.black);room.tube([[1.1,1.2,-1.24],[1.20,1.20,-1.24],[1.20,1.10,-1.24],[1.10,1.09,-1.24]],.033,C.cream);
 // Plant, leaf clusters and radiator.
@@ -131,7 +136,7 @@ uniform vec3 u_camera;uniform float u_alpha;uniform float u_fog;uniform vec3 u_f
 void main(){vec3 n=normalize(v_n), sun=normalize(vec3(-0.53,0.89,0.33));float lam=max(dot(n,sun),0.0);
 float candle=2.0/(1.0+0.6*pow(distance(v_p,vec3(-1.2,2.2,-2.2)),2.0));
 float screen=1.7/(1.0+1.5*pow(distance(v_p,vec3(0.0,1.7,-1.6)),2.0));
-vec3 tex=mix(vec3(1.),texture(u_atlas,v_uv).rgb*1.30,clamp(v_tex,0.,1.));vec3 base=v_col*tex;float rim=pow(1.0-max(dot(n,normalize(u_camera-v_p)),0.0),2.0);vec3 lit=base*(0.30+0.54*lam)+base*vec3(1.0,.73,.43)*candle*.52+base*vec3(.32,.72,.93)*screen*.60+base*v_e*1.6+base*rim*.045;
+vec3 tex=mix(vec3(1.),texture(u_atlas,v_uv).rgb*1.30,clamp(v_tex,0.,1.));vec3 base=v_col*tex;float rim=pow(1.0-max(dot(n,normalize(u_camera-v_p)),0.0),2.0);float fill=max(dot(n,normalize(vec3(.63,.48,-.86))),0.0);vec3 lit=base*(0.36+0.54*lam+0.36*fill)+base*vec3(1.0,.73,.43)*candle*.55+base*vec3(.32,.72,.93)*screen*.65+base*v_e*1.6+base*rim*.045;
 float fog=1.0-exp(-distance(v_p,u_camera)*u_fog);
 vec3 col=mix(lit*u_exposure,u_fogColor,clamp(fog,0.,.87));col=col/(vec3(1.0)+col*.42);
 outColor=vec4(pow(col,vec3(0.88)),u_alpha);}`;
