@@ -83,7 +83,7 @@ const colorFacades=[0x233442,0x39424a,0x42373c,0x374b49,0x55483e];
 for(let side of [-1,1]){
  box(city,side*3.5,-.53,0,3.1,.05,310,mat(0x252b31,.94));
  box(city,side*4.6,-.40,0,.22,.28,310,mat(0x65605b,.88));
- for(let z=-148;z<=148;z+=7.7){
+ for(let z=-250;z<=250;z+=7.7){
   const h=4.2+Math.floor(rng()*5)*1.35,deep=3.0+rng()*2.5,px=side*(7.1+rng()*1.9);
   const facade=mat(colorFacades[Math.floor(rng()*colorFacades.length)],.91);
   box(city,px,h/2-.43,z,deep,h,6.4,facade);
@@ -99,7 +99,7 @@ for(let side of [-1,1]){
    box(city,px-side*(deep/2+.35),.83,z+.8,.19,.08,.98,mat(0xd2aa67,.46,.1,0x65421d));
   }
  }
- for(let z=-140;z<=140;z+=17){
+ for(let z=-220;z<=220;z+=17){
   beam(city,[side*4.08,-.35,z],[side*4.08,4.2,z],.055,IRON);
   box(city,side*4.06,4.12,z,.35,.14,.38,mat(0xe4bd79,.24,0,0x9b7937));
  }
