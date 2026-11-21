@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#091420"><meta name="description" content="LUMA: personaje 2D animado con spritesheet transparente, listo para escenas 3D.">
+  <title>LUMA | Estudio 3D · Personajes 07</title><link rel="stylesheet" href="./style.css">
+</head>
+<body>
+<div class="app">
+  <header class="top"><div class="brand"><span class="glyph">✳</span><span>PROMETEO <b>·</b> ESTUDIO 3D</span></div><div class="edition">PERSONAJES / 07 <span>·</span> WAVE 004</div></header>
+  <main class="layout">
+    <section class="scene" aria-label="Vista previa tridimensional de Luma">
+      <div class="ambient a1"></div><div class="ambient a2"></div>
+      <div id="viewport" class="viewport" aria-label="Escenario 3D: arrastrá para girar la cámara"></div>
+      <div id="fallback" class="fallback" hidden><div id="fallbackSprite"></div><small>VISTA 2D · WebGL no disponible</small></div>
+      <div class="scene-top"><span><i class="live"></i> PERSONAJE ORIGINAL</span><span>32 CUADROS / SVG</span></div>
+      <div class="scene-foot"><span>↔ ARRASTRÁ PARA ORBITAR</span><span id="cameraLabel">CÁMARA 00°</span></div>
+    </section>
+    <aside class="panel">
+      <div class="chapter"><span>EXPERIMENTO 07</span><span>2D × 3D</span></div>
+      <div class="headline"><div class="eyebrow">THE CHARACTER ARCHIVE</div><h1>LU<span>M</span>A<span class="dot">.</span></h1><p>Mensajera de luces</p></div>
+      <p class="description">Una figura ilustrada de silueta propia, capa texturada y farol encendido. Cuatro movimientos sobre una única hoja transparente. Ninguna malla humanoide de primitivas.</p>
+      <div class="separator"></div>
+      <div class="section-label"><span>SECUENCIAS</span><span id="frameLabel">01 / 08</span></div>
+      <div class="states" role="group" aria-label="Elegir animación">
+        <button class="selected" data-state="idle" aria-pressed="true"><span>01</span> REPOSO <small>↗</small></button>
+        <button data-state="walk" aria-pressed="false"><span>02</span> CAMINAR <small>↗</small></button>
+        <button data-state="turn" aria-pressed="false"><span>03</span> GIRO <small>↗</small></button>
+        <button data-state="react" aria-pressed="false"><span>04</span> REACCIÓN <small>↗</small></button>
+      </div>
+      <div class="speed"><label for="speed">VELOCIDAD</label><input id="speed" type="range" min="0.5" max="2" step="0.1" value="1"><output id="speedValue">1.0×</output></div>
+      <div class="controls"><button id="pause" class="pause">PAUSAR ANIMACIÓN <span>Ⅱ</span></button><button id="reset" class="reset" aria-label="Restablecer cámara">↺</button></div>
+      <div class="separator"></div>
+      <div class="assets"><div class="section-label">RECURSOS REUTILIZABLES</div>
+      <a href="./atlas.svg" target="_blank" rel="noopener">ATLAS TRANSPARENTE <span>↗</span></a>
+      <a href="./generator.mjs" target="_blank" rel="noopener">FUENTE EDITABLE <span>↗</span></a>
+      <a href="./actor.mjs" target="_blank" rel="noopener">ADAPTADOR THREE.JS <span>↗</span></a>
+      <a href="./manifest.json" target="_blank" rel="noopener">CONTRATO DE ANIMACIÓN <span>↗</span></a>
+      </div>
+      <p class="aside-foot">ESTUDIO 3D · MÉTODO 2.3.0<br>RECURSO INDEPENDIENTE · V1</p>
+    </aside>
+  </main>
+</div>
+<script type="module" src="./app.mjs"></script>
+</body>
+</html>
