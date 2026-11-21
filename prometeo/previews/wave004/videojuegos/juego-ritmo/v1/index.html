@@ -252,7 +252,7 @@ function roundup(x,y,w,h,r){
 function renderNotes(){
  var w=screenW,h=screenH;two.clearRect(0,0,w,h);
  if(!started||finished)return;
- var horizonY=h*.36,targetY=h<540?h*.62:h*.67;var center=w*.5;var span=Math.min(w*.23,160);
+ var horizonY=h*.36,targetY=h<540?h-140:h-195;var center=w*.5;var span=Math.min(w*.23,160);
  var near=[center-span,center,center+span];var far=[center-span*.32,center,center+span*.32];
  two.lineWidth=1;
  for(var i=0;i<3;i++){
