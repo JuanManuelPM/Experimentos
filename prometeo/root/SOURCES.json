@@ -1,0 +1,26 @@
+{
+  "schema": "prometeo.root.public-sources/v1",
+  "revision": "2026-11-21",
+  "purpose": "Public-only central viewer. Root of production methods stays in private GitHub; this is an index and local feedback client.",
+  "registries": [
+    {
+      "id": "3d-wave004",
+      "label": "Estudio 3D · Ola 004",
+      "url": "../3d-flow/w4/MANIFEST.json",
+      "family": "3d",
+      "enabled": true
+    }
+  ],
+  "studios": "../site/spaces.json",
+  "defaultBatchSize": 10,
+  "noArtificialChatLimit": true,
+  "rules": [
+    "ONE_SHARED_PRODUCTION_METHOD_VERSION_PER_WAVE",
+    "BRIEFS_ARE_SEEDS",
+    "ONE_RUN_PER_PROMPT",
+    "HUMAN_REVIEW_IMPROVES_METHOD_BETWEEN_WAVES",
+    "NO_PRIVATE_DATA_ON_PAGES",
+    "ONE_CATALOG_MANY_PRESENTATIONS"
+  ],
+  "addition": "To add other studios, publish a public manifest with tracks, items 1..10, output publicPaths, version pin and exact launchers; add only its URL here. Do not put private repos, source code or credentials."
+}

@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#111417">
+<title>ROOT · PROMETEO</title>
+<meta name="description" content="Lanzar, ver y revisar tandas de producción de PROMETEO. Un método, muchas obras.">
+<link rel="stylesheet" href="./style.css?v=1"><script src="./app.js?v=1" defer></script>
+</head><body>
+<header class="top"><div class="topinner"><a href="./" class="brand"><span class="root-symbol">R</span> ROOT <span class="muted">/ PROMETEO</span></a><a href="../" class="quiet-link">Estudios ↗</a></div></header>
+<main class="wrap">
+<section class="lead"><p class="overline">PROMETEO · PRODUCCIÓN EN TANDAS</p><h1>Una raíz.<br><span>Muchas obras.</span></h1><p>La semilla cambia. El método se conserva durante cada ejecución. Las decisiones quedan registradas y tus observaciones mejoran las siguientes tandas.</p><div id="summary" class="summary">Cargando proyectos públicos…</div></section>
+<div class="nav" role="tablist" aria-label="Secciones">
+<button role="tab" id="tab-launch" aria-selected="true" data-tab="launch">01 · Producir</button>
+<button role="tab" id="tab-view" aria-selected="false" data-tab="view">02 · Ver</button>
+<button role="tab" id="tab-review" aria-selected="false" data-tab="review">03 · Calibrar</button>
+<button role="tab" id="tab-system" aria-selected="false" data-tab="system">04 · Sistema</button></div>
+<section id="panel-launch" role="tabpanel" aria-labelledby="tab-launch">
+<div class="heading"><div><p class="overline">SEMILLAS / TANDAS</p><h2>Copiar los diez prompts</h2></div><p>Podés lanzar varias tandas al mismo tiempo. El número 10 define la tanda, no el máximo de chats.</p></div>
+<div id="launchers"><p class="subtle">Cargando manifiesto…</p></div></section>
+<section id="panel-view" role="tabpanel" aria-labelledby="tab-view" hidden>
+<div class="heading"><div><p class="overline">OBRAS / PUBLICACIONES</p><h2>Ver producciones</h2></div><p>Publicada significa que se encontró el archivo web. La aprobación artística depende de vos.</p></div>
+<div class="toolbar"><div id="view-filters" class="filters"></div><button class="smallbutton" id="refresh" type="button">↻ Actualizar</button></div><div id="results"></div></section>
+<section id="panel-review" role="tabpanel" aria-labelledby="tab-review" hidden>
+<div class="heading"><div><p class="overline">CALIBRAR / REVISIÓN HUMANA</p><h2>Diez observaciones. Una mejora del método.</h2></div><p>Elegí una tanda, anotá qué no te gustó y adjuntá tus capturas. El registro se prepara para corregir las raíces en la próxima versión, no para parchear las obras.</p></div>
+<div class="review-controls"><label for="review-track">Tanda que vas a revisar</label><select id="review-track"></select><button id="export-review" type="button" class="primary">Guardar revisión ZIP ↓</button></div>
+<p class="privacy-note"><strong>Privacidad:</strong> las observaciones y capturas quedan en este navegador; no se envían a GitHub ni a servidores. Exportá el ZIP para conservarlas o compartirlas en el chat. No incluyas información sensible en capturas públicas.</p>
+<div id="review-items"></div></section>
+<section id="panel-system" role="tabpanel" aria-labelledby="tab-system" hidden>
+<div class="heading"><div><p class="overline">ARQUITECTURA / VERIFICABLE</p><h2>Una fuente para cada responsabilidad</h2></div></div>
+<div class="system-cards"><article><strong>01 · Raíz productiva</strong><p>Método fijado por versión y hash. La semilla es el encargo. Cada productor tiene su propia rama y su traza.</p><a href="../3d-flow/versions/2.3.0/METHOD.md">Método 3D vigente ↗</a></article>
+<article><strong>02 · Registro de obras</strong><p>Los manifiestos apuntan a cada salida publicada. Las nuevas olas se incorporan a la fuente de esta página sin cambiar su URL.</p><a href="./SOURCES.json">Fuentes de la página ↗</a></article>
+<article><strong>03 · Revisión de diez</strong><p>Capturas y comentarios por obra. CALIBRAR analiza las decisiones que fallaron y propone mejoras del método, no modificaciones automáticas a las obras.</p><a href="../3d-flow/w4/MANIFEST.json">Manifiesto 3D ↗</a></article>
+<article><strong>04 · Vistas, no nuevas raíces</strong><p>Podemos ensayar diez formas de visualizar un mismo registro. Ninguna variante debe crear otro catálogo de resultados ni alterar los prompts de producción.</p><a href="../3d-flow/galeria/">Galería 3D anterior ↗</a></article></div>
+<h3>Estudios existentes</h3><div id="studios" class="studio-list"></div>
+</section>
+<footer>ROOT es un acceso público a publicaciones autorizadas. Las fuentes privadas, los archivos restringidos y las credenciales no se publican aquí. <a href="../">Portal PROMETEO ↗</a></footer>
+</main>
+<div id="dialog" class="dialog" hidden role="dialog" aria-modal="true" aria-labelledby="dialog-title"><div class="dialog-top"><strong id="dialog-title">Vista</strong><div><a id="dialog-link" href="#" target="_blank" rel="noopener noreferrer">Abrir aparte ↗</a><button id="dialog-close" type="button">Cerrar ×</button></div></div><iframe id="dialog-frame" title="Vista del proyecto" allow="fullscreen; autoplay; gamepad"></iframe></div>
+</body></html>
