@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#eae5d9">
+<meta name="description" content="Caminante y vestuario, estudio de personaje 3D animado. Ola 004 / PROMETEO.">
+<title>CAMINANTE · PROMETEO / ESTUDIO 3D</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="preconnect" href="https://tevy.dev" crossorigin>
+<link rel="stylesheet" href="./style.css">
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
+</head>
+<body>
+<main id="stage">
+  <div id="poster" aria-hidden="true"><img src="https://tevy.dev/models/hiker/v1/preview.webp" alt=""></div>
+  <div id="viewport" aria-label="Visor 3D interactivo del personaje caminante" role="img"></div>
+  <header class="topline">
+    <a class="brand" href="https://juanmanuelpm.github.io/Experimentos/prometeo/estudios/3d/">PROMETEO <span>/</span> ESTUDIO 3D</a>
+    <span class="edition">SERIE 04 <i></i> PERSONAJES 02</span>
+  </header>
+  <section class="intro" aria-label="Título">
+    <p class="eyebrow">ESTUDIO DE PERSONAJE / 001</p>
+    <h1>Una figura.<br><em>Su propio paso.</em></h1>
+    <p class="introcopy">Vestuario. Silueta. Peso. Movimiento.<br>Un personaje que se sostiene desde cualquier ángulo.</p>
+  </section>
+  <div class="left-edge"><span>01</span><span class="edge-rule"></span><span>CAMINANTE / V1</span></div>
+  <aside class="inspector" aria-live="polite">
+    <div><span class="inspector-label">ACCIÓN</span><strong id="motionLabel">REPOSO</strong></div>
+    <div><span class="inspector-label">APOYO</span><strong id="contactLabel">SIN MEDIR</strong></div>
+    <div><span class="inspector-label">CÁMARA</span><strong id="angleLabel">TRES CUARTOS</strong></div>
+    <button id="viewsBtn" class="views-btn" type="button" aria-expanded="false" aria-controls="viewsPanel">CAMBIAR VISTA <span>＋</span></button>
+    <div id="viewsPanel" class="views-panel" hidden>
+      <button type="button" data-view="front">Frente</button>
+      <button type="button" data-view="quarter">3/4</button>
+      <button type="button" data-view="side">Perfil</button>
+      <button type="button" data-view="back">Espalda</button>
+    </div>
+  </aside>
+  <div class="footline">
+    <span id="loading">CARGANDO ESCULTURA ANIMADA...</span>
+    <span class="micro">ARRASTRÁ PARA GIRAR LA CÁMARA · PINZÁ PARA ACERCAR</span>
+  </div>
+  <nav class="transport" aria-label="Control de animación">
+    <button id="walkBtn" type="button"><span class="symbol">▶</span><span>CAMINAR</span></button>
+    <button id="stopBtn" type="button" class="selected" aria-pressed="true"><span class="symbol">Ⅱ</span><span>FRENAR</span></button>
+    <button id="turnBtn" type="button"><span class="symbol">↻</span><span>GIRAR 90°</span></button>
+    <button id="lookBtn" type="button"><span class="symbol">◉</span><span>MIRAR</span></button>
+  </nav>
+  <div class="credit"><span>MODELO: <a href="https://tevy.dev/models/hiker" target="_blank" rel="noopener noreferrer">HIKER / TEVY CC0</a></span><a href="https://tevy.dev/models/hiker/v1/lod0.glb" download rel="noopener noreferrer" target="_blank">GLB ORIGINAL ↗</a></div>
+  <div id="error" role="alert" hidden><p id="errorText">No se pudo cargar el modelo 3D.</p><a href="https://tevy.dev/models/hiker" target="_blank" rel="noopener">VER RECURSO ORIGINAL</a><button id="retryBtn" type="button">REINTENTAR</button></div>
+</main>
+<script type="module" src="./app.mjs"></script>
+</body></html>
