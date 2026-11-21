@@ -72,7 +72,7 @@ const shots=[
 {at:0,id:'ESTABLISH',p:[0,1.88,6.55],t:[0,1.05,-.32],fov:39},
 {at:3,id:'MARA_CU',p:[-.72,1.35,1.67],t:[-1.38,1.15,-.33],fov:27},
 {at:9,id:'ELIAS_CU',p:[.65,1.36,1.63],t:[1.38,1.16,-.33],fov:27},
-{at:14,id:'HANDS',p:[-.28,1.78,2.3],t:[-1.25,.91,.19],fov:31},
+{at:14,id:'HANDS',p:[-.66,1.75,1.15],t:[-1.31,.99,.10],fov:33},
 {at:17,id:'MARA_REACTION',p:[-.61,1.31,1.30],t:[-1.38,1.20,-.31],fov:25},
 {at:23,id:'ELIAS_REACTION',p:[.61,1.30,1.25],t:[1.38,1.20,-.31],fov:25},
 {at:30,id:'TWO_SHOT',p:[0,1.73,4.9],t:[0,1.1,-.45],fov:42},
@@ -96,9 +96,10 @@ function artPanel(g,x,y,z,w,h,label){
  box(g,x,y,z,w+.08,h+.09,.085,M.gold);
  box(g,x,y,z+.053,w,h,.011,new THREE.MeshStandardMaterial({map:tex,roughness:.7}));
 }
+let seed=92021;function rng(){seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296}
 function makeRain(){
  const count=155,p=new Float32Array(count*6);
- for(let i=0;i<count;i++){const x=(Math.random()-.5)*7.9,z=-3.49,y=.45+Math.random()*3.8;
+ for(let i=0;i<count;i++){const x=(rng()-.5)*7.9,z=-3.49,y=.45+Math.random()*3.8;
   p[i*6]=x;p[i*6+1]=y;p[i*6+2]=z;p[i*6+3]=x-.035;p[i*6+4]=y-.21;p[i*6+5]=z;}
  const geo=new THREE.BufferGeometry();geo.setAttribute('position',new THREE.BufferAttribute(p,3));
  const rain=new THREE.LineSegments(geo,new THREE.LineBasicMaterial({color:0x728e9a,transparent:true,opacity:.23}));scene.add(rain);return {rain,p};
@@ -137,10 +138,10 @@ function makeRoom(){
  box(g,0,.012,.65,7.5,.016,4.1,M.felt,.04);
  for(let k=0;k<4;k++)box(g,0,.023,.65,7.25-k*.13,.007,3.85-k*.13,k%2?M.felt:M.gold);
  // Thick authored desk, inset rim and two curved supports.
- box(g,0,.84,1.14,4.84,.15,1.29,M.wood2,.085);
- box(g,0,.916,1.14,4.73,.024,1.18,M.wood,.03);
- for(let x of [-2.2,2.2]){box(g,x,.44,1.14,.22,.7,1.04,M.wood2,.04);box(g,x,.15,1.14,.24,.12,1.02,M.gold)}
- box(g,0,.74,1.77,4.55,.04,.05,M.gold);
+ box(g,0,.84,.88,4.84,.15,1.29,M.wood2,.085);
+ box(g,0,.916,.88,4.73,.024,1.18,M.wood,.03);
+ for(let x of [-2.2,2.2]){box(g,x,.44,.88,.22,.7,1.04,M.wood2,.04);box(g,x,.15,.88,.24,.12,1.02,M.gold)}
+ box(g,0,.74,1.51,4.55,.04,.05,M.gold);
  // visible acoustic wall treatment.
  for(let s of [-1,1])for(let i=0;i<8;i++)box(g,s*4.91,1.2+i*.37,-1.1,.16,.21,1.9,i%2?M.wood:M.panel);
  // Three practical pendants with actual emitters.
@@ -322,8 +323,8 @@ function poseActor(a,t){
  for(const e of a.eyes){e.gaze.position.x=(i?-1:1)*(.004+react*.001);e.gaze.position.y=react*-.002;e.lid.visible=blink>.02;e.lid.scale.y=blink;e.upper.position.y=-blink*.009;e.globe.scale.y=.012*(1-blink*.78)}
  a.brows.forEach((b,j)=>{b.position.y=react*(i?.003:.008)+talk*.004;b.rotation.z=react*(j?-.07:.07)});
  for(const h of a.arms){const lead=h.s===(i? -1:1),weight=lead?1:.42;
-  h.shoulder.rotation.set(-.23-gesture*.32*weight, h.s*.05,h.s*(.24+gesture*.14));
-  h.elbow.rotation.set(-1.40-gesture*.22*weight+react*.06, h.s*(.18+gesture*.1),h.s*.09);
+  h.shoulder.rotation.set(-.91-gesture*.27*weight, h.s*.05,h.s*(.24+gesture*.14));
+  h.elbow.rotation.set(-.78-gesture*.19*weight+react*.06, h.s*(.18+gesture*.1),h.s*.09);
   h.hand.rotation.set(Math.PI-.12-gesture*.21, h.s*.13, h.s*.1);
   h.digits.forEach((d,j)=>{d.rotation.x=.18+react*.32+(1-gesture)*.12+j*.015});
  }
