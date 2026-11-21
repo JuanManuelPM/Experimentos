@@ -57,7 +57,7 @@ button{cursor:pointer;border:1px solid var(--line);color:var(--ink);background:v
 #anatomyPanel footer{font-size:10px;line-height:1.5;color:#94b3a5;margin-top:14px}
 @media(max-width:680px){#anatomyPanel{right:7px;top:89px;max-height:calc(100dvh - 156px);padding:12px}}
 @media(max-height:430px){#anatomyPanel{top:35px;max-height:calc(100dvh - 91px);width:min(385px,calc(100vw - 18px))}#anatomyChapters{grid-template-columns:repeat(4,1fr)}#anatomyChapters button{font-size:10px}}
-</style></head><body>
+#right #anatomyToggle{position:fixed;left:14px;right:auto;top:102px;z-index:6}@media(max-height:430px){#right #anatomyToggle{top:92px}}</style></head><body>
 <canvas id="stage" aria-label="Escena tridimensional interactiva de un ventilador de mesa"></canvas>
 <div id="top"><div class="stamp">PROMETEO / 005 · VENTILADOR</div></div>
 <div id="right"><button id="anatomyToggle" title="Inspeccionar la mecánica" aria-label="Inspeccionar la mecánica" aria-expanded="false">ⓘ</button><button id="guide" title="Recorrido guiado" aria-label="Recorrido guiado">▷</button><button id="isolate" title="Aislar pieza" aria-label="Aislar pieza">◎</button><button id="reset" title="Restablecer cámara" aria-label="Restablecer cámara">↺</button></div>
