@@ -1,0 +1,160 @@
+{
+  "schema": "prometeo.3d.production-receipt/v1",
+  "id": "wave004-videojuegos-6-juego-ritmo-v1",
+  "project": "PULSE STATION / Sector 06",
+  "specialization": "VIDEOJUEGO",
+  "briefLiteral": "Quiero un juego breve de ritmo con audio original, señales audiovisuales claras, controles por tiempo, puntuación y desaciertos, y un escenario 3D que reaccione de verdad.",
+  "briefSha256": "cff5ae8b5309eff836585cc115454f44611a1dbf6bcb147772e954535ce2cde0",
+  "flow": {
+    "version": "2.3.0",
+    "sha256Canonical": "53bc9e2e4b37c99e92d3494af8dfa4461cd4644b15f980e32497a8428b067b3f",
+    "hashRecomputedAndMatched": true
+  },
+  "branch": "candidate/3d-videojuegos-juego-ritmo-wave004-20261121",
+  "publicPath": "prometeo/previews/wave004/videojuegos/juego-ritmo/v1/",
+  "summary": "Vertical slice autocontenido en HTML. Túnel WebGL con mallas 3D, música sintetizada original con Web Audio, 3 carriles de input, hit window de ±165 ms, PERFECT/GOOD/MISS, combo, puntuación y final de sesión.",
+  "preproductionComparison": [
+    {
+      "route": "Canvas 2D con ilusión de profundidad",
+      "advantages": "Compatibilidad y autoría visual rápida",
+      "disadvantages": "No cumple con un escenario 3D real"
+    },
+    {
+      "route": "WebGL directo con geometría procedural y UI canvas 2D",
+      "advantages": "Profundidad verdadera, geometría editable, cero recursos externos y respuesta espacial a aciertos",
+      "disadvantages": "Requiere GPU/WebGL; arte estilizado en vez de asset fotorrealista",
+      "selected": true
+    }
+  ],
+  "assets": [
+    {
+      "name": "Mallas 3D de túnel, torres y suelo",
+      "origin": "Autoría original procedural",
+      "license": "Original para este proyecto",
+      "format": "Geometría WebGL buffer"
+    },
+    {
+      "name": "Composición y sonidos",
+      "origin": "Autoría original por síntesis de osciladores y ruido",
+      "license": "Original para este proyecto",
+      "format": "Audio generado en tiempo real mediante Web Audio"
+    },
+    {
+      "name": "Interfaz y mapa de notas",
+      "origin": "Autoría original",
+      "license": "Original para este proyecto",
+      "format": "HTML/CSS/JS"
+    }
+  ],
+  "controls": [
+    "A/S/D",
+    "Flechas izquierda/abajo/derecha",
+    "Botones táctiles",
+    "Espacio: pausar o iniciar",
+    "Pausa",
+    "Silenciar"
+  ],
+  "stageTrace": [
+    {
+      "id": "scope",
+      "decision": "Juego de ritmo de una sola sesión. Brief inmutable, experiencia móvil y desktop."
+    },
+    {
+      "id": "recovery",
+      "decision": "Leídos método 2.3.0, flow.json, STAGE_OPERATIONS.json y PRODUCTION_CONTRACT.json. Sin versión previa de este proyecto."
+    },
+    {
+      "id": "planning",
+      "decision": "Comparadas escena 2D perspectivada y escena WebGL real. Elegida segunda por exigencia 3D."
+    },
+    {
+      "id": "acquisition",
+      "decision": "Código, melodía y geometría originales. Sin dependencias externas, sin activos ajenos."
+    },
+    {
+      "id": "classification",
+      "decision": "Mallas ambientales WebGL, controles DOM, notas Canvas 2D y audio Web Audio."
+    },
+    {
+      "id": "humanoid",
+      "decision": "N/A: el brief no pide figuras humanoides; no se agregan actores."
+    },
+    {
+      "id": "props",
+      "decision": "Módulos, rieles, torres y arcos de túnel autorados como mallas con reacción."
+    },
+    {
+      "id": "environment",
+      "decision": "Perspectiva 3D longitudinal, suelo segmentado, profundidad espacial y encuadre único."
+    },
+    {
+      "id": "fx",
+      "decision": "Colores por carril y pulsos sincronizados con secuencia y aciertos."
+    },
+    {
+      "id": "assembly",
+      "decision": "Composición de escenario WebGL, notas Canvas, HUD táctil y motor de audio."
+    },
+    {
+      "id": "orientation",
+      "decision": "Cámara frontal mirando al eje negativo Z; carriles izquierda-centro-derecha fijos."
+    },
+    {
+      "id": "acting",
+      "decision": "Juicio temporal ±165 ms, hit reactivo y penalizaciones reales."
+    },
+    {
+      "id": "cinema",
+      "decision": "Cámara estable de túnel, balanceo sutil, profundidad y niebla."
+    },
+    {
+      "id": "qa",
+      "decision": "Fuente JavaScript analizada sintácticamente sin errores; ejecución WebGL/audio/móvil NOT_RUN."
+    },
+    {
+      "id": "repair",
+      "decision": "Sin tests estéticos obligatorios; ajuste preventivo de línea de impacto al tamaño móvil."
+    },
+    {
+      "id": "persistence",
+      "decision": "Fuente versionada en rama exclusiva. Brief y SHA fijados para W4."
+    },
+    {
+      "id": "publish",
+      "decision": "Candidato aislado de gh-pages; publicación no implica aprobación humana ni prueba Android."
+    }
+  ],
+  "tests": [
+    {
+      "subject": "JavaScript parse",
+      "status": "PASS",
+      "evidence": "new Function(script) terminó sin excepción sobre fuente publicada en rama candidata."
+    },
+    {
+      "subject": "Flow hash SHA-256 canonical",
+      "status": "PASS",
+      "evidence": "SHA-256 recomputado con claves ordenadas excluyendo sha256Canonical coincide con FLOW_INDEX."
+    },
+    {
+      "subject": "WebGL rendered on real GPU",
+      "status": "NOT_RUN",
+      "evidence": "No se dispone de navegador gráfico ejecutando la URL en esta sesión."
+    },
+    {
+      "subject": "Web Audio playback on mobile",
+      "status": "NOT_RUN",
+      "evidence": "No se comprobó audio físico en Android."
+    },
+    {
+      "subject": "Look and feel human approval",
+      "status": "NOT_RUN",
+      "evidence": "Se entrega como candidato para revisión externa."
+    }
+  ],
+  "limitations": [
+    "WebGL 1 requerido para escenario 3D; si falla, queda la interfaz jugable 2D con estado honesto.",
+    "Los controles de reproducción de música operan en Web Audio y requieren gesto inicial.",
+    "Sin pruebas visuales ni auditivas automatizadas que garanticen calidad artística."
+  ],
+  "status": "CANDIDATE"
+}
