@@ -3,7 +3,7 @@
   "projectId": "transporte-retro",
   "version": "V3",
   "wave": "002",
-  "status": "SOURCE_PERSISTED",
+  "status": "PUBLISHED_CANDIDATE__STATIC_QA_PASS__VISUAL_NOT_RUN",
   "branch": "candidate/3d-transporte-retro-v3-wave002-20261120",
   "derivedFrom": {
     "v1": "prometeo/previews/transporte-retro-001/",
@@ -18,13 +18,14 @@
   "sourcePath": "PROMETEO/spaces/studio-3d/parallel-productions/v3/scenes/transporte-retro/v3/source/",
   "preview": {
     "url": "https://juanmanuelpm.github.io/Experimentos/prometeo/previews/transporte-retro/v3/",
-    "status": "PUBLISH_ATTEMPT_PENDING_VERIFICATION",
-    "http": "NOT_RUN",
-    "webgl": "NOT_RUN"
+    "status": "GITHUB_PAGES_SOURCE_COMMITTED",
+    "http": "NOT_VERIFIED_WEB_TOOL_ACCESS_ERROR",
+    "webgl": "NOT_RUN",
+    "githubPagesCommit": "c972cf1d5939212f2eaef361aaeafffa15bf06f9"
   },
   "humanApproval": "NOT_RUN",
   "androidQA": "NOT_RUN",
-  "sourceQa": "STATIC_CHECKS_PENDING",
+  "sourceQa": "PASS_19_STATIC_AND_DETERMINISTIC_CHECKS_0_FAIL",
   "content": {
     "passengerProfiles": 9,
     "driver": 1,
@@ -36,5 +37,13 @@
     "Sitting pose swaps models",
     "Supporting characters are procedural and not closeup-grade",
     "No real phone test or artistic acceptance"
-  ]
+  ],
+  "evidence": {
+    "privateSourceCommit": "6b7f5792778755b99cc741be74bc2f0e5b2848f5",
+    "publicPreviewCommit": "c972cf1d5939212f2eaef361aaeafffa15bf06f9",
+    "githubPublishedSourceBlob": "761e0a7c47be94ae77b611984629400916d27d09",
+    "checks": "4 JavaScript parse; seat clearance; 9 unique profiles; 9 shots 62s; 621 camera samples finite; 10 source structure checks",
+    "browserWebGL": "NOT_RUN",
+    "android": "NOT_RUN"
+  }
 }
