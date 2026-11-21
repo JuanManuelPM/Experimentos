@@ -37,3 +37,11 @@ test('character strategy is mandatory evidence for VERIFIED human actor, not a p
  assert.ok(r.warnings.includes('CHARACTER_VISUAL_NOT_USER_APPROVED'));
  assert.ok(validateReceipt({...base,status:'VERIFIED'},f).errors.includes('CHARACTER_VISUAL_ART_APPROVAL_REQUIRED'));
 });
+
+test('eight non-character stage procedures unchanged from flow 2.0',()=>{
+ const oldOps=load('./versions/2.0.0/STAGE_OPERATIONS.json');
+ const changed=new Set(['recovery','planning','acquisition','classification','humanoid','acting','qa','repair','persistence']);
+ const before=oldOps.stages.filter(x=>!changed.has(x.id)),after=ops.stages.filter(x=>!changed.has(x.id));
+ assert.equal(before.length,8);
+ assert.deepEqual(after,before);
+});

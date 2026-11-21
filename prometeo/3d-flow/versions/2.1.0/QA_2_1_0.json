@@ -1,0 +1,118 @@
+{
+  "schema": "prometeo.3d.flow-qa/v2.1",
+  "flowVersion": "2.1.0",
+  "asOf": "2026-11-20",
+  "status": "OPERATIONAL_SOURCE_TESTED__NEW_CHARACTERS_NOT_RENDERED",
+  "flowCanonicalSha256": "1a5b7e270f725974208236eb6b4e1a299f397eb976677f49d8e2143332506db8",
+  "structure": {
+    "nodes": 280,
+    "edges": 370,
+    "stages": 17,
+    "subflows": 12,
+    "allReachable": true,
+    "terminalIds": [
+      "END0",
+      "END1"
+    ],
+    "changedStageProcedures": 9,
+    "unchangedStageProcedures": [
+      "scope",
+      "props",
+      "environment",
+      "fx",
+      "assembly",
+      "orientation",
+      "cinema",
+      "publish"
+    ]
+  },
+  "sourceTests": {
+    "passed": 73,
+    "failed": 0,
+    "method": "Executed exact GitHub source contents in V8 JS compatibility harness + one direct immutable-stage comparison; not native Node checkout",
+    "suites": [
+      {
+        "name": "character-strategy",
+        "passed": 12
+      },
+      {
+        "name": "flow-repair",
+        "passed": 9
+      },
+      {
+        "name": "scene-compiler",
+        "passed": 12
+      },
+      {
+        "name": "flow-audit",
+        "passed": 7
+      },
+      {
+        "name": "adapter-routing",
+        "passed": 6
+      },
+      {
+        "name": "validate-trace",
+        "passed": 8
+      },
+      {
+        "name": "top-level flow regression",
+        "passed": 6
+      },
+      {
+        "name": "unchanged eight non-character stages",
+        "passed": 1
+      },
+      {
+        "name": "inherited browser-boot",
+        "passed": 9
+      },
+      {
+        "name": "inherited browser-check",
+        "passed": 3
+      }
+    ],
+    "regressions": [
+      "Earlier visual rejection in Bondi now yields explicit failure before assembly",
+      "CesiumMan visual rejected, fluid motion classified PARTIAL_POSITIVE independent",
+      "Seven actual actor projects get unique visual strategy hypotheses, three others do not get forced humans",
+      "Original brief hashes immutable and old flow 2.0 preserved",
+      "First-attempt scene remains publishable even if characters are unapproved",
+      "Flow correction requires source evidence, version bump and character-only stage",
+      "Generic repeated stage trace is flagged as poor causal evidence",
+      "Asset binary and retarget motions cannot be claimed without measured evidence",
+      "Art promotion requires human review and second consumer"
+    ]
+  },
+  "provenance": {
+    "sixAuditedProjects": [
+      "transporte-retro",
+      "cruce-urbano",
+      "estacion-servicio-tormenta",
+      "laboratorio-submarino",
+      "entrevista-nocturna",
+      "respawn-desk"
+    ],
+    "sources": "Private Wave002 STAGE_TRACE and ASSET_MANIFEST, exact public Git blobs, user screenshot comments in current conversation; linked in CHARACTER_DECISION_AUDIT.json",
+    "externalResearch": "Official Quaternius, Blender glTF, MPFB, Three SkeletonUtils, Adobe Mixamo, VRoid/three-vrm and KayKit docs"
+  },
+  "unverified": {
+    "newCharacterMeshes": "NOT_CREATED",
+    "realRigRetarget": "NOT_RUN",
+    "newCharacterAnimations": "NOT_RUN",
+    "userArtApproval": "NONE",
+    "actualAndroidBrowser": "NOT_RUN",
+    "newTenSceneWave": "NOT_LAUNCHED",
+    "nativeNodeTestRun": "NOT_RUN",
+    "sourceImageBinariesInGitHub": "NOT_COPIED",
+    "qualityGTA": "ASPIRATIONAL_TARGET_NOT_PROVEN"
+  },
+  "publicationRules": {
+    "scopeOnly": "prometeo/3d-flow/",
+    "previousVersionsImmutable": true,
+    "oldWave002PromptsRemainPinnedTo2_0": true,
+    "otherProjectsUntouched": true,
+    "characterReadyClaim": false
+  },
+  "notes": "User-level aesthetic rejections and source-based evidence support a method correction, not actual successful new characters. V8 fixtures cannot assess image quality, face topology realism, or physics."
+}
