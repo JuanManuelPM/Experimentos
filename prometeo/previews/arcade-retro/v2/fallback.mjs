@@ -9,7 +9,7 @@ export function startFallback(root,qa){
  let selected=1,game=false,score=0,ship=.5,projectiles=[],enemies=[],clock=0,last=performance.now(),media=null,mediaUrl=null,htmlUrl=null;
  let keys={left:false,right:false,fire:false};
  const title=document.querySelector("#machineTitle"),sub=document.querySelector("#machineSub"),counter=document.querySelector("#counter"),btn=document.querySelector("#play");
- const layer=document.querySelector("#gameLayer"),frame=document.querySelector("#gameFrame");
+ const layer=document.querySelector("#gameLayer"),gameFrame=document.querySelector("#gameFrame");
  const hint=document.querySelector("#hint");hint.textContent="MODO 2D · ESTE NAVEGADOR NO TIENE WEBGL2";
  qa.status="FALLBACK_2D_RENDERING";qa.machineCount=6;qa.sceneMode="CANVAS2D_NOT_3D";
  function pick(n){selected=(n+6)%6;title.textContent=items[selected][0];sub.textContent=selected===1?"Juego funcional · Modo 2D":"Pantalla animada · Vista 2D";counter.textContent=String(selected+1).padStart(2,"0")+" / 06";btn.textContent=selected===1?(game?"SALIR DEL JUEGO":"JUGAR"):"INTERACTUAR";}
@@ -21,7 +21,7 @@ export function startFallback(root,qa){
  document.querySelector("#next").onclick=()=>pick(selected+1);
  document.querySelector("#focus").onclick=()=>{clock+=.2;};
  btn.onclick=press;
- document.querySelector("#closeGame").onclick=()=>{layer.hidden=true;frame.src="about:blank";};
+ document.querySelector("#closeGame").onclick=()=>{layer.hidden=true;gameFrame.src="about:blank";};
  for(const [id,key] of [["#turnLeft","left"],["#turnRight","right"],["#fire","fire"]]){
   const b=document.querySelector(id);
   b.addEventListener("pointerdown",e=>{e.preventDefault();keys[key]=true;b.setPointerCapture(e.pointerId);});
@@ -40,8 +40,8 @@ export function startFallback(root,qa){
    else{const img=new Image();img.src=mediaUrl;media=img;qa.mediaMode="IMAGE_FALLBACK";}
    clear.hidden=false;
  };
- htmlInput.onchange=()=>{const file=htmlInput.files?.[0];if(!file)return;if(htmlUrl)URL.revokeObjectURL(htmlUrl);htmlUrl=URL.createObjectURL(file);frame.src=htmlUrl;layer.hidden=false;qa.mediaMode="HTML_GAME_OVERLAY";clear.hidden=false;};
- clear.onclick=()=>{media?.pause?.();media=null;if(mediaUrl)URL.revokeObjectURL(mediaUrl);if(htmlUrl)URL.revokeObjectURL(htmlUrl);mediaUrl=htmlUrl=null;frame.src="about:blank";layer.hidden=true;clear.hidden=true;qa.mediaMode="builtin";};
+ htmlInput.onchange=()=>{const file=htmlInput.files?.[0];if(!file)return;if(htmlUrl)URL.revokeObjectURL(htmlUrl);htmlUrl=URL.createObjectURL(file);gameFrame.src=htmlUrl;layer.hidden=false;qa.mediaMode="HTML_GAME_OVERLAY";clear.hidden=false;};
+ clear.onclick=()=>{media?.pause?.();media=null;if(mediaUrl)URL.revokeObjectURL(mediaUrl);if(htmlUrl)URL.revokeObjectURL(htmlUrl);mediaUrl=htmlUrl=null;gameFrame.src="about:blank";layer.hidden=true;clear.hidden=true;qa.mediaMode="builtin";};
  pick(1);
  function resize(){const d=Math.min(devicePixelRatio||1,1.5);canvas.width=root.clientWidth*d;canvas.height=root.clientHeight*d;canvas.style.width=root.clientWidth+"px";canvas.style.height=root.clientHeight+"px";ctx.setTransform(d,0,0,d,0,0);}
  addEventListener("resize",resize);resize();
