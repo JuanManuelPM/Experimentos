@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f7f7f4">
+  <meta name="description" content="ROOT. Mensajes, capturas y calibración.">
+  <link rel="stylesheet" href="./rounds-e1.css?v=1">
+  <title>root.</title>
+  <style>
+:root{color-scheme:light;--bg:#f7f7f4;--fg:#222520;--muted:#81857e;--edge:#ddded8;--surface:#f0f1ec;--accent:#8b9b83;--menu-bg:#eaece5;--lift:#fff;--inv:#f7f7f4}
+:root[data-theme=dark]{color-scheme:dark;--bg:#141714;--fg:#e9ece6;--muted:#8e968d;--edge:#373e37;--surface:#1c211c;--accent:#a5baa0;--menu-bg:#242a24;--lift:#2d362d;--inv:#141714}
+*{box-sizing:border-box}html{width:100%;min-width:0;min-height:100%;scrollbar-color:var(--edge) transparent}body{background:var(--bg);color:var(--fg);margin:0;font:400 15px/1.55 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;overflow-x:hidden;-webkit-font-smoothing:antialiased}body.viewer-open{overflow:hidden}button,input,textarea{font:inherit}button{cursor:pointer}a{color:inherit;text-decoration:none}button:focus-visible,input:focus-visible,a:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:4px}[hidden]{display:none!important}
+.shell{width:100%;max-width:1160px;min-width:0;margin:auto;min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;padding:0 clamp(12px,5vw,58px)}
+.topbar{height:76px;min-height:76px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--edge);position:relative;z-index:30;gap:12px}.brand{font-size:27px;font-weight:750;letter-spacing:-.115em;line-height:1}.brand span,.period{color:var(--accent)}.top-actions{display:flex;gap:18px;align-items:center}.live i{display:block;width:7px;height:7px;border-radius:50%;background:var(--muted);transition:background .2s}.live.ready i{background:var(--accent)}.menu-trigger{display:flex;flex-direction:column;justify-content:center;align-items:center;gap:6px;width:44px;height:44px;border:1px solid var(--edge);background:transparent;border-radius:50%;padding:0}.menu-trigger>span{display:block;width:17px;height:1.5px;background:var(--fg);transition:transform .14s}.menu-trigger[aria-expanded=true]>span:first-child{transform:translateY(3.75px) rotate(45deg)}.menu-trigger[aria-expanded=true]>span:last-child{transform:translateY(-3.75px) rotate(-45deg)}.menu{position:absolute;right:0;top:calc(100% + 9px);width:min(350px,calc(100vw - 24px));padding:10px 18px;background:var(--menu-bg);border:1px solid var(--edge);border-radius:12px;box-shadow:0 17px 45px #0002}.menu button{width:100%;padding:18px 2px;display:grid;grid-template-columns:32px minmax(0,1fr) 16px;gap:8px;align-items:center;text-align:left;color:var(--fg);background:transparent;border:0;border-bottom:1px solid var(--edge);font-size:20px;font-weight:570;letter-spacing:-.055em}.menu button:last-child{border-bottom:0}.menu button:hover,.menu button[aria-current=page]{color:var(--accent)}.menu-num{color:var(--muted);font-size:10px;font-weight:650;letter-spacing:0}.menu-arrow{font-size:14px;font-weight:400;justify-self:end}
+main{flex:1;min-width:0}.page{padding:clamp(33px,6vh,74px) 0 85px;min-width:0}.page-head{display:flex;gap:12px;align-items:flex-start;justify-content:space-between;margin:0 0 clamp(27px,6vh,62px)}h1{font-size:clamp(43px,7.2vw,92px);line-height:1.02;letter-spacing:-.087em;font-weight:560;margin:0;overflow-wrap:anywhere}.counter{font-size:11px;color:var(--muted);letter-spacing:.1em;font-weight:650;white-space:nowrap;padding-top:12px}.message{max-width:820px}.message-meta{display:flex;align-items:baseline;justify-content:space-between;gap:12px;font-size:10px;font-weight:700;letter-spacing:.10em;color:var(--muted);margin-bottom:21px;text-transform:uppercase}.message-meta time{letter-spacing:0;text-transform:none;font-weight:450}.message h2{font-size:clamp(23px,3.8vw,46px);font-weight:520;line-height:1.16;letter-spacing:-.065em;margin:0 0 23px;overflow-wrap:anywhere}.message-body{font-size:15px;line-height:1.85;white-space:pre-wrap;overflow-wrap:anywhere;color:var(--fg);opacity:.85;max-width:750px}.message-bottom{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;min-height:45px;border-top:1px solid var(--edge);margin-top:38px;padding-top:14px}.quiet-action{border:0;background:transparent;color:var(--fg);padding:8px 2px;font-size:12px;font-weight:630}.quiet-action:hover{text-decoration:underline;text-underline-offset:4px}.message-older{max-width:770px}.message-older article{border-top:1px solid var(--edge);padding:26px 0}.message-older h3{font-size:20px;letter-spacing:-.06em;font-weight:520;margin:0 0 12px}.message-older p{font-size:14px;line-height:1.8;white-space:pre-wrap;margin:0;overflow-wrap:anywhere}.statusbar{border-top:1px solid var(--edge);margin-top:auto;min-height:51px;display:flex;align-items:center;justify-content:space-between;gap:8px;color:var(--muted);font-size:10px;letter-spacing:.11em;font-weight:640}.statusbar>span:last-child{color:var(--accent)}
+.gallery{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:clamp(10px,2vw,19px);align-items:start}.capture{min-width:0}.capture-frame{display:flex;width:100%;height:clamp(135px,24vw,245px);overflow:hidden;align-items:center;justify-content:center;border:1px solid var(--edge);background:var(--surface);border-radius:5px;padding:0;position:relative}.capture-frame img{display:block;width:100%;height:100%;object-fit:contain;object-position:top center;image-rendering:auto}.capture-frame:disabled{cursor:default}.capture-frame:hover:not(:disabled){border-color:var(--accent)}.capture-placeholder{display:grid;place-items:center;color:var(--muted);font-size:20px}.capture-meta{display:flex;align-items:baseline;justify-content:space-between;gap:5px;margin-top:11px}.capture-meta strong{font-size:20px;font-weight:590;letter-spacing:-.04em}.capture-meta .cap-dot{display:inline-block;border-radius:50%;width:6px;height:6px;background:var(--edge)}.capture-meta .cap-dot.ready{background:var(--accent)}.capture-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.capture-actions a,.capture-actions button{font-size:11px;border:0;background:transparent;padding:4px 0;color:var(--muted)}.capture-actions button:hover,.capture-actions a:hover{color:var(--fg);text-decoration:underline}.gallery.full{grid-template-columns:repeat(2,minmax(0,1fr));gap:28px}.gallery.full .capture-frame{height:auto;min-height:140px}.gallery.full .capture-frame img{height:auto}.gallery.full .capture-frame:has(.capture-placeholder){height:200px}
+.calibrate{max-width:740px}.number-grid{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:7px;margin-bottom:40px}.number-grid button{min-width:0;aspect-ratio:1;border:1px solid var(--edge);background:transparent;border-radius:3px;color:var(--muted);padding:2px;font-size:12px;font-weight:590}.number-grid button[aria-pressed=true]{background:var(--fg);border-color:var(--fg);color:var(--inv)}.field-label{display:flex;justify-content:space-between;gap:8px;font-size:11px;font-weight:620;letter-spacing:.04em;margin-bottom:12px}#note{display:block;width:100%;background:transparent;color:var(--fg);border:1px solid var(--edge);border-radius:4px;resize:vertical;padding:20px;min-height:185px;line-height:1.7;font-size:14px}#note::placeholder{color:var(--muted)}.calibrate-actions{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:13px;margin-top:25px}.primary{background:var(--fg);border:1px solid var(--fg);color:var(--inv);padding:14px 21px;min-height:49px;border-radius:100px;font-size:12px;font-weight:680}.primary span{margin-left:15px}.small-note{font-size:11px;color:var(--muted);margin-top:27px;line-height:1.5}
+.settings{max-width:700px}.setting{display:flex;align-items:center;justify-content:space-between;gap:14px;min-height:78px;border-bottom:1px solid var(--edge);font-size:14px;font-weight:500;cursor:pointer;position:relative}.setting:first-child{border-top:1px solid var(--edge)}.setting input{opacity:0;position:absolute;right:0;width:52px;height:30px;cursor:pointer}.switch{width:49px;height:28px;border:1px solid var(--edge);border-radius:30px;position:relative;background:var(--surface);flex-shrink:0}.switch::before{content:'';position:absolute;top:5px;left:5px;width:16px;height:16px;border-radius:50%;background:var(--muted);transition:transform .16s,background .16s}.setting input:checked+.switch:before{transform:translateX(21px);background:var(--inv)}.setting input:checked+.switch{background:var(--fg);border-color:var(--fg)}.setting input:focus-visible+.switch{outline:2px solid var(--accent);outline-offset:3px}.setting-button{width:100%;background:transparent;border-left:0;border-right:0;border-top:0;color:var(--fg);text-align:left;padding:0;cursor:pointer}.settings-bottom{max-width:700px;display:flex;justify-content:space-between;gap:12px;margin-top:31px;font-size:11px;color:var(--muted)}
+.viewer{position:fixed;inset:0;z-index:100;background:var(--bg);display:flex;flex-direction:column}.viewer-bar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;border-bottom:1px solid var(--edge);padding:11px clamp(12px,3vw,28px);min-height:62px}.viewer-bar strong{font-size:20px;letter-spacing:-.04em;font-weight:580}.viewer-actions{display:flex;align-items:center;gap:17px}.viewer-actions a,.viewer-actions button{border:0;background:transparent;color:var(--fg);font-size:12px;font-weight:630;min-height:40px;display:inline-flex;align-items:center}.viewer-scroll{overflow:auto;flex:1;min-height:0;padding:clamp(9px,2vw,24px);scrollbar-color:var(--muted) var(--bg);text-align:center}.viewer-scroll img{width:min(100%,820px);height:auto;vertical-align:top;box-shadow:0 8px 36px #0002}.toast{position:fixed;z-index:200;bottom:max(18px,env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);padding:12px 17px;background:var(--fg);color:var(--inv);border-radius:30px;font-size:12px;max-width:calc(100vw - 24px);text-align:center;box-shadow:0 9px 33px #0003}
+@media(max-width:720px){.gallery{grid-template-columns:repeat(3,minmax(0,1fr))}.number-grid{grid-template-columns:repeat(5,minmax(0,1fr))}.shell{padding-left:clamp(12px,4vw,24px);padding-right:clamp(12px,4vw,24px)}.page{padding-top:40px}.page-head{margin-bottom:37px}.capture-frame{height:clamp(128px,35vw,228px)}}
+@media(max-width:430px){.gallery{grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}.gallery.full{grid-template-columns:1fr;gap:25px}.capture-frame{height:clamp(155px,52vw,260px)}.topbar{min-height:62px;height:62px}.page{padding-top:32px;padding-bottom:55px}.page-head{margin-bottom:32px}.counter{padding-top:7px}.message-body{font-size:14px;line-height:1.8}.number-grid{margin-bottom:29px}.number-grid button{min-height:42px}.calibrate-actions .primary{flex:1;text-align:center}.menu{right:0;width:min(320px,calc(100vw - 24px))}}
+@media(max-width:270px){.shell{padding:0 9px}.brand{font-size:24px}.menu-trigger{width:40px;height:40px}.gallery{grid-template-columns:1fr}.gallery.full{grid-template-columns:1fr}.page-head{flex-wrap:wrap;gap:8px}h1{font-size:38px}.counter{padding-top:0}.capture-frame{height:240px}.number-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.number-grid button{aspect-ratio:auto;min-height:44px}.menu{width:calc(100vw - 18px)}#note{padding:10px}.viewer-actions{gap:7px}}
+@media(max-height:360px) and (min-width:431px){.topbar{height:48px;min-height:48px}.menu-trigger{height:36px;width:36px}.page{padding-top:19px}.page-head{margin-bottom:21px}h1{font-size:46px}.menu{max-height:calc(100vh - 55px);overflow:auto}}
+@media(prefers-reduced-motion:reduce){.live i,.menu-trigger>span,.switch::before{transition:none}}
+
+</style>
+  
+</head>
+<body>
+<div class="shell">
+  <header class="topbar">
+    <a class="brand" href="#mensajes" aria-label="ROOT, mensajes">root<span>.</span></a>
+    <div class="top-actions">
+      <span class="live" id="live" aria-label="Estado de conexión"><i></i></span>
+      <button class="menu-trigger" id="menu-trigger" type="button" aria-label="Abrir menú" aria-expanded="false" aria-controls="menu">
+        <span></span><span></span>
+      </button>
+    </div>
+    <nav id="menu" class="menu" aria-label="Navegación" hidden>
+      <button type="button" data-view="mensajes"><span class="menu-num">01</span><span>Mensajes</span><span class="menu-arrow">↗</span></button>
+      <button type="button" data-view="ronda"><span class="menu-num">02</span><span>Lanzar</span><span class="menu-arrow">↗</span></button>
+      <button type="button" data-view="capturas"><span class="menu-num">03</span><span>Capturas</span><span class="menu-arrow">↗</span></button>
+      <button type="button" data-view="calibrar"><span class="menu-num">04</span><span>Calibrar</span><span class="menu-arrow">↗</span></button>
+      <button type="button" data-view="ajustes"><span class="menu-num">05</span><span>Ajustes</span><span class="menu-arrow">↗</span></button>
+    </nav>
+  </header>
+  <main id="main">
+    <section class="page" id="page-mensajes" data-page="mensajes" aria-labelledby="title-mensajes">
+      <div class="page-head"><h1 id="title-mensajes">Mensajes<span class="period">.</span></h1><div class="counter" id="message-counter">01 / 01</div></div>
+      <div class="message" id="message-current" aria-live="polite">
+        <div class="message-meta"><span id="message-tag">ROOT</span><time id="message-date"></time></div>
+        <h2 id="message-title">...</h2>
+        <div class="message-body" id="message-body">Cargando</div>
+        <div class="message-bottom">
+          <button class="quiet-action" type="button" id="message-previous" hidden>Anterior <span aria-hidden="true">↗</span></button>
+          <button class="quiet-action" type="button" id="message-copy" hidden>Copiar CONTINUAR <span aria-hidden="true">↗</span></button>
+          <button class="quiet-action" type="button" id="message-read" hidden>Escuchar <span aria-hidden="true">◌</span></button>
+        </div>
+      </div>
+      <div class="message-older" id="message-older" hidden></div>
+    </section>
+
+    <section class="page" id="page-ronda" data-page="ronda" aria-labelledby="title-ronda" hidden>
+      <div class="page-head"><h1 id="title-ronda">Lanzar<span class="period">.</span></h1><div class="counter" id="e1-launch-count">00 / 10</div></div>
+      <div class="e1-bar"><span>E001 · Exploratoria</span><button type="button" id="e1-copy-all">Copiar los 10</button></div>
+      <div id="e1-launchers" class="e1-list"></div>
+    </section>
+
+    <section class="page" id="page-capturas" data-page="capturas" aria-labelledby="title-capturas" hidden>
+      <div class="page-head"><h1 id="title-capturas">Capturas<span class="period">.</span></h1><div class="counter" id="capture-counter" hidden>00 / 10</div><div class="counter" id="e1-capture-counter">00 / 10</div></div>
+      <div class="e1-switch" aria-label="Seleccionar ronda"><button type="button" data-e1-toggle="capture" data-target="e1" aria-pressed="true">E001</button><button type="button" data-e1-toggle="capture" data-target="w1" aria-pressed="false">W001</button></div>
+      <div id="e1-captures"><div id="e1-capture-grid" class="e1-shot-list"></div><div id="e1-capture-empty" class="e1-empty">Sin capturas aún.</div><div id="e1-capture-strip" class="e1-mini" aria-label="Estados de diez variantes"></div></div>
+      <div class="gallery" id="gallery"></div>
+    </section>
+
+    <section class="page" id="page-calibrar" data-page="calibrar" aria-labelledby="title-calibrar" hidden>
+      <div class="page-head"><h1 id="title-calibrar">Calibrar<span class="period">.</span></h1><div class="counter" id="calibrar-counter">01 / 10</div></div>
+      <div class="e1-switch" aria-label="Seleccionar revisión"><button type="button" data-e1-toggle="review" data-target="e1" aria-pressed="true">E001</button><button type="button" data-e1-toggle="review" data-target="w1" aria-pressed="false">W001</button></div>
+      <div id="review-e1" class="e1-note">
+        <div id="e1-numbers" class="e1-mini" aria-label="Versión"></div>
+        <label for="e1-note">Nota <span id="e1-current">01</span></label>
+        <textarea id="e1-note" rows="7" placeholder="" spellcheck="true"></textarea>
+        <div class="e1-note-buttons"><button class="primary" type="button" id="e1-copy">Copiar CALIBRAR ↗</button><button class="quiet-action" type="button" id="e1-export">Exportar ↓</button></div>
+      </div>
+      <div class="calibrate" id="review-w1" hidden>
+        <div class="number-grid" id="number-grid" aria-label="Elegir versión"></div>
+        <label class="field-label" for="note">Observación <span id="note-number">01</span></label>
+        <textarea id="note" placeholder="Escribí acá o enviá un audio en ChatGPT." rows="7" spellcheck="true"></textarea>
+        <div class="calibrate-actions">
+          <button class="primary" type="button" id="copy-calibrar">Copiar CALIBRAR <span aria-hidden="true">↗</span></button>
+          <button class="quiet-action" type="button" id="export-notes">Exportar <span aria-hidden="true">↓</span></button>
+        </div>
+        <p class="small-note" id="note-help">Las notas quedan en este dispositivo.</p>
+      </div>
+    </section>
+
+    <section class="page" id="page-ajustes" data-page="ajustes" aria-labelledby="title-ajustes" hidden>
+      <div class="page-head"><h1 id="title-ajustes">Ajustes<span class="period">.</span></h1></div>
+      <div class="settings">
+        <label class="setting"><span>Modo oscuro</span><input id="dark-mode" type="checkbox" role="switch"><span class="switch" aria-hidden="true"></span></label>
+        <label class="setting"><span>Capturas completas</span><input id="full-captures" type="checkbox" role="switch"><span class="switch" aria-hidden="true"></span></label>
+        <button class="setting setting-button" id="refresh-all" type="button"><span>Actualizar</span><span aria-hidden="true">↗</span></button>
+      </div>
+      <div class="settings-bottom"><span id="wave-label">Ola 01</span><span id="status-label">ROOT</span></div>
+    </section>
+  </main>
+  <footer class="statusbar"><span id="status-wave">ROOT / W01</span><span id="status-online">●</span></footer>
+</div>
+
+<div class="viewer" id="viewer" hidden role="dialog" aria-modal="true" aria-label="Captura completa">
+  <div class="viewer-bar"><strong id="viewer-name">01</strong><div class="viewer-actions"><a id="viewer-link" href="#" target="_blank" rel="noopener noreferrer">HTML ↗</a><button id="viewer-close" type="button" aria-label="Cerrar captura">Cerrar ×</button></div></div>
+  <div class="viewer-scroll" id="viewer-scroll"><img id="viewer-img" alt="Captura completa"></div>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+<script>
+(()=>{'use strict';
+const $=id=>document.getElementById(id);
+const root=new URL('../../',location.href);
+const S={view:'mensajes',replies:[],shots:[],config:null,status:Array(10).fill('unknown'),active:1,notes:{},copied:{},full:false,speaking:false,scanBusy:false,loaded:false};
+const fmt=n=>String(n).padStart(2,'0');
+const elem=(tag,cls,text)=>{const e=document.createElement(tag);if(cls)e.className=cls;if(text!==undefined)e.textContent=text;return e};
+const tryStorage=(key,value)=>{try{if(value===undefined)return localStorage.getItem(key);localStorage.setItem(key,value)}catch(e){return null}};
+const storedJSON=(key,fallback)=>{try{return JSON.parse(tryStorage(key)||'null')||fallback}catch(e){return fallback}};
+const storeNote=()=>{S.notes[S.active]=$('note').value;tryStorage('root3:notes',JSON.stringify(S.notes))};
+const publicURL=n=>S.config?new URL(S.config.active.previewBase+n+'/index.html',root).href:'https://juanmanuelpm.github.io/Experimentos/prometeo/root/ui-lab/w1/'+n+'/index.html';
+const workPrompt=n=>S.config?'WORK · ROOT UI · '+S.config.active.launcherBase+n:null;
+const fullPath=path=>{if(typeof path!=='string'||!/^[a-z0-9_./-]+$/i.test(path)||path.includes('..'))return null;const u=new URL(path,root);return u.origin===root.origin&&u.pathname.startsWith(root.pathname+'prometeo/root/')?u.href:null};
+const shotFor=n=>S.shots.find(x=>x.number===n)||null;
+const imageFor=n=>{const o=shotFor(n);if(!o)return null;if(o.assetPath){const u=fullPath(o.assetPath);if(u)return u}if(o.screenshotUrl&&/^https:\/\/storage\.googleapis\.com\/firecrawl-scrape-media\//.test(o.screenshotUrl)&&(!o.expiresAt||Date.parse(o.expiresAt)>Date.now()))return o.screenshotUrl;return null};
+const toast=msg=>{const t=$('toast');t.textContent=msg;t.hidden=false;clearTimeout(toast.timer);toast.timer=setTimeout(()=>t.hidden=true,2300)};
+const copy=async s=>{try{await navigator.clipboard.writeText(s);return true}catch(e){const t=elem('textarea');t.value=s;t.style.cssText='position:fixed;opacity:0;pointer-events:none';document.body.append(t);t.select();let ok=false;try{ok=document.execCommand('copy')}catch(err){}t.remove();return ok}};
+const safeView=v=>['mensajes','ronda','capturas','calibrar','ajustes'].includes(v)?v:'mensajes';
+function closeMenu(){$('menu').hidden=true;$('menu-trigger').setAttribute('aria-expanded','false');$('menu-trigger').setAttribute('aria-label','Abrir menú')}
+function openMenu(){$('menu').hidden=false;$('menu-trigger').setAttribute('aria-expanded','true');$('menu-trigger').setAttribute('aria-label','Cerrar menú')}
+function navigate(v,updateHash=true){v=safeView(v);S.view=v;closeMenu();document.querySelectorAll('[data-page]').forEach(p=>p.hidden=p.dataset.page!==v);document.querySelectorAll('[data-view]').forEach(b=>{b.setAttribute('aria-current',b.dataset.view===v?'page':'false')});if(updateHash&&location.hash!=='#'+v)history.replaceState(null,'','#'+v);window.scrollTo(0,0);if(v==='capturas')renderGallery()}
+$('menu-trigger').addEventListener('click',()=>{$('menu').hidden?openMenu():closeMenu()});
+document.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',()=>navigate(b.dataset.view)));
+document.addEventListener('click',e=>{if(!$('menu').hidden&&!$('menu').contains(e.target)&&!$('menu-trigger').contains(e.target))closeMenu()});
+window.addEventListener('hashchange',()=>navigate(location.hash.slice(1),false));
+const dateLabel=s=>{const d=new Date(s);return Number.isNaN(d.getTime())?'':d.toLocaleDateString('es-AR',{day:'2-digit',month:'short',year:'numeric'})};
+function renderReplies(){const entries=S.replies;if(!entries.length){$('message-counter').textContent='00 / 00';$('message-tag').textContent='ROOT';$('message-date').textContent='';$('message-title').textContent='Sin mensajes';$('message-body').textContent='';$('message-previous').hidden=true;$('message-copy').hidden=true;$('message-read').hidden=true;return;}const a=entries[0];$('message-counter').textContent=fmt(1)+' / '+fmt(entries.length);$('message-tag').textContent=a.tag||'ROOT';$('message-date').textContent=dateLabel(a.publishedAt);$('message-title').textContent=a.title||'Respuesta';$('message-body').textContent=a.body||'';$('message-previous').hidden=entries.length<2;$('message-copy').hidden=!(typeof a.prompt==='string'&&a.prompt.trim());$('message-read').hidden=!(('speechSynthesis' in window)&&a.body);const older=$('message-older');older.replaceChildren();for(const it of entries.slice(1)){const article=elem('article');const meta=elem('div','message-meta',dateLabel(it.publishedAt));const h=elem('h3','',it.title||'Respuesta');const body=elem('p','',it.body||'');article.append(meta,h,body);if(typeof it.prompt==='string'&&it.prompt.trim()){const cp=elem('button','quiet-action','Copiar CONTINUAR ↗');cp.type='button';cp.addEventListener('click',async()=>{toast(await copy(it.prompt)?'CONTINUAR copiado':'No se pudo copiar')});article.append(cp)}older.append(article)} }
+async function getJSON(path){const res=await fetch(path+'?_='+Date.now(),{cache:'no-store'});if(!res.ok)throw Error('HTTP '+res.status);return res.json()}
+async function loadReplies(){try{const data=await getJSON('./REPLIES.json');if(!Array.isArray(data.entries))throw Error('Invalid replies');S.replies=data.entries;renderReplies()}catch(e){if(!S.replies.length){$('message-title').textContent='Sin conexión';$('message-body').textContent=''}}}
+function renderGallery(){const host=$('gallery');host.classList.toggle('full',S.full);host.replaceChildren();let images=0;for(let n=1;n<=10;n++){const card=elem('article','capture');const btn=elem('button','capture-frame');btn.type='button';const u=imageFor(n);btn.setAttribute('aria-label','Ver captura '+fmt(n));if(u){images++;const img=elem('img');img.src=u;img.alt='Versión '+fmt(n);img.loading='lazy';img.decoding='async';img.referrerPolicy='no-referrer';img.addEventListener('error',()=>{btn.textContent='';btn.append(elem('span','capture-placeholder','◇'));btn.disabled=true});btn.append(img);btn.addEventListener('click',()=>openViewer(n));}else{btn.disabled=true;btn.append(elem('span','capture-placeholder','◇'));}const meta=elem('div','capture-meta');meta.append(elem('strong','',fmt(n)));const dot=elem('i','cap-dot'+(S.status[n-1]==='ready'?' ready':''));dot.title=S.status[n-1]==='ready'?'HTML publicado':'Publicación no confirmada';meta.append(dot);const actions=elem('div','capture-actions');const link=elem('a','','HTML ↗');link.href=publicURL(n);link.target='_blank';link.rel='noopener noreferrer';actions.append(link);const prompt=workPrompt(n);if(prompt){const cp=elem('button','',S.copied[n]?'Copiado ✓':'Copiar');cp.type='button';cp.addEventListener('click',async()=>{if(await copy(prompt)){S.copied[n]=true;tryStorage('root3:copied:'+S.config.active.cohortId,JSON.stringify(S.copied));cp.textContent='Copiado ✓';toast(fmt(n)+' copiado')}else toast('No se pudo copiar')});actions.append(cp)}card.append(btn,meta,actions);host.append(card)}$('capture-counter').textContent=fmt(images)+' / 10';}
+async function loadShots(){try{const x=await getJSON('./SNAPSHOTS.json');S.shots=Array.isArray(x.items)?x.items:[]}catch(e){S.shots=[]}if(S.view==='capturas')renderGallery()}
+async function loadConfig(){try{const x=await getJSON('./PROGRAM.json');if(!x.active||!/^prometeo\/root\/ui-lab\/w\d+\/$/.test(x.active.previewBase)||!/^https:\/\/github\.com\/JuanManuelPM\/pruebas\/blob\/.+\/launch\/$/.test(x.active.launcherBase))throw Error('Invalid configuration');S.config=x;S.copied=storedJSON('root3:copied:'+x.active.cohortId,{});$('status-wave').textContent='ROOT / W'+fmt(x.active.wave);$('wave-label').textContent='Ola '+fmt(x.active.wave);$('live').classList.add('ready');$('status-online').textContent='●';renderGallery();await checkAll()}catch(e){$('status-online').textContent='○';$('status-label').textContent='Sin conexión';}}
+async function probe(n){const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),8500);try{const r=await fetch(publicURL(n)+'?_='+Date.now(),{method:'HEAD',cache:'no-store',signal:controller.signal});return r.ok?'ready':r.status===404?'missing':'unknown'}catch(e){return 'unknown'}finally{clearTimeout(timer)}}
+async function checkAll(){if(!S.config||S.scanBusy)return;S.scanBusy=true;try{S.status=await Promise.all(Array.from({length:10},(_,i)=>probe(i+1)));if(S.view==='capturas')renderGallery()}finally{S.scanBusy=false}}
+function openViewer(n){const url=imageFor(n);if(!url)return;$('viewer-img').src=url;$('viewer-img').alt='Captura completa '+fmt(n);$('viewer-name').textContent=fmt(n);$('viewer-link').href=publicURL(n);$('viewer').hidden=false;$('viewer-scroll').scrollTop=0;document.body.classList.add('viewer-open');$('viewer-close').focus()}
+function closeViewer(){$('viewer').hidden=true;$('viewer-img').removeAttribute('src');document.body.classList.remove('viewer-open')}
+$('viewer-close').addEventListener('click',closeViewer);
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){if(!$('viewer').hidden)closeViewer();else closeMenu()}});
+function renderNumbers(){const host=$('number-grid');host.replaceChildren();for(let n=1;n<=10;n++){const b=elem('button','',fmt(n));b.type='button';b.setAttribute('aria-pressed',String(n===S.active));b.addEventListener('click',()=>selectNote(n));host.append(b)}}
+function selectNote(n){storeNote();S.active=n;$('note').value=S.notes[n]||'';$('note-number').textContent=fmt(n);$('calibrar-counter').textContent=fmt(n)+' / 10';hostPress();}
+function hostPress(){const all=$('number-grid').querySelectorAll('button');all.forEach((b,i)=>b.setAttribute('aria-pressed',String(i+1===S.active)))}
+function notePayload(){storeNote();return {schema:'prometeo.root.review/v1',cohort:S.config?.active?.cohortId||'root-ui-benchmark-w001',briefSha256:S.config?.active?.briefSha256||null,notes:Array.from({length:10},(_,i)=>({number:i+1,note:S.notes[i+1]||''})),privacy:'LOCAL_ONLY_EXPLICIT_EXPORT'}}
+$('note').addEventListener('input',storeNote);
+$('copy-calibrar').addEventListener('click',async()=>{const data=notePayload();const notes=data.notes.filter(v=>v.note.trim()).map(v=>fmt(v.number)+': '+v.note.trim()).join('\n');const content='CALIBRAR · ROOT · '+data.cohort+'\nConservar el mismo brief. Investigar las diez trazas y corregir UNA sola raíz, sin activar nuevas olas sin aprobación.\n'+(notes||'Voy a enviar mis observaciones en audio o texto.')+'\nPublicar una respuesta apta para la página pública ROOT en REPLIES.json, sin publicar datos privados.';toast(await copy(content)?'Copiado':'No se pudo copiar')});
+$('export-notes').addEventListener('click',()=>{const blob=new Blob([JSON.stringify(notePayload(),null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=elem('a');a.href=url;a.download='root-calibrar.json';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),2000)});
+$('message-previous').addEventListener('click',()=>{$('message-older').hidden=!$('message-older').hidden;$('message-previous').textContent=$('message-older').hidden?'Anterior ↗':'Ocultar ×'});
+$('message-copy').addEventListener('click',async()=>{const p=S.replies[0]?.prompt;if(typeof p!=='string'||!p.trim())return;toast(await copy(p)?'CONTINUAR copiado':'No se pudo copiar')});
+$('message-read').addEventListener('click',()=>{if(!('speechSynthesis' in window))return;if(S.speaking){speechSynthesis.cancel();S.speaking=false;$('message-read').textContent='Escuchar ◌';return}const last=S.replies[0];if(!last)return;const ut=new SpeechSynthesisUtterance((last.title||'')+'. '+(last.body||''));ut.lang='es-AR';const voices=speechSynthesis.getVoices();ut.voice=voices.find(v=>v.lang==='es-AR')||voices.find(v=>v.lang.startsWith('es'))||null;ut.onend=ut.onerror=()=>{S.speaking=false;$('message-read').textContent='Escuchar ◌'};speechSynthesis.speak(ut);S.speaking=true;$('message-read').textContent='Detener ×'});
+function applyTheme(value){document.documentElement.dataset.theme=value?'dark':'light';$('dark-mode').checked=value;tryStorage('root3:dark',String(value))}
+applyTheme(tryStorage('root3:dark')==='true');$('dark-mode').addEventListener('change',()=>applyTheme($('dark-mode').checked));
+S.full=tryStorage('root3:full')==='true';$('full-captures').checked=S.full;$('full-captures').addEventListener('change',()=>{S.full=$('full-captures').checked;tryStorage('root3:full',String(S.full));renderGallery()});
+$('refresh-all').addEventListener('click',async()=>{await Promise.all([loadReplies(),loadShots(),S.config?checkAll():loadConfig()]);toast('Actualizado')});
+S.notes=storedJSON('root3:notes',{});$('note').value=S.notes[1]||'';renderNumbers();navigate(location.hash.slice(1),false);loadReplies();loadShots();loadConfig();
+document.addEventListener('visibilitychange',()=>{if(!document.hidden){loadReplies();checkAll()}});
+setInterval(()=>{if(!document.hidden)loadReplies()},45000);
+setInterval(()=>{if(!document.hidden)checkAll()},120000);
+})();
+
+</script>
+<script src="./rounds-e1.js?v=2"></script>
+</body>
+</html>
