@@ -235,8 +235,8 @@ button{font:inherit;cursor:pointer}button:focus-visible{outline:2px solid #f7c79
   put(a.arm1,"rotate("+left+" "+a.axis1[0]+" "+a.axis1[1]+")");
   put(a.arm2,"rotate("+right+" "+a.axis2[0]+" "+a.axis2[1]+")");
   put(a.b1,"translate(0 "+brow+")");put(a.b2,"translate(0 "+brow+")");
-  put(a.e1,"translate("+eyes+" 0)"+(blink?" scale(1 .36)":""));
-  put(a.e2,"translate("+eyes+" 0)"+(blink?" scale(1 .36)":""));
+  put(a.e1,"translate("+eyes+" 0)"+(blink?" translate(0 99) scale(1 .36)":""));
+  put(a.e2,"translate("+eyes+" 0)"+(blink?" translate(0 99) scale(1 .36)":""));
   a.mouth.setAttribute("d",mouth);
  }
  function setLine(who,line){if($("speaker").textContent!==who)$("speaker").textContent=who;if($("words").textContent!==line)$("words").textContent=line}
@@ -265,7 +265,8 @@ button{font:inherit;cursor:pointer}button:focus-visible{outline:2px solid #f7c79
  $("hands").addEventListener("click",()=>trigger("hands"));
  $("reset").addEventListener("click",()=>{setPlaying(false);elapsed=0;display(0);document.querySelectorAll(".controls button").forEach(b=>b.classList.remove("active"));setLine("INÉS",beats[0].line);});
  window.addEventListener("keydown",e=>{if(e.code==="Space"&&e.target.tagName!=="BUTTON"){e.preventDefault();$("play").click()}});
- display(0);requestAnimationFrame(tick);
+ function fitStage(){if(window.innerWidth<=730){$("scene").setAttribute("viewBox","185 0 855 790")}else{$("scene").setAttribute("viewBox","0 0 1200 790")}}
+ window.addEventListener("resize",fitStage);fitStage();display(0);requestAnimationFrame(tick);
 })();
 </script>
 </body></html>
