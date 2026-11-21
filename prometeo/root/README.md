@@ -1,21 +1,14 @@
-# ROOT · PROMETEO · Entrada pública unificada v0.1
-Una URL permanente para **lanzar, ver y revisar** producciones por tandas de diez: `https://juanmanuelpm.github.io/Experimentos/prometeo/root/`.
+# ROOT · ÚNICA URL PERMANENTE
 
-## Frontera de responsabilidades
-**Raíz productiva** = método versionado, fijo durante cada ejecución y mejorado sólo entre tandas por CALIBRAR. Semillas = briefs que no cambian durante un experimento. Árbol = obra producida. Traza = elecciones reales de ejecución. **Raíz de presentación** = catálogo público y vistas reproducibles, no un segundo método de producción.
+https://juanmanuelpm.github.io/Experimentos/prometeo/root/
 
-Este sitio sirve como punto de entrada único. Lee registros autorizados de producciones en `SOURCES.json`. Actualmente `3d-wave004`, que expone 3 series de 10. No importa código ni informes del repo privado; los otros estudios están vinculados a sus páginas públicas existentes y se incorporarán mediante nuevos manifiestos, no creando sitios nuevos.
+1. `PROGRAM.json` mantiene `stages` (etapas hasta la consolidación) y `active` (fase/ola/método y brief inmutables, 10 launchers y rutas públicas).
+2. HTML único y fijo: muestra 10 prompts «Copiar»; detecta preview automáticamente por HTTP HEAD cada 35 segundos y al volver al navegador. Rojo=no copiado en ESTE navegador. Amarillo=copiado local, NO significa enviado. Verde=existe index.html público, NO significa QA o chat completado.
+3. Seleccionar `Ver` permite abrir vista; escribir una observación por número y marcar candidato (persisten localmente en el dispositivo). `Copiar CALIBRAR` genera texto con críticas, refs, etapa, ola, hashes, URLs para pegar en un chat Ideas. No descarga nada ni envía comentarios a la nube.
+4. Cuando diez intentos estén revisados, Ideas analiza trazas y propone una sola versión mejorada del método, NO diez prompts nuevos. Repetir exactamente el mismo brief en diez destinos nuevos para comparar. Puede repetirse en la misma etapa indefinidamente de forma controlada.
+5. Tras aprobación del usuario, un agente autorizado genera la siguiente ola o fase, actualiza sólo `active` de `PROGRAM.json` (y sus lanzadores/versiones) con CAS/readback. No cambia esta URL ni necesita reconstruir la página. Próxima fase sigue el programa.
+6. Cualquier artefacto experimental es descartable previa aprobación; conservar los hashes, briefs, trazas, observaciones y candidato elegido. Git history puede retener bytes antiguos. NO garantizar borrado físico ni automatismo de recolección.
+7. Sin backend ni autenticación: notas/estado amarillo no se comparten entre dispositivos; verde sí por publicación pública. No hay forma de detectar automáticamente que un chat recibió un prompt, sólo que se copió y apareció un HTML seguro.
+8. Proteger fuentes privadas y credenciales; no dar a la página acceso de escritura a GitHub. No tocar método 3D 2.3.0 ni otros estudios.
 
-## Circuito humano
-1. Copiar prompt numerado y lanzarlo en un chat; puede ejecutar en paralelo.
-2. Ver la producción publicada, si existe. Existencia de index.html no prueba calidad, arte, WebGL ni aprobación.
-3. Elegir tanda en CALIBRAR, escribir diez observaciones y agregar capturas locales.
-4. Descargar ZIP con `revision.json`, `RESUMEN.md`, capturas. Presentarlo al chat de gobierno Ideas para revisar la traza y proponer cambios al método compartido. **No hay escritura automática en GitHub privado desde esta página**.
-
-## Privacidad
-El portal es público. Nunca publicar ramas privadas, tokens, notas o archivos restringidos. Los comentarios se guardan por navegador usando localStorage y las imágenes por IndexedDB, si están disponibles; no se envían por red, pero podrían perderse al borrar datos locales. Exportar ZIP como copia. Las capturas pueden contener datos privados: no introducirlas en GitHub Pages.
-
-## Mantenimiento y próximos estudios
-La entrada `SOURCES.json` es el único índice de manifiestos públicos permitidos. Otros estudios publicarán su serie de 10 como registro compatible (wave, flow, tasks[número, series, title, projectId, briefSha256, publicPath, publicUrl]). Cada UI distinta reutiliza este índice, sin duplicar raíces ni versiones.
-
-Este sitio **NO implementa aún un ejecutor universal recursivo** ni un planificador multiestudio. No sustituye el 3D Flow 2.3.0 ni las skills instaladas. En el futuro diez variantes visuales deben consumir EXACTAMENTE estos mismos datos, y ninguna escribir en otras ramas sin permiso.
+Estado: base de portal implementada y fuente/JS verificada. QA navegador Android y ejecución de las diez producciones NOT_RUN.
