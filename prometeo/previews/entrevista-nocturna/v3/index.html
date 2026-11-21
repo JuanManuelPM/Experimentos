@@ -259,7 +259,7 @@ function makePortrait(parent,p){
   ball(gaze,0,0,.0108,.0075,.008,.0028,iris);ball(gaze,0,0,.013,.0039,.0041,.0013,pupil);ball(gaze,-.002,.003,.014,.0015,.0015,.0008,white);
   const upper=curveMesh(eye,[[-.019,0,.003],[-.009,.009,.008],[0,.011,.011],[.011,.008,.008],[.019,0,.003]],.0031,skin);
   curveMesh(eye,[[-.019,0,.003],[0,-.008,.01],[.019,0,.003]],.0025,skin);
-  const lid=ball(eye,0,.005,.006,.019,.012,.010,skin);lid.scale.y=.001;lid.visible=false;
+  const lid=ball(eye,0,.005,.006,.019,.012,.010,skin);lid.scale.y=.00012;lid.visible=false;
   eyes.push({eye,gaze,lid,upper,globe});
   const eyebrow=curveMesh(head,[[s*.022,.038,.095],[s*.041,.047*p.brow,.099],[s*.061,.044,.091],[s*.077,.033,.079]],.0037,hair);brows.push(eyebrow);
  }
@@ -317,10 +317,10 @@ function poseActor(a,t){
  a.torso.rotation.set(-.025-gesture*.075+react*.045, (i?-1:1)*(.035+gesture*.055),breath*.5);
  a.head.rotation.set(.025+react*.10-gesture*.055+talkFix(t,i,talk), (i?-1:1)*(.26+react*.12)+Math.sin(t*.55+i)*.03, Math.sin(t*.73+i)*.022+react*(i?.04:-.07));
  const syll=talk*(.22+.78*Math.abs(Math.sin(t*11+i)*Math.sin(t*5.1+.5)));
- a.cavity.scale.y=1+syll*2.7;a.lowerLip.position.y=-syll*.009;a.upperLip.position.y=syll*.002;a.teeth.visible=syll>.52;
+ a.cavity.scale.y=.004*(1+syll*2.7);a.lowerLip.position.y=-syll*.009;a.upperLip.position.y=syll*.002;a.teeth.visible=syll>.52;
  a.mouth.rotation.z=react*(i?.045:-.05);
  const blink=Math.max(0,1-Math.abs(((t+i*1.1+1.2)%4.7)-2.4)/.12);
- for(const e of a.eyes){e.gaze.position.x=(i?-1:1)*(.004+react*.001);e.gaze.position.y=react*-.002;e.lid.visible=blink>.02;e.lid.scale.y=blink;e.upper.position.y=-blink*.009;e.globe.scale.y=.012*(1-blink*.78)}
+ for(const e of a.eyes){e.gaze.position.x=(i?-1:1)*(.004+react*.001);e.gaze.position.y=react*-.002;e.lid.visible=blink>.02;e.lid.scale.y=.012*blink;e.upper.position.y=-blink*.009;e.globe.scale.y=.012*(1-blink*.78)}
  a.brows.forEach((b,j)=>{b.position.y=react*(i?.003:.008)+talk*.004;b.rotation.z=react*(j?-.07:.07)});
  for(const h of a.arms){const lead=h.s===(i? -1:1),weight=lead?1:.42;
   h.shoulder.rotation.set(-.91-gesture*.27*weight, h.s*.05,h.s*(.24+gesture*.14));
