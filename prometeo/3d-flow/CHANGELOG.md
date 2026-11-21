@@ -1,3 +1,6 @@
+## 2.2.0 · 2026-11-21
+36 nodos: autoría abierta de personajes, movimiento por actor, UI y cámara touch, riesgos latentes. 56 pruebas de código V8. Arte/Android/GPU pendientes.
+
 # Changelog de producción 3D
 
 ## 2.1.0 · 2026-11-20 · CURRENT_CANDIDATE

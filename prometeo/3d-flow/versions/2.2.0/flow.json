@@ -3642,8 +3642,8 @@
     {
       "id": "CHAR_ALLOC",
       "stage": "planning",
-      "label": "Diversificar familias visuales sin alterar el brief",
-      "detail": "Asignar visual source/face/wardrobe/rig route distintos a los proyectos con actores. Los proyectos sin personaje no reciben NPC forzado. No contar recolor como estrategia nueva.",
+      "label": "Abrir investigación y autoría por escena",
+      "detail": "Cada producción elige una estrategia propia, compara hipótesis materialmente diferentes y puede inventar rutas; catálogo anterior es inspiración no vinculante. No añadir personas ajenas al brief ni contar recolor como nueva identidad.",
       "type": "action",
       "owner": "studio-3d-character-domain",
       "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
@@ -3666,8 +3666,8 @@
     {
       "id": "CHAR_SELECT",
       "stage": "acquisition",
-      "label": "Seleccionar fuente visual por evidencia y plano",
-      "detail": "Comparar dos modelos/autorías disponibles, URL/bytes/licencia/UV/morph/rig y limitaciones; documentar rechazo de la opción anterior. No asumir herramienta o GLB instalados.",
+      "label": "Seleccionar insumos y herramienta para autoría propia",
+      "detail": "Investigar dos rutas disponibles de creación/transformación legal. Probar bytes, herramienta, licencia y compatibilidad; seleccionar una como punto de partida, nunca como personaje final aprobado.",
       "type": "action",
       "owner": "studio-3d-character-domain",
       "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
@@ -7168,7 +7168,7 @@
         "qa"
       ],
       "earlyGates": [],
-      "policy": "No final human visual family is approved. Different actor scenes test different authoring/material/face families. Stages audited; still deliver full scene if actor fails."
+      "policy": "Zero approved visual base; independent character authorship, diverse authoring hypotheses are optional and not assigned. Full scene regardless of art quality."
     },
     {
       "id": "self-correcting-flow-character",
@@ -7377,16 +7377,23 @@
       "CAST_MOTION_QA when applicable",
       "UI_TOUCH_QA",
       "LATENT_RISK_REPORT"
+    ],
+    "requiredRead": [
+      "METHOD.md",
+      "STAGE_OPERATIONS.json",
+      "PRODUCTION_CONTRACT.json",
+      "production-gates.mjs",
+      "scene-compiler.mjs"
     ]
   },
   "characterSystem": {
     "version": "2.2.0",
     "status": "ZERO_APPROVED_VISUAL_BASE_OPEN_AUTHORING",
     "visualLibraryApprovals": 0,
-    "visualRejectionsPath": "versions/2.1.0/NEGATIVE_CHARACTER_REGISTRY.json",
-    "sourceDecisionAuditPath": "versions/2.1.0/CHARACTER_DECISION_AUDIT.json",
-    "strategyPath": "versions/2.1.0/CHARACTER_STRATEGIES.json",
-    "actorContractPath": "versions/2.1.0/CHARACTER_COMPONENT.schema.json",
+    "visualRejectionsPath": "versions/2.2.0/NEGATIVE_CHARACTER_REGISTRY.json",
+    "sourceDecisionAuditPath": "versions/2.2.0/CHARACTER_DECISION_AUDIT.json",
+    "strategyPath": "versions/2.2.0/CHARACTER_STRATEGIES.json",
+    "actorContractPath": "versions/2.2.0/CHARACTER_COMPONENT.schema.json",
     "visualAndMotionSeparated": true,
     "approvedMotionPacks": 0,
     "partialMotionReference": "Cruce v2 Cesium walk, only smoothness approved partially, not rig or appearance",
@@ -7451,5 +7458,5 @@
       "global routers"
     ]
   },
-  "sha256Canonical": "d16d35530f716e0b05090bed12df4adf66527a5bc407beb0c06c818ce569dfee"
+  "sha256Canonical": "764d5ee400a62dbc1bae1e96cec581c21e44d3d1895392b6283e8357ed3a2263"
 }

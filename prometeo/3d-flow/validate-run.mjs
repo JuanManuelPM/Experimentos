@@ -17,7 +17,7 @@ export function validateReceipt(receipt,flow){
   if(!['PASS','FAIL','NOT_RUN',...(isPrevention&&r.nodeId==='D42'?['NOT_APPLICABLE']:[])].includes(r.status))errors.push('INVALID_STATUS_'+r.nodeId);
   if(r.status==='PASS'&&(!Array.isArray(r.evidenceRefs)||!r.evidenceRefs.length))errors.push('PASS_MISSING_EVIDENCE_'+r.nodeId);
  }
- const ready=['2.0.0','2.1.0'].includes(flow.version)?receipt?.status==='VERIFIED':['READY_FOR_ART_REVIEW','VERIFIED'].includes(receipt?.status);
+ const ready=['2.0.0','2.1.0','2.2.0'].includes(flow.version)?receipt?.status==='VERIFIED':['READY_FOR_ART_REVIEW','VERIFIED'].includes(receipt?.status);
  const scale=false; // v1.3: artistic diagnostics cannot cancel FULL_ATTEMPT delivery.
  if(isPrevention&&receipt?.status!=='NOT_STARTED'){
    if(!['FIRST_ARTICLE','SCALED','FULL_ATTEMPT'].includes(receipt?.buildScope))errors.push('BUILD_SCOPE_REQUIRED');
@@ -49,11 +49,11 @@ export function validateReceipt(receipt,flow){
   if(!/^https:\/\//.test(receipt.url||''))errors.push('PUBLIC_URL_REQUIRED');
   if(receipt.publicHTTPVerified!==true)errors.push('PUBLIC_HTTP_NOT_VERIFIED');
  }
- if(['1.4.0','2.0.0','2.1.0'].includes(flow.version)){
+ if(['1.4.0','2.0.0','2.1.0','2.2.0','2.2.0'].includes(flow.version)){
   if(!receipt?.briefLock?.briefId||!receipt?.briefLock?.sha256)warnings.push('BRIEF_LOCK_MISSING__COMPARE_WITH_CAUTION');
   if(!receipt?.stageTrace?.path)warnings.push('STAGE_TRACE_MISSING__LEARNING_INCOMPLETE');
  }
- if(['2.0.0','2.1.0'].includes(flow.version)){
+ if(['2.0.0','2.1.0','2.2.0'].includes(flow.version)){
   if(!receipt?.compiledContract?.path)warnings.push('COMPILED_CONTRACT_MISSING');
   if(receipt?.buildScope==='FIRST_ARTICLE')warnings.push('FIRST_ARTICLE_NOT_FULL_SCENE__PUBLISH_AS_PARTIAL_NOT_COMPLETE');
   if(!receipt?.scopeAudit?.scopeStatus)warnings.push('SCOPE_AUDIT_MISSING');
@@ -62,7 +62,7 @@ export function validateReceipt(receipt,flow){
   if(receipt?.status==='READY_FOR_ART_REVIEW'&&receipt?.buildScope==='FIRST_ARTICLE')warnings.push('REVIEWABLE_BUT_PARTIAL');
  }
 
- if(flow.version==='2.1.0'){
+ if(['2.1.0','2.2.0'].includes(flow.version)){
   const hasActor=receipt?.characterCoverage?.hasVisibleHumans===true;
   if(hasActor){
    if(!receipt?.characterDecision?.strategyId)warnings.push('CHARACTER_VISUAL_STRATEGY_UNRECORDED');
@@ -70,8 +70,18 @@ export function validateReceipt(receipt,flow){
    if(!receipt?.characterDecision?.alternativeSources?.length||receipt.characterDecision.alternativeSources.length<2)warnings.push('CHARACTER_TWO_ALTERNATIVES_NOT_DOCUMENTED');
    if(!receipt?.characterDecision?.separateMotionPackId)warnings.push('CHARACTER_MOTION_NOT_SEPARATE');
    if(receipt?.characterDecision?.artisticStatus!=='USER_APPROVED')warnings.push('CHARACTER_VISUAL_NOT_USER_APPROVED');
-   if(receipt.status==='VERIFIED'&&receipt.characterDecision.artisticStatus!=='USER_APPROVED')errors.push('CHARACTER_VISUAL_ART_APPROVAL_REQUIRED');
+   if(receipt.status==='VERIFIED'&&receipt.characterDecision?.artisticStatus!=='USER_APPROVED')errors.push('CHARACTER_VISUAL_ART_APPROVAL_REQUIRED');
   }
+ }
+ if(flow.version==='2.2.0'){
+  const q=receipt?.productionQuality||{},keys=['avatarExperiment','castMotion','ui','touch','latentRisks'];
+  for(const k of keys){
+   if(!['PASS','FAIL','NOT_RUN','N/A'].includes(q[k]))warnings.push('QUALITY_EVIDENCE_MISSING_'+k);
+   if(receipt.status==='VERIFIED'&&q[k]!=='PASS'&&!(q[k]==='N/A'&&q.notApplicableReasons?.[k]&&['avatarExperiment','castMotion','touch'].includes(k)))errors.push('QUALITY_NOT_VERIFIED_'+k);
+  }
+  if(receipt.status==='VERIFIED'&&(!Array.isArray(q.evidenceRefs)||!q.evidenceRefs.length))errors.push('QUALITY_RUNTIME_EVIDENCE_MISSING');
+  if(receipt.characterCoverage?.hasVisibleHumans===true&&q.avatarExperiment==='N/A')errors.push('VISIBLE_ACTORS_REQUIRE_AUTHORING');
+  if(receipt.status==='VERIFIED'&&typeof receipt.characterCoverage?.hasVisibleHumans!=='boolean')errors.push('CHARACTER_COVERAGE_UNCLASSIFIED');
  }
  return{ok:errors.length===0,errors,warnings,mustContinueProduction:true,requiredGateIds:qaGates.map(x=>x.id),earlyGateIds:isPrevention?earlyIds:[]};
 }

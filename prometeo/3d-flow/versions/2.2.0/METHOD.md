@@ -1,6 +1,6 @@
 # PROMETEO Estudio 3D · 2.2.0
 
-Hash canónico: `d16d35530f716e0b05090bed12df4adf66527a5bc407beb0c06c818ce569dfee`. Hereda [2.1.0](../2.1.0/METHOD.md) y [2.0.0](../2.0.0/METHOD.md) salvo contradicción con esta versión. Únicamente Estudio 3D. No cambiar briefs ni escenas históricas.
+Hash canónico: `764d5ee400a62dbc1bae1e96cec581c21e44d3d1895392b6283e8357ed3a2263`. Hereda [2.1.0](../2.1.0/METHOD.md) y [2.0.0](../2.0.0/METHOD.md) salvo contradicción con esta versión. Únicamente Estudio 3D. No cambiar briefs ni escenas históricas.
 
 **Piso cero de personajes:** ningún avatar está aprobado. Cada proyecto con actores investiga y crea su propio avatar como un frente artístico de profundidad comparable al escenario. No hay método, asset o asignación de técnica fija. Diseñar identidad y silueta, cuerpo, rostro, manos, cabello, ropa, UV/material, topología, rig, expresión, lookdev y corrección. Comparar al menos dos rutas materialmente distintas que estén disponibles; un recolor no es ruta nueva. Modelar/esculpir o transformar una base legal de manera sustantiva. No añadir humanos a escenas que no los requieren. Mostrar vistas neutrales y plano real e intento completo. Conservar variantes; la decisión de qué base gusta es humana. Estándar compartido sólo tras aprobación y prueba en otro consumidor.
 
@@ -122,3 +122,6 @@ Leer `STAGE_OPERATIONS.json`, `PRODUCTION_CONTRACT.json` y `production-gates.mjs
 
 ### av_review
 **Comparar obras completas y personajes** (publish). Mostrar personaje en neutral, cara/acción y escena completa. Aprobación humana por apariencia y movimiento; sólo base después de que guste, estándar compartido con segundo consumidor probado.
+
+## Pruebas del método
+56 pruebas de código ejecutadas en V8 (fixtures de orientación, cobertura de reparto, UI, gestos, compilador, grafo y recibo). No se ejecutó Node CLI, WebGL2 ni Android físico; no hay avatares nuevos aprobados.

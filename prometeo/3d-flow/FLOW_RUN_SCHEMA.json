@@ -303,6 +303,63 @@
           }
         }
       }
+    },
+    "productionQuality": {
+      "type": "object",
+      "properties": {
+        "avatarExperiment": {
+          "enum": [
+            "PASS",
+            "FAIL",
+            "NOT_RUN",
+            "N/A"
+          ]
+        },
+        "castMotion": {
+          "enum": [
+            "PASS",
+            "FAIL",
+            "NOT_RUN",
+            "N/A"
+          ]
+        },
+        "ui": {
+          "enum": [
+            "PASS",
+            "FAIL",
+            "NOT_RUN",
+            "N/A"
+          ]
+        },
+        "touch": {
+          "enum": [
+            "PASS",
+            "FAIL",
+            "NOT_RUN",
+            "N/A"
+          ]
+        },
+        "latentRisks": {
+          "enum": [
+            "PASS",
+            "FAIL",
+            "NOT_RUN",
+            "N/A"
+          ]
+        },
+        "notApplicableReasons": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "evidenceRefs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
     }
   },
   "additionalProperties": true,
@@ -331,5 +388,5 @@
       }
     }
   ],
-  "description": "Flow 2.1 adds advisory character selection and separate visual/motion reports, with no veto on a FULL_ATTEMPT candidate. VERIFIED still requires real QA and human approval."
+  "description": "2.2 adds avatar, actor-wide locomotion, UI, touch and latent regression evidence. A FULL_ATTEMPT candidate remains deliverable; VERIFIED requires actual QA and user approval."
 }

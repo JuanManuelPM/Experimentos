@@ -1,13 +1,13 @@
 {
   "schema": "prometeo.3d.production-flow/v1",
   "id": "prometeo-3d-production",
-  "version": "2.1.0",
-  "publishedAt": "2026-11-20",
+  "version": "2.2.0",
+  "publishedAt": "2026-11-21",
   "status": "CURRENT_CANDIDATE",
   "scope": "studio-3d",
-  "title": "PROMETEO Estudio 3D · Character exploration + method-repair 2.1",
-  "description": "2.0.0 full-scene contract preserved. New character appearance decision discipline; blacklist failed visual models, retarget motion separately, diversify exploration, trace earliest decisions, human-controlled method correction between waves. Brief immutable.",
-  "sourceOfTruth": "FLOW_INDEX.json → versions/2.1.0/flow.json; METHOD.md; STAGE_OPERATIONS.json; NEGATIVE_CHARACTER_REGISTRY.json; CHARACTER_STRATEGIES.json; flow-repair.mjs",
+  "title": "PROMETEO Estudio 3D · Autoría de personajes desde cero, interfaz minimalista y cámara táctil",
+  "description": "Autoría abierta por producción, todos los actores, UI escena primero, gestos coherentes y regresión transversal. Brief y full attempt intactos.",
+  "sourceOfTruth": "FLOW_INDEX.json → versions/2.2.0/flow.json + METHOD.md + STAGE_OPERATIONS.json + PRODUCTION_CONTRACT.json + production-gates.mjs",
   "stages": [
     {
       "id": "scope",
@@ -3642,8 +3642,8 @@
     {
       "id": "CHAR_ALLOC",
       "stage": "planning",
-      "label": "Diversificar familias visuales sin alterar el brief",
-      "detail": "Asignar visual source/face/wardrobe/rig route distintos a los proyectos con actores. Los proyectos sin personaje no reciben NPC forzado. No contar recolor como estrategia nueva.",
+      "label": "Abrir investigación y autoría por escena",
+      "detail": "Cada producción elige una estrategia propia, compara hipótesis materialmente diferentes y puede inventar rutas; catálogo anterior es inspiración no vinculante. No añadir personas ajenas al brief ni contar recolor como nueva identidad.",
       "type": "action",
       "owner": "studio-3d-character-domain",
       "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
@@ -3666,8 +3666,8 @@
     {
       "id": "CHAR_SELECT",
       "stage": "acquisition",
-      "label": "Seleccionar fuente visual por evidencia y plano",
-      "detail": "Comparar dos modelos/autorías disponibles, URL/bytes/licencia/UV/morph/rig y limitaciones; documentar rechazo de la opción anterior. No asumir herramienta o GLB instalados.",
+      "label": "Seleccionar insumos y herramienta para autoría propia",
+      "detail": "Investigar dos rutas disponibles de creación/transformación legal. Probar bytes, herramienta, licencia y compatibilidad; seleccionar una como punto de partida, nunca como personaje final aprobado.",
       "type": "action",
       "owner": "studio-3d-character-domain",
       "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
@@ -3758,6 +3758,474 @@
       "procedureRef": "STAGE_OPERATIONS.json#/stages/15",
       "evidencePolicy": "SOURCE_LEVEL_NOT_PIXEL_APPROVAL",
       "scope": "CHARACTER_ONLY"
+    },
+    {
+      "id": "AV_ROLE",
+      "stage": "planning",
+      "label": "Diseñar el reparto antes de modelar",
+      "detail": "Inventariar todos los actores por ID: identidad, oficio, silueta, personalidad, tamaño en plano, acciones y estilo; no añadir actores ajenos al brief.",
+      "type": "action",
+      "owner": "character:*",
+      "procedureRef": "STAGE_OPERATIONS.json#/stages/2",
+      "docRef": "FLOW_3D_MASTER.md#av_role",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "evidencePolicy": "REAL_EVIDENCE_OR_NOT_RUN",
+      "componentAwareness": null
+    },
+    {
+      "id": "AV_BUDGET",
+      "stage": "planning",
+      "label": "Dedicar un frente artístico completo al avatar",
+      "detail": "Asignar esfuerzo comparable en profundidad al escenario: investigación, diseño, cuerpo, cara, ropa, materiales, rig, actuación y prueba. No usar minutos sobrantes.",
+      "type": "action",
+      "owner": "character:*",
+      "procedureRef": "STAGE_OPERATIONS.json#/stages/2",
+      "docRef": "FLOW_3D_MASTER.md#av_budget",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "evidencePolicy": "REAL_EVIDENCE_OR_NOT_RUN",
+      "componentAwareness": null
+    },
+    {
+      "id": "AV_REF",
+      "stage": "planning",
+      "label": "Investigar referencias de identidad y anatomía",
+      "detail": "Recuperar referencias estéticas pertinentes de rostro, silueta, vestuario y movimiento; derechos de uso y no copiar personajes propietarios.",
+      "type": "action",
+      "owner": "character:*",
+      "procedureRef": "STAGE_OPERATIONS.json#/stages/2",
+      "docRef": "FLOW_3D_MASTER.md#av_ref",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "evidencePolicy": "REAL_EVIDENCE_OR_NOT_RUN",
+      "componentAwareness": null
+    },
+    {
+      "id": "AV_OPEN",
+      "stage": "planning",
+      "label": "Explorar dos métodos realmente distintos",
+      "detail": "Cada productor elige su ruta, incluso una nueva no catalogada. Comparar al menos dos alternativas materialmente distintas y disponibles. No fijar estilo, modelo, proveedor ni técnica universal. Catálogo de 2.1 sólo ideas.",
+      "type": "action",
+      "owner": "character:*",
+      "procedureRef": "STAGE_OPERATIONS.json#/stages/2",
+      "docRef": "FLOW_3D_MASTER.md#av_open",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "evidencePolicy": "REAL_EVIDENCE_OR_NOT_RUN",
+      "componentAwareness": null
+    },
+    {
+      "id": "AV_TOOL",
+      "stage": "acquisition",
+      "label": "Comprobar herramientas y recursos reales",
+      "detail": "Probar modelador/editor/exportador, malla base y rig de verdad; derechos por asset. Si una vía no está disponible investigar otra, no volver automáticamente al modelo mediocre.",
+      "type": "action",
+      "owner": "character:*",
+      "procedureRef": "STAGE_OPERATIONS.json#/stages/3",
+      "docRef": "FLOW_3D_MASTER.md#av_tool",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "evidencePolicy": "REAL_EVIDENCE_OR_NOT_RUN",
+      "componentAwareness": null
+    },
+    {
+      "id": "AV_DESIGN",
+      "stage": "humanoid",
+      "label": "Diseñar silueta y model sheet",
+      "detail": "Diseñar proporciones, pose, frente/perfil/espalda y tres cuartos; diferenciar cabezas, cuerpos y ropa; una imagen conceptual no es malla.",
+      "type": "action",
+      "owner": "character:*",
+      "procedureRef": "STAGE_OPERATIONS.json#/stages/5",
+      "docRef": "FLOW_3D_MASTER.md#av_design",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "evidencePolicy": "REAL_EVIDENCE_OR_NOT_RUN",
+      "componentAwareness": null
+    },
+    {
+      "id": "AV_BODY",
+      "stage": "humanoid",
+      "label": "Autoría real del cuerpo",
+      "detail": "Modelar/esculpir o transformar sustancialmente una base legal con editor/modelador genuino cuando sea viable. Silueta, cráneo, torso, articulaciones, topología; no entregar muñeco de primitivas ni recolor como identidad nueva.",
+      "type": "action",
+      "owner": "character:*",
+      "procedureRef": "STAGE_OPERATIONS.json#/stages/5",
+      "docRef": "FLOW_3D_MASTER.md#av_body",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "evidencePolicy": "REAL_EVIDENCE_OR_NOT_RUN",
+      "componentAwareness": null
+    },
+    {
+      "id": "AV_FACE",
+      "stage": "humanoid",
+      "label": "Construir rostro con identidad",
+      "detail": "Formas de cráneo, mandíbula, nariz, ojos, párpados, boca, cejas, orejas; nivel de detalle según plano. Comprobar expresión y coherencia de anatomía.",
+      "type": "action",
+      "owner": "character:*",
+      "procedureRef": "STAGE_OPERATIONS.json#/stages/5",
+      "docRef": "FLOW_3D_MASTER.md#av_face",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "evidencePolicy": "REAL_EVIDENCE_OR_NOT_RUN",
+      "componentAwareness": null
+    },
+    {
+      "id": "AV_HANDS",
+      "stage": "humanoid",
+      "label": "Manos, pies, cuello y uniones",
+      "detail": "Revisar dedos cuando visibles, cuello, muñecas, hombros, calzado, huecos, piezas flotantes, intersecciones y proporciones.",
+      "type": "action",
+      "owner": "character:*",
+      "procedureRef": "STAGE_OPERATIONS.json#/stages/5",
+      "docRef": "FLOW_3D_MASTER.md#av_hands",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "evidencePolicy": "REAL_EVIDENCE_OR_NOT_RUN",
+      "componentAwareness": null
+    },
+    {
+      "id": "AV_HAIR",
+      "stage": "humanoid",
+      "label": "Cabello y rasgos propios",
+      "detail": "Silueta y acabado propios, peinado y accesorios anclados, no identidad basada sólo en color.",
+      "type": "action",
+      "owner": "character:*",
+      "procedureRef": "STAGE_OPERATIONS.json#/stages/5",
+      "docRef": "FLOW_3D_MASTER.md#av_hair",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "evidencePolicy": "REAL_EVIDENCE_OR_NOT_RUN",
+      "componentAwareness": null
+    },
+    {
+      "id": "AV_CLOTH",
+      "stage": "humanoid",
+      "label": "Vestuario como geometría y material",
+      "detail": "Ropa con volumen, caída, costuras, capas y coherencia con oficio/época; prueba de intersección al deformar.",
+      "type": "action",
+      "owner": "character:*",
+      "procedureRef": "STAGE_OPERATIONS.json#/stages/5",
+      "docRef": "FLOW_3D_MASTER.md#av_cloth",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "evidencePolicy": "REAL_EVIDENCE_OR_NOT_RUN",
+      "componentAwareness": null
+    },
+    {
+      "id": "AV_MATERIAL",
+      "stage": "humanoid",
+      "label": "UV, piel, ropa, materiales",
+      "detail": "UV/atlas o técnica justificada; textura de piel, ojos, pelo, tela; densidad según cámara y materiales coherentes con luces, no ruido global.",
+      "type": "action",
+      "owner": "character:*",
+      "procedureRef": "STAGE_OPERATIONS.json#/stages/5",
+      "docRef": "FLOW_3D_MASTER.md#av_material",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "evidencePolicy": "REAL_EVIDENCE_OR_NOT_RUN",
+      "componentAwareness": null
+    },
+    {
+      "id": "AV_TOPO",
+      "stage": "humanoid",
+      "label": "Inspeccionar geometría y exportable",
+      "detail": "Normales, topología, mallas conectadas y calidad de exportación editable/GLB si viable; revisar rendimiento y nivel de detalle.",
+      "type": "action",
+      "owner": "character:*",
+      "procedureRef": "STAGE_OPERATIONS.json#/stages/5",
+      "docRef": "FLOW_3D_MASTER.md#av_topo",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "evidencePolicy": "REAL_EVIDENCE_OR_NOT_RUN",
+      "componentAwareness": null
+    },
+    {
+      "id": "AV_RIG",
+      "stage": "humanoid",
+      "label": "Rigado y poses de esfuerzo",
+      "detail": "Huesos, rest pose, escalas, pesos, hombros/caderas/rodillas; poses relevantes, deformación real. Rig separado del aspecto.",
+      "type": "action",
+      "owner": "character:*",
+      "procedureRef": "STAGE_OPERATIONS.json#/stages/5",
+      "docRef": "FLOW_3D_MASTER.md#av_rig",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "evidencePolicy": "REAL_EVIDENCE_OR_NOT_RUN",
+      "componentAwareness": null
+    },
+    {
+      "id": "AV_EXPR",
+      "stage": "humanoid",
+      "label": "Expresión, rostro y actuación",
+      "detail": "Para closeup/diálogo: gestos, mirada, blink y boca, morphs/huesos y sincronía real; no confundir voz y subtítulo con actuación facial.",
+      "type": "action",
+      "owner": "character:*",
+      "procedureRef": "STAGE_OPERATIONS.json#/stages/5",
+      "docRef": "FLOW_3D_MASTER.md#av_expr",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "evidencePolicy": "REAL_EVIDENCE_OR_NOT_RUN",
+      "componentAwareness": null
+    },
+    {
+      "id": "AV_LOOKDEV",
+      "stage": "humanoid",
+      "label": "Banco de prueba visual del personaje",
+      "detail": "Render genuino neutral frente, perfil, espalda, tres cuartos; cara/manos según plano; pose y clip si animado; luego luz y distancia de escena.",
+      "type": "action",
+      "owner": "character:*",
+      "procedureRef": "STAGE_OPERATIONS.json#/stages/5",
+      "docRef": "FLOW_3D_MASTER.md#av_lookdev",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "evidencePolicy": "REAL_EVIDENCE_OR_NOT_RUN",
+      "componentAwareness": null
+    },
+    {
+      "id": "AV_ITERATE",
+      "stage": "humanoid",
+      "label": "Comparar y corregir durante autoría",
+      "detail": "Comparar con referencias y segunda vía; corregir mayor defecto observable antes de montaje cuando viable, guardar versión antes/después. No iterar eternamente ni cancelar entrega completa.",
+      "type": "action",
+      "owner": "character:*",
+      "procedureRef": "STAGE_OPERATIONS.json#/stages/5",
+      "docRef": "FLOW_3D_MASTER.md#av_iterate",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "evidencePolicy": "REAL_EVIDENCE_OR_NOT_RUN",
+      "componentAwareness": null
+    },
+    {
+      "id": "AV_CAST",
+      "stage": "humanoid",
+      "label": "Identidades del reparto, no clones",
+      "detail": "Comprobar todos los IDs visibles, variedad real de geometría facial/corporal/ropa, LOD razonable. Base legal puede ser materia prima, no estándar hasta aprobación.",
+      "type": "action",
+      "owner": "character:*",
+      "procedureRef": "STAGE_OPERATIONS.json#/stages/5",
+      "docRef": "FLOW_3D_MASTER.md#av_cast",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "evidencePolicy": "REAL_EVIDENCE_OR_NOT_RUN",
+      "componentAwareness": null
+    },
+    {
+      "id": "AV_AXIS",
+      "stage": "orientation",
+      "label": "Calibrar frente anatómico de toda instancia",
+      "detail": "Frente local real por malla y transform mundial, incluyendo import, offsets, jerarquía y escala negativa. No asumir eje por GLB. Guardar evidencia por perfil e instancia.",
+      "type": "action",
+      "owner": "character:*",
+      "procedureRef": "STAGE_OPERATIONS.json#/stages/10",
+      "docRef": "FLOW_3D_MASTER.md#av_axis",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "evidencePolicy": "REAL_EVIDENCE_OR_NOT_RUN",
+      "componentAwareness": null
+    },
+    {
+      "id": "AV_ROUTE",
+      "stage": "acting",
+      "label": "Orientar con velocidad real de trayectoria",
+      "detail": "Calcular tangent/velocidad del root en mundo, aplicar yaw corregido por frontLocal calibrado; giro más corto, parar a baja velocidad. Retroceso/strafe sólo intencional con clip apropiado.",
+      "type": "action",
+      "owner": "character:*",
+      "procedureRef": "STAGE_OPERATIONS.json#/stages/11",
+      "docRef": "FLOW_3D_MASTER.md#av_route",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "evidencePolicy": "REAL_EVIDENCE_OR_NOT_RUN",
+      "componentAwareness": null
+    },
+    {
+      "id": "AV_CLIPS",
+      "stage": "acting",
+      "label": "Calibrar clip y desplazamiento",
+      "detail": "Comprobar clip real/rig, stride, root motion o in-place, velocidad, idle, curva y giro; no aplicar doble movimiento.",
+      "type": "action",
+      "owner": "character:*",
+      "procedureRef": "STAGE_OPERATIONS.json#/stages/11",
+      "docRef": "FLOW_3D_MASTER.md#av_clips",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "evidencePolicy": "REAL_EVIDENCE_OR_NOT_RUN",
+      "componentAwareness": null
+    },
+    {
+      "id": "AV_ALL_MOTION",
+      "stage": "acting",
+      "label": "Medir cada actor que camina, incluidos extras",
+      "detail": "Cruzar roster de escena real: todos los IDs y rutas, dirección normal dot frente mundial/velocidad ≥0.8, cuatro orientaciones canario, giros, retorno, loop, marcha/idle. Muestrear poses y errores por actor, no sólo héroe.",
+      "type": "action",
+      "owner": "character:*",
+      "procedureRef": "STAGE_OPERATIONS.json#/stages/11",
+      "docRef": "FLOW_3D_MASTER.md#av_all_motion",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "evidencePolicy": "REAL_EVIDENCE_OR_NOT_RUN",
+      "componentAwareness": null
+    },
+    {
+      "id": "AV_CONTACT",
+      "stage": "acting",
+      "label": "Pies, posición, asiento y manos",
+      "detail": "Medir apoyo y deslizamiento, contacto con suelo/asiento/prop y poses en sus fases; comprobar cámara real, no sólo coordenadas.",
+      "type": "action",
+      "owner": "character:*",
+      "procedureRef": "STAGE_OPERATIONS.json#/stages/11",
+      "docRef": "FLOW_3D_MASTER.md#av_contact",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "evidencePolicy": "REAL_EVIDENCE_OR_NOT_RUN",
+      "componentAwareness": null
+    },
+    {
+      "id": "UX_MODE",
+      "stage": "assembly",
+      "label": "Escena protagonista, UI mínima",
+      "detail": "Presentación inicial sin paneles invasivos, modal ni controles secundarios; acciones contextuales, menú colapsado, HUD ocultable y limpio. Modo juego/inspección explícito.",
+      "type": "action",
+      "owner": "studio-3d-method",
+      "procedureRef": "STAGE_OPERATIONS.json#/stages/9",
+      "docRef": "FLOW_3D_MASTER.md#ux_mode",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "evidencePolicy": "REAL_EVIDENCE_OR_NOT_RUN",
+      "componentAwareness": null
+    },
+    {
+      "id": "UX_AREA",
+      "stage": "assembly",
+      "label": "Medir ocupación visual y tacto",
+      "detail": "Objetivo candidato: unión de UI persistente ≤12% viewport y cero superposición focal, controles táctiles ≥44 CSS px cuando viable; safe area, portrait/landscape, medir rectángulos y no duplicar zonas.",
+      "type": "action",
+      "owner": "studio-3d-method",
+      "procedureRef": "STAGE_OPERATIONS.json#/stages/9",
+      "docRef": "FLOW_3D_MASTER.md#ux_area",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "evidencePolicy": "REAL_EVIDENCE_OR_NOT_RUN",
+      "componentAwareness": null
+    },
+    {
+      "id": "UX_LAYER",
+      "stage": "assembly",
+      "label": "Capas, interfaz y contenido del mundo",
+      "detail": "Pantalla de prop en textura real cuando posible; HTML externo sólo overlay explícito y cerrable, no cubre escena por defecto. Excluir UI del gesto de cámara, controles no bloquean área ajena.",
+      "type": "action",
+      "owner": "studio-3d-method",
+      "procedureRef": "STAGE_OPERATIONS.json#/stages/9",
+      "docRef": "FLOW_3D_MASTER.md#ux_layer",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "evidencePolicy": "REAL_EVIDENCE_OR_NOT_RUN",
+      "componentAwareness": null
+    },
+    {
+      "id": "TOUCH_MODE",
+      "stage": "cinema",
+      "label": "Fijar significado del gesto por cámara",
+      "detail": "FREE_LOOK: derecha mira derecha, arriba mira arriba. ORBIT: la proyección de referencia sigue el arrastre. HYBRID conserva pose, GUIDED no se rompe por tap accidental.",
+      "type": "action",
+      "owner": "studio-3d-method",
+      "procedureRef": "STAGE_OPERATIONS.json#/stages/12",
+      "docRef": "FLOW_3D_MASTER.md#touch_mode",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "evidencePolicy": "REAL_EVIDENCE_OR_NOT_RUN",
+      "componentAwareness": null
+    },
+    {
+      "id": "TOUCH_CORE",
+      "stage": "cinema",
+      "label": "Entrada táctil común con adaptador",
+      "detail": "Pointer ID, capture, cancel/lostcapture, umbral tap/drag, pinch/pan, CSS pixels, exclusión de UI y multitouch, límites, horizonte y resize; no signos parcheados a ojo.",
+      "type": "action",
+      "owner": "studio-3d-method",
+      "procedureRef": "STAGE_OPERATIONS.json#/stages/12",
+      "docRef": "FLOW_3D_MASTER.md#touch_core",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "evidencePolicy": "REAL_EVIDENCE_OR_NOT_RUN",
+      "componentAwareness": null
+    },
+    {
+      "id": "TOUCH_PROBE",
+      "stage": "cinema",
+      "label": "Comprobar cuatro sentidos y cambios de modo",
+      "detail": "Medir giro derecha/izquierda/arriba/abajo, gesto de dos dedos, tap/drag, reset, giro de teléfono y continuidad sin salto; probar real, no sólo signo matemático.",
+      "type": "action",
+      "owner": "studio-3d-method",
+      "procedureRef": "STAGE_OPERATIONS.json#/stages/12",
+      "docRef": "FLOW_3D_MASTER.md#touch_probe",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "evidencePolicy": "REAL_EVIDENCE_OR_NOT_RUN",
+      "componentAwareness": null
+    },
+    {
+      "id": "QA_CAST",
+      "stage": "qa",
+      "label": "Cobertura de todo el reparto",
+      "detail": "El auditor cruza inventario actor real, rutas, muestras y pruebas por ID; un extra que camina atrás falla locomoción. Faltantes NOT_RUN. Arte sólo humano.",
+      "type": "action",
+      "owner": "studio-3d-method",
+      "procedureRef": "STAGE_OPERATIONS.json#/stages/13",
+      "docRef": "FLOW_3D_MASTER.md#qa_cast",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "evidencePolicy": "REAL_EVIDENCE_OR_NOT_RUN",
+      "componentAwareness": null
+    },
+    {
+      "id": "QA_HUD",
+      "stage": "qa",
+      "label": "Medir interfaz en pantallas reales",
+      "detail": "360×640, 412×915, 915×412 y escritorio; captura en estado inicial, interacción, menú, error. Presupuesto de área, focal, cierre, safe-area y targets.",
+      "type": "action",
+      "owner": "studio-3d-method",
+      "procedureRef": "STAGE_OPERATIONS.json#/stages/13",
+      "docRef": "FLOW_3D_MASTER.md#qa_hud",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "evidencePolicy": "REAL_EVIDENCE_OR_NOT_RUN",
+      "componentAwareness": null
+    },
+    {
+      "id": "QA_TOUCH",
+      "stage": "qa",
+      "label": "Verificar gesto y continuidad",
+      "detail": "Pruebas navegador y Android por separado, arrastre, giro, pinch/pan, cancel, controles, scroll accidental, focus y zoom. Fixture numérico no prueba experiencia real.",
+      "type": "action",
+      "owner": "studio-3d-method",
+      "procedureRef": "STAGE_OPERATIONS.json#/stages/13",
+      "docRef": "FLOW_3D_MASTER.md#qa_touch",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "evidencePolicy": "REAL_EVIDENCE_OR_NOT_RUN",
+      "componentAwareness": null
+    },
+    {
+      "id": "QA_LATENT",
+      "stage": "qa",
+      "label": "Matriz transversal de riesgos no observados",
+      "detail": "Comprobar arranque/GLB, espacios cerrados, parallax, escala/sliding/collision, cámara clipping, cortes/pausas, resize, pérdida contexto, audio/autoplay, FPS/memoria, reset. Riesgo no es defecto confirmado.",
+      "type": "action",
+      "owner": "studio-3d-method",
+      "procedureRef": "STAGE_OPERATIONS.json#/stages/13",
+      "docRef": "FLOW_3D_MASTER.md#qa_latent",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "evidencePolicy": "REAL_EVIDENCE_OR_NOT_RUN",
+      "componentAwareness": null
+    },
+    {
+      "id": "UX_CAUSE",
+      "stage": "repair",
+      "label": "Corregir causa, reejecutar prueba",
+      "detail": "Ubicar falla en authoring, rig, eje, clip, ruta, input, layout, runtime. Reparar problemas técnicos verificables antes de entregar sin recortar la escena ni cambiar brief.",
+      "type": "action",
+      "owner": "studio-3d-method",
+      "procedureRef": "STAGE_OPERATIONS.json#/stages/14",
+      "docRef": "FLOW_3D_MASTER.md#ux_cause",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "evidencePolicy": "REAL_EVIDENCE_OR_NOT_RUN",
+      "componentAwareness": null
+    },
+    {
+      "id": "AV_SAVE",
+      "stage": "persistence",
+      "label": "Conservar variantes y autoría editable",
+      "detail": "Guardar intentos, fuente editable, licencia, rig, clip, capturas, diferencias y decisiones por actor. Biblioteca visual aprobada vacía; no convertir versión provisional en estándar.",
+      "type": "action",
+      "owner": "character:*",
+      "procedureRef": "STAGE_OPERATIONS.json#/stages/15",
+      "docRef": "FLOW_3D_MASTER.md#av_save",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "evidencePolicy": "REAL_EVIDENCE_OR_NOT_RUN",
+      "componentAwareness": null
+    },
+    {
+      "id": "AV_REVIEW",
+      "stage": "publish",
+      "label": "Comparar obras completas y personajes",
+      "detail": "Mostrar personaje en neutral, cara/acción y escena completa. Aprobación humana por apariencia y movimiento; sólo base después de que guste, estándar compartido con segundo consumidor probado.",
+      "type": "action",
+      "owner": "character:*",
+      "procedureRef": "STAGE_OPERATIONS.json#/stages/16",
+      "docRef": "FLOW_3D_MASTER.md#av_review",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "evidencePolicy": "REAL_EVIDENCE_OR_NOT_RUN",
+      "componentAwareness": null
     }
   ],
   "edges": [
@@ -5460,12 +5928,6 @@
       "kind": "main"
     },
     {
-      "from": "PUB1",
-      "to": "END0",
-      "label": "Sólo impedimento legal/técnico REAL, fuente íntegra preservada",
-      "kind": "normal"
-    },
-    {
       "from": "QA5",
       "to": "D29",
       "label": "Continuar QA",
@@ -5892,18 +6354,6 @@
       "kind": "main"
     },
     {
-      "from": "FULLSET0",
-      "to": "WEB0",
-      "label": "",
-      "kind": "main"
-    },
-    {
-      "from": "INSPECT0",
-      "to": "CAM0",
-      "label": "",
-      "kind": "main"
-    },
-    {
       "from": "BOOT2",
       "to": "S1",
       "label": "",
@@ -5922,20 +6372,8 @@
       "kind": "main"
     },
     {
-      "from": "CHAR_ALLOC",
-      "to": "P1",
-      "label": "",
-      "kind": "main"
-    },
-    {
       "from": "CHAR_REJECT",
       "to": "D39",
-      "label": "",
-      "kind": "main"
-    },
-    {
-      "from": "CHAR_SELECT",
-      "to": "A1",
       "label": "",
       "kind": "main"
     },
@@ -5946,40 +6384,286 @@
       "kind": "main"
     },
     {
-      "from": "CHAR_LOOK",
-      "to": "H2",
-      "label": "",
-      "kind": "main"
-    },
-    {
       "from": "CHAR_ALTERNATE",
       "to": "H3",
       "label": "",
       "kind": "main"
     },
     {
+      "from": "CHAR_ALLOC",
+      "to": "AV_ROLE",
+      "kind": "main",
+      "label": ""
+    },
+    {
+      "from": "AV_ROLE",
+      "to": "AV_BUDGET",
+      "kind": "main",
+      "label": ""
+    },
+    {
+      "from": "AV_BUDGET",
+      "to": "AV_REF",
+      "kind": "main",
+      "label": ""
+    },
+    {
+      "from": "AV_REF",
+      "to": "AV_OPEN",
+      "kind": "main",
+      "label": ""
+    },
+    {
+      "from": "AV_OPEN",
+      "to": "P1",
+      "kind": "main",
+      "label": ""
+    },
+    {
+      "from": "CHAR_SELECT",
+      "to": "AV_TOOL",
+      "kind": "main",
+      "label": ""
+    },
+    {
+      "from": "AV_TOOL",
+      "to": "A1",
+      "kind": "main",
+      "label": ""
+    },
+    {
+      "from": "CHAR_LOOK",
+      "to": "AV_DESIGN",
+      "kind": "main",
+      "label": ""
+    },
+    {
+      "from": "AV_DESIGN",
+      "to": "AV_BODY",
+      "kind": "main",
+      "label": ""
+    },
+    {
+      "from": "AV_BODY",
+      "to": "AV_FACE",
+      "kind": "main",
+      "label": ""
+    },
+    {
+      "from": "AV_FACE",
+      "to": "AV_HANDS",
+      "kind": "main",
+      "label": ""
+    },
+    {
+      "from": "AV_HANDS",
+      "to": "AV_HAIR",
+      "kind": "main",
+      "label": ""
+    },
+    {
+      "from": "AV_HAIR",
+      "to": "AV_CLOTH",
+      "kind": "main",
+      "label": ""
+    },
+    {
+      "from": "AV_CLOTH",
+      "to": "AV_MATERIAL",
+      "kind": "main",
+      "label": ""
+    },
+    {
+      "from": "AV_MATERIAL",
+      "to": "AV_TOPO",
+      "kind": "main",
+      "label": ""
+    },
+    {
+      "from": "AV_TOPO",
+      "to": "AV_RIG",
+      "kind": "main",
+      "label": ""
+    },
+    {
+      "from": "AV_RIG",
+      "to": "AV_EXPR",
+      "kind": "main",
+      "label": ""
+    },
+    {
+      "from": "AV_EXPR",
+      "to": "AV_LOOKDEV",
+      "kind": "main",
+      "label": ""
+    },
+    {
+      "from": "AV_LOOKDEV",
+      "to": "AV_ITERATE",
+      "kind": "main",
+      "label": ""
+    },
+    {
+      "from": "AV_ITERATE",
+      "to": "AV_CAST",
+      "kind": "main",
+      "label": ""
+    },
+    {
+      "from": "AV_CAST",
+      "to": "H2",
+      "kind": "main",
+      "label": ""
+    },
+    {
       "from": "CHAR_RETARGET",
+      "to": "AV_AXIS",
+      "kind": "main",
+      "label": ""
+    },
+    {
+      "from": "AV_AXIS",
+      "to": "AV_ROUTE",
+      "kind": "main",
+      "label": ""
+    },
+    {
+      "from": "AV_ROUTE",
+      "to": "AV_CLIPS",
+      "kind": "main",
+      "label": ""
+    },
+    {
+      "from": "AV_CLIPS",
+      "to": "AV_ALL_MOTION",
+      "kind": "main",
+      "label": ""
+    },
+    {
+      "from": "AV_ALL_MOTION",
+      "to": "AV_CONTACT",
+      "kind": "main",
+      "label": ""
+    },
+    {
+      "from": "AV_CONTACT",
       "to": "M1",
-      "label": "",
-      "kind": "main"
+      "kind": "main",
+      "label": ""
+    },
+    {
+      "from": "FULLSET0",
+      "to": "UX_MODE",
+      "kind": "main",
+      "label": ""
+    },
+    {
+      "from": "UX_MODE",
+      "to": "UX_AREA",
+      "kind": "main",
+      "label": ""
+    },
+    {
+      "from": "UX_AREA",
+      "to": "UX_LAYER",
+      "kind": "main",
+      "label": ""
+    },
+    {
+      "from": "UX_LAYER",
+      "to": "WEB0",
+      "kind": "main",
+      "label": ""
+    },
+    {
+      "from": "INSPECT0",
+      "to": "TOUCH_MODE",
+      "kind": "main",
+      "label": ""
+    },
+    {
+      "from": "TOUCH_MODE",
+      "to": "TOUCH_CORE",
+      "kind": "main",
+      "label": ""
+    },
+    {
+      "from": "TOUCH_CORE",
+      "to": "TOUCH_PROBE",
+      "kind": "main",
+      "label": ""
+    },
+    {
+      "from": "TOUCH_PROBE",
+      "to": "CAM0",
+      "kind": "main",
+      "label": ""
     },
     {
       "from": "CHAR_QA",
+      "to": "QA_CAST",
+      "kind": "main",
+      "label": ""
+    },
+    {
+      "from": "QA_CAST",
+      "to": "QA_HUD",
+      "kind": "main",
+      "label": ""
+    },
+    {
+      "from": "QA_HUD",
+      "to": "QA_TOUCH",
+      "kind": "main",
+      "label": ""
+    },
+    {
+      "from": "QA_TOUCH",
+      "to": "QA_LATENT",
+      "kind": "main",
+      "label": ""
+    },
+    {
+      "from": "QA_LATENT",
       "to": "QA1",
-      "label": "",
-      "kind": "main"
+      "kind": "main",
+      "label": ""
     },
     {
       "from": "CHAR_CAUSE",
+      "to": "UX_CAUSE",
+      "kind": "main",
+      "label": ""
+    },
+    {
+      "from": "UX_CAUSE",
       "to": "D25",
-      "label": "",
-      "kind": "main"
+      "kind": "main",
+      "label": ""
     },
     {
       "from": "CHAR_PROMOTE",
+      "to": "AV_SAVE",
+      "kind": "main",
+      "label": ""
+    },
+    {
+      "from": "AV_SAVE",
       "to": "G7",
-      "label": "",
-      "kind": "main"
+      "kind": "main",
+      "label": ""
+    },
+    {
+      "from": "PUB1",
+      "to": "AV_REVIEW",
+      "kind": "normal",
+      "label": "Sólo impedimento legal/técnico REAL, fuente íntegra preservada"
+    },
+    {
+      "from": "AV_REVIEW",
+      "to": "END0",
+      "kind": "normal",
+      "label": ""
     }
   ],
   "knownIssues": [
@@ -6220,6 +6904,71 @@
       ],
       "status": "SOURCE_VERIFIED",
       "rootCause": "Bondi STAGE_TRACE acknowledges secondary actors flawed; Respawn repeats same action/decision for many stages; logs did not force new alternative selection."
+    },
+    {
+      "id": "W002_AVATAR_ZERO",
+      "title": "Avatar: no hay base visual aprobada",
+      "nodes": [
+        "AV_ROLE",
+        "AV_OPEN",
+        "AV_BODY",
+        "AV_FACE",
+        "AV_CLOTH",
+        "AV_LOOKDEV",
+        "AV_ITERATE"
+      ],
+      "status": "USER_REPORTED",
+      "rootCause": "El flujo dedicó selección de recursos pero no una secuencia de autoría artística completa; usuario rechaza avatares actuales."
+    },
+    {
+      "id": "W002_UI_OCCLUSION",
+      "title": "UI invasiva tapa la escena",
+      "nodes": [
+        "UX_MODE",
+        "UX_AREA",
+        "UX_LAYER",
+        "QA_HUD"
+      ],
+      "status": "USER_REPORTED_SOURCE_SUPPORTED",
+      "rootCause": "Arcade V2 incluye top, panel de acciones, pad, fire y capa de juego explícita. No se midió cobertura real; usuario informa obstrucción.",
+      "evidence": [
+        "prometeo/previews/arcade-retro/v2/index.html@6f9ec4d3a86796f23ef6fdbf2ef888c523547401",
+        "prometeo/previews/arcade-retro/v2/app.mjs@5bcb619ea3ec6174549be162065d0fbcb7b334e1"
+      ]
+    },
+    {
+      "id": "W002_TOUCH",
+      "title": "Gestos táctiles invertidos o inconsistentes",
+      "nodes": [
+        "TOUCH_MODE",
+        "TOUCH_CORE",
+        "TOUCH_PROBE",
+        "QA_TOUCH"
+      ],
+      "status": "USER_REPORTED_SOURCE_RISK",
+      "rootCause": "Implementaciones separadas de signos yaw/pitch y eventos pointer; Arcade/Transporte no muestran cleanup canvas cancel en handlers revisados. No se reprodujo gesto físico exacto.",
+      "evidence": [
+        "prometeo/previews/arcade-retro/v2/app.mjs@5bcb619ea3ec6174549be162065d0fbcb7b334e1",
+        "prometeo/previews/transporte-retro/v3/scene.mjs@b7d628e4241d7e949f8342c1e04442afda1d3af3",
+        "prometeo/previews/laboratorio-submarino/v2/scene.mjs@431c3af78f23c07cff61140de339c346a5fc387e"
+      ]
+    },
+    {
+      "id": "W002_NPC_BACKWARD",
+      "title": "Secundarios caminan hacia atrás",
+      "nodes": [
+        "AV_AXIS",
+        "AV_ROUTE",
+        "AV_ALL_MOTION",
+        "QA_CAST"
+      ],
+      "status": "USER_REPORTED_SOURCE_RISK",
+      "rootCause": "Estación usa yaw por tiempo separado de trayectoria; Transporte yaw discontinuo por tiempo; Cruce necesita prueba de frente mundial de modelo importado. No se verificó qué actor exacto falló.",
+      "evidence": [
+        "prometeo/previews/estacion-servicio-tormenta/v2/scene.mjs@709180a950a47ed197817c4209cf9e9f63e2f917",
+        "prometeo/previews/transporte-retro/v3/scene.mjs@b7d628e4241d7e949f8342c1e04442afda1d3af3",
+        "prometeo/previews/cruce-urbano/v2/scene.mjs@f0a2d1f6f0f59fb3af0cfd14f0f0710e782c4f89"
+      ]
     }
   ],
   "historyPolicy": {
@@ -6237,8 +6986,8 @@
   },
   "evidence": "diagnosis only; source visual failures from user screenshots; no new scene fix",
   "revision": {
-    "previous": "2.0.0",
-    "changes": "11 new executable character + flow correction nodes; negative visual registry; 10 research routes with 7 actor-scene allocations, no forced NPCs in 3 mechanical/interactive scenes; actor visual/rig/motion/behavior split; stage audit and approved capability promotion.",
+    "previous": "2.1.0",
+    "changes": "36 nuevos nodos, autoría de personajes, locomoción total, UI y cámara táctil",
     "riskPolicy": "NO_REJECTED_VISUAL_REUSE_NO_HUMAN_BRIEF_REWRITE_NO_ART_VETO",
     "gateIds": [
       "source-and-license",
@@ -6254,10 +7003,15 @@
       "before-build",
       "technique-suitability",
       "before-replication",
-      "camera-preflight"
+      "camera-preflight",
+      "avatar-authoring",
+      "cast-motion",
+      "minimal-ui",
+      "touch-direction",
+      "latent-qa"
     ],
     "operationMode": "FULL_SCENE_ALWAYS",
-    "patchScope": "CHARACTER_DOMAIN_ONLY"
+    "patchScope": "STUDIO_3D_CHARACTERS_UI_TOUCH_QA"
   },
   "subflows": [
     {
@@ -6414,7 +7168,7 @@
         "qa"
       ],
       "earlyGates": [],
-      "policy": "No final human visual family is approved. Different actor scenes test different authoring/material/face families. Stages audited; still deliver full scene if actor fails."
+      "policy": "Zero approved visual base; independent character authorship, diverse authoring hypotheses are optional and not assigned. Full scene regardless of art quality."
     },
     {
       "id": "self-correcting-flow-character",
@@ -6427,6 +7181,57 @@
       ],
       "earlyGates": [],
       "policy": "Human comment + screenshot + source trace => earliest decision => proposed stage procedure delta => distinct flow version with QA. No source-free claims; no human brief changes; no global router mutation."
+    },
+    {
+      "id": "avatar-open-authoring",
+      "start": "AV_ROLE",
+      "stages": [
+        "planning",
+        "acquisition",
+        "humanoid",
+        "orientation",
+        "acting",
+        "qa",
+        "persistence",
+        "publish"
+      ],
+      "owner": "studio-3d",
+      "earlyGates": [],
+      "policy": "No fixed character visual recipe; create own character; no approved base until user review."
+    },
+    {
+      "id": "all-actor-locomotion",
+      "start": "AV_ALL_MOTION",
+      "stages": [
+        "orientation",
+        "acting",
+        "qa"
+      ],
+      "owner": "studio-3d",
+      "earlyGates": [],
+      "policy": "All locomoting actor IDs, not only protagonist."
+    },
+    {
+      "id": "minimal-scene-interface",
+      "start": "UX_MODE",
+      "stages": [
+        "assembly",
+        "qa"
+      ],
+      "owner": "studio-3d",
+      "earlyGates": [],
+      "policy": "Screen focus and bounded persistent HUD."
+    },
+    {
+      "id": "touch-camera-contract",
+      "start": "TOUCH_MODE",
+      "stages": [
+        "cinema",
+        "qa"
+      ],
+      "owner": "studio-3d",
+      "earlyGates": [],
+      "policy": "Mode-grounded touch and actual screen test."
     }
   ],
   "qualityArchitecture": {
@@ -6458,7 +7263,10 @@
     "decisionAtSource": "Map source technique to output role before modeling; don't use a visual filter as substitute for authored form.",
     "mobileRuntime": "WEBGL2_FOR_MODERN_THREE; direct .mjs boot; error taxonomy and honest fallback",
     "trace": "17 stages with factual decisions, output first; no bloated admin",
-    "characterCorrection": "Visual approval now explicitly rejected for previously reused skin/face assets. Positive Crossing WALK only as independently retargeted candidate; character styles diversify across projects; other domains unchanged."
+    "characterCorrection": "Open experiment, craft body, face, wardrobe, UV, rig, movement, compare and render. No fixed canonical avatar.",
+    "uiPolicy": "Scene first, HUD 12% candidate budget, focal region no overlap",
+    "cameraInput": "FREE_LOOK right=>right; ORBIT projected world follows finger",
+    "locomotionPolicy": "ALL_INSTANCE_RUNTIME_SAMPLES"
   },
   "stageInstrumentation": {
     "schema": "prometeo.3d.stage-trace/v1",
@@ -6541,12 +7349,12 @@
     "reasonForChange": "Record exact stage, old policy, failure, new general rule, expected transfer result"
   },
   "executionSpec": {
-    "version": "2.1.0",
-    "stageOperations": "versions/2.1.0/STAGE_OPERATIONS.json",
-    "sceneCompiler": "versions/2.1.0/scene-compiler.mjs",
-    "sceneCatalog": "versions/2.1.0/SCENE_INTENT_CATALOG.json",
-    "componentReferences": "versions/2.1.0/COMPONENT_REFERENCE_MATRIX.json",
-    "toolchain": "versions/2.1.0/TOOLCHAIN_ROUTING.json",
+    "version": "2.2.0",
+    "stageOperations": "versions/2.2.0/STAGE_OPERATIONS.json",
+    "sceneCompiler": "versions/2.2.0/scene-compiler.mjs",
+    "sceneCatalog": "versions/2.2.0/SCENE_INTENT_CATALOG.json",
+    "componentReferences": "versions/2.2.0/COMPONENT_REFERENCE_MATRIX.json",
+    "toolchain": "versions/2.2.0/TOOLCHAIN_ROUTING.json",
     "browserBoot": "versions/2.0.0/browser-boot.mjs",
     "nodeCoverage": "ALL_NODES_USE_STAGE_OPERATIONS",
     "shortBriefMode": "REGISTERED_ALIAS_OR_EXACT_BRIEF",
@@ -6555,22 +7363,37 @@
     "fullSceneRequired": true,
     "advisoryOnlyQA": true,
     "qualityApprovedBy": "USER_AFTER_DELIVERY",
-    "outputContract": "versions/2.0.0/METHOD.md",
-    "characterStrategies": "versions/2.1.0/CHARACTER_STRATEGIES.json",
-    "characterNegativeRegistry": "versions/2.1.0/NEGATIVE_CHARACTER_REGISTRY.json",
-    "characterStrategyCode": "versions/2.1.0/character-strategy.mjs",
-    "flowRepair": "versions/2.1.0/flow-repair.mjs",
-    "actorComponentSchema": "versions/2.1.0/CHARACTER_COMPONENT.schema.json",
-    "characterQualityApproved": false
+    "outputContract": "versions/2.2.0/METHOD.md",
+    "characterStrategies": "versions/2.2.0/CHARACTER_STRATEGIES.json",
+    "characterNegativeRegistry": "versions/2.2.0/NEGATIVE_CHARACTER_REGISTRY.json",
+    "characterStrategyCode": "versions/2.2.0/character-strategy.mjs",
+    "flowRepair": "versions/2.2.0/flow-repair.mjs",
+    "actorComponentSchema": "versions/2.2.0/CHARACTER_COMPONENT.schema.json",
+    "characterQualityApproved": false,
+    "productionContract": "versions/2.2.0/PRODUCTION_CONTRACT.json",
+    "productionGates": "versions/2.2.0/production-gates.mjs",
+    "requiredOutputs": [
+      "AVATAR_EXPERIMENT_RECEIPT when applicable",
+      "CAST_MOTION_QA when applicable",
+      "UI_TOUCH_QA",
+      "LATENT_RISK_REPORT"
+    ],
+    "requiredRead": [
+      "METHOD.md",
+      "STAGE_OPERATIONS.json",
+      "PRODUCTION_CONTRACT.json",
+      "production-gates.mjs",
+      "scene-compiler.mjs"
+    ]
   },
   "characterSystem": {
-    "version": "2.1.0",
-    "status": "SOURCE_TESTED_EXPERIMENTS_NOT_RUN",
+    "version": "2.2.0",
+    "status": "ZERO_APPROVED_VISUAL_BASE_OPEN_AUTHORING",
     "visualLibraryApprovals": 0,
-    "visualRejectionsPath": "versions/2.1.0/NEGATIVE_CHARACTER_REGISTRY.json",
-    "sourceDecisionAuditPath": "versions/2.1.0/CHARACTER_DECISION_AUDIT.json",
-    "strategyPath": "versions/2.1.0/CHARACTER_STRATEGIES.json",
-    "actorContractPath": "versions/2.1.0/CHARACTER_COMPONENT.schema.json",
+    "visualRejectionsPath": "versions/2.2.0/NEGATIVE_CHARACTER_REGISTRY.json",
+    "sourceDecisionAuditPath": "versions/2.2.0/CHARACTER_DECISION_AUDIT.json",
+    "strategyPath": "versions/2.2.0/CHARACTER_STRATEGIES.json",
+    "actorContractPath": "versions/2.2.0/CHARACTER_COMPONENT.schema.json",
     "visualAndMotionSeparated": true,
     "approvedMotionPacks": 0,
     "partialMotionReference": "Cruce v2 Cesium walk, only smoothness approved partially, not rig or appearance",
@@ -6580,17 +7403,23 @@
       "face/UV/lookdev must fit actual camera distance",
       "real shader/model/rig evidence if available",
       "no screenshots invented",
-      "continue complete scene even if role not visually approved"
+      "continue complete scene even if role not visually approved",
+      "full self-authoring cycle",
+      "all cast IDs",
+      "real lookdev and corrective attempt before assembly"
     ],
     "previousFactoryRefs": [
       "JuanManuelPM/pruebas@candidate/prometeo-3d-character-flow-v3-20261116:cloud-lab/flow-studio-v3/experiments/semilla-parallel-launchpad/launcher-workspace-v4/prometeo/learning/3d-studio/work-decision-flow/v3/character/FLOW_CHARACTER.md",
       "JuanManuelPM/pruebas@candidate/prometeo-3d-character-motion-factory-calibrar-20261116:cloud-lab/flow-studio-v3/experiments/semilla-parallel-launchpad/launcher-workspace-v4/prometeo/learning/3d-studio/factory/character-motion-v1/INDEX.md"
     ],
-    "noRebuildFromScratch": true
+    "noRebuildFromScratch": true,
+    "fixedStrategy": false,
+    "routeAllocation": "NON_BINDING_HYPOTHESES",
+    "authoringContract": "versions/2.2.0/PRODUCTION_CONTRACT.json"
   },
   "flowRepairSystem": {
-    "domain": "CHARACTER_FIRST",
-    "version": "v1",
+    "domain": "STUDIO_3D_CHARACTERS_INPUT_UI_QA",
+    "version": "v2",
     "strategy": "PRINCIPLES_FROM_CAUSE_NOT_PROMPT_PATCH",
     "rootCauseClassification": [
       "recovery",
@@ -6601,7 +7430,10 @@
       "acting",
       "qa",
       "repair",
-      "persistence"
+      "persistence",
+      "orientation",
+      "assembly",
+      "cinema"
     ],
     "input": [
       "user_feedback",
@@ -6620,11 +7452,11 @@
     "noAutoCommit": true,
     "protected": [
       "brief lock",
-      "flow 2.0 snapshot",
-      "other 3D domains",
-      "global routers",
-      "previous scenes"
+      "historical versions",
+      "prior scenes",
+      "other studios",
+      "global routers"
     ]
   },
-  "sha256Canonical": "1a5b7e270f725974208236eb6b4e1a299f397eb976677f49d8e2143332506db8"
+  "sha256Canonical": "764d5ee400a62dbc1bae1e96cec581c21e44d3d1895392b6283e8357ed3a2263"
 }
