@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#ebece5">
+<meta name="description" content="ROOT · PROMETEO. Diez alternativas del mismo encargo, comparación y revisión privada.">
+<title>ROOT / Laboratorio de interfaces</title>
+<style>
+:root{--ink:#161e1b;--muted:#56625a;--line:#c6cbc0;--paper:#ebece5;--light:#f7f8f2;--acid:#d8fa6b;--dark:#16201b;--radius:11px;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--ink);background:var(--paper)}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0}button,input,textarea,select{font:inherit}button,a,select{touch-action:manipulation}button{cursor:pointer}a{color:inherit}button:focus-visible,a:focus-visible,select:focus-visible,textarea:focus-visible,input:focus-visible{outline:3px solid #789b23;outline-offset:3px}button:disabled{opacity:.5;cursor:not-allowed}
+[hidden]{display:none!important}.wrap{width:min(1290px,100% - 52px);margin:auto}.mono{font-family:ui-monospace,"SFMono-Regular",Consolas,monospace}.tiny{font-size:11px;text-transform:uppercase;letter-spacing:.11em;font-weight:750}.muted{color:var(--muted)}.rule{border-top:1px solid var(--line)}
+header{background:var(--paper);border-bottom:1px solid var(--ink);position:relative;z-index:2}.topbar{min-height:75px;display:flex;align-items:center;gap:27px}.brand{display:flex;gap:12px;align-items:center;text-decoration:none;white-space:nowrap;font-size:20px;font-weight:900;letter-spacing:-.07em}.mark{display:grid;place-items:center;width:31px;height:31px;border-radius:50%;background:var(--ink);color:var(--acid);font-size:19px;line-height:1}.toplinks{display:flex;gap:23px;margin-left:auto;align-items:center}.toplinks a{text-decoration:none;font-size:13px;font-weight:650}.toplinks a:hover{text-decoration:underline}.external{border:1px solid var(--ink);border-radius:50px;padding:11px 16px;text-decoration:none;font-weight:750;font-size:12px}
+.hero{padding:70px 0 58px;display:grid;grid-template-columns: minmax(0,1fr) 250px;gap:70px;align-items:end}.eyebrow{display:flex;align-items:center;gap:10px;font-size:12px;font-weight:750;letter-spacing:.13em;text-transform:uppercase}.signal{width:9px;height:9px;border-radius:50%;background:#88b13f;box-shadow:0 0 0 4px #88b13f20}h1{font-size:clamp(56px,8.1vw,122px);line-height:.96;letter-spacing:-.092em;margin:23px 0 24px;font-weight:850;max-width:970px}h1 em{font-style:normal;color:#747e70}.hero-desc{max-width:520px;font-size:16px;line-height:1.6;color:#475149;margin:0}.hero-aside{border-left:1px solid var(--ink);padding:9px 0 0 23px}.hero-aside strong{display:block;font-size:57px;letter-spacing:-.075em;line-height:1.1;margin:8px 0}.hero-aside p{font-size:13px;line-height:1.55;color:var(--muted);margin:4px 0 0}
+.section{padding:45px 0 64px}.section-top{display:flex;align-items:end;justify-content:space-between;gap:16px;margin-bottom:24px}.section-top h2{font-size:clamp(33px,4vw,54px);letter-spacing:-.065em;line-height:1.08;margin:8px 0 0}.section-caption{font-size:13px;color:var(--muted);margin:10px 0 0}.controls{display:flex;gap:9px;flex-wrap:wrap}.btn{border:1px solid var(--ink);border-radius:50px;background:transparent;color:var(--ink);padding:12px 17px;min-height:47px;font-size:13px;font-weight:750}.btn:hover{background:var(--light)}.btn.accent{background:var(--acid);border-color:var(--acid)}.btn.dark{background:var(--ink);color:#fff}.btn:focus-visible{outline-color:#8c9c56}.ten-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+.run{width:100%;min-height:150px;padding:18px;display:flex;flex-direction:column;text-align:left;align-items:stretch;justify-content:space-between;border:1px solid var(--line);border-radius:var(--radius);background:var(--light);transition:background .16s,border-color .16s}.run:hover{border-color:var(--ink)}.run[aria-pressed=true]{border-color:var(--ink);background:var(--acid);box-shadow:inset 0 0 0 1px var(--ink)}.run-head{display:flex;align-items:start;justify-content:space-between;gap:5px}.run-number{font-size:55px;letter-spacing:-.075em;line-height:.9;font-weight:850}.run-arrow{font-size:20px}.run-bottom{display:flex;align-items:center;gap:7px;font-size:11px;font-weight:750}.status-dot{width:7px;height:7px;border-radius:50%;background:#a3a89d;flex:0 0 auto}.status-dot.ready{background:#2c7d4d}.status-dot.pending{background:#a08145}.status-dot.unknown{background:#88928b}.run[aria-pressed=true] .status-dot{box-shadow:0 0 0 2px #ffffff80}
+.workspace{background:var(--dark);color:#f7f8f2;border-radius:17px;overflow:hidden;margin-top:18px}.workspace-bar{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:18px 22px;border-bottom:1px solid #3e4940}.workspace-title{display:flex;align-items:center;gap:14px}.workspace-title strong{font-size:22px;letter-spacing:-.05em}.workspace-title span{font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:#a5b0a5}.switch{border:1px solid #758174;background:transparent;border-radius:40px;color:#e6e8dd;font-weight:750;padding:11px 15px;min-height:44px;font-size:12px}.switch[aria-pressed=true]{background:var(--acid);color:var(--ink);border-color:var(--acid)}
+.workspace-main{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(280px,.85fr);min-height:490px}.preview-col{border-right:1px solid #3e4940;min-width:0;display:flex;flex-direction:column}.preview-controls{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 20px}.preview-controls p{margin:0;color:#a9b4ac;font-size:12px;line-height:1.45}.open-link{background:#f2f5e9;color:#17201a;border-radius:50px;text-decoration:none;font-weight:850;min-height:42px;padding:11px 16px;font-size:12px;white-space:nowrap}.open-link[aria-disabled=true]{pointer-events:none;opacity:.45}.screen{background:#0c120e;min-height:390px;flex:1;display:grid;place-items:stretch}.screen iframe{width:100%;height:100%;min-height:390px;border:0;background:#fff}.empty-preview{display:flex;justify-content:center;align-items:center;flex-direction:column;gap:14px;text-align:center;padding:36px}.empty-preview .disc{display:grid;place-items:center;width:60px;height:60px;border:1px solid #5a6759;border-radius:50%;font-size:25px;color:var(--acid)}.empty-preview strong{font-size:22px;letter-spacing:-.04em}.empty-preview p{font-size:13px;line-height:1.55;max-width:320px;color:#aeb7ab;margin:0}.dual-view{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:#344137}.dual-view .pane{background:#0b110e;min-width:0;display:flex;flex-direction:column}.pane-label{padding:12px;color:#d3dacf;font-size:12px}.pane select{color:#fff;background:#202e23;border:1px solid #657365;border-radius:8px;padding:10px;min-height:43px;margin:0 12px 10px}.pane iframe{min-height:320px;height:400px;border:0;background:white;width:100%}.pane .empty-preview{min-height:320px}
+.review-panel{padding:28px 23px;background:#202c23}.review-panel h3{font-size:26px;letter-spacing:-.06em;line-height:1.1;margin:11px 0 9px}.review-panel .explainer{color:#bbc7ba;font-size:13px;line-height:1.55;margin:0 0 22px}.field-label{display:block;color:#c6d1c5;margin:16px 0 7px;font-size:11px;font-weight:750;text-transform:uppercase;letter-spacing:.1em}.review-panel textarea,.review-panel select{width:100%;border:1px solid #718071;background:#111b14;color:#eff5eb;border-radius:9px;padding:12px;font-size:14px}.review-panel textarea{resize:vertical;min-height:116px;line-height:1.5}.review-panel select{min-height:46px}.upload{display:flex;align-items:center;justify-content:center;gap:8px;padding:15px 11px;min-height:52px;border:1px dashed #8c9b8b;border-radius:8px;color:#eef3e9;font-size:13px;font-weight:750;cursor:pointer}.upload:hover{border-color:var(--acid)}.upload input{position:absolute;width:1px;height:1px;opacity:0;overflow:hidden}.filelist{font-size:12px;color:#c3cdc2;line-height:1.6;word-break:break-word}.privacy{margin-top:16px;padding-top:12px;border-top:1px solid #465247;font-size:11px;line-height:1.55;color:#a7b6a7}
+.review-footer{padding:17px 22px;display:flex;align-items:center;justify-content:space-between;gap:14px;border-top:1px solid #465247}.review-footer p{font-size:12px;color:#bcc8b9;margin:0}.export{background:var(--acid);color:var(--ink);border:0;border-radius:50px;min-height:47px;padding:12px 20px;font-size:13px;font-weight:850}.feedback{font-size:12px;line-height:1.4;margin:10px 0 0;min-height:17px}
+.studios{display:grid;grid-template-columns:repeat(4,1fr);gap:11px}.studio{display:flex;flex-direction:column;justify-content:space-between;min-height:167px;border:1px solid var(--line);background:var(--light);border-radius:var(--radius);padding:21px;text-decoration:none}.studio:hover{border-color:var(--ink);background:#fff}.studio.primary{background:var(--acid);border-color:var(--ink)}.studio-head{display:flex;justify-content:space-between;align-items:center;gap:8px}.studio-head span:last-child{font-size:22px}.studio-name{font-size:24px;font-weight:850;letter-spacing:-.05em}.studio small{display:block;color:#505c50;font-size:12px;margin-top:6px;line-height:1.4}
+.lockbox{background:var(--light);border:1px solid var(--line);border-radius:var(--radius);padding:25px;display:grid;grid-template-columns:1fr 1fr;gap:25px}.lockbox h3{margin:0 0 17px;font-size:18px}.hash{font-size:12px;line-height:1.8;overflow-wrap:anywhere;word-break:break-all;color:#4e594f}.lockbox .detail{font-size:12px;color:#5b675b;line-height:1.6}.stage-chips{display:flex;gap:7px;flex-wrap:wrap;margin-top:17px}.stage-chips span{font-size:10px;padding:8px;border:1px solid var(--line);border-radius:5px;background:white}
+footer{background:#18211b;color:#eaf0e6;padding:35px 0;margin-top:50px}footer .wrap{display:flex;align-items:center;justify-content:space-between;gap:22px;flex-wrap:wrap}footer a{color:#eaf0e6;font-size:12px}footer small{color:#a8b4a7;font-size:11px}
+@media(max-width:1000px){.hero{grid-template-columns:1fr 190px;gap:25px}.toplinks{gap:13px}.workspace-main{grid-template-columns:minmax(0,1fr) 290px}.studios{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:760px){.wrap{width:calc(100% - 30px)}.topbar{min-height:65px}.toplinks{display:none}.topbar .external{margin-left:auto;padding:10px 12px}.hero{grid-template-columns:1fr;padding:43px 0 37px;gap:28px}.hero-aside{border-left:0;border-top:1px solid var(--line);padding:15px 0 0;display:flex;gap:15px;align-items:center}.hero-aside strong{font-size:42px;margin:0}.hero-aside p{margin:0;max-width:260px}.hero-desc{font-size:14px}.section{padding:34px 0}.ten-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.run{min-height:116px;padding:14px}.run-number{font-size:45px}.section-top{align-items:start;flex-direction:column}.workspace-main{display:flex;flex-direction:column}.preview-col{border-right:0;border-bottom:1px solid #3e4940}.screen{min-height:300px}.screen iframe{min-height:300px;height:52vh}.review-panel{padding:23px 18px}.workspace-bar{padding:15px}.workspace-title strong{font-size:19px}.workspace-title span{font-size:10px}.review-footer{flex-direction:column;align-items:stretch;padding:15px}.export{width:100%}.lockbox{grid-template-columns:1fr}.dual-view{grid-template-columns:1fr}.pane iframe{height:40vh;min-height:260px}.pane .empty-preview{min-height:200px}.studio{min-height:144px}.studio-name{font-size:20px}}
+@media(max-width:420px){h1{font-size:53px}.studios{grid-template-columns:1fr 1fr}.studio{padding:15px;min-height:128px}.studio-name{font-size:18px}.studio small{font-size:11px}.preview-controls{flex-direction:column;align-items:stretch}.open-link{text-align:center}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<header><div class="wrap topbar">
+<a class="brand" href="https://juanmanuelpm.github.io/Experimentos/prometeo/root/" aria-label="ROOT PROMETEO"><span class="mark" aria-hidden="true">R</span> ROOT <span class="tiny muted">/ PROMETEO</span></a>
+<nav class="toplinks" aria-label="Navegación"><a href="#alternativas">Alternativas</a><a href="#estudios">Estudios</a><a href="#metodo">Método</a></nav>
+<a class="external" href="https://juanmanuelpm.github.io/Experimentos/prometeo/" target="_blank" rel="noopener noreferrer">Portal general ↗</a>
+</div></header>
+<main>
+<section class="hero wrap" aria-labelledby="hero-title">
+<div><div class="eyebrow"><span class="signal" aria-hidden="true"></span>Laboratorio de interfaces <span class="mono">/ W001</span></div>
+<h1 id="hero-title">Una consigna.<br><em>Diez respuestas.</em></h1>
+<p class="hero-desc">El mismo brief. El mismo método. Diez soluciones independientes. Explorá los resultados publicados, comparalos y prepará la próxima revisión sin modificar ninguna obra.</p></div>
+<div class="hero-aside"><strong id="ready-total" aria-live="polite">…/10</strong><p>Previews accesibles en la primera ola.<br>La comprobación no garantiza calidad ni funcionamiento.</p></div>
+</section>
+<section class="section rule" id="alternativas">
+<div class="wrap">
+<div class="section-top"><div><div class="tiny">01 / EXPLORACIÓN</div><h2>La misma idea, diez veces.</h2><p class="section-caption" id="check-status" role="status" aria-live="polite">Comprobando las diez rutas públicas…</p></div><div class="controls"><button class="btn" id="refresh" type="button">↻ Comprobar</button><a class="btn" href="https://juanmanuelpm.github.io/Experimentos/prometeo/root/ui-lab/" target="_blank" rel="noopener noreferrer" style="text-decoration:none;display:inline-flex;align-items:center">Índice fijo ↗</a></div></div>
+<div class="ten-grid" id="runs" aria-label="Diez versiones del mismo encargo"></div>
+<div class="workspace" id="workspace"><div class="workspace-bar"><div class="workspace-title"><span>PREVIEW</span><strong id="selected-label">Versión 02</strong></div><button id="compare-toggle" class="switch" aria-pressed="false" type="button">Comparar dos ↔</button></div>
+<div class="workspace-main"><div class="preview-col"><div id="single-preview"><div class="preview-controls"><p id="preview-state">Comprobando disponibilidad…</p><a class="open-link" id="open-tab" href="#" target="_blank" rel="noopener noreferrer" aria-disabled="true">Abrir aparte ↗</a></div><div class="screen" id="single-screen"></div></div>
+<div id="compare-preview" hidden><div class="dual-view"><div class="pane"><div class="pane-label">A / PRIMERA VERSIÓN</div><select aria-label="Primera versión a comparar" id="compare-a"></select><div id="screen-a"></div></div><div class="pane"><div class="pane-label">B / SEGUNDA VERSIÓN</div><select aria-label="Segunda versión a comparar" id="compare-b"></select><div id="screen-b"></div></div></div></div></div>
+<aside class="review-panel" aria-labelledby="review-heading"><div class="tiny" style="color:var(--acid)">REVISIÓN HUMANA / <span id="review-number">02</span></div><h3 id="review-heading">¿Qué cambiarías?</h3><p class="explainer">Una nota por alternativa. La etapa sospechada es opcional; no modifica ROOT automáticamente.</p>
+<label class="field-label" for="note">Observación</label><textarea id="note" rows="4" placeholder="Describí qué funciona y qué debería mejorar…" maxlength="8000"></textarea>
+<label class="field-label" for="stage">Etapa sospechada (opcional)</label><select id="stage"><option value="">Sin atribuir etapa</option></select>
+<label class="field-label" for="capture">Capturas de referencia</label><label class="upload" for="capture">＋ Agregar hasta 3 imágenes<input type="file" id="capture" accept="image/png,image/jpeg,image/webp" multiple></label>
+<div class="filelist" id="file-list">Sin capturas adjuntas.</div>
+<button class="switch" style="margin-top:10px" type="button" id="clear-files" hidden>Quitar capturas</button>
+<p class="privacy">Todo queda en la memoria de esta pestaña hasta exportar. No se carga a ningún servidor y se pierde al cerrar o recargar. Formatos: JPG, PNG y WebP, máximo 5 MB por archivo.</p></aside></div>
+<div class="review-footer"><p id="review-count">0 / 10 versiones con revisión</p><div><button id="export-review" type="button" class="export">↓ Exportar revisión ZIP</button><p class="feedback" id="review-feedback" role="status" aria-live="polite"></p></div></div>
+</div></div></section>
+<section class="section rule" id="estudios"><div class="wrap"><div class="section-top"><div><div class="tiny">02 / ESTUDIOS</div><h2>Un portal. Muchos estudios.</h2><p class="section-caption">Enlaces a destinos existentes. Los demás accesos pasan por PROMETEO, sin crear catálogos ficticios.</p></div></div>
+<div class="studios">
+<a class="studio primary" href="https://juanmanuelpm.github.io/Experimentos/prometeo/3d-flow/galeria/" target="_blank" rel="noopener noreferrer"><div class="studio-head"><span class="tiny">Galería existente</span><span aria-hidden="true">↗</span></div><div><div class="studio-name">Estudio 3D</div><small>Integradores · Personajes · Videojuegos</small></div></a>
+<a class="studio" href="https://juanmanuelpm.github.io/Experimentos/prometeo/" target="_blank" rel="noopener noreferrer"><div class="studio-head"><span class="tiny">Acceso general</span><span aria-hidden="true">↗</span></div><div><div class="studio-name">Música</div><small>Sin catálogo público verificado aquí</small></div></a>
+<a class="studio" href="https://juanmanuelpm.github.io/Experimentos/prometeo/" target="_blank" rel="noopener noreferrer"><div class="studio-head"><span class="tiny">Acceso general</span><span aria-hidden="true">↗</span></div><div><div class="studio-name">Video</div><small>Desde PROMETEO</small></div></a>
+<a class="studio" href="https://juanmanuelpm.github.io/Experimentos/prometeo/" target="_blank" rel="noopener noreferrer"><div class="studio-head"><span class="tiny">Acceso general</span><span aria-hidden="true">↗</span></div><div><div class="studio-name">Imágenes</div><small>Desde PROMETEO</small></div></a>
+<a class="studio" href="https://juanmanuelpm.github.io/Experimentos/prometeo/" target="_blank" rel="noopener noreferrer"><div class="studio-head"><span class="tiny">Acceso general</span><span aria-hidden="true">↗</span></div><div><div class="studio-name">Diseño web</div><small>Desde PROMETEO</small></div></a>
+<a class="studio" href="https://juanmanuelpm.github.io/Experimentos/prometeo/" target="_blank" rel="noopener noreferrer"><div class="studio-head"><span class="tiny">Acceso general</span><span aria-hidden="true">↗</span></div><div><div class="studio-name">Educación</div><small>Desde PROMETEO</small></div></a>
+<a class="studio" href="https://juanmanuelpm.github.io/Experimentos/prometeo/" target="_blank" rel="noopener noreferrer"><div class="studio-head"><span class="tiny">Acceso general</span><span aria-hidden="true">↗</span></div><div><div class="studio-name">Archivo Vivo</div><small>Desde PROMETEO</small></div></a>
+<a class="studio" href="https://juanmanuelpm.github.io/Experimentos/prometeo/" target="_blank" rel="noopener noreferrer"><div class="studio-head"><span class="tiny">Acceso general</span><span aria-hidden="true">↗</span></div><div><div class="studio-name">Phone / Ideas</div><small>Desde PROMETEO</small></div></a>
+</div></div></section>
+<section class="section rule" id="metodo"><div class="wrap"><div class="section-top"><div><div class="tiny">03 / TRAZABILIDAD</div><h2>La consigna no cambia.</h2><p class="section-caption">El mismo brief literal y una única versión del método para todas las alternativas de esta ola.</p></div></div>
+<div class="lockbox"><div><div class="tiny muted">BRIEF / BLOQUEADO</div><h3>Una sola consigna</h3><div class="hash mono" id="brief-hash">558b9babbf23e0fdf1cfeb6b4af7dd0fa7afb9dab5a84b14e280c04b6e2a770a</div><p class="detail">SHA-256 del brief W001. El texto original no se reescribe dentro de cada intento.</p></div>
+<div><div class="tiny muted">ROOT / BLOQUEADO</div><h3>prometeo-root-selfbuild <span class="mono">0.1.1</span></h3><div class="hash mono" id="root-hash">35ee98a3c32538ed02191c1b21917e2d47af9b9bbcdd3e0e03932aa137d1b918</div><p class="detail">SHA-256 canónico. Diez etapas obligatorias, iguales para las diez ejecuciones.</p></div></div>
+<div class="stage-chips" id="stage-chips" aria-label="Diez etapas del método"></div>
+<p class="muted" style="font-size:13px;line-height:1.6;margin-top:20px">Próxima ola: conservar el brief literal, versionar una única nueva raíz tras CALIBRAR en Ideas y volver a comparar las diez ejecuciones. Esta pantalla no aprueba métodos ni modifica obras.</p>
+</div></section>
+</main>
+<footer><div class="wrap"><div><strong>ROOT <span style="color:var(--acid)">●</span> PROMETEO</strong><br><small>Experimento 02 / W001 · Interfaz aislada y descartable</small></div><a href="https://juanmanuelpm.github.io/Experimentos/prometeo/3d-flow/galeria/" target="_blank" rel="noopener noreferrer">Ir a la galería 3D ↗</a><a href="https://juanmanuelpm.github.io/Experimentos/prometeo/root/" target="_blank" rel="noopener noreferrer">ROOT actual ↗</a></div></footer>
+<script>
+(function(){
+"use strict";
+var BASE="https://juanmanuelpm.github.io/Experimentos/prometeo/root/ui-lab/w1/";
+var BRIEF="558b9babbf23e0fdf1cfeb6b4af7dd0fa7afb9dab5a84b14e280c04b6e2a770a";
+var ROOT="35ee98a3c32538ed02191c1b21917e2d47af9b9bbcdd3e0e03932aa137d1b918";
+var stages=["scope","recovery","prevention","alternatives","capabilities","planning","production","integration","persistence","delivery"];
+var states=Array(10).fill("checking");
+var reviews=Array.from({length:10},function(){return {note:"",stage:"",files:[]};});
+var selectParam=Number(new URLSearchParams(location.search).get("v"));
+var selected=Number.isInteger(selectParam)&&selectParam>=1&&selectParam<=10?selectParam:2;
+var sideA=1, sideB=2, compare=false, generation=0;
+function el(id){return document.getElementById(id);}
+function pad(n){return String(n).padStart(2,"0");}
+function previewUrl(n){return BASE+n+"/";}
+function stateName(s){return s==="ready"?"Archivo publicado":s==="pending"?"Pendiente":s==="checking"?"Comprobando…":"Sin verificar";}
+function clear(node){while(node.firstChild)node.removeChild(node.firstChild);}
+function labelStatus(n){return pad(n)+" · "+stateName(states[n-1]);}
+function emptyNode(message){
+ var box=document.createElement("div");box.className="empty-preview";
+ var disc=document.createElement("div");disc.className="disc";disc.textContent="↗";box.appendChild(disc);
+ var title=document.createElement("strong");title.textContent=message==="pending"?"Todavía no se publicó":message==="checking"?"Comprobando preview":message==="unknown"?"Disponibilidad incierta":"Preview no disponible";box.appendChild(title);
+ var p=document.createElement("p");p.textContent=message==="pending"?"Este número aún no tiene index.html accesible. Podés volver a comprobar en cualquier momento.":message==="checking"?"Esperando respuesta de la URL pública…":"No se pudo confirmar la publicación. Podés intentar abrir la URL en una pestaña nueva.";box.appendChild(p);
+ if(message==="unknown"){var a=document.createElement("a");a.className="open-link";a.href=previewUrl(selected);a.target="_blank";a.rel="noopener noreferrer";a.textContent="Intentar abrir ↗";box.appendChild(a);}
+ return box;
+}
+function frameNode(n){var frame=document.createElement("iframe");frame.title="Preview ROOT versión "+pad(n);frame.loading="lazy";frame.sandbox="allow-scripts allow-forms allow-popups allow-modals allow-pointer-lock";frame.referrerPolicy="no-referrer";frame.src=previewUrl(n);return frame;}
+function renderRuns(){
+ clear(el("runs"));
+ states.forEach(function(s,i){var n=i+1;var b=document.createElement("button");b.type="button";b.className="run";b.setAttribute("aria-pressed",String(n===selected));b.setAttribute("aria-label","Versión "+pad(n)+", "+stateName(s));b.dataset.n=String(n);
+ var row=document.createElement("div");row.className="run-head";var num=document.createElement("span");num.className="run-number";num.textContent=pad(n);var arrow=document.createElement("span");arrow.className="run-arrow";arrow.setAttribute("aria-hidden","true");arrow.textContent="↗";row.append(num,arrow);
+ var foot=document.createElement("div");foot.className="run-bottom";var dot=document.createElement("span");dot.className="status-dot "+s;var status=document.createElement("span");status.textContent=stateName(s);foot.append(dot,status);b.append(row,foot);el("runs").appendChild(b);});
+ var published=states.filter(function(x){return x==="ready";}).length;
+ var complete=states.every(function(x){return x!=="checking";});
+ el("ready-total").textContent=published+"/10";
+ el("check-status").textContent=complete?(published+" rutas publicadas · "+states.filter(function(x){return x==="pending";}).length+" pendientes · "+states.filter(function(x){return x==="unknown";}).length+" sin verificar"):"Comprobando las diez rutas públicas…";
+}
+function fillOptions(id){var sel=el(id);clear(sel);for(var n=1;n<=10;n++){var opt=document.createElement("option");opt.value=n;opt.textContent=labelStatus(n);sel.appendChild(opt);}sel.value=id==="compare-a"?String(sideA):String(sideB);}
+function renderSingle(){
+ var s=states[selected-1],screen=el("single-screen");clear(screen);
+ el("selected-label").textContent="Versión "+pad(selected);
+ el("review-number").textContent=pad(selected);
+ el("preview-state").textContent="Ola 001 / "+stateName(s)+(s==="ready"?" · Publicado no significa probado":"");
+ var link=el("open-tab");link.href=previewUrl(selected);link.setAttribute("aria-disabled",String(s==="pending"||s==="checking"));
+ if(s==="ready")screen.appendChild(frameNode(selected));else screen.appendChild(emptyNode(s));
+ if(s==="unknown"){link.setAttribute("aria-disabled","false");}
+ el("note").value=reviews[selected-1].note;el("stage").value=reviews[selected-1].stage;el("capture").value="";
+ renderFiles();
+ try{var url=new URL(location.href);url.searchParams.set("v",pad(selected));history.replaceState(null,"",url);}catch(e){}
+}
+function renderFiles(){
+ var files=reviews[selected-1].files;el("file-list").textContent=files.length?files.map(function(f){return f.name+" ("+Math.round(f.size/1024)+" KB)";}).join(" · "):"Sin capturas adjuntas.";
+ el("clear-files").hidden=!files.length;
+ el("review-count").textContent=reviews.filter(function(r){return !!r.note.trim()||!!r.stage||r.files.length>0;}).length+" / 10 versiones con revisión";
+}
+function renderCompare(){
+ fillOptions("compare-a");fillOptions("compare-b");
+ [["screen-a",sideA],["screen-b",sideB]].forEach(function(pair){var screen=el(pair[0]),n=pair[1];clear(screen);if(states[n-1]==="ready")screen.appendChild(frameNode(n));else screen.appendChild(emptyNode(states[n-1]));});
+}
+function render(){renderRuns();renderSingle();if(compare)renderCompare();}
+async function check(n){
+ try{var r=await fetch(previewUrl(n)+"index.html?check="+Date.now(),{method:"HEAD",cache:"no-store",redirect:"follow"});
+ if(r.ok)return "ready";if(r.status===404)return "pending";return "unknown";
+ }catch(e){return "unknown";}
+}
+async function refresh(){
+ var token=++generation;states=Array(10).fill("checking");render();
+ var result=await Promise.all(Array.from({length:10},function(_,i){return check(i+1);}));
+ if(token!==generation)return;states=result;render();
+}
+function byteString(str){return new TextEncoder().encode(str);}
+var crcTable=null;
+function crc32(bytes){
+ if(!crcTable){crcTable=[];for(var n=0;n<256;n++){var c=n;for(var k=0;k<8;k++)c=(c&1)?0xedb88320^(c>>>1):c>>>1;crcTable[n]=c>>>0;}}
+ var crc=0xffffffff;for(var j=0;j<bytes.length;j++)crc=crcTable[(crc^bytes[j])&255]^(crc>>>8);return (crc^0xffffffff)>>>0;
+}
+function u16(view,off,value){view.setUint16(off,value,true);}function u32(view,off,value){view.setUint32(off,value,true);}
+async function makeZip(entries){
+ var chunks=[],centers=[],offset=0;
+ for(var i=0;i<entries.length;i++){
+ var entry=entries[i],name=byteString(entry.name),data=typeof entry.data==="string"?byteString(entry.data):new Uint8Array(await entry.data.arrayBuffer()),crc=crc32(data);
+ var local=new Uint8Array(30+name.length),lv=new DataView(local.buffer);u32(lv,0,0x04034b50);u16(lv,4,20);u16(lv,6,0x0800);u16(lv,8,0);u32(lv,14,crc);u32(lv,18,data.length);u32(lv,22,data.length);u16(lv,26,name.length);local.set(name,30);
+ var central=new Uint8Array(46+name.length),cv=new DataView(central.buffer);u32(cv,0,0x02014b50);u16(cv,4,20);u16(cv,6,20);u16(cv,8,0x0800);u16(cv,10,0);u32(cv,16,crc);u32(cv,20,data.length);u32(cv,24,data.length);u16(cv,28,name.length);u32(cv,42,offset);central.set(name,46);
+ chunks.push(local,data);centers.push(central);offset+=local.length+data.length;
+ }
+ var centralSize=centers.reduce(function(n,c){return n+c.length;},0),end=new Uint8Array(22),ev=new DataView(end.buffer);u32(ev,0,0x06054b50);u16(ev,8,entries.length);u16(ev,10,entries.length);u32(ev,12,centralSize);u32(ev,16,offset);
+ return new Blob(chunks.concat(centers,[end]),{type:"application/zip"});
+}
+function safeName(name){return name.normalize("NFKD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-zA-Z0-9._-]/g,"_").slice(0,65)||"captura";}
+async function exportReview(){
+ var button=el("export-review"),feedback=el("review-feedback");button.disabled=true;feedback.textContent="Preparando ZIP local…";
+ try{
+ var results=[],entries=[];for(var i=0;i<10;i++){var review=reviews[i],paths=[];
+ for(var f=0;f<review.files.length;f++){var file=review.files[f],path="capturas/"+pad(i+1)+"/"+pad(f+1)+"_"+safeName(file.name);entries.push({name:path,data:file});paths.push({path:path,originalName:file.name,mediaType:file.type,sizeBytes:file.size});}
+ results.push({version:i+1,notes:review.note,stageSuspected:review.stage||null,captures:paths,previewUrl:previewUrl(i+1),observedHttpState:states[i]});
+ }
+ var doc={schema:"prometeo.calibrar.root-ui-review/v1",cohortId:"root-ui-benchmark-w001",wave:"001",briefSha256:BRIEF,root:{id:"prometeo-root-selfbuild",version:"0.1.1",sha256Canonical:ROOT},createdAt:new Date().toISOString(),privacy:"LOCAL_EXPORT_ONLY_NOT_UPLOADED",approval:"NOT_GIVEN",results:results};
+ entries.unshift({name:"revision.json",data:JSON.stringify(doc,null,2)+"\n"});
+ entries.push({name:"LEEME.txt",data:"PROMETEO · ROOT UI W001 · revisión para CALIBRAR en Ideas\nNotas y capturas recopiladas localmente. Nada fue enviado a la red por esta interfaz.\nLas etapas sospechadas son hipótesis humanas, no diagnósticos ni aprobaciones.\nEl brief original y ROOT 0.1.1 se identifican por sus hashes en revision.json.\n"});
+ var zip=await makeZip(entries),url=URL.createObjectURL(zip),link=document.createElement("a");link.href=url;link.download="ROOT_UI_W001_revision_"+new Date().toISOString().slice(0,10)+".zip";document.body.appendChild(link);link.click();link.remove();setTimeout(function(){URL.revokeObjectURL(url);},60000);
+ feedback.textContent="ZIP generado. Tus notas no se enviaron."; 
+ }catch(error){feedback.textContent="No se pudo generar el ZIP: "+String(error.message||error);}
+ finally{button.disabled=false;}
+}
+function init(){
+ stages.forEach(function(stage,i){var option=document.createElement("option");option.value=stage;option.textContent=pad(i+1)+" · "+stage;el("stage").appendChild(option);
+ var chip=document.createElement("span");chip.textContent=pad(i+1)+" "+stage;el("stage-chips").appendChild(chip);});
+ el("runs").addEventListener("click",function(e){var b=e.target.closest("button[data-n]");if(!b)return;selected=Number(b.dataset.n);el("review-feedback").textContent="";render();});
+ el("refresh").addEventListener("click",refresh);
+ el("compare-toggle").addEventListener("click",function(){compare=!compare;this.setAttribute("aria-pressed",String(compare));this.textContent=compare?"Cerrar comparación ×":"Comparar dos ↔";el("single-preview").hidden=compare;el("compare-preview").hidden=!compare;if(compare){sideA=selected;sideB=selected===10?9:selected+1;renderCompare();}});
+ el("compare-a").addEventListener("change",function(){sideA=Number(this.value);renderCompare();});
+ el("compare-b").addEventListener("change",function(){sideB=Number(this.value);renderCompare();});
+ el("note").addEventListener("input",function(){reviews[selected-1].note=this.value;renderFiles();});
+ el("stage").addEventListener("change",function(){reviews[selected-1].stage=this.value;renderFiles();});
+ el("capture").addEventListener("change",function(){
+ var files=Array.from(this.files||[]),stored=reviews[selected-1].files;var total=reviews.reduce(function(sum,review){return sum+review.files.reduce(function(s,file){return s+file.size;},0);},0);
+ if(stored.length+files.length>3||files.some(function(f){return !["image/jpeg","image/png","image/webp"].includes(f.type)||f.size>5*1024*1024;})||total+files.reduce(function(s,f){return s+f.size;},0)>20*1024*1024){
+ el("review-feedback").textContent="Máximo 3 imágenes por versión, 5 MB cada una y 20 MB entre todas.";this.value="";return;}
+ reviews[selected-1].files=stored.concat(files);this.value="";renderFiles();el("review-feedback").textContent=files.length?"Capturas guardadas sólo en esta pestaña.":"";
+ });
+ el("clear-files").addEventListener("click",function(){reviews[selected-1].files=[];renderFiles();});
+ el("export-review").addEventListener("click",exportReview);
+ render();refresh();
+}
+if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init);else init();
+})();
+</script>
+</body>
+</html>
