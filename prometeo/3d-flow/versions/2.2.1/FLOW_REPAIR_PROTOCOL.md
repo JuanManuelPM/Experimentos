@@ -1,0 +1,2 @@
+# Flow repair 2.2 · Estudio 3D
+Hereda las reglas de [2.1](../2.1.0/FLOW_REPAIR_PROTOCOL.md) excepto alcance: la corrección incluye las etapas de autoría, orientación, actuación, assembly, cinema y QA. Cada error se liga a fuente, actor o modo, estado, prueba y primera decisión causal; hipótesis no es causa visual comprobada. Cambiar sólo versión nueva del método, conservar brief y producción previos, probar regresión, no auto-aprobar arte ni afectar otros estudios.

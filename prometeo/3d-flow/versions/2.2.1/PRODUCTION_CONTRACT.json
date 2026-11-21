@@ -1,0 +1,168 @@
+{
+  "version": "2.2.1",
+  "schema": "prometeo.3d.production-contract/v2.2",
+  "avatar": {
+    "state": "ZERO_APPROVED_VISUAL_BASE",
+    "noFixedMethod": true,
+    "compareDistinctViableRoutes": 2,
+    "applies": "all visible actors required by brief; do not force actors",
+    "requiredSteps": [
+      "AV_ROLE",
+      "AV_BUDGET",
+      "AV_REF",
+      "AV_OPEN",
+      "AV_TOOL",
+      "AV_DESIGN",
+      "AV_BODY",
+      "AV_FACE",
+      "AV_HANDS",
+      "AV_HAIR",
+      "AV_CLOTH",
+      "AV_MATERIAL",
+      "AV_TOPO",
+      "AV_RIG",
+      "AV_EXPR",
+      "AV_LOOKDEV",
+      "AV_ITERATE",
+      "AV_CAST",
+      "AV_AXIS",
+      "AV_ROUTE",
+      "AV_CLIPS",
+      "AV_ALL_MOTION",
+      "AV_CONTACT",
+      "AV_SAVE",
+      "AV_REVIEW"
+    ],
+    "lookdev": [
+      "FRONT",
+      "PROFILE",
+      "BACK",
+      "THREE_QUARTER",
+      "FACE_IF_CLOSEUP",
+      "TARGET_SHOT",
+      "ACTION_IF_ANIMATED"
+    ],
+    "artifacts": [
+      "editable source",
+      "asset/license hash",
+      "cast roster",
+      "lookdev frames",
+      "variant comparisons",
+      "AVATAR_EXPERIMENT_RECEIPT"
+    ],
+    "promotion": "HUMAN_APPROVED_APPEARANCE_AND_SECOND_CONSUMER_FOR_SHARED_STANDARD"
+  },
+  "motion": {
+    "scope": "ALL_LOCOMOTING_ACTORS_AND_ROUTES",
+    "thresholdDot": 0.8,
+    "minSpeedMps": 0.05,
+    "maxSampleGapSeconds": 0.12,
+    "minMovingSamplesPerRoute": 3,
+    "exceptions": [
+      "BACKPEDAL",
+      "STRAFE"
+    ],
+    "artifact": "CAST_MOTION_QA"
+  },
+  "ui": {
+    "defaultMode": "PRESENTATION",
+    "maxPersistentViewportFraction": 0.12,
+    "maxFocalOverlap": 0,
+    "touchTargetCSSPx": 44,
+    "viewports": [
+      [
+        360,
+        640
+      ],
+      [
+        412,
+        915
+      ],
+      [
+        915,
+        412
+      ]
+    ],
+    "modal": "EXPLICIT_USER_ACTION_ONLY",
+    "artifact": "UI_TOUCH_QA"
+  },
+  "touch": {
+    "freeLook": "SWIPE_RIGHT_LOOK_RIGHT_UP_LOOK_UP",
+    "orbit": "GRAB_WORLD_FOLLOWS_FINGER",
+    "checks": [
+      "four directions",
+      "pinch",
+      "pan",
+      "pointercancel",
+      "lostpointercapture",
+      "tap versus drag",
+      "UI exclusion",
+      "mode switch pose",
+      "reset",
+      "resize"
+    ]
+  },
+  "latentRisks": [
+    "BOOT_ASSETS",
+    "DEPTH_PARALLAX",
+    "SCALE_CLOSURE",
+    "COLLISIONS_CONTACT",
+    "CAMERA_CLIPPING",
+    "ANIMATION_TRANSITIONS",
+    "RESIZE_SAFE_AREA",
+    "CONTEXT_RESTORE",
+    "AUDIO_AUTOPLAY",
+    "FPS_MEMORY",
+    "RESET_RESUME"
+  ],
+  "evidencePolicy": "PASS with actual evidence, FAIL, NOT_RUN, justified N/A; no artistic veto on full attempt",
+  "qualityFinish": {
+    "schema": "prometeo.3d.quality-delta/v1",
+    "target": "Professional small production within existing brief and available rights-safe tools",
+    "baselineRequiredForRevision": true,
+    "phases": [
+      "BASELINE_AND_TARGET",
+      "DESIGN_AND_AUTHOR",
+      "INTEGRATE_FULL_SCOPE",
+      "OBSERVE_COMPARE",
+      "CORRECT_HIGHEST_IMPACT",
+      "RECHECK_AND_DELIVER"
+    ],
+    "applies": [
+      "HERO",
+      "ACTOR",
+      "ENVIRONMENT",
+      "MATERIAL_LIGHT",
+      "MOTION",
+      "CAMERA",
+      "INTERACTION",
+      "MOBILE"
+    ],
+    "visualImprovementEvidence": [
+      "matched before/after actual renders",
+      "same framing/scale/action as far as practical",
+      "implemented source change"
+    ],
+    "nonComparable": "NO_COMPARABLE or NOT_RUN; never invent pixels",
+    "fullCandidateAlways": true,
+    "humanArtApprovalOnly": true,
+    "artifact": "QUALITY_DELTA.json",
+    "policies": {
+      "scope": "[Q221_SCOPE] Conservar BRIEF byte por byte. Ambición significa elevar la ejecución artística, técnica e interactiva de TODO el alcance existente, no agregar nuevas exigencias al texto ni multiplicar funciones irrelevantes.",
+      "recovery": "[Q221_BASELINE] Para una revisión recuperar HEAD de la versión anterior, fuentes, capturas y devolución humana. Enumerar qué preservar y qué reconstruir; comparar en un encuadre y una acción equivalentes. No declarar una mejora sin contraste observable.",
+      "planning": "[Q221_PLAN] Definir resultado objetivo comparable con una pequeña producción profesional del estilo elegido, por cámara, identidad/silueta, materiales, iluminación, actuación e interacción. Reservar capacidad sustancial de autoría a personajes si existen, con el mismo nivel de desglose y cuidado que el escenario. Presupuestar primero la obra, no los informes; no terminar por haber escrito código o un primer artículo.",
+      "acquisition": "[Q221_TRIAL] Comparar rutas viables y ejecutar una prueba de representación real para las alternativas de mayor impacto cuando haya herramientas. Si una técnica no permite resultado convincente, cambiar de técnica o insumo; no reciclar el avatar rechazado por comodidad. Guardar artefacto editable y evidencia de prueba, no sólo dos nombres.",
+      "humanoid": "[Q221_CHARACTER] Tratar cada avatar como un producto artístico completo; dedicar una pasada de autoría y una pasada correctiva concreta tras lookdev, antes de integración final. Priorizar mejoras en geometría de rostro/cuerpo, pelo/ropa/materiales y deformación; no contar recolor, cambio de luz o accesorio como corrección estructural. Conservar diversidad por actor, no congelar técnica ni modelo. Si la prueba visual no es posible, registrar NOT_RUN y continuar el mejor intento completo.",
+      "props": "[Q221_PROPS] Diseñar el objeto importante desde silueta, espesores, piezas, uniones, pivotes y materialidad. Probar funcionamiento/despiece/interacción realmente; evitar maqueta genérica o decoración que simula una función. Revisar de cerca y en escena, corregir defecto de mayor impacto.",
+      "environment": "[Q221_WORLD] Construir un lugar intencional y completo con profundidad, continuidad espacial, usos y detalle contextual; conservar los logros de la versión anterior. Variar geometría y materiales en elementos repetidos, emplear assets y modelado real, no simplemente aumentar cantidad de bloques.",
+      "fx": "[Q221_LOOK] Diseñar composición, contrastes, fuentes de luz y materiales que hagan legible y convincente el espacio y el sujeto. Comparar planos equivalentes antes/después cuando haya render; corregir luz/materiales y evitar que un efecto tape defectos.",
+      "assembly": "[Q221_INTEGRATE] Integrar la totalidad real de actores, espacio, objetos, acciones y controles. Priorizar apertura pública, modos claros y presentación limpia; probar el elemento central en uso. No utilizar paneles de diagnóstico como interfaz final ni confundir fallback 2D con obra 3D.",
+      "acting": "[Q221_ACTION] Revisar el ciclo completo de acción de cada actor pertinente, no sólo el protagonista. Corregir orientación, contactos, transición, peso y ritmo; no sustituir actores animados con maniquíes que sólo se desplazan. Mantener política de evidencia real o NOT_RUN.",
+      "cinema": "[Q221_CAMERA] Usar cámara y encuadre que permitan evaluar calidad del rostro, objeto y espacio, además de continuidad, control táctil y ausencia de clipping. No ocultar debilidades con cortes o distancia; probar escena completa bajo una vista limpia.",
+      "qa": "[Q221_FINISH] Antes de cerrar, ejecutar revisión comparativa con la versión anterior por componente aplicable: HERO/ACTOR, ENVIRONMENT, MATERIAL/LIGHT, MOTION, CAMERA, INTERACTION y MOBILE. Clasificar MEJORADO_OBSERVABLE, REGRESION, SIN_CAMBIO, NO_COMPARABLE o NOT_RUN. Cada mejora observable exige evidencia comparable de antes/después y cambio implementado, no sólo relato. Los checklists de código no son aprobación de arte.",
+      "repair": "[Q221_POLISH] Incorporar una pasada deliberada de acabado DURANTE la producción, tras primera integración y diagnóstico: reparar al menos los defectos de mayor impacto que sean corregibles, repetir prueba y registrar resultado. No esperar a la ronda siguiente para un defecto conocido reversible. La revisión artística final sigue humana; no auto-vetar ni iterar indefinidamente.",
+      "persistence": "[Q221_RECORD] Guardar QUALITY_DELTA.json con baseline commit, componente, defecto, comparación, intervención concreta, evidencia antes/después y pendiente. Guardar intento completo y archivos de autoría; no premiar la cantidad de texto ni de pasos declarados.",
+      "publish": "[Q221_RELEASE] Entregar la obra completa y URL aislada, junto a comparación breve y evidencia de qué cambió. Una publicación no equivale a aprobación; si no hubo render o usuario no revisó, declararlo. No detener o esconder un resultado imperfecto."
+    }
+  }
+}
