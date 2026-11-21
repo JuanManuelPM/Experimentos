@@ -1,3 +1,16 @@
+# Changelog de producción 3D
+
+## 2.1.0 · 2026-11-20 · CURRENT_CANDIDATE
+- 280 nodos, 370 aristas, 17 etapas y 12 subflujos con 11 nodos para decisión temprana de personajes y reparación del flujo.
+- Seis auditorías de decisiones sobre Ola 002: por qué eligieron CesiumMan, pasajeros de formas, GLB de morfología repetida y mallas loft pese a la calidad deficiente.
+- Registradas cinco familias de visuales rechazos/uso restringido, **cero** personajes aprobados. Movimiento de Cruce clasificado sólo como PARTIAL_POSITIVE.
+- Sistema de estrategia visual separado de rig, animación y comportamiento; 10 pipelines experimentales distintos, 7 asignaciones a escenas con personajes y 3 alternativas sin necesidad de introducir NPC en escenas que no lo requieren.
+- `flow-repair.mjs`: síntesis causal por etapa, control de trazas genéricas, parche acotado a nueva versión, prohibición de modificar brief humano/otros sectores.
+- Reusar Character Flow V3, Character Motion Factory A/B/C/D y fuentes oficiales. No inventar herramientas instaladas.
+- QA por componente y permitir publicación íntegra con defecto visible; aprobación humana y segundo consumidor sólo para promoción real.
+- No se relanzó Ola 002 ni se modificaron los diez encargos fijados al flujo 2.0.
+- Personajes de calidad comercial todavía **NO PRODUCIDOS NI APROBADOS** con este método.
+
 # Evolución del método 3D
 
 ## 2.0.0 · 2026-11-20 · CURRENT_CANDIDATE

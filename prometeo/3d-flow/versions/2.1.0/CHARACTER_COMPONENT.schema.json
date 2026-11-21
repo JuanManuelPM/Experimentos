@@ -1,0 +1,294 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "PROMETEO 3D actor as separate visual/rig/motion/behavior components",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "projectId",
+    "actorId",
+    "role",
+    "strategyId",
+    "visual",
+    "rig",
+    "motion",
+    "behavior",
+    "selectionEvidence",
+    "approval"
+  ],
+  "properties": {
+    "schema": {
+      "const": "prometeo.3d.character-components/v1"
+    },
+    "projectId": {
+      "type": "string",
+      "minLength": 2
+    },
+    "actorId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "role": {
+      "enum": [
+        "HERO",
+        "DIALOGUE",
+        "SUPPORT_NPC",
+        "VISIBLE_CROWD",
+        "BACKGROUND",
+        "DEBUG_PROXY"
+      ]
+    },
+    "strategyId": {
+      "type": "string",
+      "minLength": 2
+    },
+    "visual": {
+      "type": "object",
+      "required": [
+        "visualSourceId",
+        "sourceRef",
+        "meshTechnique",
+        "faceTechnique",
+        "outfitTechnique",
+        "license",
+        "status"
+      ],
+      "properties": {
+        "visualSourceId": {
+          "type": "string"
+        },
+        "sourceRef": {
+          "type": "string"
+        },
+        "bytesHash": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "meshTechnique": {
+          "type": "string"
+        },
+        "faceTechnique": {
+          "type": "string"
+        },
+        "outfitTechnique": {
+          "type": "string"
+        },
+        "materialAtlasRef": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "license": {
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "SOURCE_ONLY",
+            "LOOKDEV_NOT_RUN",
+            "REJECTED_VISUAL",
+            "CANDIDATE_RENDERED",
+            "USER_ART_APPROVED"
+          ]
+        }
+      }
+    },
+    "rig": {
+      "type": "object",
+      "required": [
+        "rigId",
+        "skeletonRef",
+        "boneMapRef",
+        "restPose",
+        "frontAxisCalibration"
+      ],
+      "properties": {
+        "rigId": {
+          "type": "string"
+        },
+        "skeletonRef": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "boneMapRef": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "restPose": {
+          "enum": [
+            "T",
+            "A",
+            "CUSTOM",
+            "UNKNOWN"
+          ]
+        },
+        "frontAxisCalibration": {
+          "enum": [
+            "CALIBRATED",
+            "UNVERIFIED"
+          ]
+        },
+        "skeletonHash": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "motion": {
+      "type": "object",
+      "required": [
+        "motionPackId",
+        "sourceRef",
+        "clipIds",
+        "retargetStatus",
+        "rootMotionPolicy",
+        "footContactStatus"
+      ],
+      "properties": {
+        "motionPackId": {
+          "type": "string"
+        },
+        "sourceRef": {
+          "type": "string"
+        },
+        "clipIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "retargetStatus": {
+          "enum": [
+            "NATIVE_COMPATIBLE",
+            "RETARGET_MEASURED",
+            "UNVERIFIED",
+            "INCOMPATIBLE"
+          ]
+        },
+        "rootMotionPolicy": {
+          "enum": [
+            "IN_PLACE",
+            "ROOT_MOTION",
+            "UNKNOWN"
+          ]
+        },
+        "footContactStatus": {
+          "enum": [
+            "MEASURED",
+            "UNVERIFIED",
+            "FAIL"
+          ]
+        },
+        "motionApprovedByUser": {
+          "type": "boolean"
+        }
+      }
+    },
+    "behavior": {
+      "type": "object",
+      "required": [
+        "behaviorId",
+        "events"
+      ],
+      "properties": {
+        "behaviorId": {
+          "type": "string"
+        },
+        "events": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "cameraTargets": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "selectionEvidence": {
+      "type": "object",
+      "required": [
+        "alternatives",
+        "selectedBecause",
+        "rejectedPriorRefs",
+        "actualModelBytesRead"
+      ],
+      "properties": {
+        "alternatives": {
+          "type": "array",
+          "minItems": 2,
+          "items": {
+            "type": "string"
+          }
+        },
+        "selectedBecause": {
+          "type": "string",
+          "minLength": 10
+        },
+        "rejectedPriorRefs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "actualModelBytesRead": {
+          "type": "boolean"
+        },
+        "lookdevImageRefs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "stageTraceRefs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "approval": {
+      "type": "object",
+      "required": [
+        "technicalStatus",
+        "artisticStatus",
+        "humanReviewer"
+      ],
+      "properties": {
+        "technicalStatus": {
+          "enum": [
+            "NOT_RUN",
+            "SOURCE_TESTED",
+            "RENDER_TESTED"
+          ]
+        },
+        "artisticStatus": {
+          "enum": [
+            "NOT_REVIEWED",
+            "REJECTED",
+            "PARTIAL_POSITIVE",
+            "APPROVED"
+          ]
+        },
+        "humanReviewer": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    }
+  }
+}

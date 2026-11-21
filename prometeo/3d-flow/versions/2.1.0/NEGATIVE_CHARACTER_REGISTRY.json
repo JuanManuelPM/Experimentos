@@ -1,0 +1,132 @@
+{
+  "schema": "prometeo.3d.character-negative-registry/v1",
+  "lastHumanReview": "2026-11-20",
+  "defaultArtStatus": "NONE_APPROVED",
+  "objective": "No previously rejected human visual family may be silently selected as final hero/dialogue/NPC. Motion components can be independently evaluated and carried to a different mesh/rig.",
+  "entries": [
+    {
+      "id": "humanoid:seated-crowd-procedural-v0.1.0",
+      "project": "transporte-retro-v3",
+      "target": "VISUAL_MESH",
+      "status": "REJECTED_VISUAL",
+      "reasons": [
+        "Human faces and torsos made from spheres/boxes/cylinders",
+        "Looks like a generic toy or placeholder, not production character"
+      ],
+      "source": "prometeo/previews/transporte-retro/v3/scene.mjs",
+      "hash": "b7d628e4241d7e949f8342c1e04442afda1d3af3",
+      "prohibitedRoles": [
+        "HERO",
+        "DIALOGUE",
+        "SUPPORT_NPC",
+        "VISIBLE_CROWD"
+      ],
+      "salvage": [
+        "seat-layout",
+        "crowd-routing"
+      ],
+      "scope": "Specific visual implementation; does not ban primitive geometry for props/architecture."
+    },
+    {
+      "id": "humanoid:cesium-man-default-skin",
+      "project": "cruce-urbano-v2,estacion-servicio-tormenta-v2,laboratorio-submarino-v2",
+      "target": "VISUAL_MESH_AND_TEXTURE",
+      "status": "REJECTED_VISUAL",
+      "reasons": [
+        "Demonstration figure's fixed blue/green/white appearance and face are visually unacceptable as final characters",
+        "Simple recolor, cap or accessories are not new visual identity"
+      ],
+      "source": "prometeo/previews/cruce-urbano/v2/scene.mjs",
+      "hash": "f0a2d1f6f0f59fb3af0cfd14f0f0710e782c4f89",
+      "prohibitedRoles": [
+        "HERO",
+        "DIALOGUE",
+        "SUPPORT_NPC",
+        "VISIBLE_CROWD"
+      ],
+      "salvage": [
+        "LOCOMOTION_CANDIDATE_WITH_USER_POSITIVE_FEEDBACK",
+        "skeleton-mixer-integration",
+        "path-following"
+      ],
+      "scope": "Reject current CesiumMan VISUAL only; not all CC BY glTF assets, not the library's animation principles.",
+      "motionApproval": "PARTIAL_POSITIVE_NOT_COMPATIBILITY_TESTED"
+    },
+    {
+      "id": "humanoid:quaternius-civilian-reskin-pair",
+      "project": "entrevista-nocturna-v2",
+      "target": "FACE_AND_VISUAL_VARIATION",
+      "status": "REJECTED_FOR_CLOSEUP",
+      "reasons": [
+        "Same underlying morphology recolored for two dialogue characters",
+        "First-person face and expression quality insufficient"
+      ],
+      "source": "prometeo/previews/entrevista-nocturna/v2/index.html",
+      "hash": "7b4c4804d1668278a584df05399096625f0f96b8",
+      "prohibitedRoles": [
+        "HERO_CLOSEUP",
+        "DIALOGUE_CLOSEUP"
+      ],
+      "salvage": [
+        "BODY_RIG_REFERENCE_IF_REAL_CLIP",
+        "material-dressing-pattern"
+      ],
+      "scope": "Reject these specific assets/closeup use, not Quaternius entire library or neutral secondary roles."
+    },
+    {
+      "id": "humanoid:respawn-hand-loft-v3",
+      "project": "respawn-desk-v3",
+      "target": "FACE_AND_ANATOMY",
+      "status": "REJECTED_VISUAL",
+      "reasons": [
+        "Hand-lofted custom mesh avoids classic primitives but still fails visual anatomical expectations",
+        "Face/eyes/skin and detailed rig inadequate at target shot distance"
+      ],
+      "source": "prometeo/previews/respawn-desk/v3/assets/anonymous-actor-mesh.mjs",
+      "hash": "fc285df65e4ed7deaeab7973f22c5db33587cffa",
+      "prohibitedRoles": [
+        "HERO",
+        "DIALOGUE"
+      ],
+      "salvage": [
+        "timeline-and-camera-movement"
+      ],
+      "scope": "Ban THIS constructed face as approved model; not all authored Blender mesh techniques."
+    },
+    {
+      "id": "humanoid:technical-proxy",
+      "project": "GENERAL",
+      "target": "FINAL_VISIBLE_HUMAN",
+      "status": "INTERNAL_DEBUG_ONLY",
+      "reasons": [
+        "Proxy/placeholder cannot be claimed as a finished character or increase art readiness"
+      ],
+      "source": "none",
+      "hash": null,
+      "prohibitedRoles": [
+        "HERO",
+        "DIALOGUE",
+        "SUPPORT_NPC",
+        "VISIBLE_CROWD"
+      ],
+      "salvage": [
+        "collision-layout",
+        "debug-camera",
+        "rig-axes"
+      ],
+      "scope": "Permitted for internal prototype only; if no replacement can be produced, still deliver best full-scene candidate with honest character FAIL, never declare artistic approval."
+    }
+  ],
+  "approvedVisualFamilies": [],
+  "approvedAnimationPacks": [],
+  "candidateMotionComponents": [
+    {
+      "source": "cruce-urbano/v2",
+      "component": "CesiumMan walk clip and path control",
+      "status": "PARTIAL_POSITIVE_USER",
+      "requires": "Extract motion source+rig map, prove retarget compatibility and foot contact before integrating into different model"
+    }
+  ],
+  "selectionRule": "A negative visual cannot become approved by changing color alone. New source must differ materially in topology/silhouette/face/UV/authoring; acquisition alternatives compared with evidence, no fake pass. If technically impossible, full scene is still delivered with visual character FAIL and explicit workaround.",
+  "promotionRule": "Only user-approved appearance based on actual viewed frames, rights-compatible source, loadable editable asset, valid skeleton/animation (if required), second scene reuse proof can elevate to approved visual family. Do not promote merely by deterministic tests."
+}

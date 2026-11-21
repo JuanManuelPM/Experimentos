@@ -1,13 +1,13 @@
 {
   "schema": "prometeo.3d.production-flow/v1",
   "id": "prometeo-3d-production",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "publishedAt": "2026-11-20",
   "status": "CURRENT_CANDIDATE",
   "scope": "studio-3d",
-  "title": "PROMETEO Estudio 3D · Método operativo universal, producción íntegra + componentes excelentes",
-  "description": "Brief humano fijo y opcional alias mínimo; compilación a contrato de escena íntegra; recuperar recursos y fábricas; producir 3D de calidad por componente (hero/entorno/actor/cámara); publicar sin censura estética; trazar etapa y reutilizar hallazgos.",
-  "sourceOfTruth": "FLOW_INDEX.json → versions/2.0.0/flow.json + METHOD.md + STAGE_OPERATIONS.json + scene-compiler.mjs",
+  "title": "PROMETEO Estudio 3D · Character exploration + method-repair 2.1",
+  "description": "2.0.0 full-scene contract preserved. New character appearance decision discipline; blacklist failed visual models, retarget motion separately, diversify exploration, trace earliest decisions, human-controlled method correction between waves. Brief immutable.",
+  "sourceOfTruth": "FLOW_INDEX.json → versions/2.1.0/flow.json; METHOD.md; STAGE_OPERATIONS.json; NEGATIVE_CHARACTER_REGISTRY.json; CHARACTER_STRATEGIES.json; flow-repair.mjs",
   "stages": [
     {
       "id": "scope",
@@ -3626,6 +3626,138 @@
       "qualityPolicy": "PRODUCE_FIRST_DIAGNOSE_AFTER_NO_ARTISTIC_VETO",
       "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
       "componentAwareness": null
+    },
+    {
+      "id": "CHAR_AUDIT",
+      "stage": "recovery",
+      "label": "Rastrear primeras decisiones y fallos heredados",
+      "detail": "Leer fuentes y STAGE_TRACE de Wave002, localizar selección de Cesium y muñecos de primitivas y consultar rejected registry antes de volver a usarlos; elegir estrategia alternativa.",
+      "type": "action",
+      "owner": "studio-3d-character-domain",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "procedureRef": "STAGE_OPERATIONS.json#/stages/1",
+      "evidencePolicy": "SOURCE_LEVEL_NOT_PIXEL_APPROVAL",
+      "scope": "CHARACTER_ONLY"
+    },
+    {
+      "id": "CHAR_ALLOC",
+      "stage": "planning",
+      "label": "Diversificar familias visuales sin alterar el brief",
+      "detail": "Asignar visual source/face/wardrobe/rig route distintos a los proyectos con actores. Los proyectos sin personaje no reciben NPC forzado. No contar recolor como estrategia nueva.",
+      "type": "action",
+      "owner": "studio-3d-character-domain",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "procedureRef": "STAGE_OPERATIONS.json#/stages/2",
+      "evidencePolicy": "SOURCE_LEVEL_NOT_PIXEL_APPROVAL",
+      "scope": "CHARACTER_ONLY"
+    },
+    {
+      "id": "CHAR_REJECT",
+      "stage": "planning",
+      "label": "Filtrar referencias de apariencia humana rechazadas",
+      "detail": "Cruce: movimiento candidato sí, cara/skin no. Bondi primitivas, entrevista rostros, respawn cabeza procedimental no son personajes visuales aprobados. Dos alternativas reales.",
+      "type": "action",
+      "owner": "studio-3d-character-domain",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "procedureRef": "STAGE_OPERATIONS.json#/stages/2",
+      "evidencePolicy": "SOURCE_LEVEL_NOT_PIXEL_APPROVAL",
+      "scope": "CHARACTER_ONLY"
+    },
+    {
+      "id": "CHAR_SELECT",
+      "stage": "acquisition",
+      "label": "Seleccionar fuente visual por evidencia y plano",
+      "detail": "Comparar dos modelos/autorías disponibles, URL/bytes/licencia/UV/morph/rig y limitaciones; documentar rechazo de la opción anterior. No asumir herramienta o GLB instalados.",
+      "type": "action",
+      "owner": "studio-3d-character-domain",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "procedureRef": "STAGE_OPERATIONS.json#/stages/3",
+      "evidencePolicy": "SOURCE_LEVEL_NOT_PIXEL_APPROVAL",
+      "scope": "CHARACTER_ONLY"
+    },
+    {
+      "id": "CHAR_PARTS",
+      "stage": "classification",
+      "label": "Desacoplar visual, rig, clips y comportamiento",
+      "detail": "Registrar visualSourceId, rigId, motionPackId, behaviorId y paths SHAs. El controlador de caminata es portable sólo con retarget probado; nunca arrastrar la skin mala.",
+      "type": "action",
+      "owner": "studio-3d-character-domain",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "procedureRef": "STAGE_OPERATIONS.json#/stages/4",
+      "evidencePolicy": "SOURCE_LEVEL_NOT_PIXEL_APPROVAL",
+      "scope": "CHARACTER_ONLY"
+    },
+    {
+      "id": "CHAR_LOOK",
+      "stage": "humanoid",
+      "label": "Inspección neutral temprana de rostro, piel y silueta",
+      "detail": "Antes del ensamblaje, comprobar plano previsto, tres vistas y rostro/ropa/UV con render genuino cuando posible; un GLB con animación no certifica calidad. Comparar contra capturas humanas.",
+      "type": "action",
+      "owner": "studio-3d-character-domain",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "procedureRef": "STAGE_OPERATIONS.json#/stages/5",
+      "evidencePolicy": "SOURCE_LEVEL_NOT_PIXEL_APPROVAL",
+      "scope": "CHARACTER_ONLY"
+    },
+    {
+      "id": "CHAR_ALTERNATE",
+      "stage": "humanoid",
+      "label": "Cambiar fuente tras fallo visual antes del armado",
+      "detail": "Si se elige un rejected visual o placeholder, intentar una estrategia distinta; no permitir que el worker ignore su propia nota de baja calidad. Si no hay medio, seguir escena completa y declarar FAIL de personaje.",
+      "type": "action",
+      "owner": "studio-3d-character-domain",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "procedureRef": "STAGE_OPERATIONS.json#/stages/5",
+      "evidencePolicy": "SOURCE_LEVEL_NOT_PIXEL_APPROVAL",
+      "scope": "CHARACTER_ONLY"
+    },
+    {
+      "id": "CHAR_RETARGET",
+      "stage": "acting",
+      "label": "Movimiento reusable sin modelo visual anterior",
+      "detail": "Validar skeleton/bone map/rest pose/root motion, dot de frente, pie; conservar fluidez de Cruce como técnica candidata, aplicar a modelo nuevo sólo tras evidencia.",
+      "type": "action",
+      "owner": "studio-3d-character-domain",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "procedureRef": "STAGE_OPERATIONS.json#/stages/11",
+      "evidencePolicy": "SOURCE_LEVEL_NOT_PIXEL_APPROVAL",
+      "scope": "CHARACTER_ONLY"
+    },
+    {
+      "id": "CHAR_QA",
+      "stage": "qa",
+      "label": "Calificación independiente por faceta de personaje",
+      "detail": "Reportar FACE/SILHOUETTE/TEXTURE/RIG/MOTION/ACTING y evidencia con PASS,FAIL,NOT_RUN; usuario valida estética. No calificar buen look por tener clips o mesh cargado.",
+      "type": "action",
+      "owner": "studio-3d-character-domain",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "procedureRef": "STAGE_OPERATIONS.json#/stages/13",
+      "evidencePolicy": "SOURCE_LEVEL_NOT_PIXEL_APPROVAL",
+      "scope": "CHARACTER_ONLY"
+    },
+    {
+      "id": "CHAR_CAUSE",
+      "stage": "repair",
+      "label": "Localizar fallo en la primera etapa que decidió mal",
+      "detail": "Flow-repair: del comentario y screenshot llegar a source+stage trace, comparar causa y síntoma, generar delta sólo del subflujo 3D pertinente, sin reescribir prompts.",
+      "type": "action",
+      "owner": "studio-3d-character-domain",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "procedureRef": "STAGE_OPERATIONS.json#/stages/14",
+      "evidencePolicy": "SOURCE_LEVEL_NOT_PIXEL_APPROVAL",
+      "scope": "CHARACTER_ONLY"
+    },
+    {
+      "id": "CHAR_PROMOTE",
+      "stage": "persistence",
+      "label": "Promover sólo capacidades que gustaron y se probaron",
+      "detail": "Biblioteca visual aprobada empieza VACÍA; sólo con evaluación humana real, asset con derechos y prueba en segundo consumidor. Motion puede ser positivo sin ser visual aprobado.",
+      "type": "action",
+      "owner": "studio-3d-character-domain",
+      "executePolicy": "DO_BEST_FIRST_PASS_FULL_SCOPE",
+      "procedureRef": "STAGE_OPERATIONS.json#/stages/15",
+      "evidencePolicy": "SOURCE_LEVEL_NOT_PIXEL_APPROVAL",
+      "scope": "CHARACTER_ONLY"
     }
   ],
   "edges": [
@@ -3751,7 +3883,7 @@
     },
     {
       "from": "R1",
-      "to": "R2",
+      "to": "CHAR_AUDIT",
       "label": "",
       "kind": "main"
     },
@@ -3961,7 +4093,7 @@
     },
     {
       "from": "A0",
-      "to": "A1",
+      "to": "CHAR_SELECT",
       "label": "",
       "kind": "main"
     },
@@ -4135,7 +4267,7 @@
     },
     {
       "from": "H0",
-      "to": "H1",
+      "to": "CHAR_PARTS",
       "label": "",
       "kind": "normal"
     },
@@ -4165,13 +4297,13 @@
     },
     {
       "from": "H1",
-      "to": "H2",
+      "to": "CHAR_LOOK",
       "label": "",
       "kind": "main"
     },
     {
       "from": "H2",
-      "to": "H3",
+      "to": "CHAR_ALTERNATE",
       "label": "",
       "kind": "main"
     },
@@ -4723,7 +4855,7 @@
     },
     {
       "from": "M0",
-      "to": "M1",
+      "to": "CHAR_RETARGET",
       "label": "",
       "kind": "main"
     },
@@ -4915,7 +5047,7 @@
     },
     {
       "from": "QA0",
-      "to": "QA1",
+      "to": "CHAR_QA",
       "label": "",
       "kind": "main"
     },
@@ -5119,7 +5251,7 @@
     },
     {
       "from": "FIX2",
-      "to": "D25",
+      "to": "CHAR_CAUSE",
       "label": "",
       "kind": "main"
     },
@@ -5245,7 +5377,7 @@
     },
     {
       "from": "G6",
-      "to": "G7",
+      "to": "CHAR_PROMOTE",
       "label": "",
       "kind": "main"
     },
@@ -5743,13 +5875,13 @@
     },
     {
       "from": "COMPLETE0",
-      "to": "P1",
+      "to": "CHAR_ALLOC",
       "label": "",
       "kind": "main"
     },
     {
       "from": "REFERENCE0",
-      "to": "D39",
+      "to": "CHAR_REJECT",
       "label": "",
       "kind": "main"
     },
@@ -5780,6 +5912,72 @@
     {
       "from": "LINKTRACE0",
       "to": "G1",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "CHAR_AUDIT",
+      "to": "R2",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "CHAR_ALLOC",
+      "to": "P1",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "CHAR_REJECT",
+      "to": "D39",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "CHAR_SELECT",
+      "to": "A1",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "CHAR_PARTS",
+      "to": "H1",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "CHAR_LOOK",
+      "to": "H2",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "CHAR_ALTERNATE",
+      "to": "H3",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "CHAR_RETARGET",
+      "to": "M1",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "CHAR_QA",
+      "to": "QA1",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "CHAR_CAUSE",
+      "to": "D25",
+      "label": "",
+      "kind": "main"
+    },
+    {
+      "from": "CHAR_PROMOTE",
+      "to": "G7",
       "label": "",
       "kind": "main"
     }
@@ -5990,6 +6188,38 @@
       ],
       "status": "OFFICIAL_DOC_RESEARCH_CONFIRMED",
       "rootCause": "Three WebGLRenderer requires WebGL2 since r163; WebGL1 fallback implies different renderer/older pinned engine and honest adaptation, not automatic getContext('webgl')."
+    },
+    {
+      "id": "CHAR_REJECTION_002",
+      "title": "Rejected actor visual models repeatedly reused as finals",
+      "nodes": [
+        "CHAR_AUDIT",
+        "CHAR_REJECT",
+        "CHAR_SELECT",
+        "CHAR_LOOK"
+      ],
+      "status": "HUMAN_REJECTED_AND_SOURCE_EXAMINED",
+      "rootCause": "Workers treated source-ready/cached CesiumMan and procedural crowd as sufficient; admission preflight failed to respect user rejection."
+    },
+    {
+      "id": "CHAR_DECOUPLE_002",
+      "title": "Motion quality and visual identity incorrectly tied to one GLB",
+      "nodes": [
+        "CHAR_PARTS",
+        "CHAR_RETARGET"
+      ],
+      "status": "HUMAN_PARTIAL_MOTION_POSITIVE",
+      "rootCause": "CesiumMan appeared across Crossing/Station/Submarine because the asset had a clip; user liked smoothness but not face/skin."
+    },
+    {
+      "id": "CHAR_TRACE_002",
+      "title": "Stage logs sometimes record acknowledged weakness or repeat boilerplate without influencing choice",
+      "nodes": [
+        "CHAR_CAUSE",
+        "CHAR_PROMOTE"
+      ],
+      "status": "SOURCE_VERIFIED",
+      "rootCause": "Bondi STAGE_TRACE acknowledges secondary actors flawed; Respawn repeats same action/decision for many stages; logs did not force new alternative selection."
     }
   ],
   "historyPolicy": {
@@ -6007,9 +6237,9 @@
   },
   "evidence": "diagnosis only; source visual failures from user screenshots; no new scene fix",
   "revision": {
-    "previous": "1.4.0",
-    "changes": "7 distinctive nodes for coverage compiler, component-level positive transfer, look, full-set density, camera interaction, modern WebGL2 and stage-linked evidence; stage bundles unify all 269 old/new nodes.",
-    "riskPolicy": "NO_PROMPT_GROWTH_NO_EARLY_ABORT_NO_NEGATIVE_REFERENCE_COPY",
+    "previous": "2.0.0",
+    "changes": "11 new executable character + flow correction nodes; negative visual registry; 10 research routes with 7 actor-scene allocations, no forced NPCs in 3 mechanical/interactive scenes; actor visual/rig/motion/behavior split; stage audit and approved capability promotion.",
+    "riskPolicy": "NO_REJECTED_VISUAL_REUSE_NO_HUMAN_BRIEF_REWRITE_NO_ART_VETO",
     "gateIds": [
       "source-and-license",
       "geometry-clearance",
@@ -6026,7 +6256,8 @@
       "before-replication",
       "camera-preflight"
     ],
-    "operationMode": "FIRST_COMPLETE_DELIVERY"
+    "operationMode": "FULL_SCENE_ALWAYS",
+    "patchScope": "CHARACTER_DOMAIN_ONLY"
   },
   "subflows": [
     {
@@ -6168,6 +6399,34 @@
       ],
       "earlyGates": [],
       "policy": "Only praised component transfers. Need separate HERO/SET/ACTOR/CAMERA/MATERIAL/INTERACTION verdicts. Never import weak background or camera from otherwise loved scene."
+    },
+    {
+      "id": "character-visual-diversification",
+      "owner": "character:*",
+      "start": "CHAR_ALLOC",
+      "stages": [
+        "recovery",
+        "planning",
+        "acquisition",
+        "classification",
+        "humanoid",
+        "acting",
+        "qa"
+      ],
+      "earlyGates": [],
+      "policy": "No final human visual family is approved. Different actor scenes test different authoring/material/face families. Stages audited; still deliver full scene if actor fails."
+    },
+    {
+      "id": "self-correcting-flow-character",
+      "owner": "studio-3d-method",
+      "start": "CHAR_CAUSE",
+      "stages": [
+        "recovery",
+        "repair",
+        "persistence"
+      ],
+      "earlyGates": [],
+      "policy": "Human comment + screenshot + source trace => earliest decision => proposed stage procedure delta => distinct flow version with QA. No source-free claims; no human brief changes; no global router mutation."
     }
   ],
   "qualityArchitecture": {
@@ -6198,7 +6457,8 @@
     "artisticReview": "HUMAN_BETWEEN_WAVES",
     "decisionAtSource": "Map source technique to output role before modeling; don't use a visual filter as substitute for authored form.",
     "mobileRuntime": "WEBGL2_FOR_MODERN_THREE; direct .mjs boot; error taxonomy and honest fallback",
-    "trace": "17 stages with factual decisions, output first; no bloated admin"
+    "trace": "17 stages with factual decisions, output first; no bloated admin",
+    "characterCorrection": "Visual approval now explicitly rejected for previously reused skin/face assets. Positive Crossing WALK only as independently retargeted candidate; character styles diversify across projects; other domains unchanged."
   },
   "stageInstrumentation": {
     "schema": "prometeo.3d.stage-trace/v1",
@@ -6281,12 +6541,12 @@
     "reasonForChange": "Record exact stage, old policy, failure, new general rule, expected transfer result"
   },
   "executionSpec": {
-    "version": "2.0.0",
-    "stageOperations": "./versions/2.0.0/STAGE_OPERATIONS.json",
-    "sceneCompiler": "versions/2.0.0/scene-compiler.mjs",
-    "sceneCatalog": "versions/2.0.0/SCENE_INTENT_CATALOG.json",
-    "componentReferences": "versions/2.0.0/COMPONENT_REFERENCE_MATRIX.json",
-    "toolchain": "versions/2.0.0/TOOLCHAIN_ROUTING.json",
+    "version": "2.1.0",
+    "stageOperations": "versions/2.1.0/STAGE_OPERATIONS.json",
+    "sceneCompiler": "versions/2.1.0/scene-compiler.mjs",
+    "sceneCatalog": "versions/2.1.0/SCENE_INTENT_CATALOG.json",
+    "componentReferences": "versions/2.1.0/COMPONENT_REFERENCE_MATRIX.json",
+    "toolchain": "versions/2.1.0/TOOLCHAIN_ROUTING.json",
     "browserBoot": "versions/2.0.0/browser-boot.mjs",
     "nodeCoverage": "ALL_NODES_USE_STAGE_OPERATIONS",
     "shortBriefMode": "REGISTERED_ALIAS_OR_EXACT_BRIEF",
@@ -6295,7 +6555,76 @@
     "fullSceneRequired": true,
     "advisoryOnlyQA": true,
     "qualityApprovedBy": "USER_AFTER_DELIVERY",
-    "outputContract": "versions/2.0.0/METHOD.md"
+    "outputContract": "versions/2.0.0/METHOD.md",
+    "characterStrategies": "versions/2.1.0/CHARACTER_STRATEGIES.json",
+    "characterNegativeRegistry": "versions/2.1.0/NEGATIVE_CHARACTER_REGISTRY.json",
+    "characterStrategyCode": "versions/2.1.0/character-strategy.mjs",
+    "flowRepair": "versions/2.1.0/flow-repair.mjs",
+    "actorComponentSchema": "versions/2.1.0/CHARACTER_COMPONENT.schema.json",
+    "characterQualityApproved": false
   },
-  "sha256Canonical": "27c96cac84056dd8b1f2a952cdb8f0f2f7f8136ef322280f34f510f24c239682"
+  "characterSystem": {
+    "version": "2.1.0",
+    "status": "SOURCE_TESTED_EXPERIMENTS_NOT_RUN",
+    "visualLibraryApprovals": 0,
+    "visualRejectionsPath": "versions/2.1.0/NEGATIVE_CHARACTER_REGISTRY.json",
+    "sourceDecisionAuditPath": "versions/2.1.0/CHARACTER_DECISION_AUDIT.json",
+    "strategyPath": "versions/2.1.0/CHARACTER_STRATEGIES.json",
+    "actorContractPath": "versions/2.1.0/CHARACTER_COMPONENT.schema.json",
+    "visualAndMotionSeparated": true,
+    "approvedMotionPacks": 0,
+    "partialMotionReference": "Cruce v2 Cesium walk, only smoothness approved partially, not rig or appearance",
+    "requirements": [
+      "two meaningful visual alternatives",
+      "no visual variants of rejected model treated as a new character",
+      "face/UV/lookdev must fit actual camera distance",
+      "real shader/model/rig evidence if available",
+      "no screenshots invented",
+      "continue complete scene even if role not visually approved"
+    ],
+    "previousFactoryRefs": [
+      "JuanManuelPM/pruebas@candidate/prometeo-3d-character-flow-v3-20261116:cloud-lab/flow-studio-v3/experiments/semilla-parallel-launchpad/launcher-workspace-v4/prometeo/learning/3d-studio/work-decision-flow/v3/character/FLOW_CHARACTER.md",
+      "JuanManuelPM/pruebas@candidate/prometeo-3d-character-motion-factory-calibrar-20261116:cloud-lab/flow-studio-v3/experiments/semilla-parallel-launchpad/launcher-workspace-v4/prometeo/learning/3d-studio/factory/character-motion-v1/INDEX.md"
+    ],
+    "noRebuildFromScratch": true
+  },
+  "flowRepairSystem": {
+    "domain": "CHARACTER_FIRST",
+    "version": "v1",
+    "strategy": "PRINCIPLES_FROM_CAUSE_NOT_PROMPT_PATCH",
+    "rootCauseClassification": [
+      "recovery",
+      "planning",
+      "acquisition",
+      "classification",
+      "humanoid",
+      "acting",
+      "qa",
+      "repair",
+      "persistence"
+    ],
+    "input": [
+      "user_feedback",
+      "source_sha",
+      "stage_trace",
+      "renderer_proof_when_available",
+      "negative_registry"
+    ],
+    "output": [
+      "source_backed_cause",
+      "localized_method_delta",
+      "regression_fixture",
+      "new_flow_version_candidate"
+    ],
+    "launch": "ONLY_USER_INITIATED",
+    "noAutoCommit": true,
+    "protected": [
+      "brief lock",
+      "flow 2.0 snapshot",
+      "other 3D domains",
+      "global routers",
+      "previous scenes"
+    ]
+  },
+  "sha256Canonical": "1a5b7e270f725974208236eb6b4e1a299f397eb976677f49d8e2143332506db8"
 }

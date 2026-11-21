@@ -263,6 +263,46 @@
           }
         }
       }
+    },
+    "characterCoverage": {
+      "type": "object",
+      "properties": {
+        "hasVisibleHumans": {
+          "type": "boolean"
+        },
+        "actorCount": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "characterDecision": {
+      "type": "object",
+      "properties": {
+        "strategyId": {
+          "type": "string"
+        },
+        "visualSourceId": {
+          "type": "string"
+        },
+        "separateMotionPackId": {
+          "type": "string"
+        },
+        "artisticStatus": {
+          "enum": [
+            "NOT_RUN",
+            "REJECTED",
+            "PARTIAL_POSITIVE",
+            "USER_APPROVED"
+          ]
+        },
+        "alternativeSources": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
     }
   },
   "additionalProperties": true,
@@ -291,5 +331,5 @@
       }
     }
   ],
-  "description": "2.0.0: FULL_ATTEMPT can be sent to human review with technical FAIL/NOT_RUN. Strict VERIFIED still needs real QA and human approval; missing coverage is a warning not auto-cancel."
+  "description": "Flow 2.1 adds advisory character selection and separate visual/motion reports, with no veto on a FULL_ATTEMPT candidate. VERIFIED still requires real QA and human approval."
 }
