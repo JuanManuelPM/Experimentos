@@ -1,9 +1,9 @@
 {
   "schema": "worker-lab.zero-friction/v1",
-  "run_id": "zf-44796089769",
-  "started_at": "2026-11-20T18:49:24.687Z",
-  "finished_at": "2026-11-20T18:50:39.379Z",
-  "duration_ms": 74692,
+  "run_id": "zf-44931769666",
+  "started_at": "2026-11-21T17:46:39.968Z",
+  "finished_at": "2026-11-21T17:46:52.380Z",
+  "duration_ms": 12412,
   "human_actions": 0,
   "cost_usd": 0,
   "fully_zero_friction": true,
@@ -73,7 +73,7 @@
           "expected": "WORKER_LAB_OK",
           "status": "PASS",
           "output": "WORKER_LAB_OK",
-          "latency_ms": 1305,
+          "latency_ms": 1012,
           "eval_count": 6,
           "prompt_eval_count": 38
         },
@@ -84,7 +84,7 @@
           "expected": "391",
           "status": "PASS",
           "output": "391",
-          "latency_ms": 174,
+          "latency_ms": 163,
           "eval_count": 4,
           "prompt_eval_count": 39
         },
@@ -95,7 +95,7 @@
           "expected": "FRUIT",
           "status": "FAIL",
           "output": "VEHICLE",
-          "latency_ms": 201,
+          "latency_ms": 178,
           "eval_count": 4,
           "prompt_eval_count": 45
         },
@@ -106,7 +106,7 @@
           "expected": "ZX-4821",
           "status": "PASS",
           "output": "ZX-4821",
-          "latency_ms": 276,
+          "latency_ms": 233,
           "eval_count": 7,
           "prompt_eval_count": 47
         },
@@ -117,7 +117,7 @@
           "expected": "YES",
           "status": "PASS",
           "output": "YES",
-          "latency_ms": 199,
+          "latency_ms": 185,
           "eval_count": 2,
           "prompt_eval_count": 53
         }
@@ -125,7 +125,7 @@
       "score": 0.8,
       "passed": 4,
       "total": 5,
-      "duration_ms": 2504
+      "duration_ms": 1882
     },
     {
       "engine": "github-actions-ollama",
@@ -144,7 +144,7 @@
           "expected": "WORKER_LAB_OK",
           "status": "PASS",
           "output": "WORKER_LAB_OK\n",
-          "latency_ms": 908,
+          "latency_ms": 950,
           "eval_count": 8,
           "prompt_eval_count": 38
         },
@@ -154,9 +154,9 @@
           "prompt": "Compute 17 * 23. Return only the integer.",
           "expected": "391",
           "status": "FAIL",
-          "output": "17 * 23\n",
-          "latency_ms": 102,
-          "eval_count": 8,
+          "output": "17 * 23 = 391",
+          "latency_ms": 189,
+          "eval_count": 12,
           "prompt_eval_count": 38
         },
         {
@@ -166,7 +166,7 @@
           "expected": "FRUIT",
           "status": "PASS",
           "output": "FRUIT\n",
-          "latency_ms": 70,
+          "latency_ms": 103,
           "eval_count": 4,
           "prompt_eval_count": 43
         },
@@ -177,7 +177,7 @@
           "expected": "ZX-4821",
           "status": "FAIL",
           "output": "Ticket ID: ZX-4821\n",
-          "latency_ms": 128,
+          "latency_ms": 187,
           "eval_count": 11,
           "prompt_eval_count": 46
         },
@@ -188,7 +188,7 @@
           "expected": "YES",
           "status": "FAIL",
           "output": "NO\n",
-          "latency_ms": 65,
+          "latency_ms": 101,
           "eval_count": 3,
           "prompt_eval_count": 52
         }
@@ -196,7 +196,7 @@
       "score": 0.4,
       "passed": 2,
       "total": 5,
-      "duration_ms": 1273
+      "duration_ms": 1530
     },
     {
       "engine": "github-actions-ollama",
@@ -215,7 +215,7 @@
           "expected": "WORKER_LAB_OK",
           "status": "PASS",
           "output": "WORKER_LAB_OK",
-          "latency_ms": 1848,
+          "latency_ms": 1751,
           "eval_count": 6,
           "prompt_eval_count": 50
         },
@@ -226,7 +226,7 @@
           "expected": "391",
           "status": "FAIL",
           "output": "432",
-          "latency_ms": 176,
+          "latency_ms": 240,
           "eval_count": 2,
           "prompt_eval_count": 49
         },
@@ -237,7 +237,7 @@
           "expected": "FRUIT",
           "status": "PASS",
           "output": "FRUIT",
-          "latency_ms": 240,
+          "latency_ms": 345,
           "eval_count": 3,
           "prompt_eval_count": 57
         },
@@ -248,7 +248,7 @@
           "expected": "ZX-4821",
           "status": "PASS",
           "output": "ZX-4821",
-          "latency_ms": 324,
+          "latency_ms": 428,
           "eval_count": 5,
           "prompt_eval_count": 57
         },
@@ -259,7 +259,7 @@
           "expected": "YES",
           "status": "PASS",
           "output": "YES",
-          "latency_ms": 344,
+          "latency_ms": 366,
           "eval_count": 2,
           "prompt_eval_count": 65
         }
@@ -267,12 +267,12 @@
       "score": 0.8,
       "passed": 4,
       "total": 5,
-      "duration_ms": 2932
+      "duration_ms": 3130
     },
     {
       "engine": "ai-horde-anonymous",
       "provider": "AI_HORDE",
-      "model": "aphrodite/TheDrummer/Skyfall-31B-v4.2",
+      "model": "Qwen/Qwen3.8-Flash-Next",
       "human_actions": 0,
       "account_required": false,
       "api_key_required": false,
@@ -284,246 +284,186 @@
           "id": "H01",
           "level": "L0",
           "expected": "WORKER_LAB_OK",
-          "output": "WORKER_LAB_OK\n\n\n+++++ lab_10/10_1.py\nimport numpy as np\nimport",
-          "status": "FAIL"
+          "output": "WORKER_LAB_OK",
+          "status": "PASS"
         }
       ],
-      "active_threads": 6,
-      "request_id": "46c5bb36-92cd-46ff-8d5e-c21841a5357d",
+      "active_threads": 8,
+      "request_id": "896235d5-5fd5-4086-a557-105116745778",
       "queue_position": 0,
       "wait_time": 0,
-      "score": 0,
-      "passed": 0,
+      "score": 1,
+      "passed": 1,
       "total": 1,
-      "duration_ms": 67983
+      "duration_ms": 5869
     }
   ],
   "events": [
     {
-      "ts": "2026-11-20T18:49:24.688Z",
+      "ts": "2026-11-21T17:46:39.969Z",
       "type": "model_start",
       "detail": "qwen2.5:0.5b-instruct",
       "model": "qwen2.5:0.5b-instruct"
     },
     {
-      "ts": "2026-11-20T18:49:26.341Z",
+      "ts": "2026-11-21T17:46:41.090Z",
       "type": "task_result",
       "detail": "qwen2.5:0.5b-instruct T01 PASS",
       "model": "qwen2.5:0.5b-instruct",
       "task_id": "T01"
     },
     {
-      "ts": "2026-11-20T18:49:26.515Z",
+      "ts": "2026-11-21T17:46:41.253Z",
       "type": "task_result",
       "detail": "qwen2.5:0.5b-instruct T02 PASS",
       "model": "qwen2.5:0.5b-instruct",
       "task_id": "T02"
     },
     {
-      "ts": "2026-11-20T18:49:26.716Z",
+      "ts": "2026-11-21T17:46:41.431Z",
       "type": "task_result",
       "detail": "qwen2.5:0.5b-instruct T03 FAIL",
       "model": "qwen2.5:0.5b-instruct",
       "task_id": "T03"
     },
     {
-      "ts": "2026-11-20T18:49:26.992Z",
+      "ts": "2026-11-21T17:46:41.664Z",
       "type": "task_result",
       "detail": "qwen2.5:0.5b-instruct T04 PASS",
       "model": "qwen2.5:0.5b-instruct",
       "task_id": "T04"
     },
     {
-      "ts": "2026-11-20T18:49:27.191Z",
+      "ts": "2026-11-21T17:46:41.849Z",
       "type": "task_result",
       "detail": "qwen2.5:0.5b-instruct T05 PASS",
       "model": "qwen2.5:0.5b-instruct",
       "task_id": "T05"
     },
     {
-      "ts": "2026-11-20T18:49:27.191Z",
+      "ts": "2026-11-21T17:46:41.850Z",
       "type": "model_done",
       "detail": "qwen2.5:0.5b-instruct: 4/5",
       "model": "qwen2.5:0.5b-instruct"
     },
     {
-      "ts": "2026-11-20T18:49:27.191Z",
+      "ts": "2026-11-21T17:46:41.850Z",
       "type": "model_start",
       "detail": "gemma3:270m",
       "model": "gemma3:270m"
     },
     {
-      "ts": "2026-11-20T18:49:28.099Z",
+      "ts": "2026-11-21T17:46:42.800Z",
       "type": "task_result",
       "detail": "gemma3:270m T01 PASS",
       "model": "gemma3:270m",
       "task_id": "T01"
     },
     {
-      "ts": "2026-11-20T18:49:28.201Z",
+      "ts": "2026-11-21T17:46:42.989Z",
       "type": "task_result",
       "detail": "gemma3:270m T02 FAIL",
       "model": "gemma3:270m",
       "task_id": "T02"
     },
     {
-      "ts": "2026-11-20T18:49:28.271Z",
+      "ts": "2026-11-21T17:46:43.092Z",
       "type": "task_result",
       "detail": "gemma3:270m T03 PASS",
       "model": "gemma3:270m",
       "task_id": "T03"
     },
     {
-      "ts": "2026-11-20T18:49:28.399Z",
+      "ts": "2026-11-21T17:46:43.279Z",
       "type": "task_result",
       "detail": "gemma3:270m T04 FAIL",
       "model": "gemma3:270m",
       "task_id": "T04"
     },
     {
-      "ts": "2026-11-20T18:49:28.464Z",
+      "ts": "2026-11-21T17:46:43.380Z",
       "type": "task_result",
       "detail": "gemma3:270m T05 FAIL",
       "model": "gemma3:270m",
       "task_id": "T05"
     },
     {
-      "ts": "2026-11-20T18:49:28.464Z",
+      "ts": "2026-11-21T17:46:43.380Z",
       "type": "model_done",
       "detail": "gemma3:270m: 2/5",
       "model": "gemma3:270m"
     },
     {
-      "ts": "2026-11-20T18:49:28.464Z",
+      "ts": "2026-11-21T17:46:43.380Z",
       "type": "model_start",
       "detail": "llama3.2:1b",
       "model": "llama3.2:1b"
     },
     {
-      "ts": "2026-11-20T18:49:30.312Z",
+      "ts": "2026-11-21T17:46:45.131Z",
       "type": "task_result",
       "detail": "llama3.2:1b T01 PASS",
       "model": "llama3.2:1b",
       "task_id": "T01"
     },
     {
-      "ts": "2026-11-20T18:49:30.488Z",
+      "ts": "2026-11-21T17:46:45.371Z",
       "type": "task_result",
       "detail": "llama3.2:1b T02 FAIL",
       "model": "llama3.2:1b",
       "task_id": "T02"
     },
     {
-      "ts": "2026-11-20T18:49:30.728Z",
+      "ts": "2026-11-21T17:46:45.716Z",
       "type": "task_result",
       "detail": "llama3.2:1b T03 PASS",
       "model": "llama3.2:1b",
       "task_id": "T03"
     },
     {
-      "ts": "2026-11-20T18:49:31.052Z",
+      "ts": "2026-11-21T17:46:46.144Z",
       "type": "task_result",
       "detail": "llama3.2:1b T04 PASS",
       "model": "llama3.2:1b",
       "task_id": "T04"
     },
     {
-      "ts": "2026-11-20T18:49:31.396Z",
+      "ts": "2026-11-21T17:46:46.510Z",
       "type": "task_result",
       "detail": "llama3.2:1b T05 PASS",
       "model": "llama3.2:1b",
       "task_id": "T05"
     },
     {
-      "ts": "2026-11-20T18:49:31.396Z",
+      "ts": "2026-11-21T17:46:46.510Z",
       "type": "model_done",
       "detail": "llama3.2:1b: 4/5",
       "model": "llama3.2:1b"
     },
     {
-      "ts": "2026-11-20T18:49:31.396Z",
+      "ts": "2026-11-21T17:46:46.511Z",
       "type": "horde_discover",
       "detail": "Discovering active anonymous text models"
     },
     {
-      "ts": "2026-11-20T18:49:31.675Z",
+      "ts": "2026-11-21T17:46:46.753Z",
       "type": "horde_model",
-      "detail": "aphrodite/TheDrummer/Skyfall-31B-v4.2 · threads=6"
+      "detail": "Qwen/Qwen3.8-Flash-Next · threads=8"
     },
     {
-      "ts": "2026-11-20T18:49:32.037Z",
+      "ts": "2026-11-21T17:46:47.032Z",
       "type": "horde_submit",
-      "detail": "46c5bb36-92cd-46ff-8d5e-c21841a5357d"
+      "detail": "896235d5-5fd5-4086-a557-105116745778"
     },
     {
-      "ts": "2026-11-20T18:49:37.216Z",
-      "type": "horde_poll",
-      "detail": "done=false queue=12"
-    },
-    {
-      "ts": "2026-11-20T18:49:42.413Z",
-      "type": "horde_poll",
-      "detail": "done=false queue=13"
-    },
-    {
-      "ts": "2026-11-20T18:49:47.574Z",
-      "type": "horde_poll",
-      "detail": "done=false queue=13"
-    },
-    {
-      "ts": "2026-11-20T18:49:52.740Z",
-      "type": "horde_poll",
-      "detail": "done=false queue=13"
-    },
-    {
-      "ts": "2026-11-20T18:49:57.889Z",
-      "type": "horde_poll",
-      "detail": "done=false queue=12"
-    },
-    {
-      "ts": "2026-11-20T18:50:03.055Z",
-      "type": "horde_poll",
-      "detail": "done=false queue=11"
-    },
-    {
-      "ts": "2026-11-20T18:50:08.213Z",
-      "type": "horde_poll",
-      "detail": "done=false queue=9"
-    },
-    {
-      "ts": "2026-11-20T18:50:13.372Z",
-      "type": "horde_poll",
-      "detail": "done=false queue=9"
-    },
-    {
-      "ts": "2026-11-20T18:50:18.605Z",
-      "type": "horde_poll",
-      "detail": "done=false queue=6"
-    },
-    {
-      "ts": "2026-11-20T18:50:23.785Z",
-      "type": "horde_poll",
-      "detail": "done=false queue=4"
-    },
-    {
-      "ts": "2026-11-20T18:50:28.965Z",
-      "type": "horde_poll",
-      "detail": "done=false queue=3"
-    },
-    {
-      "ts": "2026-11-20T18:50:34.201Z",
-      "type": "horde_poll",
-      "detail": "done=false queue=0"
-    },
-    {
-      "ts": "2026-11-20T18:50:39.379Z",
+      "ts": "2026-11-21T17:46:52.379Z",
       "type": "horde_poll",
       "detail": "done=true queue=0"
     },
     {
-      "ts": "2026-11-20T18:50:39.379Z",
+      "ts": "2026-11-21T17:46:52.380Z",
       "type": "horde_done",
-      "detail": "aphrodite/TheDrummer/Skyfall-31B-v4.2 · FAIL"
+      "detail": "Qwen/Qwen3.8-Flash-Next · PASS"
     }
   ]
 }
