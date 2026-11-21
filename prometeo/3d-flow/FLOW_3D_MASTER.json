@@ -1,13 +1,13 @@
 {
   "schema": "prometeo.3d.production-flow/v1",
   "id": "prometeo-3d-production",
-  "version": "2.2.1",
+  "version": "2.3.0",
   "publishedAt": "2026-11-21",
   "status": "CURRENT_CANDIDATE",
   "scope": "studio-3d",
-  "title": "PROMETEO Estudio 3D · 2.2.1 · Autoría exigente y acabado comparativo",
-  "description": "Exige calidad de producción en todo el alcance inmutable: referencia y baseline, autoría sustancial, revisión visual, reparación y acabado antes de entregar, con comparación por componente.",
-  "sourceOfTruth": "FLOW_INDEX.json → versions/2.2.1/flow.json + METHOD.md + STAGE_OPERATIONS.json + PRODUCTION_CONTRACT.json + quality-finish.mjs",
+  "title": "PROMETEO Estudio 3D · 2.3.0 · Prevención artística y tandas paralelas sin cupos",
+  "description": "Un flujo para integradores, personajes y videojuegos. Calidad por prevención de técnicas/inputs antes de producir; hasta 30+ chats independientes superpuestos, sin límite artificial ni barrera entre tandas.",
+  "sourceOfTruth": "FLOW_INDEX.json → versions/2.3.0/flow.json + METHOD.md + STAGE_OPERATIONS.json + PRODUCTION_CONTRACT.json",
   "stages": [
     {
       "id": "scope",
@@ -6986,33 +6986,17 @@
   },
   "evidence": "diagnosis only; source visual failures from user screenshots; no new scene fix",
   "revision": {
-    "previous": "2.2.0",
-    "changes": "Refuerza ejecución de 15 etapas, acabado durante producción, prueba de autoría y comparación observable sin cambiar briefs ni fijar avatar; conserva 316 nodos/406 aristas.",
-    "riskPolicy": "NO_REJECTED_VISUAL_REUSE_NO_HUMAN_BRIEF_REWRITE_NO_ART_VETO",
+    "previous": "2.2.1",
+    "changes": "QA preventivo en origen; ninguna ronda artística obligatoria de pruebas/corrección tras producir; veto a humanoides finales de primitivas, alternativas reales/2D/collage; especialización por tarea; olas 10+10+10 superpuestas sin cupo artificial.",
+    "riskPolicy": "NO_VISUAL_HARDCODE_NO_PROMPT_MUTATION_NO_FLOW_CAP",
     "gateIds": [
-      "source-and-license",
-      "geometry-clearance",
-      "material-uv",
-      "room-closure",
-      "semantic-orientation",
-      "motion",
-      "interaction",
-      "cinematography",
-      "mobile-performance",
-      "reopen-roundtrip",
-      "before-build",
-      "technique-suitability",
-      "before-replication",
-      "camera-preflight",
-      "avatar-authoring",
-      "cast-motion",
-      "minimal-ui",
-      "touch-direction",
-      "latent-qa",
-      "component-quality-delta"
+      "BEFORE_ASSET_CHOICE",
+      "BEFORE_MODELING",
+      "BEFORE_SCENE_BUILD",
+      "RIGHTS_AND_REAL_BYTES"
     ],
-    "operationMode": "FULL_SCENE_ALWAYS",
-    "patchScope": "STUDIO_3D_QUALITY_ENFORCEMENT_ONLY"
+    "operationMode": "INDEPENDENT_PARALLEL_JOBS_FULL_RELEVANT_SCOPE",
+    "patchScope": "STUDIO_3D_FLOW_ONLY__NO_SCENE_REWRITES"
   },
   "subflows": [
     {
@@ -7247,10 +7231,10 @@
       "unapproved art",
       "imperfect camera"
     ],
-    "preproduction": "Recover baseline and targeted observable quality; reserve substantial artist work before production.",
-    "production": "Full scope and dedicated authoring; deliberate correction/finish pass before closure; not canary-only or paperwork.",
-    "earlyDiagnostics": "D39..D42 advisory, NEVER a permission gate",
-    "postProduction": "After the in-production finish pass, user supplies final aesthetic judgment. Never use self-review to veto delivery; preserve defects.",
+    "preproduction": "Highest priority preventive QA: compare real available art routes, source rights and protagonist representation BEFORE modeling or assembling; decide at cause not after defect.",
+    "production": "Full relevant scope by track, quality first from method/asset selection; no mandatory artistic post-production testing/rewrite loop.",
+    "earlyDiagnostics": "Advisory PRE-BUILD decisions only; technical tests are not art QA and do not gate artistic publication.",
+    "postProduction": "Deliver complete candidate for HUMAN review; CALIBRAR evolves shared method between waves, not each scene as a test correction.",
     "publishing": "Technical preview even when imperfect and unverified, with honest label; publish only rights-safe original materials.",
     "safety": "Licensing/privacy/security real blockers still apply; preserve full original source privately if publication impossible.",
     "progress": "Best effort full production, not empty loops or false claims of background work.",
@@ -7264,11 +7248,11 @@
     "decisionAtSource": "Map source technique to output role before modeling; don't use a visual filter as substitute for authored form.",
     "mobileRuntime": "WEBGL2_FOR_MODERN_THREE; direct .mjs boot; error taxonomy and honest fallback",
     "trace": "17 stages with factual decisions, output first; no bloated admin",
-    "characterCorrection": "Open experiment, craft body, face, wardrobe, UV, rig, movement, compare and render. No fixed canonical avatar.",
+    "characterCorrection": "No primitive-composite finished humans. Use real model/import, 2D/2.5D collage, authored animation, or other visually suitable researched technique. No shared fixed avatar.",
     "uiPolicy": "Scene first, HUD 12% candidate budget, focal region no overlap",
     "cameraInput": "FREE_LOOK right=>right; ORBIT projected world follows finger",
     "locomotionPolicy": "ALL_INSTANCE_RUNTIME_SAMPLES",
-    "qualityDelta": "Comparable before/after component evidence; no claim of improvement based only on source or asset count."
+    "qualityDelta": "OPTIONAL historical baseline record; no mandatory post-production visual test or aesthetic correction loop."
   },
   "stageInstrumentation": {
     "schema": "prometeo.3d.stage-trace/v1",
@@ -7351,9 +7335,9 @@
     "reasonForChange": "Record exact stage, old policy, failure, new general rule, expected transfer result"
   },
   "executionSpec": {
-    "version": "2.2.1",
-    "stageOperations": "versions/2.2.1/STAGE_OPERATIONS.json",
-    "sceneCompiler": "versions/2.2.1/scene-compiler.mjs",
+    "version": "2.3.0",
+    "stageOperations": "versions/2.3.0/STAGE_OPERATIONS.json",
+    "sceneCompiler": "versions/2.3.0/scene-compiler.mjs",
     "sceneCatalog": "versions/2.2.1/SCENE_INTENT_CATALOG.json",
     "componentReferences": "versions/2.2.1/COMPONENT_REFERENCE_MATRIX.json",
     "toolchain": "versions/2.2.1/TOOLCHAIN_ROUTING.json",
@@ -7365,31 +7349,37 @@
     "fullSceneRequired": true,
     "advisoryOnlyQA": true,
     "qualityApprovedBy": "USER_AFTER_DELIVERY",
-    "outputContract": "versions/2.2.1/METHOD.md",
+    "outputContract": "versions/2.3.0/METHOD.md",
     "characterStrategies": "versions/2.2.1/CHARACTER_STRATEGIES.json",
     "characterNegativeRegistry": "versions/2.2.1/NEGATIVE_CHARACTER_REGISTRY.json",
     "characterStrategyCode": "versions/2.2.1/character-strategy.mjs",
     "flowRepair": "versions/2.2.1/flow-repair.mjs",
     "actorComponentSchema": "versions/2.2.1/CHARACTER_COMPONENT.schema.json",
     "characterQualityApproved": false,
-    "productionContract": "versions/2.2.1/PRODUCTION_CONTRACT.json",
+    "productionContract": "versions/2.3.0/PRODUCTION_CONTRACT.json",
     "productionGates": "versions/2.2.1/production-gates.mjs",
     "requiredOutputs": [
-      "AVATAR_EXPERIMENT_RECEIPT when applicable",
-      "CAST_MOTION_QA when applicable",
-      "UI_TOUCH_QA",
-      "LATENT_RISK_REPORT",
-      "QUALITY_DELTA.json"
+      "BRIEF_LOCK",
+      "SCENE_SOURCE",
+      "SCENE_RELEASE",
+      "PREVENTION_DECISIONS",
+      "EDITABLE_ART_SOURCE_IF_APPLICABLE",
+      "PUBLIC_PREVIEW_CANDIDATE_IF_RIGHTS_SAFE"
     ],
     "requiredRead": [
       "METHOD.md",
       "STAGE_OPERATIONS.json",
       "PRODUCTION_CONTRACT.json",
-      "production-gates.mjs",
-      "scene-compiler.mjs",
-      "quality-finish.mjs"
+      "scene-compiler.mjs"
     ],
-    "qualityFinish": "versions/2.2.1/quality-finish.mjs"
+    "qualityFinish": "OPTIONAL_V2_2_1_LEGACY_NOT_MANDATORY",
+    "specializationModes": [
+      "INTEGRADOR",
+      "PERSONAJE",
+      "VIDEOJUEGO"
+    ],
+    "qaPriority": "PREVENTIVE_BEFORE_MODELING",
+    "concurrency": "NO_ARTIFICIAL_STUDIO_CAP"
   },
   "characterSystem": {
     "version": "2.2.1",
@@ -7463,5 +7453,42 @@
       "global routers"
     ]
   },
-  "sha256Canonical": "18ec70ff09159fbe0b8d50c910e8d5740d08e07866357b4d26d9690c02837263"
+  "preventionDoctrine": {
+    "mandatory": true,
+    "principle": "MEJOR_ELECCION_ARTISTICA_ANTES_DE_PRODUCIR",
+    "before": [
+      "research",
+      "alternative actual authoring/import routes",
+      "source/rights/availability",
+      "visual strategy",
+      "representation appropriate to camera and role"
+    ],
+    "notAfter": [
+      "mandatory art error hunts",
+      "automatic quality score approval",
+      "model postmortem loop as substitute for good source choice"
+    ],
+    "tests": "TECHNICAL_NON_ARTISTICAL_OPTIONAL",
+    "userFeedback": "CALIBRAR_METHOD_BETWEEN_WAVES"
+  },
+  "parallelExecution": {
+    "flowConcurrencyCap": null,
+    "policy": "NO_ARTIFICIAL_LIMIT",
+    "declaredMaxConcurrentJobs": null,
+    "tracks": [
+      "integradores",
+      "personajes",
+      "videojuegos"
+    ],
+    "nominalBatchSizePerTrack": 10,
+    "batchesCanOverlap": true,
+    "newBatchMayStartWhileOldBatchRunning": true,
+    "eachJob": "ONE_SEPARATE_CHAT_ONE_TASK_ONE_BRANCH_ONE_PINNED_FLOW",
+    "globalSynchronizationBarrier": false,
+    "hostLimits": "DEPEND_ON_PLATFORM_NO_UNLIMITED_GUARANTEE",
+    "sameFlowVersionAcrossTracks": true,
+    "updateDuringRun": "EXISTING_RUNS_PIN_OLD_HASH",
+    "publish": "ISOLATED_PATHS_AND_CAS"
+  },
+  "sha256Canonical": "53bc9e2e4b37c99e92d3494af8dfa4461cd4644b15f980e32497a8428b067b3f"
 }
