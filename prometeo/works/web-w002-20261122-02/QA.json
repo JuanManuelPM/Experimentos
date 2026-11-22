@@ -1,0 +1,36 @@
+{
+  "schema": "prometeo.web.qa/v1",
+  "taskId": "web-w002-20261122-02",
+  "source": "GitHub connector readback of 7 files + V8 structural checks",
+  "checks": {
+    "identity": "PASS",
+    "branchPathIsolation": "PASS",
+    "githubFilesReadback": "PASS",
+    "internalAnchors": "PASS",
+    "dialogDataKeys": "PASS",
+    "photoCreditLinksPresent": "PASS",
+    "jsSyntaxV8": "PASS",
+    "canonicalDeepSpecV8": {
+      "gate": "READY_FOR_FIRST_SLICE",
+      "errors": [],
+      "validatorBlobSha": "0536af26982d50dfc3c3689aca2677751bdee1fe"
+    }
+  },
+  "limits": {
+    "browserFunctional": "NOT_RUN",
+    "screen320": "NOT_RUN",
+    "screen768": "NOT_RUN",
+    "screen1440": "NOT_RUN",
+    "keyboardAndTouch": "NOT_RUN",
+    "photographyHttp": "NOT_RUN",
+    "qualityHuman": "NOT_APPROVED",
+    "publicPagesHttp": "NOT_VERIFIED",
+    "browserReason": "Hosted browser unavailable due to connected Firecrawl quota; external browser tools could not fetch new Pages URL."
+  },
+  "assets": {
+    "photographs": 6,
+    "license": "Unsplash License with original author pages linked in public footer",
+    "photoHosting": "External Unsplash CDN; no self-hosted photo binaries"
+  },
+  "claim": "Technical source publication and structural tests, not visual or interactive certification."
+}
