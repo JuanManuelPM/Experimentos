@@ -231,7 +231,7 @@ async function saveDraft(){
  if(!value)return;
  if(!shouldSave(value)){ui.status.textContent="Escribí algo para guardar";return}
  saveQueue=saveQueue.catch(()=>{}).then(async()=>{await put(value);const existing=notes.findIndex(n=>n.id===value.id);if(existing>=0)notes[existing]=value;else notes.push(value);render()});
- try{await saveQueue;if(editing&&editing.id===value.id){editing={...value};ui.status.textContent="Guardado en este dispositivo";ui.status.style.color="#596c5d"}$("delete").classList.remove("hidden")}
+ try{await saveQueue;if(editing&&editing.id===value.id){const current=snapshot();const settled=current&&current.title===value.title&&current.body===value.body&&current.imageAlt===value.imageAlt&&current.image===value.image&&current.color===value.color;ui.status.textContent=settled?"Guardado en este dispositivo":"Guardando…";ui.status.style.color="#596c5d"}$("delete").classList.remove("hidden")}
  catch(e){fail("No se pudo guardar. Revisá el espacio disponible.") ;throw e}
 }
 async function closeEditor(){if(!editing)return;clearTimeout(saveTimer);try{await saveDraft()}catch(e){return}editing=null;setPreview();ui.dialog.close()}
