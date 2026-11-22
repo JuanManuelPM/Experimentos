@@ -1,0 +1,114 @@
+{
+  "schema": "prometeo.3d.flow-improvement-gates/v1",
+  "status": "CANDIDATE_NOT_ACTIVE",
+  "basedOn": {
+    "version": "2.3.0",
+    "index": "prometeo/3d-flow/FLOW_INDEX.json",
+    "sha256Canonical": "53bc9e2e4b37c99e92d3494af8dfa4461cd4644b15f980e32497a8428b067b3f"
+  },
+  "applicability": "future_3d_jobs_after_integrator_promotion_only",
+  "principle": "PREVENT_WITH_FIRST_ARTICLE_BEFORE_MASS_AUTHORING; NOT_POST_PRODUCTION_ART_AUDIT",
+  "gatePolicy": "SELECT_ONLY_APPLICABLE_GATES_BASED_ON_BRIEF; NEVER_EXPAND_HUMAN_BRIEF",
+  "gates": [
+    {
+      "id": "ART_SCALE",
+      "trigger": "all_visual_worlds",
+      "preflight": "select artistic language, 2 visual references, scale baseline and one hero composition",
+      "firstArticle": "hero object + actor/reference + framed shot",
+      "reject": "inconsistent proportions, random scale, arbitrary primitive-looking finish",
+      "repair": "change asset/modeling/composition strategy"
+    },
+    {
+      "id": "INTERIOR_CAMERA",
+      "trigger": "walkable_interior",
+      "preflight": "select architectural closure plus camera occlusion strategy and separate camera/player collision",
+      "firstArticle": "single interior room with roof, doorway, corner, furniture; test 2 orientations",
+      "reject": "missing physical roof, camera passes through walls, blocked hero sightline",
+      "repair": "occlusion-aware roof/wall cutaway or camera mode transition"
+    },
+    {
+      "id": "LOC_ORIENT",
+      "trigger": "moving_actors",
+      "preflight": "define local forward axis, global up, root motion/speed mapping; specify justified backpedal/strafe",
+      "firstArticle": "start / turn / stop and obstacle route with foot contact",
+      "reject": "normal walking faces opposite actual velocity",
+      "repair": "correct rotation quaternion, animation axis, input mapping"
+    },
+    {
+      "id": "INTERACTION_MEANING",
+      "trigger": "interactive_actors_or_props",
+      "preflight": "define physical anchor or justified suspension, affordance, action, reaction and camera framing",
+      "firstArticle": "one complete cause-action-result interaction",
+      "reject": "unexplained floating prop or action with no visible outcome",
+      "repair": "redesign prop relation, animation and responsive feedback"
+    },
+    {
+      "id": "WORLD_COMPOSITION",
+      "trigger": "city_or_environment",
+      "preflight": "define plan, scale, function, foreground/midground/background, land use and framing",
+      "firstArticle": "one coherent block/area with street and human scale",
+      "reject": "huge arbitrary cubes or isolated building in implausible placement",
+      "repair": "change block typology and layout generator before replication"
+    },
+    {
+      "id": "VEHICLE_CRAFT",
+      "trigger": "vehicle_or_public_transport",
+      "preflight": "proportions and mechanical parts plus seating and circulation rules from lawful refs",
+      "firstArticle": "one seat bay, wheel/window/door relationships and vehicle exterior viewed at intended angle",
+      "reject": "mismatched seats, roof heights, windows or no context in road",
+      "repair": "correct vehicle skeleton and seat layout before repetition"
+    },
+    {
+      "id": "SHELL_UI",
+      "trigger": "3d_studio_or_game_ui",
+      "preflight": "assign full-screen experience, universal shell, game-only minimal HUD and edit-only tools",
+      "firstArticle": "320px portrait and landscape with menu closed/open, touching focal action",
+      "reject": "duplicate menus, admin-looking page, fixed overlay obscuring scene",
+      "repair": "remove nested shell, use global contextual menu"
+    },
+    {
+      "id": "RHYTHM_TOUCH",
+      "trigger": "brief_requests_rhythm_game",
+      "preflight": "choose licensed/original audio, monotonic audio timing, calibration and gesture grammar",
+      "firstArticle": "short sync demo with tap, hold start/end, trace/slide, judgement, feedback",
+      "reject": "visual only point tapping, notes drift from audio, missing hold/release, inconsistent sizes",
+      "repair": "redesign input and audio clock rather than adding decoration"
+    },
+    {
+      "id": "CHARACTER_IDENTITY",
+      "trigger": "close_up_or_character_role",
+      "preflight": "choose expressive silhouette, modeling/asset route, face/cloth/rig/material appropriate to view",
+      "firstArticle": "front/side/three-quarter and one action, author source editable",
+      "reject": "primitive humanoid final, blank face, recurrent generic body",
+      "repair": "replace representation and art source"
+    }
+  ],
+  "requiredReceiptFields": [
+    "briefHash",
+    "pinnedFlowHash",
+    "experienceType",
+    "heroView",
+    "referenceScale",
+    "artLanguage",
+    "highestRisks",
+    "firstArticle",
+    "selectedGates",
+    "chosenTechnique",
+    "fallbackTechnique",
+    "evidenceStatus"
+  ],
+  "evidenceStatus": [
+    "PASS_WITH_ACTUAL_EVIDENCE",
+    "FAIL",
+    "NOT_RUN",
+    "NOT_APPLICABLE"
+  ],
+  "promotion": {
+    "owner": "integrator_of_3d_flow",
+    "preserveCurrentFlow": true,
+    "futureVersionSuggestion": "2.3.1_or_2.4.0",
+    "baselineRegressionClasses": 2,
+    "mustShow": "pre-build decision avoids previous class of failure",
+    "publishCurrentIndexOnlyAfter": "cross-work_regression_and_authorized_review"
+  }
+}
