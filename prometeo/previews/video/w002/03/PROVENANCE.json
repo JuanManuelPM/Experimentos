@@ -1,0 +1,205 @@
+{
+  "schema": "prometeo.video.frame-provenance/v1",
+  "taskId": "video-w002-20261122-03",
+  "fps": 24,
+  "durationSeconds": 48,
+  "frameCount": 1152,
+  "claims": {
+    "C01": {
+      "text": "The 12 Nov 2019 CPSM Punta Salute peak was 187 cm at 22:50",
+      "primarySource": "https://www.comune.venezia.it/it/content/le-acque-alte-eccezionali/",
+      "unit": "centimetres",
+      "datum": "CPSM Punta Salute municipal record"
+    },
+    "C02": {
+      "text": "4 Nov 1966 reached +194 cm in the Comune di Venezia historical record",
+      "primarySource": "https://www.comune.venezia.it/it/content/le-acque-alte-eccezionali/",
+      "unit": "centimetres",
+      "datum": "Comune historical tide record"
+    },
+    "C03": {
+      "text": "In October 2020 MOSE first operated during sustained high tides",
+      "primarySource": "https://www.isprambiente.gov.it/it/archivio/notizie-e-novita-normative/notizie-ispra/2020/11/12-novembre-2019-2013-un-anno-dall2019acqua-alta-eccezionale-a-venezia",
+      "unit": "event",
+      "datum": "ISPRA statement of 3 and 15 Oct 2020"
+    }
+  },
+  "media": {
+    "VENICE_CONTEXT": {
+      "url": "https://videos.pexels.com/video-files/3381844/3381844-hd_1920_1080_30fps.mp4",
+      "file": "venice_context_unknown_capture_date.mp4",
+      "minbytes": 100000,
+      "magic": "mp4",
+      "creator": "Linda Tripaldi",
+      "date": "CAPTURE_UNKNOWN; published 2019-12-14",
+      "license": "Pexels free media license",
+      "commons": "https://www.pexels.com/video/traveling-the-grand-canal-waterways-of-venice-italy-3381844/"
+    },
+    "SATELLITE_2019_14": {
+      "url": "https://www.nesdis.noaa.gov/s3/migrated/Venicetimeditfinal.jpg",
+      "file": "noaa_venice_2019-11-14.jpg",
+      "minbytes": 10000,
+      "magic": "jpg",
+      "creator": "NOAA NESDIS · NOAA-20/VIIRS",
+      "date": "2019-11-14",
+      "license": "US federal government public domain",
+      "commons": "https://www.nesdis.noaa.gov/news/rising-sea-levels-and-sirocco-winds-worsen-flooding-venice"
+    },
+    "FLOOD_CONTEXT": {
+      "url": "https://videos.pexels.com/video-files/14159923/14159923-hd_1080_1920_30fps.mp4",
+      "file": "venice_flood_context_unknown_capture_date.mp4",
+      "minbytes": 100000,
+      "magic": "mp4",
+      "creator": "Marius Nacu",
+      "date": "CAPTURE_UNKNOWN; published 2022-10-24",
+      "license": "Pexels free media license",
+      "commons": "https://www.pexels.com/video/flood-in-venice-14159923/"
+    }
+  },
+  "segments": [
+    {
+      "id": "S01",
+      "assetId": "VENICE_CONTEXT",
+      "label": "VENECIA | CONTEXTO SIN FECHA DE RODAJE",
+      "kind": "ARCHIVAL_VIDEO",
+      "claimIds": [],
+      "startFrame": 0,
+      "endFrame": 144,
+      "startSeconds": 0,
+      "endSeconds": 6,
+      "mediaSource": "https://www.pexels.com/video/traveling-the-grand-canal-waterways-of-venice-italy-3381844/",
+      "dateCaptured": "CAPTURE_UNKNOWN; published 2019-12-14",
+      "license": "Pexels free media license",
+      "author": "Linda Tripaldi",
+      "alterations": "Scale, color grade, muted original ambient audio, source date overlay"
+    },
+    {
+      "id": "S02",
+      "assetId": "SATELLITE_2019_14",
+      "label": "14 NOV 2019 | SATÉLITE NOAA-20",
+      "kind": "ARCHIVAL_PHOTO",
+      "claimIds": [
+        "C01"
+      ],
+      "startFrame": 144,
+      "endFrame": 288,
+      "startSeconds": 6,
+      "endSeconds": 12,
+      "mediaSource": "https://www.nesdis.noaa.gov/news/rising-sea-levels-and-sirocco-winds-worsen-flooding-venice",
+      "dateCaptured": "2019-11-14",
+      "license": "US federal government public domain",
+      "author": "NOAA NESDIS · NOAA-20/VIIRS",
+      "alterations": "Color grade, original animated credit overlay, crop/zoom"
+    },
+    {
+      "id": "S03",
+      "assetId": "SATELLITE_2019_14",
+      "label": "187 cm | DATO 12 NOV, IMAGEN 14 NOV",
+      "kind": "ARCHIVAL_PHOTO",
+      "claimIds": [
+        "C01"
+      ],
+      "startFrame": 288,
+      "endFrame": 432,
+      "startSeconds": 12,
+      "endSeconds": 18,
+      "mediaSource": "https://www.nesdis.noaa.gov/news/rising-sea-levels-and-sirocco-winds-worsen-flooding-venice",
+      "dateCaptured": "2019-11-14",
+      "license": "US federal government public domain",
+      "author": "NOAA NESDIS · NOAA-20/VIIRS",
+      "alterations": "Color grade, original animated credit overlay, crop/zoom"
+    },
+    {
+      "id": "S04",
+      "assetId": null,
+      "label": "DOS ALTURAS, DOS FECHAS | COMUNE DI VENEZIA",
+      "kind": "ORIGINAL_DATA_GRAPHIC",
+      "claimIds": [
+        "C01",
+        "C02"
+      ],
+      "startFrame": 432,
+      "endFrame": 576,
+      "startSeconds": 18,
+      "endSeconds": 24,
+      "mediaSource": "PROMETEO original editorial graphic",
+      "dateCaptured": null,
+      "license": "Original",
+      "alterations": "Editorial graphics, no historical photographic claim"
+    },
+    {
+      "id": "S05",
+      "assetId": "FLOOD_CONTEXT",
+      "label": "INUNDACIÓN | CONTEXTO SIN FECHA DE RODAJE",
+      "kind": "ARCHIVAL_PHOTO",
+      "claimIds": [],
+      "startFrame": 576,
+      "endFrame": 720,
+      "startSeconds": 24,
+      "endSeconds": 30,
+      "mediaSource": "https://www.pexels.com/video/flood-in-venice-14159923/",
+      "dateCaptured": "CAPTURE_UNKNOWN; published 2022-10-24",
+      "license": "Pexels free media license",
+      "author": "Marius Nacu",
+      "alterations": "Color grade, original animated credit overlay, crop/zoom"
+    },
+    {
+      "id": "S06",
+      "assetId": "VENICE_CONTEXT",
+      "label": "CONTEXTO SIN FECHA | NO ES REGISTRO MOSE",
+      "kind": "ARCHIVAL_VIDEO",
+      "claimIds": [
+        "C03"
+      ],
+      "startFrame": 720,
+      "endFrame": 864,
+      "startSeconds": 30,
+      "endSeconds": 36,
+      "mediaSource": "https://www.pexels.com/video/traveling-the-grand-canal-waterways-of-venice-italy-3381844/",
+      "dateCaptured": "CAPTURE_UNKNOWN; published 2019-12-14",
+      "license": "Pexels free media license",
+      "author": "Linda Tripaldi",
+      "alterations": "Scale, color grade, muted original ambient audio, source date overlay"
+    },
+    {
+      "id": "S07",
+      "assetId": "FLOOD_CONTEXT",
+      "label": "VENECIA | CONTEXTO SIN FECHA DE RODAJE",
+      "kind": "ARCHIVAL_PHOTO",
+      "claimIds": [
+        "C03"
+      ],
+      "startFrame": 864,
+      "endFrame": 1008,
+      "startSeconds": 36,
+      "endSeconds": 42,
+      "mediaSource": "https://www.pexels.com/video/flood-in-venice-14159923/",
+      "dateCaptured": "CAPTURE_UNKNOWN; published 2022-10-24",
+      "license": "Pexels free media license",
+      "author": "Marius Nacu",
+      "alterations": "Color grade, original animated credit overlay, crop/zoom"
+    },
+    {
+      "id": "S08",
+      "assetId": null,
+      "label": "FUENTES, FECHAS Y LICENCIAS EN EL REGISTRO",
+      "kind": "ORIGINAL_CREDITS",
+      "claimIds": [],
+      "startFrame": 1008,
+      "endFrame": 1152,
+      "startSeconds": 42,
+      "endSeconds": 48,
+      "mediaSource": "PROMETEO original editorial graphic",
+      "dateCaptured": null,
+      "license": "Original",
+      "alterations": "Editorial graphics, no historical photographic claim"
+    }
+  ],
+  "audio": {
+    "voice": "Spanish text-to-speech by local espeak (synthetic, not interview)",
+    "ambience": "Pink noise and sine designed in ffmpeg, not historical field recordings",
+    "factualVoiceText": "Venecia vive con el agua. Pero en noviembre de dos mil diecinueve, la relación cambió de escala. El doce de noviembre, el centro municipal de mareas midió ciento ochenta y siete centímetros en Punta della Salute. Solo la gran crecida de mil novecientos sesenta y seis superaba ese registro, con ciento noventa y cuatro. Las imágenes tienen orígenes distintos, y el video de contexto no registra aquel temporal. En octubre de dos mil veinte, las barreras móviles MOSE comenzaron a operar ante nuevas mareas altas. La ciudad no desaparece bajo el agua: aprende, una vez más, a medirla."
+  },
+  "rights": "The film's original editorial elements are CC BY 4.0; imported material retains its listed CC BY 3.0 / CC BY 3.0 IT licenses and separate attribution obligations.",
+  "visualTruth": "Undated Pexels canal footage is explicitly contextual; 2019 NOAA satellite and undated flood B-roll have explicit, distinct source dates."
+}

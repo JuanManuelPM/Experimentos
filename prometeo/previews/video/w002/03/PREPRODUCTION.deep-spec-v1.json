@@ -1,0 +1,234 @@
+{
+  "version": "DEEP-SPEC-1",
+  "medium": "video documental",
+  "depth": "SISTEMA",
+  "brief": "LA CIUDAD BAJO EL AGUA · W002 tarea 03: microdocumental verificable sobre la relación de una ciudad real con el agua, con video real, narración, archivo autorizado y ledger por fotograma y afirmación.",
+  "briefIdentity": {
+    "batchId": "video-w002-20261122",
+    "taskNumber": 3,
+    "taskId": "video-w002-20261122-03",
+    "launchBlob": "d7eebea6d36fc6e5aa3b72cba4e35dd149dc552d",
+    "launcher": "https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/launch/20261122/next/video/LAUNCH.md"
+  },
+  "intent": {
+    "experience": "Un espectador comprende en menos de un minuto cómo Venecia convive con el Adriático, qué sucedió el 12 de noviembre de 2019 y qué cambió en 2020, sin confundir escenas históricas.",
+    "distinctAbility": "Auditar cada tramo del montaje con un registro que une fecha de la imagen, permiso, afirmación, fuente primaria y tiempos exactos del video."
+  },
+  "references": [
+    {
+      "id": "R1",
+      "url": "https://www.comune.venezia.it/it/content/le-acque-alte-eccezionali/",
+      "status": "OBSERVED",
+      "observation": "El Centro Maree de Venecia informa 187 cm medidos por CPSM Punta Salute el 12-XI-2019, segundo máximo frente a 194 cm del 4-XI-1966; precisión y referencia instrumental decisivas."
+    },
+    {
+      "id": "R2",
+      "url": "https://www.isprambiente.gov.it/it/archivio/notizie-e-novita-normative/notizie-ispra/2020/11/12-novembre-2019-2013-un-anno-dall2019acqua-alta-eccezionale-a-venezia",
+      "status": "OBSERVED",
+      "observation": "ISPRA refiere 189 cm sobre Zero Mareografico de Punta della Salute y señala activación operativa de MOSE en octubre 2020; la diferencia con CPSM exige no mezclar series ni referencias."
+    },
+    {
+      "id": "R3",
+      "url": "https://www.pexels.com/video/traveling-the-grand-canal-waterways-of-venice-italy-3381844/",
+      "status": "OBSERVED",
+      "observation": "Metraje Pexels por Linda Tripaldi, publicado el 14-XII-2019; rodaje no fechado, por lo cual solo puede mostrar Venecia como contexto general y nunca como evidencia del evento del 12-XI-2019."
+    },
+    {
+      "id": "R4",
+      "url": "https://www.nesdis.noaa.gov/news/rising-sea-levels-and-sirocco-winds-worsen-flooding-venice",
+      "status": "OBSERVED",
+      "observation": "Imagen satelital original captada por NOAA-20 el 14-XI-2019, con descripción oficial contemporánea del temporal; es imagen de dos días después del pico, no registro del 12."
+    },
+    {
+      "id": "R5",
+      "url": "https://www.pexels.com/video/flood-in-venice-14159923/",
+      "status": "OBSERVED",
+      "observation": "Video de agua alta en Venecia por Marius Nacu publicado 24-X-2022, bajo licencia gratuita Pexels; no informa fecha de rodaje y no representa documentalmente la marea de 2019."
+    },
+    {
+      "id": "R6",
+      "url": "https://www.pixar.com/a-spark-story",
+      "status": "OBSERVED",
+      "observation": "Referencia de enfoque documental: centrar el relato en el proceso verificable y atribuir la voz de quien narra, sin adjudicar testimonios a imágenes ajenas ni usar material sin licencia."
+    }
+  ],
+  "components": [
+    {
+      "id": "C1",
+      "role": "Selección de archivo cinematográfico existente y fotografías documentales fechadas",
+      "strategy": "Montar dos videos de Pexels de contexto no fechado y satélite NOAA original del 14 Nov 2019, sin imágenes atribuidas a fechas de rodaje imaginadas.",
+      "constraints": "El satélite 14-XI-2019 no se presenta como imagen 12-XI; los clips Pexels no se presentan como footage del temporal 2019."
+    },
+    {
+      "id": "C2",
+      "role": "Argumento documental, locución y cifras históricas vinculadas a fuentes primarias",
+      "strategy": "Guion breve con 187 cm CPSM en 2019, 194 cm en 1966 y primera operación de MOSE en 2020",
+      "constraints": "Distinguir 187 (CPSM) de 189 (ISPRA) sin sumar cifras; no fingir entrevista o registro sonoro de 2019"
+    },
+    {
+      "id": "C3",
+      "role": "Montaje H264 AAC con duraciones y continuidad documental etiquetadas",
+      "strategy": "Ocho fragmentos de seis segundos, secuencia ffmpeg y voz sintética declarada",
+      "constraints": "Cada fotograma corresponde a recurso acreditado y la reproducción confirma duración y pista de audio"
+    },
+    {
+      "id": "C4",
+      "role": "Registro reutilizable de procedencia audiovisual por plano y afirmación factual",
+      "strategy": "JSON con segmentos en fotogramas, archivos, fecha de captura, fuente, licencia y claim IDs + verificador",
+      "constraints": "Sin huecos, atribuciones ausentes ni rótulos que hagan pasar archivo 2012 por inundación 2019"
+    }
+  ],
+  "questions": [
+    {
+      "id": "Q1",
+      "target": "C2",
+      "question": "¿Qué nivel mareográfico es históricamente defendible, bajo qué datum se midió y cómo evitar 187 contra 189 cm?",
+      "alternatives": [
+        "Usar registro municipal CPSM 187 cm con instrumento identificado",
+        "Usar 189 cm de ISPRA con su datum y nota de discrepancia"
+      ],
+      "evidenceRef": "R1",
+      "finding": "CPSM municipal usa 187 cm; ISPRA utiliza 189 cm sobre cero mareográfico. La película especificará 187 cm según CPSM y no mezclarán ambos niveles.",
+      "decisionImpact": "El gráfico no combinará métricas incompatibles ni afirmará que una cifra invalida la otra."
+    },
+    {
+      "id": "Q2",
+      "target": "C1",
+      "question": "¿Cómo mostrar la ciudad sin atribuir incorrectamente material de otros años al evento 2019?",
+      "alternatives": [
+        "Combinar archivo satelital oficial 14-XI con contexto urbano de Pexels no fechado",
+        "Utilizar exclusivamente gráficos con fuentes estadísticas municipales"
+      ],
+      "evidenceRef": "R3",
+      "finding": "La fuente oficial NOAA observa Venecia el 14-XI-2019, posterior al pico; Pexels videos no ofrecen fechas de captura, solo fechas de publicación.",
+      "decisionImpact": "Cada segmento incluye fecha de captura y papel documental, no recreación presentada como evidencia."
+    },
+    {
+      "id": "Q3",
+      "target": "C3",
+      "question": "¿Qué mecanismo asegura que existe un MP4/AAC reproducible y no solamente una promesa en HTML?",
+      "alternatives": [
+        "Publicar directamente un HTML con recursos remotos",
+        "Codificar un MP4 binario con ffmpeg, decodificarlo y auditar pistas y duración"
+      ],
+      "evidenceRef": "R4",
+      "finding": "El entorno local tiene ffmpeg, pero acceso a los archivos externos está restringido; la descarga y codificación deben probarse en GitHub Actions con fallo explícito.",
+      "decisionImpact": "No emitir DELIVERED hasta que GitHub Actions produzca el binario y ffprobe más decodificación completa sean reales."
+    }
+  ],
+  "relations": [
+    {
+      "from": "C1",
+      "to": "C4",
+      "invariant": "Cada rango distingue datos del 12-XI, satélite NOAA del 14-XI y contexto Pexels sin fecha de captura verificada.",
+      "failure": "Presentar video sin fecha de Pexels como la marea real de 2019 induciría a engaño.",
+      "test": "Validador de ranges, assets, fechas y claims"
+    },
+    {
+      "from": "C2",
+      "to": "C4",
+      "invariant": "Cada cifra sonora o gráfica enlaza una fuente primaria identificada, con referencia mareográfica explícita",
+      "failure": "Un gráfico podría presentar 189 de ISPRA y 187 de CPSM como datos comparables sin datum",
+      "test": "Prueba de claims y fuente, inspección de guion"
+    },
+    {
+      "from": "C3",
+      "to": "C4",
+      "invariant": "El conjunto de fragmentos cubre 0 a 1152 fotogramas a 24 FPS y los rótulos documentan las tomas",
+      "failure": "La obra podría contener cortes sin fuente o rótulos alterados durante la exportación",
+      "test": "FFprobe, decodificación completa y control de imágenes en 0, 12, 24, 36 y 47 s"
+    }
+  ],
+  "decisions": [
+    {
+      "id": "D1",
+      "questionId": "Q1",
+      "componentIds": [
+        "C2",
+        "C4"
+      ],
+      "choice": "Citar 187 cm CPSM y 194 cm en 1966 con datum municipal",
+      "rejected": "Promediar 187 y 189 cm o usar 189 sin explicar",
+      "productionChange": "Guion y cartela identifican la estación municipal y excluyen una comparación instrumental incorrecta.",
+      "why": "Fuente primaria municipal y distinción metodológica verificada con ISPRA."
+    },
+    {
+      "id": "D2",
+      "questionId": "Q2",
+      "componentIds": [
+        "C1",
+        "C4"
+      ],
+      "choice": "Satélite NOAA oficial 14-XI-2019 y dos videos Pexels con captura desconocida",
+      "rejected": "Reciclar footage anterior a 2019 como si fuera registro de la inundación",
+      "productionChange": "Rótulos muestran satélite NOAA dos días después, clips contextuales sin fecha de filmación, datos de marea del 12-XI documentados por municipio.",
+      "why": "Autenticidad documental por encima de una narración visual llamativa pero engañosa."
+    },
+    {
+      "id": "D3",
+      "questionId": "Q3",
+      "componentIds": [
+        "C3",
+        "C4"
+      ],
+      "choice": "Renderer Python+FFmpeg y verificador reutilizable con fallo cerrado",
+      "rejected": "Declarar export porque la página HTML reproduce animaciones",
+      "productionChange": "El CI genera MP4 H264/AAC y PROBE.json solo si descarga los originales y verifica decodificación.",
+      "why": "Probar película real es necesario para distinguir producto de documentación."
+    }
+  ],
+  "risks": [
+    {
+      "componentIds": [
+        "C1",
+        "C3"
+      ],
+      "severity": "high",
+      "failure": "El runner puede no poder descargar los archivos Commons o puede faltar un codec de ffmpeg.",
+      "prevention": "Descarga con User-Agent, comprobación de magic bytes y tamaño; encoder ffmpeg normalizado.",
+      "test": "Spike externo: descargar los tres originales, comprobar firmas y ejecutar 1 s H264/AAC antes de render completo.",
+      "status": "OBSERVED",
+      "spikeEvidence": "Downloaded licensed files; one-second H264+AAC encoded and probed in GitHub Actions."
+    },
+    {
+      "componentIds": [
+        "C2",
+        "C4"
+      ],
+      "severity": "medium",
+      "failure": "Confundir fechas de imágenes o puntos cero mareográficos puede inducir a engaño.",
+      "prevention": "Datos y fechas fijados por cada clip con trazabilidad independiente.",
+      "test": "Verificador ledger y auditoría editorial contra Comune e ISPRA.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "acceptance": [
+    {
+      "kind": "logic",
+      "criterion": "La ficha pasa DEEP-SPEC-1 después del spike de descarga y el ledger no tiene huecos.",
+      "oracle": "node deep-spec-v1.mjs + python verify_ledger.py",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "functional",
+      "criterion": "MP4 de 48 segundos, H264 1280x720 24fps más AAC, decodificable de extremo a extremo.",
+      "oracle": "ffprobe y ffmpeg -f null con status de salida, no inferencia por extensión.",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "visual",
+      "criterion": "Rótulos de fecha y fuente legibles; ninguna toma 2012 se presenta como archivo del temporal de 2019.",
+      "oracle": "Inspección de fotogramas de apertura, tres planos intermedios y cierre.",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "audio",
+      "criterion": "Locución original sintética y ambientación instrumental se oyen sin asemejar grabaciones de rescate reales.",
+      "oracle": "Reproducción auditiva completa y control de sync.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "resources": "FFmpeg, Pillow, espeak y Node. Imagen NOAA 14-XI-2019 de dominio público y dos videos Pexels libres con fechas de captura no verificadas.",
+  "licensing": "Satélite NOAA NESDIS de obra gubernamental federal estadounidense en dominio público; videos de Linda Tripaldi y Marius Nacu con licencia gratuita Pexels; voz y atmósfera sintéticas originales.",
+  "environmentLimits": "Remote-download and ffmpeg compatibility spike observed on this GitHub Actions runner; aesthetic listening and human approval remain NOT_RUN."
+}
