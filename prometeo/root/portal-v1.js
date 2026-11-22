@@ -40,7 +40,7 @@ function batchEntries(room){
   });
   const dates=tasks.filter(t=>t.result).map(t=>Date.parse(t.result.publishedAt)||0);
   return {id:b.id,room,title:b.title||'Tanda',publishedAt:new Date(Math.max(Date.parse(b.createdAt)||0,...dates,Date.parse('2026-11-21T00:00:00Z'))).toISOString(),
-   blocks:[{type:'batch',id:b.id,title:b.title,launchUrl:b.launchUrl,items:tasks}]};
+   blocks:[{type:'batch',id:b.id,room,title:b.title,launchUrl:b.launchUrl,items:tasks}]};
  });
 }
 function ownedMessages(){return state.public.filter(e=>e&&e.room===state.room);}
