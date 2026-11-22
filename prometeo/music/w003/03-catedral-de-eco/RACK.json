@@ -1,0 +1,30 @@
+{
+  "schema": "prometeo.music.echo-rack/v1",
+  "name": "Filtered Two-Depth Dub Echo",
+  "bpm": 122,
+  "samplerate": 44100,
+  "source": "synthesized chord bus only (never kick/sub)",
+  "primary": {
+    "leftBeats": 0.75,
+    "rightBeats": 1.0,
+    "feedback": 0.56,
+    "repeats": 11,
+    "lowCutHz": 310,
+    "highCutHz": 3300,
+    "gain": 0.73,
+    "crossPan": 0.2
+  },
+  "secondary": {
+    "leftBeats": 1.5,
+    "rightBeats": 2.0,
+    "feedback": 0.44,
+    "repeats": 7,
+    "lowCutHz": 440,
+    "highCutHz": 2150,
+    "gain": 0.35,
+    "crossPan": 0.1
+  },
+  "outputLowCutHz": 270,
+  "wetAutomation": "per section; dry unprocessed master retains center",
+  "stabilityLaw": "finite repeats, feedback <1, band-limit on EACH repeat, no wet->sub routing"
+}
