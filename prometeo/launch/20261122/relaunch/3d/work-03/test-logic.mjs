@@ -1,7 +1,7 @@
 // Asteroide Jardín W7 · deterministic tests. Run: node test-logic.mjs
 import assert from 'node:assert/strict';
 import {freshQuest,restoreQuest,questAction} from './quest-state.mjs';
-import {unit,arcDistance,advanceOnSphere,moveWithObstacles,radialPhysics,patrolOnSphere,slerp} from './planet-motion.mjs';
+import {unit,cross,arcDistance,advanceOnSphere,moveWithObstacles,radialPhysics,patrolOnSphere,slerp} from './planet-motion.mjs';
 const checks=[];
 function run(name,test){try{test();checks.push({name,result:'PASS'});process.stdout.write('PASS '+name+'\n');}catch(e){checks.push({name,result:'FAIL',error:e.message});process.stderr.write('FAIL '+name+' '+e.message+'\n');process.exitCode=1;}}
 run('Pre-Nima drops blocked',()=>assert.equal(questAction(freshQuest(),'drop:0').state.drops.length,0));
@@ -16,5 +16,5 @@ run('Swept obstacle blocks tunneling',()=>{let p=moveWithObstacles(unit([-.3,1,0
 run('Radial jump lands',()=>{let r={height:0,velocity:0};for(let i=0;i<130;i++)r=radialPhysics(r.height,r.velocity,1/60,{jump:i===0});assert.equal(r.height,0);assert.equal(r.grounded,true)});
 run('NPC follows great circle',()=>{let p=patrolOnSphere([[0,1,0],[1,0,0],[0,-1,0]],.5);assert.ok(Math.abs(arcDistance(p.normal,[0,1,0],1)-Math.PI/4)<1e-7)});
 run('Antipodal slerp stays unit',()=>assert.ok(Math.abs(Math.hypot(...slerp([0,1,0],[0,-1,0],.5))-1)<1e-7));
-run('Full revolution returns near origin',()=>{let n=[0,1,0];for(let i=0;i<360;i++)n=advanceOnSphere(n,[1,0,0],2*Math.PI/360,1);assert.ok(arcDistance(n,[0,1,0],1)<1e-3)});
+run('Full revolution returns near origin',()=>{let n=[0,1,0];for(let i=0;i<360;i++)n=advanceOnSphere(n,cross([0,0,-1],n),2*Math.PI/360,1);assert.ok(arcDistance(n,[0,1,0],1)<1e-3)});
 process.stdout.write(JSON.stringify({total:checks.length,pass:checks.filter(c=>c.result==='PASS').length,fail:checks.filter(c=>c.result==='FAIL').length})+'\n');
