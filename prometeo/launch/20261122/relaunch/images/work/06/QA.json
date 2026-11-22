@@ -1,7 +1,7 @@
 {
   "taskId": "images-w003-20261122-06",
   "room": "images",
-  "status": "PARTIAL_MEDIA_GENERATED_COMPLETION_BLOCKED",
+  "status": "PARTIAL_3_PUBLIC_FULL_RASTERS_2_UNGENERATED_1_LOCAL_MASTER",
   "humanApproved": false,
   "notProduced": [
     "03",
@@ -23,22 +23,37 @@
       "slot": "01",
       "generationId": "nA8QI0FFhUjRNGo9EPH7",
       "generationCompleted": true,
-      "remoteBinaryVerified": false,
-      "perceptualObserved": false
+      "remoteBinaryVerified": true,
+      "perceptualObserved": false,
+      "dimensions": [
+        1280,
+        720
+      ],
+      "sha256": "b908aab2a4455384fc97e2cda568068629a47c9154a666c5a70d03dc14fedd1e"
     },
     {
       "slot": "02",
       "generationId": "jj0fgs8GZ9eRGiRzS1KO",
       "generationCompleted": true,
-      "remoteBinaryVerified": false,
-      "perceptualObserved": false
+      "remoteBinaryVerified": true,
+      "perceptualObserved": false,
+      "dimensions": [
+        1280,
+        720
+      ],
+      "sha256": "1611f80800263a965c99dad02f5f0c1f152f16adb9c1462bab6e2c0f4e3db209"
     },
     {
       "slot": "04",
       "generationId": "zhYdCKwW24w3SF4JiFWg",
       "generationCompleted": true,
-      "remoteBinaryVerified": false,
-      "perceptualObserved": false
+      "remoteBinaryVerified": true,
+      "perceptualObserved": false,
+      "dimensions": [
+        1280,
+        720
+      ],
+      "sha256": "f9c6db556fd5a2d7d1d3d85d068e94db8eea7493cf70c0fa4caeaf3ec24e2184"
     }
   ],
   "tests": [
@@ -74,8 +89,8 @@
     },
     {
       "id": "repo_binary_escrow",
-      "status": "PENDING",
-      "why": "Workflow created for fetching already generated signed originals, but run/readback not observed"
+      "status": "PASS",
+      "why": "GitHub Actions run 45059311503 success, 3 PNGs decoded at 1280×720, unique SHA256 and branch readback"
     },
     {
       "id": "provider_rights",
@@ -91,5 +106,16 @@
     "Free tier image limit reached in ElevenLabs; no retry or paid upgrade done",
     "No fullsize GitHub preview from local ImageGen possible through connected text API"
   ],
-  "updatedAt": "2026-11-22T19:12:55.584Z"
+  "updatedAt": "2026-11-22T19:16:59.027Z",
+  "binaryVerification": {
+    "runId": 45059311503,
+    "conclusion": "SUCCESS",
+    "nativeOriginals": [
+      "01",
+      "02",
+      "04"
+    ],
+    "shaVerified": true,
+    "contact": "media/contact_01_02_04.webp"
+  }
 }
