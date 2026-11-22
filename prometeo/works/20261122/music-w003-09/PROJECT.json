@@ -11,49 +11,57 @@
       "name": "UMBRAL",
       "start": 0,
       "bars": 32,
-      "role": "DJ intro kick/hats and ghost motif"
+      "role": "DJ intro: kick/hat, filtered motif ghost, open key center",
+      "density": 0.19
     },
     {
       "name": "HUELLA",
       "start": 32,
       "bars": 24,
-      "role": "bass and harmony establishment"
+      "role": "bass begins / harmonic imprint",
+      "density": 0.38
     },
     {
       "name": "DERIVA",
       "start": 56,
       "bars": 32,
-      "role": "melodic counterpoint and voicing variations"
+      "role": "countermotif, warm voicings, rhythmic development",
+      "density": 0.54
     },
     {
       "name": "VACÍO",
       "start": 88,
       "bars": 16,
-      "role": "subtraction: kick nearly absent"
+      "role": "deliberate subtraction: melody remains, no four-on-floor",
+      "density": 0.17
     },
     {
       "name": "ASCENSO",
       "start": 104,
       "bars": 24,
-      "role": "rhythmic density and harmonic tension"
+      "role": "harmonic tension, increasing onset density and register",
+      "density": 0.63
     },
     {
       "name": "CUMBRE",
       "start": 128,
       "bars": 32,
-      "role": "peak counterpoint without loudness trick"
+      "role": "full phrase release with counterpoint, not louder master",
+      "density": 0.91
     },
     {
       "name": "RETORNO",
       "start": 160,
       "bars": 16,
-      "role": "opening motif returned lower"
+      "role": "initial four-note motif exposed one octave lower",
+      "density": 0.43
     },
     {
       "name": "SALIDA",
       "start": 176,
       "bars": 32,
-      "role": "DJ outro percussion and final stripped mix"
+      "role": "DJ outro: remove tonal voices, leave dependable drums",
+      "density": 0.21
     }
   ],
   "harmony": {
@@ -166,8 +174,17 @@
     "motif",
     "space"
   ],
-  "rights": "Original synthesized audio; no third-party recordings or samples",
-  "renderConfig": "Python 3 / numpy scipy soundfile / 44.1 kHz stereo / render.py provided in separate deliverable ZIP",
-  "masterStatus": "RENDERED_LOCALLY_NOT_IN_GITHUB",
-  "previewStatus": "REMOTE_AUDIO_NOT_YET_VERIFIED"
+  "automation": {
+    "kick": "four-to-floor except VOID",
+    "bass": "syncopation and kick-responsive duck",
+    "harmony": "four-bar revoicing, tremolo and left/right delay",
+    "motif": "register, phrase omissions, named RETURN transposition",
+    "space": "tonal particles enter on selected odd bars",
+    "master": "gentle tanh headroom not aggressive loudness limiting"
+  },
+  "rights": {
+    "audio": "entirely synthesized, no licensed samples",
+    "source": "original authored for this task"
+  },
+  "rebuild": "python render.py --project PROJECT.json --out export"
 }
