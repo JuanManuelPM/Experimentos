@@ -1,0 +1,209 @@
+{
+  "version": "DEEP-SPEC-1",
+  "medium": "images",
+  "depth": "OPERATIVO",
+  "taskId": "images-w003-20261122-01",
+  "brief": "Crear campaña visual LÚMINA: protagonista extraordinaria, tres piezas editoriales, raster y sistema reconocible sin repetir logo.",
+  "briefSha": "a97b91ca103847ea75eeb9d1d2af10b6c9c0dddd",
+  "qualityBarVersion": "QBAR-1",
+  "intent": {
+    "experience": "La persona ve una luminaria protagonista antes de leer la marca; la imagen expresa oficio y calma.",
+    "distinctAbility": "Dirección de arte coherente entre escena y piezas editoriales asimétricas sin mockups vacíos."
+  },
+  "references": [
+    {
+      "id": "r1",
+      "status": "OBSERVED",
+      "url": "https://flos.com/en/us/stories/ic-lights-family.html",
+      "observation": "La silueta se lee contra fondos neutros y la sombra de contacto convierte la luminaria en un objeto físico, no sólo un ícono."
+    },
+    {
+      "id": "r2",
+      "status": "OBSERVED",
+      "url": "https://www.louispoulsen.com/en-us/products/indoor-lighting/pendants/ph-5",
+      "observation": "La lógica de difusores y la luz controlada aportan un mecanismo visual legible más allá de un ornamento genérico."
+    },
+    {
+      "id": "r3",
+      "status": "OBSERVED",
+      "url": "https://neve.studio/aesop-photography-video-case-study/",
+      "observation": "Fotografía y dirección de arte trabajan textura, utilería y ritmo editorial con amplitud de aire negativo."
+    }
+  ],
+  "components": [
+    {
+      "id": "hero",
+      "role": "Objeto luminaria protagonista y escenario con luz cálida y azules ambientales",
+      "strategy": "Imagen generativa original, verificada perceptualmente antes de disponer tipografías",
+      "constraints": "Hoja superior íntegra, luz de interior hacia el exterior, base con sombra de apoyo."
+    },
+    {
+      "id": "layouts",
+      "role": "Tres soportes diferenciados: página editorial, afiche, pieza social 4:5",
+      "strategy": "Pillow con tipografía compuesta y recortes de un máster fotográfico común",
+      "constraints": "La fuente fotográfica es 1536x1024; ninguna salida afirma mayor detalle óptico."
+    },
+    {
+      "id": "system",
+      "role": "Silueta, paleta, material, orden de lectura y escala tipográfica repetibles",
+      "strategy": "Reglas declaradas y código de composición reejecutable sobre el hero original",
+      "constraints": "El mismo objeto y el mismo contraste ámbar-carbón deben persistir entre soportes."
+    }
+  ],
+  "questions": [
+    {
+      "id": "q1",
+      "target": "hero",
+      "question": "¿La silueta y la iluminación explican un artefacto particular, o se parecerá a una lámpara genérica?",
+      "alternatives": [
+        "foto editorial de cerámica plegada con luz emanante",
+        "composición vectorial abstracta de formas de luz"
+      ],
+      "evidenceRef": "r1",
+      "finding": "El referente demuestra una silueta fuerte con sombra físicamente legible; elegir escultura de cerámica plegada original.",
+      "decisionImpact": "Construir el artículo maestro antes de generar las otras tres piezas de campaña."
+    },
+    {
+      "id": "q2",
+      "target": "layouts",
+      "question": "¿Conviene componer tres imágenes completamente nuevas o reutilizar una sola escena con diferencias editoriales reales?",
+      "alternatives": [
+        "tres generaciones independientes y riesgo de producto cambiante",
+        "una escena maestra auténtica con tres composiciones tipográficas distintas"
+      ],
+      "evidenceRef": "r3",
+      "finding": "Para identidad de un producto ficticio único, reutilizar la misma escena permite continuidad de material y luz.",
+      "decisionImpact": "Adaptar foco y jerarquía por soporte sin fingir tres fotografías de cámara distintas."
+    }
+  ],
+  "relations": [
+    {
+      "from": "hero",
+      "to": "layouts",
+      "invariant": "Silueta completa de las dos alas de cerámica y luz ámbar bajo la hoja al recortar a afiche vertical.",
+      "failure": "La parte superior cortada convierte el objeto en un trozo abstracto sin escala.",
+      "test": "Inspección del cartel y comparación de recortes en atlas."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "d1",
+      "questionId": "q1",
+      "componentIds": [
+        "hero"
+      ],
+      "choice": "Fotoilustración generativa con lámpara de cerámica plegada y bronce",
+      "rejected": "Icono SVG con triángulos de luz sobre fondo vacío",
+      "productionChange": "Producir un raster 1536×1024 como primer artículo y examinar forma y luz antes de componer piezas.",
+      "why": "La dirección necesita materia y sombras, no solo una marca que se repite."
+    },
+    {
+      "id": "d2",
+      "questionId": "q2",
+      "componentIds": [
+        "layouts",
+        "system"
+      ],
+      "choice": "Un máster y tres jerarquías tipográficas adaptadas",
+      "rejected": "Tres imágenes inconexas por generación independiente",
+      "productionChange": "Usar un atlas visual y un código de encuadre parametrizado por soporte; mantener objeto único.",
+      "why": "Se evita pérdida de identidad del objeto y se hace visible el lenguaje visual común."
+    }
+  ],
+  "risks": [
+    {
+      "componentIds": [
+        "hero",
+        "layouts"
+      ],
+      "severity": "high",
+      "failure": "Pérdida de silueta en recorte vertical y supuesto detalle óptico inventado en grandes formatos.",
+      "prevention": "Inspeccionar primero hero, después poster y declarar nativos vs composición.",
+      "test": "Pillow decodifica los cinco JPG y atlas muestra silueta completa; verificación de impresión separada.",
+      "status": "OBSERVED"
+    }
+  ],
+  "acceptance": [
+    {
+      "kind": "visual",
+      "criterion": "La lámpara sigue siendo reconocible en los tres soportes; material, forma y luz no cambian.",
+      "oracle": "Inspección de la hoja de comparación, con tres soportes visibles uno junto a otro.",
+      "status": "OBSERVED"
+    },
+    {
+      "kind": "interactive",
+      "criterion": "Primera pantalla real 390/1440 muestra protagonista y tipografía legibles sin scroll horizontal.",
+      "oracle": "Capturas reales de Chromium y comprobación del ancho de scroll y carga de imágenes.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "resources": "ChatGPT ImageGen para raster original, Python/Pillow para piezas y Chromium local intentado para navegador.",
+  "licensing": "Todos los raster proceden de imagen original generada para marca ficticia; referentes observados no se reutilizan como assets. Fuentes del sistema no se redistribuyen.",
+  "environmentLimits": "Chromium impide navegar file:// y 127.0.0.1; GitHub Pages HTTP, impresión física e independencia perceptual no se verificaron en este entorno.",
+  "artDirection": {
+    "schema": "prometeo.art-direction.first-article/v1",
+    "medium": "images",
+    "taskId": "images-w003-20261122-01",
+    "briefSha": "a97b91ca103847ea75eeb9d1d2af10b6c9c0dddd",
+    "flowRef": "candidate/prometeo-image-studio-unificado-20261117 / ADAPTADOR_ARTISTICO.md SHA 28016b762d318a7c06e8e1ffd628bc8cda24ecd0",
+    "promise": {
+      "subject": "SAVIA 01: luminaria de cerámica plegada, bronce y fuente de luz ámbar",
+      "intent": "Una escultura luminosa extraña pero creíble, con calor táctil y espacio editorial en negativo"
+    },
+    "benchmark": {
+      "status": "OBSERVED",
+      "url": "https://flos.com/en/us/stories/ic-lights-family.html",
+      "description": "Estudio oficial de IC Lights: objeto escultórico, luz visible y sombra de contacto, sin copiar su silueta."
+    },
+    "techniques": [
+      {
+        "family": "Imagen generativa editorial original",
+        "viability": "ImageGen probado en primer raster de 1536x1024 y observado visualmente",
+        "license": "Imagen generada para este trabajo; no incorpora fotografía externa"
+      },
+      {
+        "family": "Ilustración digital original construida con rasterización manual",
+        "viability": "Pillow y superficies dibujadas disponibles, pero menor detalle material y riesgo de imagen sintética",
+        "license": "Autoría procedimental propia, con fuentes del sistema no redistribuidas"
+      }
+    ],
+    "selectedTechnique": "Imagen generativa editorial original",
+    "firstFrame": {
+      "openingDescription": "En 390 y 1440 se ve la luminaria en una sala oscura antes de cualquier pieza secundaria",
+      "focalSubject": "SAVIA 01: dos alas cerámicas con borde ámbar completo",
+      "minimalUI": "Sin controles ni cards; página de campaña con solo cabecera y texto editorial.",
+      "checks": [
+        {
+          "viewport": "390",
+          "criterion": "Luminaria completa y título inteligible en móvil de 390px",
+          "oracle": "Captura del navegador y comparación contra master"
+        },
+        {
+          "viewport": "1440",
+          "criterion": "Luminaria dominante y texto en espacio negativo en escritorio de 1440px",
+          "oracle": "Captura en Chromium con imagen cargada"
+        },
+        {
+          "viewport": "both",
+          "criterion": "No hay overflow horizontal y se mantiene el foco del objeto",
+          "oracle": "Inspección de scrollWidth y recorte del CSS"
+        }
+      ],
+      "observations": []
+    },
+    "firstArticle": {
+      "target": "Hero auténtico de 1536x1024 con silueta, luz y base del objeto",
+      "rejectWhen": "La silueta no puede reconocerse en poster vertical o la base parece flotar",
+      "switchTo": "Ilustración digital original construida con rasterización manual",
+      "oracle": "Inspección humana/visual y medición real de dimensiones de raster",
+      "resourceProof": "El archivo original se generó localmente con ImageGen y Pillow lo decodificó",
+      "status": "OBSERVED_PASS",
+      "localObservation": "Imagen original observada directamente; JPG deposita el mismo arte en GitHub en el branch candidato.",
+      "evidence": {
+        "url": "https://github.com/JuanManuelPM/Experimentos/blob/candidate/prometeo-images-w003-20261122-01/prometeo/works/20261122/images-w003-01/00_hero_original.jpg",
+        "description": "Raster JPEG real del primer artículo, 1536x1024, publicado en rama candidata y revisado con Pillow."
+      }
+    },
+    "humanApproved": false
+  }
+}
