@@ -30,6 +30,12 @@ class VideoGateTest(unittest.TestCase):
     def test_requires_narrative_causality(self):
         a=fixture();a["design"]["causalActionTest"]=""
         self.assertIn("CAUSAL_ACTION_UNTESTED",evaluate(a,probe=False)["errors"])
+    def test_not_run_audio_is_not_considered_a_listen(self):
+        a=fixture();a["media"]={"status":"LOCAL","file":"sample.mp4","frameSamples":[0,1,2],"audioReview":"NOT_RUN"}
+        with tempfile.TemporaryDirectory() as d:
+            pathlib.Path(d, "sample.mp4").write_bytes(b"placeholder fixture")
+            r=evaluate(a,root=pathlib.Path(d),probe=False)
+            self.assertIn("CRITICAL_LISTENING_NOT_RUN",r["warnings"])
     def test_rejects_wrong_batch_number(self):
         a=fixture();a["identity"]["taskNumber"]=12
         self.assertIn("IDENTITY_MISMATCH",evaluate(a,probe=False)["errors"])
