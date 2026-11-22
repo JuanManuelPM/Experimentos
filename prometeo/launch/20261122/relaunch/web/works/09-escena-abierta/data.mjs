@@ -10,7 +10,7 @@ export const TYPES=["Música","Performance","Visuales","Ideas"];
 export const PHOTOS=[
  {src:"https://images.unsplash.com/photo-1689041961947-741dfc09fa84?auto=format&fit=crop&w=1350&q=82",by:"Lachy Spratt",url:"https://unsplash.com/photos/a-large-group-of-people-at-a-concert-s3ObQUr4Kzs",alt:"Público de un concierto real con humo e iluminación naranja"},
  {src:"https://images.unsplash.com/photo-1592526698106-367d4cc984b5?auto=format&fit=crop&w=1200&q=80",by:"Yoad Shejtman",url:"https://unsplash.com/photos/yMdb69xGEco",alt:"Multitud de un concierto al aire libre bajo luces azules"},
- {src:"https://images.unsplash.com/photo-1668007981919-e4f6a549f107?auto=format&fit=crop&w=1200&q=80",by:"Lachy Spratt",url:"https://unsplash.com/photos/a-large-group-of-people-at-a-concert-s3ObQUr4Kzs",alt:"Personas en un concierto, humo de escenario y luz blanca"}
+ {src:"https://images.unsplash.com/photo-1689041961947-741dfc09fa84?auto=format&fit=crop&w=1200&q=80",by:"Lachy Spratt",url:"https://unsplash.com/photos/a-large-group-of-people-at-a-concert-s3ObQUr4Kzs",alt:"Personas en un concierto, humo de escenario y luces anaranjadas"}
 ];
 const rows=[
 ["materia-sonora",0,"16:00",65,0,0,"La materia que suena","Apertura / concierto expandido","Un jardín de micrófonos, percusión de madera y sintes analógicos. Cada pulso se arma frente al público: la escucha también es una forma de estar presente.",0],
