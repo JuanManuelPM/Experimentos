@@ -1,0 +1,242 @@
+{
+  "version": "DEEP-SPEC-1",
+  "medium": "images",
+  "depth": "SISTEMA",
+  "brief": "MAREA DE VIDRIO: imagen de álbum electrónico con tapa, contratapa, funda y dos promociones raster, obra original y continuidad tipográfica.",
+  "briefSha": "a97b91ca103847ea75eeb9d1d2af10b6c9c0dddd",
+  "intent": {
+    "experience": "Una pieza de museo editorial sobre el sonido como una ola de vidrio detenida.",
+    "distinctAbility": "Placa nativa de imagen con tipografía monumental y soportes gráficos coherentes sin ampliación fotográfica."
+  },
+  "references": [
+    {
+      "id": "BEDOW",
+      "status": "OBSERVED",
+      "url": "https://www.bedow.se/work/more-than-human/",
+      "observation": "Sistema reconocido de packaging con una ventana de imágenes, material oscuro, tipografía y variantes táctiles de una edición."
+    },
+    {
+      "id": "DAG",
+      "status": "OBSERVED",
+      "url": "https://maimon.fr/en/case-studies/dag-album-art-direction/",
+      "observation": "Funda de disco como objeto editorial, ilustración expresiva y lenguaje propio que continúa fuera de la portada."
+    },
+    {
+      "id": "PRINT",
+      "status": "OBSERVED",
+      "url": "https://pressonvinyl.com/artwork/",
+      "observation": "Guía con necesidad de 300dpi nativos, sangrado de 5mm, plantilla real, perfil CMYK y confirmación por proveedor."
+    }
+  ],
+  "components": [
+    {
+      "id": "hero",
+      "role": "Fotografía de ola de vidrio como objeto protagonista original.",
+      "strategy": "Imagen ImageGen original 1254 px y placa sin expansión de fuente.",
+      "constraints": "Tamaño nativo 1254px en lugar de estiramiento a 3900px."
+    },
+    {
+      "id": "type",
+      "role": "Sistema de título monumental, nombre SILTE y pistas del álbum.",
+      "strategy": "Rasterizar fuentes instaladas a tamaño final con Pillow.",
+      "constraints": "Título MAREA y DE VIDRIO legible a 96px y sin solapamiento."
+    },
+    {
+      "id": "surfaces",
+      "role": "Cinco soportes diferentes de gráfica musical coherente.",
+      "strategy": "Composiciones nativas con tipografía, colores y curvas compartidos.",
+      "constraints": "No confundir un contacto o un boceto de funda con producto impreso."
+    }
+  ],
+  "questions": [
+    {
+      "id": "Q1",
+      "target": "hero",
+      "question": "¿Dónde está el riesgo de calidad óptica cuando la imagen nativa mide solo 1254px?",
+      "alternatives": [
+        "Ampliar full bleed a 3600",
+        "Placa 1254px dentro de diseño 3600"
+      ],
+      "finding": "Un lienzo 3600px no añade detalle a una fotografía de 1254px; la placa 1:1 sí preserva su resolución.",
+      "decisionImpact": "Fotografía ocupa solo parte del área y se rodea de tipografía vectorial.",
+      "evidenceRef": "PRINT"
+    },
+    {
+      "id": "Q2",
+      "target": "type",
+      "question": "¿Puede reconocerse el álbum en una miniatura de solo 96 pixeles de ancho?",
+      "alternatives": [
+        "Texto pequeño y gran foto",
+        "Título gigante con foto como objeto"
+      ],
+      "finding": "El contacto y el thumbnail locales permiten leer el título; se corrigieron solapamientos.",
+      "decisionImpact": "Dos anclas tipográficas prevalecen sobre los metadatos microeditoriales.",
+      "evidenceRef": "BEDOW"
+    },
+    {
+      "id": "Q3",
+      "target": "surfaces",
+      "question": "¿Cómo evitar que la campaña sean cinco redimensionamientos del mismo JPG?",
+      "alternatives": [
+        "Una sola composición escalada",
+        "Variar jerarquías, tracklist y narrativa por soporte"
+      ],
+      "finding": "Cada formato local contiene composición nueva que repite sujeto, color y letra sin repetir ubicaciones.",
+      "decisionImpact": "Contratapa incorpora lista de canciones; funda otro lema; póster y banner tienen órdenes propios.",
+      "evidenceRef": "DAG"
+    }
+  ],
+  "decisions": [
+    {
+      "id": "D1",
+      "questionId": "Q1",
+      "componentIds": [
+        "hero"
+      ],
+      "choice": "Placa de fotografía 1254px 1:1",
+      "rejected": "Upscale fotográfico a full bleed",
+      "productionChange": "Colocar imagen central como espécimen fotográfico con margen y marco a tamaño nativo.",
+      "why": "La resolución óptica por superficie es una medida física, no un número del export."
+    },
+    {
+      "id": "D2",
+      "questionId": "Q2",
+      "componentIds": [
+        "type"
+      ],
+      "choice": "Tipografía monumental",
+      "rejected": "Texto pequeño bajo foto dominante",
+      "productionChange": "Títulos separados MAREA / DE VIDRIO y test real de miniatura.",
+      "why": "El disco debe identificarse también cuando se presenta reducido."
+    },
+    {
+      "id": "D3",
+      "questionId": "Q3",
+      "componentIds": [
+        "surfaces"
+      ],
+      "choice": "Distintas jerarquías editoriales",
+      "rejected": "Cinco crops intercambiables",
+      "productionChange": "Contratapa tracklist, funda conceptual y dos adaptaciones compositivas originales.",
+      "why": "Un sistema visual transporta reglas, no solo el mismo JPEG."
+    }
+  ],
+  "relations": [
+    {
+      "from": "hero",
+      "to": "surfaces",
+      "invariant": "El foto-especímen jamás supera 1254 pixeles originales de ancho en cada salida.",
+      "failure": "El nuevo archivo simula detalle nativo inexistente.",
+      "test": "Comparar fuente nativa y tamaño insertado."
+    },
+    {
+      "from": "type",
+      "to": "surfaces",
+      "invariant": "Los títulos deben tener jerarquía en todos los formatos.",
+      "failure": "Letra cortada o solapada en la adaptación.",
+      "test": "Inspeccionar contacto local y miniatura a 96px."
+    }
+  ],
+  "risks": [
+    {
+      "componentIds": [
+        "hero",
+        "surfaces"
+      ],
+      "severity": "high",
+      "failure": "Upscaling falso y pérdida de resolución óptica para impresión.",
+      "prevention": "Foto sin ampliación; texto generado nativo.",
+      "test": "Medir 1254px origen y 1254px inserción de fotografía.",
+      "status": "OBSERVED"
+    },
+    {
+      "componentIds": [
+        "type"
+      ],
+      "severity": "medium",
+      "failure": "Título superpuesto o poco legible en las adaptaciones.",
+      "prevention": "Inspección de contacto antes del cierre.",
+      "test": "Examinar raster y corregir solapes por coordenada.",
+      "status": "OBSERVED"
+    }
+  ],
+  "acceptance": [
+    {
+      "kind": "visual",
+      "criterion": "MAREA DE VIDRIO se lee en miniatura a 96px.",
+      "oracle": "Abrir la miniatura real y revisar letras.",
+      "status": "OBSERVED"
+    },
+    {
+      "kind": "logic",
+      "criterion": "Todos los cinco productos tienen dimensiones y hashes reales.",
+      "oracle": "Abrir con Pillow y calcular SHA256.",
+      "status": "OBSERVED"
+    },
+    {
+      "kind": "visual",
+      "criterion": "Impresión terminada y validada por imprenta.",
+      "oracle": "Proof físico, sangrado, ICC y plantilla de taller.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "resources": "ImageGen original, Python Pillow y tipografías locales Noto Sans/DejaVu.",
+  "licensing": "Fuente de vidrio generada originalmente; referentes no copiados; fonts no redistribuidas.",
+  "environmentLimits": "Los cinco raster fullres y fuente existen en paquete local de conversación pero no se subieron completos a GitHub; sin proof físico ni navegador Android.",
+  "artDirection": {
+    "schema": "prometeo.art-direction.first-article/v1",
+    "medium": "images",
+    "taskId": "images-w003-20261122-05",
+    "briefSha": "a97b91ca103847ea75eeb9d1d2af10b6c9c0dddd",
+    "flowRef": "ART_DIRECTION_FIRST_ARTICLE.md@b1a1a012e90897200336cac6316c0511cb40c4c5",
+    "promise": {
+      "subject": "Album MAREA DE VIDRIO como objeto sonoro de materia suspendida.",
+      "intent": "Título monumental y transparencia de vidrio imposibles de confundir con un álbum genérico."
+    },
+    "benchmark": {
+      "url": "https://www.bedow.se/work/more-than-human/",
+      "description": "Referente observado de packaging editorial que usa ventana de arte brillante y sistema tipográfico.",
+      "status": "OBSERVED"
+    },
+    "techniques": [
+      {
+        "family": "fotografía generativa en placa editorial",
+        "viability": "ImageGen produjo el sujeto original en 1254x1254, Pillow lo inserta 1 a 1.",
+        "license": "Imagen producida para este trabajo y sin recursos externos copiados."
+      },
+      {
+        "family": "ilustración vectorial nativa",
+        "viability": "Dibujo procedural y curvas con Python a tamaño final, fallback alternativo.",
+        "license": "Dibujo propio matemático sin dependencias fotográficas externas."
+      }
+    ],
+    "selectedTechnique": "fotografía generativa en placa editorial",
+    "firstFrame": {
+      "openingDescription": "Tapa azul petróleo y título monumental alrededor de un espécimen de vidrio.",
+      "focalSubject": "Ola transparente con sombras y caústicas sobre fondo cálido.",
+      "minimalUI": "No hay botones ni overlays; la obra es un raster artístico.",
+      "checks": [
+        {
+          "viewport": "390",
+          "criterion": "El título MAREA DE VIDRIO se lee en miniatura y tapa cuadrada.",
+          "oracle": "Inspección local miniatura de 96 y 320px."
+        },
+        {
+          "viewport": "1440",
+          "criterion": "La fotografía tiene detalles visibles sin ampliación de origen.",
+          "oracle": "Inspección local del original 1254px y de la capa integrada."
+        }
+      ],
+      "observations": []
+    },
+    "firstArticle": {
+      "target": "Tapa y placa fotográfica con título en miniatura.",
+      "rejectWhen": "El vidrio resulta genérico, se estira o se vuelve ilegible a 96px.",
+      "switchTo": "ilustración vectorial nativa",
+      "oracle": "Comparar fuente original, tamaño de pegado y legibilidad del texto.",
+      "resourceProof": "Foto fuente 1254px original en ZIP local; aún no lectura HTTPS remota.",
+      "status": "NOT_RUN"
+    },
+    "humanApproved": false
+  }
+}
