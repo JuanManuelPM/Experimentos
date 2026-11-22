@@ -160,7 +160,7 @@ function rebuildCam(){
  if(camBody){camPivot.remove(camBody);camBody.geometry.dispose();}
  const pts=profile(opts,420),shape=new THREE.Shape();
  shape.moveTo(pts[0].x,pts[0].y);for(let i=1;i<pts.length;i++)shape.lineTo(pts[i].x,pts[i].y);
- shape.closePath();camBody=new THREE.Mesh(new THREE.ExtrudeGeometry(shape,{depth:12,steps:1,bevelEnabled:true,bevelSegments:2,bevelThickness:1.2,bevelSize:1.2,curveSegments:6}),metal);
+ shape.closePath();const axleHole=new THREE.Path();axleHole.absarc(0,0,6,0,Math.PI*2,true);shape.holes.push(axleHole);camBody=new THREE.Mesh(new THREE.ExtrudeGeometry(shape,{depth:12,steps:1,bevelEnabled:true,bevelSegments:2,bevelThickness:1.2,bevelSize:1.2,curveSegments:6}),metal);
  camPivot.add(camBody);
 }
 rebuildCam();
