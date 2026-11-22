@@ -1,6 +1,6 @@
 # Recibo de entrega · FORJA Escena · 3d-w6-20261122-09
 
-**Estado:** DELIVERED_SOURCE_VERIFIED_PENDING_PUBLICATION · 11/11 LOGIC PASS V8 · 2/2 JS SYNTAX PASS · DEMO JSON VALID · WEBGL NOT_RUN · ANDROID NOT_RUN · HUMAN_APPROVED_NO.
+**Estado:** SOURCE_PUBLISHED_GH_PAGES_READBACK_OK · 11/11 LOGIC PASS V8 · 2/2 JS SYNTAX PASS · DEMO JSON VALID · WEBGL NOT_RUN · ANDROID NOT_RUN · HUMAN_APPROVED_NO.
 
 ## Identidad y propiedad
 
@@ -50,3 +50,10 @@ Aprendizaje: stage=preflight/runtime; cause=source checks without browser oracle
 ## Retorno al coordinador
 
 Solo publicar como entrega parcial de código y test lógico. Nunca marcar VERIFIED_RENDER ni HUMAN_APPROVED sin observación de navegador.
+
+## Publicación y retorno verificados
+
+- 9 archivos entregados en gh-pages/prometeo/launch/20261122/next/3d/work-09/; SHA de blob de cada archivo publicado coincide con la rama work/3d-w6-20261122-09.
+- index.html, editor.mjs y scene-core.mjs releídos tras publicar, parser PASS, 50 IDs DOM referenciados y 0 faltantes. DEMO_PROJECT.json validado con 7 nodos y 2 tracks.
+- Registrado en prometeo/root/ROOM_MESSAGES.json con id 3d-w6-20261122-09-forja-escena-source-20261122, CAS y relectura OK (única entrada).
+- URL prevista de Pages: https://juanmanuelpm.github.io/Experimentos/prometeo/launch/20261122/next/3d/work-09/ . El HTTP del sitio y render GPU NO SE CONFIRMARON; la fuente pública sí.
