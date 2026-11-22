@@ -22,3 +22,11 @@
 La persona solo revisa ejemplos y comenta libremente usando una referencia de obra/tanda. El chat que recibe ese feedback debe conservarlo en el inbox apropiado, no exigir que el humano pronuncie comandos especiales. **Este lanzamiento sintetiza lo acumulado**, no sustituye el registro individual de observaciones ni crea un demonio en segundo plano.
 
 No inventar un botón que lanza automáticamente una IA desde GitHub Pages. La página puede ofrecer Copiar; el humano abre un chat con GitHub autorizado y pega una sola referencia.
+
+## Alimentación desde la autocrítica automática
+
+Recuperar primero `JuanManuelPM/Experimentos@gh-pages:prometeo/root/AUTOCRITICA_WHISPLASH.md` y el índice `AUTO_REVIEW_BASELINE.json`. Leer las auditorías verificadas en `JuanManuelPM/pruebas@candidate/prometeo-autocritica-multistudio-20261122:sistemas/metodo/autocritica/20261122/`: `AUDITORIA_INICIAL.md` y `DELIVERY_PROOF_GATE.json`, más cualquier nuevo recibo por hash generado por monitoreo periódico. Es una **candidata**, no canon.
+
+Antes de promover cada reparación, exigir al ejecutor la respuesta documentada al diálogo: ¿cuál era el error real, en qué etapa apareció, qué control preventivo evita que se repita, qué contraejemplo lo desafía y qué pruebas se ejecutaron efectivamente? Aplicar el gate transversal de evidencia por tipo de artefacto, con adaptadores de medio en vez de 5 flujos duplicados. La falta de un MP4 publicado, playback de navegador o persistencia probada no queda arreglada por redactar una conclusión convincente.
+
+La autoevaluación sin humano debe conservar `HUMAN_APPROVED=NO`. Puede producir y verificar mejoras pequeñas con rollback en ramas candidatas, pero no afirmar una actualización activa general hasta que esté efectivamente promovida y validada. Sin evidencia: `NOT_RUN` o `BLOCKED`. Esta entrada de síntesis es el único coordinador de actualización transversal, no una propuesta extra por trabajador.
