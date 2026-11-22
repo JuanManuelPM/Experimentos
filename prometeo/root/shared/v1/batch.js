@@ -6,12 +6,13 @@ const selection=new Map();
 const stylesheet=new URL('./batch.css',import.meta.url).href;
 const labels=['Preparado','Copiado localmente','Iniciado con evidencia','Entregado','Verificado'];
 const el=(tag,cls,text)=>{const node=document.createElement(tag);if(cls)node.className=cls;if(text!==undefined)node.textContent=String(text);return node;};
-function keyFor(batch,item){return String(batch.id)+'|'+String(item.number)+'|'+String(batch.launchUrl);}
+function promptKey(batch){return String(batch.id)+'|'+String(batch.launchUrl)+'|UNIVERSAL';}
+function promptFor(batch){return 'WORK · '+String(batch.launchUrl||'')+' · ';}
 function receipt(item){const r=item.result;return r&&typeof r==='object'&&typeof r.id==='string'&&r.id? r:null;}
 function flags(batch,item){
  const result=receipt(item),ev=item.evidence||{};
  const valid=x=>typeof x==='string'&&x.trim()!==''&&!x.includes('PLACEHOLDER');
- return [true,wasCopied(keyFor(batch,item)),Boolean(result)||valid(ev.started),Boolean(result&&((Array.isArray(result.blocks)&&result.blocks.some(b=>b&&b.url))||valid(result.body)))||valid(ev.delivered),valid(ev.verified)];
+ return [true,false,Boolean(result)||valid(ev.started),Boolean(result&&((Array.isArray(result.blocks)&&result.blocks.some(b=>b&&b.url))||valid(result.body)))||valid(ev.delivered),valid(ev.verified)];
 }
 function emit(host,success,item){host.dispatchEvent(new CustomEvent('prometeo:action',{detail:{kind:'copy',success,workId:item.id},bubbles:true,composed:true}));}
 function renderBatch(block){
@@ -21,7 +22,19 @@ function renderBatch(block){
  const style=document.createElement('link');style.rel='stylesheet';style.href=stylesheet;host.append(style);
  const id=String(block.id||''),tabs=el('div','p-batch-numbers'),body=el('div','p-batch-body');
  tabs.setAttribute('role','group');tabs.setAttribute('aria-label','Trabajos de la tanda');
- host.append(tabs,body);
+ const launch=el('div','p-batch-launch');
+ const title=el('strong','p-batch-launch-label','Un solo prompt · '+items.length+' trabajos');
+ const launchCopy=el('button','p-batch-launch-copy',wasCopied(promptKey(block))?'Copiar de nuevo el prompt':'Copiar prompt universal');
+ launchCopy.type='button';launchCopy.disabled=!block.launchUrl;
+ launchCopy.setAttribute('aria-label','Copiar un solo prompt para esta tanda y después agregar el número');
+ launchCopy.addEventListener('click',async()=>{
+  const ok=await copyValue(promptFor(block));
+  if(ok){recordCopied(promptKey(block));launchCopy.textContent='Copiar de nuevo el prompt';}
+  host.dispatchEvent(new CustomEvent('prometeo:action',{detail:{kind:'copy',success:ok,workId:id},bubbles:true,composed:true}));
+ });
+ const hint=el('p','p-batch-launch-help','Pegá el mismo texto en un chat nuevo por trabajo y agregá el número del 1 al '+items.length+'. Los números de abajo solo muestran resultados.');
+ launch.append(title,launchCopy,hint);
+ host.append(launch,tabs,body);
  let index=Math.min(Math.max(selection.get(id)||0,0),items.length-1);
  const buttons=[];
  function show(next){
@@ -29,7 +42,7 @@ function renderBatch(block){
   for(let i=0;i<buttons.length;i++){
    const b=buttons[i],item=items[i],f=flags(block,item);
    b.setAttribute('aria-current',i===index?'true':'false');
-   b.dataset.copied=String(f[1]);b.dataset.delivered=String(f[3]);
+   b.dataset.delivered=String(f[3]);
    b.title=(item.label||'Trabajo')+' · '+labels.filter((_,j)=>f[j]).join(' · ');
    b.setAttribute('aria-label','Ver resultado '+item.number+'. '+b.title);
   }
@@ -47,12 +60,10 @@ function renderBatch(block){
   }else{
    body.append(el('p','p-batch-pending','Sin entrega pública registrada.'));
   }
-  const footer=el('div','p-batch-footer'),status=el('span','p-batch-state',f[4]?'Verificado':f[3]?'Entregado':f[2]?'Iniciado con evidencia':f[1]?'Copiado localmente':'Preparado');
+  const footer=el('div','p-batch-footer'),status=el('span','p-batch-state',f[4]?'Verificado':f[3]?'Entregado':f[2]?'Iniciado con evidencia':'Preparado');
   status.title=labels.map((v,i)=>v+': '+(f[i]?'sí':'no')).join(' · ');
   footer.append(status);
   if(item.sourceUrl){const a=el('a','p-batch-source','Fuente');a.href=safeURL(item.sourceUrl)||'#';a.target='_blank';a.rel='noopener noreferrer';footer.append(a);}
-  const copy=el('button','p-batch-copy',f[1]?'Copiado':'Copiar '+String(item.number).padStart(2,'0'));
-  copy.type='button';copy.addEventListener('click',()=>copyItem(item));footer.append(copy);
   if(result?.id){
    const review=el('button','p-batch-copy','Revisar obra');review.type='button';
    review.setAttribute('aria-label','Copiar referencia para revisar '+(item.label||item.id));
@@ -64,12 +75,6 @@ function renderBatch(block){
   }
   body.append(footer);
  }
- async function copyItem(item){
-  const reference='WORK · '+String(block.launchUrl||'')+' · '+item.number;
-  const ok=await copyValue(reference);
-  if(ok)recordCopied(keyFor(block,item));
-  show(index);emit(host,ok,item);
- }
  for(let i=0;i<items.length;i++){
   const item=items[i],f=flags(block,item);
   const button=el('button','p-batch-number',String(item.number).padStart(2,'0'));
@@ -77,7 +82,6 @@ function renderBatch(block){
   button.setAttribute('aria-label','Ver resultado '+item.number+': '+(item.label||'Trabajo')+'. '+labels.filter((_,j)=>f[j]).join(', '));
   button.title=(item.label||'Trabajo')+' · '+labels.filter((_,j)=>f[j]).join(' · ');
   if(f[3])button.dataset.delivered='true';
-  if(f[1])button.dataset.copied='true';
   button.addEventListener('click',()=>show(i));
   tabs.append(button);buttons.push(button);
  }
