@@ -1,0 +1,76 @@
+{
+  "schema": "prometeo.root.trace-qa/v1",
+  "date": "2026-11-22",
+  "fixtures": [
+    {
+      "name": "2.3.0 graph with observed steps",
+      "pass": true,
+      "expected": "STRUCTURE_PASS_MEDIA_NOT_VERIFIED",
+      "actual": "STRUCTURE_PASS_MEDIA_NOT_VERIFIED"
+    },
+    {
+      "name": "reject incompatible 1.4.0 lock",
+      "pass": true,
+      "expected": "INVALID",
+      "actual": "INVALID"
+    },
+    {
+      "name": "sha mismatch",
+      "pass": true,
+      "expected": "INVALID",
+      "actual": "INVALID"
+    },
+    {
+      "name": "reject invented edge",
+      "pass": true,
+      "expected": "INVALID",
+      "actual": "INVALID"
+    },
+    {
+      "name": "reject unknown node",
+      "pass": true,
+      "expected": "INVALID",
+      "actual": "INVALID"
+    },
+    {
+      "name": "skip without reason",
+      "pass": true,
+      "expected": "INVALID",
+      "actual": "INVALID"
+    },
+    {
+      "name": "zero visited nodes",
+      "pass": true,
+      "expected": "INVALID",
+      "actual": "INVALID"
+    },
+    {
+      "name": "false self approval",
+      "pass": true,
+      "expected": "INVALID",
+      "actual": "INVALID"
+    },
+    {
+      "name": "no evidence on executed step",
+      "pass": true,
+      "expected": "INVALID",
+      "actual": "INVALID"
+    },
+    {
+      "name": "out of order timestamp",
+      "pass": true,
+      "expected": "INVALID",
+      "actual": "INVALID"
+    },
+    {
+      "name": "valid explicit not-run",
+      "pass": true,
+      "expected": "STRUCTURE_PASS_MEDIA_NOT_VERIFIED",
+      "actual": "STRUCTURE_PASS_MEDIA_NOT_VERIFIED"
+    }
+  ],
+  "passed": 11,
+  "total": 11,
+  "observedRealTrace": "NOT_RUN",
+  "humanApproved": false
+}
