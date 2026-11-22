@@ -35,15 +35,15 @@
     },
     {
       "id": "R4",
-      "url": "https://commons.wikimedia.org/wiki/File:Acqua_alta_del_12_novembre_2019.jpg",
+      "url": "https://www.nesdis.noaa.gov/news/rising-sea-levels-and-sirocco-winds-worsen-flooding-venice",
       "status": "OBSERVED",
-      "observation": "Foto de Piazza San Marco de Ministerio del Interior italiano, fechada 12-XI-2019 y distribuida en Commons CC BY 3.0; imagen de archivo auténtico con atribución."
+      "observation": "Imagen satelital original captada por NOAA-20 el 14-XI-2019, con descripción oficial contemporánea del temporal; es imagen de dos días después del pico, no registro del 12."
     },
     {
       "id": "R5",
-      "url": "https://commons.wikimedia.org/wiki/File:Acqua_alta_del_15_novembre_2019.jpg",
+      "url": "https://www.pexels.com/video/flood-in-venice-14159923/",
       "status": "OBSERVED",
-      "observation": "Imagen del Comune di Venezia del 15-XI-2019 disponible en Wikimedia Commons CC BY 3.0 Italia; debe conservar fecha diferenciada del pico del día 12."
+      "observation": "Video de agua alta en Venecia por Marius Nacu publicado 24-X-2022, bajo licencia gratuita Pexels; no informa fecha de rodaje y no representa documentalmente la marea de 2019."
     },
     {
       "id": "R6",
@@ -56,8 +56,8 @@
     {
       "id": "C1",
       "role": "Selección de archivo cinematográfico existente y fotografías documentales fechadas",
-      "strategy": "Fotos reales Commons con licencia individual, descargadas mediante proxy visual a causa de HTTP 429; video Pexels para contexto con fecha de rodaje no identificada.",
-      "constraints": "No presentar como hecho el año de rodaje del video contextual, ni atribuirlo a crecida de 2019."
+      "strategy": "Montar dos videos de Pexels de contexto no fechado y satélite NOAA original del 14 Nov 2019, sin imágenes atribuidas a fechas de rodaje imaginadas.",
+      "constraints": "El satélite 14-XI-2019 no se presenta como imagen 12-XI; los clips Pexels no se presentan como footage del temporal 2019."
     },
     {
       "id": "C2",
@@ -96,11 +96,11 @@
       "target": "C1",
       "question": "¿Cómo mostrar la ciudad sin atribuir incorrectamente material de otros años al evento 2019?",
       "alternatives": [
-        "Video de contexto Pexels libre rotulado con fecha desconocida",
-        "Solo fotos históricas auténticas fechadas y paneos"
+        "Combinar archivo satelital oficial 14-XI con contexto urbano de Pexels no fechado",
+        "Utilizar exclusivamente gráficos con fuentes estadísticas municipales"
       ],
       "evidenceRef": "R3",
-      "finding": "El video Pexels fue publicado 14-XII-2019 y el rodaje no está fechado; se rotula como contexto sin fecha de captura.",
+      "finding": "La fuente oficial NOAA observa Venecia el 14-XI-2019, posterior al pico; Pexels videos no ofrecen fechas de captura, solo fechas de publicación.",
       "decisionImpact": "Cada segmento incluye fecha de captura y papel documental, no recreación presentada como evidencia."
     },
     {
@@ -120,8 +120,8 @@
     {
       "from": "C1",
       "to": "C4",
-      "invariant": "Fecha y autor del archivo coinciden con el rótulo, la fuente y su licencia en cada rango de fotogramas",
-      "failure": "Un video urbano de rodaje sin fecha presentado como la inundación 2019 falsearía el documental.",
+      "invariant": "Cada rango distingue datos del 12-XI, satélite NOAA del 14-XI y contexto Pexels sin fecha de captura verificada.",
+      "failure": "Presentar video sin fecha de Pexels como la marea real de 2019 induciría a engaño.",
       "test": "Validador de ranges, assets, fechas y claims"
     },
     {
@@ -159,9 +159,9 @@
         "C1",
         "C4"
       ],
-      "choice": "Archivo de contexto Pexels con fecha de rodaje no verificable y fotografías reales con fecha",
+      "choice": "Satélite NOAA oficial 14-XI-2019 y dos videos Pexels con captura desconocida",
       "rejected": "Reciclar footage anterior a 2019 como si fuera registro de la inundación",
-      "productionChange": "Rotular todo video como contexto sin fecha de captura, y las imágenes históricas con su fecha 12/15-XI-2019.",
+      "productionChange": "Rótulos muestran satélite NOAA dos días después, clips contextuales sin fecha de filmación, datos de marea del 12-XI documentados por municipio.",
       "why": "Autenticidad documental por encima de una narración visual llamativa pero engañosa."
     },
     {
@@ -227,7 +227,7 @@
       "status": "NOT_RUN"
     }
   ],
-  "resources": "Python Pillow, ffmpeg, espeak, Node en GitHub Actions; Pexels context libre y originales Commons descargados mediante proxy de imágenes solo como transporte.",
-  "licensing": "Video Linda Tripaldi con licencia gratuita de Pexels; fotografías Ministero y Comune con CC BY 3.0 / CC BY 3.0 Italia; locución y sonido sintéticos originales.",
-  "environmentLimits": "GitHub Actions inicial falló: Wikimedia devolvió HTTP 429 al video original. Alternativa Pexels y proxy de fotos no ensayada; gate spike NOT_RUN."
+  "resources": "FFmpeg, Pillow, espeak y Node. Imagen NOAA 14-XI-2019 de dominio público y dos videos Pexels libres con fechas de captura no verificadas.",
+  "licensing": "Satélite NOAA NESDIS de obra gubernamental federal estadounidense en dominio público; videos de Linda Tripaldi y Marius Nacu con licencia gratuita Pexels; voz y atmósfera sintéticas originales.",
+  "environmentLimits": "Wikimedia 429 y proxy 404 observados en Actions; se eliminaron ambas descargas y se usarán NOAA y Pexels. El nuevo spike real sigue NOT_RUN."
 }

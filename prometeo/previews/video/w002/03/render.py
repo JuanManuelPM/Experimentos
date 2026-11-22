@@ -18,17 +18,17 @@ ASSETS = {
         "creator": "Linda Tripaldi", "date": "CAPTURE_UNKNOWN; published 2019-12-14", "license": "Pexels free media license",
         "commons": "https://www.pexels.com/video/traveling-the-grand-canal-waterways-of-venice-italy-3381844/",
     },
-    "FLOOD_2019_12": {
-        "url": "https://wsrv.nl/?url=upload.wikimedia.org/wikipedia/commons/0/09/Acqua_alta_del_12_novembre_2019.jpg",
-        "file": "ministero_2019-11-12.jpg", "minbytes": 50000, "magic": "jpg",
-        "creator": "Ministero dell'Interno", "date": "2019-11-12", "license": "CC BY 3.0",
-        "commons": "https://commons.wikimedia.org/wiki/File:Acqua_alta_del_12_novembre_2019.jpg",
+    "SATELLITE_2019_14": {
+        "url": "https://www.nesdis.noaa.gov/s3/migrated/Venicetimeditfinal.jpg",
+        "file": "noaa_venice_2019-11-14.jpg", "minbytes": 10000, "magic": "jpg",
+        "creator": "NOAA NESDIS · NOAA-20/VIIRS", "date": "2019-11-14", "license": "US federal government public domain",
+        "commons": "https://www.nesdis.noaa.gov/news/rising-sea-levels-and-sirocco-winds-worsen-flooding-venice",
     },
-    "FLOOD_2019_15": {
-        "url": "https://wsrv.nl/?url=upload.wikimedia.org/wikipedia/commons/e/ef/Acqua_alta_del_15_novembre_2019.jpg",
-        "file": "comune_2019-11-15.jpg", "minbytes": 30000, "magic": "jpg",
-        "creator": "Comune di Venezia", "date": "2019-11-15", "license": "CC BY 3.0 Italia",
-        "commons": "https://commons.wikimedia.org/wiki/File:Acqua_alta_del_15_novembre_2019.jpg",
+    "FLOOD_CONTEXT": {
+        "url": "https://videos.pexels.com/video-files/14159923/14159923-hd_1080_1920_30fps.mp4",
+        "file": "venice_flood_context_unknown_capture_date.mp4", "minbytes": 100000, "magic": "mp4",
+        "creator": "Marius Nacu", "date": "CAPTURE_UNKNOWN; published 2022-10-24", "license": "Pexels free media license",
+        "commons": "https://www.pexels.com/video/flood-in-venice-14159923/",
     },
 }
 CLAIMS = {
@@ -39,12 +39,12 @@ CLAIMS = {
 # 6 s segments: frame intervals half-open. Historical dates NEVER change.
 SHOTS = [
  {"id":"S01","assetId":"VENICE_CONTEXT","label":"VENECIA | CONTEXTO SIN FECHA DE RODAJE","kind":"ARCHIVAL_VIDEO","claimIds":[]},
- {"id":"S02","assetId":"FLOOD_2019_12","label":"12 NOV 2019 | FOTOGRAFIA DE ARCHIVO","kind":"ARCHIVAL_PHOTO","claimIds":["C01"]},
- {"id":"S03","assetId":"FLOOD_2019_12","label":"187 cm  |  22:50  |  CPSM PUNTA SALUTE","kind":"ARCHIVAL_PHOTO","claimIds":["C01"]},
+ {"id":"S02","assetId":"SATELLITE_2019_14","label":"14 NOV 2019 | SATÉLITE NOAA-20","kind":"ARCHIVAL_PHOTO","claimIds":["C01"]},
+ {"id":"S03","assetId":"SATELLITE_2019_14","label":"187 cm | DATO 12 NOV, IMAGEN 14 NOV","kind":"ARCHIVAL_PHOTO","claimIds":["C01"]},
  {"id":"S04","assetId":None,"label":"DOS ALTURAS, DOS FECHAS | COMUNE DI VENEZIA","kind":"ORIGINAL_DATA_GRAPHIC","claimIds":["C01","C02"]},
- {"id":"S05","assetId":"FLOOD_2019_15","label":"15 NOV 2019 | OTRO DIA DE CRECIDA","kind":"ARCHIVAL_PHOTO","claimIds":[]},
+ {"id":"S05","assetId":"FLOOD_CONTEXT","label":"INUNDACIÓN | CONTEXTO SIN FECHA DE RODAJE","kind":"ARCHIVAL_PHOTO","claimIds":[]},
  {"id":"S06","assetId":"VENICE_CONTEXT","label":"CONTEXTO SIN FECHA | NO ES REGISTRO MOSE","kind":"ARCHIVAL_VIDEO","claimIds":["C03"]},
- {"id":"S07","assetId":"FLOOD_2019_15","label":"VENECIA | AGUA Y CIUDAD","kind":"ARCHIVAL_PHOTO","claimIds":["C03"]},
+ {"id":"S07","assetId":"FLOOD_CONTEXT","label":"VENECIA | CONTEXTO SIN FECHA DE RODAJE","kind":"ARCHIVAL_PHOTO","claimIds":["C03"]},
  {"id":"S08","assetId":None,"label":"FUENTES, FECHAS Y LICENCIAS EN EL REGISTRO","kind":"ORIGINAL_CREDITS","claimIds":[]},
 ]
 SCRIPT = (
@@ -52,7 +52,7 @@ SCRIPT = (
  "la relación cambió de escala. El doce de noviembre, el centro municipal "
  "de mareas midió ciento ochenta y siete centímetros en Punta della Salute. "
  "Solo la gran crecida de mil novecientos sesenta y seis superaba ese registro, "
- "con ciento noventa y cuatro. Las fotografías son de fechas distintas, "
+ "con ciento noventa y cuatro. Las imágenes tienen orígenes distintos, "
  "y el video de contexto no registra aquel temporal. "
  "En octubre de dos mil veinte, las barreras móviles MOSE comenzaron a operar "
  "ante nuevas mareas altas. La ciudad no desaparece bajo el agua: "
@@ -153,8 +153,8 @@ def build_credits():
     d.text((76,115),"LA EVIDENCIA TIENE FECHA",font=font(43,True),fill=(243,250,245))
     rows=[
         "Video contextual: Linda Tripaldi, Pexels · rodaje sin fecha",
-        "Imagen 12-XI-2019: Ministerio del Interior · CC BY 3.0",
-        "Imagen 15-XI-2019: Comune di Venezia · CC BY 3.0 IT",
+        "Satélite 14-XI-2019: NOAA / dominio público",
+        "Video contexto inundación: Marius Nacu / Pexels",
         "Datos: Centro Maree Comune di Venezia / ISPRA",
         "Locucion y atmosfera sintetizadas, no audio del suceso",
         "Registro por fotograma y afirmacion: PROVENANCE.json",
@@ -167,9 +167,9 @@ def render_scene(n,shot,inputs):
     asset=shot["assetId"]
     if asset:
         path=inputs[asset]
-        if asset=="VENICE_CONTEXT":
+        if asset in ("VENICE_CONTEXT","FLOOD_CONTEXT"):
             source=["-stream_loop","-1","-i",path]
-            vf="scale=1280:720:force_original_aspect_ratio=increase,crop=1280:720,eq=contrast=1.05:saturation=0.83"
+            vf=("scale=1280:720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=0x15313a,eq=contrast=1.05:saturation=0.83" if asset=="FLOOD_CONTEXT" else "scale=1280:720:force_original_aspect_ratio=increase,crop=1280:720,eq=contrast=1.05:saturation=0.83")
         else:
             source=["-loop","1","-framerate",str(FPS),"-i",path]
             vf="scale=1600:900:force_original_aspect_ratio=increase,crop=1600:900,zoompan=z='min(zoom+0.00024,1.08)':d=1:s=1280x720:fps=24,eq=contrast=1.065:saturation=0.84"
@@ -228,7 +228,7 @@ def make_ledger():
         "claims":CLAIMS,"media":ASSETS,"segments":records,
         "audio":{"voice":"Spanish text-to-speech by local espeak (synthetic, not interview)", "ambience":"Pink noise and sine designed in ffmpeg, not historical field recordings", "factualVoiceText":SCRIPT},
         "rights":"The film's original editorial elements are CC BY 4.0; imported material retains its listed CC BY 3.0 / CC BY 3.0 IT licenses and separate attribution obligations.",
-        "visualTruth":"Undated Pexels canal footage is explicitly contextual; archival 2019 photographs have separate date labels."
+        "visualTruth":"Undated Pexels canal footage is explicitly contextual; 2019 NOAA satellite and undated flood B-roll have explicit, distinct source dates."
     }
     p=HERE/"PROVENANCE.json";p.write_text(json.dumps(ledger,ensure_ascii=False,indent=2)+"\n",encoding="utf8")
     return p
@@ -276,7 +276,7 @@ def finish(slides,soundtrack,voiceSecs):
     result={"status":"ENCODED_AND_DECODED","render":"GitHub Actions runner","taskId":"video-w002-20261122-03",
          "durationSeconds":float(meta["format"]["duration"]),"fps":24,"frames":1152,"videoCodec":"h264",
          "audioCodec":"aac","imageWidth":1280,"imageHeight":720,"narrationSeconds":voiceSecs,
-         "documentaryDates":["context video capture unknown; published 2019-12-14","2019-11-12 flood","2019-11-15 flood"],
+         "documentaryDates":["context video capture unknown; published 2019-12-14","2019-11-14 NOAA satellite","undated flood B-roll published 2022-10-24"],
          "qa":{"decode":"PASS","frameLedger":"PASS","visualViewedByHuman":"NOT_RUN","audioListenedByHuman":"NOT_RUN","historicalRights":"metadata verified, original file retrieval checked"}}
     (HERE/"PROBE.json").write_text(json.dumps(result,ensure_ascii=False,indent=2)+"\n",encoding="utf8")
     print("ENCODED + DECODE VERIFIED",result)

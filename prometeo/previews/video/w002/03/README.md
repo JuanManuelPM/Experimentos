@@ -12,8 +12,8 @@
 ## Archivo legal y fecha de toma
 
 - **VENICE_CONTEXT:** metraje de Linda Tripaldi, licencia gratuita Pexels, fecha de rodaje sin verificar (publicado 14-XII-2019). Contexto solamente, nunca se presenta como registro de la inundación ni de MOSE. https://www.pexels.com/video/traveling-the-grand-canal-waterways-of-venice-italy-3381844/
-- **FLOOD_2019_12:** foto de 12-XI-2019, Ministero dell'Interno, CC BY 3.0. https://commons.wikimedia.org/wiki/File:Acqua_alta_del_12_novembre_2019.jpg
-- **FLOOD_2019_15:** foto de 15-XI-2019, Comune di Venezia, CC BY 3.0 Italia. https://commons.wikimedia.org/wiki/File:Acqua_alta_del_15_novembre_2019.jpg
+- **SATELLITE_2019_14:** imagen NOAA-20/VIIRS auténtica del 14-XI-2019, dominio público federal, dos días después del pico, no del 12-XI. https://www.nesdis.noaa.gov/news/rising-sea-levels-and-sirocco-winds-worsen-flooding-venice
+- **FLOOD_CONTEXT:** clip Pexels de Marius Nacu publicado 24-X-2022, fecha real de filmación no verificada, licencia Pexels. No representa el temporal de 2019. https://www.pexels.com/video/flood-in-venice-14159923/
 - Adaptaciones: color, encuadre, zoom y rótulos. Ambiente sonoro y narración español con espeak sintetizados; **NO** corresponden a entrevistas ni grabaciones originales del evento. Elementos editoriales originales: CC BY 4.0 sin anular créditos individuales de archivo.
 
 ## Dirección editorial
@@ -40,4 +40,6 @@ Rama de producción exclusiva candidate/prometeo-video-w002-03-20261122; GitHub 
 
 ### Recuperación de incidente real
 
-El primer intento de Actions (run 45044386071) fue bloqueado por HTTP 429 en Wikimedia. El segundo intenta Pexels como video de contexto con rodaje no fechado, y fotos de Commons descargadas por proxy (autor y licencia no cambian). No equivale a export hasta que los archivos lleguen y el codec se verifique.
+El primer intento de Actions (run 45044386071) fue bloqueado por HTTP 429 en Wikimedia. El segundo intenta Pexels como video de contexto con rodaje no fechado, y imagen oficial NOAA de dominio público (autor y licencia no cambian). No equivale a export hasta que los archivos lleguen y el codec se verifique.
+
+**Segundo intento de Actions (45044818076):** video Pexels descargado y validado, pero proxy de Commons devolvió HTTP 404. Sustituido por imagen histórica oficial NOAA 14-XI-2019 y segundo video Pexels rotulado explícitamente como contexto sin fecha de rodaje.

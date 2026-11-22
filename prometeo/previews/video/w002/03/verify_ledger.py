@@ -27,15 +27,15 @@ def validate(d):
             if not a: errors.append(f"Unknown asset {aid}");continue
             if item.get("dateCaptured")!=a.get("date") or item.get("author")!=a.get("creator"):
                 errors.append(f"Wrong provenance for {name}")
-            if item.get("license")!=a.get("license") or not (a.get("commons","").startswith("https://commons.wikimedia.org/wiki/File:") or a.get("commons","").startswith("https://www.pexels.com/video/")):
+            if item.get("license")!=a.get("license") or not (a.get("commons","").startswith("https://commons.wikimedia.org/wiki/File:") or a.get("commons","").startswith("https://www.pexels.com/video/") or a.get("commons","").startswith("https://www.nesdis.noaa.gov/news/")):
                 errors.append(f"Missing legal credit: {name}")
             label=item.get("label","")
             if aid=="VENICE_CONTEXT" and "CONTEXTO" not in label:
                 errors.append(f"Context footage mislabeled: {name}")
-            if aid=="FLOOD_2019_12" and "2019" not in label and "187" not in label:
-                errors.append(f"Nov 12 archive unlabeled: {name}")
-            if aid=="FLOOD_2019_15" and name=="S05" and "15 NOV 2019" not in label:
-                errors.append(f"Nov 15 photograph mislabeled: {name}")
+            if aid=="SATELLITE_2019_14" and "2019" not in label and "187" not in label:
+                errors.append(f"Nov 14 satellite unlabeled: {name}")
+            if aid=="FLOOD_CONTEXT" and "CONTEXTO" not in label:
+                errors.append(f"Undated flood B-roll mislabeled: {name}")
         else:
             if item.get("kind") not in ("ORIGINAL_DATA_GRAPHIC","ORIGINAL_CREDITS"):
                 errors.append(f"Graphic incorrectly presented as evidence: {name}")
