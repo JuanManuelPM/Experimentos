@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>EL RELEVO · PROMETEO Video 07</title>
+<meta name="description" content="EL RELEVO: cortometraje animado original sin diálogo, Video W002, trabajo 07.">
+<style>
+:root{color-scheme:dark;font-family:system-ui,-apple-system,sans-serif;background:#0d171e;color:#e4dfd4}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(circle at 49% 30%,#223641 0%,#0d171e 64%);display:grid;place-content:center;padding:clamp(15px,3vw,45px)}
+main{max-width:980px;width:100%;margin:auto}
+header{display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:.75rem;letter-spacing:.18em;color:#b9c7c9;text-transform:uppercase;margin-bottom:24px}
+h1{font-size:clamp(38px,7vw,90px);font-weight:420;letter-spacing:-.065em;margin:0 0 16px;line-height:1}
+p{line-height:1.5;color:#cad0d0;max-width:65ch}.stage{border:1px solid #5c686b;box-shadow:0 20px 80px #0009;overflow:hidden;background:#14222a;position:relative}
+video{width:100%;aspect-ratio:16/9;display:block;background:#14222a;object-fit:contain}
+small{font-size:12px;line-height:1.4;color:#9aaeb6}
+.meta{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-top:20px}
+a{color:#e7bd87;text-decoration-color:#e7bd8766;text-underline-offset:3px}a:focus-visible{outline:3px solid #e7bd87}
+#status{font-size:12px;color:#dfb87a;margin:12px 0 4px;min-height:1em}
+</style></head>
+<body><main>
+<header><span>PROMETEO · ESTUDIO VIDEO · W002/07</span><span>Película original · 2026</span></header>
+<h1>EL RELEVO</h1>
+<p>Una parada de noche. Un mitón rojo. Tres desconocidos. Historia animada sin palabras, con banda sonora original.</p>
+<div class="stage"><video id="film" src="./EL_RELEVO_07.mp4" controls preload="metadata" playsinline poster="./frame_420.png" aria-label="Reproducir el cortometraje El relevo"></video></div>
+<div id="status" aria-live="polite"></div>
+<div class="meta"><small>28 segundos · 8 planos · 960 × 540 · H.264/AAC</small><small><a href="./EL_RELEVO_07.mp4">Archivo MP4</a> · <a href="./render.py">Código de render</a> · <a href="./SilentContinuityGraph.json">Grafo de raccord</a> · <a href="https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/launch/20261122/next/video/works/07-el-relevo/RESULT.md">Informe de verificación</a></small></div>
+<p><small>Esta edición es una prueba de producción. La comprensión narrativa por espectadores independientes y la aprobación artística humana están pendientes. Las referencias de cine se estudiaron como proceso, sin incorporar contenido de terceros.</small></p>
+<script>const video=document.getElementById("film"),status=document.getElementById("status");video.addEventListener("error",()=>status.textContent="El archivo MP4 todavía no está disponible en la publicación; consultá el informe de estado.");video.addEventListener("loadedmetadata",()=>status.textContent="");</script>
+</main></body></html>
