@@ -1,0 +1,76 @@
+{
+  "schema": "prometeo.work.qa-receipt/v1",
+  "generatedAt": "2026-11-22T18:57:21.142Z",
+  "room": "3d",
+  "batchId": "3d-w7-20261122",
+  "taskNumber": 9,
+  "taskId": "3d-w7-20261122-09",
+  "build": {
+    "branch": "candidate/prometeo-3d-w7-20261122-09",
+    "exclusivePath": "prometeo/launch/20261122/relaunch/3d/works/09/",
+    "launchBlobSha": "58de659e2aa01c0746d59ca6f95c36bdc59f3030",
+    "flowVersion": "2.3.0",
+    "flowSha256Canonical": "53bc9e2e4b37c99e92d3494af8dfa4461cd4644b15f980e32497a8428b067b3f"
+  },
+  "actualObservations": [
+    {
+      "test": "JavaScript syntax editor / serializer / fixture",
+      "status": "PASS_V8",
+      "source": "editor.mjs, scene-core.mjs, fixture-glb.mjs"
+    },
+    {
+      "test": "Original generated GLB 2.0 binary",
+      "status": "PASS_V8",
+      "bytes": 19740,
+      "sourceNodes": 4,
+      "meshCount": 2,
+      "nativeClips": 1
+    },
+    {
+      "test": "Portable JSON import fixture matching authored GLB bytes",
+      "status": "PASS_V8",
+      "sceneNodes": 13,
+      "glbAssets": 1,
+      "animationTracks": 3
+    },
+    {
+      "test": "Preventive structural+timeline regression tests from real test source",
+      "status": "PASS_V8",
+      "passed": 20,
+      "total": 20,
+      "source": "scene-core.test.mjs"
+    },
+    {
+      "test": "Deep-spec structural validator",
+      "status": "SPIKE_REQUIRED",
+      "errors": [],
+      "reason": "No browser GLTFLoader/GPU observation"
+    },
+    {
+      "test": "Art-direction first article validator",
+      "status": "FIRST_ARTICLE_REQUIRED",
+      "errors": [],
+      "reason": "No real rendered 390/1440 capture"
+    },
+    {
+      "test": "Visited stage-level trace",
+      "status": "STRUCTURE_PASS_MEDIA_NOT_VERIFIED",
+      "warnings": 10
+    }
+  ],
+  "notRun": [
+    "WebGL browser load/GPU render of this actual app",
+    "GLTFLoader.parseAsync end-to-end in browser",
+    "GLB native animation visual observation",
+    "JSON roundtrip from actual UI in browser",
+    "Screenshot 390 and 1440",
+    "Android touch controls",
+    "Independent perceptual quality comparison",
+    "Human approval",
+    "Node.js node --test invocation on checkout"
+  ],
+  "importantDifference": "W6 DEMO_PROJECT.json had zero assets; W7 has authored embedded real 19,740-byte GLB with native animation and pivot; logical regression PASS does not certify improved artistic quality.",
+  "firstArticle": "STRUCTURAL_BINARY_OBSERVED_VISUAL_NOT_RUN",
+  "releaseStatus": "SOURCE_CANDIDATE_BUILD",
+  "humanApproved": false
+}
