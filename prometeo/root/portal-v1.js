@@ -25,7 +25,8 @@ function batchEntries(room){
    const n=Number(t.number);
    const result=state.public.find(e=>e&&e.room===room&&Array.isArray(t.messageIds)&&t.messageIds.includes(e.id))||
     state.public.find(e=>e&&e.room===room&&e.batchId===b.id&&Number(e.taskNumber)===n);
-   return {id:t.id,number:n,label:t.label,sourceUrl:b.launchUrl,result:result||null,evidence:t.evidence||{}};
+   const embed=(t.embedResult&&result&&Array.isArray(result.blocks))?result.blocks.find(x=>x?.type==='file'&&safePreview(x.url)&&x.url.includes('/previews/w5/')):null;
+   return {id:t.id,number:n,label:t.label,sourceUrl:b.launchUrl,result:result||null,embedUrl:embed?.url||'',evidence:t.evidence||{}};
   });
   const dates=tasks.filter(t=>t.result).map(t=>Date.parse(t.result.publishedAt)||0);
   return {id:b.id,room,title:b.title||'Tanda',publishedAt:new Date(Math.max(Date.parse(b.createdAt)||0,...dates,Date.parse('2026-11-21T00:00:00Z'))).toISOString(),
@@ -126,6 +127,7 @@ function updateContext(){
   c.append(option('Obras',()=>go('#3d/biblioteca'),state.screen==='library'));
   c.append(option('Respuestas',()=>go('#3d/mensajes'),state.screen==='messages'));
   c.append(option('Editar · FORJA',()=>{shell.closeMenu();newTab(PUBLIC+'forja/');}));
+  c.append(option('Continuar',async()=>{shell.closeMenu();toast(await copy(promptFor('3d'))?'Copiado':'No se pudo copiar');},false,true));
   if(state.screen==='stage'){
    const item=state.items.find(x=>x.id===state.itemId);
    for(const ver of item?.versions||[])c.append(option('Abrir '+ver.label,()=>{shell.closeMenu();newTab(ver.url);},false,true));
