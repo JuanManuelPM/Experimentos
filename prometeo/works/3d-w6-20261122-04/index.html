@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#101a1f">
+<meta name="description" content="La despedida: cortometraje 3D editable. Dirección de cámara, luz y actuaciones sobre una línea de tiempo reproducible.">
+<title>LA DESPEDIDA | Estudio de dirección</title>
+<style>
+:root{color-scheme:dark;--bg:#0b1116;--panel:#141f25;--line:#354349;--ink:#f2ede3;--muted:#a0a9a8;--gold:#e6ad76;--cold:#81a7aa}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);font-family:Inter,"Segoe UI",system-ui,sans-serif}
+button,input,select{font:inherit}button{cursor:pointer}button:focus-visible,input:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+header{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:13px clamp(16px,3vw,35px);min-height:64px;border-bottom:1px solid var(--line);background:#10181d}
+.eyebrow,.meta,.label,.timecode{font-size:10px;letter-spacing:.19em;text-transform:uppercase;color:var(--muted)}.identity{display:flex;align-items:center;gap:14px}.mark{border:1px solid #9b7d65;color:#e8c19a;width:34px;height:34px;display:grid;place-items:center;border-radius:50%;font:22px Georgia,serif}
+.identity strong{display:block;font:18px/1.1 Georgia,serif;letter-spacing:.025em}.identity small{display:block;margin-top:4px;color:var(--muted);font-size:10px;letter-spacing:.07em}.header-actions{display:flex;gap:8px;align-items:center}
+button{border:1px solid #455459;background:#1b2a2f;color:var(--ink);border-radius:3px;padding:11px 14px;transition:background .14s}button:hover{background:#273b3f}button.primary{background:var(--gold);border-color:var(--gold);color:#182025;font-weight:750}.disabled{opacity:.45}button.small{padding:8px 11px;font-size:11px;letter-spacing:.06em}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(286px,326px);min-height:calc(100dvh - 64px)}
+.screen-column{min-width:0;display:flex;flex-direction:column;align-items:stretch;background:#070b0f}
+.stage-wrap{position:relative;min-height:340px;flex:1;overflow:hidden;display:grid;place-items:center;background:radial-gradient(circle at 50% 45%,#193038,#060b0e 72%);}
+.viewport{position:absolute;inset:0;overflow:hidden}#stage{width:100%;height:100%;display:block;touch-action:pan-y}
+.letterbox{position:absolute;pointer-events:none;left:0;right:0;height:clamp(22px,4vw,44px);background:#050608;z-index:2}.letterbox.top{top:0}.letterbox.bottom{bottom:0}
+.film-overlay{pointer-events:none;position:absolute;z-index:3;inset:0;padding:70px 5.5% 55px;display:flex;flex-direction:column;justify-content:space-between}
+.film-top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.film-label{color:#e1d0b8;font-size:10px;letter-spacing:.19em;text-transform:uppercase;text-shadow:0 1px 8px #000}
+.film-title{font:clamp(23px,3.4vw,52px)/1.05 Georgia,serif;letter-spacing:.015em;text-shadow:0 2px 20px #03080a}
+.film-bottom{text-align:center;margin:0 auto;max-width:75%;font:clamp(13px,1.6vw,21px)/1.45 Georgia,serif;text-shadow:0 2px 12px #000,0 2px 4px #000}
+#subtitle:empty{display:none}#subtitle{display:inline;background:linear-gradient(90deg,transparent,rgba(0,0,0,.33) 16%,rgba(0,0,0,.33) 84%,transparent);padding:7px 15px}
+.play-badge{pointer-events:auto;position:absolute;z-index:4;left:50%;top:50%;transform:translate(-50%,-50%);width:79px;height:79px;border-radius:50%;font-size:25px;background:rgba(9,21,26,.8);backdrop-filter:blur(9px);border-color:#c8a383;box-shadow:0 0 0 6px rgba(0,0,0,.12)}
+#status{position:absolute;z-index:6;left:20px;bottom:49px;color:#ced5d4;font-size:11px;letter-spacing:.05em;max-width:65%;text-shadow:0 1px 4px #000}
+.screen-bottom{padding:16px clamp(16px,3vw,35px) 24px;border-top:1px solid #27363c;background:#111b20}
+.transport{display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap}.clock{font-size:12px;font-variant-numeric:tabular-nums;min-width:111px;letter-spacing:.09em;color:#e3e6e1}
+#seek{width:100%;height:5px;accent-color:var(--gold);margin:4px 0 16px;cursor:pointer}.shots{display:flex;gap:4px;min-height:69px;align-items:stretch}
+.shot{min-width:0;flex-basis:0;flex-grow:1;border:1px solid #526063;text-align:left;background:#1d2c32;padding:10px 8px;display:flex;flex-direction:column;justify-content:space-between;gap:4px;position:relative}.shot .num{color:#d8a981;font-size:10px}.shot .name{font:11px/1.2 Georgia,serif;overflow:hidden;text-overflow:ellipsis}.shot .dur{font-size:9px;color:var(--muted)}.shot.active{background:#32413c;border-color:var(--gold)}.shot.selected:after{content:"";position:absolute;inset:0;border:1px solid #fff7;pointer-events:none}
+.timeline-footer{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-top:12px;color:#92a3a4;font-size:10px}
+.panel{border-left:1px solid var(--line);background:linear-gradient(165deg,#19282c,#111b20 75%);min-height:100%;display:flex;flex-direction:column}
+.panel-head{padding:24px 23px 18px;border-bottom:1px solid var(--line)}.panel-head .eyebrow{color:var(--gold);margin:0 0 12px}.panel-head h1{font:39px/1 Georgia,serif;margin:0 0 12px}.panel-head p{font:13px/1.55 Georgia,serif;color:#b1bdba;margin:0}
+.panel-body{padding:20px 22px 30px;overflow:auto;min-height:0}
+.section{border-top:1px solid #3b4b50;padding-top:17px;margin-top:19px}.section:first-child{border-top:0;padding-top:0;margin-top:0}
+.section-title{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:16px}.section-title strong{font-size:12px;letter-spacing:.12em;text-transform:uppercase;font-weight:600}.section-title span{font-size:10px;color:#b3bdb7}
+.field{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}.field>span{font-size:11px;color:#c1cbc8}
+.field input{width:100%;height:35px;border:1px solid #53656a;background:#101a20;border-radius:2px;color:var(--ink);padding:6px 9px;font-size:13px}.field input[type=range]{height:25px;padding:0;accent-color:#dca36d}
+.triple{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}.triple label{font-size:10px;color:#87989a}.triple input{display:block;margin-top:5px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:9px}.two button{width:100%;font-size:11px}.note{font-size:11px;line-height:1.55;color:#a2b1b1}.note strong{color:#e7d1b8}
+.export-status{min-height:20px;margin-top:12px;font-size:11px;color:#dcb28d;word-break:break-word}#download{display:none;color:#edd0a9;text-decoration:underline;margin-top:12px;font-size:12px}#download:not([hidden]){display:block}
+#file{display:none}.bottom-status{color:var(--muted);font-size:10px;margin-top:10px}
+body.film-mode .panel,body.film-mode .screen-bottom{display:none}body.film-mode .layout{grid-template-columns:1fr}body.film-mode .stage-wrap{height:calc(100dvh - 64px)}
+@media(max-width:850px){header{padding:10px 14px}.layout{display:flex;flex-direction:column}.stage-wrap{min-height:58vw;height:min(67dvh,600px);flex:none}.panel{border-left:0;border-top:1px solid var(--line)}.panel-head{padding:17px}.panel-head h1{font-size:31px}.panel-body{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;padding:15px}.section{margin:0;border-top:0;padding:0}.shots{min-height:72px}.shot .name{font-size:10px}.screen-bottom{padding:13px}.film-overlay{padding:55px 6% 44px}}
+@media(max-width:520px){.panel-body{grid-template-columns:1fr}.header-actions{gap:4px}.identity small{font-size:8px}.film-label{font-size:8px}.shots{gap:2px}.shot{padding:8px 5px}.shot .num{font-size:9px}.shot .name{font-size:9px}.shot .dur{font-size:8px}.film-bottom{max-width:95%;font-size:13px}.stage-wrap{min-height:340px;height:56dvh}.clock{font-size:11px;min-width:auto}.transport button{font-size:12px;padding:9px 10px}}
+@media(prefers-reduced-motion:reduce){button{transition:none}}
+</style></head>
+<body>
+<header><div class="identity"><span class="mark">✦</span><div><strong>LA DESPEDIDA</strong><small>PROMETEO · 3D · W6 / PELÍCULA 04</small></div></div><div class="header-actions"><span class="meta" id="render-status">3D · INICIANDO</span><button class="small" id="filmMode">VER CORTO</button></div></header>
+<div class="layout">
+<main class="screen-column">
+ <div class="stage-wrap"><div class="viewport"><canvas id="stage" aria-label="Escenario tridimensional La despedida"></canvas></div><div class="letterbox top"></div><div class="letterbox bottom"></div>
+ <div class="film-overlay"><div class="film-top"><span class="film-label">UN CORTO DE PROMETEO</span><span class="film-label" id="shotNumber">PLANO 01 / 05</span></div><div><div class="film-title" id="filmTitle">La despedida</div><div class="film-bottom"><span id="subtitle"></span></div></div></div>
+ <button class="play-badge" id="bigPlay" title="Reproducir escena" aria-label="Reproducir escena">▶</button><div id="status" role="status">Preparando escenario...</div>
+ </div>
+ <div class="screen-bottom"><div class="transport"><button id="play" class="primary">▶ REPRODUCIR</button><button id="rewind">↺ INICIO</button><span id="clock" class="clock">00:00 / 00:26</span><span class="meta">25–30 FPS objetivo</span></div>
+ <input id="seek" type="range" min="0" max="26" step="0.01" value="0" aria-label="Mover cabezal de reproducción">
+ <div class="shots" id="shots" aria-label="Plano a plano"></div><div class="timeline-footer"><span>SECUENCIA / 5 PLANOS EDITABLES</span><span id="cutInfo">CORTES CONTIGUOS · TIEMPO ABSOLUTO</span></div></div>
+</main>
+<aside class="panel">
+ <div class="panel-head"><p class="eyebrow">UNA HISTORIA · UNA DECISIÓN</p><h1>La despedida.</h1><p>Dos personas. Un farol. El mar. Cambiá la cámara, la luz y los gestos; cada decisión altera la película.</p></div>
+ <div class="panel-body">
+ <section class="section"><div class="section-title"><strong>01 / Plano seleccionado</strong><span id="selectedId">S01</span></div>
+ <label class="field"><span>Duración del plano (segundos)</span><input id="shotDuration" type="number" min="1" max="15" step="0.1"></label>
+ <label class="field"><span>Campo de visión (grados)</span><input id="fov" type="range" min="20" max="80" step="1"><span id="fovValue" class="meta"></span></label>
+ <div class="field"><span>Posición inicial de cámara · X / Y / Z (m)</span><div class="triple"><label>X<input id="cx" type="number" step=".1"></label><label>Y<input id="cy" type="number" step=".1"></label><label>Z<input id="cz" type="number" step=".1"></label></div></div>
+ <div class="field"><span>Posición final de cámara · X / Y / Z (m)</span><div class="triple"><label>X<input id="ex" type="number" step=".1"></label><label>Y<input id="ey" type="number" step=".1"></label><label>Z<input id="ez" type="number" step=".1"></label></div></div>
+ </section>
+ <section class="section"><div class="section-title"><strong>02 / Luz y actuación</strong><span>KEYFRAMES</span></div>
+ <label class="field"><span>Intensidad final del farol</span><input id="light" type="range" min=".1" max="7" step=".05"><span id="lightValue" class="meta"></span></label>
+ <label class="field"><span>Vera · mano extendida</span><input id="vera" type="range" min="0" max="1" step=".01"><span id="veraValue" class="meta"></span></label>
+ <label class="field"><span>Noé · mano extendida</span><input id="noe" type="range" min="0" max="1" step=".01"><span id="noeValue" class="meta"></span></label>
+ <label class="field"><span>Texto de escena</span><input id="subtitleEdit" type="text" maxlength="180"></label>
+ </section>
+ <section class="section"><div class="section-title"><strong>03 / Entregar y llevar</strong><span>FUENTES ABIERTAS</span></div>
+ <div class="two"><button id="saveJson">↓ TIMELINE.JSON</button><button id="loadJson">↑ IMPORTAR JSON</button></div>
+ <input id="file" type="file" accept=".json,application/json">
+ <p class="note">La línea de tiempo es <strong>editable y exportable</strong>. El corto se renderiza con WebGL y audio original generado localmente, sin claves privadas.</p>
+ <button id="record" class="primary" style="width:100%;margin-top:4px">● EXPORTAR VIDEO CON AUDIO</button>
+ <p class="note">Se usa el contenedor que tu navegador soporte (normalmente WebM). No se crea un MP4 ficticio. Los controles quedan desactivados durante la captura.</p>
+ <div id="exportStatus" class="export-status" role="status"></div><a id="download" hidden>↓ ABRIR ARCHIVO EXPORTADO</a>
+ </section>
+ <section class="section"><div class="section-title"><strong>04 / Créditos y prueba</strong></div><p class="note">Obra, guion, materiales, figuras, secuencia y banda sonora originales. Referencias: <a href="https://www.blender.org/press/spring-open-movie/" target="_blank" rel="noopener" style="color:var(--gold)">Blender Studio</a> y <a href="https://www.theatrejs.com/docs/latest/manual/sequences" target="_blank" rel="noopener" style="color:var(--gold)">Theatre.js</a>. La comparación con obras profesionales sigue pendiente de evaluación humana.</p><div class="bottom-status">ID · 3d-w6-20261122-04 · QBAR-1 / DEEP-SPEC-1</div></section>
+ </div>
+</aside></div>
+<script type="module" src="./main.js"></script>
+</body></html>
