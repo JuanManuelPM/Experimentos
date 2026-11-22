@@ -286,7 +286,7 @@ const currentPose={headYaw:0,headPitch:0,headRoll:0,gazeX:0,gazeY:0,armLift:0};
 let last=performance.now(),frames=0,frameBucket=0;
 function loop(){
  requestAnimationFrame(loop);if(!renderer)return;
- const t=clock.getElapsedTime(),dt=Math.min(clock.getDelta(),.06),now=performance.now();
+ const dt=Math.min(clock.getDelta(),.06),t=clock.elapsedTime,now=performance.now();
  for(let key in currentPose)currentPose[key]+=((destination[key]||0)-currentPose[key])*Math.min(1,dt*2.5);
  let v='rest';if(currentTrack.length){
   const time=playingAudio?playingAudio.currentTime:(now-startClock)/1000;
