@@ -1,0 +1,168 @@
+{
+  "schema": "prometeo.music.stage-trace/v1",
+  "taskId": "music-w003-20261122-03",
+  "flowVersion": "2.0.0",
+  "flowSha256": "6826ce13f4bd1e0d81b8a89bd7e6728668b85c44c68185b79426b00a36b8f05f",
+  "recordedAt": "2026-11-22T19:01:41Z",
+  "timestampCaveat": "Recorded timestamp documents this receipt, not historical per-stage timestamps; exact per-stage times were not logged live. No incompatible trace validator claimed.",
+  "stages": [
+    {
+      "stageId": "M00",
+      "name": "Recuperación y SHA fijado",
+      "status": "EXECUTED",
+      "evidenceTier": "SOURCE_READ",
+      "decisionAndOutput": "Conservar versión musical 2.0.0 frozen candidate, LAUNCH W003 y W002 anteriores.",
+      "evidenceRefs": [
+        "render.py",
+        "QA_RECEIPT.json",
+        "PREPRODUCTION.deep-spec-v1.json"
+      ]
+    },
+    {
+      "stageId": "M01",
+      "name": "Brief 03 inmutable",
+      "status": "EXECUTED",
+      "evidenceTier": "SOURCE_READ",
+      "decisionAndOutput": "Dos ecos filtrados y subgrave con silencios, mismo brief de W002.",
+      "evidenceRefs": [
+        "render.py",
+        "QA_RECEIPT.json",
+        "PREPRODUCTION.deep-spec-v1.json"
+      ]
+    },
+    {
+      "stageId": "M02",
+      "name": "Referentes de técnica dub",
+      "status": "EXECUTED",
+      "evidenceTier": "SOURCE_READ",
+      "decisionAndOutput": "Ableton El Choop, iZotope efecto dub, catálogo Basic Channel solo documental.",
+      "evidenceRefs": [
+        "render.py",
+        "QA_RECEIPT.json",
+        "PREPRODUCTION.deep-spec-v1.json"
+      ]
+    },
+    {
+      "stageId": "M03",
+      "name": "Alternativas de representación",
+      "status": "EXECUTED",
+      "evidenceTier": "CODE_TEST",
+      "decisionAndOutput": "Rack offline propio sin samples; alternativa IR CC0 viable pero no usada.",
+      "evidenceRefs": [
+        "render.py",
+        "QA_RECEIPT.json",
+        "PREPRODUCTION.deep-spec-v1.json"
+      ]
+    },
+    {
+      "stageId": "M04",
+      "name": "Timeline armónico",
+      "status": "EXECUTED",
+      "evidenceTier": "CODE_TEST",
+      "decisionAndOutput": "88 compases, seis acordes, siete secciones con vacío central.",
+      "evidenceRefs": [
+        "render.py",
+        "QA_RECEIPT.json",
+        "PREPRODUCTION.deep-spec-v1.json"
+      ]
+    },
+    {
+      "stageId": "M05",
+      "name": "Síntesis y fraseo",
+      "status": "EXECUTED",
+      "evidenceTier": "AUDIO_RENDER",
+      "decisionAndOutput": "Acordes, sub, percusión y aire originales con tiempos editables.",
+      "evidenceRefs": [
+        "render.py",
+        "QA_RECEIPT.json",
+        "PREPRODUCTION.deep-spec-v1.json"
+      ]
+    },
+    {
+      "stageId": "M06",
+      "name": "Timbre y arquitectura de delays",
+      "status": "EXECUTED",
+      "evidenceTier": "AUDIO_RENDER",
+      "decisionAndOutput": "Doble feedback 0.56/0.44 con filtros en repeticiones.",
+      "evidenceRefs": [
+        "render.py",
+        "QA_RECEIPT.json",
+        "PREPRODUCTION.deep-spec-v1.json"
+      ]
+    },
+    {
+      "stageId": "M07",
+      "name": "Primer artículo",
+      "status": "EXECUTED",
+      "evidenceTier": "AUDIO_RENDER",
+      "decisionAndOutput": "Ocho compases WAV de prueba y QA impulse/sub/mono.",
+      "evidenceRefs": [
+        "render.py",
+        "QA_RECEIPT.json",
+        "PREPRODUCTION.deep-spec-v1.json"
+      ]
+    },
+    {
+      "stageId": "M08",
+      "name": "Obra completa",
+      "status": "EXECUTED",
+      "evidenceTier": "AUDIO_RENDER",
+      "decisionAndOutput": "88 compases, 177.5s, cambios de armonía y silencios.",
+      "evidenceRefs": [
+        "render.py",
+        "QA_RECEIPT.json",
+        "PREPRODUCTION.deep-spec-v1.json"
+      ]
+    },
+    {
+      "stageId": "M09",
+      "name": "Máster, stems, export",
+      "status": "EXECUTED",
+      "evidenceTier": "AUDIO_RENDER",
+      "decisionAndOutput": "Master 24-bit 44.1k y cinco stems con paridad raw.",
+      "evidenceRefs": [
+        "render.py",
+        "QA_RECEIPT.json",
+        "PREPRODUCTION.deep-spec-v1.json"
+      ]
+    },
+    {
+      "stageId": "M10",
+      "name": "Diagnóstico y primera corrección",
+      "status": "EXECUTED",
+      "evidenceTier": "CODE_TEST",
+      "decisionAndOutput": "Se corrigió el test de sub en el primer artículo, el intro originalmente no tenía sub. QA oído NOT_RUN.",
+      "evidenceRefs": [
+        "render.py",
+        "QA_RECEIPT.json",
+        "PREPRODUCTION.deep-spec-v1.json"
+      ]
+    },
+    {
+      "stageId": "M11",
+      "name": "Persistencia y recepción",
+      "status": "EXECUTED",
+      "evidenceTier": "SOURCE_READ",
+      "decisionAndOutput": "Archivos y reproductor publicados, fuente remota releída; Pages HTTP NOT_VERIFIED.",
+      "evidenceRefs": [
+        "render.py",
+        "QA_RECEIPT.json",
+        "PREPRODUCTION.deep-spec-v1.json"
+      ]
+    }
+  ],
+  "unperformed": [
+    {
+      "activity": "HUMAN_LISTEN",
+      "status": "NOT_RUN",
+      "reason": "No independent headphone or mono subjective listening in current environment."
+    },
+    {
+      "activity": "PUBLIC_PAGES_HTTP",
+      "status": "NOT_RUN",
+      "reason": "Connector GitHub source readback only, Pages network egress blocked in current environment."
+    }
+  ],
+  "traceGraphValidation": "NOT_RUN",
+  "humanApproved": false
+}
