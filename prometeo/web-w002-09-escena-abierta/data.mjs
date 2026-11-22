@@ -1,0 +1,42 @@
+// ESCENA ABIERTA · ficción editorial · fuente de datos reutilizable
+export const DAYS = [
+ {date:"2027-03-12",short:"VIE 12",long:"Viernes 12 de marzo"},
+ {date:"2027-03-13",short:"SÁB 13",long:"Sábado 13 de marzo"},
+ {date:"2027-03-14",short:"DOM 14",long:"Domingo 14 de marzo"}
+];
+export const STAGES = ["Patio Luz","Nave Umbral","Caja Negra"];
+export const CATEGORIES = ["Música","Arte vivo","Visuales","Ideas"];
+export const PHOTOS = [
+ {src:"https://images.unsplash.com/photo-1767677764533-83e1cab46a46?auto=format&fit=crop&w=1600&q=80",credit:"Jingtao",url:"https://unsplash.com/photos/crowd-at-a-concert-with-bright-stage-lights-hRwq6SvX0PE",alt:"Público reunido bajo luces violetas en un concierto"},
+ {src:"https://images.unsplash.com/photo-1756310331722-31901b1bafc1?auto=format&fit=crop&w=1200&q=80",credit:"Max Ovcharenko",url:"https://unsplash.com/photos/performer-singing-into-microphone-under-red-stage-lights-2kLhltQ83GY",alt:"Intérprete sobre un escenario con iluminación roja"},
+ {src:"https://images.unsplash.com/photo-1771714430881-3ed05b032904?auto=format&fit=crop&w=1400&q=80",credit:"Jan Oblak",url:"https://unsplash.com/photos/abstract-geometric-pattern-projected-onto-a-dark-surface-c-M3yO2xAjw",alt:"Proyección abstracta de luz sobre una superficie oscura"},
+ {src:"https://images.unsplash.com/photo-1784040625175-201afd3bfe00?auto=format&fit=crop&w=1400&q=80",credit:"arman grigoryan",url:"https://unsplash.com/photos/performer-on-stage-with-purple-lights-and-holographic-figures-fHK9UkkjKs4",alt:"Escenario de música electrónica con proyecciones violeta"},
+ {src:"https://images.unsplash.com/photo-1785421269679-3a4f5fbe5e35?auto=format&fit=crop&w=1400&q=80",credit:"Pierre Goiffon",url:"https://unsplash.com/photos/a-band-performs-live-on-stage-under-bright-purple-lights-fPfJmv09NRM",alt:"Banda tocando en vivo bajo reflectores violeta"}
+];
+const make=(id,day,time,duration,stage,category,title,subtitle,description,photo)=>({id,day,time,duration,stage,category,title,subtitle,description,photo});
+export const EVENTS = [
+ make("invernadero-sonoro","2027-03-12","16:00",65,"Patio Luz","Música","Invernadero sonoro","Botánica electrónica", "Sintetizadores analógicos, grabaciones de campo y pequeños instrumentos de madera se entrelazan en una sesión que cambia con cada escucha. Un comienzo para entrar al festival sin apuro.",0),
+ make("espacios-que-suenan","2027-03-12","16:30",55,"Nave Umbral","Ideas","Los espacios que suenan","Conversación abierta", "Arquitectura, escucha y memoria urbana: tres voces imaginan cómo cambia una ciudad cuando atendemos a lo que suele quedar fuera del mapa sonoro. Encuentro con preguntas del público.",2),
+ make("cuerpos-de-sombra","2027-03-12","17:15",70,"Caja Negra","Arte vivo","Cuerpos de sombra","Danza y proyección", "Una coreografía para tres cuerpos y una sola fuente de luz. Las sombras ensayan sus propias relaciones y convierten el escenario en un territorio móvil.",2),
+ make("brote-electrico","2027-03-12","18:00",65,"Patio Luz","Música","Brote eléctrico","Ritmo de otra orilla", "Percusión expandida, bajos elásticos y melodías que cruzan la electrónica con los ritmos del litoral. Una invitación a moverse antes de que caiga el sol.",4),
+ make("materia-en-transito","2027-03-12","18:30",75,"Nave Umbral","Visuales","Materia en tránsito","Instalación de imágenes vivas", "Una pantalla de gran formato reacciona al sonido y a la presencia del público. El sistema nunca repite exactamente la misma composición.",2),
+ make("duo-interferencia","2027-03-12","19:30",70,"Caja Negra","Música","Dúo Interferencia","Cuerdas intervenidas", "Un chelo amplificado dialoga con dispositivos caseros, latidos electrónicos y silencios prolongados. Música de cámara que se anima a romper su propio marco.",1),
+ make("aurora-lenta","2027-03-12","20:15",80,"Patio Luz","Música","Aurora Lenta","Canciones para quedarse", "Voces próximas, guitarras procesadas y una banda que encuentra belleza en los contrastes. Un concierto para escuchar de cerca y cantar sin darse cuenta.",4),
+ make("cartografia-del-ruido","2027-03-12","22:00",75,"Nave Umbral","Arte vivo","Cartografía del ruido","Recorrido sonoro inmersivo", "Un mapa que se puede recorrer con los oídos: objetos resonantes, pequeños relatos y zonas de silencio en una instalación que se transforma durante la noche.",3),
+ make("niebla-comun","2027-03-13","16:00",70,"Patio Luz","Música","Niebla común","Dub experimental", "Graves profundos, texturas granuladas y percusiones pacientes. El sonido avanza como una niebla amable que termina por ocupar todo el patio.",3),
+ make("archivo-futuras-ciudades","2027-03-13","16:20",55,"Nave Umbral","Ideas","Archivo de futuras ciudades","Diseño y ficción", "¿Qué registros dejaríamos para quienes vivan en nuestra ciudad dentro de cien años? Un encuentro de narrativas, diseño y pensamiento colectivo.",2),
+ make("camara-de-eco","2027-03-13","17:30",75,"Caja Negra","Arte vivo","Cámara de eco","Teatro de la repetición", "Seis intérpretes ensayan una historia que se desarma y se cuenta de nuevo desde otros puntos de vista. Una pieza sobre aquello que creemos haber escuchado.",1),
+ make("alud-rosa","2027-03-13","18:00",70,"Patio Luz","Música","Alud Rosa","Pop de alta fricción", "Canciones de estribillos magnéticos, guitarras filosas y un pulso que no se detiene. Un directo construido para saltar entre ternura y distorsión.",4),
+ make("especies-de-luz","2027-03-13","19:00",70,"Nave Umbral","Visuales","Especies de luz","Laboratorio audiovisual", "Una colección de formas lumínicas parece aprender a moverse con la música. La instalación revela cómo el azar puede construir un lenguaje visual.",2),
+ make("orbita-minima","2027-03-13","19:50",70,"Caja Negra","Música","Órbita mínima","Piano y electricidad", "Piezas mínimas que crecen desde una sola nota hasta un paisaje de ruido delicado. Un concierto íntimo sobre lo que sucede entre dos sonidos.",1),
+ make("sol-de-fondo","2027-03-13","21:00",80,"Patio Luz","Música","Sol de fondo","Baile del fin de semana", "Secuencias bailables, voces corales y ritmos quebrados se encuentran en una sesión donde todo está pensado para ser compartido.",0),
+ make("madrugada-portatil","2027-03-13","22:30",90,"Nave Umbral","Música","Madrugada portátil","Club de bolsillo", "Una travesía desde el ambient hasta la pista de baile. Beats en movimiento, bajos envolventes y una última parte para perder la noción del horario.",3),
+ make("semillas-de-ruido","2027-03-14","16:00",60,"Patio Luz","Música","Semillas de ruido","Percusión colectiva", "Una orquesta de objetos cotidianos, tambores y texturas vocales abre la última jornada. La música crece a partir de gestos pequeños.",4),
+ make("manual-para-escuchar","2027-03-14","16:40",70,"Nave Umbral","Ideas","Manual para escuchar","Taller participativo", "No hace falta saber de música: solo prestar atención. Un laboratorio colectivo para descubrir paisajes sonoros y ensayar nuevas formas de estar presentes.",2),
+ make("una-voz-sin-cuerpo","2027-03-14","17:50",65,"Caja Negra","Arte vivo","Una voz sin cuerpo","Teatro y sonido", "Una historia mínima se construye entre voces grabadas, presencia física y sombras. El público completa los espacios que la obra deja abiertos.",1),
+ make("cables-y-barro","2027-03-14","18:15",70,"Patio Luz","Música","Cables y barro","Folclore expandido", "Cajas de ritmo junto a guitarras criollas, modulaciones y canto colectivo. Una exploración que reúne memoria y futuros posibles.",4),
+ make("piel-de-pantalla","2027-03-14","19:20",80,"Nave Umbral","Visuales","Piel de pantalla","Cine en tiempo real", "Imágenes capturadas y transformadas en vivo se proyectan como una superficie orgánica. Cada gesto modifica la historia de lo que vemos.",2),
+ make("el-viento-habla","2027-03-14","20:00",75,"Caja Negra","Música","El viento habla","Voces y texturas", "Cantos de aire, instrumentos de viento y electrónica suave componen un paisaje que cambia lentamente. Una pausa para escuchar la respiración del espacio.",1),
+ make("asamblea-de-ecos","2027-03-14","21:00",90,"Patio Luz","Música","Asamblea de ecos","Concierto colectivo", "La formación más grande del festival reúne improvisación, ritmos latinoamericanos y arreglos abiertos. Una despedida compartida, sin finales predecibles.",0),
+ make("ultima-frecuencia","2027-03-14","22:45",95,"Nave Umbral","Música","Última frecuencia","Sesión de cierre", "Ritmos que se estiran más allá de la medianoche. Un cierre de festival hecho de transiciones, voces lejanas y la promesa de volver a encontrarnos.",3)
+];
