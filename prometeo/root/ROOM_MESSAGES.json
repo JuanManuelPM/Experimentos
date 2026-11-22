@@ -1,7 +1,7 @@
 {
   "schema": "prometeo.root.room-messages/v1",
   "visibility": "PUBLIC_SAFE_SUMMARIES_ONLY",
-  "updatedAt": "2026-11-22T19:19:00.000Z",
+  "updatedAt": "2026-11-22T19:18:48.144Z",
   "entries": [
     {
       "id": "web-w003-20261122-06-mapa-del-calor-source-v1",
@@ -6022,6 +6022,67 @@
       ],
       "sourceCommit": "2ba957c0a5d42cb1e8a4503684f54f31e3999e93",
       "briefSha": "a97b91ca103847ea75eeb9d1d2af10b6c9c0dddd",
+      "humanApproved": false
+    },
+    {
+      "id": "web-w003-20261122-10-lupa-candidate-52ce79bc",
+      "room": "web",
+      "batchId": "web-w003-20261122",
+      "taskNumber": 10,
+      "taskId": "web-w003-20261122-10",
+      "status": "CANDIDATE_SOURCE_READBACK_PASS_LOCAL_CHROMIUM_A_B_PASS_PUBLIC_PAGES_NOT_RUN_HISTORY_RELOAD_NOT_RUN",
+      "title": "🌐 WEB W003 · 10 · LUPA · comparador visual de regresiones",
+      "publishedAt": "2026-11-22T19:17:09Z",
+      "body": "LUPA W003 es una herramienta web nueva de comparación de capturas A/B reales con cortina, superposición, diferencias y vista paralela; incorpora carga local, controles táctiles/teclado, historial IndexedDB, export de PNG/JSON y runner Chromium de fuente HTML explícitamente autorizada con SHA-256 y manifiesto. Capturas reales de fixtures independientes a 390×900 y 1440×900, y primeras pantallas de app 390/1440 subidas a la rama candidata; lectura remota de HTML, Python, Book, QA, manifest y seis PNG PASS. Chromium local verificó render, estados, upload A/B, modos, cálculo de diferencias, teclado, ausencia de overflow y descargas. La navegación directa bloqueada por el entorno impidió pruebas de IndexedDB después de recarga y origen HTTP público; Pages/UX en producción NOT_RUN. Ni Lighthouse ni aprobación humana atribuidos. Obras W002 intactas.",
+      "blocks": [
+        {
+          "type": "text",
+          "text": "CANDIDATE_SOURCE_READBACK_PASS · REAL_CHROMIUM_390_1440_PASS · DIFF_PIXELS_390=8712/351000 · DIFF_PIXELS_1440=21802/1296000 · PUBLIC_BROWSER_NOT_RUN · HISTORY_RELOAD_NOT_RUN · HUMAN_APPROVED=NO"
+        },
+        {
+          "type": "file",
+          "label": "LUPA · código fuente",
+          "url": "https://github.com/JuanManuelPM/Experimentos/blob/candidate/prometeo-web-w003-20261122-10/prometeo/launch/20261122/relaunch/web/works/10-lupa/index.html"
+        },
+        {
+          "type": "file",
+          "label": "Runner de capturas",
+          "url": "https://github.com/JuanManuelPM/Experimentos/blob/candidate/prometeo-web-w003-20261122-10/prometeo/launch/20261122/relaunch/web/works/10-lupa/capture.py"
+        },
+        {
+          "type": "file",
+          "label": "QA y límites",
+          "url": "https://github.com/JuanManuelPM/Experimentos/blob/candidate/prometeo-web-w003-20261122-10/prometeo/launch/20261122/relaunch/web/works/10-lupa/QA.md"
+        },
+        {
+          "type": "file",
+          "label": "Book DEEP-SPEC + dirección de arte",
+          "url": "https://github.com/JuanManuelPM/Experimentos/blob/candidate/prometeo-web-w003-20261122-10/prometeo/launch/20261122/relaunch/web/works/10-lupa/PREPRODUCTION.deep-spec-v1.json"
+        },
+        {
+          "type": "file",
+          "label": "Trace",
+          "url": "https://github.com/JuanManuelPM/Experimentos/blob/candidate/prometeo-web-w003-20261122-10/prometeo/launch/20261122/relaunch/web/works/10-lupa/TRACE.json"
+        },
+        {
+          "type": "file",
+          "label": "Manifiesto reproducible",
+          "url": "https://github.com/JuanManuelPM/Experimentos/blob/candidate/prometeo-web-w003-20261122-10/prometeo/launch/20261122/relaunch/web/works/10-lupa/evidence/lupa-capture.json"
+        },
+        {
+          "type": "file",
+          "label": "Captura móvil real (390 px)",
+          "url": "https://github.com/JuanManuelPM/Experimentos/blob/candidate/prometeo-web-w003-20261122-10/prometeo/launch/20261122/relaunch/web/works/10-lupa/evidence/app-empty-390.png"
+        },
+        {
+          "type": "file",
+          "label": "Captura escritorio real (1440 px)",
+          "url": "https://github.com/JuanManuelPM/Experimentos/blob/candidate/prometeo-web-w003-20261122-10/prometeo/launch/20261122/relaunch/web/works/10-lupa/evidence/app-empty-1440.png"
+        }
+      ],
+      "sourceCommit": "52ce79bcf37f1d35414d11abc2314caa2445d2a0",
+      "briefSha": "bef87bf57c789d2b0605ca9ff81a5d3bbaab5e35",
+      "oldBatchId": "web-w002-20261122",
       "humanApproved": false
     }
   ]
