@@ -50,15 +50,25 @@
   ],
   "evidence": {
     "githubReadback": "PASS",
-    "offlineLogicTests": "11/11_PASS",
+    "offlineLogicTests": "14/14_PASS_V8",
     "browserCrossStudy": "NOT_RUN",
     "mobilePhysical": "NOT_RUN",
     "audioVideoExport": "NOT_RUN",
     "humanArtApproval": "NOT_RUN",
-    "promotion": "BLOCKED"
+    "promotion": "BLOCKED",
+    "nodeRunner": "NOT_RUN_THIS_CORRECTION"
   },
   "privacy": "SAFE_METADATA_ONLY",
   "privateEvidence": "Repositorio privado; no se publicaron comentarios ni capturas del humano",
   "next": "Recibir feedback de obras reales, ejecutar regresiones cruzadas y revisar la candidata antes de cualquier promoción",
-  "engineRevision": "0.2_CANDIDATE"
+  "engineRevision": "0.3_CANDIDATE",
+  "independenceQA": {
+    "status": "LOGIC_CHECKED_ONLY",
+    "changed": "Require different study domains and different evidence blob SHAs, direct observation, matching media verification type",
+    "codeBlobSha": "aebde55d70b33ac3e0a90770267fe86240dafe3f",
+    "testsBlobSha": "74fe36c27c6a6488d15b52648b94f99862a92839",
+    "cases": "14/14 V8 logical cases",
+    "limitations": "Evidence shape and SHA independence do not establish the reality or artistic quality of media; physical, browser, audio/video and human checks remain NOT_RUN"
+  },
+  "commandSemantics": "FLOW_REVIEW.md is a single integrator, not a numbered 10-task launcher; 05 labels this isolated review cut"
 }
