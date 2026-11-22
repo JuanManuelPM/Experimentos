@@ -1,18 +1,18 @@
 {
   "schema": "prometeo.root.ui-evidence/v1",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "publishedDate": "2026-11-21",
   "status": "PUBLISHED_CODE_WITH_LOCAL_EMULATED_QA",
   "source": {
     "repository": "JuanManuelPM/pruebas",
     "branch": "candidate/prometeo-ui-universal-v1-20261121",
-    "commit": "d0e788654fbfd1013d532169664058ca06eea971",
+    "commit": "54a5d7a172ddbf51d819aafaa0cd33d14fab05cb",
     "path": "PROMETEO/shared/ui/v1/"
   },
   "public": {
     "repository": "JuanManuelPM/Experimentos",
     "branch": "gh-pages",
-    "commit": "2c859263de75703a021135c5522642e0b3a753a9",
+    "commit": "2544dbe74a3ee2e37be507d08c6babffb1145ac0",
     "url": "https://juanmanuelpm.github.io/Experimentos/prometeo/root/",
     "paths": [
       "prometeo/root/index.html",
@@ -28,7 +28,7 @@
     "archived": "prometeo/root/archivo-20261121.html"
   },
   "tests": {
-    "method": "Local Chromium browser with stubbed JSON; visual and interaction checks, not live GitHub Pages",
+    "method": "Local Chromium browser with stubbed JSON; visual and interaction checks, not live GitHub Pages; keyboard traversal regression re-run at all four viewports",
     "viewports": [
       {
         "width": 320,
@@ -57,7 +57,8 @@
       "existing room messages",
       "Escape closes",
       "no horizontal overflow",
-      "no uncaught page errors"
+      "no uncaught page errors",
+      "Tab and Shift+Tab reach contextual slot controls"
     ],
     "notRun": [
       "physical Android test",
@@ -75,5 +76,13 @@
     ],
     "otherAppsModified": false
   },
-  "rollback": "Restore prometeo/root/index.html from public commit 4521f9dcd38b391f97cb00486865bb71cffe9818; shared/v1 assets remain additive. Future versions should use shared/v2 and update only imports after regression QA."
+  "rollback": "Restore prometeo/root/index.html from public commit 4521f9dcd38b391f97cb00486865bb71cffe9818; shared/v1 assets remain additive. Future versions should use shared/v2 and update only imports after regression QA.",
+  "revisions": [
+    {
+      "component": "shell.js",
+      "version": "1.0.1",
+      "commit": "2544dbe74a3ee2e37be507d08c6babffb1145ac0",
+      "reason": "keyboard focus order includes contextual slot"
+    }
+  ]
 }
