@@ -1,0 +1,79 @@
+name: PROMETEO video W003 03 — Venice documentary
+on:
+  push:
+    branches:
+      - candidate/prometeo-video-w003-20261122-03
+    paths:
+      - prometeo/works/video-w003-20261122/03/**
+      - .github/workflows/prometeo-video-w003-03.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: prometeo-video-w003-03
+  cancel-in-progress: false
+jobs:
+  render-and-publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Install media tools
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg espeak python3-pil fonts-dejavu-core
+          ffmpeg -hide_banner -encoders | grep -q libx264
+      - name: Render original documentary and independently verify streams
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd prometeo/works/video-w003-20261122/03
+          python3 render.py
+          python3 verify_ledger.py PROVENANCE.json
+          ffprobe -v error -show_streams -show_format VENECIA-EL-AGUA-TIENE-FECHA.mp4 > codec_details.txt
+          ffmpeg -hide_banner -v error -xerror -i VENECIA-EL-AGUA-TIENE-FECHA.mp4 -f null -
+          test -s first_article.jpg
+          test -s frame_02.jpg
+          test -s poster.jpg
+          test -s PROVENANCE.json
+      - name: Save binary as workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: video-w003-03-first-article-and-film
+          path: |
+            prometeo/works/video-w003-20261122/03/VENECIA-EL-AGUA-TIENE-FECHA.mp4
+            prometeo/works/video-w003-20261122/03/first_article.mp4
+            prometeo/works/video-w003-20261122/03/frame_*.jpg
+            prometeo/works/video-w003-20261122/03/PROVENANCE.json
+            prometeo/works/video-w003-20261122/03/PROBE.json
+          retention-days: 30
+      - name: Publish only W003/03 outputs to gh-pages, rebase on concurrent changes
+        shell: bash
+        run: |
+          set -euo pipefail
+          SRC="$GITHUB_WORKSPACE/prometeo/works/video-w003-20261122/03"
+          git fetch origin gh-pages
+          git worktree add -b "publish-video-w003-03-${GITHUB_RUN_ID}" /tmp/prometeo-w003-03-pages origin/gh-pages
+          P=/tmp/prometeo-w003-03-pages
+          DEST="$P/prometeo/previews/video/w003/03"
+          mkdir -p "$DEST"
+          cp "$SRC/VENECIA-EL-AGUA-TIENE-FECHA.mp4" "$SRC/index.html" "$SRC/PROVENANCE.json" "$SRC/PROBE.json" "$SRC/poster.jpg" "$SRC/first_article.jpg" "$SRC/first_article.mp4" "$DEST/"
+          cp "$SRC"/frame_*.jpg "$DEST/"
+          cd "$P"
+          git config user.name "prometeo-video-w003-03[bot]"
+          git config user.email "prometeo-video-w003-03@users.noreply.github.com"
+          git add prometeo/previews/video/w003/03
+          git commit -m "video W003/03: publish genuine H264/AAC film and indexed evidence"
+          for i in 1 2 3 4 5 6 7 8 9 10; do
+            if git push origin HEAD:gh-pages; then
+              echo "Published isolated video W003/03 on gh-pages"
+              exit 0
+            fi
+            git fetch origin gh-pages
+            git rebase origin/gh-pages
+            sleep 3
+          done
+          echo "BLOCKED: unable to publish after concurrency-safe retries" >&2
+          exit 1
