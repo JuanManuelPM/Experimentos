@@ -1,0 +1,293 @@
+{
+  "version": "DEEP-SPEC-1",
+  "taskId": "3d-w7-20261122-03",
+  "medium": "3d",
+  "depth": "SISTEMA",
+  "brief": "Asteroide Jardín: mundo esférico jugable con dos habitantes, misión con estado y resolución, movimiento con gravedad local, colisión, controles móviles, guardado y módulo reutilizable.",
+  "briefSha": "58de659e2aa01c0746d59ca6f95c36bdc59f3030",
+  "createdAt": "2026-11-22T18:51:38.171Z",
+  "identity": {
+    "batchId": "3d-w7-20261122",
+    "taskNumber": 3,
+    "oldBatchId": "3d-w6-20261122",
+    "oldBriefSHA": "942c3ba8b851137886e959d2790771556e2d9f5d",
+    "launcherBlobSHA": "58de659e2aa01c0746d59ca6f95c36bdc59f3030"
+  },
+  "flow": {
+    "version": "2.3.0",
+    "sha256Canonical": "53bc9e2e4b37c99e92d3494af8dfa4461cd4644b15f980e32497a8428b067b3f",
+    "indexBlobSHA": "cb809bc55a66791680f9c6c76969e154e67023b6",
+    "status": "CURRENT_CANDIDATE_NOT_PROMOTED"
+  },
+  "intent": {
+    "experience": "Recorrer un pequeño jardín cósmico coherente, sentir que no existe arriba absoluto, conversar con dos habitantes y ver florecer el mundo.",
+    "distinctAbility": "Locomoción tangente y gravedad radial que afectan también a cámara, colisiones, habitantes, guardado y final de una misión."
+  },
+  "references": [
+    {
+      "id": "R1",
+      "status": "OBSERVED",
+      "url": "https://www.nintendo.com/en-gb/Iwata-Asks/Iwata-Asks-Super-Mario-Galaxy/Volume-2-The-Developers/2-Benefits-of-a-Spherical-Field/2-Benefits-of-a-Spherical-Field-222607.html",
+      "observation": "Entrevista original a desarrolladores: el campo esférico ofrece juego gravitatorio y altera cómo se siente recorrer superficie y horizonte."
+    },
+    {
+      "id": "R2",
+      "status": "OBSERVED",
+      "url": "https://www.mobiusdigitalgames.com/outer-wilds.html?pubDate=20250223",
+      "observation": "La descripción oficial relaciona exploración y descubrimiento en mundos pequeños con sucesos del entorno que cambian la experiencia."
+    },
+    {
+      "id": "R3",
+      "status": "OBSERVED",
+      "url": "https://threejs.org/manual/pages/fundamentals.html",
+      "observation": "Manual técnico oficial documenta renderer WebGL, cámara perspectiva y gestión de escena; no valida el arte de este proyecto."
+    }
+  ],
+  "components": [
+    {
+      "id": "LOCO",
+      "role": "Movimiento continuo sobre esfera, colisión barrida y salto radial reutilizable.",
+      "strategy": "Módulo de vectores sin renderer; paso fijo limitado con proyección tangente y gravedad escalar radial.",
+      "constraints": "Normales unitarias; continuidad en polos; clearance mínimo respecto de obstáculos."
+    },
+    {
+      "id": "QUEST",
+      "role": "Misión de rocíos, conversaciones, final y restauración de partida sin dependencia online.",
+      "strategy": "Reducer puro versionado, reconstrucción de datos persistidos y estados terminales.",
+      "constraints": "El faro solo se enciende tras Nima, tres rocíos distintos y Boro; no duplicar premios."
+    },
+    {
+      "id": "ART",
+      "role": "Planeta botánico de siluetas intencionales y transformación visual tras la misión.",
+      "strategy": "Curvas, troncos tubulares y follaje 3D en niveles; flores latentes y movimiento de viento.",
+      "constraints": "Proporción de personaje 0.9 frente a planeta R9, dosel 0.8-2.2, vegetación anclada al normal."
+    },
+    {
+      "id": "UX",
+      "role": "Cámara adaptable, controles táctiles y HUD poco invasivo.",
+      "strategy": "Cámara radial con arrastre, joystick pointer, botón acción y salto, CSS responsive.",
+      "constraints": "Vista inicial deja protagonista y horizonte sin bloqueos; 390px y 1440px por observar en render."
+    }
+  ],
+  "questions": [
+    {
+      "id": "Q1",
+      "target": "LOCO",
+      "question": "¿Un desplazamiento tangente continuo mantiene cuerpo y colisiones sobre la esfera incluso atravesando polos y rocas?",
+      "alternatives": [
+        "Traducción cartesiana plana con gravedad decorativa",
+        "Slerp y proyección tangente con barrido de obstáculos y salto radial"
+      ],
+      "finding": "El módulo W6 ya tenía pruebas de arco y barrido; W7 añade física radial y tests de aterrizaje y ruta NPC.",
+      "decisionImpact": "La dirección normal gobierna cuerpo, cámara, altura y colisión en la misma unidad de escala.",
+      "evidenceRef": "R1"
+    },
+    {
+      "id": "Q2",
+      "target": "QUEST",
+      "question": "¿Cómo demostrar que la misión no termina sin tres objetos únicos y dos conversaciones, y que reiniciar o recargar no rompe ese estado?",
+      "alternatives": [
+        "Estados mutados dentro del loop gráfico",
+        "Reducer puro con sanitización al recargar y test de ruta completa"
+      ],
+      "finding": "13 pruebas de código y estados en V8: final solo tras Nima, tres gotas distintas, Boro y altar, sin duplicados.",
+      "decisionImpact": "Separación explícita quest-state.mjs y diagnóstico de estado legible para playtest.",
+      "evidenceRef": "R2"
+    },
+    {
+      "id": "Q3",
+      "target": "ART",
+      "question": "¿Una flora coherente de siluetas funciona mejor que multiplicar piedras y primitivas aisladas sin composición?",
+      "alternatives": [
+        "Repetir isocaedros y plantas planas sin jerarquía",
+        "Diseñar una familia de árboles botánicos curvos, escalados coherentemente y reusables"
+      ],
+      "finding": "El código de grove volumétrico está en GitHub y compila, pero su calidad óptica en navegador sigue NOT_RUN.",
+      "decisionImpact": "Añadir grove individual como artículo de mayor riesgo antes de afirmar mejora estética.",
+      "evidenceRef": "R3"
+    }
+  ],
+  "decisions": [
+    {
+      "id": "D1",
+      "questionId": "Q1",
+      "componentIds": [
+        "LOCO",
+        "UX"
+      ],
+      "choice": "Normal radial compartida, barrido y salto con aceleración gravitatoria.",
+      "rejected": "Movimiento plano y cámara con eje global fijo.",
+      "why": "La misión exige caminar alrededor del mundo y mantener contacto coherente en cualquier latitud.",
+      "productionChange": "planet-motion.mjs exporta radialPhysics/patrolOnSphere y el loop ajusta cuerpo y cámara según dirección radial."
+    },
+    {
+      "id": "D2",
+      "questionId": "Q2",
+      "componentIds": [
+        "QUEST"
+      ],
+      "choice": "Reducer de acciones puras con save v2 aislado de la producción anterior.",
+      "rejected": "Solo mutaciones de estado en una función de interfaz.",
+      "why": "Separar misión de renderer permite comprobar una partida completa sin mentir sobre un playtest.",
+      "productionChange": "quest-state.mjs contiene acciones y restauración; index delega las interacciones y publica diagnóstico de sólo lectura."
+    },
+    {
+      "id": "D3",
+      "questionId": "Q3",
+      "componentIds": [
+        "ART",
+        "UX"
+      ],
+      "choice": "Botánica 3D de siluetas orgánicas y una apertura UI reducida.",
+      "rejected": "Añadir más geometría de cajas y un panel decorativo ocupando la escena.",
+      "why": "La dirección visual exige foco en mundo y personaje, no interfaz que narra funciones.",
+      "productionChange": "garden-flora.mjs contiene un árbol reutilizable por familias de hojas; CSS libera espacio visual para la escena."
+    }
+  ],
+  "relations": [
+    {
+      "from": "LOCO",
+      "to": "ART",
+      "invariant": "Radio de planeta, pies del jugador, árboles y rocas comparten centro y normal unitario.",
+      "failure": "La criatura flota, árboles nacen invertidos o se atraviesan piedras.",
+      "test": "Test barrido V8 y prueba de contacto 390/1440 pendiente."
+    },
+    {
+      "from": "QUEST",
+      "to": "ART",
+      "invariant": "Los tres rocíos guardados desaparecen y el final activa una floración visible coherente.",
+      "failure": "La misión se declara completa pero mundo conserva estado inicial.",
+      "test": "Reducer V8 PASS; verificación visual de floración y NPC pendiente."
+    },
+    {
+      "from": "UX",
+      "to": "LOCO",
+      "invariant": "El control relativo a cámara siempre produce dirección tangente a la esfera.",
+      "failure": "Joystick invierte orientación cerca de polos y cámara pierde horizonte.",
+      "test": "Math test normal / rutas PASS; Android touch NOT_RUN."
+    }
+  ],
+  "risks": [
+    {
+      "componentIds": [
+        "ART",
+        "UX"
+      ],
+      "severity": "high",
+      "failure": "Los árboles se leen como láminas o invaden encuadre y no existe evidencia de primera pantalla.",
+      "prevention": "Probar un grove aislado y dos capturas reales antes de multiplicar su uso.",
+      "test": "Render WebGL 390/1440 y análisis de composición con forest y sin HUD.",
+      "status": "NOT_RUN"
+    },
+    {
+      "componentIds": [
+        "LOCO"
+      ],
+      "severity": "medium",
+      "failure": "Un paso largo atraviesa una roca y pierde dirección de gravedad local.",
+      "prevention": "Barrido subdividido y radialPhysics puro independiente del renderer.",
+      "test": "Caso cruce de obstáculo, cuarto de arco y vuelo 130 frames V8.",
+      "status": "OBSERVED"
+    },
+    {
+      "componentIds": [
+        "QUEST"
+      ],
+      "severity": "medium",
+      "failure": "La historia se da por terminada con acciones fuera de orden o duplicadas.",
+      "prevention": "Reducer de estados independiente y sanitización de savedata.",
+      "test": "Ruta completa con orden obligatorio, rechazo de duplicados y persistencia.",
+      "status": "OBSERVED"
+    }
+  ],
+  "acceptance": [
+    {
+      "kind": "logic",
+      "criterion": "Misión de tres objetos distintos, Boro y altar produce terminal que persiste tras recarga.",
+      "oracle": "Ejecutar reducer puro con estados desordenados, duplicados y final correcto.",
+      "status": "OBSERVED"
+    },
+    {
+      "kind": "interactive",
+      "criterion": "Una persona camina y salta alrededor de la esfera y encuentra a ambos habitantes.",
+      "oracle": "Control físico en móvil táctil y teclado, capturas en diferentes latitudes.",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "visual",
+      "criterion": "Primer artículo botánico se lee como silueta intencional, sin falta de escala en 390 y 1440.",
+      "oracle": "Dos capturas verificables y revisión humana sin overlay de descripción.",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "functional",
+      "criterion": "La floración, el retorno de NPC y el faro se observan jugando el final real.",
+      "oracle": "Completar partida en WebGL, no solo invocar el reducer en V8.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "resources": "Geometría y materiales originales generados en código Three.js; módulo previo propio de locomoción W6 copiado a ruta nueva, ampliado y no sobrescrito. CDN de Three.js 0.160.1 requerido; WebGL en navegador no disponible desde ejecución conectada.",
+  "licensing": "Assets geométricos originales creados por el worker; Three.js distribuido MIT vía jsDelivr. Referencias externas solo como benchmark, ningún sprite de Nintendo/Mobius incorporado.",
+  "environmentLimits": "No hay navegador WebGL conectado al repositorio remoto ni conexión del contenedor al CDN para cargar Three.js; por ello los renders, captures 390/1440 y recorrido móvil siguen NOT_RUN.",
+  "artDirection": {
+    "schema": "prometeo.art-direction.first-article/v1",
+    "medium": "3d",
+    "taskId": "3d-w7-20261122-03",
+    "briefSha": "58de659e2aa01c0746d59ca6f95c36bdc59f3030",
+    "flowRef": "https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/3d-flow/versions/2.3.0/flow.json",
+    "promise": {
+      "subject": "Un asteroide verde nocturno de papel botánico curvado con dos pequeñas criaturas bajo un faro.",
+      "intent": "Abrir y sentir un mundo minúsculo navegable con siluetas orgánicas, gravedad local y final visible."
+    },
+    "benchmark": {
+      "url": "https://www.nintendo.com/en-gb/Iwata-Asks/Iwata-Asks-Super-Mario-Galaxy/Volume-2-The-Developers/2-Benefits-of-a-Spherical-Field/2-Benefits-of-a-Spherical-Field-222607.html",
+      "description": "Fuente primaria examinada sobre jugabilidad en superficies esféricas y gravedad local; no reproducción visual de su obra.",
+      "status": "OBSERVED"
+    },
+    "techniques": [
+      {
+        "family": "botánica volumétrica de curvas y hojas 3D",
+        "viability": "Geometrías Three.js propias escritas y compiladas; dependencia CDN identificada.",
+        "license": "100% geometría original; motor MIT."
+      },
+      {
+        "family": "atlas 2.5D de ilustraciones Canvas sobre planos orientados",
+        "viability": "Canvas 2D y planos nativos disponibles en navegador; no requiere imágenes de terceros.",
+        "license": "Ilustraciones originales Canvas, sin copiar assets externos."
+      }
+    ],
+    "selectedTechnique": "botánica volumétrica de curvas y hojas 3D",
+    "firstFrame": {
+      "openingDescription": "Planeta curvo protagonista, criaturas junto a faro, árboles silueteados detrás y estrellas; sin dashboard ni texto ornamental.",
+      "focalSubject": "Protagonista sobre superficie cerca del faro y su mundo diminuto.",
+      "minimalUI": "Título pequeño, misión de una línea, joystick, salto, acción y reinicio.",
+      "checks": [
+        {
+          "viewport": "390",
+          "criterion": "Joystick y acción no tapan al protagonista y el faro cabe en cuadro.",
+          "oracle": "Captura real 390x844 con escena WebGL y hit targets visibles."
+        },
+        {
+          "viewport": "1440",
+          "criterion": "La composición conserva horizonte y contraste de siluetas, sin llenar mitad con HUD.",
+          "oracle": "Captura WebGL 1440x900 y medición visual."
+        },
+        {
+          "viewport": "both",
+          "criterion": "Se distingue la criatura del terreno por contraste y escala.",
+          "oracle": "Análisis de imagen real sin overlays de marketing."
+        }
+      ],
+      "observations": []
+    },
+    "firstArticle": {
+      "target": "Una sola planta-grove con contacto, tres pisos de hojas y movimiento leve, vista contra esfera en primer encuadre.",
+      "rejectWhen": "La silueta se convierte en un conjunto de láminas planas sin volumen o árboles desproporcionados.",
+      "switchTo": "atlas 2.5D de ilustraciones Canvas sobre planos orientados",
+      "oracle": "Captura de primer artículo WebGL a escala con cámara 390 y 1440 antes de poblar el bosque.",
+      "resourceProof": "garden-flora.mjs publicado con fuentes originales y SHA; software escrito, capturas NOT_RUN.",
+      "status": "NOT_RUN"
+    },
+    "humanApproved": false
+  }
+}
