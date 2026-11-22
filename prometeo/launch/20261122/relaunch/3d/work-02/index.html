@@ -1,0 +1,235 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/><meta name="theme-color" content="#161c1a"/><meta name="description" content="Casa entre patios, recorrido 3D original con cámara inteligente, tres ambientes y dos luces."/><title>Casa entre patios · Experimento arquitectónico 3D</title>
+<style>
+:root{color-scheme:dark;--cream:#f2eee4;--dim:#ddd7ca;--ink:#171d1b;--panel:rgba(19,24,23,.64)}*{box-sizing:border-box}body{margin:0;background:#171d1b;color:var(--cream);font-family:Arial,Helvetica,sans-serif;overflow:hidden}button{font:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}canvas{display:block;width:100vw;height:100dvh;touch-action:none;outline:none}#frame{position:fixed;inset:0;pointer-events:none}#frame:before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(14,20,18,.56),transparent 25%,transparent 70%,rgba(10,18,16,.55));pointer-events:none}header{position:absolute;top:max(22px,env(safe-area-inset-top));left:clamp(19px,3.5vw,52px);right:clamp(19px,3.5vw,52px);display:flex;align-items:flex-start;justify-content:space-between;gap:20px}header .brand{font-size:10px;letter-spacing:.30em;font-weight:700;color:#e0d8c6;text-transform:uppercase;margin-bottom:9px}h1{font-size:clamp(26px,3.5vw,49px);letter-spacing:-.047em;font-weight:400;line-height:1.0;margin:0;font-family:Georgia,'Times New Roman',serif;text-shadow:0 2px 20px #0007}header button{pointer-events:auto;border:1px solid #f3efe470;border-radius:50px;background:#2128226e;color:var(--cream);padding:11px 16px;display:flex;gap:12px;align-items:center;white-space:nowrap;backdrop-filter:blur(12px)}header button b{font-size:11px;font-weight:500;letter-spacing:.05em}header button svg{width:18px;height:18px}#info{position:absolute;bottom:clamp(80px,11vh,120px);left:clamp(18px,3.5vw,52px);max-width:210px}#info .num{font-size:10px;letter-spacing:.29em;font-weight:700;margin-bottom:10px}#info h2{font-weight:400;font-size:clamp(26px,3.4vw,44px);margin:0 0 7px;font-family:Georgia,'Times New Roman',serif;letter-spacing:-.04em}#info p{margin:0;color:#e1ded1;font-size:12px;letter-spacing:.1em}#nav{position:absolute;bottom:max(24px,env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);display:flex;gap:6px;align-items:center;max-width:calc(100% - 32px);padding:5px;border-radius:999px;background:rgba(18,23,21,.52);backdrop-filter:blur(16px);border:1px solid #ece9dd40;pointer-events:auto;box-shadow:0 8px 32px #0005}#nav button{border:0;background:transparent;color:#dfddcfb3;border-radius:50px;padding:12px 18px;font-size:11px;letter-spacing:.065em;min-height:44px;white-space:nowrap}#nav button.active{background:#eee9dc;color:#272c28}#help{position:absolute;right:clamp(18px,3.5vw,52px);bottom:clamp(85px,11vh,120px);display:flex;align-items:center;gap:10px;color:#e9e4d0b8;font-size:11px;letter-spacing:.05em}#help span{font-size:18px}#status{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);padding:24px;max-width:360px;color:#fff;background:#151b19;display:none;pointer-events:auto}#status.show{display:block}#testState{position:absolute;left:-10000px}button:focus-visible{outline:2px solid #e4d7ac;outline-offset:3px}@media(max-width:650px){h1{font-size:29px}#help{display:none}#info{bottom:102px}#nav{bottom:max(17px,env(safe-area-inset-bottom));width:calc(100% - 25px);justify-content:space-around}#nav button{flex:1;padding:10px 5px;font-size:10px;min-width:0}header button{padding:11px 13px}header button b{font-size:10px}#info .num{margin-bottom:6px}#info h2{font-size:29px}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;animation:none!important}}
+</style></head><body><canvas id="view" tabindex="0" role="img" aria-label="Escena 3D interactiva de una casa entre patios, con sala, patio, comedor y estudio"></canvas><div id="frame"><header><div><div class="brand">PROMETEO / Arquitectura 02</div><h1>Casa entre patios</h1></div><button id="lighting" aria-label="Cambiar entre luz natural y luz artificial" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M19 5l-1.5 1.5m-11 11L5 19"/></svg><b id="lightlabel">Luz natural</b></button></header><div id="info" aria-live="polite"><div class="num" id="section">01 / 04</div><h2 id="room">Sala</h2><p id="detail">Estar · 31 m²</p></div><div id="help" aria-hidden="true"><span>↔</span> Arrastrá para mirar · WASD para recorrer</div><nav id="nav" aria-label="Seleccionar ambiente"><button type="button" class="active" data-room="sala" aria-current="true">Sala</button><button type="button" data-room="patio">Patio</button><button type="button" data-room="comedor">Comedor</button><button type="button" data-room="estudio">Estudio</button></nav><div id="status" role="alert"></div></div><output id="testState" aria-hidden="true"></output>
+<script type="module">const {Renderer,mat,vec}=(()=>{
+// CASA ENTRE PATIOS · Minimal standalone WebGL2 renderer · original code, no remote dependencies
+const vs=`#version 300 es
+precision highp float;
+layout(location=0) in vec3 position;
+layout(location=1) in vec3 normal;
+layout(location=2) in vec2 uv;
+uniform mat4 model, view, proj, lightMatrix;
+out vec3 vPos,vNormal; out vec2 vUv; out vec4 vShadow;
+void main(){vec4 wp=model*vec4(position,1.);vPos=wp.xyz;vNormal=normalize(mat3(transpose(inverse(model)))*normal);vUv=uv;vShadow=lightMatrix*wp;gl_Position=proj*view*wp;}`;
+const fs=`#version 300 es
+precision highp float;
+precision highp sampler2DShadow;
+in vec3 vPos,vNormal;in vec2 vUv;in vec4 vShadow;out vec4 frag;
+uniform vec3 cameraPosition,baseColor,lightDirection,lightColor;
+uniform float roughness,metalness,opacity,dayMix;
+uniform int finish;
+uniform sampler2DShadow shadowTexture;
+float hash(vec3 p){p=fract(p*0.1031);p+=dot(p,p.yzx+33.33);return fract((p.x+p.y)*p.z);}
+float textureGrain(vec3 p){return sin((p.x*0.82+p.z*.17+p.y*.12)*115.+sin(p.x*16.)*2.)*.5+.5;}
+float shadows(vec3 n,vec3 l){vec3 proj=vShadow.xyz/vShadow.w;proj=proj*.5+.5;if(proj.x<0.||proj.y<0.||proj.x>1.||proj.y>1.||proj.z>1.)return 1.;float bias=max(.0015,.005*(1.-dot(n,l)));float sh=0.;for(int x=-1;x<=1;x++)for(int y=-1;y<=1;y++){sh+=texture(shadowTexture,vec3(proj.xy+vec2(float(x),float(y))/768.,proj.z-bias));}return mix(.38,1.,sh/9.);}
+vec3 brdf(vec3 col,vec3 n,vec3 v,vec3 l,float rough,float metal){
+ vec3 h=normalize(v+l);float nl=max(dot(n,l),.0001),nv=max(dot(n,v),.0001),nh=max(dot(n,h),.0001),hv=max(dot(h,v),0.);
+ float a=rough*rough,a2=a*a;float D=a2/(3.14159*pow(nh*nh*(a2-1.)+1.,2.));
+ float k=pow(rough+1.,2.)/8.;float G=(nl/(nl*(1.-k)+k))*(nv/(nv*(1.-k)+k));
+ vec3 F0=mix(vec3(.04),col,metal),F=F0+(1.-F0)*pow(1.-hv,5.);
+ return (col*(1.-F)*(1.-metal)/3.14159+D*G*F/max(4.*nv*nl,.001))*nl;
+}
+void main(){vec3 n=normalize(vNormal),v=normalize(cameraPosition-vPos),col=baseColor;
+ float grain=hash(floor(vPos*65.)),g2=hash(floor(vPos*12.));
+ if(finish==1)col*=.945+.10*g2+.02*grain; // mineral plaster
+ if(finish==2)col*=.76+.30*textureGrain(vPos); // longitudinal timber grain
+ if(finish==3)col*=.88+.15*grain; // terrazzo aggregate
+ if(finish==4)col*=.94+.07*g2; // woven textiles
+ if(finish==5)col*=.83+.12*grain; // patinated metal
+ vec3 sun=normalize(lightDirection);vec3 radiance=brdf(col,n,v,sun,roughness,metalness)*lightColor*3.0*dayMix*shadows(n,sun);
+ vec3 ambient=col*(.19+.27*dayMix)*mix(1.1,.65,max(0.,-n.y));
+ vec3 lamppos[4];lamppos[0]=vec3(-5.2,2.78,1.8);lamppos[1]=vec3(5.1,2.65,1.4);lamppos[2]=vec3(0.,2.6,-5.5);lamppos[3]=vec3(0.,2.8,4.6);
+ vec3 artificial=vec3(0.);
+ for(int i=0;i<4;i++){vec3 delta=lamppos[i]-vPos;float dis=length(delta);float att=1./(1.+.14*dis*dis+.022*dis*dis*dis);artificial+=brdf(col,n,v,normalize(delta),roughness,metalness)*vec3(1.,.72,.39)*5.5*(1.-dayMix*.82)*att;}
+ vec3 c=radiance+ambient+artificial;c=c/(c+vec3(.75));c=pow(c,vec3(1./2.2));frag=vec4(c,opacity);
+}`;
+const depthVS=`#version 300 es
+layout(location=0) in vec3 position;uniform mat4 model,lightMatrix;void main(){gl_Position=lightMatrix*model*vec4(position,1.);}`;
+const depthFS=`#version 300 es
+precision highp float; void main(){}`;
+const V=(x,y,z)=>[x,y,z];
+const vec={add:(a,b)=>a.map((v,i)=>v+b[i]),sub:(a,b)=>a.map((v,i)=>v-b[i]),mul:(a,v)=>a.map(x=>x*v),length:a=>Math.hypot(...a),norm:a=>{let l=Math.hypot(...a)||1;return a.map(v=>v/l)},cross:(a,b)=>[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]]};
+const mat={
+ identity:()=>new Float32Array([1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1]),
+ multiply:(a,b)=>{let c=new Float32Array(16);for(let i=0;i<4;i++)for(let j=0;j<4;j++)for(let k=0;k<4;k++)c[j*4+i]+=a[k*4+i]*b[j*4+k];return c},
+ translation:(x,y,z)=>new Float32Array([1,0,0,0,0,1,0,0,0,0,1,0,x,y,z,1]),
+ scaling:(x,y,z)=>new Float32Array([x,0,0,0,0,y,0,0,0,0,z,0,0,0,0,1]),
+ rotationY:a=>new Float32Array([Math.cos(a),0,-Math.sin(a),0,0,1,0,0,Math.sin(a),0,Math.cos(a),0,0,0,0,1]),
+ rotationX:a=>new Float32Array([1,0,0,0,0,Math.cos(a),Math.sin(a),0,0,-Math.sin(a),Math.cos(a),0,0,0,0,1]),
+ rotationZ:a=>new Float32Array([Math.cos(a),Math.sin(a),0,0,-Math.sin(a),Math.cos(a),0,0,0,0,1,0,0,0,0,1]),
+ perspective:(fovy,aspect,n,f)=>{let t=1/Math.tan(fovy/2),o=new Float32Array(16);o[0]=t/aspect;o[5]=t;o[10]=(f+n)/(n-f);o[11]=-1;o[14]=2*f*n/(n-f);return o},
+ ortho:(l,r,b,t,n,f)=>new Float32Array([2/(r-l),0,0,0,0,2/(t-b),0,0,0,0,-2/(f-n),0,-(r+l)/(r-l),-(t+b)/(t-b),-(f+n)/(f-n),1]),
+ lookAt:(eye,target,up=[0,1,0])=>{let z=vec.norm(vec.sub(eye,target)),x=vec.norm(vec.cross(up,z)),y=vec.cross(z,x);return new Float32Array([x[0],y[0],z[0],0,x[1],y[1],z[1],0,x[2],y[2],z[2],0,-(x[0]*eye[0]+x[1]*eye[1]+x[2]*eye[2]),-(y[0]*eye[0]+y[1]*eye[1]+y[2]*eye[2]),-(z[0]*eye[0]+z[1]*eye[1]+z[2]*eye[2]),1])},
+ compose:(p,s=[1,1,1],rot=[0,0,0])=>mat.multiply(mat.translation(...p),mat.multiply(mat.rotationY(rot[1]),mat.multiply(mat.rotationX(rot[0]),mat.multiply(mat.rotationZ(rot[2]),mat.scaling(...s)))))
+};
+function cuboid(){const p=[],n=[],uv=[],ix=[];const faces=[[[1,0,0],[.5,-.5,-.5],[.5,-.5,.5],[.5,.5,.5],[.5,.5,-.5]],[[-1,0,0],[-.5,-.5,.5],[-.5,-.5,-.5],[-.5,.5,-.5],[-.5,.5,.5]],[[0,1,0],[-.5,.5,-.5],[.5,.5,-.5],[.5,.5,.5],[-.5,.5,.5]],[[0,-1,0],[-.5,-.5,.5],[.5,-.5,.5],[.5,-.5,-.5],[-.5,-.5,-.5]],[[0,0,1],[.5,-.5,.5],[-.5,-.5,.5],[-.5,.5,.5],[.5,.5,.5]],[[0,0,-1],[-.5,-.5,-.5],[.5,-.5,-.5],[.5,.5,-.5],[-.5,.5,-.5]]];for(const f of faces){let st=p.length/3;for(let k=1;k<=4;k++){p.push(...f[k]);n.push(...f[0]);uv.push(k===1||k===4?0:1,k<3?0:1)}ix.push(st,st+1,st+2,st,st+2,st+3)}return {p,n,uv,ix}}
+function sphere(seg=14,rings=10){const p=[],n=[],uv=[],ix=[];for(let i=0;i<=rings;i++){let v=i/rings,theta=v*Math.PI;for(let j=0;j<=seg;j++){let u=j/seg,phi=u*2*Math.PI,x=Math.sin(theta)*Math.cos(phi),y=Math.cos(theta),z=Math.sin(theta)*Math.sin(phi);p.push(x*.5,y*.5,z*.5);n.push(x,y,z);uv.push(u,v);}}for(let i=0;i<rings;i++)for(let j=0;j<seg;j++){let a=i*(seg+1)+j,b=a+seg+1;ix.push(a,b,a+1,b,b+1,a+1)}return {p,n,uv,ix}}
+function cylinder(seg=24){const p=[],n=[],uv=[],ix=[];for(let i=0;i<=seg;i++){let u=i/seg,a=u*2*Math.PI,x=Math.cos(a),z=Math.sin(a);for(let y of [-.5,.5]){p.push(x*.5,y,z*.5);n.push(x,0,z);uv.push(u,y+.5)}}for(let i=0;i<seg;i++){let j=i*2;ix.push(j,j+1,j+2,j+1,j+3,j+2)}for(let side of [-.5,.5]){let center=p.length/3;p.push(0,side,0);n.push(0,side>0?1:-1,0);uv.push(.5,.5);for(let i=0;i<=seg;i++){let a=i*2*Math.PI/seg;p.push(Math.cos(a)*.5,side,Math.sin(a)*.5);n.push(0,side>0?1:-1,0);uv.push(.5+.5*Math.cos(a),.5+.5*Math.sin(a))}for(let i=0;i<seg;i++){if(side>0)ix.push(center,center+i+1,center+i+2);else ix.push(center,center+i+2,center+i+1)}}return {p,n,uv,ix}}
+function roundbox(segments=6,radius=.12){const p=[],n=[],uv=[],ix=[];const planes=[{a:0,b:1,c:2,sign:1},{a:0,b:1,c:2,sign:-1},{a:1,b:0,c:2,sign:1},{a:1,b:0,c:2,sign:-1},{a:2,b:0,c:1,sign:1},{a:2,b:0,c:1,sign:-1}];for(let f of planes){let st=p.length/3;for(let i=0;i<=segments;i++)for(let j=0;j<=segments;j++){let q=[0,0,0];q[f.a]=.5*f.sign;q[f.b]=i/segments-.5;q[f.c]=j/segments-.5;let inner=q.map(v=>Math.max(-.5+radius,Math.min(.5-radius,v))),normal=vec.norm(vec.sub(q,inner));let out=vec.add(inner,vec.mul(normal,radius));p.push(...out);n.push(...normal);uv.push(j/segments,i/segments)}for(let i=0;i<segments;i++)for(let j=0;j<segments;j++){let a=st+i*(segments+1)+j,b=a+segments+1;let d=f.sign>0; if((f.a===0||f.a===2)===d)ix.push(a,a+1,b,a+1,b+1,b);else ix.push(a,b,a+1,a+1,b,b+1)}}return {p,n,uv,ix}}
+function compile(gl,vs,fs){let p=gl.createProgram();for(let [type,src] of [[gl.VERTEX_SHADER,vs],[gl.FRAGMENT_SHADER,fs]]){let sh=gl.createShader(type);gl.shaderSource(sh,src);gl.compileShader(sh);if(!gl.getShaderParameter(sh,gl.COMPILE_STATUS))throw Error(gl.getShaderInfoLog(sh));gl.attachShader(p,sh)}gl.linkProgram(p);if(!gl.getProgramParameter(p,gl.LINK_STATUS))throw Error(gl.getProgramInfoLog(p));return p}
+class Renderer{
+ constructor(canvas){this.canvas=canvas;this.gl=canvas.getContext('webgl2',{antialias:true,alpha:false,powerPreference:'high-performance'});if(!this.gl)throw Error('Este dispositivo no ofrece WebGL2');let g=this.gl;this.program=compile(g,vs,fs);this.depthProgram=compile(g,depthVS,depthFS);this.geometries={box:cuboid(),round:roundbox(),sphere:sphere(),cylinder:cylinder()};this.meshes={};for(let [key,v] of Object.entries(this.geometries)){let vao=g.createVertexArray();g.bindVertexArray(vao);for(let [idx,data,sz] of [[0,v.p,3],[1,v.n,3],[2,v.uv,2]]){let buf=g.createBuffer();g.bindBuffer(g.ARRAY_BUFFER,buf);g.bufferData(g.ARRAY_BUFFER,new Float32Array(data),g.STATIC_DRAW);g.enableVertexAttribArray(idx);g.vertexAttribPointer(idx,sz,g.FLOAT,false,0,0)}let eb=g.createBuffer();g.bindBuffer(g.ELEMENT_ARRAY_BUFFER,eb);g.bufferData(g.ELEMENT_ARRAY_BUFFER,new Uint16Array(v.ix),g.STATIC_DRAW);this.meshes[key]={vao,count:v.ix.length}}g.bindVertexArray(null);
+ this.shadowFbo=g.createFramebuffer();this.shadowTexture=g.createTexture();g.bindTexture(g.TEXTURE_2D,this.shadowTexture);g.texImage2D(g.TEXTURE_2D,0,g.DEPTH_COMPONENT24,768,768,0,g.DEPTH_COMPONENT,g.UNSIGNED_INT,null);g.texParameteri(g.TEXTURE_2D,g.TEXTURE_MIN_FILTER,g.LINEAR);g.texParameteri(g.TEXTURE_2D,g.TEXTURE_MAG_FILTER,g.LINEAR);g.texParameteri(g.TEXTURE_2D,g.TEXTURE_WRAP_S,g.CLAMP_TO_EDGE);g.texParameteri(g.TEXTURE_2D,g.TEXTURE_WRAP_T,g.CLAMP_TO_EDGE);g.texParameteri(g.TEXTURE_2D,g.TEXTURE_COMPARE_MODE,g.COMPARE_REF_TO_TEXTURE);g.texParameteri(g.TEXTURE_2D,g.TEXTURE_COMPARE_FUNC,g.LEQUAL);g.bindFramebuffer(g.FRAMEBUFFER,this.shadowFbo);g.framebufferTexture2D(g.FRAMEBUFFER,g.DEPTH_ATTACHMENT,g.TEXTURE_2D,this.shadowTexture,0);g.drawBuffers([g.NONE]);g.readBuffer(g.NONE);g.bindFramebuffer(g.FRAMEBUFFER,null);this.lightDirection=vec.norm([.43,.87,-.31]);const lightEye=vec.mul(this.lightDirection,21);this.lightMatrix=mat.multiply(mat.ortho(-19,19,-19,19,.1,70),mat.lookAt(lightEye,[0,0,0]));this.u={};for(let name of ['model','view','proj','lightMatrix','cameraPosition','baseColor','lightDirection','lightColor','roughness','metalness','opacity','dayMix','finish','shadowTexture'])this.u[name]=g.getUniformLocation(this.program,name);this.ud={model:g.getUniformLocation(this.depthProgram,'model'),lightMatrix:g.getUniformLocation(this.depthProgram,'lightMatrix')};g.enable(g.DEPTH_TEST);g.depthFunc(g.LEQUAL);g.disable(g.CULL_FACE);this.frame=0;}
+ resize(){let d=window.__CASA_QA_MODE__?.5:Math.min(window.devicePixelRatio||1,1.45),w=Math.max(1,Math.floor(this.canvas.clientWidth*d)),h=Math.max(1,Math.floor(this.canvas.clientHeight*d));if(this.canvas.width!==w||this.canvas.height!==h){this.canvas.width=w;this.canvas.height=h}return [w,h]}
+ draw(objects,camera,dayMix=1,hidden=new Set()){let g=this.gl,[w,h]=this.resize(),v=mat.lookAt(camera.pos,camera.target),p=mat.perspective(Math.PI/3,w/h,.07,90);if(!Number.isFinite(p[0]))return;let visible=objects.filter(o=>o.visible!==false),lit=visible.filter(o=>!hidden.has(o.id));
+ if(!this.shadowReady){g.bindFramebuffer(g.FRAMEBUFFER,this.shadowFbo);g.viewport(0,0,768,768);g.clear(g.DEPTH_BUFFER_BIT);g.useProgram(this.depthProgram);g.uniformMatrix4fv(this.ud.lightMatrix,false,this.lightMatrix);for(let o of visible){if(o.opacity!=null&&o.opacity<.95)continue;let m=this.meshes[o.geometry||'box'];g.bindVertexArray(m.vao);g.uniformMatrix4fv(this.ud.model,false,o.model);g.drawElements(g.TRIANGLES,m.count,g.UNSIGNED_SHORT,0)}
+ this.shadowReady=true;}g.bindFramebuffer(g.FRAMEBUFFER,null);g.viewport(0,0,w,h);g.clearColor(...(dayMix>.5?[.79,.82,.77,1]:[.085,.11,.16,1]));g.clear(g.COLOR_BUFFER_BIT|g.DEPTH_BUFFER_BIT);g.useProgram(this.program);g.uniformMatrix4fv(this.u.view,false,v);g.uniformMatrix4fv(this.u.proj,false,p);g.uniformMatrix4fv(this.u.lightMatrix,false,this.lightMatrix);g.uniform3fv(this.u.cameraPosition,camera.pos);g.uniform3fv(this.u.lightDirection,this.lightDirection);g.uniform3fv(this.u.lightColor,[1,.93,.82]);g.uniform1f(this.u.dayMix,dayMix);g.activeTexture(g.TEXTURE0);g.bindTexture(g.TEXTURE_2D,this.shadowTexture);g.uniform1i(this.u.shadowTexture,0);
+ const draw=o=>{const m=this.meshes[o.geometry||'box'];g.bindVertexArray(m.vao);g.uniformMatrix4fv(this.u.model,false,o.model);g.uniform3fv(this.u.baseColor,o.color);g.uniform1f(this.u.roughness,o.roughness??.76);g.uniform1f(this.u.metalness,o.metalness??0);g.uniform1f(this.u.opacity,o.opacity??1);g.uniform1i(this.u.finish,o.finish??0);g.drawElements(g.TRIANGLES,m.count,g.UNSIGNED_SHORT,0)};
+ for(let o of lit.filter(o=>!o.opacity||o.opacity>=.98))draw(o);
+ g.enable(g.BLEND);g.blendFunc(g.SRC_ALPHA,g.ONE_MINUS_SRC_ALPHA);g.depthMask(false);for(let o of lit.filter(o=>o.opacity&&o.opacity<.98))draw(o);g.depthMask(true);g.disable(g.BLEND);g.bindVertexArray(null);this.frame++;return {width:w,height:h,frame:this.frame,glError:g.getError()}}
+}
+
+return {Renderer,mat,vec};})();
+const {architecturalScene}=(()=>{
+// All geometry, furniture and materials are original and parameterized in metres.
+
+const colors={limestone:[.77,.725,.635],plaster:[.83,.796,.704],sand:[.64,.57,.47],floor:[.69,.63,.55],timber:[.31,.19,.11],lightWood:[.56,.36,.21],darkWood:[.18,.13,.11],rust:[.35,.19,.12],textile:[.65,.58,.48],linen:[.84,.80,.71],leather:[.39,.28,.20],ink:[.075,.082,.076],brass:[.43,.32,.16],glass:[.48,.64,.62],foliage:[.22,.33,.19],foliage2:[.36,.43,.22],foliage3:[.12,.26,.15],water:[.22,.36,.37],gravel:[.49,.46,.38],white:[.89,.84,.75],night:[.78,.52,.25]};
+const objects=[];let idx=0;
+function add(name,geo,pos,scale,color,opts={}){let o={id:opts.id||`piece-${++idx}`,name,geometry:geo,pos,scale,color:colors[color]||color,roughness:opts.roughness??.73,metalness:opts.metalness??0,finish:opts.finish??0,opacity:opts.opacity??1,occluder:!!opts.occluder,solid:!!opts.solid,roof:!!opts.roof,visible:true};o.model=mat.compose(pos,scale,opts.rotation||[0,0,0]);if(geo==='box'&&opts.solid||opts.occluder){o.bounds={min:pos.map((v,i)=>v-scale[i]/2),max:pos.map((v,i)=>v+scale[i]/2)}}objects.push(o);return o}
+function box(name,p,s,c,opts){return add(name,'box',p,s,c,opts)}
+function smooth(name,p,s,c,opts){return add(name,'round',p,s,c,opts)}
+function sphere(name,p,s,c,opts){return add(name,'sphere',p,s,c,opts)}
+function cyl(name,p,s,c,opts){return add(name,'cylinder',p,s,c,opts)}
+function pillar(name,p,s=[.1,3,.1],c='ink'){return box(name,p,s,c,{finish:5,roughness:.3,metalness:.48})}
+function wall(name,p,s,color='plaster'){return box(name,p,s,color,{finish:1,roughness:.91,solid:true,occluder:true})}
+function roof(name,p,s){return box(name,p,s,'timber',{finish:2,roughness:.83,roof:true,occluder:true})}
+function slab(name,p,s,color='floor'){return box(name,p,s,color,{finish:3,roughness:.9})}
+function shadow(name,p,s){return sphere(name,p,s,'ink',{opacity:.20,roughness:1})}
+function beam(name,p,s){return box(name,p,s,'darkWood',{finish:2,roughness:.58})}
+function rail(name,p,s){return box(name,p,s,'ink',{roughness:.32,metalness:.6})}
+function glassPane(name,p,s){return box(name,p,s,'glass',{opacity:.17,roughness:.16,metalness:.05})}
+function doorFrame(x,z,width){for(let a of [-width/2,width/2])pillar('marco de acero',[x+a,1.42,z],[.045,2.86,.054]);rail('dintel del vano',[x,2.85,z],[width,.05,.055]);rail('guía inferior',[x,.045,z],[width,.03,.06]);}
+// House: exterior 16.7 × 15.2m. Living west, dining east, studio south, two courts.
+slab('losa continua',[-.0,-.13,-.05],[17.05,.23,15.45]);
+// Coherent room footprints: salon 6.1 × 6.25; dining 6.1 × 6.25; studio 6.0 × 4.7.
+slab('estar pavimento',[-5.40,-.035,1.55],[6.0,.10,6.2]);
+slab('comedor pavimento',[5.45,-.035,1.55],[5.95,.10,6.2]);
+slab('estudio pavimento',[0,-.035,-5.45],[5.9,.10,4.25]);
+slab('patio A piedra',[0,-.025,-.25],[4.15,.07,5.5],'gravel');
+slab('patio B piedra',[0,-.025,4.52],[4.15,.07,3.0],'gravel');
+// Shell on west and east wings. Sections intentionally separated for real walk-through.
+wall('muro oeste',[-8.38,1.55,1.54],[.30,3.10,6.25]);
+wall('muro norte estar',[-5.35,1.55,-1.62],[6.1,3.10,.30]);
+wall('muro sur estar',[-5.35,1.55,4.71],[6.1,3.10,.30]);
+wall('muro este',[8.38,1.55,1.55],[.30,3.10,6.28]);
+wall('muro norte comedor',[5.35,1.55,-1.62],[6.1,3.10,.30]);
+wall('muro sur comedor',[5.35,1.55,4.71],[6.1,3.10,.30]);
+// Sliding glazing to court: structural piers flank a wide open gap.
+wall('machón oeste norte',[-2.23,1.55,-1.16],[.30,3.1,.95]);
+wall('machón oeste sur',[-2.23,1.55,3.44],[.30,3.1,2.52]);
+wall('machón este norte',[2.27,1.55,-1.16],[.30,3.1,.95]);
+wall('machón este sur',[2.27,1.55,3.44],[.30,3.1,2.52]);
+// Glazed doors sit in rear pocket; 2m clear central openings
+for(let x of [-2.38,2.42]){
+ const openZ=.40;for(let z of [-.3,1.8]){glassPane('vidrio corredizo',[x,1.41,z],[.022,2.70,1.30]);rail('perfil vertical',[x,1.42,z-.65],[.05,2.80,.055]);rail('perfil vertical',[x,1.42,z+.65],[.05,2.80,.055]);}
+ rail('cabezal corredera',[x,2.82,.7],[.07,.07,4.2]);}
+// Studio around lower court: no roof across courtyard.
+wall('estudio oeste',[-3.14,1.55,-5.45],[.27,3.1,4.95]);
+wall('estudio este',[3.14,1.55,-5.45],[.27,3.1,4.95]);
+wall('estudio fondo',[0,1.55,-7.84],[6.2,3.1,.27]);
+wall('estudio fachada izquierda',[-2.64,1.55,-3.0],[.97,3.1,.24]);
+wall('estudio fachada derecha',[2.64,1.55,-3.0],[.97,3.1,.24]);
+doorFrame(0,-3.02,4.0);glassPane('vidrio estudio izquierda',[-1.35,1.4,-3.02],[1.15,2.68,.024]);glassPane('vidrio estudio derecha',[1.35,1.4,-3.02],[1.15,2.68,.024]);
+// Roof sections incl. timber soffits and clerestory strips.
+roof('cubierta estar',[-5.4,3.27,1.56],[6.25,.30,6.48]);
+roof('cubierta comedor',[5.4,3.27,1.56],[6.25,.30,6.48]);
+roof('cubierta estudio',[0,3.27,-5.48],[6.49,.30,5.05]);
+for(let x of [-8.0,-7.4,-6.8,-6.2,-5.6,-5,-4.4,-3.8,-3.2,3.2,3.8,4.4,5,5.6,6.2,6.8,7.4,8])beam('tablilla cielorraso',[x,3.08,1.5],[.036,.065,6.10]);
+// Thin pergola at second, rear patio; casts moving visually legible shadow.
+for(let x=-1.85;x<=1.86;x+=.32)beam('lamas de sombra',[x,2.97,4.92],[.058,.14,2.48]);
+// Large facing exterior lime wall forms second court backdrop.
+wall('muro patio trasero',[0,1.45,6.30],[4.3,2.9,.20]);
+// Fine boardform relief seams, material details, etc.
+for(let yy=.4;yy<3.0;yy+=.47){box('línea enlucido',[-8.23,yy,1.6],[.014,.008,5.6],'sand',{opacity:.16});box('junta del patio',[0,yy,6.18],[3.84,.009,.01],'sand',{opacity:.20})}
+// Living: modular sofa in taupe bouclé, solid walnut coffee table.
+shadow('huella sofá',[-6.25,.012,2.0],[3.7,.016,1.45]);
+box('bastidor sofá',[-6.14,.30,2.00],[3.34,.29,1.28],'darkWood',{finish:2});
+for(let x of [-7.13,-6.15,-5.17]){smooth('cojín asiento',[x,.54,1.95],[.98,.30,1.15],'linen',{finish:4,roughness:1});smooth('respaldo',[x,.88,2.62],[.97,.69,.32],'textile',{finish:4,roughness:1});}
+smooth('apoyabrazos izquierdo',[-7.8,.73,2.0],[.27,.62,1.35],'textile',{finish:4});smooth('apoyabrazos derecho',[-4.52,.73,2.0],[.27,.62,1.35],'textile',{finish:4});
+// armchair near courtyard
+shadow('contacto butaca',[-3.78,.02,-.42],[1.45,.018,1.12]);smooth('sillón nogal',[-3.82,.46,-.40],[1.06,.44,.87],'leather',{finish:4});smooth('respaldo butaca',[-3.82,.87,-.93],[1.06,.9,.27],'leather',{finish:4});for(let x of [-4.22,-3.42])for(let z of [-.67,-.13])cyl('patas butaca',[x,.22,z],[.068,.42,.068],'darkWood',{finish:2});
+// low circular table, stone top and walnut tapered base
+cyl('mesa redonda',[-5.4,.39,.37],[1.48,.10,1.48],'sand',{finish:3,roughness:.52});cyl('pie mesa',[-5.4,.19,.37],[.50,.36,.50],'timber',{finish:2});shadow('huella mesa',[-5.4,.013,.37],[1.55,.017,1.2]);
+// ceramic vase and branch arrangement
+cyl('vasija piedra',[-5.23,.51,.48],[.27,.24,.27],'plaster',{finish:1});cyl('flores tallo',[-5.23,.82,.48],[.019,.54,.019],'darkWood');sphere('ramas',[-5.21,1.04,.48],[.25,.16,.18],'foliage',{roughness:1});
+// wall built-in: restrained details, shelving+sculpture
+for(let y of [.65,1.2,1.75,2.30])beam('estante nogal',[-8.0,y,-.2],[.29,.07,2.0]);for(let z of [-.88,-.12,.7])cyl('cuenco artesanal',[-7.98,1.27,z],[.16,.09,.16],'gravel',{finish:3});
+// Dining: original oval table and eight cantilever-ish wood chairs
+shadow('sombra mesa comedor',[5.08,.012,1.52],[3.68,.017,1.83]);sphere('tablero mesa',[5.14,.79,1.47],[3.42,.14,1.57],'lightWood',{finish:2,roughness:.46});for(let x of [3.98,6.27]){box('pata mesa',[x,.40,1.48],[.18,.71,.70],'timber',{finish:2});}
+function chair(x,z,angle=0){const group=[];let c=Math.cos(angle),s=Math.sin(angle);const tr=(dx,dz)=>[x+dx*c-dz*s,z+dx*s+dz*c];function cb(n,dx,y,dz,sc,col,op={}){let v=tr(dx,dz);return add(n,'round',[v[0],y,v[1]],sc,col,{...op,rotation:[0,angle,0]})}cb('asiento silla',0,.49,0,[.53,.115,.49],'lightWood',{finish:2});cb('respaldo moldeado',0,.87,-.23,[.57,.74,.08],'lightWood',{finish:2,rotation:[-.16,angle,0]});for(let dx of [-.21,.21])for(let dz of [-.19,.20]){let a=tr(dx,dz);cyl('pata silla',[a[0],.23,a[1]],[.04,.46,.04],'darkWood',{finish:2})}let v=tr(0,0);shadow('sombra silla',[v[0],.019,v[1]],[.65,.011,.60])}
+for(let x of [4.13,5.12,6.10]){chair(x,.12,Math.PI);chair(x,2.85,0)}chair(3.29,1.5,Math.PI/2);chair(6.98,1.5,-Math.PI/2);
+// Kitchen on east end: monolithic counters, bronze fittings, cabinetry.
+for(let z of [-1.02,-.41,.20])box('puerta módulo cocina',[7.58,.63,z],[1.05,1.22,.56],'timber',{finish:2});
+box('encimera piedra',[7.49,1.31,-.42],[1.43,.11,2.04],'plaster',{finish:3,roughness:.40});
+for(let z of [-.86,-.52])cyl('grifería',[7.08,1.62,z],[.035,.55,.035],'brass',{metalness:.8,roughness:.26});
+// Studio: long work table, task lamp, book spines, artwork frame
+shadow('sombra escritorio',[0,.015,-6.45],[2.55,.016,.88]);smooth('sobre de nogal',[0,.78,-6.43],[2.40,.11,.83],'timber',{finish:2});for(let x of [-1.03,1.03])for(let z of [-6.73,-6.12])box('pata escritorio',[x,.39,z],[.078,.76,.08],'ink',{metalness:.65,roughness:.35});
+smooth('banco estudio',[0,.43,-5.24],[1.09,.12,.42],'leather',{finish:4});for(let x of [-.45,.45])box('pata banco',[x,.21,-5.25],[.06,.42,.07],'darkWood',{finish:2});
+for(let x=-2.45;x<-.5;x+=.18){let h=.38+(Math.sin(x*11)+1)*.16;box('libro de arquitectura',[x,1.15+h/2,-7.67],[.12,h,.35],x%2<1?'leather':'plaster',{finish:4})}
+beam('biblioteca empotrada',[-1.42,1.01,-7.68],[2.5,.065,.42]);
+for(let y of [1.48,2.0,2.52])beam('estante superior',[1.35,y,-7.67],[2.3,.055,.45]);
+// Recessed LED-like practical lights in ceiling. Real illumination from shader point lights.
+for(let p of [[-5.2,2.93,1.8],[5.1,2.95,1.4],[0,2.93,-5.5],[0,2.85,4.6]]){cyl('luminaria cobre',p,[.32,.075,.32],'brass',{metalness:.63,roughness:.22});cyl('difusor cálido',[p[0],p[1]-.055,p[2]],[.20,.026,.20],'night',{roughness:.20})}
+// Courtyard A: shallow water, fine concrete perimeter, dry tree.
+shadow('borde estanque',[.0,.015,-.6],[3.18,.028,3.55]);
+box('borde norte estanque',[0,.125,-2.23],[3.25,.23,.21],'sand',{finish:3});box('borde sur estanque',[0,.125,1.01],[3.25,.23,.21],'sand',{finish:3});
+box('borde este estanque',[1.52,.125,-.6],[.18,.23,3.0],'sand',{finish:3});box('borde oeste estanque',[-1.52,.125,-.6],[.18,.23,3.0],'sand',{finish:3});
+box('agua quieta',[0,.043,-.60],[2.92,.025,2.96],'water',{opacity:.82,roughness:.10,metalness:.25});
+// Stone island supports botanical centerpiece: nothing floating.
+box('isla raíz',[-.42,.20,-.55],[.78,.27,.78],'gravel',{finish:3});
+// Cylinders between two points, directional geometry aligns local Y axis.
+function branch(name,a,b,r,c='darkWood'){const p=vec.mul(vec.add(a,b),.5),d=vec.sub(b,a),len=vec.length(d),dir=vec.norm(d);let yaw=Math.atan2(dir[0],dir[2]),pitch=Math.acos(Math.min(1,Math.max(-1,dir[1])));let o=add(name,'cylinder',p,[r*2,len,r*2],c,{roughness:1,finish:2});let theta=Math.asin(Math.max(-1,Math.min(1,dir[2]))),phi=Math.atan2(-dir[0],dir[1]);o.model=mat.multiply(mat.translation(...p),mat.multiply(mat.rotationZ(phi),mat.multiply(mat.rotationX(theta),mat.scaling(r*2,len,r*2))));return o}
+branch('olivo tronco',[-.42,.29,-.55],[-.34,2.12,-.55],.097);
+for(let [ex,ey,ez] of [[-1.13,2.43,-.32],[.32,2.37,-.49],[-.74,2.83,-1.1],[.02,2.87,.17]])branch('olivo rama',[-.34,1.8,-.55],[ex,ey,ez],.045);
+for(let i=0;i<58;i++){const a=i*2.3999,rad=.4+.64*((i*13%61)/61),yy=2.22+.50*Math.cos(i*.68);sphere('hojas olivo',[-.42+Math.cos(a)*rad,yy,-.50+Math.sin(a)*rad*.65],[.23+.08*(i%3),.13+.03*(i%5),.13],i%3===0?'foliage2':i%3===1?'foliage':'foliage3',{roughness:1})}
+// secondary patio: gravel and columnar planting, screened view.
+box('jardin de grava',[0,.04,4.86],[3.66,.09,1.92],'gravel',{finish:3});
+for(let j=0;j<5;j++){let x=-1.44+j*.74,z=4.58+.26*(j%2);cyl('tronco lapacho',[x,.59,z],[.09,1.11,.09],'darkWood',{finish:2});for(let k=0;k<8;k++){let a=k*2.38+j; sphere('follaje juvenil',[x+Math.cos(a)*.26,1.35+.24*Math.sin(k*1.7),z+Math.sin(a)*.21],[.31,.38,.22],(j+k)%3===0?'foliage2':'foliage',{roughness:1})}}
+// Court stepping stones (no collision, stable composition), pots and pond lip.
+for(let z of [3.65,4.45,5.23])smooth('paso de travertino',[0,.13,z],[.66,.09,.39],'plaster',{finish:3});
+// Wall art is authored abstract relief, not a borrowed photograph.
+box('panel relieve',[-7.95,1.70,4.52],[1.88,1.13,.055],'sand',{finish:3});for(let j=0;j<7;j++)box('incisión relieve',[-8.72+j*.25,1.72+Math.sin(j)*.10,4.56],[.055,.62+.09*(j%3),.015],j%2?'timber':'plaster',{finish:3});
+const architecturalScene={objects,dimensions:{unit:'metres',envelope:[16.76,15.2],ceiling:3.12,rooms:{sala:[6.1,6.25],comedor:[6.1,6.25],estudio:[6.0,4.7]},courtyards:2},materials:colors};
+
+return {architecturalScene};})();
+const {ArchitectureCamera,PRESETS,resolveOcclusion}=(()=>{
+// Casa entre patios: reusable viewport-aware occlusion + tactile first-person camera.
+// Metres throughout. No rendering library coupling.
+const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
+function segmentAABB(a,b,box){let t0=0,t1=1;const min=box.min,max=box.max;for(let i=0;i<3;i++){let d=b[i]-a[i];if(Math.abs(d)<1e-9){if(a[i]<min[i]||a[i]>max[i])return null;continue}let near=(min[i]-a[i])/d,far=(max[i]-a[i])/d;if(near>far)[near,far]=[far,near];t0=Math.max(t0,near);t1=Math.min(t1,far);if(t0>t1)return null}return t0;}
+function coverage(camera,focal,occluder,viewportWidth=390){let aspect=viewportWidth/Math.max(450,viewportWidth*.64),fov=60*Math.PI/180;let dir=norm(sub(focal,camera));let right=norm(cross(dir,[0,1,0]));let up=norm(cross(right,dir));let length=Math.hypot(...sub(focal,camera));let reach=length*Math.tan(fov/2)*.14;let blocked=0;for(let y of [-1,0,1])for(let x of [-1,0,1]){let p=add(focal,add(scale(right,x*reach*aspect),scale(up,y*reach)));let t=segmentAABB(camera,p,occluder);if(t!==null&&t>.002&&t<.975)blocked++}return blocked/9;}
+const sub=(a,b)=>a.map((v,i)=>v-b[i]),add=(a,b)=>a.map((v,i)=>v+b[i]),scale=(a,n)=>a.map(v=>v*n),norm=a=>{let l=Math.hypot(...a)||1;return scale(a,1/l)},cross=(a,b)=>[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2]];
+function resolveOcclusion(camera,focal,objects,viewportWidth=390){const ranked=[];for(const o of objects){if(!o.occluder||!o.bounds)continue;let c=coverage(camera,focal,o.bounds,viewportWidth);if(c>=.44)ranked.push({id:o.id,coverage:c,roof:!!o.roof});}
+ ranked.sort((a,b)=>b.coverage-a.coverage);return new Set(ranked.filter((r,i)=>i<3||r.roof).map(r=>r.id));}
+function walkable(p,walls,radius=.29){if(p[0]<-8.12||p[0]>8.12||p[2]<-7.48||p[2]>7.55)return false;for(const w of walls){if(!w.solid||!w.bounds||w.roof)continue;const b=w.bounds;if(p[0]>b.min[0]-radius&&p[0]<b.max[0]+radius&&p[2]>b.min[2]-radius&&p[2]<b.max[2]+radius)return false}return true;}
+const PRESETS={
+ sala:{pos:[-4.34,1.62,3.45],look:[-.73,1.38,-.58],name:'Sala',detail:'Estar · 31 m²'},
+ patio:{pos:[-.25,1.62,1.65],look:[.45,1.32,-2.45],name:'Patio',detail:'Agua y sombra · 22 m²'},
+ comedor:{pos:[5.85,1.62,3.50],look:[1.95,1.4,.2],name:'Comedor',detail:'Mesa · 27 m²'},
+ estudio:{pos:[-.3,1.62,-6.55],look:[.0,1.43,-3.12],name:'Estudio',detail:'Trabajo · 19 m²'}
+};
+function anglesFrom(pos,target){let d=sub(target,pos);return {yaw:Math.atan2(d[0],-d[2]),pitch:Math.atan2(d[1],Math.hypot(d[0],d[2]))}}
+class ArchitectureCamera{
+ constructor(walls){this.walls=walls;this.pos=[...PRESETS.sala.pos];const a=anglesFrom(this.pos,PRESETS.sala.look);this.yaw=a.yaw;this.pitch=a.pitch;this.route=[];this.focus=[...PRESETS.sala.look];this.scene='sala';this.moving=false;}
+ target(){return [this.pos[0]+Math.sin(this.yaw)*Math.cos(this.pitch)*6,this.pos[1]+Math.sin(this.pitch)*6,this.pos[2]-Math.cos(this.yaw)*Math.cos(this.pitch)*6]}
+ turn(dx,dy){this.yaw+=dx;this.pitch=clamp(this.pitch+dy,-.91,.74);this.route=[]}
+ move(forward,side,dt){this.route=[];const s=Math.min(.12,dt)*2.2,f=scale([Math.sin(this.yaw),0,-Math.cos(this.yaw)],forward*s),r=scale([Math.cos(this.yaw),0,Math.sin(this.yaw)],side*s);let p=add(this.pos,add(f,r));if(walkable(p,this.walls))this.pos=p;else{let x=[p[0],this.pos[1],this.pos[2]],z=[this.pos[0],this.pos[1],p[2]];if(walkable(x,this.walls))this.pos=x;if(walkable(z,this.walls))this.pos=z;}return this.pos}
+ go(key){const to=PRESETS[key];if(!to)return;this.scene=key;let steps=[];if(key==='sala')steps=[[-1.8,1.62,0],[-2.9,1.62,.5],to.pos];else if(key==='comedor')steps=[[1.8,1.62,0],[2.95,1.62,.5],to.pos];else if(key==='estudio')steps=[[0,1.62,-2.7],[0,1.62,-3.55],to.pos];else steps=[to.pos];this.route=steps.map((pos,i)=>({pos,look:i===steps.length-1?to.look:[0,1.45,0]}));this.moving=true;}
+ tick(dt){if(!this.route.length){this.moving=false;return}let waypoint=this.route[0],delta=sub(waypoint.pos,this.pos),dist=Math.hypot(...delta),speed=Math.min(dist,dt*3.35);if(dist>.04)this.pos=add(this.pos,scale(delta,speed/Math.max(dist,.01)));else{this.pos=[...waypoint.pos];this.route.shift()}const a=anglesFrom(this.pos,waypoint.look);let deltaYaw=((a.yaw-this.yaw+Math.PI*3)%(Math.PI*2))-Math.PI;this.yaw+=clamp(deltaYaw,-dt*2.2,dt*2.2);this.pitch+=clamp(a.pitch-this.pitch,-dt*1.5,dt*1.5);this.moving=this.route.length>0;}
+}
+
+return {ArchitectureCamera,PRESETS,resolveOcclusion};})();
+const canvas=document.getElementById('view'),state=document.getElementById('testState'),status=document.getElementById('status');const objects=architecturalScene.objects;
+let engine,camera,day=1,targetDay=1,last=0,keys=new Set(),drag=null,drawStats=null,errors=[];try{engine=new Renderer(canvas);camera=new ArchitectureCamera(objects)}catch(e){status.classList.add('show');status.textContent='No se pudo iniciar el render WebGL2 en este dispositivo: '+e.message;state.textContent='WEBGL_UNAVAILABLE';throw e}
+const roomKeys=['sala','patio','comedor','estudio'];function roomChange(key){camera.go(key);document.querySelectorAll('#nav button').forEach(b=>{const yes=b.dataset.room===key;b.classList.toggle('active',yes);if(yes)b.setAttribute('aria-current','true');else b.removeAttribute('aria-current')});let i=roomKeys.indexOf(key);document.getElementById('section').textContent=String(i+1).padStart(2,'0')+' / 04';document.getElementById('room').textContent=PRESETS[key].name;document.getElementById('detail').textContent=PRESETS[key].detail}
+document.querySelectorAll('#nav button').forEach(b=>b.addEventListener('click',()=>roomChange(b.dataset.room)));
+document.getElementById('lighting').addEventListener('click',()=>{targetDay=targetDay>.5?0:1;const isNight=targetDay<.5;document.getElementById('lightlabel').textContent=isNight?'Luz artificial':'Luz natural';document.getElementById('lighting').setAttribute('aria-pressed',String(isNight))});
+canvas.addEventListener('pointerdown',e=>{drag=[e.clientX,e.clientY];canvas.setPointerCapture(e.pointerId)});canvas.addEventListener('pointermove',e=>{if(!drag)return;let dx=e.clientX-drag[0],dy=e.clientY-drag[1];camera.turn(-dx*.0042,dy*.003);drag=[e.clientX,e.clientY]});canvas.addEventListener('pointerup',()=>drag=null);canvas.addEventListener('pointercancel',()=>drag=null);
+canvas.addEventListener('wheel',e=>{e.preventDefault();camera.move(e.deltaY>0?-1:1,0,.25)},{passive:false});window.addEventListener('keydown',e=>{if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' ','w','a','s','d','W','A','S','D'].includes(e.key)){keys.add(e.key.toLowerCase());if(e.key.startsWith('Arrow'))e.preventDefault()}if('1234'.includes(e.key)&&e.key.length===1)roomChange(roomKeys[+e.key-1])});window.addEventListener('keyup',e=>keys.delete(e.key.toLowerCase()));
+let dragTouch=0;canvas.addEventListener('touchstart',e=>{dragTouch=e.touches.length},{passive:true});canvas.addEventListener('touchmove',e=>{if(e.touches.length===2){camera.move(1,0,.016)}},{passive:true});
+const still=matchMedia('(prefers-reduced-motion:reduce)').matches;
+function frame(t){const dt=Math.min(.055,(t-last)/1000||.016);last=t;day+=(targetDay-day)*Math.min(1,dt*(still?20:2.4));if(keys.size)camera.move((keys.has('w')||keys.has('arrowup')?1:0)-(keys.has('s')||keys.has('arrowdown')?1:0),(keys.has('d')||keys.has('arrowright')?1:0)-(keys.has('a')||keys.has('arrowleft')?1:0),dt);camera.tick(dt);const cam={pos:camera.pos,target:camera.target()};const hidden=resolveOcclusion(cam.pos,camera.focus,objects,canvas.clientWidth);try{drawStats=engine.draw(objects,cam,day,hidden);state.textContent=JSON.stringify({renderer:'WEBGL2',frame:engine.frame,room:camera.scene,day:day.toFixed(2),occluded:[...hidden],size:[drawStats.width,drawStats.height],objects:objects.length,glError:drawStats.glError});}catch(e){errors.push(e.message);status.classList.add('show');status.textContent='Falló el render: '+e.message;return}requestAnimationFrame(frame)}requestAnimationFrame(frame);
+window.__CASA_QA__={getState:()=>({room:camera.scene,pos:[...camera.pos],frame:engine.frame,day,glError:drawStats?.glError,hidden:resolveOcclusion(camera.pos,camera.focus,objects,canvas.clientWidth).size,meshCount:objects.length}),go:roomChange,light:(v)=>{targetDay=v?1:0},rooms:roomKeys,dimensions:architecturalScene.dimensions};
+</script></body></html>
