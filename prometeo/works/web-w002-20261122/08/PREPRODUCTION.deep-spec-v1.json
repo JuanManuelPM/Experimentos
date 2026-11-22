@@ -1,0 +1,213 @@
+{
+  "version": "DEEP-SPEC-1",
+  "medium": "web",
+  "depth": "SISTEMA",
+  "taskId": "web-w002-20261122-08",
+  "batchId": "web-w002-20261122",
+  "taskNumber": 8,
+  "launchBlobSha": "cd88a07941ab62072f6de5ee69764308f1ec2387",
+  "qualityBarVersion": "QBAR-1",
+  "brief": "SECUENCIA: editor visual sin código para historias web con bloques de texto, imagen y video autorizado, orden, tiempos, animación, previsualización móvil y escritorio y export HTML estático autónomo.",
+  "intent": {
+    "experience": "Que una persona cree una historia digital elegante y la exporte sin programar ni depender de SECUENCIA.",
+    "distinctAbility": "Paridad demostrable entre preview y archivo exportado, con medios incorporados y esquema reutilizable."
+  },
+  "references": [
+    {
+      "id": "R1",
+      "status": "OBSERVED",
+      "url": "https://help.webflow.com/hc/en-us/articles/42861689104531-Timeline-in-Interactions-with-GSAP",
+      "observation": "Documentación de julio 2026: las acciones aparecen como tracks cronológicos; permite scrub, invertir, duración y reordenación, separando la edición de la reproducción."
+    },
+    {
+      "id": "R2",
+      "status": "OBSERVED",
+      "url": "https://grapesjs.com/docs/modules/Components",
+      "observation": "GrapesJS afirma que el modelo de componentes es la fuente de verdad del HTML exportado y que la vista del editor puede tener otra presentación."
+    },
+    {
+      "id": "R3",
+      "status": "OBSERVED",
+      "url": "https://wp.stories.google/docs/getting-started/editor/",
+      "observation": "Google Web Stories diferencia insertar, estilizar y metadatos; admite reorganizar páginas y ofrece checklist editorial y accesible."
+    },
+    {
+      "id": "R4",
+      "status": "OBSERVED",
+      "url": "https://help.webflow.com/hc/en-us/articles/33961386739347-How-do-I-export-my-Webflow-site-code",
+      "observation": "El export Webflow incluye HTML CSS JS e imágenes, pero CMS, búsqueda y algunas funciones hospedadas no funcionan externamente: un export debe declarar y comprobar autonomía."
+    }
+  ],
+  "components": [
+    {
+      "id": "scene",
+      "role": "Esquema de escenas validado y serializable con bloque, duracion y transicion",
+      "strategy": "JSON declarativo versionado con IDs y whitelist por tipo",
+      "constraints": "Prohibir HTML arbitrario y controlar tamaños de media y strings antes de exportar"
+    },
+    {
+      "id": "studio",
+      "role": "Panel accesible de edición y reordenamiento de capítulos de la historia",
+      "strategy": "Inspector nativo, botones de orden, carga local y autosave en navegador",
+      "constraints": "Acciones de toque y teclado equivalentes al drag visual; no sacrificar contenido en móvil"
+    },
+    {
+      "id": "runtime",
+      "role": "Motor sin dependencias que dibuja una historia narrativa en documento estático",
+      "strategy": "Reusar el mismo HTML completo para srcdoc del iframe y para descarga",
+      "constraints": "Preservar animacion y media con reduced motion; aislar entradas del usuario"
+    },
+    {
+      "id": "export",
+      "role": "Exportador autónomo que incrusta JSON, CSS, JS y archivos de imagen o video",
+      "strategy": "Crear Blob text/html con estructura autosuficiente y descargas locales",
+      "constraints": "Bloquear medios remotos en export; impedir cierre de script, sin servidores ni pagos"
+    }
+  ],
+  "questions": [
+    {
+      "id": "Q1",
+      "target": "runtime",
+      "question": "¿Cómo impedir divergencias entre una previsualización sofisticada y el export autónomo?",
+      "alternatives": [
+        "Dos implementaciones independientes",
+        "Una sola función para construir documento y runtime"
+      ],
+      "finding": "GrapesJS separa modelo y vista pero sostiene un modelo de verdad único para export.",
+      "evidenceRef": "R2",
+      "decisionImpact": "Un solo documento generado se monta en iframe srcdoc y se descarga byte a byte."
+    },
+    {
+      "id": "Q2",
+      "target": "export",
+      "question": "¿Cómo conservar imágenes y videos offline sin dependencias externas ni licencias inventadas?",
+      "alternatives": [
+        "URL de CDN con export marcado autónomo",
+        "Importar archivo autorizado y embebido como data URL"
+      ],
+      "finding": "Webflow documenta límites de export cuando subsistemas siguen vinculados a su plataforma.",
+      "evidenceRef": "R4",
+      "decisionImpact": "Solo archivos de usuario y SVG original integrado; no URL remota en media exportable."
+    },
+    {
+      "id": "Q3",
+      "target": "studio",
+      "question": "¿Qué controles mínimos ayudan a construir una narración compleja sin convertir el editor en una planilla?",
+      "alternatives": [
+        "Freeform infinito con centenares de opciones",
+        "Storyboard de escenas más inspector con tiempo y movimiento"
+      ],
+      "finding": "Webflow timeline ofrece control temporal y Google Story editor separa insertar, estilo y metadatos.",
+      "evidenceRef": "R1",
+      "decisionImpact": "Storyboard ordenable, duración y transición individual más preview móvil/desktop."
+    }
+  ],
+  "relations": [
+    {
+      "from": "scene",
+      "to": "runtime",
+      "invariant": "Cada escena serializada debe representar el mismo orden y texto en preview y export",
+      "failure": "Dos modelos de escena generan diferencias visibles al publicar",
+      "test": "Comparación de DOM y texto entre iframe preview y export"
+    },
+    {
+      "from": "studio",
+      "to": "scene",
+      "invariant": "Edición y orden deben persistir sin perder IDs ni medios importados",
+      "failure": "Reordenar elimina contenido o desincroniza inspector",
+      "test": "Crear, editar, mover y recargar para verificar estado"
+    },
+    {
+      "from": "export",
+      "to": "runtime",
+      "invariant": "El HTML exportado funciona sin cargar ninguna biblioteca o archivo remoto",
+      "failure": "Dependencias externas rompen en file:// o sin conexión",
+      "test": "Abrir export descargado fuera del editor y contar requests"
+    }
+  ],
+  "decisions": [
+    {
+      "id": "D1",
+      "questionId": "Q1",
+      "componentIds": [
+        "runtime",
+        "export"
+      ],
+      "choice": "Generador único de HTML para preview y export",
+      "rejected": "Renderers diferentes de preview y descarga",
+      "productionChange": "El mismo string html se usa como srcdoc y como archivo entregable, sin reconstrucción posterior.",
+      "why": "La identidad del documento evita una clase completa de divergencias."
+    },
+    {
+      "id": "D2",
+      "questionId": "Q2",
+      "componentIds": [
+        "export",
+        "scene"
+      ],
+      "choice": "Data URLs para assets subidos y recurso SVG original",
+      "rejected": "Imágenes alojadas externamente ocultas como export autónomo",
+      "productionChange": "Media subidos se vuelven data URI; se verifican tamaño y MIME antes de permitir persistencia.",
+      "why": "Una sola página HTML debe reproducirse desconectada de la plataforma."
+    },
+    {
+      "id": "D3",
+      "questionId": "Q3",
+      "componentIds": [
+        "studio",
+        "scene"
+      ],
+      "choice": "Storyboard por escenas con ajustes de tiempo, ritmo y formato",
+      "rejected": "Canvas libre genérico con widgets arbitrarios",
+      "productionChange": "Acciones de insertar, mover, duplicar, borrar, editar y vista responsive mediante controles semánticos.",
+      "why": "Las decisiones editoriales más importantes quedan fáciles de inspeccionar y probar."
+    }
+  ],
+  "risks": [
+    {
+      "componentIds": [
+        "export",
+        "runtime"
+      ],
+      "severity": "high",
+      "failure": "HTML exportado no funciona offline o ejecuta HTML inyectado del usuario",
+      "prevention": "Serialización JSON segura que neutralice < y control de MIME en importaciones",
+      "test": "Spike: abrir export en navegación local y comparar DOM con preview con caracteres especiales",
+      "status": "NOT_RUN"
+    },
+    {
+      "componentIds": [
+        "studio",
+        "scene"
+      ],
+      "severity": "medium",
+      "failure": "Autosave local agota storage o pierde bloques tras reordenación",
+      "prevention": "Guardar con control de cuota y aviso; no sobrescribir al fallar",
+      "test": "Reordenar cinco escenas, editar y recargar en navegador",
+      "status": "NOT_RUN"
+    }
+  ],
+  "acceptance": [
+    {
+      "kind": "functional",
+      "criterion": "Export HTML autónomo representa historia demo fuera del editor",
+      "oracle": "Playwright abre export file:// y compara escenas, orden y texto con vista previa",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "interactive",
+      "criterion": "Acciones de edición, orden, importación y preview móvil funcionan",
+      "oracle": "Prueba de interacción real a 320, 768 y 1440, teclado y tacto",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "visual",
+      "criterion": "Composición editorial legible en escritorio y 320 px",
+      "oracle": "Capturas reales y observación visual de la interfaz y la historia",
+      "status": "NOT_RUN"
+    }
+  ],
+  "licensing": "Imágenes de portada: SVG editorial original del autor del experimento. Otros medios solo si son archivos suministrados y autorizados por quien edita; no se copian marcas/fotos de las referencias.",
+  "resources": "HTML CSS JS sin dependencias, GitHub Pages para publicación, Node y Chromium Playwright local si se obtiene código; herramientas GitHub Connector para escritura.",
+  "environmentLimits": "No hay navegador remoto conectado a la sesión GitHub para QA en Pages; comprobaciones de lectura HTTP y pruebas de código se distinguirán del uso de navegador cuando no se realicen."
+}
