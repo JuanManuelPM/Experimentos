@@ -106,7 +106,7 @@ def report():
     mixed=np.zeros((N,2),np.float64)
     for _,s in stem_buffers:mixed+=s
     premix_peak=float(np.max(np.abs(mixed)))
-    bus_gain=min(float(SONG['master_gain']),.92/max(premix_peak,1e-9))
+    bus_gain=min(2.5,.84/max(premix_peak,1e-9))  # Linear peak normalization; preserves stem parity
     # Apply only LINEAR attenuation to retain explicit stem/master parity.
     mixed=(mixed*bus_gain).astype(np.float32)
     for id,s in stem_buffers:
