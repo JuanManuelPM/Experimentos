@@ -1,7 +1,7 @@
 {
   "schema": "prometeo.root.room-messages/v1",
   "visibility": "PUBLIC_SAFE_SUMMARIES_ONLY",
-  "updatedAt": "2026-11-22T19:19:00.736Z",
+  "updatedAt": "2026-11-22T19:19:11.693Z",
   "entries": [
     {
       "id": "web-w003-20261122-06-mapa-del-calor-source-v1",
@@ -6146,6 +6146,54 @@
           "url": "https://github.com/JuanManuelPM/Experimentos/blob/candidate/prometeo-images-w003-20261122-06/prometeo/launch/20261122/relaunch/images/work/06/PREPRODUCTION.deep-spec-v1.json"
         }
       ],
+      "humanApproved": false
+    },
+    {
+      "id": "web-w003-20261122-08-secuencia-editor-offline-v2",
+      "room": "web",
+      "batchId": "web-w003-20261122",
+      "taskNumber": 8,
+      "taskId": "web-w003-20261122-08",
+      "publishedAt": "2026-11-22T19:19:11.693Z",
+      "title": "🌐 WEB W003 · 08 · SECUENCIA · editor y export HTML autónomo",
+      "status": "GH_PAGES_SOURCE_READBACK_PASS_LOCAL_CHROMIUM_18_OF_18_PASS_PUBLIC_BROWSER_NOT_VERIFIED_HUMAN_APPROVED_NO",
+      "body": "Editor original de historias sin código, 4 tipos de escenas, reordenar, duración/movimiento, preview 390/1440, media local autorizada en data URI, exportación de HTML autónomo. Chromium Playwright 18/18 controles: interacción, descarga UI verdadera, ejecución de bytes exportados en contexto independiente sin red, imagen SVG original, WebM real sintético FFmpeg 320x180 decodificado, reduced-motion y ausencia de overflow. Capturas reales locales 390/1440 no publicadas en este commit. En este entorno page.goto con file:// y localhost fue ERR_BLOCKED_BY_ADMINISTRATOR; el test utilizó page.set_content del HTML descargado, no equivale a abrir archivo por doble clic. GitHub gh-pages commit y 9 blobs comprobados por API; navegador HTTP público y Android NO_VERIFICADOS. Aprobación humana NO. Conservado W002 intacto.",
+      "blocks": [
+        {
+          "type": "text",
+          "text": "EDITOR_REAL · EXPORT_HTML_UI_VERIFIED · CHROMIUM_OFFLINE_SET_CONTENT_18/18 · SVG_ORIGINAL + WEBM_REAL_TEST_FIXTURE · GH_PAGES_SOURCE_READBACK_PASS · FILE_URL_DIRECT_BLOCKED · LIVE_HTTP_NOT_VERIFIED · HUMAN_APPROVED=NO"
+        },
+        {
+          "type": "link",
+          "label": "SECUENCIA · editor web (HTTP público pendiente de confirmar)",
+          "url": "https://juanmanuelpm.github.io/Experimentos/prometeo/works/web-w003-20261122/08/"
+        },
+        {
+          "type": "link",
+          "label": "Historia de cinco escenas HTML exportada",
+          "url": "https://juanmanuelpm.github.io/Experimentos/prometeo/works/web-w003-20261122/08/sample-story.html"
+        },
+        {
+          "type": "file",
+          "label": "Código fuente, renderer, modelo y QA",
+          "url": "https://github.com/JuanManuelPM/Experimentos/tree/gh-pages/prometeo/works/web-w003-20261122/08"
+        },
+        {
+          "type": "file",
+          "label": "Informe de pruebas y límites",
+          "url": "https://github.com/JuanManuelPM/Experimentos/tree/gh-pages/prometeo/works/web-w003-20261122/08/QA.md"
+        },
+        {
+          "type": "file",
+          "label": "Rama exclusiva candidata W003/08",
+          "url": "https://github.com/JuanManuelPM/Experimentos/tree/candidate/prometeo-web-w003-20261122-08/prometeo/works/web-w003-20261122/08"
+        }
+      ],
+      "previewUrl": "https://juanmanuelpm.github.io/Experimentos/prometeo/works/web-w003-20261122/08/",
+      "previewStatus": "PUBLIC_BROWSER_NOT_VERIFIED",
+      "sourceCommit": "550abf55b879d8ad43f7151a6ccaf6b24e072b5d",
+      "briefSha": "bef87bf57c789d2b0605ca9ff81a5d3bbaab5e35",
+      "oldBatchId": "web-w002-20261122",
       "humanApproved": false
     }
   ]
