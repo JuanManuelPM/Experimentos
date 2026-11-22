@@ -327,7 +327,7 @@ function touchAdjust(op){
    e.root.scale[axis]=e.baseScale*clamp(Number((current+sign*.1).toFixed(4)),.05,20);
   }
  }else return;
- state.transform?.updateMatrixWorld();
+ e.root.updateMatrixWorld(true);
  historyPush();updateInspector();
 }
 function setMobilePanel(panel=null){
