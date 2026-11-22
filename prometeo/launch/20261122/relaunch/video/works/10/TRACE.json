@@ -1,0 +1,103 @@
+{
+  "schema": "prometeo.visited-trace/v1",
+  "taskId": "video-w003-20261122-10",
+  "recordedAt": "2026-11-22T19:13:23.635Z",
+  "flowPin": "FLOW.json",
+  "topologyValidation": "NOT_RUN_NO_SPECIALIZED_FLOW_GRAPH_RECOVERED",
+  "steps": [
+    {
+      "id": "01-SOURCE",
+      "stage": "RECOVER",
+      "status": "OBSERVED",
+      "decision": "Fijar solo la consigna N10 y LAUNCH W003 sin editar W002.",
+      "alternative": "Recodificar otras consignas",
+      "evidence": [
+        "LAUNCH blob 0cc574528594731a3d1cf0c15a0d0e5a37e775b7"
+      ],
+      "recordedAt": "2026-11-22T19:13:23.635Z"
+    },
+    {
+      "id": "02-QBAR",
+      "stage": "BENCHMARK",
+      "status": "OBSERVED",
+      "decision": "Usar editores multipista reales y APIs web como capacidades objetivo, no copiar interfaces.",
+      "alternative": "Panel decorativo sin edición ni export",
+      "evidence": [
+        "https://www.blackmagicdesign.com/products/davinciresolve/edit",
+        "https://forum.shotcut.org/t/about-the-timeline/12952"
+      ],
+      "recordedAt": "2026-11-22T19:13:23.635Z"
+    },
+    {
+      "id": "03-BOOK",
+      "stage": "PREPRODUCTION",
+      "status": "OBSERVED",
+      "decision": "Preservar mismo compositor W002, diseñar corrección portable ZIP y mantener el gate audiovisual pendiente.",
+      "alternative": "Rehacer editor a partir de mockup",
+      "evidence": [
+        "PREPRODUCTION.deep-spec-v1.json"
+      ],
+      "recordedAt": "2026-11-22T19:13:23.635Z"
+    },
+    {
+      "id": "04-BUILD",
+      "stage": "IMPLEMENT",
+      "status": "OBSERVED",
+      "decision": "Adaptar HTML en rama exclusiva, mover clave IndexedDB, agregar ZIP STORE/CRC y controles.",
+      "alternative": "Guardar solo JSON",
+      "evidence": [
+        "index.html",
+        "commit df56a6f7ae65206b60589965a6be6ca4e9886c57"
+      ],
+      "recordedAt": "2026-11-22T19:13:23.635Z"
+    },
+    {
+      "id": "05-QA-LOGIC",
+      "stage": "VERIFY_LOGIC",
+      "status": "OBSERVED",
+      "decision": "Compilar ambos scripts y ejecutar zipStore/readStore sobre bytes artificiales con CRC y truncamiento.",
+      "alternative": "Dar por válido por inspección manual",
+      "evidence": [
+        "QA.md",
+        "index.html Git blob c89c925ae360d793b652a4b5d2551538c8db59f2"
+      ],
+      "recordedAt": "2026-11-22T19:13:23.635Z"
+    },
+    {
+      "id": "06-QA-MEDIA",
+      "stage": "VERIFY_MEDIA",
+      "status": "NOT_RUN",
+      "reason": "No se ejecutó interfaz en navegador real en esta sesión.",
+      "decision": "No atribuir WebM export ni calidad A/V a W003",
+      "alternative": "Heredar el PASS de W002",
+      "evidence": [
+        "QA.md"
+      ],
+      "recordedAt": "2026-11-22T19:13:23.635Z"
+    },
+    {
+      "id": "07-PUBLISH",
+      "stage": "PUBLISH",
+      "status": "OBSERVED",
+      "decision": "Crear archivos nuevos bajo gh-pages y rama propia; comparar bytes con lectura remota GitHub.",
+      "alternative": "Sobrescribir index W002",
+      "evidence": [
+        "https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/launch/20261122/relaunch/video/works/10/index.html"
+      ],
+      "recordedAt": "2026-11-22T19:13:23.635Z"
+    },
+    {
+      "id": "08-PAGES",
+      "stage": "VISUAL_BROWSER",
+      "status": "NOT_RUN",
+      "reason": "No se obtuvo respuesta HTTP de Pages ni captura 390/1440.",
+      "decision": "No afirmar vista publicada y probada en browser",
+      "alternative": "Inventar screenshot",
+      "evidence": [
+        "QA.md"
+      ],
+      "recordedAt": "2026-11-22T19:13:23.635Z"
+    }
+  ],
+  "humanApproved": false
+}
