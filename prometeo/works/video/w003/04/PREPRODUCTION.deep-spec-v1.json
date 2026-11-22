@@ -1,0 +1,276 @@
+{
+  "version": "DEEP-SPEC-1",
+  "medium": "video",
+  "depth": "SISTEMA",
+  "taskId": "video-w003-20261122-04",
+  "batchId": "video-w003-20261122",
+  "taskNumber": 4,
+  "brief": "UNA PALABRA CAMBIA TODO: cortometraje-manifiesto tipográfico original sobre cómo una misma frase cambia de sentido con su contexto; entrega horizontal, vertical, sonido sincronizado y motor editorial temporal reutilizable.",
+  "briefSha": "0cc574528594731a3d1cf0c15a0d0e5a37e775b7",
+  "oldBriefSha": "d7eebea6d36fc6e5aa3b72cba4e35dd149dc552d",
+  "intent": {
+    "experience": "Un espectador entiende tres lecturas emocionalmente distintas de TE ESPERO incluso viendo el metraje sin explicaciones externas.",
+    "distinctAbility": "Motor tipográfico con movimiento y puntuación gobernados por semántica y no por simples presets de aparición."
+  },
+  "references": [
+    {
+      "id": "r1",
+      "url": "https://studiodumbar.com/work/demo-2025",
+      "status": "OBSERVED",
+      "observation": "Página oficial e imágenes reales observadas: sistema tipográfico enorme adaptado a pantallas múltiples; sonido con contraste de texturas. No se vio el reel entero."
+    },
+    {
+      "id": "r2",
+      "url": "https://www.webbyawards.com/crafted-with-code/demo/",
+      "status": "OBSERVED",
+      "observation": "Declaración de autores examinada: letras variables limitadas por un frame y composición propia para cada canvas; sirve para adaptar 16:9 a 9:16."
+    },
+    {
+      "id": "r3",
+      "url": "https://research.rca.ac.uk/en/publications/transforming-type-new-directions-in-kinetic-typography/",
+      "status": "OBSERVED",
+      "observation": "Resumen editorial académico consultado sobre construcción, parallax y metamorfosis de caracteres; no es benchmark audiovisual observado."
+    }
+  ],
+  "components": [
+    {
+      "id": "c1",
+      "role": "Narrativa semántica de tres contextos",
+      "strategy": "Frase exacta TE ESPERO: promesa, pregunta y amenaza con puntuación y copy secundario",
+      "constraints": "El contexto debe entenderse visualmente sin depender exclusivamente del audio."
+    },
+    {
+      "id": "c2",
+      "role": "Motor de composición tipográfica temporal",
+      "strategy": "Canvas renderAt(t) determinista, tipografía vectorial responsive, keyframes de movimiento y capas",
+      "constraints": "Texto principal legible en salida vertical y horizontal, trazos seguros en safe-area."
+    },
+    {
+      "id": "c3",
+      "role": "Partitura y exportación audiovisual",
+      "strategy": "WebAudio original en reproducción y síntesis Python determinista para masters H264/AAC",
+      "constraints": "Eventos sonoros próximos a transiciones semánticas, exactamente 26 s y 624 cuadros."
+    }
+  ],
+  "questions": [
+    {
+      "id": "q1",
+      "target": "c1",
+      "question": "¿Se entienden promesa, duda y amenaza cuando las mismas palabras conservan su identidad léxica?",
+      "alternatives": [
+        "Tres cambios de contexto, color, puntuación y dinámica",
+        "Tres copys nuevos sobre pantallas con transiciones uniformes"
+      ],
+      "evidenceRef": "r1",
+      "finding": "El cambio significativo debe transformar la función del texto y no solo su presentación.",
+      "decisionImpact": "Estructurar 3 escenas contrastantes y cierre que explicita el papel del contexto."
+    },
+    {
+      "id": "q2",
+      "target": "c2",
+      "question": "¿Qué compositor mantiene texto protagonista y jerarquía consistente entre pantalla ancha y pantalla vertical?",
+      "alternatives": [
+        "Canvas vectorial parametrizado por proporción",
+        "FFmpeg drawtext/ASS y composiciones fijas distintas"
+      ],
+      "evidenceRef": "r2",
+      "finding": "El diseño propio del marco y los elementos responsivos permite conservar sentido en ambas orientaciones.",
+      "decisionImpact": "Elegir coordenadas proporcionales, tests con 390 y 1440 y corrección de interrogación superpuesta."
+    },
+    {
+      "id": "q3",
+      "target": "c3",
+      "question": "¿Cómo hacer que pausas y eventos auditivos den forma a cada lectura en un export verdaderamente decodificable?",
+      "alternatives": [
+        "Partitura original atada a beats de transición y silencio",
+        "Loop genérico o sonido únicamente generado en reproducción web"
+      ],
+      "evidenceRef": "r1",
+      "finding": "Un contraste de timbres ayuda a distinguir confianza, incertidumbre y amenaza; el master debe tener audio independiente.",
+      "decisionImpact": "Componer score estéreo WAV original y mux AAC, medir muestras/streams y verificar duración."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "d1",
+      "questionId": "q1",
+      "componentIds": [
+        "c1",
+        "c2"
+      ],
+      "choice": "Tres lecturas divergentes de TE ESPERO con copy contextual",
+      "rejected": "No usar una tarjeta animada repetida con idénticos efectos.",
+      "why": "La película tiene que demostrar cambio real de significado en la misma frase.",
+      "productionChange": "Transiciones secuenciadas a 3.0, 9.2 y 15.4 s y coda desde 21.5 s."
+    },
+    {
+      "id": "d2",
+      "questionId": "q2",
+      "componentIds": [
+        "c2"
+      ],
+      "choice": "Canvas y escena calculada por t con posiciones dependientes del formato",
+      "rejected": "No generar un crop vertical automático del master horizontal.",
+      "why": "Un crop eliminaría el protagonista o dejaría las marcas fuera de plano.",
+      "productionChange": "Diseñar horizontal 960×540 y vertical 540×960 nativos, revisar signos y márgenes."
+    },
+    {
+      "id": "d3",
+      "questionId": "q3",
+      "componentIds": [
+        "c3",
+        "c1"
+      ],
+      "choice": "Score stereo procedural original de 26 segundos y H264/AAC",
+      "rejected": "No reemplazar audio narrativo por un clic ornamental o pista de stock.",
+      "why": "Cada escena necesita una voz material reconocible sin introducir diálogos.",
+      "productionChange": "Sintetizar capas armónicas, ticks y ruido filtrado, con AAC 44.1 kHz."
+    }
+  ],
+  "relations": [
+    {
+      "from": "c1",
+      "to": "c2",
+      "invariant": "Cambia función dramática de una frase idéntica mediante puntuación, ritmo, jerarquía y relación espacial.",
+      "failure": "Una pantalla textual genérica solo anima el texto sin alteración semántica.",
+      "test": "Evaluar imágenes de las tres escenas y preguntar sin contexto qué comunica cada una."
+    },
+    {
+      "from": "c2",
+      "to": "c3",
+      "invariant": "Cada corte de sentido y cambio de tensión corresponde a cambios audibles sin borrar la lectura.",
+      "failure": "Sonido desfazado respecto de la puntuación o falla de duración en export.",
+      "test": "FFprobe H264/AAC con 624 frames, 26 s; escucha en cortes de 9.2/15.4/21.5 s."
+    }
+  ],
+  "risks": [
+    {
+      "componentIds": [
+        "c2"
+      ],
+      "severity": "high",
+      "failure": "Los signos de puntuación o el cuerpo principal colisionan en formato vertical.",
+      "prevention": "Diseñar dos layouts, observar primer artículo y corregir anclajes en vez de reescalar un crop.",
+      "test": "Abrir capturas verticales en t=11.75 y comparar contra safe-area.",
+      "status": "OBSERVED",
+      "result": "Primera prueba con ¿ superpuesto falló; se movió a x relativa y se volvió a renderizar."
+    },
+    {
+      "componentIds": [
+        "c1"
+      ],
+      "severity": "medium",
+      "failure": "El espectador no distingue el cambio narrativo sin subtítulos contextuales.",
+      "prevention": "Títulos contextuales expresivos y gramática visual diferenciada por escena.",
+      "test": "Prueba de comprensión ciega con personas externas.",
+      "status": "NOT_RUN"
+    },
+    {
+      "componentIds": [
+        "c3"
+      ],
+      "severity": "medium",
+      "failure": "El master publicado carece de pistas sincronizadas o tiene audio vacío.",
+      "prevention": "Guardar score original y verificar codecs, tasa, cuadros y RMS en archivo local.",
+      "test": "FFprobe más inspección de actividad y escucha perceptual en auriculares.",
+      "status": "OBSERVED",
+      "result": "FFprobe observó H264/AAC, 26 s, 624 cuadros, audio estéreo."
+    }
+  ],
+  "acceptance": [
+    {
+      "kind": "visual",
+      "criterion": "Tres contextos visualmente distinguibles con la misma frase y punteado jerárquico",
+      "oracle": "Inspección manual de 5 cuadros por formato y evaluación narrativa ciega aparte",
+      "status": "OBSERVED",
+      "caveat": "Inspector técnico propio; no hubo público ciego."
+    },
+    {
+      "kind": "functional",
+      "criterion": "Dos videos reales de 26 segundos con H264 24fps, 624 frames y AAC estéreo",
+      "oracle": "FFprobe en dos masters locales y apertura de PNG renderizados",
+      "status": "OBSERVED"
+    },
+    {
+      "kind": "interactive",
+      "criterion": "Página accesible 390/1440 con controles de reproducción, orientación y exportación WebM",
+      "oracle": "Chromium local comprobado como motor de raster; test de pulsación, reproducción y export WebM independiente",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "audio",
+      "criterion": "Ritmo y timbre articulados con cambios narrativos y mezcla sin clipping",
+      "oracle": "RMS calculado y escucha crítica separada de otro oyente",
+      "status": "NOT_RUN"
+    }
+  ],
+  "licensing": "Todo el texto, partitura, gráficos y motor son originales; no hay voces, música o metraje de terceros, no se publican archivos de fuentes.",
+  "resources": "Canvas 2D, WebAudio, Python/NumPy/SciPy, Playwright Chromium, FFmpeg 24fps H264 AAC; capacidad local OBSERVED, Actions pendiente.",
+  "environmentLimits": "No se validó HTTP de GitHub Pages desde este entorno, exportación WebM en un dispositivo físico, ni sesión con espectadores independientes.",
+  "artDirection": {
+    "schema": "prometeo.art-direction.first-article/v1",
+    "medium": "video",
+    "taskId": "video-w003-20261122-04",
+    "briefSha": "0cc574528594731a3d1cf0c15a0d0e5a37e775b7",
+    "flowRef": "CONTRATO_COMPARTIDO@7911ce780c6eb8fc08ba3e5621e4479bbe2e9757 + DEEP_SPEC@7656a293b0182f81619bf0d27b90dffa771c2683",
+    "promise": {
+      "subject": "La frase TE ESPERO en tres sentidos opuestos",
+      "intent": "Un manifiesto editorial legible donde los movimientos del texto expresan promesa, incertidumbre y amenaza."
+    },
+    "benchmark": {
+      "url": "https://studiodumbar.com/work/demo-2025",
+      "description": "Página de caso e imágenes oficiales DEMO 2025 observadas; no se visionó el reel completo.",
+      "status": "OBSERVED"
+    },
+    "techniques": [
+      {
+        "family": "Canvas editorial temporal con webaudio y ffmpeg",
+        "viability": "Canvas Chrome rasterizado en 624 cuadros por orientación, export local comprobado.",
+        "license": "Código, texto y audio originales sin assets de terceros."
+      },
+      {
+        "family": "Compositor de subtítulos ASS con filtros FFmpeg",
+        "viability": "FFmpeg disponible, la retícula editorial puede programarse con ASS si Canvas falla.",
+        "license": "Textos y keyframes originales; fuente de sistema."
+      }
+    ],
+    "selectedTechnique": "Canvas editorial temporal con webaudio y ffmpeg",
+    "firstFrame": {
+      "openingDescription": "Fondo papel, NO SON SOLO PALABRAS, línea roja revela que el contexto es protagonista.",
+      "focalSubject": "La palabra SOLO y luego TE ESPERO en tres funciones semánticas.",
+      "minimalUI": "Solo film sin overlays; controles fuera del frame para reproducción web.",
+      "checks": [
+        {
+          "viewport": "390",
+          "criterion": "La frase TE ESPERO y puntuación se mantienen dentro del área segura vertical.",
+          "oracle": "Captura de frame real en 540×960 y vista reducida a 390 px."
+        },
+        {
+          "viewport": "1440",
+          "criterion": "El foco del texto y las etiquetas secundarias conservan jerarquía y aire.",
+          "oracle": "Captura de frame real 960×540 a ancho equivalente escritorio."
+        },
+        {
+          "viewport": "both",
+          "criterion": "No hay signo de interrogación superpuesto tras corrección del primer slice.",
+          "oracle": "Reinspección visual del cuadro 282 en horizontal/vertical."
+        }
+      ],
+      "observations": []
+    },
+    "firstArticle": {
+      "target": "Primer contraste semántico en retrato y posterior duda con ¿ fuera del titular",
+      "rejectWhen": "El signo invade TE ESPERO o el significado solo se transmite por audio.",
+      "switchTo": "Compositor de subtítulos ASS con filtros FFmpeg",
+      "oracle": "PNG extraídos de Canvas local, comparación del frame 282 en ambos formatos.",
+      "resourceProof": "Chromium, NumPy, ffmpeg y fuentes de sistema comprobados mediante comandos reales.",
+      "status": "OBSERVED_PASS",
+      "evidence": {
+        "url": "https://github.com/JuanManuelPM/Experimentos/blob/candidate/prometeo-video-w003-20261122-04/prometeo/works/video/w003/04/index.html",
+        "description": "Motor fuente que permite reproducir el primer artículo; frames localmente observados, todavía no publicados como evidencia remota."
+      },
+      "localObserved": "Sí: 2×624 frames exportados; solapamiento de interrogación detectado, corregido y rerenderizado. Capturas locales verificadas."
+    },
+    "humanApproved": false
+  }
+}
