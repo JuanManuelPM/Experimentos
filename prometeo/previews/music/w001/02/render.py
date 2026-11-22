@@ -31,7 +31,7 @@ def envelope(n,attack,release,decay=0):
     r=np.minimum(1,(n-1-np.arange(n,dtype=np.float32))/(max(release,.0001)*SR))
     return a*r*np.exp(-decay*t)
 def synth(kind,note,velocity,dur):
-    n=round(SR*min(4.4,max(.09,dur+.20)))
+    n=round(SR*min(4.4,max(.09,dur+.60)))
     ti=np.arange(n,dtype=np.float32)/SR
     amp=velocity/127
     if kind=='techkick':
