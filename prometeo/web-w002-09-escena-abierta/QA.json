@@ -1,0 +1,66 @@
+{
+  "schema": "prometeo.work.qa/v1",
+  "room": "web",
+  "batchId": "web-w002-20261122",
+  "taskNumber": 9,
+  "taskId": "web-w002-20261122-09",
+  "title": "ESCENA ABIERTA",
+  "sourceBranch": "candidate/prometeo-web-w002-09-20261122",
+  "publishedBranch": "gh-pages",
+  "publishCommit": "b8617d52d901b2184fb412176ba67af99af3515c",
+  "siteUrl": "https://juanmanuelpm.github.io/Experimentos/prometeo/web-w002-09-escena-abierta/",
+  "sourceUrl": "https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/web-w002-09-escena-abierta/index.html",
+  "qualityBarVersion": "QBAR-1",
+  "deepSpecVersion": "DEEP-SPEC-1",
+  "deepSpecGate": "READY_FOR_FIRST_SLICE",
+  "humanApproved": false,
+  "claims": [
+    {
+      "id": "github-readback",
+      "status": "OBSERVED",
+      "evidence": "7/7 published files match source blob SHA"
+    },
+    {
+      "id": "syntax-app",
+      "status": "OBSERVED",
+      "evidence": "V8 Function compile after stripping ESM imports, no exception"
+    },
+    {
+      "id": "logic",
+      "status": "OBSERVED",
+      "evidence": "9/9 direct assertions on actual GitHub data/core files passed"
+    },
+    {
+      "id": "deep-spec",
+      "status": "OBSERVED",
+      "evidence": "Original deep-spec-v1.mjs inspector applied to source JSON, READY_FOR_FIRST_SLICE"
+    },
+    {
+      "id": "node-tests-execution",
+      "status": "NOT_RUN",
+      "evidence": "tests.mjs supplied but not executed by Node"
+    },
+    {
+      "id": "browser-qa",
+      "status": "NOT_RUN",
+      "evidence": "External browser interaction tool unavailable; 320,768,1440 and touch/keyboard not observed"
+    },
+    {
+      "id": "visual-media",
+      "status": "NOT_RUN",
+      "evidence": "No screenshots or remote image load observations"
+    },
+    {
+      "id": "pages-availability",
+      "status": "NOT_VERIFIED",
+      "evidence": "GitHub Pages workflow pending at publish; no successful HTTP response observed"
+    }
+  ],
+  "publishedReadback": {
+    "count": 7,
+    "match": 7
+  },
+  "scope": "Artefacto original de demostración, eventos y festival ficticios, fotos Unsplash acreditadas, no tickets reales",
+  "reusableComponent": "festival-core.mjs",
+  "acceptance": "TECHNICAL_SOURCE_AND_LOGIC_VERIFIED_ONLY"
+}
