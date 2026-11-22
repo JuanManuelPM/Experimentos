@@ -1,0 +1,144 @@
+{
+  "schema": "prometeo.3d.work-receipt/v1",
+  "room": "3d",
+  "batchId": "3d-w6-20261122",
+  "taskNumber": 2,
+  "taskId": "3d-w6-20261122-02",
+  "title": "Casa entre patios",
+  "date": "2026-11-22",
+  "status": "IMPLEMENTED_SOURCE_PUBLISHED_GPU_NOT_RUN",
+  "flow": {
+    "version": "2.3.0",
+    "sha256": "53bc9e2e4b37c99e92d3494af8dfa4461cd4644b15f980e32497a8428b067b3f",
+    "qualityBar": "QBAR-1",
+    "deepSpec": "DEEP-SPEC-1"
+  },
+  "source": {
+    "briefBlob": "942c3ba8b851137886e959d2790771556e2d9f5d",
+    "repository": "JuanManuelPM/Experimentos",
+    "candidateBranch": "candidate/prometeo-3d-w6-02-20261122",
+    "publishedBranch": "gh-pages",
+    "artifactPath": "prometeo/previews/3d/w6/02/"
+  },
+  "links": {
+    "viewer": "https://juanmanuelpm.github.io/Experimentos/prometeo/previews/3d/w6/02/",
+    "source": "https://github.com/JuanManuelPM/Experimentos/tree/gh-pages/prometeo/previews/3d/w6/02/",
+    "preproduction": "https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/previews/3d/w6/02/PREPRODUCTION.deep-spec-v1.json"
+  },
+  "features": [
+    "Tres crujías en planta 15,6 × 5,4 m con huecos de circulación entre tabiques",
+    "Dos patios de vegetación, mobiliario original de cuatro familias, cubiertas y grandes paños de vidrio",
+    "PBR Three.js metalness/roughness; texturas procedurales originales de roble, cal y piedra",
+    "Paseo interior táctil/teclado con colisión y composición cinematográfica exterior",
+    "ArchitecturalOcclusion reutilizable con raycast y atenuación independiente de muros y cubiertas",
+    "Escenarios de luz natural/artificial; seis renders reproducibles en plancha PNG local"
+  ],
+  "checks": [
+    {
+      "id": "readback",
+      "oracle": "GitHub Contents API comparó blob SHA candidato contra gh-pages para cuatro archivos",
+      "status": "PASS",
+      "detail": "4/4 SHA idénticos"
+    },
+    {
+      "id": "syntax",
+      "oracle": "V8 Function compiló el cuerpo de los dos ES Modules sin declaraciones import/export",
+      "status": "PASS",
+      "detail": "2/2 análisis sintáctico; no ejecutó Three.js"
+    },
+    {
+      "id": "collision",
+      "oracle": "Ejecución aislada de canMoveWithinPlan con cinco invariantes",
+      "status": "PASS",
+      "detail": "vano libre; muro bloqueado; borde; mueble; desplazamiento libre: 5/5"
+    },
+    {
+      "id": "deepSpec",
+      "oracle": "Validador canónico DEEP-SPEC-1 ejecutado sobre JSON",
+      "status": "SPIKE_REQUIRED",
+      "detail": "Estructura válida sin errores, pero riesgo alto de oclusión visual no probado en GPU"
+    },
+    {
+      "id": "pagesHttp",
+      "oracle": "Abrir URL de Pages desde navegación pública",
+      "status": "NOT_RUN",
+      "detail": "La herramienta web no pudo acceder a la página nueva en el momento del intento, sin afirmar HTTP 200"
+    },
+    {
+      "id": "webgl",
+      "oracle": "Captura independiente de framebuffer WebGL con tres ambientes",
+      "status": "NOT_RUN",
+      "detail": "Sin navegador conectado a CDN/escena ni render observado"
+    },
+    {
+      "id": "mobile",
+      "oracle": "Paseo táctil en Android real",
+      "status": "NOT_RUN",
+      "detail": "Interacciones implementadas, no comprobadas en teléfono"
+    },
+    {
+      "id": "lightCompare",
+      "oracle": "Descarga y examen de matriz PNG 3×2",
+      "status": "NOT_RUN",
+      "detail": "Exportación implementada en código, no inspección perceptual de imagen"
+    }
+  ],
+  "benchmark": [
+    {
+      "reference": "Courted House / Breakspear Architects",
+      "url": "https://architectureau.com/articles/courted-house/",
+      "observed": "Documentación de patios como eje de la vida doméstica y aperturas visuales interiores.",
+      "decision": "Eje de circulación y vistas enfrentadas hacia dos patios.",
+      "gap": "Sin comprobación arquitectónica perceptual de materiales y proporciones frente al referente."
+    },
+    {
+      "reference": "HM House / Tatsuro Sasaki Architects",
+      "url": "https://plainmagazine.com/tatsuro-sasaki-architects-hm-house-japan/",
+      "observed": "Materialidad sobria y estancias conectadas visualmente con patio.",
+      "decision": "Piedra, roble, cal, abertura y continuidad espacial.",
+      "gap": "Materiales procedurales de menor detalle que assets escaneados profesionales."
+    },
+    {
+      "reference": "Three.js PBR material standard",
+      "url": "https://threejs.org/docs/pages/MeshStandardMaterial.html",
+      "observed": "Modelo físico metalness/roughness y uso de mapas bump y color.",
+      "decision": "PBR en categorías de material y configuración diurna/nocturna.",
+      "gap": "Falta validar respuesta visual, rendimiento y exposición en una pantalla real."
+    }
+  ],
+  "reusableComponent": {
+    "file": "occlusion-camera.mjs",
+    "exports": [
+      "ArchitecturalOcclusion",
+      "PLAN",
+      "crossDivision",
+      "canMoveWithinPlan",
+      "slidePlayer"
+    ],
+    "usage": "Importar junto con Three.js, registrar mallas de cerramiento, llamar update(camera.position, focus, dt) por cuadro."
+  },
+  "lessons": [
+    {
+      "stage": "preproduction",
+      "cause": "Planear una cámara sin mapa explícito de muros y pasos provoca atraviesos o puntos ciegos.",
+      "preventive_gate": "Trazar puertas y límites en unidades métricas antes de instalar el recorrido.",
+      "test": "Cruce de vano versus cruce de pared con radio humano.",
+      "owner": "estudio-3d",
+      "counterexample": "Teleportar entre tres cuartos sin continuidad geométrica."
+    },
+    {
+      "stage": "visual-qa",
+      "cause": "Compilar código no permite certificar calidad PBR o transparencia visible.",
+      "preventive_gate": "No convertir PASS lógico en aprobación artística; exigir captura GPU.",
+      "test": "Observar matriz de seis vistas y recorrido sin cubierta delante.",
+      "owner": "estudio-3d",
+      "counterexample": "Declarar escena validada solo por existencia de index.html."
+    }
+  ],
+  "approval": {
+    "artist": "NOT_RUN",
+    "functionalGpu": "NOT_RUN",
+    "human": "NOT_REQUESTED"
+  },
+  "notes": "Se entregan fuentes y publicación aislada. El enlace Pages está construido a partir de la ruta publicada; su disponibilidad HTTP real no pudo confirmarse."
+}
