@@ -1,0 +1,208 @@
+{
+  "schema": "prometeo.flow.visited-trace/v1",
+  "taskId": "music-w003-20261122-05",
+  "batchId": "music-w003-20261122",
+  "room": "music",
+  "flow": {
+    "version": "2.0.0",
+    "sha256Canonical": "6826ce13f4bd1e0d81b8a89bd7e6728668b85c44c68185b79426b00a36b8f05f",
+    "gitBlobSHA": "1423f13e08b743f418c42052613a6808b214d622",
+    "status": "FROZEN_CANDIDATE"
+  },
+  "captureTimeNote": "Event timestamps are this ledger's recording time, NOT alleged exact stage execution times. No graph node IDs asserted because music FLOW v2 supplies stages, not node/edge topology.",
+  "humanApproved": false,
+  "events": [
+    {
+      "stage": "M00",
+      "status": "EXECUTED",
+      "timestamp": "2026-11-22T18:56:03.247Z",
+      "decision": "Read LAUNCH and frozen music flow",
+      "alternativesConsidered": [
+        "Existing W002 work untouched"
+      ],
+      "outputRef": "work branch and SHA lock",
+      "evidenceRefs": [
+        "https://github.com/JuanManuelPM/Experimentos/blob/candidate/prometeo-music-w003-20261122-05/prometeo/works/20261122/music-w003-05/PREPRODUCTION.deep-spec-v1.json"
+      ],
+      "testStatus": "NOT_RUN",
+      "evidenceTier": "SOURCE_READ",
+      "verifiedScope": "As described, no automatic artistic approval"
+    },
+    {
+      "stage": "M01",
+      "status": "EXECUTED",
+      "timestamp": "2026-11-22T18:56:03.247Z",
+      "decision": "Keep original ambient brief number 05",
+      "alternativesConsidered": [
+        "No replacement brief"
+      ],
+      "outputRef": "score.json original four movement plan",
+      "evidenceRefs": [
+        "https://github.com/JuanManuelPM/Experimentos/blob/candidate/prometeo-music-w003-20261122-05/prometeo/works/20261122/music-w003-05/score.json"
+      ],
+      "testStatus": "NOT_RUN",
+      "evidenceTier": "SOURCE_READ",
+      "verifiedScope": "As described, no automatic artistic approval"
+    },
+    {
+      "stage": "M02",
+      "status": "EXECUTED",
+      "timestamp": "2026-11-22T18:56:03.247Z",
+      "decision": "Read interviews by Hopkins, Cooper and Eno",
+      "alternativesConsidered": [
+        "Do not copy or sample reference recordings"
+      ],
+      "outputRef": "PREPRODUCTION references, benchmark listening NOT_RUN",
+      "evidenceRefs": [
+        "https://github.com/JuanManuelPM/Experimentos/blob/candidate/prometeo-music-w003-20261122-05/prometeo/works/20261122/music-w003-05/render.py"
+      ],
+      "testStatus": "NOT_RUN",
+      "evidenceTier": "SOURCE_READ",
+      "verifiedScope": "As described, no automatic artistic approval"
+    },
+    {
+      "stage": "M03",
+      "status": "EXECUTED",
+      "timestamp": "2026-11-22T18:56:03.247Z",
+      "decision": "Select offline additive multi-stem synthesis",
+      "alternativesConsidered": [
+        "Granular resynthesis of own tones considered"
+      ],
+      "outputRef": "render.py and motif_transform.py",
+      "evidenceRefs": [
+        "https://github.com/JuanManuelPM/Experimentos/blob/candidate/prometeo-music-w003-20261122-05/prometeo/works/20261122/music-w003-05/render.py"
+      ],
+      "testStatus": "OBSERVED",
+      "evidenceTier": "CODE_TEST",
+      "verifiedScope": "As described, no automatic artistic approval"
+    },
+    {
+      "stage": "M04",
+      "status": "EXECUTED",
+      "timestamp": "2026-11-22T18:56:03.247Z",
+      "decision": "Map 4 x 48 seconds and dynamics",
+      "alternativesConsidered": [
+        "One infinite pad rejected"
+      ],
+      "outputRef": "score.json four movements and eight chord regions",
+      "evidenceRefs": [
+        "https://github.com/JuanManuelPM/Experimentos/blob/candidate/prometeo-music-w003-20261122-05/prometeo/works/20261122/music-w003-05/score.json"
+      ],
+      "testStatus": "OBSERVED",
+      "evidenceTier": "CODE_TEST",
+      "verifiedScope": "As described, no automatic artistic approval"
+    },
+    {
+      "stage": "M05",
+      "status": "EXECUTED",
+      "timestamp": "2026-11-22T18:56:03.247Z",
+      "decision": "Compose motif and transform by inversion/retrograde/transpose",
+      "alternativesConsidered": [
+        "No percussion, no static literal recurrence"
+      ],
+      "outputRef": "score.json motif and motif_transform.py",
+      "evidenceRefs": [
+        "https://github.com/JuanManuelPM/Experimentos/blob/candidate/prometeo-music-w003-20261122-05/prometeo/works/20261122/music-w003-05/score.json"
+      ],
+      "testStatus": "OBSERVED",
+      "evidenceTier": "CODE_TEST",
+      "verifiedScope": "As described, no automatic artistic approval"
+    },
+    {
+      "stage": "M06",
+      "status": "EXECUTED",
+      "timestamp": "2026-11-22T18:56:03.247Z",
+      "decision": "Add original harmonic and air textures",
+      "alternativesConsidered": [
+        "Field recordings with unclear rights rejected"
+      ],
+      "outputRef": "render.py additive/grain synthesis",
+      "evidenceRefs": [
+        "https://github.com/JuanManuelPM/Experimentos/blob/candidate/prometeo-music-w003-20261122-05/prometeo/works/20261122/music-w003-05/render.py"
+      ],
+      "testStatus": "OBSERVED",
+      "evidenceTier": "CODE_TEST",
+      "verifiedScope": "As described, no automatic artistic approval"
+    },
+    {
+      "stage": "M07",
+      "status": "EXECUTED",
+      "timestamp": "2026-11-22T18:56:03.247Z",
+      "decision": "Render 24-second first article and check decoded audio",
+      "alternativesConsidered": [
+        "No false audio-only-on-paper"
+      ],
+      "outputRef": "first_article/MASTER.flac local: SHA256 56e2925b4821e6366c807a239cea44e2086ec2968fa651fd2ca493a63569bf8a",
+      "evidenceRefs": [
+        "https://github.com/JuanManuelPM/Experimentos/blob/candidate/prometeo-music-w003-20261122-05/prometeo/works/20261122/music-w003-05/render.py"
+      ],
+      "testStatus": "OBSERVED",
+      "evidenceTier": "AUDIO_RENDER",
+      "verifiedScope": "Technical local render/decode only; no independent listening"
+    },
+    {
+      "stage": "M08",
+      "status": "EXECUTED",
+      "timestamp": "2026-11-22T18:56:03.247Z",
+      "decision": "Expand four movement form with different motif transforms",
+      "alternativesConsidered": [
+        "Repeating 24s first article endlessly rejected"
+      ],
+      "outputRef": "render.py 192s arrangement",
+      "evidenceRefs": [
+        "https://github.com/JuanManuelPM/Experimentos/blob/candidate/prometeo-music-w003-20261122-05/prometeo/works/20261122/music-w003-05/render.py"
+      ],
+      "testStatus": "OBSERVED",
+      "evidenceTier": "AUDIO_RENDER",
+      "verifiedScope": "Technical local render/decode only; no independent listening"
+    },
+    {
+      "stage": "M09",
+      "status": "EXECUTED",
+      "timestamp": "2026-11-22T18:56:03.247Z",
+      "decision": "Render master and separate stems, decode and compare",
+      "alternativesConsidered": [
+        "No stem export from different sessions"
+      ],
+      "outputRef": "master/MASTER.flac local SHA256 cc908936c22a7c6c3c789a47cfee788d6a97b99726ec1814dfde92772bf4b60b",
+      "evidenceRefs": [
+        "https://github.com/JuanManuelPM/Experimentos/blob/candidate/prometeo-music-w003-20261122-05/prometeo/works/20261122/music-w003-05/QA.md"
+      ],
+      "testStatus": "OBSERVED",
+      "evidenceTier": "AUDIO_RENDER",
+      "verifiedScope": "Technical local render/decode only; no independent listening"
+    },
+    {
+      "stage": "M10",
+      "status": "EXECUTED",
+      "timestamp": "2026-11-22T18:56:03.247Z",
+      "decision": "Correct excessively quiet preview by raising level with headroom; rerender and run regression suite",
+      "alternativesConsidered": [
+        "Louder is not automatically artistically better"
+      ],
+      "outputRef": "QA.md and qa_tests.py, peak 0.58 and stem null <1e-5",
+      "evidenceRefs": [
+        "https://github.com/JuanManuelPM/Experimentos/blob/candidate/prometeo-music-w003-20261122-05/prometeo/works/20261122/music-w003-05/qa_tests.py"
+      ],
+      "testStatus": "OBSERVED",
+      "evidenceTier": "CODE_TEST",
+      "verifiedScope": "As described, no automatic artistic approval"
+    },
+    {
+      "stage": "M11",
+      "status": "EXECUTED",
+      "timestamp": "2026-11-22T18:56:03.247Z",
+      "decision": "Commit project and reproducible CI to exclusive branch",
+      "alternativesConsidered": [
+        "Do not overwrite gh-pages or other worker"
+      ],
+      "outputRef": "GitHub candidate/prometeo-music-w003-20261122-05; Pages/audio remote verification pending",
+      "evidenceRefs": [
+        "https://github.com/JuanManuelPM/Experimentos/blob/candidate/prometeo-music-w003-20261122-05/prometeo/works/20261122/music-w003-05/render.py"
+      ],
+      "testStatus": "NOT_RUN",
+      "evidenceTier": "SOURCE_READ",
+      "verifiedScope": "As described, no automatic artistic approval"
+    }
+  ]
+}
