@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PROMETEO | NPC civil · revisión facial W5</title>
+<meta name="description" content="Comparador 3D del NPC civil: original frente a revisión geométrica, dos variantes y animación heredada.">
+<style>
+:root{color-scheme:dark;background:#12181a;color:#f2eee8;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+*{box-sizing:border-box}body{margin:0;min-height:100svh}button,a{font:inherit}button{color:inherit;cursor:pointer}button:focus-visible,a:focus-visible{outline:3px solid #b8d5f7;outline-offset:3px}
+.page{display:flex;flex-direction:column;min-height:100svh}.top{display:flex;justify-content:space-between;align-items:center;padding:15px 21px;gap:12px;border-bottom:1px solid #343a38}
+.top h1{font-size:clamp(17px,3vw,23px);letter-spacing:-.045em;margin:0;font-weight:700}.tag{font-size:11px;letter-spacing:.12em;color:#a6b1ad;font-weight:700}.stage{height:min(70svh,720px);min-height:340px;position:relative;background:#202b2b;overflow:hidden}
+#view{display:block;width:100%;height:100%;touch-action:none}.half-label{position:absolute;top:17px;z-index:2;font-size:11px;letter-spacing:.11em;text-transform:uppercase;color:#e9e2d6;background:#111b1bc0;border:1px solid #465555;padding:8px 11px;pointer-events:none}
+.half-label.left{left:17px}.half-label.right{left:calc(50% + 17px)}.split{position:absolute;top:0;bottom:0;left:50%;width:1px;background:#8aaca9a8;pointer-events:none}
+.fallback{display:none;position:absolute;inset:0;background:#192324;align-items:center;justify-content:center;flex-direction:column;gap:12px;text-align:center;padding:25px;z-index:3}
+.fallback img{height:65%;max-width:90%;object-fit:contain}.fallback[data-show=true]{display:flex}
+.toolbar{padding:14px 18px 18px;display:flex;flex-wrap:wrap;gap:12px 20px;align-items:flex-end;background:#12181a}
+.group{display:flex;flex-direction:column;gap:7px}.group>span{font-size:10px;text-transform:uppercase;color:#97a8a6;letter-spacing:.13em}
+.controls{display:flex;flex-wrap:wrap;gap:5px}.controls button,.controls a{min-height:42px;border:1px solid #4a5856;background:#202b2b;color:#f0ede7;text-decoration:none;border-radius:4px;padding:9px 13px;font-size:12px;display:inline-flex;align-items:center;justify-content:center}
+.controls button[aria-pressed=true]{border-color:#d9bb90;background:#d7bc94;color:#162124;font-weight:700}.controls button:disabled{opacity:.45;cursor:default}
+.bottom{border-top:1px solid #343a38;padding:11px 20px 15px;display:flex;gap:10px;justify-content:space-between;align-items:center;flex-wrap:wrap;color:#a6b4b0;font-size:12px}
+#status[data-error=true]{color:#ffc7b6}#metrics{font-variant-numeric:tabular-nums;color:#dccbb0}
+@media(max-width:640px){.top{padding:12px}.top h1{font-size:18px}.tag{font-size:9px}.stage{height:54svh;min-height:310px}.half-label{top:10px;font-size:9px;padding:6px}.half-label.left{left:8px}.half-label.right{left:calc(50% + 8px)}.toolbar{padding:12px;gap:11px 14px}.controls button,.controls a{min-height:42px;padding:8px 11px;font-size:12px}.bottom{padding:11px 12px}}
+</style>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.181.2/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.181.2/examples/jsm/"}}</script>
+</head>
+<body>
+<main class="page">
+<header class="top"><h1>NPC CIVIL <span style="font-weight:400;color:#b0bcb6">/ revisión 01</span></h1><div class="tag">PROMETEO · ESTUDIO 3D · W5</div></header>
+<section class="stage" id="stage" aria-label="Comparación tridimensional simultánea de original y revisión">
+<canvas id="view" aria-label="Dos modelos tridimensionales, misma cámara y movimiento"></canvas>
+<div class="half-label left">01 / ORIGINAL</div><div class="half-label right">02 / REVISIÓN</div><div class="split"></div>
+<div id="fallback" class="fallback"><strong>El modelo no pudo cargarse en este navegador</strong><img src="../../../../3d-npc-civilian-v1/evidence/face_azul.jpg" alt="Captura real de la cara original"><span id="error"></span></div>
+</section>
+<nav class="toolbar" aria-label="Controles de inspección">
+<div class="group"><span>Vestuario</span><div class="controls"><button data-skin="azul" aria-pressed="true">Azul</button><button data-skin="granate" aria-pressed="false">Granate</button></div></div>
+<div class="group"><span>Cámara sincronizada</span><div class="controls"><button data-view="face" aria-pressed="true">Rostro</button><button data-view="front" aria-pressed="false">Frente</button><button data-view="side" aria-pressed="false">Perfil</button><button data-view="three" aria-pressed="false">¾</button><button data-view="full" aria-pressed="false">Cuerpo</button></div></div>
+<div class="group"><span>Movimiento</span><div class="controls"><button data-motion="idle" aria-pressed="true">Quieto</button><button data-motion="walk" aria-pressed="false">Caminar</button></div></div>
+<div class="group"><span>Archivo</span><div class="controls"><button id="capture">Captura</button><button id="export">GLB revisión</button><a id="original" href="../../../../3d-npc-civilian-v1/dist/civil_azul.glb" download="civil_azul.glb">GLB original</a></div></div>
+</nav>
+<footer class="bottom"><span id="status" role="status" aria-live="polite">Cargando dos modelos de origen y rig...</span><span id="metrics">CC0 · Quaternius · candidato no aprobado</span></footer>
+</main>
+<script type="module">
+import * as THREE from 'three';
+import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
+import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
+import {clone as cloneSkeleton} from 'three/addons/utils/SkeletonUtils.js';
+import {GLTFExporter} from 'three/addons/exporters/GLTFExporter.js';
+
+const $=s=>document.querySelector(s);
+const source={
+ azul:'../../../../3d-npc-civilian-v1/dist/civil_azul.glb',
+ granate:'../../../../3d-npc-civilian-v1/dist/civil_granate.glb'
+};
+const status=$('#status'),metrics=$('#metrics'),stage=$('#stage'),canvas=$('#view');
+const buttons=(name,value)=>document.querySelectorAll('[data-'+name+']').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset[name]===value)));
+let selected='azul',motion='idle',view='face',ready=false,sculpted=0,animationsAvailable={};
+const pairs={};
+const smooth=t=>{t=Math.max(0,Math.min(1,t));return t*t*(3-2*t)};
+const band=(x,a,b,c,d)=>smooth((x-a)/(b-a))*(1-smooth((x-c)/(d-c)));
+function ancestors(o){const names=[];for(let p=o;p;p=p.parent)names.push(p.name||'');return names.join('/');}
+function sculpt(root){
+ const edits={face:0,clothes:0,headMeshes:0,bodyMeshes:0};
+ root.traverse(o=>{
+  if(!o.isMesh||!o.geometry?.attributes?.position)return;
+  const names=ancestors(o);
+  const mats=Array.isArray(o.material)?o.material:[o.material];
+  const skin=names.includes('Casual_Head')&&mats.some(m=>m?.name==='Skin');
+  const garment=names.includes('Casual_Body')&&mats.some(m=>/Purple|LightBlue|Blue|Hood|Shirt/i.test(m?.name||''));
+  if(!skin&&!garment)return;
+  o.geometry=o.geometry.clone();
+  const p=o.geometry.attributes.position;
+  let changed=0;
+  for(let i=0;i<p.count;i++){
+   const x=p.getX(i),y=p.getY(i),z=p.getZ(i);
+   let nx=x,nz=z;
+   if(skin&&z>0.035&&Math.abs(x)<0.13){
+    // Redibujar la silueta de mandíbula y pómulos en la malla CC0, no sumar una cara de primitivas.
+    const chin=band(y,1.525,1.553,1.625,1.675);
+    nx=x*(1-.125*chin);
+    const cheek=band(y,1.635,1.660,1.700,1.733)*band(Math.abs(x),.028,.045,.074,.100);
+    const bridge=band(y,1.665,1.682,1.730,1.747)*(1-smooth((Math.abs(x)-.010)/.020));
+    const chinPlane=band(y,1.552,1.565,1.598,1.617)*(1-smooth((Math.abs(x)-.019)/.034));
+    nz=z+cheek*.007+bridge*.009+chinPlane*.006;
+   }
+   if(garment){
+    // Entallar moderadamente la cintura, marcar bolsillo y volumen del puño sobre la ropa real.
+    const waist=band(y,.88,.96,1.12,1.25)*(1-smooth((Math.abs(x)-.17)/.18));
+    nx=x*(1-.062*waist);
+    const pocket=band(y,.935,.993,1.155,1.220)*(1-smooth((Math.abs(x)-.105)/.13))*smooth((z-.015)/.12);
+    nz=z+pocket*.013;
+    const cuff=band(y,.695,.755,.875,.930)*smooth((Math.abs(x)-.19)/.20);
+    nx+=Math.sign(x)*.006*cuff;
+   }
+   if(Math.abs(nx-x)+Math.abs(nz-z)>.00015){p.setXYZ(i,nx,y,nz);changed++;}
+  }
+  if(changed){
+   p.needsUpdate=true;o.geometry.computeVertexNormals();
+   if(skin){edits.face+=changed;edits.headMeshes++}
+   if(garment){edits.clothes+=changed;edits.bodyMeshes++}
+  }
+ });
+ return edits;
+}
+function makeScene(){
+ const s=new THREE.Scene();s.background=new THREE.Color('#202b2b');
+ s.add(new THREE.HemisphereLight(0xcbd9e5,0x50463c,2.35));
+ const key=new THREE.DirectionalLight(0xffedcf,3.2);key.position.set(-3,7,5);s.add(key);
+ const fill=new THREE.DirectionalLight(0x90c8df,1.6);fill.position.set(4,3,-4);s.add(fill);
+ const floor=new THREE.Mesh(new THREE.CircleGeometry(1.15,48),new THREE.MeshStandardMaterial({color:0x304044,roughness:1}));
+ floor.rotation.x=-Math.PI/2;floor.position.y=-.028;s.add(floor);
+ return s;
+}
+let renderer,orbit,scenes,camera,secondCamera,movieTime=0;
+try{
+ renderer=new THREE.WebGLRenderer({canvas,antialias:true,preserveDrawingBuffer:true});
+ renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;
+ renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
+ scenes=[makeScene(),makeScene()];
+ camera=new THREE.PerspectiveCamera(34,1,.005,100);
+ secondCamera=camera.clone();
+ orbit=new OrbitControls(camera,canvas);orbit.enableDamping=true;orbit.enablePan=false;orbit.minDistance=.22;orbit.maxDistance=8;orbit.target.set(0,1,0);
+ const loader=new GLTFLoader();
+ const [blue,red]=await Promise.all([loader.loadAsync(source.azul),loader.loadAsync(source.granate)]);
+ for(const [skin,gltf] of [['azul',blue],['granate',red]]){
+  const original=cloneSkeleton(gltf.scene),revised=cloneSkeleton(gltf.scene);
+  const edits=sculpt(revised);
+  const box=new THREE.Box3().setFromObject(original),size=box.getSize(new THREE.Vector3());
+  if(!Number.isFinite(size.y)||size.y<=0||edits.face===0||edits.clothes===0){
+   throw new Error('La malla no coincide con la versión de origen. No se aplicaron cambios inseguros.');
+  }
+  const scale=1.76/size.y;
+  for(const avatar of [original,revised]){avatar.scale.setScalar(scale);avatar.position.y=-box.min.y*scale;}
+  pairs[skin]={original,revised,edits,clips:gltf.animations,mixers:[new THREE.AnimationMixer(original),new THREE.AnimationMixer(revised)]};
+  animationsAvailable[skin]=gltf.animations.map(c=>c.name);
+ }
+ function displaySkin(next){
+  if(pairs[selected]){scenes[0].remove(pairs[selected].original);scenes[1].remove(pairs[selected].revised);}
+  selected=next;
+  const p=pairs[selected];scenes[0].add(p.original);scenes[1].add(p.revised);
+  const a=$('#original');a.href=source[next];a.download='civil_'+next+'.glb';
+  buttons('skin',next);sculpted=p.edits.face+p.edits.clothes;
+  metrics.textContent=p.edits.face+' vértices cara · '+p.edits.clothes+' ropa · '+p.clips.length+' clips heredados';
+  setMotion(motion);
+ }
+ function setMotion(next){
+  motion=next;
+  buttons('motion',next);
+  for(const p of Object.values(pairs)){
+   for(const m of p.mixers)m.stopAllAction();
+   const re=next==='walk'?/walk|walking|run/i:/idle|standing|breath/i;
+   const clip=p.clips.find(c=>re.test(c.name));
+   if(clip)for(const m of p.mixers)m.clipAction(clip).reset().play();
+  }
+  const found=pairs[selected].clips.some(c=>(next==='walk'?/walk|walking|run/i:/idle|standing|breath/i).test(c.name));
+  status.textContent=found?'Comparación sincronizada · '+(next==='walk'?'caminata del rig original':'reposo del rig original'):'Modelo cargado; clip '+next+' no identificado. Pose estática.';
+ }
+ function setView(next){
+  view=next;buttons('view',next);orbit.autoRotate=false;
+  const poses={
+   face:[[.27,1.59,.77],[0,1.59,0]],
+   front:[[0,.97,3.30],[0,.91,0]],
+   side:[[3.25,.99,0],[0,.91,0]],
+   three:[[1.60,1.04,2.68],[0,.94,0]],
+   full:[[.50,1.10,3.55],[0,.92,0]]
+  };
+  const p=poses[next];camera.position.set(...p[0]);orbit.target.set(...p[1]);orbit.update();
+ }
+ displaySkin('azul');setView('face');ready=true;
+ const resize=()=>{
+  const w=Math.max(1,stage.clientWidth),h=Math.max(1,stage.clientHeight);
+  renderer.setSize(w,h,false);
+  camera.aspect=(Math.floor(w/2))/h;camera.updateProjectionMatrix();
+ };
+ const ro=new ResizeObserver(resize);ro.observe(stage);resize();
+ let last=performance.now();
+ renderer.setAnimationLoop(t=>{
+  const dt=Math.min((t-last)/1000,.05);last=t;movieTime+=dt;
+  if(ready){
+   const p=pairs[selected];p.mixers.forEach(m=>m.update(dt));
+   const excursion=motion==='walk'?.045*Math.sin(movieTime*2.8):0;
+   p.original.position.x=excursion;p.revised.position.x=excursion;
+  }
+  orbit.update();secondCamera.copy(camera);
+  const w=stage.clientWidth,h=stage.clientHeight,left=Math.floor(w/2);
+  renderer.setScissorTest(true);
+  renderer.setViewport(0,0,left,h);renderer.setScissor(0,0,left,h);renderer.render(scenes[0],camera);
+  secondCamera.aspect=(w-left)/h;secondCamera.updateProjectionMatrix();
+  renderer.setViewport(left,0,w-left,h);renderer.setScissor(left,0,w-left,h);renderer.render(scenes[1],secondCamera);
+  renderer.setScissorTest(false);
+ });
+ document.querySelectorAll('[data-skin]').forEach(b=>b.addEventListener('click',()=>displaySkin(b.dataset.skin)));
+ document.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',()=>setView(b.dataset.view)));
+ document.querySelectorAll('[data-motion]').forEach(b=>b.addEventListener('click',()=>setMotion(b.dataset.motion)));
+ $('#capture').addEventListener('click',()=>{
+  const a=document.createElement('a');a.href=renderer.domElement.toDataURL('image/png');
+  a.download='npc-w5-'+selected+'-'+view+'-'+motion+'.png';a.click();
+ });
+ $('#export').addEventListener('click',()=>{
+  const p=pairs[selected];
+  status.textContent='Preparando GLB de revisión...';
+  new GLTFExporter().parse(p.revised,result=>{
+   const blob=new Blob([result],{type:'model/gltf-binary'});
+   const href=URL.createObjectURL(blob),a=document.createElement('a');
+   a.href=href;a.download='civil_'+selected+'_revision_w5.glb';a.click();
+   setTimeout(()=>URL.revokeObjectURL(href),1000);
+   status.textContent='GLB generado en este navegador. Falta validar importación externa.';
+  },err=>{status.textContent='No se pudo exportar el GLB: '+err.message;status.dataset.error='true';},
+  {binary:true,animations:p.clips,trs:true,onlyVisible:true});
+ });
+ window.PROMETEO_QA={
+  schema:'prometeo.npc-face-w5.qa/v1',source,variantsLoaded:2,
+  get skin(){return selected},get view(){return view},get motion(){return motion},
+  get sculpt(){return pairs[selected].edits},
+  get clips(){return animationsAvailable[selected]},
+  get frame(){return renderer.domElement.toDataURL('image/png')},
+  webglReady:true,artApproved:false
+ };
+}catch(err){
+ console.error('[npc-w5]',err);
+ status.textContent='Error de modelo o WebGL: '+(err?.message||String(err));status.dataset.error='true';
+ $('#fallback').dataset.show='true';$('#error').textContent=String(err?.message||err);
+ window.PROMETEO_QA={webglReady:false,error:String(err)};
+}
+</script>
+</body>
+</html>
