@@ -1,0 +1,161 @@
+{
+  "schema": "prometeo.flow.visited-trace/v1",
+  "taskId": "web-w003-20261122-03",
+  "batchId": "web-w003-20261122",
+  "taskNumber": 3,
+  "flow": {
+    "version": "2.0.0",
+    "sha256Canonical": "NOT_AVAILABLE_IN_FLOW",
+    "gitBlobSha": "1a0e709beec9a84986fc33c5ce4ab0a162dccaf2",
+    "status": "CANDIDATE_NOT_PROMOTED",
+    "reference": "JuanManuelPM/pruebas@candidate/prometeo-web-art-gate-w002-20261122:WEB_FACTORY_V2/FLOW.json"
+  },
+  "validationStatus": "NOT_RUN_FLOW_LACKS_SHA256_CANONICAL_AND_NODE_TOPOLOGY",
+  "humanApproved": false,
+  "timestampMeaning": "Marca temporal del artefacto o de registro de evento; no reconstrucción exacta del tiempo de razonamiento.",
+  "events": [
+    {
+      "stage": "S00",
+      "status": "EXECUTED",
+      "timestamp": "2026-11-22T19:06:59Z",
+      "decision": "Fijar brief SHA bef87b y rama exclusiva; no modificar W002.",
+      "alternativesConsidered": [
+        "Reutilizar rama W002",
+        "Crear candidata exclusiva W003/03"
+      ],
+      "outputRef": "https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/launch/20261122/relaunch/web/works/03/art.js",
+      "evidenceRefs": [
+        "https://github.com/JuanManuelPM/Experimentos/commit/fa254e730ade49b9c7c91e6a05ae6dd9ec4a46ac"
+      ],
+      "testStatus": "OBSERVED"
+    },
+    {
+      "stage": "S02",
+      "status": "EXECUTED",
+      "timestamp": "2026-11-22T19:06:59Z",
+      "decision": "Crear obras originales con metadata de ficción, sin stock ni atribuciones ajenas.",
+      "alternativesConsidered": [
+        "IIIF patrimonial con atribución real",
+        "Composiciones raster originales"
+      ],
+      "outputRef": "https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/launch/20261122/relaunch/web/works/03/art.js",
+      "evidenceRefs": [
+        "https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/launch/20261122/relaunch/web/works/03/art.js"
+      ],
+      "testStatus": "OBSERVED"
+    },
+    {
+      "stage": "S04",
+      "status": "EXECUTED",
+      "timestamp": "2026-11-22T19:07:13Z",
+      "decision": "Adoptar lectura de zoom contextual y accesibilidad; benchmark observado por fuentes documentales.",
+      "alternativesConsidered": [
+        "Lightbox simple sin metadatos",
+        "Archivo con visor y ficha simultánea"
+      ],
+      "outputRef": "https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/launch/20261122/relaunch/web/works/03/PREPRODUCTION.deep-spec-v1.json",
+      "evidenceRefs": [
+        "https://www.rijksmuseum.nl/en/about-collection-online",
+        "https://openseadragon.github.io/examples/ui-keyboard-navigation/"
+      ],
+      "testStatus": "OBSERVED"
+    },
+    {
+      "stage": "S05",
+      "status": "EXECUTED",
+      "timestamp": "2026-11-22T19:07:13Z",
+      "decision": "Cuatro familias visuales en lugar de las ocho piezas homogéneas W002.",
+      "alternativesConsidered": [
+        "Un generador SVG repetido",
+        "Raster autoral con técnicas independientes"
+      ],
+      "outputRef": "https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/launch/20261122/relaunch/web/works/03/art.js",
+      "evidenceRefs": [
+        "https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/launch/20261122/relaunch/web/works/03/art.js"
+      ],
+      "testStatus": "OBSERVED"
+    },
+    {
+      "stage": "S08",
+      "status": "EXECUTED",
+      "timestamp": "2026-11-22T19:07:13Z",
+      "decision": "Publicar primer artículo antes de poblar catálogo; no afirmar render observado.",
+      "alternativesConsidered": [
+        "Construir el catálogo entero antes del artículo",
+        "Primer raster autónomo y sitio posterior"
+      ],
+      "outputRef": "https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/launch/20261122/relaunch/web/works/03/first-article.html",
+      "evidenceRefs": [
+        "https://github.com/JuanManuelPM/Experimentos/commit/6f6594215d72e6a5165b45aa28f0f8c26a51a4b8"
+      ],
+      "testStatus": "NOT_RUN"
+    },
+    {
+      "stage": "S09",
+      "status": "EXECUTED",
+      "timestamp": "2026-11-22T19:10:25Z",
+      "decision": "Construir frontend original, seis obras, visor portable, filtros y deep links.",
+      "alternativesConsidered": [
+        "Galería estática sin interacción",
+        "Archivo editorial con zoom y contexto"
+      ],
+      "outputRef": "https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/launch/20261122/relaunch/web/works/03/index.html",
+      "evidenceRefs": [
+        "https://github.com/JuanManuelPM/Experimentos/commit/b23fdd1b49b392e46ccfc09049f8eaa4ff6a2cc2",
+        "https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/launch/20261122/relaunch/web/works/03/viewer.js"
+      ],
+      "testStatus": "NOT_RUN"
+    },
+    {
+      "stage": "S10",
+      "status": "EXECUTED",
+      "timestamp": "2026-11-22T19:13:39Z",
+      "decision": "Ejecutar validadores oficiales contra Book y declarar pruebas de navegador pendientes.",
+      "alternativesConsidered": [
+        "Declarar QA PASS por archivos presentes",
+        "Separar fuente, gates y observación visual real"
+      ],
+      "outputRef": "https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/launch/20261122/relaunch/web/works/03/QA.md",
+      "evidenceRefs": [
+        "https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/launch/20261122/relaunch/web/works/03/PREPRODUCTION.deep-spec-v1.json",
+        "https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/launch/20261122/relaunch/web/works/03/QA.md"
+      ],
+      "testStatus": "OBSERVED"
+    },
+    {
+      "stage": "S11",
+      "status": "NOT_RUN",
+      "timestamp": "2026-11-22T19:14:16.015Z",
+      "reason": "Lectura remota de fuente PASS pero la ruta Pages devolvió HTTP 404 durante cola/despliegue; browser público completo sin prueba."
+    },
+    {
+      "stage": "S12",
+      "status": "EXECUTED",
+      "timestamp": "2026-11-22T19:14:16.015Z",
+      "decision": "Entregar comparación W002/W003 y límites sin adjudicar calidad artística.",
+      "alternativesConsidered": [
+        "Promocionar mejora automáticamente",
+        "Dejar resultado candidato a revisión humana"
+      ],
+      "outputRef": "https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/launch/20261122/relaunch/web/works/03/QA.md",
+      "evidenceRefs": [
+        "https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/launch/20261122/relaunch/web/works/03/QA.md"
+      ],
+      "testStatus": "NOT_RUN"
+    }
+  ],
+  "skippedStages": [
+    {
+      "stage": "S03",
+      "reason": "IA del archivo implementada junto al sitio, no existe prueba independiente del nodo; no fabricar evento."
+    },
+    {
+      "stage": "S06",
+      "reason": "Composición incorporada a style.css y first-article, sin captura de frame para aprobar."
+    },
+    {
+      "stage": "S07",
+      "reason": "Plan técnico integrado a DEEP-SPEC sin ejecución registrada como etapa separada."
+    }
+  ]
+}
