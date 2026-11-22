@@ -1,0 +1,42 @@
+/* CASA MATERIAL — reusable identity tokens and primitives, v1 */
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap');
+:root {
+  color-scheme:light;
+  --paper:#f0eadf;
+  --paper-light:#f9f5ed;
+  --chalk:#e6dfd0;
+  --ink:#28251e;
+  --muted:#665f54;
+  --rust:#995137;
+  --rust-dark:#713a29;
+  --hairline:rgba(40,37,30,.25);
+  --font-display:"Instrument Serif",Georgia,"Times New Roman",serif;
+  --font-body:"DM Sans",Arial,sans-serif;
+  --font-code:ui-monospace, "SFMono-Regular", Consolas,monospace;
+  --page-gutter:clamp(18px,4.2vw,76px);
+  --section-space:clamp(88px,11vw,200px);
+  --ease-material:cubic-bezier(.25,.8,.2,1);
+  --radius:0px;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:95px}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--font-body);font-size:16px;line-height:1.52}
+body:has(dialog[open]){overflow:hidden}
+button,input,textarea{font:inherit}
+button,a{-webkit-tap-highlight-color:transparent}
+button{cursor:pointer}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--rust);outline-offset:4px}
+img{max-width:100%;display:block}
+::selection{background:var(--rust);color:var(--paper-light)}
+.measure{max-width:60ch}
+.eyebrow{font-family:var(--font-code);font-size:10px;line-height:1.4;letter-spacing:.12em;text-transform:uppercase;font-weight:500}
+.display{font-family:var(--font-display);font-weight:400;line-height:.89;letter-spacing:-.055em}
+.rule{border-top:1px solid var(--hairline)}
+.arrow-link{display:inline-flex;align-items:center;justify-content:space-between;gap:36px;min-width:min(250px,100%);padding:15px 0;border-bottom:1px solid currentColor;font-size:12px;font-weight:600;letter-spacing:.05em;text-decoration:none;text-transform:uppercase}
+.arrow-link .arr{font-size:20px;font-weight:400;line-height:1;transition:transform .35s var(--ease-material)}
+.arrow-link:hover .arr,.arrow-link:focus-visible .arr{transform:translateX(8px)}
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+}
