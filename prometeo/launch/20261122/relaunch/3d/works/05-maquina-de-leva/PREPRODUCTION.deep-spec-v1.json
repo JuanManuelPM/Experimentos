@@ -1,0 +1,381 @@
+{
+  "version": "DEEP-SPEC-1",
+  "medium": "3D",
+  "depth": "SISTEMA",
+  "batchId": "3d-w7-20261122",
+  "taskNumber": 5,
+  "taskId": "3d-w7-20261122-05",
+  "launchBlobSHA": "58de659e2aa01c0746d59ca6f95c36bdc59f3030",
+  "flowVersion": "2.3.0",
+  "flowSHA256Canonical": "53bc9e2e4b37c99e92d3494af8dfa4461cd4644b15f980e32497a8428b067b3f",
+  "qualityBarVersion": "QBAR-1",
+  "brief": "Laboratorio mecánico · Máquina de leva: máquina interactiva con leva, seguidor, transmisión, parámetros, paro/reinicio, piezas modelables y diagnóstico de restricciones y contactos.",
+  "intent": {
+    "experience": "Entender la transferencia de movimiento rotativo a lineal mirando una máquina mecánica coherente y manipulable, también en móvil.",
+    "distinctAbility": "Una vista 3D manipulable y un corte independiente de contacto, ambos alimentados por el mismo perfil conjugado; exportación GLB con reimportación y contraste de cotas."
+  },
+  "references": [
+    {
+      "id": "R1",
+      "url": "https://www.cs.cmu.edu/~rapidproto/mechanisms/chpt6.html",
+      "status": "OBSERVED",
+      "observation": "La sección 6.5.3 distingue curva de paso del centro del rodillo y envolvente desplazada según su normal; mecanismo de inversión y condición de contacto."
+    },
+    {
+      "id": "R2",
+      "url": "https://www.roymech.co.uk/Useful_Tables/Cams_Springs/Cams.html",
+      "status": "OBSERVED",
+      "observation": "Explica representación desplazamiento-ángulo, derivadas para velocidad/aceleración y riesgo de presión lateral, aceleración y pérdida de contacto."
+    },
+    {
+      "id": "R3",
+      "url": "https://lu.ca/calc/cam/",
+      "status": "OBSERVED",
+      "observation": "La herramienta compara leyes de movimiento, ángulo de presión y socavado; 4-5-6-7 ofrece derivadas iniciales/finales suaves y detección de rangos."
+    },
+    {
+      "id": "R4",
+      "url": "https://rapier.rs/docs/user_guides/javascript/joints/",
+      "status": "OBSERVED",
+      "observation": "Rapier proporciona juntas revolutas y prismáticas y motores, pero una unión estándar no modela por sí sola una pareja leva-rodillo arbitraria."
+    }
+  ],
+  "components": [
+    {
+      "id": "C-CAM",
+      "role": "Contorno extruido de leva y eje principal mecanizable.",
+      "strategy": "Crear perfil paramétrico cerrado, curva de paso invertida y envolvente de radio de rodillo; agujero nominal central en DXF.",
+      "constraints": "Unidades en mm; eje z común; leva y rodillo se solapan axialmente y conservan tangencia para todo ángulo."
+    },
+    {
+      "id": "C-FOLLOWER",
+      "role": "Rodillo giratorio, vástago vertical y guía prismática.",
+      "strategy": "Rodillo sobre centro Y fijado por la ley s(theta); guía superior y resorte entre anclajes.",
+      "constraints": "El rodillo se traslada en el eje Y; no se mueve lateralmente, no penetra en la leva y mantiene carrera trazable."
+    },
+    {
+      "id": "C-DRIVE",
+      "role": "Volante motriz, par de poleas y banda plana transmitiendo giro.",
+      "strategy": "Cinemática de correa 1:1 de poleas iguales con ejes fijos; modelado 3D original.",
+      "constraints": "Las poleas comparten velocidad angular, el cinturón está en otro plano z y nunca cruza el contorno activo de la leva."
+    },
+    {
+      "id": "C-UI",
+      "role": "Laboratorio táctil y datos útiles en tiempo real.",
+      "strategy": "Cámara orbital limitada, pausa, reinicio, avance de fase, sliders, gráfico de alzada y reporte.",
+      "constraints": "Los controles afectan las mismas variables que contorno, seguidor, fuerzas y documento exportado; errores visibles."
+    },
+    {
+      "id": "C-QA",
+      "role": "Diagnóstico reutilizable de restricciones y trazado.",
+      "strategy": "Muestreo de distancias segmento-rodillo, máxima presión, carga axial, radios locales y retorno a cero.",
+      "constraints": "Fallar ante anomalías matemáticas; distinguir diagnóstico ideal de simulación de contacto industrial."
+    },
+    {
+      "id": "C-SECTION",
+      "role": "Sección independiente del renderer 3D, escala geométrica coherente y lectura del contacto.",
+      "strategy": "Proyectar el contorno analítico a SVG y girarlo en 360 grados para inspección táctil local, con cálculo de normal y diferencia radial.",
+      "constraints": "Un mismo módulo mechanics.mjs alimenta sección y visor; el centro del rodillo debe estar a un radio del punto conjugado."
+    }
+  ],
+  "questions": [
+    {
+      "id": "Q1",
+      "target": "C-CAM",
+      "question": "¿Cómo generar un disco real que se mantenga tangente al rodillo para cualquier fase, en vez de animar una forma decorativa?",
+      "alternatives": [
+        "Envolvente de la curva de paso por normal local",
+        "Disco radial arbitrario y rodillo reposicionado"
+      ],
+      "evidenceRef": "R1",
+      "finding": "La inversión geométrica y la compensación en la normal exterior generan el contacto correcto para una leva de rodillo.",
+      "decisionImpact": "Se escribió mechanics.mjs como geometría independiente del motor 3D y se evita simular contacto falso."
+    },
+    {
+      "id": "Q2",
+      "target": "C-FOLLOWER",
+      "question": "¿Qué ley de alzada evita impactos de velocidad y aceleración al comenzar y terminar cada período de movimiento?",
+      "alternatives": [
+        "Polinomio de séptimo grado 4-5-6-7",
+        "Movimiento lineal por fase con bordes bruscos"
+      ],
+      "evidenceRef": "R3",
+      "finding": "La ley 4-5-6-7 anula velocidad, aceleración y jerk al tocar el dwell, sin necesitar interpolación visual.",
+      "decisionImpact": "La ley única alimenta leva, posición, gráfica y cálculo dinámico simplificado."
+    },
+    {
+      "id": "Q3",
+      "target": "C-QA",
+      "question": "¿Cómo distinguir un contacto matemático de una simulación dinámica de fricción y deformación que no se implementó?",
+      "alternatives": [
+        "Cinemática determinista con verificaciones de penetración y ángulo",
+        "Declarar físico un acoplamiento animado o integración de motor sin solver de contacto"
+      ],
+      "evidenceRef": "R2",
+      "finding": "Las derivadas y el ángulo de presión permiten diagnóstico estático/dinámico ideal; no garantizan esfuerzos Hertz ni duración real.",
+      "decisionImpact": "Se muestran unidades, disclaimers de fuerzas ideales y contacto muestreado, sin sello de certificación industrial."
+    },
+    {
+      "id": "Q4",
+      "target": "C-SECTION",
+      "question": "¿Una captura oblicua puede ocultar una penetración entre leva y rodillo que el cálculo o la vista seccionada revela?",
+      "alternatives": [
+        "Crear un corte XY paramétrico autónomo sin dependencia de WebGL",
+        "Confiar sólo en un render PBR y la posición animada"
+      ],
+      "evidenceRef": "R1",
+      "finding": "La curva de trabajo y la curva de paso son objetos distintos, verificables en un dibujo de sección con el centro del rodillo.",
+      "decisionImpact": "Se implementó section.html y se verificó la lectura del contacto en 390 y 1440 con navegador local."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "D1",
+      "questionId": "Q1",
+      "componentIds": [
+        "C-CAM",
+        "C-FOLLOWER"
+      ],
+      "choice": "Envolvente geométrica original del rodillo para el cam profile",
+      "rejected": "Leva oval aproximada y rodillo animado de forma visual",
+      "why": "La tangencia del rodillo y las conexiones son el requisito diferenciador del encargo.",
+      "productionChange": "Generar shape extruido con vértices de camPoint y posicionar el rodillo a base+roller+s(theta)."
+    },
+    {
+      "id": "D2",
+      "questionId": "Q2",
+      "componentIds": [
+        "C-FOLLOWER",
+        "C-UI"
+      ],
+      "choice": "Ley única de movimiento suave 4-5-6-7 para ascenso y retorno",
+      "rejected": "Interpolación lineal que produciría golpes de aceleración en límites",
+      "why": "La continuidad de derivadas hace reproducible y diagnosticable la relación cinemática.",
+      "productionChange": "Conectar sliders a motion(theta) y desplazar collar, vástago, resorte, marcador y curva de alzada desde una fuente."
+    },
+    {
+      "id": "D3",
+      "questionId": "Q3",
+      "componentIds": [
+        "C-QA",
+        "C-DRIVE"
+      ],
+      "choice": "Restricciones cinemáticas exactas y fuerzas ideales con límites explícitos",
+      "rejected": "Modelo dinámico sin contacto riguroso etiquetado como física real",
+      "why": "La honestidad técnica permite verificar lo demostrado y separar diseño de fabricación.",
+      "productionChange": "Diagnosticar presión, tangencia, fuerza axial y radio mínimo; explicar que deslizamiento de correa, rigidez y fatiga NO se simulan."
+    },
+    {
+      "id": "D4",
+      "questionId": "Q4",
+      "componentIds": [
+        "C-SECTION",
+        "C-CAM",
+        "C-QA"
+      ],
+      "choice": "Vista de sección paramétrica con test de distancia al punto de tangencia",
+      "rejected": "Depender exclusivamente de la cámara WebGL y los números en una barra",
+      "why": "El defecto principal W6 fue no observar visualmente conexiones y contactos reales.",
+      "productionChange": "Se publica sección SVG independiente que muestra fuerza normal, contacto, perfil y guías; se vincula directamente desde el visor 3D."
+    }
+  ],
+  "relations": [
+    {
+      "from": "C-CAM",
+      "to": "C-FOLLOWER",
+      "invariant": "La normal de la leva en el punto de contacto pasa por el centro del rodillo a exactamente su radio.",
+      "failure": "Interpenetración, separación o desplazamiento sin tocar el perfil.",
+      "test": "Barrido completo 720 muestras de contacto y prueba de penetración por segmentos."
+    },
+    {
+      "from": "C-DRIVE",
+      "to": "C-CAM",
+      "invariant": "Relación angular 1 a 1 entre volante, ambas poleas y camshaft.",
+      "failure": "Volante y leva giran a tiempos diferentes o en sentidos imposibles.",
+      "test": "Revisión de fase angular tras una vuelta y cambio de RPM."
+    },
+    {
+      "from": "C-UI",
+      "to": "C-QA",
+      "invariant": "Los parámetros visibles corresponden al mismo estado usado por el motor, el contorno, la gráfica y DXF.",
+      "failure": "Sliders cambian etiquetas pero no la geometría o exportación.",
+      "test": "Modificar carrera y alzada, detener y reiniciar, exportar e inspeccionar datos."
+    },
+    {
+      "from": "C-CAM",
+      "to": "C-SECTION",
+      "invariant": "La sección y las mallas 3D se derivan del mismo perfil y de la misma fase angular.",
+      "failure": "La pantalla 2D es decorativa o muestra una posición incompatible con el visor.",
+      "test": "Barrido geométrico 720 fases, captura 390 y 1440; manualmente comparar posiciones del rodillo."
+    }
+  ],
+  "risks": [
+    {
+      "componentIds": [
+        "C-CAM",
+        "C-FOLLOWER"
+      ],
+      "severity": "high",
+      "failure": "Contorno invertido o normal equivocada produce penetración",
+      "prevention": "Spike de geometría invertida y test de distancia radial 720 muestras",
+      "test": "Error radial máximo menor a 0,001 mm en 720 fases para los valores base",
+      "status": "OBSERVED",
+      "evidence": "Spike numérico independiente en el chat: 720 fases, error radial máximo 1.78e-14 mm y presión máxima 13.43 grados; se debe volver a correr tests del módulo tras la publicación."
+    },
+    {
+      "componentIds": [
+        "C-CAM",
+        "C-QA"
+      ],
+      "severity": "medium",
+      "failure": "Socavado o ángulo excesivo con combinaciones de sliders",
+      "prevention": "Marcar ángulo de presión máximo y curvatura mínima y mostrar alarmas",
+      "test": "Diagnóstico muestreado con extremos del dominio, señal de riesgo cuando corresponde",
+      "status": "NOT_RUN"
+    },
+    {
+      "componentIds": [
+        "C-UI"
+      ],
+      "severity": "medium",
+      "failure": "WebGL, dependencias CDN o controles táctiles no ejecutan en Android",
+      "prevention": "Fallback de error, limitar DPR y táctil, módulo independiente del render",
+      "test": "Render real en navegador móvil y exportación GLB observados",
+      "status": "NOT_RUN"
+    },
+    {
+      "componentIds": [
+        "C-SECTION",
+        "C-CAM"
+      ],
+      "severity": "high",
+      "failure": "Un error de signo de giro puede dibujar un contacto aparente pero invertir el contorno real.",
+      "prevention": "Prueba analítica independiente antes del prototipo, luego dos tamaños de viewport en Chromium.",
+      "test": "720 fases con diferencia radial <=1e-8 mm; captura 390 y 1440 del primer artículo SVG.",
+      "status": "OBSERVED",
+      "evidence": "Evaluación del módulo mechanics.mjs original en motor V8: 720 posiciones, máxima diferencia 1.78e-14 mm, presión máxima 13.43 grados; sección.js en Chromium con 390/1440 sin pageerror y alzada modificable; las capturas locales están en la entrega del chat, no son QA del 3D."
+    }
+  ],
+  "acceptance": [
+    {
+      "kind": "logic",
+      "criterion": "Puntos de contacto y normales coherentes para 360 grados y parámetros predefinidos.",
+      "oracle": "Prueba analítica independiente 720 muestras, error radial 1.78e-14 mm (no ejecución exacta del módulo).",
+      "status": "OBSERVED"
+    },
+    {
+      "kind": "interactive",
+      "criterion": "Controles cambian movimiento visible, perfil, datos, pausa y reinicio en navegador real.",
+      "oracle": "Prueba de UI y touch con navegador Android, todavía pendiente.",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "visual",
+      "criterion": "Volumetría, uniones, escala, materiales y contraste legibles en tres ángulos de cámara.",
+      "oracle": "Capturas de WebGL y evaluación perceptual humana, todavía pendientes.",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "functional",
+      "criterion": "Exportación GLB y DXF y lecturas de estado mantienen dimensiones declaradas.",
+      "oracle": "Abrir archivos exportados en herramienta externa de CAD/GLB; pendiente.",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "functional",
+      "criterion": "La exportación GLB se reimporta y conserva número de mallas y dimensiones geométricas.",
+      "oracle": "Botón GLB realiza export->GLTFLoader.parseAsync->comparación de conteo y tamaño en milímetros; clic en navegador real pendiente.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "licensing": "Todas las mallas, interfaces y cálculos se producen desde código original; los enlaces solo se usan como bibliografía, sin copiar imágenes, 3D ni textos.",
+  "resources": "Three.js 0.170 desde CDN jsDelivr sin credenciales; JavaScript matemático propio, navegador WebGL2 o WebGL, GitHub Pages; source editable en rama exclusiva.",
+  "limitations": "Cinemática con contacto y esfuerzos ideales; no integra rozamiento, deformación, tolerancias IT, transferencia real de torque ni análisis industrial de fatiga.",
+  "environmentLimits": "Navegador Chromium local accesible por set_content para sección SVG en dos viewports; acceso directo al sitio remoto y CDN Three.js bloqueado por política de red. GPU 3D, Android y GLB exportado NOT_RUN; pruebas lógicas y capturas del corte sí ejecutadas.",
+  "oldBatchId": "3d-w6-20261122",
+  "flowRef": "prometeo/3d-flow/versions/2.3.0/flow.json",
+  "flowIndexBlobSHA": "cb809bc55a66791680f9c6c76969e154e67023b6",
+  "artDirection": {
+    "schema": "prometeo.art-direction.first-article/v1",
+    "medium": "3d",
+    "taskId": "3d-w7-20261122-05",
+    "briefSha": "58de659e2aa01c0746d59ca6f95c36bdc59f3030",
+    "flowRef": "prometeo/3d-flow/versions/2.3.0/flow.json@53bc9e2e4b37c99e92d3494af8dfa4461cd4644b15f980e32497a8428b067b3f",
+    "promise": {
+      "subject": "Leva maciza, rodillo guiado, transmisión y contacto legibles en un plano mecánico.",
+      "intent": "Al abrir la máquina se deben ver conjunto, ejes, escala y transferencia de giro a desplazamiento sin overlays que oculten el mecanismo."
+    },
+    "benchmark": {
+      "url": "https://www.cs.cmu.edu/~rapidproto/mechanisms/chpt6.html",
+      "description": "Capítulo 6.5.3 realmente leído: separación explícita entre curva de paso de centro del rodillo y envolvente de contacto; no se copia diseño gráfico.",
+      "status": "OBSERVED"
+    },
+    "techniques": [
+      {
+        "family": "Geometría conjugada paramétrica Three.js con corte SVG",
+        "viability": "Código original del núcleo recuperado y ejecutado matemáticamente; WebGL depende de CDN y navegador compatible.",
+        "license": "Mallas y cálculos escritos originalmente para PROMETEO; biblioteca Three.js MIT."
+      },
+      {
+        "family": "Diseño CAD sólido con importación GLB y comprobación de malla",
+        "viability": "Ruta alternativa si falla visual 3D: modelar en CAD libre, exportar archivo propio con escala verificada; herramienta CAD no conectada aquí.",
+        "license": "Sólo modelo original propio o componente con licencia verificable; no se usó asset externo."
+      }
+    ],
+    "selectedTechnique": "Geometría conjugada paramétrica Three.js con corte SVG",
+    "firstFrame": {
+      "openingDescription": "Vista oblicua de bancada, leva, volante, correa y guía; sección disponible como recurso de inspección fuera del viewport principal.",
+      "focalSubject": "Leva y rodillo deben dominar el visor 390/1440; la UI no puede cubrir el punto de contacto.",
+      "minimalUI": "Reproducir/pausar, fase, reset y parámetros táctiles; sección como enlace fuera del escenario.",
+      "checks": [
+        {
+          "criterion": "La sección muestra la leva, el rodillo y el punto de contacto sin quedar cortados.",
+          "oracle": "Captura local del SVG a 390 y 1440; comprobar visualmente tamaño/encuadre.",
+          "viewport": "both"
+        },
+        {
+          "criterion": "La geometría cambia al cambiar la carrera y la fase en el mismo diseño.",
+          "oracle": "Chromium: mover phase 135 y lift 25; verificar desplazamiento de lectura y gap.",
+          "viewport": "both"
+        },
+        {
+          "criterion": "El visor Three.js no tiene errores de consola ni UI solapada al abrir.",
+          "oracle": "Capturas WebGL a 390 y 1440 + logs cuando exista acceso al CDN.",
+          "viewport": "both"
+        }
+      ],
+      "observations": [
+        {
+          "viewport": "390",
+          "status": "OBSERVED_PASS",
+          "evidence": {
+            "url": "https://github.com/JuanManuelPM/Experimentos/blob/candidate/prometeo-3d-w7-20261122-05/prometeo/launch/20261122/relaunch/3d/works/05-maquina-de-leva/section.html",
+            "description": "Vista de sección local Chromium 390x844, captura first-article-390.png de esta sesión, sin errores y controles funcionales; NO captura 3D."
+          }
+        },
+        {
+          "viewport": "1440",
+          "status": "OBSERVED_PASS",
+          "evidence": {
+            "url": "https://github.com/JuanManuelPM/Experimentos/blob/candidate/prometeo-3d-w7-20261122-05/prometeo/launch/20261122/relaunch/3d/works/05-maquina-de-leva/section.html",
+            "description": "Vista de sección local Chromium 1440x900, captura first-article-1440.png de esta sesión; NO captura 3D."
+          }
+        }
+      ],
+      "threeDViewportStatus": "NOT_RUN"
+    },
+    "firstArticle": {
+      "target": "Contorno leva y seguidor con contacto verificable en 360 grados, magnificado como sección autónoma antes del visor.",
+      "rejectWhen": "Diferencia de contacto mayor que 1e-8 mm, perfil invertido, rodillo oculto o falla en viewport móvil.",
+      "switchTo": "Diseño CAD sólido con importación GLB y comprobación de malla",
+      "oracle": "Barrido de 720 fases; lectura de sección en Chromium local en 390/1440, cambios fase y lift.",
+      "resourceProof": "Núcleo original propio mechanics.mjs del producto anterior con SHA 99c4d0bc..., sin copiar modelos terceros y reutilizado en nueva ruta.",
+      "status": "OBSERVED_PASS",
+      "evidence": {
+        "url": "https://github.com/JuanManuelPM/Experimentos/blob/candidate/prometeo-3d-w7-20261122-05/prometeo/launch/20261122/relaunch/3d/works/05-maquina-de-leva/section.html",
+        "description": "Primer corte vectorial ejecutado en Chromium local 390/1440. 720 fases evaluadas en V8, error máximo 1.78e-14 mm; capturas locales first-article-390.png y first-article-1440.png, no publicadas remotamente."
+      }
+    },
+    "humanApproved": false
+  }
+}
