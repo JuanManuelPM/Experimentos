@@ -1,0 +1,286 @@
+{
+  "version": "DEEP-SPEC-1",
+  "medium": "web",
+  "depth": "SISTEMA",
+  "taskId": "web-w003-20261122-05",
+  "batchId": "web-w003-20261122",
+  "taskNumber": 5,
+  "briefSha": "bef87bf57c789d2b0605ca9ff81a5d3bbaab5e35",
+  "brief": "OBJETO CERO: web de lanzamiento de objeto físico ficticio, imágenes originales, narrativa, tres variantes material/imagen y carrito persistente con totales correctos; compra de demostración.",
+  "intent": {
+    "experience": "Abrir una portada editorial donde el objeto dibujado sea protagonista y la compra de demostración sea transparente, legible y elegante.",
+    "distinctAbility": "Tres acabados visuales del mismo objeto vinculados a SKU, precio y persistencia en un carrito real sin backend."
+  },
+  "references": [
+    {
+      "id": "R1",
+      "url": "https://www.bang-olufsen.com/en/int/speakers/beosound-a5",
+      "status": "OBSERVED",
+      "observation": "Página pública recuperada en texto: el Beosound A5 presenta variantes de producto y descripciones de materiales; no se capturó su render en browser. Inspira la claridad del selector de acabados, no se copia su diseño."
+    },
+    {
+      "id": "R2",
+      "url": "https://teenage.engineering/products/op-1",
+      "status": "OBSERVED",
+      "observation": "Página pública recuperada en texto: el OP-1 field explica el objeto físico y su función por secciones, sin ocultar el control tangible; no se inspeccionó el render interactivo."
+    },
+    {
+      "id": "R3",
+      "url": "https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/launch/20261122/repair/web/AUDIT_W002.md",
+      "status": "OBSERVED",
+      "observation": "Auditoría WEB W002 recuperada desde rama candidata: para N05 faltaban navegador real, persistencia visible y correspondencia variante/foto/total aunque sí había pruebas Node."
+    }
+  ],
+  "components": [
+    {
+      "id": "visual",
+      "role": "Primer objeto hero y variante consistente entre portada y configurador",
+      "strategy": "Único símbolo SVG original en el documento con gradientes, trama y sombras; acabados como variables CSS heredadas",
+      "constraints": "El mismo cuerpo, ubicación de mando y geometría permanecen constantes entre las tres terminaciones."
+    },
+    {
+      "id": "configurator",
+      "role": "Selector de acabado que gobierna el precio y el material visual",
+      "strategy": "Tres acabados definidos una sola vez como catálogo puro y estado de selección sincronizado",
+      "constraints": "La clase de material, aria-label, botón seleccionado y precio deben corresponder al SKU."
+    },
+    {
+      "id": "cart",
+      "role": "Persistencia local con cantidades y subtotales verificables",
+      "strategy": "Módulo ES puro cart-core.js y diálogo nativo sin servidor ni pago",
+      "constraints": "Sin red, sin datos personales, máximo veinte unidades por acabado y normalización defensiva."
+    },
+    {
+      "id": "editorial",
+      "role": "Sistema responsive con lectura atractiva y navegación clara",
+      "strategy": "Tipografía Georgia y sans del sistema, bloques asimétricos, cromática restringida y media queries",
+      "constraints": "Sin scroll horizontal en 320, 390, 768 y 1440; foco y reduced-motion respetados."
+    }
+  ],
+  "questions": [
+    {
+      "id": "Q1",
+      "target": "visual",
+      "question": "¿Qué recurso muestra tres acabados sin inventar objetos distintos en cada render?",
+      "alternatives": [
+        "Tríptico raster generado con una misma cámara",
+        "Modelo ilustrado paramétrico con geometría estable"
+      ],
+      "evidenceRef": "R3",
+      "finding": "La foto generada se inspeccionó localmente pero no había una vía confiable para integrar el binario en el commit; un SVG original rasterizado mostró identidad y materiales constantes.",
+      "decisionImpact": "Producción final usa SVG reproducible y exporta tres vistas estáticas originales; no se anuncia fotografía real."
+    },
+    {
+      "id": "Q2",
+      "target": "cart",
+      "question": "¿Cómo asegurar que cantidades, total y recarga reflejen el mismo estado?",
+      "alternatives": [
+        "Manipulación ad hoc de precios del DOM",
+        "Reducer puro, almacenamiento normalizado y renderer de bolsa"
+      ],
+      "evidenceRef": "R3",
+      "finding": "W002 ya había probado invariantes Node pero no recarga real; se ejecutaron trece nuevas aserciones de cálculo, almacenamiento y corrupción.",
+      "decisionImpact": "Módulo cart-core.js independiente de DOM y uso explícito de localStorage con manejo de fallos."
+    },
+    {
+      "id": "Q3",
+      "target": "editorial",
+      "question": "¿Cómo mantener al producto como protagonista sin superponer una interfaz enorme?",
+      "alternatives": [
+        "Hero tipo tienda con tarjetas y llamadas repetidas",
+        "Portada editorial con una acción principal, detalle narrativo y selección al final"
+      ],
+      "evidenceRef": "R2",
+      "finding": "La página examinada estructura el relato a partir del objeto y su función; se separa contenido de experiencia de carrito.",
+      "decisionImpact": "Una sola llamada en portada, historia sin componentes flotantes y carrito solo al invocarlo."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "D1",
+      "questionId": "Q1",
+      "componentIds": [
+        "visual",
+        "configurator"
+      ],
+      "choice": "Ilustración de producto paramétrica, con materiales en CSS y vistas exportadas",
+      "rejected": "Publicar tres fotos distintas sin prueba de identidad geométrica",
+      "productionChange": "Primer artículo SVG rasterizado 900×650 y tres variantes tiza/arcilla/noche comparadas en lámina.",
+      "why": "Garantiza geometría constante, autoría verificable y buena reproducción sin dependencias externas."
+    },
+    {
+      "id": "D2",
+      "questionId": "Q2",
+      "componentIds": [
+        "cart",
+        "configurator"
+      ],
+      "choice": "Catálogo cerrado y reducer funcional persistente en localStorage",
+      "rejected": "Total manual con cadena de texto del DOM",
+      "productionChange": "Trece pruebas Node de cantidad, subtotal, persistencia y almacenamiento corrupto.",
+      "why": "Evita deriva entre variante, cantidad y precio aun con datos locales inválidos."
+    },
+    {
+      "id": "D3",
+      "questionId": "Q3",
+      "componentIds": [
+        "editorial",
+        "visual"
+      ],
+      "choice": "Portada tipográfica con radio dominante y secciones narrativas claras",
+      "rejected": "Diseño genérico de tarjetas y controles flotantes",
+      "productionChange": "Layout editorial con hero dividido, sección de materia y configurador, sin overlays permanentes.",
+      "why": "La radio y sus cualidades se comprenden antes de usar la bolsa."
+    }
+  ],
+  "relations": [
+    {
+      "from": "visual",
+      "to": "configurator",
+      "invariant": "La representación de la radio y el nombre del acabado corresponden siempre al selector actual.",
+      "failure": "El botón cambia el precio pero mantiene un color de radio anterior.",
+      "test": "Cambiar cada swatch y comprobar clase de escena, precio y aria-label en navegador."
+    },
+    {
+      "from": "configurator",
+      "to": "cart",
+      "invariant": "Cada línea utiliza precio de CATALOG por SKU, sin extraer un importe de HTML.",
+      "failure": "Cambiar acabado después de agregar altera el costo de líneas anteriores.",
+      "test": "Aserción multi-SKU y cantidad tras cambiar acabado."
+    },
+    {
+      "from": "editorial",
+      "to": "visual",
+      "invariant": "El radio se mantiene visible y sin recortes importantes a 320/390/768/1440.",
+      "failure": "Imagen fuera de marco o tipografía desborda viewport pequeño.",
+      "test": "Captura y chequeo de scrollWidth en navegador real; pendiente por política local."
+    }
+  ],
+  "risks": [
+    {
+      "componentIds": [
+        "visual"
+      ],
+      "severity": "high",
+      "failure": "Las tres representaciones difieren geométricamente o no tienen calidad visual suficiente.",
+      "prevention": "Usar símbolo único y rasterizar primer artículo antes del resto.",
+      "test": "CairoSVG genera vistas con la misma geometría y colores distintos; lámina inspeccionada.",
+      "status": "OBSERVED"
+    },
+    {
+      "componentIds": [
+        "cart"
+      ],
+      "severity": "high",
+      "failure": "Carrito suma precios incorrectos o falla con almacenamiento malformado.",
+      "prevention": "Reducer puro, catálogo cerrado, saneo local y tests de límites.",
+      "test": "node tests.mjs: 13 aserciones PASS.",
+      "status": "OBSERVED"
+    },
+    {
+      "componentIds": [
+        "editorial",
+        "configurator"
+      ],
+      "severity": "medium",
+      "failure": "Responsive o interacción del selector/bolsa no accesibles en Chromium.",
+      "prevention": "Semántica HTML, dialog nativo, botones con etiquetas y media queries; no declararlo validado.",
+      "test": "Playwright real en 4 viewports, bloqueado por net::ERR_BLOCKED_BY_ADMINISTRATOR.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "acceptance": [
+    {
+      "kind": "visual",
+      "criterion": "Tres ilustraciones independientes del mismo objeto con material distinguible",
+      "oracle": "Comparación de rasterizados CairoSVG de Tiza, Arcilla y Noche en hoja de contacto.",
+      "status": "OBSERVED"
+    },
+    {
+      "kind": "logic",
+      "criterion": "Catálogo con tres SKU y totales correctos con cantidades y pérdidas de almacenamiento",
+      "oracle": "13 aserciones node tests.mjs en código puro.",
+      "status": "OBSERVED"
+    },
+    {
+      "kind": "interactive",
+      "criterion": "Selección visual y compra demo sobreviven recarga real",
+      "oracle": "Playwright sobre página servida, con lectura de price/class y bolsa tras reload.",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "visual",
+      "criterion": "Primer frame útil en 390 y 1440 sin texto cortado",
+      "oracle": "Dos screenshots de navegación real revisados visualmente.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "resources": "HTML/CSS/JS propios, CairoSVG local para rasterizar primer artículo y Node 22 para tests. Chromium disponible pero bloqueado por política administrativa.",
+  "licensing": "El objeto, texto, símbolo SVG, acabados y UI son creación original de este WORK. Referentes citados solo como investigación; no se reutilizan sus fotos ni marcas. Imagen exploratoria generada no publicada.",
+  "environmentLimits": "Chromium presenta URLBlocklist con net::ERR_BLOCKED_BY_ADMINISTRATOR incluso en localhost; captura en browser, navegación táctil y comprobación de Pages quedan NOT_RUN.",
+  "artDirection": {
+    "schema": "prometeo.art-direction.first-article/v1",
+    "medium": "web",
+    "taskId": "web-w003-20261122-05",
+    "briefSha": "bef87bf57c789d2b0605ca9ff81a5d3bbaab5e35",
+    "flowRef": "Experimentos@gh-pages:QUALITY_BAR.md sha 5653704d3267; DEEP_SPEC.md sha 7656a293b018; ART_DIRECTION_FIRST_ARTICLE.md sha b1a1a012e908; auditoría WEB candidata NO PROMOVIDA.",
+    "promise": {
+      "subject": "Radio ficticia LENTO 01 reconocible y táctil",
+      "intent": "La primera pantalla debe mostrar un único objeto cuidado, sin componentes de tienda invadiendo su silueta."
+    },
+    "benchmark": {
+      "status": "OBSERVED",
+      "url": "https://www.bang-olufsen.com/en/int/speakers/beosound-a5",
+      "description": "Se observó el texto público sobre las variantes y materiales del producto; el render visual del sitio benchmark no fue inspeccionado."
+    },
+    "techniques": [
+      {
+        "family": "Fotografía conceptual generada",
+        "viability": "Imagen triptica original explorada en archivo local; integración del binario en GitHub no disponible mediante la ruta de publicación usada.",
+        "license": "Imagen producida originalmente para este trabajo y sin fotografías de terceros."
+      },
+      {
+        "family": "Ilustración vectorial paramétrica",
+        "viability": "SVG original se rasterizó localmente en tres variantes y se inspeccionó como primer artículo.",
+        "license": "Formas y texturas creadas para este trabajo; no derivadas de un producto comercial concreto."
+      }
+    ],
+    "selectedTechnique": "Ilustración vectorial paramétrica",
+    "firstFrame": {
+      "openingDescription": "En 390 aparece marca, promesa editorial y una radio protagonista en pantalla siguiente; en 1440, texto izquierdo y radio grande derecho.",
+      "focalSubject": "Radio LENTO 01 en vista frontal ligeramente en perspectiva",
+      "minimalUI": "Cabecera compacta, un CTA y un botón de bolsa, sin overlays sobre el producto.",
+      "checks": [
+        {
+          "viewport": "390",
+          "criterion": "El título y el CTA mantienen lectura completa y no hay scroll horizontal.",
+          "oracle": "Captura 390×844 y document.scrollWidth<=innerWidth en navegador local."
+        },
+        {
+          "viewport": "1440",
+          "criterion": "La radio ocupa el área dominante de la primera pantalla.",
+          "oracle": "Captura 1440×900 y observación del encuadre real."
+        },
+        {
+          "viewport": "both",
+          "criterion": "La UI no tapa la radio y compra se indica de demostración.",
+          "oracle": "Inspección visual y árbol accesible con los dos anchos."
+        }
+      ],
+      "observations": []
+    },
+    "firstArticle": {
+      "target": "Una radio coherente, renderizada con geometría inmutable en tres acabados",
+      "rejectWhen": "La silueta se desarma o tres acabados modifican la geometría, o no se puede publicar legalmente el recurso.",
+      "switchTo": "Fotografía conceptual generada",
+      "oracle": "Rasterizar mismo símbolo en tres gamas y mirar hoja de contacto; falla si no son reconocibles como un mismo objeto.",
+      "resourceProof": "Los SVG originales son fuente y asset, con raster local generado por CairoSVG; se publica la fuente autoral.",
+      "status": "OBSERVED_PASS",
+      "evidence": {
+        "url": "https://github.com/JuanManuelPM/Experimentos/blob/candidate/prometeo-web-w003-20261122-05/prometeo/works/web-w003-20261122/05/radio-tiza.svg",
+        "description": "Primer artículo SVG reproducible; render CairoSVG inspeccionado en el entorno local. No es screenshot de navegador."
+      }
+    },
+    "humanApproved": false
+  }
+}

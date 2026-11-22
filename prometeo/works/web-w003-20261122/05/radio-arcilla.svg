@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="900" height="650" viewBox="0 0 900 650"><defs>
+ <radialGradient id="shadowfade"><stop offset="0" stop-color="#111" stop-opacity=".37"/><stop offset="1" stop-color="#111" stop-opacity="0"/></radialGradient>
+ <linearGradient id="shellgrad" x1="0" y1="0" x2=".94" y2="1"><stop offset="0" stop-color="#db8860"/><stop offset=".47" stop-color="#b95b37"/><stop offset="1" stop-color="#6a2e24"/></linearGradient>
+ <linearGradient id="facegrad" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="#db8860"/><stop offset="1" stop-color="#b95b37"/></linearGradient>
+ <radialGradient id="knobgrad" cx=".37" cy=".25" r=".8"><stop offset="0" stop-color="#fbf4e7"/><stop offset=".25" stop-color="#c7b9a7"/><stop offset=".52" stop-color="#757167"/><stop offset=".72" stop-color="#e9e1d0"/><stop offset="1" stop-color="#514d46"/></radialGradient>
+ <radialGradient id="centergrad" cx=".28" cy=".2" r=".85"><stop offset="0" stop-color="#f6f0e7"/><stop offset=".55" stop-color="#bab6a9"/><stop offset="1" stop-color="#706d64"/></radialGradient>
+ <pattern id="weave" width="11" height="11" patternUnits="userSpaceOnUse"><rect width="11" height="11" fill="#9b8066"/><path d="M1 0v11 M6 0v11" stroke="#e4cdac" stroke-width="2.4" opacity=".8"/><path d="M0 2h11 M0 7h11" stroke="#e4cdac" stroke-width="1.4" opacity=".55"/></pattern>
+ <filter id="objects-shadow" x="-.4" y="-.5" width="1.8" height="2"><feGaussianBlur stdDeviation="15"/></filter>
+ <filter id="speckle"><feTurbulence type="fractalNoise" baseFrequency=".8" numOctaves="2" seed="6" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncA type="linear" slope=".12"/></feComponentTransfer></filter>
+ <symbol id="radio-body" viewBox="0 0 900 650">
+ <ellipse cx="456" cy="551" rx="340" ry="45" fill="url(#shadowfade)"/>
+ <path d="M229 266Q217 118 343 117H616Q733 116 724 262" fill="none" stroke="#423b34" stroke-width="26" stroke-linecap="round" opacity=".4"/>
+ <path d="M236 259Q218 123 345 123H616Q728 124 716 256" fill="none" stroke="#8f432d" stroke-width="15" stroke-linecap="round"/>
+ <path d="M236 245Q235 142 345 140H608Q707 143 708 239" fill="none" stroke="#fff6e7" stroke-opacity=".45" stroke-width="3"/>
+ <path d="M190 451L768 451L790 506Q781 536 740 540H235Q203 536 190 514Z" fill="#6a2e24"/>
+ <rect x="227" y="506" width="67" height="33" rx="10" fill="#36352f"/><rect x="683" y="506" width="67" height="33" rx="10" fill="#36352f"/>
+ <path d="M206 223Q212 206 242 205H719Q771 207 776 251L797 459Q804 510 758 524L251 528Q201 529 183 485L165 284Q159 250 206 223Z" fill="url(#shellgrad)" stroke="#6a2e24" stroke-width="3"/>
+ <path d="M210 234Q219 218 249 218L705 219Q757 221 761 263L779 453Q788 497 744 503L251 511Q212 507 205 466L189 288Q183 260 210 234Z" fill="url(#facegrad)"/>
+ <rect x="215" y="252" width="371" height="232" rx="30" fill="#9b8066" stroke="#6a2e24" stroke-width="4"/>
+ <rect x="226" y="261" width="352" height="216" rx="24" fill="url(#weave)"/>
+ <path d="M230 273Q237 260 263 260H564" fill="none" stroke="#fff" opacity=".16" stroke-width="5"/>
+ <rect x="598" y="244" width="139" height="245" rx="27" fill="#b95b37" opacity=".34"/>
+ <circle cx="670" cy="344" r="82" fill="#514e46" opacity=".4"/><circle cx="667" cy="338" r="76" fill="#5e584b" stroke="#3f4039" stroke-width="3"/>
+ <circle cx="667" cy="338" r="67" fill="url(#knobgrad)" stroke="#e8dfc9" stroke-opacity=".8" stroke-width="3"/>
+ <circle cx="667" cy="338" r="51" fill="url(#centergrad)" stroke="#9d9b90" stroke-width="2"/>
+ <path d="M629 298Q662 273 700 299" fill="none" stroke="#fff" opacity=".45" stroke-width="3"/>
+ <circle cx="667" cy="338" r="9" fill="#8a877e" opacity=".25"/>
+ <rect x="655" y="442" width="20" height="49" rx="10" fill="#4d4135"/>
+ <rect x="660" y="450" width="10" height="30" rx="5" fill="#eb924c"/>
+ <path d="M181 269L205 469M779 271L793 460" stroke="#fff" stroke-opacity=".17" stroke-width="4"/>
+ <rect x="197" y="246" width="588" height="270" rx="43" filter="url(#speckle)" opacity=".20"/>
+ </symbol>
+</defs><use href="#radio-body" xlink:href="#radio-body"/></svg>
