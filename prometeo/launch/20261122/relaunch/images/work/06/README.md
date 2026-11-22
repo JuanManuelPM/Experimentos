@@ -20,7 +20,7 @@
 | 05 | Encuentro | Viajera se agacha ante terrier con pata blanca | MÁSTER_LOCAL + PREVIEW_REMOTO |
 | 06 | Compañía | Salida conjunta al amanecer | NO_GENERADO |
 
-## Qué cambió respecto a W002
+## Gates reales\n\nEl validador DEEP-SPEC-1 devuelve `READY_FOR_FIRST_SLICE` y ART-DIRECTION/FIRST-ARTICLE devuelve `READY_TO_BUILD_NOT_ARTISTICALLY_APPROVED`, después de observar capturas Chromium reales a 390/1440. Son validaciones estructurales y de apertura, **no** certifican narración completa ni comprensión.\n\n## Qué cambió respecto a W002
 
 El auditor registró una única plancha 1536×1024 recortada en seis cuadros de 506×506, sin prueba ciega de comprensión. Esta W003 parte de una escena pictórica real 1672×941 y genera imágenes independientes de 1280×720 para 01/02/04. **No implica mejora de continuidad:** el resto de la historia no está completado ni leído a ciegas.
 
@@ -35,7 +35,7 @@ El auditor registró una única plancha 1536×1024 recortada en seis cuadros de 
 
 Referencia externa observada: [galería oficial de Shaun Tan](https://www.shauntan.net/arrival-images-gallery), [The Red Book, reseña](https://www.kirkusreviews.com/book-reviews/barbara-lehman/the-red-book/). Inspiración de gramática narrativa sin copiar assets. Los originales generados no incluyen material de referencia externo y no se atribuye aprobación de derechos comerciales específicos sin revisión de términos.
 
-**Capturas reales:** [390 px](qa/opening-390.png) y [1440 px](qa/opening-1440.png) cuando estén actualizadas por el workflow; ejecutar la prueba no equivale a aprobación artística.\n\n**Límites:** no hay screenshot real navegador 390/1440, ni prueba ciega de orden con lectores externos; no hay verificación de identidad completa ni de calidad de la serie. El límite de cuota del generador impidió finalizar 03 y 06. Los dos afiches PROMETEO fuera de tema fueron descartados, no cuentan como obra.
+**Capturas reales:** [390 px](qa/opening-390.png) y [1440 px](qa/opening-1440.png) verificadas en Chromium [run 45059841510](https://github.com/JuanManuelPM/Experimentos/actions/runs/45059841510); sin desborde, hero original desde el primer píxel; ejecutar la prueba no equivale a aprobación artística.\n\n**Límites:** no hay screenshot real navegador 390/1440, ni prueba ciega de orden con lectores externos; no hay verificación de identidad completa ni de calidad de la serie. El límite de cuota del generador impidió finalizar 03 y 06. Los dos afiches PROMETEO fuera de tema fueron descartados, no cuentan como obra.
 
 **Identidad:** `room=images` · `batchId=images-w003-20261122` · `taskNumber=6` · `taskId=images-w003-20261122-06` · `LAUNCH blob=a97b91ca103847ea75eeb9d1d2af10b6c9c0dddd` · `HUMAN_APPROVED=NO`.
 
