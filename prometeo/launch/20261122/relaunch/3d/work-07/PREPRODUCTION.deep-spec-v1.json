@@ -1,0 +1,278 @@
+{
+  "version": "DEEP-SPEC-1",
+  "medium": "3d",
+  "depth": "SISTEMA",
+  "batchId": "3d-w7-20261122",
+  "taskNumber": 7,
+  "taskId": "3d-w7-20261122-07",
+  "briefSha": "58de659e2aa01c0746d59ca6f95c36bdc59f3030",
+  "brief": "07 · Captura · Una habitación verdadera: reconstruir un interior real a partir de fotos o escaneo autorizado, entregar escena 3D navegable, fuente, licencia, alineación foto-vista y comparaciones honestas; bloquear sin evidencias.",
+  "intent": {
+    "experience": "Al abrir, ver una habitación verdaderamente capturada y poder desplazarse entre dos cámaras reales sin encontrar decoración ficticia.",
+    "distinctAbility": "Carga propia de splat real con posiciones de cámara del conjunto original y ajuste foto-vista exportable sin inventar precisión métrica."
+  },
+  "references": [
+    {
+      "id": "r1",
+      "url": "https://github.com/Ahmedn1/roomsplat",
+      "status": "OBSERVED",
+      "observation": "README inspeccionado: pipeline video real -> COLMAP -> 3DGS -> .splat; demo de oficina de 11 MB y 350+ poses disponibles. No se vio el render en navegador."
+    },
+    {
+      "id": "r2",
+      "url": "https://github.com/Ahmedn1/roomsplat/blob/main/docs/index.html",
+      "status": "OBSERVED",
+      "observation": "Código del visor original inspeccionado: usa three@0.170 y gaussian-splats-3d@0.4.6, cámara con Y invertido, progresión SH0 y fuentes reales publicadas."
+    },
+    {
+      "id": "r3",
+      "url": "https://superspl.at/scene/eed8f458",
+      "status": "OBSERVED",
+      "observation": "Página de metadatos observada: apartamento capturado por iPhone, 10 millones de splats, 320.96 MB, licencia CC BY 4.0. Render 3D no inspeccionado."
+    },
+    {
+      "id": "r4",
+      "url": "https://github.com/JuanManuelPM/Experimentos/blob/candidate/prometeo-3d-autocritica-v2-20261122/prometeo/launch/20261122/repair/3d/AUDIT_10.md",
+      "status": "OBSERVED",
+      "observation": "Auditoría W6 07 examinada: iframe de un scan ajeno y fotos de distintas campañas no acreditan alineación ni reconstrucción bajo control del worker."
+    }
+  ],
+  "components": [
+    {
+      "id": "capture",
+      "role": "Reconstrucción gaussiana auténtica de una oficina real",
+      "strategy": "Consumir directamente bytes .splat del repositorio fuente original publicado y fijado por commit",
+      "constraints": "Prohibido sustituir binario ausente por geometría decorativa o 3D fabricado."
+    },
+    {
+      "id": "camera",
+      "role": "Navegación entre poses extrínsecas de cámaras reales",
+      "strategy": "Leer cameras.json original por CORS y disponer fallback de dos poses literales verificadas",
+      "constraints": "Preservar vectores forward y up; origen en unidades arbitrarias sin declarar metros."
+    },
+    {
+      "id": "alignment",
+      "role": "Comparador reutilizable de fotograma y vista 3D",
+      "strategy": "Superposición manual local opcional con desplazamiento, zoom, opacidad y exportación JSON",
+      "constraints": "Sin originales emparejados no calcular RMSE de reproyección ni certificar escala."
+    }
+  ],
+  "questions": [
+    {
+      "id": "q1",
+      "target": "capture",
+      "question": "¿Hay bytes de captura genuina y autorización más allá de un embed externo?",
+      "alternatives": [
+        "Datos .splat originales distribuibles bajo MIT del repositorio",
+        "Embed externo sin acceso a bytes de la reconstrucción"
+      ],
+      "evidenceRef": "r1",
+      "finding": "Existe archivo docs/scene.splat (blob GitHub 2733dd9...) y archivo de poses; autorización explícita solo a nivel de repositorio MIT; licencia individual del escaneo aún requiere cotejo.",
+      "decisionImpact": "Elegir visor WebGL propio con entrada real y política de bloqueo si falla descarga."
+    },
+    {
+      "id": "q2",
+      "target": "camera",
+      "question": "¿Las fotos usadas en comparación corresponden a las mismas poses de cámara?",
+      "alternatives": [
+        "Fotogramas originales nombrados en cameras.json con intrínsecos recuperados",
+        "Fotos de otra campaña sin extrínsecos comunes"
+      ],
+      "evidenceRef": "r2",
+      "finding": "Cameras.json incluye posiciones, forward, up y nombres de JPG; los JPG fuente no se distribuyen en el demo accesible.",
+      "decisionImpact": "Permitir navegación por poses, dejar comparación foto-vista en estado pendiente y nunca inferir calibración métrica."
+    },
+    {
+      "id": "q3",
+      "target": "alignment",
+      "question": "¿Debe haber una interfaz permanente que tape la sala para comparar imágenes?",
+      "alternatives": [
+        "Escena a pantalla completa con inspector colapsado",
+        "Comparador abierto y superpuesto de inicio"
+      ],
+      "evidenceRef": "r4",
+      "finding": "La auditoría detectó que el envoltorio documental y controles extra ocultaban el valor de la captura misma.",
+      "decisionImpact": "Render de protagonista completo, dos vistas y una acción para abrir un comparador bajo demanda."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "d1",
+      "questionId": "q1",
+      "componentIds": [
+        "capture"
+      ],
+      "choice": "Carga directa de la captura real .splat",
+      "rejected": "Iframe propietario como único resultado visible",
+      "productionChange": "index.html incorpora GaussianSplats3D para render directo, barra de progreso y estado de error sin geometría suplente.",
+      "why": "Hace observable la fuente en un visor diseñado en esta tarea y evita repetir la falla anterior."
+    },
+    {
+      "id": "d2",
+      "questionId": "q2",
+      "componentIds": [
+        "camera",
+        "alignment"
+      ],
+      "choice": "Dos poses originales y overlay foto opcional marcado no calibrado",
+      "rejected": "Atribuir poses a fotos de campañas distintas",
+      "productionChange": "Pose 01 y 02 cambian cámara 3D, y foto-view-aligner.js exporta sesión manual con status explícito.",
+      "why": "Evita falsos resultados de precisión a partir de imágenes no correspondientes."
+    },
+    {
+      "id": "d3",
+      "questionId": "q3",
+      "componentIds": [
+        "capture",
+        "alignment"
+      ],
+      "choice": "La habitación ocupa todo el viewport inicial",
+      "rejected": "Panel comparador fijo sobre geometría 3D",
+      "productionChange": "HTML viewport 390/1440 con inspector oculto hasta invocación y controles mínimos.",
+      "why": "La primera impresión debe ser una sala capturada, no una herramienta burocrática."
+    }
+  ],
+  "relations": [
+    {
+      "from": "capture",
+      "to": "camera",
+      "invariant": "Pose de cada vista debe residir en el sistema de coordenadas del scan real.",
+      "failure": "Vista apunta fuera de la habitación o modelo no decodifica.",
+      "test": "Comparar dos encuadres en navegador y observar superficie escaneada."
+    },
+    {
+      "from": "camera",
+      "to": "alignment",
+      "invariant": "Un fotograma original se debe emparejar con el frame/pose que lo originó.",
+      "failure": "Overlay de foto no correspondiente parece reproyección calibrada sin serlo.",
+      "test": "Pares originales reales con focal e intrínsecos antes de métrica."
+    }
+  ],
+  "risks": [
+    {
+      "componentIds": [
+        "capture"
+      ],
+      "severity": "high",
+      "failure": "CORS, dependencia CDN, WebGL2 o tamaño impiden cargar el activo real.",
+      "prevention": "Fijar origen/commit reales, mostrar error de decodificación y evitar escenas sustitutas.",
+      "test": "Abrir en navegador 390/1440 y examinar framebuffer y consola.",
+      "status": "NOT_RUN"
+    },
+    {
+      "componentIds": [
+        "camera",
+        "alignment"
+      ],
+      "severity": "high",
+      "failure": "No existen fotogramas originales emparejados y calibración intrínseca accesible para dos comparaciones medidas.",
+      "prevention": "No inferir datos ni declarar métrica; permitir foto local original y exportar solo overlay manual.",
+      "test": "Adquirir dos originales con permisos y parámetros intrínsecos; comparar pose/proyección real.",
+      "status": "NOT_RUN"
+    },
+    {
+      "componentIds": [
+        "camera"
+      ],
+      "severity": "medium",
+      "failure": "Camera.up invertido y orientación errada.",
+      "prevention": "Usar vectores forward/up originales del pipeline y un test de normalización.",
+      "test": "Ejecutar módulo lógico y rotación visual en dos poses.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "acceptance": [
+    {
+      "kind": "functional",
+      "criterion": "La obra lee un activo .splat real y no un iframe ni una habitación de primitivas.",
+      "oracle": "Verificar respuesta binaria y render 3D con cambio de perspectiva.",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "visual",
+      "criterion": "Primera pantalla 390/1440 con habitación como protagonista y sin paneles invasivos.",
+      "oracle": "Capturas reales de ambos tamaños comprobando framebuffer y controles.",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "interactive",
+      "criterion": "Dos poses reales seleccionables y navegación drag/touch operativa.",
+      "oracle": "Manipular cámaras con pointer/touch y comparar encuadre.",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "functional",
+      "criterion": "Módulo exporta registro 2D de overlay, pero nunca precisión métrica inexistente.",
+      "oracle": "Tests de funciones y export JSON, sin afirmar validez fotogramétrica.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "licensing": "Fuente pública Ahmedn1/roomsplat, licencia de repositorio MIT verificada; no se atribuye automáticamente permiso separado del escaneo y se cita al autor. No redistribuimos ni publicamos fotografías privadas; cliente consulta los bytes que el autor publicó.",
+  "resources": "GitHub connector con lectura de scene.splat (binario, blob SHA 2733dd9b6f05199b5197b421bda606b05735f4b3) y cameras.json (JSON original); Three.js 0.170, gaussian-splats-3d 0.4.6 por CDN; editor JS.",
+  "environmentLimits": "Este entorno no pudo acceder a la URL de salida desde un navegador con WebGL; CDN/CORS, capturas de 390/1440, fotos originales emparejadas, geometría métrica y Android quedan NOT_RUN. No se tiene acceso a GPU COLMAP ni a los JPEG originales del vídeo.",
+  "artDirection": {
+    "schema": "prometeo.art-direction.first-article/v1",
+    "medium": "3d",
+    "taskId": "3d-w7-20261122-07",
+    "briefSha": "58de659e2aa01c0746d59ca6f95c36bdc59f3030",
+    "flowRef": "prometeo 3D 2.3.0, SHA256 reportado 53bc9e2e4b37c99e92d3494af8dfa4461cd4644b15f980e32497a8428b067b3f (revalidación NOT_RUN)",
+    "promise": {
+      "subject": "Una oficina auténticamente capturada en 3D",
+      "intent": "Que la propia sala real llene el primer frame sin que una interfaz inventada se haga protagonista."
+    },
+    "benchmark": {
+      "url": "https://github.com/Ahmedn1/roomsplat",
+      "description": "Documentación y visor fuente realmente inspeccionados: demo de oficina 3DGS desde video real, dos calidades y cámara COLMAP; render de referencia NOT_RUN.",
+      "status": "OBSERVED"
+    },
+    "techniques": [
+      {
+        "family": "Splat 3DGS sobre video real con poses COLMAP",
+        "viability": "Blob real scene.splat de 11 MB y cameras.json públicos encontrados en GitHub; render en navegador pendiente.",
+        "license": "Licencia MIT del repositorio verificada, alcance de derechos sobre captura por confirmar."
+      },
+      {
+        "family": "Malla fotogramétrica de fotos o RGB-D autorizados",
+        "viability": "Ruta viable solamente con escaneo propio/CC verificado y exportación mesh en formato compatible, recurso todavía no adquirido.",
+        "license": "Exigir permiso verificable del capturador y autorización de redistribución."
+      }
+    ],
+    "selectedTechnique": "Splat 3DGS sobre video real con poses COLMAP",
+    "firstFrame": {
+      "openingDescription": "Un solo render WebGL de oficina real a pantalla completa, sin paneles ni tarjetas.",
+      "focalSubject": "Paredes, mobiliario y espacio de una oficina verdaderamente escaneada.",
+      "minimalUI": "Título discreto, dos cámaras originales y un control para abrir comparación opcional.",
+      "checks": [
+        {
+          "criterion": "La nube gaussiana debe ser visible tras la carga, no un lienzo vacío.",
+          "oracle": "Screenshot de WebGL y comprobación de consola 390/1440.",
+          "viewport": "both"
+        },
+        {
+          "criterion": "El inspector no debe cubrir el primer encuadre ni crear panel redundante.",
+          "oracle": "Captura de apertura 390 y 1440 y porcentaje de área cubierta.",
+          "viewport": "both"
+        },
+        {
+          "criterion": "Las poses A/B deben revelar perspectivas espaciales realmente distintas.",
+          "oracle": "Dos capturas por viewport tras tocar ambos controles.",
+          "viewport": "both"
+        }
+      ],
+      "observations": []
+    },
+    "firstArticle": {
+      "target": "Un escaneo real descargado, decodificado, visible en dos poses.",
+      "rejectWhen": "CORS, decodificación 3DGS o foto fuente bloqueen resultado honesto.",
+      "switchTo": "Malla fotogramétrica de fotos o RGB-D autorizados",
+      "oracle": "Captura real de escena, cambio de pose y fuente/permiso leídos en el mismo dispositivo.",
+      "resourceProof": "GitHub blob scene.splat 2733dd9b6f05199b5197b421bda606b05735f4b3 y camera poses reales JSON descargadas vía conector; WebGL NOT_RUN.",
+      "status": "NOT_RUN"
+    },
+    "humanApproved": false
+  },
+  "qualityBarVersion": "QBAR-1",
+  "deepSpecValidatorState": "SPIKE_REQUIRED",
+  "artDirectionValidatorState": "FIRST_ARTICLE_REQUIRED",
+  "humanApproved": false
+}
