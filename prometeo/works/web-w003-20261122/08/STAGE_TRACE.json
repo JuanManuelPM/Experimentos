@@ -1,0 +1,80 @@
+{
+  "schema": "prometeo.web.stage-trace/v1",
+  "taskId": "web-w003-20261122-08",
+  "flowRef": "JuanManuelPM/pruebas@candidate/prometeo-web-art-gate-w002-20261122:cloud-lab/flow-studio-v3/experiments/semilla-parallel-launchpad/launcher-workspace-v4/prometeo/learning/web-design-studio/workflows/WEB_FACTORY_V2/FLOW.json",
+  "flowSha": "1a0e709beec9a84986fc33c5ce4ab0a162dccaf2",
+  "flowVersion": "2.0.0",
+  "validatorCompatibility": "NOT_RUN: v1 trace not certified against private graph 2.0.0",
+  "events": [
+    {
+      "stage": "S00",
+      "status": "OBSERVED",
+      "decision": "Recuperar identidad, documentos y blobs",
+      "output": "brief launch sha y QLOOP/QBAR/DEEP/ART",
+      "evidence": "FLOW.lock.json"
+    },
+    {
+      "stage": "S01",
+      "status": "OBSERVED",
+      "decision": "Paridad UI→HTML en entorno independiente",
+      "output": "Aceptación específica definida antes de producto",
+      "evidence": "PREPRODUCTION.deep-spec-v1.json"
+    },
+    {
+      "stage": "S02",
+      "status": "OBSERVED",
+      "decision": "Referencia de GrapesJS, Readymag y Framer",
+      "output": "Documento único y control explícito de tiempos",
+      "evidence": "PREPRODUCTION.deep-spec-v1.json"
+    },
+    {
+      "stage": "S03",
+      "status": "OBSERVED",
+      "decision": "Renderer HTML autónomo vs paquete ZIP",
+      "output": "Familias comparadas en Book",
+      "evidence": "PREPRODUCTION.deep-spec-v1.json"
+    },
+    {
+      "stage": "S05",
+      "status": "OBSERVED_LOCAL_ONLY",
+      "decision": "Primer frame y primer artículo con WebM original",
+      "output": "Capturas locales 390/1440 y descarga autonoma",
+      "evidence": "QA.md"
+    },
+    {
+      "stage": "S08",
+      "status": "OBSERVED",
+      "decision": "Construcción de herramienta y render",
+      "output": "index.html, renderer.mjs, sample-story.html",
+      "evidence": "index.html"
+    },
+    {
+      "stage": "S10",
+      "status": "OBSERVED_LOCAL_ONLY",
+      "decision": "Browser E2E descargando HTML por UI y reabriendo bytes offline",
+      "output": "18 de 18 controles funcionales PASS",
+      "evidence": "qa/qa-results.json"
+    },
+    {
+      "stage": "S11",
+      "status": "IN_PROGRESS",
+      "decision": "Publicar rama candidata y salida separada sin alterar W002",
+      "output": "GitHub candidate commit y Pages pendiente",
+      "evidence": "QA.md"
+    }
+  ],
+  "skipped": [
+    {
+      "stage": "PUBLIC_BROWSER",
+      "reason": "No confirmado por navegador público; no inferir de git push"
+    },
+    {
+      "stage": "FILE_URL",
+      "reason": "ERR_BLOCKED_BY_ADMINISTRATOR al navegar file://; test de set_content sí funciona"
+    },
+    {
+      "stage": "HUMAN_APPROVED",
+      "reason": "Solamente el humano puede aprobar artísticamente"
+    }
+  ]
+}

@@ -1,0 +1,303 @@
+{
+  "version": "DEEP-SPEC-1",
+  "medium": "web",
+  "depth": "SISTEMA",
+  "taskId": "web-w003-20261122-08",
+  "batchId": "web-w003-20261122",
+  "taskNumber": 8,
+  "launchBlobSha": "bef87bf57c789d2b0605ca9ff81a5d3bbaab5e35",
+  "qualityBarVersion": "QBAR-1",
+  "brief": "SECUENCIA: editor visual funcional sin código para historias web de texto, imagen y video autorizado, orden, tiempos, animaciones, preview móvil/escritorio y exportación HTML autónoma.",
+  "intent": {
+    "experience": "Crear, editar y exportar una historia visual con calidad editorial sin código ni dependencia del editor tras descargar.",
+    "distinctAbility": "El documento exportado desde la interfaz reproduce el mismo renderer y medios embebidos en un contexto Chromium independiente sin red."
+  },
+  "references": [
+    {
+      "id": "R1",
+      "status": "OBSERVED",
+      "url": "https://grapesjs.com/docs/modules/Components",
+      "observation": "GrapesJS documenta la distinción entre modelo de componentes y vista del editor, útil para mantener una única fuente de verdad del export HTML."
+    },
+    {
+      "id": "R2",
+      "status": "OBSERVED",
+      "url": "https://help.readymag.com/hc/en-us/articles/360020527292-Animation",
+      "observation": "Readymag documenta disparadores y pasos de animación; la edición de ritmos debe quedar accesible también sin animaciones."
+    },
+    {
+      "id": "R3",
+      "status": "OBSERVED",
+      "url": "https://www.framer.com/help/articles/can-i-export-my-website-to-html-and-self-host-it/",
+      "observation": "La documentación de Framer explica que no proporciona exportación HTML autónoma para autoalojar; esto exige demostrar portabilidad genuina."
+    }
+  ],
+  "components": [
+    {
+      "id": "scene",
+      "role": "Modelo de escena con identificadores y datos semánticos",
+      "strategy": "JSON secuencia.story/v2 con tipos portada texto imagen y video",
+      "constraints": "Sin HTML arbitrario ni dependencias ocultas; validar MIME y máximo de 3 MiB"
+    },
+    {
+      "id": "studio",
+      "role": "Editor visual y storyboard reordenable con inspector de escena",
+      "strategy": "HTML semántico, botones mover y drag, campos nativos y preview iframe",
+      "constraints": "Vista de 390 y 1440 px sin desbordes, funcionalidades también por teclado"
+    },
+    {
+      "id": "runtime",
+      "role": "Renderer reusable que representa los capítulos exportados",
+      "strategy": "Una función makeStandalone reutilizada en iframe y Blob real",
+      "constraints": "CSS y JS inline, reduced-motion y contenido serializado escapado"
+    },
+    {
+      "id": "export",
+      "role": "Módulo que descarga archivo HTML y JSON con medios incrustados",
+      "strategy": "Blob de bytes idénticos al preview y media local en data URL",
+      "constraints": "Un HTML sin scripts remotos ni fetch, con video WebM decodificable"
+    }
+  ],
+  "questions": [
+    {
+      "id": "Q1",
+      "target": "runtime",
+      "question": "¿Cómo verificar que la previsualización y el HTML real exportado no divergen tras editar?",
+      "alternatives": [
+        "Dos renderers independientes",
+        "Un único documento para srcdoc y descarga"
+      ],
+      "finding": "GrapesJS documenta el modelo de componentes como fuente de verdad para la salida, evitando duplicar la autoría.",
+      "evidenceRef": "R1",
+      "decisionImpact": "El mismo makeStandalone genera srcdoc y Blob; Playwright comprueba orden después de descargar."
+    },
+    {
+      "id": "Q2",
+      "target": "export",
+      "question": "¿Puede el HTML reproducir material audiovisual original cuando queda completamente sin red?",
+      "alternatives": [
+        "Cargar medios de un CDN",
+        "Incrustar media local como data URI y controlar tipo/tamaño"
+      ],
+      "finding": "Framer advierte que no soporta export HTML independiente, evidenciando la necesidad de prueba explícita de autonomía.",
+      "evidenceRef": "R3",
+      "decisionImpact": "Incrustar SVG original y WebM real de prueba, abrir bytes descargados en nuevo contexto Chromium offline."
+    },
+    {
+      "id": "Q3",
+      "target": "studio",
+      "question": "¿Cómo equilibrar edición de duración y animación con una superficie legible de 390 px?",
+      "alternatives": [
+        "Timeline complejo con pistas superpuestas",
+        "Storyboard editorial e inspector por escena"
+      ],
+      "finding": "Readymag explica triggers y etapas de animación, pero no exige una única complejidad de UI a la persona autora.",
+      "evidenceRef": "R2",
+      "decisionImpact": "Vista principal editorial, acciones básicas y reloj por escenas, mantener reduced-motion y navegación táctil."
+    }
+  ],
+  "relations": [
+    {
+      "from": "scene",
+      "to": "runtime",
+      "invariant": "Id, texto y orden serializados deben coincidir entre preview y HTML descargado",
+      "failure": "Dos versiones del modelo producen capítulos con distinto orden",
+      "test": "Descarga desde UI y comparación de secciones rendered en Chromium offline"
+    },
+    {
+      "from": "studio",
+      "to": "scene",
+      "invariant": "La edición y el reordenamiento conservan contenido y controles para táctil y teclado",
+      "failure": "La interfaz deja perder contenido o foco en cada pulsación",
+      "test": "Escribir una escena, verificar valores, mover capítulo y cotejar preview"
+    },
+    {
+      "from": "export",
+      "to": "runtime",
+      "invariant": "El HTML funciona en un nuevo contexto sin requests de red y decodifica medios",
+      "failure": "El documento depende del servidor de autoría o no contiene el video",
+      "test": "Contexto Playwright offline, comprueba bytes, video.readyState y zero requests"
+    }
+  ],
+  "decisions": [
+    {
+      "id": "D1",
+      "questionId": "Q1",
+      "componentIds": [
+        "runtime",
+        "scene",
+        "export"
+      ],
+      "choice": "Generador único makeStandalone para preview y descarga",
+      "rejected": "Segundo renderer simplificado para export",
+      "productionChange": "La interfaz asigna iframe.srcdoc al documento exacto que también descarga con Blob; E2E compara luego contenido.",
+      "why": "Evita divergencia accidental entre vista editable y artefacto publicado."
+    },
+    {
+      "id": "D2",
+      "questionId": "Q2",
+      "componentIds": [
+        "export",
+        "scene"
+      ],
+      "choice": "Video de prueba real y SVG original incrustados como data URI",
+      "rejected": "Enlace remoto oculto en la historia exportada",
+      "productionChange": "GUI importa WebM real desde disco y exporta el archivo completo; verificación Chromium con red deshabilitada.",
+      "why": "La portabilidad debe ser real y mensurable, no simple afirmación del exportador."
+    },
+    {
+      "id": "D3",
+      "questionId": "Q3",
+      "componentIds": [
+        "studio",
+        "runtime"
+      ],
+      "choice": "Storyboard y inspector editorial con controles de orden alternativos",
+      "rejected": "Timeline técnico que invade el primer frame",
+      "productionChange": "Editor con dos paneles, previsualización protagonista, controles concretos y media queries para 390/1440.",
+      "why": "Facilita construir la historia y verificar el resultado sin reintroducir una UI invasiva."
+    }
+  ],
+  "risks": [
+    {
+      "componentIds": [
+        "export",
+        "runtime"
+      ],
+      "severity": "high",
+      "failure": "HTML descargado pierde imagen o video y requiere conexión, invalidando la principal promesa",
+      "prevention": "Autocontener recursos mediante data URLs y crear una prueba de descarga real desde UI",
+      "test": "Chromium hace clic export, abre los bytes en contexto offline y decodifica WebM",
+      "status": "OBSERVED"
+    },
+    {
+      "componentIds": [
+        "studio",
+        "scene"
+      ],
+      "severity": "medium",
+      "failure": "Al mover o editar una escena desaparece el texto o se rompe el orden visible",
+      "prevention": "Mantener IDs y campos del inspector sincronizados sin reemplazar foco por cada tecla",
+      "test": "E2E edita y reordena, verifica preview y salida",
+      "status": "OBSERVED"
+    },
+    {
+      "componentIds": [
+        "export",
+        "runtime"
+      ],
+      "severity": "medium",
+      "failure": "La ejecución con URL directa file:// puede ser bloqueada por el entorno",
+      "prevention": "Separar el test de bytes offline de la validación file:// y publicar límite honesto",
+      "test": "Navegar con page.goto a file:// al HTML exportado (ERR_BLOCKED_BY_ADMINISTRATOR)",
+      "status": "NOT_RUN"
+    }
+  ],
+  "acceptance": [
+    {
+      "kind": "functional",
+      "criterion": "El HTML descargado desde la interfaz contiene los mismos capítulos que la preview",
+      "oracle": "Prueba Chromium UI→Blob real→contexto offline compara orden y texto",
+      "status": "OBSERVED"
+    },
+    {
+      "kind": "interactive",
+      "criterion": "Se agregan y reordenan capítulos y el video real se importa sin excepción",
+      "oracle": "Playwright conduce controles de UI y verifica videoWidth 320, videoHeight 180",
+      "status": "OBSERVED"
+    },
+    {
+      "kind": "visual",
+      "criterion": "Primera pantalla editorial visible a 390 y 1440 sin barras horizontales",
+      "oracle": "Captura real local en Chromium, lectura visual y ancho de scroll <= ancho viewport",
+      "status": "OBSERVED"
+    },
+    {
+      "kind": "functional",
+      "criterion": "Se puede abrir el HTML con doble clic vía navegador del sistema",
+      "oracle": "Navegación directa file:// en entorno independiente",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "visual",
+      "criterion": "El resultado fue aprobado por el criterio artístico humano",
+      "oracle": "Revisión humana voluntaria posterior de las pantallas publicadas",
+      "status": "NOT_RUN"
+    }
+  ],
+  "licensing": "CSS, HTML, JS, copia editorial y SVG de demostración son originales; video es FFmpeg testsrc2 sintético propio y no footage narrativo. Los medios futuros requieren autorización y son introducidos explícitamente por quien edita.",
+  "resources": "HTML CSS JS en un archivo autónomo, Playwright Chromium local, FFmpeg WebM VP9 320×180 2 segundos, GitHub candidate branch y Pages aislado.",
+  "environmentLimits": "Chromium pudo ejecutar la interfaz con page.set_content, descargar bytes reales y leer en contexto independiente con red deshabilitada. page.goto para file:// y localhost devolvió ERR_BLOCKED_BY_ADMINISTRATOR. Android físico, navegador público y criterio humano no observados.",
+  "oldBatchId": "web-w002-20261122",
+  "oldLaunchBlobSha": "cd88a07941ab62072f6de5ee69764308f1ec2387",
+  "artDirection": {
+    "schema": "prometeo.art-direction.first-article/v1",
+    "medium": "web",
+    "taskId": "web-w003-20261122-08",
+    "briefSha": "bef87bf57c789d2b0605ca9ff81a5d3bbaab5e35",
+    "flowRef": "JuanManuelPM/pruebas@candidate/prometeo-web-art-gate-w002-20261122:cloud-lab/flow-studio-v3/experiments/semilla-parallel-launchpad/launcher-workspace-v4/prometeo/learning/web-design-studio/workflows/WEB_FACTORY_V2/FLOW.json",
+    "promise": {
+      "subject": "Un editor donde la historia domina el lienzo y produce una web independiente",
+      "intent": "La primera pantalla debe parecer herramienta editorial acabada, con escena protagonista y controles proporcionados."
+    },
+    "benchmark": {
+      "url": "https://grapesjs.com/docs/modules/Components",
+      "description": "Referencia técnica observada: separación de modelo y vista para que la salida HTML conserve una única representación.",
+      "status": "OBSERVED"
+    },
+    "techniques": [
+      {
+        "family": "Documento HTML autónomo con renderer único",
+        "viability": "Funciona sin compilación ni conexión; descargado desde UI, verificado offline en Chromium.",
+        "license": "Código original y medios sintéticos originales, sin librerías externas."
+      },
+      {
+        "family": "Empaquetado de escenas y reproductor ZIP",
+        "viability": "Técnica distinta con assets externos relativos; falla como export de un HTML único pero viable si la vía inline rompe tamaños.",
+        "license": "Archivos originales/licenciados incluidos dentro de ZIP, sin dependencias comerciales."
+      }
+    ],
+    "selectedTechnique": "Documento HTML autónomo con renderer único",
+    "firstFrame": {
+      "openingDescription": "Editor crema y tinta; storyboard a izquierda, historia preview central dominante e inspector a derecha, cabecera discreta.",
+      "focalSubject": "El contenido editorial visible de la primera escena, no un overlay de navegación.",
+      "minimalUI": "Solo bloques, vista móvil/escritorio y export en franja superior; los controles del editor no aparecen en la historia exportada.",
+      "checks": [
+        {
+          "criterion": "Composición de la historia protagonista a 1440 y ningún panel la tapa",
+          "oracle": "Captura local de Chromium 1440 comparada con árbol DOM y ausencia de overflow",
+          "viewport": "1440"
+        },
+        {
+          "criterion": "En 390 la historia conserva la lectura y no produce scroll horizontal",
+          "oracle": "Captura local Chromium 390 y scrollWidth <= innerWidth",
+          "viewport": "390"
+        },
+        {
+          "criterion": "Exportación muestra solo reproducción limpia sin paneles del editor",
+          "oracle": "Comparar DOM de iframe preview con HTML descargado en página independiente",
+          "viewport": "both"
+        }
+      ],
+      "observations": []
+    },
+    "firstArticle": {
+      "target": "Export de un capítulo de imagen y video WebM real de prueba dentro de una historia de cinco escenas",
+      "rejectWhen": "El HTML descargado necesita red o no decodifica el video incrustado",
+      "switchTo": "Empaquetado de escenas y reproductor ZIP",
+      "oracle": "GUI real descarga HTML; nuevo Chromium offline preserva orden y video listo con readyState 4",
+      "resourceProof": "SVG autoría original y FFmpeg testsrc2 VP9 WebM de 320×180 con hash local y video presente en historia exportada.",
+      "status": "OBSERVED_PASS",
+      "evidence": {
+        "url": "https://github.com/JuanManuelPM/Experimentos/blob/candidate/prometeo-web-w003-20261122-08/prometeo/works/web-w003-20261122/08/QA.md",
+        "description": "Informe del primer artículo y 18 tests Chromium; capturas PNG solo disponibles como artefactos locales, no se finge su publicación."
+      }
+    },
+    "humanApproved": false
+  },
+  "validation": {
+    "deepSpec": "STRUCTURAL_VALIDATOR_NOT_RUN_IN_THIS_GITHUB_STEP",
+    "artDirection": "FIRST_FRAME_CAPTURE_REQUIRED (remote screenshot evidence unpublished)",
+    "humanApproved": false
+  }
+}
