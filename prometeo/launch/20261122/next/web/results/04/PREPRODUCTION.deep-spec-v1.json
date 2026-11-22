@@ -1,0 +1,282 @@
+{
+  "version": "DEEP-SPEC-1",
+  "medium": "web",
+  "depth": "SISTEMA",
+  "taskId": "web-w002-20261122-04",
+  "batchId": "web-w002-20261122",
+  "taskNumber": 4,
+  "briefSource": {
+    "repo": "JuanManuelPM/Experimentos",
+    "ref": "gh-pages",
+    "path": "prometeo/launch/20261122/next/web/LAUNCH.md",
+    "blobSha": "cd88a07941ab62072f6de5ee69764308f1ec2387"
+  },
+  "qualityBarVersion": "QBAR-1",
+  "brief": "TIPO VIVO: micrositio original de fundición ficticia que permite escribir, alterar ejes reales y explorar composiciones cinéticas con licencia válida; motor reutilizable, responsive, teclado y movimiento reducido.",
+  "intent": {
+    "experience": "Convertir el gesto de probar una tipografía en un laboratorio editorial con tacto, ritmo y composición, sin perder la posibilidad de leer y escribir.",
+    "distinctAbility": "Cinco ejes auténticos unidos a texto editable y escenas cinéticas pausables mediante un motor independiente de la interfaz."
+  },
+  "references": [
+    {
+      "id": "R1",
+      "status": "OBSERVED",
+      "url": "https://www.recursive.design/",
+      "observation": "Se observó documentación y demo textual de los cinco ejes Recursive: MONO 0..1, CASL 0..1, wght 300..1000, slnt -15..0 y CRSV 0..1; el sitio explica la estabilidad métrica por estilo y atribuye licencia OFL 1.1.",
+      "observationMode": "TEXT_HTML",
+      "purpose": "Validar material tipográfico y límites reales"
+    },
+    {
+      "id": "R2",
+      "status": "OBSERVED",
+      "url": "https://dinamodarkroom.com/",
+      "observation": "La página de Dinamo Darkroom describe Font Gauntlet como herramienta para previsualizar y animar conjuntamente los ejes de fuentes variables; se toma como referencia de exploración interactiva, sin reproducir su diseño.",
+      "observationMode": "TEXT_HTML",
+      "purpose": "Potenciar la idea de instrumento tipográfico"
+    },
+    {
+      "id": "R3",
+      "status": "OBSERVED",
+      "url": "https://studio-size.com/work/exat/",
+      "observation": "Studio Size explica que desarrolló motion, pósteres y micrositio para Exat vinculando estructura de la letra y arte editorial; solo se observó texto público, no playback ni captura visual.",
+      "observationMode": "TEXT_HTML",
+      "purpose": "Exigir expresión editorial distinta de simples sliders"
+    },
+    {
+      "id": "R4",
+      "status": "OBSERVED",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/font-variation-settings",
+      "observation": "La referencia MDN detalla el ajuste de ejes OpenType mediante etiquetas de cuatro caracteres en font-variation-settings, usado para construir el motor sin asumir que una fuente admite ejes ajenos.",
+      "observationMode": "TECH_DOCS",
+      "purpose": "Garantizar aplicación CSS real"
+    },
+    {
+      "id": "R5",
+      "status": "OBSERVED",
+      "url": "https://github.com/arrowtype/recursive/blob/main/OFL.txt",
+      "observation": "Se examinó el encabezado de licencia: copyright de The Recursive Project Authors, SIL Open Font License 1.1; la obra acredita explícitamente autor original y no presenta la familia como creación de la fundición ficticia.",
+      "observationMode": "LICENSE_TEXT",
+      "purpose": "Cumplimiento de permisos"
+    }
+  ],
+  "components": [
+    {
+      "id": "C1",
+      "role": "Motor reusable de ejes variables y validación numérica, exportable como módulo ESM.",
+      "strategy": "Mapa de ejes fuente con clamp, serialización CSS y presets; interface de datos separada de DOM.",
+      "constraints": "Usar únicamente las cinco variaciones válidas de Recursive; valores no numéricos se normalizan y no escapan de rango."
+    },
+    {
+      "id": "C2",
+      "role": "Editor tipográfico interactivo de texto libre y composición editorial adaptable.",
+      "strategy": "Textarea semántica, specimen con textContent, sliders nativos, badges de ejes y presets accesibles.",
+      "constraints": "Soportar teclado y táctil; entrada y salida correctamente asociadas; evitar inyección HTML al introducir texto."
+    },
+    {
+      "id": "C3",
+      "role": "Escena cinética con reloj reversible, play/pause y configuración sin movimiento.",
+      "strategy": "Animación por requestAnimationFrame que interpola solo parámetros del motor, desacoplada del scroll y cancelable.",
+      "constraints": "Respetar prefers-reduced-motion y botón de pausa; no bloquear tab ni desbordar a 320 CSS px."
+    },
+    {
+      "id": "C4",
+      "role": "Sistema editorial visual original y navegación por secciones de un micrositio de una sola página.",
+      "strategy": "Fondo azul de tinta, papel marfil, naranja cálido, tipografía display variable y márgenes calibrados en CSS.",
+      "constraints": "Contraste legible, jerarquía incluso sin fuentes externas, diseño medido en 320/768/1440 sin scroll horizontal."
+    }
+  ],
+  "questions": [
+    {
+      "id": "Q1",
+      "target": "C1",
+      "question": "¿Qué familia legal soporta deformación real y ejes suficientemente distintos para una muestra avanzada?",
+      "alternatives": [
+        "Recursive, cinco ejes OFL documentados",
+        "Fuente de pago sin redistribución clara o fuente estática"
+      ],
+      "evidenceRef": "R1",
+      "finding": "Recursive declara cinco ejes y licencia abierta; permite mostrar cambio de dibujo sin copiar Exat.",
+      "decisionImpact": "El motor será específico en límites y se acreditará ArrowType; no se simula eje que la fuente no tenga."
+    },
+    {
+      "id": "Q2",
+      "target": "C3",
+      "question": "¿La cinética debe modificar la composición por CSS transform o la anatomía real del glifo?",
+      "alternatives": [
+        "Interpolar font-variation-settings con ejes válidos",
+        "Escalar o distorsionar visualmente el HTML sin modificar el glifo"
+      ],
+      "evidenceRef": "R2",
+      "finding": "Dinamo centra la exploración de ejes variables animados; la cinética debe pertenecer al dibujo tipográfico.",
+      "decisionImpact": "La escena animará peso, casualidad, monoespaciado y slant sin transformaciones que adulteren la tipografía."
+    },
+    {
+      "id": "Q3",
+      "target": "C4",
+      "question": "¿Qué distingue al micrositio editorial de cinco sliders sobre un hero?",
+      "alternatives": [
+        "Secuencia de composición, póster generativo y espécimen con jerarquía",
+        "Header genérico, tarjetas y sliders repetidos"
+      ],
+      "evidenceRef": "R3",
+      "finding": "El estudio Exat conecta familia, carteles y movimiento en una dirección artística coherente.",
+      "decisionImpact": "Se diseñan pósteres tipográficos y escenas con contraste de escala, sin imitar identidad Exat."
+    },
+    {
+      "id": "Q4",
+      "target": "C2",
+      "question": "¿Cómo preservar texto seguro y control continuo con teclado sin afectar los valores extremos?",
+      "alternatives": [
+        "textarea + textContent + input range + clamps",
+        "contenteditable sin control de estado ni límites"
+      ],
+      "evidenceRef": "R4",
+      "finding": "El motor serializa los cuatro caracteres por eje en font-variation-settings; valores deben medirse y limitarse.",
+      "decisionImpact": "El editor usa controles semánticos y módulo testeable para valores invalidos y límites."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "D1",
+      "questionId": "Q1",
+      "componentIds": [
+        "C1",
+        "C2"
+      ],
+      "choice": "Recursive cinco ejes con crédito y licencia OFL.",
+      "rejected": "Comprar o imitar Exat; atribuir el diseño a la marca ficticia.",
+      "productionChange": "Importar una fuente variable pública y mostrar claramente su autoría y rangos reales.",
+      "why": "La disponibilidad abierta y amplitud de ejes habilitan un espécimen verificable y legal."
+    },
+    {
+      "id": "D2",
+      "questionId": "Q2",
+      "componentIds": [
+        "C1",
+        "C3"
+      ],
+      "choice": "Cinética como interpolación de ejes reales con botón detener.",
+      "rejected": "Scale/skew repetitivos de texto o reproducción obligatoria.",
+      "productionChange": "Crear un controlador temporal que anime los valores del motor; mantener escenas fijas en reduced motion.",
+      "why": "Evita confundir maquillaje de CSS con tipografía variable y respeta accesibilidad."
+    },
+    {
+      "id": "D3",
+      "questionId": "Q3",
+      "componentIds": [
+        "C2",
+        "C4"
+      ],
+      "choice": "Exhibición editorial de alto contraste con especimen gigante y pósteres.",
+      "rejected": "Sustituir la prueba de ejes por formas decorativas y tarjetas.",
+      "productionChange": "Construir tres zonas de lectura y varios usos del mismo material con retícula gráfica propia.",
+      "why": "Demuestra dirección de arte y variación tipográfica entre escalas y no solo un panel técnico."
+    },
+    {
+      "id": "D4",
+      "questionId": "Q4",
+      "componentIds": [
+        "C1",
+        "C2"
+      ],
+      "choice": "Datos separados del DOM, input nativo y serialización restringida.",
+      "rejected": "Asignar HTML editable libre y rangos sin validar.",
+      "productionChange": "Publicar axis-engine.js con clamp y pruebas de frontera reproducibles.",
+      "why": "Permite reutilizar el componente sin depender de la interfaz particular."
+    }
+  ],
+  "relations": [
+    {
+      "from": "C1",
+      "to": "C2",
+      "invariant": "Toda edición de ejes aplica exactamente los mismos valores al specimen y a los numerales visibles.",
+      "failure": "Desalineación entre muestra visible y valores en panel.",
+      "test": "Probar mínimos, máximos y valores de preset."
+    },
+    {
+      "from": "C1",
+      "to": "C3",
+      "invariant": "La animación interpola únicamente los límites válidos; pausa conserva último estado sin saltos inesperados.",
+      "failure": "Los glifos llegan fuera de rango o la pausa reinicia.",
+      "test": "Testear paso de reloj, pausa y restauración."
+    },
+    {
+      "from": "C2",
+      "to": "C4",
+      "invariant": "Un texto largo permanece legible y no crea scroll horizontal en pantallas de 320 píxeles.",
+      "failure": "Texto del usuario desborda el viewport o tapa controles.",
+      "test": "Ancho real 320 y texto de 100 caracteres."
+    },
+    {
+      "from": "ENV",
+      "to": "C3",
+      "invariant": "La preferencia del sistema de movimiento reducido prevalece sobre autoplay y ofrece contenido estático completo.",
+      "failure": "Movimiento forzado al abrir en contexto sensible.",
+      "test": "Emular prefers-reduced-motion y observar DOM."
+    }
+  ],
+  "risks": [
+    {
+      "componentIds": [
+        "C1",
+        "C2"
+      ],
+      "severity": "high",
+      "failure": "Fuente sin licencia válida o atribución engañosa al estudio ficticio.",
+      "prevention": "Verificar el archivo OFL y dar crédito explícito a The Recursive Project Authors y ArrowType.",
+      "test": "Leer texto de la licencia fuente y comprobar que créditos se ven en la pieza.",
+      "status": "OBSERVED"
+    },
+    {
+      "componentIds": [
+        "C1",
+        "C3"
+      ],
+      "severity": "medium",
+      "failure": "El CDN entrega una variante estática que no modifica ejes personalizados.",
+      "prevention": "Pedir los cinco ejes a la API de Google Fonts, declarar font-variation-settings y dar fallback.",
+      "test": "Inspeccionar computed style, carga de fuente y diferencia visual entre extremos.",
+      "status": "NOT_RUN"
+    },
+    {
+      "componentIds": [
+        "C2",
+        "C4"
+      ],
+      "severity": "medium",
+      "failure": "Glifos grandes generan clipping o scrolling horizontal en móvil.",
+      "prevention": "Limitar font-size con clamp, word-break e instrumentar pruebas por viewport.",
+      "test": "Playwright a 320, 768 y 1440 comprobando scrollWidth.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "acceptance": [
+    {
+      "kind": "functional",
+      "criterion": "Cambiar cualquier eje actualiza el espécimen con los valores exactos dentro del rango documentado.",
+      "oracle": "Test de lógica JS y computed style de navegador para cinco ejes.",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "interactive",
+      "criterion": "Texto editable y sliders admiten teclado, puntero, presets y pausa sin bloquear el scroll.",
+      "oracle": "Secuencia Playwright con teclado y pointer en desktop y viewport táctil.",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "visual",
+      "criterion": "Retícula y jerarquía editorial respiran sin scroll horizontal entre 320, 768 y 1440 px.",
+      "oracle": "Capturas de navegador y inspección visual independiente por viewport.",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "functional",
+      "criterion": "prefers-reduced-motion evita reproducción automática y detiene la secuencia si cambia.",
+      "oracle": "Contexto emulado reducedMotion: reduce con aserción de estado.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "resources": "GitHub Pages estático; HTML CSS JS nativos; fuente Recursive por Google Fonts CSS2 y fallback de sistema; Node para tests del motor, Chromium/Playwright locales sin red.",
+  "licensing": "El laboratorio y marca TIPO VIVO son ficticios. Fuente real Recursive © The Recursive Project Authors, ArrowType, SIL OFL 1.1; no se distribuye binario de terceros. No copiar Exat ni su diseño.",
+  "environmentLimits": "Chromium local disponible pero sin acceso a internet en container; QA visual con fuente remota puede quedar limitado. GitHub conectado permite publicar textos de la web, no incorpora binarios de fuente."
+}
