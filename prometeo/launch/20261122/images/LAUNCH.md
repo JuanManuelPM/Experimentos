@@ -3,6 +3,8 @@
 **Identidad:** `images-w001-20261122` · **Estado:** PREPARADA, NO INICIADA; CALIDAD ARTÍSTICA DEL MOTOR NO VERIFICADA.
 **Comando:** `WORK · https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/launch/20261122/images/LAUNCH.md · N`
 
+**Calidad aspiracional compartida (nuevos WORK):** leer [QBAR-1](../../QUALITY_BAR.md) y contrastar composición, iluminación, materiales, anatomía, detalle y lenguaje visual con ilustración, fotografía y diseño profesional real. No declarar final un HTML ilustrativo o formas geométricas que reemplazan el arte. Preservar los diez briefs originales.
+
 Leer el [contrato universal](../UNIVERSAL.md). **Fuente prioritaria confirmada:** [PROMETEO_IMAGE_ROUTER.md](https://github.com/JuanManuelPM/pruebas/blob/main/PROMETEO_IMAGE_ROUTER.md), que apunta a `JuanManuelPM/pruebas@candidate/prometeo-image-studio-unificado-20261117:sistemas/imagenes/`. Recuperar README, CONTRATO_DE_TERMINACION, OPERACION_FUTUROS_CHATS y código real (one_shot.py, prometeo.py). La ficha `prometeo/control:PROMETEO/spaces/image-studio/PROJECT.md` que dice `source_repo=NONE` está atrasada frente a ese router explícito: **no fingir que ya se migró**, pero usar el motor existente y conservar su propietario para la obra nueva. HOTEL-001 y STUDY-002 tienen QA geométrico real; estética equivalente a fotografías o condicionamiento generativo por profundidad NO están verificados. Para cada N, elegir la estrategia de imagen apropiada y disponible, reutilizar la fábrica geométrica si corresponde y no aplicar el motor HOTEL a un póster tipográfico por inercia. La ausencia de una herramienta de render artístico no autoriza declarar obra terminada.
 | N | Encargo literal de obra |
 |---:|---|
