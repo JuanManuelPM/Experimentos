@@ -1,0 +1,233 @@
+{
+  "version": "DEEP-SPEC-1",
+  "medium": "video documental",
+  "depth": "SISTEMA",
+  "brief": "LA CIUDAD BAJO EL AGUA · W002 tarea 03: microdocumental verificable sobre la relación de una ciudad real con el agua, con video real, narración, archivo autorizado y ledger por fotograma y afirmación.",
+  "briefIdentity": {
+    "batchId": "video-w002-20261122",
+    "taskNumber": 3,
+    "taskId": "video-w002-20261122-03",
+    "launchBlob": "d7eebea6d36fc6e5aa3b72cba4e35dd149dc552d",
+    "launcher": "https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/launch/20261122/next/video/LAUNCH.md"
+  },
+  "intent": {
+    "experience": "Un espectador comprende en menos de un minuto cómo Venecia convive con el Adriático, qué sucedió el 12 de noviembre de 2019 y qué cambió en 2020, sin confundir escenas históricas.",
+    "distinctAbility": "Auditar cada tramo del montaje con un registro que une fecha de la imagen, permiso, afirmación, fuente primaria y tiempos exactos del video."
+  },
+  "references": [
+    {
+      "id": "R1",
+      "url": "https://www.comune.venezia.it/it/content/le-acque-alte-eccezionali/",
+      "status": "OBSERVED",
+      "observation": "El Centro Maree de Venecia informa 187 cm medidos por CPSM Punta Salute el 12-XI-2019, segundo máximo frente a 194 cm del 4-XI-1966; precisión y referencia instrumental decisivas."
+    },
+    {
+      "id": "R2",
+      "url": "https://www.isprambiente.gov.it/it/archivio/notizie-e-novita-normative/notizie-ispra/2020/11/12-novembre-2019-2013-un-anno-dall2019acqua-alta-eccezionale-a-venezia",
+      "status": "OBSERVED",
+      "observation": "ISPRA refiere 189 cm sobre Zero Mareografico de Punta della Salute y señala activación operativa de MOSE en octubre 2020; la diferencia con CPSM exige no mezclar series ni referencias."
+    },
+    {
+      "id": "R3",
+      "url": "https://commons.wikimedia.org/wiki/File:Timelapse_from_Rialto_Bridge,_Venice.webm",
+      "status": "OBSERVED",
+      "observation": "Metraje real de 9 segundos filmado en 2012 por Jamie Tabb, CC BY 3.0 verificada por Commons; útil como contexto de la laguna únicamente, nunca presentarlo como inundación de 2019."
+    },
+    {
+      "id": "R4",
+      "url": "https://commons.wikimedia.org/wiki/File:Acqua_alta_del_12_novembre_2019.jpg",
+      "status": "OBSERVED",
+      "observation": "Foto de Piazza San Marco de Ministerio del Interior italiano, fechada 12-XI-2019 y distribuida en Commons CC BY 3.0; imagen de archivo auténtico con atribución."
+    },
+    {
+      "id": "R5",
+      "url": "https://commons.wikimedia.org/wiki/File:Acqua_alta_del_15_novembre_2019.jpg",
+      "status": "OBSERVED",
+      "observation": "Imagen del Comune di Venezia del 15-XI-2019 disponible en Wikimedia Commons CC BY 3.0 Italia; debe conservar fecha diferenciada del pico del día 12."
+    },
+    {
+      "id": "R6",
+      "url": "https://www.pixar.com/a-spark-story",
+      "status": "OBSERVED",
+      "observation": "Referencia de enfoque documental: centrar el relato en el proceso verificable y atribuir la voz de quien narra, sin adjudicar testimonios a imágenes ajenas ni usar material sin licencia."
+    }
+  ],
+  "components": [
+    {
+      "id": "C1",
+      "role": "Selección de archivo cinematográfico existente y fotografías documentales fechadas",
+      "strategy": "Descargar originales de Commons usando URL resuelta y licencias comprobadas; metraje 2012 siempre rotulado",
+      "constraints": "No usar fotos de otro día como imagen del pico del 12; no recortar créditos de marca de agua oficial"
+    },
+    {
+      "id": "C2",
+      "role": "Argumento documental, locución y cifras históricas vinculadas a fuentes primarias",
+      "strategy": "Guion breve con 187 cm CPSM en 2019, 194 cm en 1966 y primera operación de MOSE en 2020",
+      "constraints": "Distinguir 187 (CPSM) de 189 (ISPRA) sin sumar cifras; no fingir entrevista o registro sonoro de 2019"
+    },
+    {
+      "id": "C3",
+      "role": "Montaje H264 AAC con duraciones y continuidad documental etiquetadas",
+      "strategy": "Ocho fragmentos de seis segundos, secuencia ffmpeg y voz sintética declarada",
+      "constraints": "Cada fotograma corresponde a recurso acreditado y la reproducción confirma duración y pista de audio"
+    },
+    {
+      "id": "C4",
+      "role": "Registro reutilizable de procedencia audiovisual por plano y afirmación factual",
+      "strategy": "JSON con segmentos en fotogramas, archivos, fecha de captura, fuente, licencia y claim IDs + verificador",
+      "constraints": "Sin huecos, atribuciones ausentes ni rótulos que hagan pasar archivo 2012 por inundación 2019"
+    }
+  ],
+  "questions": [
+    {
+      "id": "Q1",
+      "target": "C2",
+      "question": "¿Qué nivel mareográfico es históricamente defendible, bajo qué datum se midió y cómo evitar 187 contra 189 cm?",
+      "alternatives": [
+        "Usar registro municipal CPSM 187 cm con instrumento identificado",
+        "Usar 189 cm de ISPRA con su datum y nota de discrepancia"
+      ],
+      "evidenceRef": "R1",
+      "finding": "CPSM municipal usa 187 cm; ISPRA utiliza 189 cm sobre cero mareográfico. La película especificará 187 cm según CPSM y no mezclarán ambos niveles.",
+      "decisionImpact": "El gráfico no combinará métricas incompatibles ni afirmará que una cifra invalida la otra."
+    },
+    {
+      "id": "Q2",
+      "target": "C1",
+      "question": "¿Cómo mostrar la ciudad sin atribuir incorrectamente material de otros años al evento 2019?",
+      "alternatives": [
+        "Usar exclusivamente foto CC BY del día 12, con movimientos de cámara",
+        "Abrir con video de 2012 etiquetado como contexto y reservar archivo de 2019 para afirmaciones históricas"
+      ],
+      "evidenceRef": "R3",
+      "finding": "Existe metraje CC BY 3.0 de 2012 verificado en Commons; el año de captura queda visible sobre la toma.",
+      "decisionImpact": "Cada segmento incluye fecha de captura y papel documental, no recreación presentada como evidencia."
+    },
+    {
+      "id": "Q3",
+      "target": "C3",
+      "question": "¿Qué mecanismo asegura que existe un MP4/AAC reproducible y no solamente una promesa en HTML?",
+      "alternatives": [
+        "Publicar directamente un HTML con recursos remotos",
+        "Codificar un MP4 binario con ffmpeg, decodificarlo y auditar pistas y duración"
+      ],
+      "evidenceRef": "R4",
+      "finding": "El entorno local tiene ffmpeg, pero acceso a los archivos externos está restringido; la descarga y codificación deben probarse en GitHub Actions con fallo explícito.",
+      "decisionImpact": "No emitir DELIVERED hasta que GitHub Actions produzca el binario y ffprobe más decodificación completa sean reales."
+    }
+  ],
+  "relations": [
+    {
+      "from": "C1",
+      "to": "C4",
+      "invariant": "Fecha y autor del archivo coinciden con el rótulo, la fuente y su licencia en cada rango de fotogramas",
+      "failure": "Un archivo de 2012 presentado como crecida de noviembre de 2019 falsearía el documental",
+      "test": "Validador de ranges, assets, fechas y claims"
+    },
+    {
+      "from": "C2",
+      "to": "C4",
+      "invariant": "Cada cifra sonora o gráfica enlaza una fuente primaria identificada, con referencia mareográfica explícita",
+      "failure": "Un gráfico podría presentar 189 de ISPRA y 187 de CPSM como datos comparables sin datum",
+      "test": "Prueba de claims y fuente, inspección de guion"
+    },
+    {
+      "from": "C3",
+      "to": "C4",
+      "invariant": "El conjunto de fragmentos cubre 0 a 1152 fotogramas a 24 FPS y los rótulos documentan las tomas",
+      "failure": "La obra podría contener cortes sin fuente o rótulos alterados durante la exportación",
+      "test": "FFprobe, decodificación completa y control de imágenes en 0, 12, 24, 36 y 47 s"
+    }
+  ],
+  "decisions": [
+    {
+      "id": "D1",
+      "questionId": "Q1",
+      "componentIds": [
+        "C2",
+        "C4"
+      ],
+      "choice": "Citar 187 cm CPSM y 194 cm en 1966 con datum municipal",
+      "rejected": "Promediar 187 y 189 cm o usar 189 sin explicar",
+      "productionChange": "Guion y cartela identifican la estación municipal y excluyen una comparación instrumental incorrecta.",
+      "why": "Fuente primaria municipal y distinción metodológica verificada con ISPRA."
+    },
+    {
+      "id": "D2",
+      "questionId": "Q2",
+      "componentIds": [
+        "C1",
+        "C4"
+      ],
+      "choice": "Dos fuentes de archivo del evento y metraje 2012 explícitamente contextual",
+      "rejected": "Reciclar footage anterior a 2019 como si fuera registro de la inundación",
+      "productionChange": "Pista visual y JSON indican el año real de grabación y la procedencia en todos los rangos.",
+      "why": "Autenticidad documental por encima de una narración visual llamativa pero engañosa."
+    },
+    {
+      "id": "D3",
+      "questionId": "Q3",
+      "componentIds": [
+        "C3",
+        "C4"
+      ],
+      "choice": "Renderer Python+FFmpeg y verificador reutilizable con fallo cerrado",
+      "rejected": "Declarar export porque la página HTML reproduce animaciones",
+      "productionChange": "El CI genera MP4 H264/AAC y PROBE.json solo si descarga los originales y verifica decodificación.",
+      "why": "Probar película real es necesario para distinguir producto de documentación."
+    }
+  ],
+  "risks": [
+    {
+      "componentIds": [
+        "C1",
+        "C3"
+      ],
+      "severity": "high",
+      "failure": "El runner puede no poder descargar los archivos Commons o puede faltar un codec de ffmpeg.",
+      "prevention": "Descarga con User-Agent, comprobación de magic bytes y tamaño; encoder ffmpeg normalizado.",
+      "test": "Spike externo: descargar los tres originales, comprobar firmas y ejecutar 1 s H264/AAC antes de render completo.",
+      "status": "NOT_RUN"
+    },
+    {
+      "componentIds": [
+        "C2",
+        "C4"
+      ],
+      "severity": "medium",
+      "failure": "Confundir fechas de imágenes o puntos cero mareográficos puede inducir a engaño.",
+      "prevention": "Datos y fechas fijados por cada clip con trazabilidad independiente.",
+      "test": "Verificador ledger y auditoría editorial contra Comune e ISPRA.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "acceptance": [
+    {
+      "kind": "logic",
+      "criterion": "La ficha pasa DEEP-SPEC-1 después del spike de descarga y el ledger no tiene huecos.",
+      "oracle": "node deep-spec-v1.mjs + python verify_ledger.py",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "functional",
+      "criterion": "MP4 de 48 segundos, H264 1280x720 24fps más AAC, decodificable de extremo a extremo.",
+      "oracle": "ffprobe y ffmpeg -f null con status de salida, no inferencia por extensión.",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "visual",
+      "criterion": "Rótulos de fecha y fuente legibles; ninguna toma 2012 se presenta como archivo del temporal de 2019.",
+      "oracle": "Inspección de fotogramas de apertura, tres planos intermedios y cierre.",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "audio",
+      "criterion": "Locución original sintética y ambientación instrumental se oyen sin asemejar grabaciones de rescate reales.",
+      "oracle": "Reproducción auditiva completa y control de sync.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "resources": "Python Pillow y ffmpeg 24fps/H264/AAC en GitHub Actions; espeak español como recurso libre local con limitación expresiva declarada. Archivo Commons de Jaime Tabb, Ministerio Interior y Comune.",
+  "licensing": "Material de archivo Commons CC BY 3.0, autor y URL por recurso; música/ambiente sintetizados originales; sin entrevistas, terceros sin permiso ni grabaciones de sirenas atribuibles al suceso.",
+  "environmentLimits": "En el runtime local existen ffmpeg y espeak, pero la red para descargar originales de Wikimedia no resuelve; descarga real y compatibilidad del runner están PENDIENTES hasta la ejecución de GitHub Actions."
+}
