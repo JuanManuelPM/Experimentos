@@ -1,0 +1,77 @@
+{
+  "schema": "prometeo.root.art-gate-qa/v1",
+  "createdOn": "2026-11-22",
+  "status": "CANDIDATE_STRUCTURAL_ONLY",
+  "tests": [
+    {
+      "name": "FIRST_ARTICLE missing",
+      "expected": "FIRST_ARTICLE_REQUIRED",
+      "actual": "FIRST_ARTICLE_REQUIRED",
+      "pass": true
+    },
+    {
+      "name": "Collage face triggers representation switch",
+      "expected": "SWITCH_REPRESENTATION",
+      "actual": "SWITCH_REPRESENTATION",
+      "pass": true
+    },
+    {
+      "name": "Wall covers room",
+      "expected": "SWITCH_REPRESENTATION",
+      "actual": "SWITCH_REPRESENTATION",
+      "pass": true
+    },
+    {
+      "name": "Mobile typography without tests",
+      "expected": "INVALID",
+      "actual": "INVALID",
+      "pass": true
+    },
+    {
+      "name": "Web empty opening",
+      "expected": "INVALID",
+      "actual": "INVALID",
+      "pass": true
+    },
+    {
+      "name": "Undeveloped loop",
+      "expected": "SWITCH_REPRESENTATION",
+      "actual": "SWITCH_REPRESENTATION",
+      "pass": true
+    },
+    {
+      "name": "MP4 only claimed without bytes",
+      "expected": "INVALID",
+      "actual": "INVALID",
+      "pass": true
+    },
+    {
+      "name": "Raster exists but no first frame observed",
+      "expected": "FIRST_FRAME_CAPTURE_REQUIRED",
+      "actual": "FIRST_FRAME_CAPTURE_REQUIRED",
+      "pass": true
+    },
+    {
+      "name": "Fully observed fixture",
+      "expected": "READY_TO_BUILD_NOT_ARTISTICALLY_APPROVED",
+      "actual": "READY_TO_BUILD_NOT_ARTISTICALLY_APPROVED",
+      "pass": true
+    },
+    {
+      "name": "Cosmetic fallback repeats same technique",
+      "expected": "INVALID",
+      "actual": "INVALID",
+      "pass": true
+    },
+    {
+      "name": "AI self approval",
+      "expected": "INVALID",
+      "actual": "INVALID",
+      "pass": true
+    }
+  ],
+  "passed": 11,
+  "total": 11,
+  "mediaTest": "NOT_RUN",
+  "humanApproved": false
+}
