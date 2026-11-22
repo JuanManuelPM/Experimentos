@@ -1,0 +1,77 @@
+{
+  "schema": "prometeo.video.receipt/v1",
+  "id": "video-w001-20261122-08",
+  "room": "video",
+  "batchId": "video-w001-20261122",
+  "taskNumber": 8,
+  "title": "MATERIA / 008",
+  "state": "DELIVERED_TECHNICALLY_QA_PENDING",
+  "publication": "2026-11-22",
+  "source": {
+    "repo": "JuanManuelPM/Experimentos",
+    "branch": "candidate/prometeo-video-w001-08-20261122",
+    "headSha": "749539e9a8abd39610ebe236a6c82f94431971e3",
+    "directory": "prometeo/previews/video/w001/08/",
+    "renderSha": "151720d66d07fe4b8ee4ba8de0299c454d75f60a",
+    "recipeSha": "1bf48488d080047e25607bdb8fd28a09dde385ff"
+  },
+  "references": {
+    "videoStudioProject": "JuanManuelPM/pruebas@prometeo/control:PROMETEO/spaces/video-studio/PROJECT.md",
+    "videoStudioProjectBlob": "fa110be05d4a4d4e5e9f8d19cc33540c3f0b41bf",
+    "campaign": "JuanManuelPM/pruebas@candidate/prometeo-video-studio-parallel-20261111",
+    "frozenCampaignHead": "74e44add752561707ec9032c7193bd31e8fa582a",
+    "engineNote": "Isolated deterministic Pillow/FFmpeg implementation; no claim that an experimental studio engine is validated"
+  },
+  "artifacts": {
+    "preview": "https://juanmanuelpm.github.io/Experimentos/prometeo/previews/video/w001/08/",
+    "mp4": "https://juanmanuelpm.github.io/Experimentos/prometeo/previews/video/w001/08/MATERIA-008.mp4",
+    "mp4BlobSha": "20a0b51aae7dbd9ad44968131a3c940356d691b4",
+    "mp4Bytes": 1322320,
+    "poster": "poster.png",
+    "recipe": "recipe.json",
+    "render": "render.py",
+    "soundtrack": "soundtrack.wav",
+    "probe": "PROBE.json"
+  },
+  "timeline": {
+    "seconds": 12,
+    "frames": 288,
+    "fps": 24,
+    "width": 960,
+    "height": 540,
+    "videoCodec": "h264",
+    "audioCodec": "aac",
+    "materialSources": [
+      "PAPER",
+      "METAL"
+    ],
+    "cutFrames": [
+      36,
+      72,
+      111,
+      150,
+      198,
+      240,
+      264
+    ],
+    "editingStyle": "hard cuts / circular visual match / two original generative media plates"
+  },
+  "rights": "All visual material, text and soundtrack synthesized originally by this task. No third-party clip or personal recording.",
+  "verification": {
+    "GITHUB_ACTIONS_RUN": {
+      "state": "PASS",
+      "runId": 44989188694,
+      "link": "https://github.com/JuanManuelPM/Experimentos/actions/runs/44989188694"
+    },
+    "FFPROBE_VIDEO": "PASS H.264 960x540 24fps 288 frames duration 12.000s",
+    "FFPROBE_AUDIO": "PASS AAC source original synthesized PCM",
+    "EDIT_DECISION_LIST": "PASS seven boundaries defined in source and recipe",
+    "GITHUB_BINARY_READBACK": "PASS MP4 1322320 B SHA 20a0b51aae7dbd9ad44968131a3c940356d691b4",
+    "PAGES_HTTP": "NOT_VERIFIED (independent public HTTP fetch unavailable)",
+    "BROWSER_PLAYBACK": "NOT_RUN",
+    "MOBILE_BROWSER": "NOT_RUN",
+    "AUDIO_AURAL_REVIEW": "NOT_RUN",
+    "HUMAN_ART_APPROVAL": "NOT_RUN"
+  },
+  "next": "Human can evaluate timing, contrast, intelligibility and sound using published MP4; no automatic artistic approval."
+}
