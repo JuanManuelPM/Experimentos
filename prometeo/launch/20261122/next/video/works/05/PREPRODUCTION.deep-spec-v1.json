@@ -1,0 +1,234 @@
+{
+  "version": "DEEP-SPEC-1",
+  "medium": "video",
+  "depth": "SISTEMA",
+  "brief": "Video W002 / número 05 / El corredor: plano secuencia dramático con revelación, continuidad espacial, movimiento de cámara, foco y módulo reusable. LAUNCH SHA d7eebea6d36fc6e5aa3b72cba4e35dd149dc552d.",
+  "intent": {
+    "experience": "Una acción que primero parece amenazante se revela como cuidado, gracias a movimiento de cámara continuo y actuación.",
+    "distinctAbility": "Planificador editable de cámara, bloqueo, foco, velocidad y oclusiones en un corredor métrico."
+  },
+  "references": [
+    {
+      "id": "vimeo",
+      "status": "OBSERVED",
+      "url": "https://vimeo.com/blog/post/staff-pick-premiere-end-of-the-cul-de-sac",
+      "observation": "Vimeo relata la coreografía del corto de Paul Trillo rodado en un solo plano de nueve minutos con cámara dron en varios ejes."
+    },
+    {
+      "id": "victoria",
+      "status": "OBSERVED",
+      "url": "https://www.europeanfilmawards.eu/efa-movie/victoria/",
+      "observation": "La European Film Academy confirma que Victoria fue filmada en una toma continua por múltiples espacios y con preparación coordinada."
+    },
+    {
+      "id": "cuaron",
+      "status": "OBSERVED",
+      "url": "https://www.latimes.com/archives/la-xpm-2006-dec-29-et-children29-story.html",
+      "observation": "La crónica describe los retos físicos de Cuarón y Lubezki al cubrir una secuencia compleja en un vehículo estrecho."
+    }
+  ],
+  "components": [
+    {
+      "id": "camera",
+      "role": "Trayectoria de cámara real en metros y mirada a personajes y acción.",
+      "strategy": "Interpolación continua de seis puntos temporales, un solo reloj de tiempo.",
+      "constraints": "x dentro del corredor, y encima del piso, velocidad continua y aceleraciones moderadas."
+    },
+    {
+      "id": "blocking",
+      "role": "Dos intérpretes y un bastón de apoyo asociados a momentos narrativos.",
+      "strategy": "Personajes estilizados con poses continuas y objetos persistentes.",
+      "constraints": "Identidades coherentes, gesto visible y bastón persistente durante la transformación."
+    },
+    {
+      "id": "corridor",
+      "role": "Hall métrico con luz cálida, ventana fría, puertas, objetos y oclusiones.",
+      "strategy": "Geometría original y perspectiva de una cámara única con profundidad estable.",
+      "constraints": "Puertas, banco, radiador y carrito nunca cambian de escala o posición relativa."
+    },
+    {
+      "id": "sound",
+      "role": "Foley original, pasos, resonancia metálica y ambiente diegético.",
+      "strategy": "Síntesis sonora 48k estéreo y mux final H264/AAC.",
+      "constraints": "Reloj compartido de catorce segundos, sin música ni audios de terceros."
+    }
+  ],
+  "questions": [
+    {
+      "id": "q1",
+      "target": "camera",
+      "question": "¿Cómo revela una acción benévola el desplazamiento de cámara sin recurrir a empalmes ocultos?",
+      "alternatives": [
+        "Avance longitudinal uniforme",
+        "Dolly con órbita lateral y parallax alrededor del carrito"
+      ],
+      "evidenceRef": "vimeo",
+      "finding": "El movimiento lateral cambia la línea de visión y desbloquea el objeto clave.",
+      "decisionImpact": "Cámara x avanza de -1.43m a +1.60m mientras z aumenta 7.55m."
+    },
+    {
+      "id": "q2",
+      "target": "blocking",
+      "question": "¿Qué acción específica sostiene dos lecturas contrarias sin subtítulos ni cambios bruscos de personaje?",
+      "alternatives": [
+        "Siluetas genéricas con texto explicativo",
+        "La aparente amenaza de un objeto fino se convierte en entrega de bastón"
+      ],
+      "evidenceRef": "victoria",
+      "finding": "La actuación debe explicarse desde cambios continuos de gesto y apoyo físico.",
+      "decisionImpact": "La persona mayor se incorpora y toma un bastón durante la revelación."
+    },
+    {
+      "id": "q3",
+      "target": "corridor",
+      "question": "¿Qué objetos y fuentes luminosas convierten la cámara continua en una escena espacial y no un túnel decorativo?",
+      "alternatives": [
+        "Pasillo vacío repetido",
+        "Banco, carrito, arte, radiator, apliques y ventana con luz fría"
+      ],
+      "evidenceRef": "cuaron",
+      "finding": "Los volúmenes próximos aportan oclusiones y parallax, y la iluminación ancla la cámara.",
+      "decisionImpact": "Escenografía coherente con mobiliario y fuentes de luz original."
+    },
+    {
+      "id": "q4",
+      "target": "sound",
+      "question": "¿Qué sonido original permite reconocer el bastón y acompañar el tiempo físico sin música omnipresente?",
+      "alternatives": [
+        "Música genérica arbitraria",
+        "Paso, tela, resonancia metálica del apoyo y ambiente"
+      ],
+      "evidenceRef": "vimeo",
+      "finding": "La resonancia metálica breve introduce un elemento causal sin explicar con palabras.",
+      "decisionImpact": "Foley sintetizado sincronizado al movimiento con pista continua."
+    }
+  ],
+  "relations": [
+    {
+      "from": "camera",
+      "to": "corridor",
+      "invariant": "La cámara siempre permanece en el volumen transitable y proyecta la misma escena métrica.",
+      "failure": "Atravesar muro, mueble o cambiar tamaño de puerta sin razón espacial.",
+      "test": "Muestrear 300 puntos, límites x y velocidades."
+    },
+    {
+      "from": "camera",
+      "to": "blocking",
+      "invariant": "Las posiciones físicas de intérpretes son persistentes y no cambian por la vista.",
+      "failure": "La acción aparece desconectada entre comienzo y final.",
+      "test": "Verificar fotogramas exportados al comienzo, centro y final."
+    },
+    {
+      "from": "sound",
+      "to": "blocking",
+      "invariant": "El contacto del bastón ocurre sobre el mismo reloj que el sonido original.",
+      "failure": "Se escucha sonido sin causa visual plausible.",
+      "test": "Auditar escucha contra timeline del video final."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "d1",
+      "questionId": "q1",
+      "componentIds": [
+        "camera",
+        "corridor"
+      ],
+      "choice": "Travelling que deriva en órbita",
+      "rejected": "Forward glide sin motivación",
+      "productionChange": "Curva única de seis claves y trayectoria editable por el módulo; velocidad máxima auditada.",
+      "why": "El espectador debe descubrir otra relación espacial, no solo recorrer metros."
+    },
+    {
+      "id": "d2",
+      "questionId": "q2",
+      "componentIds": [
+        "blocking"
+      ],
+      "choice": "Auxilio y bastón con posturas animadas",
+      "rejected": "Tarjetas explicativas y montaje",
+      "productionChange": "El mismo bastón rota desde horizontal a posición de apoyo mientras el residente se alza.",
+      "why": "El objeto persistente soporta la transformación narrativa sin sustituirse."
+    },
+    {
+      "id": "d3",
+      "questionId": "q3",
+      "componentIds": [
+        "corridor",
+        "camera"
+      ],
+      "choice": "Set tridimensional original continuo",
+      "rejected": "Fotos incongruentes en sucesión",
+      "productionChange": "Geometría fija de puertas y carrito, iluminación ambiental e interpolación de cámara.",
+      "why": "Da control estricto de escala y continuidad sin usar materiales sin permiso."
+    },
+    {
+      "id": "d4",
+      "questionId": "q4",
+      "componentIds": [
+        "sound",
+        "blocking"
+      ],
+      "choice": "Foley diegético sintetizado",
+      "rejected": "Música indiferenciada",
+      "productionChange": "Pista AAC estéreo 48 kHz sincronizada al video y con señales del bastón.",
+      "why": "El sonido debe reforzar el significado de la acción que sucede."
+    }
+  ],
+  "risks": [
+    {
+      "componentIds": [
+        "camera",
+        "corridor"
+      ],
+      "severity": "high",
+      "failure": "El carrito obstruye la resolución y mantiene ilegible la asistencia.",
+      "prevention": "Spike real de tres fotogramas y modificar órbita de salida para cambiar parallax.",
+      "test": "Inspección de 0.5, 7 y 13.2 segundos tras reposicionar cámara.",
+      "status": "OBSERVED"
+    },
+    {
+      "componentIds": [
+        "blocking"
+      ],
+      "severity": "medium",
+      "failure": "Los cuerpos estilizados no comunican inequívocamente el auxilio sin texto.",
+      "prevention": "Mantener el gesto sostenido y el bastón como objeto físico continuo.",
+      "test": "Prueba de comprensión con observador humano ajeno al desarrollo.",
+      "status": "NOT_RUN"
+    },
+    {
+      "componentIds": [
+        "sound"
+      ],
+      "severity": "medium",
+      "failure": "La pista sonora no coincide con la duración o interacción visual.",
+      "prevention": "Un reloj global de catorce segundos para síntesis y render.",
+      "test": "Decodificar video entero y escuchar a los tiempos claves.",
+      "status": "OBSERVED"
+    }
+  ],
+  "acceptance": [
+    {
+      "kind": "logic",
+      "criterion": "Trayectoria de cámara sin cortes, dentro del corredor y sin saltos bruscos.",
+      "oracle": "Chequeo numérico local sobre 300 muestras y readback del informe blocking-qa.json.",
+      "status": "OBSERVED"
+    },
+    {
+      "kind": "visual",
+      "criterion": "Historia y revelación legibles con oclusiones intencionales y cuerpos creíbles.",
+      "oracle": "Revisión perceptual humana del video 14s sin explicaciones previas.",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "audio",
+      "criterion": "Audio decodificable y duraciones exactas de catorce segundos.",
+      "oracle": "ffprobe local, decodificación íntegra FFmpeg, sincronía perceptual a evaluar.",
+      "status": "OBSERVED"
+    }
+  ],
+  "resources": "Render Python NumPy / OpenCV / SciPy con FFmpeg local; planificador HTML/JS sin dependencias.",
+  "licensing": "Personajes, escena, luces y sonido son síntesis original, no material de archivo ajeno.",
+  "environmentLimits": "No hay acceso a modelo generativo de video en el plan conectado ni a un rodaje real; la producción es estilizada, no fotorealista. El módulo fija distancia de foco, pero el motor de render local no simula profundidad de campo óptica. La aprobación humana de claridad narrativa no se ha realizado."
+}
