@@ -1,0 +1,299 @@
+{
+  "version": "DEEP-SPEC-1",
+  "medium": "web",
+  "depth": "SISTEMA",
+  "brief": "CASA MATERIAL: crear identidad de marca ficticia de objetos artesanales como sitio, con fotografía, sistema reticular, tipografía, composición, microinteracciones y textos, no un hero genérico; sitio e identidad reusable.",
+  "briefLock": {
+    "batchId": "web-w003-20261122",
+    "taskNumber": 2,
+    "taskId": "web-w003-20261122-02",
+    "source": "https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/launch/20261122/relaunch/web/LAUNCH.md",
+    "blobSha": "bef87bf57c789d2b0605ca9ff81a5d3bbaab5e35",
+    "oldBatchId": "web-w002-20261122",
+    "oldBriefBlobSha": "cd88a07941ab62072f6de5ee69764308f1ec2387"
+  },
+  "intent": {
+    "experience": "El visitante entra a una publicación de materialidad contemplativa y puede explorar piezas y sus fichas sin sentir una tienda genérica.",
+    "distinctAbility": "Hacer que obra visual original, navegación, taxonomía, fichas y composición compartan una gramática sin vender objetos ficticios."
+  },
+  "references": [
+    {
+      "id": "R1",
+      "url": "https://bloomwise.studio/en/da/tesson",
+      "status": "OBSERVED",
+      "observation": "Caso de identidad Tesson para cerámica: una tinta color arcilla, sans de gran cuerpo, reglas finas, fotografía aislada y aplicación editorial al catálogo, fichas y móvil; lectura documental pública, no screenshot de toda la página."
+    },
+    {
+      "id": "R2",
+      "url": "https://www.jonnymartin.blog/wendy",
+      "status": "OBSERVED",
+      "observation": "El caso Wendy integra identidad, biblioteca de fotografía y sitio; el repertorio fotográfico refleja la práctica cerámica, no sólo un logo aplicado a tarjetas. Observación documental pública."
+    },
+    {
+      "id": "R3",
+      "url": "https://www.behance.net/gallery/226838727/Terroza-Brand-Identity-Editorial-Design",
+      "status": "OBSERVED",
+      "observation": "Imagen editorial observada: fotografía del trabajo con barro sobre papel crudo, serif de contraste y acentos rojizos, con tipografía y soporte que refuerzan material y proceso; se transfieren principios, no layout exacto."
+    }
+  ],
+  "components": [
+    {
+      "id": "IMAGE",
+      "role": "Serie de cuatro escenas visuales originales de una colección ficticia.",
+      "strategy": "Generación original de una hoja de cuatro bodegones con crops WebP locales, escenas conceptuales rotuladas.",
+      "constraints": "No anunciar objetos fabricados ni fotografías documentales del taller; declarar imagen generada de propuesta."
+    },
+    {
+      "id": "IDENTITY",
+      "role": "Sistema visual compartido de titular, color, reglas, cartelas, retícula y etiquetas.",
+      "strategy": "Editorial tipográfica con tinta/papel/óxido y composición asimétrica como catálogo físico.",
+      "constraints": "Funcionar sin fuentes remotas, con contraste legible y sin overlays flotantes invasivos."
+    },
+    {
+      "id": "CATALOG",
+      "role": "Colección, categorías y fichas de cuatro objetos ficticios explorables.",
+      "strategy": "Semántica HTML, filtro con botones aria-pressed, dialog nativo y deep link por query.",
+      "constraints": "Mantener teclado, Escape, foco, acceso directo, back y filtro 100 por ciento funcionales."
+    },
+    {
+      "id": "RESPONSIVE",
+      "role": "Mantener el significado y la composición en pantallas de 320 a 1440 píxeles.",
+      "strategy": "Grid editorial que pasa de split-screen a flujo vertical legible.",
+      "constraints": "Sin desplazamiento horizontal, zonas táctiles útiles y prefers-reduced-motion."
+    }
+  ],
+  "questions": [
+    {
+      "id": "Q1",
+      "target": "IMAGE",
+      "question": "¿Cómo mostrar objetos ficticios propios sin atribuirse fotografías de un taller real?",
+      "alternatives": [
+        "Fotografía de banco acreditada como referencia",
+        "Visualizaciones originales de objetos conceptuales identificadas como tales"
+      ],
+      "evidenceRef": "R2",
+      "finding": "La auditoría anterior identificó la ambigüedad de fotos de stock como producto; una serie original con procedencia explícita reduce ese riesgo.",
+      "decisionImpact": "Generar cuatro escenas coherentes y publicar sus archivos locales, además de un aviso claro de conceptualidad."
+    },
+    {
+      "id": "Q2",
+      "target": "IDENTITY",
+      "question": "¿Qué estructura evita que la marca sea un hero genérico con colores cambiados?",
+      "alternatives": [
+        "Landing comercial estándar con cards iguales",
+        "Catálogo editorial con composición y ritmo asimétricos"
+      ],
+      "evidenceRef": "R1",
+      "finding": "Tesson conecta normas de identidad con aplicaciones visuales concretas y no limita su sistema al logotipo.",
+      "decisionImpact": "Compás tipográfico y reglas de catálogo que reaparecen en portada, fichas, navegación y móvil."
+    },
+    {
+      "id": "Q3",
+      "target": "CATALOG",
+      "question": "¿Cómo hace el visitante para explorar un objeto y regresar sin perder foco o contexto?",
+      "alternatives": [
+        "Carrusel con interacción por hover",
+        "Colección filtrable con diálogo nativo y enlace directo"
+      ],
+      "evidenceRef": "R3",
+      "finding": "La lectura editorial necesita dar contexto a cada pieza, no esconderlo en hover o controles decorativos.",
+      "decisionImpact": "Cada tarjeta abre una ficha accesible que contiene misma fotografía, atributos, y restauración de foco."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "D1",
+      "questionId": "Q1",
+      "componentIds": [
+        "IMAGE",
+        "CATALOG"
+      ],
+      "choice": "Escenas locales originales de bodegones conceptuales",
+      "rejected": "Fotos sin relación entre sí presentadas como stock de taller",
+      "productionChange": "Las cuatro escenas derivan de un único estudio lumínico, son WebP locales y cada ficha declara que se trata de visualizaciones.",
+      "why": "Soluciona procedencia, continuidad de material y dependencia de CDN con una sola elección."
+    },
+    {
+      "id": "D2",
+      "questionId": "Q2",
+      "componentIds": [
+        "IDENTITY",
+        "RESPONSIVE"
+      ],
+      "choice": "Catálogo tipográfico material de ritmo asimétrico",
+      "rejected": "Hero rectangular y tres tarjetas comerciales iguales",
+      "productionChange": "Logotipo de composición tipográfica, hero dividido, ficha como folio, reglas horizontales y columna editorial sin UI de compra.",
+      "why": "La forma de leer y la imagen comparten escala, tactilidad, ritmo y tono."
+    },
+    {
+      "id": "D3",
+      "questionId": "Q3",
+      "componentIds": [
+        "CATALOG",
+        "RESPONSIVE"
+      ],
+      "choice": "Colección semántica y fichas nativas",
+      "rejected": "Modal no accesible hecho con div y trampas manuales",
+      "productionChange": "Los detalles abren dialog con close, teclado, query ?pieza=, Escape y foco retornado.",
+      "why": "La accesibilidad no debe depender de una animación ni del punto de entrada."
+    }
+  ],
+  "relations": [
+    {
+      "from": "IMAGE",
+      "to": "IDENTITY",
+      "invariant": "Toda imagen mantiene luz diagonal cálida, textura terrosa y cartela numérica legible.",
+      "failure": "Producto de stock aislado no se reconoce como la misma marca.",
+      "test": "Comparar los cuatro crops y la portada juntos en 390 y 1440."
+    },
+    {
+      "from": "CATALOG",
+      "to": "RESPONSIVE",
+      "invariant": "Todos los productos y sus detalles siguen accesibles con teclado y touch tras reflow.",
+      "failure": "Filtros ocultan fichas o dejan foco detrás del diálogo.",
+      "test": "Playwright filtro + apertura + escape + URL directa y reflujo 320."
+    }
+  ],
+  "risks": [
+    {
+      "componentIds": [
+        "IMAGE",
+        "IDENTITY"
+      ],
+      "severity": "high",
+      "failure": "La primera imagen es un placeholder incoherente con la familia visual.",
+      "prevention": "Generar un primer artículo visual real, inspeccionar composición y cambiar de familia antes de repetir si no funciona.",
+      "test": "Captura de apertura con primer objeto a 390 y 1440, inspección y cambio si falla.",
+      "status": "OBSERVED"
+    },
+    {
+      "componentIds": [
+        "CATALOG",
+        "RESPONSIVE"
+      ],
+      "severity": "medium",
+      "failure": "El diálogo rompe navegación, scroll o foco en dispositivos pequeños.",
+      "prevention": "Usar dialog nativo y tests de roles, foco y Escape.",
+      "test": "Prueba de navegador servido en 320,390,768 y 1440.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "acceptance": [
+    {
+      "kind": "visual",
+      "criterion": "La primera pantalla muestra objeto protagonista, identidad reconocible y contenido legible en 390 y 1440.",
+      "oracle": "Capturas reales producidas por Chromium servido, inspección visual contra referencias.",
+      "status": "OBSERVED"
+    },
+    {
+      "kind": "functional",
+      "criterion": "Filtrar categoría, abrir y cerrar ficha, deep link y regresar mantienen contenido correcto.",
+      "oracle": "Playwright navega botones y verifica aria-pressed, foco y datos de pieza.",
+      "status": "OBSERVED"
+    },
+    {
+      "kind": "interactive",
+      "criterion": "No hay overflow horizontal en viewport de 320/390/768/1440.",
+      "oracle": "documentElement.scrollWidth <= innerWidth y screenshots guardados.",
+      "status": "OBSERVED"
+    }
+  ],
+  "licensing": "Assets de imágenes generados especialmente para esta obra con herramienta de imagen; solo visualización conceptual, sin atribuir producción física; HTML/CSS/JS propios, tipografías de sistema.",
+  "resources": "Pillow para crops locales WebP, HTML/CSS/JS vanilla, Python HTTP local, Chromium Playwright para inspección; Github para rama privada candidata; Pages en gh-pages requiere integración. Standalone index.html embeds the four WebP data URLs to preserve bytes across text-only GitHub contents transport; identity.css/site.js separately editable.",
+  "environmentLimits": "CHROMIUM_NAVIGATION_BLOCKED: Page.goto HTTP localhost y file:// devolvieron net::ERR_BLOCKED_BY_ADMINISTRATOR; se usó page.set_content con assets como data URI para inspección real de layout. Navegación y asset HTTP servidos, CDN y Pages: NOT_RUN. Producto ficticio, obra generada no fotografiada/fabricada.",
+  "artDirection": {
+    "schema": "prometeo.art-direction.first-article/v1",
+    "medium": "web",
+    "taskId": "web-w003-20261122-02",
+    "briefSha": "bef87bf57c789d2b0605ca9ff81a5d3bbaab5e35",
+    "flowRef": "WEB_FACTORY_V2 2.0.0 candidate audit FLOW.json blob 1a0e709beec9a84986fc33c5ce4ab0a162dccaf2; candidate not promoted",
+    "promise": {
+      "subject": "Un solo bodegón cerámico de formas imperfectas sobre piedra y lino, acompañado por un título tipográfico poderoso.",
+      "intent": "Sentir una publicación de taller material, cálida y serena, no una plantilla de catálogo."
+    },
+    "benchmark": {
+      "url": "https://www.behance.net/gallery/226838727/Terroza-Brand-Identity-Editorial-Design",
+      "description": "Imagen editorial de fotografía cerámica, papel crudo, composición y acento rojizo observada desde referencia visual pública.",
+      "status": "OBSERVED"
+    },
+    "techniques": [
+      {
+        "family": "Bodegones originales con tipografía editorial",
+        "viability": "Cuatro fotos conceptuales de una generación propia, cuatro WebP locales; HTML y CSS accesibles.",
+        "license": "Arte generado específicamente para esta pieza; sin propiedad de objeto físico."
+      },
+      {
+        "family": "Dibujo vectorial de producto con dirección gráfica",
+        "viability": "SVG propios con trazados de silueta y manchas, sin atribuir fotografía real, como opción expresiva alternativa.",
+        "license": "Vector y tipografía 100% originales hechos en código."
+      }
+    ],
+    "selectedTechnique": "Bodegones originales con tipografía editorial",
+    "firstFrame": {
+      "openingDescription": "En 1440 portada dividida: titular editorial y fotografía del objeto a escala; en 390 imagen dominante y titular legible, sin UI de compra.",
+      "focalSubject": "Jarra de terracota facetada y cuenco de caliza sobre piedra con luz lateral.",
+      "minimalUI": "Logo tipográfico, enlaces discretos a colección y manifiesto, sin overlays de herramientas.",
+      "checks": [
+        {
+          "criterion": "No se ve ninguna barra lateral de aplicación ni controles superfluos",
+          "oracle": "Captura 390 y 1440 con encabezado y portada visibles",
+          "viewport": "both"
+        },
+        {
+          "criterion": "Foto del objeto domina visualmente sin tapar el titular",
+          "oracle": "Comparación manual de captura y bounding boxes de imagen/título",
+          "viewport": "both"
+        },
+        {
+          "criterion": "No hay scroll horizontal ni texto recortado",
+          "oracle": "documentElement.scrollWidth <= innerWidth",
+          "viewport": "both"
+        }
+      ],
+      "observations": [
+        {
+          "viewport": "390",
+          "status": "OBSERVED_PASS",
+          "evidence": {
+            "url": "https://github.com/JuanManuelPM/Experimentos/blob/candidate/prometeo-web-w003-20261122-02/prometeo/works/20261122/web-w003-02/QA_CAPTURES.html#first-390",
+            "description": "Captura Chromium real 390px sobre contenido inyectado, no visita a servidor"
+          }
+        },
+        {
+          "viewport": "1440",
+          "status": "OBSERVED_PASS",
+          "evidence": {
+            "url": "https://github.com/JuanManuelPM/Experimentos/blob/candidate/prometeo-web-w003-20261122-02/prometeo/works/20261122/web-w003-02/QA_CAPTURES.html#first-1440",
+            "description": "Captura Chromium real 1440px sobre contenido inyectado, no visita a servidor"
+          }
+        }
+      ]
+    },
+    "firstArticle": {
+      "target": "Portada con primer WebP propio y estilo editorial coherente en dos tamaños.",
+      "rejectWhen": "La imagen parezca stock inconexo o el hero se reduzca a un cuadro genérico sin relato material.",
+      "switchTo": "Dibujo vectorial de producto con dirección gráfica",
+      "oracle": "Dos capturas y comprobación de asset local cargado con naturalWidth > 0.",
+      "resourceProof": "Archivo WebP propio recortado desde hoja generada específicamente y su master PNG guardados localmente.",
+      "status": "OBSERVED_PASS",
+      "evidence": {
+        "url": "https://github.com/JuanManuelPM/Experimentos/blob/candidate/prometeo-web-w003-20261122-02/prometeo/works/20261122/web-w003-02/QA_CAPTURES.html#first-390",
+        "description": "Screenshot real de Chromium con HTML inyectado, imagen local embebida, vista 390; no URL servida ni Pages."
+      }
+    },
+    "humanApproved": false
+  },
+  "flow": {
+    "version": "2.0.0",
+    "candidateFlowBlob": "1a0e709beec9a84986fc33c5ce4ab0a162dccaf2",
+    "authority": "candidate/prometeo-web-art-gate-w002-20261122; not promoted"
+  },
+  "createdAt": "2026-11-22T19:05:00Z",
+  "validationNotes": {
+    "deepSpec": "READY_FOR_FIRST_SLICE esperado; ejecutar validador estructural local",
+    "artDirection": "READY_TO_BUILD_NOT_ARTISTICALLY_APPROVED esperado; test lógico, no certificado artístico",
+    "firstArticleObservation": "CHROMIUM_INJECTED_CONTENT_NOT_SERVED",
+    "humanApproved": false
+  },
+  "updatedAt": "2026-11-22T19:11:05Z"
+}
