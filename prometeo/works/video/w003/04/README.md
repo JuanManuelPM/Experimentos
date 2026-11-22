@@ -12,11 +12,11 @@ Película original sobre el cambio de significado de una misma frase: **«TE ESP
 - `PREPRODUCTION.deep-spec-v1.json`: Book DEEP-SPEC+FIRST-ARTICLE.
 - `QA.md`: pruebas, pruebas no realizadas, comparación W002/W003, fuentes de referencia y licencias.
 - `FLOW.json` y `TRACE.json`: identidad/flujo y eventos observados.
-- El master MP4 real se generó localmente en dos formatos y se entrega también como archivos de conversación; la subida de los binarios al repositorio requiere un readback remoto independiente, no se asume a partir de este README.
+- Los dos master MP4 reales también quedaron publicados y leídos remotamente en esta rama mediante el workflow GitHub Actions. El render remoto tiene hashes distintos del local y el archivo QA_CI.json fija el hash y los streams de la ejecución CI. Los MP4 locales se entregan además como archivos de conversación.
 
 ## Reproducir/exportar
 Abrir `index.html`, botón reproducir, cambiar aspecto y descargar WebM. Para dos MP4 reproducibles localmente: `python -m pip install playwright numpy scipy`; `python -m playwright install chromium`; `python render.py && python score.py`; por cada orientación ejecutar `ffmpeg -i UNA_PALABRA_CAMBIA_TODO_16x9_SILENT.mp4 -i SCORE_ORIGINAL.wav -c:v libx264 -crf 19 -c:a aac -b:a 160k -shortest UNA_PALABRA_CAMBIA_TODO_16x9.mp4` (sustituir 9x16 para el otro formato).
 
 **Licencias:** texto, diseño, curvas, composición y audio creados en esta ejecución. Sin fotografía de archivo, música, voces ni material protegido de terceros. Usa la fuente de sistema cuando Inter no está presente; las instancias de Inter disponibles localmente tienen licencia OFL, pero no se redistribuyen archivos de fuente.
 
-**Estado:** local H264/AAC decodificable y fotogramas revisados; prueba de audiencia independiente y aprobación humana **NOT_RUN**. La versión W002 permanece intacta.
+**Estado:** local y remoto H264/AAC decodificables, export GitHub Actions y readback de 2/2 MP4 **PASS**, fotogramas 390/1440 revisados localmente; prueba de audiencia independiente, escucha artística y aprobación humana **NOT_RUN**. La versión W002 permanece intacta.
