@@ -1,0 +1,72 @@
+{
+  "schema": "prometeo.video.stage-trace/v1",
+  "taskId": "video-w003-20261122-07",
+  "flow": {
+    "qloopSha": "7911ce780c6eb8fc08ba3e5621e4479bbe2e9757",
+    "qbarSha": "5653704d3267c339fe7405f2b36b8488dbb44be9",
+    "deepSpecSha": "7656a293b0182f81619bf0d27b90dffa771c2683",
+    "artDirectionSha": "b1a1a012e90897200336cac6316c0511cb40c4c5",
+    "universalSha": "0377d79b2aeb0a642a97687be49c5ba965593bf5",
+    "auditCandidateSha": "CANDIDATE_UNPROMOTED",
+    "specializedVideoActiveFlowSha": "NOT_RESOLVED",
+    "validator": "NOT_RUN_FULL_EXTERNAL_OWNER_TRACE"
+  },
+  "visited": [
+    {
+      "stage": "READ_BRIEF",
+      "status": "OBSERVED",
+      "decision": "task 07 only, immutable W003/07 and SHA 0cc574528594731a3d1cf0c15a0d0e5a37e775b7",
+      "output": "LAUNCH contents read"
+    },
+    {
+      "stage": "QBAR_REFERENCE",
+      "status": "OBSERVED_LIMITED",
+      "decision": "Original visual reference Pixar Bao official still, text document Paperman not viewed",
+      "output": "Benchmark note in Book"
+    },
+    {
+      "stage": "FIRST_ARTICLE",
+      "status": "OBSERVED_LOCAL",
+      "decision": "Hand contact is the critical unit; construct S04 before entire film",
+      "output": "First article local shots and browser player"
+    },
+    {
+      "stage": "SWITCH_AND_CORRECT",
+      "status": "OBSERVED",
+      "decision": "Final bus occlusion masked payoff; move bus behind characters and clip rider to window",
+      "output": "Revised HTML source and final capture at 26.2s"
+    },
+    {
+      "stage": "RENDER",
+      "status": "OBSERVED",
+      "decision": "Record real MediaRecorder WebM and encode H264/AAC MP4",
+      "output": "27.85s MP4 + VP9/Opus WebM"
+    },
+    {
+      "stage": "TECHNICAL_QA",
+      "status": "OBSERVED",
+      "decision": "Test decode, audio RMS and screen axis",
+      "output": "QA.json / RACCORD_GRAPH.json"
+    },
+    {
+      "stage": "PUBLISH",
+      "status": "OBSERVED_PARTIAL",
+      "decision": "Publish source on candidate and gh-pages, keep MP4 explicitly sandbox-only",
+      "output": "GitHub index.html both refs"
+    },
+    {
+      "stage": "HUMAN_BLIND_TEST",
+      "status": "NOT_RUN",
+      "decision": "No independent viewers in environment",
+      "output": null
+    },
+    {
+      "stage": "HUMAN_APPROVAL",
+      "status": "NOT_RUN",
+      "decision": "Only human can approve artistic quality",
+      "output": null
+    }
+  ],
+  "summary": "Visited actual actions only; no pretend flow 1.4.0/2.3.0 provenance.",
+  "humanApproved": false
+}
