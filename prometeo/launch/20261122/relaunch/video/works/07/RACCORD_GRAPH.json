@@ -1,0 +1,157 @@
+{
+  "schema": "prometeo.video.raccord-emotional/v1",
+  "title": "EL RELEVO",
+  "durationSeconds": 28,
+  "axis": "ELSA left, INA middle, LEO right; transfer left to right",
+  "prop": {
+    "id": "red-origami-bird",
+    "ownerAtStart": "ELSA",
+    "ownerAtEnd": "LEO",
+    "noDuplicate": true
+  },
+  "actors": {
+    "ELSA": "silver-haired older woman, protective, later generous",
+    "INA": "blue-clad teen, initially lonely, then empathetic",
+    "LEO": "small child in ochre, lonely then smiling"
+  },
+  "shots": [
+    {
+      "id": "S01",
+      "start": 0,
+      "end": 3.4,
+      "scale": "wide",
+      "ownerIn": "ELSA",
+      "ownerOut": "ELSA",
+      "emotionIn": -0.6,
+      "emotionOut": -0.4,
+      "action": "two strangers at shelter",
+      "screenDirection": "left-to-right"
+    },
+    {
+      "id": "S02",
+      "start": 3.4,
+      "end": 6.7,
+      "scale": "tight medium",
+      "ownerIn": "ELSA",
+      "ownerOut": "ELSA",
+      "emotionIn": -0.4,
+      "emotionOut": -0.3,
+      "action": "cradled origami",
+      "screenDirection": "left-to-right"
+    },
+    {
+      "id": "S03",
+      "start": 6.7,
+      "end": 10.3,
+      "scale": "two shot",
+      "ownerIn": "ELSA",
+      "ownerOut": "ELSA",
+      "emotionIn": -0.3,
+      "emotionOut": 0.05,
+      "action": "glance and offer",
+      "screenDirection": "left-to-right"
+    },
+    {
+      "id": "S04",
+      "start": 10.3,
+      "end": 13.5,
+      "scale": "hands macro",
+      "ownerIn": "ELSA",
+      "ownerOut": "INA",
+      "emotionIn": 0.05,
+      "emotionOut": 0.35,
+      "action": "first contact",
+      "screenDirection": "left-to-right"
+    },
+    {
+      "id": "S05",
+      "start": 13.5,
+      "end": 17,
+      "scale": "reaction",
+      "ownerIn": "INA",
+      "ownerOut": "INA",
+      "emotionIn": 0.35,
+      "emotionOut": -0.1,
+      "action": "teen looks beyond herself",
+      "screenDirection": "left-to-right"
+    },
+    {
+      "id": "S06",
+      "start": 17,
+      "end": 20.6,
+      "scale": "two shot",
+      "ownerIn": "INA",
+      "ownerOut": "INA",
+      "emotionIn": -0.1,
+      "emotionOut": 0.12,
+      "action": "teen notices boy",
+      "screenDirection": "left-to-right"
+    },
+    {
+      "id": "S07",
+      "start": 20.6,
+      "end": 23.8,
+      "scale": "hands macro",
+      "ownerIn": "INA",
+      "ownerOut": "LEO",
+      "emotionIn": 0.12,
+      "emotionOut": 0.56,
+      "action": "second contact",
+      "screenDirection": "left-to-right"
+    },
+    {
+      "id": "S08",
+      "start": 23.8,
+      "end": 28,
+      "scale": "wide",
+      "ownerIn": "LEO",
+      "ownerOut": "LEO",
+      "emotionIn": 0.56,
+      "emotionOut": 0.9,
+      "action": "shared umbrella, older woman in bus window",
+      "screenDirection": "left-to-right"
+    }
+  ],
+  "handoffTimes": {
+    "S04": 12.05,
+    "S07": 22.35
+  },
+  "edges": [
+    {
+      "from": "S01",
+      "to": "S02",
+      "rule": "same prop, same screen axis and contiguous time"
+    },
+    {
+      "from": "S02",
+      "to": "S03",
+      "rule": "same prop, same screen axis and contiguous time"
+    },
+    {
+      "from": "S03",
+      "to": "S04",
+      "rule": "same prop, same screen axis and contiguous time"
+    },
+    {
+      "from": "S04",
+      "to": "S05",
+      "rule": "same prop, same screen axis and contiguous time"
+    },
+    {
+      "from": "S05",
+      "to": "S06",
+      "rule": "same prop, same screen axis and contiguous time"
+    },
+    {
+      "from": "S06",
+      "to": "S07",
+      "rule": "same prop, same screen axis and contiguous time"
+    },
+    {
+      "from": "S07",
+      "to": "S08",
+      "rule": "same prop, same screen axis and contiguous time"
+    }
+  ],
+  "test": "In every edge a.end===b.start and a.ownerOut===b.ownerIn; only S04/S07 change ownership."
+}
