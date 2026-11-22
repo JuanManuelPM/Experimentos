@@ -8,7 +8,7 @@ Una banda sonora original de **48 s / 16 compases / 80 BPM** con armonía Dm(add
 
 ## Archivos audibles reales
 
-Los WAV PCM están versionados en una rama exclusiva de activos, separada del portal público. Links de descarga directos:
+[**Escuchar recorrido de ocho transiciones**](https://raw.githubusercontent.com/JuanManuelPM/Experimentos/assets/prometeo-music-w002-08-20261122/prometeo/music/w002/08/masters/recorrido-interactivo.wav) · cambios cuantizados en los segundos 3, 6, 9, 12, 15, 18, 21 y 33.\n\nLos WAV PCM están versionados en una rama exclusiva de activos, separada del portal público. Links de descarga directos:
 
 - [Máster Calma](https://raw.githubusercontent.com/JuanManuelPM/Experimentos/assets/prometeo-music-w002-08-20261122/prometeo/music/w002/08/masters/calma.wav)
 - [Máster Deriva](https://raw.githubusercontent.com/JuanManuelPM/Experimentos/assets/prometeo-music-w002-08-20261122/prometeo/music/w002/08/masters/deriva.wav)
@@ -39,3 +39,7 @@ Node: pruebas de tempo/compás, solicitudes rápidas, muestras finitas, duració
 [Austin Wintory sobre música interactiva](https://awintory.medium.com/from-journey-to-erica-214355002896) · [FMOD: quantization y marcadores](https://www.fmod.com/docs/2.04/studio/authoring-events.html) · [Diseño de música dinámica Wwise: regiones post-exit](https://www.gamesounddesign.com/in-depth-creation-of-dynamic-music-in-a-video-game.html). Son referencias de método; no se copiaron audios ni composiciones.
 
 **Aprendizaje transferible:** una transición sin clicks en PCM demuestra continuidad numérica pero no continuidad dramática; las QA offline, navegador real y escucha humana deben registrarse por separado.
+
+## Regenerar y probar
+
+Con Node 22 o posterior, sin dependencias externas: `node tests.mjs` y `node render.mjs dist`. Los WAV resultantes se guardan en `dist/stems/` y `dist/masters/`, incluido el recorrido interactivo.
