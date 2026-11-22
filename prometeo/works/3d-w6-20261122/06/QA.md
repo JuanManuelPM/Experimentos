@@ -20,7 +20,9 @@
 5. Chromium 144 + Xvfb + SwiftShader/ANGLE, render WebGL2 real: **PASS**. Captura observada a **1024×640**, sin error JS en el primer cuadro; diagnóstico: 245 árboles, 29.581 instancias nominales dibujadas con calidad EQUILIBRADA, 12 draw calls aproximadas, **5 FPS sobre software**, no GPU móvil.
 6. Chromium 144 + Xvfb + SwiftShader/ANGLE, viewport 480×700, calidad ECO activada de forma automática: **PASS**. Canvas **360×525**, 12.516 instancias nominales, **7 FPS en software**. No extrapolar estos FPS a teléfono real.
 7. Captura del navegador real revisada: un paisaje tridimensional navegable potencial, vegetación diferenciada, curvas del río y controles visibles. **OBSERVED**. Brecha importante: follaje y sombras simplificados, siluetas todavía de geometría low-poly reconocible; requiere mejorar para competir con referencias profesionales.
-8. Cuatro estaciones de una misma cámara, autoplay completo, colisiones en dispositivos reales, reflejos físicamente correctos y benchmark móvil comparativo: **NOT_RUN**. Intentos de prueba automatizada completa quedaron limitados por FPS bajo de SwiftShader / timeout de automatización.
+8. Control de estaciones en Chromium WebGL2 real, viewport 420×480: **OBSERVED**. Primavera/verano como estado inicial, invierno pulsado desde UI, `targetSeason=3`, transición gradual (`season=3.666` observada), captura de invierno con arbolado caducifolio sin hojas y suelo nevado. No se observaron aún las cuatro estaciones por capturas equivalentes.
+9. Lluvia + calidad ALTA en el mismo viewport: **OBSERVED**. Cambio de ECO a ALTA de 12.516 a 48.259 instancias realmente solicitadas a `drawArraysInstanced`, resolución de 315×360 a 420×480 y draw calls de 12 a 13 al activarse lluvia; en SwiftShader bajó de 6 a 2 FPS. No es resultado de GPU móvil.
+10. Desplazamiento con evento `KeyW`: **OBSERVED**. Cámara de `(6,18)` a `(5.833,17.495)` sobre el heightfield; errores JS detectados `[]`. Tacto real en dispositivo, autoplay completo, colisión física exhaustiva, reflejos físicamente correctos y benchmark en hardware móvil: **NOT_RUN**.
 
 ## Referencia → intención → decisión → evidencia → brecha
 
