@@ -1,0 +1,264 @@
+{
+  "version": "DEEP-SPEC-1",
+  "medium": "3d",
+  "depth": "OPERATIVO",
+  "taskId": "3d-w7-20261122-01",
+  "batchId": "3d-w7-20261122",
+  "taskNumber": 1,
+  "brief": "Interlocutora: conversación breve con personaje 3D que escucha, responde y cambia de emoción, con rig, labios, dos elecciones y tres planos; entrega reutilizable y fuente editable.",
+  "briefLock": {
+    "launcher": "prometeo/launch/20261122/relaunch/3d/LAUNCH.md",
+    "newLauncherBlobSHA": "58de659e2aa01c0746d59ca6f95c36bdc59f3030",
+    "oldLauncherBlobSHA": "942c3ba8b851137886e959d2790771556e2d9f5d"
+  },
+  "intent": {
+    "experience": "Encuentro íntimo en estudio cinematográfico: una presencia responde diferente según el pedido del espectador, sin ornamentación que tape al actor.",
+    "distinctAbility": "Interpretación con malla skinned y morphs de un GLB de autor/licencia comprobada, dos ramas de voz y gesto, tres cámaras manipulables."
+  },
+  "references": [
+    {
+      "id": "R1",
+      "status": "OBSERVED",
+      "url": "https://github.com/mrdoob/three.js/blob/r164/examples/models/gltf/RobotExpressive/README.md",
+      "observation": "Se examinó el README de la fuente en el tag r164. Declara CC0 1.0, autor Tomás Laulhé y tres morph targets faciales agregados por Don McCurdy. La captura externa visual muestra actor robótico low-poly de identidad coherente, no rostro humano."
+    },
+    {
+      "id": "R2",
+      "status": "OBSERVED",
+      "url": "https://threejs.org/examples/webgl_animation_skinning_morph.html",
+      "observation": "Se examinó la descripción pública y capturas del ejemplo RobotExpressive, con mezcla de animación esquelética y controles de morph facial; NO se ejecutó aquí su render interactivo."
+    },
+    {
+      "id": "R3",
+      "status": "REFERENCE_RESEARCHED",
+      "url": "https://unity.com/demos/enemies",
+      "observation": "Referencia aspiracional de acting y microexpresiones; no se ha observado ejecutándose en este entorno ni se afirma equiparación."
+    }
+  ],
+  "components": [
+    {
+      "id": "character",
+      "role": "Modelo 3D skinned, rig corporal con morphs faciales reales importado por GLTFLoader.",
+      "strategy": "Importar GLB CC0 RobotExpressive r164 y normalizar escala, evitando escultura de caras mediante piezas primitivas.",
+      "constraints": "No alterar topología facial importada, no hacer collage de ojo/nariz/ropa; verificar morph y animaciones al cargar."
+    },
+    {
+      "id": "performance",
+      "role": "Dirección de dos actuaciones emocionales con elección, voz local y gestos corporales.",
+      "strategy": "Ramas locales y originales, clips No y Yes, morph Sad o Surprised, SpeechSynthesis del navegador.",
+      "constraints": "Sin servicio de conversación en vivo; sincronía aproximada, sin promesa de lipsync fonético exacto."
+    },
+    {
+      "id": "stage",
+      "role": "Escenario WebGL con continuidad en vistas frente, perfil y primer plano.",
+      "strategy": "Three.js PBR iluminado con foco y contraluz; composición adaptada a 390 y 1440 sin panel invasivo.",
+      "constraints": "La cámara mantiene escala de 2.85 metros del modelo; el control de UI no debe tapar la cara."
+    }
+  ],
+  "questions": [
+    {
+      "id": "Q1",
+      "target": "character",
+      "question": "¿Cómo evitar otro rostro con geometría pegada manteniendo un rig facial real y copyright autorizado?",
+      "alternatives": [
+        "Importar modelo glTF con morphs faciales y clips CC0",
+        "Construir nueva malla escultórica unificada con blendshapes originales"
+      ],
+      "evidenceRef": "R1",
+      "finding": "El GLB RobotExpressive tiene autorización CC0 declarada y blendshapes añadidos profesionalmente; se aleja deliberadamente del realismo humano.",
+      "decisionImpact": "El personaje será una intérprete robótica estilizada con geometría unificada de un modelo de autor."
+    },
+    {
+      "id": "Q2",
+      "target": "performance",
+      "question": "¿Cómo hacer dos interpretaciones diferentes sin llamar a un proveedor conversacional cada vez?",
+      "alternatives": [
+        "Guion local con gestos y voz del navegador",
+        "Generación dinámica de respuesta y voz en proveedor remoto"
+      ],
+      "evidenceRef": "R2",
+      "finding": "El ejemplo usa clips y morphs independientes; SpeechSynthesis está estandarizado en navegadores pero sus voces reales varían por dispositivo.",
+      "decisionImpact": "La escena usa diálogo original fijo con dos ramas, clips independientes y TTS local solo cuando disponible."
+    },
+    {
+      "id": "Q3",
+      "target": "stage",
+      "question": "¿Qué composición expone rostro, perfil y planos cercanos sin superponer una UI en móvil?",
+      "alternatives": [
+        "Escena 3D arriba y decisiones fuera del canvas",
+        "Panel lateral persistente y muchos controles flotantes"
+      ],
+      "evidenceRef": "R2",
+      "finding": "Los ejemplos 3D requieren inspección multivista, pero la presentación anterior invadió el rostro con tipografía; una banda separada reduce oclusión.",
+      "decisionImpact": "El layout reserva 60% pantalla al escenario en 390 px, deja decisiones en banda inferior y ofrece cámaras fijas."
+    }
+  ],
+  "relations": [
+    {
+      "from": "character",
+      "to": "performance",
+      "invariant": "Los canales de morph y los clips gestuales deben pertenecer al mismo GLB y conservar una pose animada coherente.",
+      "failure": "Una animación suplantada por cambios superficiales no valida acting ni deformación.",
+      "test": "Comprobar skins, morphs, clips y dos reacciones frente y perfil."
+    },
+    {
+      "from": "stage",
+      "to": "character",
+      "invariant": "Las tres cámaras deben mostrar el protagonista entero o su rostro con margen, también en 390 px.",
+      "failure": "Cara cortada, protagonista fuera de encuadre o botones que ocultan ojos.",
+      "test": "Capturar apertura y detalle en 390 y 1440, inspeccionar RGB/encuadre."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "D1",
+      "questionId": "Q1",
+      "componentIds": [
+        "character"
+      ],
+      "choice": "GLB CC0 de personaje robótico con rig y morphs, no cara humana montada con primitives.",
+      "rejected": "Repetir collage geométrico de cabeza/nariz/cabello sobre esfera.",
+      "productionChange": "Nuevo actor-rig.js carga RobotExpressive r164 y falla explícitamente si faltan skin o morphs, en lugar de fingir rig.",
+      "why": "Es una diferencia de familia de representación comprobable frente al defecto humano de W6."
+    },
+    {
+      "id": "D2",
+      "questionId": "Q2",
+      "componentIds": [
+        "performance"
+      ],
+      "choice": "Dos decisiones con actuación, texto original y voz local opcional.",
+      "rejected": "Chat remoto obligatorio o sincronía fonética simulada como profesional.",
+      "productionChange": "Nuevo dialogue.js registra las dos respuestas; la voz se vincula al reloj del sintetizador y el visor declara límites.",
+      "why": "Permite variar interpretación sin hacer promesas imposibles sobre backend y audio."
+    },
+    {
+      "id": "D3",
+      "questionId": "Q3",
+      "componentIds": [
+        "stage"
+      ],
+      "choice": "Escenario exclusivo con tres puntos de vista y controles por fuera.",
+      "rejected": "Panel ornamental que ocupa un tercio del área de rostro.",
+      "productionChange": "Nuevo index.html usa banda inferior y alterna cámara en posiciones front, profile y detail.",
+      "why": "Responde a la observación humana de colisión entre texto y cara en móvil."
+    }
+  ],
+  "risks": [
+    {
+      "componentIds": [
+        "character",
+        "stage"
+      ],
+      "severity": "high",
+      "failure": "El modelo 3D podría verse mal encuadrado, perder expresiones o no cargar por CDN/WebGL.",
+      "prevention": "Primer artículo del rig frente y perfil antes de afirmar calidad; cambiar modelo/técnica si el render falla.",
+      "test": "Capturas WebGL reales de personaje en 390 y 1440, de frente, perfil y primer plano.",
+      "status": "NOT_RUN"
+    },
+    {
+      "componentIds": [
+        "performance"
+      ],
+      "severity": "high",
+      "failure": "SpeechSynthesis podría usar voz remota, carecer de voz española o desincronizar morph de la boca.",
+      "prevention": "No llamar servicios externos propios, comprobar voz instalada y medir tiempos de onstart/onend.",
+      "test": "Escucha humana y video/screen capture con test de A a B y viceversa.",
+      "status": "NOT_RUN"
+    },
+    {
+      "componentIds": [
+        "stage"
+      ],
+      "severity": "medium",
+      "failure": "Botones de decisión y label podrían tapar rostro o quedar fuera de pantalla.",
+      "prevention": "UI en banda independiente y tres puntos de vista sin overlays invasivos.",
+      "test": "Captura real 390x844 y 1440x900 con consola sin errores.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "acceptance": [
+    {
+      "kind": "visual",
+      "criterion": "Primera pantalla con protagonista legible y UI sin tapar ojos en 390 y 1440.",
+      "oracle": "Capturas auténticas revisadas por observador, no screenshot sintético.",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "interactive",
+      "criterion": "Cada uno de dos botones cambia gesto y emoción, sin pedir respuesta a un servidor.",
+      "oracle": "Clicks probados con playback de clips y morphs en renderer real.",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "audio",
+      "criterion": "La boca se mueve mientras existe voz local autorizada y se detiene al finalizar.",
+      "oracle": "Escucha y captura temporal; reconocer que sincronía por amplitud aproximada no es visema fonético.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "licensing": "RobotExpressive por Tomás Laulhé CC0 1.0, modificación Don McCurdy en three.js r164. Biblioteca Three.js MIT. Guion y código de dirección nuevos. SpeechSynthesis usa voz autorizada por el sistema sin grabaciones comerciales externas.",
+  "resources": "Modelo glTF estático de tag r164 servido por jsDelivr, Three.js ESM, WebGL2, SpeechSynthesis opcional. No Blender ni herramienta de video/export confirmados en este entorno.",
+  "environmentLimits": "El contenedor local carece de DNS público para descargar el GLB o importar CDN; no es posible realizar captura WebGL real del preview en este entorno. El runtime del dispositivo y las voces no están observados.",
+  "artDirection": {
+    "schema": "prometeo.art-direction.first-article/v1",
+    "medium": "3d",
+    "taskId": "3d-w7-20261122-01",
+    "briefSha": "58de659e2aa01c0746d59ca6f95c36bdc59f3030",
+    "flowRef": "JuanManuelPM/pruebas@candidate/prometeo-3d-character-flow-v3-20261116 PROJECT_BOOTSTRAP.md sha 02cd6acb6df538ccaef3d5e88adf1be4ba5c9d33 (no promoción probada)",
+    "promise": {
+      "subject": "Un interlocutor robótico riggeado que se vea completo y actúe sin anatomía collage.",
+      "intent": "El visitante cambia el modo de hablar de un mismo actor, con ojos, pose y voz congruentes."
+    },
+    "benchmark": {
+      "url": "https://threejs.org/examples/webgl_animation_skinning_morph.html",
+      "description": "Ejemplo visual y código fuente examinados: rig SkinnedMesh, mezcla de clips y tres morph targets, recurso CC0 de autoría nombrada.",
+      "status": "OBSERVED"
+    },
+    "techniques": [
+      {
+        "family": "importación de glTF riggeado CC0",
+        "viability": "Asset en r164 con README CC0 y clips/morphs documentados, acceso estático CDN; WebGL no probado aquí.",
+        "license": "CC0 1.0 declarado en README y MIT para three.js."
+      },
+      {
+        "family": "malla escultórica propia con rig/blendshapes",
+        "viability": "Puede modelarse sin material de terceros y exportarse en GLB cuando haya autoría y herramienta compatibles; hoy no existe asset listo.",
+        "license": "Modelado de nueva autoría íntegramente original, sin uso de fotos ajenas."
+      }
+    ],
+    "selectedTechnique": "importación de glTF riggeado CC0",
+    "firstFrame": {
+      "openingDescription": "En la primera carga el actor ocupa el centro del estudio oscuro, con tres cámaras discretas arriba y dos decisiones en banda inferior.",
+      "focalSubject": "Actor robótico con cabeza y tronco articulados, rostro que no recibe piezas geométricas pegadas.",
+      "minimalUI": "Título pequeño, tres vistas y dos elecciones fuera del canvas; sin overlays funcionalmente duplicados.",
+      "checks": [
+        {
+          "viewport": "390",
+          "criterion": "Los ojos del actor son visibles y la banda inferior no los cubre.",
+          "oracle": "Captura real 390x844 revisada visualmente."
+        },
+        {
+          "viewport": "1440",
+          "criterion": "El actor aparece completo y centrado, con aire alrededor de la silueta.",
+          "oracle": "Captura real 1440x900 y verificación perceptual."
+        },
+        {
+          "viewport": "both",
+          "criterion": "Perfil y detalle exhiben deformación y no cortan cabeza o extremidades.",
+          "oracle": "Dos capturas por tamaño al cambiar vista."
+        }
+      ],
+      "observations": []
+    },
+    "firstArticle": {
+      "target": "Primer busto 3D importado en front/profile/detail con morphs y actuación de una rama.",
+      "rejectWhen": "La cabeza se observa como collage, cara recortada, skinned mesh ausente o voz no acoplada.",
+      "switchTo": "malla escultórica propia con rig/blendshapes",
+      "oracle": "Render real en dos viewports y perfil, inspección de morph dictionary y clips, escucha de audio.",
+      "resourceProof": "README oficial r164 CC0 inspeccionado: https://github.com/mrdoob/three.js/blob/r164/examples/models/gltf/RobotExpressive/README.md",
+      "status": "NOT_RUN"
+    },
+    "humanApproved": false
+  }
+}
