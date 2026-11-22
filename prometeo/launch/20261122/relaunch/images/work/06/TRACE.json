@@ -56,9 +56,10 @@
     },
     {
       "stage": "BROWSER_ART_QA",
-      "timestamp": null,
-      "status": "NOT_RUN",
-      "reason": "No screenshot on a real browser"
+      "timestamp": "2026-11-22T19:18:29.128Z",
+      "status": "OBSERVED_TECHNICAL",
+      "evidence": "GitHub Actions 45059841510 SUCCESS; Chromium screenshots 390 and 1440, hero on first screen, no overflow, media loaded",
+      "decision": "Removed oversized UI header and pixelated preview in observed iteration; do not assert artistic quality or full six-panel success."
     },
     {
       "stage": "BLIND_STORY_QA",
@@ -67,6 +68,6 @@
       "reason": "Incomplete six scene set and no external readers"
     }
   ],
-  "validator": "NOT_RUN_WITH_ORIGINAL_FLOW_TOPOLOGY",
+  "validator": "Visited flow topology NOT_RUN; DEEP-SPEC/ART structural validators both executed with gates READY_FOR_FIRST_SLICE / READY_TO_BUILD_NOT_ARTISTICALLY_APPROVED",
   "humanApproved": false
 }
