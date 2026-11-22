@@ -1,0 +1,221 @@
+{
+  "version": "DEEP-SPEC-1",
+  "medium": "images",
+  "depth": "OPERATIVO",
+  "batchId": "images-w003-20261122",
+  "taskNumber": 10,
+  "taskId": "images-w003-20261122-10",
+  "briefSha": "a97b91ca103847ea75eeb9d1d2af10b6c9c0dddd",
+  "brief": "Interpretar la misma plaza ficticia después de una inundación mediante fotografía editorial sobria e ilustración gráfica expresiva, sin modificar hechos ni protagonistas.",
+  "intent": {
+    "experience": "Que un espectador sienta la misma pérdida y el mismo gesto humano con dos gramáticas visuales opuestas.",
+    "distinctAbility": "Preservar los mismos ocho anclajes semánticos en dos técnicas distintas e inspeccionar raster genuino."
+  },
+  "references": [
+    {
+      "id": "R1",
+      "status": "OBSERVED",
+      "url": "https://www.worldpressphoto.org/collection/photo-contest/2025/Amanda-M-Perobelli/4",
+      "observation": "Acción humana en inundación real con barro, daño material, objetos cotidianos y encuadre sobrio; referencia no copiada."
+    },
+    {
+      "id": "R2",
+      "status": "OBSERVED",
+      "url": "https://www.shauntan.net/arrival-book",
+      "observation": "Narración gráfica legible mediante gestos, motivos persistentes y geometría editorial, sin depender de texto explicativo."
+    }
+  ],
+  "components": [
+    {
+      "id": "C",
+      "role": "Canon espacial y humano de la plaza inundada",
+      "strategy": "Ocho anclas fijadas antes de elaborar las dos obras",
+      "constraints": "Mantener árbol, banco azul, arcos, cuerda naranja, agua, dos personajes y álbum rojo sobre caja de madera."
+    },
+    {
+      "id": "F",
+      "role": "Fotografía editorial ficticia sintética",
+      "strategy": "Síntesis generativa con luz nublada, materia húmeda y gesto compartido",
+      "constraints": "Nunca declarar que la fotografía fue capturada por cámara o corresponde a un desastre real."
+    },
+    {
+      "id": "I",
+      "role": "Ilustración editorial original raster",
+      "strategy": "Dibujar por paths independientes y pasar de SVG a PNG con CairoSVG",
+      "constraints": "No recolorear o aplicar filtros a la fotografía; dibujar protagonistas, arcos, utilería y agua."
+    }
+  ],
+  "questions": [
+    {
+      "id": "Q1",
+      "target": "C",
+      "question": "¿Qué hechos y geometrías deben resistir cuando cambia el lenguaje visual?",
+      "alternatives": [
+        "Comparar dos estilos sin mapa común",
+        "Fijar anclas visibles de espacio, objetos y acción"
+      ],
+      "evidenceRef": "R2",
+      "finding": "Persistencia de gestos y objetos mantiene lectura del lugar sin exigir pixel-match.",
+      "decisionImpact": "Ocho anclas iniciales y matrix de continuidad."
+    },
+    {
+      "id": "Q2",
+      "target": "I",
+      "question": "¿Cómo impedir que el dibujo sea un filtro de la fotografía o una imagen fuera del brief?",
+      "alternatives": [
+        "Usar transformación de color",
+        "Dibujo de formas independientes gobernado por canon"
+      ],
+      "evidenceRef": "R2",
+      "finding": "Dos afiches automáticos quedaron fuera de tema y fueron excluidos del trabajo.",
+      "decisionImpact": "Switch de técnica real a SVG manual; PNG de fuente nueva."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "D1",
+      "questionId": "Q1",
+      "componentIds": [
+        "C",
+        "F",
+        "I"
+      ],
+      "choice": "Canon cerrado de lugar y protagonistas",
+      "rejected": "Cambiar la plaza de una imagen a otra",
+      "productionChange": "Álbum rojo, mujer ocre, hombre verde, arcos, reloj, árbol, banco y cuerda en ambas imágenes.",
+      "why": "Comparar formas de contar exige un único hecho y un mismo centro humano."
+    },
+    {
+      "id": "D2",
+      "questionId": "Q2",
+      "componentIds": [
+        "I",
+        "C"
+      ],
+      "choice": "Dibujo independiente con shapes propios",
+      "rejected": "Repetir generación fuera de tema o filtrar foto",
+      "productionChange": "Segundo raster construido con 81 KB de SVG original y CairoSVG, 1536 por 1024.",
+      "why": "El lenguaje gráfico debe cambiar elementos formales, no solo tonos."
+    }
+  ],
+  "relations": [
+    {
+      "from": "C",
+      "to": "I",
+      "invariant": "Ambos roles, álbum rojo, arcos, banco, árbol y soga deben identificarse en la ilustración.",
+      "failure": "Pieza B contiene otra escena o no se distingue un objeto.",
+      "test": "Revisar visualmente B contra canon y foto A."
+    },
+    {
+      "from": "F",
+      "to": "I",
+      "invariant": "La narración coincide aun cuando contornos y profundidad difieren radicalmente.",
+      "failure": "Pieza B solo recolorea los mismos píxeles de A.",
+      "test": "Comparar fuentes y arte A/B lado a lado."
+    }
+  ],
+  "risks": [
+    {
+      "componentIds": [
+        "I",
+        "C"
+      ],
+      "severity": "high",
+      "failure": "Generación de afiches sobre PROMETEO que omite la plaza inundada.",
+      "prevention": "Rechazar resultados ajenos al brief y cambiar a dibujo con canon controlado.",
+      "test": "Inspeccionar el raster B y sus ocho anclajes.",
+      "status": "OBSERVED"
+    },
+    {
+      "componentIds": [
+        "F",
+        "I"
+      ],
+      "severity": "medium",
+      "failure": "Píxeles no verificables o reescalado como simulacro de detalle.",
+      "prevention": "Entregar PNG RGB nativos sin upscale y SHA256.",
+      "test": "Pillow/Image.open, formato y dimensiones.",
+      "status": "OBSERVED"
+    }
+  ],
+  "acceptance": [
+    {
+      "kind": "visual",
+      "criterion": "Dos imágenes interpretan un mismo episodio y los mismos protagonistas.",
+      "oracle": "Inspección perceptual comparada de las ocho anclas.",
+      "status": "OBSERVED"
+    },
+    {
+      "kind": "functional",
+      "criterion": "Los PNG RGB 1536×1024 existen y tienen SHA256 diferentes.",
+      "oracle": "PIL decode y hash de archivos locales.",
+      "status": "OBSERVED"
+    },
+    {
+      "kind": "interactive",
+      "criterion": "Comparador ciego presenta obras sin overlay en 390/1440.",
+      "oracle": "Captura y descarga JSON en Chromium; bloqueo administrativo.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "licensing": "Referentes externos observados, no incluidos como medios; fotografía A sintética e ilustración B originales.",
+  "resources": "Generación de imagen, Pillow, Python, SVG y CairoSVG verificados; Chromium bloqueado por administrador.",
+  "environmentLimits": "Los dos PNG son arte local entregado en la conversación pero no se pudieron transportar como binarios a GitHub; navegador file y localhost bloqueado; media HTTP, capturas de viewport y evaluación humana NOT_RUN.",
+  "artDirection": {
+    "schema": "prometeo.art-direction.first-article/v1",
+    "medium": "images",
+    "taskId": "images-w003-20261122-10",
+    "briefSha": "a97b91ca103847ea75eeb9d1d2af10b6c9c0dddd",
+    "flowRef": "QBAR-1 QUALITY_BAR.md SHA 5653704d3267c339fe7405f2b36b8488dbb44be9 / DEEP-SPEC-1 SHA 7656a293b0182f81619bf0d27b90dffa771c2683",
+    "promise": {
+      "subject": "Dos personas arrodilladas rescatan un álbum rojo de una caja de barro en una plaza inundada.",
+      "intent": "Un mismo momento, testimonio fotográfico ficticio frente a memoria gráfica expresiva."
+    },
+    "benchmark": {
+      "url": "https://www.worldpressphoto.org/collection/photo-contest/2025/Amanda-M-Perobelli/4",
+      "description": "Acción humana contenida, objetos dañados y ambientación física real; solo referente.",
+      "status": "OBSERVED"
+    },
+    "techniques": [
+      {
+        "family": "síntesis fotográfica generativa",
+        "viability": "PNG A 1536×1024 observado y decodificado.",
+        "license": "Escena imaginaria creada, no photojournalism real."
+      },
+      {
+        "family": "ilustración con tinta vectorial",
+        "viability": "Dibujo SVG propio a tamaño nativo renderizado a PNG.",
+        "license": "Paths originales sin uso de fotos protegidas."
+      }
+    ],
+    "selectedTechnique": "síntesis fotográfica generativa",
+    "firstFrame": {
+      "openingDescription": "Dos imágenes sin overlays, personas y álbum rojo dominan la lectura.",
+      "focalSubject": "Álbum rojo sostenido por una pareja delante de arcos inundados.",
+      "minimalUI": "Título y obra primero, encuesta ciega debajo del primer viewport.",
+      "checks": [
+        {
+          "criterion": "390px muestra obra y sin scroll lateral",
+          "oracle": "Screenshot real, NO ejecutado por bloqueo.",
+          "viewport": "390"
+        },
+        {
+          "criterion": "1440px permite comparar ambas piezas",
+          "oracle": "Screenshot real, NO ejecutado por bloqueo.",
+          "viewport": "1440"
+        }
+      ],
+      "observations": []
+    },
+    "firstArticle": {
+      "target": "Primera pieza de alta resolución con plaza y álbum rojo",
+      "rejectWhen": "Falta el hecho y al menos una ancla central.",
+      "switchTo": "ilustración con tinta vectorial",
+      "oracle": "Revisión directa de pixels y anclas de la plaza ficticia.",
+      "resourceProof": "PNG y SVG locales con dimensiones y sha256 documentados.",
+      "status": "NOT_RUN",
+      "localNote": "Primer artículo observado localmente, pero falta evidencia pública HTTPS requerida por gate formal."
+    },
+    "humanApproved": false
+  }
+}
