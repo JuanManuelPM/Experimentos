@@ -106,7 +106,7 @@ function studioItems(room){
   const url=media.src||media.url,kind=media.type==='file'?'Obra':media.type==='scene'?'Escena':media.type;
   addItem(map,{id:e.batchId+'-'+e.taskNumber,title:e.title||String(e.taskNumber),kind,media:media.type==='file'?'html':media.type==='scene'?'html':media.type,url,version:'W001/'+String(e.taskNumber).padStart(2,'0'),source:e.id,description:e.body||''},80);
  }
- return [...map.values()].sort((a,b)=>b.rank-a.rank||a.title.localeCompare(b.title,'es'));
+ return [...map.values()].sort((a,b)=>(room==='music'?Number(a.folder!=='Canciones')-Number(b.folder!=='Canciones'):0)||b.rank-a.rank||a.title.localeCompare(b.title,'es'));
 }
 function element(tag,cls,text){const e=document.createElement(tag);if(cls)e.className=cls;if(text!==undefined)e.textContent=text;return e;}
 function renderLibrary(){
@@ -114,7 +114,9 @@ function renderLibrary(){
  const batch=state.batches.find(b=>b.room===state.room);
  const batchButton=$('batch-link');batchButton.hidden=!batch;
  if(batch){const count=state.public.filter(e=>batch.tasks?.some(t=>t.messageIds?.includes(e.id)||e.batchId===batch.id)).length;batchButton.textContent=count+' / '+batch.tasks.length+' · Entregas';}
+ let folder='';
  for(const item of studioItems(state.room)){
+  if(item.folder&&item.folder!==folder){folder=item.folder;const h=element('h2','p-work-group',folder);host.append(h);}
   const card=element('article','p-work-card'),open=element('button','p-work-open');open.type='button';
   open.setAttribute('aria-label','Abrir '+item.title);
   const meta=element('span','p-work-meta');meta.append(element('span','',item.kind),element('span','',item.version||''));
