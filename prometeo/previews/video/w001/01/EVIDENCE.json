@@ -1,7 +1,7 @@
 {
   "schema": "prometeo.video.evidence/v1",
   "id": "video-w001-20261122-01",
-  "phase": "LOCAL_VIDEO_ENCODED",
+  "phase": "REMOTE_VIDEO_ENCODED",
   "sourceRef": "gh-pages:prometeo/launch/20261122/video/LAUNCH.md",
   "sourceBlobSha": "efc6259b5731950be1e84fda71c1fbaf6bdc57d3",
   "flowBootstrapBlobSha": "c1ea01fe4475c43e4affe6fbf4f475f93fc3d365",
@@ -18,8 +18,13 @@
     "status": "PASS"
   },
   "remoteArtifact": {
-    "mp4": "NOT_VERIFIED_PENDING_CI",
-    "preview": "PENDING_PUBLIC_READBACK"
+    "status": "PASS_GITHUB_ACTIONS_AND_BLOB_READBACK",
+    "mp4BlobSha": "264cef125108",
+    "mp4Bytes": 830175,
+    "encodedAtRun": "https://github.com/JuanManuelPM/Experimentos/actions/runs/44987231521",
+    "videoUrl": "https://juanmanuelpm.github.io/Experimentos/prometeo/previews/video/w001/01/film.mp4",
+    "browserPlayback": "NOT_RUN",
+    "pagesDeployment": "PENDING_CONFIRMATION"
   },
   "tests": {
     "sourceCreated": "PASS",
@@ -27,7 +32,11 @@
     "localDuration": "PASS",
     "localAudioTrack": "PASS",
     "browserPlayback": "NOT_RUN",
-    "remoteMp4": "NOT_RUN",
-    "artisticApproval": "NOT_RUN"
+    "remoteMp4": "PASS_CI_FFPROBE",
+    "artisticApproval": "NOT_RUN",
+    "remoteMp4BlobReadback": "PASS_830175_BYTES",
+    "remoteAudioTrack": "PASS_CI_FFPROBE",
+    "remoteDurationSeconds": "PASS_12.000",
+    "remoteFrames": "PASS_288"
   }
 }
