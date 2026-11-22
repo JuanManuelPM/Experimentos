@@ -74,7 +74,7 @@
 
 ### Criterios verificables de cierre de esta preproducción
 
-1. GitHub readback de `LAUNCH.md` y `EVIDENCE.md` en rama candidata, con diez números, IDs distintos y una única orden universal: **pendiente de relectura tras commit**.
-2. Confirmar W001 y `BATCHES.json` intactos tras estas escrituras: **pendiente de relectura tras commit**.
+1. GitHub readback de `LAUNCH.md` y `EVIDENCE.md` en rama candidata, con diez números, IDs distintos y una única orden universal: **VERIFICADO por lectura remota:** LAUNCH contiene secciones 1–10 sin duplicados, un solo comando y EVIDENCE contiene 10 filas de matriz; blobs `b592b46e5d775ad29639889f25b7a72457d4f4db` y `a04137e716fbe8224612d5e0d6429adfc77b4c48` en la primera relectura.
+2. Confirmar W001 y `BATCHES.json` intactos tras estas escrituras: **VERIFICADO por lectura remota:** W001 LAUNCH conserva blob `dd873c31af2e340f6ecfc07aca204ba72271772c`; `BATCHES.json` conserva blob `5d1414698b4a7d0a954982e47ef5b647f31bb39d`, mantiene W001 y no incluye W002.
 3. No ejecutar ni publicar audio, ni registrar `STARTED` en ROOT: **cumplido por alcance**.
 4. Promoción/ejecución solo tras una auditoría ROOT de cinco tandas: **pendiente de humano/ROOT**.
