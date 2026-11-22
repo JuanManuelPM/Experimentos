@@ -15,3 +15,12 @@
 **Referencias observadas y usadas como inspiración, sin copiar imágenes:** [TNC](https://www.nature.org/es-us/que-hacemos/nuestras-prioridades/hacer-frente-al-cambio-climatico/carbono-forestal-chile-reserva-costera-valdiviana/), [Chile Travel](https://www.chile.travel/blog/bano-bosques/), [ecosistema oficial Chile](https://simbio.mma.gob.cl/Ecosistemas/Details/86).
 
 La validación de una ficha o la existencia de un enlace no constituye verificación artística, ambiental ni aprobación humana.
+## Validación canónica ejecutada (2026-11-22)
+
+Se ejecutó el código oficial recuperado de `gh-pages` y fijado a sus blob SHA, sobre el `PREPRODUCTION.deep-spec-v1.json` publicado en esta rama:
+
+- `deep-spec-v1.mjs` blob `0536af26982d50dfc3c3689aca2677751bdee1fe`: **`READY_FOR_FIRST_SLICE`**, 0 errores estructurales.
+- `art-direction-first-article-v1.mjs` blob `dac224b390fc86982ce76eeb0135d4be59eb52ad`: **`FIRST_FRAME_CAPTURE_REQUIRED`**, 0 errores estructurales.
+- Book publicado blob `ab2cbdb86364bc5057e26e681571e3622340c14f`.
+
+El estado del arte sigue siendo **PARCIAL**: no hay captura Chromium real, ni entrega de los binarios en GitHub, ni QA ecológica independiente. La validación estructural no corrige esas carencias.
