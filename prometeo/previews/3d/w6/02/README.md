@@ -19,6 +19,7 @@ El componente reusable `occlusion-camera.mjs` calcula superficies de muros/techo
 ## Evidencia y límites
 
 - `PREPRODUCTION.deep-spec-v1.json`: referencias verdaderamente consultadas, relaciones, decisiones y riesgos. Gate estructural: `SPIKE_REQUIRED` por render no observado.
+- `test.html`: diagnóstico ejecutable en el navegador para WebGL, oclusión y colisiones (aún NOT_RUN aquí).
 - `QA_RECEIPT.json`: tests lógicos y sintácticos PASADOS, QA visual y móvil `NOT_RUN`.
 - `index.html`, `scene.mjs` y `occlusion-camera.mjs`: editables y versionados.
 - No certificar profesionalismo o aprobación humana sin revisión real. Las capturas de la herramienta se generan por el navegador al hacer clic, no se adjuntan PNG ficticios.
