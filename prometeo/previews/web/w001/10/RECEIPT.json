@@ -1,0 +1,63 @@
+{
+  "schema": "prometeo.web.w001.receipt/v1",
+  "id": "web-w001-20261122-10",
+  "room": "web",
+  "batchId": "web-w001-20261122",
+  "taskNumber": 10,
+  "title": "ATLAS / comparador de versiones",
+  "status": "CODE_PUBLISHED_PUBLIC_BROWSER_UNVERIFIED",
+  "createdAt": "2026-11-22T04:52:52.088Z",
+  "brief": "Interfaz web para comparar versiones de una obra creativa, con dos vistas y cambio funcional de versión.",
+  "source": {
+    "repo": "JuanManuelPM/pruebas",
+    "branch": "candidate/prometeo-web-w001-10-20261122",
+    "path": "PROMETEO/spaces/web-design/works/web-w001-20261122-10/index.html",
+    "blobSha": "a248ec7f8f4b2328d7a4ffbf7fde25fffeadb818",
+    "commitSha": "ddd33b663ccb4bad7050b6ffe014c97c13071f7d"
+  },
+  "flow": {
+    "repo": "JuanManuelPM/pruebas",
+    "ref": "candidate/prometeo-web-factory-workflow-v2-20261117",
+    "path": "cloud-lab/flow-studio-v3/experiments/semilla-parallel-launchpad/launcher-workspace-v4/prometeo/learning/web-design-studio/workflows/WEB_FACTORY_V2/FLOW.json",
+    "blobSha": "02f7b6161b50cd5bc6b342b84c969aaa36bac90a",
+    "status": "SPEC_ONLY"
+  },
+  "publication": {
+    "repo": "JuanManuelPM/Experimentos",
+    "ref": "gh-pages",
+    "path": "prometeo/previews/web/w001/10/index.html",
+    "commitSha": "af2b1746a9fd0d338846265b3f9584009f568301",
+    "blobSha": "a248ec7f8f4b2328d7a4ffbf7fde25fffeadb818",
+    "githubFileUrl": "https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/previews/web/w001/10/index.html",
+    "intendedPagesUrl": "https://juanmanuelpm.github.io/Experimentos/prometeo/previews/web/w001/10/",
+    "remoteBrowserVerified": false
+  },
+  "capabilities": [
+    "Cuatro composiciones SVG originales de la misma obra",
+    "Comparación en paralelo de dos versiones",
+    "Comparación en cortina con slider táctil y teclado",
+    "Intercambio de versiones",
+    "Deep link con estado de controles",
+    "Interfaz responsive y modo reduced-motion",
+    "Sin dependencias externas ni datos personales"
+  ],
+  "qa": {
+    "githubSourceReadback": "PASS",
+    "githubPublicationReadback": "PASS",
+    "sourceEqualsPublished": "PASS",
+    "staticChecks": "11/11 PASS",
+    "scriptRuntime": "NOT_RUN",
+    "localBrowserRender": "NOT_RUN",
+    "remoteHttp": "HTTP_503_OBSERVED_FROM_EXTERNAL_FETCH_SERVICE; public reachability not confirmed",
+    "remoteBrowserInteraction": "NOT_RUN",
+    "screenshots": "NOT_CAPTURED",
+    "mobileDevice": "NOT_RUN",
+    "humanArtApproval": "PENDING"
+  },
+  "limits": [
+    "GitHub Pages puede demorar en servir un commit o rechazar consultas desde herramientas externas; no asumir éxito HTTP",
+    "El flujo Web V2 leído es una especificación, no un motor completamente validado",
+    "No se modificó ROOT ni otros estudios, ni se atribuyó aprobación humana"
+  ],
+  "nextCheck": "Abrir la vista pública en navegador real, comprobar selectores/cortina y responsive, guardar capturas y recién entonces marcar VERIFIED."
+}
