@@ -89,6 +89,16 @@ main{display:grid;grid-template-columns:minmax(0,1fr) 342px;min-height:calc(100v
 <div id="status" role="status" aria-live="polite">Cargando laboratorio 3D…</div>
 </aside>
 </main>
+<script>
+window.__camWorkshopReady=false;
+window.addEventListener('error',function(ev){
+ const element=document.getElementById('fatal');
+ if(element&&!window.__camWorkshopReady){element.style.display='grid';element.textContent='No se pudo iniciar el visor 3D. Comprobá que el navegador admita WebGL y permita descargar Three.js.';}
+},true);
+window.setTimeout(function(){
+ if(!window.__camWorkshopReady){const element=document.getElementById('fatal');if(element){element.style.display='grid';element.textContent='El visor 3D todavía no pudo iniciar. Comprobá conexión a internet y compatibilidad WebGL.';}}
+},12000);
+</script>
 <script type="module">
 import * as THREE from 'three';
 import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
@@ -248,7 +258,7 @@ function frame(now){requestAnimationFrame(frame);const dt=Math.min((now-prev)/10
  if(now-lastReadout>40){applyPose();lastReadout=now}
  renderer.render(scene,camera);
 }
-rebuildChart();check();applyPose();requestAnimationFrame(frame);$('parts').setAttribute('aria-pressed','true');
+rebuildChart();check();applyPose();requestAnimationFrame(frame);$('parts').setAttribute('aria-pressed','true');window.__camWorkshopReady=true;$('fatal').style.display='none';
 window.addEventListener('error',e=>{if(/WebGL|module|Failed to fetch/i.test(e.message)){$('fatal').style.display='grid';$('fatal').textContent='Este navegador no pudo iniciar WebGL o descargar Three.js. Revisá la conexión y el soporte gráfico.'}});
 </script>
 </body></html>
