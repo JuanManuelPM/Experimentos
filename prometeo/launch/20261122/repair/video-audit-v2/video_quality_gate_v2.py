@@ -59,7 +59,7 @@ def evaluate(manifest, *, root=pathlib.Path("."), probe=True):
                             errors.append("AUDIO_TRACK_MISSING")
             if not media.get("frameSamples") or len(media.get("frameSamples")) < 3:
                 errors.append("START_MIDDLE_END_NOT_REVIEWED")
-            if not media.get("audioReview"):
+            if media.get("audioReview") != "OBSERVED":
                 warnings.append("CRITICAL_LISTENING_NOT_RUN")
             if media.get("status") == "PUBLIC" and not media.get("publicUrl"):
                 errors.append("PUBLIC_URL_MISSING")
