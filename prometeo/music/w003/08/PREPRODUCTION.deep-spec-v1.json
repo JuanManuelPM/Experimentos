@@ -1,0 +1,288 @@
+{
+  "version": "DEEP-SPEC-1",
+  "medium": "music",
+  "depth": "SISTEMA",
+  "brief": "08 · MAREA VARIABLE · Banda sonora reactiva: tres estados emocionales, stems compatibles, cambios de intensidad cuantizados y audio editable; mínimo tres estados, export y pruebas de cambios rápidos.",
+  "intent": {
+    "experience": "El oyente altera una marea musical continua sin quebrar el pulso ni perder el motivo común.",
+    "distinctAbility": "Un único reloj musical gobierna cuatro stems originales y cambios de estado sobre el siguiente compás."
+  },
+  "references": [
+    {
+      "id": "R1",
+      "url": "https://www.fmod.com/docs/2.04/studio/authoring-events.html",
+      "status": "OBSERVED",
+      "observation": "Documentación FMOD consultada: marcadores de tempo, sincronía relativa a compás y regiones de transición, no evaluación sonora ni audio ajeno."
+    },
+    {
+      "id": "R2",
+      "url": "https://www.gamesounddesign.com/in-depth-creation-of-dynamic-music-in-a-video-game.html",
+      "status": "OBSERVED",
+      "observation": "Caso Wwise consultado: contenedores musicales, reglas de salida y necesidad de preservar colas antes de cambiar de estado. Se extrajo lógica, no grabaciones."
+    }
+  ],
+  "components": [
+    {
+      "id": "C1",
+      "role": "Partitura, armonía y narrativa emocional de 48 compases",
+      "strategy": "Cuatro secciones y progresión de acordes original con motivo que retorna variado.",
+      "constraints": "Los cuatro stems deben tener idéntica duración, tempo, sample rate y estructura armónica."
+    },
+    {
+      "id": "C2",
+      "role": "Síntesis y archivos PCM editables de cuatro stems",
+      "strategy": "Renderizado determinista de FM, tonos compuestos, ruido filtrado, ataques humanos y delays acotados.",
+      "constraints": "Ningún sample de terceros; export 32000 Hz PCM 16-bit y sin valores no finitos."
+    },
+    {
+      "id": "C3",
+      "role": "Reproductor musical reactivo y motor de cambios por compás",
+      "strategy": "Todos los AudioBufferSourceNode comienzan al mismo tiempo; solo se automatizan ganancias en el siguiente compás.",
+      "constraints": "La última intención gana hasta programación de la siguiente frontera; jamás reiniciar la fase al cambiar."
+    },
+    {
+      "id": "C4",
+      "role": "Superficie audiovisual legible en pantalla móvil y escritorio",
+      "strategy": "Interfaz editorial con un único control emocional, acción Play y exportaciones discretas.",
+      "constraints": "Protagonista musical visible sin paneles de debug ni overlays; capturas reales 390/1440 pendientes."
+    }
+  ],
+  "questions": [
+    {
+      "id": "Q1",
+      "target": "C3",
+      "question": "¿Qué conserva la posición musical cuando el oyente pide estados distintos varias veces antes del compás?",
+      "alternatives": [
+        "Reiniciar audio por estado con crossfade arbitrario",
+        "Arrancar los cuatro stems juntos y automatizar ganancia a la frontera de compás"
+      ],
+      "evidenceRef": "R1",
+      "finding": "FMOD modela cuantización en marcadores de tempo y compases, lo que evita saltos de fase entre capas.",
+      "decisionImpact": "Transport único, destino coalescido y curva de energía constante durante un compás."
+    },
+    {
+      "id": "Q2",
+      "target": "C2",
+      "question": "¿Cómo se demuestra que la obra audible y editable existe sin depender de licencias o servicios externos?",
+      "alternatives": [
+        "Usar una pista online de licencia incierta",
+        "Sintetizar una partitura propia offline y exportar PCM comprobable"
+      ],
+      "evidenceRef": "R2",
+      "finding": "La separación por stems sincronizados permite usar reglas de transición con colas; las fuentes externas requerirían permisos.",
+      "decisionImpact": "Audio real local de 120 segundos y exportaciones deterministas con el código fuente."
+    },
+    {
+      "id": "Q3",
+      "target": "C4",
+      "question": "¿Qué debe verse al abrir 390 y 1440 antes de darle Play para que se perciba una obra y no un panel de herramientas?",
+      "alternatives": [
+        "Rack repleto de controles técnicos",
+        "Tipografía protagonista, ola abstracta y una sola entrada Play"
+      ],
+      "evidenceRef": "R2",
+      "finding": "El caso de música adaptativa prioriza control de estado musical, no la edición técnica visible al oyente.",
+      "decisionImpact": "Superficie sin duplicación de selector, con un parámetro de intensidad y exportaciones secundarias."
+    }
+  ],
+  "relations": [
+    {
+      "from": "C1",
+      "to": "C2",
+      "invariant": "Todos los stems comparten el mismo mapa armónico de 48 compases y su inicio está alineado por muestra.",
+      "failure": "Saltos armónicos o desfasajes al alternar a mitad de frase.",
+      "test": "Longitud exacta y comparación de fronteras de compás."
+    },
+    {
+      "from": "C2",
+      "to": "C3",
+      "invariant": "La reproducción de cualquier estado conserva reloj, posición y duración exactos de los otros stems.",
+      "failure": "Desfase o percusión doble por reinicio no sincronizado.",
+      "test": "Eventos repetidos y rápidos con historial cuantizado y fuentes sin reinicio."
+    },
+    {
+      "from": "C3",
+      "to": "C4",
+      "invariant": "Cambiar intensidad solicita destino pero nunca dispara otro transporte ni silencia la base compartida.",
+      "failure": "Interfaz engañosa que promete control audible y no lo ejecuta.",
+      "test": "Prueba de Web Audio real en navegador con captura y comprobación de reloj."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "D1",
+      "questionId": "Q1",
+      "componentIds": [
+        "C1",
+        "C3"
+      ],
+      "choice": "Stems simultáneos y crossfade por compás.",
+      "rejected": "Reproductores separados reiniciados por cambio.",
+      "productionChange": "Motor reusable newTransport/request/advance; entrada cuantizada y última intención priorizada.",
+      "why": "Minimiza desfase y preserva historia musical con reglas comprobables."
+    },
+    {
+      "id": "D2",
+      "questionId": "Q2",
+      "componentIds": [
+        "C1",
+        "C2"
+      ],
+      "choice": "Composición íntegramente sintetizada por código y WAV PCM exportable.",
+      "rejected": "Pistas ajenas reutilizadas y licencias indeterminadas.",
+      "productionChange": "Partitura de 48 compases, cuatro stems, tres masters y recorrido real de cambios.",
+      "why": "Los bytes pueden verificarse y la autoría no depende de contenido ajeno."
+    },
+    {
+      "id": "D3",
+      "questionId": "Q3",
+      "componentIds": [
+        "C3",
+        "C4"
+      ],
+      "choice": "Superficie editorial centrada en la marea y slider único.",
+      "rejected": "Multiplicación de botones de estado y widgets de inspección.",
+      "productionChange": "HTML responsivo standalone con play principal y control de intensidad.",
+      "why": "La obra debe poder abrirse y entenderse sin conocer el backend musical."
+    }
+  ],
+  "risks": [
+    {
+      "componentIds": [
+        "C2",
+        "C3"
+      ],
+      "severity": "high",
+      "failure": "Stems de diferente tamaño o muestras NaN causan desfasaje y errores en AudioBuffer.",
+      "prevention": "Fijar SR/BAR/BARS en un solo score y validar cada muestra y longitud.",
+      "test": "Node PCM por pista, RIFF header, ffprobe de recorrido y tests de ritmo.",
+      "status": "OBSERVED"
+    },
+    {
+      "componentIds": [
+        "C3"
+      ],
+      "severity": "high",
+      "failure": "Ráfagas de estados sobrescriben transiciones y generan clicks o saltos de fase.",
+      "prevention": "Agrupar intención previa a cada compás y programar solo un crossfade de potencia constante.",
+      "test": "Prueba Node de solicitudes rápidas, repetidas, mitad de frase, casos de mantenimiento.",
+      "status": "OBSERVED"
+    },
+    {
+      "componentIds": [
+        "C4"
+      ],
+      "severity": "medium",
+      "failure": "Falta de prueba visual real en navegador móvil o render de audio Web Audio.",
+      "prevention": "Separar QA de PCM y prueba de navegador, nunca inferir la segunda desde la primera.",
+      "test": "Capturas 390/1440 y prueba audible interactiva en Chromium o Android.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "acceptance": [
+    {
+      "kind": "functional",
+      "criterion": "48 compases a 96 BPM con cuatro stems mono PCM de 120 s y mismo SR.",
+      "oracle": "Node tests y ffprobe 120.000000 segundos; exportación WAV RIFF y métricas RMS.",
+      "status": "OBSERVED"
+    },
+    {
+      "kind": "audio",
+      "criterion": "Cambios de estado en audio real con secciones diferenciadas, sin clicks ni desfasaje perceptual.",
+      "oracle": "Escucha integral y análisis del recorrido real de eventos contra onda y tempo.",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "interactive",
+      "criterion": "Cambios múltiples en navegador no reinician ningún AudioBufferSourceNode.",
+      "oracle": "Playwright/Web Audio en Chromium y escucha real tras cambios rápidos.",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "visual",
+      "criterion": "Primera pantalla móvil 390 y desktop 1440 muestran protagonista, play e intensidad sin overflow.",
+      "oracle": "Capturas reales en navegador de ambas vistas y comparación crítica.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "resources": "Node 22, ffmpeg/ffprobe, sintetizador JS original y Web Audio del navegador; WAV generados localmente, no subida binaria al repositorio.",
+  "licensing": "Composición, síntesis y CSS originales; cero samples externos; documentación de FMOD/Wwise solo referencia técnica.",
+  "environmentLimits": "El entorno bloquea Chromium local con ERR_BLOCKED_BY_ADMINISTRATOR incluso en file:// y localhost. No se ha hecho escucha independiente ni se han publicado WAV binarios remotos.",
+  "artDirection": {
+    "schema": "prometeo.art-direction.first-article/v1",
+    "medium": "music",
+    "taskId": "music-w003-20261122-08",
+    "briefSha": "5d7e6c2540cc49d998b7fe75fc1048d6f9cba80b",
+    "flowRef": "music-studio/FLOW.json v2.0.0 gitBlob=1423f13e08b743f418c42052613a6808b214d622 sha256=6826ce13f4bd1e0d81b8a89bd7e6728668b85c44c68185b79426b00a36b8f05f",
+    "promise": {
+      "subject": "Una marea sonora cambiante de 120 segundos y tres emociones.",
+      "intent": "El oyente escucha cómo cambia el arreglo en frase, no una interrupción arbitraria."
+    },
+    "benchmark": {
+      "url": "https://www.fmod.com/docs/2.04/studio/authoring-events.html",
+      "description": "Reglas de quantization en eventos de música con tempo markers documentadas y consultadas.",
+      "status": "OBSERVED"
+    },
+    "techniques": [
+      {
+        "family": "PCM multistem offline + AudioBufferSourceNode",
+        "viability": "Node render y WAV PCM observados; Web Audio en navegador aún pendiente de prueba.",
+        "license": "Todo el audio se sintetiza en código original propio."
+      },
+      {
+        "family": "Síntesis WebAudio en tiempo real por voces",
+        "viability": "Disponible de forma técnica si el audio buffer precalculado causa latencia o memoria excesivas.",
+        "license": "Instrumentos osciladores originales, sin recursos externos."
+      }
+    ],
+    "selectedTechnique": "PCM multistem offline + AudioBufferSourceNode",
+    "firstFrame": {
+      "openingDescription": "Al abrir se ve MAREA VARIABLE, la forma de una ola, el botón principal ENTRAR EN LA MAREA y un solo slider.",
+      "focalSubject": "La dramaturgia de tres estados y una ola protagonista, no un panel de control.",
+      "minimalUI": "Un Play principal, slider emocional único, pequeño marcador temporal y descargas de stems.",
+      "checks": [
+        {
+          "criterion": "En pantalla de 390 px el título y el botón principal no se solapan.",
+          "oracle": "Captura real y análisis de bounding boxes.",
+          "viewport": "390"
+        },
+        {
+          "criterion": "En desktop 1440 px el campo visual mantiene obra y control distinguibles.",
+          "oracle": "Captura real y overflow/visibilidad CSS.",
+          "viewport": "1440"
+        },
+        {
+          "criterion": "El cambio de intensidad nunca arranca una segunda reproducción.",
+          "oracle": "Instrumentar fuentes activas y verificar sus estados.",
+          "viewport": "both"
+        }
+      ],
+      "observations": []
+    },
+    "firstArticle": {
+      "target": "Primera frase armónica y dos cambios de estado representados en audio PCM real, no solo UI.",
+      "rejectWhen": "El primer render está vacío, tiene picos incontrolados, falla la sincronía o no produce WAV legible.",
+      "switchTo": "Síntesis WebAudio en tiempo real por voces",
+      "oracle": "Prueba Node de número de muestras, señal finita, ffprobe y comparación de fronteras.",
+      "resourceProof": "Generador JS propio sin samples externos y render WAV offline probado con ffprobe.",
+      "status": "OBSERVED_PASS",
+      "evidence": {
+        "url": "https://github.com/JuanManuelPM/Experimentos/blob/candidate/prometeo-music-w003-20261122-08/prometeo/music/w003/08/QA.md",
+        "description": "QA PCM real, eventos y 120 s verificados; no declara escucha ni navegador verificado."
+      }
+    },
+    "humanApproved": false
+  },
+  "meta": {
+    "batchId": "music-w003-20261122",
+    "taskNumber": 8,
+    "taskId": "music-w003-20261122-08",
+    "launchBlob": "5d7e6c2540cc49d998b7fe75fc1048d6f9cba80b",
+    "oldBatchId": "music-w002-20261122",
+    "oldLaunchBlob": "1045f4950c9f7ae11b455523ca664e087ec1b30d",
+    "flowBefore": "2.0.0",
+    "flowAfter": "2.0.0",
+    "preparedAt": "2026-11-22T18:54:19.211Z",
+    "importantNote": "Documented post-first-render: preproduction was reasoned before render but Book persisted after local render. Cannot claim gate validated before first sound."
+  }
+}
