@@ -1,0 +1,214 @@
+{
+  "version": "DEEP-SPEC-1",
+  "medium": "Videoclip musical original con sintesis y render procedural",
+  "depth": "SISTEMA",
+  "brief": "Video W002 numero 06. PULSO EN LA MATERIA. Brief LAUNCH sha e6d8075d33c342767dd249593256ca7667a20041. Musica original, video real, mezcla y planificador reutilizable.",
+  "intent": {
+    "experience": "La superficie mineral se comprime, fractura, liqueface y enfria en cuatro frases de musica original.",
+    "distinctAbility": "Una misma geologia evoluciona con cortes por estructura musical en vez de golpes y con audiovisual exportado realmente."
+  },
+  "references": [
+    {
+      "id": "R1",
+      "status": "OBSERVED",
+      "url": "https://s3.amazonaws.com/wac-imgix/cms/Michel-Gondry-Regis-Dialogue-Formatted.pdf",
+      "observation": "En el dialogo de 2007, Gondry critica que cortar siempre al beat rigidiza el resultado y recomienda entrar entre golpes o alrededor del compas; fuente textual, no filmografia completa."
+    },
+    {
+      "id": "R2",
+      "status": "OBSERVED",
+      "url": "https://www.ryojiikeda.com/project/testpattern/",
+      "observation": "La pagina oficial documenta conversion audiovisual y sincronizacion de senales mediante sistemas digitales; es referencia de rigor temporal y no de estetica copiada."
+    },
+    {
+      "id": "R3",
+      "status": "OBSERVED",
+      "url": "https://www.dariakorsak.com/selectedwork/imogenheapiam",
+      "observation": "La directora describe su videoclip experimental de catorce minutos dividido en capitulos enlazados por metamorfosis de materiales; pagina de proceso leida, film no evaluado entero."
+    }
+  ],
+  "components": [
+    {
+      "id": "music",
+      "role": "Sintesis y arreglo de partitura original estereo",
+      "strategy": "FM aditiva y percusiones producidas con generador numerico",
+      "constraints": "16 compases 120 BPM y 32 segundos 48 kilohertz sin samples ajenos"
+    },
+    {
+      "id": "visual",
+      "role": "Materia mineral y luz en un campo de formas continuo",
+      "strategy": "Textura multi-escala, normales y adveccion coherente",
+      "constraints": "Frente termico y liquido visibles sin recurrir a diapositivas ni fondos independientes"
+    },
+    {
+      "id": "editing",
+      "role": "Planificador reutilizable de cortes por frases",
+      "strategy": "Puntuacion de cambios estructurales independientes de beat",
+      "constraints": "Tres limites a ocho, dieciseis y veinticuatro segundos; minimo de plano valido"
+    },
+    {
+      "id": "export",
+      "role": "Mezclador y codificador real de ambas pistas",
+      "strategy": "WAV sintetizado muxado a H264 y AAC con FFmpeg",
+      "constraints": "Video 24fps y audio estereo 48000Hz deben durar exactamente 32 segundos"
+    }
+  ],
+  "questions": [
+    {
+      "id": "Q1",
+      "target": "editing",
+      "question": "Cortamos cada medio segundo al beat o en los tres cambios estructurales que verdaderamente alteran la dramaturgia?",
+      "alternatives": [
+        "Cortes repetidos a tempo",
+        "Cortes segun la frase con contrapunto de materia"
+      ],
+      "evidenceRef": "R1",
+      "finding": "El discurso del director diferencia beats y frases y evita la rigidez mecanica en el montaje musical.",
+      "decisionImpact": "Un planificador independiente recibe secciones musicales, mantiene un minimo de duracion y explica cada cut."
+    },
+    {
+      "id": "Q2",
+      "target": "visual",
+      "question": "Como hacer creible una sola materia evolutiva en vez de cuatro texturas inconexas con colores distintos?",
+      "alternatives": [
+        "Cuatro fondos decorativos sin relaciones",
+        "Una geologia adveccionada con respuesta termica y reflejos"
+      ],
+      "evidenceRef": "R3",
+      "finding": "La directora describe capitulos enlazados como una metamorfosis continua del mismo universo grafico.",
+      "decisionImpact": "Se reemplazo el primer render homogeneo por camaras diferentes y una onda de calor seguida de liquefaccion."
+    },
+    {
+      "id": "Q3",
+      "target": "export",
+      "question": "Que evidencia separa una reproduccion audiovisual real y sincronizada de una animacion que solo simula una pista?",
+      "alternatives": [
+        "GIF o pagina sin medio muxado",
+        "Contenedor audiovisual con dos pistas y duracion verificable"
+      ],
+      "evidenceRef": "R2",
+      "finding": "La correspondencia sincronica requiere un sistema medible, no una decoracion acoplada a un contador supuesto.",
+      "decisionImpact": "El archivo MP4 real contiene H264 y AAC, ambas pistas medidas a 32 segundos y decodificadas por FFmpeg."
+    }
+  ],
+  "relations": [
+    {
+      "from": "music",
+      "to": "editing",
+      "invariant": "BPM y estructura musical con tiempo absoluto dirigen los puntos de transicion sin cortar por cada beat",
+      "failure": "El video repite siempre el mismo corte a cada golpe sin sentido estructural",
+      "test": "test_phrase_boundaries_not_all_beat"
+    },
+    {
+      "from": "editing",
+      "to": "visual",
+      "invariant": "Las cuatro fases comparten la textura base y el campo de normales, cambiando ritmo de adveccion y luz",
+      "failure": "Cuatro fondos intercambiables muestran discontinuidad de materia",
+      "test": "Ocho capturas en contact sheet y revision visual"
+    },
+    {
+      "from": "music",
+      "to": "export",
+      "invariant": "La composicion de 32 segundos y el export de 768 frames mantienen un reloj identico",
+      "failure": "AAC o video empiezan o terminan con desfase detectable",
+      "test": "ffprobe de cada stream y decodificacion integral"
+    }
+  ],
+  "decisions": [
+    {
+      "id": "D1",
+      "questionId": "Q1",
+      "componentIds": [
+        "editing",
+        "music"
+      ],
+      "choice": "Cambios estructurales a los 8,16 y 24 segundos",
+      "rejected": "Cortar cada 0.5 segundos a cada beat",
+      "productionChange": "Se genero EDIT_PLAN.json con tres cortes motivados y una cuadrícula solo analitica.",
+      "why": "La pieza necesita evolucion expresiva por frase en vez de automatismo formal."
+    },
+    {
+      "id": "D2",
+      "questionId": "Q2",
+      "componentIds": [
+        "visual"
+      ],
+      "choice": "Mismo campo mineral con fase termica y azul",
+      "rejected": "Cuatro cuadros fijos de colores separados",
+      "productionChange": "Se renderizaron fotogramas advectados con normales y un frente caliente que se liqueface.",
+      "why": "La continuidad de material permite reconocer el motivo aunque cambia su estado."
+    },
+    {
+      "id": "D3",
+      "questionId": "Q3",
+      "componentIds": [
+        "export"
+      ],
+      "choice": "FFmpeg H264/AAC en un binario reproducible",
+      "rejected": "Captura web o stream separado con sincronizacion aproximada",
+      "productionChange": "MP4 640x360 24 fps y AAC estereo 48khz, duracion 32 segundos medida.",
+      "why": "El archivo permite probar pistas reales y controlar la duracion con herramientas independientes."
+    }
+  ],
+  "risks": [
+    {
+      "componentIds": [
+        "visual"
+      ],
+      "severity": "high",
+      "failure": "Cuatro secciones se perciben como un wallpaper repetitivo y poco expresivo",
+      "prevention": "Segunda pasada a lentes, deformacion y crecimiento de calor y flujo",
+      "test": "Imagen de ocho fotogramas extraidos de render final",
+      "status": "OBSERVED"
+    },
+    {
+      "componentIds": [
+        "export"
+      ],
+      "severity": "high",
+      "failure": "Pista ausente o archivo con sincronizacion audiovisual incorrecta",
+      "prevention": "Muxado con un reloj, duracion fijada y decodificacion de salida",
+      "test": "FFprobe para ambos streams a 32s y ffmpeg null decode",
+      "status": "OBSERVED"
+    },
+    {
+      "componentIds": [
+        "music"
+      ],
+      "severity": "medium",
+      "failure": "Mezcla no probada auditivamente por un evaluador humano",
+      "prevention": "Entrega WAV y MP4 para escucha y comparacion de secciones",
+      "test": "Sesion de escucha humana externa con dispositivo real",
+      "status": "NOT_RUN"
+    }
+  ],
+  "acceptance": [
+    {
+      "kind": "logic",
+      "criterion": "Planner calcula cambios de frase y puede reutilizarse con otro score",
+      "oracle": "Pruebas unitarias de segunda estructura musical y huecos",
+      "status": "OBSERVED"
+    },
+    {
+      "kind": "visual",
+      "criterion": "La roca cambia de estado durante cuatro frases musicales con motivos continuos",
+      "oracle": "Revision directa de ocho fotogramas exportados del video",
+      "status": "OBSERVED"
+    },
+    {
+      "kind": "functional",
+      "criterion": "Se decodifica un video que contiene imagen y sonido muxados de 32 segundos",
+      "oracle": "ffprobe y decoder FFmpeg sin errores de pista",
+      "status": "OBSERVED"
+    },
+    {
+      "kind": "audio",
+      "criterion": "La mezcla tiene intencion musical reconocible y calidad en escucha humana",
+      "oracle": "Musico o editor que escuche pieza completa en equipo real",
+      "status": "NOT_RUN"
+    }
+  ],
+  "resources": "Python 3, NumPy, SciPy, OpenCV, Pillow y FFmpeg reales con node para DEEP-SPEC; todas las muestras sinteticas.",
+  "licensing": "Todos los sonidos e imagenes se generaron como obra original para esta tarea. No se importaron grabaciones, videos, texturas ni samples de obras de terceros.",
+  "environmentLimits": "El video binario se entrega localmente como descarga de conversacion y aun no fue publicado en GitHub; la escucha humana y la aprobacion perceptual por tercero estan NOT_RUN."
+}
