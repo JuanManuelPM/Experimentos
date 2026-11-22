@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="es">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#070c13"><title>ANDÉN CERO | PROMETEO Video W001:01</title>
+<style>
+:root{color-scheme:dark;font-family:system-ui,-apple-system,'Segoe UI',sans-serif;background:#060a10;color:#ecefea}
+*{box-sizing:border-box}body{margin:0;min-height:100vh}main{max-width:1450px;margin:auto;padding:clamp(12px,3vw,35px)}
+header{display:flex;justify-content:space-between;align-items:center;padding-bottom:12px;color:#adb5be;font-size:11px;letter-spacing:.18em}
+header b{color:#f3f5f2;letter-spacing:.24em}.stage{aspect-ratio:16/9;position:relative;overflow:hidden;background:radial-gradient(circle at 50% 45%,#242b39 0%,#0b1421 20%,#02050a 80%);border:1px solid #283442;box-shadow:0 16px 80px #0009;isolation:isolate}
+video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;z-index:3;background:#02060b;display:none}
+.stage:fullscreen{height:100%;width:100%;aspect-ratio:auto;border:0}.stage:fullscreen video{object-fit:contain}
+#preview{width:100%;height:100%;display:block}.controls{display:flex;align-items:center;gap:10px;padding:15px 0;flex-wrap:wrap}
+button,a.action{background:#151e28;color:#eaf0f3;border:1px solid #374451;padding:11px 16px;border-radius:3px;font-size:12px;letter-spacing:.08em;cursor:pointer;text-decoration:none}
+button.primary{background:#c92d46;border-color:#c92d46;color:white}button:disabled{opacity:.35;cursor:default}button:hover:not(:disabled){filter:brightness(1.16)}
+#time{font-variant-numeric:tabular-nums;color:#9ba9b5;font-size:12px;margin-left:auto}.progress{height:2px;background:#263242;position:relative}.progress span{display:block;background:#d23c51;height:100%;width:0%}
+footer{display:flex;align-items:start;justify-content:space-between;gap:25px;flex-wrap:wrap;padding-top:22px;border-top:1px solid #24303a;margin-top:20px}.eyebrow{font-size:11px;letter-spacing:.2em;color:#cb4b60}h1{font-size:clamp(22px,4vw,38px);margin:6px 0;font-weight:650;letter-spacing:.045em}p{font-size:13px;line-height:1.7;color:#a6b2be;margin:4px 0;max-width:590px}a{color:#d9e4ef}#renderState{color:#859dad;font-size:11px;line-height:1.7}
+</style>
+<main><header><b>P / VIDEO</b><span>W001 · OBRA 01 / 10</span></header>
+<section id="stage" class="stage" aria-label="Reproductor de Andén Cero"><canvas id="preview" width="960" height="540" aria-label="Previsualización original animada"></canvas><video id="video" playsinline controls preload="metadata" poster="poster.svg"><source src="film.mp4" type="video/mp4"></video></section>
+<div class="progress"><span id="bar"></span></div>
+<div class="controls"><button id="play" class="primary">▶ REPRODUCIR</button><button id="restart">↺ DESDE EL INICIO</button><button id="full">⛶ PANTALLA COMPLETA</button><a id="download" class="action" href="film.mp4" download hidden>↓ MP4</a><span id="time">00:00 / 00:12</span></div>
+<footer><div><div class="eyebrow">UN THRILLER EN DOCE SEGUNDOS</div><h1>ANDÉN CERO</h1><p>Cuatro golpes de tensión, tipografía editorial y un andén que no debería existir. Diseño, animación y banda sonora sintetizada originales. Una obra audiovisual, no una demo de la herramienta.</p></div><div id="renderState">Comprobando exportación de vídeo…</div></footer></main>
+<script>
+const canvas=document.querySelector('#preview'),g=canvas.getContext('2d'),v=document.querySelector('#video'),play=document.querySelector('#play'),restart=document.querySelector('#restart'),download=document.querySelector('#download'),status=document.querySelector('#renderState'),time=document.querySelector('#time'),bar=document.querySelector('#bar');
+let videoReady=false,previewPlaying=false,base=0,elapsed=0;
+const smooth=x=>{x=Math.max(0,Math.min(1,x));return x*x*(3-2*x)};
+function paint(t){const w=960,h=540;g.fillStyle='#040912';g.fillRect(0,0,w,h);let grad=g.createLinearGradient(0,0,0,h);grad.addColorStop(0,'#06101b');grad.addColorStop(1,'#0b1018');g.fillStyle=grad;g.fillRect(0,0,w,h);let vx=480+11*Math.sin(t*.42),vy=238;
+for(let k=0;k<11;k++){let q=(k/11+t*.085)%1,d=q*q;g.strokeStyle=`rgba(99,126,148,${(.11+d*.24).toFixed(3)})`;g.beginPath();g.moveTo(0,vy+d*360);g.lineTo(w,vy+d*360);g.stroke();let x=vx+(k-5)*42*(1+d);g.beginPath();g.moveTo(x,h);g.lineTo(vx+(x-vx)*.1,vy);g.stroke()}
+let halo=g.createRadialGradient(vx,vy,0,vx,vy,96);halo.addColorStop(0,'#b32d4b44');halo.addColorStop(1,'#b32d4b00');g.fillStyle=halo;g.fillRect(vx-97,vy-97,194,194);g.fillStyle='#e23b55';g.beginPath();g.arc(vx,vy,4,0,Math.PI*2);g.fill();
+for(let b of [2.60,5.82,8.50]){let a=Math.exp(-Math.abs(t-b)/.045);if(a>.02){g.fillStyle=`rgba(197,212,220,${a*.26})`;g.fillRect(0,0,w,h)}}
+g.strokeStyle='#84919c';g.globalAlpha=.6;g.beginPath();g.moveTo(58,45);g.lineTo(902,45);g.moveTo(58,497);g.lineTo(902,497);g.stroke();g.globalAlpha=1;
+g.fillStyle='#c2cbd2';g.textAlign='left';g.font='bold 15px sans-serif';g.fillText('P / FILMS',58,31);g.font='12px sans-serif';g.fillText('03:17  /  NOCHE',770,31);g.font='11px sans-serif';g.fillText('LÍNEA 00  —  ACCESO RESTRINGIDO',58,518);g.fillText('12 SEG / 24 FPS',785,518);
+function title(s,y,sz,color,a=1){g.save();g.globalAlpha=a;g.fillStyle=color;g.textAlign='center';g.font=`700 ${sz}px system-ui,sans-serif`;g.fillText(s,480,y);g.restore()}
+if(t<3.08){let a=smooth((t-.32)/1.02)*(1-smooth((t-2.42)/.48));title('ÚLTIMO SERVICIO',258,50,'#f2f3ee',a);title('EL TREN QUE NUNCA LLEGÓ',302,17,'#bac8d3',a)}
+else if(t<6.18){let a=smooth((t-3.14)/.75)*(1-smooth((t-5.72)/.35));title('NO MIRES',264,78,'#f2f3ee',a);title('ATRÁS',357,94,'#ed354d',a)}
+else if(t<8.83){let a=smooth((t-6.29)/.48)*(1-smooth((t-8.32)/.36));title('EL ANDÉN ESTÁ VACÍO',260,43,'#f2f3ee',a);title('PERO ALGUIEN RESPONDIÓ.',316,19,'#ed5368',a)}
+else{let a=smooth((t-8.89)/.65)*(1-smooth((t-11.64)/.36));title('ANDÉN',257,95,'#f2f3ee',a);title('CERO',368,108,'#f03250',a);title('UNA HISTORIA QUE EMPIEZA DESPUÉS DEL FINAL',427,16,'#bfcbd3',a)}
+g.fillStyle='#0008';g.fillRect(0,0,w,7);g.fillRect(0,533,w,7);
+}
+function sync(t){time.textContent=`00:${String(Math.floor(t)).padStart(2,'0')} / 00:12`;bar.style.width=`${Math.min(100,100*t/12)}%`}
+function tick(ms){if(!previewPlaying)return;let t=Math.min(12,(ms-base)/1000);elapsed=t;paint(t);sync(t);if(t<12)requestAnimationFrame(tick);else{previewPlaying=false;play.textContent='▶ REPRODUCIR'}}
+function previewStart(reset=false){if(reset)elapsed=0;if(previewPlaying)return;previewPlaying=true;base=performance.now()-elapsed*1000;play.textContent='Ⅱ PAUSA';requestAnimationFrame(tick)}
+play.addEventListener('click',()=>{if(videoReady){if(v.paused)v.play();else v.pause();return}if(previewPlaying){previewPlaying=false;play.textContent='▶ REPRODUCIR'}else previewStart(elapsed>=12)});
+restart.addEventListener('click',()=>{if(videoReady){v.currentTime=0;v.play()}else{previewPlaying=false;previewStart(true)}});
+document.querySelector('#full').addEventListener('click',()=>{let st=document.querySelector('#stage');if(!document.fullscreenElement)st.requestFullscreen?.();else document.exitFullscreen?.()});
+v.addEventListener('loadedmetadata',()=>{if(v.duration>0){videoReady=true;v.style.display='block';download.hidden=false;status.textContent=`MP4 codificado · ${v.duration.toFixed(2)} s · H.264 / AAC · obra original`;play.textContent='▶ REPRODUCIR';previewPlaying=false}});
+v.addEventListener('error',()=>{videoReady=false;v.style.display='none';download.hidden=true;status.textContent='PREVIEW HTML DISPONIBLE · Export MP4 no encontrado en esta publicación; no se presenta como vídeo codificado.'});
+v.addEventListener('timeupdate',()=>sync(v.currentTime));v.addEventListener('play',()=>play.textContent='Ⅱ PAUSA');v.addEventListener('pause',()=>play.textContent='▶ REPRODUCIR');
+paint(9.7);sync(0);
+</script>
+</html>
