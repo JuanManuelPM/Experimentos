@@ -11,7 +11,7 @@
 
 ## Archivo legal y fecha de toma
 
-- **VENICE_2012:** filmación real 2012, Jamie Tabb, CC BY 3.0. Contexto solamente, nunca se presenta como registro de la inundación ni de MOSE. https://commons.wikimedia.org/wiki/File:Timelapse_from_Rialto_Bridge,_Venice.webm
+- **VENICE_CONTEXT:** metraje de Linda Tripaldi, licencia gratuita Pexels, fecha de rodaje sin verificar (publicado 14-XII-2019). Contexto solamente, nunca se presenta como registro de la inundación ni de MOSE. https://www.pexels.com/video/traveling-the-grand-canal-waterways-of-venice-italy-3381844/
 - **FLOOD_2019_12:** foto de 12-XI-2019, Ministero dell'Interno, CC BY 3.0. https://commons.wikimedia.org/wiki/File:Acqua_alta_del_12_novembre_2019.jpg
 - **FLOOD_2019_15:** foto de 15-XI-2019, Comune di Venezia, CC BY 3.0 Italia. https://commons.wikimedia.org/wiki/File:Acqua_alta_del_15_novembre_2019.jpg
 - Adaptaciones: color, encuadre, zoom y rótulos. Ambiente sonoro y narración español con espeak sintetizados; **NO** corresponden a entrevistas ni grabaciones originales del evento. Elementos editoriales originales: CC BY 4.0 sin anular créditos individuales de archivo.
@@ -37,3 +37,7 @@ El verificador independiente audita rangos de fotogramas, fecha de captura, auto
 ## Publicación
 
 Rama de producción exclusiva candidate/prometeo-video-w002-03-20261122; GitHub Actions exclusivo de este número publica la salida aprobada por QA mecánico en gh-pages bajo prometeo/previews/video/w002/03/ con rebase ante concurrencia. No toca W001 ni otros nueve números. El estado DELIVERED exige readback del MP4; ningún README significa por sí solo video exportado.
+
+### Recuperación de incidente real
+
+El primer intento de Actions (run 45044386071) fue bloqueado por HTTP 429 en Wikimedia. El segundo intenta Pexels como video de contexto con rodaje no fechado, y fotos de Commons descargadas por proxy (autor y licencia no cambian). No equivale a export hasta que los archivos lleguen y el codec se verifique.

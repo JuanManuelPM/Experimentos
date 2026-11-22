@@ -27,11 +27,11 @@ def validate(d):
             if not a: errors.append(f"Unknown asset {aid}");continue
             if item.get("dateCaptured")!=a.get("date") or item.get("author")!=a.get("creator"):
                 errors.append(f"Wrong provenance for {name}")
-            if item.get("license")!=a.get("license") or not a.get("commons","").startswith("https://commons.wikimedia.org/wiki/File:"):
+            if item.get("license")!=a.get("license") or not (a.get("commons","").startswith("https://commons.wikimedia.org/wiki/File:") or a.get("commons","").startswith("https://www.pexels.com/video/")):
                 errors.append(f"Missing legal credit: {name}")
             label=item.get("label","")
-            if aid=="VENICE_2012" and "2012" not in label:
-                errors.append(f"2012 footage mislabeled: {name}")
+            if aid=="VENICE_CONTEXT" and "CONTEXTO" not in label:
+                errors.append(f"Context footage mislabeled: {name}")
             if aid=="FLOOD_2019_12" and "2019" not in label and "187" not in label:
                 errors.append(f"Nov 12 archive unlabeled: {name}")
             if aid=="FLOOD_2019_15" and name=="S05" and "15 NOV 2019" not in label:

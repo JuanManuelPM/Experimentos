@@ -12,20 +12,20 @@ CACHE.mkdir(parents=True, exist_ok=True)
 FPS, WIDTH, HEIGHT, DURATION = 24, 1280, 720, 48
 OUT = HERE / "LA-CIUDAD-BAJO-EL-AGUA.mp4"
 ASSETS = {
-    "VENICE_2012": {
-        "url": "https://upload.wikimedia.org/wikipedia/commons/2/2e/Timelapse_from_Rialto_Bridge%2C_Venice.webm",
-        "file": "venice_context_2012.webm", "minbytes": 3500000, "magic": "webm",
-        "creator": "Jamie Tabb", "date": "2012-02-05", "license": "CC BY 3.0",
-        "commons": "https://commons.wikimedia.org/wiki/File:Timelapse_from_Rialto_Bridge,_Venice.webm",
+    "VENICE_CONTEXT": {
+        "url": "https://videos.pexels.com/video-files/3381844/3381844-hd_1920_1080_30fps.mp4",
+        "file": "venice_context_unknown_capture_date.mp4", "minbytes": 100000, "magic": "mp4",
+        "creator": "Linda Tripaldi", "date": "CAPTURE_UNKNOWN; published 2019-12-14", "license": "Pexels free media license",
+        "commons": "https://www.pexels.com/video/traveling-the-grand-canal-waterways-of-venice-italy-3381844/",
     },
     "FLOOD_2019_12": {
-        "url": "https://upload.wikimedia.org/wikipedia/commons/0/09/Acqua_alta_del_12_novembre_2019.jpg",
+        "url": "https://wsrv.nl/?url=upload.wikimedia.org/wikipedia/commons/0/09/Acqua_alta_del_12_novembre_2019.jpg",
         "file": "ministero_2019-11-12.jpg", "minbytes": 50000, "magic": "jpg",
         "creator": "Ministero dell'Interno", "date": "2019-11-12", "license": "CC BY 3.0",
         "commons": "https://commons.wikimedia.org/wiki/File:Acqua_alta_del_12_novembre_2019.jpg",
     },
     "FLOOD_2019_15": {
-        "url": "https://upload.wikimedia.org/wikipedia/commons/e/ef/Acqua_alta_del_15_novembre_2019.jpg",
+        "url": "https://wsrv.nl/?url=upload.wikimedia.org/wikipedia/commons/e/ef/Acqua_alta_del_15_novembre_2019.jpg",
         "file": "comune_2019-11-15.jpg", "minbytes": 30000, "magic": "jpg",
         "creator": "Comune di Venezia", "date": "2019-11-15", "license": "CC BY 3.0 Italia",
         "commons": "https://commons.wikimedia.org/wiki/File:Acqua_alta_del_15_novembre_2019.jpg",
@@ -38,12 +38,12 @@ CLAIMS = {
 }
 # 6 s segments: frame intervals half-open. Historical dates NEVER change.
 SHOTS = [
- {"id":"S01","assetId":"VENICE_2012","label":"VENECIA | ARCHIVO DE CONTEXTO · 2012","kind":"ARCHIVAL_VIDEO","claimIds":[]},
+ {"id":"S01","assetId":"VENICE_CONTEXT","label":"VENECIA | CONTEXTO SIN FECHA DE RODAJE","kind":"ARCHIVAL_VIDEO","claimIds":[]},
  {"id":"S02","assetId":"FLOOD_2019_12","label":"12 NOV 2019 | FOTOGRAFIA DE ARCHIVO","kind":"ARCHIVAL_PHOTO","claimIds":["C01"]},
  {"id":"S03","assetId":"FLOOD_2019_12","label":"187 cm  |  22:50  |  CPSM PUNTA SALUTE","kind":"ARCHIVAL_PHOTO","claimIds":["C01"]},
  {"id":"S04","assetId":None,"label":"DOS ALTURAS, DOS FECHAS | COMUNE DI VENEZIA","kind":"ORIGINAL_DATA_GRAPHIC","claimIds":["C01","C02"]},
  {"id":"S05","assetId":"FLOOD_2019_15","label":"15 NOV 2019 | OTRO DIA DE CRECIDA","kind":"ARCHIVAL_PHOTO","claimIds":[]},
- {"id":"S06","assetId":"VENICE_2012","label":"ARCHIVO DE CONTEXTO · 2012 | NO ES 2020","kind":"ARCHIVAL_VIDEO","claimIds":["C03"]},
+ {"id":"S06","assetId":"VENICE_CONTEXT","label":"CONTEXTO SIN FECHA | NO ES REGISTRO MOSE","kind":"ARCHIVAL_VIDEO","claimIds":["C03"]},
  {"id":"S07","assetId":"FLOOD_2019_15","label":"VENECIA | AGUA Y CIUDAD","kind":"ARCHIVAL_PHOTO","claimIds":["C03"]},
  {"id":"S08","assetId":None,"label":"FUENTES, FECHAS Y LICENCIAS EN EL REGISTRO","kind":"ORIGINAL_CREDITS","claimIds":[]},
 ]
@@ -53,7 +53,7 @@ SCRIPT = (
  "de mareas midió ciento ochenta y siete centímetros en Punta della Salute. "
  "Solo la gran crecida de mil novecientos sesenta y seis superaba ese registro, "
  "con ciento noventa y cuatro. Las fotografías son de fechas distintas, "
- "y este paisaje en movimiento fue filmado años antes. "
+ "y el video de contexto no registra aquel temporal. "
  "En octubre de dos mil veinte, las barreras móviles MOSE comenzaron a operar "
  "ante nuevas mareas altas. La ciudad no desaparece bajo el agua: "
  "aprende, una vez más, a medirla."
@@ -74,7 +74,7 @@ def get_asset(key, item):
         return dest
     request = urllib.request.Request(item["url"], headers={
         "User-Agent": "PROMETEO-documentary-license-audit/1.0 (non-commercial source verification)",
-        "Accept": "image/jpeg,video/webm,*/*"
+        "Accept": "image/jpeg,video/mp4,video/webm,*/*"
     })
     last = None
     for attempt in range(3):
@@ -91,6 +91,8 @@ def get_asset(key, item):
                 raise RuntimeError("not JPEG")
             if item["magic"] == "webm" and not data.startswith(bytes.fromhex("1a45dfa3")):
                 raise RuntimeError("not WebM")
+            if item["magic"] == "mp4" and data[4:8] != b"ftyp":
+                raise RuntimeError("not MP4")
             print("ASSET VERIFIED", key, dest.stat().st_size, item["license"])
             return dest
         except Exception as ex:
@@ -150,7 +152,7 @@ def build_credits():
     im=Image.new("RGB",(WIDTH,HEIGHT),(8,21,29));d=ImageDraw.Draw(im)
     d.text((76,115),"LA EVIDENCIA TIENE FECHA",font=font(43,True),fill=(243,250,245))
     rows=[
-        "Archivo en movimiento: Jamie Tabb, 2012 · CC BY 3.0",
+        "Video contextual: Linda Tripaldi, Pexels · rodaje sin fecha",
         "Imagen 12-XI-2019: Ministerio del Interior · CC BY 3.0",
         "Imagen 15-XI-2019: Comune di Venezia · CC BY 3.0 IT",
         "Datos: Centro Maree Comune di Venezia / ISPRA",
@@ -165,7 +167,7 @@ def render_scene(n,shot,inputs):
     asset=shot["assetId"]
     if asset:
         path=inputs[asset]
-        if asset=="VENICE_2012":
+        if asset=="VENICE_CONTEXT":
             source=["-stream_loop","-1","-i",path]
             vf="scale=1280:720:force_original_aspect_ratio=increase,crop=1280:720,eq=contrast=1.05:saturation=0.83"
         else:
@@ -226,14 +228,14 @@ def make_ledger():
         "claims":CLAIMS,"media":ASSETS,"segments":records,
         "audio":{"voice":"Spanish text-to-speech by local espeak (synthetic, not interview)", "ambience":"Pink noise and sine designed in ffmpeg, not historical field recordings", "factualVoiceText":SCRIPT},
         "rights":"The film's original editorial elements are CC BY 4.0; imported material retains its listed CC BY 3.0 / CC BY 3.0 IT licenses and separate attribution obligations.",
-        "visualTruth":"2012 time-lapse is explicitly contextual; archival 2019 photographs have separate date labels."
+        "visualTruth":"Undated Pexels canal footage is explicitly contextual; archival 2019 photographs have separate date labels."
     }
     p=HERE/"PROVENANCE.json";p.write_text(json.dumps(ledger,ensure_ascii=False,indent=2)+"\n",encoding="utf8")
     return p
 
 def spike(inputs):
     out=HERE/"_spike.mp4"
-    run(["ffmpeg","-hide_banner","-loglevel","error","-y","-i",inputs["VENICE_2012"],
+    run(["ffmpeg","-hide_banner","-loglevel","error","-y","-i",inputs["VENICE_CONTEXT"],
          "-f","lavfi","-i","anullsrc=r=44100:cl=stereo","-t","1","-vf","scale=640:360","-c:v","libx264",
          "-c:a","aac","-pix_fmt","yuv420p","-shortest",out])
     meta=probe(out)
@@ -274,7 +276,7 @@ def finish(slides,soundtrack,voiceSecs):
     result={"status":"ENCODED_AND_DECODED","render":"GitHub Actions runner","taskId":"video-w002-20261122-03",
          "durationSeconds":float(meta["format"]["duration"]),"fps":24,"frames":1152,"videoCodec":"h264",
          "audioCodec":"aac","imageWidth":1280,"imageHeight":720,"narrationSeconds":voiceSecs,
-         "documentaryDates":["2012-02-05 context","2019-11-12 flood","2019-11-15 flood"],
+         "documentaryDates":["context video capture unknown; published 2019-12-14","2019-11-12 flood","2019-11-15 flood"],
          "qa":{"decode":"PASS","frameLedger":"PASS","visualViewedByHuman":"NOT_RUN","audioListenedByHuman":"NOT_RUN","historicalRights":"metadata verified, original file retrieval checked"}}
     (HERE/"PROBE.json").write_text(json.dumps(result,ensure_ascii=False,indent=2)+"\n",encoding="utf8")
     print("ENCODED + DECODE VERIFIED",result)
