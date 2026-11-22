@@ -1,0 +1,61 @@
+name: PROMETEO video W001-05 encode
+on:
+  push:
+    branches:
+      - gh-pages
+    paths:
+      - "prometeo/previews/video/w001/05/render.py"
+      - ".github/workflows/prometeo-video-w001-05.yml"
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: prometeo-video-w001-05
+  cancel-in-progress: false
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install dependencies
+        run: |
+          python -m pip install "Pillow>=10,<13" "numpy>=1.26,<3"
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg
+      - name: Render entirely original film and audio
+        run: python prometeo/previews/video/w001/05/render.py
+      - name: Verify actual MP4, timing and audio
+        run: |
+          python - <<'PY'
+          import json,subprocess,os
+          p='prometeo/previews/video/w001/05/film.mp4'
+          d=json.loads(subprocess.check_output(['ffprobe','-v','error','-show_streams','-show_format','-of','json',p]))
+          vs=[x for x in d['streams'] if x['codec_type']=='video']
+          au=[x for x in d['streams'] if x['codec_type']=='audio']
+          assert len(vs)==1 and vs[0]['codec_name']=='h264'
+          assert vs[0]['width']==960 and vs[0]['height']==540 and int(vs[0]['nb_frames'])==264
+          assert len(au)==1 and au[0]['codec_name']=='aac'
+          assert abs(float(d['format']['duration'])-11)<.05
+          assert os.stat(p).st_size>80000
+          print('VERIFIED 11.000s, 264 frames, H264 AAC')
+          PY
+      - name: Commit MP4 and poster to Pages
+        run: |
+          set -e
+          git config user.name "prometeo-video-encoder"
+          git config user.email "actions@users.noreply.github.com"
+          git add prometeo/previews/video/w001/05/film.mp4 prometeo/previews/video/w001/05/poster.png
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "video W001/05: publish original 11-second rainy city video [skip ci]"
+          for attempt in 1 2 3 4; do
+            git pull --rebase origin gh-pages
+            if git push origin HEAD:gh-pages; then exit 0; fi
+            sleep 2
+          done
+          exit 1
