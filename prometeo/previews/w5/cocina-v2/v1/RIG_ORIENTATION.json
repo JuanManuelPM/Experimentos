@@ -1,0 +1,46 @@
+{
+  "schema": "prometeo.3d.asset-orientation/v1",
+  "civil": {
+    "asset": "civil_azul.glb",
+    "sha256": "8bec29e84c9f0d082cc8ac08fd8cbe898dfcaa82abc9e1fa1bb13de46bfa5e4b",
+    "frontAxisLocal": [
+      0,
+      0,
+      1
+    ],
+    "status": "GEOMETRY_MEASURED_PENDING_VISUAL_CERTIFICATION",
+    "method": "Eye + Eyebrows + Mouth front surfaces vs upper Skin head mesh; measured from genuine glTF world geometry",
+    "measurements": {
+      "eyeCenter": [
+        -0.02399,
+        1.57343,
+        0.04963
+      ],
+      "headSkinCenter": [
+        -0.01755,
+        1.54608,
+        -0.03432
+      ],
+      "eyebrowZ": 0.06052,
+      "mouthZ": 0.05342
+    }
+  },
+  "chair": {
+    "asset": "chair.glb",
+    "sha256": "c8a11eec93e89e31250ba91afc1b8d56c3bec7ae86640fd1239f595ff4180883",
+    "seatFrontLocal": [
+      0,
+      0,
+      1
+    ],
+    "status": "GEOMETRY_MEASURED_PENDING_VISUAL_CERTIFICATION",
+    "method": "Upper backrest vertex centroid vs seat body; verified runtime dot=1 for both chairs",
+    "measuredBackrest": [
+      0,
+      0.79468,
+      -0.14128
+    ]
+  },
+  "profileSource": "genuine GLB runtime Chromium 2026-11-19; art approval still NOT_RUN",
+  "scope": "SHA-scoped, never a global yaw adjustment"
+}
