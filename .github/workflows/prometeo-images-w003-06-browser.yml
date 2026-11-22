@@ -1,0 +1,79 @@
+name: "PROMETEO · Images W003/06 · opening frame 390/1440 QA"
+on:
+  push:
+    branches:
+      - candidate/prometeo-images-w003-20261122-06
+    paths:
+      - .github/workflows/prometeo-images-w003-06-browser.yml
+      - prometeo/launch/20261122/relaunch/images/work/06/index.html
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: prometeo-images-w003-06-viewport-qa
+  cancel-in-progress: false
+jobs:
+  screenshot-real-browser:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+          fetch-depth: 1
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install browser
+        run: |
+          npm install --no-save playwright
+          npx playwright install --with-deps chromium
+      - name: Real screenshot and objective DOM checks
+        run: |
+          node --input-type=module <<'JS'
+          import { chromium } from 'playwright';
+          import { resolve } from 'node:path';
+          import { mkdirSync, writeFileSync } from 'node:fs';
+          const root='prometeo/launch/20261122/relaunch/images/work/06';
+          mkdirSync(root+'/qa',{recursive:true});
+          const b=await chromium.launch({headless:true});
+          const evidence=[];
+          for(const [width,height] of [[390,844],[1440,900]]){
+            const p=await b.newPage({viewport:{width,height},deviceScaleFactor:1});
+            await p.goto('file://'+resolve(root+'/index.html'),{waitUntil:'load'});
+            await p.locator('.hero img').waitFor({state:'visible'});
+            const state=await p.evaluate(()=>{
+              const hero=document.querySelector('.hero img');
+              const all=[...document.querySelectorAll('.sequence img')];
+              return {
+                title:document.title,
+                viewportWidth:innerWidth,
+                documentWidth:document.documentElement.scrollWidth,
+                heroNaturalWidth:hero.naturalWidth,heroNaturalHeight:hero.naturalHeight,
+                heroRectangle:(()=>{const r=hero.getBoundingClientRect();return {top:r.top,left:r.left,width:r.width,height:r.height}})(),
+                images:all.map(x=>({src:x.getAttribute('src'),naturalWidth:x.naturalWidth,naturalHeight:x.naturalHeight})),
+                missingPanels:[...document.querySelectorAll('.unavailable')].filter(x=>x.textContent.includes('AÚN NO PRODUCIDO')).length
+              };
+            });
+            if(state.documentWidth>width+1)throw new Error('HORIZONTAL_OVERFLOW_'+width+':'+JSON.stringify(state));
+            if(state.heroNaturalWidth!==1280||state.heroNaturalHeight!==720)throw new Error('NO_REAL_HERO_'+width+':'+JSON.stringify(state));
+            if(state.heroRectangle.left<0||state.heroRectangle.width>width+1)throw new Error('HERO_CLIPPED_'+width);
+            if(state.images.some(x=>x.naturalWidth===0))throw new Error('BROKEN_IMAGE_'+width+':'+JSON.stringify(state.images));
+            if(state.missingPanels!==2)throw new Error('UNTRUTHFUL_MISSING_SLOTS_'+width);
+            await p.screenshot({path:root+'/qa/opening-'+width+'.png',fullPage:true});
+            evidence.push({...state,viewportHeight:height,screenshot:'qa/opening-'+width+'.png',result:'PASS_DOM_NOT_ART_JUDGEMENT'});
+            await p.close();
+          }
+          await b.close();
+          writeFileSync(root+'/qa/BROWSER.json',JSON.stringify({taskId:'images-w003-20261122-06',observedAt:new Date().toISOString(),browser:'playwright-chromium',technicalQA:'PASS',artisticQA:'NOT_RUN',humanApproved:false,viewports:evidence},null,2)+'\n');
+          console.log(JSON.stringify(evidence));
+          JS
+      - name: Commit screenshots as actual browser evidence
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add prometeo/launch/20261122/relaunch/images/work/06/qa/
+          git diff --cached --quiet || git commit -m 'images W003 06: publish real 390 and 1440 Chromium opening captures'
+          git pull --rebase origin candidate/prometeo-images-w003-20261122-06
+          git push origin HEAD:candidate/prometeo-images-w003-20261122-06
