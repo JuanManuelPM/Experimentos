@@ -2,17 +2,14 @@
 import {registerBlockAdapter,renderBlock} from './adapters.js';
 import {copyValue,recordCopied,wasCopied,safeURL} from './actions.js';
 import './response.js';
+import {evidenceFlags} from './evidence-policy.mjs';
 const selection=new Map();
 const stylesheet=new URL('./batch.css',import.meta.url).href;
 const labels=['Preparado','Copiado localmente','Iniciado con evidencia','Entregado','Verificado'];
 const el=(tag,cls,text)=>{const node=document.createElement(tag);if(cls)node.className=cls;if(text!==undefined)node.textContent=String(text);return node;};
 function keyFor(batch,item){return String(batch.id)+'|'+String(item.number)+'|'+String(batch.launchUrl);}
 function receipt(item){const r=item.result;return r&&typeof r==='object'&&typeof r.id==='string'&&r.id? r:null;}
-function flags(batch,item){
- const result=receipt(item),ev=item.evidence||{};
- const valid=x=>typeof x==='string'&&x.trim()!==''&&!x.includes('PLACEHOLDER');
- return [true,wasCopied(keyFor(batch,item)),Boolean(result)||valid(ev.started),Boolean(result&&((Array.isArray(result.blocks)&&result.blocks.some(b=>b&&b.url))||valid(result.body)))||valid(ev.delivered),valid(ev.verified)];
-}
+function flags(batch,item){return evidenceFlags(item,wasCopied(keyFor(batch,item)));}
 function emit(host,success,item){host.dispatchEvent(new CustomEvent('prometeo:action',{detail:{kind:'copy',success,workId:item.id},bubbles:true,composed:true}));}
 function renderBatch(block){
  const items=Array.isArray(block.items)?block.items.filter(x=>x&&Number.isInteger(x.number)):[],host=el('section','p-batch');
