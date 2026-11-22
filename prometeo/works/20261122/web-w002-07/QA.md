@@ -1,6 +1,6 @@
 # CONTRAPUNTO · Evidencia de QA y brechas
 
-**WORK:** `web-w002-20261122-07`. **Estado local:** `IMPLEMENTED` + `OBSERVED_IN_BROWSER_DOM`. **Publicación HTTP:** por verificar de forma independiente tras push. **Calidad premiada:** `NOT_CLAIMED`; **evaluación humana:** `NOT_RUN`.
+**WORK:** `web-w002-20261122-07`. **Estado local:** `IMPLEMENTED` + `OBSERVED_IN_BROWSER_DOM`. **Publicación en GitHub:** `gh-pages` commit `914f1bb9b98344639f79a52db61df0e178df7c65`, readback de `index.html` correcto (blob `e15877fb142063fc910b76e19ddf0f8de58829c7`). **GitHub Pages HTTP:** `NOT_VERIFIED`, intento de lectura externa no accesible. **Calidad premiada:** `NOT_CLAIMED`; **evaluación humana:** `NOT_RUN`.
 
 ## Artefacto real
 
@@ -16,7 +16,7 @@ Ocho páginas HTML estáticas, seis publicaciones completas, tres WebP originale
 
 ## Límite de prueba honesto
 
-El navegador del contenedor respondió `ERR_BLOCKED_BY_ADMINISTRATOR` tanto al servidor en `127.0.0.1:8765` como a `file://`. La suite de Chromium usó `page.set_content` con HTML real, CSS real y JS real inyectados, además de imágenes locales convertidas en data URLs. **Por eso la suite demuestra interacción y composición, no navegación por HTTP del sitio publicado ni carga real de Google Fonts**. La prueba estática verifica la existencia de rutas y recursos. Falta prueba real de publicación pública y auditoría WCAG integral.
+El navegador del contenedor respondió `ERR_BLOCKED_BY_ADMINISTRATOR` tanto al servidor en `127.0.0.1:8765` como a `file://`. La suite de Chromium usó `page.set_content` con HTML real, CSS real y JS real inyectados, además de imágenes locales convertidas en data URLs. **Por eso la suite demuestra interacción y composición, no navegación por HTTP del sitio publicado ni carga real de Google Fonts**. La prueba estática verifica la existencia de rutas y recursos. La fuente se verificó en `gh-pages`; falta prueba real de respuesta HTTP de GitHub Pages y auditoría WCAG integral.
 
 ## Benchmark observado → intención → decisión → resultado → brecha
 
@@ -37,3 +37,6 @@ El navegador del contenedor respondió `ERR_BLOCKED_BY_ADMINISTRATOR` tanto al s
 - **Counterexample:** `hidden=true` en el DOM pero los seis artículos siguen visibles en pantalla.
 
 **No se autodeclara `HUMAN_APPROVED`, WCAG conformant, ni calidad premiada.**
+## Gate DEEP-SPEC-1
+
+`node tools/deep-spec-v1.mjs PREPRODUCTION.deep-spec-v1.json` se ejecutó con la lógica del validador canónico: **READY_FOR_FIRST_SLICE; errors=[]**. El gate sólo valida trazabilidad estructural, no calidad editorial. La ficha se cerró después del primer corte local, y esa desviación permanece registrada.
