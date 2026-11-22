@@ -1,0 +1,290 @@
+{
+  "version": "DEEP-SPEC-1",
+  "medium": "3D interactive game",
+  "depth": "SISTEMA",
+  "brief": "03 · Asteroide Jardín: mundo esférico original jugable con gravedad local, habitantes con rutinas, misión transformadora, reinicio/guardado y locomoción reutilizable; navegador y móvil.",
+  "source": {
+    "repo": "JuanManuelPM/Experimentos",
+    "branch": "candidate/prometeo-3d-w001-03-20261122",
+    "launchBlobSHA": "942c3ba8b851137886e959d2790771556e2d9f5d",
+    "taskId": "3d-w6-20261122-03",
+    "flow": "2.3.0",
+    "flowSHA256": "53bc9e2e4b37c99e92d3494af8dfa4461cd4644b15f980e32497a8428b067b3f"
+  },
+  "intent": {
+    "experience": "Explorar un diminuto cuerpo celeste vivo, entender a sus habitantes y devolverle el pulso mediante una acción irreversible en el relato, pero reversible por reinicio.",
+    "distinctAbility": "Desplazamiento continuo por superficie esférica con eje de gravedad cambiante, actor radial, colisiones, cámara estable, NPC itinerantes y progresión guardada."
+  },
+  "references": [
+    {
+      "id": "R1",
+      "status": "OBSERVED",
+      "url": "https://www.nintendo.com/en-gb/Iwata-Asks/Iwata-Asks-Super-Mario-Galaxy/Volume-2-The-Developers/2-Benefits-of-a-Spherical-Field/2-Benefits-of-a-Spherical-Field-222607.html",
+      "observation": "Entrevista original: campos esféricos y gravedad local condicionan el diseño del recorrido y la cámara, no solo el decorado; inspiración técnica, no copia del juego."
+    },
+    {
+      "id": "R2",
+      "status": "OBSERVED",
+      "url": "https://blog.playstation.com/2021/08/05/crafting-a-tiny-open-world-a-look-behind-the-scenes-at-the-creation-of-a-short-hike/",
+      "observation": "Texto del creador: micro mundo abierto invita a desviarse del camino, con habitantes y ayudas, dirección de arte legible y escala contenida; se abstrae ritmo y descubrimiento."
+    },
+    {
+      "id": "R3",
+      "status": "OBSERVED",
+      "url": "https://bruno-simon.com/",
+      "observation": "Página de primera parte del portafolio: interfaz enseña entrada móvil, movimiento, interacción, cámara, rescate y reinicio, con mundo WebGL exploratorio y controles explícitos."
+    },
+    {
+      "id": "R4",
+      "status": "OBSERVED",
+      "url": "https://threejs.org/docs/pages/Raycaster",
+      "observation": "Referencia técnica consultada: casting desde cámara utiliza coordenadas NDC, intersectObject recorre jerarquía y ofrece distancia/punto; útil para interacción opcional."
+    }
+  ],
+  "components": [
+    {
+      "id": "WORLD",
+      "role": "Asteroide orgánico con silueta propia, relieve suave y microrregiones de vegetación con material y luz coherentes.",
+      "strategy": "Three.js geométrico escultórico procedural, curvas de tallos y hojas, sin assets privados ni personajes humanos.",
+      "constraints": "Radio 9 unidades; todos los objetos anclados a normales y altura de superficie consistentes."
+    },
+    {
+      "id": "MOTION",
+      "role": "Módulo independiente de locomoción planetaria y resolución contra obstáculos circulares tangentes.",
+      "strategy": "Geodésicas de esfera y eje radial normalizado; proyección tangente, ángulos, rechazo/sliding.",
+      "constraints": "Conservar radio, normalización, pasos continuos y collision clearance sin atravesar obstáculos."
+    },
+    {
+      "id": "ACTORS",
+      "role": "Habitantes zoomórficos y rutinas curvilíneas legibles, orientados siempre en gravedad local.",
+      "strategy": "Siluetas orgánicas no humanas con animación de balancín y recorridos de arcos entre paradas.",
+      "constraints": "Dos personajes identificables, pausas/gestos; evitar teletransporte y clipping con suelo."
+    },
+    {
+      "id": "QUEST",
+      "role": "Narrativa breve de cuidado: hablar, reunir tres señales de luz y encender un jardín cambiante.",
+      "strategy": "Máquina de estados explícita; coleccionables visibles; floración y color restaurado como final.",
+      "constraints": "Conservar progreso y checkpoint con JSON versionado; reinicio limpia solo esta obra."
+    },
+    {
+      "id": "CONTROL",
+      "role": "Experiencia táctil y teclado con avisos claros, interacción por proximidad y cámara legible.",
+      "strategy": "Joystick por Pointer Events, botón de acción, WASD y E; órbita controlada y cámara interpolada.",
+      "constraints": "Área táctil amplia sin scroll/zoom; tolerar DPR y aspect ratios; no tapar la escena."
+    }
+  ],
+  "questions": [
+    {
+      "id": "Q1",
+      "target": "MOTION",
+      "question": "¿Cómo mantener posición, orientación y velocidad estables al cruzar polos y el lado oculto sin saltos de normal?",
+      "alternatives": [
+        "Actualizar la posición sobre geodésica y orientar actor a normal local",
+        "Mover en plano y reproyectar distancia a esfera"
+      ],
+      "evidenceRef": "R1",
+      "finding": "La identidad del juego depende de gravedad cambiante; el movimiento debe basarse en normal/tangente y arco, no en un plano oculto.",
+      "decisionImpact": "Crear módulo independiente de caminata geodésica y orientación quaternion radial."
+    },
+    {
+      "id": "Q2",
+      "target": "QUEST",
+      "question": "¿Qué acción breve produce un relato completo sin llenar un mundo pequeño de objetos indistintos?",
+      "alternatives": [
+        "Hablar con guardianes y restaurar tres gotas antes de activar el corazón",
+        "Recolectar objetos infinitos sin desenlace"
+      ],
+      "evidenceRef": "R2",
+      "finding": "El micro mundo puede tener sentido mediante encuentros y recompensa territorial con recorrido libre, no mediante cantidad de contenido.",
+      "decisionImpact": "La misión tiene inicio con un habitante, tres puntos de hallazgo, vuelta al altar y transformación irreversible hasta reinicio."
+    },
+    {
+      "id": "Q3",
+      "target": "ACTORS",
+      "question": "¿Con qué representación se reconocen los habitantes y se comunica su rutina sin muñecos humanos de primitivas?",
+      "alternatives": [
+        "Criaturas orgánicas esculpidas con curva de cuerpo y apéndices de hoja, variación de siluetas y animación",
+        "Bolas con caras idénticas y patrones aleatorios"
+      ],
+      "evidenceRef": "R2",
+      "finding": "La legibilidad de silueta, contraste y gesto pesa más que la complejidad geométrica; la forma debe seguir una intención de personaje.",
+      "decisionImpact": "Dos habitantes de especie fantástica diferenciados por casco floral, aletas y movimientos de pausa."
+    },
+    {
+      "id": "Q4",
+      "target": "CONTROL",
+      "question": "¿Cómo asegurar que la misión siga siendo jugable con pulgar, orientación cambiante y cámara orbitable en teléfono?",
+      "alternatives": [
+        "Joystick táctil anclado y botón de acción constante con cámara de seguimiento suave",
+        "Movimiento tap-to-path sin referencia ni acción persistente"
+      ],
+      "evidenceRef": "R3",
+      "finding": "La interfaz de una experiencia 3D que funciona en móvil expone por separado movimiento, cámara y acción, además de reinicio.",
+      "decisionImpact": "Reservar zonas de gesto, mantener action CTA y mostrar siempre objetivo de proximidad."
+    }
+  ],
+  "relations": [
+    {
+      "from": "MOTION",
+      "to": "WORLD",
+      "invariant": "Posición y pie del personaje permanecen a distancia radio+altura de la superficie y normal local, sin teletransporte.",
+      "failure": "El avatar flota, se hunde o cruza roca al invertir el vector radial.",
+      "test": "Simulación de desplazamiento y seguimiento sobre arcos con norma constante."
+    },
+    {
+      "from": "ACTORS",
+      "to": "MOTION",
+      "invariant": "La orientación y recorridos de los NPC utilizan la misma función de tangente y radio de la locomoción del jugador.",
+      "failure": "Habitantes patinan, atraviesan la esfera o giran cabeza abajo.",
+      "test": "Comprobar normal y orientación de las dos trayectorias, sin discontinuidad angular."
+    },
+    {
+      "from": "QUEST",
+      "to": "WORLD",
+      "invariant": "La restauración cambia luz, color, brotes y estado de la escena a la vez que progreso y diálogos.",
+      "failure": "HUD declara misión terminada pero el jardín no sufre transformación visible.",
+      "test": "Recorrer final y recarga; observar cambios de mundo persistidos."
+    },
+    {
+      "from": "CONTROL",
+      "to": "MOTION",
+      "invariant": "Arriba del joystick siempre es avance perceptual relativo a cámara y tangente local.",
+      "failure": "En reverso planetario la orientación de la acción se invierte inesperadamente.",
+      "test": "Ensayo de control móvil alrededor de 360 grados con seguimiento de cámara."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "D1",
+      "questionId": "Q1",
+      "componentIds": [
+        "MOTION",
+        "WORLD"
+      ],
+      "choice": "Marcha esférica pura con normal local y sliding en colisiones.",
+      "rejected": "Plano XZ reproyectado sobre esfera sin conservar movimiento angular.",
+      "productionChange": "Módulo planet-motion.mjs con rotateTowardsTangent, surfaceDistance, moveWithObstacles y pruebas Node.",
+      "why": "El movimiento radial tiene invariantes medibles y se desacopla de la dirección visual."
+    },
+    {
+      "id": "D2",
+      "questionId": "Q2",
+      "componentIds": [
+        "QUEST",
+        "WORLD"
+      ],
+      "choice": "Secuencia del corazón → tres rocíos → altar → floración persistida.",
+      "rejected": "Mapa sin misión cerrada y coleccionables solo decorativos.",
+      "productionChange": "Máquina de estados con texto, marcadores, inventario 3/3, final visual y restaurar reiniciar.",
+      "why": "El jugador necesita un arco dramático y un cambio de paisaje visible que pruebe completitud."
+    },
+    {
+      "id": "D3",
+      "questionId": "Q3",
+      "componentIds": [
+        "ACTORS",
+        "WORLD"
+      ],
+      "choice": "Dos criaturas no humanas autorales con cuerpos orgánicos y movimientos sobre rutas de superficie.",
+      "rejected": "Humanoides modulares hechos de cubos o esferas articuladas.",
+      "productionChange": "Dos habitantes distintos, rutas y gestos, con señales de proximidad e interacción.",
+      "why": "El lenguaje visual necesita carácter y legibilidad, no ruido geométrico genérico."
+    },
+    {
+      "id": "D4",
+      "questionId": "Q4",
+      "componentIds": [
+        "CONTROL",
+        "MOTION"
+      ],
+      "choice": "WASD+E y joystick Pointer Events más botón visible y drag de cámara.",
+      "rejected": "Gestos táctiles mezclados en un único canvas sin áreas de interacción.",
+      "productionChange": "UI accesible con botones grandes y límites de velocidad/cámara independientes de framerate.",
+      "why": "Se debe poder completar la misión sin teclado ni ratón, con la cámara como ayuda y no obstáculo."
+    }
+  ],
+  "risks": [
+    {
+      "severity": "high",
+      "componentIds": [
+        "MOTION"
+      ],
+      "failure": "Singularidades en polos o normal degenerada rompen orientación y causan cambios bruscos en geodésicas.",
+      "prevention": "Normalización en cada paso y proyección tangencial con pruebas de ida, arco y polo.",
+      "test": "Spike de álgebra numérica: avance de 0.25 rad mantiene norma=1 y arco=0.25; prueba de continuidad.",
+      "status": "OBSERVED",
+      "observation": {
+        "norm": 1,
+        "arc": 0.2500000000000002,
+        "orthogonality": 0,
+        "around": [
+          0.20436851286182967,
+          0.978894024371711,
+          0
+        ]
+      }
+    },
+    {
+      "severity": "medium",
+      "componentIds": [
+        "ACTORS",
+        "MOTION"
+      ],
+      "failure": "NPC circulan por arcos que intersectan decoraciones y aparentan teletransporte.",
+      "prevention": "Rutas controladas y obstáculos fuera de los caminos marcados para habitantes.",
+      "test": "Inspección de trayectos con captura WebGL y comparación de normas.",
+      "status": "NOT_RUN"
+    },
+    {
+      "severity": "medium",
+      "componentIds": [
+        "CONTROL",
+        "QUEST"
+      ],
+      "failure": "El joystick o la cámara impiden descubrir/interactuar al sostener el dispositivo vertical.",
+      "prevention": "Separación de Pointer Events y acciones persistentes con proximity hint.",
+      "test": "Interacción real en viewport 390×844 y rotación.",
+      "status": "NOT_RUN"
+    },
+    {
+      "severity": "medium",
+      "componentIds": [
+        "WORLD"
+      ],
+      "failure": "Carga de Three.js por CDN bloqueada o WebGL deshabilitado impide entregar juego offline.",
+      "prevention": "Mostrar diagnóstico de fallo sin simular render; documentar dependencia de CDN y WebGL.",
+      "test": "Visitar URL pública en navegador real y comprobar inicio y render.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "acceptance": [
+    {
+      "kind": "logic",
+      "criterion": "Planet motion mantiene vector unitario y distancia arc sin atravesar obstáculo.",
+      "oracle": "Node assert sobre módulo reutilizable y test de colisiones.",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "functional",
+      "criterion": "Misión cerrada con dos NPC, tres semillas, final de floración, persistencia y reinicio.",
+      "oracle": "Ejecutar navegador completo y observar cambios tras recargar.",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "interactive",
+      "criterion": "Joysticks y controles de cámara permiten caminar e interactuar desde viewport móvil.",
+      "oracle": "Prueba pointer/touch sobre navegador WebGL real.",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "visual",
+      "criterion": "El planeta posee identidad artística y coherencia sin figura de cubos; existe cambio visible.",
+      "oracle": "Captura de escena antes y después y evaluación humana independiente.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "resources": "Three.js r0.160.1 (dependencia ESM CDN), JavaScript nativo, GitHub Pages público y herramientas de comprobación disponibles; geometría original en código fuente editable.",
+  "licensing": "Todo modelo, color, narrativa y geometría del juego son creación original programática; referencias solo para principios, no reutilización de assets; Three.js usa licencia MIT.",
+  "environmentLimits": "Se puede publicar y revisar código GitHub; no afirmar pruebas táctiles/perceptuales hasta tener navegador WebGL real accesible con las dependencias CDN cargadas.",
+  "preproductionGate": "READY_FOR_FIRST_SLICE (spike algebraico observado; validación formal pendiente)"
+}
