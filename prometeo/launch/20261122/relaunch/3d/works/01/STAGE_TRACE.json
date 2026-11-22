@@ -1,0 +1,114 @@
+{
+  "schema": "prometeo.stage-trace/w7-01",
+  "taskId": "3d-w7-20261122-01",
+  "room": "3d",
+  "batchId": "3d-w7-20261122",
+  "taskNumber": 1,
+  "startedAt": "2026-11-22T18:51:36.382Z",
+  "updatedAt": "2026-11-22T18:51:36.382Z",
+  "humanApproved": false,
+  "flow": {
+    "shared": {
+      "qualityBar": "QBAR-1",
+      "deepSpec": "DEEP-SPEC-1",
+      "artDirection": "FIRST-ARTICLE-1"
+    },
+    "specializedRef": "JuanManuelPM/pruebas@candidate/prometeo-3d-character-flow-v3-20261116",
+    "sourcePointerSha": "02cd6acb6df538ccaef3d5e88adf1be4ba5c9d33",
+    "specializedRuntimeVersion": "NOT_VERIFIED",
+    "isPromoted": false,
+    "traceValidatorCompatibility": "NOT_RUN"
+  },
+  "sources": [
+    {
+      "kind": "launcher",
+      "blobSHA": "58de659e2aa01c0746d59ca6f95c36bdc59f3030"
+    },
+    {
+      "kind": "previousBrief",
+      "blobSHA": "942c3ba8b851137886e959d2790771556e2d9f5d"
+    },
+    {
+      "kind": "modelLicense",
+      "url": "https://github.com/mrdoob/three.js/blob/r164/examples/models/gltf/RobotExpressive/README.md",
+      "blobSHA": "7eca324eccff3cb0b27c0714074e051c5e38853c"
+    },
+    {
+      "kind": "modelAsset",
+      "url": "https://github.com/mrdoob/three.js/blob/r164/examples/models/gltf/RobotExpressive/RobotExpressive.glb",
+      "blobSHA": "6fec9cfb4b41cb319c70d38cf86965aba5630964"
+    }
+  ],
+  "stages": [
+    {
+      "stage": "IDENTITY_LOCK",
+      "status": "OBSERVED",
+      "decision": "Únicamente N01 W7",
+      "output": "Launcher SHA y rama exclusiva"
+    },
+    {
+      "stage": "QBAR_REFERENCE",
+      "status": "OBSERVED_SOURCE",
+      "decision": "Elegir rig glTF CC0 en vez de collage",
+      "output": "README oficial y ejemplo de animación, captura del modelo externo"
+    },
+    {
+      "stage": "DEEP_SPEC",
+      "status": "SPIKE_REQUIRED",
+      "decision": "Riesgo alto de first article y voz debe observarse",
+      "output": "PREPRODUCTION.deep-spec-v1.json",
+      "validatorResult": "SPIKE_REQUIRED"
+    },
+    {
+      "stage": "ART_DIRECTION",
+      "status": "FIRST_ARTICLE_REQUIRED",
+      "decision": "Probar rig y encuadres reales antes de declarar actor terminado",
+      "output": "index.html / actor-rig.js",
+      "validatorResult": "FIRST_ARTICLE_REQUIRED"
+    },
+    {
+      "stage": "FIRST_ARTICLE_IMPLEMENTATION",
+      "status": "IMPLEMENTED_SOURCE",
+      "decision": "GLB articulado + clips + morph facial",
+      "output": "index.html, actor-rig.js, dialogue.js"
+    },
+    {
+      "stage": "JS_SYNTAX",
+      "status": "PASS",
+      "decision": "Parseo sintáctico V8 de 3 scripts",
+      "output": "3/3 sin excepción"
+    },
+    {
+      "stage": "WEBGL_RENDER",
+      "status": "NOT_RUN",
+      "decision": "No usar captura falsa",
+      "output": null
+    },
+    {
+      "stage": "AUDIO_PLAYBACK",
+      "status": "NOT_RUN",
+      "decision": "No afirmar lip-sync verificado",
+      "output": null
+    },
+    {
+      "stage": "VISUAL_QA_ANDROID",
+      "status": "NOT_RUN",
+      "decision": "No afirmar compatibilidad de dispositivo",
+      "output": null
+    },
+    {
+      "stage": "HUMAN_APPROVAL",
+      "status": "NOT_RUN",
+      "decision": "Solo humano aprueba",
+      "output": null
+    }
+  ],
+  "comparison": {
+    "oldBatchId": "3d-w6-20261122",
+    "newBatchId": "3d-w7-20261122",
+    "flowBefore": "W6 representacion facial de primitivas",
+    "flowAfter": "W7 importacion GLB CC0 con skins/morphs en fuente",
+    "observableResult": "NOT_RUN",
+    "qualityChange": "NOT_VERIFIED"
+  }
+}
