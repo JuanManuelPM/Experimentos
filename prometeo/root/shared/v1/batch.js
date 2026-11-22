@@ -53,6 +53,15 @@ function renderBatch(block){
   if(item.sourceUrl){const a=el('a','p-batch-source','Fuente');a.href=safeURL(item.sourceUrl)||'#';a.target='_blank';a.rel='noopener noreferrer';footer.append(a);}
   const copy=el('button','p-batch-copy',f[1]?'Copiado':'Copiar '+String(item.number).padStart(2,'0'));
   copy.type='button';copy.addEventListener('click',()=>copyItem(item));footer.append(copy);
+  if(result?.id){
+   const review=el('button','p-batch-copy','Revisar obra');review.type='button';
+   review.setAttribute('aria-label','Copiar referencia para revisar '+(item.label||item.id));
+   review.addEventListener('click',async()=>{
+    const reference='CONTINUAR · PROMETEO · RESPUESTA · https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/root/ROOM_MESSAGES.json · '+result.id;
+    const ok=await copyValue(reference);emit(host,ok,item);
+   });
+   footer.append(review);
+  }
   body.append(footer);
  }
  async function copyItem(item){
