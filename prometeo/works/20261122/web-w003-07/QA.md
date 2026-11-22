@@ -5,7 +5,7 @@
 
 ## Producto entregado
 - `index.html`: edición editorial en español con seis lecturas originales: ensayo de ciudad, entrevista de ficción explícita, columna, especial de tres láminas originales, crónica literaria de ficción y cuaderno de cinco notas.
-- `styles.css`: sistema tipográfico y de retículas responsive, tokens, cinco formatos editoriales, legibilidad, foco, reduced-motion y estados ocultos.
+- `styles.css`: sistema tipográfico y de retículas responsive, tokens, seis formatos editoriales, legibilidad, foco, reduced-motion y estados ocultos.
 - `app.js`: índice/búsqueda por texto completo (con normalización de acentos), filtros, enlace directo por hash, estado vacío, navegación con foco y pestañas ARIA sin autoplay.
 - `FIRST_ARTICLE.html`: spike editorial independiente; `PREPRODUCTION.deep-spec-v1.json`: Book único con arte, riesgos y decisiones; `evidence/first-frame-390.jpg` y `evidence/first-frame-1440.jpg`: capturas JPEG reales de Chromium.
 - Fotografía documental Wikimedia Commons bajo licencia atribuidas junto a imagen: Sking CC BY-SA 3.0, Christian Haugen CC BY 2.0, Luis Argerich CC BY 2.0. Ninguna foto documenta una escena ficticia. Láminas SVG propias ilustran conceptos y no fingen series estadísticas.
