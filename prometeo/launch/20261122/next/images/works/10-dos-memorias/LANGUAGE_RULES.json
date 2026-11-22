@@ -1,0 +1,89 @@
+{
+  "schema": "DOS-MEMORIAS-LANGUAGE-RULES-1",
+  "taskId": "images-w002-20261122-10",
+  "world": "Plaza de las Mareas, una plaza ficticia donde vecinos rescatan objetos familiares una tarde nublada después de una inundación.",
+  "invariants": {
+    "angle": "horizontal 3:2, cámara peatonal frontal al edificio cívico, no vista aérea",
+    "positions": {
+      "tree": "izquierda con jardinera circular",
+      "building": "fondo con tres arcos y puerta azul central",
+      "bench": "derecha",
+      "woman": "centro-izquierda",
+      "olderMan": "centro-derecha",
+      "crate": "abajo entre ambos",
+      "album": "rojo, sobre caja azul"
+    },
+    "facts": [
+      "el agua ya bajó",
+      "queda una marca de barro en la fachada",
+      "la mujer viste impermeable mostaza y botas marinas",
+      "el hombre viste suéter gris",
+      "ambos sostienen un álbum rojo que colocan en caja azul"
+    ],
+    "tone": "empatía y recuperación, sin tragedia espectacular ni ficción disfrazada de noticia"
+  },
+  "grammars": {
+    "A": {
+      "medium": "fotografía editorial sintética",
+      "light": "cielo cubierto y sombras suaves",
+      "lens": "equivalente 35 mm",
+      "materials": "texturas detalladas y tonos naturales de ropa, piedra, charcos y barro",
+      "forbidden": [
+        "leyendas de sucesos reales",
+        "drama añadido",
+        "sustituir la acción humana",
+        "firma o watermark editorial ficticio"
+      ],
+      "repeatability": "prompt y canon reutilizables; generación no determinista, sin seed expuesta"
+    },
+    "B": {
+      "medium": "ilustración gráfica editorial raster original",
+      "toolchain": [
+        "Python 3",
+        "Pillow",
+        "NumPy"
+      ],
+      "canvasPx": [
+        1536,
+        1024
+      ],
+      "palette": {
+        "INK": "#212c37",
+        "DEEP": "#23364a",
+        "COBALT": "#3c6071",
+        "PARCH": "#efe4cf",
+        "CLAY": "#aa5b45",
+        "MUSTARD": "#dea247"
+      },
+      "printStrategy": [
+        "formas y contornos dibujados",
+        "paleta limitada y sombras por planos",
+        "textura de papel estocástica con semilla fija",
+        "trama y rayaduras dibujadas manualmente"
+      ],
+      "randomSeed": {
+        "python": 2342026,
+        "numpy": 1031
+      },
+      "forbidden": [
+        "remapear colores de A",
+        "convertir una fotografía a cartoon automáticamente",
+        "copiar material protegido"
+      ],
+      "verifiedReproductionSha256": "02b2414019d97dccb5410f938e4859ffac82d2fe9d3e311cb495732bf501378a",
+      "repeatability": "script adjunto al ZIP de la conversación, réplica byte-identica verificada en este entorno"
+    }
+  },
+  "tests": {
+    "photoRealness": "solo apariencia fotográfica; no implicar procedencia factual",
+    "facts": "cotejar anclas y registrar oclusiones, no promediar errores",
+    "formalDifference": "examinar máscaras, masas, contornos y texturas, no solo la paleta",
+    "blindHuman": "mostrar dos brazos con orden aleatorio y revelar gramáticas después de respuestas; pendiente",
+    "currentIssues": [
+      "arcos laterales parcialmente ocluidos en B",
+      "materiales gráficos simplifican el detalle de la imagen A"
+    ]
+  },
+  "assetLicensing": "Los raster finales son obras ficticias generadas para este proyecto; no se emplearon fotos ni obras ajenas como insumos. Las fuentes externas son benchmarks solamente.",
+  "publication": "README y gramática en rama candidata; PNG binarios únicamente en artefactos locales de conversación."
+}
