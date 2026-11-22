@@ -2,7 +2,7 @@
 
 **Comando humano mínimo:** `WORK · https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/launch/20261122/FLOW_REVIEW.md`
 
-**Estado de esta entrada:** preparada; NO inicia trabajos ni afirma haber recopilado críticas todavía. Usar después de que el humano revise las entregas y los ejecutores registren sus observaciones.
+**Estado de esta entrada:** preparada para integración a pedido. Ejecutar DESPUÉS de que los chats productores hayan guardado autocríticas mediante `AUTOCRITICA_WHISPLASH.md · ESTE_CHAT` o feedback humano. **No requiere que el humano haya escuchado, visto o criticado cada obra**. La ausencia de una revisión se registra como pendiente, no se sustituye por un dictamen inventado. No inicia trabajos por publicar el archivo; no crear automatizaciones programadas.
 
 ## Resolver
 
@@ -19,7 +19,7 @@
 
 ## Criterio humano
 
-La persona solo revisa ejemplos y comenta libremente usando una referencia de obra/tanda. El chat que recibe ese feedback debe conservarlo en el inbox apropiado, no exigir que el humano pronuncie comandos especiales. **Este lanzamiento sintetiza lo acumulado**, no sustituye el registro individual de observaciones ni crea un demonio en segundo plano.
+La persona solo revisa ejemplos y comenta libremente usando una referencia de obra/tanda. El chat que recibe ese feedback debe conservarlo en el inbox apropiado, no exigir que el humano pronuncie comandos especiales. **Este lanzamiento sintetiza lo acumulado, incluidas las autocríticas verificables guardadas por cada chat sin audio humano**, no sustituye el registro individual de observaciones ni crea un demonio en segundo plano.
 
 No inventar un botón que lanza automáticamente una IA desde GitHub Pages. La página puede ofrecer Copiar; el humano abre un chat con GitHub autorizado y pega una sola referencia.
 
