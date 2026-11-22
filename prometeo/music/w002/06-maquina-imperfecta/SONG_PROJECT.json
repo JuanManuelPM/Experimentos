@@ -1,0 +1,191 @@
+{
+  "schema": "prometeo.music.song-project/w002-06-v1",
+  "taskId": "music-w002-20261122-06",
+  "title": "MÁQUINA IMPERFECTA",
+  "subtitle": "electro de maquinaria respirando",
+  "author": "Original generative synthesis created in this task",
+  "bpm": 116,
+  "bars": 48,
+  "sampleRate": 24000,
+  "seed": 2026112206,
+  "key": "E minor",
+  "meter": "4/4",
+  "patches": {
+    "kick": {
+      "f": 45,
+      "sweep": 105,
+      "d": 0.29
+    },
+    "snare": {
+      "f": 184,
+      "d": 0.19
+    },
+    "bass": {
+      "f": 560,
+      "d": 0.29,
+      "drive": 1.54,
+      "pwm": 0.39
+    },
+    "seq": {
+      "f": 1700,
+      "d": 0.18,
+      "pwm": 0.56
+    },
+    "pad": {
+      "f": 950,
+      "d": 1.12,
+      "pwm": 0.32
+    }
+  },
+  "patchGraph": {
+    "signalPath": {
+      "kick": [
+        "pitch-envelope",
+        "sine-osc",
+        "tanh-drive",
+        "decay-envelope",
+        "output"
+      ],
+      "snare": [
+        "tone-osc",
+        "seeded-white-noise",
+        "noise-highpass",
+        "transient-envelope",
+        "output"
+      ],
+      "hat": [
+        "seeded-noise",
+        "highpass",
+        "six-inharmonic-partials",
+        "decay-envelope",
+        "output"
+      ],
+      "bass": [
+        "polyBLEP-pulse",
+        "polyBLEP-saw",
+        "sub-sine",
+        "drive",
+        "two-onepole-lowpass",
+        "amp-envelope",
+        "output"
+      ],
+      "sequence": [
+        "polyBLEP-pulse",
+        "polyBLEP-saw",
+        "third-harmonic-FM",
+        "drive",
+        "two-onepole-lowpass",
+        "amp-envelope",
+        "output"
+      ],
+      "pads": [
+        "polyBLEP-pulse",
+        "polyBLEP-saw",
+        "sub-sine",
+        "two-onepole-lowpass",
+        "amp-envelope",
+        "output"
+      ]
+    },
+    "implementation": "renderer.js / renderSong(cfg), all oscillators computed per note, seeded percussion, parameter routes from modulation array"
+  },
+  "modulation": [
+    {
+      "target": "cutoff",
+      "source": {
+        "type": "phrase",
+        "hz": 1
+      },
+      "depth": 0.21,
+      "unit": "fraction_of_base_cutoff"
+    },
+    {
+      "target": "cutoff",
+      "source": {
+        "type": "sine",
+        "hz": 0.0625,
+        "phase": 0.19
+      },
+      "depth": 0.18,
+      "unit": "fraction_of_base_cutoff"
+    },
+    {
+      "target": "pwm",
+      "source": {
+        "type": "triangle",
+        "hz": 0.17,
+        "phase": 0.1
+      },
+      "depth": 0.085,
+      "unit": "duty_cycle"
+    },
+    {
+      "target": "accent",
+      "source": {
+        "type": "step",
+        "hz": 1.933333333,
+        "values": [
+          -1,
+          0.5,
+          0,
+          0.9,
+          -0.6,
+          0.1,
+          0.7,
+          0
+        ]
+      },
+      "depth": 0.68,
+      "unit": "velocity_fraction"
+    }
+  ],
+  "score": {
+    "method": "in renderer.js: indexed events per 16th, per-track humanization and six original arrangement scenes",
+    "sections": [
+      {
+        "bars": "1-8",
+        "role": "ignition",
+        "energy": "low",
+        "motif": "bass delayed; sparse syncopated metal"
+      },
+      {
+        "bars": "9-16",
+        "role": "machine starts",
+        "energy": "medium",
+        "motif": "bass and PWM figure enter"
+      },
+      {
+        "bars": "17-24",
+        "role": "complexity",
+        "energy": "high",
+        "motif": "clap overlay, syncopated high steps"
+      },
+      {
+        "bars": "25-32",
+        "role": "breathing gap",
+        "energy": "low",
+        "motif": "bass rests, chord space"
+      },
+      {
+        "bars": "33-40",
+        "role": "pressure",
+        "energy": "high",
+        "motif": "full percussion + breakbeat + high sequence"
+      },
+      {
+        "bars": "41-48",
+        "role": "shutdown",
+        "energy": "medium to zero",
+        "motif": "sequencer peels away"
+      }
+    ]
+  },
+  "production": {
+    "sourcePolicy": "original synthesized only",
+    "renderMode": "offline PCM16 stereo",
+    "qualityLimit": "sampleRate 24000 for distributable compact master; renderer supports 48000 exports",
+    "mix": "stems summed in floating PCM, bus tanh soft saturation; -1.0dBFS peak ceiling approximate"
+  },
+  "rights": "Original algorithmic score, synthesized instruments and processing; no copyrighted third-party samples or presets used.",
+  "rebuild": "node renderer.js 48000 produces editable reproducible 48k WAV set in audio/; required Node.js >= 16, no packages"
+}
