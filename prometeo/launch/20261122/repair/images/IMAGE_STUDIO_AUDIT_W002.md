@@ -45,8 +45,8 @@ Esta auditoría corrige **el método**, no repara ni sustituye las diez obras. F
 En propietario privado JuanManuelPM/pruebas, rama candidate/prometeo-images-audit-w002-20261122:
 [Gate de dirección artística](https://github.com/JuanManuelPM/pruebas/blob/candidate/prometeo-images-audit-w002-20261122/sistemas/imagenes/ART_DIRECTION_GATE_W002.md),
 [runner de verificación de originales](https://github.com/JuanManuelPM/pruebas/blob/candidate/prometeo-images-audit-w002-20261122/sistemas/imagenes/src/image_art_gate.py),
-[7 tests de contraejemplos](https://github.com/JuanManuelPM/pruebas/blob/candidate/prometeo-images-audit-w002-20261122/sistemas/imagenes/tests/test_image_art_gate.py).
+[8 tests de contraejemplos](https://github.com/JuanManuelPM/pruebas/blob/candidate/prometeo-images-audit-w002-20261122/sistemas/imagenes/tests/test_image_art_gate.py).
 
-Tests sintéticos locales Python/Pillow: 7/7 PASS. **NO se ejecutaron contra los raster históricos W002**; la mayoría de esos binarios no fue transferida a este chat. Nunca HUMAN_APPROVED desde un test. Para rollback conservar candidate/prometeo-image-studio-unificado-20261117, main/router, gh-pages/W001/W002 y SHAs de las obras intactos.
+Tests sintéticos locales Python/Pillow: 8/8 PASS. **NO se ejecutaron contra los raster históricos W002**; la mayoría de esos binarios no fue transferida a este chat. Nunca HUMAN_APPROVED desde un test. Para rollback conservar candidate/prometeo-image-studio-unificado-20261117, main/router, gh-pages/W001/W002 y SHAs de las obras intactos.
 
 **ROOT debe integrar solo como aprendizaje candidato y comparar el resultado de la siguiente tanda con medias recuperables.** No se promovió el flujo ni se declararon imágenes profesionales.
