@@ -184,7 +184,7 @@ const loadScript=src=>new Promise((resolve,reject)=>{
 let offlinePromise=null,offlineAvailable=false;
 function loadOfflineVoice(){
  if(offlinePromise)return offlinePromise;
- const base='https://cdn.jsdelivr.net/npm/mespeak@2.0.2/';
+ const base='https://cdn.jsdelivr.net/gh/btopro/mespeak@master/';
  offlinePromise=(async()=>{
   await loadScript(base+'mespeak.js');
   if(!window.meSpeak)throw Error('meSpeak no disponible');
