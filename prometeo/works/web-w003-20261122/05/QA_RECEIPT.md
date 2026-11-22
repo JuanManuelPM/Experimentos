@@ -41,3 +41,10 @@
 - **GitHub Pages externo:** una lectura por Firecrawl de `https://juanmanuelpm.github.io/Experimentos/prometeo/works/web-w003-20261122/05/` devolvió **HTTP 404 / Page not found**, por lo que LIVE_HTTP **FAILED** y la vista pública no se declara operativa.
 - **Rama candidata:** guarda además `LIVE_SINGLE_FILE.html` con el mismo bundle. La publicación de fuente y su aplicación pública son hechos diferentes.
 - **Browser final:** sigue **NOT_RUN**. Ninguna captura válida 390/1440 de esta web fue obtenida.
+
+## Actualización: fotografía conceptual integrada
+
+- Se recuperó y publicó la estrategia fotográfica: **tres imágenes WebP originales de 512×480**, recortadas de un único tríptico generado para LENTO 01, integradas como `data:image/webp;base64` en los HTML y el módulo de aplicación. Cada acabado corresponde al mismo modelo, con variación de carcasa y tejido. No son fotografías de un producto fabricado.
+- `index.html` y `app.js` de la rama candidata cargan las tres imágenes embebidas; `LIVE_SINGLE_FILE.html` y el `index.html` de gh-pages incluyen las imágenes, estilos y lógica sin dependencias externas. La ilustración SVG continúa de fallback.
+- **Readback de fuente fotográfica:** `index.html` 2 referencias WebP, `app.js` 3 referencias WebP, `LIVE_SINGLE_FILE.html` 5 referencias WebP, todos leídos desde GitHub. Esto prueba la presencia de bytes de imágenes en fuente, **no** su decodificación en navegador final.
+- **Limitaciones sin cambio:** URL pública de Pages devolvió HTTP 404 tras el commit anterior; browser real 390/1440, compra tras recarga, tactilidad y aprobación humana siguen NOT_RUN.
