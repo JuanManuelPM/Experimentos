@@ -1,13 +1,13 @@
 # LA ESTACIÓN VACÍA · PROMETEO IMAGES W003/06
 
-**Estado:** ENTREGA PARCIAL comprobable · `HUMAN_APPROVED=NO` · seis escenas previstas, **cuatro imágenes generadas**, **tres generaciones remotas completas** y **una prueba maestra local**. Ningún resultado se anuncia como secuencia completa. Rama aislada, obras anteriores intactas.
+**Estado:** ENTREGA PARCIAL comprobable · `HUMAN_APPROVED=NO` · seis escenas previstas, **cuatro imágenes generadas**, **tres PNG originales de 1280×720 publicados** y **una prueba maestra local**. Ningún resultado se anuncia como secuencia completa. Rama aislada, obras anteriores intactas.
 
 ## Ver
 
 - [Galería editorial de esta rama](index.html) (el archivo HTML de rama candidata se descarga o previsualiza según GitHub; NO es todavía GitHub Pages).
 - [Previsualización raster real de 05 (128×72)](media/first_article_preview.webp), derivada del máster local 1672×941 (SHA256 `a8ba45d5a11031aea12c84a28bf0e0275308b2e3659b0a32286b4b2c6a2e624e`).
 - [Galería de generación del editor conectado](https://elevenlabs.io/app/flows/PX6GnoXhnhJCgp3rJFLv) (el acceso puede requerir sesión de la cuenta).
-- 01, 02 y 04: generaciones de imagen con IDs `nA8QI0FFhUjRNGo9EPH7`, `jj0fgs8GZ9eRGiRzS1KO`, `zhYdCKwW24w3SF4JiFWg`. Un workflow aislado intentó o intentará guardar los bytes aquí; **la mera existencia del workflow no prueba que la copia se haya publicado**.
+- 01, 02 y 04: generaciones de imagen con IDs `nA8QI0FFhUjRNGo9EPH7`, `jj0fgs8GZ9eRGiRzS1KO`, `zhYdCKwW24w3SF4JiFWg`. El [workflow de escrow](https://github.com/JuanManuelPM/Experimentos/actions/runs/45059311503) terminó SUCCESS; los tres PNG nativos 1280×720 y [contacto](media/contact_01_02_04.webp) están en esta rama, con SHA256 en [QA_BINARY.json](media/QA_BINARY.json). Esta verificación de bytes no aprueba la historia ni su continuidad.
 
 ## Seis momentos de narrativa (sin texto sobre los cuadros)
 
@@ -35,7 +35,7 @@ El auditor registró una única plancha 1536×1024 recortada en seis cuadros de 
 
 Referencia externa observada: [galería oficial de Shaun Tan](https://www.shauntan.net/arrival-images-gallery), [The Red Book, reseña](https://www.kirkusreviews.com/book-reviews/barbara-lehman/the-red-book/). Inspiración de gramática narrativa sin copiar assets. Los originales generados no incluyen material de referencia externo y no se atribuye aprobación de derechos comerciales específicos sin revisión de términos.
 
-**Límites:** no hay screenshot real navegador 390/1440, ni prueba ciega de orden con lectores externos; no hay verificación de identidad completa ni de calidad de la serie. El límite de cuota del generador impidió finalizar 03 y 06. Los dos afiches PROMETEO fuera de tema fueron descartados, no cuentan como obra.
+**Capturas reales:** [390 px](qa/opening-390.png) y [1440 px](qa/opening-1440.png) cuando estén actualizadas por el workflow; ejecutar la prueba no equivale a aprobación artística.\n\n**Límites:** no hay screenshot real navegador 390/1440, ni prueba ciega de orden con lectores externos; no hay verificación de identidad completa ni de calidad de la serie. El límite de cuota del generador impidió finalizar 03 y 06. Los dos afiches PROMETEO fuera de tema fueron descartados, no cuentan como obra.
 
 **Identidad:** `room=images` · `batchId=images-w003-20261122` · `taskNumber=6` · `taskId=images-w003-20261122-06` · `LAUNCH blob=a97b91ca103847ea75eeb9d1d2af10b6c9c0dddd` · `HUMAN_APPROVED=NO`.
 
