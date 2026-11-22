@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="es"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#101412">
+<meta name="description" content="PROMETEO · Biblioteca y taller 3D. Obras, animaciones, personajes, versiones, QA y editor FORJA.">
+<title>PROMETEO · Estudio 3D · Registro W4</title>
+<link rel="stylesheet" href="./studio.css?v=1.2.0-w5">
+<script defer src="./studio.js?v=1.2.0-w5"></script>
+</head><body>
+<header class="top">
+  <a class="brand" href="./" aria-label="Estudio 3D, inicio"><span class="brand-glyph">◇</span><span>3D</span></a>
+  <nav class="main-nav" aria-label="Espacios principales">
+    <a href="./" aria-current="page">Biblioteca</a>
+    <a href="../../../../estudios/3d/ola001/" title="Revisar las diez escenas de la ronda">Ola 001</a>
+    <a href="../../../../forja/">FORJA</a>
+  </nav>
+  <button id="filter-toggle" class="filter-toggle" type="button" aria-label="Buscar y filtrar obras" aria-expanded="false">⌕</button>
+</header>
+<main class="shell">
+  <section class="hero">
+    <div class="hero-copy"><p class="eyebrow">ESTUDIO DE PRODUCCIÓN 3D</p><h1>Todo lo que<br><em>construimos.</em></h1><p class="lead">Mundos, personajes y animaciones. Las últimas versiones, sin perder la historia.</p></div>
+    <a class="editor-cta" href="../../../../forja/"><span class="cta-icon" aria-hidden="true">↗</span><span><strong>Abrir FORJA</strong><small>Crear y editar escenas</small></span></a>
+  </section>
+  <section class="latest" id="latest" hidden aria-label="Trabajo en revisión">
+    <div class="latest-flag"><span class="pulse"></span><span>EN REVISIÓN</span></div>
+    <div class="latest-content"><div class="latest-title" id="latest-title"></div><p id="latest-desc"></p></div>
+    <button id="latest-open" type="button" class="latest-action">Ver progreso <span aria-hidden="true">↗</span></button>
+  </section>
+  <section class="collection" aria-label="Biblioteca de obras">
+    <div class="section-top"><div><p class="eyebrow">BIBLIOTECA</p><h2>Proyectos</h2></div><span class="count" id="count">Cargando…</span></div>
+    <div class="filters" id="filters-panel" hidden>
+      <div class="filter-chips" id="filters" role="group" aria-label="Tipo de proyecto">
+        <button type="button" class="selected" data-kind="creations" aria-pressed="true">Obras</button>
+        <button type="button" data-kind="world" aria-pressed="false">Mundos</button>
+        <button type="button" data-kind="animation" aria-pressed="false">Animaciones</button>
+        <button type="button" data-kind="character" aria-pressed="false">Personajes</button>
+        <button type="button" data-kind="tool" aria-pressed="false">Herramientas</button>
+      </div>
+      <label class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.4"/><path d="m15.4 15.4 5 5"/></svg><input id="search" type="search" placeholder="Buscar proyectos" autocomplete="off" aria-label="Buscar proyectos"></label>
+    </div>
+    <div id="grid" class="grid" aria-live="polite"><p class="loading">Recuperando proyectos publicados…</p></div>
+    <div class="bottom-note" id="updated">W4: código publicado no significa render observado. Sin capturas no hay miniatura.</div>
+  </section>
+</main>
+<footer class="footer"><span>PROMETEO · ESTUDIO 3D</span><span>Una biblioteca. Un editor. Versiones conservadas.</span><a href="../../../../">Todos los estudios ↗</a></footer>
+<div class="overlay" id="overlay" hidden>
+  <div class="shade" id="shade"></div>
+  <section class="detail" id="detail" role="dialog" aria-modal="true" aria-labelledby="detail-title">
+    <div class="detail-bar"><button class="back" id="close" type="button" aria-label="Volver a biblioteca">‹</button><span id="compact-title" class="compact-title"></span><div class="detail-actions"><a id="detail-visit" href="#" target="_self" class="detail-visit" title="Abrir en pantalla completa" aria-label="Abrir obra en pantalla completa" hidden>↗</a><button id="details-toggle" type="button" aria-label="Mostrar errores, versiones y flujo" aria-expanded="false">⋯</button><button id="detail-close" type="button" aria-label="Cerrar detalle">×</button></div></div>
+    <div class="detail-scroll">
+      <div class="detail-intro"><div class="eyebrow" id="detail-meta"></div><h2 id="detail-title"></h2><p id="detail-desc"></p></div>
+      <div class="viewer" id="viewer"><div class="viewer-idle"><div class="viewer-mark">◇</div><p>Vista del proyecto</p><button id="preview" type="button">Cargar vista real ↗</button></div></div>
+      <aside class="detail-extras" id="detail-extras" hidden><div class="detail-tabs" role="tablist" aria-label="Detalles de la obra"><button type="button" data-tab="summary" class="on" aria-selected="true">Resumen</button><button type="button" data-tab="issues" aria-selected="false">Errores</button><button type="button" data-tab="versions" aria-selected="false">Versiones</button></div>
+      <div id="detail-content" class="detail-content"></div>
+      <div class="detail-bottom"><a id="detail-flow" href="../../3d-flow/">Flujo ↗</a><a href="../../../../forja/">FORJA ↗</a></div></aside>
+    </div>
+  </section>
+</div>
+</body></html>
