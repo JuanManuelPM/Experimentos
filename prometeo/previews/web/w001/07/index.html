@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#eeeae1">
+<meta name="description" content="MARGEN: notas visuales personales, guardadas solo en tu navegador.">
+<title>MARGEN · Notas visuales</title>
+<style>
+:root{color-scheme:light;--paper:#eeeae1;--ink:#272b28;--muted:#6f746d;--line:#cecec4;--warm:#fbfaf6;--yellow:#f1db85;--peach:#efcbb6;--blue:#c4dbe0;--lilac:#d9cee6;--sage:#d6dfca;--radius:18px}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.5 Arial,Helvetica,sans-serif}
+button,input,textarea,select{font:inherit}
+button{cursor:pointer}
+button:disabled{opacity:.48;cursor:not-allowed}
+button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:3px solid #41675f;outline-offset:3px}
+a{color:inherit}
+.skip{position:absolute;z-index:30;top:-100px;left:16px;background:#fff;padding:12px}.skip:focus{top:12px}
+.shell{max-width:1450px;margin:auto;padding:0 clamp(18px,4vw,66px)}
+.top{display:flex;align-items:center;justify-content:space-between;gap:18px;min-height:84px;border-bottom:1px solid var(--line)}
+.brand{display:inline-flex;align-items:center;gap:12px;font-size:18px;font-weight:900;letter-spacing:.12em}
+.brandmark{width:26px;height:29px;border:2px solid var(--ink);border-radius:3px;transform:rotate(-6deg);position:relative;display:inline-block;background:var(--yellow);box-shadow:4px 4px 0 #c5c3b8}
+.brandmark:after{content:"";position:absolute;left:6px;top:6px;width:11px;height:12px;border-left:2px solid var(--ink);border-bottom:2px solid var(--ink);transform:skew(-12deg)}
+.top-right{display:flex;align-items:center;gap:14px}
+.top-note{font-size:12px;color:var(--muted);letter-spacing:.03em}
+.primary{display:inline-flex;gap:11px;align-items:center;justify-content:center;border:1px solid var(--ink);background:var(--ink);color:#fff;border-radius:99px;padding:12px 20px;font-weight:700;min-height:46px;transition:transform .15s,background .15s}
+.primary:hover{background:#454c45;transform:translateY(-1px)}
+.primary svg,.icon-button svg,.soft-button svg{width:18px;height:18px;stroke:currentColor;stroke-width:1.8;fill:none;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.hero{display:grid;grid-template-columns:minmax(0,1fr) 220px;align-items:end;gap:20px;padding:67px 0 43px}
+.eyebrow{display:flex;align-items:center;gap:10px;text-transform:uppercase;font-size:11px;font-weight:800;letter-spacing:.16em;color:#58665e}
+.eyebrow:before{content:"";display:block;background:#748b72;width:27px;height:2px}
+h1{font:normal clamp(47px,7.7vw,110px)/.98 Georgia,serif;letter-spacing:-.062em;max-width:790px;margin:18px 0 19px}
+h1 em{font-style:italic;color:#7d8a7a}
+.intro{margin:0;max-width:500px;color:#5d625d;font-size:clamp(15px,1.3vw,17px);line-height:1.65}
+.hero-art{height:175px;position:relative;align-self:end;margin-bottom:4px;pointer-events:none}
+.art-sheet{position:absolute;width:132px;height:145px;border:1.5px solid #343c34;border-radius:6px;transform:rotate(-10deg);background:var(--yellow);right:48px;bottom:7px;box-shadow:8px 9px 0 #d5d3c9}
+.art-sheet:before{content:"";position:absolute;top:28px;left:20px;width:72px;height:42px;border:2px solid #536454;border-top-color:transparent;border-radius:48% 52% 32% 41%;transform:rotate(22deg)}
+.art-sheet:after{content:"";position:absolute;bottom:30px;left:21px;width:72px;height:16px;border-top:2px solid #536454;border-bottom:2px solid #536454}
+.art-sticker{position:absolute;right:4px;top:5px;width:65px;height:68px;background:var(--blue);border:1.5px solid #394640;border-radius:50% 44% 49% 43%;transform:rotate(14deg)}
+.art-sticker:after{content:"✳";font-size:42px;position:absolute;inset:0;display:grid;place-items:center}
+.bar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;padding:17px 0 21px;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.tabset{display:flex;gap:4px}
+.tab{border:0;background:transparent;border-radius:9px;padding:11px 14px;font-weight:700;color:#6d716c;min-height:44px}
+.tab[aria-pressed=true]{background:#fcfaf5;color:var(--ink);box-shadow:0 1px 2px #3331}
+.search{display:flex;align-items:center;gap:9px;min-height:44px;border:1px solid var(--line);background:#f5f3ed;border-radius:12px;padding:0 13px;flex:1 1 195px;max-width:380px}
+.search:focus-within{border-color:#446b61}
+.search svg{width:18px;height:18px;stroke:#737b72;stroke-width:1.8;fill:none}
+.search input{width:100%;border:0;background:transparent;outline:0;min-width:0;font-size:14px;color:var(--ink)}
+.search input:focus-visible{outline:0}
+.search input::placeholder{color:#767b73}
+.sort{background:transparent;border:1px solid var(--line);border-radius:12px;min-height:44px;color:var(--ink);padding:0 33px 0 13px;max-width:190px}
+.count{font-size:12px;letter-spacing:.05em;color:var(--muted);white-space:nowrap;margin-left:auto}
+.boards{padding-top:29px;padding-bottom:100px;min-height:300px}
+.board{columns:3 290px;column-gap:20px}
+.note{position:relative;display:inline-block;vertical-align:top;width:100%;margin:0 0 20px;padding:25px 25px 19px;break-inside:avoid;border:1px solid #272b281a;border-radius:12px;background:var(--yellow);box-shadow:2px 4px 0 #30332a11;transition:transform .18s,box-shadow .18s}
+.note:hover{transform:translateY(-3px) rotate(-.35deg);box-shadow:3px 9px 0 #30332a16}
+.note[data-color=butter]{background:var(--yellow)}
+.note[data-color=coral]{background:var(--peach)}
+.note[data-color=ice]{background:var(--blue)}
+.note[data-color=violet]{background:var(--lilac)}
+.note[data-color=leaf]{background:var(--sage)}
+.note[data-color=paper]{background:#f9f8f3}
+.note-head{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:#4b544d}
+.note-title{font:normal 29px/1.12 Georgia,serif;letter-spacing:-.035em;margin:21px 0 12px;overflow-wrap:anywhere;white-space:pre-wrap}
+.note-body{white-space:pre-wrap;overflow-wrap:anywhere;margin:0;color:#3e443f;line-height:1.6;font-size:14px;max-height:230px;overflow:hidden;mask-image:linear-gradient(to bottom,#000 81%,transparent 100%)}
+.note-image{display:block;width:100%;max-height:230px;object-fit:cover;border-radius:5px;margin:15px 0 0;border:1px solid #3332}
+.note-actions{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:23px;border-top:1px solid #4a514d33;padding-top:12px}
+.note-date{color:#4c544e;font-size:12px}
+.note-controls{display:flex;gap:4px}
+.icon-button{display:inline-flex;align-items:center;justify-content:center;width:39px;height:39px;background:transparent;border:1px solid transparent;border-radius:10px;color:#303a34}
+.icon-button:hover{border-color:#6a716b55;background:#ffffff44}
+.icon-button[aria-pressed=true]{background:#ffffff66}
+.note-open{border:0;border-bottom:1px solid #38483f;background:transparent;font-size:12px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;min-height:36px;padding:0 0 2px;color:#303a34}
+.empty{border:1px dashed #aeb1a8;border-radius:18px;min-height:320px;display:grid;grid-template-columns:1fr 270px;align-items:center;gap:20px;padding:clamp(24px,4vw,64px);background:#f5f3ec}
+.empty h2{font:normal clamp(32px,4vw,50px)/1.13 Georgia,serif;letter-spacing:-.045em;margin:8px 0 17px}
+.empty p{color:#676d65;max-width:470px;margin:0 0 23px}
+.empty-visual{width:195px;height:205px;margin:auto;position:relative}
+.empty-visual div{position:absolute;border:1px solid #454d43;border-radius:4px;width:143px;height:172px;background:var(--blue);transform:rotate(12deg);top:13px;left:30px}
+.empty-visual div+div{background:var(--peach);transform:rotate(-9deg);left:13px;top:25px;padding:30px 17px;font:italic 29px Georgia,serif}
+.footer{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;padding:24px 0 38px;border-top:1px solid var(--line);font-size:12px;color:var(--muted)}
+.footer-actions{display:flex;gap:11px;flex-wrap:wrap}
+.link-button{border:0;background:none;text-decoration:underline;text-underline-offset:3px;color:#434e45;padding:8px 4px}
+dialog{border:0;border-radius:18px;padding:0;width:min(760px,calc(100vw - 26px));max-height:min(94vh,850px);box-shadow:0 20px 80px #171d1860;background:#fcfbf7;color:var(--ink);overflow:auto}
+dialog::backdrop{background:#17221cc9;backdrop-filter:blur(3px)}
+.editor{padding:clamp(19px,4vw,37px)}
+.editor-top{display:flex;justify-content:space-between;gap:15px;align-items:center;border-bottom:1px solid #d8d9d0;padding-bottom:17px}
+.editor-top span{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#68716a}
+.editor-main{padding:22px 0}
+.editor label{display:block;font-size:12px;font-weight:800;letter-spacing:.03em;color:#4b554e;margin-bottom:9px}
+.editor input[type=text],.editor textarea{width:100%;padding:14px 15px;border:1px solid #ced2c8;background:white;border-radius:10px;color:var(--ink)}
+.editor #titleInput{font:normal 30px/1.2 Georgia,serif;letter-spacing:-.03em}
+.editor textarea{min-height:185px;resize:vertical;line-height:1.7}
+.field{margin:0 0 19px}
+.options{display:flex;align-items:center;flex-wrap:wrap;gap:12px;margin:17px 0 22px}
+.swatches{display:flex;gap:9px;flex-wrap:wrap}
+.swatch{width:39px;height:39px;border-radius:50%;border:2px solid #1c211c22;outline-offset:3px}
+.swatch[aria-pressed=true]{outline:2px solid #293c34;border:3px solid #fcfbf7;box-shadow:0 0 0 1px #293c34}
+.swatch[data-color=butter]{background:var(--yellow)}.swatch[data-color=coral]{background:var(--peach)}.swatch[data-color=ice]{background:var(--blue)}.swatch[data-color=violet]{background:var(--lilac)}.swatch[data-color=leaf]{background:var(--sage)}.swatch[data-color=paper]{background:#f9f8f3}
+.soft-button{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:43px;border:1px solid #cfd4ca;background:#f6f5f0;border-radius:11px;padding:9px 13px;font-weight:700;color:#4b584e}
+.soft-button:hover{background:#e7e9e0}
+.preview{display:none;position:relative;margin:12px 0;max-width:400px}
+.preview img{display:block;width:100%;max-height:230px;object-fit:contain;background:#e9e9e4;border-radius:8px}
+.preview.active{display:block}
+.editor-footer{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;border-top:1px solid #d8d9d0;padding-top:17px}
+.editor-status{font-size:12px;color:#596c5d;min-height:20px}
+.editor-actions{display:flex;gap:8px;flex-wrap:wrap}
+.danger{color:#9c3326}
+.small{font-size:12px;color:#73796f}
+.toaster{position:fixed;bottom:max(20px,env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);background:#26362b;color:#fff;padding:12px 18px;border-radius:99px;font-weight:700;z-index:40;box-shadow:0 12px 30px #0004;max-width:90%;text-align:center}
+.hidden{display:none!important}
+@media(max-width:750px){
+.top{min-height:71px}.top-note{display:none}.hero{grid-template-columns:1fr;padding:50px 0 33px}.hero-art{display:none}
+.count{margin-left:0}.sort{flex:1 0 145px}.search{max-width:none;flex-basis:150px}
+.board{columns:2 220px;column-gap:13px}.note{margin-bottom:13px;padding:21px 19px 15px}
+.empty{grid-template-columns:1fr}.empty-visual{display:none}
+}
+@media(max-width:500px){h1{font-size:52px}.brand{font-size:15px}.top .primary{padding:10px 13px;font-size:13px}
+.bar{gap:9px}.tabset{width:100%}.tab{flex:1}.search{flex:1 1 100%}.sort{max-width:none}.count{margin-left:auto}
+.board{columns:1}.note-title{font-size:31px}
+dialog{width:100vw;height:100dvh;max-height:none;border-radius:0}.editor{min-height:100%;display:flex;flex-direction:column}.editor-main{flex:1}
+.editor-footer{position:sticky;bottom:0;background:#fcfbf7;padding:12px 0 max(12px,env(safe-area-inset-bottom))}
+}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<a class="skip" href="#board">Saltar a las notas</a>
+<div class="shell">
+<header class="top">
+  <div class="brand" aria-label="Margen"><span class="brandmark" aria-hidden="true"></span>MARGEN<span aria-hidden="true">.</span></div>
+  <div class="top-right"><span class="top-note">ESPACIO PERSONAL / SIN CUENTA</span><button id="newTop" class="primary" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Nueva nota</button></div>
+</header>
+<main>
+<section class="hero" aria-labelledby="pageTitle">
+  <div><div class="eyebrow">Tu pequeño archivo de ideas</div><h1 id="pageTitle">Lo que merece <em>quedarse.</em></h1><p class="intro">Palabras, imágenes y cosas que todavía no tienen nombre. Un rincón tranquilo para guardarlas a tu manera.</p></div>
+  <div class="hero-art" aria-hidden="true"><span class="art-sheet"></span><span class="art-sticker"></span></div>
+</section>
+<section class="bar" aria-label="Organizar notas">
+ <div class="tabset" role="group" aria-label="Filtrar"><button class="tab" type="button" data-filter="all" aria-pressed="true">Todas</button><button class="tab" type="button" data-filter="favorite" aria-pressed="false">Favoritas</button></div>
+ <label class="search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m16 16 5 5"/></svg><input id="search" type="search" placeholder="Buscar una idea…" aria-label="Buscar notas"></label>
+ <select id="sort" class="sort" aria-label="Ordenar notas"><option value="recent">Más recientes</option><option value="oldest">Más antiguas</option><option value="title">Por título</option></select>
+ <span id="count" class="count" aria-live="polite">Cargando…</span>
+</section>
+<section class="boards" id="board" aria-label="Mis notas">
+  <div id="cards" class="board"></div>
+  <div id="empty" class="empty hidden">
+   <div><div class="eyebrow" id="emptyEyebrow">Un comienzo en blanco</div><h2 id="emptyTitle">Todo empieza con una idea.</h2><p id="emptyText">Escribí algo, elegí un color o sumá una imagen. Lo guardamos en este navegador, sin enviar nada a un servidor.</p><button class="primary" type="button" id="newEmpty">Crear mi primera nota <span aria-hidden="true">↗</span></button></div>
+   <div class="empty-visual" aria-hidden="true"><div></div><div>Una idea puede cambiarlo todo.</div></div>
+  </div>
+  <div id="fatal" class="empty hidden" role="alert"><div><h2>No pudimos abrir el archivo local.</h2><p id="fatalText">Revisá los permisos de almacenamiento de este navegador.</p><button type="button" id="retry" class="primary">Reintentar</button></div></div>
+</section>
+</main>
+<footer class="footer"><span>✳ Tus notas se quedan en este navegador. Guardá una copia para no perderlas si borrás sus datos.</span><div class="footer-actions"><button type="button" class="link-button" id="export">Descargar copia</button><button type="button" class="link-button" id="import">Importar copia</button></div></footer>
+</div>
+<input id="importFile" type="file" accept=".json,application/json" class="hidden" aria-label="Seleccionar copia de notas">
+<dialog id="dialog" aria-labelledby="editorHeading">
+<form class="editor" method="dialog" id="editorForm">
+ <div class="editor-top"><span id="editorHeading">Una nota para guardar</span><button type="button" id="closeEditor" class="icon-button" aria-label="Cerrar editor"><svg viewBox="0 0 24 24"><path d="M5 5l14 14M19 5 5 19"/></svg></button></div>
+ <div class="editor-main">
+  <div class="field"><label for="titleInput">Título</label><input type="text" id="titleInput" maxlength="140" placeholder="¿Qué querés recordar?" autocomplete="off"></div>
+  <div class="field"><label for="bodyInput">Tu nota</label><textarea id="bodyInput" maxlength="30000" placeholder="Empezá a escribir…"></textarea></div>
+  <div class="options"><span class="small">COLOR</span><div class="swatches" role="group" aria-label="Color de la nota">
+   <button type="button" class="swatch" data-color="butter" aria-label="Amarillo" aria-pressed="true"></button><button type="button" class="swatch" data-color="coral" aria-label="Durazno" aria-pressed="false"></button><button type="button" class="swatch" data-color="ice" aria-label="Azul" aria-pressed="false"></button><button type="button" class="swatch" data-color="violet" aria-label="Lila" aria-pressed="false"></button><button type="button" class="swatch" data-color="leaf" aria-label="Verde" aria-pressed="false"></button><button type="button" class="swatch" data-color="paper" aria-label="Blanco" aria-pressed="false"></button>
+  </div></div>
+  <div class="field"><button class="soft-button" id="addImage" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9" r="1.5"/><path d="m4 17 5-5 4 3 3-4 4 5"/></svg>Adjuntar imagen</button><input class="hidden" type="file" id="imageFile" accept="image/png,image/jpeg,image/webp,image/gif" aria-label="Elegir imagen"><p class="small">PNG, JPG, WebP o GIF, hasta 4 MB. Solo se guarda en este dispositivo.</p>
+   <div id="imagePreview" class="preview"><img id="previewImg" alt="Vista previa de la imagen de la nota"><button id="removeImage" class="link-button" type="button">Quitar imagen</button></div>
+  </div>
+  <div class="field hidden" id="altField"><label for="imageAlt">Descripción de la imagen (accesibilidad)</label><input type="text" id="imageAlt" maxlength="280" placeholder="Describí brevemente qué muestra"></div>
+ </div>
+ <div class="editor-footer"><span id="saveStatus" class="editor-status" aria-live="polite">Guardado en este dispositivo</span><div class="editor-actions"><button class="soft-button danger hidden" type="button" id="delete">Eliminar</button><button class="primary" type="submit" id="save">Guardar y cerrar</button></div></div>
+</form>
+</dialog>
+<div id="toast" class="toaster hidden" role="status" aria-live="polite"></div>
+<script>
+(function(){
+"use strict";
+const DB_NAME="margen-notas-v1", STORE="notes", COLORS=["butter","coral","ice","violet","leaf","paper"], MAX_IMAGE=4*1024*1024;
+const $=id=>document.getElementById(id);
+const ui={cards:$("cards"),empty:$("empty"),fatal:$("fatal"),count:$("count"),dialog:$("dialog"),title:$("titleInput"),body:$("bodyInput"),alt:$("imageAlt"),altField:$("altField"),preview:$("imagePreview"),previewImg:$("previewImg"),status:$("saveStatus")};
+let db=null,notes=[],filter="all",sort="recent",query="",editing=null,saveTimer=0,saveQueue=Promise.resolve(),previewURL=null,cardURLs=[],toastTimer=0;
+const uid=()=>typeof crypto!=="undefined"&&crypto.randomUUID?crypto.randomUUID():"n-"+Date.now()+"-"+Math.random().toString(36).slice(2);
+function announce(message){const el=$("toast");el.textContent=message;el.classList.remove("hidden");clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.add("hidden"),3200)}
+function fail(message){ui.status.textContent=message;ui.status.style.color="#a33127";announce(message)}
+function txRequest(transaction,req){return new Promise((resolve,reject)=>{req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error||new Error("Error al leer"));transaction.onabort=()=>reject(transaction.error||new Error("Error de almacenamiento"))})}
+function openDB(){return new Promise((resolve,reject)=>{if(!("indexedDB" in window)){reject(new Error("IndexedDB no disponible"));return}let req=indexedDB.open(DB_NAME,1);req.onupgradeneeded=()=>{if(!req.result.objectStoreNames.contains(STORE))req.result.createObjectStore(STORE,{keyPath:"id"})};req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error||new Error("Sin acceso al almacenamiento"));req.onblocked=()=>reject(new Error("Otra pestaña bloquea la base local"))})}
+function getAll(){const tx=db.transaction(STORE,"readonly");return txRequest(tx,tx.objectStore(STORE).getAll())}
+function writeTransaction(method,value){return new Promise((resolve,reject)=>{const tx=db.transaction(STORE,"readwrite");tx.objectStore(STORE)[method](value);tx.oncomplete=()=>resolve();tx.onerror=()=>reject(tx.error||new Error("Error de escritura"));tx.onabort=()=>reject(tx.error||new Error("Escritura abortada"))})}
+function put(note){return writeTransaction("put",note)}
+function del(id){return writeTransaction("delete",id)}
+function formatDate(time){return new Intl.DateTimeFormat("es-AR",{day:"numeric",month:"short"}).format(new Date(time))}
+function setPreview(){if(previewURL){URL.revokeObjectURL(previewURL);previewURL=null}ui.preview.classList.toggle("active",!!(editing&&editing.image));ui.altField.classList.toggle("hidden",!(editing&&editing.image));if(editing&&editing.image){previewURL=URL.createObjectURL(editing.image);ui.previewImg.src=previewURL;ui.previewImg.alt="Vista previa: "+(editing.imageAlt||"imagen sin describir")}else{ui.previewImg.removeAttribute("src")}}
+function render(){
+ cardURLs.forEach(url=>URL.revokeObjectURL(url));cardURLs=[];ui.cards.replaceChildren();
+ const visible=notes.filter(n=>(filter!=="favorite"||n.favorite)&&(!query||(n.title+" "+n.body+" "+(n.imageAlt||"")).toLocaleLowerCase("es").includes(query)));
+ visible.sort((a,b)=>sort==="oldest"?a.updatedAt-b.updatedAt:sort==="title"?(a.title||"Sin título").localeCompare(b.title||"Sin título","es"):b.updatedAt-a.updatedAt);
+ const frag=document.createDocumentFragment();
+ visible.forEach((note,i)=>{
+  const article=document.createElement("article");article.className="note";article.dataset.color=COLORS.includes(note.color)?note.color:"paper";article.setAttribute("aria-label","Nota: "+(note.title||"Sin título"));
+  const head=document.createElement("div");head.className="note-head";const marker=document.createElement("span");marker.textContent="APUNTE / "+String(i+1).padStart(2,"0");head.append(marker);
+  const favorite=document.createElement("button");favorite.className="icon-button";favorite.type="button";favorite.setAttribute("aria-label",note.favorite?"Quitar de favoritas":"Marcar como favorita");favorite.setAttribute("aria-pressed",String(!!note.favorite));favorite.title=note.favorite?"Quitar favorita":"Marcar favorita";favorite.textContent=note.favorite?"★":"☆";favorite.style.fontSize="23px";favorite.addEventListener("click",async()=>{const changed={...note,favorite:!note.favorite,updatedAt:Date.now()};try{await put(changed);notes=notes.map(n=>n.id===changed.id?changed:n);render()}catch(e){announce("No se pudo guardar el cambio")}});head.append(favorite);article.append(head);
+  const h=document.createElement("h2");h.className="note-title";h.textContent=note.title||"Sin título";article.append(h);
+  if(note.body){const body=document.createElement("p");body.className="note-body";body.textContent=note.body;article.append(body)}
+  if(note.image instanceof Blob){const img=document.createElement("img");img.className="note-image";img.alt=note.imageAlt||"Imagen adjunta";const url=URL.createObjectURL(note.image);cardURLs.push(url);img.src=url;article.append(img)}
+  const actions=document.createElement("div");actions.className="note-actions";const date=document.createElement("span");date.className="note-date";date.textContent=formatDate(note.updatedAt);const open=document.createElement("button");open.type="button";open.className="note-open";open.textContent="Abrir nota";open.setAttribute("aria-label","Editar "+(note.title||"nota sin título"));open.addEventListener("click",()=>openEditor(note.id));actions.append(date,open);article.append(actions);frag.append(article);
+ });
+ ui.cards.append(frag);
+ const empty=!visible.length;ui.empty.classList.toggle("hidden",!empty);ui.cards.classList.toggle("hidden",empty);
+ $("emptyTitle").textContent=notes.length?"No hay notas por acá.":"Todo empieza con una idea.";
+ $("emptyText").textContent=notes.length?"Probá con otra búsqueda o cambiá el filtro para volver a tus ideas.":"Escribí algo, elegí un color o sumá una imagen. Lo guardamos en este navegador, sin enviar nada a un servidor.";
+ $("emptyEyebrow").textContent=notes.length?"Sin coincidencias":"Un comienzo en blanco";
+ $("newEmpty").textContent=notes.length?"Crear otra nota ↗":"Crear mi primera nota ↗";
+ ui.count.textContent=visible.length+" "+(visible.length===1?"nota":"notas");
+}
+function setColor(color){if(!editing)return;editing.color=COLORS.includes(color)?color:"butter";document.querySelectorAll(".swatch").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.color===editing.color)));scheduleSave()}
+function openEditor(id){
+ const saved=id?notes.find(n=>n.id===id):null;const now=Date.now();
+ editing=saved?{...saved}:{id:uid(),title:"",body:"",color:"butter",favorite:false,image:null,imageAlt:"",createdAt:now,updatedAt:now};
+ ui.title.value=editing.title;ui.body.value=editing.body;ui.alt.value=editing.imageAlt||"";
+ $("delete").classList.toggle("hidden",!saved);$("editorHeading").textContent=saved?"Editar nota":"Una nota para guardar";
+ document.querySelectorAll(".swatch").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.color===editing.color)));
+ ui.status.textContent=saved?"Los cambios se guardan automáticamente":"Empezá a escribir";
+ ui.status.style.color="#596c5d";setPreview();ui.dialog.showModal();setTimeout(()=>ui.title.focus(),10);
+}
+function snapshot(){if(!editing)return null;return {...editing,title:ui.title.value.slice(0,140),body:ui.body.value.slice(0,30000),imageAlt:ui.alt.value.slice(0,280),updatedAt:Date.now()}}
+function shouldSave(n){return !!(n&&(n.title.trim()||n.body.trim()||n.image))}
+function scheduleSave(){if(!editing)return;ui.status.textContent="Guardando…";ui.status.style.color="#596c5d";clearTimeout(saveTimer);saveTimer=setTimeout(()=>{void saveDraft()},550)}
+async function saveDraft(){
+ clearTimeout(saveTimer);const value=snapshot();
+ if(!value)return;
+ if(!shouldSave(value)){ui.status.textContent="Escribí algo para guardar";return}
+ saveQueue=saveQueue.catch(()=>{}).then(async()=>{await put(value);const existing=notes.findIndex(n=>n.id===value.id);if(existing>=0)notes[existing]=value;else notes.push(value);render()});
+ try{await saveQueue;if(editing&&editing.id===value.id){editing={...value};ui.status.textContent="Guardado en este dispositivo";ui.status.style.color="#596c5d"}$("delete").classList.remove("hidden")}
+ catch(e){fail("No se pudo guardar. Revisá el espacio disponible.") ;throw e}
+}
+async function closeEditor(){if(!editing)return;clearTimeout(saveTimer);try{await saveDraft()}catch(e){return}editing=null;setPreview();ui.dialog.close()}
+async function deleteCurrent(){if(!editing)return;const id=editing.id;const exists=notes.some(n=>n.id===id);if(!exists){editing=null;setPreview();ui.dialog.close();return}if(!window.confirm("¿Eliminar esta nota? Esta acción no se puede deshacer."))return;clearTimeout(saveTimer);try{await saveQueue.catch(()=>{});await del(id);notes=notes.filter(n=>n.id!==id);editing=null;setPreview();ui.dialog.close();render();announce("Nota eliminada")}catch(e){fail("No se pudo eliminar la nota")}}
+function bufferToDataURL(blob){return new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(r.result);r.onerror=()=>reject(r.error);r.readAsDataURL(blob)})}
+function dataURLToBlob(s){const parts=s.match(/^data:(image\/(?:png|jpeg|webp|gif));base64,([a-zA-Z0-9+/=]+)$/);if(!parts)throw new Error("Imagen no compatible");const bytes=atob(parts[2]);if(bytes.length>MAX_IMAGE)throw new Error("Imagen demasiado grande");const arr=new Uint8Array(bytes.length);for(let i=0;i<bytes.length;i++)arr[i]=bytes.charCodeAt(i);return new Blob([arr],{type:parts[1]})}
+async function exportBackup(){try{await saveQueue.catch(()=>{});const data=await Promise.all(notes.map(async n=>({...n,image:n.image instanceof Blob?await bufferToDataURL(n.image):null})));const blob=new Blob([JSON.stringify({schema:"margen/v1",exportedAt:new Date().toISOString(),notes:data},null,2)],{type:"application/json"});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download="margen-notas-"+new Date().toISOString().slice(0,10)+".json";document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);announce("Copia descargada")}catch(e){announce("No pudimos crear la copia")}}
+async function importBackup(file){if(!file)return;if(file.size>42*1024*1024){announce("La copia es demasiado grande");return}try{const content=JSON.parse(await file.text());if(content.schema!=="margen/v1"||!Array.isArray(content.notes)||content.notes.length>500)throw new Error("Formato no compatible");const imported=[];for(const item of content.notes){if(!item||typeof item.title!=="string"||typeof item.body!=="string")throw new Error("Nota no válida");imported.push({id:uid(),title:item.title.slice(0,140),body:item.body.slice(0,30000),color:COLORS.includes(item.color)?item.color:"paper",favorite:!!item.favorite,image:item.image?dataURLToBlob(item.image):null,imageAlt:typeof item.imageAlt==="string"?item.imageAlt.slice(0,280):"",createdAt:Number.isFinite(item.createdAt)?item.createdAt:Date.now(),updatedAt:Number.isFinite(item.updatedAt)?item.updatedAt:Date.now()})}
+ if(!window.confirm("¿Agregar "+imported.length+" notas desde esta copia? Las notas actuales se conservan."))return;
+ let saved=0;for(const n of imported){await put(n);notes.push(n);saved++}render();announce(saved+" notas importadas")}catch(e){render();announce("No se pudo importar: "+e.message)}}
+function bind(){
+ $("newTop").addEventListener("click",()=>openEditor(null));$("newEmpty").addEventListener("click",()=>openEditor(null));
+ document.querySelectorAll("[data-filter]").forEach(btn=>btn.addEventListener("click",()=>{filter=btn.dataset.filter;document.querySelectorAll("[data-filter]").forEach(x=>x.setAttribute("aria-pressed",String(x===btn)));render()}));
+ $("search").addEventListener("input",e=>{query=e.target.value.trim().toLocaleLowerCase("es");render()});
+ $("sort").addEventListener("change",e=>{sort=e.target.value;render()});
+ document.querySelectorAll(".swatch").forEach(btn=>btn.addEventListener("click",()=>setColor(btn.dataset.color)));
+ [ui.title,ui.body,ui.alt].forEach(input=>input.addEventListener("input",scheduleSave));
+ $("addImage").addEventListener("click",()=>$("imageFile").click());
+ $("imageFile").addEventListener("change",e=>{const file=e.target.files[0];e.target.value="";if(!file)return;if(!["image/jpeg","image/png","image/webp","image/gif"].includes(file.type)||file.size>MAX_IMAGE){announce("Elegí una imagen válida de hasta 4 MB");return}if(!editing)return;editing.image=file;setPreview();ui.alt.focus();scheduleSave()});
+ $("removeImage").addEventListener("click",()=>{if(!editing)return;editing.image=null;editing.imageAlt="";ui.alt.value="";setPreview();scheduleSave()});
+ $("closeEditor").addEventListener("click",closeEditor);
+ $("editorForm").addEventListener("submit",e=>{e.preventDefault();void closeEditor()});
+ ui.dialog.addEventListener("cancel",e=>{e.preventDefault();void closeEditor()});
+ $("delete").addEventListener("click",deleteCurrent);
+ $("export").addEventListener("click",exportBackup);$("import").addEventListener("click",()=>$("importFile").click());
+ $("importFile").addEventListener("change",e=>{const file=e.target.files[0];e.target.value="";void importBackup(file)});
+ $("retry").addEventListener("click",()=>location.reload());
+ document.addEventListener("keydown",e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="k"){e.preventDefault();$("search").focus()}if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="n"){e.preventDefault();if(!ui.dialog.open)openEditor(null)}});
+}
+async function init(){bind();try{db=await openDB();notes=await getAll();render();if("serviceWorker" in navigator&&location.protocol==="https:"){navigator.serviceWorker.register("./sw.js").catch(()=>{})}}catch(e){ui.cards.classList.add("hidden");ui.empty.classList.add("hidden");ui.fatal.classList.remove("hidden");$("fatalText").textContent="No hay acceso al almacenamiento local ("+e.message+"). Probá habilitarlo o abrir en una ventana normal.";ui.count.textContent="Sin acceso local";$("newTop").disabled=true;$("newEmpty").disabled=true}}
+init();
+})();
+</script>
+</body>
+</html>
