@@ -29,7 +29,7 @@ Los hashes son de los archivos locales renderizados en esta conversación; un re
 5. Escucha perceptual independiente, legibilidad en teléfono físico, comprensión ciega de tres contextos: **NOT_RUN**.
 6. Navegador con interacción de Play/Pause/seek y WebM MediaRecorder: **NOT_RUN** (motor de frames comprobado, controles no E2E).
 7. URL GitHub Pages por HTTP: **NOT_VERIFIED** en este entorno.
-8. Validadores `deep-spec-v1.mjs` y `art-direction-first-article-v1.mjs`: **NOT_RUN**, no se adjudica gate formal.
+8. Validación estructural equivalente en JavaScript, ejecutando la misma lógica de los validadores públicos contra el Book remoto: DEEP-SPEC-1 **READY_FOR_FIRST_SLICE** (0 errores) y ART-DIRECTION-1 **READY_TO_BUILD_NOT_ARTISTICALLY_APPROVED** (0 errores). **CLI Node separado NOT_RUN**; estas etiquetas solo evalúan campos y estado declarado, no imagen/audio, licencia ni evaluación humana.
 9. Binary GitHub readback: **OBSERVED_PASS** para 2/2 MP4 y frame vertical. Se cotejó SHA Git blob de los archivos; `QA_CI.json` publicado describe streams, tamaños y SHA256 remoto. El render remoto produjo hashes diferentes que los archivos locales, ambos masters fueron exportados independientemente.
 10. HUMAN_APPROVED: **NO**.
 
