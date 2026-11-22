@@ -1,0 +1,74 @@
+name: PROMETEO Music W003-02 DESPLAZAMIENTO
+on:
+  push:
+    branches: [candidate/prometeo-music-w003-20261122-02]
+    paths:
+      - .github/workflows/prometeo-music-w003-02.yml
+      - prometeo/music/w003/02/engine.mjs
+      - prometeo/music/w003/02/build.mjs
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: prometeo-music-w003-02-release
+  cancel-in-progress: false
+jobs:
+  render-and-release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: candidate/prometeo-music-w003-20261122-02
+          fetch-depth: 0
+      - name: Render original track, stems, MIDI and A/B
+        run: |
+          node prometeo/music/w003/02/build.mjs | tee /tmp/music-w003-02.log
+          test -s prometeo/music/w003/02/master.wav
+          test -s prometeo/music/w003/02/DESPLAZAMIENTO.mid
+      - name: Encode stems and independently decode master + A/B
+        run: |
+          set -eu
+          cd prometeo/music/w003/02
+          for f in stems/*.wav; do
+            ffmpeg -hide_banner -loglevel error -y -i "$f" -c:a flac "${f%.wav}.flac"
+            ffmpeg -hide_banner -loglevel error -i "${f%.wav}.flac" -f null -
+          done
+          rm stems/*.wav
+          ffmpeg -hide_banner -loglevel error -y -i master.wav -c:a libmp3lame -q:a 2 preview.mp3
+          for f in master.wav ab/played.wav ab/straight-matched.wav; do
+            ffmpeg -hide_banner -loglevel error -i "$f" -f null -
+          done
+          ffprobe -v error -show_entries stream=codec_name,sample_rate,channels -show_entries format=duration,size -of json master.wav > PROBE.json
+          node -e "let fs=require('fs'),p='QA.json',q=JSON.parse(fs.readFileSync(p));q.audioDecode='FFMPEG_ALL_11_FILES_PASS';q.stemsDecoded=8;q.masterProbe=JSON.parse(fs.readFileSync('PROBE.json'));fs.writeFileSync(p,JSON.stringify(q,null,2))"
+      - name: Commit production on exclusive branch
+        run: |
+          set -eu
+          git config user.name "prometeo-music-bot"
+          git config user.email "prometeo-music-bot@users.noreply.github.com"
+          git add -f prometeo/music/w003/02/
+          git diff --cached --quiet || git commit -m "music w003-02: rendered 44.1k master, 8 FLAC stems, MIDI, verified A/B"
+          git push origin HEAD:candidate/prometeo-music-w003-20261122-02 || {
+            git pull --rebase origin candidate/prometeo-music-w003-20261122-02
+            git push origin HEAD:candidate/prometeo-music-w003-20261122-02
+          }
+      - name: Publish isolated master and player to gh-pages
+        run: |
+          set -eu
+          git fetch origin gh-pages
+          git worktree add --detach /tmp/prometeo-music-pages origin/gh-pages
+          mkdir -p /tmp/prometeo-music-pages/prometeo/music/w003/02
+          cp -a prometeo/music/w003/02/. /tmp/prometeo-music-pages/prometeo/music/w003/02/
+          cd /tmp/prometeo-music-pages
+          git config user.name "prometeo-music-bot"
+          git config user.email "prometeo-music-bot@users.noreply.github.com"
+          git add -f prometeo/music/w003/02
+          git diff --cached --quiet || git commit -m "publish isolated music w003-02 DESPLAZAMIENTO original audio"
+          for n in 1 2 3 4; do
+            if git push origin HEAD:gh-pages; then
+              exit 0
+            fi
+            git fetch origin gh-pages
+            git rebase origin/gh-pages || exit 1
+          done
+          exit 1
