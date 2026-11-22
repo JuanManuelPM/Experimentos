@@ -1,0 +1,295 @@
+{
+  "version": "DEEP-SPEC-1",
+  "medium": "3D arquitectónico",
+  "depth": "SISTEMA",
+  "taskId": "3d-w6-20261122-02",
+  "batchId": "3d-w6-20261122",
+  "taskNumber": 2,
+  "briefSha": "942c3ba8b851137886e959d2790771556e2d9f5d",
+  "method": {
+    "flow": "2.3.0",
+    "flowCanonicalSha256": "53bc9e2e4b37c99e92d3494af8dfa4461cd4644b15f980e32497a8428b067b3f",
+    "qualityBarVersion": "QBAR-1",
+    "launcher": "gh-pages"
+  },
+  "brief": "Construir Casa entre patios, interior arquitectónico explorable de escala plausible con mobiliario original, superficies PBR, luces natural/artificial y cámara sin oclusiones; comparar tres ambientes bajo dos iluminaciones y aportar módulo reutilizable de cámara.",
+  "intent": {
+    "experience": "Habitar una casa de patios conectados mediante continuidad de vista y materia, en lugar de mirar un catálogo de cajas aisladas.",
+    "distinctAbility": "Atravesar tres ambientes con iluminación contrastable y oclusión arquitectónica calculada en tiempo real."
+  },
+  "references": [
+    {
+      "id": "arch1",
+      "status": "OBSERVED",
+      "url": "https://architectureau.com/articles/courted-house/",
+      "observation": "La documentación y fotografías describen un patio central como pivote de la vida doméstica; abertura al cielo, planos de madera y vistas cruzadas entre recintos.",
+      "scope": "Arquitectura observada en artículo con imagen; no se visitó edificio real"
+    },
+    {
+      "id": "arch2",
+      "status": "OBSERVED",
+      "url": "https://plainmagazine.com/tatsuro-sasaki-architects-hm-house-japan/",
+      "observation": "HM House de 67 m² dispone áreas conectadas visualmente alrededor de un patio vidriado, con madera, cemento pulido y muros claros.",
+      "scope": "Texto, imágenes y materiales; la propuesta W6 es independiente"
+    },
+    {
+      "id": "pbr1",
+      "status": "OBSERVED",
+      "url": "https://threejs.org/docs/pages/MeshStandardMaterial.html",
+      "observation": "Three.js documenta PBR metalness y roughness, texturas de relieve y respuesta material a la iluminación en MeshStandardMaterial.",
+      "scope": "Documentación técnica, no prueba de acabado renderizado"
+    },
+    {
+      "id": "arch3",
+      "status": "OBSERVED",
+      "url": "https://dev.epicgames.com/community/learning/tutorials/DdRE/unreal-engine-real-time-interior-visualization-starter-guide",
+      "observation": "El índice del tutorial oficial presenta visualización arquitectónica en tiempo real, materiales, luces y ajuste de cámara; no se ejecutó el proyecto Unreal.",
+      "scope": "Benchmark de proceso, no motor instalado"
+    }
+  ],
+  "components": [
+    {
+      "id": "geometry",
+      "role": "Envolvente métrica con tres recintos comunicados y dos patios visibles.",
+      "strategy": "Losa, muros seccionados con huecos de paso, carpinterías vidriadas y cubiertas segmentadas.",
+      "constraints": "Planta interior 15,6 × 5,4 m, muros 3,4 m, huecos transitables de aproximadamente 1,58 m."
+    },
+    {
+      "id": "materials",
+      "role": "Materia coherente para piedra, roble, revoco, latón y textiles.",
+      "strategy": "Materiales PBR MeshStandard/Physical con mapas procedurales originales y acabado específico.",
+      "constraints": "No fingir fotogrametría ni textura fotográfica, balancear rugosidad y metálico según cada material."
+    },
+    {
+      "id": "furniture",
+      "role": "Mobiliario de autor que permite comprender escala y uso sin bloquear puertas.",
+      "strategy": "Geometría redondeada, tubos curvos, proporciones cotadas y familias visuales únicas por estancia.",
+      "constraints": "Sofá y mesa baja en estar, comedor con seis sillas, biblioteca y escritorio en estudio."
+    },
+    {
+      "id": "camera",
+      "role": "Paseo libre táctil con colisión, vistas cinematográficas y oclusión viva.",
+      "strategy": "Componente ArchitecturalOcclusion independiente con raycast y material clone; slidePlayer y presets.",
+      "constraints": "Evitar paredes y cubierta que tapen el objetivo; no penetrar muros; controles grandes en teléfono."
+    },
+    {
+      "id": "lighting",
+      "role": "Dos condiciones medibles de una composición cinematográfica.",
+      "strategy": "Sol direccional con sombras, hemisférica ambiental y puntos cálidos independientes para noche.",
+      "constraints": "Igual encuadre por ambiente y captura real 3×2; intensidad no sustituye evaluación física en navegador."
+    },
+    {
+      "id": "exports",
+      "role": "Fotografías y matriz comparativa extraídas de renders WebGL genuinos.",
+      "strategy": "Canvas WebGL preserveDrawingBuffer, capturas PNG y composición local en canvas 2D.",
+      "constraints": "Seis vistas reproducibles por presets, con identificación de ambiente y modo de luz."
+    }
+  ],
+  "questions": [
+    {
+      "id": "Q1",
+      "target": "camera",
+      "question": "¿Qué hacer con el techo y los muros interpuestos cuando se recorre o filma desde fuera?",
+      "alternatives": [
+        "Raycast y transparencia temporal individual de muros/cubiertas",
+        "Retirar permanentemente techos y muros en una maqueta seccionada"
+      ],
+      "finding": "La casa de referencia mantiene cerramientos y vistas cruzadas; el corte permanente sacrifica la percepción del volumen.",
+      "decisionImpact": "Añadir ArchitecturalOcclusion con materiales clonados y velocidad de transición por superficie.",
+      "evidenceRef": "arch1"
+    },
+    {
+      "id": "Q2",
+      "target": "materials",
+      "question": "¿Cómo lograr materiales diferenciados sin importar fotos de licencia incierta ni construir falsos PBR?",
+      "alternatives": [
+        "Mapas procedurales originales con roughness y bump",
+        "Texturas extraídas de fotografías de arquitectura sin permisos"
+      ],
+      "finding": "El modelo metalness/roughness de Three.js permite asignar respuesta específica sin usar imágenes de terceros.",
+      "decisionImpact": "Crear canvas textures originales para roble, piedra y cal, y metales verdaderos para herrajes.",
+      "evidenceRef": "pbr1"
+    },
+    {
+      "id": "Q3",
+      "target": "geometry",
+      "question": "¿Qué planta permite ver patios opuestos y atravesar tres estancias sin teleportación obligatoria?",
+      "alternatives": [
+        "Tres crujías sobre eje de paso y vidrio al norte/sur",
+        "Tres módulos cerrados accesibles solo con botones"
+      ],
+      "finding": "HM House utiliza conexiones visuales alrededor de un patio, no compartimentos aislados.",
+      "decisionImpact": "Reservar eje transitable y huecos de puerta en x=-2,6 y x=2,6, con patios en los dos lados.",
+      "evidenceRef": "arch2"
+    },
+    {
+      "id": "Q4",
+      "target": "lighting",
+      "question": "¿Cómo comparar las luces con evidencia directa y composición idéntica para cada ambiente?",
+      "alternatives": [
+        "Seis renders del mismo encuadre con sol y luminarias diferenciados",
+        "Dos imágenes coloreadas mediante filtros CSS"
+      ],
+      "finding": "La referencia técnica vincula luz y materia PBR; colorear píxeles no modifica sombras ni reflejos.",
+      "decisionImpact": "Renderizar dos estados de escena reales y exportar automáticamente una plancha comparativa PNG.",
+      "evidenceRef": "pbr1"
+    }
+  ],
+  "decisions": [
+    {
+      "id": "D1",
+      "questionId": "Q1",
+      "componentIds": [
+        "camera",
+        "geometry"
+      ],
+      "choice": "Fade individual por raycast",
+      "rejected": "Corte total del techo siempre activo",
+      "productionChange": "Clonar materiales por elemento; comprobar raycast entre cámara y foco y atenuar opacidad gradualmente.",
+      "why": "Preserva lectura espacial fuera de la línea de visión y permite revisar la continuidad."
+    },
+    {
+      "id": "D2",
+      "questionId": "Q2",
+      "componentIds": [
+        "materials",
+        "furniture"
+      ],
+      "choice": "Texturas procedurales de autor",
+      "rejected": "Fotografías o assets sin permisos",
+      "productionChange": "Texturizar cal, roble y piedra con CanvasTexture y aplicar metalness/roughness por categoría.",
+      "why": "Evita dependencia de derechos de terceros y da fuentes editables reproducibles."
+    },
+    {
+      "id": "D3",
+      "questionId": "Q3",
+      "componentIds": [
+        "geometry",
+        "camera"
+      ],
+      "choice": "Crujías y circulación continua",
+      "rejected": "Teleportación exclusiva entre escenas",
+      "productionChange": "Construir dos puertas geométricas y colisión por radio humano de 0,24 m sobre planta métrica.",
+      "why": "La conexión entre ambientes es el criterio central de experiencia del encargo."
+    },
+    {
+      "id": "D4",
+      "questionId": "Q4",
+      "componentIds": [
+        "lighting",
+        "exports"
+      ],
+      "choice": "Plancha 3×2 de renders reales",
+      "rejected": "Filtros de color sobre capturas estáticas",
+      "productionChange": "Exportar seis renderizados WebGL de tres presets con estados de luz distintos en una imagen PNG.",
+      "why": "Una comparación repetible detecta falta de continuidad de iluminación y composición."
+    }
+  ],
+  "relations": [
+    {
+      "from": "geometry",
+      "to": "camera",
+      "invariant": "Las aberturas reales deben coincidir con la colisión y con lo que muestra la cámara al caminar.",
+      "failure": "El usuario atraviesa un muro o queda bloqueado en una puerta visualmente abierta.",
+      "test": "Caminar por z=0 y probar paso por ambos muros; probar z=1,8 como zona bloqueada."
+    },
+    {
+      "from": "lighting",
+      "to": "materials",
+      "invariant": "Roughness, metales y material vidriado responden a las luces y no a una capa CSS superpuesta.",
+      "failure": "La noche es un recolor de la misma imagen y no cambia contacto ni sombra.",
+      "test": "Comparar capturas de comedor bajo sol frente a luminarias artificiales."
+    },
+    {
+      "from": "camera",
+      "to": "exports",
+      "invariant": "Las seis capturas deben usar posiciones comparables por estancia y dos luces sin cambiar geometría.",
+      "failure": "La matriz mezcla ángulos y no permite comparar la evolución de materialidad.",
+      "test": "Extraer plancha desde renderer.domElement y revisar las seis celdas."
+    }
+  ],
+  "risks": [
+    {
+      "componentIds": [
+        "camera",
+        "geometry"
+      ],
+      "severity": "high",
+      "failure": "Un plano de techo o muro bloquea el primer plano en GPU o el fade revela caras incorrectas.",
+      "prevention": "Raycast por objeto y clones por pared, techo registrado como oclusor, materiales DoubleSide.",
+      "test": "Comprobar visualmente secuencia aérea y paseo en móvil con el navegador real.",
+      "status": "NOT_RUN"
+    },
+    {
+      "componentIds": [
+        "geometry",
+        "camera"
+      ],
+      "severity": "medium",
+      "failure": "El paseo atraviesa una pared divisoria o el radio humano bloquea una puerta válida.",
+      "prevention": "Comprobar radio y segmentos de muro en un test lógico de cruce antes del render.",
+      "test": "Cinco casos con hueco, muro, borde, mueble y movimiento libre.",
+      "status": "OBSERVED"
+    },
+    {
+      "componentIds": [
+        "lighting",
+        "exports"
+      ],
+      "severity": "medium",
+      "failure": "Comparación 3×2 no produce imagen descargable o puntos nocturnos desbalancean exposición.",
+      "prevention": "Guardar las seis vistas en una sola imagen y separar temperatura e intensidad de fuentes.",
+      "test": "Generar PNG y observar contraste de sombras en dispositivo o navegador.",
+      "status": "NOT_RUN"
+    },
+    {
+      "componentIds": [
+        "materials"
+      ],
+      "severity": "medium",
+      "failure": "CDN bloqueado impide cargar dependencias Three.js incluso si el HTML se publicó.",
+      "prevention": "Fijar versión exacta de Three.js y ofrecer mensaje explícito de fallo de inicialización.",
+      "test": "Probar carga de módulo y render en navegador externo con red.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "acceptance": [
+    {
+      "kind": "logic",
+      "criterion": "Navegación bloquea cuatro tipos de colisión y permite cruzar un vano válido.",
+      "oracle": "Ejecutador JavaScript con cinco pruebas aisladas sobre el módulo fuente.",
+      "status": "OBSERVED"
+    },
+    {
+      "kind": "interactive",
+      "criterion": "En móvil se puede pasar por dos puertas y mirar alrededor sin perder el objetivo.",
+      "oracle": "Observación directa de navegador móvil con interacción táctil.",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "visual",
+      "criterion": "Matriz de tres espacios por dos luces muestra seis imágenes reales sin techo delante.",
+      "oracle": "Revisión visual de PNG exportado desde navegador WebGL.",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "functional",
+      "criterion": "Las cámaras y los cambios de luz no alteran la identidad ni la geometría de habitaciones.",
+      "oracle": "Prueba en ejecución de botones y secuencia reproducible.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "licensing": "Todo el modelado, textos y mapas CanvasTexture de autoría original; no se incluyen fotografías ni modelos de los referentes. Three.js con licencia MIT vía CDN.",
+  "resources": "Código fuente ES Modules, Three.js 0.163.0 con RoundedBoxGeometry y RoomEnvironment, navegador WebGL2 para ejecución, GitHub Pages para publicación.",
+  "environmentLimits": "El entorno de código puede validar sintaxis y lógica de colisión, pero no tuvo acceso GPU al recurso CDN ni navegación Android real; materiales, descarga PNG y render perceptual quedan NOT_RUN.",
+  "provenance": {
+    "sourceBrief": "https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/launch/20261122/next/3d/LAUNCH.md",
+    "fixedBriefBlob": "942c3ba8b851137886e959d2790771556e2d9f5d",
+    "owner": "JuanManuelPM/Experimentos",
+    "branch": "candidate/prometeo-3d-w6-02-20261122"
+  },
+  "validation": {
+    "gate": "SPIKE_REQUIRED",
+    "errors": []
+  }
+}
