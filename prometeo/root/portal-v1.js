@@ -19,7 +19,10 @@ const FEEDBACK_ROUTER='https://github.com/JuanManuelPM/Experimentos/blob/gh-page
 function promptFor(room,resource=''){return 'CONTINUAR · PROMETEO · '+FEEDBACK_ROUTER+' · '+PUBLIC+'root/#'+String(room||'root')+(resource?'/'+resource:'');}
 function currentReference(){
  if(state.screen==='stage'&&state.itemId)return promptFor(state.room,'obra/'+encodeURIComponent(state.itemId));
- if(state.screen==='messages'&&state.batchId){const batch=state.batches.some(b=>b.id===state.batchId);return promptFor(state.room,(batch?'tanda/':'mensaje/')+encodeURIComponent(state.batchId));}
+ if(state.screen==='messages'){
+  const id=state.batchId||messages()[0]?.id;
+  if(id){const batch=state.batches.some(b=>b.id===id);return promptFor(state.room,(batch?'tanda/':'mensaje/')+encodeURIComponent(id));}
+ }
  return promptFor(state.room);
 }
 async function copy(text){try{await navigator.clipboard.writeText(text);return true;}catch{const n=document.createElement('textarea');n.value=text;n.style.position='fixed';n.style.top='-3000px';document.body.append(n);n.select();let ok=false;try{ok=document.execCommand('copy');}catch{}n.remove();return ok;}}
@@ -152,6 +155,7 @@ function parseRoute(){
  const parts=raw.split('/'),room=!raw?'root':state.rooms.some(r=>r.id===parts[0])?parts[0]:'root';
  if(!['3d','music','web','video','images'].includes(room))return {room,screen:'messages',batchId:(parts[1]==='mensaje'||parts[1]==='tanda')?(parts[2]||''):''};
  if(parts[1]==='tanda')return {room,screen:'messages',batchId:parts[2]||''};
+ if(parts[1]==='mensaje')return {room,screen:'messages',batchId:parts[2]||''};
  if(parts[1]==='mensajes'||parts[1]==='respuestas')return {room,screen:'messages'};
  if(parts[1]==='obra')return {room,screen:'stage',itemId:parts[2]||''};
  if(parts[1]==='biblioteca'||parts[1]==='obras')return {room,screen:'library'};
