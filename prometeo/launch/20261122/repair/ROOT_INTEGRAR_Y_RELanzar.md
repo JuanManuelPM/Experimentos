@@ -17,6 +17,10 @@
 2. Recuperar los **cinco informes y ramas candidatas de autocrítica** producidos desde `prometeo/launch/20261122/repair/STUDIO_AUTOCritica_V2.md`. **No asumir que están porque el usuario haya pegado cinco mensajes**; verificar commits, capturas/media reales, listas de 10 y resultados. Recuperar también la mejora de biblioteca ROOT desde `ROOT_UI_REDESIGN.md` si existe.
 3. Cuando falten observaciones de algún N, registrar `MISSING` o `NOT_RUN` de modo explícito, continuar con evidencia disponible y **no declarar que se inspeccionaron diez obras**. En el histórico podían faltar retornos públicos 3D 10 e Imágenes 3; volver a buscar ramas/obras al ejecutar, no fijar ese estado como permanente.
 
+## Auditoría prioritaria añadida · First Frame + Trace (22/11/2026)
+
+Antes de integrar, leer [TDD_FIRST_FRAME_FLOW_TRACE_FINDINGS.md](TDD_FIRST_FRAME_FLOW_TRACE_FINDINGS.md) y su evidencia específica. Los formularios DEEP-SPEC de 3D 01 y 02 **ya nombraban** errores visuales ahora vistos por el humano, pero dejaron sus pruebas en NOT_RUN; por eso no basta con más campos. Introducir pruebas pensadas ANTES de hacer la obra: qué se ve al abrir, interfaz mínima y coherencia de primer componente. El worker debe **cambiar de técnica** ante un primer artículo deficiente, no maquillar el defecto. Recuperar Surface/Book/Flow/Trace: ya hay Book y grafo, pero stage trace no fue observado en las seis rutas inspeccionadas y la definición v2.3.0 apunta a validador v1.4.0 con versión fija incompatible. La integración ROOT debe comprobar capturas reales y trazabilidad durable de los nodos verdaderamente recorridos, no solo documentación. NO imponer un formulario adicional ni hacer esperar al humano por tests infinitos.
+
 ## Integración causal, no suma de consejos
 
 4. Confrontar defectos repetidos de las cinco especialidades y organizar por causa raíz:
