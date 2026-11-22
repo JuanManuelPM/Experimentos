@@ -5,8 +5,8 @@ export function createInterlocutora(T) {
   const skin = new T.MeshStandardMaterial({color:0xb98269,roughness:.7,metalness:0});
   const skinLight = new T.MeshStandardMaterial({color:0xd69c7b,roughness:.72});
   const skinShadow = new T.MeshStandardMaterial({color:0x875944,roughness:.84});
-  const hair = new T.MeshStandardMaterial({color:0x282523,roughness:.88,metalness:.01});
-  const hairHighlight = new T.MeshStandardMaterial({color:0x463c35,roughness:.8});
+  const hair = new T.MeshStandardMaterial({color:0x282523,roughness:.88,metalness:.01,side:T.DoubleSide});
+  const hairHighlight = new T.MeshStandardMaterial({color:0x463c35,roughness:.8,side:T.DoubleSide});
   const coat = new T.MeshStandardMaterial({color:0x274a52,roughness:.8,side:T.DoubleSide});
   const darkCoat = new T.MeshStandardMaterial({color:0x183239,roughness:.87,side:T.DoubleSide});
   const shirt = new T.MeshStandardMaterial({color:0xd8cbb4,roughness:.93,side:T.DoubleSide});
