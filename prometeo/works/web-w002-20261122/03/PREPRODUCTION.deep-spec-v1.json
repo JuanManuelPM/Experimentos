@@ -1,0 +1,216 @@
+{
+  "version": "DEEP-SPEC-1",
+  "medium": "web",
+  "depth": "SISTEMA",
+  "batchId": "web-w002-20261122",
+  "taskNumber": 3,
+  "taskId": "web-w002-20261122-03",
+  "launcherBlobSHA": "cd88a07941ab62072f6de5ee69764308f1ec2387",
+  "qualityBarVersion": "QBAR-1",
+  "brief": "ARCHIVO ABIERTO: portfolio editorial de una artista ficticia, obras visuales originales, alta resolución, zoom por niveles, fichas y procedencia, filtros y rutas directas; visor reutilizable.",
+  "intent": {
+    "experience": "Un archivo editorial sereno donde investigar cada obra al tamaño de su detalle sin perder sus datos de catálogo.",
+    "distinctAbility": "Continuidad entre exploración, deep link, ficha de procedencia y zoom por niveles accesible en táctil y teclado."
+  },
+  "references": [
+    {
+      "id": "r1",
+      "url": "https://www.rijksmuseum.nl/en/about-collection-online",
+      "status": "OBSERVED",
+      "observation": "El museo describe búsqueda, imágenes, documentos de archivo y comparador que acerca detalles, además de colecciones compartibles; se extrae continuidad de contexto y obra, no su estética."
+    },
+    {
+      "id": "r2",
+      "url": "https://api.artic.edu/docs/",
+      "status": "OBSERVED",
+      "observation": "La documentación pública separa datos de objetos de las imágenes IIIF y advierte sobre derechos; un archivo confiable requiere fichas y atribución precisas, no imágenes sin procedencia."
+    },
+    {
+      "id": "r3",
+      "url": "https://openseadragon.github.io/",
+      "status": "OBSERVED",
+      "observation": "El visor ofrece zoom, pan, fuentes IIIF/DZI, atajos de teclado y controles personalizables; se toma como benchmark de capacidades de navegación visual, no como dependencia obligatoria."
+    }
+  ],
+  "components": [
+    {
+      "id": "collection",
+      "role": "Índice editorial filtrable y navegable",
+      "strategy": "Grilla editorial responsiva con filtros por material/serie, búsqueda contextual y vínculos de obra por querystring.",
+      "constraints": "Preservar enlaces completos y orden de lectura en 320, 768 y 1440 píxeles."
+    },
+    {
+      "id": "media",
+      "role": "Obras originales a resolución independiente",
+      "strategy": "Serie de ocho piezas vectoriales originales reproducibles de 3000x3800 nominales generadas con capas, texturas y variaciones controladas.",
+      "constraints": "No usar imagen de terceros atribuida a la artista ficticia ni prometer fotografía real."
+    },
+    {
+      "id": "viewer",
+      "role": "Motor de imagen y metadatos reutilizable",
+      "strategy": "Módulo independiente con zoom escalonado, drag/pinch, teclado, restablecimiento y límites de paneo.",
+      "constraints": "Navegación de lector de pantalla, foco y manipulación táctil no deben ocultar la ficha."
+    },
+    {
+      "id": "records",
+      "role": "Fichas completas y procedencia verificable",
+      "strategy": "Datos estructurados por obra con identificación, técnica, fecha, tamaño, serie, edición, procedencia, licencia y descripción alternativa.",
+      "constraints": "La artista es ficticia; procedencia registra la producción digital de esta obra y no inventa coleccionistas o exhibiciones reales."
+    }
+  ],
+  "questions": [
+    {
+      "id": "q1",
+      "target": "media",
+      "question": "¿Cómo obtener imágenes realmente ampliables sin apropiación ni licencias dudosas?",
+      "alternatives": [
+        "Descargar imágenes de terceros sin aclarar autoría",
+        "Crear obra vectorial original escalable y registrar su método"
+      ],
+      "finding": "Las APIs de museos no conceden automáticamente derechos y la navegación por niveles tiene valor cuando el detalle es real.",
+      "decisionImpact": "Construir obra original vectorial exportable y acreditar explícitamente su procedencia y carácter ficticio.",
+      "evidenceRef": "r2"
+    },
+    {
+      "id": "q2",
+      "target": "viewer",
+      "question": "¿Qué arquitectura preserva contexto editorial y gestos al ampliar en móvil y teclado?",
+      "alternatives": [
+        "Imagen CSS con hover transform",
+        "Visor reusable con control de escala/posición, multitouch y acciones por teclado"
+      ],
+      "finding": "OpenSeadragon documenta interacciones de imagen por niveles y teclado como capacidades integradas esenciales.",
+      "decisionImpact": "Separar viewer.mjs del archivo de obras, y mantener ficha visible junto al lienzo en pantallas amplias.",
+      "evidenceRef": "r3"
+    },
+    {
+      "id": "q3",
+      "target": "collection",
+      "question": "¿Cómo asegurar navegación editorial no dependiente solo de imagen o animación?",
+      "alternatives": [
+        "Mosaico de tarjetas visuales sin texto",
+        "Índice de inventario con filtros, rótulos y URLs que reconstruyen estado"
+      ],
+      "finding": "Rijksmuseum presenta imágenes junto a información y búsqueda, con puntos de entrada múltiples hacia el detalle.",
+      "decisionImpact": "Incluir encabezados textuales, catálogo con filtros y rutas directas de obra que funcionen con history.",
+      "evidenceRef": "r1"
+    }
+  ],
+  "decisions": [
+    {
+      "id": "d1",
+      "questionId": "q1",
+      "componentIds": [
+        "media",
+        "records"
+      ],
+      "choice": "Obras originales vectoriales con fichas de procedencia.",
+      "rejected": "Thumbnails remotos sin control de licencia.",
+      "why": "La coherencia de autoría y el verdadero nivel de detalle son esenciales para un archivo artístico.",
+      "productionChange": "Generar ocho SVG originales escalables desde un módulo documentado y escribir medio, fecha y procedencia verificable."
+    },
+    {
+      "id": "d2",
+      "questionId": "q2",
+      "componentIds": [
+        "viewer"
+      ],
+      "choice": "Motor autónomo de zoom/pan sin librerías externas.",
+      "rejected": "Transformación CSS estática basada en hover.",
+      "why": "Permite un visor liviano y reutilizable para SVG o raster, accesible con controles evidentes.",
+      "productionChange": "Implementar zoom por niveles, wheel/pinch/pan, límites, tecla Escape y guía para lector de pantalla."
+    },
+    {
+      "id": "d3",
+      "questionId": "q3",
+      "componentIds": [
+        "collection",
+        "records"
+      ],
+      "choice": "Narrativa editorial más índice consultable y URL directa.",
+      "rejected": "Galería exclusivamente decorativa.",
+      "why": "La procedencia y la recuperación de una pieza son parte de la obra de archivo.",
+      "productionChange": "Crear búsqueda/filtros accesibles y actualizar URL en apertura/cierre para compartir cada pieza."
+    }
+  ],
+  "relations": [
+    {
+      "from": "collection",
+      "to": "viewer",
+      "invariant": "Abrir obra siempre debe mantener la identidad y volver al estado previo del índice.",
+      "failure": "El filtro o la posición se pierden al cerrar el detalle.",
+      "test": "Filtrar, abrir, ampliar, cerrar y comprobar continuidad."
+    },
+    {
+      "from": "viewer",
+      "to": "records",
+      "invariant": "El identificador en el enlace y la ficha visible corresponden al mismo recurso.",
+      "failure": "Zoom o navegación cruzada muestran datos de otra pieza.",
+      "test": "Abrir cada deep link y contrastar título y número de catálogo."
+    },
+    {
+      "from": "media",
+      "to": "viewer",
+      "invariant": "La imagen conserva proporción y ofrece detalle nítido a todos los niveles.",
+      "failure": "El zoom pixeliza o recorta sin posibilidad de regresar.",
+      "test": "Inspección a cuatro escalas y reset en móvil y escritorio."
+    }
+  ],
+  "risks": [
+    {
+      "componentIds": [
+        "media",
+        "viewer"
+      ],
+      "severity": "medium",
+      "failure": "Un SVG demasiado complejo puede renderizar lento al ampliar desde un teléfono.",
+      "prevention": "Acotar cantidad de formas y filtros, generar arte determinista y evitar cargas de red.",
+      "test": "Probar apertura y cuatro niveles en Chromium con throttling simulado si está disponible.",
+      "status": "NOT_RUN"
+    },
+    {
+      "componentIds": [
+        "collection",
+        "viewer"
+      ],
+      "severity": "medium",
+      "failure": "La ventana de detalle puede bloquear teclado o dejar foco perdido al cerrar.",
+      "prevention": "Usar dialog nativo con retorno de foco, Escape y controles táctiles visibles.",
+      "test": "Recorrido únicamente con Tab, Shift+Tab, Enter, Escape y flechas.",
+      "status": "NOT_RUN"
+    },
+    {
+      "componentIds": [
+        "records"
+      ],
+      "severity": "medium",
+      "failure": "La ficción puede confundirse con biografías o procedencias reales.",
+      "prevention": "Declarar explícitamente obra, artista y fichas ficticias y separar fuentes técnicas de piezas propias.",
+      "test": "Leer todas las notas de procedencia y comprobar leyendas de ficción.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "acceptance": [
+    {
+      "kind": "functional",
+      "criterion": "Ocho obras originales con ficha, procedencia, filtros y URL individual.",
+      "oracle": "Auditoría de datos y enlaces sobre las ocho tarjetas.",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "interactive",
+      "criterion": "Zoom por niveles, drag y gestos táctiles además de teclado.",
+      "oracle": "Pruebas de navegador y revisión de interacción en diferentes breakpoints.",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "visual",
+      "criterion": "Composición editorial coherente y detalle escalable sin miniaturas ficticias.",
+      "oracle": "Capturas reales en 320/768/1440 y ampliación 4x.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "licensing": "Todo material visual se genera para esta obra como creación digital original. Sin reproducción de marcas o piezas de terceros. La artista y todas las obras son ficticias y se informa expresamente.",
+  "resources": "HTML CSS JavaScript ECMAScript; SVG vectorial original y módulo de visor independiente; GitHub Pages para publicación aislada, Chromium para QA si accesible.",
+  "environmentLimits": "No hay sesión automatizada de navegación del sitio en el servicio remoto hasta el corte de QA; no se atribuye certificación artística ni aprobación humana."
+}
