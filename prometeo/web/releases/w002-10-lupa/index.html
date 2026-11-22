@@ -110,6 +110,9 @@ kbd{border:1px solid var(--line);padding:2px 5px;border-radius:2px}
 @media(max-width:800px){.intro{grid-template-columns:1fr;gap:16px;padding:29px 0}.intro h1{font-size:clamp(44px,9vw,68px)}.dek{max-width:570px}.workspace{grid-template-columns:1fr}.controls{grid-template-columns:1fr 1fr;gap:10px}.controls .panel:first-child,.controls .status{grid-column:1/-1}.stage{min-height:320px}.stage-wrap{padding:10px}.mast-right>span{display:none}}
 @media(max-width:480px){.shell{padding:0 12px}.mast-inner{min-height:64px}.brand{font-size:25px}.mast-right{font-size:10px}.intro{padding:26px 0 25px}.intro h1{font-size:50px}.controls{grid-template-columns:1fr}.controls .panel:first-child,.controls .status{grid-column:auto}.panel{padding:15px}.inspector-head{padding:13px}.mode{padding:8px;font-size:10px}.stage-wrap{padding:8px}.stage{min-height:285px}.blank{padding:28px 14px}.blank h2{font-size:19px}.scrubber{grid-template-columns:70px 1fr 40px;gap:6px}.readout{grid-template-columns:1fr 1fr}.metric:nth-child(2){border:0}.metric:nth-child(-n+2){border-bottom:1px solid var(--line)}.tools{padding:13px}.picture.parallel{gap:3px;padding:3px}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
+
+/* Prevent empty side-by-side mode from overriding the hidden inspector. */
+.picture:not(.ready){display:none!important}
 </style>
 <script src="./app.js" defer></script>
 </head>
