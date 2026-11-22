@@ -4,6 +4,10 @@
 
 **Estado:** contrato aditivo de preparación/producción para *nuevos* WORK que lo recuperen. No altera retroactivamente versiones/obras ya ejecutadas, no equivale a un flujo privado canónico promovido, ni garantiza el resultado de calidad profesional. Preservar `batchId`, `taskNumber`, briefs y SHA originales, junto con `qualityBarVersion:QBAR-1` cuando se ejecute.
 
+## DEEP-SPEC-1 · gate de preproducción antes del paso 6
+
+QBAR-1 **conserva** la responsabilidad de referencias y umbral de excelencia. Su ejecución alimenta la [ESPECIFICACIÓN PROFUNDA universal](DEEP_SPEC.md), que articula Q-LOOP → preguntas del trabajo → componentes/relaciones → decisiones implementables → riesgos/spikes → aceptación. Los cinco adaptadores y la lógica de validación tienen **un solo propietario** en ese enlace. Para un WORK nuevo, persistir `PREPRODUCTION.deep-spec-v1.json` en el dueño de la obra antes del primer corte y revisar el gate; no copiar un formulario a los briefs ni inventar evidencia. `READY_FOR_FIRST_SLICE` solo habilita construir, nunca acredita arte profesional. Los WORK ya finalizados y SHA históricos permanecen intactos.
+
 ## Error original que corrige
 
 Se generaron diez encargos Web convencionales porque se eligieron por familiaridad de la IA (portada, portfolio, catálogo, notas) sin contrastarlos antes con sitios de excelencia. Ante una corrección humana breve («buscá diez sitios premiados y describí sus características») aparecieron referencias y capacidades muy superiores. La falla fue **en la etapa de elegir objetivos y representación**, no solo en el tamaño del prompt. Repetir collages de figuras geométricas, placeholders, sintes básicos o un HTML correcto no alcanza.

@@ -5,6 +5,8 @@
 
 **Calidad aspiracional compartida (nuevos WORK):** leer [QBAR-1](../../QUALITY_BAR.md) y estudiar referencias premiadas de diseño y desarrollo web por dirección artística, fotografía/video, tipografía, scroll y navegación; evitar collages geométricos genéricos y plantillas disfrazadas de novedad. Preservar los diez briefs originales.
 
+**Preproducción obligatoria en nuevas ejecuciones:** aplicar [DEEP-SPEC-1](../../DEEP_SPEC.md) con adaptador `web`, vincular referencias investigadas con decisiones, relaciones y riesgos de este brief, hacer spike de alto impacto y conservar ficha versionada en la rama propia. No exigirle preguntas al humano ni convertir esta ficha en artefacto final; la implementación completa y su QA siguen siendo obligatorias.
+
 Leer el [contrato universal](../UNIVERSAL.md). Recuperar el Estudio Web desde `JuanManuelPM/pruebas@prometeo/control:PROMETEO/spaces/web-design/PROJECT.md`, origen `candidate/prometeo-web-design-studio-campaign-20261112` y `candidate/prometeo-web-factory-engine-v2-20261117` (WEB_FACTORY_ENTRYPOINT.md, workflows/WEB_FACTORY_V2/FLOW.json), comprobando cambios posteriores. La campaña original contenía 20 investigaciones + 6 spikes; **estos diez son obras nuevas**, no duplicación de esas investigaciones. Cada obra utiliza un brief independiente, fuentes originales o con licencia, diseño distintivo y QA real de pantalla e interacción. Sin nombres, fotos ni datos personales del usuario.
 
 | N | Encargo literal de producto |

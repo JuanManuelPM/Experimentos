@@ -2,6 +2,8 @@
 
 https://juanmanuelpm.github.io/Experimentos/prometeo/root/
 
+**Nueva entrada ROOT:** [DEEP-SPEC-1 · preproducción profunda universal](DEEP_SPEC_V1.md) · [pruebas lógicas y pendientes](../launch/20261122/DEEP_SPEC_TESTS.md). El método compartido está versionado y no modifica los 10 briefs ni inicia trabajos.
+
 1. `PROGRAM.json` mantiene `stages` (etapas hasta la consolidación) y `active` (fase/ola/método y brief inmutables, 10 launchers y rutas públicas).
 2. HTML único y fijo: muestra 10 prompts «Copiar»; detecta preview automáticamente por HTTP HEAD cada 35 segundos y al volver al navegador. Rojo=no copiado en ESTE navegador. Amarillo=copiado local, NO significa enviado. Verde=existe index.html público, NO significa QA o chat completado.
 3. Seleccionar `Ver` permite abrir vista; escribir una observación por número y marcar candidato (persisten localmente en el dispositivo). `Copiar CALIBRAR` genera texto con críticas, refs, etapa, ola, hashes, URLs para pegar en un chat Ideas. No descarga nada ni envía comentarios a la nube.

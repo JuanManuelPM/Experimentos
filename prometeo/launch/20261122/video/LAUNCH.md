@@ -5,6 +5,8 @@
 
 **Calidad aspiracional compartida (nuevos WORK):** leer [QBAR-1](../../QUALITY_BAR.md) y estudiar referentes profesionales de fotografía, montaje, narrativa, movimiento y sonido; rechazar secuencias vacías de transiciones como sustituto de un corto. Preservar los diez briefs originales.
 
+**Preproducción obligatoria en nuevas ejecuciones:** aplicar [DEEP-SPEC-1](../../DEEP_SPEC.md) con adaptador `video`, vincular referencias investigadas con decisiones, relaciones y riesgos de este brief, hacer spike de alto impacto y conservar ficha versionada en la rama propia. No exigirle preguntas al humano ni convertir esta ficha en artefacto final; la implementación completa y su QA siguen siendo obligatorias.
+
 Leer el [contrato universal](../UNIVERSAL.md). Recuperar `JuanManuelPM/pruebas@prometeo/control:PROMETEO/spaces/video-studio/PROJECT.md` y las fuentes reales `candidate/prometeo-video-studio-parallel-20261111` con campaña 7 investigaciones/2 spikes y avances posteriores. Antes de construir, distinguir los motores comprobados y experimentales. Cada N crea una pieza audiovisual distinta de **8–15 segundos** y fuente/receta editable. Música, clips y voces deben ser originales o legalmente utilizables. Si el runtime no puede producir MP4/WebM, registrar con honestidad HTML preview y NOT_RUN del export, sin afirmar que es un vídeo final.
 
 | N | Encargo literal de obra |

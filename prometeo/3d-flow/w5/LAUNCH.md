@@ -9,6 +9,8 @@ Estos son lanzadores, NO trabajos iniciados. No limitan la cantidad de chats: pu
 **En cada chat:** recuperar ROOT y el origen exacto; aplicar método compartido e investigación y prevención antes de producir; conservar briefs, ramas/versiones, assets legales y pruebas; construir un artefacto real, publicar de forma aislada, hacer readback y emitir INFORMAR/retorno con límites. La rama propia se crea sólo al comenzar, tras comprobar que no está ocupada. Nunca publicar material privado en Pages. Copiar no inicia ni demuestra éxito.
 **Exigencia artística compartida para NUEVAS ejecuciones:** leer [QBAR-1](../../launch/QUALITY_BAR.md) antes de elegir implementación; contrastar escenas, personajes, cámara e interacción con obras de referencia de calidad profesional y evitar sustituciones genéricas de primitivas. La referencia eleva la calidad objetivo sin cambiar los diez briefs históricos ni las obras ya entregadas.
 
+**Gate compartido para nuevas continuaciones, sin rehacer W5 históricas:** aplicar [DEEP-SPEC-1](../../launch/DEEP_SPEC.md) desde ROOT con adaptador 3D. Antes de construir, relacionar cámara/oclusiones, escala, materiales PBR, luz, personaje, colisiones y controles; guardar decisiones y probar un componente crítico. No reemplazar la escena original ni el método 3D 2.3.0. La ficha interna sigue siendo responsabilidad del trabajador, no del humano.
+
 ## Contrato de WORK numérico · misma URL para toda la tanda
 
 Encargo humano: `WORK · https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/3d-flow/w5/LAUNCH.md · N`
