@@ -7,7 +7,7 @@ const $=id=>document.getElementById(id);
 const FALLBACK=[{id:'direccion',label:'Dirección'},{id:'root',label:'ROOT'},{id:'3d',label:'3D'},{id:'music',label:'Música'},{id:'web',label:'Web'},{id:'video',label:'Video'},{id:'images',label:'Imágenes'}];
 const ROOT_REF='https://github.com/JuanManuelPM/pruebas/blob/candidate/prometeo-portal-unico-base-20261121/PROMETEO/system/PORTAL_BASE_HANDOFF.md#';
 const PUBLIC='https://juanmanuelpm.github.io/Experimentos/prometeo/';
-const state={rooms:FALLBACK,room:'direccion',screen:'messages',itemId:'',public:[],legacy:[],batches:[],projects:[],w4:[],catalog:null,older:false,items:[],workspaces:[],ready:false,batchId:''};
+const state={universalFilter:'all',universalView:'batches',universalOpen:undefined,rooms:FALLBACK,room:'direccion',screen:'messages',itemId:'',public:[],legacy:[],batches:[],projects:[],w4:[],catalog:null,older:false,items:[],workspaces:[],ready:false,batchId:''};
 const shell=$('shell');
 let timer;
 function toast(text){const n=$('toast');n.textContent=text;n.hidden=false;clearTimeout(timer);timer=setTimeout(()=>n.hidden=true,1800);}
@@ -127,7 +127,90 @@ function studioItems(room){
  return [...map.values()].sort((a,b)=>(room==='music'?Number(a.folder!=='Canciones')-Number(b.folder!=='Canciones'):0)||b.rank-a.rank||a.title.localeCompare(b.title,'es'));
 }
 function element(tag,cls,text){const e=document.createElement(tag);if(cls)e.className=cls;if(text!==undefined)e.textContent=text;return e;}
+
+function renderUniversalLibrary(){
+ const host=$('works');host.replaceChildren();
+ const batchBtn=$('batch-link');batchBtn.hidden=true;
+ const title=document.querySelector('.p-library-top h1');if(title)title.textContent='Obras';
+ const emoji={'3d':'🧊',web:'🌐',music:'🎵',video:'🎬',images:'🎨'};
+ const rooms=['3d','web','music','video','images'];
+ const toolbar=element('div','p-univ-toolbar');
+ const filters=element('div','p-univ-filters');
+ for(const [id,label] of [['all','Todos'],['3d','3D'],['web','Web'],['music','Música'],['video','Video'],['images','Imágenes']]){
+  const b=option(label,()=>{state.universalFilter=id;renderUniversalLibrary()},state.universalFilter===id);
+  b.setAttribute('aria-pressed',String(state.universalFilter===id));filters.append(b);
+ }
+ const modes=element('div','p-univ-modes');
+ for(const [id,label] of [['batches','Tandas'],['recent','Recientes']]){
+  const b=option(label,()=>{state.universalView=id;renderUniversalLibrary()},state.universalView===id);
+  b.setAttribute('aria-pressed',String(state.universalView===id));modes.append(b);
+ }
+ toolbar.append(filters,modes);host.append(toolbar);
+ const resultFor=(b,t)=>state.public.find(e=>e&&e.room===b.room&&e.batchId===b.id&&Number(e.taskNumber)===Number(t.number))
+   ||state.public.find(e=>e&&e.room===b.room&&Array.isArray(t.messageIds)&&t.messageIds.includes(e.id))||null;
+ const validDate=e=>{const ms=Date.parse(e?.publishedAt||'');return Number.isFinite(ms)&&ms>0?ms:0};
+ const formatted=ms=>ms?new Date(ms).toLocaleDateString('es-AR',{day:'2-digit',month:'short',year:'numeric'}):'sin fecha registrada';
+ const groups=state.batches.filter(b=>rooms.includes(b.room)&&Array.isArray(b.tasks)&&b.launchUrl)
+   .filter(b=>state.universalFilter==='all'||b.room===state.universalFilter)
+   .map(b=>{
+     const tasks=b.tasks.map(t=>({task:t,result:resultFor(b,t)}));
+     const delivered=tasks.filter(x=>x.result);
+     const last=Math.max(0,...delivered.map(x=>validDate(x.result)));
+     return{batch:b,tasks,delivered,last};
+   }).sort((a,b)=>b.last-a.last||String(b.batch.id).localeCompare(String(a.batch.id)));
+ const card=(group,x)=>{
+  const e=x.result,blocks=Array.isArray(e?.blocks)?e.blocks:[];
+  const actual=blocks.map(z=>({type:z?.type,url:z?.src||z?.url,label:z?.label||''}))
+    .filter(z=>safePreview(z.url)&&(['image','video','audio','scene'].includes(z.type)||z.type==='file'));
+  const visual=actual.find(z=>z.type==='image'||z.type==='file'&&/\.(png|jpe?g|webp)(?:[?#]|$)/i.test(z.url))||
+    actual.find(z=>z.type==='video'||z.type==='file'&&/\.(mp4|webm)(?:[?#]|$)/i.test(z.url));
+  const first=actual.find(z=>z.type==='scene'||z.type==='file'&&(/\.html?(?:[?#]|$)/i.test(z.url)||/\/$/.test(z.url)))||visual;
+  const backup=blocks.find(z=>typeof z?.url==='string'&&/^https:\/\//.test(z.url))?.url||'';
+  const href=first?.url||backup||group.batch.launchUrl;
+  const a=element('a','p-univ-card');a.href=href;a.target='_blank';a.rel='noopener noreferrer';a.setAttribute('aria-label','Abrir '+(e?.title||x.task.label));
+  const frame=element('div','p-univ-frame');
+  if(visual?.type==='image'||visual?.type==='file'&&/\.(png|jpe?g|webp)/i.test(visual.url)){
+   const img=document.createElement('img');img.src=visual.url;img.loading='lazy';img.alt='Vista real publicada de '+(e?.title||x.task.label);frame.append(img);
+  }else if(visual&&(visual.type==='video'||/\.(mp4|webm)/i.test(visual.url))){
+   const video=document.createElement('video');video.src=visual.url;video.preload='metadata';video.muted=true;video.playsInline=true;video.setAttribute('aria-label','Video publicado');frame.append(video);
+  }else{
+   frame.classList.add('p-univ-placeholder');frame.append(element('span','p-univ-icon',emoji[group.batch.room]||'◻'),element('small','',e?'Sin miniatura verificada':'Aún sin entrega'));
+  }
+  const info=element('div','p-univ-info');
+  info.append(element('span','p-univ-meta',(emoji[group.batch.room]||'')+' '+group.batch.id+' · '+String(x.task.number).padStart(2,'0')));
+  info.append(element('strong','p-univ-title',e?.title||x.task.label||String(x.task.number)));
+  info.append(element('span','p-univ-meta',e?formatted(validDate(e)): 'Encargo preparado'));
+  a.append(frame,info);return a;
+ };
+ const flat=groups.flatMap(g=>g.delivered.map(x=>({group:g,x})));
+ flat.sort((a,b)=>validDate(b.x.result)-validDate(a.x.result)||String(a.group.batch.id).localeCompare(String(b.group.batch.id))||Number(a.x.task.number)-Number(b.x.task.number));
+ if(state.universalView==='recent'){
+  const grid=element('section','p-univ-grid');grid.setAttribute('aria-label','Obras ordenadas por publicación real');
+  if(!flat.length)grid.append(element('p','p-univ-empty','Todavía no hay entregas con enlaces registradas.'));
+  else for(const item of flat)grid.append(card(item.group,item.x));
+  host.append(grid);return;
+ }
+ const defaultOpen=groups.find(x=>x.delivered.length>0)?.batch.id||groups[0]?.batch.id;
+ for(const group of groups){
+  const d=document.createElement('details');d.className='p-univ-batch';d.open=state.universalOpen===undefined?group.batch.id===defaultOpen:state.universalOpen===group.batch.id;
+  const summary=document.createElement('summary');summary.append(
+   element('strong','', (emoji[group.batch.room]||'')+' '+(group.batch.title||group.batch.id)),
+   element('span','',group.delivered.length+' / '+group.tasks.length+' entregas · '+(group.last?formatted(group.last):'sin publicaciones'))
+  );
+  d.append(summary);
+  d.addEventListener('toggle',()=>{if(d.open){state.universalOpen=group.batch.id;}else if(state.universalOpen===group.batch.id){state.universalOpen='';}});
+  const intro=element('div','p-univ-batch-tools');
+  const launch=document.createElement('a');launch.href=group.batch.launchUrl;launch.target='_blank';launch.rel='noopener noreferrer';launch.textContent='Consignas '+group.tasks.length;
+  const copyBtn=option('Copiar WORK',async()=>toast(await copy('👷 '+emoji[group.batch.room]+' WORK · '+group.batch.launchUrl+' · ')?'Copiado':'No se pudo copiar'));
+  intro.append(launch,copyBtn);d.append(intro);
+  if(!group.delivered.length)d.append(element('p','p-univ-empty','Sin obras publicadas en esta tanda. No se muestran miniaturas ficticias.'));
+  else{const grid=element('div','p-univ-grid');const items=[...group.delivered].sort((a,b)=>validDate(b.result)-validDate(a.result)||Number(a.task.number)-Number(b.task.number));for(const x of items)grid.append(card(group,x));d.append(grid);}
+  host.append(d);
+ }
+}
+
 function renderLibrary(){
+ if(state.room==='root'){renderUniversalLibrary();return;}
  const host=$('works');host.replaceChildren();
  const batch=state.batches.find(b=>b.room===state.room);
  const batchButton=$('batch-link');batchButton.hidden=!batch;
@@ -153,6 +236,7 @@ function parseRoute(){
  if(['capturas','ronda','calibrar','ajustes'].includes(raw)){location.replace('./archivo-20261121.html#'+raw);return null;}
  if(raw==='mensajes')return {room:'root',screen:'messages'};
  const parts=raw.split('/'),room=!raw?'root':state.rooms.some(r=>r.id===parts[0])?parts[0]:'root';
+ if(room==='root'&&(parts.length===1||['obras','biblioteca','recientes'].includes(parts[1]))){if(parts[1]==='recientes')state.universalView='recent';return {room,screen:'library'};}
  if(!['3d','music','web','video','images'].includes(room))return {room,screen:'messages',batchId:(parts[1]==='mensaje'||parts[1]==='tanda')?(parts[2]||''):''};
  if(parts[1]==='tanda')return {room,screen:'messages',batchId:parts[2]||''};
  if(parts[1]==='mensaje')return {room,screen:'messages',batchId:parts[2]||''};
@@ -196,7 +280,8 @@ function updateContext(){
   c.append(option('Comentar esta pantalla',()=>closeCopy(currentReference()),false,true));
  }else{
   if(state.room==='root'||state.room==='direccion'){
-   c.append(option('Tandas preparadas',()=>go('#root'),state.room==='root'));
+   c.append(option('Obras',()=>go('#root/obras'),state.room==='root'&&state.screen==='library'));
+    c.append(option('Mensajes',()=>go('#root/mensajes'),state.room==='root'&&state.screen==='messages'));
    c.append(option('Revisar sin audio',()=>closeCopy('WORK · https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/root/AUTOCRITICA_WHISPLASH.md · ESTE_CHAT'),false,true));
    c.append(option('Actualizar flujos',()=>closeCopy('WORK · https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/launch/20261122/FLOW_REVIEW.md'),false,true));
    const a=document.createElement('a');a.href='./archivo-20261121.html#mensajes';a.textContent='Archivo';a.className='p-context-small';c.append(a);
@@ -227,9 +312,9 @@ function selectRoute(next){
  if(studio&&state.screen==='stage'&&!studioItems(state.room).some(x=>x.id===state.itemId))state.screen='library';
  shell.toggleAttribute('stage-mode',studio&&state.screen==='stage');
  $('messages').hidden=studio&&state.screen!=='messages';
- $('library').hidden=!studio||state.screen!=='library';
+ $('library').hidden=!(studio||state.room==='root')||state.screen!=='library';
  $('stage').hidden=!studio||state.screen!=='stage';
- if(studio&&state.screen==='library')renderLibrary();
+ if((studio||state.room==='root')&&state.screen==='library')renderLibrary();
  if(studio&&state.screen==='stage')renderStage();
  else{const host=$('stage-visual');if(host.dataset.url){host.replaceChildren();delete host.dataset.url;}}
  if(state.screen==='messages')renderMessages();
