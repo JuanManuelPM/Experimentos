@@ -1,0 +1,45 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Casa entre patios · Diagnóstico</title><style>
+body{margin:0;max-width:850px;padding:clamp(22px,5vw,54px);font:15px/1.6 system-ui;background:#18221e;color:#f4e9d7}h1{font:normal 45px/1 Georgia,serif}a{color:#e8c8a0}p{color:#c7c4ba}.item{border-top:1px solid #7780716b;padding:11px 2px;display:flex;justify-content:space-between;gap:16px}.pass{color:#b9e0ae}.fail{color:#ffb1a6}.pending{color:#edcba4}canvas{width:180px;height:120px;display:block}#status{font-weight:bold}
+</style><script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.163.0/build/three.module.js"}}</script></head>
+<body><div style="letter-spacing:.2em;font-size:12px">PROMETEO · 3D W6/02</div><h1>Diagnóstico local</h1><p>Estas pruebas se ejecutan en tu navegador. Un resultado lógico válido no acredita calidad artística de la casa.</p><p id="status">Cargando Three.js y WebGL…</p><div id="results"></div><div id="canvas"></div><p><a href="./">Volver a Casa entre patios</a> · <a href="./QA_RECEIPT.json">Recibo documental</a></p>
+<script type="module">
+import * as THREE from 'three';
+import { ArchitecturalOcclusion, canMoveWithinPlan, slidePlayer } from './occlusion-camera.mjs';
+const list=document.querySelector('#results'),status=document.querySelector('#status');let ok=0,total=0;
+function test(name,condition,details=''){total++;if(condition)ok++;const row=document.createElement('div');row.className='item';const a=document.createElement('span');a.textContent=name+(details?' · '+details:'');const b=document.createElement('strong');b.className=condition?'pass':'fail';b.textContent=condition?'PASS':'FAIL';row.append(a,b);list.appendChild(row)}
+function run(){
+  const furniture=[{x1:-1.25,x2:1.25,z1:-1.9,z2:-.85}];
+  test('Paso por hueco libre',canMoveWithinPlan({x:-3,z:0},{x:-2.5,z:0}));
+  test('Muro opaco bloquea',!canMoveWithinPlan({x:-3,z:1.8},{x:-2.5,z:1.8}));
+  test('Límite de casa bloquea',!canMoveWithinPlan({x:7,z:0},{x:8,z:0}));
+  test('Mesa bloquea',!canMoveWithinPlan({x:0,z:0},{x:0,z:-1.3},furniture));
+  test('Movimiento interior libre',canMoveWithinPlan({x:0,z:0},{x:.3,z:0},furniture));
+  const p=slidePlayer({x:-3,z:1.7},{x:.6,z:-.1},[]);
+  test('Colisión resuelta por ejes',p.x===-3&&Math.abs(p.z-1.6)<1e-6);
+  const wall=new THREE.Mesh(new THREE.BoxGeometry(2,2,.18),new THREE.MeshStandardMaterial({color:0xffffff}));
+  const occlusion=new ArchitecturalOcclusion({fade:.055,response:14});occlusion.register(wall,'wall');
+  const cam=new THREE.Vector3(0,1,2),goal=new THREE.Vector3(0,1,-2);
+  for(let i=0;i<9;i++)occlusion.update(cam,goal,.12);
+  test('Muro interpuesto se desvanece',wall.material.opacity<.13,'raycast Three.js');
+  for(let i=0;i<12;i++)occlusion.update(cam,new THREE.Vector3(0,1,3),.12);
+  test('Muro recupera opacidad',wall.material.opacity>.96,'restauración dinámica');
+  const roof=new THREE.Mesh(new THREE.BoxGeometry(2,.2,2),new THREE.MeshStandardMaterial());
+  roof.position.y=3;occlusion.register(roof,'roof');
+  for(let i=0;i<9;i++)occlusion.update(new THREE.Vector3(0,4,2),new THREE.Vector3(0,1,0),.12);
+  test('Techo se despeja en cámara elevada',roof.material.opacity<.13);
+  // Render WebGL real con contexto del navegador: sólo prueba capacidad de ejecución.
+  try{
+    const renderer=new THREE.WebGLRenderer({antialias:true,preserveDrawingBuffer:true});
+    renderer.setSize(180,120);
+    const scene=new THREE.Scene();scene.background=new THREE.Color(0x8fa6a0);
+    const cube=new THREE.Mesh(new THREE.BoxGeometry(1,1,1),new THREE.MeshNormalMaterial());scene.add(cube);
+    const camera=new THREE.PerspectiveCamera(60,1.5,.01,30);camera.position.z=3;
+    renderer.render(scene,camera);document.querySelector('#canvas').appendChild(renderer.domElement);
+    test('Framebuffer WebGL real',renderer.domElement.toDataURL('image/png').length>100);
+    renderer.dispose();
+  }catch(e){test('Framebuffer WebGL real',false,e.message)}
+  status.textContent=ok+'/'+total+' comprobaciones ejecutadas en este navegador';
+  status.className=ok===total?'pass':'fail';
+}
+try{run()}catch(e){status.className='fail';status.textContent='Diagnóstico interrumpido: '+e.message;console.error(e)}
+</script></body></html>
