@@ -38,14 +38,14 @@ CLAIMS = {
 }
 # 6 s segments: frame intervals half-open. Historical dates NEVER change.
 SHOTS = [
- {"id":"S01","assetId":"VENICE_CONTEXT","label":"VENECIA · UN CANAL COTIDIANO","kind":"CONTEXT_VIDEO","claimIds":[]},
- {"id":"S02","assetId":"FLOOD_CONTEXT","label":"EL AGUA EN LA CALLE · ARCHIVO CONTEXTUAL","kind":"CONTEXT_VIDEO","claimIds":[]},
+ {"id":"S01","assetId":"VENICE_CONTEXT","label":"VENECIA · CANAL EN CONTEXTO","kind":"CONTEXT_VIDEO","claimIds":[]},
+ {"id":"S02","assetId":"FLOOD_CONTEXT","label":"AGUA EN LA CALLE · CONTEXTO","kind":"CONTEXT_VIDEO","claimIds":[]},
  {"id":"S03","assetId":"SATELLITE_2019_14","label":"14 NOV 2019 · SATÉLITE NOAA-20","kind":"ARCHIVAL_PHOTO","claimIds":["C01"]},
- {"id":"S04","assetId":"VENICE_CONTEXT","label":"12 NOV 2019 · REGISTRO MUNICIPAL","kind":"CONTEXT_VIDEO","claimIds":["C01","C02"]},
- {"id":"S05","assetId":"FLOOD_CONTEXT","label":"SIROCO + MAREA · SEGÚN ISPRA","kind":"CONTEXT_VIDEO","claimIds":["C01"]},
- {"id":"S06","assetId":"SATELLITE_2019_14","label":"IMAGEN DEL 14 · DATO DEL 12","kind":"ARCHIVAL_PHOTO","claimIds":["C01"]},
+ {"id":"S04","assetId":"VENICE_CONTEXT","label":"187 CM · DATO REAL, VIDEO CONTEXTO","kind":"CONTEXT_VIDEO","claimIds":["C01","C02"]},
+ {"id":"S05","assetId":"FLOOD_CONTEXT","label":"SIROCO Y MAREA · CONTEXTO","kind":"CONTEXT_VIDEO","claimIds":["C01"]},
+ {"id":"S06","assetId":"SATELLITE_2019_14","label":"14 NOV 2019 · IMAGEN NOAA POSTERIOR","kind":"ARCHIVAL_PHOTO","claimIds":["C01"]},
  {"id":"S07","assetId":None,"label":"MOSE · ESQUEMA EDITORIAL","kind":"ORIGINAL_DATA_GRAPHIC","claimIds":["C03"]},
- {"id":"S08","assetId":"VENICE_CONTEXT","label":"MEDIR, DISTINGUIR, CONVIVIR","kind":"CONTEXT_VIDEO","claimIds":["C03"]},
+ {"id":"S08","assetId":"VENICE_CONTEXT","label":"VENECIA · CONTEXTO DE HOY","kind":"CONTEXT_VIDEO","claimIds":["C03"]},
 ]
 
 SCRIPT = (
