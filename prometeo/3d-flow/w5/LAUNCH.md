@@ -7,6 +7,8 @@ Estos son lanzadores, NO trabajos iniciados. No limitan la cantidad de chats: pu
 **Método 3D:** https://github.com/JuanManuelPM/Experimentos/tree/gh-pages/prometeo/3d-flow/versions/2.3.0
 
 **En cada chat:** recuperar ROOT y el origen exacto; aplicar método compartido e investigación y prevención antes de producir; conservar briefs, ramas/versiones, assets legales y pruebas; construir un artefacto real, publicar de forma aislada, hacer readback y emitir INFORMAR/retorno con límites. La rama propia se crea sólo al comenzar, tras comprobar que no está ocupada. Nunca publicar material privado en Pages. Copiar no inicia ni demuestra éxito.
+**Exigencia artística compartida para NUEVAS ejecuciones:** leer [QBAR-1](../../launch/QUALITY_BAR.md) antes de elegir implementación; contrastar escenas, personajes, cámara e interacción con obras de referencia de calidad profesional y evitar sustituciones genéricas de primitivas. La referencia eleva la calidad objetivo sin cambiar los diez briefs históricos ni las obras ya entregadas.
+
 ## Contrato de WORK numérico · misma URL para toda la tanda
 
 Encargo humano: `WORK · https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/3d-flow/w5/LAUNCH.md · N`
