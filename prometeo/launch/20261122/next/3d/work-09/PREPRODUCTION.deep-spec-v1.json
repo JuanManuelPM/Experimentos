@@ -1,0 +1,266 @@
+{
+  "version": "DEEP-SPEC-1",
+  "medium": "3D / herramienta de autor",
+  "depth": "SISTEMA",
+  "brief": "3d-w6-20261122-09 · FORJA Escena: editor 3D aislado con jerarquías, transformaciones, cámara, luces, keyframes, undo/redo y serialización de GLB conservando pivotes y tiempos.",
+  "identity": {
+    "room": "3d",
+    "batchId": "3d-w6-20261122",
+    "taskNumber": 9,
+    "taskId": "3d-w6-20261122-09",
+    "briefBlob": "942c3ba8b851137886e959d2790771556e2d9f5d",
+    "baseForjaBlob": "2e9a55a9815578afd70beaf8e919ede353d4e2d7",
+    "flowVersion": "2.3.0",
+    "flowSha256": "53bc9e2e4b37c99e92d3494af8dfa4461cd4644b15f980e32497a8428b067b3f"
+  },
+  "intent": {
+    "experience": "Crear una escena 3D interactiva y comprobar que los proyectos sobreviven a la edición y recarga con jerarquía y timeline intactas.",
+    "distinctAbility": "Un editor real, portable en JSON, cuya serialización preserva las fuentes GLB binarias y los pivotes locales por nodo."
+  },
+  "references": [
+    {
+      "id": "FORJA",
+      "url": "https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/forja/forge.mjs",
+      "status": "OBSERVED",
+      "observation": "Fuente real inspeccionada: Three.js 0.181, GLTFLoader, TransformControls, formato v1 con item.p/r/s/h, 1.883 modelos y limitaciones de exportación de clips."
+    },
+    {
+      "id": "THREE",
+      "url": "https://threejs.org/docs/pages/TransformControls",
+      "status": "OBSERVED",
+      "observation": "Documentación técnica revisada: TransformControls se acopla a un Object3D real, modo translate/rotate/scale y getHelper; el gizmo debe desactivar OrbitControls al arrastrar."
+    },
+    {
+      "id": "GLTF",
+      "url": "https://registry.khronos.org/glTF/specs/2.0/glTF-2.0.html",
+      "status": "OBSERVED",
+      "observation": "Especificación glTF 2.0 contrastada: nodos usan transformaciones locales TRS, jerarquía multiplica matrices, animaciones contienen tiempos y canales; preservar source GLB evita reconstruir topología arbitraria."
+    },
+    {
+      "id": "THEATRE",
+      "url": "https://www.theatrejs.com/docs/latest/manual/sequences",
+      "status": "OBSERVED",
+      "observation": "Manual de Theatre.js consultado: secuenciador con claves editables y reproducción temporal. Se inspira en el control temporal sin copiar su diseño ni declarar instalada su integración."
+    }
+  ],
+  "components": [
+    {
+      "id": "C1",
+      "role": "Jerarquía de escena y selección precisa de nodos",
+      "strategy": "Tres grupos independientes: mundo editable, utilidades de editor y cámara de navegación; IDs propios estables; lectura de nombres y transforms locales.",
+      "constraints": "La jerarquía importada de GLB no se sustituye por primitivas; reparenting no destruye pivotes."
+    },
+    {
+      "id": "C2",
+      "role": "Carga y conservación de modelos binarios autorizados",
+      "strategy": "GLTFLoader.parseAsync desde archivos locales o catálogo CC0 fijado; incrustar bytes originales en el proyecto JSON.",
+      "constraints": "No hacer upload de archivos del usuario; preservar nodos hijos y su topología original."
+    },
+    {
+      "id": "C3",
+      "role": "Edición, inspector y manipulación espacial",
+      "strategy": "TransformControls y campos X/Y/Z, cámara de autor y luces reales en el mundo editable.",
+      "constraints": "Desactivar OrbitControls durante dragging; no perder escala, posición ni cuaternión al guardar."
+    },
+    {
+      "id": "C4",
+      "role": "Keyframes y transporte temporal determinista",
+      "strategy": "Tracks por ID estable, tiempo en segundos, interpolación lineal para posición/escala y esférica para cuaterniones.",
+      "constraints": "Keys ordenadas, sin tiempos duplicados y duración suficiente para todas las claves."
+    },
+    {
+      "id": "C5",
+      "role": "Núcleo reutilizable de serialización y control de calidad",
+      "strategy": "Modulo scene-core.mjs independiente de Three, validador, comparación canónica y prueba roundtrip de la misma pipeline de importación.",
+      "constraints": "Limitar tamaño/profundidad, detectar duplicación de IDs y distinguir lógica observada de WebGL no probado."
+    }
+  ],
+  "questions": [
+    {
+      "id": "Q1",
+      "target": "C2",
+      "question": "¿Cómo evitar que serializar el grafo de Three pierda pivotes, nodos sin malla o datos binarios de un GLB importado?",
+      "alternatives": [
+        "Recrear solo geometrías y matrices visibles",
+        "Guardar bytes GLB y overrides TRS de toda la jerarquía"
+      ],
+      "finding": "glTF establece TRS locales y jerarquía; el editor v1 solo guardaba referencias y transform de instancias, insuficientes para editar nodos interiores.",
+      "decisionImpact": "Se incorpora asset binario original por proyecto y estructura completa de nodos con UID.",
+      "evidenceRef": "GLTF"
+    },
+    {
+      "id": "Q2",
+      "target": "C4",
+      "question": "¿Qué interpolación conserva orientaciones estables y tiempos exactos cuando una toma se reproduce luego de recargar?",
+      "alternatives": [
+        "Interpolar ángulos Euler por eje",
+        "Interpolar cuaterniones y conservar segundos numéricos ordenados"
+      ],
+      "finding": "La especificación glTF diferencia rotación por cuaternión y tiempos de muestreo; Theatre.js también trata la secuencia como datos editables.",
+      "decisionImpact": "Se crean pistas independientes por UID, sampleTrack y keyframes con tiempo decimal explícito.",
+      "evidenceRef": "GLTF"
+    },
+    {
+      "id": "Q3",
+      "target": "C3",
+      "question": "¿Se adapta FORJA v1 sobrescribiendo su app o mediante una ruta nueva con compatibilidad de archivos antiguos?",
+      "alternatives": [
+        "Reemplazar forge.mjs e index histórico",
+        "Crear editor aislado y conversor de JSON v1 a proyecto v2"
+      ],
+      "finding": "La FORJA original posee auto-guardado v1 y catálogo dependiente de commit; alterar esa app rompe la regresión histórica.",
+      "decisionImpact": "Rama work/3d-w6-20261122-09, nueva ruta work-09 y migración explícita desde catálogo CC0.",
+      "evidenceRef": "FORJA"
+    },
+    {
+      "id": "Q4",
+      "target": "C5",
+      "question": "¿Cómo diferenciar integridad estructural demostrada de funcionamiento real observado sin GPU de navegador disponible en esta sesión?",
+      "alternatives": [
+        "Informar PASS global por análisis sintáctico",
+        "Ejecutar pruebas lógicas, ofrecer test interactivo de reconstrucción y marcar runtime no ejecutado"
+      ],
+      "finding": "TransformControls depende de Object3D real en navegador y el validador de estructura no demuestra render ni interacción.",
+      "decisionImpact": "Núcleo testable aislado, botón IDA/VUELTA y estados NOT_RUN para navegador y móvil.",
+      "evidenceRef": "THREE"
+    }
+  ],
+  "decisions": [
+    {
+      "id": "D1",
+      "questionId": "Q1",
+      "componentIds": [
+        "C1",
+        "C2",
+        "C5"
+      ],
+      "choice": "GLB embebido con topología completa",
+      "rejected": "Solo exportar capturas o meshes visibles",
+      "productionChange": "Guardar buffer base64 de GLB, árbol local con UID y re-aplicar overrides a nodos nativos tras parse.",
+      "why": "Sin fuente binaria no se recuperan skins, pivotes ni nodos de autor."
+    },
+    {
+      "id": "D2",
+      "questionId": "Q2",
+      "componentIds": [
+        "C4",
+        "C5"
+      ],
+      "choice": "Slerp cuaternión y segundos",
+      "rejected": "Interpolación angular Euler a mano",
+      "productionChange": "sampleTrack interpola TRS y valida tiempos crecientes, keys únicos y duración.",
+      "why": "La orientación debe tener continuidad sin discontinuidades numéricas."
+    },
+    {
+      "id": "D3",
+      "questionId": "Q3",
+      "componentIds": [
+        "C1",
+        "C2"
+      ],
+      "choice": "Ruta y branch aisladas",
+      "rejected": "Mutación del editor original",
+      "productionChange": "Archivos nuevos en work-09 y traducción de documentos v1 desde asset catálogo pinned.",
+      "why": "Proteger proyectos, claves de almacenamiento y rutas de la FORJA histórica."
+    },
+    {
+      "id": "D4",
+      "questionId": "Q4",
+      "componentIds": [
+        "C3",
+        "C5"
+      ],
+      "choice": "Prueba determinista con evidencia diferenciada",
+      "rejected": "Declarar evaluación WebGL por inspección del código",
+      "productionChange": "Comprobador de roundtrip en el editor y tests sin dependencias para núcleo de serialización.",
+      "why": "Una prueba lógica no sustituye comprobar visualmente un motor 3D real."
+    }
+  ],
+  "relations": [
+    {
+      "from": "C1",
+      "to": "C2",
+      "invariant": "Cada GLB importado conserva el mismo número de hijos, pivote local, orden y nombre tras reconstrucción.",
+      "failure": "Un export genérico descarta objetos vacíos o matrices de hijos sin mesh.",
+      "test": "Comparar documentos antes y después de loadDocument y detectar diferente topología."
+    },
+    {
+      "from": "C3",
+      "to": "C4",
+      "invariant": "La transformación que se registra en la clave corresponde al Object3D seleccionado y a su identificador persistente.",
+      "failure": "Las pistas animan otro nodo cuando la jerarquía cambia.",
+      "test": "Mover una malla hija, guardar keys, recargar y scrub en ambos extremos."
+    },
+    {
+      "from": "C4",
+      "to": "C5",
+      "invariant": "La duración y los tiempos de las keys nunca dependen de la frecuencia de cuadros ni de un nombre variable.",
+      "failure": "Al recargar, el track cambia de nodo o pierde la última clave.",
+      "test": "Pruebas de sampleTrack en tiempo intermedio y comparación canónica."
+    }
+  ],
+  "risks": [
+    {
+      "componentIds": [
+        "C2",
+        "C5"
+      ],
+      "severity": "medium",
+      "failure": "El GLB de terceros puede contener texturas externas o superar los 24 MB del JSON local.",
+      "prevention": "Limitar tamaño y aceptar solo archivos GLB autorizados con sus recursos incrustados.",
+      "test": "Abrir un GLB CC0 real, editar nodos y recargar el JSON exportado en navegador.",
+      "status": "NOT_RUN"
+    },
+    {
+      "componentIds": [
+        "C1",
+        "C3"
+      ],
+      "severity": "high",
+      "failure": "Un bug de GLTFLoader/TransformControls en runtime puede romper el render o selección aunque el JS tenga sintaxis válida.",
+      "prevention": "Conservar la FORJA anterior, módulo nuevo aislado y control explícito de error en la importación.",
+      "test": "Prueba en navegador con GPU: importar GLB, arrastrar gizmo, seleccionar hijo y comparar ida/vuelta.",
+      "status": "NOT_RUN"
+    },
+    {
+      "componentIds": [
+        "C4",
+        "C5"
+      ],
+      "severity": "medium",
+      "failure": "Los cambios de tiempo o giro podrían normalizarse y perder rotación reproducible.",
+      "prevention": "Pistas por UID y slerp normalizado; conservar los valores serializados al cargar.",
+      "test": "Test de interpolación intermedia, comparación al recargar y claves terminales.",
+      "status": "OBSERVED"
+    }
+  ],
+  "acceptance": [
+    {
+      "kind": "logic",
+      "criterion": "Validación de nodos sin UID repetidos y tracks ordenados; slerp correcto.",
+      "oracle": "Evaluación real del módulo de serialización por pruebas sintéticas estructurales.",
+      "status": "OBSERVED"
+    },
+    {
+      "kind": "functional",
+      "criterion": "Editar un GLB autorizado y recargar idénticos pivotes, jerarquía y tiempos.",
+      "oracle": "Botón IDA/VUELTA con el GLB real en Chromium o móvil.",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "interactive",
+      "criterion": "Gizmo, árbol, inspector, historial y cámara funcionan con canvas GPU.",
+      "oracle": "Inspección manual de navegador y captura del resultado real.",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "visual",
+      "criterion": "Diseño legible y escena navegable en móvil sin oclusión de controles.",
+      "oracle": "Capturas del móvil y prueba de rotación/scroll sin bloqueo.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "resources": "Three.js 0.181.0, GLTFLoader, OrbitControls, TransformControls y módulo sin dependencias scene-core.mjs. GitHub autenticado para autoría; V8 para lógica; Chromium local no conectado a la web pública.",
+  "licensing": "Geometría original del proyecto demo; los GLB externos solo se importan desde archivos aportados por quien tiene derechos o desde tge-assets CC0 con SHA fijo. No se redistribuyen obras ajenas por inferencia.",
+  "environmentLimits": "No hay navegador con acceso al GitHub Pages publicado ni dispositivo Android conectado a esta ejecución. La comprobación de GPU/perceptual se registra como NOT_RUN y no se considera aprobación humana."
+}
