@@ -1,0 +1,82 @@
+{
+  "schema": "prometeo.web.w001.receipt/v1",
+  "taskId": "web-w001-20261122-09",
+  "batchId": "web-w001-20261122",
+  "taskNumber": 9,
+  "room": "web",
+  "title": "MANO · Escuela ficticia de oficios",
+  "status": "DELIVERED",
+  "producedAt": "2026-11-22T04:56:28.506Z",
+  "scope": "prometeo/previews/web/w001/09/",
+  "ownerBranch": "candidate/prometeo-web-w001-09-20261122",
+  "publishedBranch": "gh-pages",
+  "launch": "https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/launch/20261122/web/LAUNCH.md",
+  "flow": {
+    "repository": "JuanManuelPM/pruebas",
+    "ref": "candidate/prometeo-web-factory-engine-v2-20261117",
+    "path": "cloud-lab/flow-studio-v3/experiments/semilla-parallel-launchpad/launcher-workspace-v4/prometeo/learning/web-design-studio/workflows/WEB_FACTORY_V2/FLOW.json",
+    "blobSha": "02f7b6161b50cd5bc6b342b84c969aaa36bac90a",
+    "status": "SPEC_ONLY",
+    "adaptation": "Sitio de corte vertical, sin afirmar que las 66 preguntas del flujo se completaron"
+  },
+  "artifact": {
+    "preview": "https://juanmanuelpm.github.io/Experimentos/prometeo/previews/web/w001/09/",
+    "source": "index.html",
+    "evidence": "EVIDENCE.html",
+    "originalAssets": "Ilustración SVG programada en el HTML; sin fotos ni dependencias externas",
+    "blobSha": "b86ec2fea6942731d360276a1966db7715a06a2b",
+    "sha256": "751e41c848742c05e4ad4d9b786ad188e46dcb264934a5af35f7475cdb764050"
+  },
+  "browserQA": {
+    "engine": "Chromium headless + Playwright, set_content local (no HTTP)",
+    "widths": [
+      320,
+      390,
+      768,
+      1440
+    ],
+    "checks": [
+      "No overflow horizontal",
+      "6 cursos visibles",
+      "Filtro Técnicos produce 2 resultados",
+      "Apertura del detalle",
+      "Regreso a Todos (6)",
+      "Menú móvil y cierre por navegación en 320/390",
+      "Formulario produce borrador con oficio/pregunta/no enviado",
+      "Cero errores JavaScript"
+    ],
+    "result": "PASS 4/4 viewports",
+    "screenshots": [
+      "EVIDENCE.html (390 y 1440 de captura real, JPG codificado dentro del HTML)"
+    ],
+    "hardwareDevice": "NOT_RUN",
+    "remoteHttp": "UNVERIFIED",
+    "axeAudit": "NOT_RUN",
+    "humanArtApproval": "PENDING"
+  },
+  "honestBehavior": {
+    "school": "FICTICIA",
+    "courseData": "ILUSTRATIVOS",
+    "form": "NO NETWORK REQUEST, LOCAL DRAFT ONLY",
+    "privateUserData": "NO USER DATA INCLUDED IN REPO"
+  },
+  "publication": {
+    "candidateSourceReadback": "VERIFIED",
+    "pagesSourceReadback": "VERIFIED",
+    "candidateEvidenceReadback": "VERIFIED",
+    "pagesEvidenceReadback": "VERIFIED",
+    "pagesRuntimeHttp": "NOT_VERIFIED: navegador de consulta bloqueó tanto preview como ROOT existente"
+  },
+  "limitations": [
+    "La publicación del HTML en gh-pages no prueba que GitHub Pages ya sirva el archivo por HTTP.",
+    "La aceptación visual humana no se ha realizado.",
+    "No se ejecutó axe ni prueba en teléfono real.",
+    "No se probaron tres prototipos visuales previos, se construyó directamente una dirección editorial original."
+  ],
+  "noChanges": [
+    "ROOT code",
+    "other web works",
+    "flows",
+    "canon"
+  ]
+}
