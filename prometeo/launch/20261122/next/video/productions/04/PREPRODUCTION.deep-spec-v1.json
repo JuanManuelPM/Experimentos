@@ -1,0 +1,238 @@
+{
+  "version": "DEEP-SPEC-1",
+  "medium": "Video / tipografía cinética editorial con mezcla original y export H.264/AAC",
+  "depth": "SISTEMA",
+  "taskId": "video-w002-20261122-04",
+  "batchId": "video-w002-20261122",
+  "taskNumber": 4,
+  "briefSha": "d7eebea6d36fc6e5aa3b72cba4e35dd149dc552d",
+  "qualityBarVersion": "QBAR-1",
+  "brief": "UNA PALABRA CAMBIA TODO. Manifiesto audiovisual original cuyo contexto reinterpreta una frase idéntica; tipografía, ritmo, composición y sonido con un motor temporal reutilizable y formatos 16:9 y 9:16.",
+  "intent": {
+    "experience": "El espectador pasa de la tranquilidad a la desconfianza y a la amenaza sin que cambie una sola letra de NO PASA NADA.; después comprende que el contexto completa el significado.",
+    "distinctAbility": "Cambiar el sentido usando sólo puesta en página, jerarquía, intervalos, movimiento y un diseño sonoro estrictamente sincronizado con eventos, sin transiciones prefabricadas."
+  },
+  "references": [
+    {
+      "id": "r1",
+      "status": "OBSERVED",
+      "url": "https://studiodumbar.com/work/demo-2025",
+      "observation": "El estudio describe tipografía como núcleo del sistema global y un contraste deliberado entre diseño sonoro etéreo y textural; sus obras se adaptan a pantallas de escalas diferentes. Observación del texto del caso, no reproducción completa del video."
+    },
+    {
+      "id": "r2",
+      "status": "OBSERVED",
+      "url": "https://www.artofthetitle.com/title/north-by-northwest/",
+      "observation": "El ensayo describe una grilla que guía el movimiento tipográfico, atraviesa tres mundos visuales e integra score creciente; se observa una progresión conceptual más allá de un simple preset de aparición."
+    },
+    {
+      "id": "r3",
+      "status": "OBSERVED",
+      "url": "https://buck.co/work/illumina",
+      "observation": "BUCK documenta investigación del porqué antes del cómo, lenguaje visual que nace de una historia y capítulos conectados por tensión con integración de música e imagen."
+    },
+    {
+      "id": "r4",
+      "status": "OBSERVED",
+      "url": "https://www.walkerart.org/reader/conditioning-typography-and-moving-image/",
+      "observation": "El Walker Art Center examina cómo la tipografía condiciona emocionalmente antes de entender la historia y cómo signo, sonido e imagen interactúan en tiempo narrativo."
+    }
+  ],
+  "components": [
+    {
+      "id": "semantic",
+      "role": "Partitura narrativa en seis escenas con la misma frase en tres contextos y dos enunciados de cierre",
+      "strategy": "Una sola cadena canónica y etiquetas secundarias que determinan la interpretación sin alterar su puntuación",
+      "constraints": "La frase NO PASA NADA. debe permanecer exactamente igual en las tres escenas de contexto."
+    },
+    {
+      "id": "layout",
+      "role": "Sistema responsive de composición tipográfica de seguro editorial para horizontal y vertical",
+      "strategy": "Recalcular escala, saltos de línea, márgenes y tamaños mínimos por orientación; medir caja real de cada pieza",
+      "constraints": "Ningún glifo importante cortado y los textos esenciales deben ser legibles a 720 px de ancho."
+    },
+    {
+      "id": "movement",
+      "role": "Motor de secuencias con easing, tracking, ritmos de escena y apariciones motivadas por significado",
+      "strategy": "Funciones temporales deterministas por keyframes y presets semánticos alivio, informe, amenaza, conclusión",
+      "constraints": "Los cambios de ritmo deben corresponder a contextos y no a transiciones decorativas repetitivas."
+    },
+    {
+      "id": "sound",
+      "role": "Diseño sonoro original con respiración sintética, ticks de informe, golpes de amenaza y cadencia final",
+      "strategy": "Síntesis DSP original parametrizada con eventos en segundos; 48 kHz, mezcla dinámica y límite de pico",
+      "constraints": "Cada evento sonoro dominante debe corresponder a un gesto visual con deriva temporal inferior a dos fotogramas."
+    },
+    {
+      "id": "export",
+      "role": "Dos archivos de video reproducibles, pistas de audio, fuentes y pruebas de decodificación",
+      "strategy": "Generación Pillow en frame clock exacto 24 fps y mux ffmpeg H.264/AAC, ffprobe y render de fotogramas de control",
+      "constraints": "Video real, no imagen aislada ni HTML que simula reproducción; ambas relaciones de aspecto con audio."
+    }
+  ],
+  "questions": [
+    {
+      "id": "q1",
+      "target": "semantic",
+      "question": "¿Cambia de verdad la interpretación sin alterar la frase NO PASA NADA. entre los tres episodios?",
+      "alternatives": [
+        "Variar las palabras o signos para explicar el significado",
+        "Mantener caracteres intactos y modificar tono editorial y contexto espacial/sonoro"
+      ],
+      "finding": "El ensayo Art of the Title identifica narración en tres mundos y lenguaje gráfico vinculado al contexto; Walker trata la relación emotiva entre lenguaje y puesta temporal.",
+      "evidenceRef": "r2",
+      "decisionImpact": "La misma frase se mantiene literal; aparecen alivio, negación y amenaza como marcos editoriales secundarios."
+    },
+    {
+      "id": "q2",
+      "target": "layout",
+      "question": "¿Puede una misma partitura visual sostener jerarquía en 16:9 y 9:16 sin forzar un crop del máster?",
+      "alternatives": [
+        "Recortar automáticamente el horizontal a vertical",
+        "Recomponer cada escena usando la misma partitura temporal y reglas de saltos de línea"
+      ],
+      "finding": "Studio Dumbar describe una identidad cinética construida para soportes muy distintos a gran escala y con tipografía como elemento principal.",
+      "evidenceRef": "r1",
+      "decisionImpact": "Renderizado independiente de ambos tamaños desde las mismas funciones y puntos temporales."
+    },
+    {
+      "id": "q3",
+      "target": "sound",
+      "question": "¿Cómo evitar que los golpes sonoros funcionen como una cama genérica y no como indicios narrativos?",
+      "alternatives": [
+        "Loop musical constante indiferente a la puesta tipográfica",
+        "Eventos de sonido específicos por escena y segmentos con huecos deliberados"
+      ],
+      "finding": "El caso DEMO 2025 describe contraste de texturas y sonido generado como respuesta a pruebas de movimiento; BUCK busca coreografía entre imagen y audio.",
+      "evidenceRef": "r1",
+      "decisionImpact": "SFX originales ligados a entradas de capítulos, escáner y pulsos; la semántica de cada textura cambia."
+    }
+  ],
+  "relations": [
+    {
+      "from": "semantic",
+      "to": "movement",
+      "invariant": "La cadena principal debe seguir siendo idéntica al cambiar tracking, tamaño, ritmo y entorno.",
+      "failure": "Recontextualización convertida en simple sustitución de letras u otras palabras.",
+      "test": "Assert literal en cada escena y revisión manual de frames de centro."
+    },
+    {
+      "from": "movement",
+      "to": "sound",
+      "invariant": "Los transitorios principales de audio son eventos de la misma línea de tiempo global del render de video.",
+      "failure": "Un timeline de video sin referencia al audio genera desincronía perceptible.",
+      "test": "Comparar eventos programados con duración, transient peaks y tiempos de animación."
+    },
+    {
+      "from": "layout",
+      "to": "export",
+      "invariant": "La composición debe reconstruirse para dos orientaciones con márgenes seguros y tamaños de fuente medidos.",
+      "failure": "Recorte del master horizontal deja texto ilegible en formato teléfono.",
+      "test": "Inspección de contacto de 6 muestras temporales por formato y bounds en motor."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "d1",
+      "questionId": "q1",
+      "componentIds": [
+        "semantic",
+        "movement"
+      ],
+      "choice": "La frase idéntica NO PASA NADA. en tres contextos visuales y emocionales.",
+      "rejected": "Variaciones de texto explicativo que reemplazan la puesta editorial.",
+      "productionChange": "Tres capítulos distintos compartiendo copy y alterando tamaño, espacio, presión temporal y contexto.",
+      "why": "La comparación debe aislar contexto como variable principal y no cambiar simultáneamente el mensaje."
+    },
+    {
+      "id": "d2",
+      "questionId": "q2",
+      "componentIds": [
+        "layout",
+        "movement",
+        "export"
+      ],
+      "choice": "Recomposición por anchura orientada a cada relación de aspecto.",
+      "rejected": "Crop automático de una única película de 16:9.",
+      "productionChange": "Cada frame se dibuja dos veces desde el mismo tiempo de la partitura en un canvas 1280x720 o 720x1280.",
+      "why": "La lectura completa de frases y metadatos no debe depender de un área horizontal oculta."
+    },
+    {
+      "id": "d3",
+      "questionId": "q3",
+      "componentIds": [
+        "sound",
+        "movement",
+        "semantic"
+      ],
+      "choice": "Síntesis de texturas, silencios y transitorios alineados a entradas semánticas.",
+      "rejected": "Bucle repetitivo y sonido de transición genérico.",
+      "productionChange": "Capa armónica ligera, tics en negación, golpes secos en amenaza y silencio relativo en cierre reflexivo.",
+      "why": "Cada sonido debe cambiar interpretación, no sólo entretener mientras aparecen letras."
+    }
+  ],
+  "risks": [
+    {
+      "componentIds": [
+        "export",
+        "sound"
+      ],
+      "severity": "high",
+      "failure": "Encoder ausente, video sin pista real o error de timestamps entre frames y WAV.",
+      "prevention": "Spike de un segundo con fotogramas reales y audio a 48 kHz; ffprobe antes del render completo.",
+      "test": "ffprobe audio/video, decodificar último fotograma y validar duración y códecs.",
+      "status": "OBSERVED",
+      "spikeEvidence": "SPIKE.mp4, H.264 640x360 @24fps, AAC, duration 1.000; ffprobe passed on 2026-11-22"
+    },
+    {
+      "componentIds": [
+        "layout"
+      ],
+      "severity": "medium",
+      "failure": "Tipografía legible en 16:9 pero recortada o de tamaño microscópico en 9:16.",
+      "prevention": "Componer ambas orientaciones por separado y usar fuentes de distintos tamaños y safe margins.",
+      "test": "Verificar cajas tipográficas, muestras en todos los capítulos y medidas de ancho.",
+      "status": "NOT_RUN"
+    },
+    {
+      "componentIds": [
+        "semantic",
+        "movement"
+      ],
+      "severity": "medium",
+      "failure": "La película se convierte en carrusel de slogans y no en narración editorial de contexto.",
+      "prevention": "Conservar misma frase textual en tres atmósferas con acciones distintas y una tesis final.",
+      "test": "Revisión perceptual de capítulos, sin considerar tamaño del archivo prueba de arte.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "acceptance": [
+    {
+      "kind": "logic",
+      "criterion": "La frase canónica es idéntica en los tres mundos y el timeline dura exactamente 23 segundos.",
+      "oracle": "Aserciones deterministas del guion y prueba del frame clock en fuente.",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "visual",
+      "criterion": "En las versiones horizontal y vertical pueden leerse todos los títulos principales sin clip ni posición fuera de safe area.",
+      "oracle": "Frames de control de las seis secciones y bounds medidos por Pillow.",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "audio",
+      "criterion": "Ambos masters contienen audio AAC con transitorios expresivos alineados a la partitura y no clipeados.",
+      "oracle": "ffprobe + estadística del WAV original y escucha humana pendiente.",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "functional",
+      "criterion": "Un único script de motor reproduce los dos masters en dos relaciones de aspecto desde la misma configuración.",
+      "oracle": "Comandos de render y readback de ambos archivos usando ffprobe y decodificación.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "resources": "Python 3, Pillow, numpy y FFmpeg locales probados; tipos Inter Display y Noto Serif instalados sólo como dependencias de render, sin copiar ni distribuir fuentes de terceros.",
+  "licensing": "Texto, partitura temporal, gráficos y audio son originales de esta obra; referencias de terceros sólo para investigar, sin descargar ni incrustar escenas, marcas, fotos, audio o tipografías ajenas. Los archivos de fuentes del sistema no se redistribuyen.",
+  "environmentLimits": "Se puede codificar y medir los videos localmente, pero no se debe equiparar la inspección automatizada del medio con aprobación artística o prueba de comprensión de espectadores humanos."
+}
