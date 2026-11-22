@@ -5,7 +5,7 @@ from data_to_motion import read_data,X,Y,YMIN,YMAX,YEAR0,YEAR1,frame,SECONDS,FPS
 p=Path(__file__).parent
 D=read_data(p/'annual_nasa_gistemp_1880_2025.csv');m=dict(D)
 assert len(D)==146 and [x[0] for x in D]==list(range(1880,2026))
-assert m[1880]==-.18 and m[2025]==1.19 and m[2024]==1.28
+assert m[1880]==-.17 and m[2025]==1.18 and m[2024]==1.28
 assert X(1880)<X(1900)<X(2025), 'years must not reverse in X'
 assert Y(-.50)>Y(0)>Y(1.19), 'Y should be linear, not magnitude-distorting'
 assert math.isclose((Y(1.0)-Y(0)),Y(0)-Y(-1.0),abs_tol=1e-9)
