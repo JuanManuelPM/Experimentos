@@ -1,0 +1,288 @@
+{
+  "version": "DEEP-SPEC-1",
+  "medium": "images",
+  "depth": "SISTEMA",
+  "taskId": "images-w002-20261122-10",
+  "batchId": "images-w002-20261122",
+  "taskNumber": 10,
+  "qualityBarVersion": "QBAR-1",
+  "brief": "Interpretar una misma plaza ficticia después de una inundación como fotografía editorial sobria e ilustración gráfica expresiva, sin cambiar los hechos ni el foco humano.",
+  "source": {
+    "repo": "JuanManuelPM/Experimentos",
+    "ref": "gh-pages",
+    "path": "prometeo/launch/20261122/next/images/LAUNCH.md",
+    "blobSha": "2e0e5e8ca226d546005349dc44b31cd9abcf5dd1",
+    "section": "10 · DOS MEMORIAS"
+  },
+  "intent": {
+    "experience": "Sentir el peso silencioso de una inundación pasada y la dignidad de la reconstrucción compartida, en dos lenguajes realmente distintos.",
+    "distinctAbility": "Mantener hechos, relaciones, puntos de anclaje espacial y foco humano entre dos renderizados que no comparten gramática visual."
+  },
+  "references": [
+    {
+      "id": "R1",
+      "url": "https://www.worldpressphoto.org/collection/photo-contest/2025/Amanda-M-Perobelli/4",
+      "status": "OBSERVED",
+      "observation": "La serie sobre inundaciones en Brasil presenta rastros físicos del desastre y experiencias individuales dentro de una secuencia documental; el referente informa la atención a los seres humanos, sin copiar imágenes."
+    },
+    {
+      "id": "R2",
+      "url": "https://www.pentagram.com/work/the-meteor?page=2&rel=search",
+      "status": "OBSERVED",
+      "observation": "La identidad editorial de The Meteor articula decisiones independientes de tipografía, imagen y color, mostrando que un lenguaje gráfico coherente no es simplemente recolorear fotografías."
+    },
+    {
+      "id": "R3",
+      "url": "https://www.worldpressphoto.org/contest/code-of-ethics",
+      "status": "OBSERVED",
+      "observation": "El código de ética de fotografía documental exige integridad y responsabilidad al representar personas y acontecimientos; esta escena se acredita explícitamente como ficción sintetizada, nunca reportaje real."
+    },
+    {
+      "id": "R4",
+      "url": "https://www.shauntan.net/arrival-book",
+      "status": "OBSERVED",
+      "observation": "El autor describe cómo el relato visual sin diálogo se apoya en continuidad de objetos, montaje y variación de escala; se adopta la idea abstracta de continuidad factual, sin replicar ilustraciones."
+    }
+  ],
+  "worldCanon": {
+    "setting": "Plaza de las Mareas, población y lugar totalmente ficticios, inmediatamente después de retirarse una inundación; tarde nublada, sin tormenta activa.",
+    "invariantFacts": [
+      "Mismo encuadre horizontal 3:2 desde la esquina noroeste mirando hacia un edificio cívico de dos plantas",
+      "Edificio beige al fondo con TRES arcos en planta baja y UNA puerta central azul oscuro",
+      "Plátano de copa ancha y jardinera redonda de piedra en primer término izquierdo",
+      "Banco verde de listones a la derecha, inclinado y embarrado",
+      "Línea de barro visible a media altura en el edificio, charcos poco profundos y escombros pequeños, sin agua alta actual",
+      "Mujer adulta con impermeable MOSTAZA y botas de goma AZUL MARINO, arrodillada al centro, rescata un álbum familiar ROJO embarrado",
+      "Hombre mayor con suéter GRIS arrodillado junto a ella, sostiene una caja de plástico AZUL abierta",
+      "La mano de la mujer lleva el mismo álbum rojo hacia la caja azul; ambos personajes colaboran, sin dramatización de víctimas"
+    ],
+    "camera": "Posición a altura de los ojos de peatón; focal editorial equivalente 35 mm; edificio tras las figuras, personas al tercio central inferior; misma relación izquierda-derecha.",
+    "lighting": "Cielo nublado, luz difusa desde arriba a izquierda, suelo mojado con reflejos contenidos, sin rayos cinematográficos artificiales.",
+    "palette": {
+      "photo": "tierra gris y arcilla, mostaza mate, azul azul marino, piedra húmeda",
+      "illustration": "tinta azul medianoche, terracota barro, papel marfil, mostaza y azul sólido"
+    },
+    "contentSafety": "No es un hecho documentado ni fotografía real, sin localización/personas reales, sin nombres/cifras de víctimas. Atribución explícita de síntesis en metadatos y página de proyecto."
+  },
+  "components": [
+    {
+      "id": "world",
+      "role": "Canon único de hechos y relaciones espaciales",
+      "strategy": "Lista cerrada de anclas visuales y plano semántico compartido para ambos resultados",
+      "constraints": "No alterar protagonistas, tarea, arcos, banco, árbol, caja ni álbum entre lenguajes."
+    },
+    {
+      "id": "photo",
+      "role": "Imagen raster editorial con lenguaje fotográfico sobrio",
+      "strategy": "Profundidad de campo moderada, texturas de barro y agua fotográficas, imperfecta cotidianidad sin espectáculo",
+      "constraints": "No simular procedencia noticiosa ni exagerar daño; sin tipografía ni marca de agua."
+    },
+    {
+      "id": "graphic",
+      "role": "Ilustración raster editorial expresiva radicalmente distinta",
+      "strategy": "Gouache serigráfico y grabado, superficies planas, ritmo de masas y bordes entintados con perspectiva simplificada",
+      "constraints": "Mantener todos los anclajes semánticos aunque se modifiquen textura y tratamiento espacial."
+    },
+    {
+      "id": "audit",
+      "role": "Comparación ciega y trazabilidad de continuidad",
+      "strategy": "Tabla de anclas, protocolo A/B sin identificación de técnica, dimensiones y hashes de los raster",
+      "constraints": "No afirmar evaluación humana ni igualdad perceptual sin inspección independiente."
+    }
+  ],
+  "questions": [
+    {
+      "id": "Q1",
+      "target": "world",
+      "question": "¿Qué detalles físicos hacen que dos escenas sean identificables como un mismo hecho y encuadre, incluso al simplificar la ilustración?",
+      "alternatives": [
+        "Solo silueta general",
+        "Anclas físicas y relación entre personajes y objetos"
+      ],
+      "finding": "La narrativa visual secuencial funciona mejor cuando personajes y utilería permanecen identificables; se fija una lista de anclas compartidas.",
+      "decisionImpact": "Congelar una matriz de hechos y una regla fija de cámara antes de producir ambos raster.",
+      "evidenceRef": "R4"
+    },
+    {
+      "id": "Q2",
+      "target": "photo",
+      "question": "¿Cómo transmitir consecuencias humanas de una inundación en clave documental sin convertir la recreación ficticia en desinformación?",
+      "alternatives": [
+        "Fotografía heroica dramática sin aclaraciones",
+        "Composición sobria y crédito visible externo como ficción sintetizada"
+      ],
+      "finding": "Las normas de integridad documental exigen distinguir claramente recreaciones e imágenes sintéticas de reportajes reales.",
+      "decisionImpact": "Evitar geolocalización y titulares reales; rotular explícitamente la simulación en el README y el comparador.",
+      "evidenceRef": "R3"
+    },
+    {
+      "id": "Q3",
+      "target": "graphic",
+      "question": "¿Qué recursos diferencian de verdad una ilustración editorial de una fotografía con preset sin perder el significado del rescate de un álbum?",
+      "alternatives": [
+        "Recolorear la fotografía con un filtro",
+        "Redibujar con masas de tinta, impronta manual, planos y jerarquía de formas"
+      ],
+      "finding": "Las gramáticas editoriales combinan decisiones de imagen, forma y color, no exclusivamente un baño cromático.",
+      "decisionImpact": "Generar la ilustración independientemente con composición semántica común, sin transformar el mismo raster.",
+      "evidenceRef": "R2"
+    },
+    {
+      "id": "Q4",
+      "target": "audit",
+      "question": "¿Cómo detectar de modo reproducible si cambió el hecho o si la ilustración falsea el impacto humano frente a la foto?",
+      "alternatives": [
+        "Autocrítica textual sin prueba",
+        "Anclas contadas más lectura ciega de la misma escena"
+      ],
+      "finding": "Las series documentales centran consecuencias materiales y experiencias humanas; los cotejos necesitan evidencia concreta y revisión externa.",
+      "decisionImpact": "Usar checklist de anclas, registrar discrepancias y preparar test ciego independiente sin inventar resultados.",
+      "evidenceRef": "R1"
+    }
+  ],
+  "relations": [
+    {
+      "from": "world",
+      "to": "photo",
+      "invariant": "Edificio de tres arcos, árbol a la izquierda, banco a la derecha y acción sobre álbum rojo permanecen presentes.",
+      "failure": "La toma fotográfica sustituye componentes del canon y deja de representar la misma plaza.",
+      "test": "Inspección visual de anclas anotada por elemento."
+    },
+    {
+      "from": "world",
+      "to": "graphic",
+      "invariant": "La ilustración mantiene la misma posición funcional de personas, arco triple, banco, árbol y objetos.",
+      "failure": "La estilización crea un segundo episodio o invierte los hechos.",
+      "test": "Checklist de continuidad semántica y orientación de escena."
+    },
+    {
+      "from": "photo",
+      "to": "graphic",
+      "invariant": "Mismo acontecimiento y foco de colaboración, técnicas diferentes observables aun sin color.",
+      "failure": "Se limitaron a aplicar dos filtros a un mismo placeholder.",
+      "test": "Prueba en grises de estructura gráfica, bordes y materiales."
+    },
+    {
+      "from": "audit",
+      "to": "world",
+      "invariant": "La comparación ciega evalúa contenido y forma separadamente sin revelar el brazo en la primera lectura.",
+      "failure": "El evaluador responde por el nombre del estilo y no por lo que ve.",
+      "test": "Formulario A/B con campos de hechos, emoción y justificación."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "D1",
+      "questionId": "Q1",
+      "componentIds": [
+        "world",
+        "photo",
+        "graphic"
+      ],
+      "choice": "Misma cámara semántica y ocho hechos persistentes.",
+      "rejected": "Escenas consecutivas libres que comparten solo el tema.",
+      "productionChange": "Redactar prompts que reiteran objetos, colores, relaciones y encuadre con canon central.",
+      "why": "Comparar lenguajes exige impedir que cambien a la vez la acción y el escenario."
+    },
+    {
+      "id": "D2",
+      "questionId": "Q2",
+      "componentIds": [
+        "photo",
+        "audit"
+      ],
+      "choice": "Estética fotográfica editorial sin atribución de evento real.",
+      "rejected": "Usar una presunta fotografía de noticia de inundación.",
+      "productionChange": "Agregar crédito de ficción generada en documentos y visualizador, nunca afirmar captura real.",
+      "why": "La ficción no debe circular como documento de una tragedia auténtica."
+    },
+    {
+      "id": "D3",
+      "questionId": "Q3",
+      "componentIds": [
+        "graphic",
+        "world"
+      ],
+      "choice": "Dibujo ilustrado independiente de masas de color, tinta y papel.",
+      "rejected": "Filtro o posterización sobre el raster fotográfico.",
+      "productionChange": "Segundo render con lenguaje grabado-gouache y nueva construcción pictórica de todo el cuadro.",
+      "why": "La distancia formal es el objeto de esta prueba de capacidad."
+    },
+    {
+      "id": "D4",
+      "questionId": "Q4",
+      "componentIds": [
+        "audit",
+        "photo",
+        "graphic"
+      ],
+      "choice": "Checklist factual + evaluación ciega definida, resultados pendientes hasta observación.",
+      "rejected": "Declarar calidad y equivalencia por existencia de archivos.",
+      "productionChange": "Persistir tabla de desviaciones y protocolo de evaluadores; no contar revisiones imaginarias.",
+      "why": "La inspección de continuidad difiere del juicio artístico y debe poder refutarse."
+    }
+  ],
+  "risks": [
+    {
+      "componentIds": [
+        "world",
+        "photo",
+        "graphic"
+      ],
+      "severity": "high",
+      "failure": "Las dos generaciones independientes modifican objetos y número de arcos o intercambian protagonistas.",
+      "prevention": "Primero hacer un corte piloto con anclas repetidas en ambas instrucciones y comparar con la matriz de escena.",
+      "test": "Observación de los ocho hechos persistentes en ambos raster, seguida de corrección si el encuadre diverge.",
+      "status": "NOT_RUN"
+    },
+    {
+      "componentIds": [
+        "photo"
+      ],
+      "severity": "medium",
+      "failure": "La fotorealidad puede inducir a tomar el suceso ficticio por noticia real.",
+      "prevention": "Aviso inequívoco de síntesis ficticia fuera de imagen y metadatos de publicación.",
+      "test": "Abrir visualizador y verificar un rótulo de origen claramente legible.",
+      "status": "NOT_RUN"
+    },
+    {
+      "componentIds": [
+        "graphic"
+      ],
+      "severity": "medium",
+      "failure": "La ilustración podría ser solo una versión filtrada de la fotografía.",
+      "prevention": "Generar una interpretación pictórica independiente, no transformar bytes ni mapear colores de la foto.",
+      "test": "Cotejar bordes, trazos, simplificación de forma y materialidad sin recurrir al color.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "acceptance": [
+    {
+      "kind": "visual",
+      "criterion": "Dos raster reales en formato horizontal, inspeccionables a tamaño completo.",
+      "oracle": "Lectura de bytes, PNG decode, tamaño en píxeles, inspección perceptual humana separada.",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "visual",
+      "criterion": "Continuidad de la plaza, objetos y acción humana con al menos ocho anclas definidas.",
+      "oracle": "Tabla por ancla a partir de las dos imágenes reales; contradicciones registradas.",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "visual",
+      "criterion": "Gráfica expresiva de lenguaje materialmente distinto de la fotografía sobria.",
+      "oracle": "Comparación visual sin color de masas de forma, borde, ritmo y papel.",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "functional",
+      "criterion": "Protocolo ciego A/B disponible sin revelar antes el nombre del brazo.",
+      "oracle": "Dos archivos identificados de modo neutral y hoja de evaluación reproducible.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "resources": "ImageGen para arte raster original, Pillow/Node para QA, GitHub para fuente, hashes y publicación aislada; sin usar imágenes ajenas como assets.",
+  "licensing": "Arte visual original de proyecto ficticio generado con herramientas propias, sin importar fotografías de referencia ni copiar obra ajena; atribuir generación sintética y verificar permisos de publicación.",
+  "environmentLimits": "ImageGen no expone semillas ni condicionamiento espacial determinista por máscara; los dos resultados no pueden prometer continuidad pixel a pixel ni reproducción bit-exacta. Una prueba ciega con humanos sigue pendiente."
+}
