@@ -1,0 +1,74 @@
+{
+  "schema": "prometeo.autocritica.public-receipt/v1",
+  "audit_id": "web-w001-20261122-autocritica-0259",
+  "batch_id": "web-w001-20261122",
+  "room": "web",
+  "task_numbers": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10
+  ],
+  "invocation": "WORK · prometeo/root/AUTOCRITICA_WHISPLASH.md · web-w001-20261122",
+  "result": "FLOW_CANDIDATE_NOT_PROMOTED",
+  "artifact_source": "JuanManuelPM/Experimentos@gh-pages:prometeo/previews/web/w001/NN/index.html",
+  "flow": {
+    "id": "WEB_FACTORY_V2",
+    "version": "2.0.0",
+    "source_blob_sha": "02f7b6161b50cd5bc6b342b84c969aaa36bac90a",
+    "status": "SPEC_ONLY"
+  },
+  "coverage": {
+    "expected": 10,
+    "source_code_readback": 10,
+    "receipts_readback": 10,
+    "js_syntax_checked": 10,
+    "static_anchor_tests": 10,
+    "browser_checks_rerun": 0,
+    "reports_of_prior_local_chromium": 2
+  },
+  "findings": {
+    "verified_code_defects": 1,
+    "evidence_or_process_gaps": 4,
+    "proposals_saved": 5,
+    "proposals_readback_verified": 5,
+    "preventive_prototype_saved": 1,
+    "preventive_prototype_executed_pass": 1,
+    "production_works_modified": 0,
+    "flow_promoted": 0
+  },
+  "confirmed_defect": {
+    "task_number": 10,
+    "source_html_sha": "5c6a5ab1505c6dbc96f046101661652e0963d05f",
+    "description": "Repeated inline SVG resource IDs g4, clip4, g3 across simulated ATLAS panels. In-memory namespacing prototype restored 0 duplicates and 0 unresolved local references.",
+    "visual_runtime_effect": "NOT_INSPECTED"
+  },
+  "evidence_gaps": [
+    "Web browser/touch/accessibility QA was not rerun; 06 and 09 have prior local browser evidence in receipts only",
+    "GitHub Pages HTTPS 200 + browser visit not established independently",
+    "IndexedDB persistence/offline for 07 and audible Web Audio for 03 not runtime-tested",
+    "Artistic options and visual screenshots not assessed here; 09 receipt confirms three directions were not trialed"
+  ],
+  "blockers": [
+    "External browser runner had insufficient credits",
+    "Container had no external DNS",
+    "Five attempted Pages URL retrievals were inaccessible to web viewer"
+  ],
+  "human_approved": false,
+  "candidate": {
+    "repository": "JuanManuelPM/pruebas",
+    "branch": "candidate/prometeo-autocritica-web-w001-20261122-0259",
+    "report_path": "sistemas/metodo/autocritica/20261122/web/WEB_W001_AUDIT.md",
+    "proposal_root": "sistemas/metodo/inbox/web-factory-v2/web-w001-20261122/",
+    "prototype_path": "sistemas/metodo/autocritica/20261122/web/SVG_SCOPING_PROTOTYPE.js",
+    "last_commit": "d93b42df18ccc63d92ee5cdd7b65d2bc1b6d2295"
+  },
+  "integration_instruction": "ROOT FLOW_REVIEW.md should consolidate these isolated proposals, test regressions in at least two suitable products and promote only with authorization and proof.",
+  "privacy": "No private chat content, user data, or historic work copies"
+}
