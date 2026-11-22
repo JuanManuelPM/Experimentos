@@ -1,0 +1,335 @@
+{
+  "version": "DEEP-SPEC-1",
+  "medium": "3D / dirección cinematográfica",
+  "depth": "SISTEMA",
+  "taskId": "3d-w7-20261122-04",
+  "batchId": "3d-w7-20261122",
+  "taskNumber": 4,
+  "qualityBarVersion": "QBAR-1",
+  "source": {
+    "launchBlobSha": "58de659e2aa01c0746d59ca6f95c36bdc59f3030",
+    "flowVersion": "2.3.0",
+    "flowSha256": "53bc9e2e4b37c99e92d3494af8dfa4461cd4644b15f980e32497a8428b067b3f",
+    "evidenceBlobSha": "3253d9de4922ea25100ac02dfdb507aae89937ca",
+    "oldLaunchBlobSha": "942c3ba8b851137886e959d2790771556e2d9f5d",
+    "flowSourceStatus": "PREVIOUS_WORK_2_3_0_SHA_REUSED_AS_REFERENCE_NOT_PRIVATE_FLOW_REVERIFIED",
+    "artDirectionReferenceBlobSha": "b1a1a012e90897200336cac6316c0511cb40c4c5",
+    "deepSpecBlobSha": "7656a293b0182f81619bf0d27b90dffa771c2683",
+    "universalBlobSha": "0377d79b2aeb0a642a97687be49c5ba965593bf5"
+  },
+  "brief": "Construí «La despedida», una escena dramática original con dos personajes y una herramienta de dirección que permita editar planos, movimientos de cámara, iluminación y actuaciones en una línea de tiempo reproducible. Entregá escena y timeline editables, un componente reutilizable de secuenciación y, cuando exista exportador real, un corto reproducible con audio; probá continuidad de miradas, duración y correspondencia exacta entre la línea de tiempo y el resultado exportado, sin fingir un MP4.",
+  "intent": {
+    "experience": "Abrir directamente a una imagen dramática del muelle donde Vera y Noé se buscan con la mirada; experimentar dos planos, una respuesta y el costo de soltar la luz. El editor se mantiene fuera de la superficie cinematográfica.",
+    "distinctAbility": "Editar cámara, duración, luz y la dirección de mirada de ambos intérpretes; evaluar primer artículo de dos planos exactamente en los 3,2 segundos del JSON sin cruzar el eje, y exportar solo un blob que el navegador produzca realmente."
+  },
+  "references": [
+    {
+      "id": "r1",
+      "url": "https://www.theatrejs.com/docs/latest/manual/sequences",
+      "status": "OBSERVED",
+      "observation": "Documentación oficial leída: el Sequence Editor conecta propiedades, keyframes, focos de tiempo y controles de reproducción; diferencia guía de herramienta y scrub de secuencia. No se reutiliza código ni una apariencia ajena."
+    },
+    {
+      "id": "r2",
+      "url": "https://studio.blender.org/tools/pipeline-overview/shot-production/lighting",
+      "status": "OBSERVED",
+      "observation": "Se examinó exclusivamente el extracto de búsqueda indexado de la guía Blender Studio: dirección de luz y consistencia por secuencia en diálogo; la página completa devuelve HTTP 402, sus fotogramas NO fueron inspeccionados."
+    },
+    {
+      "id": "r3",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/API/HTMLCanvasElement/captureStream",
+      "status": "OBSERVED",
+      "observation": "Manual MDN leído: captureStream devuelve track canvas con frameRate, puede fallar si el origen no es limpio; no asegura codec, calidad o que audio+video se exporten realmente."
+    }
+  ],
+  "components": [
+    {
+      "id": "world",
+      "role": "Muelle nocturno escénico",
+      "strategy": "Geometría editorial autoral de tablones, faro y horizonte marino con materiales de baja rugosidad y niebla atmosférica.",
+      "constraints": "Escala humana consistente, luz de foco diegético, siluetas diferenciables y render adaptable a móvil."
+    },
+    {
+      "id": "actors",
+      "role": "Actuación de dos intérpretes",
+      "strategy": "Mallas artesanales deformadas de rostros y ropa, jerarquía animable de cabeza, hombro, mano y torso.",
+      "constraints": "Nada de muñecos finales de cubos o cilindros; continuidad de orientación y mirada conservada entre cortes."
+    },
+    {
+      "id": "sequencer",
+      "role": "Núcleo puro de dirección",
+      "strategy": "Pistas JSON con interpolación declarativa y muestreo por tiempo absoluto, siempre igual en reproducción y export.",
+      "constraints": "Duración invariante, cortes sin huecos, tiempos absolutos, sin estado acumulado según FPS."
+    },
+    {
+      "id": "ui",
+      "role": "Estudio de dirección responsive",
+      "strategy": "Editor de planos, trayectoria de cámara, FOV, luz y actuación junto a scrub, play, importación y export JSON.",
+      "constraints": "La acción visual debe modificar el mismo objeto del que consume el motor; controles accesibles al tacto."
+    },
+    {
+      "id": "export",
+      "role": "Capturador audiovisual del navegador",
+      "strategy": "Canvas.captureStream más salida WebAudio mezclada en MediaStreamDestination y MediaRecorder con detección de mime.",
+      "constraints": "No afirmar MP4 sin encoder real; detener grabación al tiempo final y ofrecer archivo solo tras Blob no vacío."
+    }
+  ],
+  "questions": [
+    {
+      "id": "q1",
+      "target": "sequencer",
+      "question": "¿Cuándo el primer corte cruza el eje de acción entre Vera y Noé y destruye el intercambio de mirada?",
+      "alternatives": [
+        "Cámaras al mismo lado del eje con yaw dirigido al interlocutor",
+        "Contraplano cruzado sin criterios de orientación"
+      ],
+      "evidenceRef": "r2",
+      "finding": "La guía de iluminación enfatiza continuidad espacial en diálogo; el corte se puede controlar con geometría y signos de yaw sin afirmar aprobación estética.",
+      "decisionImpact": "Crear continuity.mjs que verifica lado de cámaras y signos de mirada en ambos planos, con contraejemplo artificial que debe fallar."
+    },
+    {
+      "id": "q2",
+      "target": "actors",
+      "question": "¿Cuál es la familia de representación viable antes de prometer rostros humanos cinematográficos creíbles?",
+      "alternatives": [
+        "Figuras escultóricas de autor y actuación corporal bajo recorte cinematográfico",
+        "Figuras 2.5D originales de teatro de sombras con vistas limitadas"
+      ],
+      "evidenceRef": "r2",
+      "finding": "No hay acceso a captura evaluada de W7; se conserva como CANDIDATE el teatro de figuras de malla y se quita la nariz de cono exterior, sin declarar fidelidad de actuación.",
+      "decisionImpact": "Probar dos planos primero: silhouette, ojos, movimiento de cabeza y manos; ante fallo se pasa a otra familia 2.5D en vez de pegar más primitivas."
+    },
+    {
+      "id": "q3",
+      "target": "export",
+      "question": "¿Se puede grabar un archivo real con video y audio desde el navegador y qué duración tiene el archivo decodificado?",
+      "alternatives": [
+        "MediaRecorder con MIME detectado, WebAudio y archivo real a revisar",
+        "Declaración automática MP4 sin archivo de salida"
+      ],
+      "evidenceRef": "r3",
+      "finding": "MDN documenta pista del canvas, no acredita MediaRecorder en esta sesión ni la decodificación del archivo final; se requiere prueba real en navegador.",
+      "decisionImpact": "Conservar exportador condicional de bytes genuinos y bloquear claim de formato, sincronía y duración mientras no se haya reproducido el archivo."
+    },
+    {
+      "id": "q4",
+      "target": "ui",
+      "question": "¿Cómo evitar que botones y controles tapen la actuación en la primera pantalla móvil?",
+      "alternatives": [
+        "Play desplazado a margen y editor por debajo de la escena",
+        "Overlay central enorme y panel encima del protagonista"
+      ],
+      "evidenceRef": "r1",
+      "finding": "El editor requiere acceso a propiedades sin convertirlas en superficie del corto; 390/1440 necesitan capturas para verificar ubicación real.",
+      "decisionImpact": "Mover Play a margen inferior, colocar inspector fuera del lienzo y habilitar un botón específico para revisar 3,2 s."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "d1",
+      "questionId": "q1",
+      "componentIds": [
+        "sequencer",
+        "actors"
+      ],
+      "choice": "Eje fijo de interacción y prueba pura de signos de mirada",
+      "rejected": "Cortes guiados solo por poses individuales sin continuidad",
+      "productionChange": "Módulo nuevo continuity.mjs y corte firstArticleCut con frontera exacta 1,6 s.",
+      "why": "La topología de los dos planos debe fallar en tests antes de multiplicar montaje."
+    },
+    {
+      "id": "d2",
+      "questionId": "q2",
+      "componentIds": [
+        "actors",
+        "world"
+      ],
+      "choice": "Dirección escultórica con rasgos discretos y gesto corporal",
+      "rejected": "Cono nasal pegado y rostro de accesorio primitivo",
+      "productionChange": "Eliminar cono externo de nariz, reducir volumen de ojos y activar editor de yaw de ambos personajes.",
+      "why": "Evitar collage facial directo del antecedente sin confundir reducción de rasgos con calidad perceptual verificada."
+    },
+    {
+      "id": "d3",
+      "questionId": "q3",
+      "componentIds": [
+        "export",
+        "sequencer"
+      ],
+      "choice": "Captura condicional nativa y no publicación anticipada de archivo",
+      "rejected": "MP4 nominal sin codificador ni validación de playback",
+      "productionChange": "Reusar capturador real del motor y marcar video real NOT_RUN hasta reproducir bytes y medir duración.",
+      "why": "El MIME reportado por el navegador no es prueba de archivo reproducible ni sincronizado."
+    },
+    {
+      "id": "d4",
+      "questionId": "q4",
+      "componentIds": [
+        "ui",
+        "actors"
+      ],
+      "choice": "Interfaz de film con accionador lateral y editor separado",
+      "rejected": "Botón central solapando rostros",
+      "productionChange": "Primer frame con play periférico, panel móvil bajo el film y acceso directo al corte de 3,2 s.",
+      "why": "La emoción debe leerse al abrir y el director editar solo al entrar al inspector."
+    }
+  ],
+  "relations": [
+    {
+      "from": "sequencer",
+      "to": "export",
+      "invariant": "El segundo N evalúa exactamente el mismo estado de cámara, luz y acting sin depender de la frecuencia de frames.",
+      "failure": "Video con cortes fuera de tiempo o posición distinta de los keyframes.",
+      "test": "Tests de muestreo y comparación de capturas en límites de plano."
+    },
+    {
+      "from": "actors",
+      "to": "world",
+      "invariant": "Ambos personajes comparten escala de suelo y posiciones de mirada con las cámaras y la fuente de luz narrativa.",
+      "failure": "Actores flotan, miran fuera de eje o cambian de talla entre planos.",
+      "test": "Inspección de planos frontal, reverso, planos cortos y sombras."
+    },
+    {
+      "from": "ui",
+      "to": "sequencer",
+      "invariant": "Cada edición modifica la fuente JSON que el motor evalúa y que se exporta, sin estado visual paralelo.",
+      "failure": "UI cambia valores sin producir diferencia visual en preview.",
+      "test": "Roundtrip JSON y regresiones por edición de fotogramas clave."
+    }
+  ],
+  "risks": [
+    {
+      "componentIds": [
+        "actors",
+        "world"
+      ],
+      "severity": "high",
+      "failure": "El primer artículo podría seguir percibiéndose como figuras artificiales sin actuaciones legibles y sin escala de plano.",
+      "prevention": "Probar exactamente dos planos, retrato y encuadre, con captura 390/1440 antes de aceptar estrategia; si falla cambiar a teatro 2.5D original.",
+      "test": "Capturar y evaluar de forma independiente primera pantalla y frames a t=0,1.599,1.600,3.200.",
+      "status": "NOT_RUN"
+    },
+    {
+      "componentIds": [
+        "export",
+        "sequencer"
+      ],
+      "severity": "high",
+      "failure": "MediaRecorder no genera bytes decodificables o audio queda fuera de sincronía con cortes.",
+      "prevention": "No publicar MP4 ni reclamar grabación sin archivo; ofrecer MIME real si navegador soporta API.",
+      "test": "Grabar corte de 3,2 s en dispositivo, abrir archivo y medir longitud/audio/corte con ffprobe o reproducción.",
+      "status": "NOT_RUN"
+    },
+    {
+      "componentIds": [
+        "sequencer"
+      ],
+      "severity": "medium",
+      "failure": "El corte temporal cruza eje o genera hueco al mover duraciones.",
+      "prevention": "Validador de línea absoluta y continuidad.cameras/yaw; prueba de mutación negativa.",
+      "test": "Inspección lógica de todas las tomas, t=1.599/1.600 y retime de toma.",
+      "status": "OBSERVED"
+    }
+  ],
+  "acceptance": [
+    {
+      "kind": "logic",
+      "criterion": "Dos planos exactos con eje de mirada consistente y frontera 1,600 s.",
+      "oracle": "Pruebas en V8 con evaluador real y contraejemplo que cruza el eje; duración total exactamente 3,2 s.",
+      "status": "OBSERVED"
+    },
+    {
+      "kind": "visual",
+      "criterion": "Fotogramas reales de dos planos en viewport 390 y 1440 que priorizan los dos actores.",
+      "oracle": "Comparar capturas visuales genuinas de apertura y corte, no CSS ni artefactos ilustrativos.",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "interactive",
+      "criterion": "Controles de mirada, luz, FOV, posición y duración editan la misma secuencia serializada.",
+      "oracle": "En navegador Android cambiar gesto/cámara, exportar JSON, recargar y comprobar estado visual.",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "audio",
+      "criterion": "Corto auténtico exportado y decodificado con audio y duración observable.",
+      "oracle": "Capturar WebM/MP4 real, abrirlo, escuchar y verificar duración, MIME y frontera.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "resources": "Recuperación controlada del motor Three.js CDN 0.170.0, escena 3D de mallas originales W6 conservadas como fuente, editor y WebAudio; nuevo módulo de continuidad y corte de primer artículo reutilizable. CDN/Android/render no comprobados en esta sesión.",
+  "licensing": "Geometría, guion y música originales del proyecto previo del mismo propietario. Reutilización explícita de W6 desde source SHA documentados; no assets de terceros. Fuentes externas únicamente como referentes leídos.",
+  "environmentLimits": "La herramienta de captura de navegador remoto no ejecutó el pedido por cuota insuficiente. El contenedor local no puede resolver Internet ni cargar Three.js CDN; la primera imagen WebGL 390/1440, Android, audio y video final están NOT_RUN.",
+  "oldBatchId": "3d-w6-20261122",
+  "artDirection": {
+    "schema": "prometeo.art-direction.first-article/v1",
+    "medium": "3d",
+    "taskId": "3d-w7-20261122-04",
+    "briefSha": "58de659e2aa01c0746d59ca6f95c36bdc59f3030",
+    "flowRef": "W6 specialized FORJA 2.3.0 / sha256 53bc9e2e4b37c99e92d3494af8dfa4461cd4644b15f980e32497a8428b067b3f (current private promotion NOT_REVERIFIED)",
+    "promise": {
+      "subject": "Vera y Noé se encuentran sobre el muelle antes de separarse",
+      "intent": "Dos planos legibles y no genéricos cuya geografía de miradas y silencio sostenga una despedida."
+    },
+    "benchmark": {
+      "url": "https://studio.blender.org/tools/pipeline-overview/shot-production/lighting",
+      "description": "Extracto indexado observado: guía oficial Blender Studio sobre continuidad espacial y direccionalidad lumínica entre planos; no se abrió el fotograma completo por HTTP 402.",
+      "status": "OBSERVED"
+    },
+    "techniques": [
+      {
+        "family": "Three.js teatro escultórico tridimensional",
+        "viability": "Motor WebGL existente y mallas propias W6; render en navegador todavía no observado.",
+        "license": "Geometría original de mismo repositorio; código Three.js cargado por CDN."
+      },
+      {
+        "family": "Teatro 2.5D de siluetas vectoriales",
+        "viability": "Técnica alternativa implementable con capas vectoriales de autor, sin servidor ni assets de terceros.",
+        "license": "Dibujos originales propios, sin bibliotecas de personajes ajenas."
+      }
+    ],
+    "selectedTechnique": "Three.js teatro escultórico tridimensional",
+    "firstFrame": {
+      "openingDescription": "Plano 1 del corte, dos personajes en el muelle con fuente de luz diegética y acceso a Play fuera de su silueta.",
+      "focalSubject": "La dirección corporal y de mirada de Vera frente a Noé.",
+      "minimalUI": "Play pequeño en margen inferior izquierdo; editor fuera del cuadro; sin tarjeta sobre los rostros.",
+      "checks": [
+        {
+          "viewport": "390",
+          "criterion": "Al menos los cuerpos y el farol permanecen legibles en el primer frame sin overlay sobre sujetos.",
+          "oracle": "Captura real 390×844 y comparación de contornos/ocupación del viewport."
+        },
+        {
+          "viewport": "1440",
+          "criterion": "El plano conserva contraste y escala en desktop sin espacio vacío dominante o panel superpuesto.",
+          "oracle": "Captura real 1440×900 con escena visible y dos cuerpos localizables."
+        },
+        {
+          "viewport": "both",
+          "criterion": "Las miradas de Vera y Noé se sostienen al cortar a t=1,600 s.",
+          "oracle": "Comparar dos frames antes y después del corte y lectura dramática humana."
+        }
+      ],
+      "observations": []
+    },
+    "firstArticle": {
+      "target": "Primer intercambio de miradas de 3,2 segundos, planos A y B reales en WebGL.",
+      "rejectWhen": "El cambio de plano cruza eje, no se leen las siluetas o el archivo grabado no reproduce imagen+audio.",
+      "switchTo": "Teatro 2.5D de siluetas vectoriales",
+      "oracle": "Reproducir dos planos, inspeccionar imagen y escuchar export real; pruebas de código solas no alcanzan.",
+      "resourceProof": "Three.js y geometría heredada bajo URLs en repositorio; archivo exportado del navegador NOT_RUN.",
+      "status": "NOT_RUN"
+    },
+    "humanApproved": false
+  },
+  "comparison": {
+    "oldBatchId": "3d-w6-20261122",
+    "newBatchId": "3d-w7-20261122",
+    "oldBriefSha": "942c3ba8b851137886e959d2790771556e2d9f5d",
+    "newBriefSha": "58de659e2aa01c0746d59ca6f95c36bdc59f3030",
+    "strategyBefore": "Plano completo y validación lógica del montaje sin primer artículo observado.",
+    "strategyAfter": "Corte preventivo aislado de dos planos + prueba de mirada, se bloquea afirmación de calidad hasta screenshot/export.",
+    "result": "IMPLEMENTED_SOURCE; ART_NOT_OBSERVED; EXPORT_NOT_RUN"
+  },
+  "bookCreatedAt": "2026-11-22T18:51:32.686Z"
+}
