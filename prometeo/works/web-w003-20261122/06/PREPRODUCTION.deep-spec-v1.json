@@ -1,0 +1,301 @@
+{
+  "version": "DEEP-SPEC-1",
+  "medium": "web",
+  "depth": "SISTEMA",
+  "taskId": "web-w003-20261122-06",
+  "batchId": "web-w003-20261122",
+  "taskNumber": 6,
+  "launch": {
+    "ref": "gh-pages",
+    "path": "prometeo/launch/20261122/relaunch/web/LAUNCH.md",
+    "sha": "bef87bf57c789d2b0605ca9ff81a5d3bbaab5e35"
+  },
+  "flow": {
+    "owner": "JuanManuelPM/pruebas",
+    "branch": "candidate/prometeo-web-art-gate-w002-20261122",
+    "path": "cloud-lab/flow-studio-v3/experiments/semilla-parallel-launchpad/launcher-workspace-v4/prometeo/learning/web-design-studio/workflows/WEB_FACTORY_V2/FLOW.json",
+    "version": "2.0.0",
+    "sha": "1a0e709beec9a84986fc33c5ce4ab0a162dccaf2",
+    "status": "CANDIDATE_NOT_PROMOTED"
+  },
+  "brief": "Ensayo periodístico web sobre cambios de calor urbano con series públicas, incertidumbre, gráficos consultables, scrollytelling responsive y componentes reutilizables.",
+  "intent": {
+    "experience": "Abrir sobre una imagen de datos auténticos, recorrer una historia corta y poder interrogar cada año sin perder unidades ni contexto.",
+    "distinctAbility": "Gráfico editorial de matrices térmicas con valores auditables, lectura narrativa y tabla exacta de 75 registros."
+  },
+  "references": [
+    {
+      "id": "r1",
+      "url": "https://pudding.cool/process/how-to-make-dope-shit-part-3/",
+      "status": "OBSERVED",
+      "observation": "Se examinó el artículo de proceso: relaciona la escritura y la construcción de estructura narrativa visual, no propone una gráfica aislada sin desarrollo."
+    },
+    {
+      "id": "r2",
+      "url": "https://climate.copernicus.eu/reuters-launches-climate-monitor-tool-powered-copernicus-climate-change-service-data",
+      "status": "OBSERVED",
+      "observation": "Se examinó el texto de Copernicus del 2 de julio de 2026: Climate Monitor contextualiza temperaturas con un período de referencia comparativo y localidad."
+    },
+    {
+      "id": "r3",
+      "url": "https://www.epa.gov/heatislands/measuring-heat-islands",
+      "status": "OBSERVED",
+      "observation": "Se examinó la guía EPA: evaluar una isla de calor requiere objetivos, dónde, cuándo, comparación espacial y medidas apropiadas, no un punto único."
+    },
+    {
+      "id": "r4",
+      "url": "https://open-meteo.com/en/docs/historical-weather-api",
+      "status": "OBSERVED",
+      "observation": "Se examinaron documentación de ERA5-Land 0.1 grados y variables diarias de máximas/mínimas del aire a 2 metros, con requisitos de zona horaria."
+    }
+  ],
+  "components": [
+    {
+      "id": "c1",
+      "role": "Hero de datos con mosaico térmico anual por ciudad",
+      "strategy": "25 columnas de marcas originales SVG/DOM, mapeo cromático explícito y etiquetas de año consultables",
+      "constraints": "Cada marca deriva del mismo data.json, sin mapa de superficies ni valores fabricados."
+    },
+    {
+      "id": "c2",
+      "role": "Relato con gráfico lineal coordinado y anotaciones",
+      "strategy": "Sticky chart responsive en desktop y lectura normal de flujo en móvil con reduced-motion",
+      "constraints": "La narrativa nunca reemplaza exploración manual y el orden DOM coincide con el de lectura."
+    },
+    {
+      "id": "c3",
+      "role": "Explorador tabular con descarga CSV auditable",
+      "strategy": "75 filas de data.json, controles de ciudad y métrica, export local",
+      "constraints": "CSV usa idénticos valores, unidades visibles y selección accesible por teclado."
+    },
+    {
+      "id": "c4",
+      "role": "Capa de metodología y límites epistemológicos",
+      "strategy": "Footnotes y fuentes enlazadas a grilla y API original",
+      "constraints": "No confundir calor de modelo a 2 m con isla térmica urbana ni prometer incertidumbre estadística no estimada."
+    }
+  ],
+  "questions": [
+    {
+      "id": "q1",
+      "target": "c1",
+      "question": "¿Conviene mapa de calor geográfico sin raster espacial o matriz temporal de valores reales por ciudad?",
+      "alternatives": [
+        "Mapa espacial interpolado como producto de grilla",
+        "Matriz temporal de temperaturas por localidad"
+      ],
+      "evidenceRef": "r3",
+      "finding": "Tres puntos de grilla no permiten interpolar un mapa de isla urbana fiel; sí una matriz cronológica comparativa.",
+      "decisionImpact": "Protagonista de 75 casillas observables en apertura y no falso mapa de microclima."
+    },
+    {
+      "id": "q2",
+      "target": "c2",
+      "question": "¿Cómo pasar de narración a gráfico preservando lectura en móvil y sin animaciones?",
+      "alternatives": [
+        "Mapa con scroll capturado",
+        "Secuencia de capítulos con gráfico sticky opcional"
+      ],
+      "evidenceRef": "r1",
+      "finding": "Un relato puede disponer de hitos y visual sincronizado sin interceptar el scroll natural.",
+      "decisionImpact": "IntersectionObserver sólo cambia el foco; botones manuales siempre prevalecen hasta nuevo capítulo."
+    },
+    {
+      "id": "q3",
+      "target": "c4",
+      "question": "¿Qué afirma el dato y qué no afirma sobre el calor de veredas individuales?",
+      "alternatives": [
+        "Declarar isla de calor sin comparador rural",
+        "Temperatura de reanálisis por punto grilla y límites frontales"
+      ],
+      "evidenceRef": "r4",
+      "finding": "ERA5-Land representa celdas de 0.1 grados; no contiene gradiente intraciudad por calle.",
+      "decisionImpact": "Metodología visible y disclaimer explícito en el hero y cada conclusión."
+    }
+  ],
+  "relations": [
+    {
+      "from": "c1",
+      "to": "c3",
+      "invariant": "La misma fila anual alimenta casilla hero, gráfico, etiqueta y tabla; no recalcular otras métricas para el hero.",
+      "failure": "Hero contradice ficha del año o CSV descargado.",
+      "test": "Aserciones 75/75 para celdas y CSV."
+    },
+    {
+      "from": "c2",
+      "to": "c4",
+      "invariant": "El texto editorial usa promedios y diferencias calculados de la serie activa y conserva nombre de unidad.",
+      "failure": "Afirmación numérica estática incorrecta o confundida con causa.",
+      "test": "Aserciones de fuentes y cambios entre 2001-10 y 2016-25."
+    },
+    {
+      "from": "c1",
+      "to": "c2",
+      "invariant": "A 320px todas las 25 marcas permanecen consultables por scroll local, sin desbordar viewport.",
+      "failure": "Corte de años o de etiquetas.",
+      "test": "Chromium con 320/390/768/1440 y overflow check."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "d1",
+      "questionId": "q1",
+      "componentIds": [
+        "c1",
+        "c3"
+      ],
+      "choice": "Matriz temporal de datos reales",
+      "rejected": "Mapa regional con interpolación de tres puntos",
+      "productionChange": "Se implementa hero de bandas 25x3 y tabla consultable, sin colorear polígonos geográficos.",
+      "why": "Una superficie inventada traicionaría la resolución espacial y atribución de la fuente."
+    },
+    {
+      "id": "d2",
+      "questionId": "q2",
+      "componentIds": [
+        "c2",
+        "c3"
+      ],
+      "choice": "Scrollytelling no intrusivo y controles manuales",
+      "rejected": "Secuestro del scroll y animaciones obligatorias",
+      "productionChange": "Se usan IntersectionObserver y estados de input accesibles, con fallback y reduced motion.",
+      "why": "El texto debe leerse igual en móvil, teclado y preferencias de movimiento."
+    },
+    {
+      "id": "d3",
+      "questionId": "q3",
+      "componentIds": [
+        "c4",
+        "c1"
+      ],
+      "choice": "Reanálisis ERA5-Land con advertencias fuertes",
+      "rejected": "Afirmar detección de isla de calor con un punto",
+      "productionChange": "La página repite la escala de 0.1 grados y enlaza las URLs originales por localidad.",
+      "why": "La información periodística exige separar medición del modelo, elección editorial y explicación causal."
+    }
+  ],
+  "risks": [
+    {
+      "componentIds": [
+        "c1",
+        "c3"
+      ],
+      "severity": "high",
+      "failure": "Data.json sin carga o heatmatrix falsa en primera pantalla",
+      "prevention": "Primer artículo con 25 casillas reales y verificación 390/1440 antes de expandir",
+      "test": "Cargar serie en navegador y comparar años/cantidad de casillas",
+      "status": "NOT_RUN"
+    },
+    {
+      "componentIds": [
+        "c2",
+        "c3"
+      ],
+      "severity": "medium",
+      "failure": "Scroll rompe controles o tabla inaccesible en 320 px",
+      "prevention": "Separar navegación y datos de cambios por IntersectionObserver",
+      "test": "Browser teclado, cuatro viewports, movimiento reducido",
+      "status": "NOT_RUN"
+    },
+    {
+      "componentIds": [
+        "c4"
+      ],
+      "severity": "medium",
+      "failure": "Inferencia falsa de isla de calor",
+      "prevention": "Explicitar reanálisis y la ausencia de comparador rural",
+      "test": "Búsqueda en copy de afirmaciones y verificación de metodología",
+      "status": "OBSERVED"
+    }
+  ],
+  "acceptance": [
+    {
+      "kind": "logic",
+      "criterion": "75 registros anuales, 25 por ciudad y los valores de métricas concuerdan con data.json.",
+      "oracle": "Script local compara en cada fila datos/tabla/CSV con tolerancia nula.",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "visual",
+      "criterion": "Primera pantalla con gráfico como protagonista sin desborde horizontal a 390/1440.",
+      "oracle": "Captura real Chromium y medida document.documentElement.scrollWidth.",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "interactive",
+      "criterion": "Poder consultar año, ciudad y métrica en teclado y pantalla estrecha.",
+      "oracle": "Eventos reales de navegador y lectura de rótulos e indicadores.",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "functional",
+      "criterion": "La aplicación abre desde ruta servida con data.json local y no depende de CDN.",
+      "oracle": "HTTP local y prueba de carga de recurso, JS y descargas CSV.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "resources": "HTML/CSS/ES Modules sin dependencias externas; datos ERA5-Land Open-Meteo reusados de W002 bajo nueva ruta, capturas en Chromium local si disponibles.",
+  "licensing": "Datos meteorológicos Open-Meteo ERA5-Land con atribución y CC BY 4.0; las visualizaciones originales se crean en esta tarea. Sin fotografías sin licencia.",
+  "environmentLimits": "El acceso directo de Chromium local a GitHub Pages no está disponible; QA local servida y publicación remota requieren comprobaciones separadas. No se dispone de inspección humana del arte.",
+  "artDirection": {
+    "schema": "prometeo.art-direction.first-article/v1",
+    "medium": "web",
+    "taskId": "web-w003-20261122-06",
+    "briefSha": "bef87bf57c789d2b0605ca9ff81a5d3bbaab5e35",
+    "flowRef": "candidate/prometeo-web-art-gate-w002-20261122/FLOW.json blob 1a0e709beec9a84986fc33c5ce4ab0a162dccaf2",
+    "promise": {
+      "subject": "Matriz térmica genuina de 75 años-ciudad como hero editorial",
+      "intent": "El primer contacto es evidencia visible, con anotación y línea temporal antes que un menú o un bloque de tarjetas."
+    },
+    "benchmark": {
+      "url": "https://climate.copernicus.eu/reuters-launches-climate-monitor-tool-powered-copernicus-climate-change-service-data",
+      "description": "La ficha Copernicus observada expone comparaciones contextuales de temperatura y año de referencia.",
+      "status": "OBSERVED"
+    },
+    "techniques": [
+      {
+        "family": "Matriz temporal SVG/DOM accesible",
+        "viability": "Grilla anual 25x3 reproducible desde serie y herramientas web nativas disponibles.",
+        "license": "Geometría/visualización original y datos CC BY 4.0 con atribución."
+      },
+      {
+        "family": "Serie radial/canvas en raster dinámico",
+        "viability": "Canvas 2D disponible pero etiquetas y foco requieren capa DOM accesible adicional.",
+        "license": "Gráficos originales a partir de datos autorizados ERA5-Land."
+      }
+    ],
+    "selectedTechnique": "Matriz temporal SVG/DOM accesible",
+    "firstFrame": {
+      "openingDescription": "390: título editorial en columna, mosaico de 3 tiras debajo; 1440: título alto a izquierda y 3 tiras a derecha.",
+      "focalSubject": "Bandas de temperatura con valores reales 2001–2025 para tres localidades y escala legible.",
+      "minimalUI": "Identidad pequeña, enlace explorar, controles de años, sin overlays y sin botones decorativos.",
+      "checks": [
+        {
+          "criterion": "75 marcas anuales con 25 por localidad",
+          "oracle": "Contar botones de datos en DOM y validar 25x3.",
+          "viewport": "both"
+        },
+        {
+          "criterion": "No desbordar ventana de 390 o 1440",
+          "oracle": "Medir documentElement.scrollWidth <= window.innerWidth.",
+          "viewport": "both"
+        },
+        {
+          "criterion": "Una casilla revela valor exacto y unidad",
+          "oracle": "Activar 2025 y confirmar valor de la fuente, con aria-pressed.",
+          "viewport": "both"
+        }
+      ],
+      "observations": []
+    },
+    "firstArticle": {
+      "target": "Una tira de 25 bandas de Buenos Aires con lectura anual, después tres tiras",
+      "rejectWhen": "Los puntos se vuelven ilegibles o aparecen valores no trazables a data.json.",
+      "switchTo": "Serie radial/canvas en raster dinámico",
+      "oracle": "Chromium observa marcas reales, valores y ausencia de overflow en dos viewports.",
+      "resourceProof": "dataset W002 b7ab02af9855453b101f0c48ff600156bc2ccaab, atribución Open-Meteo CC BY 4.0",
+      "status": "NOT_RUN"
+    },
+    "humanApproved": false
+  }
+}
