@@ -5,7 +5,7 @@
   "batchId": "web-w001-20261122",
   "taskNumber": 1,
   "title": "Casi nada. · Ciencia cotidiana",
-  "status": "SOURCE_DELIVERED_PUBLIC_URL_UNVERIFIED",
+  "status": "DELIVERED_PUBLIC_HTML_FETCH_VERIFIED_BROWSER_NOT_RUN",
   "source": {
     "repo": "JuanManuelPM/pruebas",
     "ref": "candidate/prometeo-web-w001-01-20261122",
@@ -34,8 +34,28 @@
     "screenshot": "NOT_RUN",
     "browserInteraction": "NOT_RUN",
     "physicalMobile": "NOT_RUN",
-    "pagesExternalHttp": "HTTP_404_IN_EARLY_CHECK",
-    "note": "Parallel external fetch reported 404 while Pages deploys were pending/cancelled concurrently; Firecrawl hosted browser could not run because that app exhausted credits."
+    "pagesExternalHttp": "PUBLIC_HTML_CONTENT_RETRIEVED_PASS",
+    "note": "An initial external fetch returned 404 during concurrent deployments. A subsequent live external content retrieval returned the actual site, and a later GitHub Pages workflow succeeded. Real screenshot/browser interaction/physical mobile checks remain NOT_RUN.",
+    "initialExternalHttp": "HTTP_404_IN_EARLY_CHECK_DURING_CONCURRENT_DEPLOYS",
+    "externalHtmlVerification": {
+      "status": "PASS",
+      "method": "Parallel web_fetch (live requested); extracted publicly served HTML text",
+      "observedDate": "2026-11-22",
+      "checkedUrl": "https://juanmanuelpm.github.io/Experimentos/prometeo/previews/web/w001/01/",
+      "matchedText": [
+        "casi nada",
+        "Edición 001 / Materia en movimiento",
+        "Lo invisible",
+        "Laboratorio",
+        "La curiosidad también se documenta"
+      ],
+      "limits": "Confirms remote page content was retrievable. Does not certify interactive controls, CSS visual rendering, smartphone layout or live server HTTP status code."
+    },
+    "pagesDeployment": {
+      "status": "GITHUB_ACTION_SUCCESS",
+      "runUrl": "https://github.com/JuanManuelPM/Experimentos/actions/runs/44988623009",
+      "note": "Pages success observed for gh-pages; not equivalent to browser smoke test."
+    }
   },
   "originalAssets": true,
   "noPersonalData": true,
