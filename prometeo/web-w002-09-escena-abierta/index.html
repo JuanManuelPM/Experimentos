@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#211719">
+<meta name="description" content="ESCENA ABIERTA. Un festival cultural imaginario de música, performance e ideas. Explorá el programa y armá tu agenda personal.">
+<title>ESCENA ABIERTA 2027 · Festival cultural imaginario</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./style.css">
+<script type="module" src="./app.mjs"></script>
+</head>
+<body>
+<a class="skip-link" href="#programacion">Ir a programación</a>
+<header class="site-header">
+ <a class="brand" href="#inicio" aria-label="Escena Abierta, inicio"><span class="brand-symbol" aria-hidden="true">✳</span><span>ESCENA<br>ABIERTA</span></a>
+ <nav class="nav-links" aria-label="Navegación principal">
+  <a href="#concepto">El festival</a><a href="#programacion">Programación</a><a href="#mi-agenda" class="agenda-nav">Mi agenda <span class="agenda-counter" id="header-count">0</span></a>
+ </nav>
+ <a class="nav-mobile" href="#mi-agenda" aria-label="Ver mi agenda">Agenda <span id="mobile-count">0</span></a>
+</header>
+<main>
+<section id="inicio" class="hero" aria-labelledby="hero-title">
+ <div class="hero-copy">
+  <div class="hero-top"><span>UN FESTIVAL PARA SALIR DEL MARCO</span><span>EDICIÓN / 01</span></div>
+  <h1 id="hero-title"><span>ESCENA</span><span class="hero-outline">ABIERTA<span class="title-dot">.</span></span></h1>
+  <div class="hero-bottom"><div><span class="eyebrow">12, 13 Y 14 DE MARZO · 2027</span><strong>BUENOS<br>AIRES</strong></div><a href="#programacion" class="round-arrow" aria-label="Explorar programación"><span aria-hidden="true">↘</span></a></div>
+ </div>
+ <div class="hero-photo"><img src="https://images.unsplash.com/photo-1767677764533-83e1cab46a46?auto=format&fit=crop&w=1600&q=80" alt="Público y luces violetas en un recital; imagen atmosférica, no fotografía del festival ficticio" fetchpriority="high">
+  <div class="hero-photo-tag">MÚSICA / ARTE VIVO / IMÁGENES / IDEAS</div>
+  <span class="hero-index" aria-hidden="true">01 / 03</span>
+ </div>
+</section>
+<div class="ticker" aria-hidden="true"><div class="ticker-track">TRES DÍAS PARA CAMBIAR DE FRECUENCIA · TRES DÍAS PARA CAMBIAR DE FRECUENCIA · </div></div>
+<section id="concepto" class="manifesto wrap">
+ <div class="section-kicker"><span>01 / EL MANIFIESTO</span><span>FESTIVAL DE PRÁCTICAS VIVAS</span></div>
+ <div class="manifesto-layout"><p class="manifesto-statement">No venimos a ver el futuro. <em>Venimos a escucharlo</em> mientras sucede.</p>
+ <div class="manifesto-side"><span class="star" aria-hidden="true">✳</span><p>La música que no entra en una categoría. El cuerpo que se convierte en imagen. Una conversación que no termina cuando se apagan las luces.</p><p><strong>ESCENA ABIERTA</strong> reúne durante tres días propuestas imaginarias de música, performance, artes visuales e ideas en un encuentro donde las disciplinas se cruzan.</p><a class="text-link" href="#programacion">Descubrí los encuentros <span aria-hidden="true">↗</span></a></div></div>
+</section>
+<section class="image-interlude" aria-label="Atmósferas visuales del festival">
+ <figure class="interlude-left"><img loading="lazy" src="https://images.unsplash.com/photo-1756310331722-31901b1bafc1?auto=format&fit=crop&w=1200&q=80" alt="Intérprete iluminado de rojo sobre un escenario"><figcaption>LA VOZ / EL CUERPO</figcaption></figure>
+ <div class="interlude-middle"><span>NO ES<br>UN SOLO<br>ESCENARIO.</span><span class="asterisk" aria-hidden="true">✳</span></div>
+ <figure class="interlude-right"><img loading="lazy" src="https://images.unsplash.com/photo-1771714430881-3ed05b032904?auto=format&fit=crop&w=1400&q=80" alt="Proyección de arte digital abstracto"><figcaption>LA LUZ / LA MATERIA</figcaption></figure>
+</section>
+<section id="programacion" class="program-section" aria-labelledby="program-title">
+ <div class="wrap">
+  <div class="section-kicker program-kicker"><span>02 / PROGRAMACIÓN</span><span>24 ENCUENTROS · 3 ESCENARIOS</span></div>
+  <div class="program-heading"><div><h2 id="program-title">TODO<br><i>EN VIVO.</i></h2><p>No te pierdas lo que no sabías que querías ver. Elegí un día, explorá los espacios y armá tu propio recorrido.</p></div><div class="program-issue"><span class="issue-circle">24</span><span>PROPUESTAS<br>PARA CRUZARSE</span></div></div>
+  <div class="day-tabs" id="day-tabs" role="group" aria-label="Elegir jornada">
+   <button type="button" class="day-tab" data-day="2027-03-12" aria-pressed="true"><span>VIERNES</span><strong>12</strong><small>MARZO</small></button>
+   <button type="button" class="day-tab" data-day="2027-03-13" aria-pressed="false"><span>SÁBADO</span><strong>13</strong><small>MARZO</small></button>
+   <button type="button" class="day-tab" data-day="2027-03-14" aria-pressed="false"><span>DOMINGO</span><strong>14</strong><small>MARZO</small></button>
+  </div>
+  <form id="filters" class="filters" aria-label="Filtrar programación">
+   <label>ESCENARIO<select id="stage-filter"><option value="">Todos los escenarios</option><option>Patio Luz</option><option>Nave Umbral</option><option>Caja Negra</option></select></label>
+   <label>DISCIPLINA<select id="category-filter"><option value="">Todas las disciplinas</option><option>Música</option><option>Arte vivo</option><option>Visuales</option><option>Ideas</option></select></label>
+   <label>HORARIO<select id="time-filter"><option value="">Todo el día</option><option value="tarde">16:00 a 19:00</option><option value="noche">19:00 a 22:00</option><option value="trasnoche">Desde las 22:00</option></select></label>
+   <label class="search-label">BUSCAR<input id="search-filter" type="search" placeholder="Artista, obra, palabra…" autocomplete="off"></label>
+  </form>
+  <div class="results-toolbar"><p id="results-count" role="status" aria-live="polite">Cargando programación…</p><button id="reset-filters" type="button" class="quiet-button">Limpiar filtros ↗</button></div>
+  <div id="program-list" class="program-list" aria-live="off"></div>
+  <div class="program-bottom"><span>LOS HORARIOS SON ILUSTRATIVOS · FESTIVAL FICTICIO</span><a href="#mi-agenda">VER MI AGENDA <span aria-hidden="true">↗</span></a></div>
+ </div>
+</section>
+<section id="mi-agenda" class="agenda-section" aria-labelledby="agenda-title">
+ <div class="wrap">
+  <div class="section-kicker"><span>03 / TU RECORRIDO</span><span>GUARDADO EN ESTE DISPOSITIVO</span></div>
+  <div class="agenda-head"><h2 id="agenda-title">MI <em>AGENDA<span class="agenda-period">.</span></em></h2><div class="agenda-intro"><p>Conservá tus encuentros favoritos. Si dos propuestas ocurren al mismo tiempo, te mostramos el cruce para que decidas.</p><p id="storage-warning" class="storage-warning" hidden>Tu navegador impide guardar cambios permanentes. La agenda funciona durante esta visita.</p></div></div>
+  <div class="agenda-summary"><span><strong id="saved-count">00</strong><small>ENCUENTROS GUARDADOS</small></span><span><strong id="clash-count">00</strong><small>CRUCES HORARIOS</small></span><button type="button" id="export-ics" class="download-button" disabled>EXPORTAR A CALENDARIO <span aria-hidden="true">↗</span></button></div>
+  <div id="agenda-list" class="agenda-list"></div>
+  <div class="agenda-actions"><a href="#programacion" class="text-link">VOLVER AL PROGRAMA <span aria-hidden="true">↗</span></a><button type="button" id="clear-agenda" class="quiet-button" disabled>Vaciar agenda</button></div>
+ </div>
+</section>
+<section class="closing">
+ <div class="closing-photo"><img loading="lazy" src="https://images.unsplash.com/photo-1784040625175-201afd3bfe00?auto=format&fit=crop&w=1400&q=80" alt="Actuación musical con luces y proyecciones violetas"></div>
+ <div class="closing-copy"><div class="eyebrow">TE ESPERAMOS EN LA IMAGINACIÓN</div><p>HAY COSAS QUE<br>SOLO PASAN<br><em>CUANDO ESTÁS.</em></p><a href="#programacion" class="closing-link">EXPLORAR PROGRAMACIÓN ↗</a></div>
+</section>
+</main>
+<footer class="footer">
+ <div class="footer-main"><div class="footer-brand">ESCENA<br><span>ABIERTA.</span></div><div class="footer-right"><span>12–14 MAR 2027 / BUENOS AIRES</span><p>Concepto, programación, artistas y espacios ficticios. Este sitio es una obra de demostración, no vende entradas ni representa un festival real. Las fotografías ilustran atmósferas; no retratan a los artistas inventados.</p></div></div>
+ <div class="photo-credits"><strong>FOTOGRAFÍA BAJO LICENCIA UNSPLASH</strong> <a href="https://unsplash.com/photos/crowd-at-a-concert-with-bright-stage-lights-hRwq6SvX0PE" target="_blank" rel="noopener noreferrer">Jingtao</a> · <a href="https://unsplash.com/photos/performer-singing-into-microphone-under-red-stage-lights-2kLhltQ83GY" target="_blank" rel="noopener noreferrer">Max Ovcharenko</a> · <a href="https://unsplash.com/photos/abstract-geometric-pattern-projected-onto-a-dark-surface-c-M3yO2xAjw" target="_blank" rel="noopener noreferrer">Jan Oblak</a> · <a href="https://unsplash.com/photos/performer-on-stage-with-purple-lights-and-holographic-figures-fHK9UkkjKs4" target="_blank" rel="noopener noreferrer">arman grigoryan</a> · <a href="https://unsplash.com/photos/a-band-performs-live-on-stage-under-bright-purple-lights-fPfJmv09NRM" target="_blank" rel="noopener noreferrer">Pierre Goiffon</a>. Tipografía Space Grotesk (SIL OFL 1.1).</div>
+ <div class="footer-bottom"><span>© ESCENA ABIERTA · EXPERIMENTO WEB 09</span><a href="#inicio">VOLVER ARRIBA ↑</a></div>
+</footer>
+<dialog id="event-dialog" class="event-dialog" aria-labelledby="dialog-title">
+ <div class="dialog-shell"><button class="dialog-close" type="button" id="dialog-close" aria-label="Cerrar ficha">✕</button><div id="dialog-content"></div></div>
+</dialog>
+<div id="toast" role="status" aria-live="polite" class="toast" hidden></div>
+<noscript><p class="noscript-note">Esta edición necesita JavaScript para visualizar el programa y guardar tu agenda. No se venden entradas reales.</p></noscript>
+</body>
+</html>
