@@ -1,0 +1,304 @@
+{
+  "version": "DEEP-SPEC-1",
+  "medium": "music",
+  "depth": "SISTEMA",
+  "brief": "Creá un tema dub techno original cuyos acordes, filtro, saturación y múltiples delays formen un espacio profundo pero legible, con evolución armónica y silencios que dejen respirar al subgrave. Entregá máster, stems y una cadena de efectos editable; construí un rack reutilizable de ecos sincronizados con control de realimentación y verificá colas, mono, estabilidad del feedback y balance seco/húmedo en distintas secciones.",
+  "briefSha256": "01d706d13f47d1a25a75b223e43be2c2a776f8fc45634831184b3e294bf4a132",
+  "launchBlobSha": "5d7e6c2540cc49d998b7fe75fc1048d6f9cba80b",
+  "batchId": "music-w003-20261122",
+  "taskId": "music-w003-20261122-03",
+  "intent": {
+    "experience": "Escuchar una arquitectura de ecos densa pero clara en un tema dub techno con 7 movimientos, bajo respirable y silencios intencionales.",
+    "distinctAbility": "Rack de dos profundidades sincronizadas, editable, con feedback y filtros en cada repetición, probado con señales numéricas."
+  },
+  "references": [
+    {
+      "id": "ref-ableton",
+      "status": "OBSERVED",
+      "url": "https://www.ableton.com/en/blog/designing-dub-chords-in-ableton-live-with-el-chooppizza-hotline/",
+      "observation": "Artículo observado, recomienda diversificar los retornos respecto a los acordes secos usando filtros, transformaciones y control de estéreo; música externa NO escuchada."
+    },
+    {
+      "id": "ref-izotope",
+      "status": "OBSERVED",
+      "url": "https://www.izotope.com/community/blog/6-genres-and-the-effects-chains-that-define-them",
+      "observation": "Documento técnico revisado: en dub techno los delays con feedback alto acumulan graves si no hay high-pass (200 Hz, como ejemplo) y panning/spatialidad requieren control."
+    },
+    {
+      "id": "ref-basic",
+      "status": "OBSERVED",
+      "url": "https://www.basicchannel.com/label/Basic%2BChannel",
+      "observation": "Catálogo histórico oficial examinado como referencia cultural de género, no escuchado ni medido en este entorno."
+    }
+  ],
+  "components": [
+    {
+      "id": "chords",
+      "role": "Acordes de 6 armonías y stabs sintetizados con filtro móvil",
+      "strategy": "Síntesis multiharmónica con batidos de fase, saturación tanh y envolventes originales",
+      "constraints": "Acordes con ataque y silencio; no notas ajenas; mantener envío independiente al rack."
+    },
+    {
+      "id": "sub",
+      "role": "Bajo mono articulado que convive con el bombo y los acordes",
+      "strategy": "Oscilador original con armónicos bajos y huecos rítmicos; no envía señal a delays",
+      "constraints": "Separa entrada del sub 65ms respecto del kick; baja energía del eco por debajo de 130Hz."
+    },
+    {
+      "id": "echo",
+      "role": "Rack de ecos dub multinivel sincronizados con espacialidad y filtros",
+      "strategy": "Dos buses filtrados con realimentación finita y variantes izquierda-derecha",
+      "constraints": "Feedback limitado 0.56/0.44; high-pass por repetición; mezcla conserva el centro en mono."
+    },
+    {
+      "id": "form",
+      "role": "Arreglo de 88 compases con siete secciones de presencia y respiración",
+      "strategy": "Progresión armónica de 6 acordes, cambios de frase, pausas en compases 40 a 48 y colas",
+      "constraints": "Silencios dramáticos reales, no sólo bajar volumen general o aumentar densidad uniforme."
+    },
+    {
+      "id": "player",
+      "role": "Superficie web de reproducción de máster auténtico sin overlays",
+      "strategy": "Recomponer MP3 original de fragmentos de GitHub Pages, fallback alternativo identificado",
+      "constraints": "No llamar master a re-síntesis WebAudio; operación móvil y escritorio sin scroll horizontal."
+    }
+  ],
+  "questions": [
+    {
+      "id": "Q1",
+      "target": "echo",
+      "question": "¿Qué representación evita que el eco acumulado capture el subgrave y se dispare con cada repetición?",
+      "alternatives": [
+        "Dos buses de delay limitados con filtros por repetición",
+        "Convolución de IR legal externa y cadena compresiva"
+      ],
+      "evidenceRef": "ref-izotope",
+      "finding": "iZotope documenta la acumulación de graves por delays altos y recomienda high-pass; el rack tapado se probó con impulsos reales.",
+      "decisionImpact": "Filtrar cada repetición, excluir por completo sub/kick del envío y medir graves en el primer artículo."
+    },
+    {
+      "id": "Q2",
+      "target": "chords",
+      "question": "¿Cómo dar identidad espacial a los stabs sin que todo suene como una única nota MIDI plana?",
+      "alternatives": [
+        "Armónicos batidos y modulación de filtro por frase",
+        "Importar sample dub con procedencia licenciada"
+      ],
+      "evidenceRef": "ref-ableton",
+      "finding": "Entrevista a El Choop discute transformación de chords y sus ecos con filtro; se priorizó síntesis original sin licencias externas.",
+      "decisionImpact": "Implementar banco de acordes multiharmónicos y envíos con ataque y caída editables."
+    },
+    {
+      "id": "Q3",
+      "target": "form",
+      "question": "¿Qué cambio de forma ofrece silencio significativo al sub sin convertir el desarrollo en un loop infinito?",
+      "alternatives": [
+        "7 secciones con pausa central 40–48 y progresión cambiante",
+        "Loop de 4 compases repetido con automatización global de volumen"
+      ],
+      "evidenceRef": "ref-basic",
+      "finding": "La referencia histórica señala el uso de un vocabulario restringido de dub techno; se eligió progresión nueva y silencios que cambian la función del eco.",
+      "decisionImpact": "Escribir forma completa de 88 compases con roles y RMS contrastados por sección."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "D1",
+      "questionId": "Q1",
+      "componentIds": [
+        "echo",
+        "sub"
+      ],
+      "choice": "Rack propio de delay sincro filtrado en cada repetición",
+      "rejected": "Feedback sin filtro de sub con riesgo de saturación",
+      "productionChange": "Agregar low-cut 310/440 Hz en cada línea, fuente chords única, límite de 11/7 repeticiones.",
+      "why": "Primer artículo y diagnóstico numérico deben impedir acumulación de energía grave."
+    },
+    {
+      "id": "D2",
+      "questionId": "Q2",
+      "componentIds": [
+        "chords",
+        "echo"
+      ],
+      "choice": "Stabs de síntesis original con modulaciones tímbricas lentas",
+      "rejected": "Sample de terceros sin licencia y seno infantil estático",
+      "productionChange": "Generar acordes de cinco notas, armónicos múltiples, saturación y cutoff por compás.",
+      "why": "Timbre original trazable y libre de incertidumbre de derechos externos."
+    },
+    {
+      "id": "D3",
+      "questionId": "Q3",
+      "componentIds": [
+        "form",
+        "player"
+      ],
+      "choice": "Evolución armónica de siete secciones con vacío central",
+      "rejected": "Loop idéntico que se limita a subir volumen",
+      "productionChange": "Persistir siete secciones con roles, acordes, silencios y contraste de mezcla medibles.",
+      "why": "La dramaturgia requiere vacíos y retorno, no mero incremento de loudness."
+    }
+  ],
+  "relations": [
+    {
+      "from": "echo",
+      "to": "sub",
+      "invariant": "Ecos no reciben ni bombo ni sub y su energía por debajo de 130 Hz queda atenuada.",
+      "failure": "Graves repetidos enmascaran al subgrave e invalidan el espacio de mezcla.",
+      "test": "Filtro pasabajos 130 Hz: RMS wet versus RMS sub y mono numérico."
+    },
+    {
+      "from": "form",
+      "to": "echo",
+      "invariant": "Las colas atraviesan límites de sección con transiciones de ganancia suaves.",
+      "failure": "Corte audible o acumulación descontrolada en cambio de sección.",
+      "test": "Impulse decay, wet/dry por sección y revisión de gain en fronteras."
+    }
+  ],
+  "risks": [
+    {
+      "componentIds": [
+        "echo",
+        "sub"
+      ],
+      "severity": "high",
+      "failure": "Realimentación creciente o exceso de graves que anula el pulso central.",
+      "prevention": "Filtros por repetición, source chord-only, feedback menor que uno, primer artículo de ocho compases.",
+      "test": "Impulse estable y diferencia wet/subgrave <-12 dB, sample peak por debajo de 0 dBFS.",
+      "status": "OBSERVED"
+    },
+    {
+      "componentIds": [
+        "form",
+        "chords"
+      ],
+      "severity": "medium",
+      "failure": "La repetición de un solo acorde genera un loop inmóvil sin desarrollo.",
+      "prevention": "Progresión de seis acordes, secciones y vacío central verificados por la partitura exportada.",
+      "test": "Comprobar cambios de progresión y diferencias de RMS en siete secciones.",
+      "status": "OBSERVED"
+    },
+    {
+      "componentIds": [
+        "player"
+      ],
+      "severity": "medium",
+      "failure": "Player alternativo presentado falsamente como máster final.",
+      "prevention": "Publicar partes binarias reales y rotular claramente el fallback de síntesis.",
+      "test": "Comparar tamaño ensamblado de MP3 con el archivo original en Chromium con rutas simuladas.",
+      "status": "OBSERVED"
+    }
+  ],
+  "acceptance": [
+    {
+      "kind": "audio",
+      "criterion": "Master final PCM estéreo y cinco stems reales de longitud y fase alineadas.",
+      "oracle": "SoundFile abre archivos y la suma lineal de stems reproduce la señal raw previa a masterización.",
+      "status": "OBSERVED"
+    },
+    {
+      "kind": "logic",
+      "criterion": "Realimentación del delay no crece y la banda de bajos del wet queda controlada.",
+      "oracle": "Impulso con colas decrecientes, energía sub 130 Hz medida y sample peak.",
+      "status": "OBSERVED"
+    },
+    {
+      "kind": "functional",
+      "criterion": "Reproductor con carga de MP3 original y controles Play y Stop probados.",
+      "oracle": "Chromium en 390/1440 y respuesta a 24 fetch mocks con masterAudio.paused false, no errores JS.",
+      "status": "OBSERVED"
+    },
+    {
+      "kind": "audio",
+      "criterion": "Escucha crítica en auriculares y mono confirma espacio, timbre y musicalidad.",
+      "oracle": "Audición humana real en dos sistemas; no inferir de RMS ni render.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "licensing": "Sintetizado 100% de código y composición originales; cero muestras externas, licencias de herramientas Python separadas.",
+  "resources": "Python 3, NumPy, SciPy y SoundFile local; ffmpeg MP3; HTML/WebAudio; Github Pages para binarios base64.",
+  "environmentLimits": "Navegador Chromium DOM real probado con URL remota simulada. HTTP real de GitHub Pages y escucha subjetiva independiente no ejecutados; archivos de máster WAV y stems disponibles como adjuntos, no subidos binarios a GitHub.",
+  "artDirection": {
+    "schema": "prometeo.art-direction.first-article/v1",
+    "medium": "music",
+    "taskId": "music-w003-20261122-03",
+    "briefSha": "01d706d13f47d1a25a75b223e43be2c2a776f8fc45634831184b3e294bf4a132",
+    "flowRef": "JuanManuelPM/pruebas@candidate/prometeo-music-flow-v2-wave001-20261121:FLOW.json / SHA256 6826ce13f4bd1e0d81b8a89bd7e6728668b85c44c68185b79426b00a36b8f05f",
+    "promise": {
+      "subject": "Acordes filtrados con dos profundidades de eco que respetan el subgrave",
+      "intent": "El eco define un espacio oscuro y profundo y los silencios muestran el cambio armónico sin convertir el tema en un loop inmóvil."
+    },
+    "benchmark": {
+      "url": "https://www.ableton.com/en/blog/designing-dub-chords-in-ableton-live-with-el-chooppizza-hotline/",
+      "status": "OBSERVED",
+      "description": "Entrevista técnica real a El Choop examinada: EQ en el retorno, transformaciones del eco respecto del sonido seco, control de anchura estéreo. NO se escuchó la música de referencia."
+    },
+    "techniques": [
+      {
+        "family": "Offline band-limited tapped echo with synthesized stabs",
+        "viability": "Implementado con NumPy y SciPy instalados: 44,1 kHz, notas originales, colas limitadas y pruebas reproducibles.",
+        "license": "Composición y síntesis originales, sin samples externos ni dependencias comerciales."
+      },
+      {
+        "family": "Sample-based convolution and licensed acoustic impulse responses",
+        "viability": "Alternativa técnicamente viable con scipy.signal.fftconvolve y IR libre documentada, pero IR licenciada no adquirida ni utilizada; requeriría verificar permisos.",
+        "license": "Solo IR CC0/documentada o captura propia antes de uso; no se usa grabación externa aquí."
+      }
+    ],
+    "selectedTechnique": "Offline band-limited tapped echo with synthesized stabs",
+    "firstFrame": {
+      "openingDescription": "Portada limpia con título Catedral de Eco y controles Escuchar, Detener, Descargar MP3; sin panel técnico superpuesto.",
+      "focalSubject": "Obra de dub techno original, escucha del máster antes que el dashboard.",
+      "minimalUI": "Título, un subtítulo, transportes y barra mínima de progreso; QA y fuentes fuera de la obra.",
+      "checks": [
+        {
+          "criterion": "Apertura legible a 390 píxeles, sin desplazamiento horizontal",
+          "oracle": "Chromium viewport 390: scrollWidth <= innerWidth, captura real, ausencia de excepciones.",
+          "viewport": "390"
+        },
+        {
+          "criterion": "Apertura legible a 1440 píxeles, jerarquía de obra y controles",
+          "oracle": "Chromium viewport 1440: screenshot real y no horizontal overflow.",
+          "viewport": "1440"
+        },
+        {
+          "criterion": "Player reproduce el MP3 original reconstruido correctamente",
+          "oracle": "Playwright page.route con 24 archivos originales: estado playing, bytes MP3, stop, JS errors=0.",
+          "viewport": "both"
+        }
+      ],
+      "observations": [
+        {
+          "viewport": "390",
+          "status": "OBSERVED_PASS",
+          "evidence": {
+            "url": "https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/music/w003/03-catedral-de-eco/FIRST_FRAME_390.html",
+            "description": "Captura real Chromium 390, embebida en página y persistida desde PNG original."
+          }
+        },
+        {
+          "viewport": "1440",
+          "status": "OBSERVED_PASS",
+          "evidence": {
+            "url": "https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/music/w003/03-catedral-de-eco/FIRST_FRAME_1440.html",
+            "description": "Captura real Chromium 1440, embebida en página y persistida desde PNG original."
+          }
+        }
+      ]
+    },
+    "firstArticle": {
+      "target": "Primeros ocho compases de batería+sub+acordes+delay, 44,1 kHz, render original y export de wet/dry.",
+      "rejectWhen": "Colas crecientes, mono inestable, eco invasivo debajo de 130 Hz, diferencias de stems o timbre plástico.",
+      "switchTo": "Sample-based convolution and licensed acoustic impulse responses",
+      "oracle": "Impulse con colas decrecientes, ruteo de sub separado, medidas del primer render y escucha no fingida.",
+      "resourceProof": "NumPy, SciPy y SoundFile instalados; WAV creado en first_article y bytes locales comprobados; no samples externos.",
+      "status": "OBSERVED_PASS",
+      "evidence": {
+        "url": "https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/music/w003/03-catedral-de-eco/FIRST_ARTICLE_QA.json",
+        "description": "Primer artículo con WAV local real y métricas de seguridad; escucha artística pendiente."
+      }
+    },
+    "humanApproved": false
+  },
+  "createdAt": "2026-11-22T19:01:41Z"
+}
