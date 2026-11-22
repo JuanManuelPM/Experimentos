@@ -1,0 +1,123 @@
+{
+  "schema": "prometeo.3d.work-qa/v1",
+  "id": "3d-w6-20261122-04",
+  "room": "3d",
+  "batchId": "3d-w6-20261122",
+  "taskNumber": 4,
+  "title": "La despedida",
+  "evaluatedAt": "2026-11-22T16:31:00Z",
+  "source": {
+    "branch": "candidate/prometeo-3d-w6-04-20261122",
+    "launchSha": "942c3ba8b851137886e959d2790771556e2d9f5d",
+    "flowVersion": "2.3.0",
+    "qualityBar": "QBAR-1",
+    "preproduction": "DEEP-SPEC-1"
+  },
+  "status": "IMPLEMENTED_SOURCE_READBACK_VERIFIED_NOT_ARTISTICALLY_APPROVED",
+  "artifacts": [
+    "index.html",
+    "main.js",
+    "sound.mjs",
+    "sequencer.mjs",
+    "timeline.json",
+    "PREPRODUCTION.deep-spec-v1.json",
+    "test-sequencer.mjs",
+    "README.md"
+  ],
+  "checks": [
+    {
+      "id": "preproduction-shape",
+      "status": "OBSERVED",
+      "evidence": "The canonical DEEP-SPEC validator returned gate SPIKE_REQUIRED with errors [] (high-risk browser export remains NOT_RUN)."
+    },
+    {
+      "id": "timeline-validation",
+      "status": "OBSERVED",
+      "evidence": "Independent V8 execution: validateTimeline(timeline.json) returned [] and sampled all five boundary cuts."
+    },
+    {
+      "id": "timeline-roundtrip",
+      "status": "OBSERVED",
+      "evidence": "Independent JS test compared 100 sample times: diffAt(original, JSON-roundtrip) == 0."
+    },
+    {
+      "id": "timeline-retiming",
+      "status": "OBSERVED",
+      "evidence": "Retiming s03 from 5.2s to 6.5s changed runtime from 26 to 27.3s; validation [] and roundtrip diff 0."
+    },
+    {
+      "id": "invalid-gap-rejection",
+      "status": "OBSERVED",
+      "evidence": "Adding 0.1s to s02.start caused explicit gap/overlap rejection."
+    },
+    {
+      "id": "syntax-check",
+      "status": "OBSERVED",
+      "evidence": "JavaScript Function parser accepted main.js and sound.mjs after stripping static imports / exports."
+    },
+    {
+      "id": "node-test-script",
+      "status": "NOT_RUN",
+      "evidence": "Node test source written in repo; runtime execution of this exact file has not been observed."
+    },
+    {
+      "id": "gpu-render",
+      "status": "NOT_RUN",
+      "evidence": "No actual screenshot of production scene from a GPU browser has yet been inspected."
+    },
+    {
+      "id": "touch-and-ui",
+      "status": "NOT_RUN",
+      "evidence": "Changes to camera, acting and lighting are wired but were not exercised on target Android."
+    },
+    {
+      "id": "audio-listening",
+      "status": "NOT_RUN",
+      "evidence": "Synthesized audio graph created in source; actual audible playback not yet evaluated."
+    },
+    {
+      "id": "video-recording-and-duration",
+      "status": "NOT_RUN",
+      "evidence": "MediaRecorder pathway implemented; no downloadable recording verified yet. MP4 never claimed."
+    },
+    {
+      "id": "professional-art-approval",
+      "status": "NOT_RUN",
+      "evidence": "Human art-direction review not performed."
+    }
+  ],
+  "referenceComparisons": [
+    {
+      "reference": "Blender Studio Spring stills and production notes",
+      "intent": "Subtle acting made readable by silhouette and light",
+      "decision": "Tailored 3D cloth/face meshes and gestures lit by central lantern",
+      "artifact": "Source geometry and acting tracks present",
+      "gap": "Perceptual render and expression comparison not yet observed"
+    },
+    {
+      "reference": "Theatre.js sequence manual",
+      "intent": "Non-decorative editable sequencing",
+      "decision": "Pure deterministic evaluator plus inspector / JSON",
+      "artifact": "5 editable shots, tests for boundaries and roundtrip",
+      "gap": "Full UI interaction in live browser not yet observed"
+    },
+    {
+      "reference": "Three.js forum capture + audio",
+      "intent": "Record actual playable media",
+      "decision": "Canvas captureStream and AudioContext mix + MediaRecorder type detection",
+      "artifact": "Actual recorder code present",
+      "gap": "Real file playback and duration NOT_RUN"
+    }
+  ],
+  "improvements": [
+    {
+      "stage": "EXPORT",
+      "cause": "Client-code presence cannot establish codec/browser support",
+      "preventiveGate": "Require produced file, metadata and audio inspection before VERIFIED",
+      "test": "Record, download, replay and check length/audio",
+      "owner": "3d studio",
+      "counterexample": "Button changing label to MP4 without creating playable bytes"
+    }
+  ],
+  "humanApproved": false
+}
