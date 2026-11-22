@@ -17,6 +17,6 @@ for(const lift of [6,12,19,25])for(const rise of [105,130,150])for(const topDwel
  const diagnostic=diagnose({lift,rise,topDwell},48,360);
  assert.equal(diagnostic.continuousContact,true,JSON.stringify({lift,rise,topDwell}));variants++;
 }
-const dx=buildDXF();assert.ok(dx.includes('$INSUNITS\\n70\\n4'),'DXF declares mm');assert.ok(dx.includes('LWPOLYLINE')&&dx.includes('CIRCLE'));
+const dx=buildDXF();assert.ok(dx.includes('$INSUNITS\n70\n4'),'DXF declares mm');assert.ok(dx.includes('LWPOLYLINE')&&dx.includes('CIRCLE'));
 const a=profile({lift:6},90),b=profile({lift:25},90);assert.ok(a.some((p,i)=>Math.hypot(p.x-b[i].x,p.y-b[i].y)>5));
 console.log(JSON.stringify({status:'PASS',analyticContactMaxMm:analytical,polygonalMinGapMm:baseline.minGap,polygonalMaxGapMm:baseline.maxGap,maxPressureDeg:baseline.maxPressure,variants,dxUnits:'mm',humanApproved:false},null,2));
