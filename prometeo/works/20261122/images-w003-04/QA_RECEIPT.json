@@ -36,13 +36,56 @@
     "RASTER_DIMENSIONS": "PASS",
     "COLOR_VARIANCE": "PASS",
     "SAME_PIVOTS_MODEL": "PASS_LOGIC",
-    "REMOTE_PNG_SOURCE": "PUBLISHED_GIT_BLOB",
+    "REMOTE_PNG_SOURCE": "READBACK_BINARY_CRC_PASS",
     "BROWSER_390": "NOT_RUN",
     "BROWSER_1440": "NOT_RUN",
-    "ROOT_CAS": "NOT_RUN",
+    "ROOT_CAS": "POSTED_READBACK",
     "PHYSICAL_CLEARANCE": "NOT_RUN",
     "ELECTRICAL_SAFETY": "NOT_RUN",
     "HUMAN_APPROVED": "NO"
   },
-  "notes": "El PNG remoto PRODUCT_DIAGRAM es una elevación de taller dibujada desde el mismo canon, no se presenta falsamente como render VTK. Renders VTK de alta resolución y fuentes se entregan en esta conversación."
+  "notes": "El PNG remoto PRODUCT_DIAGRAM es una elevación de taller dibujada desde el mismo canon, no se presenta falsamente como render VTK. Renders VTK de alta resolución y fuentes se entregan en esta conversación.",
+  "structuralValidators": {
+    "deepSpec": {
+      "gate": "READY_FOR_FIRST_SLICE",
+      "errors": []
+    },
+    "artDirection": {
+      "gate": "FIRST_FRAME_CAPTURE_REQUIRED",
+      "errors": []
+    }
+  },
+  "remoteBinaryReadback": {
+    "status": "PASS",
+    "shaMatches": true,
+    "magic": true,
+    "crcAllPass": true,
+    "byteLength": 528747,
+    "width": 880,
+    "height": 600,
+    "colorType": 3,
+    "chunks": [
+      {
+        "name": "IHDR",
+        "len": 13,
+        "crcOk": true
+      },
+      {
+        "name": "PLTE",
+        "len": 27,
+        "crcOk": true
+      },
+      {
+        "name": "IDAT",
+        "len": 528651,
+        "crcOk": true
+      },
+      {
+        "name": "IEND",
+        "len": 0,
+        "crcOk": true
+      }
+    ]
+  },
+  "checkedAt": "2026-11-22T19:13:01.390Z"
 }
