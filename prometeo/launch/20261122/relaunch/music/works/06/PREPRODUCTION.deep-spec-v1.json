@@ -1,0 +1,281 @@
+{
+  "version": "DEEP-SPEC-1",
+  "medium": "music",
+  "depth": "SISTEMA",
+  "taskId": "music-w003-20261122-06",
+  "batchId": "music-w003-20261122",
+  "taskNumber": 6,
+  "launchBlobSHA": "5d7e6c2540cc49d998b7fe75fc1048d6f9cba80b",
+  "brief": "Producí electro analógico de fuerte identidad rítmica, con bajo articulado, batería sintética rica y secuencias moduladas que respondan musicalmente a la composición; evitá presets de silbidos o sintes de una sola onda sin carácter. Entregá obra y stems reales más un patch graph o receta de síntesis reconstruible; dejá un módulo reutilizable de modulación y probá que el mismo patch reproduce timbre y automatizaciones al reabrir el proyecto.",
+  "intent": {
+    "experience": "Un electro que inicia, toma impulso, sufre un brownout y vuelve con motivos transformados.",
+    "distinctAbility": "Síntesis multi-oscilador y rutas de modulación serializables y reconstruibles por beat absoluto."
+  },
+  "references": [
+    {
+      "id": "r1",
+      "status": "OBSERVED",
+      "url": "https://www.bitwig.com/userguide/latest/the_unified_modulation_system/",
+      "observation": "Se leyó la documentación técnica oficial sobre fuentes de control y ruteo de moduladores por voz; no se utilizó Bitwig ni se replicó su software."
+    },
+    {
+      "id": "r2",
+      "status": "OBSERVED",
+      "url": "https://www.ableton.com/es/blog/caterina-barbieri-minimalism-modular-and-live/",
+      "observation": "Se leyó una entrevista sobre minimalismo modular, cambio gradual y secuencias; no se oyó una grabación musical de referencia."
+    },
+    {
+      "id": "r3",
+      "status": "OBSERVED",
+      "url": "https://sonicstate.com/news/2021/03/16/synthesizing-a-tr-808-drum-kit/",
+      "observation": "Se leyó una descripción de batería de caja de ritmos sintetizada sin samples como alternativa de diseño independiente."
+    }
+  ],
+  "components": [
+    {
+      "id": "rhythm",
+      "role": "Groove electro con batería sintética original y silencios articulados",
+      "strategy": "Synthesis local desde pitch decay, ruido filtrado y parciales metálicos inarmónicos",
+      "constraints": "Kick y bajo deben tener transitorios independientes y no usar samples sin permiso."
+    },
+    {
+      "id": "bass",
+      "role": "Bajo de tres osciladores que responde al arreglo por frase y sección",
+      "strategy": "Saw más pulse/PWM detune más sub, filtro variable en el tiempo y envolventes de notas",
+      "constraints": "Evitar un seno único; preservar registro y modulación al reabrir."
+    },
+    {
+      "id": "sequence",
+      "role": "Secuencia de respuesta con armónicos impares, FM, pan y eco espacial",
+      "strategy": "OSC parcial additive más sideband, cutoff controlado y delay de 3/4 beat",
+      "constraints": "La variación debe modificar audio y nunca simplemente la etiqueta del patch."
+    },
+    {
+      "id": "arrangement",
+      "role": "Obra musical completa en 64 compases con seis niveles de densidad",
+      "strategy": "Motivos escritos, interludios, desplazamiento armónico y fills antes de breaks",
+      "constraints": "Diferencia audible de secciones; no repetir un loop con más limitador."
+    },
+    {
+      "id": "export",
+      "role": "Máster y seis stems alineados en frecuencia, tiempo y ganancia",
+      "strategy": "Render 44.1kHz/24bit con ganancia compartida y verificación de paridad PCM",
+      "constraints": "La suma de stems equivale al máster y true peak nunca supera 0dBFS."
+    }
+  ],
+  "questions": [
+    {
+      "id": "q1",
+      "target": "bass",
+      "question": "¿El sintetizador tiene cuerpo articulado sin caer en un preset caricaturesco de una sola onda?",
+      "alternatives": [
+        "saw + PWM + sub con cutoff dinámico",
+        "seno distorsionado plano"
+      ],
+      "evidenceRef": "r1",
+      "finding": "Primer artículo real con instrumentos de varias fuentes, cambios medibles de cutoff y notas.",
+      "decisionImpact": "Construcción de bass() con tres fuentes y modulationRoutes serializadas."
+    },
+    {
+      "id": "q2",
+      "target": "arrangement",
+      "question": "¿Las secciones evolucionan por arreglo real y silencios o sólo por incrementos de volumen?",
+      "alternatives": [
+        "seis movimientos con variaciones por pistas y armonía",
+        "mismo loop con limitador"
+      ],
+      "evidenceRef": "r2",
+      "finding": "Se observaron niveles y densidades distintos en las seis secciones, aunque la escucha artística está pendiente.",
+      "decisionImpact": "Cortes BROWNOUT y POWER DOWN y entrada de secuencia en CIRCUIT A."
+    },
+    {
+      "id": "q3",
+      "target": "rhythm",
+      "question": "¿La identidad de caja de ritmos puede conseguirse con audio propio y reconstruible?",
+      "alternatives": [
+        "osciladores, ruido sintetizado y envolventes",
+        "usar librería externa sin verificar licencia"
+      ],
+      "evidenceRef": "r3",
+      "finding": "El primer WAV real y el máster completo se sintetizaron sin archivos externos de audio.",
+      "decisionImpact": "Kick pitch decay, snare filtrada y hats por parciales inarmónicos."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "d1",
+      "questionId": "q1",
+      "componentIds": [
+        "bass",
+        "sequence"
+      ],
+      "choice": "Síntesis offline multisource con control por beat",
+      "rejected": "Single sine con vibrato fijo",
+      "productionChange": "Rutas serializadas triangulares, step y sample hold influyen en filtros y secuencia.",
+      "why": "El sound design tiene que cambiar el audio reconstruido, no únicamente un documento."
+    },
+    {
+      "id": "d2",
+      "questionId": "q2",
+      "componentIds": [
+        "arrangement",
+        "rhythm"
+      ],
+      "choice": "Estructura de seis movimientos y variación rítmica",
+      "rejected": "Multiplicación de loop sin transformación",
+      "productionChange": "Se aplican kicks, ghosts, densidad, acordes y melodías distintas por etapa.",
+      "why": "Los silencios y las respuestas sostienen el arco sin falsear tensión a mayor volumen."
+    },
+    {
+      "id": "d3",
+      "questionId": "q3",
+      "componentIds": [
+        "rhythm",
+        "export"
+      ],
+      "choice": "Síntesis original sin samples de terceros",
+      "rejected": "Paquetes ajenos y origen desconocido",
+      "productionChange": "Los instrumentos generan las ondas y stems FLAC24 en una operación reproducible.",
+      "why": "El contrato requiere timbres propios, derecho de uso claro y persistencia editable."
+    }
+  ],
+  "relations": [
+    {
+      "from": "rhythm",
+      "to": "bass",
+      "invariant": "Bass arranca con 0.06 beats de separación con kick por diseño del patrón.",
+      "failure": "Ataques en graves enmascarados en el compás.",
+      "test": "Comparar stems y escucha de kick junto al bajo."
+    },
+    {
+      "from": "sequence",
+      "to": "export",
+      "invariant": "LFO y step se evalúan por beat absoluto y la semilla es fija.",
+      "failure": "Reabrir altera automatización o sonido.",
+      "test": "Test de recarga compara SHA256 del PCM generado."
+    }
+  ],
+  "risks": [
+    {
+      "componentIds": [
+        "bass",
+        "sequence"
+      ],
+      "severity": "high",
+      "failure": "Timbre pobre de un oscilador que apenas responde a la música.",
+      "prevention": "Renderizar primer artículo 4 compases y probar filtros antes del master completo.",
+      "test": "FIRST_ARTICLE.wav y A/B con respuesta numérica distinta.",
+      "status": "OBSERVED"
+    },
+    {
+      "componentIds": [
+        "export"
+      ],
+      "severity": "high",
+      "failure": "Stems que no permiten reconstruir el master o clipping digital.",
+      "prevention": "Aplicar ganancia compartida a todas las pistas y no usar limitación no lineal final.",
+      "test": "Decodificar todos los FLAC24 y verificar suma frente al master.",
+      "status": "OBSERVED"
+    },
+    {
+      "componentIds": [
+        "arrangement"
+      ],
+      "severity": "medium",
+      "failure": "Composición monótona que conserva variaciones solamente estadísticas.",
+      "prevention": "Diferenciar silencios, fills, armonías y entradas entre seis movimientos.",
+      "test": "Escucha crítica integral a igual volumen por persona independiente.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "acceptance": [
+    {
+      "kind": "audio",
+      "criterion": "Máster estéreo y seis stems originales exportados y decodificables a 44.1kHz y 24bits.",
+      "oracle": "soundfile y ffprobe sobre PCM y FLAC reales en entrega local.",
+      "status": "OBSERVED"
+    },
+    {
+      "kind": "logic",
+      "criterion": "Reabriendo proyecto se reproducen ondas y automatizaciones de manera determinista.",
+      "oracle": "6 tests pytest y comparación SHA256 del PCM re-renderizado en entorno actual.",
+      "status": "OBSERVED"
+    },
+    {
+      "kind": "audio",
+      "criterion": "Una escucha humana evalúa si el bajo y los cambios de timbre tienen verdadero carácter musical.",
+      "oracle": "Comparación perceptual de pista y A/B nivelado con escucha real.",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "visual",
+      "criterion": "La vista de reproducción en 390 y 1440 píxeles debe mostrar titular y reproductor.",
+      "oracle": "Capturas reales Chromium mobile/desktop e interacción efectiva Play.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "licensing": "Sonido completamente generado por código propio sin grabaciones, samples o presets de terceros.",
+  "resources": "Python numpy scipy soundfile ffmpeg; no se presume ningún DAW propietario ni plugins pagos.",
+  "environmentLimits": "Chromium headless se bloqueó en dos intentos de screenshot; tampoco hubo escucha subjetiva externa ni publicación binaria remota con el conector GitHub. No declarar estos estados PASS.",
+  "artDirection": {
+    "schema": "prometeo.art-direction.first-article/v1",
+    "medium": "music",
+    "taskId": "music-w003-20261122-06",
+    "briefSha": "5d7e6c2540cc49d998b7fe75fc1048d6f9cba80b",
+    "flowRef": "JuanManuelPM/pruebas FLOW.json v2.0.0 blob 1423f13e08b743f418c42052613a6808b214d622",
+    "promise": {
+      "subject": "Bajo articulado, groove de electro y secuencia transformada en seis movimientos",
+      "intent": "Una máquina musical que evoluciona entre la estabilidad y la falla rítmica."
+    },
+    "benchmark": {
+      "url": "https://www.bitwig.com/userguide/latest/the_unified_modulation_system/",
+      "description": "Documentación oficial leída sobre ruteo de moduladores, no prueba auditiva de calidad",
+      "status": "OBSERVED"
+    },
+    "techniques": [
+      {
+        "family": "Motor DSP procedural offline con score JSON",
+        "viability": "Python con numpy scipy soundfile ejecutado y probado localmente.",
+        "license": "Síntesis y melodía original sin samples ajenos."
+      },
+      {
+        "family": "Web Audio con AudioWorklet por nota",
+        "viability": "Alternativa legal distinta de síntesis y render browser, no probada.",
+        "license": "API de navegador más implementación propia."
+      }
+    ],
+    "selectedTechnique": "Motor DSP procedural offline con score JSON",
+    "firstFrame": {
+      "openingDescription": "Título MÁQUINA IMPERFECTA grande, waveform del master y audio nativo con jerarquía editorial.",
+      "focalSubject": "La obra musical real, no un estado de generación ni una UI artificial.",
+      "minimalUI": "Un reproductor HTML5, seis etiquetas de secciones y metadatos discretos.",
+      "checks": [
+        {
+          "criterion": "A 390 px título y control de reproducción visibles y sin scroll horizontal.",
+          "oracle": "Screenshot real del viewport Chromium 390 y comprobación visual.",
+          "viewport": "390"
+        },
+        {
+          "criterion": "A 1440 px forma de onda, controles y encabezado alineados y legibles.",
+          "oracle": "Screenshot real del viewport Chromium 1440 y comprobación visual.",
+          "viewport": "1440"
+        }
+      ],
+      "observations": []
+    },
+    "firstArticle": {
+      "target": "Cuatro compases completos CIRCUIT A con bajo y batería como primer slice.",
+      "rejectWhen": "Timbre de un solo seno o falta de respuesta a cambios de modulación.",
+      "switchTo": "Web Audio con AudioWorklet por nota",
+      "oracle": "Render WAV original y comparación de modulación y muestras reabiertas.",
+      "resourceProof": "Ejecutados numpy scipy soundfile y decodificación WAV real local.",
+      "status": "OBSERVED_PASS",
+      "localEvidence": "FIRST_ARTICLE.wav y FIRST_ARTICLE_QA.json del paquete local",
+      "evidence": {
+        "url": "https://github.com/JuanManuelPM/Experimentos/blob/candidate/prometeo-music-w003-20261122-06/prometeo/launch/20261122/relaunch/music/works/06/QA.md",
+        "description": "Recibo textual del primer artículo; no acredita media binaria remota."
+      }
+    },
+    "humanApproved": false
+  }
+}
