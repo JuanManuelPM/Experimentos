@@ -1,0 +1,80 @@
+{
+  "schema": "prometeo.web.w001.receipt/v1",
+  "id": "web-w001-20261122-06",
+  "room": "web",
+  "batchId": "web-w001-20261122",
+  "taskNumber": 6,
+  "date": "2026-11-22",
+  "source": {
+    "launch": "prometeo/launch/20261122/web/LAUNCH.md",
+    "studioProject": "JuanManuelPM/pruebas@prometeo/control:PROMETEO/spaces/web-design/PROJECT.md",
+    "flow": {
+      "name": "WEB_FACTORY_V2",
+      "version": "2.0.0",
+      "specBlobSha": "02f7b6161b50cd5bc6b342b84c969aaa36bac90a",
+      "implementation": "SPEC_ONLY"
+    }
+  },
+  "workspace": {
+    "repo": "JuanManuelPM/Experimentos",
+    "branch": "candidate/prometeo-web-w001-06-20261122",
+    "previewPath": "prometeo/previews/web/w001/06/",
+    "htmlBlobSha": "7e9e0ad70416e7eecb6bfb6ec6834e41fa43c605"
+  },
+  "state": {
+    "started": "STARTED_EVIDENCED",
+    "code": "DELIVERED",
+    "localBrowser": "BROWSER_VERIFIED",
+    "publicReadback": "PENDING",
+    "humanApproval": "PENDING"
+  },
+  "product": {
+    "title": "PULSO / Ciudad Vela",
+    "data": "100% sintéticos y deterministas; 19 franjas horarias",
+    "features": [
+      "4 modos",
+      "2 tipos de jornada",
+      "4 sectores",
+      "curva SVG responsiva con selección horaria",
+      "diagrama topológico ficticio",
+      "4 barras de corredores",
+      "tabla accesible",
+      "export CSV dinámico",
+      "reset"
+    ]
+  },
+  "qa": {
+    "runtime": "Chromium headless mediante Playwright Python",
+    "method": "set_content desde HTML local, no HTTP",
+    "viewports": [
+      320,
+      390,
+      768,
+      1440
+    ],
+    "checks": {
+      "overflow": 0,
+      "consoleErrors": 0,
+      "pageErrors": 0,
+      "tableRows": 19,
+      "modeFilter": true,
+      "dayFilter": true,
+      "zoneFilter": true,
+      "hourSlider": true,
+      "csvWithCurrentFilters": true,
+      "reset": true,
+      "mobileInteraction": true
+    },
+    "screenshots": "Capturas reales locales de los cuatro anchos; no alojadas en el repositorio",
+    "physicalDevice": "NOT_RUN",
+    "httpBrowserVisit": "NOT_RUN",
+    "humanVisualApproval": "PENDING"
+  },
+  "externalAssets": [],
+  "privacy": "Sin personas, datos reales, rastreadores, APIs o almacenamiento; solo arte original local",
+  "limits": [
+    "Fórmula de demostración, no modelo de predicción",
+    "Topología inventada, no mapa real",
+    "Sin evaluación humana ni dispositivo físico"
+  ]
+}
