@@ -74,6 +74,7 @@ h1 em{font-weight:400;color:var(--signal)}
 @media(max-width:900px){.mast{grid-template-columns:1fr;gap:18px}.intro{max-width:550px}.curtain{grid-template-columns:1fr}.curtain-frame{max-width:570px}.curtain-notes{display:grid;grid-template-columns:1fr 1fr;column-gap:24px;align-items:center}.curtain-notes h2{margin:5px 0 10px}.curtain-picks{margin:8px 0;gap:10px}.curtain-key{grid-column:1/-1}}
 @media(max-width:610px){.site-head .container{min-height:65px}.header-id{font-size:9px}.mast{padding-top:36px}.intro{font-size:14px}.toolrow{align-items:stretch}.toolrow-title{width:100%}.actions{width:100%}.switch{flex:1}.switch button{flex:1;padding:10px 6px}.subtle-btn{padding:11px 12px}.compare-grid{grid-template-columns:1fr;gap:22px}.piece-top{gap:6px}.version-select{max-width:62%}.curtain-notes{display:block}.curtain-picks{grid-template-columns:1fr 1fr;margin:16px 0}.curtain-notes h2{font-size:36px}.curtain-stage{aspect-ratio:3/4}.after{grid-template-columns:1fr}.footer{flex-direction:column}.piece-bottom{padding-top:9px}}
 @media(max-width:350px){.actions{gap:6px}.subtle-btn{font-size:10px}.brand{font-size:11px}.curtain-picks{grid-template-columns:1fr}}
+.curtain-stage:focus-within .curtain-handle{outline:3px solid var(--signal);outline-offset:4px}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
 </style>
 </head>
@@ -124,7 +125,7 @@ common+art+
 '</svg>';
 }
 const qs=new URLSearchParams(location.search);
-let state={a:versions.some(v=>v.id===qs.get("a"))?qs.get("a"):"v1",b:versions.some(v=>v.id===qs.get("b"))?qs.get("b"):"v4",mode:qs.get("mode")==="wipe"?"wipe":"parallel",split:Math.min(100,Math.max(0,Number(qs.get("split"))||50))};
+let state={a:versions.some(v=>v.id===qs.get("a"))?qs.get("a"):"v1",b:versions.some(v=>v.id===qs.get("b"))?qs.get("b"):"v4",mode:qs.get("mode")==="wipe"?"wipe":"parallel",split:(()=>{const n=Number(qs.get("split")??50);return Number.isFinite(n)?Math.min(100,Math.max(0,n)):50})()};
 const selectors=[$("select-a"),$("select-b"),$("select-a2"),$("select-b2")];
 selectors.forEach(sel=>{versions.forEach(v=>{const opt=document.createElement("option");opt.value=v.id;opt.textContent=v.label;sel.appendChild(opt)});sel.addEventListener("change",()=>{state[sel.id.includes("-a")?"a":"b"]=sel.value;render()})});
 $("parallel").addEventListener("click",()=>{state.mode="parallel";render()});
