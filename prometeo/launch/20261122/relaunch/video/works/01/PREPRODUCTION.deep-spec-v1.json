@@ -1,0 +1,245 @@
+{
+  "version": "DEEP-SPEC-1",
+  "medium": "video",
+  "depth": "SISTEMA",
+  "taskId": "video-w003-20261122-01",
+  "brief": "ÚLTIMA GUARDIA: cortometraje original de suspenso donde una guardia nocturna descubre que alguien alteró el registro de la habitación vacía, con actuación creíble, continuidad de miradas y sonido narrativo. Kit de continuidad reusable.",
+  "briefSha": "0cc574528594731a3d1cf0c15a0d0e5a37e775b7",
+  "intent": {
+    "experience": "La audiencia ve tinta recién incorporada al libro de una habitación vacía y descubre la amenaza con la mirada de una guardia.",
+    "distinctAbility": "Narración audiovisual por acting, cobertura, espacio y eventos acústicos sincronizados."
+  },
+  "references": [
+    {
+      "id": "bfi",
+      "url": "https://www.bfi.org.uk/sight-and-sound/features/alfred-hitchcock-my-own-methods",
+      "status": "OBSERVED",
+      "observation": "Se leyó el ensayo de Hitchcock sobre planificar la continuidad y concentrar atención en detalles; NO se visionó una película de referencia completa."
+    },
+    {
+      "id": "edit",
+      "url": "https://pressbooks.pub/reframingcinema/chapter/editing/",
+      "status": "OBSERVED",
+      "observation": "Capítulo examinado sobre regla del eje y raccord de miradas que favorecen continuidad de tiempo y de espacio entre cortes."
+    },
+    {
+      "id": "audit",
+      "url": "https://github.com/JuanManuelPM/Experimentos/blob/candidate/prometeo-video-audit-v2-20261122/prometeo/launch/20261122/repair/video-audit-v2/AUDIT_W002.md",
+      "status": "OBSERVED",
+      "observation": "Auditoría candidata informa que W002/01 quedó sin película y que el servicio pago de generación bloqueó el filme anterior."
+    }
+  ],
+  "components": [
+    {
+      "id": "PERF",
+      "role": "Interpretación corporal y facial continua",
+      "strategy": "Fotografías originales con poses diferentes en nueve planos, no interpretación registrada temporalmente.",
+      "constraints": "No declarar actuación filmada; el rostro es estático dentro del plano y solo cambia por cortes."
+    },
+    {
+      "id": "EDIT",
+      "role": "Cobertura, eje espacial y continuidad",
+      "strategy": "Nueve planos originales con encuadres y zoom/pan leves dirigidos y metadatos de continuidad.",
+      "constraints": "Sala 208 a pantalla derecha, eje puerta-guardia controlado y gestos de mirada fijados editorialmente."
+    },
+    {
+      "id": "SOUND",
+      "role": "Sonido narrativo sincronizado a montaje",
+      "strategy": "Room tone, pasos, raspado y pestillo por síntesis propia con tiempos intencionales.",
+      "constraints": "Audio independiente del stock, no engañar sobre Foley de rodaje o diálogos reales."
+    }
+  ],
+  "questions": [
+    {
+      "id": "QA",
+      "target": "PERF",
+      "question": "¿Un animatic basado en nueve fotos puede demostrar actuación corporal y microexpresión temporal en pantalla?",
+      "alternatives": [
+        "animatic fotográfico por poses",
+        "footage filmado autorizado"
+      ],
+      "finding": "No: el movimiento de cámara no equivale a movimiento actoral; fallo observado en primer artículo.",
+      "decisionImpact": "Mantener MP4 como corte parcial y cambiar de técnica antes de llamar película terminada.",
+      "evidenceRef": "audit"
+    },
+    {
+      "id": "QB",
+      "target": "EDIT",
+      "question": "¿La ubicación de puerta y libro permanece comprensible mediante empalmes sin rótulos?",
+      "alternatives": [
+        "eje editorial consistente",
+        "cortes independientes sin eje"
+      ],
+      "finding": "Tres fotogramas (inicial/medio/final) inspeccionados localmente, pero recepción por audiencia NOT_RUN.",
+      "decisionImpact": "Conservar en JSON la continuidad por plano y no declarar lectura ciega probada.",
+      "evidenceRef": "edit"
+    },
+    {
+      "id": "QC",
+      "target": "SOUND",
+      "question": "¿El pestillo audible puede anticipar el giro de mirada y crear tensión sin texto?",
+      "alternatives": [
+        "Foley sincronizado con mirada",
+        "ambient sin información causal"
+      ],
+      "finding": "MP4 con H264/AAC decodificado sin errores, escucha crítica NOT_RUN.",
+      "decisionImpact": "Evento a 15.42s y cambio de plano cercano; export reproducible en kit local.",
+      "evidenceRef": "bfi"
+    }
+  ],
+  "decisions": [
+    {
+      "id": "DA",
+      "questionId": "QA",
+      "componentIds": [
+        "PERF"
+      ],
+      "choice": "Corte fotográfico solo como primera demostración técnica",
+      "rejected": "autodeclarar actuación en movimiento que no existe",
+      "productionChange": "Marcar FIRST_ARTICLE_FAILED y proponer recurso filmado autorizado como nueva familia.",
+      "why": "El defecto de representación es crítico, aunque exista un video verdadero."
+    },
+    {
+      "id": "DB",
+      "questionId": "QB",
+      "componentIds": [
+        "EDIT"
+      ],
+      "choice": "Shotlist explícito con eje y mirada",
+      "rejected": "cortes decorativos sin continuidad espacial",
+      "productionChange": "Persistir duraciones, función narrativa y composición de nueve planos en kit.",
+      "why": "La dirección de mirada crea causalidad solo si el espacio sigue siendo comprensible."
+    },
+    {
+      "id": "DC",
+      "questionId": "QC",
+      "componentIds": [
+        "SOUND",
+        "EDIT"
+      ],
+      "choice": "Foley sintetizado y transitorios temporales",
+      "rejected": "banda indiferenciada sin diseño de acciones",
+      "productionChange": "Export PCM y AAC; verificar decode y nivel técnico en FFmpeg.",
+      "why": "El guion debe apoyarse en eventos auditivos, no en placas aclaratorias."
+    }
+  ],
+  "relations": [
+    {
+      "from": "PERF",
+      "to": "EDIT",
+      "invariant": "La protagonista debe orientar mirada y posición respecto de habitación 208 a través de los planos.",
+      "failure": "Eje invertido, emoción desconectada del espacio.",
+      "test": "Revisar contacto de nueve planos y raccord a tamaño de proyección."
+    },
+    {
+      "from": "SOUND",
+      "to": "EDIT",
+      "invariant": "La señal de pestillo debe preceder a un plano de escucha.",
+      "failure": "SFX posterior a reacción o ilegible.",
+      "test": "Cruzar timestamps de SFX con transiciones y revisar audio decodificado."
+    }
+  ],
+  "risks": [
+    {
+      "componentIds": [
+        "PERF"
+      ],
+      "severity": "high",
+      "failure": "El acting no evoluciona dentro del plano, es fotografía animada.",
+      "prevention": "Cambiar a footage original o licenciado con actuación real.",
+      "test": "Primer artículo de seis segundos con gesto corporal y mirada humana en movimiento.",
+      "status": "FAILED"
+    },
+    {
+      "componentIds": [
+        "EDIT",
+        "SOUND"
+      ],
+      "severity": "medium",
+      "failure": "Nueve fotografías no demuestran comprensión de conflicto por parte del espectador.",
+      "prevention": "Prueba de espectadores ciegos y escucha independiente.",
+      "test": "Recopilar explicación espontánea de causa y resolución, sin exposición textual.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "acceptance": [
+    {
+      "kind": "functional",
+      "criterion": "Vídeo MP4 H264 y AAC reproducible y técnicamente decodificable.",
+      "oracle": "FFprobe y FFmpeg: 616 frames 24fps, 960x540, 25.70 segundos, AAC 32k.",
+      "status": "OBSERVED"
+    },
+    {
+      "kind": "visual",
+      "criterion": "Actuación corporal continua que explique descubrimiento.",
+      "oracle": "Primer artículo de 3s observado: cámara se desplaza pero actor está inmóvil.",
+      "status": "FAILED"
+    },
+    {
+      "kind": "audio",
+      "criterion": "Sonido escuchado críticamente y sincronizado perceptualmente.",
+      "oracle": "Audición humana y confirmación de eventos de primer/medio/último plano.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "resources": "Python, PIL, SciPy y FFmpeg local + imágenes cinematográficas originales generadas. Generación video paga y descarga de footage bloqueadas.",
+  "licensing": "Arte original generado para esta tarea y Foley propio sintetizado, sin material audiovisual ni voces de terceros reutilizadas.",
+  "environmentLimits": "ElevenLabs solo permite generación de video en plan pago; red del contenedor no permite descargar Pexels. Test ciego, acting vivo y escucha independiente NOT_RUN.",
+  "artDirection": {
+    "schema": "prometeo.art-direction.first-article/v1",
+    "medium": "video",
+    "taskId": "video-w003-20261122-01",
+    "briefSha": "0cc574528594731a3d1cf0c15a0d0e5a37e775b7",
+    "flowRef": "DEEP-SPEC-1@7656a293b0182f81619bf0d27b90dffa771c2683; video specialized flow NOT_RETRIEVED",
+    "promise": {
+      "subject": "Guardia nocturna y libro de la habitación 208 intervenido",
+      "intent": "El suspense surge de la mirada, el registro alterado y la respuesta sonora."
+    },
+    "benchmark": {
+      "url": "https://www.bfi.org.uk/sight-and-sound/features/alfred-hitchcock-my-own-methods",
+      "description": "Ensayo histórico efectivamente leído; no se observó un filme completo.",
+      "status": "OBSERVED"
+    },
+    "techniques": [
+      {
+        "family": "photographic-motion-animatic",
+        "viability": "Disponible y exportado localmente, pero actuación viva imposible.",
+        "license": "Imágenes originales encargadas para esta tarea y sonido sintetizado."
+      },
+      {
+        "family": "licensed-live-performance-footage",
+        "viability": "Legalmente posible en principio, bloqueado por red aquí.",
+        "license": "Footage concreto exige descarga, comprobación de licencia y procedencia."
+      }
+    ],
+    "selectedTechnique": "photographic-motion-animatic",
+    "firstFrame": {
+      "openingDescription": "Guardia con linterna en pasillo, puerta 208 en margen derecho.",
+      "focalSubject": "Guardia humana, habitación 208 y mesa con registro",
+      "minimalUI": "Ninguna; se entrega video limpio sin subtítulos narrativos.",
+      "checks": [
+        {
+          "viewport": "390",
+          "criterion": "Silueta y relación con puerta siguen legibles.",
+          "oracle": "first_390.jpg exportado local; navegador NOT_RUN."
+        },
+        {
+          "viewport": "1440",
+          "criterion": "Composición de personaje/puerta sin overlays.",
+          "oracle": "first_1440.jpg exportado local; navegador NOT_RUN."
+        }
+      ],
+      "observations": []
+    },
+    "firstArticle": {
+      "target": "Actuación temporal del rostro y manos en tres segundos.",
+      "rejectWhen": "La imagen es una foto fija que se aproxima sin actuación temporal.",
+      "switchTo": "licensed-live-performance-footage",
+      "oracle": "Visionar microexpresiones y acciones de mano en primer artículo corto.",
+      "resourceProof": "Folio de arte original y ffmpeg local disponibles; footage externo bloqueado.",
+      "status": "FAILED",
+      "observed": "Prueba de tres segundos observada: animatic real pero actuación temporal insuficiente."
+    },
+    "humanApproved": false
+  }
+}
