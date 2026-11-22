@@ -1,0 +1,47 @@
+<!doctype html><html lang="es"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#101c2a"><title>La última luz · Recortes 2.5D</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#0d1721;color:#f2e9d6;font-family:system-ui,-apple-system,sans-serif;min-height:100svh;display:grid;place-items:center}.wrap{width:min(94vw,1120px)}header{display:flex;align-items:baseline;justify-content:space-between;gap:1rem;padding:18px 0}h1{font-size:clamp(22px,4vw,40px);font-weight:500;letter-spacing:-.045em;margin:0}header p{font-size:11px;letter-spacing:.15em;color:#a4afbb;margin:0;text-transform:uppercase}canvas{width:100%;display:none;aspect-ratio:16/9;box-shadow:0 28px 90px #0008;border:1px solid #ffffff12;background:#16273d}.tools{display:none;gap:12px;align-items:center;padding:19px 0}video{width:100%;display:block;aspect-ratio:16/9;background:#16273d;box-shadow:0 28px 90px #0008;border:1px solid #ffffff12}body.preview canvas,body.preview .tools{display:block}body.preview .tools{display:flex}body.preview video{display:none}.mode{display:flex;align-items:center;gap:20px;padding-top:14px}.mode button{border:1px solid #536479;background:#1c2e3d;color:#e5d2ae;border-radius:3px;padding:10px 14px;font-weight:600;cursor:pointer}.mode a{color:#d5b888;text-decoration:underline;text-underline-offset:4px;font-size:13px}.tools button{background:#e5c893;color:#1a2430;padding:12px 16px;border:0;min-height:46px;cursor:pointer;font-weight:650;border-radius:3px}.tools .secondary{background:#203247;color:#f1e4cd}input{flex:1;accent-color:#e5c893;min-width:30px}.stamp{font-size:12px;white-space:nowrap;font-variant-numeric:tabular-nums;color:#b7c3ca}footer{font-size:12px;color:#82949f;padding:0 0 24px}@media(max-width:520px){header{align-items:flex-start;flex-direction:column;gap:4px}.tools{gap:7px}.tools button{padding:10px}.stamp{font-size:10px}}
+</style><main class="wrap"><header><h1>LA ÚLTIMA LUZ</h1><p>Un cortometraje de papel · 12 segundos</p></header><canvas id="stage" width="960" height="540" role="img" aria-label="Un pequeño barco de papel navega entre olas de recortes hasta ser iluminado por un faro"></canvas><video id="film" controls playsinline preload="metadata" src="la-ultima-luz.mp4" aria-label="Corto final La última luz, 12 segundos"></video><div class="mode"><button id="mode">Ver animación editable</button><a href="la-ultima-luz.mp4" download>Descargar MP4</a></div><div class="tools"><button id="play" aria-label="Pausar reproducción">Pausar</button><input id="seek" type="range" min="0" max="12" step="0.01" value="0" aria-label="Posición de reproducción"><span id="time" class="stamp">00:00 / 00:12</span><button id="restart" class="secondary">Repetir</button></div><footer>Video W001 / 02 · Capas procedurales originales · Vista previa determinista</footer></main>
+<script>
+const cv=document.querySelector('#stage'),c=cv.getContext('2d');const W=960,H=540,D=12;let time=0,last=performance.now(),playing=true;const clamp=(x,a=0,b=1)=>Math.max(a,Math.min(b,x)),ease=x=>{x=clamp(x);return x*x*(3-2*x)},wave=(x,t,n)=>Math.sin(x*n+t)*.5+Math.sin(x*n*2.04-t*1.17)*.16;
+function poly(pts,fill,stroke='',line=1){c.beginPath();c.moveTo(...pts[0]);pts.slice(1).forEach(p=>c.lineTo(...p));c.closePath();c.fillStyle=fill;c.fill();if(stroke){c.strokeStyle=stroke;c.lineWidth=line;c.stroke()}}
+function path(fn,fill){c.beginPath();fn();c.fillStyle=fill;c.fill()}
+function scene(t){c.save();c.clearRect(0,0,W,H);
+let g=c.createLinearGradient(0,0,0,540);g.addColorStop(0,'#102035');g.addColorStop(.65,'#294052');g.addColorStop(1,'#3c5363');c.fillStyle=g;c.fillRect(0,0,W,H);
+// paper grain is deterministic, not random per frame
+for(let i=0;i<150;i++){let x=(i*197.17)%W,y=(i*91.67)%H;c.fillStyle=i%3?'#eee1bc22':'#cad7d922';c.fillRect(x,y,i%4===0?2:1,i%4===0?2:1)}
+// moon, distant paper discs and star die-cuts
+c.fillStyle='#e9d9b0';c.beginPath();c.arc(724,128,61,0,7);c.fill();c.fillStyle='#d5c8a7';c.beginPath();c.arc(705,114,10,0,7);c.fill();c.beginPath();c.arc(743,144,16,0,7);c.fill();
+for(let i=0;i<24;i++){let x=42+(i*163)%870,y=36+(i*67)%238,s=1+(i%3);poly([[x,y-s*2],[x+s*.5,y],[x,y+s*2],[x-s*.5,y]],'#eddcb4a0')}
+// mountain cards: distant, middleground, foreground motion parallax
+c.save();c.translate(-t*2.4,0);poly([[-40,344],[82,274],[148,313],[280,257],[422,335],[565,277],[694,332],[867,277],[1040,350],[1040,540],[-40,540]],'#243b48');c.restore();
+c.save();c.translate(-t*4.7,0);poly([[-70,374],[64,330],[152,359],[274,318],[425,365],[565,322],[683,348],[814,318],[1040,380],[1040,540],[-70,540]],'#1b303c');c.restore();
+// lighthouse on right horizon, with animated light beam that grows as boat nears
+const glow=ease((t-3)/6);c.save();c.translate(825,0);
+poly([[-36,358],[39,358],[27,170],[-24,170]],'#e4d5bd');poly([[-23,169],[23,169],[30,190],[-30,190]],'#c17662');poly([[-32,170],[32,170],[24,155],[-25,155]],'#eacfa5');poly([[-23,155],[23,155],[19,136],[-19,136]],'#c5a887');c.fillStyle='#f8e1a9';c.fillRect(-12,149,24,18);
+for(let i=0;i<3;i++){c.fillStyle='#b55e54';c.fillRect(-32+(i%2)*3,222+i*35,62-i*2,12)}
+c.fillStyle='#273846';c.fillRect(-5,294,12,50);
+c.restore();
+const rot=-.2+Math.sin(t*.46)*.21,cx=825,cy=158;let len=600;c.save();c.globalAlpha=.06+.28*glow;c.translate(cx,cy);c.rotate(rot);poly([[0,0],[-len,-138],[-len,123]],'#f6dfa1');c.restore();
+// crest and trough layers. Wave phases are continuous, boat physics follows the middle surface.
+function sea(level,amp,freq,speed,col,offset=0){path(()=>{c.moveTo(0,H);for(let x=0;x<=W+8;x+=8){let y=level+amp*wave(x+offset,t*speed,freq);c.lineTo(x,y)}c.lineTo(W,H);c.closePath()},col)}
+sea(377,25,.012,.75,'#456475');sea(421,27,.014,1,'#314e60',23);
+// boat position and tilt tied to the same wave as its local waterline
+let p=ease(t/11),bx=125+645*p,by=412+22*wave(bx+23,t,.014)-9;const tilt=(Math.cos((bx+23)*.014+t)*.013)-.015;
+c.save();c.translate(bx,by);c.rotate(tilt);c.fillStyle='#0006';c.beginPath();c.ellipse(0,18,59,9,0,0,7);c.fill();
+poly([[-64,3],[64,3],[40,29],[-35,29]],'#dbad78');poly([[-64,3],[0,9],[64,3],[40,29],[0,17],[-35,29]],'#efcba0','#b48e6a',1.3);poly([[-64,3],[0,-7],[64,3],[0,9]],'#f3dec0');
+poly([[0,-8],[0,-86],[-45,-8]],'#fff2d3');poly([[3,-82],[49,-12],[3,-8]],'#c46c5f');poly([[0,-86],[0,-8]],'#bc9b83');
+c.beginPath();c.moveTo(-5,29);c.quadraticCurveTo(14,35,44,29);c.strokeStyle='#b48968';c.lineWidth=2;c.stroke();c.restore();
+sea(454,25,.020,1.18,'#20394d',53);sea(499,24,.019,.82,'#172d40',90);
+// handmade wave strokes, keeping band spacing and perspective coherent
+for(let j=0;j<4;j++){let yy=390+j*42;for(let i=0;i<7;i++){let x=70+i*140+((j%2)*57)-t*(7+j*4)%140;c.beginPath();c.moveTo(x,yy+8*wave(x,t,.018));c.quadraticCurveTo(x+18,yy-5,x+37,yy);c.strokeStyle='#d7c5a13a';c.lineWidth=1.2;c.stroke()}}
+// settling: sail's red cutout turns golden under beam
+if(glow>.25){c.save();c.globalAlpha=.03+.12*glow;c.fillStyle='#f9e0a8';c.beginPath();c.ellipse(bx,by-14,85,52,0,0,7);c.fill();c.restore()}
+// finish on tactile paper vignette
+let v=c.createRadialGradient(480,270,90,480,270,620);v.addColorStop(0,'#00102000');v.addColorStop(1,'#00091582');c.fillStyle=v;c.fillRect(0,0,W,H);
+// restrained editorial title only near end
+if(t>10.15){let a=ease((t-10.15)/.7);c.globalAlpha=a;c.textAlign='center';c.fillStyle='#efe3cb';c.font='500 25px Georgia,serif';c.fillText('Todo viaje busca una luz.',480,76)}
+c.restore()}
+function frame(now){let delta=Math.min(.07,(now-last)/1000);last=now;if(playing){time+=delta;if(time>D)time=0;}scene(time);document.querySelector('#seek').value=time;document.querySelector('#time').textContent=`00:${String(Math.floor(time)).padStart(2,'0')} / 00:12`;requestAnimationFrame(frame)}
+document.querySelector('#play').onclick=()=>{playing=!playing;document.querySelector('#play').textContent=playing?'Pausar':'Reproducir'};document.querySelector('#restart').onclick=()=>{time=0;playing=true;document.querySelector('#play').textContent='Pausar'};document.querySelector('#seek').oninput=e=>{time=+e.target.value;playing=false;document.querySelector('#play').textContent='Reproducir';scene(time)};document.querySelector('#mode').onclick=()=>{let p=document.body.classList.toggle('preview');document.querySelector('#mode').textContent=p?'Ver video final':'Ver animación editable';document.querySelector('#film').pause()};window.renderAt=(t)=>{playing=false;time=clamp(t,0,D);scene(time)};scene(0);requestAnimationFrame(frame);
+</script></html>
