@@ -99,9 +99,12 @@ function render(t){t=clamp(t,0,D);let seg=segments.find(s=>t>=s.start&&t<s.end)|
  case'S03':{actor(355,452,1.23,'elsa',1,-.1,.24+ease(p)*.35,t);actor(670,454,1.2,'ina',-1,lerp(-1,.2,ease((p-.3)/.7)),ease((p-.5)/.5)*.25,t);bird(415+ease(p)*31,303-ease(p)*22,.7,-.05);break}
  case'S05':{actor(283-65*p,451,1.04,'elsa',1,.75,.06,t);actor(576,455,1.43,'ina',-1,lerp(-.8,.85,ease(p)),.52,t);bird(513-6*p,296+4*Math.sin(p*4),.83,.1);break}
  case'S06':{actor(410+13*p,451,1.21,'ina',1,lerp(.2,-.6,ease(p)),.3+ease(p)*.3,t);actor(746,458,.87,'leo',-1,-.9,.02,t);bird(485+11*p,306,.69,.13);break}
- case'S08':{umbrella(621,240,1.1);actor(467,463,1.21,'ina',1,lerp(.05,.8,ease(p)),.47,t);actor(697,467,.93,'leo',-1,lerp(-.7,.91,ease((p-.1)/.65)),.62,t);bird(640,202+Math.sin(t*2)*3,1.02,.2+Math.sin(t*1.7)*.07);
- // warm bus window passes behind, first owner is seen smiling
- let bx=990-p*700;roundRect(bx,227,370,154,22,'#c5a875');roundRect(bx+23,243,280,105,12,'#56727c');actor(bx+147,484,.58,'elsa',1,.78,.14,t);roundRect(bx+25,243,280,13,3,'#cbb391');break}
+ case'S08':{
+ // Bus and its rider are behind the figures, not pasted over the handoff payoff.
+ let bx=990-p*940;roundRect(bx,227,370,154,22,'#c5a875');roundRect(bx+23,243,280,105,12,'#56727c');
+ c.save();c.beginPath();c.rect(bx+25,246,276,100);c.clip();actor(bx+145,420,.58,'elsa',1,.78,.14,t);c.restore();
+ roundRect(bx+25,243,280,7,3,'#cbb391');
+ umbrella(621,240,1.1);actor(467,463,1.21,'ina',1,lerp(.05,.8,ease(p)),.47,t);actor(697,467,.93,'leo',-1,lerp(-.7,.91,ease((p-.1)/.65)),.62,t);bird(640,202+Math.sin(t*2)*3,1.02,.2+Math.sin(t*1.7)*.07);break}
  }
  }
  // moving rain light, deliberate paper-grain and cinematic vignetting
