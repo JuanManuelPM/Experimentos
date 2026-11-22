@@ -1,0 +1,100 @@
+{
+  "schema": "prometeo.3d.qa-receipt/v1",
+  "id": "3d-w7-20261122-10",
+  "publishedAt": "2026-11-22T18:55:04.292Z",
+  "room": "3d",
+  "batchId": "3d-w7-20261122",
+  "taskNumber": 10,
+  "sourceBranch": "candidate/prometeo-3d-w7-20261122-10",
+  "sourceRef": "gh-pages",
+  "launchBlobSha": "58de659e2aa01c0746d59ca6f95c36bdc59f3030",
+  "flowVersion": "2.3.0",
+  "flowSha256Canonical": "53bc9e2e4b37c99e92d3494af8dfa4461cd4644b15f980e32497a8428b067b3f",
+  "approvedByHuman": false,
+  "checks": {
+    "remoteSourceReadback": {
+      "status": "OBSERVED",
+      "count": 6,
+      "files": [
+        "index.html",
+        "app.mjs",
+        "mechanics.mjs",
+        "mechanics.test.mjs",
+        "spike.html",
+        "PREPRODUCTION.deep-spec-v1.json"
+      ]
+    },
+    "staticIndependentChecks": {
+      "status": "OBSERVED",
+      "passed": 8,
+      "total": 8,
+      "detail": "Published source independently inspected via GitHub connector; basic arithmetic and document consistency verified without executing browser module.",
+      "facts": {
+        "wheelbaseM": 1.13,
+        "frontAxleUnfoldedM": [
+          0.58,
+          0.276,
+          0
+        ],
+        "frontAxleFoldedM": [
+          -0.54,
+          0.276,
+          -0.18
+        ],
+        "rearAxleM": [
+          -0.55,
+          0.276,
+          0
+        ],
+        "foldedLateralSeparationM": 0.18,
+        "bomAssemblies": 14
+      }
+    },
+    "nodeMechanicsTest": {
+      "status": "NOT_RUN",
+      "command": "node mechanics.test.mjs",
+      "reason": "No shared execution channel from GitHub connector bytes to local Node; test file is published but was not executed."
+    },
+    "firstArticleWebGL": {
+      "status": "NOT_RUN",
+      "url": "https://juanmanuelpm.github.io/Experimentos/prometeo/launch/20261122/relaunch/3d/work-10/spike.html",
+      "reason": "Screenshot service credits exhausted, independent render not captured."
+    },
+    "firstScreen390": {
+      "status": "NOT_RUN",
+      "viewport": [
+        390,
+        844
+      ]
+    },
+    "firstScreen1440": {
+      "status": "NOT_RUN",
+      "viewport": [
+        1440,
+        900
+      ]
+    },
+    "mobileInteraction": {
+      "status": "NOT_RUN"
+    },
+    "browserConsole": {
+      "status": "NOT_RUN"
+    },
+    "glbExport": {
+      "status": "NOT_RUN"
+    },
+    "fullMeshInterferenceSweep": {
+      "status": "NOT_RUN"
+    },
+    "manufacturingToleranceAndStrength": {
+      "status": "NOT_CERTIFIED"
+    },
+    "humanApproved": false
+  },
+  "caution": "Static checks and source publication are not browser render, artistic approval, exhaustive interference test, or engineering certification.",
+  "references": [
+    "https://www.ternbicycles.com/en/bikes/472/verge-x11",
+    "https://www.brompton.com/stories/guides/folding-bike-buyers-guide",
+    "https://threejs.org/manual/pages/fundamentals.html"
+  ]
+}
