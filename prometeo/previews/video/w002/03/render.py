@@ -4,7 +4,7 @@ Footage shot in 2012 is ALWAYS labeled 2012. Photos are 12 and 15 Nov 2019.
 The narration and sonic atmosphere are synthesized, NOT historical recordings.
 """
 from __future__ import annotations
-import json, math, os, pathlib, subprocess, sys, time, urllib.request
+import hashlib, json, math, os, pathlib, subprocess, sys, time, urllib.request
 
 HERE = pathlib.Path(__file__).resolve().parent
 CACHE = HERE / "_source_downloads"
@@ -15,7 +15,7 @@ ASSETS = {
     "VENICE_CONTEXT": {
         "url": "https://videos.pexels.com/video-files/3381844/3381844-hd_1920_1080_30fps.mp4",
         "file": "venice_context_unknown_capture_date.mp4", "minbytes": 100000, "magic": "mp4",
-        "creator": "Linda Tripaldi", "date": "CAPTURE_UNKNOWN; published 2019-12-14", "license": "Pexels free media license",
+        "creator": "Linda Tripaldi", "date": "UNKNOWN", "publishedAt": "2019-12-14", "license": "Pexels free media license",
         "commons": "https://www.pexels.com/video/traveling-the-grand-canal-waterways-of-venice-italy-3381844/",
     },
     "SATELLITE_2019_14": {
@@ -27,7 +27,7 @@ ASSETS = {
     "FLOOD_CONTEXT": {
         "url": "https://videos.pexels.com/video-files/14159923/14159923-hd_1080_1920_30fps.mp4",
         "file": "venice_flood_context_unknown_capture_date.mp4", "minbytes": 100000, "magic": "mp4",
-        "creator": "Marius Nacu", "date": "CAPTURE_UNKNOWN; published 2022-10-24", "license": "Pexels free media license",
+        "creator": "Marius Nacu", "date": "UNKNOWN", "publishedAt": "2022-10-24", "license": "Pexels free media license",
         "commons": "https://www.pexels.com/video/flood-in-venice-14159923/",
     },
 }
@@ -38,13 +38,13 @@ CLAIMS = {
 }
 # 6 s segments: frame intervals half-open. Historical dates NEVER change.
 SHOTS = [
- {"id":"S01","assetId":"VENICE_CONTEXT","label":"VENECIA | CONTEXTO SIN FECHA DE RODAJE","kind":"ARCHIVAL_VIDEO","claimIds":[]},
+ {"id":"S01","assetId":"VENICE_CONTEXT","label":"VENECIA | CONTEXTO SIN FECHA DE RODAJE","kind":"CONTEXT_VIDEO","claimIds":[]},
  {"id":"S02","assetId":"SATELLITE_2019_14","label":"14 NOV 2019 | SATÉLITE NOAA-20","kind":"ARCHIVAL_PHOTO","claimIds":["C01"]},
  {"id":"S03","assetId":"SATELLITE_2019_14","label":"187 cm | DATO 12 NOV, IMAGEN 14 NOV","kind":"ARCHIVAL_PHOTO","claimIds":["C01"]},
  {"id":"S04","assetId":None,"label":"DOS ALTURAS, DOS FECHAS | COMUNE DI VENEZIA","kind":"ORIGINAL_DATA_GRAPHIC","claimIds":["C01","C02"]},
- {"id":"S05","assetId":"FLOOD_CONTEXT","label":"INUNDACIÓN | CONTEXTO SIN FECHA DE RODAJE","kind":"ARCHIVAL_PHOTO","claimIds":[]},
- {"id":"S06","assetId":"VENICE_CONTEXT","label":"CONTEXTO SIN FECHA | NO ES REGISTRO MOSE","kind":"ARCHIVAL_VIDEO","claimIds":["C03"]},
- {"id":"S07","assetId":"FLOOD_CONTEXT","label":"VENECIA | CONTEXTO SIN FECHA DE RODAJE","kind":"ARCHIVAL_PHOTO","claimIds":["C03"]},
+ {"id":"S05","assetId":"FLOOD_CONTEXT","label":"INUNDACIÓN | CONTEXTO SIN FECHA DE RODAJE","kind":"CONTEXT_VIDEO","claimIds":[]},
+ {"id":"S06","assetId":"VENICE_CONTEXT","label":"CONTEXTO SIN FECHA | NO ES REGISTRO MOSE","kind":"CONTEXT_VIDEO","claimIds":["C03"]},
+ {"id":"S07","assetId":"FLOOD_CONTEXT","label":"VENECIA | CONTEXTO SIN FECHA DE RODAJE","kind":"CONTEXT_VIDEO","claimIds":["C03"]},
  {"id":"S08","assetId":None,"label":"FUENTES, FECHAS Y LICENCIAS EN EL REGISTRO","kind":"ORIGINAL_CREDITS","claimIds":[]},
 ]
 SCRIPT = (
@@ -71,6 +71,7 @@ def probe(path):
 def get_asset(key, item):
     dest = CACHE / item["file"]
     if dest.exists() and dest.stat().st_size >= item["minbytes"]:
+        item["downloadedSha256"] = hashlib.sha256(dest.read_bytes()).hexdigest()
         return dest
     request = urllib.request.Request(item["url"], headers={
         "User-Agent": "PROMETEO-documentary-license-audit/1.0 (non-commercial source verification)",
@@ -93,7 +94,8 @@ def get_asset(key, item):
                 raise RuntimeError("not WebM")
             if item["magic"] == "mp4" and data[4:8] != b"ftyp":
                 raise RuntimeError("not MP4")
-            print("ASSET VERIFIED", key, dest.stat().st_size, item["license"])
+            item["downloadedSha256"] = hashlib.sha256(dest.read_bytes()).hexdigest()
+            print("ASSET VERIFIED", key, dest.stat().st_size, item["license"], item["downloadedSha256"])
             return dest
         except Exception as ex:
             last = ex
@@ -216,6 +218,8 @@ def make_ledger():
         if shot["assetId"]:
             item["mediaSource"]=ASSETS[shot["assetId"]]["commons"]
             item["dateCaptured"]=ASSETS[shot["assetId"]]["date"]
+            item["publishedAt"]=ASSETS[shot["assetId"]].get("publishedAt")
+            item["mediaSha256"]=ASSETS[shot["assetId"]]["downloadedSha256"]
             item["license"]=ASSETS[shot["assetId"]]["license"]
             item["author"]=ASSETS[shot["assetId"]]["creator"]
             item["alterations"]="Color grade, original animated credit overlay, crop/zoom" if shot["kind"]=="ARCHIVAL_PHOTO" else "Scale, color grade, muted original ambient audio, source date overlay"
@@ -227,7 +231,7 @@ def make_ledger():
     ledger={"schema":"prometeo.video.frame-provenance/v1","taskId":"video-w002-20261122-03","fps":FPS,"durationSeconds":DURATION,"frameCount":FPS*DURATION,
         "claims":CLAIMS,"media":ASSETS,"segments":records,
         "audio":{"voice":"Spanish text-to-speech by local espeak (synthetic, not interview)", "ambience":"Pink noise and sine designed in ffmpeg, not historical field recordings", "factualVoiceText":SCRIPT},
-        "rights":"The film's original editorial elements are CC BY 4.0; imported material retains its listed CC BY 3.0 / CC BY 3.0 IT licenses and separate attribution obligations.",
+        "rights":"Original editorial graphics and score CC BY 4.0; NOAA-20 imagery public domain (US federal government), two Pexels videos retain Pexels free license, no implication of endorsement.",
         "visualTruth":"Undated Pexels canal footage is explicitly contextual; 2019 NOAA satellite and undated flood B-roll have explicit, distinct source dates."
     }
     p=HERE/"PROVENANCE.json";p.write_text(json.dumps(ledger,ensure_ascii=False,indent=2)+"\n",encoding="utf8")

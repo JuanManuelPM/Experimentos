@@ -25,16 +25,18 @@ def validate(d):
         if aid:
             a=assets.get(aid)
             if not a: errors.append(f"Unknown asset {aid}");continue
-            if item.get("dateCaptured")!=a.get("date") or item.get("author")!=a.get("creator"):
+            if item.get("dateCaptured")!=a.get("date") or item.get("author")!=a.get("creator") or item.get("publishedAt")!=a.get("publishedAt"):
                 errors.append(f"Wrong provenance for {name}")
+            if item.get("mediaSha256")!=a.get("downloadedSha256") or not re.fullmatch("[0-9a-f]{64}",a.get("downloadedSha256","")):
+                errors.append(f"No verified binary hash for {name}")
             if item.get("license")!=a.get("license") or not (a.get("commons","").startswith("https://commons.wikimedia.org/wiki/File:") or a.get("commons","").startswith("https://www.pexels.com/video/") or a.get("commons","").startswith("https://www.nesdis.noaa.gov/news/")):
                 errors.append(f"Missing legal credit: {name}")
             label=item.get("label","")
-            if aid=="VENICE_CONTEXT" and "CONTEXTO" not in label:
+            if aid=="VENICE_CONTEXT" and ("CONTEXTO" not in label or item.get("kind")!="CONTEXT_VIDEO"):
                 errors.append(f"Context footage mislabeled: {name}")
             if aid=="SATELLITE_2019_14" and "2019" not in label and "187" not in label:
                 errors.append(f"Nov 14 satellite unlabeled: {name}")
-            if aid=="FLOOD_CONTEXT" and "CONTEXTO" not in label:
+            if aid=="FLOOD_CONTEXT" and ("CONTEXTO" not in label or item.get("kind")!="CONTEXT_VIDEO"):
                 errors.append(f"Undated flood B-roll mislabeled: {name}")
         else:
             if item.get("kind") not in ("ORIGINAL_DATA_GRAPHIC","ORIGINAL_CREDITS"):

@@ -32,7 +32,7 @@ Requiere Python + Pillow, ffmpeg, ffprobe, espeak, Node.
 
 El render primero descarga y verifica los tres originales, comprueba un spike H264/AAC de un segundo y valida DEEP-SPEC-1. Descarga fallida = BLOCKED. Después codifica ocho tramos, hace mux A/V, verifica 1152 frames, decodifica la película completa y guarda frames de control en segundos 2/14/22/30/46.
 
-El verificador independiente audita rangos de fotogramas, fecha de captura, autor, licencia, fuente primaria y tipos de evidencia. Las pruebas lógicas y de codec NO certifican percepción, fidelidad narrativa, mezcla profesional ni aprobación humana.
+El verificador independiente audita rangos de fotogramas, autor, fecha de captura o su condición desconocida, fecha de publicación, SHA-256 del archivo original, licencia, fuente primaria y tipos de evidencia. Las pruebas lógicas y de codec NO certifican percepción, fidelidad narrativa, mezcla profesional ni aprobación humana.
 
 ## Publicación
 
@@ -40,6 +40,6 @@ Rama de producción exclusiva candidate/prometeo-video-w002-03-20261122; GitHub 
 
 ### Recuperación de incidente real
 
-El primer intento de Actions (run 45044386071) fue bloqueado por HTTP 429 en Wikimedia. El segundo intenta Pexels como video de contexto con rodaje no fechado, y imagen oficial NOAA de dominio público (autor y licencia no cambian). No equivale a export hasta que los archivos lleguen y el codec se verifique.
+El primer intento de Actions (run 45044386071) fue bloqueado por HTTP 429 en Wikimedia. El segundo intento descargó Pexels pero falló el proxy de imágenes. El tercero (45045014877) superó el spike, codificación y decodificación con imagen oficial NOAA de dominio público.
 
 **Segundo intento de Actions (45044818076):** video Pexels descargado y validado, pero proxy de Commons devolvió HTTP 404. Sustituido por imagen histórica oficial NOAA 14-XI-2019 y segundo video Pexels rotulado explícitamente como contexto sin fecha de rodaje.
