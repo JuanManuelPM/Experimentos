@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BAJO EL MISMO TECHO · PROMETEO / 07</title>
+<style>
+:root{color-scheme:dark;--bg:#080d19;--text:#eef1eb;--soft:#91a5b6;--red:#f46f65}*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,sans-serif}body{min-height:100svh;display:flex;align-items:center;justify-content:center;padding:clamp(12px,3vw,35px)}main{width:min(1100px,100%)}header{display:flex;justify-content:space-between;align-items:end;margin:0 0 20px;gap:10px}header small{letter-spacing:.22em;font-size:10px;color:var(--red);font-weight:750}h1{font-size:clamp(24px,4vw,47px);margin:5px 0 0;line-height:1.1;font-weight:620;letter-spacing:-.05em}header .series{font-size:12px;color:var(--soft);text-align:right}canvas{width:100%;display:block;aspect-ratio:16/9;background:#101d2a;box-shadow:0 20px 75px #0008;border:1px solid #334055;border-radius:3px}nav{display:flex;align-items:center;gap:14px;margin-top:17px}button{border:1px solid #667a8c;background:#161f2d;color:var(--text);border-radius:2px;min-height:43px;padding:0 18px;font-weight:650;cursor:pointer;font-size:14px}button:hover{border-color:var(--red)}button:focus-visible,input:focus-visible{outline:3px solid var(--red);outline-offset:3px}input[type=range]{width:100%;accent-color:var(--red);cursor:pointer;min-width:40px}#time{font-variant-numeric:tabular-nums;color:var(--soft);font-size:12px;white-space:nowrap}footer{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:21px;border-top:1px solid #293849;padding-top:14px;font-size:12px;color:var(--soft)}footer b{color:#d7e0dc;font-weight:600}.cuts{display:flex;gap:12px;font-size:11px;letter-spacing:.09em;color:#9caebe;margin-top:11px}.cuts span{border-left:2px solid #e96c62;padding-left:8px}@media(max-width:550px){header .series{display:none}nav{gap:7px}button{padding:0 12px}.cuts{font-size:9px;gap:8px}footer{font-size:11px}}
+</style></head><body><main><header><div><small>PROMETEO / ESTUDIO DE VIDEO / 07</small><h1>Bajo el mismo techo</h1></div><div class="series">Una microhistoria sin palabras<br>3 planos · 12 segundos · 2026</div></header>
+<canvas id="screen" width="960" height="540" role="img" aria-label="Un pequeño robot protege de la lluvia a una flor con su paraguas. Cuando amanece, la flor florece."></canvas>
+<nav><button id="play" aria-label="Reproducir">▶ Reproducir</button><input id="seek" type="range" min="0" max="12" step="0.01" value="0" aria-label="Avanzar la microhistoria"><span id="time">00:00 / 00:12</span></nav>
+<div class="cuts"><span>PLANO 01 · LA LLUVIA</span><span>PLANO 02 · EL GESTO</span><span>PLANO 03 · EL REGALO</span></div>
+<footer><span><b>Animación original por código.</b> Sin imágenes, música ni voces de terceros.</span><span>Vista previa: no es una exportación MP4. Fuente y prueba técnica en el repositorio.</span></footer></main>
+<script>
+'use strict';
+const canvas=document.getElementById('screen'),ctx=canvas.getContext('2d',{alpha:false});
+const duration=12,FPS=24,W=960,H=540;let t=0,playing=false,clock=0,start=0;
+const clamp=(x,a=0,b=1)=>Math.min(b,Math.max(a,x));
+const smooth=x=>{x=clamp(x);return x*x*(3-2*x)};
+const mix=(a,b,v)=>a+(b-a)*v;
+const rand=(n)=>{let x=Math.sin(n*127.13+21.17)*43758.5453123;return x-Math.floor(x)};
+function ellipse(x,y,rx,ry,color){ctx.fillStyle=color;ctx.beginPath();ctx.ellipse(x,y,rx,ry,0,0,Math.PI*2);ctx.fill()}
+function line(x,y,x2,y2,color,width=2){ctx.strokeStyle=color;ctx.lineWidth=width;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x2,y2);ctx.stroke()}
+function poly(points,color){ctx.fillStyle=color;ctx.beginPath();ctx.moveTo(...points[0]);for(let i=1;i<points.length;i++)ctx.lineTo(...points[i]);ctx.closePath();ctx.fill()}
+function rr(x,y,w,h,r,color){ctx.fillStyle=color;ctx.beginPath();ctx.roundRect(x,y,w,h,r);ctx.fill()}
+function curve(points,color,w=2){ctx.strokeStyle=color;ctx.lineWidth=w;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(...points[0]);for(let i=1;i<points.length;i++)ctx.quadraticCurveTo(...points[i]);ctx.stroke()}
+function buildings(dawn){
+ let bg=ctx.createLinearGradient(0,0,0,510);bg.addColorStop(0,dawn?'#242c3a':'#0a172b');bg.addColorStop(.7,dawn?'#9b7b77':'#1c3448');bg.addColorStop(1,dawn?'#b88e7d':'#354254');ctx.fillStyle=bg;ctx.fillRect(0,0,960,540);
+ if(dawn){let gl=ctx.createRadialGradient(750,246,5,750,246,340);gl.addColorStop(0,'#f5bc8b99');gl.addColorStop(1,'#f5bc8b00');ctx.fillStyle=gl;ctx.fillRect(0,0,960,520);ellipse(752,265,34,34,'#edb68f')}
+ const buildings=[[-30,285,112,'#203345'],[92,251,143,'#1a2e40'],[238,304,100,'#26394a'],[327,188,136,'#1b2c3d'],[466,277,115,'#263b4a'],[571,226,145,'#17293a'],[712,278,118,'#223648'],[827,203,148,'#152838']];
+ for(let k=0;k<buildings.length;k++){let [x,y,w,col]=buildings[k];ctx.fillStyle=col;ctx.fillRect(x,y,w,310);ctx.fillStyle='#405368';ctx.fillRect(x+3,y,2,300);for(let wy=y+21;wy<420;wy+=39)for(let wx=x+16;wx<x+w-11;wx+=29){let on=rand(wx*2+wy*5)<(dawn?.34:.43);rr(wx,wy,12,21,1,on?(dawn?'#dbb18a':'#b7a88d'):'#172536');if(on)rr(wx+2,wy+2,4,16,1,'#ffffff20')}}
+ ctx.fillStyle='#1d2b3c';ctx.fillRect(0,448,960,92);ctx.fillStyle='#415263';ctx.fillRect(0,445,960,7);ctx.fillStyle='#0d1623';ctx.fillRect(0,495,960,45);
+ ctx.strokeStyle='#63728677';ctx.lineWidth=1;for(let i=0;i<18;i++)line(i*59,448,i*59-33,540,'#5362754b',1);
+ // Distinctive spatial landmarks retained across all three shots.
+ rr(105,333,45,114,3,'#233447');rr(112,340,31,97,2,'#42516a');ellipse(128,360,8,8,dawn?'#d4a989':'#ae9c80');
+ rr(800,354,10,91,2,'#344859');poly([[788,357],[818,357],[811,347],[796,347]],'#526174');
+}
+function rain(time,shield=0,dawn=0){
+ let opacity=(1-dawn*.78);if(opacity<=.02)return;
+ ctx.save();ctx.strokeStyle=`rgba(166,204,218,${.22*opacity})`;ctx.lineWidth=1.3;for(let i=0;i<250;i++){
+ let x=(rand(i+17)*1070+(time*115)%1070)%1070-60,y=(rand(i+103)*690+time*440)%690-70;
+ // Above open canopy rain can hit. Underneath it is blocked.
+ if(shield>.9&&y>303&&x>510&&x<754)continue;
+ ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x-9,y+21+rand(i+9)*13);ctx.stroke();}
+ ctx.restore();
+}
+function pot(health, time){
+ const x=666,base=449;ellipse(x,base+1,76,12,'#0c142050');
+ poly([[627,405],[705,405],[694,454],[638,454]],'#a7766a');poly([[637,416],[694,416],[686,444],[643,444]],'#be8574');rr(622,396,88,17,6,'#cf9882');rr(630,398,72,4,2,'#e2b298');
+ // Stem tips right while drooping and then recovers.
+ const headX=mix(681,670,health),headY=mix(368,329,health);
+ ctx.strokeStyle='#658e75';ctx.lineWidth=5;ctx.beginPath();ctx.moveTo(665,401);ctx.bezierCurveTo(650,378,655,351,headX,headY);ctx.stroke();
+ ctx.save();ctx.translate(657,379);ctx.rotate(-.55);ellipse(0,0,19,9,'#77a486');ellipse(-4,-1,13,5,'#9cba90');ctx.restore();
+ ctx.save();ctx.translate(674,368);ctx.rotate(.65);ellipse(0,0,18,9,'#61917c');ctx.restore();
+ ellipse(headX,headY,9,10,'#7e9c76');
+ if(health<.95){ellipse(headX+2,headY+7,9,12,'#d79e9d')}
+ const bloom=smooth((health-.36)/.64);if(bloom>.001){
+ ctx.save();ctx.globalAlpha=bloom;for(let p=0;p<7;p++){let a=p*Math.PI*2/7+Math.sin(time*1.2)*.05;ellipse(headX+Math.cos(a)*16*bloom,headY+Math.sin(a)*16*bloom,13*bloom,15*bloom,p%2?'#f3babc':'#fbd5c9')}ellipse(headX,headY,10*bloom,10*bloom,'#efad63');ellipse(headX-2,headY-2,3*bloom,3*bloom,'#ffe3a4');ctx.restore();}
+}
+function robot(x,headTilt,arms,shine,time){
+ ellipse(x,452,51,10,'#0c172380');
+ for(let side of [-1,1]){ellipse(x+side*23,443,16,16,'#111b26');ellipse(x+side*23,443,9,9,'#4d6070');ellipse(x+side*23,443,3,3,'#afaba0')}
+ rr(x-40,370,80,69,15,'#c5a66e');rr(x-34,376,68,59,12,'#e4bb73');rr(x-28,386,56,40,9,'#bb965e');
+ // plated limbs, no anatomical ambiguity.
+ line(x-35,386,x-52,405,'#af9568',11);ellipse(x-52,405,10,10,'#eac384');
+ if(arms>0){line(x+32,386,x+53,368,'#b89a69',10);line(x+53,368,x+90,352,'#d5ae75',9);ellipse(x+90,352,8,8,'#f4ce8a')}else{line(x+34,390,x+44,413,'#ad946b',10);ellipse(x+44,413,8,8,'#eac384')}
+ ctx.save();ctx.translate(x,366);ctx.rotate(headTilt);rr(-35,-49,70,52,14,'#eac78e');rr(-27,-44,54,40,11,'#364b58');ellipse(0,-25,17,16,shine?'#ffe0a0':'#b3e0d4');ellipse(1,-25,8,9,shine?'#fff3d0':'#f8f8cd');ellipse(4,-27,2,3,'#fff');rr(-7,-54,14,8,3,'#d3aa7a');line(0,-53,0,-64,'#bcaa80',3);ellipse(0,-66,4,4,'#f1bb71');ctx.restore();
+}
+function umbrella(openAmount, time){
+ if(openAmount<=0)return;
+ const a=smooth(openAmount), poleX=580, poleBottom=373,poleTop=302;
+ line(poleX,poleBottom,poleX,poleTop,'#c8bbb0',4);
+ // Folded umbrella is tucked by the robot before it opens.
+ const radius=12+133*a;
+ const y=301;const lift=4+47*a;
+ ctx.beginPath();ctx.moveTo(poleX-radius,y);ctx.quadraticCurveTo(poleX-radius*.7,y-lift*.85,poleX,y-lift);ctx.quadraticCurveTo(poleX+radius*.65,y-lift*.85,poleX+radius,y);ctx.quadraticCurveTo(poleX+radius*.67,y+12,poleX+radius*.34,y+3);ctx.quadraticCurveTo(poleX,y+13,poleX-radius*.34,y+3);ctx.quadraticCurveTo(poleX-radius*.67,y+13,poleX-radius,y);ctx.closePath();ctx.fillStyle='#e96d67';ctx.fill();
+ ctx.strokeStyle='#f4a398';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(poleX,y-lift);ctx.lineTo(poleX,y+7);ctx.moveTo(poleX,y-lift);ctx.lineTo(poleX-radius*.65,y-1);ctx.moveTo(poleX,y-lift);ctx.lineTo(poleX+radius*.65,y-1);ctx.stroke();
+ ctx.beginPath();ctx.moveTo(poleX,y-lift);ctx.quadraticCurveTo(poleX-radius*.45,y-lift*.85,poleX-radius*.66,y+3);ctx.strokeStyle='#b83f47';ctx.stroke();
+ line(poleX,poleBottom,poleX-5,poleBottom+10,'#f7dfbd',4);
+}
+function vignette(){let g=ctx.createRadialGradient(480,248,170,480,260,650);g.addColorStop(0,'#00000000');g.addColorStop(1,'#0208109c');ctx.fillStyle=g;ctx.fillRect(0,0,960,540)}
+function grain(){ctx.fillStyle='#f0e8d10c';for(let i=0;i<850;i++){const x=rand(600+i)*960,y=rand(3100+i)*540;ctx.fillRect(x,y,1.3,1.3)}}
+function world(shot,time){
+ const second=shot===2,third=shot===3,tt=shot===1?time:shot===2?time-4:time-8;
+ const health=shot===1?0:shot===2?smooth((tt-1.7)/1.7)*.48:.48+.52*smooth((tt-.6)/2.35);
+ const dawn=third?smooth(tt/3):0;
+ buildings(dawn);
+ const robotX=shot===1?mix(155,475,smooth((tt-.32)/3.0)):475;
+ const umbrellaProgress=shot===1?0:shot===2?smooth((tt-.95)/1.15):1;
+ const tilt=shot===1?-.04+.08*Math.sin(tt*1.3):shot===2?-.09:-.17;
+ rain(time,umbrellaProgress,dawn);
+ pot(health,time);
+ robot(robotX,tilt,umbrellaProgress>.1,third,time);
+ if(umbrellaProgress>0)umbrella(umbrellaProgress,time);
+ if(third&&tt>2.35){ // A single petal drifts toward the robot: the returned gift.
+ let f=smooth((tt-2.35)/1.5),px=mix(669,496,f),py=mix(319,341,f)-9*Math.sin(f*Math.PI);ctx.save();ctx.translate(px,py);ctx.rotate(f*4.2);ellipse(0,0,9,5,'#f8c5bb');ctx.restore();}
+ vignette();grain();
+}
+function drawAt(seconds){t=clamp(seconds,0,duration);let shot=t<4?1:t<8?2:3;ctx.clearRect(0,0,W,H);ctx.save();if(shot===2){ctx.translate(480,270);ctx.scale(1.35,1.35);ctx.translate(-540,-365)}else if(shot===3){ctx.translate(480,270);ctx.scale(1.055,1.055);ctx.translate(-480,-270)}world(shot,t);ctx.restore();return shot;}
+function timestamp(t){return '00:'+String(Math.floor(t)).padStart(2,'0')}
+function refresh(){document.getElementById('seek').value=t;document.getElementById('time').textContent=timestamp(t)+' / 00:12';document.getElementById('play').textContent=playing?'❚❚ Pausar':'▶ Reproducir'}
+function raf(now){if(playing){drawAt((now-start)/1000);if(t>=duration){playing=false;drawAt(12)}refresh();if(playing)requestAnimationFrame(raf)}}
+function play(){if(playing){playing=false;refresh();return}if(t>=12)drawAt(0);playing=true;start=performance.now()-t*1000;refresh();requestAnimationFrame(raf)}
+document.getElementById('play').addEventListener('click',play);
+document.getElementById('seek').addEventListener('input',ev=>{playing=false;drawAt(Number(ev.target.value));refresh()});
+document.addEventListener('keydown',e=>{if(e.code==='Space'&&!(e.target instanceof HTMLInputElement)){e.preventDefault();play()}});
+window.renderFrame=drawAt;window.videoSpec={duration,FPS,width:W,height:H,cuts:[4,8],title:'Bajo el mismo techo'};
+drawAt(0);refresh();
+</script></body></html>
