@@ -1,4 +1,4 @@
-/* PROMETEO UI shell v1.0.0 · agnóstico de la aplicación; navegación por eventos. */
+/* PROMETEO UI shell v1.0.1 · agnóstico de la aplicación; navegación por eventos. */
 const stylesheet = new URL('./shell.css', import.meta.url).href;
 
 class PrometeoShell extends HTMLElement {
@@ -11,11 +11,14 @@ class PrometeoShell extends HTMLElement {
       if (!this.hasAttribute('open')) return;
       if (e.key === 'Escape') { e.preventDefault(); this.closeMenu(true); return; }
       if (e.key !== 'Tab') return;
-      const focusables = [this._mode, this._toggle, ...this.shadowRoot.querySelectorAll('#rooms button:not([hidden])')].filter(el => !el.hidden && el.getClientRects().length > 0);
-      if (this.getAttribute('view') !== 'global') focusables.splice(2);
-      const first = focusables[0], last = focusables[focusables.length - 1];
-      if (e.shiftKey && this.shadowRoot.activeElement === first) { e.preventDefault(); last.focus(); }
-      else if (!e.shiftKey && this.shadowRoot.activeElement === last) { e.preventDefault(); first.focus(); }
+      const context = this.querySelectorAll('[slot="context"] button:not(:disabled),[slot="context"] a[href],[slot="context"] input:not(:disabled),[slot="context"] select:not(:disabled),[slot="context"] textarea:not(:disabled),[slot="context"] [tabindex]:not([tabindex="-1"])');
+      const items = this.getAttribute('view') === 'global' ? this.shadowRoot.querySelectorAll('#rooms button') : context;
+      const focusables = [this._mode,this._toggle,...items].filter(el=>!el.hidden && el.getClientRects().length > 0);
+      if (!focusables.length) return;
+      const current = this.shadowRoot.activeElement || document.activeElement;
+      const index = focusables.indexOf(current);
+      const next = focusables[(index + (e.shiftKey ? -1 : 1) + focusables.length) % focusables.length];
+      e.preventDefault(); next.focus();
     };
     this.attachShadow({mode:'open'}).innerHTML = `
       <link rel="stylesheet" href="${stylesheet}">
