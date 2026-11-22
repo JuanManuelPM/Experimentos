@@ -202,7 +202,24 @@
       "failure": "Runner no logra capturar una página real o se confunde foto de ejemplo con evidencia.",
       "prevention": "Probar Chromium local con dos URLs locales autorizadas y hashes de PNG producidos.",
       "test": "Capturar fixture A/B en tres viewports y comprobar PNG decode y SHA.",
-      "status": "NOT_RUN"
+      "status": "OBSERVED",
+      "spikeEvidence": {
+        "tool": "Chromium via Python Playwright",
+        "method": "page.set_content local original HTML then PNG screenshot at DPR 1, animations disabled",
+        "viewports": [
+          "320x700",
+          "768x700",
+          "1440x700"
+        ],
+        "sha256A_320": "1d5ec0331c3b231b09cfb1ba42ca68f855391738c58c8df8633ab5093d03af7c",
+        "sha256B_320": "8983e41857f4f07f0bc296f9e32c768a4568b44073393eb286e105ae7586c151",
+        "measuredDiffPercents": [
+          3.3558,
+          3.5662,
+          3.7762
+        ],
+        "scope": "Proof of browser-capture technique only; the Node CLI and deployed UI were not yet exercised."
+      }
     },
     {
       "componentIds": [
@@ -253,5 +270,5 @@
   ],
   "licensing": "Interfaz, fixtures y scripts originales; el operador solo captura sitios propios o expresamente autorizados, manteniendo su responsabilidad sobre contenidos.",
   "resources": "HTML/CSS/JS estático, IndexedDB, Web Crypto, Canvas, Node.js 20+, Playwright, Chromium local; sin cuentas ni backend ni dependencias de pago.",
-  "environmentLimits": "La publicación GitHub Pages no otorga acceso a páginas remotas ni permisos de captura cross-origin. Validación visual y de persistencia debe correrse con navegador real."
+  "environmentLimits": "La publicación GitHub Pages no otorga acceso a páginas remotas ni permisos de captura cross-origin. Validación visual y de persistencia debe correrse con navegador real. Python Playwright screenshot spike was observed, but the independently authored Node capture script was not executed in the current npm-restricted environment."
 }
