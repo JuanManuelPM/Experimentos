@@ -1,0 +1,21 @@
+{
+  "schema":"SilentContinuityGraph-1",
+  "identity":{"batchId":"video-w002-20261122","taskNumber":7,"taskId":"video-w002-20261122-07"},
+  "narrative":{"premise":"Un mitón colorado deja de ser una pequeña pertenencia y se vuelve abrigo compartido","axis":"El anciano permanece a la izquierda; niño y perro a la derecha.","objectId":"RED_MITTEN_WITH_CREAM_STAR","emotionalArc":["soledad","frío","duda","generosidad","atención","empatía","reconocimiento","compañía"]},
+  "shots":[
+    {"id":"S1","in":0,"out":3.6,"scale":"wide","action":"Establecer banco, anciano con mitón y llegada del niño bajo la lluvia","mittenOwner":"old_man","mittenLocation":"old_man_lap","emotion":"soledad","screenDirection":"child right-to-left"},
+    {"id":"S2","in":3.6,"out":6.5,"scale":"medium","action":"El niño tirita, el hombre lo observa","mittenOwner":"old_man","mittenLocation":"old_man_lap","emotion":"frío","screenDirection":"old_man looks right"},
+    {"id":"S3","in":6.5,"out":9.3,"scale":"insert","action":"El hombre conserva un instante el mitón bordado","mittenOwner":"old_man","mittenLocation":"old_man_hand","emotion":"duda","screenDirection":"right-facing"},
+    {"id":"S4","in":9.3,"out":12.8,"scale":"medium_wide","action":"El hombre estira el brazo, el niño recibe el mitón","mittenOwner":"child","mittenLocation":"child_hand","emotion":"generosidad","screenDirection":"transfer left-to-right"},
+    {"id":"S5","in":12.8,"out":16.2,"scale":"medium","action":"El niño ve al perro mojado a su derecha","mittenOwner":"child","mittenLocation":"child_hand","emotion":"atención","screenDirection":"child looks right/down"},
+    {"id":"S6","in":16.2,"out":20.5,"scale":"medium","action":"El niño se agacha y deja el mitón sobre el perro para abrigarlo","mittenOwner":"dog","mittenLocation":"dog_back","emotion":"empatía","screenDirection":"transfer left-to-right/down"},
+    {"id":"S7","in":20.5,"out":23.7,"scale":"medium","action":"El anciano descubre el segundo gesto y sonríe","mittenOwner":"dog","mittenLocation":"dog_back","emotion":"reconocimiento","screenDirection":"old_man looks right"},
+    {"id":"S8","in":23.7,"out":28,"scale":"wide","action":"Llega una luz cálida; los tres quedan juntos, el mitón sobre el perro","mittenOwner":"dog","mittenLocation":"dog_back","emotion":"compañía","screenDirection":"same screen axis"}
+  ],
+  "handoffs":[
+    {"time":11.8,"from":"old_man","to":"child","objectId":"RED_MITTEN_WITH_CREAM_STAR","actionVisibleIn":"S4"},
+    {"time":19.2,"from":"child","to":"dog","objectId":"RED_MITTEN_WITH_CREAM_STAR","actionVisibleIn":"S6"}
+  ],
+  "invariants":["unique_object_id","continuous_time","stable_axis","handoff_visible","soundtrack_one_clock","no_dialogue"],
+  "humanComprehension":{"status":"NOT_RUN","protocol":"Tres espectadores sin briefing visualizan video una vez, sin créditos o texto explicativo. Preguntar qué objeto circula, por qué, cómo cambia el sentido y si hubo un salto confuso.","threshold":"Al menos 2/3 identifican los dos gestos y el cambio de función sin sugerencias."}
+}
