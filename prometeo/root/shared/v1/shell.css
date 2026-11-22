@@ -29,3 +29,8 @@ button:focus-visible { outline:2px solid var(--p-fg); outline-offset:3px; }
 slot { display:block; min-width:0; }
 @media(max-width:400px) { #rooms button { font-size:31px; } }
 @media(prefers-reduced-motion:reduce) { *,*:before,*:after { transition:none!important; } }
+
+/* The same universal control remains legible over any full-screen artwork. */
+:host([stage-mode]){--p-fg:#f4f4f0;--p-bg:#151919;--p-muted:#adb2ae;--p-line:#3c4441;--p-hover:#2b3431}
+:host([stage-mode]) .control{background:#151919d9}
+:host([stage-mode]) .control:hover{background:#303a37}
