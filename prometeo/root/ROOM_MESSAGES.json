@@ -1,7 +1,7 @@
 {
   "schema": "prometeo.root.room-messages/v1",
   "visibility": "PUBLIC_SAFE_SUMMARIES_ONLY",
-  "updatedAt": "2026-11-22T16:44:36.150Z",
+  "updatedAt": "2026-11-22T16:45:09.129Z",
   "entries": [
     {
       "id": "web-w002-20261122-07-contrapunto-published",
@@ -3881,6 +3881,51 @@
       "url": "https://juanmanuelpm.github.io/Experimentos/prometeo/works/3d-w6-20261122/06/",
       "evidenceUrl": "https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/works/3d-w6-20261122/06/QA.md",
       "status": "DELIVERED_CANDIDATE_VISUAL_OBSERVED"
+    },
+    {
+      "id": "video-w002-20261122-10-sala-de-montaje-export-e2e",
+      "room": "video",
+      "batchId": "video-w002-20261122",
+      "taskNumber": 10,
+      "taskId": "video-w002-20261122-10",
+      "publishedAt": "2026-11-22T16:45:09.129Z",
+      "title": "VIDEO W002 · 10 · SALA DE MONTAJE · editor web multipista real",
+      "status": "DELIVERED_BROWSER_E2E_LOCAL_GHPAGES_READBACK",
+      "humanApproved": false,
+      "body": "Editor web original multipista V1/V2/A1/A2 publicado en ruta nueva gh-pages y fuentes en rama candidate exclusiva. Importa audio/video, permite mover, recortar, dividir, ajustar fundidos y volumen, guardar sesión JSON y generar medios originales. Exporta WebM real con canvas + mezcla Web Audio. E2E local Chromium: 3 medios fuente, 4 clips, dos exports consecutivos 6,25s y 5,2s tras editar salida, ambos VP8+Opus 640x360 verificados con ffprobe, reimport WebM y división del montaje. MP4 H.264/AAC derivado por FFmpeg y fuentes binarias adjuntas al chat de WORK, NO alojadas en GitHub. Deep-Spec gate READY_FOR_FIRST_SLICE, readback GH PASS. Chromium de prueba usó shim para IndexedDB/localStorage por restricciones de navegación: persistencia real, precisión de sincronía subframe, drag táctil, HTTP Pages público y revisión humana NOT_RUN; no afirmar VERIFIED global ni HUMAN_APPROVED.",
+      "url": "https://juanmanuelpm.github.io/Experimentos/prometeo/launch/20261122/next/video/works/10/",
+      "evidenceUrl": "https://github.com/JuanManuelPM/Experimentos/blob/candidate/prometeo-video-w002-10-20261122/prometeo/launch/20261122/next/video/works/10/QA.md",
+      "blocks": [
+        {
+          "type": "text",
+          "text": "EDITOR REAL + EXPORT WEBM VP8/OPUS: E2E LOCAL PASS (DOS EXPORTACIONES) · GH-PAGES CODE READBACK PASS · ENLACE HTTP / PERSISTENCIA REAL / APROBACIÓN HUMANA NOT_RUN."
+        },
+        {
+          "type": "file",
+          "label": "Abrir editor en Pages (HTTP no comprobado)",
+          "url": "https://juanmanuelpm.github.io/Experimentos/prometeo/launch/20261122/next/video/works/10/"
+        },
+        {
+          "type": "file",
+          "label": "Código de la aplicación · rama exclusiva",
+          "url": "https://github.com/JuanManuelPM/Experimentos/blob/candidate/prometeo-video-w002-10-20261122/prometeo/launch/20261122/next/video/works/10/index.html"
+        },
+        {
+          "type": "file",
+          "label": "QA verificable y límites",
+          "url": "https://github.com/JuanManuelPM/Experimentos/blob/candidate/prometeo-video-w002-10-20261122/prometeo/launch/20261122/next/video/works/10/QA.md"
+        },
+        {
+          "type": "file",
+          "label": "Ficha DEEP-SPEC",
+          "url": "https://github.com/JuanManuelPM/Experimentos/blob/candidate/prometeo-video-w002-10-20261122/prometeo/launch/20261122/next/video/works/10/PREPRODUCTION.deep-spec-v1.json"
+        },
+        {
+          "type": "file",
+          "label": "Sesión editable original",
+          "url": "https://github.com/JuanManuelPM/Experimentos/blob/candidate/prometeo-video-w002-10-20261122/prometeo/launch/20261122/next/video/works/10/SALA-DE-MONTAJE.session.json"
+        }
+      ]
     }
   ]
 }
