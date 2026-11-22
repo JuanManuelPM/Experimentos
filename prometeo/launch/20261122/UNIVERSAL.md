@@ -2,6 +2,10 @@
 
 Estado: **Lanzadores publicados, no sesiones iniciadas ni resultados verificados.** Cada estudio tiene un único enlace LAUNCH.md; comando humano: `WORK · <enlace> · N` con N entero 1..10. El número selecciona solamente el brief N; la URL y el brief no cambian según el chat. Diez es tamaño de esta primera tanda, **no es un límite de paralelismo**, y futuras tandas pueden solaparse.
 
+## Calidad de referencia obligatoria en nuevos WORK
+
+**Antes de producir cualquier N**, leer [QUALITY_BAR.md](../../launch/QUALITY_BAR.md) y aplicar `QBAR-1` a la consigna original **sin alterarla**: investigar referentes excepcionales reales del mismo medio, extraer capacidades que elevan el resultado, rechazar sustituciones mediocres, producir un artefacto completo y compararlo con criterios perceptuales y funcionales. El benchmark es objetivo aspiracional, no promesa ni certificación. `QUALITY_BAR.md` es un único control transversal; cada estudio conserva su técnica especializada. Esta condición no cambia trabajos con SHA ya fijado ni promueve automáticamente los flujos privados.
+
 ## Copia única desde ROOT
 
 La interfaz compartida presenta **un solo botón «Copiar prompt universal» por tanda**, no uno por cada número. Copia `WORK · <enlace común> · ` (incluido el espacio final). El humano pega ese mismo texto en un chat nuevo por encargo y escribe solo el número **1 a N** al final. Cada número resuelve un brief independiente ya existente; **no hay que duplicar briefs ni cambiar enlaces**. Los números de ROOT sirven para consultar resultados, no para copiar instrucciones ni disparar ejecuciones. Copiar no equivale a STARTED.
