@@ -1,0 +1,212 @@
+{
+  "version": "DEEP-SPEC-1",
+  "medium": "web",
+  "depth": "SISTEMA",
+  "taskId": "web-w002-20261122-01",
+  "batchId": "web-w002-20261122",
+  "taskNumber": 1,
+  "launchSha": "cd88a07941ab62072f6de5ee69764308f1ec2387",
+  "qualityBarVersion": "QBAR-1",
+  "brief": "Reportaje interactivo original de una ciudad desde el amanecer hasta la noche, con fotografía auténtica autorizada, capítulos y secuencias reutilizables.",
+  "intent": {
+    "experience": "Una caminata visual y legible por Buenos Aires: el lector percibe cómo la ciudad cambia de luz y de escala sin perder el relato.",
+    "distinctAbility": "Sincronizar capítulos semánticos con una secuencia fotográfica editorial que admite lectura lineal, teclado, teléfono y movimiento reducido."
+  },
+  "references": [
+    {
+      "id": "R1",
+      "status": "OBSERVED",
+      "url": "https://pudding.cool/process/how-to-make-dope-shit-part-3/",
+      "observation": "Texto del proceso editorial: los estados visuales deben reconstruirse incluso al saltar varios pasos; el desplazamiento progresivo no debe condicionar la lectura."
+    },
+    {
+      "id": "R2",
+      "status": "OBSERVED",
+      "url": "https://www.nationalgeographic.com/photography/article/pictures-parks-landscapes-day-night",
+      "observation": "El ensayo fotográfico explica la percepción temporal de la luz como narrativa visual, pero sus imágenes tienen derechos reservados y no se reutilizan."
+    },
+    {
+      "id": "R3",
+      "status": "OBSERVED",
+      "url": "https://commons.wikimedia.org/wiki/File:Sunrise_in_Buenos_Aires_(24286513273).jpg",
+      "observation": "La ficha de la imagen documenta autor Rodrigo Paredes, licencia CC BY 2.0, lugar Buenos Aires y resolución 1920x1280; es material editorial reutilizable con atribución."
+    },
+    {
+      "id": "R4",
+      "status": "OBSERVED",
+      "url": "https://commons.wikimedia.org/wiki/File:Buenos_Aires_at_night.jpg",
+      "observation": "Panorama nocturno de Puerto Madero por Luis Argerich, licencia CC BY 2.0; origen y atribución verificados en Wikimedia Commons."
+    }
+  ],
+  "components": [
+    {
+      "id": "sequence",
+      "role": "Motor reutilizable de capítulos, detección de progreso, URLs ancladas y clases de transición.",
+      "strategy": "Separar controlador vanilla JavaScript de datos HTML; IntersectionObserver más scroll pasivo y actualizador bajo requestAnimationFrame.",
+      "constraints": "El DOM sigue siendo artículo navegable sin JS; hashlinks y scroll inverso no dependen de animaciones."
+    },
+    {
+      "id": "visual",
+      "role": "Sistema fotográfico editorial de Buenos Aires en cinco escenas luminosas con pie y créditos.",
+      "strategy": "Figuras HTML con imagen remota de Wikimedia Commons, alt informativo, gradientes de legibilidad y fallback textual.",
+      "constraints": "Imágenes genuinas con página fuente y licencia por escena; no atribuir todas a una misma jornada real."
+    },
+    {
+      "id": "prose",
+      "role": "Crónica ensayística original que puede leerse sin efectos y mantiene continuidad conceptual.",
+      "strategy": "Textos de cinco capítulos basados en contraste de sombras, velocidades, densidad y noche, con transición de escala editorial.",
+      "constraints": "No agregar estadísticas, citas de habitantes o testimonios ficticios; titular claramente ensayo y no registro de un día real."
+    },
+    {
+      "id": "navigation",
+      "role": "Índice por capítulos, indicadores de progreso y control accesible del movimiento.",
+      "strategy": "Enlaces hash nativos, skip link, foco visible, resumen de progreso, interruptor explícito de movimiento.",
+      "constraints": "320/768/1440 CSS px, tacto, teclado y prefers-reduced-motion; evitar barras que se superpongan."
+    }
+  ],
+  "questions": [
+    {
+      "id": "Q1",
+      "target": "sequence",
+      "question": "¿El desplazamiento debe controlar todas las imágenes en una sola pantalla fija o cada capítulo debe conservar su figura y texto autónomos?",
+      "alternatives": [
+        "Escenario fijo global que cambia todo",
+        "Cada capítulo autosuficiente con observación y transición suave"
+      ],
+      "finding": "The Pudding advierte que hay que reconstruir correctamente cualquier estado al saltar pasos y considerar tamaños de pantalla.",
+      "evidenceRef": "R1",
+      "decisionImpact": "Se elige la autonomía por capítulo: cada imagen y texto se pueden alcanzar por ancla y leer sin ejecución de script."
+    },
+    {
+      "id": "Q2",
+      "target": "visual",
+      "question": "¿Podemos producir una secuencia de horas sin simular que las imágenes de distintos autores representan un mismo día?",
+      "alternatives": [
+        "Usar fotos diversas presentadas como time-lapse",
+        "Ensayo de percepción con atribución y nota metodológica explícita"
+      ],
+      "finding": "Las fichas Commons muestran fechas, ubicaciones y autores diferentes; los registros de origen no son una jornada continua.",
+      "evidenceRef": "R3",
+      "decisionImpact": "Las cinco fotografías se presentan como escenas urbanas independientes conectadas por un ensayo, con créditos y aviso de no continuidad cronológica."
+    },
+    {
+      "id": "Q3",
+      "target": "navigation",
+      "question": "¿Se puede conservar la comprensión de la secuencia cuando el lector desactiva el movimiento o navega directamente al capítulo nocturno?",
+      "alternatives": [
+        "Animaciones obligatorias",
+        "Contenido estático de base con mejoras condicionales"
+      ],
+      "finding": "La referencia técnica de The Pudding señala la necesidad de estados completos en saltos rápidos y visualización móvil.",
+      "evidenceRef": "R1",
+      "decisionImpact": "Desactivar desplazamiento de foto, deshabilitar transiciones, usar hash links y restaurar estado desde la vista actual."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "D1",
+      "questionId": "Q1",
+      "componentIds": [
+        "sequence",
+        "prose"
+      ],
+      "choice": "Artículo semántico con cinco secciones independientes.",
+      "rejected": "Slider de pantalla completa que secuestra rueda y flechas.",
+      "productionChange": "Cada scene tiene encabezado, figura, dos párrafos y un ancla enlazable, y el motor solo realza estado y ritmo.",
+      "why": "Preserva la lectura con JS fallido y protege los desplazamientos inversos."
+    },
+    {
+      "id": "D2",
+      "questionId": "Q2",
+      "componentIds": [
+        "visual",
+        "prose"
+      ],
+      "choice": "Fotografía documental Commons CC BY con atribuciones.",
+      "rejected": "Fotos genéricas sin autor o falsificación de una misma jornada.",
+      "productionChange": "Construir catálogo de cinco medios con URLs de la ficha, autor y licencia junto a una advertencia narrativa visible.",
+      "why": "Evita tergiversar procedencia y hace legítima la publicación pública."
+    },
+    {
+      "id": "D3",
+      "questionId": "Q3",
+      "componentIds": [
+        "sequence",
+        "navigation"
+      ],
+      "choice": "Efectos opcionales, anclas nativas y control de movimiento.",
+      "rejected": "Efectos que solo funcionan en scroll y bloquean teclado.",
+      "productionChange": "CSS y JS aceptan prefers-reduced-motion; control manual fuerza clase no-motion y enlaces siempre funcionan.",
+      "why": "El efecto fotográfico es apoyo y no debe ser la vía exclusiva de comprensión."
+    }
+  ],
+  "relations": [
+    {
+      "from": "sequence",
+      "to": "visual",
+      "invariant": "El capítulo activo y el encuadre de la fotografía pertenecen siempre a la misma escena.",
+      "failure": "El indicador señala noche cuando la imagen visible sigue siendo amanecer.",
+      "test": "Navegar por anclas hacia adelante y atrás y comprobar escena y navegación."
+    },
+    {
+      "from": "visual",
+      "to": "prose",
+      "invariant": "Los créditos, título y observación corresponden a la imagen realmente cargada o al fallback que la describe.",
+      "failure": "Falla la descarga de una imagen y quedan créditos atribuyendo otra ubicación.",
+      "test": "Desconectar recursos y revisar que descripción y autor sigan visibles."
+    },
+    {
+      "from": "navigation",
+      "to": "sequence",
+      "invariant": "El índice es utilizable con teclado y movimiento reducido sin pérdida de contenido ni saltos falsos.",
+      "failure": "El scroll bloquea el foco o el índice actualiza aria-current incorrectamente.",
+      "test": "Probar tecla Tab, enlaces directos y emulación reduced motion."
+    }
+  ],
+  "risks": [
+    {
+      "componentIds": [
+        "visual"
+      ],
+      "severity": "medium",
+      "failure": "La entrega depende de imágenes externas y podría recibir HTTP 429 o bloqueo de enlace directo.",
+      "prevention": "Mantener URL a página de origen, descripción, alt y fondos editoriales; no afirmar verificación de red en navegador sin acceso.",
+      "test": "Abrir imágenes reales en navegador público y comprobar status/carga por escena.",
+      "status": "NOT_RUN"
+    },
+    {
+      "componentIds": [
+        "sequence",
+        "navigation"
+      ],
+      "severity": "medium",
+      "failure": "La composición sticky podría solaparse en 320px o fallar al volver a capítulos anteriores.",
+      "prevention": "Media queries que quitan sticky en móvil y controles nativos semánticos.",
+      "test": "Capturas reales e interacción en 320/768/1440, desplazamiento ida y vuelta.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "acceptance": [
+    {
+      "kind": "logic",
+      "criterion": "Cinco escenas, enlaces internos, créditos y secuencia independiente del contenido.",
+      "oracle": "Leer código/HTML y comprobar IDs únicos y atribución para cinco fotografías.",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "interactive",
+      "criterion": "Anclas y movimiento reducido conservan lectura y capítulo activo en ambos sentidos.",
+      "oracle": "Navegador real con teclado, scroll, hash y configuración reduced-motion.",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "visual",
+      "criterion": "Composición editorial coherente con fotografía genuina en teléfono, tablet y escritorio.",
+      "oracle": "Capturas de render en 320, 768 y 1440px con inspección de legibilidad.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "resources": "HTML5, CSS puro y JavaScript vanilla; páginas Wikimedia Commons verificadas; sin frameworks, GSAP, WebGL ni tracking externo.",
+  "licensing": "Textos y código originales; fotos de Wikimedia Commons bajo CC BY 2.0, con autores, enlaces fuente y nota de recorte visual, sin mezclar licencias de las referencias.",
+  "environmentLimits": "El entorno de construcción no tiene red saliente desde Chromium local, de modo que no se podrá certificar carga fotográfica o navegación pública con pruebas de navegador remoto en esta fase."
+}
