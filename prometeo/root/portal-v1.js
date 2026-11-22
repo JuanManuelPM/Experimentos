@@ -33,7 +33,7 @@ function updateContext(){const el=$('app-context');el.replaceChildren();if(state
     const a=document.createElement('a');a.href='./archivo-20261121.html#mensajes';a.textContent='Archivo';a.className='p-context-small';el.append(a);
   }
 }
-function messages(){const own=state.public.filter(e=>e&&e.room===state.room);const legacy=state.room==='root'?state.legacy.map(e=>({...e,room:'root'})):[];return [...own,...legacy].sort((a,b)=>String(b.publishedAt||'').localeCompare(String(a.publishedAt||'')));}
+function messages(){const own=state.public.filter(e=>e&&e.room===state.room);const legacy=state.room==='root'?state.legacy.map(e=>({...e,room:'root'})):[];return [...own,...legacy].sort((a,b)=>(Date.parse(b.publishedAt)||0)-(Date.parse(a.publishedAt)||0)||String(b.id||'').localeCompare(String(a.id||'')));}
 function renderMessages(){
   const room=state.rooms.find(x=>x.id===state.room)||FALLBACK[0],m=messages(),latest=m[0];
   $('space').textContent=room.label;
