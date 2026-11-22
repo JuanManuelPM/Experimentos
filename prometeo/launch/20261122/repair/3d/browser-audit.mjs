@@ -24,7 +24,7 @@ const works=[
 const qaRoot=path.resolve('QA');
 const manifest={schema:'prometeo.3d.autocritica.browser/v1',batchId:'3d-w6-20261122',capturedAt:new Date().toISOString(),environment:{engine:'Chromium/Playwright',mode:'software-or-GPU-unknown'},notReviewed:['10'],entries:[]};
 await mkdir(path.join(qaRoot,'screens'),{recursive:true});
-const browser=await chromium.launch({headless:true,args:['--use-gl=angle','--use-angle=swiftshader','--enable-webgl','--disable-web-security=false']});
+const browser=await chromium.launch({headless:true,args:['--use-gl=angle','--use-angle=swiftshader','--enable-webgl']});
 const viewports=[{name:'mobile390',width:390,height:844,hasTouch:true,isMobile:true},{name:'desktop1440',width:1440,height:900,hasTouch:false,isMobile:false}];
 for(const [n,route] of works){
  for(const v of viewports){
