@@ -84,8 +84,8 @@
     },
     {
       "id": "browser_390_1440",
-      "status": "NOT_RUN",
-      "why": "No browser screenshots validated"
+      "status": "PASS_TECHNICAL",
+      "why": "Real Chromium 390/1440 screenshots on branch, hero starts at y=0, image decodes 1280×720, no overflow; visual art review remains separate."
     },
     {
       "id": "repo_binary_escrow",
@@ -106,7 +106,7 @@
     "Free tier image limit reached in ElevenLabs; no retry or paid upgrade done",
     "No fullsize GitHub preview from local ImageGen possible through connected text API"
   ],
-  "updatedAt": "2026-11-22T19:16:59.027Z",
+  "updatedAt": "2026-11-22T19:18:26.639Z",
   "binaryVerification": {
     "runId": 45059311503,
     "conclusion": "SUCCESS",
@@ -117,5 +117,39 @@
     ],
     "shaVerified": true,
     "contact": "media/contact_01_02_04.webp"
+  },
+  "browserEvidence": {
+    "runId": 45059841510,
+    "runConclusion": "SUCCESS",
+    "browser": "Chromium via Playwright",
+    "size390": {
+      "naturalImage": [
+        1280,
+        720
+      ],
+      "heroTop": 0,
+      "overflow": false
+    },
+    "size1440": {
+      "naturalImage": [
+        1280,
+        720
+      ],
+      "heroTop": 0,
+      "overflow": false
+    },
+    "screenshotPaths": [
+      "qa/opening-390.png",
+      "qa/opening-1440.png"
+    ],
+    "technicalStatus": "PASS",
+    "artisticApproval": false
+  },
+  "gates": {
+    "deepSpec": "READY_FOR_FIRST_SLICE",
+    "artFirstArticle": "READY_TO_BUILD_NOT_ARTISTICALLY_APPROVED",
+    "blindReading": "NOT_RUN",
+    "sixImages": "INCOMPLETE",
+    "humanApproved": false
   }
 }
