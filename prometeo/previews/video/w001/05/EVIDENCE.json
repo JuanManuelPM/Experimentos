@@ -1,0 +1,38 @@
+{
+  "schema": "prometeo.video.evidence/v1",
+  "id": "video-w001-20261122-05",
+  "taskNumber": 5,
+  "room": "video",
+  "batchId": "video-w001-20261122",
+  "status": "LOCAL_MP4_VERIFIED_REMOTE_PENDING",
+  "local": {
+    "artifact": "film.mp4",
+    "sha256": "131157065195efcfd1877773834300f804d2c5b9b1c1de473d7b227c8380bf81",
+    "durationSeconds": 11,
+    "codecVideo": "h264",
+    "codecAudio": "aac",
+    "width": 960,
+    "height": 540,
+    "frames": 264,
+    "sizeBytes": 1246230,
+    "soundRms": 0.04366,
+    "soundPeak": 0.15098,
+    "frameMotionTest": "PASS five sampled times showed mean abs change 4.68–5.58/255"
+  },
+  "sources": {
+    "launchSha": "efc6259b5731950be1e84fda71c1fbaf6bdc57d3",
+    "bootstrapSha": "c1ea01fe4475c43e4affe6fbf4f475f93fc3d365",
+    "flowCommit": "74e44add752561707ec9032c7193bd31e8fa582a"
+  },
+  "tests": {
+    "localEncoding": "PASS",
+    "duration": "PASS_11.000",
+    "videoFrames": "PASS_264",
+    "audioStream": "PASS",
+    "cameraConsistency": "CODE_INSPECTED",
+    "browserPlayback": "NOT_RUN",
+    "remoteBinary": "PENDING_GITHUB_ACTIONS",
+    "humanArtApproval": "NOT_RUN"
+  },
+  "notes": "GitHub Actions rebuilds H.264+AAC; output readback must be checked before marking remote published."
+}
