@@ -73,3 +73,13 @@ test('reject hash drift and silent method activation',()=>{
  assert.throws(()=>compilePreventiveReceipt({...baseline,pinnedFlowHash:'f'.repeat(64)}),/PINNED_FLOW_MISMATCH/);
  assert.throws(()=>compilePreventiveReceipt({...baseline,gatesManifest:{...gates,status:'ACTIVE'}}),/WRONG_GATE_STATUS/);
 });
+
+import {compileSceneWithPrevention} from './SCENE_PREFLIGHT_ADAPTER.mjs';
+test('adapter preserves baseline scene contract and exact brief/flow pins',()=>{
+ const combined=compileSceneWithPrevention({...baseline,flowSha256:baseline.pinnedFlowHash,projectId:'new-interior'});
+ assert.equal(combined.activation,'CANDIDATE_NOT_ACTIVE');
+ assert.equal(combined.sceneContract.methodVersion,'2.3.0');
+ assert.equal(combined.sceneContract.brief.rawText,baseline.humanBrief);
+ assert.equal(combined.preventiveReceipt.briefSha256,combined.sceneContract.brief.sha256);
+ assert.equal(combined.preventiveReceipt.pinnedFlowHash,combined.sceneContract.flowSha256);
+});
