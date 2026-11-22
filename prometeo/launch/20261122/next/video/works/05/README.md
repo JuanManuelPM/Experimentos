@@ -1,6 +1,6 @@
 # EL CORREDOR · video-w002-20261122-05
 
-**Trabajo 05 exclusivamente.** Parte de [LAUNCH público](../../../LAUNCH.md) (blob SHA `d7eebea6d36fc6e5aa3b72cba4e35dd149dc552d`) en `gh-pages`. `QBAR-1` + `DEEP-SPEC-1`.
+**Trabajo 05 exclusivamente.** Parte de [LAUNCH público](../../LAUNCH.md) (blob SHA `d7eebea6d36fc6e5aa3b72cba4e35dd149dc552d`) en `gh-pages`. `QBAR-1` + `DEEP-SPEC-1`.
 
 ## Identidad / estado
 
