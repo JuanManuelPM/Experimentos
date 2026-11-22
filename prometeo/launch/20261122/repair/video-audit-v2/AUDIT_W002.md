@@ -31,7 +31,7 @@ Se cotejaron el LAUNCH (blob `d7eebea6d36fc6e5aa3b72cba4e35dd149dc552d`), BATCHE
 
 - [VIDEO_ART_DIRECTION_GATE_V2.md](VIDEO_ART_DIRECTION_GATE_V2.md): decisiones, dueños, contrapruebas y rutas de recuperación.
 - [video_quality_gate_v2.py](video_quality_gate_v2.py): validador de evidencia media + riesgos; `NOT_EXPORTED` no puede pasar a entregado; un video local inexistente ni una autodeclaración `humanApproved` pasan. Se separa `TECHNICAL_EVIDENCE_READY_ART_NOT_CERTIFIED` de aprobación.
-- [test_video_quality_gate_v2.py](test_video_quality_gate_v2.py): 7 regresiones negativas/positivas ejecutadas localmente; ver recibo final y distinguir test lógico de prueba audiovisual.
+- [test_video_quality_gate_v2.py](test_video_quality_gate_v2.py): 8 regresiones negativas/positivas ejecutadas localmente; ver [QA_RECEIPT.md](QA_RECEIPT.md) y distinguir test lógico de prueba audiovisual.
 - Plan siguiente: elegir 3 representantes de riesgo (actuación 01/07, producto 02, editor 10); hacer **first slices** y comparar calidad con W002, sin tocar archivos históricos. Si no mejora, revertir el gate/selección, no aumentar burocracia.
 
 ## Evidencia visual auténtica con hash Git blob
