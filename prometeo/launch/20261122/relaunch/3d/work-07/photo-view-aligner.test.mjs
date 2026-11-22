@@ -1,0 +1,14 @@
+import assert from 'node:assert/strict';
+import {normalisePose,createAlignmentSession,setCapturedView} from './photo-view-aligner.js';
+const p={name:'frame_real.jpg',pos:[1,2,3],forward:[0,0,-2],up:[0,-3,0]};
+assert.deepEqual(normalisePose(p).forward,[0,0,-1]);
+assert.throws(()=>normalisePose({...p,forward:[0,-1,0]}),/collinear/);
+const positions=[], camera={position:{set:(...v)=>positions.push(v)},up:{set:()=>{}},lookAt:()=>{},updateProjectionMatrix:()=>{}};
+setCapturedView(camera,null,p);assert.deepEqual(positions[0],[1,2,3]);
+const a=createAlignmentSession();a.loadImage('photo.jpg');a.selectView('frame_real.jpg');
+a.addPair([.1,.2],[.1,.2]);assert.equal(a.report().rms2D,0);
+a.shift(500,-500);assert.equal(a.report().offsetX,45);assert.equal(a.report().offsetY,-45);
+a.setZoom(5);assert.equal(a.report().zoom,2.2);
+assert.throws(()=>a.addPair([-1,1],[0,0]),/normalised/);
+assert.equal(a.report().status,'MANUAL_OVERLAY_UNCALIBRATED');
+console.log('PASS 8 logical assertions (not WebGL, photos, rights or visual QA)');

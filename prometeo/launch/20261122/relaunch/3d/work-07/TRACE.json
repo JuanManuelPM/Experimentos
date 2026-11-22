@@ -1,0 +1,96 @@
+{
+  "schema": "prometeo.w7.visited-stage-trace/v1",
+  "taskId": "3d-w7-20261122-07",
+  "briefLock": {
+    "path": "prometeo/launch/20261122/relaunch/3d/LAUNCH.md",
+    "blobSHA": "58de659e2aa01c0746d59ca6f95c36bdc59f3030"
+  },
+  "flow": {
+    "version": "2.3.0",
+    "sha256Canonical": "53bc9e2e4b37c99e92d3494af8dfa4461cd4644b15f980e32497a8428b067b3f",
+    "source": "W6-07 QA reported",
+    "readback": "NOT_RUN",
+    "activePromotion": "NOT_ASSUMED"
+  },
+  "validator": {
+    "version": "visited-trace-v1.mjs",
+    "status": "NOT_RUN",
+    "reason": "No FLOW_INDEX canonical graph node IDs verified in this execution; do not invent topology."
+  },
+  "humanApproved": false,
+  "recordedAt": "2026-11-22T18:52:13.307Z",
+  "events": [
+    {
+      "stage": "DISPATCH_LOCK",
+      "status": "EXECUTED",
+      "decision": "Only task 07",
+      "alternativesConsidered": [
+        "W6 work 07",
+        "Other W7 numbered work"
+      ],
+      "evidenceRefs": [
+        "W7 launcher blob 58de659..."
+      ],
+      "outputRef": "PREPRODUCTION.deep-spec-v1.json",
+      "timestamp": "2026-11-22T18:52:13.307Z"
+    },
+    {
+      "stage": "QBAR_SOURCES",
+      "status": "EXECUTED",
+      "decision": "Direct 3DGS data instead of external iframe",
+      "alternativesConsidered": [
+        "External iframe",
+        "Original scan bytes + in-house viewport"
+      ],
+      "evidenceRefs": [
+        "Ahmedn1/roomsplat README and LICENSE",
+        "3D audit 07"
+      ],
+      "outputRef": "PREPRODUCTION.deep-spec-v1.json",
+      "timestamp": "2026-11-22T18:52:13.307Z"
+    },
+    {
+      "stage": "BUILD_SOURCE",
+      "status": "EXECUTED",
+      "decision": "Code own viewer + photo-view aligner, no fake scan",
+      "alternativesConsidered": [
+        "New synthetic room",
+        "Licensed source data"
+      ],
+      "evidenceRefs": [
+        "GitHub blob original scene.splat 2733dd9...",
+        "Original cameras.json"
+      ],
+      "outputRef": "index.html + photo-view-aligner.js",
+      "timestamp": "2026-11-22T18:52:13.307Z"
+    },
+    {
+      "stage": "LOGIC_QA",
+      "status": "EXECUTED",
+      "decision": "Execute code assertions and official preproduction validators",
+      "alternativesConsidered": [
+        "Claim all PASS without browser",
+        "Persist blocking gates"
+      ],
+      "evidenceRefs": [
+        "8/8 actual V8 assertions",
+        "DEEP-SPEC SPIKE_REQUIRED",
+        "ART-DIRECTION FIRST_ARTICLE_REQUIRED"
+      ],
+      "outputRef": "QA.md",
+      "timestamp": "2026-11-22T18:52:13.307Z"
+    },
+    {
+      "stage": "BROWSER_WEBGL",
+      "status": "NOT_RUN",
+      "reason": "No browser session was available to inspect pixels, download via CORS, or test Android gestures.",
+      "timestamp": "2026-11-22T18:52:13.307Z"
+    },
+    {
+      "stage": "PHOTO_CALIBRATION",
+      "status": "NOT_RUN",
+      "reason": "Corresponding authorized original JPG and camera intrinsics not provided; manual overlay is not calibration.",
+      "timestamp": "2026-11-22T18:52:13.307Z"
+    }
+  ]
+}
