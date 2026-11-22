@@ -1,0 +1,249 @@
+{
+  "version": "DEEP-SPEC-1",
+  "medium": "music",
+  "depth": "SISTEMA",
+  "brief": "09 PUNTO DE RETORNO: club progresivo extendido con intro/outro mezclables, armonia evolutiva, climax ganado, master stems timeline editable y mapa de energia",
+  "intent": {
+    "experience": "Escuchar una travesia de club que llega a una cima y retorna transformada sin depender de limiter ni riser generico.",
+    "distinctAbility": "Detectar progreso verdadero de secciones en audio y contrastar clímax contra intro/retorno a volumen nivelado."
+  },
+  "references": [
+    {
+      "id": "A",
+      "status": "OBSERVED",
+      "url": "https://www.ableton.com/en/blog/jon-hopkins/",
+      "observation": "Entrevista sobre estructura de partes y causalidad sonora como narrativa: la llegada de un sonido se justifica por otro."
+    },
+    {
+      "id": "B",
+      "status": "OBSERVED",
+      "url": "https://www.ableton.com/en/blog/composing-infinity-max-cooper-his-new-album/",
+      "observation": "Proceso de composicion con motivos semi generativos acotados y desarrollo narrativo, tomado como criterio tecnico no como fuente de samples."
+    },
+    {
+      "id": "C",
+      "status": "OBSERVED",
+      "url": "https://abletonlessons.com/composition-and-arrangement-in-ableton-live/",
+      "observation": "Documenta secciones DJ con 16-32 compases de introduccion/salida y variaciones de energía como diseño de arreglo."
+    }
+  ],
+  "components": [
+    {
+      "id": "arr",
+      "role": "Ocho secciones funcionales con silencio y retorno motivico",
+      "strategy": "Arreglo en eventos por compás con intro y outro de 32 compases",
+      "constraints": "Transiciones en límites de compás y continuidad de motivo sin solo volumen"
+    },
+    {
+      "id": "synth",
+      "role": "Seis familias de instrumentos sintetizados originalmente",
+      "strategy": "Síntesis aditiva, ruido filtrado, envelopes y ecos sincronizados",
+      "constraints": "Bombo y bajo ocupan registros complementarios, sin muestras no autorizadas"
+    },
+    {
+      "id": "map",
+      "role": "Detector reutilizable de contraste real de energía",
+      "strategy": "Medición por compás de RMS, centroid, flux y ataques",
+      "constraints": "No confundir curva planeada con energía escuchada; detectar sobre el master"
+    },
+    {
+      "id": "surface",
+      "role": "Superficie de escucha con protagonista musical y controles mínimos",
+      "strategy": "HTML con reproducir, progreso y mapa medido",
+      "constraints": "390 y 1440 sin capas que tapen obra, lectura accesible y sin UI redundante"
+    }
+  ],
+  "questions": [
+    {
+      "id": "q1",
+      "target": "arr",
+      "question": "¿La identidad musical evoluciona sin recurrir a un riser lineal?",
+      "alternatives": [
+        "Un motivo que cambia de registro y densidad",
+        "Riser de ruido blanco más limitador"
+      ],
+      "evidenceRef": "A",
+      "finding": "Los contrastes causalmente motivados construyen narrativa más fuerte que aumentar ruido.",
+      "decisionImpact": "El VACÍO retira bombo y el RETORNO recupera motivo en octava baja."
+    },
+    {
+      "id": "q2",
+      "target": "synth",
+      "question": "¿Qué estrategia de sonido permite máster y stems originales editables sin fuentes ajenas?",
+      "alternatives": [
+        "Síntesis DSP original por capas",
+        "Descarga de loops y samples comerciales"
+      ],
+      "evidenceRef": "B",
+      "finding": "La composición semi generativa acotada permite variaciones reproducibles sin importar grabaciones.",
+      "decisionImpact": "Se construye fuente Python con seis voces y MIDI/patrones declarados."
+    },
+    {
+      "id": "q3",
+      "target": "map",
+      "question": "¿Cómo distinguir cambios de sección perceptibles frente a una curva preprogramada?",
+      "alternatives": [
+        "RMS y cambios espectrales medidos desde WAV",
+        "Proyectar una línea de energía desde el JSON de secciones"
+      ],
+      "evidenceRef": "C",
+      "finding": "El arreglo importa por capas reales y silencios; los indicadores deben medirse sobre la salida audible.",
+      "decisionImpact": "energy_map.py computa features y puntos de cambio desde master WAV."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "d1",
+      "questionId": "q1",
+      "componentIds": [
+        "arr",
+        "synth"
+      ],
+      "choice": "Motivo con reaparición octava baja tras sección de vacío",
+      "rejected": "White noise riser y master comprimido para simular climax",
+      "productionChange": "8 secciones y 208 compases, con silencios y variación tonal diseñada",
+      "why": "El arco depende de instrumentación y relaciones no del volumen global."
+    },
+    {
+      "id": "d2",
+      "questionId": "q2",
+      "componentIds": [
+        "synth"
+      ],
+      "choice": "Seis stems de síntesis independiente con generador y score editables",
+      "rejected": "Bibliotecas con licencias inciertas y reproducción de terceros",
+      "productionChange": "Render local 44.1k WAV 24 bit y seis FLAC separados",
+      "why": "Derechos claros y producción reproducible sin plugins privativos."
+    },
+    {
+      "id": "d3",
+      "questionId": "q3",
+      "componentIds": [
+        "map",
+        "surface"
+      ],
+      "choice": "Medir RMS/espectro desde el master y pintar esa medición",
+      "rejected": "Visualización de energía artística falsamente basada en audio",
+      "productionChange": "Energy map analiza 208 compases y encuentra cambios durante VACÍO y ASCENSO",
+      "why": "La interfaz debe responder al audio y no afirmar una evidencia inexistente."
+    }
+  ],
+  "relations": [
+    {
+      "from": "synth",
+      "to": "arr",
+      "invariant": "La reaparición del motivo y la desaparición del kick están programadas por sección en el score",
+      "failure": "Un groove idéntico durante seis minutos sin forma",
+      "test": "Medir RMS por sección y comparar material de motivo"
+    },
+    {
+      "from": "synth",
+      "to": "map",
+      "invariant": "Mapa de energía se mide sobre bytes del master de la misma composición",
+      "failure": "Un mapa inventado no representaría el sonido real",
+      "test": "FFT por compás desde master.wav y output JSON"
+    }
+  ],
+  "risks": [
+    {
+      "componentIds": [
+        "arr",
+        "synth"
+      ],
+      "severity": "high",
+      "failure": "Primer artículo con bombo genérico sin dirección de gran forma",
+      "prevention": "Contrastar mínimo dos secciones y volver al motivo antes de declarar calidad",
+      "test": "Audición real de pasaje de cambio de registro y mezcla en master",
+      "status": "NOT_RUN"
+    },
+    {
+      "componentIds": [
+        "surface"
+      ],
+      "severity": "medium",
+      "failure": "Viewport pequeño con timeline ilegible o controles superpuestos",
+      "prevention": "Diseñar protagonista visible y controles mínimos desde el primer viewport",
+      "test": "Captura real de 390 y 1440 en navegador con interacción",
+      "status": "NOT_RUN"
+    }
+  ],
+  "acceptance": [
+    {
+      "kind": "audio",
+      "criterion": "Máster completo y stems de idéntico largo, sin clipping y A/B nivelado",
+      "oracle": "Decodificación local soundfile, chequeo de longitudes, peaks y escucha humana pendiente",
+      "status": "OBSERVED"
+    },
+    {
+      "kind": "functional",
+      "criterion": "Energía realmente medida y detector de cambios sobre PCM master",
+      "oracle": "Calculador de RMS, espectro y cambios audioderivados por 208 compases",
+      "status": "OBSERVED"
+    },
+    {
+      "kind": "visual",
+      "criterion": "Primera pantalla 390 y 1440 con superficie sin UI invasiva",
+      "oracle": "Capturas Chromium reales de ambos anchos y verificación de interacción",
+      "status": "NOT_RUN"
+    }
+  ],
+  "licensing": "Todo sonido generado por síntesis original; se consultaron fuentes técnicas y entrevistas sin reutilizar sus grabaciones.",
+  "resources": "Python 3, numpy, scipy, soundfile, ffmpeg y fuentes originales; GitHub sólo admite texto con los conectores disponibles.",
+  "environmentLimits": "Browser screenshot attempted but Chromium headless timed out; human musical evaluation unavailable; GitHub remote master upload unavailable in this execution.",
+  "artDirection": {
+    "schema": "prometeo.art-direction.first-article/v1",
+    "medium": "music",
+    "taskId": "music-w003-20261122-09",
+    "briefSha": "5d7e6c2540cc49d998b7fe75fc1048d6f9cba80b",
+    "flowRef": "music flow 2.0.0 / blob 1423f13e08b743f418c42052613a6808b214d622",
+    "promise": {
+      "subject": "Un motivo que aparece, desaparece y regresa con otra función",
+      "intent": "Una travesía progresiva con tensión armónica y rítmica en vez de volumen extremo"
+    },
+    "benchmark": {
+      "url": "https://www.ableton.com/en/blog/jon-hopkins/",
+      "description": "Entrevista leída sobre causalidad musical y arco de partes; no se atribuye escucha de las obras.",
+      "status": "OBSERVED"
+    },
+    "techniques": [
+      {
+        "family": "Síntesis DSP original por stems",
+        "viability": "Python scipy y soundfile probados localmente para render FLAC/WAV",
+        "license": "Código y señales originales sin grabaciones de terceros"
+      },
+      {
+        "family": "Interpretación grabada de sintetizador analógico",
+        "viability": "Se requeriría grabación autorizada de instrumentos, no disponible en entorno",
+        "license": "Requiere tomas propias autorizadas antes de publicar"
+      }
+    ],
+    "selectedTechnique": "Síntesis DSP original por stems",
+    "firstFrame": {
+      "openingDescription": "Título editorial y mapa horizontal de energía del master; nada se superpone sobre la forma musical.",
+      "focalSubject": "Ocho secciones y arco del motivo al retorno",
+      "minimalUI": "Un control Play, barra de progreso y tiempo actual",
+      "checks": [
+        {
+          "viewport": "390",
+          "criterion": "Título y play dentro del ancho visible sin desborde",
+          "oracle": "Captura Chromium 390 real"
+        },
+        {
+          "viewport": "1440",
+          "criterion": "Arco completo legible con fronteras de sección",
+          "oracle": "Captura Chromium 1440 real"
+        }
+      ],
+      "observations": []
+    },
+    "firstArticle": {
+      "target": "Ocho compases sintetizados y comparativa entre fragmentos de secciones",
+      "rejectWhen": "Groove no muestra articulación y sólo escala volumen",
+      "switchTo": "Interpretación grabada de sintetizador analógico",
+      "oracle": "Escucha real del primer pasaje y contraste antes de extenderlo",
+      "resourceProof": "Se han generado bytes WAV localmente, pero la evaluación auditiva humana no se ejecutó",
+      "status": "NOT_RUN"
+    },
+    "humanApproved": false
+  }
+}
