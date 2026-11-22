@@ -1,6 +1,5 @@
-import {mat,vec} from './engine.js';
 // All geometry, furniture and materials are original and parameterized in metres.
-
+import {mat,vec} from './engine.js';
 const colors={limestone:[.77,.725,.635],plaster:[.83,.796,.704],sand:[.64,.57,.47],floor:[.69,.63,.55],timber:[.31,.19,.11],lightWood:[.56,.36,.21],darkWood:[.18,.13,.11],rust:[.35,.19,.12],textile:[.65,.58,.48],linen:[.84,.80,.71],leather:[.39,.28,.20],ink:[.075,.082,.076],brass:[.43,.32,.16],glass:[.48,.64,.62],foliage:[.22,.33,.19],foliage2:[.36,.43,.22],foliage3:[.12,.26,.15],water:[.22,.36,.37],gravel:[.49,.46,.38],white:[.89,.84,.75],night:[.78,.52,.25]};
 const objects=[];let idx=0;
 function add(name,geo,pos,scale,color,opts={}){let o={id:opts.id||`piece-${++idx}`,name,geometry:geo,pos,scale,color:colors[color]||color,roughness:opts.roughness??.73,metalness:opts.metalness??0,finish:opts.finish??0,opacity:opts.opacity??1,occluder:!!opts.occluder,solid:!!opts.solid,roof:!!opts.roof,visible:true};o.model=mat.compose(pos,scale,opts.rotation||[0,0,0]);if(geo==='box'&&opts.solid||opts.occluder){o.bounds={min:pos.map((v,i)=>v-scale[i]/2),max:pos.map((v,i)=>v+scale[i]/2)}}objects.push(o);return o}
