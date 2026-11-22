@@ -28,3 +28,5 @@ No requiere dependencias npm ni librerías de samples. `render.mjs` emite cuatro
 | Observación | Node OK, navegador NOT_RUN | Node OK, navegador NOT_RUN |
 
 **Conclusión causal:** cobertura de material y resolución superiores, prueba musical perceptual y rendimiento Android pendientes. Las versiones W002 se conservan intactas.
+
+**Preview remoto con audio real:** [escuchar el recorrido de 120 s en Ogg Opus](escuchar.html) (24 kb/s mono, embed HTML; no reemplaza WAV local).
