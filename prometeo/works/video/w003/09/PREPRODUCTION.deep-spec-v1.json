@@ -1,0 +1,269 @@
+{
+  "version": "DEEP-SPEC-1",
+  "medium": "Video / cinematografía atmosférica",
+  "depth": "SISTEMA",
+  "taskId": "video-w003-20261122-09",
+  "batchId": "video-w003-20261122",
+  "taskNumber": 9,
+  "briefBlobSha": "0cc574528594731a3d1cf0c15a0d0e5a37e775b7",
+  "oldBriefBlobSha": "d7eebea6d36fc6e5aa3b72cba4e35dd149dc552d",
+  "qualityBarVersion": "QBAR-1",
+  "artDirection": {
+    "schema": "prometeo.art-direction.first-article/v1",
+    "medium": "video",
+    "taskId": "video-w003-20261122-09",
+    "briefSha": "0cc574528594731a3d1cf0c15a0d0e5a37e775b7",
+    "flowRef": "Video Studio PROJECT@fa110be05d4a4d4e5e9f8d19cc33540c3f0b41bf; project bootstrap@c1ea01fe4475c43e4affe6fbf4f475f93fc3d365; no verified promoted motor",
+    "promise": {
+      "subject": "Faro sobre un espigón y una cámara que se acerca cuando entra el temporal",
+      "intent": "La meteorología debe alterar material, distancia, luz y sonido con causalidad, no convertirse en overlay de gotas."
+    },
+    "benchmark": {
+      "url": "https://theasc.com/article/stormy-isle-the-lighthouse/",
+      "description": "Reportaje técnico ASC: el esquema de luz fuente, Fresnel y clima ordena la fotografía del faro; se examinó su texto, no el metraje completo.",
+      "status": "OBSERVED"
+    },
+    "techniques": [
+      {
+        "family": "composición procedural 2.5D y óptica de profundidad",
+        "viability": "NumPy, OpenCV, Pillow, SciPy y FFmpeg comprobados en W002; implementable en runner Linux de CI sin assets externos.",
+        "license": "Código y medios nuevos propios; reutilización con permiso de la implementación original W002 del mismo repositorio."
+      },
+      {
+        "family": "miniatura 3D con iluminación volumétrica renderizada por software",
+        "viability": "Escena geométrica nueva con raymarching NumPy y campos volumétricos, posible técnicamente en runner pero más costosa y no probada aquí.",
+        "license": "Geometría, shaders, texturas y sonido generados como obra original sin recursos de terceros."
+      }
+    ],
+    "selectedTechnique": "composición procedural 2.5D y óptica de profundidad",
+    "firstFrame": {
+      "openingDescription": "Plano abierto del faro y espigón reconocibles, horizonte ocre-gris y nubes ya en movimiento; sin título incrustado.",
+      "focalSubject": "Faro iluminado con horizonte, mar y cuerda cercana que anticipa escala y viento",
+      "minimalUI": "Solo controles nativos del elemento video en la página, título y descarga fuera de la imagen.",
+      "checks": [
+        {
+          "criterion": "En 390 px se identifica faro, agua y al menos dos estratos sin UI invasiva.",
+          "oracle": "Captura navegador real viewport 390 y apertura del MP4.",
+          "viewport": "390"
+        },
+        {
+          "criterion": "En 1440 px el faro mantiene composición y no hay barras o deformación.",
+          "oracle": "Captura navegador real viewport 1440 y apertura del MP4.",
+          "viewport": "1440"
+        },
+        {
+          "criterion": "En seis segundos de alto riesgo cambian nubes, mar, cañas, exposición y cuerda junto con viento y audio.",
+          "oracle": "Contact sheet y fotogramas decodificados de primer artículo 7–13 s.",
+          "viewport": "both"
+        }
+      ],
+      "observations": []
+    },
+    "firstArticle": {
+      "target": "6 segundos de temporal entre t=7 y 13, con flash, trueno posterior, parallax y materiales mojados.",
+      "rejectWhen": "El espigón se ve inmóvil salvo lluvia, no hay profundidad o el sonido precede al flash.",
+      "switchTo": "miniatura 3D con iluminación volumétrica renderizada por software",
+      "oracle": "MP4 decodificado con seis fotogramas de distintos instantes y análisis del contraste/onda sonora.",
+      "resourceProof": "Runner GitHub Actions existente de W002/09 ya codificó H264+AAC; todas las capas nuevas son procedurales y propias.",
+      "status": "NOT_RUN"
+    },
+    "humanApproved": false
+  },
+  "brief": "ANTES DE LA TORMENTA · escena de calma a tormenta en lugar reconocible con agua, lluvia, bruma, sombras, reflejos, vegetación y sonido acoplados temporalmente; video más compositor reutilizable.",
+  "intent": {
+    "experience": "La mirada avanza por un espigón costero, la humedad se hace visible y la llegada del temporal parece afectar un mundo único.",
+    "distinctAbility": "Una misma climate(t) gobierna movimiento de masas, viento y cable, iluminación del faro, lluvia, agua y sonido; la cámara separa planos en profundidad."
+  },
+  "references": [
+    {
+      "id": "asc",
+      "url": "https://theasc.com/article/stormy-isle-the-lighthouse/",
+      "status": "OBSERVED",
+      "observation": "En un artículo técnico ASC de The Lighthouse se describe uso de Fresnel, luz localizada y clima como decisiones de rodaje, no como postproducción superficial; texto consultado, metraje no evaluado."
+    },
+    {
+      "id": "w002audit",
+      "url": "https://github.com/JuanManuelPM/Experimentos/blob/candidate/prometeo-video-audit-v2-20261122/prometeo/launch/20261122/repair/video-audit-v2/AUDIT_W002.md",
+      "status": "OBSERVED",
+      "observation": "La auditoría del N09 anterior observó contacto de cuatro fotogramas, criticó composición casi fija, simplificación geométrica y lluvia dominante; sonido no escuchado."
+    }
+  ],
+  "components": [
+    {
+      "id": "place",
+      "role": "Faro, espigón, mar y campo de juncos en capas distantes y próximas.",
+      "strategy": "Reutilizar motor base del mismo repositorio más paso cercano original de cuerda, bolardo y vegetación; dolly real en espacio imagen.",
+      "constraints": "Persiste la misma geografía, con contacto y gradiente atmosférico en cada fotograma."
+    },
+    {
+      "id": "climate",
+      "role": "Física compartida de exposición, nubes, lluvia, viento, humedad y reflejo.",
+      "strategy": "Un reloj climate(t) parametriza todas las capas, incluyendo cámara más inestable, sombra húmeda y reverberación.",
+      "constraints": "La luz cambia los reflejos y sombras; el sonido de trueno entra tras la descarga luminosa, sin asincronía."
+    },
+    {
+      "id": "sound",
+      "role": "Oleaje, viento, lluvia y truenos de síntesis original en estéreo.",
+      "strategy": "Síntesis PCM original, progresión de envolventes y final AAC reproducible a 48k.",
+      "constraints": "Flash antes de trueno, amplitud de lluvia creciente y dos canales en salida."
+    },
+    {
+      "id": "publish",
+      "role": "Export verificable y surface limpia.",
+      "strategy": "Python NumPy/OpenCV/Pillow/SciPy + FFmpeg con reproducción HTML y CI que adjunta medios auténticos.",
+      "constraints": "MP4 H264+AAC, 14 s, sin títulos superpuestos a la obra; la revisión estética sigue humana."
+    }
+  ],
+  "questions": [
+    {
+      "id": "q1",
+      "target": "place",
+      "question": "¿Qué corrige el plano ilustrado casi fijo sin romper identidad del faro?",
+      "alternatives": [
+        "Más partículas de lluvia",
+        "Cámara dolly con estratos de parallax y primer término activo"
+      ],
+      "evidenceRef": "w002audit",
+      "finding": "Un movimiento de cámara medible y una cuerda que responde al viento brindan profundidad ausente antes.",
+      "decisionImpact": "Se implementa nueva capa cercana y dolly lento que coincide con la progresión del temporal."
+    },
+    {
+      "id": "q2",
+      "target": "climate",
+      "question": "¿Qué evita lluvia como filtro desvinculado de madera y paisaje?",
+      "alternatives": [
+        "Lluvia más intensa",
+        "Ráfagas, reflejo mojado, vegetación y niebla afectando luz y horizonte"
+      ],
+      "evidenceRef": "w002audit",
+      "finding": "La auditoría señala lluvia dominante y acoplamiento solo reportado; exponer efectos en suelo y aire.",
+      "decisionImpact": "Se reduce cantidad de gotas y aumenta respuesta de madera mojada, cuerda, bruma y cámara."
+    },
+    {
+      "id": "q3",
+      "target": "sound",
+      "question": "¿Cómo demostrar causalidad entre relámpago y trueno, no solo describir audio?",
+      "alternatives": [
+        "Audios ajenos sin procedencia",
+        "Sintetizar y medir latencia de eventos con reloj común"
+      ],
+      "evidenceRef": "asc",
+      "finding": "La luz del faro y la meteorología como fuentes locales ofrecen un principio de coherencia sonora.",
+      "decisionImpact": "Primer artículo 7-13 s incluye flash a 10.35 y trueno a 11.02; se exporta AAC y revisan pistas."
+    }
+  ],
+  "relations": [
+    {
+      "from": "climate",
+      "to": "place",
+      "invariant": "Mismo viento mueve nubes, gotas, juncos y cuerda y altera mar y madera húmeda.",
+      "failure": "Solo hay overlay de lluvia sobre escenario inmóvil.",
+      "test": "Fotogramas de 7.5, 9, 10.35, 11.25 y 12.5 s."
+    },
+    {
+      "from": "climate",
+      "to": "sound",
+      "invariant": "Picos acústicos de lluvia y viento crecen con curvas; trueno posterior a relámpago.",
+      "failure": "Trueno anticipado o lluvia audible antes de precipitación.",
+      "test": "FFprobe de audio y comparación temporal."
+    },
+    {
+      "from": "place",
+      "to": "publish",
+      "invariant": "Faro y muelle siguen siendo reconocibles durante cambio de tamaño y tracking.",
+      "failure": "Saltos de perspectiva o recortes demasiado agresivos.",
+      "test": "Revisión en primer frame/medio/final y capturas 390/1440."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "d1",
+      "questionId": "q1",
+      "componentIds": [
+        "place",
+        "climate"
+      ],
+      "choice": "Composición original con plano cercano y dolly atmosférico.",
+      "rejected": "Escena inmóvil con más efectos visuales encima.",
+      "productionChange": "Añadida clase CoupledAtmosphereV2 con cuerda, vegetación de primer plano y transformación de cámara.",
+      "why": "La profundidad y la respuesta física deben ser perceptibles antes de producir todo el corto."
+    },
+    {
+      "id": "d2",
+      "questionId": "q2",
+      "componentIds": [
+        "climate",
+        "place"
+      ],
+      "choice": "Reducir densidad de lluvia y exponer agua superficial/refracción de bruma.",
+      "rejected": "Escalar cantidad/opacidad de partículas hasta dominar la escena.",
+      "productionChange": "Se reducen estratos de gotas, se incorporan highlights de madera con respuesta lluvia y flash.",
+      "why": "El observador debe leer la tormenta como física del espacio, no como efecto decorativo."
+    },
+    {
+      "id": "d3",
+      "questionId": "q3",
+      "componentIds": [
+        "sound",
+        "publish"
+      ],
+      "choice": "Sonido estéreo sincronizado por una función temporal común.",
+      "rejected": "Corto mudo o efectos sin reloj ni origen claro.",
+      "productionChange": "Primer artículo renderizado con recorte PCM sincronizado y lanzamiento final después del gate.",
+      "why": "La prueba escucha y la presencia de AAC importan tanto como los fotogramas."
+    }
+  ],
+  "risks": [
+    {
+      "componentIds": [
+        "climate",
+        "place"
+      ],
+      "severity": "high",
+      "failure": "La imagen vuelve a parecer ilustración con partículas autónomas.",
+      "prevention": "No lanzar metraje completo hasta comprobar 6 segundos en tormenta real y recortes de cámara.",
+      "test": "Inspeccionar contacto del primer artículo y decodificación H264.",
+      "status": "NOT_RUN"
+    },
+    {
+      "componentIds": [
+        "sound",
+        "publish"
+      ],
+      "severity": "medium",
+      "failure": "AAC sin onda audible o relámpago y trueno desacoplados.",
+      "prevention": "Escuchar, extraer niveles y medir retardo causal del PCM.",
+      "test": "ffprobe AAC 48k y reporte de niveles en primer artículo.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "acceptance": [
+    {
+      "kind": "functional",
+      "criterion": "Primer artículo real 6 s y final 14 s, H264 24 fps, audio AAC 48k, decodificación sin errores.",
+      "oracle": "FFprobe+FFmpeg sobre bytes producidos por CI.",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "visual",
+      "criterion": "Faro reconocible mientras cambian al menos agua, vegetación, sombras, cielo y cámara.",
+      "oracle": "Seis fotogramas reales más movimiento entre cuadros consecutivos.",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "audio",
+      "criterion": "Trueno posterior al destello, lluvia y viento audibles de forma gradual.",
+      "oracle": "Escucha de archivo AAC extraído y medición de eventos.",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "visual",
+      "criterion": "Capturas reales apertura 390px y 1440px y valoración artística independiente.",
+      "oracle": "Chromium o Playwright y revisor humano.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "resources": "Python NumPy, OpenCV, SciPy, Pillow y FFmpeg disponibles en workflow; motor original W002 autoría misma obra y código W003 nuevo.",
+  "licensing": "Código, geometría y sonido procedurales propios; benchmarking sin copiar fotogramas ajenos ni audio externo.",
+  "environmentLimits": "No hay rodaje real ni evidencia de VFX fotorrealista; render 2.5D estilizado y revisión humana independiente pendiente."
+}
