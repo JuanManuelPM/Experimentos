@@ -360,7 +360,8 @@ $('#tools [data-action=shot]').addEventListener('click',()=>{
 });
 $('#tools [data-action=series]').addEventListener('click',()=>{
   // Capturas reales de render, no dibujos ilustrativos ni capturas de la interfaz.
-  const original={...state}, pos={...player};
+  const original={...state}, pos={...player}, priorAspect=camera.aspect;
+  camera.aspect=500/278;camera.updateProjectionMatrix();
   const sheet=document.createElement('canvas');sheet.width=1500;sheet.height=620;
   const ctx=sheet.getContext('2d');ctx.fillStyle='#ece5da';ctx.fillRect(0,0,1500,620);
   for(let r=0;r<2;r++)for(let c=0;c<3;c++){
@@ -372,6 +373,7 @@ $('#tools [data-action=series]').addEventListener('click',()=>{
   }
   Object.assign(state,original);player=pos;lightMode(original.night);setRoom(original.room);
   Object.assign(state,original);player=pos;describe();
+  camera.aspect=priorAspect;camera.updateProjectionMatrix();
   prepareFrame();
   download(sheet,'casa-entre-patios-comparativa-3x2.png');
   status.textContent='Serie exportada · 3 ambientes × 2 condiciones de luz · PNG real';
