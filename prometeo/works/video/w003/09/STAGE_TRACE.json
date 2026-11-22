@@ -30,13 +30,25 @@
     },
     {
       "stage": "FULL_FILM",
-      "status": "NOT_RUN",
-      "reason": "CI full-film render and downstream QA are next"
+      "status": "CI_DECODE_PASS_REMOTE_GITHUB_CONTENTS_OBSERVED",
+      "reference": "ANTES-DE-LA-TORMENTA-W003-09.mp4@8906e853aee847ff2bd0d3e9da91c3114856af7f",
+      "decision": "14s 336 frames 800x450 H264/AAC, screenshot 390/1440, media numerical QA; perceptual review pending"
     },
     {
       "stage": "HUMAN_REVIEW",
       "status": "NOT_RUN",
       "reason": "No human artistic approval"
+    },
+    {
+      "stage": "FIRST_SCREEN_BROWSER",
+      "status": "OBSERVED_CHROMIUM_390_1440",
+      "reference": "FIRST_SCREEN_390.png@8738bff9dfd1a772df95b3b3d03559c129ec42b1;FIRST_SCREEN_1440.png@2485b1417655f5bc520ce5b3cd9a934da93ac374",
+      "decision": "Inspeccionadas capturas, video HTML es visible en ambos formatos sin controles invasivos."
+    },
+    {
+      "stage": "LISTENING_INDEPENDENT",
+      "status": "NOT_RUN",
+      "reason": "Comprobación numérica de PCM/AAC no reemplaza percepción humana."
     }
   ],
   "limits": [

@@ -1,7 +1,7 @@
 {
   "taskId": "video-w003-20261122-09",
   "batchId": "video-w003-20261122",
-  "phase": "PUBLIC_BINARY_BUILT_CI",
+  "phase": "DELIVERED_CANDIDATE_TECHNICAL_QA_PASS_HUMAN_REVIEW_PENDING",
   "firstArticle": "TECHNICAL_PASS_PERCEPTUAL_FAIL",
   "secondArticle": "TECHNICAL_PASS_WORKER_VISUAL_OBSERVED",
   "secondArticleUrl": "https://github.com/JuanManuelPM/Experimentos/blob/candidate/prometeo-video-w003-20261122-09/prometeo/works/video/w003/09/SECOND_ARTICLE_7-13.mp4",
@@ -19,13 +19,14 @@
   "flowBefore": "Video Studio PROJECT@fa110be05d4a4d4e5e9f8d19cc33540c3f0b41bf",
   "flowAfter": "Same unpromoted owner; new volume engine candidate",
   "limits": [
-    "Stylized 2.5D/volumetric scene, not actual live footage.",
-    "Worker visual sampling is not artistic approval.",
-    "Browser and auditory perception pending."
+    "14s MP4 verified by GitHub Actions FFmpeg/FFprobe, remote GitHub Contents exists; not independently decoded by external auditor.",
+    "Screenshot tested on CI Chrome at 390 and 1440, not Android playback or GitHub Pages HTTP.",
+    "Cinematic imagery remains stylized simplified lighthouse, not professional live footage or realistic VFX.",
+    "Stereo audio technically verified with levels; independent listening and human artistic approval NOT_RUN."
   ],
   "binarySha256": "df4baee1a1d29698e39ff5309254f337aacc736851bbd2e39343b9c30f472860",
   "media": {
-    "durationSeconds": 14.0,
+    "durationSeconds": 14,
     "frames": 336,
     "fps": 24,
     "width": 800,
@@ -44,7 +45,7 @@
   },
   "fullFrameDecode": "OBSERVED_PASS",
   "firstMiddleLastFrames": "OBSERVED_PASS",
-  "remoteReadback": "PENDING",
+  "remoteReadback": "OBSERVED_GITHUB_CONTENTS_BLOB_AND_SIZE",
   "frame390Resolution": [
     390,
     900
@@ -52,5 +53,10 @@
   "frame1440Resolution": [
     1440,
     900
-  ]
+  ],
+  "finalBinaryBlobSHA": "8906e853aee847ff2bd0d3e9da91c3114856af7f",
+  "completedRun": "https://github.com/JuanManuelPM/Experimentos/actions/runs/45060077552",
+  "browserScreenshotsInspected": "OBSERVED_WORKER_390_1440",
+  "pageHttpPublic": "NOT_RUN",
+  "qualityLevel": "STYLIZED_2_5D_NOT_PHOTOREAL"
 }

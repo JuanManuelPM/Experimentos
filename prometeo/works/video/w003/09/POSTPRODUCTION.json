@@ -1,0 +1,63 @@
+{
+  "schema": "prometeo.video.postproduction/v1",
+  "taskId": "video-w003-20261122-09",
+  "room": "video",
+  "batchId": "video-w003-20261122",
+  "taskNumber": 9,
+  "render": "https://github.com/JuanManuelPM/Experimentos/actions/runs/45060077552",
+  "ciConclusion": "SUCCESS",
+  "sourceBranch": "candidate/prometeo-video-w003-20261122-09",
+  "film": {
+    "path": "prometeo/works/video/w003/09/ANTES-DE-LA-TORMENTA-W003-09.mp4",
+    "blobSha": "8906e853aee847ff2bd0d3e9da91c3114856af7f",
+    "sha256": "df4baee1a1d29698e39ff5309254f337aacc736851bbd2e39343b9c30f472860",
+    "bytes": 1214162,
+    "seconds": 14,
+    "frames": 336,
+    "fps": 24,
+    "width": 800,
+    "height": 450,
+    "videoCodec": "h264",
+    "audioCodec": "aac",
+    "audioSampleRate": 48000,
+    "remoteContentsReadback": "OBSERVED"
+  },
+  "firstScreens": [
+    {
+      "viewport": 390,
+      "screenshot": "FIRST_SCREEN_390.png",
+      "blobSha": "8738bff9dfd1a772df95b3b3d03559c129ec42b1",
+      "status": "OBSERVED_WORKER_INSPECTED"
+    },
+    {
+      "viewport": 1440,
+      "screenshot": "FIRST_SCREEN_1440.png",
+      "blobSha": "2485b1417655f5bc520ce5b3cd9a934da93ac374",
+      "status": "OBSERVED_WORKER_INSPECTED"
+    }
+  ],
+  "audit": {
+    "fullDecode": "PASS",
+    "audioNumericalRms": {
+      "early": 0.014326239936053753,
+      "mid": 0.03543936088681221,
+      "storm": 0.0707363709807396,
+      "thunder": 0.11833830922842026
+    },
+    "artDirectionFirstTrial": "FAILED_PERCEPTUAL",
+    "newVolumetricSecondTrial": "IMPROVED_STYLIZED_NOT_PRO_ART",
+    "browserPlayback": "NOT_RUN",
+    "independentListening": "NOT_RUN",
+    "githubPagesHttp": "NOT_RUN",
+    "humanApproved": false
+  },
+  "comparison": {
+    "oldBatchId": "video-w002-20261122",
+    "newBatchId": "video-w003-20261122",
+    "oldBriefBlobSha": "d7eebea6d36fc6e5aa3b72cba4e35dd149dc552d",
+    "newBriefBlobSha": "0cc574528594731a3d1cf0c15a0d0e5a37e775b7",
+    "strategyBefore": "2.5D moving overlaid rain; simplified lighthouse",
+    "strategyAfter": "12 depth layers Beer-Lambert transmittance, fog scattering, fewer nearby droplets, wind-responsive foreground and camera dolly",
+    "observable": "Real 6-frame contacts show less rain dominance, light/fog changes; no independent artistic rating."
+  }
+}
