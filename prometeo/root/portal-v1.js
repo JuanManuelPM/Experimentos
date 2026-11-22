@@ -203,6 +203,7 @@ function selectRoute(next){
  shell.setRoom(state.room);shell.setAttribute('app-label',state.rooms.find(r=>r.id===state.room)?.label||'PROMETEO');
  const studio=['3d','music','web','video','images'].includes(state.room);
  if(studio&&state.screen==='stage'&&!studioItems(state.room).some(x=>x.id===state.itemId))state.screen='library';
+ shell.toggleAttribute('stage-mode',studio&&state.screen==='stage');
  $('messages').hidden=studio&&state.screen!=='messages';
  $('library').hidden=!studio||state.screen!=='library';
  $('stage').hidden=!studio||state.screen!=='stage';
