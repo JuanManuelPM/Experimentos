@@ -6,7 +6,7 @@
 <meta name="color-scheme" content="light dark">
 <title>PROMETEO</title>
 <link rel="stylesheet" href="./shared/v1/tokens.css">
-<link rel="stylesheet" href="./studio-unified.css?v=20261122-feedback2">
+<link rel="stylesheet" href="./studio-unified.css?v=20261122-rootlibrary2">
 </head>
 <body>
 <prometeo-shell id="shell" app-label="Dirección"><div id="app-context" slot="context" class="p-context"></div></prometeo-shell>
@@ -19,8 +19,8 @@
   </div>
   <section id="history" class="p-history" hidden aria-label="Mensajes disponibles"></section>
   <section id="startup-fallback" class="p-startup-fallback" aria-label="Tandas preparadas">
-    <h1>Estudios y tandas</h1>
-    <p>Cuatro tandas W001 preparadas. Elegí un estudio para ver y copiar los trabajos 01–10.</p>
+    <h1>Biblioteca de obras</h1>
+    <p>Cargando tandas y obras publicadas.</p>
     <nav aria-label="Accesos a tandas">
       <a href="#music/tanda/music-w001-20261122">Música</a>
       <a href="#web/tanda/web-w001-20261122">Web</a>
@@ -31,7 +31,7 @@
   <prometeo-response id="response"></prometeo-response>
 
 </main>
-<main id="library" class="p-library" hidden aria-label="Biblioteca del Estudio 3D">
+<main id="library" class="p-library" hidden aria-label="Biblioteca universal de obras">
   <div class="p-library-top"><h1>Obras</h1><button id="batch-link" type="button" class="p-batch-link" hidden></button></div>
   <div id="works" class="p-works" aria-live="polite"></div>
 </main>
@@ -41,6 +41,6 @@
   <a id="stage-open" class="p-stage-open" target="_blank" rel="noopener noreferrer" aria-label="Abrir obra en pantalla completa">↗</a>
 </section>
 <div id="toast" class="p-toast" hidden role="status" aria-live="polite"></div>
-<script type="module" src="./portal-v1.js?v=20261122-emojiworker1"></script>
+<script type="module" src="./portal-v1.js?v=20261122-rootlibrary2"></script>
 </body>
 </html>
