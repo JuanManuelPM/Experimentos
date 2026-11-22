@@ -1,0 +1,53 @@
+{
+  "schema": "prometeo.video.flow-pin/v1",
+  "taskId": "video-w003-20261122-10",
+  "recordedAt": "2026-11-22T19:13:23.635Z",
+  "primaryVideoFlow": {
+    "status": "NOT_RECOVERED",
+    "version": null,
+    "sha": null,
+    "reason": "La ficha privada de Video encontrada está en migración pendiente; no se verificó una versión propietaria operativa con SHA."
+  },
+  "activeShared": [
+    {
+      "id": "Q-LOOP",
+      "source": "JuanManuelPM/pruebas@prometeo/control:sistemas/metodo/CONTRATO_COMPARTIDO.md",
+      "sha": "7911ce780c6eb8fc08ba3e5621e4479bbe2e9757"
+    },
+    {
+      "id": "QBAR-1",
+      "source": "JuanManuelPM/Experimentos@gh-pages:prometeo/launch/QUALITY_BAR.md",
+      "sha": "5653704d3267c339fe7405f2b36b8488dbb44be9"
+    },
+    {
+      "id": "DEEP-SPEC-1",
+      "source": "JuanManuelPM/Experimentos@gh-pages:prometeo/launch/DEEP_SPEC.md",
+      "sha": "7656a293b0182f81619bf0d27b90dffa771c2683"
+    },
+    {
+      "id": "ART-DIRECTION/FIRST-ARTICLE-1",
+      "source": "JuanManuelPM/Experimentos@gh-pages:prometeo/launch/ART_DIRECTION_FIRST_ARTICLE.md",
+      "sha": "b1a1a012e90897200336cac6316c0511cb40c4c5"
+    }
+  ],
+  "specializedCandidateReference": {
+    "source": "JuanManuelPM/Experimentos@candidate/prometeo-video-audit-v2-20261122:prometeo/launch/20261122/repair/video-audit-v2/AUDIT_W002.md",
+    "sha": "3c1cca8a26812cd9ef98b9f87bf6d873925588a8",
+    "status": "CANDIDATE_NOT_PROMOTED"
+  },
+  "implementation": {
+    "baseW002HTMLGitBlob": "a6cac5c45f180791830935a4d8dc9e83e7aa2f2f",
+    "w003HTMLGitBlob": "c89c925ae360d793b652a4b5d2551538c8db59f2",
+    "technique": "MediaRecorder/WebAudio/Canvas + IDB + portable ZIP"
+  },
+  "comparison": {
+    "oldBatchId": "video-w002-20261122",
+    "newBatchId": "video-w003-20261122",
+    "oldLaunchBlob": "d7eebea6d36fc6e5aa3b72cba4e35dd149dc552d",
+    "newLaunchBlob": "0cc574528594731a3d1cf0c15a0d0e5a37e775b7",
+    "sameNumberBrief": true,
+    "change": "ZIP con medios y checksum + ruta de AudioContext de hidratación corregida + gain demo mayor + key de almacenamiento aislada",
+    "evidenceLevel": "CODE_READBACK_ZIP_UNIT_ONLY",
+    "noCausalArtisticImprovementClaim": true
+  }
+}
