@@ -4,11 +4,17 @@
 
 **Obra:** infografía científica original en español sobre el contraste térmico entre una calle arbolada y una calle sin sombra. La ilustración pictórica es conceptual: **no es termografía, simulación ni medición local**. Los datos son referencias observadas y atribuidas, no números generados para la imagen.
 
+## Vista rápida
+
+![Infografía editorial para impresión](el_calor_oculto_A4_300dpi.jpg)
+
+**Serie móvil:** [Pantalla 1](el_calor_oculto_movil_01.png) · [Pantalla 2](el_calor_oculto_movil_02.png) · [Pantalla 3](el_calor_oculto_movil_03.png)
+
 ## Entregables
 
-- `el_calor_oculto_A4_300dpi.png`: lámina A4 a 300 dpi (2480 × 3508) para impresión; `el_calor_oculto_A4_300dpi.jpg`: vista raster optimizada para publicación.
+- `el_calor_oculto_A4_300dpi.png`: lámina A4 a 300 dpi (2480 × 3508), entregada como PNG sin pérdida en el chat; `el_calor_oculto_A4_300dpi.jpg`: raster de impresión publicado en GitHub con idénticas dimensiones. El PNG grande no se cargó al repositorio por límite de transporte.
 - `el_calor_oculto_movil_01.png` a `03.png`: serie de tres pantallas de 1080 × 1920; existen vistas `.jpg` livianas para web.
-- `ilustracion_original_sin_datos.jpg`: arte visual original, sin números ni etiquetas, usado en el montaje.
+- `ilustracion_original_sin_datos.png` y `.jpg`: arte visual original, sin números ni etiquetas, usado en el montaje.
 - `render_heat.py`: composición de texto, diagramas, leyendas, escenas y export. Usa Pillow e Inter instalados en el sistema. Ejecutar `python render_heat.py --art ilustracion_original_sin_datos.jpg --out .`.
 - `PROCEDENCIA.csv`: registro por afirmación científica, magnitud, unidad, transformación, contexto y limitaciones.
 - `PREPRODUCTION.deep-spec-v1.json`: ficha vinculada de decisiones, referencias, riesgos y pruebas.
