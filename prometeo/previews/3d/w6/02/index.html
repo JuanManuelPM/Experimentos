@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1a201c">
+<meta name="description" content="Casa entre patios: recorrido arquitectónico 3D original, tres ambientes y dos condiciones de luz.">
+<title>Casa entre patios · PROMETEO 3D 02</title>
+<style>
+:root{color-scheme:dark;--ink:#f4eedf;--dim:#b9b9ac;--line:rgba(247,240,222,.24);--glass:rgba(19,27,25,.78);--accent:#ddc6a0}
+*{box-sizing:border-box}body{margin:0;background:#111916;color:var(--ink);font:14px/1.5 system-ui,-apple-system,sans-serif;overflow:hidden}
+#stage{position:fixed;inset:0;touch-action:none}#stage canvas{display:block;width:100%;height:100%;outline:none}
+#veil{position:fixed;inset:0;display:grid;place-items:center;background:linear-gradient(140deg,#1e2b28,#101714);z-index:6;text-align:center;padding:2rem}
+#veil strong{font:normal clamp(28px,6vw,76px)/1.03 Georgia,serif;letter-spacing:-.045em;display:block;max-width:780px}
+#veil span{color:#acb5a9;display:block;margin-top:24px;letter-spacing:.18em;text-transform:uppercase;font-size:11px}
+#veil button{background:#eee3d1;color:#161c18;border:0;font-size:14px;letter-spacing:.08em;padding:15px 23px;margin-top:32px;cursor:pointer}
+#hud{position:fixed;inset:0;pointer-events:none;display:flex;flex-direction:column;justify-content:space-between;padding:max(18px,env(safe-area-inset-top)) max(18px,env(safe-area-inset-right)) max(18px,env(safe-area-inset-bottom)) max(18px,env(safe-area-inset-left))}
+.top,.bottom{display:flex;justify-content:space-between;align-items:start;gap:16px}.top{padding:4px 0}.eyebrow{font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:#c7bda7}.brand{font:normal clamp(30px,4.6vw,63px)/.99 Georgia,serif;letter-spacing:-.055em;margin:9px 0;max-width:400px;text-shadow:0 1px 22px #0009}.sub{font-size:12px;color:#d5d3c9;letter-spacing:.04em}
+.panel{pointer-events:auto;background:var(--glass);border:1px solid var(--line);backdrop-filter:blur(14px);border-radius:3px;padding:14px;box-shadow:0 7px 35px #10101039}
+.panel header{font-size:10px;text-transform:uppercase;letter-spacing:.2em;color:#c8c4b4;margin:0 0 11px}.row{display:flex;flex-wrap:wrap;gap:6px}.btn{font:inherit;font-size:12px;cursor:pointer;border:1px solid var(--line);background:#ffffff0d;color:var(--ink);border-radius:2px;min-height:43px;padding:9px 12px;white-space:nowrap}
+.btn:hover,.btn:focus-visible{background:#ffffff2d;outline:2px solid transparent}.btn[aria-pressed=true]{background:var(--accent);color:#1b211d;border-color:var(--accent)}
+.side{width:min(340px,38vw)}.levels{margin:14px 0 0;border-top:1px solid var(--line);padding-top:11px;color:var(--dim);font-size:11px;display:flex;gap:18px;justify-content:space-between}
+.scene-info{margin-top:8px;font-size:12px;color:#e1d8cb}.scene-info b{font-weight:500;color:#fff}
+.bottom{align-items:end}.guide{max-width:450px;background:#10181790;padding:12px 15px;border-left:2px solid var(--accent);font-size:11px;color:#d4d4c9;letter-spacing:.02em}
+.tools{max-width:520px}.tools .row{justify-content:flex-end}#status{font-size:11px;color:#d6d2c4;margin:9px 0 0;text-align:right;max-width:440px}
+#joy{position:fixed;left:23px;bottom:126px;width:108px;height:108px;border:1px solid #fff5;border-radius:50%;background:#1c241d84;display:none;touch-action:none;pointer-events:auto;place-items:center;backdrop-filter:blur(6px)}
+#nub{width:42px;height:42px;border-radius:50%;background:#e1d0b8b9;box-shadow:0 0 0 1px #eee7;transform:translate(var(--dx,0px),var(--dy,0px))}
+#lookhint{display:none;position:fixed;right:18px;bottom:164px;pointer-events:none;color:#ffffffe1;font-size:10px;letter-spacing:.1em;text-shadow:0 1px 4px #000}
+#err{display:none;position:fixed;inset:0;background:#18221d;z-index:9;padding:32px;overflow:auto;place-items:center;text-align:center}
+#err div{max-width:500px}#err a{color:#ffe0a4}
+@media(max-width:760px){#hud{padding:14px}.top{flex-direction:column}.brand{font-size:clamp(29px,7.2vw,42px)}.sub{display:none}.side{width:100%;padding:10px}.side header{display:none}.side .row{flex-wrap:nowrap;overflow:auto}.btn{min-height:48px;padding:8px 11px;flex-shrink:0}.levels{display:none}.bottom{flex-direction:column;gap:8px;align-items:stretch}.tools{max-width:100%}.tools .row{justify-content:space-between;flex-wrap:nowrap}.tools .row .btn{flex:1;font-size:11px;padding:9px 5px}.guide{display:none}#status{display:none}#joy{display:grid;bottom:118px}#lookhint{display:block}.panel{backdrop-filter:blur(8px)}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important}}
+</style>
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.163.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.163.0/examples/jsm/"}}
+</script>
+</head>
+<body>
+<div id="stage" aria-label="Escena arquitectónica tridimensional"></div>
+<div id="veil"><div><span>PROMETEO / Estudio de arquitectura 02</span><strong>Una casa que respira entre dos patios.</strong><span>Un recorrido de luz, materia y espacios comunicados</span><button id="enter" type="button">ENTRAR EN LA CASA</button></div></div>
+<div id="hud">
+  <div class="top">
+    <div><div class="eyebrow">Estudio espacial · 2026 / 02</div><div class="brand">Casa entre<br>patios</div><div class="sub">15,6 × 5,4 m interiores · altura 3,4 m · tres ambientes</div></div>
+    <section class="panel side" aria-label="Selección de ambientes"><header>01 / Elegí el espacio</header><div class="row" id="rooms"><button class="btn" data-room="0" aria-pressed="false">01 · Estar</button><button class="btn" data-room="1" aria-pressed="true">02 · Comedor</button><button class="btn" data-room="2" aria-pressed="false">03 · Estudio</button></div><div class="scene-info" id="room-info">La mesa central mira a los dos jardines.</div><div class="levels"><span>Materia · cal / roble / piedra</span><span id="occl">Oclusión inteligente activa</span></div></section>
+  </div>
+  <div class="bottom">
+    <div class="guide">ARRASTRÁ para mirar · WASD / flechas para caminar · rueda para acercar en vista exterior · en móvil, control izquierdo para desplazarte y gesto derecho para mirar.</div>
+    <div class="panel tools">
+      <div class="row" id="tools">
+        <button class="btn" data-action="mode" id="mode" aria-pressed="false">Recorrer</button>
+        <button class="btn" data-action="light" id="light" aria-pressed="false">Luz nocturna</button>
+        <button class="btn" data-action="shot">Fotografía</button>
+        <button class="btn" data-action="series">Comparar 3 × 2</button>
+      </div>
+      <div id="status" role="status" aria-live="polite">Vista cinematográfica · Luz natural · 3 ambientes</div>
+    </div>
+  </div>
+</div>
+<div id="joy" aria-label="Control virtual de desplazamiento"><div id="nub"></div></div>
+<div id="lookhint">DESLIZÁ PARA MIRAR</div>
+<div id="err"><div><h2>No se pudo iniciar la escena WebGL</h2><p id="errtxt">Necesitás un navegador con WebGL y acceso al módulo de Three.js.</p><a href="https://threejs.org/docs/">Documentación de Three.js</a></div></div>
+<script type="module" src="./scene.mjs"></script>
+</body></html>
