@@ -1,0 +1,73 @@
+{
+  "schema": "PROMETEO-WEB-W002-05-QA-1",
+  "taskId": "web-w002-20261122-05",
+  "room": "web",
+  "batchId": "web-w002-20261122",
+  "taskNumber": 5,
+  "briefBlobSha": "cd88a07941ab62072f6de5ee69764308f1ec2387",
+  "generatedAt": "2026-11-22T16:39:11.077Z",
+  "status": "SOURCE_IMPLEMENTED_BROWSER_BLOCKED",
+  "qualityBar": "QBAR-1",
+  "deepSpec": {
+    "version": "DEEP-SPEC-1",
+    "logic": "STRUCTURAL_READY_FOR_FIRST_SLICE",
+    "artisticCertification": false
+  },
+  "files": {
+    "site": "prometeo/previews/web/w002/05/index.html",
+    "modules": [
+      "prometeo/previews/web/w002/05/app.js",
+      "prometeo/previews/web/w002/05/cart-core.js"
+    ],
+    "raster": "prometeo/previews/web/w002/05/product-triptych.webp",
+    "tests": "prometeo/previews/web/w002/05/cart-core.test.mjs",
+    "report": "prometeo/launch/20261122/next/web/results/05/REPORT.md"
+  },
+  "observed": [
+    {
+      "test": "node cart-core.test.mjs",
+      "result": "PASS",
+      "detail": "10 reducer invariants"
+    },
+    {
+      "test": "node --check",
+      "result": "PASS",
+      "detail": "all JS modules"
+    },
+    {
+      "test": "HTML ids + fragment links",
+      "result": "PASS",
+      "detail": "no duplicate IDs or dead internal anchors"
+    },
+    {
+      "test": "static checkout scan",
+      "result": "PASS",
+      "detail": "no network or payment paths"
+    },
+    {
+      "test": "photo upload",
+      "result": "OBSERVED_BLOB",
+      "detail": "Original generated raster, 1536x1024 WebP, 50284 bytes"
+    }
+  ],
+  "blocked": [
+    {
+      "test": "Chromium local/file navigation",
+      "result": "BLOCKED",
+      "detail": "URLBlocklist [*] -> ERR_BLOCKED_BY_ADMINISTRATOR"
+    }
+  ],
+  "notRun": [
+    "Browser render, interaction, screenshots",
+    "Keyboard and touch",
+    "Persisted state reload in browser",
+    "320/768/1440 responsive visual",
+    "Reduced-motion visual",
+    "Expert art direction review"
+  ],
+  "humanApproved": false,
+  "realPayments": false,
+  "reusableComponent": "cart-core.js",
+  "externalImageRights": "Original generative asset for this project; no third party reference media reused",
+  "notes": "A working source tree and passing unit tests are not evidence of visual/browser excellence."
+}
