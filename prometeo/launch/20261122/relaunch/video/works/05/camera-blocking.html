@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>El corredor · bloqueo/cámara/foco · W003/05</title>
+<style>
+:root{color-scheme:dark;--bg:#10161b;--line:#49565a;--ink:#e9e6de;--accent:#d4aa79}
+*{box-sizing:border-box}body{background:var(--bg);color:var(--ink);margin:0;font:15px/1.5 system-ui,sans-serif}
+main{max-width:1100px;margin:auto;padding:24px 16px}h1{font-size:clamp(24px,5vw,42px);font-weight:500;line-height:1.15;margin:10px 0}
+p{color:#b2bbb9;max-width:70ch}canvas{width:100%;height:auto;background:#1b2429;border:1px solid var(--line);border-radius:4px}
+fieldset{border:1px solid var(--line);padding:15px;margin-top:18px}legend{color:var(--accent)}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.grid label{display:grid;gap:6px}
+input[type=range]{accent-color:var(--accent);width:100%}
+button{min-height:43px;background:#34424a;border:1px solid #76817d;padding:10px 15px;color:#fff;cursor:pointer;border-radius:4px}
+button:focus-visible,input:focus-visible{outline:3px solid #d4aa79;outline-offset:3px}
+.row{display:flex;flex-wrap:wrap;gap:14px;align-items:center;margin:13px 0}
+#state{color:var(--accent);font-variant-numeric:tabular-nums}small{color:#b2bbb9}
+@media(max-width:600px){.grid{grid-template-columns:1fr}main{padding:14px}}
+</style></head><body><main>
+<small>PROMETEO / VIDEO / W003 / 05 · herramienta de previsualización, no la película</small>
+<h1>EL CORREDOR</h1><p>Planificador reutilizable de cámara y bloqueo. Dos intérpretes comparten un corredor métrico; una jamba tapa el intercambio inicial y el desplazamiento lateral revela el bastón. La escena filmada/animada se exporta por separado.</p>
+<canvas id="plan" width="1100" height="520" aria-label="Planta del corredor y trayectoria de cámara"></canvas>
+<div class="row"><button id="play" type="button">▶ Reproducir</button><label for="t">Tiempo <strong id="clock">0.00 s</strong></label><input id="t" type="range" min="0" max="14" value="0" step="0.02" style="flex:1;min-width:140px"></div>
+<fieldset><legend>Camara y foco · decisiones editables</legend><div class="grid">
+<label>Distancia del dolly (m)<input id="distance" type="range" min=".5" max="4" step=".05" value="2.55"><span id="dValue">2.55 m</span></label>
+<label>Inicio de revelación (s)<input id="reveal" type="range" min="2" max="11" step=".1" value="6.8"><span id="rValue">6.8 s</span></label>
+<label>Foco final (m)<input id="focus" type="range" min="2" max="11" step=".1" value="4.1"><span id="fValue">4.1 m</span></label>
+</div></fieldset>
+<div class="row"><button id="export" type="button">Exportar plan JSON</button><label>Importar plan <input id="import" type="file" accept=".json,application/json"></label></div>
+<div id="state" role="status" aria-live="polite"></div>
+<p><small>Las curvas se validan por diferencias finitas, no afirman actuación humana ni foco óptico real. En el render original la cámara avanza lateralmente de manera continua; el foco indicado es una meta de dirección, no una prueba de profundidad de campo.</small></p>
+</main><script>
+const c=document.querySelector('#plan'),g=c.getContext('2d'),s=document.querySelector('#t'),state=document.querySelector('#state');let playing=false,prev=0,t=0;
+let cfg={schema:'prometeo.video.camera-blocking/v1',taskId:'video-w003-20261122-05',duration:14,frameRate:24,distance:2.55,reveal:6.8,focusEnd:4.1,focusStart:10.3,subject:'restitución de bastón',camera:'travelling lateral sin cortes',occluder:{x:4.15},actors:[{id:'residente',x:3.35,y:0},{id:'cuidador',x:5.10,y:0}]};
+const clamp=(x,a,b)=>Math.min(b,Math.max(a,x)),E=(a,b,x)=>{const u=clamp((x-a)/(b-a),0,1);return u*u*(3-2*u)};
+const pos=x=>cfg.distance*E(.5,13.8,x),focus=x=>cfg.focusStart+(cfg.focusEnd-cfg.focusStart)*E(3,12,x);
+const sx=x=>125+x*113,sy=y=>432-y*95;
+function draw(){
+ g.clearRect(0,0,c.width,c.height);g.fillStyle='#152127';g.fillRect(0,0,1100,520);
+ for(let x=0;x<=7;x+=.5){g.strokeStyle=x%1===0?'#3b505a':'#293740';g.beginPath();g.moveTo(sx(x),90);g.lineTo(sx(x),453);g.stroke()}
+ for(let y=-.2;y<=3;y+=.5){g.strokeStyle='#293740';g.beginPath();g.moveTo(sx(0),sy(y));g.lineTo(sx(7),sy(y));g.stroke()}
+ for(const wall of [-.15,3.25]){g.strokeStyle='#ab9173';g.lineWidth=8;g.beginPath();g.moveTo(sx(0),sy(wall));g.lineTo(sx(7),sy(wall));g.stroke();g.lineWidth=1}
+ g.strokeStyle='#d4aa79';g.lineWidth=5;g.beginPath();
+ for(let i=0;i<=160;i++){let x=pos(14*i/160)+.55; if(i)g.lineTo(sx(x),sy(1.2));else g.moveTo(sx(x),sy(1.2))}g.stroke();g.lineWidth=1;
+ g.fillStyle='#747e7e';g.fillRect(sx(cfg.occluder.x)-14,sy(2.65),28,250);
+ let ac=[{x:3.35,y:1.75,color:'#94b7a4',name:'Residente'},{x:5.10,y:1.75,color:'#91acc6',name:'Cuidador'}];
+ ac.forEach(a=>{g.fillStyle=a.color;g.beginPath();g.arc(sx(a.x),sy(a.y),19,0,7);g.fill();g.font='18px system-ui';g.fillStyle='#e8e8df';g.fillText(a.name,sx(a.x)-40,sy(a.y)-34)});
+ let cx=sx(pos(t)+.55),cy=sy(1.2);g.fillStyle='#f9c486';g.beginPath();g.arc(cx,cy,14,0,7);g.fill();
+ g.strokeStyle='#efede5';g.beginPath();g.moveTo(cx,cy);g.lineTo(sx(lerp(3.35,5.1,E(cfg.reveal,10.5,t))),sy(1.75));g.stroke();
+ g.fillStyle='#aeb8b6';g.font='15px system-ui';g.fillText('Jamba / oclusión',sx(cfg.occluder.x)-45,65);
+ g.fillText('Foco objetivo: '+focus(t).toFixed(2)+' m',20,36);
+ g.fillText('Cámara: '+pos(t).toFixed(2)+' / '+cfg.distance.toFixed(2)+' m',20,58);
+ document.querySelector('#clock').textContent=t.toFixed(2)+' s';
+}
+function lerp(a,b,u){return a+(b-a)*u}
+function check(){let max=0,acc=0,prevV=0;for(let k=1;k<=280;k++){let dt=.05,v=(pos(dt*k)-pos(dt*(k-1)))/dt;max=Math.max(max,Math.abs(v));if(k>1)acc=Math.max(acc,Math.abs(v-prevV)/dt);prevV=v}
+state.textContent='Velocidad máxima '+max.toFixed(3)+' m/s · aceleración '+acc.toFixed(3)+' m/s² · sin teleportación: '+(max<.65?'PASS':'REVISAR')+' · Narrativa sin test ciego: NOT_RUN';}
+function refresh(){for(let [id,key] of [['distance','distance'],['reveal','reveal'],['focus','focusEnd']]){document.querySelector('#'+id).value=cfg[key];document.querySelector('#'+id[0]+'Value').textContent=cfg[key]+' '+(id==='reveal'?'s':'m')}draw();check()}
+for(let [id,key] of [['distance','distance'],['reveal','reveal'],['focus','focusEnd']])document.querySelector('#'+id).addEventListener('input',e=>{cfg[key]=+e.target.value;refresh()});
+s.addEventListener('input',e=>{t=+e.target.value;draw()});
+document.querySelector('#play').onclick=()=>{playing=!playing;document.querySelector('#play').textContent=playing?'❚❚ Pausar':'▶ Reproducir';prev=performance.now();if(playing)requestAnimationFrame(loop)};
+function loop(now){if(!playing)return;t+=Math.min((now-prev)/1000,.08);prev=now;if(t>14){t=0;playing=false;document.querySelector('#play').textContent='▶ Reproducir'}s.value=t;draw();if(playing)requestAnimationFrame(loop)}
+document.querySelector('#export').onclick=()=>{let blob=new Blob([JSON.stringify(cfg,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='EL_CORREDOR.camera-blocking.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2000)};
+document.querySelector('#import').onchange=async e=>{let f=e.target.files[0];if(!f)return;try{let j=JSON.parse(await f.text());if(j.schema!==cfg.schema||!Number.isFinite(j.distance)||!Number.isFinite(j.reveal)||!Number.isFinite(j.focusEnd))throw Error('Esquema incompatible');cfg={...cfg,...j};refresh()}catch(err){state.textContent='Importación rechazada: '+err.message}};
+refresh();
+</script></body></html>
