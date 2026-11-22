@@ -108,9 +108,9 @@ function paintCityList(){
     const b=document.createElement("button");b.type="button";b.className="city-card";b.dataset.city=c.id;
     const num=document.createElement("span");num.className="num mono";num.textContent="0"+(i+1);
     const mid=document.createElement("span"),name=document.createElement("b");name.textContent=c.name;
-    const detail=document.createElement("small");detail.textContent="Grilla "+c.grid.lat.toFixed(2)+"°, "+c.grid.lon.toFixed(2)+"°";
+    const detail=document.createElement("small");detail.textContent="Grilla "+c.grid.lat.toFixed(2)+"°, "+c.grid.lon.toFixed(2)+"° · 2025 / máx. ≥35 °C";
     mid.append(name,detail);
-    const v=document.createElement("span");v.className="card-stat";v.textContent=c.series.at(-1).hotDays;
+    const v=document.createElement("span");v.className="card-stat";v.textContent=c.series.at(-1).hotDays+" d";
     b.append(num,mid,v);b.setAttribute("aria-pressed",c.id===state.city?"true":"false");
     b.setAttribute("aria-label","Seleccionar "+c.name+". En 2025 hubo "+c.series.at(-1).hotDays+" días de 35 °C o más.");
     b.addEventListener("click",()=>{state.city=c.id;paint()});
@@ -148,7 +148,7 @@ function init(data){
  chapters.set(0);
  $("#year").addEventListener("input",e=>{state.year=Number(e.target.value);paint()});
  document.querySelectorAll("[data-metric]").forEach(b=>b.addEventListener("click",()=>{state.metric=b.dataset.metric;paint()}));
- document.querySelectorAll("[data-manual]").forEach(b=>b.addEventListener("click",()=>{chapters.set(Number(b.dataset.manual));document.querySelector(".story-graphic").scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"instant":"smooth",block:"nearest"});paint()}));
+ document.querySelectorAll("[data-manual]").forEach(b=>b.addEventListener("click",()=>{chapters.set(Number(b.dataset.manual));document.querySelector(".story-graphic").scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"nearest"});paint()}));
  const dl=$("#download");dl.href=URL.createObjectURL(new Blob([csv()],{type:"text/csv;charset=utf-8"}));
  $("#data-status").textContent="Series completas · 9.131 días por ciudad · 0 registros ausentes";
  paint();
