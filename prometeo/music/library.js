@@ -4,14 +4,43 @@ const $=id=>document.getElementById(id);
 const builtIn={id:'ceniza-m007',title:'CENIZA / Luces bajo el agua',updatedAt:'2026-11-20',project:'built-in',tracks:13};
 let entries=[builtIn],selectedId=builtIn.id,previousFocus=null;
 const audio=new Audio();audio.preload='metadata';audio.crossOrigin='anonymous';
-let hasMaster=false;
+let hasMaster=false, assembledWav=null, wavUrl=null;
+
+async function joinMasterSegments(urls){
+  if(!Array.isArray(urls)||urls.length<1||urls.length>24)throw Error('Lista de segmentos WAV inválida');
+  const parts=await Promise.all(urls.map(async uri=>{
+    const resp=await fetch(safeUrl(uri),{cache:'no-store'});
+    if(!resp.ok)throw Error('Segmento WAV inaccesible: HTTP '+resp.status);
+    const bytes=new Uint8Array(await resp.arrayBuffer());
+    if(bytes.length<44)throw Error('Segmento WAV demasiado corto');
+    const dv=new DataView(bytes.buffer,bytes.byteOffset,bytes.length);
+    const ascii=(at,n)=>String.fromCharCode(...bytes.subarray(at,at+n));
+    if(ascii(0,4)!=='RIFF'||ascii(8,4)!=='WAVE'||ascii(12,4)!=='fmt '||ascii(36,4)!=='data')throw Error('Cabecera WAV incompatible');
+    if(dv.getUint16(20,true)!==1||dv.getUint16(22,true)!==1||dv.getUint32(24,true)!==16000||dv.getUint16(34,true)!==16)throw Error('Formato WAV distinto entre segmentos');
+    if(dv.getUint32(40,true)!==bytes.length-44)throw Error('Datos WAV truncados');
+    return bytes.subarray(44);
+  }));
+  const length=parts.reduce((n,p)=>n+p.byteLength,0);
+  if(length>128*1024*1024)throw Error('Máster demasiado grande');
+  const result=new Uint8Array(length+44),dv=new DataView(result.buffer);
+  const word=(offset,str)=>{for(let i=0;i<str.length;i++)result[offset+i]=str.charCodeAt(i)};
+  word(0,'RIFF');dv.setUint32(4,length+36,true);word(8,'WAVE');word(12,'fmt ');
+  dv.setUint32(16,16,true);dv.setUint16(20,1,true);dv.setUint16(22,1,true);
+  dv.setUint32(24,16000,true);dv.setUint32(28,32000,true);dv.setUint16(32,2,true);dv.setUint16(34,16,true);
+  word(36,'data');dv.setUint32(40,length,true);
+  let pos=44;for(const part of parts){result.set(part,pos);pos+=part.length}
+  return new Blob([result],{type:'audio/wav'});
+}
+
 const master={
   get active(){return hasMaster},get time(){return audio.currentTime||0},get playing(){return hasMaster&&!audio.paused},
   async play(){if(!hasMaster)throw Error('No hay máster cargado');return audio.play()},
   stop(reset=true){audio.pause();if(reset&&audio.readyState)audio.currentTime=0},
   seek(v){if(hasMaster&&Number.isFinite(v)){try{audio.currentTime=Math.max(0,Math.min(v,Number.isFinite(audio.duration)?audio.duration:v))}catch{}}},
-  unload(){audio.pause();hasMaster=false;audio.removeAttribute('src');audio.load()},
-  load(url){audio.src=url;audio.loop=$('loop').classList.contains('on');hasMaster=true;audio.load()}
+  unload(){audio.pause();hasMaster=false;audio.removeAttribute('src');audio.load();if(wavUrl){URL.revokeObjectURL(wavUrl);wavUrl=null}assembledWav=null;const dl=$('downloadReferenceMaster');if(dl)dl.hidden=true},
+  load(url){audio.src=url;audio.loop=$('loop').classList.contains('on');hasMaster=true;audio.load()},
+  async loadSegments(urls){const blob=await joinMasterSegments(urls);const localUrl=URL.createObjectURL(blob);this.load(localUrl);assembledWav=blob;wavUrl=localUrl;const dl=$('downloadReferenceMaster');if(dl)dl.hidden=false},
+  get file(){return assembledWav}
 };
 window.PROMETEO_LIBRARY_AUDIO=master;
 audio.addEventListener('ended',()=>{$('play').classList.remove('on');$('status').textContent='LISTO';});
@@ -47,7 +76,7 @@ function render(){
     if(e.id===selectedId)b.setAttribute('aria-current','true');
     const info=document.createElement('span'),title=document.createElement('strong'),meta=document.createElement('small'),arrow=document.createElement('span');
     title.textContent=e.title;
-    meta.textContent='Actualizado '+dateLabel(e.updatedAt)+(Number.isInteger(e.tracks)?' · '+e.tracks+' pistas':'')+(e.audioUrl?' · máster publicado':' · proyecto editable');
+    meta.textContent='Actualizado '+dateLabel(e.updatedAt)+(Number.isInteger(e.tracks)?' · '+e.tracks+' pistas':'')+(e.audioSegments||e.audioUrl?' · máster publicado':' · proyecto editable');
     arrow.className='arrow';arrow.textContent=e.id===selectedId?'●':'↗';
     info.append(title,meta);b.append(info,arrow);
     b.addEventListener('click',()=>selectSong(e));root.append(b);
@@ -74,7 +103,8 @@ async function selectSong(e){
     if(!project||!Array.isArray(project.tracks))throw Error('SongProject incompatible');
     master.unload();
     window.PROMETEO_API.loadProject(project);
-    if(e.audioUrl)master.load(safeUrl(e.audioUrl));
+    if(e.audioSegments)await master.loadSegments(e.audioSegments);
+    else if(e.audioUrl)master.load(safeUrl(e.audioUrl));
     selectedId=e.id;feedback.textContent='';closeLibrary();
     $('libraryToggle').textContent='Biblioteca';
   }catch(err){feedback.textContent='No se pudo abrir «'+e.title+'»: '+err.message;}
@@ -103,12 +133,13 @@ async function loadCatalog(){
         const m=await r.json();
         const slotId=slot.split('/').at(-2)?.toUpperCase();
         if(!/^W001-[0-9]{2}$/.test(slotId))return null;
-        if(m.schema!=='prometeo.music.release/v1'||!['PUBLISHED_VERIFIED','PUBLISHED_PROJECT_PLAYABLE'].includes(m.status)||m.waveJob!==slotId||!m.projectUrl)return null;
+        if(m.schema!=='prometeo.music.release/v1'||!['PUBLISHED_VERIFIED','PUBLISHED_PROJECT_PLAYABLE','PUBLISHED_SEGMENTED_MASTER'].includes(m.status)||m.waveJob!==slotId||!m.projectUrl)return null;
         const base=new URL(manifestUrl);
         const entry={id:m.waveJob,title:m.title,updatedAt:m.updatedAt,status:m.status,
           projectUrl:safeUrl(new URL(m.projectUrl,base).href),
           tracks:m.tracks,source:m.source,durationSeconds:m.durationSeconds};
         if(m.audioUrl)entry.audioUrl=safeUrl(new URL(m.audioUrl,base).href);
+        if(Array.isArray(m.audioSegments)&&m.audioSegments.length>0)entry.audioSegments=m.audioSegments.map(u=>safeUrl(new URL(u,base).href));
         if(!Number.isFinite(Date.parse(entry.updatedAt)))return null;
         return entry;
       }catch{return null;}
@@ -152,5 +183,20 @@ document.addEventListener('keydown',ev=>{
   }
 });
 $('loop').addEventListener('click',()=>{audio.loop=$('loop').classList.contains('on')});
+
+// A reference master is a frozen recording. When editing, the studio's own
+// WebAudio instruments become the audition source, never a misleading old WAV.
+$('editToggle').addEventListener('click',()=>{
+  if($('app').classList.contains('editing')&&master.active){master.unload();$('status').textContent='EDICIÓN WEB AUDIO'}
+});
+const download=document.createElement('button');
+download.id='downloadReferenceMaster';download.hidden=true;download.type='button';
+download.textContent='MÁSTER PCM';download.title='Descargar máster de referencia WAV completo (16 kHz mono)';
+download.addEventListener('click',()=>{
+  if(!master.file)return;
+  const a=document.createElement('a');a.href=URL.createObjectURL(master.file);a.download='LLUVIAS-LARGAS-W001-06-REFERENCE-MASTER.wav';a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href),60000);
+});
+$('advanced').append(download);
 loadCatalog();
 })();
