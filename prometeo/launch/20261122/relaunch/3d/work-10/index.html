@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#111920">
+<meta name="description" content="F/20. Concepto original de bicicleta plegable en 3D, con plegado, despiece, materiales y lista verificable de conjuntos.">
+<title>F/20 | Bicicleta plegable · PROMETEO</title>
+<style>
+:root{color-scheme:dark;--ink:#f1ebde;--mute:#bbc3bc;--line:#8899a455}
+*{box-sizing:border-box}html,body{width:100%;height:100%;margin:0;overflow:hidden}
+body{background:#111920;color:var(--ink);font-family:Inter,Arial,Helvetica,sans-serif;-webkit-font-smoothing:antialiased}
+#view{width:100vw;height:100dvh;display:block;touch-action:none}
+header{pointer-events:none;position:fixed;top:clamp(20px,4vw,48px);left:clamp(19px,4.5vw,70px);z-index:2}
+.eyebrow{font-size:10px;font-weight:750;letter-spacing:.25em;color:#d8bd8f}
+h1{font-size:clamp(43px,6.5vw,112px);letter-spacing:-.075em;line-height:.92;margin:10px 0 6px;font-weight:730}
+.tagline{font-size:clamp(10px,1vw,13px);letter-spacing:.13em;color:#b9c0bd;text-transform:uppercase}
+header .line{width:70px;height:1px;background:#d9c298;margin:18px 0}
+#annotation{position:fixed;right:clamp(17px,4.5vw,70px);top:clamp(26px,5vw,52px);font-size:10px;letter-spacing:.16em;color:#dfd2bc;pointer-events:none;text-align:right;max-width:230px}
+#annotation::before{content:'';display:block;width:48px;height:1px;margin:0 0 11px auto;background:#b99a68}
+.panel{position:fixed;bottom:max(22px,env(safe-area-inset-bottom));left:clamp(15px,4.5vw,70px);display:flex;flex-direction:column;gap:18px;z-index:3;max-width:calc(100vw - 30px)}
+.subline{font-size:10px;letter-spacing:.17em;color:var(--mute);margin-bottom:7px}
+.modes{display:flex;gap:6px}
+button{font:inherit;cursor:pointer;color:var(--ink);border:1px solid #77828a5b;min-height:42px;background:#1e292dde;backdrop-filter:blur(14px);transition:background .2s,border-color .2s;white-space:nowrap}
+button:focus-visible{outline:2px solid #e1c493;outline-offset:3px}
+.modes button{padding:0 18px;font-size:11px;letter-spacing:.06em}
+button:hover{border-color:#d5b583}
+.modes button.selected{color:#162028;background:#e4d1ae;border-color:#e4d1ae;font-weight:750}
+.secondary{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.dot{border-radius:100%;width:30px;height:30px;min-height:30px;padding:0;outline:2px solid transparent;outline-offset:3px}
+.dot.chosen{outline-color:#ddd1b9}
+.dot[data-palette="graphite"]{background:#28353b}
+.dot[data-palette="cobalt"]{background:#224867}
+.dot[data-palette="copper"]{background:#934d3d}
+.compact{min-height:34px;padding:0 12px;font-size:10px;letter-spacing:.12em}
+.meta{font-size:10px;color:#adbbc0;letter-spacing:.08em}
+.meta strong{color:#e5d9bc;font-weight:500}
+#parts{position:fixed;z-index:3;right:clamp(14px,4vw,65px);top:20%;width:285px;max-height:60dvh;overflow:auto;padding:19px 18px;background:#142026e9;border:1px solid #82949a55;backdrop-filter:blur(16px)}
+#parts h2{font-size:15px;letter-spacing:.03em;font-weight:600;margin:0 0 13px}
+#parts ol{list-style:none;padding:0;margin:0}
+#parts li{display:flex;gap:16px;justify-content:space-between;padding:7px 0;border-bottom:1px solid #ffffff19;font-size:11px;line-height:1.2;color:#d6ddd6}
+#parts li span:last-child{color:#d4b887;font-variant-numeric:tabular-nums}
+#parts .note{font-size:10px;line-height:1.35;color:#92a6ab}
+#download{width:100%;margin-top:12px;font-size:10px;letter-spacing:.08em}
+#error{position:fixed;top:48%;left:50%;transform:translate(-50%,-50%);padding:24px;background:#291e1f;color:#ffe0c9;border:1px solid #cb8679;z-index:9;max-width:85%;line-height:1.45}
+a{color:#e6cba4}
+@media(max-width:600px){
+  header{top:23px;left:19px}
+  .eyebrow{font-size:9px}
+  h1{font-size:61px}
+  .tagline{font-size:9px;max-width:230px;line-height:1.5}
+  header .line{margin:12px 0}
+  #annotation{top:31px;right:17px;font-size:8px;max-width:118px}
+  .panel{bottom:max(13px,env(safe-area-inset-bottom));left:14px;right:14px;gap:12px}
+  .modes button{padding:0 14px;font-size:10px;flex:1}
+  .secondary{gap:8px}
+  .meta{font-size:9px;max-width:100%;line-height:1.4}
+  #parts{right:14px;top:38%;max-height:30dvh;width:min(285px,76vw);padding:12px}
+}
+@media(prefers-reduced-motion:reduce){button{transition:none}}
+</style>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
+</head><body>
+<canvas id="view" aria-label="Visor 3D de bicicleta plegable, arrastrá para rotar y pellizcá para acercar"></canvas>
+<header><div class="eyebrow">PROMETEO / LABORATORIO DE PRODUCTO</div><h1>F/20</h1><div class="tagline">Una bicicleta. Dos volúmenes. Un gesto.</div><div class="line"></div><div class="tagline">Diseño original · concepto industrial · escala 1:1</div></header>
+<div id="annotation">00 / EN MARCHA · 1:1</div>
+<section class="panel" aria-label="Controles del producto">
+  <div><div class="subline">CONFIGURACIÓN / VISTAS</div><div class="modes" role="group" aria-label="Estado de ensamble">
+    <button data-mode="assembled" class="selected" aria-pressed="true">ARMADA</button>
+    <button data-mode="folded" aria-pressed="false">PLEGADA</button>
+    <button data-mode="exploded" aria-pressed="false">DESPIECE</button>
+  </div></div>
+  <div><div class="subline">MATERIALES / VARIANTES</div><div class="secondary">
+    <button class="dot chosen" data-palette="graphite" aria-label="Acabado grafito" aria-pressed="true"></button>
+    <button class="dot" data-palette="cobalt" aria-label="Acabado azul noche" aria-pressed="false"></button>
+    <button class="dot" data-palette="copper" aria-label="Acabado arcilla" aria-pressed="false"></button>
+    <button id="variant" class="compact" title="Alternar variante">CIUDAD</button>
+    <button id="reset" class="compact" title="Reiniciar cámara">↺ VISTA</button>
+  </div></div>
+  <div class="meta"><strong id="finish">GRAFITO</strong> · <span id="variantSpec">cubiertas urbanas + manillar ancho</span> · rueda 20″ · 1.130 mm entre ejes</div>
+</section>
+<aside id="parts" hidden aria-label="Listado de conjuntos"><h2>DESPIECE / 14 CONJUNTOS</h2><ol id="bom"></ol>
+<p class="note">Conjuntos visualizados en relación 1:1. La animación no es una certificación mecánica ni de carga.</p>
+<button id="download">EXPORTAR CONFIGURACIÓN + BOM (JSON)</button></aside>
+<div id="error" hidden role="alert"></div>
+<script type="module" src="./app.mjs"></script>
+</body></html>
