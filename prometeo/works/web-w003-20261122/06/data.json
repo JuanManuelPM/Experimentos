@@ -1,0 +1,601 @@
+{
+  "name": "MAPA DEL CALOR / Indicadores térmicos 2001–2025",
+  "fetchedOn": "2026-11-22",
+  "source": "Open-Meteo Historical Weather API / ECMWF ERA5-Land",
+  "model": "era5_land",
+  "attribution": "Weather data by Open-Meteo.com; model source ECMWF ERA5-Land. Open-Meteo CC BY 4.0.",
+  "sourceDocs": "https://open-meteo.com/en/docs/historical-weather-api",
+  "license": "https://creativecommons.org/licenses/by/4.0/",
+  "methodology": {
+    "year": "año calendario, del 1 de enero al 31 de diciembre",
+    "meanMax": "media aritmética de máximas diarias del año, °C",
+    "hotDays": "días con temperatura máxima del aire a 2 m ≥ 35 °C, número de días",
+    "warmNights": "días con mínima diaria del aire a 2 m ≥ 24 °C, proxy de noches cálidas, número de días",
+    "uncertain": "ERA5-Land: grilla nominal ~9 km (0.1°) sobre tierra, reanálisis interpolado/modelado; no sensor a escala de calle ni medición directa de isla de calor. Umbrales editoriales descriptivos, no índices oficiales de olas de calor.",
+    "aggregation": "cada día corresponde a un año por prefijo ISO; no imputación, se exige 365/366 entradas y temperaturas finitas."
+  },
+  "cities": [
+    {
+      "id": "buenos-aires",
+      "name": "Buenos Aires",
+      "query": {
+        "lat": -34.61,
+        "lon": -58.38
+      },
+      "grid": {
+        "lat": -34.6,
+        "lon": -58.4,
+        "elevationM": 37
+      },
+      "sourceUrl": "https://archive-api.open-meteo.com/v1/archive?latitude=-34.61&longitude=-58.38&start_date=2001-01-01&end_date=2025-12-31&daily=temperature_2m_max%2Ctemperature_2m_min&timezone=America%2FArgentina%2FBuenos_Aires&models=era5_land",
+      "observedDays": 9131,
+      "firstDay": "2001-01-01",
+      "lastDay": "2025-12-31",
+      "series": [
+        {
+          "year": 2001,
+          "days": 365,
+          "meanMax": 20.43,
+          "hotDays": 0,
+          "warmNights": 8
+        },
+        {
+          "year": 2002,
+          "days": 365,
+          "meanMax": 20.11,
+          "hotDays": 0,
+          "warmNights": 1
+        },
+        {
+          "year": 2003,
+          "days": 365,
+          "meanMax": 20.15,
+          "hotDays": 0,
+          "warmNights": 4
+        },
+        {
+          "year": 2004,
+          "days": 366,
+          "meanMax": 20.58,
+          "hotDays": 0,
+          "warmNights": 2
+        },
+        {
+          "year": 2005,
+          "days": 365,
+          "meanMax": 20.43,
+          "hotDays": 0,
+          "warmNights": 5
+        },
+        {
+          "year": 2006,
+          "days": 365,
+          "meanMax": 20.77,
+          "hotDays": 0,
+          "warmNights": 2
+        },
+        {
+          "year": 2007,
+          "days": 365,
+          "meanMax": 19.91,
+          "hotDays": 0,
+          "warmNights": 3
+        },
+        {
+          "year": 2008,
+          "days": 366,
+          "meanMax": 21.18,
+          "hotDays": 0,
+          "warmNights": 4
+        },
+        {
+          "year": 2009,
+          "days": 365,
+          "meanMax": 20.57,
+          "hotDays": 0,
+          "warmNights": 1
+        },
+        {
+          "year": 2010,
+          "days": 365,
+          "meanMax": 20.4,
+          "hotDays": 0,
+          "warmNights": 6
+        },
+        {
+          "year": 2011,
+          "days": 365,
+          "meanMax": 20.44,
+          "hotDays": 0,
+          "warmNights": 2
+        },
+        {
+          "year": 2012,
+          "days": 366,
+          "meanMax": 21.01,
+          "hotDays": 1,
+          "warmNights": 11
+        },
+        {
+          "year": 2013,
+          "days": 365,
+          "meanMax": 20.88,
+          "hotDays": 1,
+          "warmNights": 9
+        },
+        {
+          "year": 2014,
+          "days": 365,
+          "meanMax": 20.6,
+          "hotDays": 1,
+          "warmNights": 8
+        },
+        {
+          "year": 2015,
+          "days": 365,
+          "meanMax": 21.23,
+          "hotDays": 0,
+          "warmNights": 4
+        },
+        {
+          "year": 2016,
+          "days": 366,
+          "meanMax": 20.32,
+          "hotDays": 1,
+          "warmNights": 8
+        },
+        {
+          "year": 2017,
+          "days": 365,
+          "meanMax": 21.49,
+          "hotDays": 0,
+          "warmNights": 10
+        },
+        {
+          "year": 2018,
+          "days": 365,
+          "meanMax": 21.04,
+          "hotDays": 1,
+          "warmNights": 5
+        },
+        {
+          "year": 2019,
+          "days": 365,
+          "meanMax": 20.96,
+          "hotDays": 0,
+          "warmNights": 8
+        },
+        {
+          "year": 2020,
+          "days": 366,
+          "meanMax": 21.1,
+          "hotDays": 0,
+          "warmNights": 7
+        },
+        {
+          "year": 2021,
+          "days": 365,
+          "meanMax": 21.01,
+          "hotDays": 1,
+          "warmNights": 5
+        },
+        {
+          "year": 2022,
+          "days": 365,
+          "meanMax": 20.75,
+          "hotDays": 4,
+          "warmNights": 9
+        },
+        {
+          "year": 2023,
+          "days": 365,
+          "meanMax": 21.6,
+          "hotDays": 3,
+          "warmNights": 18
+        },
+        {
+          "year": 2024,
+          "days": 366,
+          "meanMax": 20.96,
+          "hotDays": 1,
+          "warmNights": 8
+        },
+        {
+          "year": 2025,
+          "days": 365,
+          "meanMax": 21.3,
+          "hotDays": 2,
+          "warmNights": 14
+        }
+      ]
+    },
+    {
+      "id": "rosario",
+      "name": "Rosario",
+      "query": {
+        "lat": -32.95,
+        "lon": -60.64
+      },
+      "grid": {
+        "lat": -32.899998,
+        "lon": -60.6,
+        "elevationM": 32
+      },
+      "sourceUrl": "https://archive-api.open-meteo.com/v1/archive?latitude=-32.95&longitude=-60.64&start_date=2001-01-01&end_date=2025-12-31&daily=temperature_2m_max%2Ctemperature_2m_min&timezone=America%2FArgentina%2FBuenos_Aires&models=era5_land",
+      "observedDays": 9131,
+      "firstDay": "2001-01-01",
+      "lastDay": "2025-12-31",
+      "series": [
+        {
+          "year": 2001,
+          "days": 365,
+          "meanMax": 22.69,
+          "hotDays": 2,
+          "warmNights": 7
+        },
+        {
+          "year": 2002,
+          "days": 365,
+          "meanMax": 22.48,
+          "hotDays": 1,
+          "warmNights": 3
+        },
+        {
+          "year": 2003,
+          "days": 365,
+          "meanMax": 22.51,
+          "hotDays": 3,
+          "warmNights": 6
+        },
+        {
+          "year": 2004,
+          "days": 366,
+          "meanMax": 23.19,
+          "hotDays": 4,
+          "warmNights": 1
+        },
+        {
+          "year": 2005,
+          "days": 365,
+          "meanMax": 22.8,
+          "hotDays": 4,
+          "warmNights": 4
+        },
+        {
+          "year": 2006,
+          "days": 365,
+          "meanMax": 23.86,
+          "hotDays": 6,
+          "warmNights": 6
+        },
+        {
+          "year": 2007,
+          "days": 365,
+          "meanMax": 22.12,
+          "hotDays": 2,
+          "warmNights": 5
+        },
+        {
+          "year": 2008,
+          "days": 366,
+          "meanMax": 24.23,
+          "hotDays": 11,
+          "warmNights": 7
+        },
+        {
+          "year": 2009,
+          "days": 365,
+          "meanMax": 23.45,
+          "hotDays": 6,
+          "warmNights": 3
+        },
+        {
+          "year": 2010,
+          "days": 365,
+          "meanMax": 22.62,
+          "hotDays": 0,
+          "warmNights": 3
+        },
+        {
+          "year": 2011,
+          "days": 365,
+          "meanMax": 23.13,
+          "hotDays": 5,
+          "warmNights": 4
+        },
+        {
+          "year": 2012,
+          "days": 366,
+          "meanMax": 23.3,
+          "hotDays": 15,
+          "warmNights": 13
+        },
+        {
+          "year": 2013,
+          "days": 365,
+          "meanMax": 23.57,
+          "hotDays": 9,
+          "warmNights": 10
+        },
+        {
+          "year": 2014,
+          "days": 365,
+          "meanMax": 22.91,
+          "hotDays": 7,
+          "warmNights": 8
+        },
+        {
+          "year": 2015,
+          "days": 365,
+          "meanMax": 23.38,
+          "hotDays": 0,
+          "warmNights": 2
+        },
+        {
+          "year": 2016,
+          "days": 366,
+          "meanMax": 22.49,
+          "hotDays": 6,
+          "warmNights": 8
+        },
+        {
+          "year": 2017,
+          "days": 365,
+          "meanMax": 23.41,
+          "hotDays": 2,
+          "warmNights": 9
+        },
+        {
+          "year": 2018,
+          "days": 365,
+          "meanMax": 23.58,
+          "hotDays": 10,
+          "warmNights": 4
+        },
+        {
+          "year": 2019,
+          "days": 365,
+          "meanMax": 23.27,
+          "hotDays": 6,
+          "warmNights": 9
+        },
+        {
+          "year": 2020,
+          "days": 366,
+          "meanMax": 24.16,
+          "hotDays": 7,
+          "warmNights": 4
+        },
+        {
+          "year": 2021,
+          "days": 365,
+          "meanMax": 24.08,
+          "hotDays": 10,
+          "warmNights": 2
+        },
+        {
+          "year": 2022,
+          "days": 365,
+          "meanMax": 24.22,
+          "hotDays": 34,
+          "warmNights": 15
+        },
+        {
+          "year": 2023,
+          "days": 365,
+          "meanMax": 24.32,
+          "hotDays": 29,
+          "warmNights": 17
+        },
+        {
+          "year": 2024,
+          "days": 366,
+          "meanMax": 23.56,
+          "hotDays": 10,
+          "warmNights": 4
+        },
+        {
+          "year": 2025,
+          "days": 365,
+          "meanMax": 23.97,
+          "hotDays": 17,
+          "warmNights": 16
+        }
+      ]
+    },
+    {
+      "id": "cordoba",
+      "name": "Córdoba",
+      "query": {
+        "lat": -31.42,
+        "lon": -64.19
+      },
+      "grid": {
+        "lat": -31.399998,
+        "lon": -64.2,
+        "elevationM": 401
+      },
+      "sourceUrl": "https://archive-api.open-meteo.com/v1/archive?latitude=-31.42&longitude=-64.19&start_date=2001-01-01&end_date=2025-12-31&daily=temperature_2m_max%2Ctemperature_2m_min&timezone=America%2FArgentina%2FBuenos_Aires&models=era5_land",
+      "observedDays": 9131,
+      "firstDay": "2001-01-01",
+      "lastDay": "2025-12-31",
+      "series": [
+        {
+          "year": 2001,
+          "days": 365,
+          "meanMax": 21.93,
+          "hotDays": 0,
+          "warmNights": 0
+        },
+        {
+          "year": 2002,
+          "days": 365,
+          "meanMax": 22.26,
+          "hotDays": 3,
+          "warmNights": 0
+        },
+        {
+          "year": 2003,
+          "days": 365,
+          "meanMax": 23.05,
+          "hotDays": 8,
+          "warmNights": 0
+        },
+        {
+          "year": 2004,
+          "days": 366,
+          "meanMax": 23,
+          "hotDays": 3,
+          "warmNights": 0
+        },
+        {
+          "year": 2005,
+          "days": 365,
+          "meanMax": 22.47,
+          "hotDays": 3,
+          "warmNights": 0
+        },
+        {
+          "year": 2006,
+          "days": 365,
+          "meanMax": 23.35,
+          "hotDays": 5,
+          "warmNights": 0
+        },
+        {
+          "year": 2007,
+          "days": 365,
+          "meanMax": 22.17,
+          "hotDays": 2,
+          "warmNights": 0
+        },
+        {
+          "year": 2008,
+          "days": 366,
+          "meanMax": 23.46,
+          "hotDays": 4,
+          "warmNights": 0
+        },
+        {
+          "year": 2009,
+          "days": 365,
+          "meanMax": 24.21,
+          "hotDays": 7,
+          "warmNights": 0
+        },
+        {
+          "year": 2010,
+          "days": 365,
+          "meanMax": 22.77,
+          "hotDays": 9,
+          "warmNights": 0
+        },
+        {
+          "year": 2011,
+          "days": 365,
+          "meanMax": 23.32,
+          "hotDays": 6,
+          "warmNights": 0
+        },
+        {
+          "year": 2012,
+          "days": 366,
+          "meanMax": 23.69,
+          "hotDays": 4,
+          "warmNights": 0
+        },
+        {
+          "year": 2013,
+          "days": 365,
+          "meanMax": 23.93,
+          "hotDays": 10,
+          "warmNights": 1
+        },
+        {
+          "year": 2014,
+          "days": 365,
+          "meanMax": 23.14,
+          "hotDays": 11,
+          "warmNights": 2
+        },
+        {
+          "year": 2015,
+          "days": 365,
+          "meanMax": 22.8,
+          "hotDays": 0,
+          "warmNights": 0
+        },
+        {
+          "year": 2016,
+          "days": 366,
+          "meanMax": 22.16,
+          "hotDays": 7,
+          "warmNights": 0
+        },
+        {
+          "year": 2017,
+          "days": 365,
+          "meanMax": 23.5,
+          "hotDays": 4,
+          "warmNights": 0
+        },
+        {
+          "year": 2018,
+          "days": 365,
+          "meanMax": 23.58,
+          "hotDays": 6,
+          "warmNights": 0
+        },
+        {
+          "year": 2019,
+          "days": 365,
+          "meanMax": 22.81,
+          "hotDays": 5,
+          "warmNights": 1
+        },
+        {
+          "year": 2020,
+          "days": 366,
+          "meanMax": 23.82,
+          "hotDays": 5,
+          "warmNights": 0
+        },
+        {
+          "year": 2021,
+          "days": 365,
+          "meanMax": 23.15,
+          "hotDays": 4,
+          "warmNights": 0
+        },
+        {
+          "year": 2022,
+          "days": 365,
+          "meanMax": 23.82,
+          "hotDays": 25,
+          "warmNights": 3
+        },
+        {
+          "year": 2023,
+          "days": 365,
+          "meanMax": 24.48,
+          "hotDays": 8,
+          "warmNights": 0
+        },
+        {
+          "year": 2024,
+          "days": 366,
+          "meanMax": 23.38,
+          "hotDays": 10,
+          "warmNights": 0
+        },
+        {
+          "year": 2025,
+          "days": 365,
+          "meanMax": 23.68,
+          "hotDays": 10,
+          "warmNights": 4
+        }
+      ]
+    }
+  ]
+}
