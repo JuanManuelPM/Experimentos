@@ -1,0 +1,65 @@
+{
+  "schema": "prometeo.video.autocritica.receipt/v1",
+  "date": "2026-11-22",
+  "triggered_by": "manual WORK for batch video-w001-20261122",
+  "batch_id": "video-w001-20261122",
+  "review_scope": "entire published batch, not private individual producer chats",
+  "work_count": 10,
+  "registered_public_results": 10,
+  "additional_variants": 1,
+  "source_directories_static_inspected": 11,
+  "mp4_files_on_gh_pages": 9,
+  "task_numbers_with_public_mp4": [
+    1,
+    2,
+    4,
+    5,
+    7,
+    8,
+    10
+  ],
+  "verified_source_observations": {
+    "no_public_video_binary_in_task_directories": [
+      3,
+      6,
+      9
+    ],
+    "note": "03 and 09 report MP4 encoded locally; 06 explicitly reports HTML/WAV preview and unverified WebM export",
+    "page_does_not_link_own_published_mp4": [
+      "04",
+      "07-bajo-mismo-techo"
+    ],
+    "canvas_preview_audio_not_started_by_play_code": [
+      "04",
+      "07-bajo-mismo-techo"
+    ],
+    "public_http_and_android_verification": "NOT_RUN/BLOCKED across batch; prior local Chromium and FFprobe reports remain distinct"
+  },
+  "issue_groups_from_static_evidence": 3,
+  "qa_coverage_gap_groups": 1,
+  "preventive_proposals_private_saved": 4,
+  "preventions_tested": {
+    "git_source_readback": "PASS",
+    "static_batch_inventory": "PASS, 11 directories, 9 video binaries",
+    "local_node_self_test": "PASS, 3 no-binary task dirs and 2 unlinked preview pages",
+    "private_inbox_readback": "PASS, four proposal JSON files and snapshot/script",
+    "public_pages_http": "BLOCKED",
+    "mp4_visual_inspection": "NOT_RUN",
+    "audio_listening": "NOT_RUN",
+    "android_device": "NOT_RUN",
+    "human_artistic_approval": "NOT_RUN"
+  },
+  "source_version": {
+    "batch_index_blob": "5d1414698b4a7d0a954982e47ef5b647f31bb39d",
+    "room_messages_blob": "19502ed82b7fae3f5ce0a24f51c14310b5f8b65d",
+    "launch_blob": "efc6259b5731950be1e84fda71c1fbaf6bdc57d3"
+  },
+  "candidate_branch": "candidate/prometeo-autocritica-video-w001-20261122-0258",
+  "candidate_branch_repo": "JuanManuelPM/pruebas",
+  "candidate_head_commit": "81f40493692935f53cd7da64d3935dd2102162f2",
+  "candidate_flow_status": "FLOW_CANDIDATE_NOT_PROMOTED",
+  "original_works_modified": 0,
+  "automation_changes": 0,
+  "human_approved": false,
+  "disclosure": "Static source and receipt inspection only: no direct viewing or listening of final video binaries in this audit."
+}
