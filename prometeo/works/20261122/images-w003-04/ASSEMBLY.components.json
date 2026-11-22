@@ -1,0 +1,144 @@
+{
+  "schema": "orbita-07-assembly/v2",
+  "units": "mm",
+  "status": "CONCEPT_NOT_FABRICATION_READY",
+  "design": "ÓRBITA 07, luminaria de inspección de doble brazo y cabezal lineal",
+  "pivots": {
+    "J01": [
+      0,
+      0,
+      96
+    ],
+    "J02": [
+      128,
+      0,
+      342
+    ],
+    "J03": [
+      -42,
+      0,
+      494
+    ]
+  },
+  "invariant": "Un único juego de pivotes controla brazos, centros de arandelas, pernos y ruta eléctrica",
+  "arms": [
+    {
+      "id": "A01",
+      "from": "J01",
+      "to": "J02",
+      "length_mm": 277.308,
+      "rails": 2,
+      "section_mm": [
+        11,
+        11
+      ]
+    },
+    {
+      "id": "A02",
+      "from": "J02",
+      "to": "J03",
+      "length_mm": 228.044,
+      "rails": 2,
+      "section_mm": [
+        11,
+        11
+      ]
+    }
+  ],
+  "base": {
+    "id": "B01",
+    "dimensions_mm": [
+      196,
+      136,
+      29.5
+    ],
+    "materials": "acero de lastre conceptual, carcasa de aluminio anodizado"
+  },
+  "joints": {
+    "ids": [
+      "J01",
+      "J02",
+      "J03"
+    ],
+    "axis": "Y",
+    "core_radius_mm": 21,
+    "core_length_mm": 57,
+    "washer_radius_mm": 23,
+    "washer_thickness_mm": 3,
+    "cap_radius_mm": 15,
+    "cap_thickness_mm": 4.2,
+    "screw_head_radius_mm": 5.4,
+    "fastener": "M6 conceptual, sin análisis de rosca / par"
+  },
+  "optical_head": {
+    "housing": "H01",
+    "sink": "H02",
+    "led": "H03",
+    "diffuser": "H04",
+    "fins": "H05",
+    "rear": "H06",
+    "front": "H07",
+    "gimbal": "H08",
+    "housing_dimensions_mm": [
+      187,
+      57,
+      26
+    ],
+    "assembly_direction": "Z for optical layers; X for end caps"
+  },
+  "cable": {
+    "id": "C01",
+    "external_diameter_mm": 6.3,
+    "route": [
+      {
+        "from": "base",
+        "to": "J01"
+      },
+      {
+        "from": "J01",
+        "to": "J02",
+        "segment": "exterior, bucle"
+      },
+      {
+        "from": "J02",
+        "to": "J03",
+        "segment": "exterior, bucle"
+      },
+      {
+        "from": "J03",
+        "to": "H06"
+      }
+    ],
+    "strain_reliefs": [
+      "G_J01",
+      "G_J02",
+      "G_J03"
+    ],
+    "bend_radius_measured": false
+  },
+  "materials": {
+    "frame": "aluminio anodizado grafito",
+    "fasteners": "acero",
+    "friction_elements": "aleación color bronce conceptual",
+    "diffuser": "policarbonato lechoso",
+    "cable": "funda elastomérica"
+  },
+  "assemblyOrder": [
+    "S01 sobre B01",
+    "J01 en montante S02",
+    "A01 entre J01 y J02",
+    "A02 entre J02 y J03",
+    "H02 y H03 en H01",
+    "H04 bajo H03",
+    "H06 y H07 cierran el cabezal",
+    "C01 con holguras externas y fijaciones"
+  ],
+  "limitations": [
+    "interferencias no calculadas por CAD sólido",
+    "sin análisis térmico",
+    "sin ensayos fotométricos",
+    "sin pruebas eléctricas",
+    "sin tolerancias de mecanizado",
+    "sin estabilidad estática medida"
+  ]
+}

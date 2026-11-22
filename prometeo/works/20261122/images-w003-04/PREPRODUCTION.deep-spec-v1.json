@@ -1,0 +1,224 @@
+{
+  "version": "DEEP-SPEC-1",
+  "medium": "images",
+  "depth": "OPERATIVO",
+  "brief": "Diseñá y representá una lámpara de inspección articulada original, con ensamblaje plausible, juntas, recorridos de cable, tornillería y materiales descritos de manera consistente; presentá imagen de producto, detalles macro y despiece alineado que explique cómo se ensambla. Entregá raster y un esquema reutilizable de componentes y uniones; contrastá proporciones, correspondencia pieza-ensamble y oclusiones, sin un despiece decorativo de piezas que no podrían existir juntas.",
+  "taskId": "images-w003-20261122-04",
+  "briefSha": "a97b91ca103847ea75eeb9d1d2af10b6c9c0dddd",
+  "intent": {
+    "experience": "Una lámpara de inspección plausible, que invite a mirar la construcción y no solamente el brillo",
+    "distinctAbility": "Mismo grafo de piezas y pivotes produce montaje, detalles y separación de componentes"
+  },
+  "references": [
+    {
+      "id": "R1",
+      "status": "OBSERVED",
+      "url": "https://www.behance.net/gallery/12168367/Humanscale-LED-Task-Light-REVISED",
+      "observation": "Se observaron láminas de un cabezal desmontado, fijaciones, bisel, bloque óptico y vista de brazo separadas con lectura de montaje"
+    },
+    {
+      "id": "R2",
+      "status": "OBSERVED",
+      "url": "https://atssafety.com/products/articulating-arm-machine-work-light-led",
+      "observation": "Diagrama de lámpara de máquina muestra dimensiones longitudinales, límites de giro y cabeza orientable, evitando proporciones totalmente arbitrarias"
+    }
+  ],
+  "components": [
+    {
+      "id": "A",
+      "role": "Ensamble y articulación desde base a cabezal",
+      "strategy": "Un modelo VTK de tres pivotes y dos brazos rígidos comunes",
+      "constraints": "Las tapas y arandelas deben coincidir con el centro de cada pivote"
+    },
+    {
+      "id": "H",
+      "role": "Cabezal óptico desmontable con disipación representada",
+      "strategy": "Capas distintas H01 a H08 y vista de separación por eje",
+      "constraints": "Lente, placa LED, disipador y carcasa mantienen su correspondencia entre vistas"
+    },
+    {
+      "id": "C",
+      "role": "Cable exterior con holgura a través de articulaciones",
+      "strategy": "Polyline curvada con abrazaderas G_J01 a G_J03",
+      "constraints": "Ruta continua con holguras visibles sin atravesar las placas"
+    }
+  ],
+  "questions": [
+    {
+      "id": "Q1",
+      "target": "A",
+      "question": "¿Qué geometría permite que pernos y arandelas coincidan entre vista montada y despiece?",
+      "alternatives": [
+        "Pivotes y piezas instanciadas desde un grafo único",
+        "Discos dibujados independientemente en cada lámina"
+      ],
+      "evidenceRef": "R1",
+      "finding": "La evidencia técnica muestra separación de piezas mantenida sobre su eje funcional",
+      "decisionImpact": "Una tabla de pivotes determina ubicación de todos los componentes de junta"
+    },
+    {
+      "id": "Q2",
+      "target": "H",
+      "question": "¿Cómo distinguir físicamente las capas de iluminación sin recrear un cabezal diferente en cada vista?",
+      "alternatives": [
+        "Stack de instancias H01–H08 separadas con transforms",
+        "Esquema de símbolos sin geometría compartida"
+      ],
+      "evidenceRef": "R2",
+      "finding": "Una lámpara técnica requiere dimensiones y orientación del cabezal unidas al extremo del brazo",
+      "decisionImpact": "Las capas ópticas reciben identificadores y espesores únicos dentro del mismo render"
+    }
+  ],
+  "decisions": [
+    {
+      "id": "D1",
+      "questionId": "Q1",
+      "componentIds": [
+        "A",
+        "C"
+      ],
+      "choice": "VTK de pivotes y ruta de cable parametrizados",
+      "rejected": "Collage independiente por ángulo de vista",
+      "productionChange": "Se renderizan PRODUCT, MACRO_J02 y EXPLODED_J02 desde las mismas piezas y coordenadas",
+      "why": "Conservar uniones reales es más importante que recrear una escena parecida"
+    },
+    {
+      "id": "D2",
+      "questionId": "Q2",
+      "componentIds": [
+        "H"
+      ],
+      "choice": "Capas H01–H08 con eje Z y cierres X",
+      "rejected": "Cabezal genérico opaco sin acceso a placa LED",
+      "productionChange": "El despiece óptico desplaza instancias originales en eje de ensamblado",
+      "why": "Los planos ópticos deben conservar sus espesores y orden de montaje"
+    }
+  ],
+  "relations": [
+    {
+      "from": "A",
+      "to": "C",
+      "invariant": "El cable pasa de base a cabezal a través de J01 J02 J03 con alivios de tracción representados",
+      "failure": "La trayectoria atraviesa metal sólido o se desconecta en un giro",
+      "test": "Inspección de macro y punto a punto del trayecto"
+    },
+    {
+      "from": "A",
+      "to": "H",
+      "invariant": "J03 es punto único de unión del cabezal a brazo A02",
+      "failure": "Cabezal flotante o pivote descentrado en alguna vista",
+      "test": "Cotejar pivote J03 en ensamblado y despiece"
+    }
+  ],
+  "risks": [
+    {
+      "componentIds": [
+        "A",
+        "C"
+      ],
+      "severity": "high",
+      "failure": "Piezas del despiece decorativas, sin relación con pivotes del montaje",
+      "prevention": "Primer artículo de J02 y separación sobre los mismos actores VTK",
+      "test": "Render macro y mapa de IDs compartidos",
+      "status": "OBSERVED"
+    },
+    {
+      "componentIds": [
+        "H"
+      ],
+      "severity": "medium",
+      "failure": "Disipación térmica o alojamiento físicamente inviable aunque parezca razonable",
+      "prevention": "Evitar afirmaciones de homologación y conservar dimensionado conceptual",
+      "test": "CAD sólido, ensayo térmico y tolerancias con fabricante",
+      "status": "NOT_RUN"
+    }
+  ],
+  "acceptance": [
+    {
+      "kind": "visual",
+      "criterion": "Imagen de producto y despiece como archivos raster genuinos",
+      "oracle": "Abrir PNG local, comprobar dimensiones, variancia y SHA256",
+      "status": "OBSERVED"
+    },
+    {
+      "kind": "logic",
+      "criterion": "Cada junta conserva un único par de puntos y hardware concéntrico",
+      "oracle": "Pruebas de longitud y lista compartida de coordenadas",
+      "status": "OBSERVED"
+    },
+    {
+      "kind": "functional",
+      "criterion": "Capacidad de fabricación, giro seguro y disipación verificadas",
+      "oracle": "Prototipo con CAD sólido y ensayo físico",
+      "status": "NOT_RUN"
+    }
+  ],
+  "resources": "Python 3, VTK 9.6.2, Pillow, navegador Chromium; render 3D local, diagrama PNG binario remoto de respaldo",
+  "licensing": "Ilustración, modelo y tipografía libres/propios; referencias solo para investigación, no se copian assets",
+  "environmentLimits": "Páginas públicas no desplegadas en gh-pages: rama candidate aislada hasta integración. Capturas reales 390/1440 y aprobación humana NOT_RUN.",
+  "artDirection": {
+    "schema": "prometeo.art-direction.first-article/v1",
+    "medium": "images",
+    "taskId": "images-w003-20261122-04",
+    "briefSha": "a97b91ca103847ea75eeb9d1d2af10b6c9c0dddd",
+    "flowRef": "JuanManuelPM/pruebas@3a8faed993a2df4fec69db6c29e52eb532a47d20 / image-studio candidato",
+    "promise": {
+      "subject": "Lámpara articulada original con juntas mecánicas reconocibles",
+      "intent": "Producto editorial cuyo despiece deriva de piezas con identidades comunes"
+    },
+    "benchmark": {
+      "status": "OBSERVED",
+      "url": "https://www.behance.net/gallery/12168367/Humanscale-LED-Task-Light-REVISED",
+      "description": "Láminas observadas: secuencia de componentes ópticos y fijaciones organizada en eje de montaje"
+    },
+    "techniques": [
+      {
+        "family": "Render estructural VTK desde un grafo de pivotes",
+        "viability": "VTK 9.6.2 y Pillow disponibles; renders de 1200 y 2400px generados localmente",
+        "license": "Código y geometría originales; VTK bajo licencia BSD"
+      },
+      {
+        "family": "Ilustración generativa y retoque editorial",
+        "viability": "Herramienta de raster disponible pero una muestra se desvió a un tema distinto; poco control de continuidad entre piezas",
+        "license": "Generación original; sin material de marcas importado"
+      }
+    ],
+    "selectedTechnique": "Render estructural VTK desde un grafo de pivotes",
+    "firstFrame": {
+      "openingDescription": "Lámina editorial con objeto íntegro desde el inicio y títulos legibles; despiece en bloque independiente",
+      "focalSubject": "Lámpara completa desde base hasta difusor, sin cortes de producto",
+      "minimalUI": "Sin controles, navegación ni paneles sobre la ilustración",
+      "checks": [
+        {
+          "criterion": "Objeto completo y reconocible a ancho 390 y 1440",
+          "oracle": "Captura real de navegador y cotejo de bordes",
+          "viewport": "both"
+        },
+        {
+          "criterion": "Raster de producto y despiece presentes sin placeholders",
+          "oracle": "URL remota de bytes y revisión visual de fuente",
+          "viewport": "both"
+        },
+        {
+          "criterion": "Texto no invade el modelo en móvil",
+          "oracle": "Captura a 390px y revisión manual",
+          "viewport": "390"
+        }
+      ],
+      "observations": []
+    },
+    "firstArticle": {
+      "target": "Articulación J02: concentricidad de tapa/arandela/perno y radio de ruta eléctrica",
+      "rejectWhen": "Los discos aparentan pegado visual o el recorrido eléctrico cruza arbitrariamente el eje",
+      "switchTo": "Ilustración generativa y retoque editorial",
+      "oracle": "Render macro VTK de J02 cotejado con el árbol de piezas; no afirma tolerancias",
+      "resourceProof": "VTK local 9.6.2, render PNG comprobado; código original",
+      "status": "OBSERVED_PASS",
+      "evidence": {
+        "url": "https://github.com/JuanManuelPM/Experimentos/blob/candidate/prometeo-images-w003-20261122-04/prometeo/works/20261122/images-w003-04/REPORT.md",
+        "description": "Recibo de observación local del primer macro y limitaciones; el PNG macro se adjunta en el chat, no se falsea su publicación"
+      }
+    },
+    "humanApproved": false
+  }
+}
