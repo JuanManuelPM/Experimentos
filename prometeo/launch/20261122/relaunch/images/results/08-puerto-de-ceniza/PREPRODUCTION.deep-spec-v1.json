@@ -1,0 +1,292 @@
+{
+  "version": "DEEP-SPEC-1",
+  "medium": "images",
+  "depth": "SISTEMA",
+  "brief": "PUERTO DE CENIZA: mundo ficticio en acantilados volcánicos con vista magistral, dos estudios de zona, arquitectura y vehículos; escala, rutas, historia material y canon reproducible.",
+  "batchId": "images-w003-20261122",
+  "taskId": "images-w003-20261122-08",
+  "taskNumber": 8,
+  "briefShaNew": "a97b91ca103847ea75eeb9d1d2af10b6c9c0dddd",
+  "briefShaPrevious": "2e0e5e8ca226d546005349dc44b31cd9abcf5dd1",
+  "flow": {
+    "version": "candidate-image-studio-unificado-20261117",
+    "source": "JuanManuelPM/pruebas",
+    "sourceSha": "5726f13f840884f6c4984d88fa27e89f0be9e2bb",
+    "promoted": false
+  },
+  "intent": {
+    "experience": "El usuario ve un puerto que puede existir en una roca volcánica, con actividad económica verificable.",
+    "distinctAbility": "Armonizar raster atmosférico, topografía, tecnología de carga y canon modular sin fingir multivistas."
+  },
+  "references": [
+    {
+      "id": "ref-mad",
+      "status": "OBSERVED",
+      "url": "https://turystyka.wp.pl/wyspa-inna-niz-wszystkie-pierwsze-emocje-juz-podczas-ladowania-6919160798473152a",
+      "observation": "Imagen aérea observada de rada real en costa volcánica, rompeolas, barcos y ciudad en ladera. Se extrajo estructura, no se copiaron píxeles."
+    }
+  ],
+  "components": [
+    {
+      "id": "bay",
+      "role": "Rada protegida y actividad de barcazas; rompeolas y grúas de descarga",
+      "strategy": "Raster maestro original seguido de inspección visual del primer artículo",
+      "constraints": "Espigón conectado a la costa, área protegida e industria en borde de agua"
+    },
+    {
+      "id": "levels",
+      "role": "Terrazas, funiculares, caminos, escaleras y estaciones de transferencia",
+      "strategy": "Lámina de rutas con cinco nodos entre cantera y muelle",
+      "constraints": "Intercambio por niveles; no atravesar macizo o confundir camino con funicular"
+    },
+    {
+      "id": "modules",
+      "role": "Naves, pórticos, barcos y carros modulares reconocibles a varias escalas",
+      "strategy": "Diseño raster original de arquitectura y vehículos con Pillow",
+      "constraints": "Basalto, chapa oxidada, acero recuperado, escala humana, módulo de nave 6 por 12"
+    },
+    {
+      "id": "surface",
+      "role": "Presentación limpia con primer frame de obra, sin controles distractores",
+      "strategy": "HTML editorial responsive que coloca la pintura antes de las láminas",
+      "constraints": "390 y 1440; ancho del documento no puede exceder el viewport"
+    }
+  ],
+  "questions": [
+    {
+      "id": "q1",
+      "target": "bay",
+      "question": "¿Se reconocen operaciones portuarias y su infraestructura o solo una silueta dramática sin trabajo?",
+      "alternatives": [
+        "Puerto ornamental sin logística",
+        "Muelle, grúas, naves, barcazas y rutas visibles"
+      ],
+      "evidenceRef": "ref-mad",
+      "finding": "Fotografía aérea observada exhibe rompeolas real y asentamiento costero por niveles.",
+      "decisionImpact": "Hacer el puerto productivo protagonista de la composición desde el primer render."
+    },
+    {
+      "id": "q2",
+      "target": "levels",
+      "question": "¿Cómo llega una carga desde la cantera al muelle a través de acantilados escalonados?",
+      "alternatives": [
+        "Escaleras para todo tipo de carga",
+        "Niveles con transferencias por vía estrecha y funicular"
+      ],
+      "evidenceRef": "ref-mad",
+      "finding": "La referencia real demuestra que el desnivel costero condiciona la ubicación de infraestructura.",
+      "decisionImpact": "Dibujar cinco nodos y un recorrido de mineral de la cantera al espigón."
+    },
+    {
+      "id": "q3",
+      "target": "modules",
+      "question": "¿Pueden llamarse multivistas dos recortes de una sola pintura sin probar nuevas cámaras?",
+      "alternatives": [
+        "Publicar recortes como vistas distintas",
+        "Declarar recortes y crear láminas independientes originales"
+      ],
+      "evidenceRef": "ref-mad",
+      "finding": "Un recorte conserva el mundo visible pero no evidencia cámara adicional.",
+      "decisionImpact": "Etiquetar estudios de sector y producir arquitectura y vehículos con otro motor."
+    }
+  ],
+  "relations": [
+    {
+      "from": "bay",
+      "to": "levels",
+      "invariant": "Barcazas entregan carga a un muelle conectado a las terrazas por funiculares y vías.",
+      "failure": "Ruta de carga se corta o atraviesa la roca sin estaciones visibles.",
+      "test": "Inspección de master, plano de rutas y canon espacial."
+    },
+    {
+      "from": "modules",
+      "to": "levels",
+      "invariant": "Vagonetas, naves y accesos comparten cotas y módulos conceptuales compatibles.",
+      "failure": "Vehículos resultan demasiado grandes para pórticos o escaleras.",
+      "test": "Láminas 04/05 y diagrama 06."
+    },
+    {
+      "from": "bay",
+      "to": "surface",
+      "invariant": "En móvil y escritorio la obra se ve al abrir antes de toda interfaz.",
+      "failure": "Título o UI invade la imagen, aparecen cortes o hay overflow horizontal.",
+      "test": "Capturas Chromium a 390 y 1440 con seis imágenes."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "d1",
+      "questionId": "q1",
+      "componentIds": [
+        "bay"
+      ],
+      "choice": "Panorama con infraestructura operativa y escala humana",
+      "rejected": "Puerto abstracto de siluetas y humo sin transporte",
+      "productionChange": "Rada cerrada, tres barcazas, grúas, hornos y dos funiculares representados en el master.",
+      "why": "La función económica es requisito del arte conceptual de mundo."
+    },
+    {
+      "id": "d2",
+      "questionId": "q2",
+      "componentIds": [
+        "levels",
+        "modules"
+      ],
+      "choice": "Cantera, taller, riel, patio, muelle con transferencias",
+      "rejected": "Conexiones meramente estéticas sin riel ni muelle",
+      "productionChange": "Diseñar la lámina 06 con cinco nodos y transportes diferenciados por cota.",
+      "why": "La topografía obliga a explicar cómo se mueve cada recurso."
+    },
+    {
+      "id": "d3",
+      "questionId": "q3",
+      "componentIds": [
+        "modules",
+        "surface"
+      ],
+      "choice": "Dos estudios honestamente recortados y tres láminas nuevas",
+      "rejected": "Inventar cámaras o conservar dos collages PROMETEO sin relación",
+      "productionChange": "Descartar resultados fuera de tema y dibujar los elementos nuevos con Pillow.",
+      "why": "La continuidad verificable no se obtiene con etiquetas engañosas."
+    }
+  ],
+  "risks": [
+    {
+      "componentIds": [
+        "bay"
+      ],
+      "severity": "high",
+      "failure": "Primer raster puede omitir puerto o representar solo siluetas vistosas.",
+      "prevention": "Generar la vista magistral y observar objetos funcionales antes de multiplicar paneles.",
+      "test": "Inspección del PNG 1672×941 con mar interior, carga y sistemas de ascenso.",
+      "status": "OBSERVED"
+    },
+    {
+      "componentIds": [
+        "modules"
+      ],
+      "severity": "high",
+      "failure": "Generador intenta producir collages genéricos de PROMETEO en vez de la escena.",
+      "prevention": "Rechazar resultados semánticamente ajenos y cambiar a ilustración técnica determinista.",
+      "test": "Dos intentos ajenos descartados, láminas originales decodificadas y abiertas.",
+      "status": "OBSERVED"
+    },
+    {
+      "componentIds": [
+        "surface"
+      ],
+      "severity": "medium",
+      "failure": "Título o controles ocultan el protagonista en pantalla de 390 o 1440.",
+      "prevention": "Sin controles, protagonista al comienzo y galería sin overflow.",
+      "test": "Capturas Chromium a 390/1440, 6 imágenes cargadas y ancho correcto.",
+      "status": "OBSERVED"
+    }
+  ],
+  "acceptance": [
+    {
+      "kind": "visual",
+      "criterion": "El panorama incluye puerto funcional y escala humana reconocible.",
+      "oracle": "Inspección visual local del raster maestro; criterio humano independiente pendiente.",
+      "status": "OBSERVED"
+    },
+    {
+      "kind": "logic",
+      "criterion": "Seis archivos PNG nativos válidos con SHA256 y dimensiones medidas.",
+      "oracle": "Pillow verifica seis raster originales y test_world.py cinco pruebas.",
+      "status": "OBSERVED"
+    },
+    {
+      "kind": "interactive",
+      "criterion": "Seis imágenes cargan en primera página a 390 y 1440 sin desbordamiento.",
+      "oracle": "Playwright usando derivados JPEG inline del raster real, por bloqueo de file/localhost.",
+      "status": "OBSERVED"
+    },
+    {
+      "kind": "functional",
+      "criterion": "La rama GitHub entrega públicamente los seis binarios fuente.",
+      "oracle": "Lectura remota con bytes y SHA coincidente con manifest local.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "resources": "ImageGen original, Pillow para láminas, Playwright/Chromium para QA; GitHub connector para textos, sin transferencia local de binarios disponible.",
+  "licensing": "Creación propia, referencias reales solamente consultadas y no utilizadas como assets, sin compras ni recursos privados.",
+  "environmentLimits": "GitHub connector no admite referencia directa a archivos locales. Esta rama contiene expediente y visor de código pero NO seis PNG remotos. Capturas hechas con media inline; aprobación humana, calidad experta y control multivista independiente NOT_RUN.",
+  "artDirection": {
+    "schema": "prometeo.art-direction.first-article/v1",
+    "medium": "images",
+    "taskId": "images-w003-20261122-08",
+    "briefSha": "a97b91ca103847ea75eeb9d1d2af10b6c9c0dddd",
+    "flowRef": "candidate/prometeo-image-studio-unificado-20261117/sistemas/imagenes/README.md@5726f13f840884f6c4984d88fa27e89f0be9e2bb",
+    "promise": {
+      "subject": "Puerto ficticio realista en acantilados de basalto con infraestructura reconocible",
+      "intent": "Mostrar un asentamiento cuyo trabajo, vehículos y rutas operen con lógica material."
+    },
+    "benchmark": {
+      "status": "OBSERVED",
+      "url": "https://turystyka.wp.pl/wyspa-inna-niz-wszystkie-pierwsze-emocje-juz-podczas-ladowania-6919160798473152a",
+      "description": "Fotografía aérea consultada de un espigón de puerto pequeño, barcos a escala y población sobre costa volcánica."
+    },
+    "techniques": [
+      {
+        "family": "raster generativo pictórico",
+        "viability": "Se generó un PNG original de 1672 por 941 y se inspeccionó por lectura de píxeles.",
+        "license": "Obra original generada para este brief; no se copió fotografía referencial."
+      },
+      {
+        "family": "ilustración raster determinista modular",
+        "viability": "Pillow y Python disponibles, tres láminas técnicas originales generadas con éxito.",
+        "license": "Dibujo propio, materiales y diseño ficticios; referencias no redistribuidas."
+      }
+    ],
+    "selectedTechnique": "raster generativo pictórico",
+    "firstFrame": {
+      "openingDescription": "Título editorial sobrio y protagonista amplio del puerto bajo el encabezado.",
+      "focalSubject": "Rada y ciudad industrial por niveles",
+      "minimalUI": "Sin botones, overlays ni barras de control",
+      "checks": [
+        {
+          "viewport": "390",
+          "criterion": "Panorama y dársena legibles en teléfono sin scroll horizontal.",
+          "oracle": "Chromium screenshot y docWidth idéntico al viewport."
+        },
+        {
+          "viewport": "1440",
+          "criterion": "Panorama y sistema de terrazas completos en escritorio.",
+          "oracle": "Chromium screenshot con naturalWidth real del raster."
+        }
+      ],
+      "observations": [
+        {
+          "viewport": "390",
+          "status": "OBSERVED_PASS",
+          "evidence": {
+            "url": "",
+            "description": "Captura local FIRST_FRAME_390.png, no publicada como binario"
+          }
+        },
+        {
+          "viewport": "1440",
+          "status": "OBSERVED_PASS",
+          "evidence": {
+            "url": "",
+            "description": "Captura local FIRST_FRAME_1440.png, no publicada como binario"
+          }
+        }
+      ]
+    },
+    "firstArticle": {
+      "target": "Raster maestro de entorno y logística como mayor riesgo de representación",
+      "rejectWhen": "No aparecen barcazas, transporte vertical o el raster pertenece a otro proyecto",
+      "switchTo": "ilustración raster determinista modular",
+      "oracle": "Inspección perceptual del primer PNG y descarte de collages incorrectos",
+      "resourceProof": "PNG 1672×941 original y Pillow comprobado localmente",
+      "status": "OBSERVED_PASS",
+      "evidence": {
+        "url": "",
+        "description": "PNG original local 01-vista-magistral.png con SHA256 en manifiesto, no publicado en GitHub todavía"
+      },
+      "rejectedAttempts": 2
+    },
+    "humanApproved": false
+  }
+}

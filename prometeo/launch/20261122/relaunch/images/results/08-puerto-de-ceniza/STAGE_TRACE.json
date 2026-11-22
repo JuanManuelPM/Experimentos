@@ -1,0 +1,76 @@
+{
+  "schema": "prometeo.flow.visited-trace/v1",
+  "taskId": "images-w003-20261122-08",
+  "humanApproved": false,
+  "flow": {
+    "version": "candidate-image-studio-unificado-20261117",
+    "sha256Canonical": "NOT_AVAILABLE_GRAPH_UNVERIFIED",
+    "sourceBlobSha": "5726f13f840884f6c4984d88fa27e89f0be9e2bb"
+  },
+  "verifiedTopology": "NOT_RUN",
+  "events": [
+    {
+      "stage": "BRIEF_LOCK",
+      "status": "EXECUTED",
+      "decision": "Fijar brief 08",
+      "alternativesConsidered": [
+        "Todo el lote",
+        "Solo N08"
+      ],
+      "outputRef": "PREPRODUCTION.deep-spec-v1.json",
+      "evidenceRefs": [
+        "LAUNCH@a97b91c"
+      ]
+    },
+    {
+      "stage": "FIRST_ARTICLE",
+      "status": "EXECUTED",
+      "decision": "Aceptar master pertinente, descartar collages ajenos",
+      "alternativesConsidered": [
+        "Collage PROMETEO",
+        "Master Puerto de Ceniza"
+      ],
+      "outputRef": "01-vista-magistral.png LOCAL",
+      "evidenceRefs": [
+        "RASTER_MANIFEST.json"
+      ]
+    },
+    {
+      "stage": "TECHNIQUE_SWITCH",
+      "status": "EXECUTED",
+      "decision": "Láminas técnicas reproducibles tras desvíos generativos",
+      "alternativesConsidered": [
+        "Generación no condicionada",
+        "Pillow original"
+      ],
+      "outputRef": "04/05/06 LOCAL",
+      "evidenceRefs": [
+        "RASTER_MANIFEST.json"
+      ]
+    },
+    {
+      "stage": "QA_BROWSER",
+      "status": "EXECUTED",
+      "decision": "Capturar 390 y 1440 con fuente media inline",
+      "alternativesConsidered": [
+        "No probar",
+        "Playwright"
+      ],
+      "outputRef": "BROWSER_QA.json LOCAL",
+      "evidenceRefs": [
+        "FIRST_FRAME_390.png",
+        "FIRST_FRAME_1440.png"
+      ]
+    },
+    {
+      "stage": "REMOTE_BINARY",
+      "status": "NOT_RUN",
+      "reason": "No se ha transferido ningún PNG local a Github; falta puente de binarios."
+    },
+    {
+      "stage": "HUMAN_APPROVAL",
+      "status": "NOT_RUN",
+      "reason": "Solo puede realizarla el humano."
+    }
+  ]
+}
