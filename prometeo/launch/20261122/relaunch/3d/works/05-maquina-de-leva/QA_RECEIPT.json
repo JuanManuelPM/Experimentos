@@ -1,0 +1,100 @@
+{
+  "schema": "prometeo.work.qa-receipt/v1",
+  "taskId": "3d-w7-20261122-05",
+  "batchId": "3d-w7-20261122",
+  "taskNumber": 5,
+  "launchBlobSHA": "58de659e2aa01c0746d59ca6f95c36bdc59f3030",
+  "oldBatchId": "3d-w6-20261122",
+  "oldBriefSHA": "942c3ba8b851137886e959d2790771556e2d9f5d",
+  "flowVersion": "2.3.0",
+  "flowSHA256Canonical": "53bc9e2e4b37c99e92d3494af8dfa4461cd4644b15f980e32497a8428b067b3f",
+  "qualityBar": "QBAR-1",
+  "deepSpec": "DEEP-SPEC-1",
+  "artDirection": "FIRST-ARTICLE-1",
+  "humanApproved": false,
+  "sourcePublishedOnCandidate": true,
+  "checks": [
+    {
+      "name": "Core geometry analytic 720 phases",
+      "status": "OBSERVED_PASS_V8",
+      "result": {
+        "maxRadialContactErrorMm": 1.7763568394002505e-14,
+        "maxPressureDegrees": 13.428918711958163
+      }
+    },
+    {
+      "name": "Polygonal contour 720 vertices, 180 sampled phases",
+      "status": "OBSERVED_PASS_V8",
+      "result": {
+        "minGapMm": -5.329070518200751e-15,
+        "maxGapMm": 5.329070518200751e-15,
+        "continuousContact": true
+      }
+    },
+    {
+      "name": "24 parameter variants",
+      "status": "OBSERVED_PASS_V8",
+      "result": {
+        "passed": 24,
+        "total": 24
+      }
+    },
+    {
+      "name": "DXF metric units and profile",
+      "status": "OBSERVED_PASS_V8",
+      "result": "$INSUNITS=4, bore CIRCLE, outline LWPOLYLINE"
+    },
+    {
+      "name": "Full 3D viewer JS syntax",
+      "status": "OBSERVED_PASS_V8",
+      "result": "Module body compiled with import declarations removed for parse"
+    },
+    {
+      "name": "Section browser 390x844",
+      "status": "OBSERVED_LOCAL_FIRST_ARTICLE",
+      "result": "Standalone section local Chromium capture; no JS errors; phase and lift manipulated; screenshot in chat"
+    },
+    {
+      "name": "Section browser 1440x900",
+      "status": "OBSERVED_LOCAL_FIRST_ARTICLE",
+      "result": "Standalone section local Chromium capture; no JS errors; phase and lift manipulated; screenshot in chat"
+    },
+    {
+      "name": "Full 3D GPU / visual composition / touch Android",
+      "status": "NOT_RUN",
+      "result": "Three CDN or remote Pages browser not available; source readback is not perceptual proof"
+    },
+    {
+      "name": "GLB export -> GLTFLoader reimport mesh/dimension comparison",
+      "status": "NOT_RUN",
+      "result": "Feature implemented in HTML, no actual browser GLB bytes or reimport observed"
+    },
+    {
+      "name": "DXF import in CAD",
+      "status": "NOT_RUN",
+      "result": "Header and geometry text checked; third-party CAD reimport unavailable"
+    },
+    {
+      "name": "Independent manufacturability and hardware constraints",
+      "status": "NOT_RUN",
+      "result": "No CAM, fatigue, interference bench, or real assembly measurement"
+    }
+  ],
+  "warnings": [
+    "El validador estructural FIRST ARTICLE no acredita que el render 3D tenga calidad superior.",
+    "La vista SVG se inspeccionó con geometría equivalente, no con dependencia remota del mismo módulo servida por HTTP; el módulo real se probó aparte en V8.",
+    "Los test.mjs de Node se inspeccionaron y sus oráculos se ejecutaron en V8, no se invocó node test.mjs sobre artefactos remotos."
+  ],
+  "benchmark": "CMU cam chapter / RoyMech design / lu.ca Cam Design",
+  "environmentLimits": "El navegador sandbox puede renderizar una sección local inline pero está bloqueado el acceso a orígenes externos y host local; WebGL/CDN no disponibles para esta prueba.",
+  "outputFiles": [
+    "index.html",
+    "section.html",
+    "mechanics.mjs",
+    "test.mjs",
+    "PREPRODUCTION.deep-spec-v1.json",
+    "QA_RECEIPT.json",
+    "README.md"
+  ],
+  "publishedAt": null
+}
