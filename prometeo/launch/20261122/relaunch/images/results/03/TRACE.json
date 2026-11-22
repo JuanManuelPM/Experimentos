@@ -1,0 +1,79 @@
+{
+  "schema": "prometeo.images.execution-trace/v1",
+  "taskId": "images-w003-20261122-03",
+  "graphValidation": "NOT_RUN_NO_CONFIRMED_SPECIALIZED_GRAPH",
+  "humanApproved": false,
+  "events": [
+    {
+      "stage": "contract-load",
+      "status": "EXECUTED",
+      "decision": "Freeze new launch and keep prior batch intact",
+      "alternative": "Assume old launch unchanged",
+      "output": "PREPRODUCTION.deep-spec-v1.json",
+      "evidence": "launch blob a97b91ca103847ea75eeb9d1d2af10b6c9c0dddd"
+    },
+    {
+      "stage": "benchmark",
+      "status": "EXECUTED",
+      "decision": "Observe model sheet identity and materials benchmark",
+      "alternative": "Copy prior PROMETEO artifacts",
+      "output": "benchmark notes in Book",
+      "evidence": "Observed Behance example, public Disney references"
+    },
+    {
+      "stage": "first-article",
+      "status": "EXECUTED",
+      "decision": "Keep only on-brief master of Elena front+profile",
+      "alternative": "Use 3 off-topic PROMETEO generations",
+      "output": "local raster 1199x1312",
+      "evidence": "local master SHA256 e25662d85f3d25f6a02e36e50a196493aa0ea82e96c9698fba04a8884b4d9fdc"
+    },
+    {
+      "stage": "semantics-check",
+      "status": "EXECUTED",
+      "decision": "Reject three wrong-subject renders",
+      "alternative": "Treat artwork as optional decoration",
+      "output": "Excluded outputs",
+      "evidence": "Visual inspection of generated PROMETEO posters"
+    },
+    {
+      "stage": "pixel-qa",
+      "status": "EXECUTED",
+      "decision": "Produce overlay and material crops without fake novel views",
+      "alternative": "Misrepresent crops as three-quarter",
+      "output": "local overlay + materials + Canon",
+      "evidence": "Pillow decoded master and derived files, local inspection"
+    },
+    {
+      "stage": "first-frame",
+      "status": "EXECUTED",
+      "decision": "Fit entire subject at two breakpoints",
+      "alternative": "Leave lower body clipped at desktop fold",
+      "output": "local screenshots 390 and 1440",
+      "evidence": "Chromium set_content with actual inline images, scrollWidth equals clientWidth"
+    },
+    {
+      "stage": "third-angle",
+      "status": "NOT_RUN",
+      "reason": "No genuine third angle available"
+    },
+    {
+      "stage": "expressions",
+      "status": "NOT_RUN",
+      "reason": "No independent facial expression raster available"
+    },
+    {
+      "stage": "remote-binary",
+      "status": "NOT_RUN",
+      "reason": "Image file local cannot be transferred into Github connector with current tools"
+    },
+    {
+      "stage": "root-return",
+      "status": "EXECUTED",
+      "decision": "Post precise partial status to ROOT",
+      "alternative": "Mislabel delivery as media published",
+      "output": "prometeo/root/ROOM_MESSAGES.json",
+      "evidence": "GitHub commit 24c98c98a0063f712957c95cf06cea82604e0dc9, readback blob 01ee56ee001845d85e3a7d728c9f9112d7d4ea54"
+    }
+  ]
+}
