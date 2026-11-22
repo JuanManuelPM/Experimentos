@@ -1,0 +1,94 @@
+{
+  "schema": "prometeo.music.work-result/v1",
+  "id": "music-w002-20261122-08",
+  "room": "music",
+  "batchId": "music-w002-20261122",
+  "taskNumber": 8,
+  "title": "MAREA VARIABLE",
+  "status": "DELIVERED_WITH_QA_LIMITS",
+  "briefBlobSha": "1045f4950c9f7ae11b455523ca664e087ec1b30d",
+  "qualityBarVersion": "QBAR-1",
+  "deepSpecVersion": "DEEP-SPEC-1",
+  "deepSpecGate": "READY_FOR_FIRST_SLICE",
+  "privateBranch": "candidate/prometeo-music-w002-08-20261122",
+  "publishedBranch": "gh-pages",
+  "assetBranch": "assets/prometeo-music-w002-08-20261122",
+  "publication": {
+    "player": "https://juanmanuelpm.github.io/Experimentos/prometeo/music/w002/08/",
+    "gitSource": "https://github.com/JuanManuelPM/Experimentos/tree/gh-pages/prometeo/music/w002/08/",
+    "gitReadback": "OBSERVED",
+    "githubPagesHTTP": "NOT_VERIFIED_BY_TOOL"
+  },
+  "audio": {
+    "bpm": 80,
+    "bars": 16,
+    "durationSeconds": 48,
+    "stems": [
+      "bed",
+      "calma",
+      "deriva",
+      "tormenta"
+    ],
+    "masters": [
+      "calma",
+      "deriva",
+      "tormenta"
+    ],
+    "sampleRateGitWav": 16000,
+    "sampleRateLocalWav": 24000,
+    "assetBase": "https://raw.githubusercontent.com/JuanManuelPM/Experimentos/assets/prometeo-music-w002-08-20261122/prometeo/music/w002/08/",
+    "technique": "Harmonic bed + three phase-locked emotional layers. One bar equal-power quantized transitions.",
+    "license": "Original synthesis, no third party samples."
+  },
+  "evidence": {
+    "nodeUnitTests": "PASS",
+    "deepSpecValidator": "READY_FOR_FIRST_SLICE",
+    "wavStructural": "OBSERVED ffprobe PCM 48.000 seconds",
+    "peakCalma": 0.46324,
+    "peakDeriva": 0.44945,
+    "peakTormenta": 0.66627,
+    "renderedReplayTransitions": [
+      3,
+      6,
+      9,
+      12,
+      15,
+      18,
+      21,
+      33
+    ],
+    "maxReplayBoundaryStep": 0.01129,
+    "maxLoopSeam": 0,
+    "browserPlayback": "NOT_RUN (local browser access blocked by administrator)",
+    "humanCriticalListening": "NOT_RUN",
+    "professionalArtisticApproval": "NOT_RUN"
+  },
+  "references": [
+    {
+      "url": "https://awintory.medium.com/from-journey-to-erica-214355002896",
+      "observed": "Layer variation and intentionally paced musical responses"
+    },
+    {
+      "url": "https://www.fmod.com/docs/2.04/studio/authoring-events.html",
+      "observed": "Tempo markers and quantized transition regions"
+    },
+    {
+      "url": "https://www.gamesounddesign.com/in-depth-creation-of-dynamic-music-in-a-video-game.html",
+      "observed": "Post-exit tails and state-based music transition design"
+    }
+  ],
+  "remainingGaps": [
+    "48-second adaptive cue, not extended campaign score",
+    "Headless Chromium local navigation denied; interactive browser rendering and playback not confirmed",
+    "Human A/B listening and artistic review not performed",
+    "GitHub Pages HTTP deployment not directly verified; Git commit and asset paths confirmed"
+  ],
+  "learning": {
+    "stage": "M09-M10",
+    "cause": "Synthesis and automated numeric checks cannot substitute for listening or mobile playback",
+    "preventive_gate": "Require audible asset and real interaction receipt before VERIFIED/HUMAN_APPROVED",
+    "test": "Try state changes in target browser with recorded output and blind A/B",
+    "owner": "music-studio",
+    "counterexample": "A passing JSON or a playable-looking HTML without audio"
+  }
+}
