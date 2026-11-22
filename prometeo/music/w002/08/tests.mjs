@@ -1,0 +1,14 @@
+import assert from 'node:assert/strict';
+import {nextBar,transitionSequence,weights} from './transition-engine.mjs';
+import {renderStem,combine,STATES,SR,SECONDS} from './score.mjs';
+assert.equal(nextBar(0,1.7),3);assert.equal(nextBar(0,3),6);
+assert.deepEqual(transitionSequence([{at:.4,state:'deriva'},{at:1.1,state:'tormenta'},{at:2.7,state:'calma'}]),[]);
+const seq=transitionSequence([{at:1,state:'deriva'},{at:3.5,state:'tormenta'},{at:3.9,state:'calma'},{at:6.2,state:'tormenta'}]);
+assert.deepEqual(seq.map(x=>[x.at,x.from,x.to]),[[3,'calma','deriva'],[6,'deriva','calma'],[9,'calma','tormenta']]);
+const a=weights({at:3,fade:3},4.5);assert(Math.abs(a[0]**2+a[1]**2-1)<1e-8);
+const stems=Object.fromEntries(['bed',...STATES].map(s=>[s,renderStem(s)]));
+assert(Object.values(stems).every(x=>x.length===SR*SECONDS));
+const m=STATES.map(s=>combine(stems,s));
+assert(m.every(x=>x.every(y=>Number.isFinite(y)&&Math.abs(y)<.97)));
+let seam=0;for(const x of [...Object.values(stems),...m])seam=Math.max(seam,Math.abs(x[0]-x.at(-1)));
+assert(seam<.0001);console.log('PASS: timing, overwrite, levels, PCM length, seam');
