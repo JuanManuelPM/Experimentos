@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>IMPULSO 06 · PROMETEO Video</title>
+<meta name="description" content="Pieza audiovisual abstracta original de 12 segundos, con percusión sintetizada y visualización sincronizada.">
+<style>
+:root{color-scheme:dark;--ink:#090a0d;--paper:#ebe9dd;--lime:#d6fd72;--coral:#fd7159}
+*{box-sizing:border-box}body{margin:0;background:var(--ink);color:var(--paper);font-family:system-ui,Arial,sans-serif;min-height:100svh;display:grid;place-items:center;padding:clamp(12px,3vw,36px)}
+main{width:min(100%,1440px)}.top,.controls,.foot{display:flex;align-items:center;gap:14px;justify-content:space-between;flex-wrap:wrap}
+.top{margin-bottom:14px;font-size:12px;letter-spacing:.15em;text-transform:uppercase;color:#aaa9a1}.top strong{color:var(--lime);font-weight:600}
+.stage{position:relative;border:1px solid #31312f;background:#111217;overflow:hidden;border-radius:3px}
+canvas{display:block;width:100%;height:auto;aspect-ratio:16/9}
+.corner{position:absolute;left:20px;bottom:18px;pointer-events:none;text-transform:uppercase;font-size:11px;letter-spacing:.12em;color:#fff9}
+.controls{margin-top:16px;justify-content:flex-start;gap:8px}
+button{font:600 13px system-ui,sans-serif;letter-spacing:.035em;min-height:48px;border:1px solid #474741;background:#1b1d21;color:var(--paper);border-radius:2px;padding:0 20px;cursor:pointer;transition:background .15s}
+button:focus-visible,input:focus-visible{outline:2px solid var(--lime);outline-offset:3px}
+button:hover{background:#292c2c}button.primary{background:var(--lime);color:#161716;border-color:var(--lime)}button.primary:hover{background:#e7ffaa}
+button:disabled{opacity:.42;cursor:not-allowed}
+#seek{flex:1;min-width:120px;max-width:380px;accent-color:var(--lime);cursor:pointer}
+.time{font:12px ui-monospace,monospace;font-variant-numeric:tabular-nums;color:#b4b4ab;min-width:88px}
+.foot{font-size:12px;color:#888a83;margin-top:15px;line-height:1.5}
+#status{color:#c6c5b9}.screen-reader{position:absolute;clip:rect(0,0,0,0);height:1px;width:1px;overflow:hidden}
+@media(max-width:600px){body{padding:0;display:block}.top,.controls,.foot{padding:12px}.top{margin:0}.stage{border-left:0;border-right:0}.controls{gap:7px}button{padding:0 14px;min-height:50px}.foot{margin:0}}
+@media(prefers-reduced-motion:reduce){button{transition:none}}
+</style>
+</head>
+<body>
+<main>
+<div class="top"><div>PROMETEO / VIDEO W001</div><strong>06 · IMPULSO</strong></div>
+<div class="stage"><canvas id="scene" width="960" height="540" role="img" aria-label="Composición abstracta de círculos, barras y destellos sincronizados con percusión original"></canvas><div class="corner">PERCUSIÓN SINTETIZADA · 120 BPM</div></div>
+<div class="controls">
+<button class="primary" id="play" aria-label="Reproducir pieza audiovisual">▶ Reproducir</button>
+<button id="stop" aria-label="Detener reproducción">■ Detener</button>
+<input id="seek" type="range" min="0" max="12" value="0" step=".01" aria-label="Posición de reproducción">
+<span class="time" id="time">00:00 / 00:12</span>
+<button id="export" title="Generar un archivo WebM real en este navegador">↓ Exportar WebM</button>
+<button id="full" aria-label="Pantalla completa">⛶</button>
+</div>
+<div class="foot"><span id="status" role="status" aria-live="polite">Audio original · 12 segundos · listo para reproducir</span><span>Obra #06 / Sin recursos externos</span></div>
+<audio id="track" src="percussion.wav" preload="auto"></audio>
+</main>
+<script>
+(() => {
+'use strict';
+const W=960,H=540,D=12,BPM=120,BEAT=.5, PI=Math.PI,TAU=2*PI;
+const cv=document.getElementById('scene'),g=cv.getContext('2d',{alpha:false});
+const audio=document.getElementById('track'), play=document.getElementById('play');
+const stop=document.getElementById('stop'),seek=document.getElementById('seek');
+const time=document.getElementById('time'),status=document.getElementById('status');
+const exportBtn=document.getElementById('export'),full=document.getElementById('full');
+let ctx=null,src=null,dest=null,rec=null,parts=[],exporting=false,raf=0;
+function seeded(n){let x=(n*1664525+1013904223)>>>0;x^=x<<13;x^=x>>>17;x^=x<<5;return (x>>>0)/4294967296}
+function lerp(a,b,u){return a+(b-a)*u}
+function pad(s){return String(Math.floor(s)).padStart(2,'0')}
+function draw(t) {
+t=Math.max(0,Math.min(D,t));
+const beatIndex=Math.min(23,Math.floor(t/BEAT)), phase=(t%BEAT)/BEAT;
+const hit=Math.exp(-phase*8), offbeat=Math.exp(-((t%.25)/.25)*14);
+const accent=beatIndex%4===0?1.4:beatIndex%2===0?1.1:.65;
+const pulse=hit*accent, cX=480,cY=268, rise=Math.min(1,t/.7), fade=Math.min(1,(D-t)/.65);
+g.fillStyle='#090b0f';g.fillRect(0,0,W,H);
+const glow=g.createRadialGradient(cX,cY,40,cX,cY,500);
+glow.addColorStop(0,'#232624');glow.addColorStop(.7,'#101319');glow.addColorStop(1,'#090b0f');
+g.fillStyle=glow;g.fillRect(0,0,W,H);
+g.save();g.globalAlpha=.11;g.strokeStyle='#adb6a7';g.lineWidth=1;
+for(let x=40;x<W;x+=40){g.beginPath();g.moveTo(x,0);g.lineTo(x,H);g.stroke()}
+for(let y=32;y<H;y+=40){g.beginPath();g.moveTo(0,y);g.lineTo(W,y);g.stroke()}g.restore();
+g.save();g.globalAlpha=fade*rise;
+const opening=t<4, ending=t>10;
+for(let k=0;k<3;k++){
+let r=112+k*50+pulse*(8+k*4);
+g.beginPath();g.arc(cX,cY,r,-PI/2+ t*(k%2?-.12:.10),-PI/2+t*(k%2?-.12:.10)+TAU*(.62+.11*k));g.lineWidth=k===0?2:1;
+g.strokeStyle=k===0?'#d6fd72':(k===1?'#f3ece1':'#626b63');g.stroke();
+}
+for(let i=0;i<48;i++){
+const a=TAU*(i/48)+t*.13,r=153+(i%3)*3;
+const len=7+28*Math.pow(Math.abs(Math.sin(i*2.45+t*3.1)),2)+pulse*(i%2?32:18);
+g.beginPath();g.moveTo(cX+Math.cos(a)*r,cY+Math.sin(a)*r);g.lineTo(cX+Math.cos(a)*(r+len),cY+Math.sin(a)*(r+len));
+g.strokeStyle=i%4===0?'#fd7159':(i%2===0?'#d6fd72':'#dfded3');g.lineWidth=i%4===0?3:2;g.stroke();
+}
+const r=102+pulse*17;
+g.beginPath();g.arc(cX,cY,r,0,TAU);g.fillStyle='#151a1a';g.fill();g.lineWidth=2;g.strokeStyle='#d6fd72';g.stroke();
+const polygon=opening?6:(ending?3:5);
+g.beginPath();for(let i=0;i<polygon;i++){const a=i*TAU/polygon-PI/2+t*.22,rr=62+8*Math.sin(t*2.4+i);const x=cX+Math.cos(a)*rr,y=cY+Math.sin(a)*rr;i?g.lineTo(x,y):g.moveTo(x,y)}
+g.closePath();g.lineWidth=4+pulse*3;g.strokeStyle='#fd7159';g.stroke();
+g.beginPath();g.arc(cX,cY,12+pulse*19,0,TAU);g.fillStyle='#d6fd72';g.fill();
+const active=beatIndex+phase;
+for(let i=0;i<24;i++){
+const a=-PI/2+i*TAU/24,rr=242;
+g.beginPath();g.arc(cX+Math.cos(a)*rr,cY+Math.sin(a)*rr,i<active?3.2:1.6,0,TAU);
+g.fillStyle=i<active?'#d6fd72':'#5b625b';g.fill();
+}
+for(let i=0;i<20;i++){
+const angle=seeded(i+Math.floor(t/BEAT)*333)*TAU;
+const rr=230+seeded(i+73)*150,sz=(1+5*hit)*(1-seeded(i+42)*.7);
+g.beginPath();g.arc(cX+Math.cos(angle)*rr,cY+Math.sin(angle)*rr,sz,0,TAU);
+g.fillStyle=i%3?'#e9e7de':'#fd7159';g.globalAlpha=(1-phase)*.7;g.fill();g.globalAlpha=1;
+}
+g.restore();
+g.save();g.fillStyle='#e9e7de';g.font='600 16px system-ui';g.fillText('IMPULSO',42,64);
+g.fillStyle='#9b9e97';g.font='12px ui-monospace,monospace';g.fillText('VISUAL SCORE / 001',42,85);
+g.textAlign='right';g.fillStyle='#d6fd72';g.font='700 20px ui-monospace,monospace';g.fillText('06',914,64);
+g.fillStyle='#a9a9a1';g.font='12px ui-monospace,monospace';g.fillText('12.00 SEC',914,85);
+g.textAlign='left';g.fillStyle='#676e67';g.font='12px ui-monospace,monospace';
+g.fillText('KICK / SNARE / HATS / SUB',42,487);g.fillText('AUDIO ORIGINAL · 4/4',42,506);
+g.fillStyle='#313930';g.fillRect(42,520,876,2);g.fillStyle='#d6fd72';g.fillRect(42,520,876*t/D,2);
+g.restore();
+}
+function tick(){draw(audio.currentTime||0);if(!seek.matches(':active'))seek.value=String(audio.currentTime||0);time.textContent='00:'+pad(audio.currentTime)+' / 00:12';raf=requestAnimationFrame(tick)}
+function graph(){if(ctx)return;const AC=window.AudioContext||window.webkitAudioContext;if(!AC)throw Error('Web Audio no disponible');
+ctx=new AC();src=ctx.createMediaElementSource(audio);dest=ctx.createMediaStreamDestination();src.connect(ctx.destination);src.connect(dest)}
+async function begin(record){
+try{
+if(record&&(!window.MediaRecorder||!cv.captureStream))throw Error('Este navegador no permite exportar WebM');
+graph();await ctx.resume();audio.pause();audio.currentTime=0;
+if(record){const stream=new MediaStream([...cv.captureStream(30).getVideoTracks(),...dest.stream.getAudioTracks()]);
+const choices=['video/webm;codecs=vp9,opus','video/webm;codecs=vp8,opus','video/webm'];
+const mime=choices.find(x=>MediaRecorder.isTypeSupported(x));if(!mime)throw Error('No hay codificador WebM disponible');
+parts=[];rec=new MediaRecorder(stream,{mimeType:mime,videoBitsPerSecond:2200000});
+rec.ondataavailable=e=>{if(e.data.size)parts.push(e.data)};
+rec.onerror=e=>{status.textContent='Error de grabación: '+(e.error?.message||'desconocido')};
+rec.onstop=()=>{stream.getTracks().forEach(x=>x.stop());
+if(parts.length){const blob=new Blob(parts,{type:mime});const url=URL.createObjectURL(blob);
+const a=document.createElement('a');a.href=url;a.download='IMPULSO_06_12s.webm';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),2000);status.textContent='WebM generado en este navegador · '+(blob.size/1024/1024).toFixed(2)+' MB'}
+else status.textContent='Exportación sin datos: no se generó archivo';exporting=false;exportBtn.disabled=false;};
+exporting=true;exportBtn.disabled=true;rec.start(250);status.textContent='Grabando WebM con audio real (12 s)…';
+}else status.textContent='Reproduciendo pieza audiovisual original';
+await audio.play();play.textContent='❚❚ Pausar';
+}catch(err){if(rec&&rec.state==='recording')rec.stop();exporting=false;exportBtn.disabled=false;status.textContent='No se pudo iniciar: '+err.message}
+}
+play.addEventListener('click',async()=>{
+if(audio.paused){if(audio.currentTime>=11.99)audio.currentTime=0;if(!ctx){try{graph()}catch(e){status.textContent=e.message;return}}await ctx.resume();try{await audio.play();play.textContent='❚❚ Pausar'}catch(e){status.textContent='Audio bloqueado: '+e.message}}
+else{audio.pause();play.textContent='▶ Reproducir'}});
+stop.addEventListener('click',()=>{audio.pause();audio.currentTime=0;play.textContent='▶ Reproducir';status.textContent='Detenido';if(rec&&rec.state==='recording')rec.stop()});
+seek.addEventListener('input',()=>{if(!exporting)audio.currentTime=Number(seek.value)});
+exportBtn.addEventListener('click',()=>begin(true));
+full.addEventListener('click',()=>{if(document.fullscreenElement){document.exitFullscreen?.()}else document.querySelector('.stage').requestFullscreen?.()});
+audio.addEventListener('ended',()=>{play.textContent='▶ Reproducir';if(rec&&rec.state==='recording')rec.stop();else status.textContent='Reproducción terminada'});
+audio.addEventListener('error',()=>{status.textContent='El archivo de audio no está disponible';play.disabled=true;exportBtn.disabled=true});
+if(!window.MediaRecorder||!cv.captureStream){exportBtn.disabled=true;exportBtn.title='Exportación WebM no admitida aquí'}
+tick();
+})();
+</script></body></html>
