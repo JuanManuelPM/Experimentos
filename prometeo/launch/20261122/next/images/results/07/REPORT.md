@@ -27,4 +27,4 @@ La escena, ficticia y generada originalmente, se inspira en los bosques templado
 - `02_TRONCO_NODRIZA.png` `4fa82f0154beedefea9deff326d570351df25212c1257649c37cbc6337c728d9`
 - `03_ARROYO_Y_BRUMA.png` `4e99b26a9bfbaa07641813859e4d8d83d3f8a1b6b2605fdf0ee9e32984bc895d`
 
-[Brief original del trabajo 07](../../images/LAUNCH.md) · [Entrada ROOT](../../../../../root/)
+[Brief original del trabajo 07](../../LAUNCH.md) · [Entrada ROOT](https://juanmanuelpm.github.io/Experimentos/prometeo/root/)
