@@ -1,0 +1,59 @@
+{
+  "version":"DEEP-SPEC-1",
+  "medium":"3D geográfico / MapLibre GL JS / WebGL",
+  "depth":"SISTEMA",
+  "batchId":"3d-w6-20261122",
+  "taskNumber":8,
+  "taskId":"3d-w6-20261122-08",
+  "briefSource":{"repository":"JuanManuelPM/Experimentos","ref":"gh-pages","path":"prometeo/launch/20261122/next/3d/LAUNCH.md","blobSha":"942c3ba8b851137886e959d2790771556e2d9f5d"},
+  "qualityBarVersion":"QBAR-1",
+  "flow":{"version":"2.3.0","sha256Canonical":"53bc9e2e4b37c99e92d3494af8dfa4461cd4644b15f980e32497a8428b067b3f","status":"CURRENT_CANDIDATE"},
+  "brief":"Construir Atlas de una cuenca: un atlas 3D de una cuenca real con relieve, hidrografía y dos capas auténticas, proyección, atribución, escalas y carga multiescala sin claves privadas.",
+  "intent":{"experience":"Explorar un paisaje real desde la región hasta el cauce, reconociendo la forma del relieve y los límites hidrográficos sin confundir exageración vertical con datos.","distinctAbility":"Integración de terreno de elevación en teselas y vectores hidrográficos georreferenciados, visibles y auditables en una sola vista 3D utilizable en móvil."},
+  "references":[
+    {"id":"R1","url":"https://maplibre.org/maplibre-gl-js/docs/examples/3d-terrain/","status":"OBSERVED","observation":"Ejemplo oficial muestra raster-dem como fuente separada, terrain exaggeration y controles de pitch, con escena 3D real en MapLibre; el ejemplo no implica que nuestro atlas haya corrido en GPU."},
+    {"id":"R2","url":"https://registry.opendata.aws/terrain-tiles/","status":"OBSERVED","observation":"AWS documenta archivos públicos elevation-tiles-prod Terrarium derivados de fuentes múltiples, con atribuciones específicas; la precisión vertical varía según procedencia."},
+    {"id":"R3","url":"https://hydro.nationalmap.gov/arcgis/rest/services/wbd/FeatureServer/4","status":"OBSERVED","observation":"Capa federal WBD de unidades HUC8: polígono, campo huc8, name y areasqkm, GeoJSON y consulta REST; refresco octubre de 2026 según el servicio."},
+    {"id":"R4","url":"https://3dhp.nationalmap.gov/arcgis/rest/services/usgs_3dhp_all/FeatureServer/50","status":"OBSERVED","observation":"El servicio público 3DHP Flowline soporta GeoJSON, tiene featuretype=1 para río, lengthkm y actualización declarada 4 septiembre 2026."},
+    {"id":"R5","url":"https://cesium.com/learn/cesiumjs-learn/cesiumjs-terrain/","status":"OBSERVED","observation":"Cesium demuestra globo WGS84 y streaming multiescala, pero su proveedor global premium requiere verificar acceso; se elige la vía MapLibre Terrarium sin token."},
+    {"id":"R6","url":"https://www.epa.gov/waterdata/nhdplusv1-huc8-dataset","status":"OBSERVED","observation":"EPA identifica Grand Canyon con HUC8 15010002, delimitación hidrológica real distinta del polígono de parque nacional."}
+  ],
+  "components":[
+    {"id":"terrain","role":"Superficie de relieve real a múltiples escalas, sombreada con iluminación oblicua.","strategy":"MapLibre raster-dem Terrarium AWS y hillshade desacoplados; no generar alturas por ruido.","constraints":"EPSG:3857 en render del mapa, Terrarium en metros, interpolación interna del motor, dependencia HTTP pública."},
+    {"id":"basin","role":"Límite real verificable de la unidad hidrográfica Grand Canyon HUC8.","strategy":"Solicitar USGS WBD FeatureServer/4 GeoJSON filtrado por huc8, sin redibujar el polígono a mano.","constraints":"GeoJSON WGS84 EPSG:4326, no confundir con límite del parque, exigir identificador de HUC recibido."},
+    {"id":"flow","role":"Cauces USGS 3DHP superpuestos a terreno y vinculados a extensión de la vista.","strategy":"FeatureServer/50 en bbox con limitación por categoría, paginación, cancelación y cache de consultas.","constraints":"Solo featuretype River para vista principal, servicio con máximo 2500 registros/página y posible CORS/latencia."},
+    {"id":"loader","role":"Componente reutilizable de fuentes/taselas, descarga y trazabilidad de errores.","strategy":"Módulo JS con factoría de fuentes raster-dem, wrapper REST GeoJSON y cache LRU, sin credenciales.","constraints":"Evitar ráfagas por zoom/movimiento, errores y conteos visibles; datos remotos no garantizados sin red."},
+    {"id":"ux","role":"Interfaz de atlas con lectura regional a detalle, capas, puntos de referencia y metadatos.","strategy":"Panel legible, capas conmutables, presets de cámara, escala gráfica, coordenadas y vista 2D/3D.","constraints":"Pantalla táctil, teclado, reduced-motion; contraste y atribución persistentes."}
+  ],
+  "questions":[
+    {"id":"Q1","target":"terrain","question":"¿Se dispone de un servicio de altura realmente geográfica sin token, a la resolución necesaria para un cañón?","alternatives":["Cesium World Terrain con autenticación","Mapzen/AWS Terrarium libre"],"evidenceRef":"R2","finding":"El registro AWS publica Terrarium por XYZ y exige atribución; no se comprobó CDN remoto desde el navegador de producción.","decisionImpact":"Usar teselas reales de AWS, no una malla procedural falsa, y marcar estado de carga sin afirmar render observado."},
+    {"id":"Q2","target":"basin","question":"¿El límite visible delimita la cuenca hidrológica concreta o el límite político/turístico de un parque?","alternatives":["Polígono arbitrario basado en mapa turístico","Consulta WBD por HUC8 oficial"],"evidenceRef":"R3","finding":"WBD usa HUC8 de subcuenca y el código 15010002 identifica Grand Canyon, distinto de su parque.","decisionImpact":"Filtrar por el código USGS y validar que el feature devuelto tenga la misma clave."},
+    {"id":"Q3","target":"flow","question":"¿Cómo se mantiene la hidrografía real y usable al mover la cámara sin saturar el servicio?","alternatives":["GeoJSON nacional descargado completo","Consulta WFS/ArcGIS acotada por bbox y paginada"],"evidenceRef":"R4","finding":"3DHP Flowline expone FeatureServer GeoJSON y paginación con máximo por consulta; para la primera vista conviene solicitar solo River.","decisionImpact":"Crear cargador de peticiones con bbox, límite, última vista y cancelación de respuestas obsoletas."},
+    {"id":"Q4","target":"ux","question":"¿Cómo puede una persona distinguir altura real, aumento vertical y proyección plana en un atlas 3D?","alternatives":["Mostrar únicamente una escena inclinada","Conmutar 2D/3D y controlar exageración claramente"],"evidenceRef":"R1","finding":"La API permite terrain.exaggeration y navegación pitch, siendo relevante conservar escala, coordenadas y proyección visibles.","decisionImpact":"Agregar controles de elevación 1–2.5x, brújula, escala y lectura explícita EPSG:3857/4326."}
+  ],
+  "relations":[
+    {"from":"basin","to":"terrain","invariant":"Polígono y DEM comparten coordenadas geodésicas al representarse sobre el mismo mapa.","failure":"Un límite dibujado en píxeles se desplaza al cambiar pitch o zoom.","test":"Comparar vértices WGS84 en 2D y 3D en el mismo viewport."},
+    {"from":"flow","to":"basin","invariant":"Las líneas hidrológicas y la unidad WBD conservan la misma transformación espacial EPSG:4326 a EPSG:3857.","failure":"Cauces renderizados en otra proyección quedan desplazados respecto al relieve.","test":"Inspeccionar bbox devuelto y puntos nombrados en dos niveles de zoom."},
+    {"from":"loader","to":"ux","invariant":"Ningún panel indica capa cargada si la red o el servicio falló.","failure":"La interfaz presenta una simulación de datos sin contenido real.","test":"Simular API con error y comprobar estado de advertencia, no verde."}
+  ],
+  "decisions":[
+    {"id":"D1","questionId":"Q1","componentIds":["terrain","loader"],"choice":"Terrarium AWS real","rejected":"Cesium ion obligatorio con token privado","productionChange":"raster-dem XYZ compartido sin claves y con estado explícito de disponibilidad","why":"La accesibilidad pública y la atribución de fuente son requisitos del encargo."},
+    {"id":"D2","questionId":"Q2","componentIds":["basin","ux"],"choice":"WBD 15010002 remoto","rejected":"Croquis turístico del Gran Cañón","productionChange":"Contorno se dibuja solo tras respuesta GeoJSON validada del servicio WBD","why":"Es la única forma de no sustituir una cuenca real con un perímetro inventado."},
+    {"id":"D3","questionId":"Q3","componentIds":["flow","loader"],"choice":"3DHP bbox con cache","rejected":"Miles de segmentos insertados a mano o en bruto","productionChange":"Paginación y AbortController protegen red al navegar y actualizan capa real de ríos","why":"Los cauces son datos vivos y no hay permiso para simularlos."},
+    {"id":"D4","questionId":"Q4","componentIds":["ux","terrain"],"choice":"Vista oblicua reversible y selector de escala vertical","rejected":"Vista con perspectiva sin metadatos","productionChange":"Panel muestra pitch, zoom, coordenadas, datum y exageración; acceso a 2D y foco geográfico","why":"La legibilidad de escala y fuente evita conclusiones engañosas."}
+  ],
+  "risks":[
+    {"componentIds":["terrain","loader"],"severity":"medium","failure":"CDN/CORS niega DEM en el navegador aunque el registro del conjunto exista.","prevention":"Fuentes keyless estables, error visible, plano fallback y pruebas de carga en navegador habilitado.","test":"Inspeccionar requests y comprobar visualización 3D del DEM en sesión WebGL real.","status":"NOT_RUN"},
+    {"componentIds":["basin","flow"],"severity":"medium","failure":"La consulta REST se demora, retorna vacía o corta GeoJSON en extensión regional.","prevention":"Filtrado por HUC8/bbox y manejo de error/timeout, cancelación y cache con límites.","test":"Mock de servicio y consulta real de USGS desde browser al publicar.","status":"NOT_RUN"},
+    {"componentIds":["ux"],"severity":"low","failure":"Superposición tapa la escena en pantallas pequeñas o no hay controles táctiles.","prevention":"Panel colapsable, botones táctiles de más de 44px y modo de pantalla completa.","test":"Playwright en viewport móvil y pruebas manuales de zoom/pitch.","status":"NOT_RUN"}
+  ],
+  "acceptance":[
+    {"kind":"logic","criterion":"El cargador construye URLs con outSR=4326, codifica bbox y rechaza el código HUC ajeno.","oracle":"Pruebas Node con fake fetch y assert de los invariantes de entrada.","status":"NOT_RUN"},
+    {"kind":"functional","criterion":"El HTML con fuentes auténticas carga su vista de la subcuenca y permite alternar capas.","oracle":"Navegación real y lectura de contadores WBD y 3DHP en la interfaz.","status":"NOT_RUN"},
+    {"kind":"visual","criterion":"Se distingue el relieve del cañón a dos escalas y no aparecen artefactos de alineación.","oracle":"Capturas reales en navegador con WebGL y fuentes cargadas, comparación vista 2D y 3D.","status":"NOT_RUN"},
+    {"kind":"interactive","criterion":"Dos presets y un gesto táctil mantienen continuidad de relieve y escala.","oracle":"Revisión manual móvil y Playwright con eventos de botones, zoom y pitch.","status":"NOT_RUN"}
+  ],
+  "resources":"MapLibre GL JS 6.19.0 (CDN), AWS Terrarium Tilezen/Mapzen, USGS WBD HUC8 (4), USGS 3DHP Flowline (50); HTML/CSS/ESM y Node tests locales.",
+  "licensing":"USGS WBD/3DHP datos federales abiertos sin restricción declarada por servicio; DEM AWS Mapzen exige atribuciones a proveedores; MapLibre BSD-3-Clause; no fotos ni assets privados. Referencias y versiones en README.",
+  "environmentLimits":"La sesión local no tiene salida HTTP externa desde Node ni acceso a CDN/WebGL real mediante Chromium sin red; todas las fuentes remotas y el render final en teléfono quedarán como NOT_RUN hasta comprobación externa. La ficha no se interpreta como prueba perceptual."
+}
