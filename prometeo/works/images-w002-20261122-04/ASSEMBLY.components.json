@@ -1,0 +1,128 @@
+{
+  "version": "ORBITA-07-PART-TREE-1",
+  "status": "CONCEPT_ONLY",
+  "unit": "mm",
+  "origin": "center of base",
+  "hingeAxis": "Y",
+  "pivots": {
+    "J01": [
+      0,
+      0,
+      90
+    ],
+    "J02": [
+      226,
+      0,
+      335
+    ],
+    "J03": [
+      462,
+      0,
+      478
+    ]
+  },
+  "dimensions": {
+    "baseDiameter": 190,
+    "baseHeight": 32,
+    "lowerArmAxisLength": 333.32,
+    "upperArmAxisLength": 275.94,
+    "headLength": 136,
+    "headDiameter": 58,
+    "armSection": [
+      28,
+      24
+    ]
+  },
+  "materials": {
+    "shell": "aluminio anodizado grafito",
+    "base": "acero + carcasa anodizada conceptual",
+    "joint": "acero y arandelas de fricción",
+    "trim": "aluminio anodizado bronce",
+    "lens": "policarbonato óptico",
+    "cable": "funda flexible"
+  },
+  "groups": [
+    {
+      "id": "B01",
+      "qty": 1,
+      "role": "Base pesada y montante",
+      "mate": "J01 sobre eje vertical"
+    },
+    {
+      "id": "A01",
+      "qty": 1,
+      "role": "Brazo inferior",
+      "mate": "J01 ↔ J02"
+    },
+    {
+      "id": "A02",
+      "qty": 1,
+      "role": "Brazo superior",
+      "mate": "J02 ↔ J03"
+    },
+    {
+      "id": "J01-J03",
+      "qty": 3,
+      "role": "Pernos Allen M6, discos y arandelas",
+      "mate": "Ejes transversales Y"
+    },
+    {
+      "id": "C01",
+      "qty": 1,
+      "role": "Cable flexible",
+      "mate": "Base → canal A01 → J02 → canal A02 → H06"
+    },
+    {
+      "id": "H01",
+      "qty": 1,
+      "role": "Carcasa cilíndrica",
+      "mate": "Aloja grupo óptico"
+    },
+    {
+      "id": "H02",
+      "qty": 1,
+      "role": "Disipador",
+      "mate": "Detrás de H03"
+    },
+    {
+      "id": "H03",
+      "qty": 1,
+      "role": "Placa LED",
+      "mate": "Asiento frontal de H02"
+    },
+    {
+      "id": "H04",
+      "qty": 1,
+      "role": "Lente",
+      "mate": "Frente de H03"
+    },
+    {
+      "id": "H05",
+      "qty": 1,
+      "role": "Bisel",
+      "mate": "Retiene H04"
+    },
+    {
+      "id": "H06",
+      "qty": 1,
+      "role": "Tapa trasera",
+      "mate": "Cierra H01, entrada C01"
+    }
+  ],
+  "assemblyOrder": [
+    "B01 → J01",
+    "A01 → J02",
+    "A02 → J03",
+    "H02 → H03 dentro de H01",
+    "H04 → H05 frontal",
+    "C01 entra por H06",
+    "Montaje de cabezal en J03"
+  ],
+  "limits": [
+    "M6 y geometría de fricción son conceptuales",
+    "interferencias/tolerancias NOT_RUN",
+    "torque de juntas NOT_RUN",
+    "fotometría y calor NOT_RUN",
+    "estabilidad con masas NOT_RUN"
+  ]
+}
