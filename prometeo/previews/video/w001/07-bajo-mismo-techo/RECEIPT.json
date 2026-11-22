@@ -1,0 +1,43 @@
+{
+  "schema": "prometeo.video.receipt/v1",
+  "id": "video-w001-20261122-07-bajo-mismo-techo",
+  "room": "video",
+  "batchId": "video-w001-20261122",
+  "taskNumber": 7,
+  "status": "DELIVERED_WITH_LOCAL_MP4",
+  "story": "Bajo el mismo techo",
+  "shotCount": 3,
+  "cutsSeconds": [
+    4,
+    8
+  ],
+  "durationSeconds": 12,
+  "video": {
+    "container": "MP4",
+    "videoCodec": "H.264",
+    "audioCodec": "AAC",
+    "resolution": "960x540",
+    "fps": 24,
+    "frames": 288,
+    "bytes": 1356638,
+    "sha256": "e305af2038d3795d610444960d0a2ae09fafc0c666e2be8fa495cd47709ae299",
+    "audioMeanDb": -30.8,
+    "audioMaxDb": -13.4
+  },
+  "tests": {
+    "ffprobeFormatDuration": "PASS",
+    "ffprobeFrames": "PASS",
+    "chromiumCanvasNoRuntimeErrors": "PASS",
+    "threeShotBoundaries": "PASS",
+    "visualContactSheetReviewed": "PASS",
+    "pagesHttp": "NOT_RUN",
+    "humanArtApproval": "PENDING"
+  },
+  "source": {
+    "studioProjectSha": "fa110be05d4a4d4e5e9f8d19cc33540c3f0b41bf",
+    "studioBootstrapSha": "c1ea01fe4475c43e4affe6fbf4f475f93fc3d365",
+    "launchSha": "efc6259b5731950be1e84fda71c1fbaf6bdc57d3"
+  },
+  "originality": "All vector visuals and synthesized audio are original, procedural, no third-party media.",
+  "caveat": "MP4 generated and tested locally; GitHub binary upload remains separate from Pages preview until remote readback."
+}
