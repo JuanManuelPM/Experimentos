@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="es">
+<head>
+ <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+ <meta name="color-scheme" content="light"><meta name="description" content="Nadia Arocena. Archivo abierto de seis obras digitales originales: archivo, fichas, filtros y visor de alta resolución. Artista ficticia.">
+ <title>NADIA AROCENA · Archivo abierto</title><link rel="stylesheet" href="./style.css">
+</head>
+<body>
+<header class="top"><a class="wordmark" href="#inicio">NADIA AROCENA<sup>®</sup></a><nav aria-label="Secciones"><a href="#archivo">Archivo</a><a href="#sobre">Sobre el estudio</a></nav></header>
+<main>
+ <section class="hero" id="inicio" aria-labelledby="hero-title">
+  <div class="hero-copy">
+   <div class="eyebrow edition"><span>Archivo digital / Edición 01</span><span>2024—2026</span></div>
+   <h1 id="hero-title">Lo que<br><em>queda.</em></h1>
+   <div class="hero-bottom"><p>Una colección de superficies, restos de luz y geografías imaginarias.</p><a class="small-link" href="#archivo">Explorar las obras <span aria-hidden="true">↘</span></a></div>
+  </div>
+  <div class="hero-media"><canvas id="hero-art" width="800" height="1032" role="img" aria-label="Cianotipo azul original, plantas blancas dibujadas en una superficie nocturna"></canvas><span class="media-caption">01 / La noche en las hojas · 2026</span></div>
+ </section>
+ <section class="lead"><h2>Una práctica de archivo</h2><p>La imagen como evidencia de algo que quizá nunca existió. <em>Seis piezas, cuatro lenguajes materiales y una forma de mirar de cerca.</em></p></section>
+ <section id="archivo" class="archive" aria-labelledby="archive-title">
+  <div class="archive-title"><h2 id="archive-title">Las obras.</h2><small>Archivo razonado / 2024—2026</small></div>
+  <div class="toolbar"><div class="filters" id="filters" role="group" aria-label="Filtrar obras por serie"></div><label class="search" for="search-input">Buscar <input id="search-input" type="search" autocomplete="off" placeholder="Título, año, técnica…"></label></div>
+  <p class="eyebrow" id="count" aria-live="polite">6 / 6 obras</p>
+  <div class="grid" id="gallery" aria-label="Obras del archivo"></div>
+  <div id="archive-empty" class="archive-empty" hidden>Sin resultados. <button id="clear-filters" type="button" class="filter">Limpiar filtros</button></div>
+ </section>
+ <section id="sobre" class="about"><div><div class="eyebrow">Sobre la artista</div><h2>Materia<br>y memoria.</h2></div><div><p>Nadia Arocena es una artista ficticia creada para este experimento editorial. El archivo reúne seis obras digitales originales producidas con cuatro procesos de dibujo y pintura algorítmica. No presenta fotografías de museos ni atribuciones históricas inventadas.</p><small>La autoría corresponde a este proyecto experimental. Medios, dimensiones conceptuales, técnica y procedencia de cada pieza se encuentran en su ficha. Los archivos raster grandes se generan en el navegador desde el código original publicado. No se confunden con digitalizaciones de objetos físicos.</small></div></section>
+</main>
+<footer class="foot"><span>ARCHIVO ABIERTO © 2026 · OBRA Y ARTISTA FICTICIAS</span><span>Edición independiente / Sin trackers / Sin fotografías ajenas</span></footer>
+<dialog id="detail" class="detail" aria-label="Ficha y visor de obra">
+<div class="detail-shell">
+ <div class="detail-top"><strong id="work-label">Obra 01 / 06</strong><div class="viewer-controls"><button id="prev-work" class="icon-btn" type="button" title="Obra anterior" aria-label="Obra anterior">←</button><button id="zoom-out" class="icon-btn" type="button" title="Alejar" aria-label="Alejar">−</button><output id="zoom" class="zoom-value">100 %</output><button id="zoom-in" class="icon-btn" type="button" title="Acercar" aria-label="Acercar">+</button><button id="zoom-reset" class="icon-btn" type="button" title="Reencuadrar" aria-label="Reencuadrar">⌗</button><button id="next-work" class="icon-btn" type="button" title="Obra siguiente" aria-label="Obra siguiente">→</button><button id="close-detail" class="icon-btn exit" type="button" title="Cerrar" aria-label="Cerrar ficha">×</button></div></div>
+ <div class="detail-grid">
+ <div class="image-panel"><div id="stage" class="stage" aria-label="Visor ampliable"><img id="full-image" alt="Versión ampliable de la obra elegida" draggable="false"></div><div class="image-footer"><span id="resolution">Preparando imagen…</span><span>Arrastrar / pellizcar / rueda / teclado</span></div></div>
+ <aside class="info-panel">
+  <div class="eyebrow" id="detail-number">NA–01</div><h2 id="detail-title">Obra</h2><p id="detail-description" class="desc"></p>
+  <dl class="facts">
+    <div><dt>Artista</dt><dd>Nadia Arocena (ficticia)</dd></div>
+    <div><dt>Año</dt><dd id="f-year"></dd></div>
+    <div><dt>Técnica</dt><dd id="f-medium"></dd></div>
+    <div><dt>Serie</dt><dd id="f-series"></dd></div>
+    <div><dt>Formato</dt><dd id="f-size"></dd></div>
+    <div><dt>Origen</dt><dd id="f-origin"></dd></div>
+  </dl>
+  <div class="provenance"><h3>Procedencia y derechos</h3><p id="provenance"></p></div>
+  <div class="actions"><a id="download-image" download href="#" title="Descargar imagen raster original">Descargar imagen</a><button id="copy-link" type="button">Copiar enlace</button></div>
+  <p class="reader-hint">Teclado: +/− para zoom, flechas para mover, 0 para encuadrar, Escape para cerrar. El zoom y las fichas funcionan también desde pantallas táctiles.</p>
+ </aside>
+ </div>
+</div>
+</dialog>
+<script type="module" src="./app.js"></script>
+</body></html>
