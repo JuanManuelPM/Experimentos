@@ -35,3 +35,21 @@ function inspectDeepSpec(s){
  return {gate:"READY_FOR_FIRST_SLICE",errors};
 }
 export { inspectDeepSpec };
+
+
+// CLI opcional. La importación por los tests no ejecuta esta sección.
+if (typeof process !== "undefined" && process.argv?.[1]?.endsWith("deep-spec-v1.mjs")) {
+  try {
+    if (!process.argv[2]) throw new Error("Uso: node deep-spec-v1.mjs PREPRODUCTION.deep-spec-v1.json");
+    const {readFileSync} = await import("node:fs");
+    const spec = JSON.parse(readFileSync(process.argv[2], "utf8"));
+    const verdict = inspectDeepSpec(spec);
+    process.stdout.write(JSON.stringify(verdict, null, 2) + "\n");
+    process.exitCode = verdict.gate === "READY_FOR_FIRST_SLICE" ? 0 :
+      verdict.gate === "SPIKE_REQUIRED" ? 2 :
+      verdict.gate === "BLOCKED" ? 3 : 1;
+  } catch (error) {
+    process.stderr.write("DEEP-SPEC inválido: " + error.message + "\n");
+    process.exitCode = 1;
+  }
+}
