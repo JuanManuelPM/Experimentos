@@ -1,1 +1,0 @@
-Quiero un personaje de collage de recortes ilustrados o fotográficos originales y legales, con capas 2D/2.5D, profundidad, articulaciones y expresiones animadas, en una pequeña presentación espacial.

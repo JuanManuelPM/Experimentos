@@ -1,1 +1,0 @@
-Quiero un colectivo retro completo, viajando por una ciudad de noche, con conductor, al menos ocho pasajeros diferentes, asientos, ventanas y muchos detalles. Un personaje sube, camina por el pasillo, interactúa con otro pasajero y se sienta. La cámara lo acompaña, alternando primeros planos con vistas del colectivo entero y de la ciudad pasando por las ventanas.

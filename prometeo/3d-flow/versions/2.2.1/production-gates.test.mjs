@@ -1,1 +1,0 @@
-import test from 'node:test';import assert from 'node:assert/strict';import * as g from './production-gates.mjs';import {runFixtures} from './fixtures.mjs';for(const r of runFixtures(g))test(r.name,()=>assert.equal(r.status,'PASS',r.error));
