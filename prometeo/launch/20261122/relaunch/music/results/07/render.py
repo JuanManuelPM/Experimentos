@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""CUERPO Y CIRCUITO: original electronics responding to an uncut CC0 human performance.
+"""CUERPO Y CIRCUITO: original electronics responding to unquantized real human guitar performances.
 Usage: python render.py --first-article; python render.py --full
 Requirements: Python 3, numpy, scipy, soundfile, ffmpeg.
 """
@@ -12,23 +12,53 @@ from scipy.signal import find_peaks, butter, sosfilt, resample_poly
 
 ROOT=Path(__file__).resolve().parent
 SR=44100
-SOURCE='https://upload.wikimedia.org/wikipedia/commons/9/9c/Impro_Spinetto_Metzner.ogg'
-SOURCE_PAGE='https://commons.wikimedia.org/wiki/File:Impro_Spinetto_Metzner.ogg'
+SOURCE='https://huggingface.co/datasets/Julian-br/GuitarJam/resolve/main/guitar_jam/test/026.wav'
+SOURCE_PAGE='https://huggingface.co/datasets/Julian-br/GuitarJam'
 SEED=2026112207
 
+CLIPS=['026.wav','059.wav','135.wav','226.wav']
+DATASET='https://huggingface.co/datasets/Julian-br/GuitarJam/resolve/main/guitar_jam/test/'
+
 def acquire():
-    path=ROOT/'audio'/'source_original.ogg'
-    path.parent.mkdir(parents=True,exist_ok=True)
-    if not path.exists():
-        req=urllib.request.Request(SOURCE,headers={'User-Agent':'PrometeoMusicStudy/1.0 (GitHub JuanManuelPM/Experimentos)'})
-        with urllib.request.urlopen(req,timeout=55) as resp:
-            path.write_bytes(resp.read())
-    out=ROOT/'audio'/'source_decoded.wav'
-    subprocess.run(['ffmpeg','-hide_banner','-loglevel','error','-y','-i',str(path),'-ar',str(SR),'-ac','1',str(out)],check=True)
-    src,rate=sf.read(out,dtype='float64')
-    if rate!=SR or src.ndim!=1 or len(src)<SR*25 or not np.isfinite(src).all():
-        raise RuntimeError('Real source not decoded; cannot replace it with a fake acoustic instrument')
-    return src,path
+    """Preserve four unquantized guitar takes, their articulation and human timing.
+    Each unaltered take is independently auditable in audio/source_clips/. A short
+    silence between sections permits the electronic response to finish a phrase.
+    Wikimedia CC0 spinet was rejected after an observed HTTP 429 (not replaced by MIDI).
+    """
+    clipdir=ROOT/'audio'/'source_clips'
+    clipdir.mkdir(parents=True,exist_ok=True)
+    passages=[]
+    manifests=[]
+    for filename in CLIPS:
+        path=clipdir/filename
+        if not path.exists():
+            req=urllib.request.Request(DATASET+filename,headers={'User-Agent':'PrometeoMusicStudy/1.0 (licensed CC0 acoustic performance adaptation)'})
+            with urllib.request.urlopen(req,timeout=90) as resp:
+                data=resp.read()
+            if len(data)<100000: raise RuntimeError('Remote acoustic take absent: '+filename)
+            path.write_bytes(data)
+        clip,rate=sf.read(path,dtype='float64')
+        if clip.ndim==2: clip=clip.mean(axis=1)
+        if rate!=SR: clip=resample_poly(clip,SR,rate)
+        if len(clip)<3*SR or not np.isfinite(clip).all():
+            raise RuntimeError('Genuine CC0 take failed validation: '+filename)
+        # Only anti-click edge ramps: no timing quantization, no synthetic note replacement.
+        ramp=min(int(.09*SR),len(clip)//12)
+        clip[:ramp]*=np.linspace(0,1,ramp)
+        clip[-ramp:]*=np.linspace(1,0,ramp)
+        passages.append(clip)
+        manifests.append({'file':filename,'sourceUrl':DATASET+filename,'sha256':hashlib.sha256(path.read_bytes()).hexdigest(), 'durationSeconds':round(len(clip)/SR,3)})
+    gaps=[np.zeros(int(.55*SR),dtype='float64') for _ in range(len(passages)-1)]
+    interleaved=[]
+    for i,take in enumerate(passages):
+        interleaved.append(take)
+        if i<len(gaps):interleaved.append(gaps[i])
+    src=np.concatenate(interleaved)
+    origin=ROOT/'audio'/'source_decoded.wav'
+    sf.write(origin,src,SR,subtype='PCM_24')
+    (ROOT/'audio'/'SOURCE_PROVENANCE.json').write_text(json.dumps({'license':'CC0-1.0','dataset':SOURCE_PAGE,'performer':'GuitarJam contributor Julian-br (public dataset credit)','humanPerformance':'electric guitar strings, DI capture, not acoustic-microphone capture','assembly':'four intact 8-15 s recorded improvisation clips separated by 0.55 s breath; no sample-by-note synthesis','clips':manifests},indent=2)+'\\n')
+    if len(src)<SR*25:raise RuntimeError('Genuine-source sequence shorter than full piece required')
+    return src,origin
 
 def gestures(x):
     hop=256
