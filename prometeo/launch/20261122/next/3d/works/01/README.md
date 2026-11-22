@@ -1,7 +1,7 @@
 # INTERLOCUTORA · PROMETEO 3D W6 · tarea 01
 
 **Identidad:** batch \`3d-w6-20261122\` · task \`3d-w6-20261122-01\` · **sólo N=01**.  
-**Consigna de autoridad:** [LAUNCH.md (SHA blob 942c3ba8…)](../../../LAUNCH.md).  
+**Consigna de autoridad:** [LAUNCH.md (SHA blob 942c3ba8…)](../../LAUNCH.md).  
 **Rama propietaria:** \`candidate/prometeo-3d-w6-01-20261122\`.  
 **Publicación aislada:** \`gh-pages:prometeo/launch/20261122/next/3d/works/01/\`.
 
