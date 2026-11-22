@@ -18,7 +18,8 @@
     let visible = 0;
     for (const entry of entries) {
       const matchTopic = topic === 'todos' || entry.dataset.topic === topic;
-      const matchSearch = !q || normalize(entry.dataset.search).includes(q);
+      const source = doc.getElementById(entry.dataset.target)?.textContent || '';
+      const matchSearch = !q || normalize(entry.dataset.search + ' ' + source).includes(q);
       entry.hidden = !(matchTopic && matchSearch);
       if (!entry.hidden) visible++;
     }
