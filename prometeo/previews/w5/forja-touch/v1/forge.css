@@ -16,7 +16,7 @@
  .touch-edit{position:absolute;display:flex;flex-direction:column;left:8px;right:8px;bottom:90px;z-index:6;gap:7px;padding:8px;background:#13221bed;border:1px solid #697c65;border-radius:9px;box-shadow:0 10px 30px #06130d88;backdrop-filter:blur(10px);pointer-events:auto}
  .touch-head{display:flex;align-items:center;gap:6px;min-width:0}
  .touch-head strong{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px;letter-spacing:.04em;color:#f0e8d8}
- .touch-head button{min-height:36px;min-width:36px;background:#2a3d31;color:#e8dfcb;border:1px solid #647866;border-radius:5px;font-size:10px;font-weight:800;padding:6px 9px}
+ .touch-head button{min-height:44px;min-width:44px;background:#2a3d31;color:#e8dfcb;border:1px solid #647866;border-radius:5px;font-size:10px;font-weight:800;padding:6px 9px}
  .touch-head #touch-dismiss{font-size:20px;padding:4px 9px}
  .touch-steps{display:flex;gap:6px}
  .touch-steps button{display:none;flex:1;min-width:0;min-height:44px;align-items:center;justify-content:center;border:1px solid #7c9076;border-radius:5px;background:#2b4033;color:#f3e5c9;font-size:14px;font-weight:800}
@@ -36,3 +36,5 @@
  .touch-edit{left:auto;width:min(260px,70%);bottom:75px}
  .touch-steps button{min-height:36px}
 }
+
+@media(max-width:520px) and (min-height:441px){.touch-edit{bottom:116px}}
