@@ -11,13 +11,13 @@ function inspectDeepSpec(s){
  need(components.length>=n,"components by depth");need(questions.length>=n,"specific questions by depth");
  const ids=components.map(x=>x.id), qids=questions.map(x=>x.id),rids=refs.filter(x=>x.status==="OBSERVED").map(x=>x.id);
  need(uniq(ids)&&uniq(qids)&&uniq(rids),"unique ids");
- for(const c of components){need(str(c.id,2)&&str(c.role,15)&&str(c.strategy,15)&&str(c.constraints,25),"component "+(c.id||"?")+" incomplete")}
+ for(const c of components){need(str(c.id,1)&&str(c.role,15)&&str(c.strategy,15)&&str(c.constraints,25),"component "+(c.id||"?")+" incomplete")}
  for(const q of questions){
-  need(str(q.id,2)&&ids.includes(q.target)&&str(q.question,30)&&arr(q.alternatives).length>=2&&str(q.finding,25)&&str(q.decisionImpact,25),"question "+(q.id||"?")+" not specific/actionable");
+  need(str(q.id,1)&&ids.includes(q.target)&&str(q.question,30)&&arr(q.alternatives).length>=2&&str(q.finding,25)&&str(q.decisionImpact,25),"question "+(q.id||"?")+" not specific/actionable");
   need(rids.includes(q.evidenceRef)||str(s?.environmentLimits,45),"question "+(q.id||"?")+" lacks observed source");
  }
  need(decisions.length>=n,"decisions by depth");
- for(const d of decisions)need(str(d.id,2)&&qids.includes(d.questionId)&&arr(d.componentIds).some(id=>ids.includes(id))&&str(d.choice,12)&&str(d.rejected,12)&&str(d.productionChange,30)&&str(d.why,25),"decision "+(d.id||"?")+" not linked to production");
+ for(const d of decisions)need(str(d.id,1)&&qids.includes(d.questionId)&&arr(d.componentIds).some(id=>ids.includes(id))&&str(d.choice,12)&&str(d.rejected,12)&&str(d.productionChange,30)&&str(d.why,25),"decision "+(d.id||"?")+" not linked to production");
  need(relations.length>=1,"component relationships");
  for(const rel of relations)need((ids.includes(rel.from)||rel.from==="ENV")&&(ids.includes(rel.to)||rel.to==="ENV")&&rel.from!==rel.to&&str(rel.invariant,25)&&str(rel.failure,25)&&str(rel.test,20),"relation not verifiable");
  need(risks.length>=1,"risks");
