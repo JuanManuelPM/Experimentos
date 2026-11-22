@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1c2b24">
+<meta name="description" content="TIPO VIVO. Un espécimen original de tipografía cinética: escribí, modificá cuatro ejes reales de Fraunces, y explorá el movimiento a tu ritmo.">
+<title>TIPO VIVO · MAREAS / laboratorio de la letra</title>
+<link rel="preload" as="font" type="font/ttf" crossorigin href="./fonts/Fraunces-variable.ttf">
+<link rel="stylesheet" href="./styles.css">
+<script type="module" src="./site.mjs"></script>
+</head>
+<body>
+<a class="skip" href="#taller">Ir al laboratorio</a>
+<header class="mast">
+  <a class="mast-mark" href="#inicio" aria-label="Mareas, inicio"><span class="mark-symbol" aria-hidden="true">∿</span><span>MAREAS<small>EDICIONES DE LETRAS</small></span></a>
+  <nav class="mast-nav" aria-label="Navegación principal"><a href="#taller">Taller</a><a href="#secuencia">Movimiento</a><a href="#especimenes">Especímenes</a></nav>
+  <span class="mast-index">ESTUDIO Nº 004 <b> / </b> 2026</span>
+</header>
+<main>
+<section id="inicio" class="hero" aria-labelledby="title">
+  <div class="hero-meta"><span>ENSAYO TIPOGRÁFICO / 01—04</span><span>UNA FUENTE. MUCHAS VOCES.</span></div>
+  <div class="hero-stage">
+    <div class="hero-overline"><span class="orb" aria-hidden="true">✳</span><span>EL TIPO TAMBIÉN<br>TIENE PULSO.</span></div>
+    <h1 id="title" class="hero-title font-live" data-font><span>TIPO</span><span class="hero-light">VIVO<span class="period">.</span></span></h1>
+    <div class="hero-bottom"><p>Una misma letra puede ser<br><em>tajante, suave, delicada o extraña.</em><br>Acá cambia delante de tus ojos.</p><a class="hero-enter" href="#taller"><span>ENTRAR AL TALLER</span><span class="arrow" aria-hidden="true">↘</span></a></div>
+  </div>
+  <div class="hero-foot"><span>04 EJES REALES / UNA VARIABLE INFINITA</span><span>DESLIZÁ PARA DESCUBRIR ↓</span></div>
+</section>
+<section class="interlude" aria-label="Declaración"><p><span>NO ES UNA ILUSIÓN.</span> LA FORMA CAMBIA. LA VOZ PERMANECE.</p></section>
+<section id="taller" class="studio" aria-labelledby="studio-title">
+  <div class="section-top"><span>01 / EL TALLER</span><span>ESCRIBIR ES DISEÑAR</span></div>
+  <div class="studio-heading"><h2 id="studio-title">Una palabra.<br><i>Mil maneras.</i></h2><p>El texto es tuyo. Modificá cuatro dimensiones de la misma familia y mirá cómo cambia su personalidad, sin reemplazar los caracteres.</p></div>
+  <div class="lab-grid">
+    <div class="lab-main">
+      <div class="lab-bar"><span>ESPÉCIMEN / EN VIVO</span><span id="font-indicator" role="status">CARGANDO FUENTE…</span></div>
+      <div class="live-stage">
+        <div class="corner-label">ABCDEFGHIJKLM<br>NOPQRSTUVWXYZ<br>0123456789 &¿?¡!</div>
+        <p id="specimen-word" data-font class="specimen-word font-live" aria-label="Vista previa">Respirar</p>
+        <div class="axis-cross" aria-hidden="true"><span>FRAUNCES / VARIABLE</span><span>MAREAS ∿ 26</span></div>
+      </div>
+      <label class="write-label" for="text-input">01 · TU TEXTO <span>(HASTA 72 CARACTERES)</span></label>
+      <textarea id="text-input" maxlength="72" rows="2" spellcheck="false">Respirar</textarea>
+      <div class="presets" aria-label="Composiciones predefinidas">
+        <span>EMPEZAR POR</span>
+        <button type="button" data-preset="pulso" aria-pressed="true">Pulso</button>
+        <button type="button" data-preset="filo" aria-pressed="false">Filo</button>
+        <button type="button" data-preset="neblina" aria-pressed="false">Neblina</button>
+      </div>
+    </div>
+    <div class="lab-controls">
+      <div class="controls-top"><h3>La anatomía<br>del gesto<span>↗</span></h3><p>Cuatro decisiones, una familia.</p></div>
+      <div class="axis-control">
+        <label for="axis-wght"><span><b>01</b> Peso <code>wght</code></span><output id="value-wght" for="axis-wght">720</output></label>
+        <input id="axis-wght" data-axis="wght" type="range" min="100" max="900" step="1" value="720">
+        <div class="range-label"><span>FINO</span><span>NEGRO</span></div>
+      </div>
+      <div class="axis-control">
+        <label for="axis-opsz"><span><b>02</b> Tamaño óptico <code>opsz</code></span><output id="value-opsz" for="axis-opsz">120</output></label>
+        <input id="axis-opsz" data-axis="opsz" type="range" min="9" max="144" step="1" value="120">
+        <div class="range-label"><span>LECTURA</span><span>AFICHE</span></div>
+      </div>
+      <div class="axis-control">
+        <label for="axis-SOFT"><span><b>03</b> Suavidad <code>SOFT</code></span><output id="value-SOFT" for="axis-SOFT">70</output></label>
+        <input id="axis-SOFT" data-axis="SOFT" type="range" min="0" max="100" step="1" value="70">
+        <div class="range-label"><span>AFILADO</span><span>BLANDO</span></div>
+      </div>
+      <div class="axis-control">
+        <label for="axis-WONK"><span><b>04</b> Rareza <code>WONK</code></span><output id="value-WONK" for="axis-WONK">1</output></label>
+        <input id="axis-WONK" data-axis="WONK" type="range" min="0" max="1" step="1" value="1">
+        <div class="range-label"><span>REGULAR</span><span>EXCÉNTRICO</span></div>
+      </div>
+      <div class="controls-actions">
+        <button id="reset" type="button">REINICIAR VALORES <span aria-hidden="true">↺</span></button>
+        <button id="copy" type="button">COPIAR CSS <span aria-hidden="true">↗</span></button>
+      </div>
+      <code class="css-preview" id="css-preview" aria-label="Declaración CSS generada">font-variation-settings: ...</code>
+    </div>
+  </div>
+</section>
+<section id="secuencia" class="motion" aria-labelledby="motion-title">
+  <div class="section-top"><span>02 / SECUENCIA</span><span>LA LETRA EN EL TIEMPO</span></div>
+  <div class="motion-heading"><h2 id="motion-title">Hacer visible<br><em>el cambio.</em></h2><p>Una coreografía de cuatro ejes, sin modificar el texto. Nada se mueve hasta que vos lo decidas.</p></div>
+  <div class="motion-stage" aria-label="Póster cinético">
+    <div class="motion-top"><span>MAREAS / MOVIMIENTO Nº 01</span><span id="motion-phase">ESTADO 01 · PULSO</span></div>
+    <p id="kinetic-word" data-font class="kinetic-word font-live">Respirar</p>
+    <div class="motion-bottom"><span>TIPOGRAFÍA COMO MATERIA</span><span id="motion-coords">wght 720 / opsz 120</span></div>
+  </div>
+  <div class="motion-player">
+    <button id="play" type="button" aria-pressed="false"><span class="play-icon" aria-hidden="true">▶</span><span id="play-text">REPRODUCIR</span></button>
+    <label class="seek-label" for="seek">POSICIÓN <output id="seek-output" for="seek">00%</output></label>
+    <input type="range" id="seek" min="0" max="1000" step="1" value="0" aria-label="Recorrer secuencia manualmente">
+    <button id="reduce-motion" type="button" aria-pressed="false">SIN MOVIMIENTO: NO</button>
+  </div>
+  <p class="motion-note">Accesibilidad: el botón de pausa y el recorrido manual funcionan con teclado. Si tu dispositivo tiene configurado movimiento reducido, la secuencia no se reproduce automáticamente.</p>
+</section>
+<section id="especimenes" class="specimens" aria-labelledby="specimens-title">
+  <div class="section-top"><span>03 / FORMAS</span><span>UNA FAMILIA, CUATRO VOCES</span></div>
+  <div class="specimens-heading"><h2 id="specimens-title">El mismo signo,<br><i>otra intención.</i></h2><p>Todos los trazos pertenecen a Fraunces. No son cuatro fuentes distintas: son cuatro posiciones de su espacio de diseño.</p></div>
+  <div class="specimen-row s-thin"><div><span class="spec-number">01 / LIGERA</span><span class="spec-axis">100 — 120 — 0 — 0</span></div><p>Aa<span>¿?</span></p></div>
+  <div class="specimen-row s-heavy"><div><span class="spec-number">02 / DENSA</span><span class="spec-axis">900 — 144 — 100 — 1</span></div><p>Ag<span>!</span></p></div>
+  <div class="specimen-row s-text"><div><span class="spec-number">03 / LECTURA</span><span class="spec-axis">380 — 12 — 20 — 0</span></div><p>Una forma también puede hablar bajito.</p></div>
+  <div class="specimen-row s-soft"><div><span class="spec-number">04 / BLANDA</span><span class="spec-axis">720 — 75 — 100 — 1</span></div><p>Muy suave.</p></div>
+</section>
+<section class="colophon" id="creditos" aria-labelledby="colophon-title">
+  <span class="colophon-index">04 / NOTA DE EDICIÓN</span><h2 id="colophon-title">La forma nunca<br>se queda quieta<span>.</span></h2>
+  <div class="colophon-grid"><p>MAREAS es una fundición ficticia creada para este espécimen original. La interfaz, composición, textos y motor de ejes forman parte de este experimento.</p><p>El diseño tipográfico Fraunces <strong>no fue creado por MAREAS</strong>. Pertenece a The Fraunces Project Authors y se redistribuye bajo la <a href="./fonts/OFL.txt">SIL Open Font License 1.1</a>. <a href="https://github.com/undercasetype/Fraunces" rel="noopener noreferrer">Proyecto original ↗</a></p><p>La fuente está incluida localmente. El contenido del laboratorio no se envía a ningún servidor. Compatibilidad: navegadores modernos con soporte de fuentes variables.</p></div>
+  <div class="last-line"><a href="#inicio">VOLVER ARRIBA ↗</a><span>TIPO VIVO / 2026</span><span>ESTUDIO WEB 004</span></div>
+</section>
+</main>
+<p id="live-status" class="sr-only" role="status" aria-live="polite"></p>
+</body>
+</html>
