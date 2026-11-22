@@ -163,9 +163,9 @@
       ],
       "severity": "high",
       "failure": "Una interfaz comercial puede aparentar cobros, ventas o confirmaciones reales.",
-      "prevention": "Etiquetar siempre compra de demostración y no conectar pagos ni endpoints.",
-      "test": "Inspección estática de red y prueba de clic de checkout sin solicitudes externas.",
-      "status": "NOT_RUN"
+      "prevention": "All pricing and orders are explicitly demonstrative; checkout modifies only local status text; no payment or order endpoints.",
+      "test": "Static scan verified no fetch, XMLHttpRequest, sendBeacon or PaymentRequest; cart-core Node test PASS. Browser payment-click behavior NOT_RUN due managed Chromium URLBlocklist.",
+      "status": "OBSERVED"
     },
     {
       "componentIds": [
@@ -206,9 +206,16 @@
       "criterion": "Selector, carrito y cierre de diálogo operables por teclado",
       "oracle": "Recorrido Playwright click, Tab, Escape y prefers-reduced-motion",
       "status": "NOT_RUN"
+    },
+    {
+      "kind": "logic",
+      "criterion": "Reducer unit tests validate integer amounts, SKU normalization and quantity bounds",
+      "oracle": "npm test run locally: cart-core PASS, ten invariants; syntax check PASS",
+      "status": "OBSERVED"
     }
   ],
   "licensing": "Tríptico del encargo generado con herramienta de creación de imágenes; no se usa material externo protegido de las referencias.",
   "resources": "HTML semántico, CSS sin frameworks, JS nativo, localStorage, imágenes raster generadas, Node y Playwright locales.",
-  "environmentLimits": "La validación del navegador y de Pages depende de los recursos y rutas realmente disponibles en este chat."
+  "environmentLimits": "Local Chromium is administratively configured with URLBlocklist ['*'], blocking localhost and file navigation (ERR_BLOCKED_BY_ADMINISTRATOR). Browser screenshots and real interaction are NOT_RUN; Node unit and static checks remain observed.",
+  "implementationStatus": "SOURCE_IMPLEMENTED_BROWSER_NOT_RUN"
 }
