@@ -1,0 +1,65 @@
+{
+  "schema": "prometeo.web.w001.receipt/v1",
+  "id": "web-w001-20261122-05",
+  "room": "web",
+  "batchId": "web-w001-20261122",
+  "taskNumber": 5,
+  "createdAt": "2026-11-22T04:53:30.987Z",
+  "title": "MARGEN CERO · exposición tipográfica digital",
+  "brief": "Construí una micrositio original de una exposición tipográfica ficticia, con dirección editorial fuerte y animación con movimiento reducido alternativo.",
+  "state": "CODE_DELIVERED_PAGES_DEPLOY_PENDING",
+  "source": {
+    "owner": "JuanManuelPM/pruebas",
+    "branch": "candidate/prometeo-web-w001-05-20261122",
+    "path": "PROMETEO/spaces/web-design/works/web-w001-20261122-05/index.html",
+    "sourceCommit": "449a2cb7259c66fb986bf29fd8fb0d5b96aa8689",
+    "fileBlob": "fa318b2aa2b60c2abe0024ca8b58870f79c63305"
+  },
+  "flow": {
+    "name": "WEB_FACTORY_V2",
+    "version": "2.0.0",
+    "status": "SPEC_ONLY",
+    "sourceRef": "candidate/prometeo-web-factory-engine-v2-20261117",
+    "flowBlobSha": "02f7b6161b50cd5bc6b342b84c969aaa36bac90a"
+  },
+  "publish": {
+    "owner": "JuanManuelPM/Experimentos",
+    "branch": "gh-pages",
+    "path": "prometeo/previews/web/w001/05/index.html",
+    "commit": "de226fc761a2363f38349d57184aa68072c97006",
+    "url": "https://juanmanuelpm.github.io/Experimentos/prometeo/previews/web/w001/05/",
+    "sourceReadback": "PASS",
+    "liveFetch": "HTTP_404_AT_CHECK",
+    "pagesDeployment": "NEW_RUNS_PENDING_PREVIOUS_RUNS_CANCELLED_CONCURRENT_WRITES"
+  },
+  "functionality": [
+    "Intro editorial y navegación por anclas",
+    "Tres salas con composiciones originales CSS y contenido no simulado",
+    "Laboratorio: editar frase, tamaño, espaciado e inclinación",
+    "Tres presets de composición que actualizan controles y vista previa",
+    "Pausa de movimiento y desactivación por prefers-reduced-motion"
+  ],
+  "assets": {
+    "thirdPartyFonts": 0,
+    "thirdPartyImages": 0,
+    "externalJs": 0,
+    "originalWork": true,
+    "personalData": false
+  },
+  "qa": {
+    "sourceReadback": "PASS",
+    "candidatePublicFileIdentical": "PASS",
+    "internalAnchorTargets": "PASS",
+    "semanticLandmarksSourceCheck": "PASS",
+    "reducedMotionCssPresent": "PASS",
+    "noExternalDependencies": "PASS",
+    "responsiveSourceRulesPresent": "PASS",
+    "browserInteraction": "NOT_RUN",
+    "screenshots": "NOT_RUN",
+    "physicalMobile": "NOT_RUN",
+    "httpPublication": "HTTP_404_AT_CHECK",
+    "humanArtApproval": "PENDING"
+  },
+  "rollback": "Eliminar solo la ruta /prometeo/previews/web/w001/05/ o revertir el commit correspondiente sin tocar otras obras.",
+  "note": "NO declarar PUBLIC_VERIFIED ni BROWSER_VERIFIED mientras no haya una lectura HTTP 200 y prueba real. El flujo maestro sigue siendo SPEC_ONLY. No se tocaron otras obras ni los flujos activos."
+}
