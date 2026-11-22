@@ -22,3 +22,5 @@
 **Aprendizaje de método:** `stage=layout`, `cause=long mobile title overflow`, `preventive_gate=measure text bbox against available width`, `test=thumbnail screenshot + line width`, `owner=images`, `counterexample=primer título “UNA CALLE, DOS SOMBRAS” cortado en ancho móvil`. Corregido en el trabajo 09.
 
 **Publicación:** la rama exclusiva contiene los archivos permitidos y evidencia. No interpretar validación estructural de DEEP-SPEC como aprobación artística.
+
+**Gate estructural ejecutado:** `node deep-spec-v1.mjs PREPRODUCTION.deep-spec-v1.json` => `READY_FOR_FIRST_SLICE`, `errors: []`. Esto no certifica excelencia artística. Readback de JPEG de impresión y PNGs móviles confirmado por SHA de blob GitHub; PNG A4 completo disponible como adjunto local, no subido por límite de transporte de la API.
