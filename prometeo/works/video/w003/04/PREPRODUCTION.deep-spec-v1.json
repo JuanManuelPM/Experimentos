@@ -256,18 +256,35 @@
           "oracle": "Reinspección visual del cuadro 282 en horizontal/vertical."
         }
       ],
-      "observations": []
+      "observations": [
+        {
+          "viewport": "390",
+          "status": "OBSERVED_PASS",
+          "evidence": {
+            "url": "https://github.com/JuanManuelPM/Experimentos/blob/candidate/prometeo-video-w003-20261122-04/prometeo/works/video/w003/04/frame_9x16_282.png",
+            "description": "Render real del fotograma vertical 282, reducido localmente a 390 px e inspeccionado, sin signo superpuesto."
+          }
+        },
+        {
+          "viewport": "1440",
+          "status": "OBSERVED_PASS",
+          "evidence": {
+            "url": "https://github.com/JuanManuelPM/Experimentos/blob/candidate/prometeo-video-w003-20261122-04/prometeo/works/video/w003/04/frame_16x9_119.png",
+            "description": "Render real del fotograma horizontal 119, ampliado localmente a 1440 px e inspeccionado; titular y espacios seguros íntegros."
+          }
+        }
+      ]
     },
     "firstArticle": {
       "target": "Primer contraste semántico en retrato y posterior duda con ¿ fuera del titular",
       "rejectWhen": "El signo invade TE ESPERO o el significado solo se transmite por audio.",
       "switchTo": "Compositor de subtítulos ASS con filtros FFmpeg",
       "oracle": "PNG extraídos de Canvas local, comparación del frame 282 en ambos formatos.",
-      "resourceProof": "Chromium, NumPy, ffmpeg y fuentes de sistema comprobados mediante comandos reales.",
+      "resourceProof": "Chromium Playwright y FFmpeg realmente ejecutados, y workflow remoto publicó dos masters H264/AAC y fotogramas; QA_CI.json en rama.",
       "status": "OBSERVED_PASS",
       "evidence": {
-        "url": "https://github.com/JuanManuelPM/Experimentos/blob/candidate/prometeo-video-w003-20261122-04/prometeo/works/video/w003/04/index.html",
-        "description": "Motor fuente que permite reproducir el primer artículo; frames localmente observados, todavía no publicados como evidencia remota."
+        "url": "https://github.com/JuanManuelPM/Experimentos/blob/candidate/prometeo-video-w003-20261122-04/prometeo/works/video/w003/04/frame_9x16_282.png",
+        "description": "PNG real publicado y readback GitHub 3128b97a8185ab42b8de4cc207823a85a132deb6, la corrección de interrogación se observa en el frame de duda."
       },
       "localObserved": "Sí: 2×624 frames exportados; solapamiento de interrogación detectado, corregido y rerenderizado. Capturas locales verificadas."
     },
