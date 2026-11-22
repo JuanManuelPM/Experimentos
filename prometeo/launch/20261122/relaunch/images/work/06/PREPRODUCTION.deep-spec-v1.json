@@ -1,0 +1,279 @@
+{
+  "version": "DEEP-SPEC-1",
+  "medium": "images",
+  "depth": "SISTEMA",
+  "taskId": "images-w003-20261122-06",
+  "brief": "Narrá en seis ilustraciones originales cómo una viajera encuentra una señal de vida en una estación abandonada, sin texto explicativo: establecé lugar, progresión de acciones, objetos persistentes y cierre emocional mediante cambios intencionales de plano y luz. Entregá seis imágenes raster y un canon reutilizable de continuidad de personaje, utilería y espacio; revisá que lectores externos puedan ordenar la historia sin necesitar seis mundos ni seis protagonistas diferentes.",
+  "briefSHA": "a97b91ca103847ea75eeb9d1d2af10b6c9c0dddd",
+  "createdAt": "2026-11-22T19:12:55.584Z",
+  "intent": {
+    "experience": "Contar en silencio cómo el asombro y el cuidado devuelven humanidad a una estación vacía, con emoción que proviene de acciones visibles, no texto.",
+    "distinctAbility": "Continuidad visual verificable entre seis cuadros de planos distintos, señales de causalidad por huellas y utilería constante."
+  },
+  "references": [
+    {
+      "id": "tan",
+      "status": "OBSERVED",
+      "url": "https://www.shauntan.net/arrival-images-gallery",
+      "observation": "Galería original revisada: alterna vistas panorámicas de espacio complejo con pequeños cuadros de acciones, y mantiene rostros, gestos y entorno sin texto; se adopta la función narrativa, no los personajes ni el lenguaje sepia."
+    },
+    {
+      "id": "lehman",
+      "status": "OBSERVED",
+      "url": "https://www.kirkusreviews.com/book-reviews/barbara-lehman/the-red-book/",
+      "observation": "Reseña observada de The Red Book: progresión muda con objeto persistente y revelaciones visuales; se toma la claridad de pistas, no su argumento ni imágenes."
+    }
+  ],
+  "components": [
+    {
+      "id": "traveler",
+      "role": "Protagonista reconocible por silueta, ropa y equipaje",
+      "strategy": "Canon de rasgos repetidos en cada prompt, con una escena maestra de reunión para prueba perceptual",
+      "constraints": "Mujer pelo castaño oscuro corto ondulado; abrigo mostaza; bufanda carmesí; valija rígida verde azulada con herrajes."
+    },
+    {
+      "id": "station",
+      "role": "Escenario continuo que sostiene la tensión y el encuentro",
+      "strategy": "Mismos hitos: arcos hierro remachado verde, muro azulejos oscuros, reloj antiguo, vagón verde y andén húmedo",
+      "constraints": "Conservar eje del vagón a la derecha y gradiente creíble de luz fría a dorado entre seis escenas."
+    },
+    {
+      "id": "dog",
+      "role": "Señal de vida, pista causal y contraparte emocional",
+      "strategy": "Huellas primero, silueta luego, perro visible en el encuentro, compañía final",
+      "constraints": "Terrier negro pequeño desgreñado, una sola pata delantera blanca, altura relativa constante y no duplicado."
+    }
+  ],
+  "questions": [
+    {
+      "id": "q-continuity",
+      "target": "traveler",
+      "question": "¿Se reconoce a la misma mujer sin conservar un encuadre fijo de las seis escenas?",
+      "alternatives": [
+        "Seis generaciones independientes con rasgos ancla",
+        "Una única plancha de seis cuadros luego recortada"
+      ],
+      "evidenceRef": "tan",
+      "finding": "Un primer artículo independiente muestra personaje, abrigo, bufanda y valija legibles; continuidad del resto todavía no contrastada a nivel de píxeles.",
+      "decisionImpact": "Preferir seis artes independientes y reusar canon textual en lugar de repetir una sola escena recortada."
+    },
+    {
+      "id": "q-story",
+      "target": "dog",
+      "question": "¿Qué evidencia visual permite inferir vida antes de mostrar el perro?",
+      "alternatives": [
+        "Huellas nuevas sobre polvo con dirección al vagón",
+        "Lamparita encendida que sugiere una persona ausente"
+      ],
+      "evidenceRef": "lehman",
+      "finding": "Las huellas permiten una cadena física de descubrimiento y ordenan actos sin necesidad de rótulos ni sonido.",
+      "decisionImpact": "Frame 2 huella en primer plano, frame 3 seguimiento, frame 4 silueta y frame 5 encuentro."
+    },
+    {
+      "id": "q-space",
+      "target": "station",
+      "question": "¿Cómo sostener la orientación espacial y el progreso luminoso sin confundir diferentes estaciones?",
+      "alternatives": [
+        "Hitos arquitectónicos fijos y plan de cámara variable",
+        "Fondos arquitectónicos totalmente libres en cada generación"
+      ],
+      "evidenceRef": "tan",
+      "finding": "Los hitos repetidos y el cambio de escala entre tomas dan anclaje sin sacrificar composición editorial.",
+      "decisionImpact": "Fijar reloj, columnas, tren y posición relativa de vagón a la derecha en prompts y QA."
+    }
+  ],
+  "relations": [
+    {
+      "from": "traveler",
+      "to": "station",
+      "invariant": "La valija y proporción de viajera contra bancos/puertas del mismo andén deben conservar escala plausible",
+      "failure": "Distintos cuerpos y distintas estaciones parecen seis mundos",
+      "test": "Superponer silueta, reloj, arco, vagón y comparar en tabla"
+    },
+    {
+      "from": "dog",
+      "to": "station",
+      "invariant": "Las huellas conducen físicamente hacia la misma puerta de vagón y el animal sale de allí",
+      "failure": "Pista sin dirección produce orden arbitrario o salto espacial",
+      "test": "Prueba ciega de ordenar los seis cuadros por acciones"
+    },
+    {
+      "from": "traveler",
+      "to": "dog",
+      "invariant": "Pata blanca y perro negro persisten entre aparición, encuentro y salida con reacción humana legible",
+      "failure": "Mascota distinta o reacción sin respuesta rompe el cierre",
+      "test": "Cotejo de marcas y relaciones espaciales en 04 05 06"
+    }
+  ],
+  "decisions": [
+    {
+      "id": "d-style",
+      "questionId": "q-continuity",
+      "componentIds": [
+        "traveler",
+        "station",
+        "dog"
+      ],
+      "choice": "Generación pictórica narrativa por escenas independientes, no una plancha única",
+      "rejected": "Recortar una sola imagen 1536×1024 en seis cuadros pequeños",
+      "productionChange": "Primero prueba raster maestra de encuentro y luego imágenes independientes 16:9; primer artículo 1672×941 genuino.",
+      "why": "La tanda anterior produjo viñetas de solo 506 px y no demostró lectura independiente."
+    },
+    {
+      "id": "d-clue",
+      "questionId": "q-story",
+      "componentIds": [
+        "dog",
+        "station"
+      ],
+      "choice": "Huella fresca conduce al vagón como pista de vida",
+      "rejected": "Señal luminosa abstracta sin causalidad física",
+      "productionChange": "Shotlist explícito de huella macro, sendero, silueta y reunión con cierre de compañía.",
+      "why": "Los objetos y acciones construyen la intriga muda de manera comprobable por lectores."
+    },
+    {
+      "id": "d-composition",
+      "questionId": "q-space",
+      "componentIds": [
+        "station",
+        "traveler"
+      ],
+      "choice": "Arcos, reloj, vagón verde y progresión frío-dorado preservados por descripción",
+      "rejected": "Fondos nuevos sin canon",
+      "productionChange": "Plano general, macro, diagonal, hombro, plano medio y salida panorámica con elementos fijos.",
+      "why": "Los mismos hitos evitan fingir continuidad y sostienen un vocabulario de cámara."
+    }
+  ],
+  "risks": [
+    {
+      "severity": "high",
+      "componentIds": [
+        "traveler",
+        "station",
+        "dog"
+      ],
+      "failure": "La representación inicial puede convertirse en afiche fuera de tema, y no en escena narrativa",
+      "prevention": "Primer artículo independiente inspeccionado visualmente y rechazo de las dos salidas erróneas de poster",
+      "test": "Abrir PNG y confirmar viajera, estación y perro, sin letras ni logo PROMETEO",
+      "status": "OBSERVED",
+      "evidence": "Imagen 1672×941 / SHA256 a8ba45d5..., preview GitHub."
+    },
+    {
+      "severity": "medium",
+      "componentIds": [
+        "traveler",
+        "dog",
+        "station"
+      ],
+      "failure": "Multivista podría alterar abrigo, pata blanca, arco o vagón",
+      "prevention": "Canon textual idéntico y revisión por cuadro antes de declarar una historia",
+      "test": "Inspeccionar rasgos y posiciones de seis PNG y registrar discrepancias",
+      "status": "NOT_RUN"
+    },
+    {
+      "severity": "medium",
+      "componentIds": [
+        "station",
+        "dog"
+      ],
+      "failure": "Lector podría no poder ordenar seis imágenes sin explicaciones",
+      "prevention": "Prueba ciega 3 lectores y revisar frame de pista o salida si falla",
+      "test": "Ordenamiento individual sin leyendas; registrar orden y razones",
+      "status": "NOT_RUN"
+    }
+  ],
+  "acceptance": [
+    {
+      "kind": "visual",
+      "criterion": "Primer artículo pictórico original muestra viajera, valija, perro y misma estación",
+      "oracle": "Observación humana del raster original de 1672x941 y sha256 local",
+      "status": "OBSERVED"
+    },
+    {
+      "kind": "visual",
+      "criterion": "Seis artes nativos independientes publicados y decodificados con resolución legible",
+      "oracle": "Manifest de seis PNG/WEBP, firma válida, dimensiones nativas y SHA256",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "visual",
+      "criterion": "Lectores externos pueden ordenar las seis imágenes sin texto ni guía",
+      "oracle": "Tres lectores ordenan historia ciega y al menos dos reconstruyen llegada-pista-reunión-salida",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "functional",
+      "criterion": "Visor candidato es legible a 390 y 1440 sin overlays sobre las pinturas",
+      "oracle": "Captura real de navegador a dos anchos con inspector de medios",
+      "status": "NOT_RUN"
+    }
+  ],
+  "resources": "ChatGPT ImageGen primera prueba local; ElevenLabs GPT-image-2.5-sunburst generó paneles 01, 02 y 04; Pillow local y repositorio GitHub; generación restante bloqueada por cuota.",
+  "licensing": "Imágenes de salida generadas para este encargo sin cargar recursos de terceros ni copiar obras de referencia. Revisión de términos comerciales de cada proveedor pendiente; originales externos no se redistribuyen como referencias.",
+  "environmentLimits": "El entorno local no puede descargar el contenido CDN remoto a un archivo para QA perceptual, y el servicio generativo reportó límite de cuota. GitHub Action de escrow podrá intentar leer bytes públicos temporales; hasta readback queda estado pendiente.",
+  "artDirection": {
+    "schema": "prometeo.art-direction.first-article/v1",
+    "medium": "images",
+    "taskId": "images-w003-20261122-06",
+    "briefSha": "a97b91ca103847ea75eeb9d1d2af10b6c9c0dddd",
+    "flowRef": "Q-LOOP sha7911ce78; QBAR-1 sha5653704d; DEEP-SPEC-1 sha7656a293; FIRST-ARTICLE v1 sha b1a1a012",
+    "promise": {
+      "subject": "Una viajera y un terrier comparten una estación ferroviaria abandonada",
+      "intent": "Que el espectador sienta el paso de soledad a esperanza sin una sola línea de texto"
+    },
+    "benchmark": {
+      "url": "https://www.shauntan.net/arrival-images-gallery",
+      "description": "Galería original de Shaun Tan observada: escalas de plano, secuencia silenciosa y espacio persistente, sin reproducir imágenes.",
+      "status": "OBSERVED"
+    },
+    "techniques": [
+      {
+        "family": "independent-image-generation",
+        "viability": "Tres PNG de 1280×720 generados remotamente y un primer artículo 1672×941 local; cuota restante agotada",
+        "license": "Obras nuevas generadas bajo uso del proveedor; permisos de redistribución y condiciones de cuenta por verificar."
+      },
+      {
+        "family": "manual-digital-painting",
+        "viability": "Alternativa de ilustración digital manual o compositing controlado sobre recursos propios; no ejecutada en seis planos",
+        "license": "Solo pinceles, texturas y motivos de producción propia o licencias libres verificadas."
+      }
+    ],
+    "selectedTechnique": "independent-image-generation",
+    "firstFrame": {
+      "openingDescription": "Obra sin texto: al abrir en 390 y 1440 se debería ver la estación y la viajera en primer plano visual limpio, secuencia de seis imágenes en lectura vertical.",
+      "focalSubject": "La viajera, el perro y la estación, sin overlays, badges, HUD, mockup ni el branding de PROMETEO sobre el arte.",
+      "minimalUI": "Solo una galería editorial con imágenes y metadatos fuera del raster, sin controles redundantes.",
+      "checks": [
+        {
+          "criterion": "En 390 el rostro o la silueta de protagonista es identificable y el cuadro no desborda el viewport",
+          "oracle": "Captura real 390px, inspección del encuadre y ausencia de overflow",
+          "viewport": "390"
+        },
+        {
+          "criterion": "En 1440 la imagen maestra conserva composición y detalle óptico real",
+          "oracle": "Captura real a 1440 y lectura de tamaño nativo, no upscale",
+          "viewport": "1440"
+        },
+        {
+          "criterion": "Toda viñeta es raster genuino y no un cartel ajeno a la historia",
+          "oracle": "Inspección raster semántica y firmas PNG/WebP",
+          "viewport": "both"
+        }
+      ],
+      "observations": []
+    },
+    "firstArticle": {
+      "target": "El encuentro de viajera y terrier junto al tren: riesgo mayor de coherencia de personaje y espacio.",
+      "rejectWhen": "Aparecen logos PROMETEO, coliseo, afiche, cuerpos de primitivas, letra explicativa o no se reconoce la reunión.",
+      "switchTo": "manual-digital-painting",
+      "oracle": "Inspección del original 1672x941: mujer con abrigo mostaza y bufanda roja, valija turquesa, terrier negro pata blanca y estación de hierro.",
+      "resourceProof": "ChatGPT ImageGen gen-id acc8b0df-5ab2-4002-ac83-d5feaae25738; SHA256 local a8ba45d5a11031aea12c84a28bf0e0275308b2e3659b0a32286b4b2c6a2e624e; 3598744 bytes.",
+      "status": "OBSERVED_PASS",
+      "evidence": {
+        "url": "https://github.com/JuanManuelPM/Experimentos/blob/candidate/prometeo-images-w003-20261122-06/prometeo/launch/20261122/relaunch/images/work/06/media/first_article_preview.webp",
+        "description": "El preview WebP real de 128×72 está publicado en GitHub, original fullsize observado en el chat y descargable allí; no se afirma fullsize remoto."
+      }
+    },
+    "humanApproved": false
+  }
+}

@@ -1,0 +1,95 @@
+{
+  "taskId": "images-w003-20261122-06",
+  "room": "images",
+  "status": "PARTIAL_MEDIA_GENERATED_COMPLETION_BLOCKED",
+  "humanApproved": false,
+  "notProduced": [
+    "03",
+    "06"
+  ],
+  "firstArticle": {
+    "source": "ChatGPT ImageGen",
+    "dimensions": [
+      1672,
+      941
+    ],
+    "localBytes": 3598744,
+    "sha256": "a8ba45d5a11031aea12c84a28bf0e0275308b2e3659b0a32286b4b2c6a2e624e",
+    "observed": true,
+    "remotePreviewOnly": true
+  },
+  "otherGenerations": [
+    {
+      "slot": "01",
+      "generationId": "nA8QI0FFhUjRNGo9EPH7",
+      "generationCompleted": true,
+      "remoteBinaryVerified": false,
+      "perceptualObserved": false
+    },
+    {
+      "slot": "02",
+      "generationId": "jj0fgs8GZ9eRGiRzS1KO",
+      "generationCompleted": true,
+      "remoteBinaryVerified": false,
+      "perceptualObserved": false
+    },
+    {
+      "slot": "04",
+      "generationId": "zhYdCKwW24w3SF4JiFWg",
+      "generationCompleted": true,
+      "remoteBinaryVerified": false,
+      "perceptualObserved": false
+    }
+  ],
+  "tests": [
+    {
+      "id": "native_first_article",
+      "status": "PASS",
+      "why": "PNG 1672x941 and local sha256 observed"
+    },
+    {
+      "id": "semantic_first_article",
+      "status": "PASS_LIMITED",
+      "why": "Image visibly contains traveler, dog and station, not promotional poster"
+    },
+    {
+      "id": "six_originals",
+      "status": "FAIL_INCOMPLETE",
+      "why": "Slots 03 and 06 not generated; slot 05 high resolution only in this conversation"
+    },
+    {
+      "id": "multiview_consistency",
+      "status": "NOT_RUN",
+      "why": "Remote raster bytes unavailable to inspecting runtime"
+    },
+    {
+      "id": "external_blind_order",
+      "status": "NOT_RUN",
+      "why": "No external readers recruited; cannot claim their judgment"
+    },
+    {
+      "id": "browser_390_1440",
+      "status": "NOT_RUN",
+      "why": "No browser screenshots validated"
+    },
+    {
+      "id": "repo_binary_escrow",
+      "status": "PENDING",
+      "why": "Workflow created for fetching already generated signed originals, but run/readback not observed"
+    },
+    {
+      "id": "provider_rights",
+      "status": "NOT_RUN",
+      "why": "Commercial/public terms not re-verified per service"
+    }
+  ],
+  "excludedAsWrongTopic": [
+    "a_cinematic_high_contrast_graphic_collage_illustr.png",
+    "a_detailed_deliverable_style_poster_grid_for_the_t.png"
+  ],
+  "limits": [
+    "Free tier image limit reached in ElevenLabs; no retry or paid upgrade done",
+    "No fullsize GitHub preview from local ImageGen possible through connected text API"
+  ],
+  "updatedAt": "2026-11-22T19:12:55.584Z"
+}

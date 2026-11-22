@@ -1,0 +1,72 @@
+{
+  "schema": "prometeo.images.visited-trace/v1",
+  "taskId": "images-w003-20261122-06",
+  "sourceBranch": "candidate/prometeo-images-w003-20261122-06",
+  "flowVersion": "Q-LOOP/QBAR-1/DEEP-SPEC-1/ART-DIRECTION-FIRST-ARTICLE-1",
+  "specializedFlow": "PRIVATE_SPECIALIZED_SHA_NOT_VERIFIED",
+  "timeline": [
+    {
+      "stage": "BRIEF_LOCK",
+      "timestamp": "2026-11-22T19:12:55.584Z",
+      "status": "OBSERVED",
+      "evidence": "LAUNCH.md blob a97b91ca103847ea75eeb9d1d2af10b6c9c0dddd",
+      "decision": "Only worker 06, isolated branch"
+    },
+    {
+      "stage": "REFERENCE_RESEARCH",
+      "timestamp": "2026-11-22T19:12:55.584Z",
+      "status": "OBSERVED",
+      "evidence": "Official Shaun Tan Arrival art gallery and Red Book review; inspected remotely",
+      "decision": "Use alternation of scale and repeated objects, without copying"
+    },
+    {
+      "stage": "FIRST_ARTICLE",
+      "timestamp": "2026-11-22T19:12:55.584Z",
+      "status": "OBSERVED",
+      "evidence": "ChatGPT ImageGen original 1672×941 SHA256 a8ba45d5a110...",
+      "decision": "Pictorial station encounter visually carries emotion and environment"
+    },
+    {
+      "stage": "REPRESENTATION_FAILURE",
+      "timestamp": "2026-11-22T19:12:55.584Z",
+      "status": "OBSERVED",
+      "evidence": "Two further imagegen outputs were unrelated PROMETEO brand posters",
+      "decision": "Discard both; switch to explicitly prompted image generation in connected editor"
+    },
+    {
+      "stage": "INDEPENDENT_IMAGE_GENERATION",
+      "timestamp": "2026-11-22T19:12:55.584Z",
+      "status": "PARTIAL",
+      "evidence": "ElevenLabs flow PX6GnoXhnhJCgp3rJFLv with completed IDs for 01,02,04",
+      "decision": "Keep independent 16:9 scenes, no crop-based claim"
+    },
+    {
+      "stage": "GENERATION_CAP",
+      "timestamp": "2026-11-22T19:12:55.584Z",
+      "status": "BLOCKED",
+      "evidence": "Backend 429 free_tier_image_limit_reached while attempting 05 and 06; attempt 03 returned busy",
+      "decision": "Do not retry charged or rate-limited generations"
+    },
+    {
+      "stage": "GITHUB_PUBLICATION",
+      "timestamp": "2026-11-22T19:12:55.584Z",
+      "status": "PARTIAL",
+      "evidence": "Candidate branch with genuine local first-article preview and bounded workflow",
+      "decision": "No false full delivery; wait for independent binary readback"
+    },
+    {
+      "stage": "BROWSER_ART_QA",
+      "timestamp": null,
+      "status": "NOT_RUN",
+      "reason": "No screenshot on a real browser"
+    },
+    {
+      "stage": "BLIND_STORY_QA",
+      "timestamp": null,
+      "status": "NOT_RUN",
+      "reason": "Incomplete six scene set and no external readers"
+    }
+  ],
+  "validator": "NOT_RUN_WITH_ORIGINAL_FLOW_TOPOLOGY",
+  "humanApproved": false
+}
