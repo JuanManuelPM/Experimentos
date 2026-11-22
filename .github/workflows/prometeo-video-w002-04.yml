@@ -1,0 +1,60 @@
+name: "PROMETEO Video W002 04 - render media"
+on:
+  push:
+    branches:
+      - "candidate/prometeo-video-w002-04-20261122"
+    paths:
+      - ".github/workflows/prometeo-video-w002-04.yml"
+      - "prometeo/launch/20261122/next/video/productions/04/temporal_type_engine.py"
+      - "prometeo/launch/20261122/next/video/productions/04/PREPRODUCTION.deep-spec-v1.json"
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: video-w002-04-render
+  cancel-in-progress: false
+jobs:
+  video:
+    if: github.ref == 'refs/heads/candidate/prometeo-video-w002-04-20261122'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install encoder, system fonts and Python media libraries
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg fontconfig fonts-inter fonts-noto-core
+          python -m pip install 'pillow>=10,<13' 'numpy>=1.25,<3'
+      - name: Validate deep preproduction
+        run: |
+          node prometeo/launch/deep-spec-v1.mjs prometeo/launch/20261122/next/video/productions/04/PREPRODUCTION.deep-spec-v1.json
+      - name: Spike and render both independent compositions
+        working-directory: prometeo/launch/20261122/next/video/productions/04
+        run: |
+          python temporal_type_engine.py --spike
+          python temporal_type_engine.py --render
+      - name: Decode entire audio/video streams
+        working-directory: prometeo/launch/20261122/next/video/productions/04
+        run: |
+          for f in UNA_PALABRA_CAMBIA_TODO_16x9.mp4 UNA_PALABRA_CAMBIA_TODO_9x16.mp4; do
+            ffprobe -v error -show_entries format=duration:stream=codec_type,codec_name,width,height -of json "$f"
+            ffmpeg -v error -i "$f" -f null -
+          done
+          sha256sum UNA_PALABRA_CAMBIA_TODO_*.mp4 ORIGINAL_SOUND.wav > CHECKSUMS.txt
+      - name: Commit generated media only to exclusive candidate branch
+        run: |
+          git config user.name "prometeo-video-render"
+          git config user.email "actions@users.noreply.github.com"
+          git add prometeo/launch/20261122/next/video/productions/04/UNA_PALABRA_CAMBIA_TODO_16x9.mp4
+          git add prometeo/launch/20261122/next/video/productions/04/UNA_PALABRA_CAMBIA_TODO_9x16.mp4
+          git add prometeo/launch/20261122/next/video/productions/04/ORIGINAL_SOUND.wav
+          git add prometeo/launch/20261122/next/video/productions/04/CHECKSUMS.txt
+          if git diff --cached --quiet; then
+            echo "Media already committed; no changes"
+          else
+            git commit -m "video(w002-04): render authentic dual-format MP4 and original WAV [skip ci]"
+            git push origin HEAD:candidate/prometeo-video-w002-04-20261122
+          fi
