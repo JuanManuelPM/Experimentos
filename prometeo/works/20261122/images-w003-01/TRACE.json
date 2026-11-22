@@ -1,0 +1,76 @@
+{
+  "schema": "prometeo.images.trace/v1",
+  "taskId": "images-w003-20261122-01",
+  "humanApproved": false,
+  "flow": {
+    "version": "candidate-unificado-20261117",
+    "ref": "candidate/prometeo-image-studio-unificado-20261117",
+    "sourcePath": "sistemas/imagenes/ADAPTADOR_ARTISTICO.md",
+    "sha": "28016b762d318a7c06e8e1ffd628bc8cda24ecd0",
+    "promotion": "NOT_CLAIMED"
+  },
+  "visited": [
+    {
+      "stage": "BRIEF_LOCK",
+      "status": "OBSERVED",
+      "output": "LAUNCH W003 sha a97b91ca103847ea75eeb9d1d2af10b6c9c0dddd",
+      "decision": "Only task 01"
+    },
+    {
+      "stage": "QBAR_REFERENCES",
+      "status": "OBSERVED",
+      "output": "Flos, Louis Poulsen, Aesop case study",
+      "decision": "Balance, material and negative space, no asset copying"
+    },
+    {
+      "stage": "DEEP_SPEC",
+      "status": "DOCUMENTED",
+      "output": "PREPRODUCTION.deep-spec-v1.json",
+      "decision": "Authentic raster first article over flat SVG substitute"
+    },
+    {
+      "stage": "FIRST_ARTICLE",
+      "status": "OBSERVED_LOCAL",
+      "output": "hero_original.png 1536x1024",
+      "decision": "Single SAVIA 01 sculpture and three distinct supports"
+    },
+    {
+      "stage": "LAYOUTS",
+      "status": "OBSERVED_LOCAL",
+      "output": "editorial, poster, social, comparison JPG",
+      "decision": "Preserve object identity by keeping a single master"
+    },
+    {
+      "stage": "QA_PIXELS",
+      "status": "PASS",
+      "output": "9 Pillow checks, SHA256 manifest",
+      "decision": "Never claim new optical resolution"
+    },
+    {
+      "stage": "BROWSER_390_1440",
+      "status": "NOT_RUN",
+      "output": "Chromium ERR_BLOCKED_BY_ADMINISTRATOR for file and localhost",
+      "decision": "No fake screenshots"
+    },
+    {
+      "stage": "GITHUB_BINARY_PUBLICATION",
+      "status": "BLOBS_CREATED_PENDING_TREE_READBACK",
+      "output": "Five JPEG real Git blobs created; awaiting candidate branch commit and file readback",
+      "decision": "Use Git tree to publish media with Book/Trace and preserve earlier work"
+    }
+  ],
+  "skipped": [
+    {
+      "stage": "HUMAN_APPROVAL",
+      "reason": "Requires human review"
+    },
+    {
+      "stage": "PRINT_PROOF",
+      "reason": "No physical proof/device"
+    }
+  ],
+  "oldBatchId": "images-w002-20261122",
+  "newBatchId": "images-w003-20261122",
+  "oldBriefSHA": "2e0e5e8ca226d546005349dc44b31cd9abcf5dd1",
+  "newBriefSHA": "a97b91ca103847ea75eeb9d1d2af10b6c9c0dddd"
+}
