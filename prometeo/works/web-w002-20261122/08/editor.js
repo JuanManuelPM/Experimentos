@@ -9,7 +9,7 @@ function normalize(raw){
  const clamp=(v,n)=>String(v==null?"":v).slice(0,n);
  return {schema:"secuencia.story/v1",title:clamp(raw.title||"Mi secuencia",100),blocks:raw.blocks.map((b,i)=>{
  const type=TYPES.includes(b.type)?b.type:"text",media=typeof b.media==="string"?b.media:"";
- if(media&&(!/^data:(image\/(png|jpeg|webp|avif|gif|svg\+xml)|video\/(mp4|webm|ogg));/i.test(media)||media.length>MAX*1.5))throw Error("La escena "+(i+1)+" tiene un archivo no admitido o demasiado grande.");
+ if(media&&(!/^data:(image\/(png|jpeg|webp|avif|gif|svg\+xml)|video\/(mp4|webm|ogg))(?:;[^,]*)?,/i.test(media)||media.length>MAX*1.5))throw Error("La escena "+(i+1)+" tiene un archivo no admitido o demasiado grande.");
  return {id:clamp(b.id||"s"+i,40),type,title:clamp(b.title,180),body:clamp(b.body,1200),eyebrow:clamp(b.eyebrow,90),caption:clamp(b.caption,130),duration:Math.max(2,Math.min(30,Number(b.duration)||6)),motion:MOTIONS.includes(b.motion)?b.motion:"fade",palette:PALETTES.includes(b.palette)?b.palette:"ink",media,alt:clamp(b.alt,200)}
  })};
 }
