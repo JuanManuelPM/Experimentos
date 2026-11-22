@@ -1,0 +1,70 @@
+{
+  "schema": "prometeo.video.qa/v1",
+  "taskId": "video-w003-20261122-06",
+  "testedAt": "2026-11-22T19:15:01.432Z",
+  "localMaster": {
+    "name": "PULSO_EN_LA_MATERIA_W003_06.mp4",
+    "sha256": "83c0041a32966e02bb6c57f9c03f7c755eff7184cb6eb6b2712ee2a2a4c853b2",
+    "sizeBytes": 1824556,
+    "codecVideo": "h264",
+    "codecAudio": "aac",
+    "durationVideo": 24,
+    "durationAudio": 24,
+    "frames": 384,
+    "frameRate": 16,
+    "width": 640,
+    "height": 360,
+    "ffmpegFullDecode": "PASS",
+    "remoteMP4": "MISSING",
+    "chatAttachment": "DELIVERED"
+  },
+  "localAudio": {
+    "name": "PULSO_EN_LA_MATERIA_original_mix.wav",
+    "sha256": "5fdb4ee11bf4a4a7732e09b54b62b414ae309c53cb3a928f2b58d29e0ff2ad4b",
+    "channels": 2,
+    "sampleRate": 44100,
+    "peakAbs": 0.72808837890625,
+    "rms": {
+      "seed": 0.1267690623,
+      "fold": 0.1589762284,
+      "fracture": 0.1889245428,
+      "void": 0.0364595885,
+      "resolve": 0.1410427084,
+      "silence17_72to17_94": 0.0048584148
+    }
+  },
+  "firstArticle": {
+    "name": "FIRST_ARTICLE_2_4s.mp4",
+    "sha256": "2dcc7cc49a4e68625f2156e2ed781adf5d34ba6616e4774423814bc7017159cb",
+    "status": "EXPORTED_LOCAL_STILLS_OBSERVED",
+    "remote": "NOT_PUBLISHED"
+  },
+  "source": {
+    "localPythonBuild": "build.py",
+    "sha256": "f5fb0705fb378c99642423154eb1819a445375c46919b92725573ab9d1799362",
+    "remotePython": "NOT_PUBLISHED",
+    "remoteBrowser": "index.html"
+  },
+  "checks": {
+    "localContactSheetTenTimes": "OBSERVED",
+    "localCrops390": "OBSERVED",
+    "browserViewport390_1440": "NOT_RUN",
+    "browserInteractivePlayback": "NOT_RUN",
+    "browserWebMExport": "NOT_RUN",
+    "androidPlayback": "NOT_RUN",
+    "thirdPartyArtReview": "NOT_RUN",
+    "humanApproved": false
+  },
+  "remote": {
+    "branch": "candidate/prometeo-video-w003-20261122-06",
+    "sourceReadback": "OBSERVED",
+    "pagesHttp": "NOT_RUN",
+    "binaryMP4": "NOT_PUBLISHED"
+  },
+  "scope": {
+    "oldBatchId": "video-w002-20261122",
+    "newBatchId": "video-w003-20261122",
+    "qualityGain": "NOT_CERTIFIED",
+    "comparisonNote": "W002 remote MP4 missing; W003 verified local MP4 but still remote missing."
+  }
+}

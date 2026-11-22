@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#090d10"><title>Pulso en la materia · W003/06</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0;background:#090d10;color:#dce1df;font:16px/1.45 system-ui,Arial,sans-serif}
+main{width:min(1100px,100%);margin:auto;padding:clamp(12px,2.5vw,34px)}
+h1{font-size:clamp(21px,3.2vw,38px);font-weight:500;letter-spacing:.06em;margin:0 0 14px}
+figure{margin:0;background:#020405}canvas{width:100%;height:auto;display:block;aspect-ratio:16/9;background:black}
+nav{display:flex;flex-wrap:wrap;align-items:center;gap:11px;margin:13px 0 0}
+button{background:#b9aa8f;color:#071015;padding:11px 19px;border:0;border-radius:3px;font:600 15px system-ui;cursor:pointer;min-height:48px}
+button[disabled]{opacity:.4;cursor:default}button:focus-visible{outline:3px solid #fff;outline-offset:3px}
+#status{color:#b5c4c7;font-variant-numeric:tabular-nums}
+progress{flex:1;min-width:120px;height:8px;accent-color:#c3a17b}
+small{display:block;margin-top:20px;color:#a0a9ad;max-width:74ch}
+#parts{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:3px;margin-top:11px}
+#parts span{padding:7px 3px;background:#192024;text-align:center;font-size:clamp(9px,1vw,13px);text-transform:uppercase;letter-spacing:.04em}
+#parts span.active{background:#68533b;color:#fff}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto}}
+</style></head><body><main>
+<h1>PULSO EN LA MATERIA</h1>
+<figure><canvas id="picture" width="640" height="360" role="img" aria-label="Videoclip abstracto: materia que se forma, se pliega, se fractura, se silencia y se reconstruye"></canvas></figure>
+<div id="parts" aria-label="Cinco movimientos"><span>Germinación</span><span>Fricción</span><span>Fractura</span><span>Vacío</span><span>Resonancia</span></div>
+<nav aria-label="Reproducción">
+<button id="play" type="button">▶ Reproducir</button>
+<button id="export" type="button">Exportar WebM</button>
+<progress id="progress" min="0" max="24" value="0" aria-label="Tiempo de reproducción"></progress>
+<span id="status" role="status">00:00 / 00:24</span>
+</nav>
+<small>Interpretación audiovisual reproducible de la pieza original. Música electrónica sintetizada en el navegador, sin audios ajenos. Los cortes son por estructura y silencio, no por cada golpe. El máster MP4 PCM/AAC y la edición de fotogramas originales se entregan por separado en el paquete de producción. Exportar WebM captura esta interpretación en vivo; el navegador determina el códec.</small>
+</main>
+<script type="module">
+const DUR=24, BPM=100, BAR=2.4, FPS=24, C=[0,2.7,4.8,7.25,9.6,12.6,14.4,17.4,19.2,21.75,24];
+const PARTS=[...document.querySelectorAll('#parts span')],canvas=document.querySelector('canvas'),view=canvas.getContext('2d',{alpha:false}),small=document.createElement('canvas');
+small.width=320;small.height=180;const gc=small.getContext('2d',{alpha:false}),W=320,H=180,im=gc.createImageData(W,H);
+const play=document.querySelector('#play'),exp=document.querySelector('#export'),bar=document.querySelector('progress'),status=document.querySelector('#status');
+const chords=[[87.31,130.81,174.61],[87.31,138.59,207.65],[103.83,155.56,207.65],[103.83,164.81,233.08],[116.54,174.61,233.08],[116.54,174.61,261.63],[77.78,116.54,155.56],[77.78,116.54,155.56],[87.31,130.81,174.61],[87.31,130.81,261.63]];
+let ac,mix,recDest,start=0,running=false,seq=0,stopRecording=()=>{},media=null;
+const clamp=(x,a=0,b=1)=>Math.max(a,Math.min(b,x)),smooth=(a,b,x)=>{let z=clamp((x-a)/(b-a));return z*z*(3-2*z)};
+function rand(x,y){let k=Math.sin(x*127.1+y*311.7+17.21)*43758.5453;return k-Math.floor(k)}
+function patch(t) {
+ const s=Math.min(4,Math.floor(t/4.8)), sh=Math.max(0,C.findIndex(c=>c>t)-1);
+ const shiftX=[-.14,.25,-.23,.06,.3,-.16,.05,-.26,.09,.18][sh]||0;
+ let zoom=[1.1,1.42,1.28,1.7,1.7,2.12,1.2,1.08,1.36,1.05][sh]||1.1;
+ if(s===0) zoom*=1.35-.35*smooth(0,4.8,t);
+ const phi=(t%4.8)/4.8,phrase=Math.sin(Math.PI*phi),gold=[.2,.38,.95,.06,.57][s];
+ for(let y=0,i=0;y<H;y++)for(let x=0;x<W;x++,i+=4){
+   const u=(x-W/2)/(H*.5),v=(y-H/2)/(H*.5);
+   const grain=rand(x,y)-.5,n=grain*.06;
+   let R=.012,G=.014,B=.018;
+   if(s===1){
+      const yy=v+.17*Math.sin(u*2.3-t*.68)+.05*Math.sin(u*8+t*.9);
+      const ridge=Math.sin(65*yy+2*Math.sin(u*11+.4*t));
+      const dep=clamp(.9-Math.pow(Math.abs(yy)/1.1,1.1));
+      const scan=Math.exp(-Math.pow((u-(-1.5+3*phi))/.22,2));
+      const fold=clamp(.4+.18*Math.sin(9*yy)+.22*ridge+n)*dep;
+      const lum=clamp((fold*.74+scan*.17)*(.7+.25*Math.cos(u*2.1+v*1.3-t*.31)));
+      R=lum*.83+scan*.16;G=lum*.87+scan*.09;B=lum*.89+scan*.014;
+   }else if(s===3){
+      const local=t-14.4;
+      const amp=.39*(1-smooth(2.7,3.6,local));
+      const wave=amp*Math.sin(2*Math.PI*(u/3.55*2.7+local*.12))*Math.pow(Math.max(0,Math.sin(Math.PI*clamp((u+1.78)/3.56))),1.35);
+      const ridge=Math.exp(-Math.pow((v-wave)/.009,2));
+      const glow=Math.exp(-Math.pow((v-wave)/.075,2))*.10;
+      const faded=local<3.48?1:.3;
+      R+=faded*(ridge*.64+glow*.35);G+=faded*(ridge*.44+glow*.21);B+=faded*(ridge*.24+glow*.11);
+   }else{
+      const px=(u-shiftX-.025*Math.sin(t*.48))*zoom,py=(v-.12-.021*Math.cos(t*.41))*zoom;
+      const r=Math.hypot(px*1.1,py*.985)+.0001,a=Math.atan2(py,px);
+      let edge=.96+.025*Math.sin(a*9+t*.2)+.055*Math.sin(2*Math.PI*t/4.8);
+      let inside=smooth(edge+.028,edge-.03,r);
+      const annulus=Math.exp(-Math.pow((r-.52-.04*Math.sin(t*.65))/.26,2));
+      const gro=Math.sin(73*r+2.3*Math.sin(7*a+t*.58)+.65*Math.sin(13*a-.5*t));
+      const metal=clamp(.27+.24*Math.cos(a+.56-.34*Math.sin(t*.2))+.19*(1-r)+.065*gro+.16*annulus+n);
+      const frac=smooth(9.5,10.8,t)*(1-smooth(13.1,14.5,t));
+      const crack=Math.exp(-Math.pow(Math.sin(5*a+Math.sin(r*4)*.3)/.04,2))*smooth(.1,.22,r)*frac;
+      inside=clamp(inside-crack*.73);
+      if(s===4)inside*=.42+.58*smooth(19.2,21.5,t);
+      const ring=Math.exp(-Math.pow((r-(.13+.70*phi))/.028,2))*(.2+.8*phrase);
+      const motif=Math.exp(-Math.pow(Math.sin(3*a-8*r+.32*t)/.15,2))*Math.exp(-Math.pow((r-.46)/.31,2))*(.25+.75*phrase);
+      const copper=inside*(.42+.27*Math.cos(3*a+17*r-t*.24))*(ring+motif*.16+crack*.8)*gold;
+      const vig=clamp(1-.29*(u*u+v*v),.33,1);
+      R=vig*(.013+inside*metal*.55+copper*.45)+ring*inside*.21*gold;
+      G=vig*(.014+inside*metal*.69+copper*.24)+ring*inside*.11*gold;
+      B=vig*(.017+inside*metal*.75+copper*.12)+ring*inside*.03*gold;
+   }
+   const fade=(y<6||y>H-7)?0.1:1;
+   im.data[i]=Math.round(255*Math.pow(clamp(R+grain*.024),.88)*fade);
+   im.data[i+1]=Math.round(255*Math.pow(clamp(G+grain*.024),.88)*fade);
+   im.data[i+2]=Math.round(255*Math.pow(clamp(B+grain*.024),.88)*fade);
+   im.data[i+3]=255;
+ }
+ gc.putImageData(im,0,0);view.imageSmoothingEnabled=true;view.drawImage(small,0,0,640,360);
+ PARTS.forEach((p,j)=>p.classList.toggle('active',j===s));
+ return s;
+}
+function timeLabel(t){const z=Math.min(24,Math.floor(t));return '00:'+String(z).padStart(2,'0')}
+function update(t){patch(t);bar.value=clamp(t,0,24);status.textContent=timeLabel(t)+' / 00:24'}
+function audioInit(){
+ ac=new AudioContext({latencyHint:'interactive'});mix=ac.createGain();mix.gain.value=.58;
+ const limiter=ac.createDynamicsCompressor();limiter.threshold.value=-8;limiter.ratio.value=5;
+ mix.connect(limiter);limiter.connect(ac.destination);recDest=ac.createMediaStreamDestination();limiter.connect(recDest);
+}
+function tone(f,at,d,g,type='sine',pan=0,attack=.01,release=.13){
+ if(at<0||at>DUR)return;
+ const osc=ac.createOscillator(),env=ac.createGain(),pos=ac.createStereoPanner();
+ osc.type=type;osc.frequency.setValueAtTime(f,at);
+ pos.pan.value=pan;env.gain.setValueAtTime(0,at);
+ env.gain.linearRampToValueAtTime(g,at+attack);
+ env.gain.setTargetAtTime(.0001,at+Math.max(attack,d-release),Math.max(.015,release/2.8));
+ osc.connect(env);env.connect(pos);pos.connect(mix);osc.start(at);osc.stop(at+d+.2);
+}
+function kick(at,g){
+ const o=ac.createOscillator(),v=ac.createGain();o.frequency.setValueAtTime(98,at);o.frequency.exponentialRampToValueAtTime(43,at+.22);
+ v.gain.setValueAtTime(.0001,at);v.gain.exponentialRampToValueAtTime(g,at+.004);v.gain.exponentialRampToValueAtTime(.0001,at+.43);
+ o.connect(v);v.connect(mix);o.start(at);o.stop(at+.44);
+}
+function hat(at,g) {
+ const len=Math.floor(ac.sampleRate*.09),buf=ac.createBuffer(1,len,ac.sampleRate),a=buf.getChannelData(0);
+ let st=1357911+Math.floor(at*12917);for(let k=0;k<len;k++){st=(1664525*st+1013904223)>>>0;a[k]=(st/2147483648-1)*Math.exp(-k/len*6)}
+ const src=ac.createBufferSource(),hp=ac.createBiquadFilter(),e=ac.createGain();
+ src.buffer=buf;hp.type='highpass';hp.frequency.value=3300;e.gain.value=g;
+ src.connect(hp);hp.connect(e);e.connect(mix);src.start(at);
+}
+function schedule(t0){
+ for(let bar=0;bar<10;bar++){
+   const base=t0+bar*BAR,sec=Math.floor(bar/2),ch=chords[bar];
+   if(sec!==3){ch.forEach((f,k)=>tone(f,base,2.4,.085,'sine',k===0?-.3:k===2?.3:0,.55,.7))}
+   if(sec===0){[0,2].forEach(b=>kick(base+.6*b,.42));[1,3].forEach(b=>hat(base+.6*b,.065));tone(ch[0],base,.52,.21);tone(ch[0]*1.5,base+.9,.48,.19)}
+   if(sec===1){[0,1.5,2.5,3.5].forEach(b=>kick(base+.6*b,.5));for(let b=.5;b<4;b+=.5)hat(base+.6*b,.08);
+      [[0,1],[1,2],[2,1],[2.75,2],[3.5,1]].forEach(([b,k])=>tone(ch[k]*2,base+b*.6,.45,.12,'triangle',b<2?-.25:.4))}
+   if(sec===2){[0,1,1.75,2.5,3.25].forEach(b=>kick(base+.6*b,.58));for(let b=.25;b<4;b+=.5)hat(base+.6*b,.095);
+      [[0,2],[.5,1],[1.5,2],[2.5,0],[3.25,2]].forEach(([b,k])=>tone(ch[k]*3,base+b*.6,.46,.17,'triangle',b<2?-.5:.4))}
+   if(sec===3){tone(ch[bar===6?2:1]*2,base+(bar===6?.8:.5),2.1,bar===6?.20:.15,'sine',bar===6?-.65:.65,.02,1.7)}
+   if(sec===4){[0,2.5].forEach(b=>kick(base+.6*b,.42));[1,3].forEach(b=>hat(base+.6*b,.04));
+      [[0,0],[1,1],[2,2],[3.5,1]].forEach(([b,k])=>tone(ch[k]*2,base+b*.6,.73,.16,'sine',b<2?-.35:.35))}
+ }
+}
+function raf(token){
+ if(token!==seq)return;
+ let t=Math.min(DUR,ac.currentTime-start);update(t);
+ if(t>=DUR){running=false;play.textContent='↻ Repetir';return}
+ requestAnimationFrame(()=>raf(token));
+}
+async function startRun() {
+ if(!ac)audioInit();
+ await ac.resume();
+ ++seq;start=ac.currentTime+.05;schedule(start);running=true;play.textContent='↻ Reiniciar';
+ raf(seq);
+}
+play.addEventListener('click',()=>startRun().catch(e=>status.textContent='Audio no disponible: '+e.message));
+exp.addEventListener('click',async()=>{
+ if(!('MediaRecorder'in window)||!canvas.captureStream){status.textContent='Exportación WebM no compatible';return}
+ exp.disabled=true;
+ try {
+   if(!ac)audioInit();
+   await ac.resume();
+   const video=canvas.captureStream(FPS),stream=new MediaStream([...video.getVideoTracks(),...recDest.stream.getAudioTracks()]);
+   const type=['video/webm;codecs=vp9,opus','video/webm;codecs=vp8,opus','video/webm'].find(t=>MediaRecorder.isTypeSupported(t));
+   if(!type)throw new Error('MediaRecorder sin códec WebM');
+   const chunks=[];media=new MediaRecorder(stream,{mimeType:type});
+   media.ondataavailable=e=>{if(e.data.size)chunks.push(e.data)};
+   media.onstop=()=>{const blob=new Blob(chunks,{type});const u=URL.createObjectURL(blob);
+      const a=document.createElement('a');a.href=u;a.download='PULSO_EN_LA_MATERIA_browser_edit.webm';a.click();
+      setTimeout(()=>URL.revokeObjectURL(u),1000);exp.disabled=false};
+   media.start(500);await startRun();setTimeout(()=>media.state==='recording'&&media.stop(),24400);
+ }catch(e){exp.disabled=false;status.textContent='Exportación falló: '+e.message}
+});
+patch(0);update(0);
+</script></body></html>
