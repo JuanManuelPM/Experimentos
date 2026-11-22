@@ -1,0 +1,21 @@
+import assert from 'node:assert/strict';
+import {AssemblyController,BOM,stage,validateAssembly} from './assembly.mjs';
+const group=()=>({position:{x:0,y:0,z:0,set(x,y,z){this.x=x;this.y=y;this.z=z;}},children:[{}]});
+const groups=Object.fromEntries(BOM.map(({id})=>[id,group()]));
+for(const id of ['frontWheel','frontFrame','cockpit'])groups[id].position.set(-.08,-.70,0);
+const pivot={quaternion:{setFromAxisAngle(axis,theta){this.axis=axis;this.theta=theta;}}};
+const ctrl=new AssemblyController({groups,pivot,hingeAxis:{x:-.19,y:.9,z:.392}});
+assert.deepEqual(validateAssembly({groups}),{ok:true,checks:10,fail:[]});
+assert.equal(stage(-1,.1,.9),0);assert.equal(stage(1,.1,.9),1);
+ctrl.setExplode(.6);assert.equal(ctrl.fold,0);assert(groups.frontWheel.position.z>.1);
+ctrl.setFold(1);assert.equal(ctrl.explode,0);assert(pivot.quaternion.theta>2.8);
+assert(groups.cockpit.position.y<-.9);assert(groups.seat.position.y<-.2);
+ctrl.setFold(0);assert.equal(groups.cockpit.position.y,-.7);assert.equal(groups.frontWheel.position.z,0);
+assert.equal(pivot.quaternion.theta,0);
+// Engineering reference geometry: axes and neutral roll plane are shared
+const rear=-.49,front=.53,r=.254,bs=rear+r,bf=front-r;
+assert(Math.abs((front-rear)-1.02)<1e-12);
+assert.equal(bs,.254-.49);assert.equal(bf,.53-.254);
+const broken={...groups};delete broken.chain;
+assert(validateAssembly({groups:broken}).fail.includes('Missing group chain'));
+console.log('PASS: BOM unique / 10 groups / unfold return / explode exclusion / hinge travel / neutral wheelbase');
