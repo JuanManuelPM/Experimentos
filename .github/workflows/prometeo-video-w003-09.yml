@@ -1,9 +1,11 @@
-name: "PROMETEO Video W003/09 - volume-first article"
+name: "PROMETEO Video W003/09 - full volumetric film"
 on:
   push:
     branches: [candidate/prometeo-video-w003-20261122-09]
     paths:
+      - "prometeo/works/video/w003/09/volume.py"
       - "prometeo/works/video/w003/09/render.py"
+      - "prometeo/works/video/w003/09/index.html"
       - "prometeo/works/video/w003/09/PREPRODUCTION.deep-spec-v1.json"
       - ".github/workflows/prometeo-video-w003-09.yml"
   workflow_dispatch:
@@ -13,7 +15,7 @@ concurrency:
   group: prometeo-video-w003-09
   cancel-in-progress: false
 jobs:
-  article:
+  film:
     if: github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
     timeout-minutes: 25
@@ -21,71 +23,132 @@ jobs:
       - uses: actions/checkout@v4
         with:
           persist-credentials: true
-          fetch-depth: 1
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - name: Install optical and video dependencies
+      - name: Install deterministic rendering dependencies
         run: |
           pip install --quiet "numpy<3" opencv-python-headless Pillow scipy
-          sudo apt-get update -qq
-          sudo apt-get install -y ffmpeg
-      - name: Preproduction is still a spike, NOT an approval
+          command -v ffmpeg || (sudo apt-get update -qq && sudo apt-get install -y ffmpeg)
+      - name: Read second-article evidence and structural gates
         run: |
           node --input-type=module <<'JS'
           import fs from 'node:fs';
           import {inspectDeepSpec} from './prometeo/launch/deep-spec-v1.mjs';
           import {inspectArtDirection} from './prometeo/launch/art-direction-first-article-v1.mjs';
-          const d=JSON.parse(fs.readFileSync('./prometeo/works/video/w003/09/PREPRODUCTION.deep-spec-v1.json'));
-          const a=inspectArtDirection(d.artDirection), b=inspectDeepSpec(d);
-          console.log('ART',a,'DEEP',b);
-          if (a.gate!=='FIRST_ARTICLE_REQUIRED' || b.gate!=='SPIKE_REQUIRED')process.exit(1);
+          const base='./prometeo/works/video/w003/09/';
+          const d=JSON.parse(fs.readFileSync(base+'PREPRODUCTION.deep-spec-v1.json'));
+          const a=inspectArtDirection(d.artDirection),b=inspectDeepSpec(d);
+          const t=JSON.parse(fs.readFileSync(base+'SECOND_ARTICLE.tests.json'));
+          console.log('ART',a,'DEEP',b,'SECOND_ARTICLE',t);
+          if(!['FIRST_FRAME_CAPTURE_REQUIRED','READY_TO_BUILD_NOT_ARTISTICALLY_APPROVED'].includes(a.gate)||b.gate!=='READY_FOR_FIRST_SLICE'||t.fullDecode!=='PASS')process.exit(1);
           JS
-      - name: Generate observed volume-first article at maximal atmosphere change
+      - name: Render actual 14 second movie and stereo mix
         working-directory: prometeo/works/video/w003/09
         run: |
-          python volume.py --output SECOND_ARTICLE_7-13.mp4 --seconds 6 --article-start 7 --width 640 --fps 18
-          ffmpeg -hide_banner -loglevel error -i SECOND_ARTICLE_7-13.mp4 -f null -
-          ffprobe -v error -show_entries format=duration,size:stream=codec_type,codec_name,width,height,avg_frame_rate,sample_rate -of json SECOND_ARTICLE_7-13.mp4 > SECOND_ARTICLE.probe.json
-      - name: Export real observed frames and temporal tests
+          python volume.py --output ANTES-DE-LA-TORMENTA-W003-09.mp4 --seconds 14 --width 800 --fps 24
+      - name: Full decode and real media/numerical audit
         working-directory: prometeo/works/video/w003/09
         run: |
+          ffmpeg -hide_banner -loglevel error -i ANTES-DE-LA-TORMENTA-W003-09.mp4 -f null -
+          ffprobe -v error -count_frames -show_entries format=duration,size:stream=codec_type,codec_name,width,height,avg_frame_rate,sample_rate,nb_read_frames -of json ANTES-DE-LA-TORMENTA-W003-09.mp4 > FINAL.probe.json
           python - <<'PY'
-          import subprocess, json, numpy as np
-          from PIL import Image,ImageDraw,ImageChops,ImageStat
-          v="SECOND_ARTICLE_7-13.mp4"
-          q=json.load(open("SECOND_ARTICLE.probe.json"))
-          assert abs(float(q["format"]["duration"])-6)<.1,q
-          assert any(s.get("codec_type")=="audio" and s.get("codec_name")=="aac" for s in q["streams"]),q
-          assert any(s.get("codec_type")=="video" and s.get("codec_name")=="h264" for s in q["streams"]),q
-          samples=[.5,2,3.35,4.3,5.5,5.9];imgs=[]
+          import subprocess,json,os,hashlib,math
+          import numpy as np
+          from PIL import Image,ImageDraw
+          from render import climate
+          name="ANTES-DE-LA-TORMENTA-W003-09.mp4"
+          data=json.load(open("FINAL.probe.json"))
+          assert abs(float(data["format"]["duration"])-14)<.1,data
+          streams=data["streams"]
+          v=next(s for s in streams if s.get("codec_type")=="video")
+          a=next(s for s in streams if s.get("codec_type")=="audio")
+          assert v.get("codec_name")=="h264" and v.get("width")==800 and v.get("height")==450,v
+          assert v.get("avg_frame_rate")=="24/1",v
+          assert int(v.get("nb_read_frames",0))==336,v
+          assert a.get("codec_name")=="aac" and int(a.get("sample_rate",0))==48000,a
+          # One clock controls atmospheric and sonic envelopes.
+          c=[climate(x) for x in [1,5,9,12,13]]
+          assert c[0]["rain"]<c[1]["rain"]<c[3]["rain"]
+          assert c[0]["storm"]<c[2]["storm"]<c[4]["storm"]
+          assert climate(10.35)["flash"]>.7 and climate(11.02)["flash"]<.3
+          samples=[.5,3,6,10.35,13,13.5];imgs=[]
           for i,t in enumerate(samples):
-              f=f"article-{i}.png"
-              subprocess.run(["ffmpeg","-hide_banner","-loglevel","error","-y","-ss",str(t),"-i",v,"-frames:v","1",f],check=True)
-              imgs.append(Image.open(f).convert("RGB"))
-          contrasts=[float(np.mean(np.abs(np.asarray(imgs[i],dtype=float)-np.asarray(imgs[i+1],dtype=float)))) for i in range(len(imgs)-1)]
-          assert min(contrasts)>1.4,contrasts
-          panel=Image.new("RGB",(960,600),(11,19,24));d=ImageDraw.Draw(panel)
-          for i,im in enumerate(imgs):
-              x=i%2*480;y=i//2*200;panel.paste(im.resize((480,270)).crop((0,32,480,200)),(x,y))
-              d.text((x+12,y+175),f"t={samples[i]+7:.2f}s · FRAME REAL",fill=(250,231,198))
-          panel.save("SECOND_ARTICLE.contact.png",optimize=True)
-          with open("SECOND_ARTICLE.tests.json","w") as f:json.dump({"state":"CI_SECOND_ARTICLE_RENDERED_NOT_HUMAN_APPROVED","temporalDiffMean":contrasts,"samples":[x+7 for x in samples],"fullDecode":"PASS","audio":"AAC_PRESENT_LISTEN_NOT_RUN","viewport390":"NOT_RUN","viewport1440":"NOT_RUN"},f,indent=2)
-          print("FIRST ARTICLE PASS",contrasts)
+              dest=f"FINAL-frame-{i}.png"
+              subprocess.run(["ffmpeg","-v","error","-y","-ss",str(t),"-i",name,"-frames:v","1",dest],check=True)
+              imgs.append(Image.open(dest).convert("RGB"))
+          imgs[0].save("poster.jpg",quality=90,optimize=True)
+          canvas=Image.new("RGB",(1200,750),(11,19,23));d=ImageDraw.Draw(canvas)
+          for i,(t,im) in enumerate(zip(samples,imgs)):
+              x=i%2*600;y=i//2*250;canvas.paste(im.resize((600,337)).crop((0,42,600,232)),(x,y))
+              d.text((x+14,y+206),f"t={t:.2f}s / frame decodificado",fill=(245,231,196))
+          canvas.save("FINAL.contact.png",optimize=True)
+          # Audio PCM readback: inspect dynamics without pretending critical listening.
+          with open("decoded.f32","wb") as f:
+              subprocess.run(["ffmpeg","-v","error","-i",name,"-vn","-f","f32le","-ar","48000","-ac","2","pipe:1"],stdout=f,check=True)
+          audio=np.fromfile("decoded.f32",dtype=np.float32).reshape(-1,2)
+          rms=lambda lo,hi: float(np.sqrt(np.mean(audio[int(lo*48000):int(hi*48000)]**2)))
+          windows={"early":rms(1,2),"mid":rms(7,8),"storm":rms(12,13),"thunder":rms(11.04,11.6)}
+          assert max(windows.values())>.001,windows
+          assert windows["storm"]>windows["early"]*.8,windows
+          os.remove("decoded.f32")
+          for i in range(len(samples)):os.remove(f"FINAL-frame-{i}.png")
+          sha=hashlib.sha256(open(name,"rb").read()).hexdigest()
+          q=json.load(open("QA.json"))
+          q.update(phase="PUBLIC_BINARY_BUILT_CI",fullFilm="OBSERVED_DECODE_PASS",binarySha256=sha,
+                   media={"durationSeconds":float(data["format"]["duration"]),"frames":336,"fps":24,
+                          "width":800,"height":450,"videoCodec":"h264","audioCodec":"aac","audioSampleRate":48000,
+                          "sizeBytes":os.stat(name).st_size},audioNumerical="OBSERVED_PASS",
+                   audioWindowsRms=windows,fullFrameDecode="OBSERVED_PASS",firstMiddleLastFrames="OBSERVED_PASS",
+                   remoteReadback="PENDING",humanApproved=False)
+          with open("QA.json","w") as f:json.dump(q,f,indent=2,ensure_ascii=False)
+          print("VALIDATED FILM",q["media"],windows,sha)
+          PY
+      - name: Browser first-screen capture (390 and 1440)
+        working-directory: prometeo/works/video/w003/09
+        run: |
+          BROWSER="$(command -v google-chrome || command -v chromium || command -v chromium-browser || true)"
+          if [ -n "$BROWSER" ]; then
+            SITE="file://$(pwd)/index.html"
+            for W in 390 1440; do
+              "$BROWSER" --headless=new --no-sandbox --disable-gpu --hide-scrollbars --allow-file-access-from-files --virtual-time-budget=1700 --window-size="$W",900 --screenshot="FIRST_SCREEN_${W}.png" "$SITE" >/dev/null 2>&1 || true
+            done
+          fi
+          python - <<'PY'
+          import os,json
+          from PIL import Image
+          q=json.load(open("QA.json"))
+          for w in [390,1440]:
+              p=f"FIRST_SCREEN_{w}.png"
+              ok=os.path.isfile(p) and os.path.getsize(p)>5000
+              q[f"frame{w}"]="OBSERVED_BROWSER_CAPTURE" if ok else "NOT_RUN"
+              if ok:
+                  im=Image.open(p);q[f"frame{w}Resolution"]=im.size
+          with open("QA.json","w") as f:json.dump(q,f,indent=2,ensure_ascii=False)
+          print(q.get("frame390"),q.get("frame1440"))
           PY
       - uses: actions/upload-artifact@v4
         with:
-          name: video-w003-09-volume-article
+          name: antes-de-la-tormenta-w003-09-film
+          if-no-files-found: error
           path: |
-            prometeo/works/video/w003/09/SECOND_ARTICLE_7-13.mp4
-            prometeo/works/video/w003/09/SECOND_ARTICLE.contact.png
-            prometeo/works/video/w003/09/SECOND_ARTICLE.probe.json
-            prometeo/works/video/w003/09/SECOND_ARTICLE.tests.json
-      - name: Publish isolated volume-first article to this candidate branch
+            prometeo/works/video/w003/09/ANTES-DE-LA-TORMENTA-W003-09.mp4
+            prometeo/works/video/w003/09/poster.jpg
+            prometeo/works/video/w003/09/FINAL.contact.png
+            prometeo/works/video/w003/09/FINAL.probe.json
+            prometeo/works/video/w003/09/QA.json
+            prometeo/works/video/w003/09/FIRST_SCREEN_390.png
+            prometeo/works/video/w003/09/FIRST_SCREEN_1440.png
+      - name: Publish isolated original film and exact QA
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add prometeo/works/video/w003/09/SECOND_ARTICLE_7-13.mp4 prometeo/works/video/w003/09/SECOND_ARTICLE.contact.png prometeo/works/video/w003/09/SECOND_ARTICLE.probe.json prometeo/works/video/w003/09/SECOND_ARTICLE.tests.json
-          git diff --cached --quiet || git commit -m "video W003/09: publish volume-article proof and decode tests"
+          git add prometeo/works/video/w003/09/ANTES-DE-LA-TORMENTA-W003-09.mp4
+          git add prometeo/works/video/w003/09/poster.jpg
+          git add prometeo/works/video/w003/09/FINAL.contact.png
+          git add prometeo/works/video/w003/09/FINAL.probe.json
+          git add prometeo/works/video/w003/09/QA.json
+          git add prometeo/works/video/w003/09/FIRST_SCREEN_390.png prometeo/works/video/w003/09/FIRST_SCREEN_1440.png 2>/dev/null || true
+          git diff --cached --quiet || git commit -m "video W003/09: publish 14s real atmospheric MP4 and QA"
           git pull --rebase origin candidate/prometeo-video-w003-20261122-09
           git push origin HEAD:candidate/prometeo-video-w003-20261122-09

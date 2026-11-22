@@ -1,0 +1,46 @@
+{
+  "schema": "prometeo.video.visited-trace-working/v1",
+  "taskId": "video-w003-20261122-09",
+  "room": "video",
+  "humanApproved": false,
+  "events": [
+    {
+      "stage": "READ_LAUNCH",
+      "status": "OBSERVED",
+      "reference": "LAUNCH@0cc574528594731a3d1cf0c15a0d0e5a37e775b7",
+      "decision": "N09 alone; old files preserved"
+    },
+    {
+      "stage": "QBAR_DEEP_SPEC",
+      "status": "OBSERVED",
+      "reference": "PREPRODUCTION.deep-spec-v1.json",
+      "decision": "Faro/tormenta, mayor riesgo acoplamiento físico y lluvia decorativa"
+    },
+    {
+      "stage": "FIRST_ARTICLE_2D",
+      "status": "TECHNICAL_PASS_PERCEPTUAL_FAIL",
+      "reference": "FIRST_ARTICLE.contact.png@66c51e1d8d989a59d15d6e683790c7f28dbfebcf",
+      "decision": "Overlaid rainfall dominated image; reject and switch representation"
+    },
+    {
+      "stage": "FIRST_ARTICLE_VOLUME",
+      "status": "TECHNICAL_PASS_WORKER_VISUAL_OBSERVED",
+      "reference": "SECOND_ARTICLE.contact.png@91faf71bdafaf772579095bb3dbfbf12d0a8a7a4",
+      "decision": "12 volume slabs improve atmosphere, lighthouse remains intentionally stylized"
+    },
+    {
+      "stage": "FULL_FILM",
+      "status": "NOT_RUN",
+      "reason": "CI full-film render and downstream QA are next"
+    },
+    {
+      "stage": "HUMAN_REVIEW",
+      "status": "NOT_RUN",
+      "reason": "No human artistic approval"
+    }
+  ],
+  "limits": [
+    "No claim that traces match a promoted specialized graph (owner migration pending).",
+    "No claim that screenshot URLs alone establish perceptual success."
+  ]
+}

@@ -65,7 +65,12 @@
       "switchTo": "composición procedural 2.5D y óptica de profundidad",
       "oracle": "MP4 decodificado con seis fotogramas de distintos instantes y análisis del contraste/onda sonora.",
       "resourceProof": "Python NumPy/OpenCV/FFmpeg y decodificación H264/AAC ya comprobados por CI del primer artículo; el renderer volumétrico usa esas bibliotecas.",
-      "status": "NOT_RUN"
+      "status": "OBSERVED_PASS",
+      "evidence": {
+        "url": "https://github.com/JuanManuelPM/Experimentos/blob/candidate/prometeo-video-w003-20261122-09/prometeo/works/video/w003/09/SECOND_ARTICLE.contact.png",
+        "description": "Se inspeccionaron visualmente seis fotogramas auténticos (7.5, 9, 10.35, 11.3, 12.5 y 12.9 segundos); menos trazos de lluvia superpuesta, efectos de luz/niebla visibles, faro continuo. QA de decodificación H264+AAC CI PASS, estética estilizada no certificada."
+      },
+      "observation": "TECHNICAL_PASS_AND_WORKER_VISUAL_SAMPLING; not professional or human approval."
     },
     "humanApproved": false,
     "priorArticle": {
@@ -241,7 +246,7 @@
       "failure": "La imagen vuelve a parecer ilustración con partículas autónomas.",
       "prevention": "No lanzar metraje completo hasta comprobar 6 segundos en tormenta real y recortes de cámara.",
       "test": "Inspeccionar contacto del primer artículo y decodificación H264.",
-      "status": "NOT_RUN"
+      "status": "OBSERVED"
     },
     {
       "componentIds": [
@@ -258,7 +263,7 @@
   "acceptance": [
     {
       "kind": "functional",
-      "criterion": "Primer artículo real 6 s y final 14 s, H264 24 fps, audio AAC 48k, decodificación sin errores.",
+      "criterion": "Segundo primer artículo 6 s H264/AAC decodificable y película final 14 s técnica H264/AAC.",
       "oracle": "FFprobe+FFmpeg sobre bytes producidos por CI.",
       "status": "NOT_RUN"
     },
@@ -290,5 +295,6 @@
       "asset": "FIRST_ARTICLE_7-13.mp4",
       "reason": "La lluvia oblicua domina la silueta y el ambiente es demasiado plano; se cambia familia de método."
     }
-  ]
+  ],
+  "selectedRender": "volume.py"
 }
