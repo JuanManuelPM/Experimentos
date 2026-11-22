@@ -436,6 +436,22 @@ async function migrateLegacy(old){
   const nodes=staged.children.map(captureNode);
   return {schema:SCHEMA,name:String(old.name||'FORJA v1 migrada').slice(0,64),duration:8,time:0,assets:newAssets,nodes,tracks:[],source:{editor:'FORJA Escena 09',migratedFrom:'prometeo.forja.scene/v1',catalogueCommit:SOURCE_SHA,limitation:'Clips originales GLB no se convierten a tracks de keyframes nuevos'}};
 }
+async function importCC0Example(){
+  try{
+    status('LOCALIZANDO GLB CC0 EN FUENTE FIJADA…');
+    const res=await fetch(ASSET_BASE+'catalog.json');
+    if(!res.ok)throw Error('Catálogo CC0 no disponible');
+    const catalog=await res.json();
+    const model=catalog.packs.flatMap(pack=>pack.models).find(m=>m.id==='nature-kit/tree-oak');
+    if(!model?.file)throw Error('GLB de prueba no encontrado en fuente original');
+    const fileResponse=await fetch(ASSET_BASE+model.file);
+    if(!fileResponse.ok)throw Error('GLB CC0 no recuperable: '+fileResponse.status);
+    const blob=await fileResponse.blob();
+    if(blob.size>MAX_ASSET_BYTES-countAssets())throw Error('El GLB excede límite de 24 MB');
+    await importGLB(new File([blob],'tree-oak-CC0.glb',{type:'model/gltf-binary'}));
+    status('GLB CC0 IMPORTADO · EDITÁ, GUARDÁ Y PROBÁ IDA/VUELTA');
+  }catch(e){status('ERROR GLB CC0: '+e.message);console.error(e)}
+}
 function buildDemo(){
   pause();tracks.clear();world.clear();setSelected(null);
   projectName='SALA DE RESONANCIA';$('project-name').value=projectName;
@@ -490,6 +506,7 @@ $('demo').onclick=()=>buildDemo();
 $('save').onclick=()=>saveProject();
 $('load').onclick=()=>$('json-file').click();
 $('import-glb').onclick=()=>$('glb-file').click();
+$('cc0').onclick=importCC0Example;
 $('json-file').addEventListener('change',async e=>{
   const file=e.target.files?.[0];e.target.value='';if(!file)return;
   if(file.size>34*1024*1024){status('JSON DEMASIADO GRANDE');return}
