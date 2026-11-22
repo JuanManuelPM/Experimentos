@@ -86,7 +86,23 @@ export function createInterlocutora(T) {
     P.setXYZ(i,x*.24*cheek*taper*jaw*forehead,y*.305,z*.235*(.95+.03*y));
   }
   geo.computeVertexNormals();
-  addMesh(head,geo,skinLight,'Anatomical portrait', [0,0,0]);
+  // Three.js morph targets: soft cheeks/jaw change by expression, editable in the rig.
+  const neutral=geo.attributes.position,targets=[];
+  for(const kind of ['smile','concern']){
+    const data=[];
+    for(let i=0;i<neutral.count;i++){
+      const x=neutral.getX(i),y=neutral.getY(i),z=neutral.getZ(i);
+      const front=Math.max(0,Math.min(1,(z-.03)/.11));
+      const cheek=Math.exp(-Math.pow((Math.abs(x)-.13)/.065,2)-Math.pow((y+.125)/.085,2))*front;
+      const brow=Math.exp(-Math.pow((Math.abs(x)-.1)/.08,2)-Math.pow((y-.12)/.07,2))*front;
+      data.push(x+(kind==='smile'?x*.025*cheek:-x*.01*brow),
+        y+(kind==='smile'?.014*cheek:-.013*brow),
+        z+(kind==='smile'?.008*cheek:.006*brow));
+    }
+    const a=new T.Float32BufferAttribute(data,3);a.name=kind;targets.push(a);
+  }
+  geo.morphAttributes.position=targets;
+  const face=addMesh(head,geo,skinLight,'Anatomical portrait', [0,0,0]);
   // Sculpted brow ridge, bridge, alae and chin contour.
   sphere(head,skin,'Bridge',0,-.015,.214,.065,.138,.08);
   sphere(head,skinLight,'Nasal tip',0,-.086,.275,.073,.041,.054);
@@ -176,6 +192,9 @@ export function createInterlocutora(T) {
     aperture.scale.set(.10*(target[1]+expression),.012+opening*.10,.012);
     aperture.position.y=-opening*.032;
     upper.scale.x=target[1]+expression;lower.scale.x=target[1]+expression;
+    if(face.morphTargetInfluences){face.morphTargetInfluences[0]=warm?.96:0;face.morphTargetInfluences[1]=uneasy?.86:0;}
+    brows[0].position.y=warm?-.002:uneasy?.011:0;
+    brows[1].position.y=warm?-.003:uneasy?.009:0;
     upper.position.y=opening*.009+(warm?.014:uneasy?-.009:0);
     lower.position.y=-opening*.077+(warm?.012:uneasy?-.012:0);
     teeth.visible=opening>.21 && !uneasy;
