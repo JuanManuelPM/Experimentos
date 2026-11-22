@@ -105,4 +105,6 @@ jobs:
           git add prometeo/works/video/w002/09/probe.json
           git add prometeo/works/video/w002/09/QA.json
           git diff --cached --quiet || git commit -m "video W002/09: publish decoded cinematic MP4 and frame QA"
+          # A different writer may have added only isolated metadata during rendering.
+          git pull --rebase origin candidate/prometeo-video-w002-09-20261122
           git push origin HEAD:candidate/prometeo-video-w002-09-20261122
