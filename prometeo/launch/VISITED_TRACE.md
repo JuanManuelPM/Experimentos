@@ -1,0 +1,5 @@
+# PROMETEO · Visited Trace validator v1
+
+Este validador [visited-trace-v1.mjs](visited-trace-v1.mjs) admite la versión real del flujo suministrado, en vez de fijar 1.4.0. Para 3D 2.3.0 cotejar sha256Canonical con FLOW_INDEX. Exige taskId, decisiones/alternativas, timestamps, evidencias, stages reales y aristas directas para pares consecutivos de nodeId. Los nodos omitidos no se inventan. Un evento SKIPPED o NOT_RUN exige razón y no eleva resultado a PASS. La ausencia de nodeId avisa que la topología no fue corroborada; no inferir rutas desde documentación. Una captura URL no se considera inspeccionada por el validador, por eso la única salida exitosa es STRUCTURE_PASS_MEDIA_NOT_VERIFIED. Confirmación de medio, licencias, navegador y aprobación humana se hacen aparte.
+
+**Compatibilidad:** el antiguo `prometeo/3d-flow/versions/1.4.0/validate-trace.mjs` queda inalterado; el flujo 2.3.0 lo menciona incorrectamente. Esta herramienta es un adaptador opcional para nuevas W7/W003, no una alteración de la versión 2.3.0 ni prueba de trazas reales en las W6. Se probó con 11 casos sintéticos; no se ejecutó sobre una traza de obra nueva.
