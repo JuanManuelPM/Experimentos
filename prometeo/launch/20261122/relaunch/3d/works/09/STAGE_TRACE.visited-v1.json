@@ -1,0 +1,159 @@
+{
+  "schema": "prometeo.flow.visited-trace/v1",
+  "taskId": "3d-w7-20261122-09",
+  "flow": {
+    "version": "2.3.0",
+    "sha256Canonical": "53bc9e2e4b37c99e92d3494af8dfa4461cd4644b15f980e32497a8428b067b3f"
+  },
+  "humanApproved": false,
+  "recordedAt": "2026-11-22T18:56:47.910Z",
+  "timestampSemantics": "timestamps registran incorporación de estos eventos al recibo; no reconstruyen cronómetro de etapas ni rutas de nodos no observadas",
+  "events": [
+    {
+      "stage": "scope",
+      "status": "EXECUTED",
+      "decision": "Resolver sólo encargo 09 de la tanda W7 y fijar LAUNCH blob 58de659e; no tocar W6.",
+      "alternativesConsidered": [
+        "Sobrescribir FORJA W6",
+        "Crear editor aislado en W7/09"
+      ],
+      "outputRef": "FLOW_LOCK.json",
+      "evidenceRefs": [
+        "prometeo/launch/20261122/relaunch/3d/LAUNCH.md",
+        "FLOW_LOCK.json"
+      ],
+      "testStatus": "OBSERVED",
+      "timestamp": "2026-11-22T18:56:47.910Z"
+    },
+    {
+      "stage": "recovery",
+      "status": "EXECUTED",
+      "decision": "Recuperar FORJA W6, auditoría 3D y flujo 3D 2.3.0; reconocer demo W6 sin GLB.",
+      "alternativesConsidered": [
+        "Declarar 11 tests W6 como GLB probado",
+        "Buscar y resolver evidencia faltante"
+      ],
+      "outputRef": "PREPRODUCTION.deep-spec-v1.json",
+      "evidenceRefs": [
+        "prometeo/launch/20261122/next/3d/work-09/RESULT.md",
+        "prometeo/launch/20261122/repair/3d/AUDIT_10.md"
+      ],
+      "testStatus": "OBSERVED",
+      "timestamp": "2026-11-22T18:56:47.910Z"
+    },
+    {
+      "stage": "planning",
+      "status": "EXECUTED",
+      "decision": "Primero elaborar GLB binario original con pivote y clip, después escalar editor; no usar un placeholder sin activos.",
+      "alternativesConsidered": [
+        "Modelo de primitivas sin GLB",
+        "GLB original escrito como glTF 2.0",
+        "GLB tercero atribuido"
+      ],
+      "outputRef": "fixture-glb.mjs",
+      "evidenceRefs": [
+        "fixture-glb.mjs",
+        "PREPRODUCTION.deep-spec-v1.json"
+      ],
+      "testStatus": "OBSERVED",
+      "timestamp": "2026-11-22T18:56:47.910Z"
+    },
+    {
+      "stage": "acquisition",
+      "status": "EXECUTED",
+      "decision": "Elegir geometría original sin dependencia de licencia externa y validar 19740 bytes binarios.",
+      "alternativesConsidered": [
+        "Depender de CDN para traer modelo de demostración",
+        "Entregar activo original embebido"
+      ],
+      "outputRef": "DEMO_PROJECT.json",
+      "evidenceRefs": [
+        "fixture-glb.mjs",
+        "DEMO_PROJECT.json"
+      ],
+      "testStatus": "OBSERVED",
+      "timestamp": "2026-11-22T18:56:47.910Z"
+    },
+    {
+      "stage": "assembly",
+      "status": "EXECUTED",
+      "decision": "Crear editor aislado W7, importar GLB en demo y mantener jerarquías, pistas, asset binario y clips nativos.",
+      "alternativesConsidered": [
+        "Modificar FORJA original en gh-pages",
+        "Clonar y ampliar en ruta exclusiva"
+      ],
+      "outputRef": "editor.mjs",
+      "evidenceRefs": [
+        "editor.mjs",
+        "scene-core.mjs",
+        "index.html"
+      ],
+      "testStatus": "NOT_RUN",
+      "timestamp": "2026-11-22T18:56:47.910Z"
+    },
+    {
+      "stage": "qa",
+      "status": "EXECUTED",
+      "decision": "Ejecutar 20 tests V8 en fuentes y demo reales; declarar navegador/GPU y pantalla perceptual NOT_RUN.",
+      "alternativesConsidered": [
+        "Decir que parser PASS equivale a render",
+        "Separar evidencia lógica y audiovisual"
+      ],
+      "outputRef": "scene-core.test.mjs",
+      "evidenceRefs": [
+        "scene-core.test.mjs",
+        "DEMO_PROJECT.json",
+        "PREPRODUCTION.deep-spec-v1.json"
+      ],
+      "testStatus": "OBSERVED",
+      "timestamp": "2026-11-22T18:56:47.910Z"
+    },
+    {
+      "stage": "qa",
+      "status": "NOT_RUN",
+      "reason": "No hay screenshot 390/1440 ni ejecución GLTFLoader y WebGL de este editor en navegador conectado; la calidad artística no está evaluada.",
+      "testStatus": "NOT_RUN",
+      "timestamp": "2026-11-22T18:56:47.910Z"
+    },
+    {
+      "stage": "persistence",
+      "status": "EXECUTED",
+      "decision": "Persistir Book, Flow y Trace, bloqueando versiones y detalles técnicos de pruebas ejecutadas.",
+      "alternativesConsidered": [
+        "Autocertificar gate artístico",
+        "Conservar FIRST_ARTICLE_REQUIRED y límites"
+      ],
+      "outputRef": "FLOW_LOCK.json",
+      "evidenceRefs": [
+        "PREPRODUCTION.deep-spec-v1.json",
+        "FLOW_LOCK.json",
+        "STAGE_TRACE.visited-v1.json"
+      ],
+      "testStatus": "OBSERVED",
+      "timestamp": "2026-11-22T18:56:47.910Z"
+    },
+    {
+      "stage": "publish",
+      "status": "NOT_RUN",
+      "reason": "El registro aquí se creó antes de la propagación a gh-pages; publicación y readback se detallan en RESULT.md y ROOT de forma independiente.",
+      "testStatus": "NOT_RUN",
+      "timestamp": "2026-11-22T18:56:47.910Z"
+    }
+  ],
+  "validatorVerdict": {
+    "status": "STRUCTURE_PASS_MEDIA_NOT_VERIFIED",
+    "errors": [],
+    "warnings": [
+      "EVENT_0_NODE_TRACE_NOT_OBSERVED",
+      "EVENT_1_NODE_TRACE_NOT_OBSERVED",
+      "EVENT_2_NODE_TRACE_NOT_OBSERVED",
+      "EVENT_3_NODE_TRACE_NOT_OBSERVED",
+      "EVENT_4_NODE_TRACE_NOT_OBSERVED",
+      "EVENT_4_TEST_NOT_RUN",
+      "EVENT_5_NODE_TRACE_NOT_OBSERVED",
+      "EVENT_6_STAGE_NOT_RUN",
+      "EVENT_7_NODE_TRACE_NOT_OBSERVED",
+      "EVENT_8_STAGE_NOT_RUN"
+    ]
+  }
+}
