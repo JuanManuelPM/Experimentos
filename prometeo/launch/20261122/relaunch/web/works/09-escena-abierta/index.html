@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="es"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#2911d8">
+<meta name="description" content="ESCENA ABIERTA 2027. Festival cultural ficticio de música, arte vivo, imágenes e ideas. Explorá 21 actividades y armá tu agenda en el dispositivo.">
+<title>ESCENA ABIERTA 2027 · Festival cultural imaginario</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&family=Syne:wght@400..800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./style.css"><script type="module" src="./app.mjs"></script>
+</head><body>
+<a class="skip" href="#programa">Saltar a programación</a>
+<header class="bar">
+ <a class="brand" href="#inicio" aria-label="Escena Abierta, ir al inicio">EA<span class="spark">✳</span><span class="brand-name">ESCENA ABIERTA</span></a>
+ <div class="bar-date">23—25 ABR 2027 <span>· BUENOS AIRES</span></div>
+ <nav aria-label="Secciones"><a href="#programa">Programa</a><a href="#concepto" class="nav-concept">La idea</a><a class="pill mini" href="#agenda">Mi agenda <b id="topCount">0</b></a></nav>
+</header>
+<main id="inicio">
+<section class="hero" aria-labelledby="heroTitle">
+ <div class="hero-type">
+  <div class="topline"><span class="blink-dot" aria-hidden="true"></span> CULTURA EN ESTADO PRESENTE <span>EDICIÓN 01 / FICCIÓN</span></div>
+  <h1 id="heroTitle">ESCENA<br><span>ABIERTA<span class="asterisk">✳</span></span></h1>
+  <div class="hero-bottom"><p>Tres días.<br>Muchas maneras de <em>estar acá.</em></p><a class="hero-cta" href="#programa">Explorar la grilla <span aria-hidden="true">↘</span></a></div>
+ </div>
+ <div class="hero-photo">
+  <img src="https://images.unsplash.com/photo-1689041961947-741dfc09fa84?auto=format&fit=crop&w=1500&q=82" alt="Público de un concierto real, luces naranjas y columnas de humo" width="900" height="1200" fetchpriority="high">
+  <div class="photo-overlay" aria-hidden="true"><span>✳</span><span>23 / 24 / 25</span><span>UNA CIUDAD<br>EN FRECUENCIA</span></div>
+  <small>Imagen de ambiente: <a href="https://unsplash.com/photos/a-large-group-of-people-at-a-concert-s3ObQUr4Kzs" target="_blank" rel="noopener noreferrer">Lachy Spratt / Unsplash</a>. No representa actos ficticios.</small>
+ </div>
+</section>
+<div class="ticker" aria-label="Tres días, tres escenarios, veintiún encuentros"><span>EL ARTE NO TIENE UNA SOLA ENTRADA</span><span aria-hidden="true">✳</span><span>3 DÍAS / 3 ESCENARIOS / 21 ENCUENTROS</span><span aria-hidden="true">✳</span></div>
+<section id="programa" class="program" aria-labelledby="programTitle">
+ <div class="section-kicker"><span>01 / PROGRAMACIÓN</span><span>23 AL 25 DE ABRIL · 2027</span></div>
+ <div class="section-head"><h2 id="programTitle">LA <i>GRILLA</i><span class="asterisk" aria-hidden="true">✳</span></h2><p>No te contamos qué ver. Te damos todo para elegirlo.<br>Los escenarios funcionan en paralelo.</p></div>
+ <div class="filter-panel" aria-label="Filtrar programación">
+  <fieldset class="days"><legend>Día</legend><div id="dayButtons" class="day-buttons">
+   <button type="button" class="chosen" data-day="" aria-pressed="true">Todos</button>
+   <button type="button" data-day="2027-04-23" aria-pressed="false">Vie 23</button>
+   <button type="button" data-day="2027-04-24" aria-pressed="false">Sáb 24</button>
+   <button type="button" data-day="2027-04-25" aria-pressed="false">Dom 25</button>
+  </div></fieldset>
+  <div class="select-wrap"><label for="stage">Escenario</label><select id="stage"><option value="">Todos los espacios</option><option>Patio Solar</option><option>Nave Umbral</option><option>Sala Fuga</option></select></div>
+  <div class="select-wrap"><label for="genre">Disciplina</label><select id="genre"><option value="">Todas las disciplinas</option><option>Música</option><option>Performance</option><option>Visuales</option><option>Ideas</option></select></div>
+  <div class="select-wrap search-wrap"><label for="search">Encontrá una experiencia</label><input id="search" type="search" placeholder="Nombre, disciplina, idea…" autocomplete="off"></div>
+ </div>
+ <div class="program-toolbar"><span id="resultCount" role="status" aria-live="polite">21 actividades</span><label class="toggle"><input type="checkbox" id="onlyAgenda"> Solo mi agenda</label><button type="button" id="resetFilters" class="text-button">Limpiar filtros ↺</button></div>
+ <div class="list-heading"><span>HORA / ESPACIO</span><span>EXPERIENCIA</span><span>DISCIPLINA</span><span>GUARDAR</span></div>
+ <div id="eventList" class="event-list" aria-live="off"><noscript>Activá JavaScript para explorar las actividades. Esta obra usa una agenda guardada localmente.</noscript></div>
+ <div id="empty" class="empty" hidden><strong>No hay coincidencias.</strong><p>Probá otro día, escenario o término.</p><button type="button" id="clearEmpty" class="pill">Ver toda la grilla</button></div>
+</section>
+<section id="agenda" class="agenda" aria-labelledby="agendaTitle">
+ <div class="section-kicker"><span>02 / TU RECORRIDO</span><span>SE GUARDA EN ESTE DISPOSITIVO</span></div>
+ <div class="agenda-grid"><div><h2 id="agendaTitle">TU <i>AGENDA</i><span class="asterisk" aria-hidden="true">✳</span></h2><p>Elegí tus encuentros. Te avisamos cuando dos suceden a la vez, incluso en escenarios distintos. Sin cuentas ni registros.</p><div class="agenda-actions"><button class="pill" type="button" id="exportAgenda">Exportar calendario .ics ↗</button><button class="text-button on-dark" type="button" id="clearAgenda">Vaciar agenda</button></div><p class="storage-note" id="storageStatus"></p></div><div class="agenda-paper"><div class="paper-head"><b>MI RECORRIDO / 2027</b><span id="agendaCount">0 GUARDADOS</span></div><div id="agendaItems"><p class="muted">Tu agenda está vacía. Tocá “+ Guardar” en cualquier actividad.</p></div><div id="conflictPanel" class="conflicts" hidden role="status" aria-live="polite"></div></div></div>
+</section>
+<section id="concepto" class="concept" aria-labelledby="conceptTitle">
+ <div class="section-kicker"><span>03 / LA IDEA</span><span>NO ES UN FESTIVAL REAL</span></div>
+ <div class="concept-grid"><div><h2 id="conceptTitle">HACER<br><i>ESPACIO.</i></h2><p class="concept-lead">No hay escenario chico cuando algo nos mueve.</p><p>ESCENA ABIERTA es un festival imaginario dedicado a las cosas que suceden entre disciplinas: conciertos que también son instalaciones, conversaciones que terminan en movimiento y arte que te pide estar presente.</p><p>Esta publicación es una demostración editorial y funcional. Los nombres, actividades, lugares y fechas pertenecen a una ficción. Las fotografías son registros ajenos de conciertos reales usados solamente como atmósfera.</p></div><div class="concept-photos"><figure><img loading="lazy" src="https://images.unsplash.com/photo-1592526698106-367d4cc984b5?auto=format&fit=crop&w=1000&q=75" alt="Luces azules y violetas sobre el público de un concierto" width="650" height="700"><figcaption>Atmósfera / <a href="https://unsplash.com/photos/yMdb69xGEco" target="_blank" rel="noopener noreferrer">Yoad Shejtman, Unsplash</a></figcaption></figure><figure><img loading="lazy" src="https://images.unsplash.com/photo-1668007981919-e4f6a549f107?auto=format&fit=crop&w=850&q=75" alt="Columnas de humo iluminadas durante un concierto" width="650" height="700"><figcaption>Atmósfera / <a href="https://unsplash.com/photos/a-large-group-of-people-at-a-concert-s3ObQUr4Kzs" target="_blank" rel="noopener noreferrer">Lachy Spratt, Unsplash</a></figcaption></figure></div></div>
+</section>
+</main>
+<footer><div class="footer-logo">EA<span>✳</span></div><p>ESCENA ABIERTA 2027<br>Un festival que no existe. Una agenda que sí funciona.</p><a href="#inicio">Volver arriba ↑</a><small>Obra ficticia, sin entradas ni artistas reales. Las fotos no identifican a ningún acto del programa. Proyecto WEB W003 / 09.</small></footer>
+<dialog id="detail" aria-labelledby="detailTitle"><div class="dialog-inner">
+ <div class="dialog-top"><span>FICHA / ESCENA ABIERTA</span><button type="button" id="closeDetail" aria-label="Cerrar ficha">✕ Cerrar</button></div>
+ <div class="dialog-photo"><img id="detailPhoto" src="" alt="" width="900" height="420"><span id="detailCredit"></span></div>
+ <div class="dialog-meta" id="detailMeta"></div><h2 id="detailTitle"></h2><p class="detail-kicker" id="detailKicker"></p><p id="detailDesc"></p>
+ <div class="dialog-foot"><button type="button" class="pill" id="detailSave">+ Guardar en mi agenda</button><a href="#agenda" id="goAgenda">Ver mi recorrido ↗</a></div>
+ </div></dialog>
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+</body></html>
