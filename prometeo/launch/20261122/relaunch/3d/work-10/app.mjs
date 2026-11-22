@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { GLTFExporter } from 'three/addons/exporters/GLTFExporter.js';
 import { DESIGN, BOM, PALETTES, VARIANTS, foldPose, validateDesign } from './mechanics.mjs';
 
 // F/20 : a meter-scaled, original concept visualizer. No structural certification.
@@ -116,6 +117,7 @@ function fender(parent,x,y){
  }
 }
 function build(){
+ root.traverse(obj=>{if(obj.isMesh)obj.geometry.dispose()});
  root.clear();parts={};stemHinge=null;saddleSlide=null;
  rear=new THREE.Group();rear.name='unfolded-rear-chassis';root.add(rear);
  frontPivot=new THREE.Group();frontPivot.name='vertical-folding-hinge-axis';
@@ -232,6 +234,18 @@ document.getElementById('download').addEventListener('click',()=>{
   qa:validateDesign(),note:'Concept art visualization, not manufacturing-ready engineering'};
  const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
  const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='F20-config-BOM.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1500);
+});
+document.getElementById('exportGlb').addEventListener('click',async()=>{
+ const btn=document.getElementById('exportGlb');btn.disabled=true;btn.textContent='EXPORTANDO...';
+ try{
+  root.updateMatrixWorld(true);
+  const data=await new GLTFExporter().parseAsync(root,{binary:true,onlyVisible:true});
+  if(!(data instanceof ArrayBuffer)||data.byteLength<1000)throw new Error('GLB sin geometría exportable');
+  const url=URL.createObjectURL(new Blob([data],{type:'model/gltf-binary'}));
+  const anchor=document.createElement('a');anchor.href=url;anchor.download='F20-'+variant+'-'+palette+'.glb';anchor.click();
+  setTimeout(()=>URL.revokeObjectURL(url),2000);
+ }catch(e){error.hidden=false;error.textContent='Export GLB no disponible: '+e.message}
+ finally{btn.disabled=false;btn.textContent='EXPORTAR MODELO (GLB)'}
 });
 const list=document.getElementById('bom');
 BOM.forEach(part=>{
