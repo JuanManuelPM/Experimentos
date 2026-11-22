@@ -1,0 +1,229 @@
+{
+  "version": "DEEP-SPEC-1",
+  "medium": "images",
+  "depth": "SISTEMA",
+  "brief": "PATIO DE INVIERNO: producir tres vistas de un mismo jardín interior contemporáneo, escala, materiales, luz y pruebas de continuidad visual.",
+  "intent": {
+    "experience": "Un patio doméstico cálido, silencioso y habitable cuya identidad se conserva entre ingreso, diagonal y detalle.",
+    "distinctAbility": "Canon reutilizable de espacio, objetos, materiales y cámaras con aceptación explícita de límites de continuidad."
+  },
+  "references": [
+    {
+      "id": "R1",
+      "status": "OBSERVED",
+      "url": "https://www.desaichia.com/photographers-loft",
+      "observation": "El estudio describe los ejes visuales largos, el roble como tejido común entre habitaciones y las decisiones explícitas de ingreso de luz."
+    },
+    {
+      "id": "R2",
+      "status": "OBSERVED",
+      "url": "https://www.riba.org/explore/awards/uk-awards/regional-awards/2026/north-east-awards-2026/newcastle-courtyard-house/",
+      "observation": "La ficha del RIBA describe un patio interior articulador que se conecta mediante grandes vidrieras y vegetación de sombra."
+    },
+    {
+      "id": "R3",
+      "status": "OBSERVED",
+      "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/archviz-interior-rendering?application_version=4.27",
+      "observation": "Las sombras blandas, los reflejos fuera del plano y la iluminación global hacen la diferencia en archviz de interiores."
+    }
+  ],
+  "components": [
+    {
+      "id": "SPACE",
+      "role": "Arquitectura de patio doméstico único",
+      "strategy": "Bloquear recinto, apertura, cantero y distancias métricas",
+      "constraints": "Ninguna cámara puede alterar medidas; pasajes perimetrales nominales mayores a 1,10 m."
+    },
+    {
+      "id": "IDENTITY",
+      "role": "Hitos espaciales reconocibles entre vistas",
+      "strategy": "Mantener árbol multitrónco, roca, vidrio, banco, almohadón y vasija",
+      "constraints": "Las relaciones espaciales no pueden cambiar por conveniencia compositiva en tomas nuevas."
+    },
+    {
+      "id": "CAMERA_LIGHT",
+      "role": "Tres ópticas y una misma fuente solar",
+      "strategy": "Fijar posiciones y targets, lucernario, claraboya y fachada norte",
+      "constraints": "Sin sombras invertidas y sin cambiar el esquema del espacio entre imágenes."
+    },
+    {
+      "id": "QA",
+      "role": "Rasters originales y verificación honesta",
+      "strategy": "Recortar una generación visual en tres imágenes y registrar nativo, atlas, planta y hashes",
+      "constraints": "No fingir render geométrico, conditioning ni aprobación artística que no se ejecutó."
+    }
+  ],
+  "questions": [
+    {
+      "id": "Q1",
+      "target": "SPACE",
+      "question": "¿Qué tamaño deja circulación humana suficiente alrededor del volumen central de jardín?",
+      "alternatives": [
+        "7,20 por 6,00 m con terrario central de 2,75 por 2,85 m",
+        "6,00 por 5,00 m con jardín más estrecho"
+      ],
+      "finding": "La primera elección conserva el recorrido peatonal en cuatro costados sin chocar con el banco del este.",
+      "decisionImpact": "Definir dimensiones en SCENE_CANON.json y contrastar pasillos con el plano.",
+      "evidenceRef": "R2"
+    },
+    {
+      "id": "Q2",
+      "target": "IDENTITY",
+      "question": "¿Cuáles son los objetos asimétricos que mejor delatan un cambio inadvertido de escena?",
+      "alternatives": [
+        "Árbol multitrónco, roca descentrada, banco y almohadón",
+        "Piezas decorativas genéricas reemplazables"
+      ],
+      "finding": "Los hitos no simétricos permiten detectar saltos de lugar entre la toma axial y el acercamiento.",
+      "decisionImpact": "Hacer comparativa en atlas con las tres vistas y registrar IDs fijos.",
+      "evidenceRef": "R1"
+    },
+    {
+      "id": "Q3",
+      "target": "CAMERA_LIGHT",
+      "question": "¿Puede la luz natural atravesar aberturas físicamente concebibles en lugar de inventar focos por cámara?",
+      "alternatives": [
+        "Cubierta de vidrio, claraboya oeste y gran abertura norte",
+        "Tres luces artificiales distintas para cada encuadre"
+      ],
+      "finding": "La luz entrante desde cubierta y fachada explica el tratamiento del árbol y las reflexiones laterales.",
+      "decisionImpact": "Documentar una sola orientación solar; dejar pendiente la validación mediante ray tracing.",
+      "evidenceRef": "R3"
+    },
+    {
+      "id": "Q4",
+      "target": "QA",
+      "question": "¿Qué prueba autoriza decir que las tres fotografías salieron del mismo modelo físico y no de un collage?",
+      "alternatives": [
+        "Render multivista desde la misma geometría y proyección",
+        "Continuidad visual entre recortes del mismo tríptico"
+      ],
+      "finding": "La continuidad visual observada no es evidencia de reproyección tridimensional exacta.",
+      "decisionImpact": "Publicar métricas nativas y etiquetar explicitamente la comprobación métrica NOT_RUN.",
+      "evidenceRef": "R3"
+    }
+  ],
+  "decisions": [
+    {
+      "id": "D1",
+      "questionId": "Q1",
+      "componentIds": [
+        "SPACE"
+      ],
+      "choice": "Recinto 7,20 por 6,00 metros y cantero de 2,75 por 2,85.",
+      "rejected": "Patio central sin distancias de paso conocidas.",
+      "productionChange": "Anclar todos los recintos y objetos con coordenadas de la planta.",
+      "why": "Una única geometría escrita es imprescindible para juzgar continuidad."
+    },
+    {
+      "id": "D2",
+      "questionId": "Q2",
+      "componentIds": [
+        "IDENTITY",
+        "QA"
+      ],
+      "choice": "Preservar árbol, roca, banco, cojín y vasija entre cámaras.",
+      "rejected": "Objetos ornamentales diferentes y sin IDs por vista.",
+      "productionChange": "Cotejar los tres recortes juntos en un atlas fuera de las imágenes.",
+      "why": "Las características asimétricas descubren pérdidas de identidad espacial."
+    },
+    {
+      "id": "D3",
+      "questionId": "Q3",
+      "componentIds": [
+        "CAMERA_LIGHT"
+      ],
+      "choice": "Proponer luz natural a través de cubierta y vanos laterales.",
+      "rejected": "Focos arbitrarios puestos detrás del fotógrafo en cada imagen.",
+      "productionChange": "Exponer aberturas, cámaras y orientación solar compartidas.",
+      "why": "La materialidad creíble requiere una narrativa física de iluminación."
+    },
+    {
+      "id": "D4",
+      "questionId": "Q4",
+      "componentIds": [
+        "QA",
+        "SPACE"
+      ],
+      "choice": "Entregar imágenes y canon sin certificar métrica pixel-perfect.",
+      "rejected": "Declarar que las imágenes son renders de un modelo no ejecutado.",
+      "productionChange": "Registrar status visual OBSERVED y verificación física NOT_RUN.",
+      "why": "Un fotograma plausible no demuestra identidad geométrica real."
+    }
+  ],
+  "relations": [
+    {
+      "from": "SPACE",
+      "to": "IDENTITY",
+      "invariant": "La jardinera y sus hitos están dentro de la misma sala en toda la serie.",
+      "failure": "Plantas o rocas que se trasladan de recinto en otro ángulo.",
+      "test": "Controles de bounding boxes y atlas."
+    },
+    {
+      "from": "CAMERA_LIGHT",
+      "to": "SPACE",
+      "invariant": "Cada cámara comparte huecos, techo y volumen de patio sin alteración.",
+      "failure": "Vano que aparece o desaparece al cambiar de posición.",
+      "test": "Confrontar referencias físicas del plano con cada foto."
+    },
+    {
+      "from": "QA",
+      "to": "IDENTITY",
+      "invariant": "Las fotografías conservan los hitos persistentes de identidad del proyecto.",
+      "failure": "Asiento, piedra o vegetación reemplazados en el detalle.",
+      "test": "Inspección de imágenes nativas a escala real."
+    }
+  ],
+  "risks": [
+    {
+      "componentIds": [
+        "SPACE"
+      ],
+      "severity": "high",
+      "failure": "Paso lateral inferior a 1,10 metros dentro de un patio doméstico.",
+      "prevention": "Restringir la dimensión del cantero y la banca antes de la producción.",
+      "test": "Aserciones del canon y revisión de la planta acotada.",
+      "status": "OBSERVED"
+    },
+    {
+      "componentIds": [
+        "QA",
+        "CAMERA_LIGHT"
+      ],
+      "severity": "medium",
+      "failure": "Tres vistas tienen parecido artístico pero no continuidad geométrica medida.",
+      "prevention": "Separar el canon conceptual del arte generado y reconocer limitaciones.",
+      "test": "Reproyección 3D y correspondencias en píxeles, pendientes.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "acceptance": [
+    {
+      "kind": "visual",
+      "criterion": "Tres PNG reales del patio, distintos encuadres con hitos repetidos.",
+      "oracle": "Inspección del atlas y de los ficheros raster originales.",
+      "status": "OBSERVED"
+    },
+    {
+      "kind": "logic",
+      "criterion": "El patio interior y la banca conservan pasajes nominales adecuados.",
+      "oracle": "Auditoría de coordenadas de espacio y objetos en la planta.",
+      "status": "OBSERVED"
+    },
+    {
+      "kind": "visual",
+      "criterion": "Continuidad geométrica y sombras derivadas de una única escena 3D.",
+      "oracle": "Render real ray-traced por cámaras con reproyección de hitos.",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "visual",
+      "criterion": "Acabado fotográfico premium verificado por revisión independiente.",
+      "oracle": "Evaluación externa sobre los originales al 100% y prueba de impresión.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "resources": "Generador de imágenes de ChatGPT para arte raster; Python Pillow y Matplotlib para planta y presentación local.",
+  "licensing": "Creaciones visuales originales de esta sesión; referencias sólo de investigación, sin copiar sus imágenes ni licencias.",
+  "environmentLimits": "No hay Blender ni GPU de render profesional accesibles aquí y no existe conditioning geométrico de ImageGen por este script."
+}
