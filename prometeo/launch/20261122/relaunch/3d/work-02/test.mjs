@@ -1,0 +1,18 @@
+import assert from 'node:assert/strict';
+import {architecturalScene} from './scene.js';
+import {mat} from './engine.js';
+import {ArchitectureCamera,PRESETS,coverage,resolveOcclusion,segmentAABB,walkable} from './camera-controller.js';
+const tests=[];
+const test=(name,fn)=>{try{fn();tests.push({name,status:'PASS'})}catch(err){tests.push({name,status:'FAIL',error:err.message});process.exitCode=1}};
+const o=architecturalScene.objects;
+test('Barras de matrices 3D finitas',()=>{assert.ok(o.length>=250);assert.ok(o.every(x=>x.model.length===16&&Array.from(x.model).every(Number.isFinite)))});
+test('Tres habitaciones a escala humana + dos patios',()=>{assert.equal(Object.keys(architecturalScene.dimensions.rooms).length,3);assert.equal(architecturalScene.dimensions.courtyards,2);assert.equal(architecturalScene.dimensions.ceiling,3.12)});
+test('Elementos de paredes sólidos con AABB consistente',()=>{let walls=o.filter(x=>x.solid);assert.ok(walls.length>=12);assert.ok(walls.every(x=>x.bounds&&x.bounds.min.every((v,i)=>v<x.bounds.max[i])))});
+test('Intersección de 9 rayos detecta pared real',()=>{const wall={min:[-.2,0,-.2],max:[.2,3,.2]};assert.ok(coverage([0,1.6,3],[0,1.4,-3],wall,390)>.44);assert.equal(segmentAABB([3,1.5,3],[3,1.5,-3],wall),null)});
+test('Oclusión de cámara no oculta muros detrás del sujeto',()=>{const testWall={id:'blocking',occluder:true,bounds:{min:[-3,0,-.15],max:[3,3,.15]}};assert.ok(resolveOcclusion([0,1.6,3],[0,1.6,-3],[testWall],390).has('blocking'));assert.ok(!resolveOcclusion([0,1.6,-3],[0,1.6,-6],[testWall],390).has('blocking'))});
+test('Colisión contra muros exteriores pero paso abierto al patio',()=>{assert.equal(walkable([-8.38,1.62,1.6],o),false);assert.equal(walkable([-2.20,1.62,.60],o),true)});
+test('Cámara táctil tiene pitch limitado',()=>{const c=new ArchitectureCamera(o);c.turn(0,15);assert.ok(c.pitch<=.74);c.turn(0,-15);assert.ok(c.pitch>=-.91)});
+test('Los cuatro destinos son diferentes',()=>{assert.equal(new Set(Object.values(PRESETS).map(x=>x.pos.join(','))).size,4)});
+test('Paseo tiene waypoints y concluye en posición final',()=>{const c=new ArchitectureCamera(o);c.go('estudio');for(let i=0;i<1100;i++)c.tick(.016);assert.equal(c.moving,false);assert.ok(Math.hypot(...c.pos.map((v,i)=>v-PRESETS.estudio.pos[i]))<.01)});
+test('WebGL: primer artículo requiere render separado, no se infiere de geometría',()=>{assert.ok(mat.perspective(Math.PI/3,1440/900,.07,90)[0]>0)});
+console.log(JSON.stringify({total:tests.length,pass:tests.filter(x=>x.status==='PASS').length,results:tests},null,2));

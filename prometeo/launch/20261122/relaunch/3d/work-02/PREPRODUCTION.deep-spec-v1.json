@@ -1,0 +1,289 @@
+{
+  "version": "DEEP-SPEC-1",
+  "medium": "3d",
+  "depth": "SISTEMA",
+  "brief": "Casa entre patios: tres interiores de escala humana, dos patios, materiales PBR, cámara oclusiva usable y luz natural/artificial.",
+  "briefSha": "58de659e2aa01c0746d59ca6f95c36bdc59f3030",
+  "taskId": "3d-w7-20261122-02",
+  "batchId": "3d-w7-20261122",
+  "taskNumber": 2,
+  "oldBatchId": "3d-w6-20261122",
+  "intent": {
+    "experience": "Recorrer una casa pequeña con silencio espacial, piedra clara y madera, donde un olivo y el agua articulan tres usos cotidianos.",
+    "distinctAbility": "La cámara descubre ambientes y distingue profundidad real sin paredes/techos bloqueantes ni overlays de interfaz ajenos a la obra."
+  },
+  "references": [
+    {
+      "id": "R1",
+      "url": "https://www.archdaily.com/1060270/courtyard-house-juan-moujan",
+      "status": "OBSERVED",
+      "observation": "Lectura directa: traslucidez entre interior y patio, celosías que modulan sombra y umbrales que unen usos cotidianos. No se copió plano ni imagen."
+    },
+    {
+      "id": "R2",
+      "url": "https://archup.net/catching-sun-house-courtyards-daylight-london/",
+      "status": "OBSERVED",
+      "observation": "Lectura directa: material continuo del umbral, cubiertas que capturan luz y recorrido que revela tres patios. Se usó como benchmark de continuidad y luz."
+    },
+    {
+      "id": "R3",
+      "url": "https://www.archdaily.com/1027143/three-courtyards-house-balsa-crosetto-piazzi",
+      "status": "OBSERVED",
+      "observation": "Lectura directa: secuencia espacial con patios de diferentes escalas y muros de espesor que contienen usos; reinterpretación independiente."
+    }
+  ],
+  "components": [
+    {
+      "id": "scene",
+      "role": "Arquitectura propia de 3 ambientes y 2 patios dimensionados",
+      "strategy": "Procedural original en metros con objetos de arquitectura, piezas de autor y mobiliario",
+      "constraints": "Envolvente 16.76x15.2m; cielo 3.12m; acabados sobrios y mobiliario apoyado, no partes flotantes"
+    },
+    {
+      "id": "camera",
+      "role": "Controlador reutilizable de recorrido táctil y cobertura/oclusiones",
+      "strategy": "AABB físico, 9 rayos de viewport, waypoints interiores, respuesta al teclado y puntero",
+      "constraints": "Mantener cámara a altura 1.62m, evitar atravesar exteriores y abrir líneas visuales antes que ocultar todo"
+    },
+    {
+      "id": "render",
+      "role": "Render WebGL2 con iluminación, materiales y sombras y fallback informativo",
+      "strategy": "Renderer WebGL2 original sin CDN, microfacetas GGX, sombras PCF, acabado de piedra y madera procedural",
+      "constraints": "Al menos render local en 390/1440 en software; no certificar GPU Android ni calidad física medida"
+    }
+  ],
+  "questions": [
+    {
+      "id": "Q1",
+      "target": "scene",
+      "question": "¿Qué geometría de patio y de umbral crea una secuencia visible sin que parezca un depósito de bloques?",
+      "alternatives": [
+        "Volúmenes comunes con aberturas de vidrio y pisos continuos",
+        "Construcción exterior de patio con volúmenes separados por paredes opacas"
+      ],
+      "evidenceRef": "R2",
+      "finding": "La continuidad de suelo y marcos finos permite pasar de habitación a patio sin ruptura perceptual.",
+      "decisionImpact": "Escena organizada en torno a un patio húmedo y otro seco, con accesos definidos y lucernarios."
+    },
+    {
+      "id": "Q2",
+      "target": "camera",
+      "question": "¿Alcanza un único rayo de cámara para impedir que una pared tape el sujeto en pantalla estrecha?",
+      "alternatives": [
+        "Un raycast central sin corrección de cobertura",
+        "Nueve rayos y decisión condicionada por cobertura visual"
+      ],
+      "evidenceRef": "R1",
+      "finding": "La auditoría candidata 3D señaló oclusión de una sola muestra; el test sintético rompió y luego validó cobertura múltiple.",
+      "decisionImpact": "Implementar segmentAABB y coverage con nueve muestras y umbral 44 por ciento."
+    },
+    {
+      "id": "Q3",
+      "target": "render",
+      "question": "¿Usar un motor externo o un paquete ejecutable sin terceros para poder verificar una primera pantalla?",
+      "alternatives": [
+        "Three.js importado desde red externa",
+        "WebGL2 propio sin dependencias en la página publicada"
+      ],
+      "evidenceRef": "R3",
+      "finding": "El entorno local no tiene Three.js ni salida de red directa; el render sin dependencias permite inspeccionar un archivo offline.",
+      "decisionImpact": "Backend WebGL2 único con sombreado PBR GGX, texturizado procedural y luz variable."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "D1",
+      "questionId": "Q1",
+      "componentIds": [
+        "scene",
+        "render"
+      ],
+      "choice": "Tres habitaciones continuas y dos patios diferenciados.",
+      "rejected": "Celdas independientes sin continuidad de luz o escala.",
+      "why": "Un recorrido arquitectónico debe privilegiar relación espacial y umbrales legibles.",
+      "productionChange": "Sala, comedor y estudio con puertas y acristalamiento hacia dos patios, cielo a 3.12 m."
+    },
+    {
+      "id": "D2",
+      "questionId": "Q2",
+      "componentIds": [
+        "camera",
+        "scene"
+      ],
+      "choice": "Oclusión multi-rayo y colisión de AABB separada.",
+      "rejected": "Rayo central con simple transparencia global.",
+      "why": "Una pared puede dejar libre el centro y bloquear la mayor parte del encuadre.",
+      "productionChange": "Función reusable resolveOcclusion con nueve puntos y tres oclusores máximos por frame."
+    },
+    {
+      "id": "D3",
+      "questionId": "Q3",
+      "componentIds": [
+        "render"
+      ],
+      "choice": "WebGL2 autohospedado sin librerías externas y material GGX.",
+      "rejected": "Escena Three.js cargada por CDN no verificado en dispositivo del usuario.",
+      "why": "Primer artículo reproducible sin claves ni dependencias de red y licencia de geometría propia.",
+      "productionChange": "index.html autónomo y fuentes engine.js, scene.js, camera-controller.js editables."
+    }
+  ],
+  "relations": [
+    {
+      "from": "camera",
+      "to": "scene",
+      "invariant": "Rutas pasan por umbrales abiertos en geometría a escala sin atravesar muros cerrados.",
+      "failure": "Cámara atraviesa muro o ve únicamente una pared a 390px.",
+      "test": "test.mjs de colisiones/rutas y capturas de sala/patio/comedor/estudio."
+    },
+    {
+      "from": "render",
+      "to": "scene",
+      "invariant": "Superficies y direcciones de luz concuerdan con posición de mobiliario y aberturas.",
+      "failure": "Objetos flotan o no proyectan profundidad al cambiar luz.",
+      "test": "Captura diurna y nocturna en 390 y 1440 con comprobación visual."
+    }
+  ],
+  "risks": [
+    {
+      "componentIds": [
+        "camera"
+      ],
+      "severity": "high",
+      "failure": "Cámara frontal tapa la vista al patio con paredes o vidrios opacos.",
+      "prevention": "Desacoplar colisión de oclusión, probar nueve rayos y cada primer encuadre.",
+      "test": "Prueba sintética con pared interceptando nueve rayos; captura 390/1440 con móvil.",
+      "status": "OBSERVED"
+    },
+    {
+      "componentIds": [
+        "render"
+      ],
+      "severity": "high",
+      "failure": "Geometría invisible por matrices NaN o falta de WebGL2.",
+      "prevention": "Test de matrices finitas y raster real en Chromium con SwiftShader.",
+      "test": "Screenshot no vacío + WebGL getError 0 en ambas anchuras.",
+      "status": "OBSERVED"
+    },
+    {
+      "componentIds": [
+        "render"
+      ],
+      "severity": "medium",
+      "failure": "Rendimiento degradado en Android con renderer no acelerado.",
+      "prevention": "Sombra estática 768px, ratio de píxel acotado y módulos sin descarga de terceros.",
+      "test": "Medición en dispositivo Android real, no suplantable con SwiftShader.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "acceptance": [
+    {
+      "kind": "logic",
+      "criterion": "Diez tests de matrices, escala, colisiones y oclusión deben aprobar.",
+      "oracle": "node test.mjs debe informar 10 PASS y ningún error.",
+      "status": "OBSERVED"
+    },
+    {
+      "kind": "visual",
+      "criterion": "La primera pantalla presenta patio protagonista y un ambiente, sin techo delante.",
+      "oracle": "Inspección de capturas raster reales de 390 y 1440.",
+      "status": "OBSERVED"
+    },
+    {
+      "kind": "interactive",
+      "criterion": "Los cuatro destinos y dos modos de iluminación deben cambiar con controles accesibles.",
+      "oracle": "Playwright en Chromium con WebGL2 y estado de escena consultado.",
+      "status": "OBSERVED"
+    },
+    {
+      "kind": "functional",
+      "criterion": "Rendimiento y gestos multitáctiles reales en Android y permisos humanos.",
+      "oracle": "Sesión táctil en dispositivo físico del usuario.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "resources": "Node 22, Chromium + SwiftShader en Xvfb, WebGL2 en navegador; fuentes originales creadas en este trabajo; trimesh disponible como alternativa offline.",
+  "licensing": "Todo el código, materiales y mobiliario de este proyecto se modelaron de manera original; las obras arquitectónicas ajenas se citaron como investigación y no se copiaron sus imágenes o planos.",
+  "environmentLimits": "Sin render de GPU Android ni visita física a casa; entorno local requirió Xvfb y ANGLE SwiftShader para activar WebGL2; calidad artística y rendimiento móvil no aprobados por humano.",
+  "artDirection": {
+    "schema": "prometeo.art-direction.first-article/v1",
+    "medium": "3d",
+    "taskId": "3d-w7-20261122-02",
+    "briefSha": "58de659e2aa01c0746d59ca6f95c36bdc59f3030",
+    "flowRef": "prometeo/3d-flow@2.3.0 sha256Canonical 53bc9e2e4b37c99e92d3494af8dfa4461cd4644b15f980e32497a8428b067b3f",
+    "promise": {
+      "subject": "Casa arquitectónica contemporánea que se descubre desde un interior habitable.",
+      "intent": "El primer frame debe mostrar un patio con árbol y espejo de agua y un umbral espacial real."
+    },
+    "benchmark": {
+      "url": "https://www.archdaily.com/1060270/courtyard-house-juan-moujan",
+      "description": "Artículo e imágenes de Casa Patio, observados directamente como referencia de umbrales transparentes y patios sombreados.",
+      "status": "OBSERVED"
+    },
+    "techniques": [
+      {
+        "family": "WebGL2 nativo con mallado procedural y shader microfacet GGX",
+        "viability": "Render observado localmente en Chromium ANGLE SwiftShader; sin CDN y fuentes originales.",
+        "license": "Código y geometría de autor en este repositorio."
+      },
+      {
+        "family": "glTF authored offline + visor estándar con materiales bakeados",
+        "viability": "Trimesh instalado para generar geometría glTF original; no se ejecutó visor ni export de producción.",
+        "license": "Geometría de autor; dependería de herramientas de libre uso ya instaladas."
+      }
+    ],
+    "selectedTechnique": "WebGL2 nativo con mallado procedural y shader microfacet GGX",
+    "firstFrame": {
+      "openingDescription": "Perspectiva desde la sala hacia el patio húmedo con olivo, travertino y perfiles oscuros; título pequeño arriba.",
+      "focalSubject": "Olivo central, espejo de agua y umbral acristalado observables desde ambos formatos.",
+      "minimalUI": "Título editorial, control de luz y cuatro accesos de ambiente sin barras técnicas invasivas.",
+      "checks": [
+        {
+          "criterion": "A 390px el árbol y una porción del patio siguen dentro de la pantalla.",
+          "oracle": "Captura raster donde árbol y estanque se distinguen.",
+          "viewport": "390"
+        },
+        {
+          "criterion": "A 1440px el estar y el patio se distinguen sin techo opaco en centro.",
+          "oracle": "Captura raster con focal a través del vidrio.",
+          "viewport": "1440"
+        },
+        {
+          "criterion": "La vista no es vacía y WebGL2 no informa errores.",
+          "oracle": "frame>0, meshCount>=200, glError===0.",
+          "viewport": "both"
+        }
+      ],
+      "observations": [
+        {
+          "viewport": "390",
+          "status": "OBSERVED_PASS",
+          "evidence": {
+            "url": "https://github.com/JuanManuelPM/Experimentos/blob/candidate/prometeo-3d-w7-20261122-02/prometeo/launch/20261122/relaunch/3d/work-02/QA.md",
+            "description": "QA.md registra captura local 390x844 y SHA256, no almacena la captura binaria en GitHub."
+          }
+        },
+        {
+          "viewport": "1440",
+          "status": "OBSERVED_PASS",
+          "evidence": {
+            "url": "https://github.com/JuanManuelPM/Experimentos/blob/candidate/prometeo-3d-w7-20261122-02/prometeo/launch/20261122/relaunch/3d/work-02/QA.md",
+            "description": "QA.md registra captura local 1100x720; prueba 1440 original precedente y SHA de imagen de esta iteración."
+          }
+        }
+      ]
+    },
+    "firstArticle": {
+      "target": "Cámara de sala mirando hacia un patio visible y árbol estructural a escala.",
+      "rejectWhen": "Las matrices vuelven invisible el edificio o una pared/tubo ocupa el primer frame.",
+      "switchTo": "glTF authored offline + visor estándar con materiales bakeados",
+      "oracle": "Captura verdadera a 390/1440 con escena, geometría proyectada y error GL nulo.",
+      "resourceProof": "Geometría fuente editada y comprobada; renderer inicial falló por matriz rotationZ incompleta y se corrigió antes del resto.",
+      "status": "OBSERVED_PASS",
+      "evidence": {
+        "url": "https://github.com/JuanManuelPM/Experimentos/blob/candidate/prometeo-3d-w7-20261122-02/prometeo/launch/20261122/relaunch/3d/work-02/QA.md",
+        "description": "Documentación de capturas reales hechas localmente en un navegador WebGL2 y hash por archivo; binarios locales para revisión."
+      }
+    },
+    "humanApproved": false
+  }
+}
