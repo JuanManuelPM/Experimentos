@@ -1,0 +1,15 @@
+{
+  "name": "lupa-visual-comparator",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Comparador de regresión visual con captura real autorizada",
+  "scripts": {
+    "capture": "node ./capture.mjs",
+    "check": "node --check ./capture.mjs && node --check ./app.js"
+  },
+  "dependencies": {
+    "playwright": "^1.56.0",
+    "pngjs": "^7.0.0"
+  }
+}
