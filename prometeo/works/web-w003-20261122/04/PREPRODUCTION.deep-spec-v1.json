@@ -1,0 +1,302 @@
+{
+  "version": "DEEP-SPEC-1",
+  "medium": "web",
+  "depth": "SISTEMA",
+  "taskId": "web-w003-20261122-04",
+  "batchId": "web-w003-20261122",
+  "taskNumber": 4,
+  "brief": "TIPO VIVO · Micrositio original para fundición ficticia con familia variable licenciada, escritura editable, ejes y cinética con alternativa sin movimiento.",
+  "briefLock": {
+    "newLaunchSha": "bef87bf57c789d2b0605ca9ff81a5d3bbaab5e35",
+    "oldLaunchSha": "cd88a07941ab62072f6de5ee69764308f1ec2387",
+    "oldBatchId": "web-w002-20261122",
+    "newBatchId": "web-w003-20261122"
+  },
+  "flow": {
+    "shared": "Q-LOOP/QBAR-1/DEEP-SPEC-1/ART-DIRECTION-FIRST-ARTICLE-1",
+    "sharedContractSha": "7911ce780c6eb8fc08ba3e5621e4479bbe2e9757",
+    "deepSpecSha": "7656a293b0182f81619bf0d27b90dffa771c2683",
+    "artDirectionSha": "b1a1a012e90897200336cac6316c0511cb40c4c5",
+    "specializedStatus": "CANDIDATE_NOT_PROMOTED",
+    "specializedAuditSha": "bb41faa97c76e500f26a643b8947ad22b76ec3a8",
+    "flowBefore": "web-w002 N04 logic/DOM only, browser NOT_RUN",
+    "flowAfter": "W003 preventive first article + self-hosted OFL variable binary + browser-dependent oracles"
+  },
+  "intent": {
+    "experience": "Entrar en una portada que se sienta como una publicación tipográfica, no un dashboard: la letra ocupa todo el escenario y responde a la persona.",
+    "distinctAbility": "Probar cuatro ejes OpenType efectivos y volver el espécimen una pieza cinética pausada y manipulable, no una animación decorativa."
+  },
+  "references": [
+    {
+      "id": "r1",
+      "url": "https://github.com/undercasetype/Fraunces",
+      "status": "OBSERVED",
+      "observation": "README consultado: Fraunces declara wght 100–900, opsz 9–144, SOFT 0–100 y WONK binario 0–1; autoría del proyecto y fuente libre OFL."
+    },
+    {
+      "id": "r2",
+      "url": "https://dinamodarkroom.com/",
+      "status": "OBSERVED",
+      "observation": "Texto del sitio examinado: Font Gauntlet permite previsualizar y animar ejes variables combinados; se extrae capacidad, no su diseño."
+    },
+    {
+      "id": "r3",
+      "url": "https://typedesign.fba.up.pt/varplay/",
+      "status": "OBSERVED",
+      "observation": "Página pública consultada de VarPlay, un playground variable: separación explícita entre edición del texto y exploración de ejes."
+    },
+    {
+      "id": "r4",
+      "url": "https://github.com/google/fonts/blob/main/ofl/fraunces/OFL.txt",
+      "status": "OBSERVED",
+      "observation": "Licencia OFL 1.1 y copyright de Fraunces examinados línea a línea; redistribución permitida con licencia y atribución."
+    }
+  ],
+  "components": [
+    {
+      "id": "type",
+      "role": "Familia Fraunces variable con cuatro ejes y fallback legible",
+      "strategy": "Archivo TTF OFL autoalojado y @font-face con font-variation-settings por claves validadas",
+      "constraints": "Rangos wght [100,900], opsz [9,144], SOFT [0,100], WONK [0,1]; no fingir glifos si falla la carga."
+    },
+    {
+      "id": "editor",
+      "role": "Edición tipográfica viva y presets que preservan el texto",
+      "strategy": "textarea visible accesible, espejo editorial de gran tamaño y control de eje como sliders",
+      "constraints": "Evitar inyección HTML, sincronizar output, ofrecer reset y valores reales accesibles."
+    },
+    {
+      "id": "motion",
+      "role": "Composición cinética con control de tiempo y alternativa estática",
+      "strategy": "Motor de interpolación por requestAnimationFrame y estado de pausa para secuencia de dos escenas",
+      "constraints": "No autoplay; reduced-motion desactiva el movimiento y permite scrub manual."
+    },
+    {
+      "id": "shell",
+      "role": "Dirección editorial responsive, lectura, navegación y contraste",
+      "strategy": "Portada de dos capas de tipografía, paleta crema/azul noche y ácido, retícula con números y ritmo",
+      "constraints": "320/390/1440 legibles, sin scroll horizontal ni overlay tipo panel de control sobre letras."
+    }
+  ],
+  "questions": [
+    {
+      "id": "q1",
+      "target": "type",
+      "question": "¿Qué familia con licencia verificable tiene cambios perceptibles reales en cuatro ejes?",
+      "alternatives": [
+        "Reusar Recursive remoto de W002",
+        "Fraunces TTF local y ejes propios"
+      ],
+      "finding": "Fraunces ofrece cuatro ejes y fuente OFL accesible desde repositorio de Google Fonts",
+      "decisionImpact": "Autoalojar binario auténtico y mostrar estados de carga; no depender de CSS2",
+      "evidenceRef": "r1"
+    },
+    {
+      "id": "q2",
+      "target": "editor",
+      "question": "¿El editor debe operar como una herramienta técnica o como un espécimen de lectura editorial?",
+      "alternatives": [
+        "Inputs pequeños en dashboard convencional",
+        "Composición grande editable más consola de cuatro ejes al costado"
+      ],
+      "finding": "Font Gauntlet documenta exploración combinada; la obra final integra control con vista tipográfica dominante",
+      "decisionImpact": "Protagonista tipográfico primero, controles secundarios persistentes y accesibles",
+      "evidenceRef": "r2"
+    },
+    {
+      "id": "q3",
+      "target": "motion",
+      "question": "¿Cómo evitar que la cinética impida uso manual o requiera movimiento constante?",
+      "alternatives": [
+        "Animación automática sin pausa",
+        "Animación iniciada manualmente, pausa, scrub y media query de movimiento reducido"
+      ],
+      "finding": "La exploración de ejes es independiente de la animación; controles combinados permiten reducir movimiento sin perder contenido",
+      "decisionImpact": "Agregar play/stop real, scrub y modo sin movimiento",
+      "evidenceRef": "r2"
+    }
+  ],
+  "relations": [
+    {
+      "from": "type",
+      "to": "editor",
+      "invariant": "Los mismos cuatro ejes numéricos controlan hero y specimen sin valores fuera de rango",
+      "failure": "El panel actualiza números pero el texto queda visualmente estático",
+      "test": "Leer computed style y medir la fuente real en dos extremos."
+    },
+    {
+      "from": "motion",
+      "to": "editor",
+      "invariant": "Pausar cinética conserva los valores y la escritura editable de la persona",
+      "failure": "El loop sobrescribe el control del usuario sin posibilidad de detener",
+      "test": "Cambiar slider, reproducir, pausar y volver a escribir."
+    },
+    {
+      "from": "shell",
+      "to": "type",
+      "invariant": "El protagonista tipográfico sigue legible en móvil con wrap y sin overflow horizontal",
+      "failure": "Una sola palabra corta la pantalla en 320 o 390",
+      "test": "Captura real, medidas de scrollWidth y contraste en 320/390/1440."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "d1",
+      "questionId": "q1",
+      "componentIds": [
+        "type"
+      ],
+      "choice": "Fraunces TTF variable autoalojada con licencia",
+      "rejected": "Recursive mediante Google Fonts CDN exclusivamente",
+      "productionChange": "Añadir fonts/Fraunces-variable.ttf y OFL.txt en la misma entrega; load state visible en el espécimen.",
+      "why": "Evitar el falso PASS de W002 donde DOM validó ejes sin tipografía renderizada."
+    },
+    {
+      "id": "d2",
+      "questionId": "q2",
+      "componentIds": [
+        "editor",
+        "shell"
+      ],
+      "choice": "Composición tipográfica editorial dominante con taller secundario",
+      "rejected": "Grilla de tarjetas y controles ocupando la primera pantalla",
+      "productionChange": "Hero a dos líneas de enorme cuerpo, espécimen editable bajo plegado y slider panel integrado.",
+      "why": "El medio es tipografía; convertirlo en UI de configuración domina incorrectamente la experiencia."
+    },
+    {
+      "id": "d3",
+      "questionId": "q3",
+      "componentIds": [
+        "motion",
+        "editor"
+      ],
+      "choice": "Motor reversible controlado por humano y reduced motion",
+      "rejected": "Animación constante sin control de pausa",
+      "productionChange": "Play/pausa explícitos, progreso manual, interpolación con límites y respeto de prefers-reduced-motion.",
+      "why": "El contenido debe permanecer visible y manipulable con teclado, touch y sensibilidad al movimiento."
+    }
+  ],
+  "risks": [
+    {
+      "componentIds": [
+        "type",
+        "editor"
+      ],
+      "severity": "high",
+      "failure": "Archivo variable fallido o ejes serializados sin efecto visual",
+      "prevention": "Probar archivo TTF legítimo y ancho computado del mismo glifo en dos extremos",
+      "test": "Browser document.fonts.check y screenshot 390/1440 con caracteres representativos",
+      "status": "NOT_RUN"
+    },
+    {
+      "componentIds": [
+        "shell"
+      ],
+      "severity": "medium",
+      "failure": "El afiche se sale de 320px o el panel tapa la composición",
+      "prevention": "Usar wrap explícito, clamp y tamaños compactos con grid mobile",
+      "test": "Browser scrollWidth en 320/390/1440 + inspección de capturas",
+      "status": "NOT_RUN"
+    },
+    {
+      "componentIds": [
+        "motion"
+      ],
+      "severity": "medium",
+      "failure": "La animación sigue activa en reduced-motion o al pausar",
+      "prevention": "Capacidad de pause y media query verificada",
+      "test": "Play → pause → dos frames estables y emulación reduced motion",
+      "status": "NOT_RUN"
+    }
+  ],
+  "acceptance": [
+    {
+      "kind": "functional",
+      "criterion": "Los cuatro ejes clamp y serializan en la fuente self-hosted sin NaN",
+      "oracle": "Pruebas unitarias Node para extremos, fuera de rango y actualización del DOM",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "interactive",
+      "criterion": "Editar el texto cambia los tres especímenes visibles sin HTML injection",
+      "oracle": "Browser tecleo y lectura de textContent y preservación de acentos",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "visual",
+      "criterion": "Hero 390 y 1440 da prioridad al texto sin overflow ni overlays",
+      "oracle": "Screenshot real y juicio humano sobre composición, no gate sintético",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "interactive",
+      "criterion": "Pausa y reduced-motion detienen movimiento sin borrar contenido",
+      "oracle": "Browser emulación prefers-reduced-motion y avance de frames",
+      "status": "NOT_RUN"
+    }
+  ],
+  "resources": "GitHub connector, Google Fonts/Fraunces TTF de google/fonts, pruebas Node y navegador local Chromium si disponible; coste cero, sin assets externos de pago.",
+  "licensing": "Fraunces (The Fraunces Project Authors), SIL Open Font License 1.1, archivo oficial redistribuido sin modificaciones acompañado por OFL.txt; ficción: fundición Mareas, no autora de Fraunces.",
+  "environmentLimits": "PUBLIC_BROWSER y live Pages no comprobados al fijar esta ficha; no atribuir capturas a un archivo remoto o fixture distinto.",
+  "artDirection": {
+    "schema": "prometeo.art-direction.first-article/v1",
+    "medium": "web",
+    "taskId": "web-w003-20261122-04",
+    "briefSha": "bef87bf57c789d2b0605ca9ff81a5d3bbaab5e35",
+    "flowRef": "Q-LOOP/QBAR-1/DEEP-SPEC-1/ART-DIRECTION-FIRST-ARTICLE-1",
+    "promise": {
+      "subject": "Una palabra gigante que cambia de carácter y contraste mientras conserva su legibilidad",
+      "intent": "La primera pantalla debe parecer un espécimen tipográfico publicado, no un editor administrativo."
+    },
+    "benchmark": {
+      "url": "https://dinamodarkroom.com/",
+      "description": "Texto original del Darkroom examinado; documenta Font Gauntlet y la animación de ejes combinados.",
+      "status": "OBSERVED"
+    },
+    "techniques": [
+      {
+        "family": "Fuente variable oficial autoalojada",
+        "viability": "Fraunces TTF oficial del repositorio google/fonts, se puede redistribuir",
+        "license": "SIL OFL 1.1, copyright The Fraunces Project Authors"
+      },
+      {
+        "family": "Composición tipográfica SVG con contornos trazados",
+        "viability": "Render estático manual de contornos y animación SVG posible sin fuente descargada",
+        "license": "Solo contornos derivados de fuente OFL con atribución incluida"
+      }
+    ],
+    "selectedTechnique": "Fuente variable oficial autoalojada",
+    "firstFrame": {
+      "openingDescription": "Fondo oscuro casi negro, titulación editorial mínima y dos palabras gigantes de crema con acento ácido, la letra como único protagonista.",
+      "focalSubject": "El espécimen tipográfico variable V I V A con formas Fraunces claramente moduladas.",
+      "minimalUI": "Solo wordmark, un enlace al taller, número de edición y llamada editorial al movimiento.",
+      "checks": [
+        {
+          "viewport": "390",
+          "criterion": "Protagonista no recortado y lectura de título y navegación",
+          "oracle": "Captura real viewport 390 y scrollWidth <= viewport"
+        },
+        {
+          "viewport": "1440",
+          "criterion": "La tipografía domina el primer pliegue y se ve jerarquía",
+          "oracle": "Captura real 1440 y revisión del contraste"
+        },
+        {
+          "viewport": "both",
+          "criterion": "No overlay de controles sobre la obra",
+          "oracle": "Inspección de rectángulos y screenshot real"
+        }
+      ],
+      "observations": []
+    },
+    "firstArticle": {
+      "target": "Hero con tipografía Fraunces real y dos configuraciones de cuatro ejes",
+      "rejectWhen": "La fuente falla, ambas variantes se ven idénticas o el hero está recortado",
+      "switchTo": "Composición tipográfica SVG con contornos trazados",
+      "oracle": "Browser ancho/forma renderizada de variantes y capturas",
+      "resourceProof": "Archivo original Fraunces SHA 8210f9488d3c732359a9292dd09aca3f2bae830e y OFL SHA 22fa7ce5733434d0c634f6e55116f410858e938c",
+      "status": "NOT_RUN"
+    },
+    "humanApproved": false
+  }
+}
