@@ -45,8 +45,17 @@
     "website": "https://juanmanuelpm.github.io/Experimentos/prometeo/web/releases/w002-10-lupa/",
     "codeStatus": "IMPLEMENTED",
     "githubReadback": "PENDING",
-    "httpVerification": "PENDING",
-    "browserInteraction": "NOT_RUN"
+    "httpVerification": "EXTERNAL_FETCH_HTTP_503_MAIN_AND_404_FIXTURE",
+    "browserInteraction": "NOT_RUN",
+    "httpEvidence": {
+      "tool": "Parallel web fetch",
+      "mainUrl": "https://juanmanuelpm.github.io/Experimentos/prometeo/web/releases/w002-10-lupa/",
+      "mainStatus": 503,
+      "fixtureUrl": "https://juanmanuelpm.github.io/Experimentos/prometeo/web/releases/w002-10-lupa/fixtures/a.html",
+      "fixtureStatus": 404,
+      "interpretation": "External probe did not establish public reachability; GitHub source readback did succeed.",
+      "interactionTest": "NOT_RUN"
+    }
   },
   "tests": {
     "nodeCaptureScript": "NOT_RUN",
