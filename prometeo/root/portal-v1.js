@@ -1,7 +1,7 @@
 /* PROMETEO ROOT · universal shell, real project library and typed batch results. */
 import './shared/v1/shell.js';
 import './shared/v1/response.js';
-import './shared/v1/batch.js?v=20261122-universal-copy';
+import './shared/v1/batch.js?v=20261122-feedback2';
 import './shared/v1/launch-hub.js';
 const $=id=>document.getElementById(id);
 const FALLBACK=[{id:'direccion',label:'Dirección'},{id:'root',label:'ROOT'},{id:'3d',label:'3D'},{id:'music',label:'Música'},{id:'web',label:'Web'},{id:'video',label:'Video'},{id:'images',label:'Imágenes'}];
@@ -15,7 +15,13 @@ async function get(path){const r=await fetch(path+(path.includes('?')?'&':'?')+'
 function cacheKey(path){return 'prometeo:root:cache:'+path;}
 function cache(path,data){try{localStorage.setItem(cacheKey(path),JSON.stringify(data));}catch{}}
 function readCache(path){try{return JSON.parse(localStorage.getItem(cacheKey(path))||'null');}catch{return null;}}
-function promptFor(room){return 'CONTINUAR · PROMETEO · '+String(room||'direccion').toUpperCase()+' · '+ROOT_REF+room;}
+const FEEDBACK_ROUTER='https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/root/FEEDBACK_ROUTER.md';
+function promptFor(room,resource=''){return 'CONTINUAR · PROMETEO · '+FEEDBACK_ROUTER+' · '+PUBLIC+'root/#'+String(room||'root')+(resource?'/'+resource:'');}
+function currentReference(){
+ if(state.screen==='stage'&&state.itemId)return promptFor(state.room,'obra/'+encodeURIComponent(state.itemId));
+ if(state.screen==='messages'&&state.batchId){const batch=state.batches.some(b=>b.id===state.batchId);return promptFor(state.room,(batch?'tanda/':'mensaje/')+encodeURIComponent(state.batchId));}
+ return promptFor(state.room);
+}
 async function copy(text){try{await navigator.clipboard.writeText(text);return true;}catch{const n=document.createElement('textarea');n.value=text;n.style.position='fixed';n.style.top='-3000px';document.body.append(n);n.select();let ok=false;try{ok=document.execCommand('copy');}catch{}n.remove();return ok;}}
 function option(text,fn,active=false,minor=false){const b=document.createElement('button');b.type='button';b.textContent=text;if(active)b.setAttribute('aria-current','page');if(minor)b.className='p-context-small';b.addEventListener('click',fn);return b;}
 function safePreview(url){if(typeof url!=='string')return '';try{const u=new URL(url,location.href);const prefix=new URL(PUBLIC);return u.origin===prefix.origin&&u.pathname.startsWith(prefix.pathname)&&!u.pathname.includes('..')?u.href:'';}catch{return '';}}
@@ -46,11 +52,19 @@ function renderMessages(){
  $('space').textContent=state.rooms.find(x=>x.id===state.room)?.label||'PROMETEO';
  const list=messages(),last=list.find(e=>e.id===state.batchId)||list[0],view=$('response');
  const fallback=$('startup-fallback');if(fallback)fallback.hidden=state.public.length>0&&state.batches.length>0;
- view.setData(last||{},last?.blocks?.some(b=>b.type==='batch')?[]:[{kind:'copy',label:'Copiar',value:promptFor(state.room)}]);
- const raw=sortedEntries([...ownedMessages().filter(e=>groupedIds().has(e.id)),...list.filter(e=>e.id!==last?.id)]);
- $('older').hidden=raw.length===0;$('older').textContent=state.older?'Ocultar historial':'Historial';
+ view.setData(last||{},last?.blocks?.some(b=>b.type==='batch')?[]:[{kind:'copy',label:'Copiar referencia',value:promptFor(state.room,last?.id?'mensaje/'+encodeURIComponent(last.id):'')}]);
+ const raw=list.filter(e=>e.id!==last?.id);
+ const toggle=$('older');toggle.hidden=raw.length===0;toggle.setAttribute('aria-expanded',String(state.older));toggle.setAttribute('aria-label','Mensajes · '+list.length);toggle.title='Mensajes ('+list.length+')';
  const hist=$('history');hist.hidden=!state.older;hist.replaceChildren();
- if(state.older)for(const e of raw){const n=document.createElement('prometeo-response');n.setData(e,[]);hist.append(n);}
+ if(state.older){
+  for(const e of list){
+   const item=element('button','p-message-option');item.type='button';
+   if(e.id===last?.id)item.setAttribute('aria-current','true');
+   item.append(element('span','p-message-option-title',e.title||'Mensaje'),element('time','p-message-option-date',Number.isFinite(Date.parse(e.publishedAt))?new Date(e.publishedAt).toLocaleDateString('es-AR',{day:'2-digit',month:'short'}):''));
+   item.addEventListener('click',()=>{state.older=false;go('#'+state.room+'/mensaje/'+encodeURIComponent(e.id));});
+   hist.append(item);
+  }
+ }
 }
 function addItem(map,candidate,rank){
  const url=safePreview(candidate.url);if(!url||!candidate.id)return;
@@ -151,9 +165,12 @@ function updateContext(){
  const closeCopy=async value=>{shell.closeMenu();toast(await copy(value)?'Copiado':'No se pudo copiar')};
  const command=kind=>{const host=$('stage-visual'),iframe=host?.querySelector('iframe');try{iframe?.contentWindow?.PROMETEO_WORKSPACE?.[kind]?.()}catch{toast('Herramienta no disponible')}shell.closeMenu()};
  if(studio){
-  c.append(option('Obra',()=>{const first=state.workspaces.find(w=>w.room===state.room),id=state.screen==='stage'?state.itemId:first?.id;if(id)go('#'+state.room+'/obra/'+encodeURIComponent(id));else go('#'+state.room+'/biblioteca')},state.screen==='stage'));
-  c.append(option('Biblioteca',()=>go('#'+state.room+'/biblioteca'),state.screen==='library'));
-  c.append(option('Respuestas',()=>go('#'+state.room+'/mensajes'),state.screen==='messages'));
+  c.append(option('Estudio',()=>{const first=state.workspaces.find(w=>w.room===state.room),id=state.screen==='stage'?state.itemId:first?.id;if(id)go('#'+state.room+'/obra/'+encodeURIComponent(id));else go('#'+state.room+'/biblioteca')},state.screen==='stage'));
+  c.append(option('Proyectos',()=>go('#'+state.room+'/biblioteca'),state.screen==='library'));
+  const bubble=option('',()=>go('#'+state.room+'/mensajes'),state.screen==='messages');
+  bubble.setAttribute('aria-label','Mensajes');bubble.title='Mensajes';bubble.classList.add('p-context-icon');
+  const icon=document.createElementNS('http://www.w3.org/2000/svg','svg');icon.setAttribute('viewBox','0 0 24 24');icon.setAttribute('aria-hidden','true');icon.setAttribute('fill','none');icon.setAttribute('stroke','currentColor');icon.setAttribute('stroke-width','1.8');icon.setAttribute('stroke-linecap','round');icon.setAttribute('stroke-linejoin','round');
+  const shape=document.createElementNS('http://www.w3.org/2000/svg','path');shape.setAttribute('d','M20 11.5a8 8 0 0 1-8 8 8.5 8.5 0 0 1-3.3-.66L4 20l1.16-4.7A8.5 8.5 0 0 1 4.5 12a8 8 0 0 1 8-8A7.5 7.5 0 0 1 20 11.5Z');icon.append(shape);bubble.append(icon);c.append(bubble);
   const batch=state.batches.find(b=>b.room===state.room);
   if(batch)c.append(option('Tanda · '+batch.tasks.length,()=>go('#'+state.room+'/tanda/'+batch.id),false,true));
   if(state.room==='3d')c.append(option('FORJA · Editor',()=>{shell.closeMenu();newTab(PUBLIC+'forja/');},false,true));
@@ -172,14 +189,14 @@ function updateContext(){
     for(const ver of item.versions||[])c.append(option('Versión · '+ver.label,()=>{shell.closeMenu();newTab(ver.url)},false,true));
    }
   }
-  c.append(option('Continuar por referencia',()=>closeCopy(promptFor(state.room)),false,true));
+  c.append(option('Comentar esta pantalla',()=>closeCopy(currentReference()),false,true));
  }else{
   if(state.room==='root'||state.room==='direccion'){
    c.append(option('Tandas preparadas',()=>go('#root'),state.room==='root'));
    c.append(option('Actualizar flujos',()=>closeCopy('WORK · https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/launch/20261122/FLOW_REVIEW.md'),false,true));
    const a=document.createElement('a');a.href='./archivo-20261121.html#mensajes';a.textContent='Archivo';a.className='p-context-small';c.append(a);
   }
-  c.append(option('Copiar referencia',()=>closeCopy(promptFor(state.room)),false,true));
+  c.append(option('Comentar ROOT',()=>closeCopy(currentReference()),false,true));
  }
 }
 function renderStage(){
