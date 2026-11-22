@@ -1,0 +1,214 @@
+{
+  "version": "DEEP-SPEC-1",
+  "medium": "web",
+  "depth": "SISTEMA",
+  "batchId": "web-w002-20261122",
+  "taskNumber": 5,
+  "taskId": "web-w002-20261122-05",
+  "launchBlobSha": "cd88a07941ab62072f6de5ee69764308f1ec2387",
+  "brief": "OBJETO CERO: lanzamiento comercial de objeto físico ficticio con fotografías originales, variantes correspondientes y carrito persistente de demostración.",
+  "intent": {
+    "experience": "Recorrer un lanzamiento editorial y configurar una luminaria ficticia, viendo exactamente la misma pieza en tres acabados.",
+    "distinctAbility": "El medio visual, la variante seleccionada, la línea del carrito y el total deben mantenerse vinculados y recuperar su estado tras recarga."
+  },
+  "references": [
+    {
+      "id": "apple",
+      "url": "https://www.apple.com/shop/buy-iphone/iphone-17",
+      "status": "OBSERVED",
+      "observation": "La ficha pública explicita Finish y Color junto a la representación del dispositivo; decisión editorial: la elección de material cambia la visualización del mismo objeto, sin pedir pago real."
+    },
+    {
+      "id": "teenage",
+      "url": "https://teenage.engineering/store/po-33/",
+      "status": "OBSERVED",
+      "observation": "La ficha comercial permite recorrer varias vistas reales del objeto y mantiene el producto como protagonista antes que como elemento decorativo de la página."
+    },
+    {
+      "id": "nothing",
+      "url": "https://us.nothing.tech/products/phone-3?Capacity=12%2B256GB&Colour=Black",
+      "status": "OBSERVED",
+      "observation": "El URL de producto refleja atributos como Colour y Capacity, capacidad que inspira rutas de selección compartibles sin copiar su estética."
+    }
+  ],
+  "components": [
+    {
+      "id": "photo",
+      "role": "Presentación original con tres acabados de una luminaria de mesa inventada.",
+      "strategy": "Triptych raster generado para el encargo y recortado por paneles sincronizados.",
+      "constraints": "No atribuir al objeto especificaciones técnicas comprobadas ni mezclar geometrías incompatibles."
+    },
+    {
+      "id": "config",
+      "role": "Selector accesible de material con lectura de variante, código y precio.",
+      "strategy": "Componente único controlado por modelo de tres SKU y presentación fotográfica vinculada.",
+      "constraints": "Solo se venden SKUs definidos, cada selector aporta estado visible, teclado, foco y URL."
+    },
+    {
+      "id": "cart",
+      "role": "Bolsa persistente de varias variantes con cantidad, subtotales y total.",
+      "strategy": "Lógica pura de importes enteros y localStorage saneado; diálogo nativo para foco.",
+      "constraints": "Siempre compra de demostración; nada de pago, pedido real o envío de datos."
+    },
+    {
+      "id": "editorial",
+      "role": "Narrativa comercial legible que asocia producto, luz y fabricación ficticia.",
+      "strategy": "Composición editorial y scroll con contraste, fotos y especificación ficticia rotulada.",
+      "constraints": "No esconder contenido tras animaciones y conservar semántica en 320, 768 y 1440 píxeles."
+    }
+  ],
+  "questions": [
+    {
+      "id": "q1",
+      "target": "photo",
+      "question": "¿Cómo conservar identidad geométrica exacta entre variantes sin fotografiar objetos reales inexistentes?",
+      "alternatives": [
+        "Tres imágenes generadas sin relación",
+        "Un tríptico único con idéntico producto y tres materiales"
+      ],
+      "finding": "El ensayo visual generado en tres paneles mantiene silueta, perilla, altura y sombras cercanas.",
+      "decisionImpact": "Se utilizará una única fuente fotográfica por variante con recorte por tercios en vez de inventar tres piezas distintas.",
+      "evidenceRef": "apple"
+    },
+    {
+      "id": "q2",
+      "target": "cart",
+      "question": "¿Cómo garantizar totales y persistencia sin aparentar que se procesó una compra?",
+      "alternatives": [
+        "Tarjeta estática y botón engañoso",
+        "Reducer puro con SKUs, almacenamiento y diálogo de demostración"
+      ],
+      "finding": "Los selectores comerciales observados vinculan finish con la representación; un estado local reproducible permite probar todas las operaciones.",
+      "decisionImpact": "Separar estado normalizado, render, persistencia y acciones; prohibir pasarela de pago o confirmación real.",
+      "evidenceRef": "nothing"
+    },
+    {
+      "id": "q3",
+      "target": "editorial",
+      "question": "¿Cuánta animación necesita el sitio sin perjudicar lectura y accesibilidad?",
+      "alternatives": [
+        "Secciones fijadas a scroll obligatorias",
+        "Transiciones suaves opcionales, lectura natural y reduced-motion"
+      ],
+      "finding": "La ficha observada de objetos de bolsillo prioriza vistas concretas y datos del producto antes que desplazamiento forzado.",
+      "decisionImpact": "Mantener scroll nativo y alternativas estáticas, con el configurador visible y sin bloquear eventos de teclado.",
+      "evidenceRef": "teenage"
+    }
+  ],
+  "decisions": [
+    {
+      "id": "d1",
+      "questionId": "q1",
+      "componentIds": [
+        "photo",
+        "config"
+      ],
+      "choice": "Un tríptico fotográfico original con recortes vinculados al SKU",
+      "rejected": "Imágenes independientes con proporciones inconsistentes",
+      "productionChange": "El selector controla posición del fondo de imagen en los tres recortes y textos del acabado.",
+      "why": "La correspondencia del objeto es central para credibilidad comercial."
+    },
+    {
+      "id": "d2",
+      "questionId": "q2",
+      "componentIds": [
+        "cart",
+        "config"
+      ],
+      "choice": "Carrito de prueba persistente con precios ficticios enteros",
+      "rejected": "Checkout funcional falso o carrito de utilería",
+      "productionChange": "Implementar modelo exportable en JS y tests de cantidad, borrado, subtotal, recarga y corrupción de storage.",
+      "why": "La compra ficticia no puede convertirse en una transacción real implícita."
+    },
+    {
+      "id": "d3",
+      "questionId": "q3",
+      "componentIds": [
+        "editorial",
+        "photo"
+      ],
+      "choice": "Narrativa editorial con scroll normal y movimiento respetuoso",
+      "rejected": "Parallax automático indispensable",
+      "productionChange": "Diseñar CSS responsive y prefers-reduced-motion para toda transición no esencial.",
+      "why": "La experiencia tiene que conservar acceso y significado en cualquier dispositivo."
+    }
+  ],
+  "relations": [
+    {
+      "from": "config",
+      "to": "photo",
+      "invariant": "Cada SKU actualiza simultáneamente acabado textual, muestra fotográfica y ruta compartida.",
+      "failure": "Un comprador vería un acabado y agregaría otra variante distinta.",
+      "test": "Seleccionar tres acabados y verificar el panel visible y el SKU"
+    },
+    {
+      "from": "config",
+      "to": "cart",
+      "invariant": "Al agregar, el carrito recibe el SKU realmente seleccionado y mantiene su precio definido.",
+      "failure": "El total sería independiente del producto configurado.",
+      "test": "Agregar unidades de dos acabados y recalcular subtotal por SKU"
+    },
+    {
+      "from": "cart",
+      "to": "ENV",
+      "invariant": "La persistencia local admite recarga y falla segura si almacenamiento es inaccesible o está corrupto.",
+      "failure": "Se mostrarían pedidos o montos falsos después de volver al sitio.",
+      "test": "Recargar, introducir JSON inválido y probar sesión en memoria"
+    }
+  ],
+  "risks": [
+    {
+      "componentIds": [
+        "cart"
+      ],
+      "severity": "high",
+      "failure": "Una interfaz comercial puede aparentar cobros, ventas o confirmaciones reales.",
+      "prevention": "Etiquetar siempre compra de demostración y no conectar pagos ni endpoints.",
+      "test": "Inspección estática de red y prueba de clic de checkout sin solicitudes externas.",
+      "status": "NOT_RUN"
+    },
+    {
+      "componentIds": [
+        "photo"
+      ],
+      "severity": "medium",
+      "failure": "El tríptico puede verse borroso o poco coherente en pantalla grande.",
+      "prevention": "Mantener máster raster de 1536x1024 y indicar optimizaciones y límites.",
+      "test": "Evaluación visual a 320 y 1440 con captura real y revisión de cambios de material.",
+      "status": "NOT_RUN"
+    },
+    {
+      "componentIds": [
+        "editorial"
+      ],
+      "severity": "medium",
+      "failure": "La disposición del carrito puede ocultar controles con teclado o pantalla pequeña.",
+      "prevention": "Dialog nativo, cuerpo adaptable y estados de foco visibles.",
+      "test": "Test de apertura Escape y recuperación de foco en Playwright.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "acceptance": [
+    {
+      "kind": "functional",
+      "criterion": "Totales correctos, persistencia entre recargas y ningún pago o pedido real",
+      "oracle": "Pruebas unitarias de reducer y Playwright contra HTML funcionando",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "visual",
+      "criterion": "Tres acabados fotográficos coherentes a tamaño móvil y escritorio",
+      "oracle": "Capturas reales en 320, 768, 1440 y revisión de luminaria",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "interactive",
+      "criterion": "Selector, carrito y cierre de diálogo operables por teclado",
+      "oracle": "Recorrido Playwright click, Tab, Escape y prefers-reduced-motion",
+      "status": "NOT_RUN"
+    }
+  ],
+  "licensing": "Tríptico del encargo generado con herramienta de creación de imágenes; no se usa material externo protegido de las referencias.",
+  "resources": "HTML semántico, CSS sin frameworks, JS nativo, localStorage, imágenes raster generadas, Node y Playwright locales.",
+  "environmentLimits": "La validación del navegador y de Pages depende de los recursos y rutas realmente disponibles en este chat."
+}
