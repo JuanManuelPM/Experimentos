@@ -1,0 +1,147 @@
+{
+  "schema": "prometeo.video.product-shot-system/v1",
+  "taskId": "video-w003-20261122-02",
+  "model": "FORM / 01",
+  "unit": "abstract-consistent-world-unit",
+  "render": "VTK Phong offscreen / FFmpeg H264 AAC",
+  "frameRate": 24,
+  "frameSize": [
+    960,
+    540
+  ],
+  "durationSeconds": 16,
+  "geometry": {
+    "foot": {
+      "ellipsoid": [
+        0.85,
+        0.53,
+        0.075
+      ]
+    },
+    "p0": [
+      -0.38,
+      0,
+      0.215
+    ],
+    "links": [
+      0.93,
+      0.76
+    ],
+    "head": {
+      "length": 0.98,
+      "depth": 0.2,
+      "height": 0.086,
+      "diffuserLength": 0.91
+    },
+    "jointRadius": [
+      0.075,
+      0.075,
+      0.055
+    ],
+    "colors": {
+      "arm": [
+        0.095,
+        0.112,
+        0.12
+      ],
+      "joint": [
+        0.63,
+        0.43,
+        0.235
+      ]
+    },
+    "mechanicalInvariants": [
+      "p0 anchored to plinth",
+      "p1 connected to end of arm 1",
+      "p2 connected to end of arm 2",
+      "head stays level during folding",
+      "macro/packshot both derive from same three joint positions"
+    ]
+  },
+  "motion": {
+    "startSeconds": 5,
+    "endSeconds": 10,
+    "interpolation": "smoothstep",
+    "primaryAngleDeg": [
+      16,
+      73
+    ],
+    "secondaryAbsoluteAngleDeg": [
+      167,
+      3
+    ],
+    "lightOnSeconds": [
+      10.3,
+      12
+    ]
+  },
+  "shots": [
+    {
+      "id": "S01",
+      "from": 0,
+      "to": 2.1,
+      "role": "hinge macro, dark tactile metal",
+      "camera": "near low oblique / slow azimuth",
+      "cut": "hard cut 2.1"
+    },
+    {
+      "id": "S02",
+      "from": 2.1,
+      "to": 5,
+      "role": "folded form overall; no mechanism changes",
+      "camera": "wide orbit",
+      "cut": "hard cut 5"
+    },
+    {
+      "id": "S03",
+      "from": 5,
+      "to": 10.2,
+      "role": "continuous unfolding on same world geometry",
+      "camera": "three-quarter steady orbit",
+      "cut": "hard cut 10.2"
+    },
+    {
+      "id": "S04",
+      "from": 10.2,
+      "to": 12.6,
+      "role": "light source macro, warm-on",
+      "camera": "reverse-side head detail",
+      "cut": "hard cut 12.6"
+    },
+    {
+      "id": "S05",
+      "from": 12.6,
+      "to": 16,
+      "role": "open product hero and closing identity",
+      "camera": "wide oblique with negative space",
+      "cut": "fade end"
+    }
+  ],
+  "soundEvents": [
+    {
+      "sec": 2.1,
+      "kind": "tactile foil click"
+    },
+    {
+      "sec": 5.1,
+      "kind": "pivot release"
+    },
+    {
+      "sec": 6.9,
+      "kind": "joint transit"
+    },
+    {
+      "sec": 8.5,
+      "kind": "fold-stop"
+    },
+    {
+      "sec": 10.24,
+      "kind": "lamp switch"
+    },
+    {
+      "sec": 10.67,
+      "kind": "switch tail"
+    }
+  ],
+  "license": "All source geometry, foley synthesis, logo and movement generated specifically for this work. Reference images are not included."
+}
