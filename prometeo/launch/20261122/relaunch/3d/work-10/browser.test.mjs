@@ -29,7 +29,7 @@ try{
   const page=await browser.newPage({viewport,deviceScaleFactor:1,acceptDownloads:true});
   const errors=[];page.on('pageerror',e=>errors.push(e.message));
   await page.goto('http://127.0.0.1:8765/',{waitUntil:'domcontentloaded'});
-  await page.waitForFunction(()=>window.__PROMETEO_W7_10?.status==='WEBGL_INITIALIZED',{timeout:45000});
+  await page.waitForFunction(()=>window.__PROMETEO_W7_10?.status==='WEBGL_INITIALIZED',null,{timeout:45000});
   await page.waitForTimeout(1200);
   const original=await page.evaluate(()=>window.__PROMETEO_W7_10.renderState());
   assert.ok(original.drawCalls>0,'Renderer must draw real meshes');
@@ -37,10 +37,10 @@ try{
   const w=viewport.width;
   await page.screenshot({path:join(root,'qa','opening-'+w+'.png')});
   await page.locator('[data-mode="folded"]').click();
-  await page.waitForFunction(()=>window.__PROMETEO_W7_10.renderState().fold>.96,{timeout:10000});
+  await page.waitForFunction(()=>window.__PROMETEO_W7_10.renderState().fold>.96,null,{timeout:10000});
   await page.screenshot({path:join(root,'qa','folded-'+w+'.png')});
   await page.locator('[data-mode="exploded"]').click();
-  await page.waitForFunction(()=>window.__PROMETEO_W7_10.renderState().explode>.95,{timeout:12000});
+  await page.waitForFunction(()=>window.__PROMETEO_W7_10.renderState().explode>.95,null,{timeout:12000});
   assert.equal(await page.locator('#bom li').count(),14,'BOM / scene must match');
   await page.screenshot({path:join(root,'qa','exploded-'+w+'.png')});
   await page.locator('#variant').click();
