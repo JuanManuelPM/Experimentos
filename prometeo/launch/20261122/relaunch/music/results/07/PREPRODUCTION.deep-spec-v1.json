@@ -1,0 +1,287 @@
+{
+  "version": "DEEP-SPEC-1",
+  "medium": "music",
+  "depth": "OPERATIVO",
+  "taskId": "music-w003-20261122-07",
+  "batchId": "music-w003-20261122",
+  "taskNumber": 7,
+  "launchSha": "5d7e6c2540cc49d998b7fe75fc1048d6f9cba80b",
+  "brief": "Componé una pieza híbrida que haga dialogar una interpretación acústica expresiva con una respuesta electrónica original, conservando respiración, ataque, afinación, fraseo y silencios humanos en vez de sustituir el instrumento por una señal MIDI plástica. Usá grabaciones propias o con permiso demostrable; entregá audio y sesión editable, agregá un componente reutilizable para mapear articulaciones a efectos y verificá las tomas originales frente a la mezcla final.",
+  "briefSha": "5d7e6c2540cc49d998b7fe75fc1048d6f9cba80b",
+  "flow": {
+    "owner": "JuanManuelPM/pruebas",
+    "ref": "candidate/prometeo-music-flow-v2-wave001-20261121",
+    "path": "PROMETEO/spaces/music-studio/production-universal/versions/2.0.0/FLOW.json",
+    "version": "2.0.0",
+    "gitBlobSha": "1423f13e08b743f418c42052613a6808b214d622",
+    "status": "FROZEN_CANDIDATE_NOT_PROMOTED"
+  },
+  "qualityBarVersion": "QBAR-1",
+  "preventionVersion": "ART-DIRECTION/FIRST-ARTICLE-1",
+  "intent": {
+    "experience": "Escuchar cuerdas humanas intactas dialogando con ecos electrónicos que reaccionan al ataque y dejan respirar el silencio.",
+    "distinctAbility": "Extraer articulación, fraseo y frecuencia aproximada de una interpretación real sin sustituir cada nota por MIDI."
+  },
+  "references": [
+    {
+      "id": "R1",
+      "status": "OBSERVED",
+      "url": "https://www.ableton.com/en/blog/james-holden-waclaw-zimpel/",
+      "observation": "Entrevista de proceso leída: clarinete, respuesta electrónica y sistema de interpretación complementaria. No se escuchó la grabación profesional ni se copiaron notas."
+    },
+    {
+      "id": "R2",
+      "status": "OBSERVED",
+      "url": "https://www.ableton.com/en/blog/input-output-christopher-tignor/",
+      "observation": "Entrevista leída sobre violín y procesamiento como respuesta instrumental, no como fondo genérico. Escucha A/B de la referencia: NOT_RUN."
+    },
+    {
+      "id": "R3",
+      "status": "OBSERVED",
+      "url": "https://huggingface.co/datasets/Julian-br/GuitarJam/blob/main/README.md",
+      "observation": "Tarjeta fuente consultada: 580 improvisaciones humanas en guitarra eléctrica capturadas DI a 44.1kHz, licencia CC0-1.0. Se eligieron cuatro tomas sin reconstrucción MIDI."
+    }
+  ],
+  "components": [
+    {
+      "id": "C1",
+      "role": "Tomas humanas de guitarra preservadas para auditoría individual de procedencia y microtiempo.",
+      "strategy": "Descargar cuatro WAV originales y montarlos intactos con silencios de 0,55 s entre movimientos.",
+      "constraints": "No sustituir instrumentos por notas sintetizadas; mantener originales descargables con hash por toma."
+    },
+    {
+      "id": "C2",
+      "role": "Detector de gestos de cuerda y pitch aproximado sobre la interpretación de origen.",
+      "strategy": "Analizar flancos RMS y FFT por ventana, guardar tiempos reales no cuantizados y curvas de fuerza.",
+      "constraints": "Las mediciones son aproximadas, se prueban contra el audio y nunca se presentan como transcripción perfecta."
+    },
+    {
+      "id": "C3",
+      "role": "Composición de electrónica reactiva y arquitectura de eco para llamadas y silencios.",
+      "strategy": "Diseñar osciladores complejos de respuesta, un rack de delays estéreo filtrados y silencios por secciones.",
+      "constraints": "No usar una plantilla MIDI ni generar una melodía de reemplazo; dar identidad a la electrónica y desarrollo."
+    },
+    {
+      "id": "C4",
+      "role": "Máster y stems editables para comparar toma seca, respuesta, procesado y mezcla.",
+      "strategy": "Render offline con ganancias comunes y documentación JSON, export PCM WAV y preview OGG.",
+      "constraints": "Suma real de stems idéntica al float mix pre-dither; medir pico y declarar escucha independiente NOT_RUN."
+    }
+  ],
+  "questions": [
+    {
+      "id": "Q1",
+      "target": "C1",
+      "question": "¿Qué origen autorizado conserva el gesto humano y puede adquirirse técnicamente antes del primer render?",
+      "alternatives": [
+        "Improvisación de espineta CC0 de Ulrich Metzner (Wikimedia)",
+        "Cuatro improvisaciones reales de guitarra CC0 (GuitarJam en HuggingFace)"
+      ],
+      "evidenceRef": "R3",
+      "finding": "La espineta fue bloqueada por HTTP 429 en GitHub Actions; cuatro tomas de guitarra DI CC0 son alternativa abierta por el autor.",
+      "decisionImpact": "Se conserva articulación humana de cuerdas y se cambia la representación instrumental, dejando documentada la falta de microfonía acústica."
+    },
+    {
+      "id": "Q2",
+      "target": "C2",
+      "question": "¿Debe la electrónica usar un grid MIDI cuantizado o tiempos y fuerzas medidos de la grabación humana real?",
+      "alternatives": [
+        "Grid cuantizado por nota",
+        "Detección de ataques por dinámica, timestamps crudos y pitch aproximado"
+      ],
+      "evidenceRef": "R2",
+      "finding": "La entrevista Tignor refuerza la función de gesto instrumental; la técnica de flancos se prueba con el primer audio producido.",
+      "decisionImpact": "El componente exporta articulation_map.json y cada evento dispara electrónica sin cuantizar su tiempo."
+    },
+    {
+      "id": "Q3",
+      "target": "C3",
+      "question": "¿Cómo distinguir cuatro movimientos, conservar silencios y no repetir el mismo loop o delay a idéntica densidad?",
+      "alternatives": [
+        "Un filtro o reverb constante sobre toda la pieza",
+        "Rampa de arco, retardos multitiempo y llamadas reactivas en movimiento"
+      ],
+      "evidenceRef": "R1",
+      "finding": "El enfoque de diálogo de Holden/Zimpel conduce a silencios y respuestas controladas, no a relleno permanente.",
+      "decisionImpact": "Circuito responde tras los ataques con delays, dinámica por arco y panoramización dependiente de eventos."
+    }
+  ],
+  "relations": [
+    {
+      "from": "C1",
+      "to": "C2",
+      "invariant": "Los eventos extraídos corresponden a ataques medidos en los WAV secos reales sin cuantización temporal.",
+      "failure": "Mapeo MIDI no permite distinguir el fraseo humano.",
+      "test": "Comparar eventos y timestamps contra envolvente RMS del WAV original."
+    },
+    {
+      "from": "C2",
+      "to": "C3",
+      "invariant": "La nota electrónica depende del tiempo, fuerza y pitch aproximado detectado en la toma real.",
+      "failure": "Una secuencia independiente aparenta respuesta sin depender de la interpretación.",
+      "test": "Cambiar una toma, regenerar y comprobar que articulation_map y la respuesta cambian."
+    },
+    {
+      "from": "C3",
+      "to": "C4",
+      "invariant": "Los cuatro stems suman al máster float con misma ganancia, sin un falso mix adicional.",
+      "failure": "Stems no reproducen mezcla y el A/B engaña por diferencia de volumen.",
+      "test": "Assert numérico de suma y A/B por energía RMS nivelada."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "D1",
+      "questionId": "Q1",
+      "componentIds": [
+        "C1"
+      ],
+      "choice": "GuitarJam CC0 human guitar takes de tamaño manejable",
+      "rejected": "Wikimedia improvisación de espineta bloqueada 429",
+      "productionChange": "Conservar cuatro archivos WAV fuente con SHA256 y pausas de 0,55 s entre tomas intactas.",
+      "why": "Fuente legalmente legible y ejecución observada de 429 en primer workflow, no autorización para sintes sustitutos."
+    },
+    {
+      "id": "D2",
+      "questionId": "Q2",
+      "componentIds": [
+        "C2",
+        "C3"
+      ],
+      "choice": "Mapeo de articulación dinámica no cuantizada",
+      "rejected": "MIDI note on/off fabricado",
+      "productionChange": "Guardar articulation_map.json y construir respuesta con delays y amplitud por ataque y pitch.",
+      "why": "Es la capacidad diferencial explícita de esta consigna, permite refutar respuesta ficticia."
+    },
+    {
+      "id": "D3",
+      "questionId": "Q3",
+      "componentIds": [
+        "C3",
+        "C4"
+      ],
+      "choice": "Cuatro pasajes reales, silencios expresivos y arco de densidad sonora",
+      "rejected": "Pad estático y mismo loop eterno",
+      "productionChange": "Procesamiento separado por stems y curva de producción diferenciada según sección.",
+      "why": "Estructura relacionada a fuentes musicales en lugar de autojustificar un efecto por volumen."
+    }
+  ],
+  "risks": [
+    {
+      "componentIds": [
+        "C1"
+      ],
+      "severity": "high",
+      "failure": "Fuente externa bloqueada o licencia/no equivalencia acústica de DI impide cumplir el brief.",
+      "prevention": "Verificar WAV, hash y CC0 antes del primer artículo; no confundir guitarra eléctrica DI con acústica microfoneada.",
+      "test": "Primer artículo real descargado, decodificado y evaluado en escucha A/B.",
+      "status": "NOT_RUN"
+    },
+    {
+      "componentIds": [
+        "C2",
+        "C3"
+      ],
+      "severity": "high",
+      "failure": "Onsets erróneos o instrumentos electrónicos sin dirección musical vuelven la pieza otro sintetizador plástico.",
+      "prevention": "Observar primeros 18 s antes de multiplicar y, si falla, cambiar fuente/instrumentación.",
+      "test": "A/B toma seca y mezcla procesada junto a mapa de eventos y revisión humana.",
+      "status": "NOT_RUN"
+    },
+    {
+      "componentIds": [
+        "C4"
+      ],
+      "severity": "medium",
+      "failure": "El master y sus stems difieren o el true peak se exagera como aprobación estética.",
+      "prevention": "Paridad numérica, ffprobe por cada archivo y separación de técnico/perceptual.",
+      "test": "Reporte técnico y reproducción real con auriculares; no adjudicar escucha inexistente.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "acceptance": [
+    {
+      "kind": "audio",
+      "criterion": "Toma humana original reconocible bajo electrónica dependiente de sus gestos.",
+      "oracle": "Audición real a nivel comparable en inicio, transición, tramo denso y final.",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "functional",
+      "criterion": "Máster WAV/OGG y cuatro stems PCM reales, hashes y duración verificable.",
+      "oracle": "sf.read, ffprobe y sumatoria de stems reproducible en GitHub Actions.",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "interactive",
+      "criterion": "Al abrir la obra aparece primero el reproductor auditable, sin UI invadiendo el protagonista.",
+      "oracle": "Capturas reales 390px y 1440px y prueba de playback en navegador.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "licensing": "GuitarJam de Julian-br, CC0-1.0 según tarjeta oficial del dataset HuggingFace; registrar cuatro URL y SHA256 individuales; composición electrónica y código generados para este trabajo; no afirmar propiedad sobre la interpretación fuente.",
+  "resources": "GitHub Actions runner Ubuntu, numpy, scipy, soundfile, ffmpeg instalado; cuatro WAV DI CC0 descargados de HuggingFace cuando el workflow termine.",
+  "environmentLimits": "No hay micrófono humano propio ni posibilidad de escuchar en auriculares o comprobar Android desde esta ejecución. La técnica DI no captura respiración o sala como un micrófono acústico; licencia, decodificación y lectura remota se verifican por separado.",
+  "humanApproved": false,
+  "artDirection": {
+    "schema": "prometeo.art-direction.first-article/v1",
+    "medium": "music",
+    "taskId": "music-w003-20261122-07",
+    "briefSha": "5d7e6c2540cc49d998b7fe75fc1048d6f9cba80b",
+    "flowRef": "JuanManuelPM/pruebas@candidate/prometeo-music-flow-v2-wave001-20261121:FLOW.json [v2.0.0 / blob 1423f13e08b743f418c42052613a6808b214d622]",
+    "promise": {
+      "subject": "Guitarra humana real y electrónica que contesta a sus articulaciones originales.",
+      "intent": "Al pulsar reproducir, el intérprete manda sobre los ecos; el silencio cuenta y los cuatro pasajes tienen distinto peso."
+    },
+    "benchmark": {
+      "url": "https://www.ableton.com/en/blog/james-holden-waclaw-zimpel/",
+      "description": "Entrevista profesional leída sobre clarinete y circuitos reactivos; AUDIO BENCHMARK NO ESCUCHADO.",
+      "status": "OBSERVED"
+    },
+    "techniques": [
+      {
+        "family": "Cuatro interpretaciones humanas DI CC0 descargables",
+        "viability": "Cuatro clips públicos con licencia explícita; el render y acceso se prueban remotamente.",
+        "license": "CC0-1.0, GuitarJam en HuggingFace (verificar archivo SHA256)"
+      },
+      {
+        "family": "Captura propia de intérprete acústico por micrófono",
+        "viability": "Distinto recurso de grabación con músico y micrófono real; requiere nuevas tomas y consentimiento.",
+        "license": "Licencia o cesión explícita de la propia sesión antes de publicar"
+      }
+    ],
+    "selectedTechnique": "Cuatro interpretaciones humanas DI CC0 descargables",
+    "firstFrame": {
+      "openingDescription": "Una sola portada editorial, título CUERPO Y CIRCUITO, escucha del máster y acceso a escucha seca/A/B; no placeholders ni botones ajenos al contenido.",
+      "focalSubject": "La música audible y la interpretación de guitarra real como contenido principal.",
+      "minimalUI": "Reproductor nativo, enlace a stems y créditos breves; ningún overlay, menú o panel lateral.",
+      "checks": [
+        {
+          "criterion": "Viewport 390: reproductor visible al abrir sin desplazamiento horizontal ni decoración invasiva.",
+          "oracle": "Screenshot real en navegador 390 y comprobación de overflow.",
+          "viewport": "390"
+        },
+        {
+          "criterion": "Viewport 1440: tipografía editorial y player protagonista, no tarjetas ni filler.",
+          "oracle": "Screenshot real a 1440 y revisión del DOM.",
+          "viewport": "1440"
+        },
+        {
+          "criterion": "Audio master real descargable y dos versiones A/B comparables por nivel.",
+          "oracle": "Reproducir, decodificar y cotejar WAV/OGG master y A/B.",
+          "viewport": "both"
+        }
+      ],
+      "observations": []
+    },
+    "firstArticle": {
+      "target": "Escuchar primero 18 segundos de toma humana real con respuestas electrónicas y demostrar dependencia de onsets.",
+      "rejectWhen": "Los WAV no descargan, no suenan, no conservan una interpretación reconocible o la respuesta musical es un loop autogenerado.",
+      "switchTo": "Captura propia de intérprete acústico por micrófono",
+      "oracle": "WAV de primer artículo, ffprobe y A/B seca/procesada, con criterio perceptual independiente.",
+      "resourceProof": "Tarjeta GuitarJam CC0 y cuatro WAV con SHA256; fuente espineta de Wikimedia falló 429 en GitHub Actions y se descartó.",
+      "status": "NOT_RUN"
+    },
+    "humanApproved": false
+  }
+}
