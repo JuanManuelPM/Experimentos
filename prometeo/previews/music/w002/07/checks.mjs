@@ -1,0 +1,12 @@
+import {articulation} from './articulation-map.js';
+import fs from 'node:fs';
+const s=JSON.parse(fs.readFileSync(new URL('./SONGPROJECT.json',import.meta.url),'utf8'));
+const fail=[];const check=(v,m)=>{if(!v)fail.push(m)};
+check(s.events.length>130,'demasiado pocos eventos');check(s.events.every((e,i)=>i===0||e.beat>=s.events[i-1].beat),'orden');
+check(s.events.every(e=>!!s.source[e.note+'_'+e.layer]),'fuente faltante');
+check(new Set(s.events.map(x=>x.note)).size>=9,'pocos tonos');
+check(new Set(s.events.map(x=>x.phrase)).size===5,'secciones');
+const slow=articulation({beat:4,velocity:.4,layer:'f'}),strong=articulation({beat:4.1,velocity:.95,layer:'p'},{beat:4,velocity:.4});
+check(slow.echoGain!==strong.echoGain&&slow.resonanceHz!==strong.resonanceHz,'articulacion inerte');
+check(s.events.every(e=>e.beat>=0&&e.beat<192),'fuera del arreglo');
+process.stdout.write(JSON.stringify({status:fail.length?'FAIL':'PASS',events:s.events.length,notes:new Set(s.events.map(x=>x.note)).size,sections:5,fail},null,2)+'\\n');if(fail.length)process.exitCode=1;
