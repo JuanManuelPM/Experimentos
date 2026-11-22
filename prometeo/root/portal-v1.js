@@ -113,7 +113,7 @@ function parseRoute(){
  if(['capturas','ronda','calibrar','ajustes'].includes(raw)){location.replace('./archivo-20261121.html#'+raw);return null;}
  if(raw==='mensajes')return {room:'root',screen:'messages'};
  const parts=raw.split('/'),room=state.rooms.some(r=>r.id===parts[0])?parts[0]:'direccion';
- if(room!=='3d')return {room,screen:'messages'};
+ if(room!=='3d')return {room,screen:'messages',batchId:(parts[1]==='mensaje'||parts[1]==='tanda')?(parts[2]||''):''};
  if(parts[1]==='tanda')return {room,screen:'messages',batchId:parts[2]||''};
  if(parts[1]==='mensajes'||parts[1]==='respuestas')return {room,screen:'messages'};
  if(parts[1]==='obra')return {room,screen:'stage',itemId:parts[2]||''};
