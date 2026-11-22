@@ -1,0 +1,265 @@
+{
+  "version": "DEEP-SPEC-1",
+  "medium": "video",
+  "depth": "OPERATIVO",
+  "batchId": "video-w003-20261122",
+  "taskNumber": 5,
+  "taskId": "video-w003-20261122-05",
+  "sourceLaunchBlobSha": "0cc574528594731a3d1cf0c15a0d0e5a37e775b7",
+  "oldBriefBlobSha": "d7eebea6d36fc6e5aa3b72cba4e35dd149dc552d",
+  "qualityBarVersion": "QBAR-1",
+  "brief": "EL CORREDOR: plano secuencia dramático original en corredor habitado, revelar que la acción aparente es otra, cámara, oclusiones, profundidad, foco y atmósfera, con video exportado y planificador reutilizable.",
+  "intent": {
+    "experience": "El espectador desconfía del cuidador y luego descubre un gesto de ayuda, sin intertítulos ni cortes.",
+    "distinctAbility": "Un solo reloj coordina cámara lateral, oclusión, movimiento de manos, utilería, foco planificado y ambiente sonoro."
+  },
+  "references": [
+    {
+      "id": "efa-victoria",
+      "status": "OBSERVED",
+      "url": "https://www.europeanfilmawards.eu/efa-movie/victoria/",
+      "observation": "Se leyó la declaración original del director que describe la coreografía de un plano único, varias ubicaciones e intérpretes; no se examinó la película íntegra."
+    },
+    {
+      "id": "deakins-interview",
+      "status": "SOURCE_ONLY",
+      "url": "https://britishcinematographer.co.uk/exclusive-interview-roger-deakins-cbe-bsc-asc-on-1917-bc97/",
+      "observation": "Extractos de entrevista cinematográfica sobre ensayo y desplazamientos de cámara; video completo NO VISTO."
+    }
+  ],
+  "components": [
+    {
+      "id": "acting",
+      "role": "Personajes, manos, bastón y lectura gestual de la revelación del objeto.",
+      "strategy": "Dibujar perfiles y gestos de cuerpos originales con articulación por claves temporales.",
+      "constraints": "La mirada, el contacto de mano y la función del bastón deben leerse sin cartel o sinopsis."
+    },
+    {
+      "id": "camera",
+      "role": "Movimiento lateral continuo con parallax sobre jamba, sujetos y corredor.",
+      "strategy": "Travelling con easing cúbico entre 0.5 y 13.8 segundos y 2.55 metros de recorrido.",
+      "constraints": "Sin salto de cámaras, penetración ficticia por pared ni aceleraciones incompatibles con un dolly."
+    },
+    {
+      "id": "audio",
+      "role": "Atmósfera HVAC original, zapatos, caña y contacto con el suelo.",
+      "strategy": "Senoides y ruido filtrado sintetizados a 48 kHz estéreo; tiempos enlazados a la misma escena.",
+      "constraints": "SFX no enmascaran el gesto; no usar música, voces ni medios de terceros."
+    },
+    {
+      "id": "render",
+      "role": "Render de 336 fotogramas y MP4 real con pista de audio.",
+      "strategy": "Pillow/Numpy originales a 960x540, 24 fps; FFmpeg libx264 AAC a 48 kHz.",
+      "constraints": "Video local comprobable, contenido remoto diferenciado y sin reclamar actor fotorreal."
+    }
+  ],
+  "questions": [
+    {
+      "id": "q1",
+      "target": "acting",
+      "question": "¿La revelación de bastón se entiende por contacto de manos y expresión, sin explicación?",
+      "alternatives": [
+        "Animación ilustrada propia",
+        "Rodaje físico autorizado con personas"
+      ],
+      "evidenceRef": "efa-victoria",
+      "finding": "El primer artículo ilustrado muestra figuras demasiado esquemáticas y lectura causal dudosa sin sinopsis.",
+      "decisionImpact": "No declarar dirección de actores convincente; la película queda prototipo técnico, no obra aprobada."
+    },
+    {
+      "id": "q2",
+      "target": "camera",
+      "question": "¿Un travelling lateral y la jamba ocultan información sin false cut ni salto espacial?",
+      "alternatives": [
+        "Desplazar cámara y capas con parallax",
+        "Cortar y ocultar el corte detrás de un objeto"
+      ],
+      "evidenceRef": "efa-victoria",
+      "finding": "Las capturas de 1.2, 7.0 y 11.7 segundos muestran un mismo sistema de cámara y el cambio de oclusión.",
+      "decisionImpact": "Mantener cámara única con función temporal continua; prohibir costuras y cortes invisibles."
+    },
+    {
+      "id": "q3",
+      "target": "audio",
+      "question": "¿Foley original coincide con bastón y pasos en tiempo objetivo del encargo?",
+      "alternatives": [
+        "Foley procedural sintetizado",
+        "Grabar ambiente en locación con cesión de derechos"
+      ],
+      "evidenceRef": "efa-victoria",
+      "finding": "Se ubicó impacto de bastón a 10.8 s y eventos de pasos; sincronía perceptual externa pendiente.",
+      "decisionImpact": "Incluir pista WAV estéreo con eventos de tiempo declarados y codificarla en AAC."
+    }
+  ],
+  "relations": [
+    {
+      "from": "camera",
+      "to": "acting",
+      "invariant": "La posición del poste de primer término debe ocluir la mano hasta que la cámara abre el campo.",
+      "failure": "Plano sin misterio o objeto completamente oculto hasta que se termina la historia.",
+      "test": "Comparar fotogramas 1.2, 7.0 y 11.7 s."
+    },
+    {
+      "from": "acting",
+      "to": "audio",
+      "invariant": "Las pulsaciones de bastón y pasos deben responder a la posición de manos y piernas.",
+      "failure": "Foley anticipa o contradice la acción del protagonista.",
+      "test": "Auditar fotogramas más timestamps de eventos de audio."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "d1",
+      "questionId": "q1",
+      "componentIds": [
+        "acting",
+        "render"
+      ],
+      "choice": "Mantener animación original como prototipo técnico bloqueado por actuación.",
+      "rejected": "Presentar muñecos vectoriales como interpretación humana cinematográfica.",
+      "productionChange": "Etiquetar el MP4 como ilustración experimental y marcar actuación como no aprobada.",
+      "why": "La primera pieza revela limitación perceptual de personajes y gestos."
+    },
+    {
+      "id": "d2",
+      "questionId": "q2",
+      "componentIds": [
+        "camera",
+        "render"
+      ],
+      "choice": "Parallax y travelling de 2.55m con un reloj compartido.",
+      "rejected": "Agregar transiciones que disfracen los cambios de composición.",
+      "productionChange": "Persistir planificador interactivo y generar 336 cuadros por una única función de escena.",
+      "why": "El riesgo del encargo es perder continuidad entre cambios de encuadre."
+    },
+    {
+      "id": "d3",
+      "questionId": "q3",
+      "componentIds": [
+        "audio",
+        "render"
+      ],
+      "choice": "Audio procedural original local integrado con ffmpeg.",
+      "rejected": "Música comercial o silencio sin causalidad ambiental.",
+      "productionChange": "WAV estéreo 48kHz con golpes en 1.8, 3.1, 5.4, 8.6 y 10.8s.",
+      "why": "El audio debe construir expectativa y reforzar el gesto sin explicar."
+    }
+  ],
+  "risks": [
+    {
+      "componentIds": [
+        "acting"
+      ],
+      "severity": "high",
+      "failure": "Personajes esquemáticos impiden la credibilidad y la comprensión emocional del cambio de sentido.",
+      "prevention": "Primer artículo de gestos, test ciego con espectadores y cambio real de representación.",
+      "test": "Inspección de cuadros 1.2, 7.0, 11.7 y test ciego externo.",
+      "status": "FAILED"
+    },
+    {
+      "componentIds": [
+        "camera"
+      ],
+      "severity": "medium",
+      "failure": "La jamba se desplaza incorrectamente y atraviesa el cuerpo o arruina el eje.",
+      "prevention": "Mismo reloj y capas calculadas con parallax diferenciada.",
+      "test": "Muestrear 336 instantes con cámara continua y capturas clave.",
+      "status": "OBSERVED"
+    },
+    {
+      "componentIds": [
+        "audio"
+      ],
+      "severity": "medium",
+      "failure": "El golpeteo del bastón no corresponde a la acción.",
+      "prevention": "Timestamps fijados y comprobación independiente de reproducción.",
+      "test": "FFprobe pistas y escucha de sincronización real.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "acceptance": [
+    {
+      "kind": "functional",
+      "criterion": "MP4 H264/AAC de 14 segundos con 336 frames codificados.",
+      "oracle": "ffprobe duración, streams, r_frame_rate, decodificación completa ffmpeg.",
+      "status": "OBSERVED"
+    },
+    {
+      "kind": "visual",
+      "criterion": "La acción es comprensible por actuación y encuadre sin sinopsis.",
+      "oracle": "Test ciego de cinco espectadores y observación artística independiente.",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "functional",
+      "criterion": "El planificador permite editar tiempo de revelación, cámara y foco y exportar JSON.",
+      "oracle": "Captura real del DOM y prueba táctil, teclado y descarga.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "licensing": "Ilustración, código y foley sintetizados desde cero; sin stock, sin actores reales, sin assets comerciales ni música ajena.",
+  "resources": "Python 3, Pillow, NumPy, FFmpeg con libx264/AAC, planificador HTML sin dependencias. Video externo de ElevenLabs requirió plan pago y se bloqueó en estimación sin cargo.",
+  "environmentLimits": "Generación externa de video necesita plan pago. El binario MP4 está disponible sólo como adjunto de conversación y NO está publicado en GitHub o Pages; la inspección de primera pantalla 390/1440 y el test ciego siguen NOT_RUN.",
+  "artDirection": {
+    "schema": "prometeo.art-direction.first-article/v1",
+    "medium": "video",
+    "taskId": "video-w003-20261122-05",
+    "briefSha": "0cc574528594731a3d1cf0c15a0d0e5a37e775b7",
+    "flowRef": "https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/launch/20261122/relaunch/video/LAUNCH.md",
+    "promise": {
+      "subject": "Dos personajes y un bastón atraviesan un gesto ambiguo que revela ayuda.",
+      "intent": "Una única trayectoria de cámara cambia el significado por parallax y actuación."
+    },
+    "benchmark": {
+      "url": "https://www.europeanfilmawards.eu/efa-movie/victoria/",
+      "description": "Declaración original del director consultada para entender la coreografía de toma única; no se vio el largometraje.",
+      "status": "OBSERVED"
+    },
+    "techniques": [
+      {
+        "family": "Animación ilustrada 2D propia",
+        "viability": "Python Pillow local y generación autónoma observada, export H264/AAC disponible.",
+        "license": "Elementos dibujados y audio originales del trabajador, sin terceros."
+      },
+      {
+        "family": "Rodaje físico con intérpretes y cesión",
+        "viability": "Técnica profesional legalmente posible pero sin actores, equipo o materiales de rodaje en esta sesión.",
+        "license": "Requeriría consentimiento y cesiones expresas, inexistentes por ahora."
+      }
+    ],
+    "selectedTechnique": "Animación ilustrada 2D propia",
+    "firstFrame": {
+      "openingDescription": "Corredor nocturno habitado, residente en silla y cuidador separados por la jamba.",
+      "focalSubject": "Residente y cuidador frente al bastón, no texto ni UI.",
+      "minimalUI": "El MP4 no agrega controles, rótulos ni barras dentro del cuadro.",
+      "checks": [
+        {
+          "criterion": "Silueta corporal y utilería legibles en móvil 390px sin conocer sinopsis.",
+          "oracle": "Captura real de primer frame escalada a 390px y test de comprensión independiente.",
+          "viewport": "390"
+        },
+        {
+          "criterion": "La mirada de ambos y la jamba explican un obstáculo visual sin false cut.",
+          "oracle": "Fotogramas de 1.2, 7.0 y 11.7 s comparados lado a lado.",
+          "viewport": "1440"
+        },
+        {
+          "criterion": "Sin UI ni texto invasivos sobre sujeto.",
+          "oracle": "Inspección frame inicial real y verificación de letterbox.",
+          "viewport": "both"
+        }
+      ],
+      "observations": []
+    },
+    "firstArticle": {
+      "target": "Un gesto ambiguo de intercambio de bastón junto a la jamba en plano continuo.",
+      "rejectWhen": "Actuación y contacto humano permanecen esquemáticos o solo se comprenden con sinopsis.",
+      "switchTo": "Rodaje físico con intérpretes y cesión",
+      "oracle": "Evaluación visual directa y prueba de espectador ciego sin contexto del guion.",
+      "resourceProof": "Se generaron fotogramas originales 1.2, 7.0 y 11.7s; no se obtuvo footage humano autorizado.",
+      "status": "FAILED"
+    },
+    "humanApproved": false,
+    "resultNote": "SWITCH_REPRESENTATION: el video técnico local se conservó como experimento; no se declara dirección actoral aprobada."
+  }
+}
