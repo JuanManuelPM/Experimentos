@@ -6,8 +6,8 @@ const selection=new Map();
 const stylesheet=new URL('./batch.css?v=20261122-universal-copy',import.meta.url).href;
 const labels=['Preparado','Copiado localmente','Iniciado con evidencia','Entregado','Verificado'];
 const el=(tag,cls,text)=>{const node=document.createElement(tag);if(cls)node.className=cls;if(text!==undefined)node.textContent=String(text);return node;};
-function promptKey(batch){return String(batch.id)+'|'+String(batch.launchUrl)+'|UNIVERSAL';}
-function promptFor(batch){return 'WORK · '+String(batch.launchUrl||'')+' · ';}
+function promptKey(batch,n){return String(batch.id)+'|'+String(batch.launchUrl)+'|'+String(n);}
+function promptFor(batch,n){return 'WORK · '+String(batch.launchUrl||'')+' · '+String(n);}
 function receipt(item){const r=item.result;return r&&typeof r==='object'&&typeof r.id==='string'&&r.id? r:null;}
 function flags(batch,item){
  const result=receipt(item),ev=item.evidence||{};
@@ -23,17 +23,28 @@ function renderBatch(block){
  const id=String(block.id||''),tabs=el('div','p-batch-numbers'),body=el('div','p-batch-body');
  tabs.setAttribute('role','group');tabs.setAttribute('aria-label','Trabajos de la tanda');
  const launch=el('div','p-batch-launch');
- const title=el('strong','p-batch-launch-label','Un solo prompt · '+items.length+' trabajos');
- const launchCopy=el('button','p-batch-launch-copy',wasCopied(promptKey(block))?'Copiar de nuevo el prompt':'Copiar prompt universal');
+ const title=el('strong','p-batch-launch-label','Tanda · '+items.length+' trabajos');
+ const launchCopy=el('button','p-batch-launch-copy','Copiar 01');
  launchCopy.type='button';launchCopy.disabled=!block.launchUrl;
- launchCopy.setAttribute('aria-label','Copiar un solo prompt para esta tanda y después agregar el número');
+ launchCopy.setAttribute('aria-label','Copiar el prompt completo del trabajo seleccionado, con su número');
  launchCopy.addEventListener('click',async()=>{
-  const ok=await copyValue(promptFor(block));
-  if(ok){recordCopied(promptKey(block));launchCopy.textContent='Copiar de nuevo el prompt';}
+  const selected=items[index];const ok=await copyValue(promptFor(block,selected.number));
+  if(ok)recordCopied(promptKey(block,selected.number));
   host.dispatchEvent(new CustomEvent('prometeo:action',{detail:{kind:'copy',success:ok,workId:id},bubbles:true,composed:true}));
  });
- const hint=el('p','p-batch-launch-help','Pegá el mismo texto en un chat nuevo por trabajo y agregá el número del 1 al '+items.length+'. Los números de abajo solo muestran resultados.');
+ const hint=el('p','p-batch-launch-help','Cada copia ya incluye el número correcto. Pegalo en un chat nuevo.');
  launch.append(title,launchCopy,hint);
+ if(items.some(item=>receipt(item))){
+  const review=el('button','p-batch-launch-review','Revisar toda la tanda');
+  review.type='button';
+  review.setAttribute('aria-label','Copiar referencia única de todos los resultados de la tanda');
+  review.addEventListener('click',async()=>{
+   const room=String(block.room||block.id.split('-')[0]);
+   const reference='CONTINUAR · PROMETEO · https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/root/FEEDBACK_ROUTER.md · https://juanmanuelpm.github.io/Experimentos/prometeo/root/#'+encodeURIComponent(room)+'/tanda/'+encodeURIComponent(block.id);
+   const ok=await copyValue(reference);emit(host,ok,{id:id+'-review'});
+  });
+  launch.append(review);
+ }
  host.append(launch,tabs,body);
  let index=Math.min(Math.max(selection.get(id)||0,0),items.length-1);
  const buttons=[];
@@ -47,6 +58,9 @@ function renderBatch(block){
    b.setAttribute('aria-label','Ver resultado '+item.number+'. '+b.title);
   }
   const item=items[index],f=flags(block,item);
+  launchCopy.textContent='Copiar '+String(item.number).padStart(2,'0');
+  launchCopy.setAttribute('aria-label','Copiar trabajo '+String(item.number).padStart(2,'0')+' completo');
+  launchCopy.dataset.copied=String(wasCopied(promptKey(block,item.number)));
   body.replaceChildren();
   const summary=el('div','p-batch-summary');
   summary.append(el('span','p-batch-position',String(index+1).padStart(2,'0')+' / '+items.length),el('span','p-batch-label',item.label||item.id));
@@ -68,7 +82,7 @@ function renderBatch(block){
    const review=el('button','p-batch-copy','Revisar obra');review.type='button';
    review.setAttribute('aria-label','Copiar referencia para revisar '+(item.label||item.id));
    review.addEventListener('click',async()=>{
-    const reference='CONTINUAR · PROMETEO · RESPUESTA · https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/root/ROOM_MESSAGES.json · '+result.id;
+    const reference='CONTINUAR · PROMETEO · https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/root/FEEDBACK_ROUTER.md · https://juanmanuelpm.github.io/Experimentos/prometeo/root/#'+encodeURIComponent(block.room||block.id.split('-')[0])+'/mensaje/'+encodeURIComponent(result.id);
     const ok=await copyValue(reference);emit(host,ok,item);
    });
    footer.append(review);
