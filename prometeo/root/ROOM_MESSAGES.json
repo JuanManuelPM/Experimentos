@@ -1,7 +1,7 @@
 {
   "schema": "prometeo.root.room-messages/v1",
   "visibility": "PUBLIC_SAFE_SUMMARIES_ONLY",
-  "updatedAt": "2026-11-22T16:41:36.408Z",
+  "updatedAt": "2026-11-22T16:41:42.317Z",
   "entries": [
     {
       "id": "music-w002-20261122-08-marea-variable-delivery",
@@ -480,26 +480,35 @@
       "batchId": "video-w002-20261122",
       "taskNumber": 7,
       "publishedAt": "2026-11-22T16:34:50.284Z",
-      "title": "🎬 VIDEO · W002 · 07 · EL RELEVO",
-      "body": "Se produjo en el chat una película animada original sin diálogos de 28 s con ocho planos enlazados y sonido H.264/AAC, render local decodificado y grafo de dos cambios de propiedad del mitón rojo. MP4, fuente y QA descargables en la conversación. La rama exclusiva conserva el dossier, DEEP-SPEC-1 y SilentContinuityGraph; este recibo es público. IMPORTANTE: MP4 binario no publicado en GitHub/Pages. QA local PASS, prueba espectadores NOT_RUN, criterio artístico humano NOT_APPROVED; no anunciar entrega remota ni calidad cinematográfica certificada.",
+      "title": "🎬 VIDEO · W002 · 07 · EL RELEVO · MP4 PUBLICADO",
+      "body": "EL RELEVO: película animada original de 28 s sin diálogos, 8 planos y mitón rojo con dos traspasos causales. Producción local H.264/AAC, render fuente original + grafo de raccord y ficha DEEP-SPEC-1. Exportación real vía GitHub Actions #45045051537 SUCCESS; archivo MP4 binario y PROBE.json publicados en gh-pages, readback GitHub Contents: 1 522 782 bytes, 448 cuadros, H.264/AAC. QA render, decodificación y grafo PASS. NO se comprobó acceso HTTP externo al Pages con cliente independiente, comprensión por espectadores NOT_RUN, calidad artística y HUMAN_APPROVED=NO. Diferenciar export codificado de aprobación artística.",
       "blocks": [
         {
+          "type": "video",
+          "src": "https://juanmanuelpm.github.io/Experimentos/prometeo/previews/video/w002/07-el-relevo/EL_RELEVO_07.mp4"
+        },
+        {
           "type": "text",
-          "text": "LOCAL_ENCODED · 28.0 s · 8 SHOTS · 2 HANDOFFS · FFMPEG_DECODE_PASS · DEEP_SPEC_READY_STRUCTURAL · REMOTE_MP4_NOT_PUBLISHED · SPECTATOR_TEST_NOT_RUN · HUMAN_APPROVED_NO"
+          "text": "CI_ENCODED · GITHUB_MEDIA_BLOB_READBACK_PASS · MP4_28S · 448_FRAMES · H264_AAC · FFMPEG_DECODE_PASS · GRAPH_PASS · PAGES_HTTP_NOT_RUN · BLIND_SPECTATOR_TEST_NOT_RUN · HUMAN_APPROVED_NO"
         },
         {
           "type": "file",
-          "label": "Recibo público, resultados y limitaciones",
+          "label": "Reproductor público EL RELEVO",
+          "url": "https://juanmanuelpm.github.io/Experimentos/prometeo/previews/video/w002/07-el-relevo/"
+        },
+        {
+          "type": "file",
+          "label": "Recibo, verificación, referencias y limitaciones",
           "url": "https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/launch/20261122/next/video/works/07-el-relevo/RESULT.md"
         },
         {
           "type": "file",
-          "label": "SilentContinuityGraph-1 reutilizable",
-          "url": "https://github.com/JuanManuelPM/pruebas/blob/candidate/prometeo-video-w002-07-20261122/PROMETEO/spaces/video-studio/productions/w002/07-el-relevo/SilentContinuityGraph.json"
+          "label": "Grafo de continuidad de 8 planos",
+          "url": "https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/previews/video/w002/07-el-relevo/SilentContinuityGraph.json"
         },
         {
           "type": "file",
-          "label": "Ficha DEEP-SPEC-1 del trabajo",
+          "label": "Preproducción profunda y fuente",
           "url": "https://github.com/JuanManuelPM/pruebas/blob/candidate/prometeo-video-w002-07-20261122/PROMETEO/spaces/video-studio/productions/w002/07-el-relevo/PREPRODUCTION.deep-spec-v1.json"
         }
       ]
