@@ -1,7 +1,7 @@
 /* PROMETEO ROOT · universal shell, real project library and typed batch results. */
 import './shared/v1/shell.js';
 import './shared/v1/response.js';
-import './shared/v1/batch.js?v=20261122-perchat1';
+import './shared/v1/batch.js?v=20261122-emojiworker1';
 import './shared/v1/launch-hub.js';
 const $=id=>document.getElementById(id);
 const FALLBACK=[{id:'direccion',label:'Dirección'},{id:'root',label:'ROOT'},{id:'3d',label:'3D'},{id:'music',label:'Música'},{id:'web',label:'Web'},{id:'video',label:'Video'},{id:'images',label:'Imágenes'}];
