@@ -1,0 +1,277 @@
+{
+  "version": "DEEP-SPEC-1",
+  "medium": "web",
+  "depth": "SISTEMA",
+  "batchId": "web-w003-20261122",
+  "taskNumber": 1,
+  "taskId": "web-w003-20261122-01",
+  "launch": {
+    "path": "prometeo/launch/20261122/relaunch/web/LAUNCH.md",
+    "blobSha": "bef87bf57c789d2b0605ca9ff81a5d3bbaab5e35"
+  },
+  "brief": "Construir reportaje interactivo original sobre cómo cambia la percepción de Buenos Aires del amanecer a la noche, con fotos auténticas licenciadas, capítulos accesibles, secuencia sincronizada con scroll y versión quieta.",
+  "intent": {
+    "experience": "Leer la ciudad como cinco escalas perceptuales en un montaje documental de fotos de diferentes días, sin fingir un timelapse.",
+    "distinctAbility": "Composición editorial fotográfica a toda página y motor reutilizable que sincroniza capítulo, imagen y lectura al desplazarse sin bloquear navegación nativa."
+  },
+  "references": [
+    {
+      "id": "REF1",
+      "status": "OBSERVED",
+      "url": "https://pudding.cool/process/how-to-make-dope-shit-part-3/",
+      "observation": "Guía de The Pudding: el scrollytelling exige estado explícito por paso, tolerancia a saltos de scroll y preservación de significado, observado en la fuente publicada."
+    },
+    {
+      "id": "REF2",
+      "status": "OBSERVED",
+      "url": "https://pudding.cool/process/responsive-scrollytelling/",
+      "observation": "The Pudding recomienda replantear la presentación en móvil, manteniendo scroll nativo y evitando controlar artificialmente el desplazamiento."
+    },
+    {
+      "id": "REF3",
+      "status": "OBSERVED",
+      "url": "https://commons.wikimedia.org/wiki/File:Sunrise_in_Buenos_Aires_(24286513273).jpg",
+      "observation": "Commons identifica una fotografía real de Rodrigo Paredes capturada el 9 de febrero de 2016, con licencia CC BY 2.0 y tamaño 1920x1280."
+    },
+    {
+      "id": "REF4",
+      "status": "OBSERVED",
+      "url": "https://commons.wikimedia.org/wiki/File:Vista_a%C3%A9rea_nocturna_de_Avenida_9_de_julio_y_Avenida_Corrientes_01.jpg",
+      "observation": "Commons identifica fotografía nocturna original de ProtoplasmaKid tomada el 1 octubre 2025, bajo CC BY-SA 4.0; no es misma hora o ubicación que la foto de amanecer."
+    }
+  ],
+  "components": [
+    {
+      "id": "C1",
+      "role": "Fotografías documentales y aparato de créditos",
+      "strategy": "Wikimedia Commons enlazado con fuente, autor y licencias visibles; texto alternativo descriptivo.",
+      "constraints": "No reemplazar por imágenes generadas ni afirmar una secuencia de una misma cámara o día; test de disponibilidad HTTP pendiente."
+    },
+    {
+      "id": "C2",
+      "role": "Narración editorial con cinco capítulos originales",
+      "strategy": "Bloques semánticos y navegación por anclas; composición fotográfica inmersiva seguida de lectura de columna angosta.",
+      "constraints": "El relato debe mantenerse íntegro sin JS, con títulos y continuidad conceptual honesta."
+    },
+    {
+      "id": "C3",
+      "role": "Motor SequenceDirector modular y testeable",
+      "strategy": "Capturar geometrías en cada frame scroll con rAF; resolver etapa activa sin scroll hijack; progreso y parallax optativos.",
+      "constraints": "La función que decide escena debe funcionar al subir, bajar y saltar; respetar prefers-reduced-motion y control manual."
+    },
+    {
+      "id": "C4",
+      "role": "Sistema responsive y primer frame editorial",
+      "strategy": "La imagen domina la portada, tipografía escalable; capítulos apilan foto y texto en móvil, media sticky opcional desktop.",
+      "constraints": "Viewport 320, 390, 768 y 1440 sin clipping; imagen ausente no puede tapar el contenido."
+    }
+  ],
+  "questions": [
+    {
+      "id": "Q1",
+      "target": "C1",
+      "question": "¿Con qué medio visual podemos contar una evolución lumínica sin fingir una secuencia de un día?",
+      "alternatives": [
+        "Cinco fotografías documentales con créditos y montaje declarado",
+        "Fotografía sintética o vídeo no autorizado con continuidad simulada"
+      ],
+      "evidenceRef": "REF3",
+      "finding": "Fotos documentales CC permiten uso acreditado, pero sus horas y sitios no coinciden; montaje explícito es necesario.",
+      "decisionImpact": "Los epígrafes, descargos de continuidad y capítulos anuncian la diversidad temporal en vez de sugerir una toma única."
+    },
+    {
+      "id": "Q2",
+      "target": "C3",
+      "question": "¿Cómo mantener continuidad al saltar del capítulo cinco al primero o subir rápido en móvil?",
+      "alternatives": [
+        "Geometría absoluta por frame y progreso derivado",
+        "Animación dependiente de disparos de entrada en secuencia"
+      ],
+      "evidenceRef": "REF1",
+      "finding": "La guía de scrollytelling subraya que saltos omiten disparadores; estado debe derivarse de situación actual.",
+      "decisionImpact": "Motor puro de selección y progreso testeable con posiciones sintéticas, más observación de DOM en browser."
+    },
+    {
+      "id": "Q3",
+      "target": "C4",
+      "question": "¿Qué representación mantiene foto y lectura accesibles a 390 y 1440 sin interfaz invasiva?",
+      "alternatives": [
+        "Foto a todo el ancho seguida de columna editorial, scrolldrift opcional",
+        "Split permanente mitad foto/mitad texto con recorte muy angosto"
+      ],
+      "evidenceRef": "REF2",
+      "finding": "La recomposición móvil sin capturar scroll es preferible; la representación debe cambiar de estructura entre anchos.",
+      "decisionImpact": "Rehacer layout W002 en experiencia inmersiva, sin tarjetas, menús flotantes superpuestos ni interacciones necesarias para leer."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "D1",
+      "questionId": "Q1",
+      "componentIds": [
+        "C1",
+        "C2"
+      ],
+      "choice": "Montaje explícito de obras documentales CC con créditos completos",
+      "rejected": "Fotografía sintética o continuidad cronológica supuesta",
+      "productionChange": "Metadatos originales enlazados, nota visible de que fotos son de distintas fechas y voz narrativa no testimonial.",
+      "why": "Evita documentación ficticia y conserva la fuerza de fotografías reales."
+    },
+    {
+      "id": "D2",
+      "questionId": "Q2",
+      "componentIds": [
+        "C3"
+      ],
+      "choice": "Estado instantáneo derivado del viewport",
+      "rejected": "Transición escalonada dependiente del orden de scroll",
+      "productionChange": "Funciones puras pickActive y progressFor y tests de salto, avance, retroceso y reduced-motion.",
+      "why": "El lector conserva el desplazamiento normal y el índice accesible."
+    },
+    {
+      "id": "D3",
+      "questionId": "Q3",
+      "componentIds": [
+        "C2",
+        "C4"
+      ],
+      "choice": "Fotografía editorial a toda página y cuerpo de lectura estrecho",
+      "rejected": "Repetir split sticky 56/44 de W002 y superponer paneles grandes",
+      "productionChange": "Nueva dirección visual de imágenes inmersivas, cuerpo columnar, tipografía como protagonista y estructura apilada a 390.",
+      "why": "La foto gana presencia y el texto deja de competir lateralmente en el primer frame."
+    }
+  ],
+  "relations": [
+    {
+      "from": "C1",
+      "to": "C2",
+      "invariant": "La procedencia y el tiempo real de cada foto se respetan en la narrativa, el alt y el crédito.",
+      "failure": "Una sucesión de ubicaciones no puede presentarse como un plano continuo del mismo día.",
+      "test": "Revisar captions vs Commons y leer introducción sin JavaScript."
+    },
+    {
+      "from": "C3",
+      "to": "C4",
+      "invariant": "El capítulo activo y los enlaces siguen la misma escena con o sin animación, tanto móvil como escritorio.",
+      "failure": "El índice apunta a un capítulo diferente al visible tras scroll hacia atrás.",
+      "test": "Navegación por hash, scroll hacia arriba y test pickActive sobre geometrías."
+    }
+  ],
+  "risks": [
+    {
+      "componentIds": [
+        "C1",
+        "C4"
+      ],
+      "severity": "high",
+      "failure": "Las fotografías de Commons no se cargan desde Pages o se recortan de forma que pierden el sujeto.",
+      "prevention": "Usar originales acreditados con degradado fotográfico de respaldo y no esconder textos detrás de media.",
+      "test": "Captura real con red en 390 y 1440, comprobar naturalWidth > 0 para cinco fotos.",
+      "status": "NOT_RUN"
+    },
+    {
+      "componentIds": [
+        "C3"
+      ],
+      "severity": "medium",
+      "failure": "Saltos bruscos provocan una etapa activa incorrecta y una barra de progreso engañosa.",
+      "prevention": "Resolver escena a partir de geometría actual sin eventos de entrada irreversibles.",
+      "test": "Tests en Node de avance, retroceso, salto al final y retorno al primer paso.",
+      "status": "NOT_RUN"
+    },
+    {
+      "componentIds": [
+        "C4"
+      ],
+      "severity": "medium",
+      "failure": "La tipografía o los créditos desbordan a 390px y la lectura pierde jerarquía.",
+      "prevention": "Tamaños fluidos, recortes controlados y diseño de fallback de texto.",
+      "test": "Chromium local 390 y 1440, scrollWidth y screenshots.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "acceptance": [
+    {
+      "kind": "visual",
+      "criterion": "Portada con foto real, nombre de la obra y comienzo legibles en 390 y 1440",
+      "oracle": "Chromium con fotos efectivamente descargadas y revisión visual de ambas capturas.",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "interactive",
+      "criterion": "Cinco anclas navegables adelante, atrás y con teclado y hash directo",
+      "oracle": "Playwright o interacción real en Chromium sin bloqueo por scroll o scripting.",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "functional",
+      "criterion": "Con reducción de movimiento no se produce desplazamiento fotográfico y texto conserva acceso.",
+      "oracle": "Emular prefers-reduced-motion y verificar clase y transform computado.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "resources": "GitHub contenido, Node 22, Chromium local; fotografías Commons enlazadas sin empaquetado local; las pruebas de media HTTP desde Chromium local no son posibles por red bloqueada.",
+  "licensing": "Fotografías Commons CC BY 2.0 y CC BY-SA 4.0 identificadas con autor, archivo y licencia; textos/CSS/JS propios derivados de la obra anterior del proyecto, con cambios de dirección; tipografías Newsreader y IBM Plex Sans OFL.",
+  "environmentLimits": "Chromium local sin acceso a Wikimedia o GitHub Pages desde el contenedor; capturas sin fotos no certifican representación fotográfica. HTTP público y navegador Android siguen pendientes.",
+  "artDirection": {
+    "schema": "prometeo.art-direction.first-article/v1",
+    "medium": "web",
+    "taskId": "web-w003-20261122-01",
+    "briefSha": "bef87bf57c789d2b0605ca9ff81a5d3bbaab5e35",
+    "flowRef": "WEB_FACTORY_V2@2.0.0 / blob 1a0e709beec9a84986fc33c5ce4ab0a162dccaf2 (candidate NOT_PROMOTED)",
+    "promise": {
+      "subject": "Una ciudad real, mostrada en fotografías de luz cambiante que ocupan el escenario.",
+      "intent": "El primer frame debe parecer una publicación editorial, no una herramienta con tarjetas o menús dominantes."
+    },
+    "benchmark": {
+      "url": "https://pudding.cool/process/responsive-scrollytelling/",
+      "description": "Guía real examinada sobre relato con scroll sin bloquear gestos; observación textual de arquitectura, no captura visual.",
+      "status": "OBSERVED"
+    },
+    "techniques": [
+      {
+        "family": "Montaje documental fotográfico",
+        "viability": "Fotografías con registros de autor y licencia Commons; estructura semántica e imagen remota.",
+        "license": "CC BY 2.0 y CC BY-SA 4.0, créditos y enlaces; carga real en browser pendiente."
+      },
+      {
+        "family": "Relato tipográfico sin dependencia visual",
+        "viability": "Texto y composiciones CSS locales con gradientes abstractos, sigue legible sin red.",
+        "license": "Texto y composición originales del proyecto; sin fotografías se declara experiencia degradada."
+      }
+    ],
+    "selectedTechnique": "Montaje documental fotográfico",
+    "firstFrame": {
+      "openingDescription": "Portada a alto de pantalla con fotografía real del amanecer, titular serif grande a izquierda y dos líneas de explicación.",
+      "focalSubject": "El horizonte porteño en la primera luz y la palabra luz en portada.",
+      "minimalUI": "Solo marca discreta, índice y botón reducir movimiento; sin controles superpuestos sobre protagonista.",
+      "checks": [
+        {
+          "criterion": "A 390 el título no excede el ancho y la llamada a leer es visible",
+          "oracle": "Screenshot y scrollWidth<=clientWidth",
+          "viewport": "390"
+        },
+        {
+          "criterion": "A 1440 el sujeto fotográfico y titular tienen jerarquía editorial",
+          "oracle": "Screenshot real y naturalWidth de imagen",
+          "viewport": "1440"
+        },
+        {
+          "criterion": "Sin movimiento la lectura y anclas siguen accesibles",
+          "oracle": "Emulación prefers-reduced-motion y click ancla",
+          "viewport": "both"
+        }
+      ],
+      "observations": []
+    },
+    "firstArticle": {
+      "target": "Primer frame y primer capítulo con fotografía documentada, texto y scroll sincronizado.",
+      "rejectWhen": "Fotos sin cargar, portada ilegible o fragmento que simule continuidad de un único día.",
+      "switchTo": "Relato tipográfico sin dependencia visual",
+      "oracle": "Captura de 390/1440 con imagen verificada y continuidad de índice después de scroll.",
+      "resourceProof": "Fuente Commons de Rodrigo Paredes y ProtoplasmaKid examinada con autor/licencia; bytes en navegador pendiente.",
+      "status": "NOT_RUN"
+    },
+    "humanApproved": false
+  }
+}
