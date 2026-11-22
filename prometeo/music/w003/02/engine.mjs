@@ -124,7 +124,7 @@ export function renderTrack(events,track,{sampleRate=SR,duration=null}={}){
 export function renderMix(events,{sampleRate=SR,duration=null}={}){
  const len=Math.ceil((duration??(events.length?Math.max(...events.map(e=>e.time+e.durationBeats*BEAT+1)):0))*sampleRate);
  const stems={};let mix=new Float32Array(len);
- const gain={kick:.56,snare:.28,hats:.22,ghost:.22,bass:.40,chords:.23,motif:.22,air:.12};
+ const gain={kick:.35,snare:.57,hats:.34,ghost:.37,bass:.55,chords:.42,motif:.32,air:.15};
  for(const t of TRACKS){const a=renderTrack(events,t,{sampleRate,duration:len/sampleRate}),v=gain[t];
    const st=new Float32Array(len);for(let i=0;i<len;i++){st[i]=a[i]*v;mix[i]+=st[i]}stems[t]=st;
  }
