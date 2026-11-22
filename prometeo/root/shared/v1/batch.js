@@ -31,7 +31,7 @@ function renderBatch(block){
    b.setAttribute('aria-current',i===index?'true':'false');
    b.dataset.copied=String(f[1]);b.dataset.delivered=String(f[3]);
    b.title=(item.label||'Trabajo')+' · '+labels.filter((_,j)=>f[j]).join(' · ');
-   b.setAttribute('aria-label','Ver y copiar '+item.number+'. '+b.title);
+   b.setAttribute('aria-label','Ver resultado '+item.number+'. '+b.title);
   }
   const item=items[index],f=flags(block,item);
   body.replaceChildren();
@@ -65,11 +65,11 @@ function renderBatch(block){
   const item=items[i],f=flags(block,item);
   const button=el('button','p-batch-number',String(item.number).padStart(2,'0'));
   button.type='button';
-  button.setAttribute('aria-label','Ver y copiar '+item.number+': '+(item.label||'Trabajo')+'. '+labels.filter((_,j)=>f[j]).join(', '));
+  button.setAttribute('aria-label','Ver resultado '+item.number+': '+(item.label||'Trabajo')+'. '+labels.filter((_,j)=>f[j]).join(', '));
   button.title=(item.label||'Trabajo')+' · '+labels.filter((_,j)=>f[j]).join(' · ');
   if(f[3])button.dataset.delivered='true';
   if(f[1])button.dataset.copied='true';
-  button.addEventListener('click',()=>{show(i);copyItem(item);});
+  button.addEventListener('click',()=>show(i));
   tabs.append(button);buttons.push(button);
  }
  let start=null;
