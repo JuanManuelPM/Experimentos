@@ -1,0 +1,67 @@
+name: PROMETEO video W002-07 encode EL RELEVO
+on:
+  push:
+    branches: [gh-pages]
+    paths:
+      - ".github/workflows/prometeo-video-w002-07.yml"
+      - "prometeo/previews/video/w002/07-el-relevo/render.py"
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: prometeo-video-w002-07
+  cancel-in-progress: false
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout shared Pages branch
+        uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+          persist-credentials: true
+      - name: Python runtime
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install render and export dependencies
+        run: |
+          python -m pip install 'Pillow>=10,<13' 'numpy>=1.26,<2.1' 'opencv-python-headless>=4.8,<5'
+          command -v ffmpeg
+          command -v ffprobe
+      - name: Render actual original MP4 and audio
+        run: python prometeo/previews/video/w002/07-el-relevo/render.py
+      - name: Run film and continuity export QA
+        run: |
+          python prometeo/previews/video/w002/07-el-relevo/qa.py
+          python - <<'PY'
+          import json,subprocess,pathlib,hashlib
+          base=pathlib.Path('prometeo/previews/video/w002/07-el-relevo')
+          mp4=base/'EL_RELEVO_07.mp4'
+          obj=json.loads(subprocess.check_output(['ffprobe','-v','error','-show_format','-show_streams','-of','json',str(mp4)]))
+          v=next(x for x in obj['streams'] if x['codec_type']=='video')
+          a=next(x for x in obj['streams'] if x['codec_type']=='audio')
+          assert (v['width'],v['height'])==(960,540) and v['codec_name']=='h264'
+          assert int(v['nb_frames'])==448 and abs(float(obj['format']['duration'])-28)<0.08
+          assert a['codec_name']=='aac' and int(a['sample_rate'])==32000
+          proof={'taskId':'video-w002-20261122-07','status':'CI_ENCODED','duration':float(obj['format']['duration']),'video':{'codec':'h264','width':960,'height':540,'fps':16,'frames':448},'audio':{'codec':'aac','sampleRate':32000},'mp4Bytes':mp4.stat().st_size,'mp4Sha256':hashlib.sha256(mp4.read_bytes()).hexdigest(),'artApproval':'NOT_RUN','blindSpectatorTest':'NOT_RUN','humanApproved':False}
+          (base/'PROBE.json').write_text(json.dumps(proof,indent=2)+'\n')
+          print(proof)
+          PY
+      - name: Publish encoded original media in Pages (concurrent-safe retries)
+        shell: bash
+        run: |
+          set -euo pipefail
+          base='prometeo/previews/video/w002/07-el-relevo'
+          git config user.name 'prometeo-video-encoder'
+          git config user.email 'actions@users.noreply.github.com'
+          git add "$base/EL_RELEVO_07.mp4" "$base/frame_420.png" "$base/PROBE.json"
+          if git diff --cached --quiet; then echo "Media already current"; exit 0; fi
+          git commit -m 'video W002/07: publish H264/AAC original and verified frame [skip ci]'
+          for attempt in 1 2 3 4 5 6; do
+            git pull --rebase origin gh-pages
+            if git push origin HEAD:gh-pages; then echo "Published on attempt $attempt"; exit 0; fi
+            sleep 3
+          done
+          exit 1
