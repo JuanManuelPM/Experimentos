@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#10141d">
+<meta name="description" content="Interlocutora: una breve escena 3D con dos interpretaciones, rig real y tres cámaras.">
+<title>Interlocutora · Dos formas de responder</title>
+<style>
+:root{color-scheme:dark;--bg:#0d111a;--ink:#e9e5df;--faint:#a19da1;--edge:#383945;--accent:#dab3a5}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;background:var(--bg);color:var(--ink)}
+body{font-family:system-ui,-apple-system,Segoe UI,sans-serif;overflow:hidden}
+button{font:inherit;cursor:pointer;touch-action:manipulation}
+button:focus-visible{outline:2px solid #f4d0a2;outline-offset:4px}
+#app{height:100dvh;display:grid;grid-template-rows:minmax(0,1fr) auto;overflow:hidden}
+#world{position:relative;min-height:0;overflow:hidden;background:radial-gradient(circle at 50% 49%,#343141 0,#161925 42%,#090d15 82%)}
+canvas{display:block;width:100%;height:100%;touch-action:none}
+#header{position:absolute;z-index:2;top:0;left:0;right:0;display:flex;gap:14px;align-items:flex-start;justify-content:space-between;padding:clamp(18px,3vw,42px);pointer-events:none}
+h1{margin:0;font-family:Georgia,serif;font-weight:400;font-size:clamp(24px,3vw,47px);letter-spacing:-.05em;line-height:1.1}
+#header p{color:#b0a5ad;font-size:10px;letter-spacing:.2em;text-transform:uppercase;margin:8px 0 0}
+#views{pointer-events:auto;display:flex;gap:2px;padding:4px;background:#171924a8;border:1px solid #ffffff24;border-radius:40px}
+#views button{background:transparent;border:0;color:#c9c1c2;border-radius:28px;padding:9px 12px;font-size:12px}
+#views button[aria-pressed=true]{background:#e1d2c7;color:#28212a}
+#shadowLabel{position:absolute;bottom:22px;left:clamp(18px,3vw,42px);color:#b3a0a7;letter-spacing:.2em;font-size:9px;text-transform:uppercase}
+#lower{padding:17px clamp(18px,4vw,58px) 21px;border-top:1px solid #ffffff12;background:#10131d;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px 26px;align-items:center}
+#copy{min-width:0;max-width:640px}
+#caption{font:normal clamp(15px,1.6vw,23px)/1.38 Georgia,serif;color:#eee1d9;margin:0 0 5px}
+#cue{font-size:11px;color:#afa2ac;margin:0;min-height:1.1em}
+#choices{display:flex;align-items:center;gap:10px}
+#choices button{min-height:52px;padding:13px 20px;border:1px solid #74636e;background:transparent;color:#f7ede7;border-radius:3px;font-size:13px;text-align:left}
+#choices button:hover{background:#302733}
+#choices button.selected{background:#dfbba8;color:#1e1b23;border-color:#dfbba8}
+#restart{padding:12px 10px;border:0;background:transparent;color:#c0abb1;font-size:12px}
+#loading{position:absolute;inset:0;z-index:4;background:#11141c;display:flex;align-items:center;justify-content:center;text-align:center;padding:30px;color:#dfc9be;font:17px/1.5 Georgia,serif;transition:opacity .25s}
+#loading.off{opacity:0;pointer-events:none}
+#status{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+@media(max-width:760px){
+#app{grid-template-rows:minmax(0,60dvh) minmax(0,40dvh)}
+#header{padding:19px 15px;align-items:flex-start}
+h1{font-size:27px}#header p{font-size:9px;letter-spacing:.14em}
+#views{gap:0}#views button{padding:9px 9px;font-size:11px}
+#lower{display:flex;flex-direction:column;align-items:stretch;justify-content:center;gap:13px;padding:14px 15px max(16px,env(safe-area-inset-bottom))}
+#caption{font-size:19px;line-height:1.25;min-height:46px}
+#choices{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+#choices button{font-size:12px;min-height:62px;padding:10px 11px}
+#restart{align-self:center;padding:4px}
+#shadowLabel{font-size:8px;bottom:12px;left:15px}
+}
+@media(max-width:360px){#app{grid-template-rows:57dvh 43dvh}#views button{padding:8px 6px}#caption{font-size:17px}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.164.1/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.164.1/examples/jsm/"}}
+</script>
+</head>
+<body>
+<div id="app">
+  <main id="world" aria-label="Escenario tridimensional de Interlocutora">
+    <div id="header"><div><h1>Interlocutora</h1><p>Dos formas de responder · un encuentro</p></div>
+      <nav id="views" aria-label="Puntos de vista">
+        <button type="button" data-view="front" aria-pressed="true">Frente</button>
+        <button type="button" data-view="profile" aria-pressed="false">Perfil</button>
+        <button type="button" data-view="detail" aria-pressed="false">Detalle</button>
+      </nav></div>
+    <span id="shadowLabel">Estudio de una presencia · 01</span>
+    <div id="loading" role="status">Preparando al personaje…</div>
+  </main>
+  <section id="lower" aria-label="Conversación">
+    <div id="copy"><p id="caption">Hay algo que todavía no me animé a decir.</p><p id="cue">Elegí qué necesitás escuchar.</p></div>
+    <div id="choices">
+      <button type="button" data-route="verdad">Quiero que seas sincera</button>
+      <button type="button" data-route="cuidado">Quiero que te quedes</button>
+      <button type="button" id="restart" title="Repetir escena">Repetir ↻</button>
+    </div>
+  </section>
+</div>
+<p id="status" aria-live="polite" aria-atomic="true"></p>
+<script type="module">
+import * as THREE from "three";
+import {loadActor} from "./actor-rig.js";
+import {chooseRoute} from "./dialogue.js";
+const world=document.querySelector("#world"),loading=document.querySelector("#loading");
+const caption=document.querySelector("#caption"),cue=document.querySelector("#cue");
+const status=document.querySelector("#status");
+const buttons=[...document.querySelectorAll("[data-route]")];
+const views=[...document.querySelectorAll("[data-view]")];
+let renderer,actor,mixerReady=false,activeRoute=null,speaking=false,startVoice=0,view="front",raf=0,last=0,utterance=null;
+let userMotion=matchMedia("(prefers-reduced-motion: reduce)").matches;
+const stage={lights:[],scene:null,camera:null,target:new THREE.Vector3(),desired:new THREE.Vector3()};
+function report(message){status.textContent=message;console.info("[Interlocutora]",message);}
+function showFailure(error){
+  loading.classList.remove("off");
+  loading.textContent="La escena 3D no se pudo cargar. Comprobá conexión y WebGL.";
+  report(String(error?.message||error));
+  buttons.forEach(b=>b.disabled=true);
+}
+function setView(name){
+  view=name;
+  views.forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.view===name)));
+  const spots={
+    front:[[0,1.75,5.3],[0,1.57,0]],
+    profile:[[5.1,1.8,0],[0,1.7,0]],
+    detail:[[0.26,2.47,2.72],[0,2.38,0]]
+  };
+  const [pos,look]=spots[name];
+  stage.desired.set(...pos);stage.target.set(...look);
+  if(userMotion){stage.camera.position.copy(stage.desired);stage.camera.lookAt(stage.target);}
+  report("Vista "+({front:"frontal",profile:"de perfil",detail:"de detalle"}[name]));
+}
+function chooseLocalVoice(){
+  if(!("speechSynthesis" in window))return null;
+  const voices=window.speechSynthesis.getVoices();
+  return voices.find(v=>v.lang.toLowerCase()==="es-ar"&&/fem|woman|female|mujer/i.test(v.name))
+       ||voices.find(v=>v.lang.toLowerCase()==="es-ar")
+       ||voices.find(v=>v.lang.toLowerCase().startsWith("es")&&/fem|female|mujer/i.test(v.name))
+       ||voices.find(v=>v.lang.toLowerCase().startsWith("es"))||null;
+}
+function stopAudio(){
+  if("speechSynthesis" in window)window.speechSynthesis.cancel();
+  utterance=null;speaking=false;
+}
+function playRoute(name){
+  if(!actor)return;
+  stopAudio();
+  const route=chooseRoute(name);
+  activeRoute=name;
+  buttons.forEach(b=>b.classList.toggle("selected",b.dataset.route===name));
+  actor.setEmotion(route.emotion);
+  actor.choose(route.gesture);
+  stage.lights[0].color.set(route.light);
+  caption.textContent=route.line;
+  cue.textContent=route.delivery;
+  report("Interpretación: "+route.label);
+  if(!("speechSynthesis" in window)||!("SpeechSynthesisUtterance" in window)){
+    cue.textContent="Audio local no disponible en este navegador. La actuación visual permanece.";
+    return;
+  }
+  utterance=new SpeechSynthesisUtterance(route.line);
+  utterance.lang="es-AR";utterance.rate=route.pace;utterance.pitch=name==="verdad"?.91:1.08;
+  const v=chooseLocalVoice();if(v)utterance.voice=v;
+  utterance.onstart=()=>{speaking=true;startVoice=performance.now();report("Voz iniciada: "+route.label);};
+  utterance.onend=()=>{speaking=false;report("Terminó la interpretación. Podés elegir otra respuesta.");};
+  utterance.onerror=e=>{speaking=false;report("Voz no disponible: "+e.error);cue.textContent="No se pudo reproducir voz local; la escena sigue funcionando.";};
+  // onboundary es una marca del motor de voz, no una alineación fonética exacta.
+  try{window.speechSynthesis.speak(utterance);}catch(e){utterance.onerror({error:e.message});}
+}
+function reset(){
+  stopAudio();activeRoute=null;
+  if(actor){actor.setEmotion("neutral");actor.choose("Idle");}
+  caption.textContent="Hay algo que todavía no me animé a decir.";
+  cue.textContent="Elegí qué necesitás escuchar.";
+  buttons.forEach(b=>b.classList.remove("selected"));
+  stage.lights[0].color.set("#e6c6ba");
+  report("Escena reiniciada.");
+}
+function animate(now){
+  raf=requestAnimationFrame(animate);
+  const dt=Math.min(0.05,(now-last)/1000||0.016);last=now;
+  if(!userMotion){
+    stage.camera.position.lerp(stage.desired,Math.min(1,dt*3.8));
+    stage.camera.lookAt(stage.target);
+  }
+  actor.update(dt,{speaking,timbre:speaking?(now-startVoice)/1000:0});
+  renderer.render(stage.scene,stage.camera);
+}
+function resize(){
+  if(!renderer)return;
+  const w=Math.max(1,world.clientWidth),h=Math.max(1,world.clientHeight);
+  renderer.setSize(w,h,false);
+  stage.camera.aspect=w/h;
+  stage.camera.fov=w<650?37:32;
+  stage.camera.updateProjectionMatrix();
+}
+async function init(){
+  if(!document.createElement("canvas").getContext("webgl2"))throw Error("WebGL2 no disponible");
+  const rendererLocal=new THREE.WebGLRenderer({antialias:true,alpha:true,preserveDrawingBuffer:true,powerPreference:"high-performance"});
+  renderer=rendererLocal;renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.6));
+  renderer.outputColorSpace=THREE.SRGBColorSpace;
+  renderer.toneMapping=THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure=1.1;
+  renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+  world.prepend(renderer.domElement);
+  const scene=new THREE.Scene();stage.scene=scene;
+  scene.background=new THREE.Color("#121520");scene.fog=new THREE.Fog("#121520",7,14);
+  const camera=new THREE.PerspectiveCamera(32,1,0.1,35);stage.camera=camera;
+  const key=new THREE.DirectionalLight("#e6c6ba",3.1);key.position.set(-2.7,5.3,4.6);key.castShadow=true;key.shadow.mapSize.set(1024,1024);
+  key.shadow.camera.left=-4;key.shadow.camera.right=4;key.shadow.camera.top=5;key.shadow.camera.bottom=-4;
+  scene.add(key);
+  const fill=new THREE.DirectionalLight("#819ed0",1.8);fill.position.set(3,2,2);scene.add(fill);
+  const rim=new THREE.DirectionalLight("#b4accd",2.8);rim.position.set(1,4,-4);scene.add(rim);
+  scene.add(new THREE.HemisphereLight("#afb8cb","#35232d",1.05));
+  stage.lights=[key,fill,rim];
+  const platform=new THREE.Mesh(new THREE.CircleGeometry(2.5,80),new THREE.MeshStandardMaterial({color:"#292b37",roughness:.95,metalness:.03}));
+  platform.rotation.x=-Math.PI/2;platform.position.y=-.018;platform.receiveShadow=true;scene.add(platform);
+  const ring=new THREE.Mesh(new THREE.RingGeometry(2.52,2.535,96),new THREE.MeshBasicMaterial({color:"#bca6a9",transparent:true,opacity:.35,side:THREE.DoubleSide}));
+  ring.rotation.x=-Math.PI/2;ring.position.y=-.014;scene.add(ring);
+  actor=await loadActor(scene);
+  actor.root.traverse(o=>{if(o.isMesh)o.castShadow=true;});
+  mixerReady=true;
+  const details=actor.inspect();
+  if(details.skinnedMeshes<1||details.facialMeshes<1)throw Error("Asset sin rig facial real");
+  setView("front");camera.position.copy(stage.desired);resize();
+  new ResizeObserver(resize).observe(world);
+  window.addEventListener("resize",resize,{passive:true});
+  document.addEventListener("visibilitychange",()=>{if(document.hidden)stopAudio();});
+  buttons.forEach(b=>b.addEventListener("click",()=>playRoute(b.dataset.route)));
+  views.forEach(b=>b.addEventListener("click",()=>setView(b.dataset.view)));
+  document.querySelector("#restart").addEventListener("click",reset);
+  loading.classList.add("off");
+  report("Rig cargado: "+details.skinnedMeshes+" skins, "+details.morphTargets.length+" canales faciales.");
+  raf=requestAnimationFrame(animate);
+  window.__interlocutoraQA={
+    inspect:()=>({ready:mixerReady,route:activeRoute,view,voice:speaking,...actor.inspect()}),
+    pose:()=>actor.pose(),
+    capture:()=>renderer.domElement.toDataURL("image/png")
+  };
+}
+init().catch(showFailure);
+</script>
+</body></html>
