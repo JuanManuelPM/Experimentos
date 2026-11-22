@@ -1,0 +1,312 @@
+{
+  "version": "DEEP-SPEC-1",
+  "medium": "video",
+  "depth": "OPERATIVO",
+  "taskId": "video-w003-20261122-02",
+  "batchId": "video-w003-20261122",
+  "taskNumber": 2,
+  "brief": "Anuncio cinematográfico de una luminaria plegable original ficticia, mostrando mecanismo, función, materiales, reflejos, consistencia visual entre cámaras y foley táctil.",
+  "briefSha": "0cc574528594731a3d1cf0c15a0d0e5a37e775b7",
+  "oldBriefSha": "d7eebea6d36fc6e5aa3b72cba4e35dd149dc552d",
+  "intent": {
+    "experience": "Primero curiosidad táctil en la bisagra, luego sorpresa mecánica en su apertura y finalmente un objeto encendido en un packshot inequívoco.",
+    "distinctAbility": "Compartir un único esqueleto cinemático con dos longitudes constantes entre todos los macroplanos, estados y movimientos de cámara."
+  },
+  "references": [
+    {
+      "id": "R1",
+      "status": "OBSERVED",
+      "url": "https://www.artemide.com/en/subfamily/1849546/tolomeo-tavolo",
+      "observation": "La documentación oficial detalla la importancia de sus brazos articulados y demuestra la exigencia de conexiones y pivotes consistentes, que no son decoración; no se usa ningún asset de la marca.",
+      "role": "product mechanism benchmark"
+    },
+    {
+      "id": "R2",
+      "status": "OBSERVED",
+      "url": "https://www.dyson.com/lighting/solarcycle-morph",
+      "observation": "La lámpara multifunción se representa como un objeto de ingeniería de varios modos; el fotograma de despiece observado en búsqueda de imágenes resuelve cabezal, hardware e iluminación como un sistema conectado.",
+      "role": "construction/material/light benchmark"
+    },
+    {
+      "id": "R3",
+      "status": "OBSERVED",
+      "url": "https://www.artemide.net/en/product/?family=tolomeo-table",
+      "observation": "Referencia profesional de material y macrodetalle observada en fotografías de mecanismo articulado. No se inspeccionó un anuncio cinematográfico completo y el resultado no se declara comparable.",
+      "role": "detail benchmark"
+    }
+  ],
+  "components": [
+    {
+      "id": "C1",
+      "role": "Mecanismo geométrico plegable y base coherente",
+      "strategy": "Modelar dos barras parametrizadas y tres centros de articulación compartidos en 3D VTK.",
+      "constraints": "Las barras conservan 0.93 y 0.76 unidades en cada cuadro y el cabezal permanece horizontal."
+    },
+    {
+      "id": "C2",
+      "role": "Cobertura de cinco planos cinematográficos coherentes",
+      "strategy": "Definir cortes con intervalos fijos y mover la cámara respecto del esqueleto único.",
+      "constraints": "El giro orbital no modifica escala geométrica ni inventa caras nuevas o direcciones opuestas al mecanismo."
+    },
+    {
+      "id": "C3",
+      "role": "Materiales, luz ambiental y encendido de difusor",
+      "strategy": "Componer metal grafito, acentos cobre, una tira difusora y luz progresiva con render Phong estable.",
+      "constraints": "El brillo del emisor debe aumentar después de la apertura; no afirmar reflejos raytraced inexistentes."
+    },
+    {
+      "id": "C4",
+      "role": "Foley original y película exportada con sincronía temporal",
+      "strategy": "Sintetizar eventos sample accurate a 48kHz y mezclar luego de comprimir vídeo con FFmpeg.",
+      "constraints": "El metraje final debe durar 16 segundos con sonido AAC estéreo y no usar audio no autorizado."
+    }
+  ],
+  "questions": [
+    {
+      "id": "Q1",
+      "target": "C1",
+      "question": "¿Puede un solo modelo plegarse y verse desde lados opuestos sin cambiar longitudes ni separar ejes de bisagra?",
+      "alternatives": [
+        "Un modelo paramétrico con juntas que conservan world coordinates",
+        "Una sucesión de imágenes sintéticas independientes"
+      ],
+      "evidenceRef": "R1",
+      "finding": "La articulación es parte esencial del lenguaje técnico del objeto y necesita continuidad verificable entre posiciones.",
+      "decisionImpact": "Se eligió un modelo cinemático único cuya distancia entre pivotes puede comprobarse numéricamente."
+    },
+    {
+      "id": "Q2",
+      "target": "C3",
+      "question": "¿Qué motor disponible permite inspeccionar metal, junta y luz antes de producir los cientos de fotogramas?",
+      "alternatives": [
+        "VTK con PBR+FXAA",
+        "VTK con Phong de alto contraste y luces direccionales"
+      ],
+      "evidenceRef": "R2",
+      "finding": "Primer artículo PBR producía cuadros negros completos en este entorno; repetición usando Phong sí revela mecanismo y superficies.",
+      "decisionImpact": "Se descartó PBR defectuoso y se volvió a producir el primer artículo con iluminación Phong estable."
+    },
+    {
+      "id": "Q3",
+      "target": "C4",
+      "question": "¿Cómo garantizar correspondencia entre los cambios de la articulación, cortes macro y seis eventos sonoros sintetizados?",
+      "alternatives": [
+        "Reloj global único en segundos para geometría, cámara y foley",
+        "Eventos disparados de manera independiente por plano"
+      ],
+      "evidenceRef": "R3",
+      "finding": "La continuidad del producto exige una curva de movimiento común al film y los cortes deben preservar el mundo.",
+      "decisionImpact": "Se usó un solo reloj en segundos y se auditaron streams, duración y la tabla de eventos."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "D1",
+      "questionId": "Q1",
+      "componentIds": [
+        "C1",
+        "C2"
+      ],
+      "choice": "Geometría paramétrica única y cámara multicorte.",
+      "rejected": "Collage de fotogramas de producto independientes.",
+      "productionChange": "Las cinco escenas comparten los mismos tres pivotes y coordenadas de cabezal y se calculan en cada t.",
+      "why": "Evita saltos de anatomía mecánica y permite tests de distancias."
+    },
+    {
+      "id": "D2",
+      "questionId": "Q2",
+      "componentIds": [
+        "C3"
+      ],
+      "choice": "Renderizador Phong auditado en primer artículo.",
+      "rejected": "PBR+FXAA no operativo en contexto de render offscreen.",
+      "productionChange": "Se cambió shader de materiales y el tamaño de escenario, y se revisaron cuadro plegado, intermedio y hero.",
+      "why": "Primer artículo PBR era completamente negro; la corrección fue observada en imágenes reales."
+    },
+    {
+      "id": "D3",
+      "questionId": "Q3",
+      "componentIds": [
+        "C2",
+        "C4"
+      ],
+      "choice": "Timeline determinista de 24fps y sonido sintetizado 48kHz.",
+      "rejected": "Montaje sin reloj común ni corroboración del contenedor final.",
+      "productionChange": "Se sintetizó WAV, codificó H264 y remuxeó a AAC; ffprobe y ocho extracciones validaron formato y montaje.",
+      "why": "Asegura reproducción real y evidencia de cortes más allá de un storyboard."
+    }
+  ],
+  "relations": [
+    {
+      "from": "C1",
+      "to": "C2",
+      "invariant": "Las distancias de brazo y el paso por las bisagras son idénticos en macro, plano abierto y packshot.",
+      "failure": "Secciones desconectadas, alturas incompatibles o acople de cabezal imposible.",
+      "test": "Comprobación framewise de distancias y comparación de pose compartida en ocho fotogramas."
+    },
+    {
+      "from": "C2",
+      "to": "C4",
+      "invariant": "Los sonidos de clic y encendido pertenecen al mismo reloj global de 16 segundos de la secuencia.",
+      "failure": "Eventos sonoros fuera de las aperturas mecánicas correspondientes.",
+      "test": "Audio cuantizado a 48kHz y prueba de duración conjunta del MP4 final."
+    },
+    {
+      "from": "C1",
+      "to": "C3",
+      "invariant": "El difusor viaja con el cabezal y su encendido ocurre sin desplazar el soporte.",
+      "failure": "La zona luminosa salta o se separa de la placa al orbitar.",
+      "test": "Comparación de cuadros antes y después del encendido con cámara macro."
+    }
+  ],
+  "risks": [
+    {
+      "componentIds": [
+        "C1",
+        "C3"
+      ],
+      "severity": "high",
+      "failure": "La técnica de render produce imagen negra o metal visualmente inservible.",
+      "prevention": "Antes de la película renderizar cuatro posiciones de mayor riesgo y cambiar familia de shading si falla.",
+      "test": "Cuatro PNG reales plegado, intermedio, abierto y hero observados en la sesión.",
+      "status": "OBSERVED",
+      "result": "PBR_FAILED_then_PHONG_LOCAL_OBSERVED_PASS"
+    },
+    {
+      "componentIds": [
+        "C2"
+      ],
+      "severity": "medium",
+      "failure": "Macroplanos cortan la pieza vital o hacen desaparecer la base.",
+      "prevention": "Bloquear shotlist y verificar cuadros al inicio, mitad y final.",
+      "test": "Extracción de ocho fotogramas de la película ya exportada.",
+      "status": "OBSERVED"
+    },
+    {
+      "componentIds": [
+        "C3"
+      ],
+      "severity": "medium",
+      "failure": "Sombras y reflejos se presentan como físicos cuando solo son aproximaciones.",
+      "prevention": "Declarar CGI estilizado y no asignar certificado de realismo.",
+      "test": "Revisión perceptual humana del balance especular y contacto con mesa.",
+      "status": "NOT_RUN"
+    },
+    {
+      "componentIds": [
+        "C4"
+      ],
+      "severity": "low",
+      "failure": "Film sin pista de audio o sin archivo MP4 válido.",
+      "prevention": "Verificar streams con ffprobe y extracción a PNG tras mux.",
+      "test": "FFprobe/ffmpeg y verificación de longitud y audio con volumedetect.",
+      "status": "OBSERVED"
+    }
+  ],
+  "acceptance": [
+    {
+      "kind": "visual",
+      "criterion": "Se distinguen cambios reales de posición y tres pivotes coherentes en fotogramas plegado, intermedio y abierto.",
+      "oracle": "Inspección de ocho cuadros reales y cinco cortes del MP4 decodificado.",
+      "status": "OBSERVED"
+    },
+    {
+      "kind": "functional",
+      "criterion": "La película existe como MP4 reproducible de 16 s con H264/AAC a 24 FPS.",
+      "oracle": "ffprobe format/stream metadata y extracción completa de ocho cuadros FFmpeg.",
+      "status": "OBSERVED"
+    },
+    {
+      "kind": "audio",
+      "criterion": "El contenedor incluye pista sintetizada original estéreo, con máximo seguro y presencia audible.",
+      "oracle": "ffprobe 48kHz stereo y volumedetect max -16.2 dB, escucha crítica independiente aún NOT_RUN.",
+      "status": "OBSERVED"
+    },
+    {
+      "kind": "visual",
+      "criterion": "La textura, iluminación y las uniones alcanzan una estética comercial premium reconocible.",
+      "oracle": "Evaluación externa de reflejos/roughness/material y diseño de sonido en reproducción de pantalla.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "licensing": "Todo el vídeo, geometría, textos y sonidos son originales y se sintetizaron en esta sesión; las fotos de referencia no se integran en la obra.",
+  "resources": "Python con VTK/Numpy/Pillow/Scipy; FFmpeg/FFprobe y VTK software OpenGL offscreen. Render.py y película entregados en archivo de conversación, no publicados binariamente en GitHub.",
+  "environmentLimits": "Imposible transferir la película MP4 local como binario a GitHub con las herramientas de escritura textual disponibles; sí se verificó localmente. Browser Android y audiencia no ejecutados.",
+  "flow": {
+    "method": "Q-LOOP/QBAR-1/DEEP-SPEC-1 + FIRST-ARTICLE-1",
+    "sharedContractSha": "7911ce780c6eb8fc08ba3e5621e4479bbe2e9757",
+    "qbarSha": "5653704d3267c339fe7405f2b36b8488dbb44be9",
+    "deepSpecSha": "7656a293b0182f81619bf0d27b90dffa771c2683",
+    "artDirectionSha": "b1a1a012e90897200336cac6316c0511cb40c4c5",
+    "specializedFlow": "FORMAL_VIDEO_FLOW_VERSION_NOT_RECOVERED",
+    "qaCandidate": "video audit V2 was read as candidate, not promoted"
+  },
+  "artDirection": {
+    "schema": "prometeo.art-direction.first-article/v1",
+    "medium": "video",
+    "taskId": "video-w003-20261122-02",
+    "briefSha": "0cc574528594731a3d1cf0c15a0d0e5a37e775b7",
+    "flowRef": "https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/launch/ART_DIRECTION_FIRST_ARTICLE.md",
+    "promise": {
+      "subject": "Una luminaria plegable original en grafito y cobre",
+      "intent": "La cámara revela por separado el pivote, la apertura completa y el momento en que la luz se enciende."
+    },
+    "benchmark": {
+      "url": "https://www.dyson.com/lighting/solarcycle-morph",
+      "description": "Galería oficial de una luminaria articulada de uso real; detalle técnico de cabezal visible en imagen buscada; no se vio un comercial completo.",
+      "status": "OBSERVED"
+    },
+    "techniques": [
+      {
+        "family": "VTK_PBR_OFFSCREEN",
+        "viability": "VTK installed and tested but first article BLACK, not usable.",
+        "license": "Original procedural geometry with installed open-source VTK"
+      },
+      {
+        "family": "VTK_PHONG_SOFTWARE",
+        "viability": "Four generated images rendered and inspected locally; H264/AAC export verified.",
+        "license": "Original procedural VTK geometry, no third-party footage"
+      },
+      {
+        "family": "REAL_FOOTAGE_AUTHORIZED",
+        "viability": "Requires a physical prototype and authorized camera capture unavailable in environment.",
+        "license": "Own filmed footage with written authorization for any non-own talent"
+      }
+    ],
+    "selectedTechnique": "VTK_PHONG_SOFTWARE",
+    "firstFrame": {
+      "openingDescription": "Macro cercano de bisagra y estructura negra con una luz cálida de recorte y sin carteles invasivos.",
+      "focalSubject": "Pivote y longitud de cabeza del mismo modelo plegable",
+      "minimalUI": "Solo subtítulo editorial pequeño después de la apertura, título en packshot final.",
+      "checks": [
+        {
+          "viewport": "390",
+          "criterion": "La bisagra sigue siendo reconocible al visualizar cuadro horizontal a ancho 390.",
+          "oracle": "Reducir el frame PNG a anchura 390 y revisar legibilidad."
+        },
+        {
+          "viewport": "1440",
+          "criterion": "Los contornos del modelo y la posición de la cámara se leen sin recorte fatal.",
+          "oracle": "Mostrar el PNG en ancho 1440 y evaluar composición."
+        },
+        {
+          "viewport": "both",
+          "criterion": "La composición contiene el objeto y no una portada textual que lo sustituya.",
+          "oracle": "Inspeccionar plegado, cambio de pose y cuadro hero."
+        }
+      ],
+      "observations": []
+    },
+    "firstArticle": {
+      "target": "Cuadros del mismo pivote a posiciones plegado, intermedia, abierta y packshot.",
+      "rejectWhen": "Negro total, articulaciones flotantes o imposible distinguir movimiento y cabeza de luz.",
+      "switchTo": "REAL_FOOTAGE_AUTHORIZED",
+      "oracle": "Cuatro PNG auténticos, comparados en una hoja de contacto; observar silueta y cinemática.",
+      "resourceProof": "VTK 9.6.2 y FFmpeg instalados; primer intento PBR negro, después render Phong observado.",
+      "status": "NOT_RUN",
+      "reason": "Aunque cuatro cuadros se renderizaron y observaron LOCALMENTE, falta evidencia remota verificable exigida por validador FIRST-ARTICLE."
+    },
+    "humanApproved": false
+  },
+  "humanApproved": false
+}
