@@ -1,0 +1,193 @@
+{
+  "version": "DEEP-SPEC-1",
+  "medium": "images",
+  "depth": "SISTEMA",
+  "taskId": "images-w002-20261122-03",
+  "batchId": "images-w002-20261122",
+  "taskNumber": 3,
+  "briefSha": "2e0e5e8ca226d546005349dc44b31cd9abcf5dd1",
+  "qualityBarVersion": "QBAR-1",
+  "brief": "Diseñar a Elena como personaje original restauradora de instrumentos científicos con frente, perfil, tres cuartos, expresiones y detalles técnicos.",
+  "intent": {
+    "experience": "Un personaje reconocible y reutilizable entre cámaras, expresiones y primer plano de su oficio, sin improvisar su identidad en cada vista.",
+    "distinctAbility": "Unir arte raster original, canon versionado y comparación visual de landmarks anatómicos con fallas a la vista."
+  },
+  "references": [
+    {
+      "id": "r1",
+      "url": "https://www.waltdisney.org/sites/default/files/SW.worksheets.final.pdf",
+      "status": "OBSERVED",
+      "observation": "El material del museo explica cómo las hojas de modelo usan poses y expresiones variadas para mantener continuidad de personaje en animación."
+    },
+    {
+      "id": "r2",
+      "url": "https://www.disneyanimation.com/process/look-development/",
+      "status": "OBSERVED",
+      "observation": "Desarrollar el aspecto final exige conectar pelo, texturas, costuras y tratamiento material con la composición de un personaje."
+    },
+    {
+      "id": "r3",
+      "url": "https://www.ainsworth-lin.com/character-design",
+      "status": "OBSERVED",
+      "observation": "En una misma hoja de expresiones persisten color, mechones, rostro y vestuario mientras las cejas y ojos describen emociones."
+    }
+  ],
+  "components": [
+    {
+      "id": "face",
+      "role": "Rostro, pelo y proporciones observables entre tres vistas",
+      "strategy": "Fijar cráneo, cicatriz, nariz, ojos y mechón gris como rasgos constantes",
+      "constraints": "No cambiar edad aparente, proporción del rostro, dirección del mechón o relación cabeza cuerpo entre vistas"
+    },
+    {
+      "id": "costume",
+      "role": "Sistema de vestuario y materiales con continuidad transversal",
+      "strategy": "Anclar abrigo añil, chaleco verde petróleo, delantal cobrizo, estrella y herramientas",
+      "constraints": "Evitar inversión de accesorios y pérdida de los materiales que dan identidad a la restauradora"
+    },
+    {
+      "id": "gestures",
+      "role": "Cuatro expresiones y detalles de herramientas científicas",
+      "strategy": "Agrupar bustos en una lámina junto a detalles de cuero, tejido, metal y utensilios",
+      "constraints": "Conservar misma nariz, cabello, color, edad y uso creíble del instrumental en todos los planos"
+    }
+  ],
+  "questions": [
+    {
+      "id": "q1",
+      "target": "face",
+      "question": "¿Cómo cotejar ojos, hombros, cintura y suelo para evitar una persona distinta en cada ángulo?",
+      "alternatives": [
+        "Retratos independientes",
+        "Turnaround conjunto con overlay posterior"
+      ],
+      "finding": "Las hojas de modelo observadas muestran la utilidad de cotejar vistas y mímica dentro de una referencia común.",
+      "decisionImpact": "Se genera un tablero multivista y una guía de hitos sobre el propio raster.",
+      "evidenceRef": "r1"
+    },
+    {
+      "id": "q2",
+      "target": "costume",
+      "question": "¿Qué materiales y asimetrías mantienen la identidad al girar sin esconder defectos de anatomía?",
+      "alternatives": [
+        "Prendas vintage genéricas",
+        "Paleta, insignia, bolsa y pelo fijados por canon"
+      ],
+      "finding": "El look development profesional conecta el vestuario con pelo, costuras, desgaste y materialidad.",
+      "decisionImpact": "Documentar colores, telas y piezas asimétricas en un canon compartible.",
+      "evidenceRef": "r2"
+    },
+    {
+      "id": "q3",
+      "target": "gestures",
+      "question": "¿Qué amplitud expresiva preserva el mismo rostro y permite mostrar oficio y personalidad?",
+      "alternatives": [
+        "Expresiones extremas independientes",
+        "Serie conjunta de cuatro gestos moderados"
+      ],
+      "finding": "Los estudios de expresiones observados revelan estabilidad de los rasgos y peinado alrededor de cambios faciales.",
+      "decisionImpact": "Generar neutral, concentración, sorpresa leve y sonrisa contenida en serie.",
+      "evidenceRef": "r3"
+    }
+  ],
+  "decisions": [
+    {
+      "id": "d1",
+      "questionId": "q1",
+      "componentIds": [
+        "face"
+      ],
+      "choice": "Turnaround y landmarks superpuestos",
+      "rejected": "Vistas sin puntos anatómicos comunes",
+      "productionChange": "Combinar frente, tres cuartos y perfil en un tablero y marcar visualmente siete hitos",
+      "why": "Facilita reconocer variaciones en proporciones y alineación entre vistas"
+    },
+    {
+      "id": "d2",
+      "questionId": "q2",
+      "componentIds": [
+        "costume"
+      ],
+      "choice": "Vestuario y pelo versionados en JSON",
+      "rejected": "Vestuario descrito en términos genéricos",
+      "productionChange": "Definir abrigo, chaleco, delantal, insignia, pelo y bolsa con materiales consistentes",
+      "why": "Una serie de señas constantes permite reconocer el personaje incluso en planos pequeños"
+    },
+    {
+      "id": "d3",
+      "questionId": "q3",
+      "componentIds": [
+        "gestures",
+        "face"
+      ],
+      "choice": "Cuatro expresiones en la misma pieza",
+      "rejected": "Emociones regeneradas en cada retrato",
+      "productionChange": "Vincular los bustos de neutral, concentración, sorpresa y sonrisa a las vistas del canon",
+      "why": "La comparación simultánea hace visible el cambio de identidad no deseado"
+    }
+  ],
+  "relations": [
+    {
+      "from": "face",
+      "to": "costume",
+      "invariant": "Los mismos hombros, cintura y cuello soportan prendas de largo y materiales coherentes en todos los ángulos",
+      "failure": "Abrigo y proporciones de cuerpo cambian cuando se gira el personaje en la lámina",
+      "test": "Comparar siete hitos manuales entre las tres vistas"
+    },
+    {
+      "from": "costume",
+      "to": "gestures",
+      "invariant": "El mechón gris frontal, la insignia y el chaleco verde se reconocen en todos los bustos expresivos",
+      "failure": "Las emociones muestran a otra mujer con un peinado y otra edad aparente",
+      "test": "Comprobar cuatro señas reconocibles en cada expresión"
+    }
+  ],
+  "risks": [
+    {
+      "componentIds": [
+        "face",
+        "costume"
+      ],
+      "severity": "high",
+      "failure": "El generador puede inventar otra fisonomía y ubicar la bolsa de herramientas en otro lado al girar",
+      "prevention": "Generar dos estudios, seleccionar una lámina y compararla por anclas anatómicas sin esconder errores",
+      "test": "Cotejo multivista con overlay de ojos, hombros, cadera, rodillas y suelo realizado en raster",
+      "status": "OBSERVED",
+      "outcome": "Continuidad parcial, variación de manos y perspectiva todavía pendiente de revisión humana"
+    },
+    {
+      "componentIds": [
+        "gestures"
+      ],
+      "severity": "medium",
+      "failure": "Las expresiones pueden alterar de forma drástica la nariz y edad aparente del personaje",
+      "prevention": "Mostrar cuatro expresiones moderadas en una misma ficha visual y solicitar revisión ciega",
+      "test": "Prueba independiente con reconocimiento de identidad en cuatro expresiones",
+      "status": "NOT_RUN"
+    }
+  ],
+  "acceptance": [
+    {
+      "kind": "logic",
+      "criterion": "Todas las láminas existen como raster real y se decodifican con dimensiones nativas documentadas",
+      "oracle": "Verificación local por Pillow en los ficheros PNG generados",
+      "status": "OBSERVED"
+    },
+    {
+      "kind": "visual",
+      "criterion": "Los hitos comparados quedan visibles para revelar variaciones de posición entre las tres vistas",
+      "oracle": "Superposición gráfica manual sobre los mismos archivos PNG",
+      "status": "OBSERVED"
+    },
+    {
+      "kind": "visual",
+      "criterion": "Una tercera persona identifica sin pistas a Elena a través de vistas y expresiones",
+      "oracle": "Evaluación ciega por dos ilustradores de personajes externos",
+      "status": "NOT_RUN"
+    }
+  ],
+  "licensing": "Arte original generado para este encargo. Ningún raster o asset de referencia externa fue copiado o reutilizado.",
+  "resources": "Generación raster original con herramienta de imágenes, composición y overlay local Python Pillow, HTML y JSON.",
+  "environmentLimits": "El generador no fija una geometría 3D compartida; se produjo en 1536 por 1024, sin medición anatómica mecánica ni oráculo perceptual independiente.",
+  "chronology": "Especificación registrada después de las primeras dos pruebas raster de esta sesión; el resultado lógico no certifica obediencia cronológica estricta."
+}
