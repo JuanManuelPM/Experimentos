@@ -3,7 +3,7 @@ import {registerBlockAdapter,renderBlock} from './adapters.js';
 import {copyValue,recordCopied,wasCopied,safeURL} from './actions.js';
 import './response.js';
 const selection=new Map();
-const stylesheet=new URL('./batch.css?v=20261122-autoqa1',import.meta.url).href;
+const stylesheet=new URL('./batch.css?v=20261122-perchat1',import.meta.url).href;
 const labels=['Preparado','Copiado localmente','Iniciado con evidencia','Entregado','Verificado'];
 const el=(tag,cls,text)=>{const node=document.createElement(tag);if(cls)node.className=cls;if(text!==undefined)node.textContent=String(text);return node;};
 function promptKey(batch,n){return String(batch.id)+'|'+String(batch.launchUrl)+'|'+String(n);}
@@ -32,13 +32,13 @@ function renderBatch(block){
   if(ok)recordCopied(promptKey(block,selected.number));
   host.dispatchEvent(new CustomEvent('prometeo:action',{detail:{kind:'copy',success:ok,workId:id},bubbles:true,composed:true}));
  });
- const hint=el('p','p-batch-launch-help','Cada copia ya incluye el número correcto. Pegalo en un chat nuevo.');
+ const hint=el('p','p-batch-launch-help','Para producir, copiá el número completo en un chat nuevo. Para revisar sin audio, pegá el mismo comando de revisión en cada chat que ya produjo su obra.');
  launch.append(title,launchCopy,hint);
- const automated=el('button','p-batch-launch-review','Autoevaluar tanda');
+ const automated=el('button','p-batch-launch-review','Revisar sin audio');
  automated.type='button';
- automated.setAttribute('aria-label','Copiar un único trabajo para revisar automáticamente todos los resultados de esta tanda con dos voces');
+ automated.setAttribute('aria-label','Copiar un único comando para pegar en cada chat que produjo una obra, sin audio obligatorio');
  automated.addEventListener('click',async()=>{
-  const reference='WORK · https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/root/AUTOCRITICA_WHISPLASH.md · '+encodeURIComponent(block.id);
+  const reference='WORK · https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/root/AUTOCRITICA_WHISPLASH.md · ESTE_CHAT';
   const ok=await copyValue(reference);emit(host,ok,{id:id+'-auto-review'});
  });
  launch.append(automated);
