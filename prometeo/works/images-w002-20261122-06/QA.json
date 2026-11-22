@@ -1,0 +1,41 @@
+{
+  "identity": "images-w002-20261122-06",
+  "status": "PARTIAL_REMOTE_DELIVERY",
+  "observed": {
+    "artworkGenerated": true,
+    "masterPNG": [
+      1536,
+      1024
+    ],
+    "separatePNGs": 6,
+    "panelPNG": [
+      506,
+      506
+    ],
+    "separateWebP": 6,
+    "deepSpecGate": "READY_FOR_FIRST_SLICE",
+    "localImageFormatVerified": true
+  },
+  "notRun": [
+    "3 blind external readers ordering test",
+    "professional artistic approval",
+    "remote image bytes GitHub Pages publishing"
+  ],
+  "blocker": "No direct binary transfer from image generation container to GitHub connector, thus GitHub docs alone do not constitute an online raster delivery.",
+  "sha256PNGs": [
+    "444f2793b6ed138705147247295d8742e0883e257bacc0e388379aa88f0a881c",
+    "26cb5d0a127f1ff01f417ea9c501d45b8e6d3971b9c418d852347acb09154fe4",
+    "bcf9ff7ee4f4e7014f47c0922e65581a0c88409b4cab238aba48b92eea8ab004",
+    "2a868d89aece2d8221af73875dd17617a72ea4a7bba1a2800849f14ff621c85f",
+    "35a906cc58803ed3c9b83de92fb96a71f9f8cda509566ab9999edc92886e6c33",
+    "b6d98e124a037b91f60e1d0ef2f87d5af1a10bd3134d73a12d2bd60af9ba91ad"
+  ],
+  "learning": {
+    "stage": "generation",
+    "cause": "Composite sheet improves cross-panel consistency but reduces native resolution per piece.",
+    "preventive_gate": "Inspect per-panel pixel dimensions before promising high-resolution printing.",
+    "test": "Measure cropped images and test blind sequencing.",
+    "owner": "images",
+    "counterexample": "1536×1024 sheet is not six 1536×1024 final canvases."
+  }
+}
