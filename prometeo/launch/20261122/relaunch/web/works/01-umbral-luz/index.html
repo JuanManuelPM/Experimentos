@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#1d1b1a">
+<meta name="description" content="El umbral de la luz. Un ensayo visual interactivo sobre Buenos Aires, de las primeras luces a la ciudad de noche.">
+<title>El umbral de la luz | Un ensayo sobre Buenos Aires</title>
+<link rel="preconnect" href="https://commons.wikimedia.org">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,300;6..72,400;6..72,500;6..72,600&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#f4efe7;--ink:#242019;--muted:#685f54;--line:#c9c0b2;--ochre:#ae653d;--read-progress:0%;font-synthesis:none}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:128px}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"IBM Plex Sans",Arial,sans-serif;-webkit-font-smoothing:antialiased}
+::selection{background:#d5ad86;color:#1b1714}
+a{color:inherit;text-underline-offset:.2em}
+a:focus-visible,button:focus-visible{outline:3px solid #c76c2e;outline-offset:4px}
+button{font:inherit;cursor:pointer}
+img{display:block;max-width:100%}
+.skip{position:fixed;z-index:300;top:-80px;left:12px;background:white;color:black;padding:12px}
+.skip:focus{top:12px}
+.topbar{position:fixed;inset:0 0 auto;z-index:100;height:58px;background:rgba(26,25,23,.94);color:#f5eee1;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:0 clamp(17px,3vw,52px);border-bottom:1px solid #ffffff33;backdrop-filter:blur(12px)}
+.brand{font-size:.73rem;letter-spacing:.19em;font-weight:700;text-transform:uppercase;text-decoration:none;white-space:nowrap}
+.toplinks{display:flex;align-items:center;gap:clamp(10px,2vw,30px);font-size:.73rem;text-transform:uppercase;letter-spacing:.12em}
+.toplinks a{text-decoration:none}
+.toplinks a:hover{text-decoration:underline}
+.toplinks button{border:1px solid #a9a091;background:transparent;color:inherit;border-radius:1px;padding:8px 10px;font-size:.69rem;letter-spacing:.025em;min-height:35px}
+.readbar{position:fixed;top:58px;left:0;right:0;height:3px;z-index:101;background:#2221;pointer-events:none}
+.readbar:after{content:"";display:block;width:var(--read-progress);height:100%;background:#db8c56;transition:width .1s linear}
+.hero{position:relative;min-height:700px;height:100svh;background:#262f39;color:#f7efe6;overflow:hidden;isolation:isolate}
+.hero img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 57%;filter:saturate(.78) contrast(1.05)}
+.hero:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(15,19,27,.78) 0%,rgba(14,17,26,.28) 72%),linear-gradient(0deg,rgba(12,14,20,.62),transparent 35%);z-index:0}
+.hero-inner{position:relative;z-index:1;display:flex;flex-direction:column;justify-content:flex-end;height:100%;padding:130px clamp(22px,6vw,100px) clamp(45px,8vh,95px)}
+.kicker{font-size:.7rem;letter-spacing:.29em;text-transform:uppercase;font-weight:700}
+.hero .kicker{color:#e6c3a6}
+.hero h1{font-family:"Newsreader",Georgia,serif;font-weight:300;letter-spacing:-.055em;line-height:.82;font-size:clamp(5.3rem,12.5vw,14.4rem);max-width:1100px;margin:24px 0 26px}
+.hero h1 em{font-style:italic;font-weight:300;color:#f3ceac}
+.hero-bottom{display:flex;justify-content:space-between;align-items:end;gap:24px;border-top:1px solid #ffffff80;padding-top:16px;max-width:1080px}
+.hero-bottom p{max-width:410px;font-size:clamp(.95rem,1.35vw,1.2rem);line-height:1.55;margin:0}
+.hero-bottom a{white-space:nowrap;font-size:.75rem;letter-spacing:.16em;text-transform:uppercase;font-weight:600;text-decoration:none;border-bottom:1px solid;padding-bottom:9px}
+.folio{position:absolute;right:clamp(22px,6vw,100px);top:110px;font-size:.68rem;text-align:right;letter-spacing:.14em;line-height:1.8;opacity:.85}
+.intro{max-width:1300px;padding:clamp(75px,11vw,150px) clamp(24px,7vw,100px);margin:auto;display:grid;grid-template-columns:1fr 1.35fr;gap:clamp(30px,8vw,160px)}
+.intro .overline{font-size:.73rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--ochre)}
+.intro .intro-copy{font-family:"Newsreader",Georgia,serif;font-size:clamp(2rem,3.35vw,3.7rem);line-height:1.15;letter-spacing:-.028em;font-weight:400;margin:-8px 0 0}
+.intro-copy strong{font-weight:500;color:#9a5635}
+.intro .aside{grid-column:2;font-size:.82rem;line-height:1.65;color:var(--muted);max-width:550px;margin:0}
+.chapter-index{position:sticky;top:58px;z-index:75;background:rgba(244,239,231,.96);backdrop-filter:blur(10px);border-top:1px solid var(--line);border-bottom:1px solid var(--line);display:flex;align-items:stretch;justify-content:space-between;overflow-x:auto;scrollbar-width:thin}
+.index-label{display:flex;align-items:center;gap:8px;padding:0 18px 0 clamp(20px,3.7vw,57px);white-space:nowrap;text-transform:uppercase;letter-spacing:.15em;font-weight:700;font-size:.65rem;border-right:1px solid var(--line)}
+.index-label strong{font-family:"Newsreader",Georgia,serif;font-weight:400;font-size:1.8rem;letter-spacing:-.05em}
+.chapter-index ul{display:flex;gap:0;list-style:none;padding:0;margin:0;flex:1;justify-content:flex-end}
+.chapter-index li{display:flex;flex:1;min-width:110px}
+.chapter-index a{display:flex;align-items:center;justify-content:center;gap:9px;min-height:64px;padding:10px 12px;white-space:nowrap;text-decoration:none;text-transform:uppercase;letter-spacing:.055em;font-size:.7rem;font-weight:600;border-left:1px solid var(--line);width:100%;transition:background .25s}
+.chapter-index a span{font-size:.65rem;font-weight:400;color:var(--muted)}
+.chapter-index a:hover,.chapter-index a[aria-current="location"]{background:#27231f;color:#f6eee4}
+.chapter-index a[aria-current="location"] span{color:#d8ac83}
+.chapter{position:relative;min-height:138vh;display:grid;grid-template-columns:minmax(0,56%) minmax(0,44%);border-bottom:1px solid var(--line);scroll-margin-top:127px}
+.chapter:nth-of-type(2n){background:#e8e2d8}
+.chapter .photo{position:sticky;top:122px;height:calc(100svh - 134px);min-height:500px;margin:0;overflow:hidden;background:linear-gradient(125deg,#6d7c86,#232b34);align-self:start;isolation:isolate}
+.chapter .photo:after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,rgba(7,12,18,.8),transparent 37%,transparent 75%,rgba(4,10,18,.08));pointer-events:none}
+.chapter .photo img{width:100%;height:100%;object-fit:cover;object-position:var(--photo-position,50% 50%);transform:translate3d(0,var(--photo-offset,0px),0) scale(1.085);will-change:transform}
+.photo .photolabel{position:absolute;z-index:1;top:24px;left:clamp(22px,3vw,44px);font-size:.69rem;letter-spacing:.19em;text-transform:uppercase;color:#fff;padding-bottom:10px;border-bottom:1px solid #ffffff80}
+.photo figcaption{position:absolute;bottom:27px;left:clamp(22px,3vw,44px);right:20px;z-index:1;color:#fff;font-size:.72rem;line-height:1.55;max-width:440px}
+.photo figcaption a{font-weight:600}
+.photo figcaption span{display:block;font-size:.64rem;opacity:.85;margin-top:4px}
+.photo .media-error{position:absolute;inset:22% 8%;z-index:1;display:none;align-items:center;justify-content:center;text-align:center;font-family:"Newsreader",serif;font-size:clamp(1.6rem,3vw,3rem);line-height:1.1;color:white}
+.photo.media-failed .media-error{display:flex}
+.photo.media-failed img{display:none}
+.chapter-copy{padding:clamp(55px,6vw,105px) clamp(24px,5.2vw,100px) 13vh;align-self:start;max-width:760px}
+.chapter-num{display:flex;align-items:center;gap:18px;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.2em;color:var(--ochre)}
+.chapter-num:after{content:"";height:1px;flex:1;background:var(--line)}
+.chapter h2{font-family:"Newsreader",Georgia,serif;font-size:clamp(4.3rem,7vw,9.5rem);font-weight:300;line-height:.9;letter-spacing:-.065em;margin:40px 0 30px}
+.chapter h2 em{font-weight:300}
+.deck{font-family:"Newsreader",Georgia,serif;font-size:clamp(1.45rem,2.35vw,2.65rem);line-height:1.15;letter-spacing:-.02em;margin:0 0 42px}
+.chapter-copy>p:not(.deck){font-size:clamp(1rem,1.13vw,1.14rem);line-height:1.9;max-width:52ch;margin:0 0 24px;color:#3b342c}
+.chapter blockquote{font-family:"Newsreader",Georgia,serif;font-size:clamp(1.8rem,2.65vw,3.5rem);line-height:1.1;letter-spacing:-.02em;margin:58px 0;padding:12px 0 12px 24px;border-left:2px solid #b67851;max-width:16ch}
+.chapter .endnote{font-size:.7rem!important;line-height:1.6!important;color:var(--muted)!important;margin-top:48px!important;padding-top:15px;border-top:1px solid var(--line)}
+.next-link{display:inline-flex;align-items:center;gap:15px;font-size:.75rem;letter-spacing:.16em;text-transform:uppercase;font-weight:700;text-decoration:none;margin-top:32px;border-bottom:1px solid var(--ink);padding-bottom:12px}
+.next-link:hover{color:var(--ochre);border-color:var(--ochre)}
+.photo[data-tone="day"]{background:#86867f}
+.photo[data-tone="afternoon"]{background:#7d6d58}
+.photo[data-tone="dusk"]{background:#6b4e55}
+.photo[data-tone="night"]{background:#182a34}
+.coda{background:#24221f;color:#f0e7da;padding:clamp(90px,13vw,180px) clamp(24px,7vw,120px)}
+.coda-inner{max-width:1100px;margin:auto}
+.coda .kicker{color:#d69d78}
+.coda h2{font-family:"Newsreader",Georgia,serif;font-size:clamp(4.5rem,10vw,11rem);font-weight:300;line-height:.9;letter-spacing:-.05em;margin:25px 0 30px}
+.coda h2 em{color:#d7a986}
+.coda p{max-width:700px;font-family:"Newsreader",Georgia,serif;font-size:clamp(1.5rem,2.4vw,2.7rem);line-height:1.25}
+.coda a{display:inline-block;font-size:.75rem;text-decoration:none;text-transform:uppercase;letter-spacing:.12em;border-bottom:1px solid #f0e7da;padding:12px 0;margin-top:26px}
+.production-notes{padding:clamp(65px,9vw,120px) clamp(22px,7vw,110px);max-width:1350px;margin:auto}
+.production-notes h2{font-family:"Newsreader",Georgia,serif;font-size:clamp(3rem,5vw,5.8rem);font-weight:300;letter-spacing:-.055em;margin:0 0 20px}
+.production-notes>p{max-width:75ch;line-height:1.75;color:#484035}
+.notes-grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(24px,6vw,100px);margin-top:45px}
+.notes-grid h3{font-size:.75rem;letter-spacing:.2em;text-transform:uppercase;border-bottom:1px solid var(--line);padding-bottom:18px}
+.credits{list-style:none;padding:0;margin:0}
+.credits li{border-bottom:1px solid #d8cec0;padding:13px 0;font-size:.83rem;line-height:1.6}
+.credits li span{display:block;font-size:.75rem;color:var(--muted)}
+.credits a{font-weight:600}
+.notes-grid p{font-size:.88rem;line-height:1.7;color:#484035}
+.smallprint{border-top:1px solid var(--line);margin-top:75px;padding-top:20px;display:flex;justify-content:space-between;gap:20px;font-size:.72rem;line-height:1.5;color:var(--muted)}
+.motion-off *,.motion-off *::before,.motion-off *::after{scroll-behavior:auto!important;animation:none!important;transition:none!important}
+.motion-off .chapter .photo img{transform:none!important}
+.motion-off .readbar:after{transition:none}
+@media(max-width:1060px){.chapter{grid-template-columns:51% 49%}.chapter-copy{padding-left:clamp(22px,3vw,40px);padding-right:clamp(22px,3vw,40px)}.chapter h2{font-size:clamp(4rem,8vw,7rem)}.index-label{display:none}.chapter-index li{min-width:100px}}
+@media(max-width:760px){
+  html{scroll-padding-top:113px}
+  .topbar{height:54px;padding:0 18px}
+  .toplinks{gap:11px}.toplinks a{display:none}
+  .toplinks button{font-size:.65rem;padding:7px 9px;max-width:200px}
+  .readbar{top:54px}
+  .hero{height:92svh;min-height:620px}
+  .hero img{object-position:55% center}
+  .hero-inner{padding:100px 24px 65px}
+  .hero h1{font-size:clamp(4.65rem,17.5vw,8.2rem);margin-bottom:26px}
+  .folio{right:24px;top:91px}
+  .hero-bottom{align-items:start;flex-direction:column;gap:30px}
+  .intro{display:block;padding:75px 25px}
+  .intro .intro-copy{margin:28px 0 18px}
+  .chapter-index{top:54px}
+  .chapter-index ul{justify-content:flex-start}
+  .chapter-index a{min-height:54px;padding:8px 13px}
+  .chapter{display:flex;flex-direction:column;min-height:0;scroll-margin-top:108px}
+  .chapter .photo{position:relative;top:auto;height:54svh;min-height:340px;max-height:580px;width:100%}
+  .photo figcaption{font-size:.68rem;bottom:18px}
+  .chapter .photo img{transform:none!important}
+  .chapter-copy{padding:56px 26px 80px;max-width:none}
+  .chapter h2{font-size:clamp(4.4rem,13vw,7rem);margin:29px 0}
+  .deck{font-size:clamp(1.65rem,6vw,2.35rem)}
+  .chapter blockquote{margin:40px 0}
+  .notes-grid{grid-template-columns:1fr}
+  .smallprint{flex-direction:column}
+}
+@media(max-width:400px){.brand{font-size:.63rem;letter-spacing:.14em}.toplinks button{max-width:145px;line-height:1.2}.hero h1{font-size:clamp(4.15rem,17.5vw,5.6rem)}.chapter-index a{font-size:.66rem;gap:5px;min-width:110px}.chapter .photo{height:48svh}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation:none!important;transition:none!important}.chapter .photo img{transform:none!important}}
+@media print{.topbar,.readbar,.chapter-index,.next-link{display:none!important}.hero{min-height:400px;height:500px}.chapter{display:block;min-height:0;break-inside:avoid}.chapter .photo{position:static;height:320px;min-height:0}.chapter-copy{padding:35px}.coda{padding:60px}}
+
+/* W003 · nueva representación inmersiva (sin overlay de aplicación) */
+:root{--paper:#f2eee8;--ink:#231f1c;--line:#c7beb3;--ochre:#925637}
+.hero{height:100svh;min-height:660px}
+.hero-inner{padding-bottom:clamp(46px,7vh,100px)}
+.hero h1{max-width:1100px;letter-spacing:-.067em;font-size:clamp(5.2rem,12.7vw,13.3rem);line-height:.82}
+.hero:after{background:linear-gradient(90deg,rgba(12,17,27,.88),rgba(12,17,27,.26) 75%),linear-gradient(0deg,rgba(12,17,27,.56),transparent 50%)}
+.intro{padding-top:clamp(95px,10vw,175px);padding-bottom:clamp(100px,12vw,185px)}
+.chapter{display:block;min-height:0;background:var(--paper)!important;scroll-margin-top:122px}
+.chapter:nth-of-type(even){background:#e9e3d9!important}
+.chapter .photo{position:relative;top:auto;display:block;width:100%;height:min(88svh,880px);min-height:540px;margin:0;overflow:hidden;background:linear-gradient(140deg,#707b8a,#292d35)}
+.chapter .photo img{width:100%;height:100%;object-fit:cover;object-position:50% 50%;transform:translate3d(0,var(--photo-offset,0px),0) scale(1.085);will-change:transform}
+.chapter .photo:after{background:linear-gradient(0deg,rgba(6,12,20,.85),transparent 30%),linear-gradient(180deg,rgba(5,7,12,.18),transparent 20%)}
+.chapter .photo .photolabel{top:clamp(24px,4vw,64px);left:clamp(25px,6vw,100px);font-size:.77rem;font-weight:600;border-bottom:1px solid #fff8}
+.chapter .photo figcaption{left:clamp(25px,6vw,100px);bottom:clamp(24px,4vw,58px);font-size:.83rem;max-width:700px}
+.chapter .photo figcaption span{font-size:.75rem;margin-top:6px}
+.chapter-copy{max-width:1320px;min-height:0;margin:0 auto;padding:clamp(100px,11vw,178px) clamp(28px,7vw,110px) clamp(120px,12vw,185px);display:grid;grid-template-columns:minmax(130px,23%) minmax(0,1fr);column-gap:clamp(25px,6vw,100px);align-items:start}
+.chapter-num{grid-column:1;grid-row:1 / span 10;position:sticky;top:158px;display:block;white-space:normal;line-height:1.8;padding-top:18px}
+.chapter-num:after{display:none}
+.chapter-copy>:not(.chapter-num){grid-column:2}
+.chapter h2{font-size:clamp(4.7rem,8.75vw,10.2rem);letter-spacing:-.07em;line-height:.91;margin:0 0 52px;max-width:850px}
+.chapter .deck{font-size:clamp(1.8rem,3.25vw,3.55rem);max-width:720px;line-height:1.15;margin:0 0 56px}
+.chapter-copy>p:not(.deck){max-width:57ch;font-size:clamp(1.05rem,1.16vw,1.25rem);line-height:1.96;margin-bottom:27px}
+.chapter blockquote{font-size:clamp(2.2rem,4vw,4.2rem);max-width:18ch;border:0;padding:0;margin:64px 0;color:#925637}
+.chapter .endnote{max-width:680px}
+.chapter .next-link{justify-self:start;margin-top:44px}
+.chapter-index{top:58px}
+.media-error{max-width:800px!important;margin:auto;text-shadow:0 2px 12px #151515}
+@media(max-width:760px){
+ .hero{height:94svh;min-height:640px}
+ .hero h1{font-size:clamp(4.2rem,17vw,8rem)}
+ .hero .folio{top:96px}
+ .chapter{scroll-margin-top:110px}
+ .chapter .photo{height:62svh;min-height:370px;max-height:720px}
+ .chapter .photo img{transform:none!important;object-position:center}
+ .chapter .photo figcaption{font-size:.7rem;max-width:90%}
+ .chapter .photo figcaption span{font-size:.65rem}
+ .chapter-copy{display:block;padding:68px 25px 105px}
+ .chapter-num{position:static;padding:0;margin-bottom:32px}
+ .chapter h2{font-size:clamp(4.3rem,13vw,7rem);margin:0 0 35px}
+ .chapter .deck{font-size:clamp(1.65rem,6vw,2.4rem);margin-bottom:37px}
+ .chapter blockquote{font-size:clamp(2.05rem,7vw,3rem);margin:40px 0}
+}
+@media(max-width:400px){
+ .hero h1{font-size:clamp(3.85rem,16vw,6rem)}
+ .hero-inner{padding-left:20px;padding-right:20px}
+ .hero-bottom p{font-size:.92rem}
+ .chapter .photo{height:59svh}
+ .chapter h2{font-size:clamp(3.9rem,12.7vw,5.3rem)}
+}
+@media(prefers-reduced-motion:reduce){.chapter .photo img{transform:none!important;will-change:auto}}
+.motion-off .chapter .photo img{transform:none!important;will-change:auto}
+
+</style>
+</head>
+<body>
+<a class="skip" href="#contenido">Saltar al reportaje</a>
+<header class="topbar" aria-label="Cabecera editorial">
+  <a class="brand" href="#inicio">UMBRAL <span aria-hidden="true">/</span> 01</a>
+  <div class="toplinks"><a href="#indice">Capítulos</a><a href="#fuentes">Fuentes</a><button type="button" data-motion-toggle aria-pressed="false">Reducir movimiento</button></div>
+</header>
+<div class="readbar" aria-hidden="true"></div>
+<main data-story id="contenido">
+  <header class="hero" id="inicio" aria-labelledby="hero-title">
+    <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Sunrise_in_Buenos_Aires_%2824286513273%29.jpg?width=1920" alt="Primeras luces sobre los edificios de Buenos Aires, fotografía de Rodrigo Paredes." fetchpriority="high">
+    <div class="folio">BUENOS AIRES<br>MONTAJE DOCUMENTAL<br>EDICIÓN W003 / 2026</div>
+    <div class="hero-inner"><span class="kicker">UN ENSAYO VISUAL EN CINCO CAPÍTULOS</span>
+    <h1 id="hero-title">El umbral<br>de la <em>luz.</em></h1>
+    <div class="hero-bottom"><p>Cinco fotografías documentales. Cinco maneras de mirar Buenos Aires cuando cambia la luz.</p><a href="#introduccion">Empezar a leer &nbsp; ↓</a></div></div>
+  </header>
+  <section class="intro" id="introduccion" aria-label="Introducción">
+    <div class="overline">00 / Antes del recorrido<br><br>Un ensayo de percepción</div>
+    <p class="intro-copy">Una ciudad tiene muchas formas de aparecer. <strong>La hora cambia el contorno, el peso y el mapa.</strong> La mirada nunca atraviesa el mismo paisaje dos veces.</p>
+    <p class="aside">Este ensayo reúne fotografías auténticas de distintos autores, años y lugares de Buenos Aires. No representa una jornada única ni un timelapse. La continuidad es de ideas y escalas visuales, no de cámara. El crédito y la fecha de cada imagen acompañan su capítulo.</p>
+  </section>
+  <nav class="chapter-index" id="indice" aria-label="Índice de los cinco capítulos"><div class="index-label">En escena <strong data-chapter-count>01</strong>/05</div><ul><li><a data-sequence-link href="#amanecer"><span>01</span> Primeras luces</a></li><li><a data-sequence-link href="#sol-alto"><span>02</span> Luz plena</a></li><li><a data-sequence-link href="#horas-largas"><span>03</span> La sombra</a></li><li><a data-sequence-link href="#crepusculo"><span>04</span> Crepúsculo</a></li><li><a data-sequence-link href="#noche"><span>05</span> Noche</a></li></ul></nav>
+<section class="chapter" id="amanecer" data-sequence-step aria-labelledby="h-amanecer">
+<figure class="photo" data-tone="dawn">
+<img loading="lazy" decoding="async" src="https://commons.wikimedia.org/wiki/Special:FilePath/Sunrise_in_Buenos_Aires_%2824286513273%29.jpg?width=1920" alt="Amanecer sobre Buenos Aires con fachadas aún oscuras bajo un cielo que empieza a aclararse.">
+<div class="photolabel">01 / Al borde del día</div><span class="media-error">Esta fotografía no pudo cargarse. El relato sigue disponible.</span>
+<figcaption>Foto: Rodrigo Paredes · 2016 · <a href="https://commons.wikimedia.org/wiki/File:Sunrise_in_Buenos_Aires_(24286513273).jpg" target="_blank" rel="noopener noreferrer">Ver obra original</a><span><a href="https://creativecommons.org/licenses/by/2.0/" target="_blank" rel="noopener noreferrer">CC BY 2.0</a> · Encuadre adaptado a pantalla</span></figcaption>
+</figure><div class="chapter-copy"><div class="chapter-num">01 / LA SILUETA</div><h2 id="h-amanecer">Antes de los <em>nombres.</em></h2><p class="deck">Lo primero que aparece no es una calle. Es su contorno.</p><p>Hay un momento en que Buenos Aires todavía no es del todo una ciudad legible. Las ventanas se confunden con los huecos; los edificios forman una sola línea frente al cielo. No faltan cosas. Falta luz para separarlas.</p><p>En la primera claridad, la distancia parece distinta. Un volumen conocido recupera por unos minutos el misterio que tenía antes de volverse costumbre.</p><p>La imagen no describe el despertar de todos los barrios. Es un punto de vista preciso: la luz llega antes que las certezas.</p><blockquote>El amanecer no ilumina la ciudad entera. Empieza por sus bordes.</blockquote><p class="endnote">Fotografía tomada el 9 de febrero de 2016 a las 06:42. La secuencia es un montaje, no un seguimiento de ese día.</p><a class="next-link" href="#sol-alto">Pasar a la luz plena <span aria-hidden="true">↗</span></a></div></section>
+<section class="chapter" id="sol-alto" data-sequence-step aria-labelledby="h-sol-alto">
+<figure class="photo" data-tone="day">
+<img loading="lazy" decoding="async" src="https://commons.wikimedia.org/wiki/Special:FilePath/Buenos_Aires_City_Hall_Summer_afternoon.jpg?width=1600" alt="Fachada del antiguo Palacio Municipal de Buenos Aires bajo iluminación diurna.">
+<div class="photolabel">02 / Plaza de Mayo</div><span class="media-error">Esta fotografía no pudo cargarse. El relato sigue disponible.</span>
+<figcaption>Foto: Jon Gilbert Leavitt · 2008 · <a href="https://commons.wikimedia.org/wiki/File:Buenos_Aires_City_Hall_Summer_afternoon.jpg" target="_blank" rel="noopener noreferrer">Ver obra original</a><span><a href="https://creativecommons.org/licenses/by/2.0/" target="_blank" rel="noopener noreferrer">CC BY 2.0</a> · Encuadre adaptado a pantalla</span></figcaption>
+</figure><div class="chapter-copy"><div class="chapter-num">02 / LA MATERIA</div><h2 id="h-sol-alto">Las cosas <em>pesan.</em></h2><p class="deck">Cuando la luz ocupa las superficies, el paisaje deja de ser una silueta.</p><p>En la claridad de Plaza de Mayo, la arquitectura recupera su peso. El revoque, los arcos, las cornisas y el espacio debajo de cada balcón piden ser vistos por separado.</p><p>Una fachada no se vuelve interesante porque tenga más elementos. Se vuelve reconocible porque ahora podemos medir sus partes con la mirada.</p><p>La luz diurna construye un inventario involuntario: cada material afirma su lugar, cada sombra corta una distancia.</p><blockquote>Ver con nitidez también es ordenar.</blockquote><p class="endnote">Imagen de una tarde de verano de 2008. En el relato representa la fase de luz plena, no la hora de la toma.</p><a class="next-link" href="#horas-largas">Seguir a la sombra <span aria-hidden="true">↗</span></a></div></section>
+<section class="chapter" id="horas-largas" data-sequence-step aria-labelledby="h-horas-largas">
+<figure class="photo" data-tone="afternoon">
+<img loading="lazy" decoding="async" src="https://commons.wikimedia.org/wiki/Special:FilePath/Recoleta_Late_Afternoon.jpg?width=1600" alt="Árboles, veredas y edificios de Recoleta bajo la luz oblicua de la tarde.">
+<div class="photolabel">03 / Recoleta</div><span class="media-error">Esta fotografía no pudo cargarse. El relato sigue disponible.</span>
+<figcaption>Foto: David · 2007 · <a href="https://commons.wikimedia.org/wiki/File:Recoleta_Late_Afternoon.jpg" target="_blank" rel="noopener noreferrer">Ver obra original</a><span><a href="https://creativecommons.org/licenses/by/2.0/" target="_blank" rel="noopener noreferrer">CC BY 2.0</a> · Encuadre adaptado a pantalla</span></figcaption>
+</figure><div class="chapter-copy"><div class="chapter-num">03 / EL INTERVALO</div><h2 id="h-horas-largas">La otra <em>medida.</em></h2><p class="deck">Por la tarde, el espacio comienza a medirse en sombras.</p><p>En Recoleta, el dibujo más importante ya no está hecho solamente de edificios. Lo trazan las copas de los árboles, los espacios vacíos entre las fachadas y las marcas que cruzan la vereda.</p><p>No es que las calles cambien de tamaño. La mirada encuentra nuevos recorridos. La sombra señala un lugar para quedarse; una franja de sol recuerda cuánto falta para la siguiente esquina.</p><p>Ese ritmo es más lento que el de un reloj. Una ciudad puede tener la misma dirección postal y una orientación emocional completamente nueva.</p><blockquote>La sombra también dibuja un mapa.</blockquote><p class="endnote">Fotografía de otra fecha y otro barrio. No hay continuidad de cámara respecto de las escenas anteriores.</p><a class="next-link" href="#crepusculo">Llegar al intervalo <span aria-hidden="true">↗</span></a></div></section>
+<section class="chapter" id="crepusculo" data-sequence-step aria-labelledby="h-crepusculo">
+<figure class="photo" data-tone="dusk">
+<img loading="lazy" decoding="async" src="https://commons.wikimedia.org/wiki/Special:FilePath/Buenos_Aires_-_Plaza_del_Congreso_-_Atardecer_(b).jpg?width=1400" alt="Cielo cálido sobre la Plaza del Congreso visto desde el Palacio Barolo al atardecer.">
+<div class="photolabel">04 / Plaza del Congreso</div><span class="media-error">Esta fotografía no pudo cargarse. El relato sigue disponible.</span>
+<figcaption>Foto: Beatrice Murch · 2007 · <a href="https://commons.wikimedia.org/wiki/File:Buenos_Aires_-_Plaza_del_Congreso_-_Atardecer_(b).jpg" target="_blank" rel="noopener noreferrer">Ver obra original</a><span><a href="https://creativecommons.org/licenses/by/2.0/" target="_blank" rel="noopener noreferrer">CC BY 2.0</a> · Encuadre adaptado a pantalla</span></figcaption>
+</figure><div class="chapter-copy"><div class="chapter-num">04 / DOS LUCES</div><h2 id="h-crepusculo">La hora <em>doble.</em></h2><p class="deck">Hay un punto breve en que la ciudad recibe dos iluminaciones.</p><p>Desde el Palacio Barolo, el Congreso y las calles vecinas forman una trama a la que el cielo cambia de escala. El horizonte retiene algo del día mientras abajo empieza otra forma de atención.</p><p>La transición no es un corte. Los volúmenes siguen ahí, pero las ventanas y las luminarias comienzan a competir con el último brillo de las fachadas.</p><p>Esta ambigüedad no se puede conservar. Tal vez por eso la recordamos: es un lugar que solo existe mientras está desapareciendo.</p><blockquote>Un instante entre dos versiones del mismo paisaje.</blockquote><p class="endnote">Toma de Beatrice Murch de septiembre de 2007, desde el Palacio Barolo. Imagen sin el ajuste de brillo derivado usado en W002.</p><a class="next-link" href="#noche">Entrar en la noche <span aria-hidden="true">↗</span></a></div></section>
+<section class="chapter" id="noche" data-sequence-step aria-labelledby="h-noche">
+<figure class="photo" data-tone="night">
+<img loading="lazy" decoding="async" src="https://commons.wikimedia.org/wiki/Special:FilePath/Vista_a%C3%A9rea_nocturna_de_Avenida_9_de_julio_y_Avenida_Corrientes_01.jpg?width=1800" alt="Vista aérea nocturna de la intersección de las avenidas 9 de Julio y Corrientes, con calles y edificios iluminados.">
+<div class="photolabel">05 / Corrientes y 9 de Julio</div><span class="media-error">Esta fotografía no pudo cargarse. El relato sigue disponible.</span>
+<figcaption>Foto: ProtoplasmaKid · 2025 · <a href="https://commons.wikimedia.org/wiki/File:Vista_aérea_nocturna_de_Avenida_9_de_julio_y_Avenida_Corrientes_01.jpg" target="_blank" rel="noopener noreferrer">Ver obra original</a><span><a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener noreferrer">CC BY-SA 4.0</a> · Encuadre adaptado a pantalla</span></figcaption>
+</figure><div class="chapter-copy"><div class="chapter-num">05 / LA CONSTELACIÓN</div><h2 id="h-noche">Lo que queda <em>encendido.</em></h2><p class="deck">De noche, la ciudad deja de mostrar superficies completas.</p><p>En la intersección de Corrientes y 9 de Julio, las luces hacen visible una nueva cartografía. Una calle dibuja su trayectoria con puntos. Una ventana resiste como una señal aislada.</p><p>La arquitectura no desaparece. Se vuelve soporte de otras pequeñas decisiones. La mirada salta de una zona iluminada a la siguiente sin atender a los límites que organizaban el día.</p><p>No vimos la misma ciudad cinco veces en una sola jornada. Vimos cómo distintas fotografías y distintas horas pueden cambiar nuestra manera de leer un territorio.</p><blockquote>La noche elige lo que el día nos daba entero.</blockquote><p class="endnote">Toma aérea de 1 de octubre de 2025, a las 21:12:53. Registro original bajo CC BY-SA 4.0.</p><a class="next-link" href="#epilogo">Leer el epílogo <span aria-hidden="true">↗</span></a></div></section>
+<section class="coda" id="epilogo" aria-labelledby="coda-title">
+    <div class="coda-inner"><span class="kicker">Epílogo / La mirada</span>
+    <h2 id="coda-title">Nada cambió.<br><em>Todo cambió.</em></h2>
+    <p>La arquitectura permanece; la luz reorganiza aquello que elegimos mirar. El recorrido termina, pero el paisaje nunca se queda quieto.</p>
+    <a href="#inicio">Volver al amanecer ↑</a></div>
+  </section>
+</main>
+<footer class="production-notes" id="fuentes">
+  <span class="kicker">Sobre esta publicación</span>
+  <h2>La imagen y su origen.</h2>
+  <p>Este ensayo es una composición literaria original; las fotografías proceden de autores y fechas distintas. La secuencia expresa una idea sobre la percepción, no una reconstrucción de 24 horas reales. No hay entrevistas, mediciones o acontecimientos atribuidos a personas concretas.</p>
+  <div class="notes-grid">
+    <section aria-labelledby="creditos-title"><h3 id="creditos-title">Créditos fotográficos y licencias</h3>
+      <ol class="credits"><li><a href="https://commons.wikimedia.org/wiki/File:Sunrise_in_Buenos_Aires_(24286513273).jpg" target="_blank" rel="noopener noreferrer">01 · Al borde del día</a><span>Rodrigo Paredes · 2016 · <a href="https://creativecommons.org/licenses/by/2.0/" target="_blank" rel="noopener noreferrer">CC BY 2.0</a></span></li><li><a href="https://commons.wikimedia.org/wiki/File:Buenos_Aires_City_Hall_Summer_afternoon.jpg" target="_blank" rel="noopener noreferrer">02 · Plaza de Mayo</a><span>Jon Gilbert Leavitt · 2008 · <a href="https://creativecommons.org/licenses/by/2.0/" target="_blank" rel="noopener noreferrer">CC BY 2.0</a></span></li><li><a href="https://commons.wikimedia.org/wiki/File:Recoleta_Late_Afternoon.jpg" target="_blank" rel="noopener noreferrer">03 · Recoleta</a><span>David · 2007 · <a href="https://creativecommons.org/licenses/by/2.0/" target="_blank" rel="noopener noreferrer">CC BY 2.0</a></span></li><li><a href="https://commons.wikimedia.org/wiki/File:Buenos_Aires_-_Plaza_del_Congreso_-_Atardecer_(b).jpg" target="_blank" rel="noopener noreferrer">04 · Plaza del Congreso</a><span>Beatrice Murch · 2007 · <a href="https://creativecommons.org/licenses/by/2.0/" target="_blank" rel="noopener noreferrer">CC BY 2.0</a></span></li><li><a href="https://commons.wikimedia.org/wiki/File:Vista_aérea_nocturna_de_Avenida_9_de_julio_y_Avenida_Corrientes_01.jpg" target="_blank" rel="noopener noreferrer">05 · Corrientes y 9 de Julio</a><span>ProtoplasmaKid · 2025 · <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener noreferrer">CC BY-SA 4.0</a></span></li></ol>
+      <p>Las imágenes se presentan con recorte visual CSS; los archivos originales no se modifican. Las condiciones de reutilización dependen de cada licencia enlazada; la imagen nocturna exige compartir adaptaciones bajo CC BY-SA 4.0.</p>
+    </section>
+    <section aria-labelledby="tecnica-title"><h3 id="tecnica-title">Método editorial y experiencia</h3>
+      <p>Nueva edición y composición para PROMETEO WEB W003-01, basada en motor propio del ensayo W002 pero con representación fotográfica y jerarquía editorial distintas. Fotografía alojada externamente en Wikimedia Commons. Sin video artificial, simulaciones de testimonios ni métricas inventadas.</p>
+      <p>Los capítulos son enlaces directos, tienen estructura semántica, navegación por teclado y se leen sin JavaScript. El controlador <a href="sequence-engine.js">SequenceDirector</a> acompaña el scroll y el indicador de lectura, y respeta la preferencia del dispositivo para reducir movimiento.</p>
+      <p>Tipografía Newsreader e IBM Plex Sans cargada desde Google Fonts (licencias abiertas); alternativas Georgia y Arial si no hay conexión. <a href="https://github.com/JuanManuelPM/Experimentos/tree/gh-pages/prometeo/launch/20261122/relaunch/web/works/01-umbral-luz">Código y ficha de la obra</a>.</p>
+    </section>
+  </div>
+  <div class="smallprint"><span>EL UMBRAL DE LA LUZ · PROMETEO / ESTUDIO WEB / W003 · OBRA 01</span><span>Ensayo visual original · No representa un mismo día documentado</span></div>
+</footer>
+<script type="module">
+import {SequenceDirector} from "./sequence-engine.js";
+const story = document.querySelector("[data-story]");
+const director = new SequenceDirector(story).mount();
+window.addEventListener("pagehide", () => director.destroy(), {once:true});
+</script>
+</body>
+</html>
