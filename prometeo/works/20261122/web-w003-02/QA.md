@@ -42,3 +42,8 @@ Screenshots **genuinos de Chromium**, pero inyectados: QA_CAPTURES.html#qa-320, 
 - `stage=S10-QA`, `cause=lazy-images-skipped-in-fullpage-captures`, `preventive_gate=force-image-decode-then-screenshot`, `test=all-naturalWidth-nonzero`, `owner=web`, `counterexample=blank-gallery-in-fullpage-report`.
 
 **Conclusión:** CODE+CHROMIUM_INJECTED_CAPTURE_PASS · FUNCTIONAL_INJECTED_PASS · PAGES_HTTP_NOT_RUN · ACCESSIBILITY_FULL_NOT_RUN · HUMAN_APPROVED_NO.
+
+## Validadores canónicos aplicados al Book publicado
+- `inspectDeepSpec` del `deep-spec-v1.mjs` vigente (Git blob `0536af26982d50dfc3c3689aca2677751bdee1fe`): `READY_FOR_FIRST_SLICE`, `errors=[]`.
+- `inspectArtDirection` de `art-direction-first-article-v1.mjs` (Git blob `dac224b390fc86982ce76eeb0135d4be59eb52ad`): `READY_TO_BUILD_NOT_ARTISTICALLY_APPROVED`, `errors=[]`.
+- Se ejecutaron sobre `PREPRODUCTION.deep-spec-v1.json` leído desde rama candidata, no sobre supuestos. Ambas puertas son estructurales; no certifican el juicio artístico, HTTP servido ni aprobación humana.
