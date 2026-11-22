@@ -1,0 +1,93 @@
+{
+  "schema": "lupa.qa.v1",
+  "batchId": "web-w002-20261122",
+  "taskNumber": 10,
+  "taskId": "web-w002-20261122-10",
+  "briefBlobSha": "cd88a07941ab62072f6de5ee69764308f1ec2387",
+  "captureSpike": {
+    "status": "OBSERVED",
+    "tool": "Python Playwright sync API with /usr/bin/chromium",
+    "method": "page.set_content on two original standalone HTML fixtures; page.screenshot animations disabled, scale css, DPR1, viewport capture; images saved locally",
+    "not": "The Node capture.mjs CLI has NOT been executed here. Python's file:// navigation was blocked, while page.set_content worked.",
+    "viewports": [
+      {
+        "width": 320,
+        "height": 700,
+        "changedPixels": 7517,
+        "totalPixels": 224000,
+        "changedPercent": 3.3558,
+        "sha256A": "1d5ec0331c3b231b09cfb1ba42ca68f855391738c58c8df8633ab5093d03af7c",
+        "sha256B": "8983e41857f4f07f0bc296f9e32c768a4568b44073393eb286e105ae7586c151"
+      },
+      {
+        "width": 768,
+        "height": 700,
+        "changedPixels": 19172,
+        "totalPixels": 537600,
+        "changedPercent": 3.5662,
+        "sha256A": "be1908f852da66ad2b2b381c1634aeba8180147f532d0699b60defa3817e0dff",
+        "sha256B": "08283b870212063f01102de6093e7472fb7164c9874f127d28625569ea93401f"
+      },
+      {
+        "width": 1440,
+        "height": 700,
+        "changedPixels": 38064,
+        "totalPixels": 1008000,
+        "changedPercent": 3.7762,
+        "sha256A": "8817a3f315a4656f8d566ddccb4bc88ab6f403c6f5bc3121e7d6df108170b432",
+        "sha256B": "92a2dcafc52e8f5954c98a5130ac700178aab84b192d578812a61ad96c64d79d"
+      }
+    ],
+    "diffMethod": "NumPy uint8 from PNG converted RGB; max absolute RGB-channel delta > 32 (same rule as UI/runner); masks rendered to PNG with true change coordinates."
+  },
+  "publication": {
+    "githubCandidate": "candidate/prometeo-web-w002-10-20261122",
+    "website": "https://juanmanuelpm.github.io/Experimentos/prometeo/web/releases/w002-10-lupa/",
+    "codeStatus": "IMPLEMENTED",
+    "githubReadback": "PENDING",
+    "httpVerification": "PENDING",
+    "browserInteraction": "NOT_RUN"
+  },
+  "tests": {
+    "nodeCaptureScript": "NOT_RUN",
+    "uiScreenshot": "NOT_RUN",
+    "keyboard": "NOT_RUN",
+    "touch": "NOT_RUN",
+    "indexedDbReload": "NOT_RUN",
+    "appTest320_768_1440": "NOT_RUN",
+    "crossOriginSafety": "DOCUMENTED_NOT_TESTED",
+    "provenanceHashes": "CODE_IMPLEMENTED_NOT_TESTED",
+    "humanApproved": false
+  },
+  "qualityAssessment": {
+    "benchmark": "Playwright, BackstopJS, Pixelmatch, Chromatic documentation reviewed",
+    "observedArtifact": "6 actual browser PNGs from controlled original fixtures, local only; 3 viewport diffs measured",
+    "gap": "End-to-end Node runner and browser app publication need interaction and screenshot verification; captures are QA fixtures, not independent professional screenshots."
+  },
+  "generalizableLearning": [
+    {
+      "stage": "capture",
+      "cause": "file navigation blocked by sandbox",
+      "preventive_gate": "support local HTML source through page.setContent as a legal alternative",
+      "test": "capture two standalone local HTML fixtures",
+      "owner": "web",
+      "counterexample": "Assuming a successful file:// browser navigation from the existence of HTML"
+    },
+    {
+      "stage": "provenance",
+      "cause": "a browser file chooser does not prove source URL",
+      "preventive_gate": "separate user-upload hashes and optional manifest with explicit mismatch state",
+      "test": "tamper manifest SHA and verify mismatch alert",
+      "owner": "web",
+      "counterexample": "Calling any image in a drag-and-drop area a verified screenshot"
+    },
+    {
+      "stage": "comparison",
+      "cause": "resizing mismatched captures creates fictitious geometric differences",
+      "preventive_gate": "reject dimension mismatches before pixel diff",
+      "test": "upload 320x700 versus 768x700 and check blocked analysis",
+      "owner": "web",
+      "counterexample": "silently scaling images to equal CSS width"
+    }
+  ]
+}
