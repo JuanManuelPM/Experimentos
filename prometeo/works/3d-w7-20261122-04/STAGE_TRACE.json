@@ -1,0 +1,94 @@
+{
+  "schema": "prometeo.stage-trace/v1",
+  "taskId": "3d-w7-20261122-04",
+  "batchId": "3d-w7-20261122",
+  "taskNumber": 4,
+  "recordedAt": "2026-11-22T18:52:19.277Z",
+  "humanApproved": false,
+  "flow": {
+    "method": "Q-LOOP / QBAR-1 / DEEP-SPEC-1 / ART-DIRECTION FIRST-ARTICLE-1",
+    "specialty": "3D 2.3.0 legacy cited by W6",
+    "currentPrivateFlowSHAStatus": "NOT_REVERIFIED",
+    "launchBlobSha": "58de659e2aa01c0746d59ca6f95c36bdc59f3030",
+    "artGateBlobSha": "dac224b390fc86982ce76eeb0135d4be59eb52ad"
+  },
+  "nodes": [
+    {
+      "id": "brief_lock",
+      "status": "OBSERVED",
+      "decision": "Only 04 La despedida, exact relaunch brief",
+      "output": "taskId=3d-w7-20261122-04",
+      "evidence": "LAUNCH gh-pages blob 58de659e2aa01c0746d59ca6f95c36bdc59f3030"
+    },
+    {
+      "id": "recover",
+      "status": "OBSERVED",
+      "decision": "Re-use prior scene editor and pure timeline, preserve historic W6",
+      "output": "new isolated source dir and exclusive branch",
+      "evidence": "W6 index/main/sequencer/timeline and QA fetched by GitHub connector"
+    },
+    {
+      "id": "qbar",
+      "status": "OBSERVED_LIMITED",
+      "decision": "Focus on spatial/lighting continuity and time-based property editing",
+      "output": "references and observations in one Book",
+      "evidence": "Theatre.js manual read; Blender Studio indexed excerpt only (full access 402); MDN read"
+    },
+    {
+      "id": "deep_spec",
+      "status": "OBSERVED",
+      "decision": "Build with a 2-shot gate instead of equating code to film quality",
+      "output": "PREPRODUCTION.deep-spec-v1.json",
+      "evidence": "Canonical validator returned SPIKE_REQUIRED/errors=[]"
+    },
+    {
+      "id": "first_article",
+      "status": "NOT_RUN",
+      "decision": "3.2-second two-shot exchange present in source, but no evaluated WebGL screenshot",
+      "output": "https://juanmanuelpm.github.io/Experimentos/prometeo/works/3d-w7-20261122-04/?first=1",
+      "evidence": "Remote browser screenshot request denied due exhausted credits; no fabricated image"
+    },
+    {
+      "id": "scene_edit",
+      "status": "IMPLEMENTED",
+      "decision": "Change camera, poses, lantern, eye yaw, shot duration in serialized timeline",
+      "output": "index.html; main.js; timeline.json; sound.mjs",
+      "evidence": "GitHub create-file commits and readback; first screen pixel quality NOT_RUN"
+    },
+    {
+      "id": "logic",
+      "status": "OBSERVED",
+      "decision": "Reject crossing of camera axis and signs of gaze, preserve cut and retime invariants",
+      "output": "continuity.mjs, sequencer.mjs, test-continuity.mjs",
+      "evidence": "V8 direct code execution: 16 positive checks and one false-positive test parser exclusion from import.meta; module-based test-file Node execution NOT_RUN"
+    },
+    {
+      "id": "browser",
+      "status": "NOT_RUN",
+      "decision": "Do not label 390/1440 captured when screenshot service unavailable",
+      "output": "NO_SCREENSHOT",
+      "evidence": "Firecrawl denied invocation for insufficient credits"
+    },
+    {
+      "id": "export",
+      "status": "NOT_RUN",
+      "decision": "Keep native MediaRecorder conditional, do not publish MP4 nor make duration/audio claims",
+      "output": "NO_VIDEO_BINARY",
+      "evidence": "No recorded media blob and no playback/ffprobe"
+    },
+    {
+      "id": "remote_publish",
+      "status": "OBSERVED",
+      "decision": "Publish under isolated 3d-w7 task directory",
+      "output": "https://juanmanuelpm.github.io/Experimentos/prometeo/works/3d-w7-20261122-04/",
+      "evidence": "Individual GitHub file create commits; HTTP browser render and GitHub Pages propagation NOT_VERIFIED"
+    },
+    {
+      "id": "human",
+      "status": "NOT_RUN",
+      "decision": "No human artistic approval asserted",
+      "output": "HUMAN_APPROVED=NO",
+      "evidence": "Human review absent"
+    }
+  ]
+}
