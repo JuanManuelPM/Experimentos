@@ -1,0 +1,79 @@
+{
+  "schema": "prometeo.worker.visited-stages/v1",
+  "room": "video",
+  "taskId": "video-w003-20261122-03",
+  "batchId": "video-w003-20261122",
+  "taskNumber": 3,
+  "createdAt": "2026-11-22T19:10:21.245Z",
+  "flowRefs": [
+    {
+      "name": "CONTRATO_COMPARTIDO",
+      "sha": "7911ce780c6eb8fc08ba3e5621e4479bbe2e9757"
+    },
+    {
+      "name": "QBAR-1",
+      "sha": "5653704d3267c339fe7405f2b36b8488dbb44be9"
+    },
+    {
+      "name": "DEEP-SPEC-1",
+      "sha": "7656a293b0182f81619bf0d27b90dffa771c2683"
+    },
+    {
+      "name": "ART-DIRECTION",
+      "sha": "b1a1a012e90897200336cac6316c0511cb40c4c5"
+    }
+  ],
+  "events": [
+    {
+      "stage": "BRIEF_LOCK",
+      "status": "OBSERVED",
+      "decision": "Only video task 03, fixed W003 launch SHA",
+      "evidence": "https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/launch/20261122/relaunch/video/LAUNCH.md"
+    },
+    {
+      "stage": "PRIMARY_RESEARCH",
+      "status": "OBSERVED",
+      "decision": "Venice/Comune CPSM 187 cm; NOAA image 14 Nov; MOSE ISPRA",
+      "evidence": "https://www.comune.venezia.it/it/content/le-acque-alte-eccezionali/"
+    },
+    {
+      "stage": "QBAR_EDITORIAL",
+      "status": "OBSERVED",
+      "decision": "Use FRONTLINE provenance criterion; explicitly no professional film watched",
+      "evidence": "https://www.pbs.org/wgbh/frontline/about-us/journalistic-guidelines/"
+    },
+    {
+      "stage": "REPRESENTATION_CHOICE",
+      "status": "OBSERVED",
+      "decision": "Use dated genuine media and legible original explanation instead of large title cards",
+      "evidence": "https://github.com/JuanManuelPM/Experimentos/blob/candidate/prometeo-video-w003-20261122-03/prometeo/works/video-w003-20261122/03/PREPRODUCTION.deep-spec-v1.json"
+    },
+    {
+      "stage": "SOURCE_BUILD",
+      "status": "OBSERVED",
+      "decision": "Renderer and temporal ledger versioned in exclusive candidate branch",
+      "evidence": "https://github.com/JuanManuelPM/Experimentos/blob/candidate/prometeo-video-w003-20261122-03/prometeo/works/video-w003-20261122/03/render.py"
+    },
+    {
+      "stage": "FIRST_ARTICLE",
+      "status": "NOT_RUN",
+      "reason": "Remote media download must run in GitHub Actions, not local offline environment"
+    },
+    {
+      "stage": "FILM_EXPORT",
+      "status": "NOT_RUN",
+      "reason": "Not yet encoded remotely or read back"
+    },
+    {
+      "stage": "PERCEPTUAL_REVIEW",
+      "status": "NOT_RUN",
+      "reason": "Video frames, audio and 390/1440 views not assessed"
+    },
+    {
+      "stage": "HUMAN_APPROVAL",
+      "status": "NOT_RUN",
+      "reason": "Explicitly human-only"
+    }
+  ],
+  "topologyValidation": "NOT_RUN: exact specialized node IDs/edges not retrieved; stages are activity log, NOT canonical trace PASS"
+}
