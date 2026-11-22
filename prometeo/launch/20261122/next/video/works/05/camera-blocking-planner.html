@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>EL CORREDOR | Camera Blocking Planner</title>
+<style>
+:root{color-scheme:dark;--bg:#101419;--panel:#1b222a;--text:#e8e8df;--muted:#9babac;--accent:#d9a46c}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:15px/1.45 system-ui,Arial,sans-serif}
+header{padding:20px 24px;border-bottom:1px solid #39434a}h1{font-size:20px;margin:0 0 3px}small{color:var(--muted)}
+main{display:grid;grid-template-columns:minmax(320px,2fr) minmax(280px,1fr);gap:20px;max-width:1400px;margin:auto;padding:20px}
+.panel{background:var(--panel);border:1px solid #39434a;border-radius:10px;padding:16px}
+canvas{background:#10171e;width:100%;height:auto;display:block;border:1px solid #384650;border-radius:5px;touch-action:none}
+.row{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin:13px 0}
+input[type=range]{flex:1;min-width:150px;accent-color:var(--accent)}
+button{background:#37424c;color:white;border:1px solid #647078;border-radius:5px;padding:9px 12px;cursor:pointer}
+button:focus-visible,input:focus-visible{outline:2px solid var(--accent)}
+button:hover{background:#53606a}b{color:var(--accent)}ul{padding-left:17px}
+table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums;font-size:12px}td,th{border-bottom:1px solid #3b4852;padding:5px}
+td input{width:65px;max-width:100%;background:#11191f;color:white;border:1px solid #43515a;border-radius:3px;padding:5px}
+#status{color:#b7d8bc;min-height:45px;white-space:pre-wrap}
+@media(max-width:850px){main{grid-template-columns:1fr}td input{width:56px}}@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto}}
+</style></head><body>
+<header><h1>EL CORREDOR <small>· Planner de bloqueo, cámara y foco</small></h1><small>Herramienta original reutilizable · video-w002-20261122-05 · QBAR-1 / DEEP-SPEC-1</small></header>
+<main><section class="panel">
+<canvas id="view" width="900" height="680" aria-label="Plano superior interactivo del corredor"></canvas>
+<div class="row"><label for="clock">Tiempo <b id="now">0.00s</b></label><input id="clock" type="range" min="0" max="14" step=".01" value="0"><button id="play">▶ Reproducir</button></div>
+<div class="row"><span id="reading"></span></div>
+<p><small>Escala: 60 píxeles por metro. Arrastrá el punto naranja de cámara en el plano para editar la posición de la clave más cercana. El círculo alrededor del objetivo representa el foco planificado y no simula profundidad de campo óptica.</small></p>
+<div id="status" role="status"></div>
+</section>
+<section class="panel"><h2 style="font-size:17px;margin-top:0">Claves editables</h2>
+<p><small>Posición física (x,y,z), blanco de mirada (tx,ty,tz), distancia de foco F en metros. Una toma: interpolación suave, sin empalmes.</small></p>
+<div style="overflow:auto"><table><thead><tr><th>t</th><th>x</th><th>z</th><th>tx</th><th>tz</th><th>F</th></tr></thead><tbody id="keys"></tbody></table></div>
+<div class="row"><button id="add">+ Clave</button><button id="export">Exportar JSON</button><label>Importar JSON <input id="import" type="file" accept="application/json,.json" style="max-width:150px"></label></div>
+<h3 style="font-size:16px">Leyenda</h3><ul><li>Naranja: cámara y trayectoria</li><li>Blanco: dirección de mirada y objetivo</li><li>Verde / azul: intérpretes</li><li>Gris: carrito, banco y divisor; posibles oclusiones</li></ul>
+<p><small>Este planificador puede reutilizarse con otras posiciones, tiempos y marcas. Exporta una receta editable. No genera por sí mismo los fotogramas finales ni demuestra calidad artística.</small></p>
+</section></main>
+<script>
+const initial={version:"CameraBlockingPlanner-1",title:"EL CORREDOR",duration:14,frameRate:24,room:{xMin:-1.84,xMax:1.84,zMin:0,zMax:24},actors:[{id:"ayudante",x:.63,z:12.34},{id:"residente",x:1.2,z:12.86}],props:[{id:"banco",x0:-1.29,x1:-.29,z0:8.3,z1:9.95},{id:"carrito",x0:.56,x1:1.42,z0:10.2,z1:11.22},{id:"divisor",x0:-.52,x1:-.45,z0:12.08,z1:12.13}],keys:[
+{t:0,x:-1.43,y:1.73,z:1.9,tx:-.32,ty:1.7,tz:13,focus:10.3},
+{t:3,x:-1.20,y:1.70,z:3.25,tx:-.20,ty:1.43,tz:12.75,focus:9.6},
+{t:6,x:-.66,y:1.63,z:5.45,tx:.12,ty:1.42,tz:12.65,focus:7.7},
+{t:9,x:.48,y:1.61,z:6.72,tx:.68,ty:1.42,tz:12.55,focus:6.0},
+{t:11,x:1.28,y:1.59,z:8.31,tx:.74,ty:1.38,tz:13.05,focus:4.9},
+{t:14,x:1.60,y:1.63,z:9.45,tx:.60,ty:1.45,tz:13.32,focus:4.15}]};
+let plan=structuredClone(initial),t=0,playing=false,previous=0,drag=false;
+const cv=document.querySelector("#view"),ctx=cv.getContext("2d"),slider=document.querySelector("#clock"),status=document.querySelector("#status");
+const X=x=>cv.width/2+x*82,Z=z=>cv.height-35-z*26,world=(px,py)=>[(px-cv.width/2)/82,(cv.height-35-py)/26];
+const ease=u=>{u=Math.min(1,Math.max(0,u));return u*u*(3-2*u)};
+function state(time){let a=plan.keys[0],b=plan.keys.at(-1);for(let i=0;i<plan.keys.length-1;i++){if(time>=plan.keys[i].t&&time<=plan.keys[i+1].t){a=plan.keys[i];b=plan.keys[i+1];break}}const w=a===b?0:ease((time-a.t)/(b.t-a.t));const o={};for(const k of ["x","y","z","tx","ty","tz","focus"])o[k]=a[k]*(1-w)+b[k]*w;return o}
+function grid(){ctx.fillStyle="#10171e";ctx.fillRect(0,0,cv.width,cv.height);
+for(let z=0;z<=24;z++){ctx.strokeStyle=z%5===0?"#30414c":"#1f2c36";ctx.lineWidth=z%5===0?2:1;ctx.beginPath();ctx.moveTo(X(-1.84),Z(z));ctx.lineTo(X(1.84),Z(z));ctx.stroke();if(z%5===0){ctx.fillStyle="#85959e";ctx.font="12px system-ui";ctx.fillText(z+"m",X(1.84)+12,Z(z)+4)}}
+for(const x of [-1.84,1.84]){ctx.strokeStyle="#c5a77f";ctx.lineWidth=6;ctx.beginPath();ctx.moveTo(X(x),Z(0));ctx.lineTo(X(x),Z(24));ctx.stroke()}
+ctx.fillStyle="#a0aaac";for(const p of plan.props){ctx.fillRect(X(p.x0),Z(p.z1),X(p.x1)-X(p.x0),Z(p.z0)-Z(p.z1))}
+for(const a of plan.actors){ctx.beginPath();ctx.arc(X(a.x),Z(a.z),14,0,Math.PI*2);ctx.fillStyle=a.id==="ayudante"?"#b36e69":"#7c9eb1";ctx.fill();ctx.fillStyle="white";ctx.font="12px system-ui";ctx.fillText(a.id,X(a.x)+18,Z(a.z)-7)}
+ctx.strokeStyle="#d8a067";ctx.lineWidth=4;ctx.beginPath();for(let i=0;i<=150;i++){const p=state(plan.duration*i/150);i?ctx.lineTo(X(p.x),Z(p.z)):ctx.moveTo(X(p.x),Z(p.z))}ctx.stroke();
+for(const k of plan.keys){ctx.fillStyle="#d9a46c";ctx.beginPath();ctx.arc(X(k.x),Z(k.z),6,0,Math.PI*2);ctx.fill()}
+}
+function frame(){grid();const p=state(t);ctx.lineWidth=2;ctx.strokeStyle="white";ctx.beginPath();ctx.moveTo(X(p.x),Z(p.z));ctx.lineTo(X(p.tx),Z(p.tz));ctx.stroke();
+ctx.strokeStyle="rgba(225,240,214,.65)";ctx.setLineDash([6,6]);ctx.beginPath();ctx.arc(X(p.tx),Z(p.tz),p.focus*7,0,Math.PI*2);ctx.stroke();ctx.setLineDash([]);
+ctx.fillStyle="#f0a65e";ctx.beginPath();ctx.arc(X(p.x),Z(p.z),11,0,Math.PI*2);ctx.fill();ctx.strokeStyle="white";ctx.stroke();
+document.querySelector("#now").textContent=t.toFixed(2)+"s";document.querySelector("#reading").textContent="Cámara: x "+p.x.toFixed(2)+"m · z "+p.z.toFixed(2)+"m · foco "+p.focus.toFixed(2)+"m";
+validate()}
+function validate(){let peak=0,acc=0,prev=null,prior=null,off=false;for(let i=0;i<=280;i++){const p=state(plan.duration*i/280);if(p.x<plan.room.xMin||p.x>plan.room.xMax||p.z<plan.room.zMin||p.z>plan.room.zMax)off=true;if(prev){let v=Math.hypot(p.x-prev.x,p.y-prev.y,p.z-prev.z)/(plan.duration/280);peak=Math.max(peak,v);if(prior!==null)acc=Math.max(acc,Math.abs(v-prior)/(plan.duration/280));prior=v}prev=p}
+const ok=!off&&peak<1.5&&acc<2.6;status.style.color=ok?"#abd9af":"#ffbd96";status.textContent=(ok?"✓ Recorrido dentro de límites":"⚠ Revisar recorrido")+" · velocidad máx "+peak.toFixed(2)+" m/s · aceleración máx "+acc.toFixed(2)+" m/s².\nChequeo geométrico solamente; oclusión y lectura narrativa requieren prueba perceptual."}
+function table(){const b=document.querySelector("#keys");b.replaceChildren();for(const [i,k] of plan.keys.entries()){const row=document.createElement("tr");for(const prop of ["t","x","z","tx","tz","focus"]){const cell=document.createElement("td"),inp=document.createElement("input");inp.type="number";inp.step="0.01";inp.value=Number(k[prop].toFixed(2));inp.setAttribute("aria-label","Clave "+(i+1)+" "+prop);inp.addEventListener("change",()=>{const v=Number(inp.value);if(Number.isFinite(v)){k[prop]=v;plan.keys.sort((a,b)=>a.t-b.t);frame();table()}});cell.append(inp);row.append(cell)}b.append(row)}}
+slider.addEventListener("input",()=>{t=Number(slider.value);frame()});
+document.querySelector("#play").addEventListener("click",()=>{playing=!playing;document.querySelector("#play").textContent=playing?"Ⅱ Pausar":"▶ Reproducir";previous=0;requestAnimationFrame(tick)});
+function tick(stamp){if(!playing)return;if(previous)t+=Math.min(.1,(stamp-previous)/1000);previous=stamp;if(t>=plan.duration){t=0;playing=false;document.querySelector("#play").textContent="▶ Reproducir"}slider.value=t;frame();if(playing)requestAnimationFrame(tick)}
+document.querySelector("#add").addEventListener("click",()=>{let k=state(t);plan.keys.push({t:Number(t.toFixed(2)),...k});plan.keys.sort((a,b)=>a.t-b.t);table();frame()});
+document.querySelector("#export").addEventListener("click",()=>{const blob=new Blob([JSON.stringify(plan,null,2)],{type:"application/json"}),url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download="camera-blocking-plan.json";a.click();setTimeout(()=>URL.revokeObjectURL(url),500)});
+document.querySelector("#import").addEventListener("change",async e=>{const file=e.target.files?.[0];if(!file)return;try{const parsed=JSON.parse(await file.text());if(!Array.isArray(parsed.keys)||parsed.keys.length<2||!Number.isFinite(parsed.duration)||!parsed.room)throw Error("Formato de receta inválido");plan=parsed;slider.max=plan.duration;t=0;slider.value=0;table();frame()}catch(err){status.textContent=err.message}});
+cv.addEventListener("pointerdown",e=>{const rect=cv.getBoundingClientRect(),px=(e.clientX-rect.left)*cv.width/rect.width,py=(e.clientY-rect.top)*cv.height/rect.height,p=state(t);if(Math.hypot(px-X(p.x),py-Z(p.z))<30){drag=true;cv.setPointerCapture(e.pointerId)}});
+cv.addEventListener("pointermove",e=>{if(!drag)return;const rect=cv.getBoundingClientRect(),[x,z]=world((e.clientX-rect.left)*cv.width/rect.width,(e.clientY-rect.top)*cv.height/rect.height);let k=plan.keys.reduce((a,b)=>Math.abs(a.t-t)<Math.abs(b.t-t)?a:b);k.x=Math.max(-1.8,Math.min(1.8,x));k.z=Math.max(0,Math.min(24,z));frame();table()});
+cv.addEventListener("pointerup",()=>drag=false);cv.addEventListener("pointercancel",()=>drag=false);
+table();frame();
+</script></body></html>
