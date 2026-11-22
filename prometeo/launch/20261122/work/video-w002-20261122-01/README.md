@@ -19,9 +19,12 @@ Inés, guardia de turno noche en una clínica, descubre que la fila de una habit
 node --test tests/continuity-kit.test.mjs
 node src/continuity-kit.mjs SHOTLIST.json
 node src/continuity-kit.mjs SHOTLIST.json --media pelicula-final.mp4
-node ../../../../deep-spec-v1.mjs PREPRODUCTION.deep-spec-v1.json
+node ../../../deep-spec-v1.mjs PREPRODUCTION.deep-spec-v1.json
 ```
-La última orden de DEEP-SPEC requiere utilizar la ruta correcta del validador en el checkout del repositorio; el gate esperado para esta ficha es `BLOCKED`, ya que el spike audiovisual fue rechazado.
+El gate DEEP-SPEC esperado es `BLOCKED` (el spike audiovisual fue rechazado). Esto no es un error del validador; el comando termina con código 3. Los tests de Node incluidos todavía no fueron ejecutados en un checkout real en esta sesión.
+
+## Boceto sonoro reproducible (no es mezcla final)
+`python3 src/foley_boceto.py --output ultima_guardia_foley_boceto.wav` (requiere NumPy y SciPy). Se renderizó un WAV estéreo original de 48 s a 32 kHz y ffprobe confirmó formato y duración. El binario está adjunto al chat, **no publicado en esta rama**. El diseño tiene dos golpes y respiración, pero su sincronía con actuación filmada es NOT_RUN.
 
 ## Bloqueo observado
 Dos llamadas `estimate_only` al generador audiovisual conectado, con modelos Kling-3-Pro y Seedance-v2.5, fallaron sin gasto ni generación: la cuenta exige un plan pago. FFmpeg disponible para el montaje, pero ningún video de actuación autorizado ha sido creado o aportado. No se utilizaron fotos, clips ajenos ni suplantación de material. **No llamar `DELIVERED` a estos documentos.** Para terminar la película hacen falta rodaje con intérprete y sonido con permiso, o generación cinematográfica habilitada más export/QA cuadro por cuadro.
