@@ -8,7 +8,7 @@ Estado: **Lanzadores publicados, no sesiones iniciadas ni resultados verificados
 
 ## ESPECIFICACIÓN PROFUNDA · DEEP-SPEC-1
 
-Para **todos los nuevos WORK**, incluido cualquier estudio futuro, leer [la única especificación compartida](../../DEEP_SPEC.md) junto a QBAR-1 y Q-LOOP. Antes de construir el primer corte, producir en el propietario de la tarea una ficha versionada de decisiones, componentes y relaciones, investigar lo que cambie elecciones y probar primero el riesgo alto. Usar el adaptador del medio que corresponda; **no** pedir un formulario al humano, cambiar los diez briefs, alterar hashes previos ni ejecutar tandas por esta modificación. Referencia común de los cinco lanzadores, sin duplicar el texto del método.
+Para **todos los nuevos WORK**, incluido cualquier estudio futuro, leer [la única especificación compartida](../DEEP_SPEC.md) junto a QBAR-1 y Q-LOOP. Antes de construir el primer corte, producir en el propietario de la tarea una ficha versionada de decisiones, componentes y relaciones, investigar lo que cambie elecciones y probar primero el riesgo alto. Usar el adaptador del medio que corresponda; **no** pedir un formulario al humano, cambiar los diez briefs, alterar hashes previos ni ejecutar tandas por esta modificación. Referencia común de los cinco lanzadores, sin duplicar el texto del método.
 
 ## Copia única desde ROOT
 
