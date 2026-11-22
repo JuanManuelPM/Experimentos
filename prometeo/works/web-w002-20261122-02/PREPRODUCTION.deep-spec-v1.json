@@ -1,0 +1,222 @@
+{
+  "version": "DEEP-SPEC-1",
+  "medium": "web",
+  "depth": "SISTEMA",
+  "batchId": "web-w002-20261122",
+  "taskNumber": 2,
+  "taskId": "web-w002-20261122-02",
+  "briefSha": "cd88a07941ab62072f6de5ee69764308f1ec2387",
+  "qualityBarVersion": "QBAR-1",
+  "brief": "CASA MATERIAL: sitio de marca ficticia de objetos artesanales con dirección de arte original coherente entre fotografía, retícula, tipografía, interacción, producto, navegación y móvil. Publicar web y mini sistema de identidad reutilizable.",
+  "intent": {
+    "experience": "Percibir el peso de la materia y la lentitud del trabajo artesanal en una lectura editorial comprensible, sin confundir piezas ficticias con stock real.",
+    "distinctAbility": "Demostrar una identidad visual consistente entre portada, colección, detalle, proceso, navegación y móvil, con tokens y componentes reutilizables."
+  },
+  "references": [
+    {
+      "id": "R1",
+      "url": "https://www.jonnymartin.blog/wendy",
+      "status": "OBSERVED",
+      "observation": "Caso de estudio consultado: identidad, fotografía suave, retícula sobria, navegación de tres áreas y flujo de consulta forman un mismo retrato de práctica cerámica. Lectura documental, no test visual en navegador."
+    },
+    {
+      "id": "R2",
+      "url": "https://fernandodurao.com/en/",
+      "status": "OBSERVED",
+      "observation": "Sitio de cerámica consultado: distingue piezas únicas, describe proceso, taller, material y tamaño temporal de elaboración; el producto tiene contexto verificable. Lectura textual, no auditado visualmente."
+    },
+    {
+      "id": "R3",
+      "url": "https://brand.dropbox.com/",
+      "status": "OBSERVED",
+      "observation": "Documentación de marca previamente observada en EVIDENCE: una identidad opera como sistema de voz, tipo, color, imagen, motion y reglas, no una única cabecera."
+    },
+    {
+      "id": "R4",
+      "url": "https://unsplash.com/license",
+      "status": "OBSERVED",
+      "observation": "Licencia de imágenes consultada junto a páginas individuales con atribución de autores; se utilizarán fotografías gratuitas de Unsplash, con créditos visibles y sin indicar que muestran mercancía de la marca ficticia."
+    }
+  ],
+  "components": [
+    {
+      "id": "C1",
+      "role": "Sistema de identidad y fundamentos editorial-tipográficos con tokens CSS y lenguaje verbal coherente.",
+      "strategy": "Serif de gran escala para narración, sans neutra para navegación, microetiquetas monoespaciadas; paleta cal, barro, grafito y óxido.",
+      "constraints": "Máximo dos families del sistema base más monoespaciada para etiquetas; signos, márgenes y tono permanecen estables entre formatos."
+    },
+    {
+      "id": "C2",
+      "role": "Publicación narrativa responsive con portada, manifiesto, selección de estudios, taller y créditos.",
+      "strategy": "Retícula modular asimétrica de 12 columnas con grandes imágenes fotográficas de atmósfera, cambios de ritmo y composición tipográfica en CSS.",
+      "constraints": "Sin imágenes falsas ni artes SVG como sustitutos de fotos; fotos externas licenciadas; 320px, 768px, 1440px con foco y motion reducido."
+    },
+    {
+      "id": "C3",
+      "role": "Fichas navegables de objetos ficticios, modal accesible de detalle, controles funcionales de navegación.",
+      "strategy": "Tarjetas activan diálogo HTML nativo con información y enlace al origen fotográfico; el contenido se corresponde con la pieza conceptual y se puede cerrar con Escape.",
+      "constraints": "No se ofrecen compras reales ni precios inventados; fotos de referencia no se atribuyen a taller ficticio; no depender de JS para mostrar el contenido básico."
+    },
+    {
+      "id": "C4",
+      "role": "Paquete de mini identidad con tokens, reglas de fotografía, composición y microcomponentes reutilizables.",
+      "strategy": "Separar hoja de estilos en tokens.css, patrones semánticos y manual de identidad MD versionado.",
+      "constraints": "Cada componente debe funcionar sin librerías comerciales y conservar jerarquía de lectura, contraste y foco."
+    }
+  ],
+  "questions": [
+    {
+      "id": "Q1",
+      "target": "C1",
+      "question": "¿Cómo evitar que el sistema de marca se reduzca a una paleta beige de plantilla?",
+      "alternatives": [
+        "Solo tonos y tipografía",
+        "Sintaxis editorial, puntuación de numeración, composición asimétrica y voz de marca"
+      ],
+      "finding": "Las referencias vinculan marca y taller desde la escritura, imágenes, estructura y detalles repetidos.",
+      "decisionImpact": "Definir gramática de sección, marcadores, escalas y una escritura específica antes de maquetar.",
+      "evidenceRef": "R1"
+    },
+    {
+      "id": "Q2",
+      "target": "C2",
+      "question": "¿Cómo conservar integridad fotográfica sin inventar que una imagen representa el catálogo propio?",
+      "alternatives": [
+        "Tratar stock como producto real",
+        "Publicar fotografía de referencia con crédito y declarar la marca como proyecto ficticio"
+      ],
+      "finding": "Las fichas de Unsplash observadas declaran licencia y autoría para fotos concretas y su uso no prueba procedencia de productos.",
+      "decisionImpact": "Usar fotografías de ambientación acreditadas, con descripciones prudentes y una separación visible entre concepto y objetos reales.",
+      "evidenceRef": "R4"
+    },
+    {
+      "id": "Q3",
+      "target": "C3",
+      "question": "¿Qué recorrido puede demostrar uso real sin inventar una tienda activa o checkout?",
+      "alternatives": [
+        "Botón de compra simulado",
+        "Detalle informativo accesible, navegación por secciones y consulta de fichas"
+      ],
+      "finding": "El referente de estudio cerámico prioriza contacto y consulta frente a venta directa, integrando contenido y navegación.",
+      "decisionImpact": "Construir modales de fichas genuinos, sin dinero ni promesas de stock; controles reales y enlaces con destino.",
+      "evidenceRef": "R1"
+    }
+  ],
+  "relations": [
+    {
+      "from": "C1",
+      "to": "C2",
+      "invariant": "Todas las secciones comparten tokens de color, ritmo tipográfico y márgenes que se adaptan a breakpoints.",
+      "failure": "La identidad se degrada en bloques inconsistentes al pasar a móvil.",
+      "test": "Comparar tokens y layout a 320, 768 y 1440px."
+    },
+    {
+      "from": "C2",
+      "to": "C3",
+      "invariant": "Cada tarjeta permanece identificable por imagen, nombre y número en portada, listado y detalle.",
+      "failure": "El modal presenta objeto o fotografía distinta a la tarjeta seleccionada.",
+      "test": "Abrir tres fichas y comparar títulos y fuentes."
+    },
+    {
+      "from": "C3",
+      "to": "C4",
+      "invariant": "Los componentes de detalle y navegación consumen las mismas variables y estados accesibles del sistema.",
+      "failure": "El componente reutilizado diverge en contraste, foco o tipografía.",
+      "test": "Inspeccionar selectores de tokens y navegación con teclado."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "D1",
+      "questionId": "Q1",
+      "componentIds": [
+        "C1",
+        "C4"
+      ],
+      "choice": "Sistema editorial de 'notas de taller' con nomenclatura M.01 e identidad por márgenes, materiales y voz propia.",
+      "rejected": "Plantilla de e-commerce con hero aislado y cuatro cards iguales.",
+      "productionChange": "Crear tokens.css, estilos semánticos de sello, capítulos, numeración vertical y manual de aplicación multiformato.",
+      "why": "Aporta una gramática reconocible en todas las superficies en vez de variar únicamente colores."
+    },
+    {
+      "id": "D2",
+      "questionId": "Q2",
+      "componentIds": [
+        "C2",
+        "C4"
+      ],
+      "choice": "Fotografía ambiental de uso gratuito con acreditación y etiquetas de referencia conceptual.",
+      "rejected": "Afirmar que fotografías ajenas son productos fabricados por la marca ficticia.",
+      "productionChange": "Registrar páginas individuales de fotógrafos y sus imágenes; créditos en página y fallback cromático si fallan las imágenes.",
+      "why": "Conserva la fuerza fotográfica del encargo sin falsear autoría ni procedencia."
+    },
+    {
+      "id": "D3",
+      "questionId": "Q3",
+      "componentIds": [
+        "C2",
+        "C3"
+      ],
+      "choice": "Portada, catálogo curado, detalle en diálogo nativo, proceso y navegación con anclas funcionales.",
+      "rejected": "Carrito/pago inexistente y enlaces de llamada a la acción inertes.",
+      "productionChange": "Implementar tarjetas activables, dialog aria-labelledby, Escape y foco restaurado, menú móvil y hash anchoring.",
+      "why": "La primera función del sitio es la comprensión de una identidad ficticia, no fingir ventas."
+    }
+  ],
+  "risks": [
+    {
+      "componentIds": [
+        "C2"
+      ],
+      "severity": "medium",
+      "failure": "Las imágenes de Unsplash dependen de un host externo y pueden no cargarse sin conectividad.",
+      "prevention": "Usar imágenes con fallback de color coherente, dimensiones explícitas y un manifiesto de URLs/licencia.",
+      "test": "Comprobar HTTP y render de todos los recursos cuando el navegador tenga red.",
+      "status": "NOT_RUN"
+    },
+    {
+      "componentIds": [
+        "C3"
+      ],
+      "severity": "medium",
+      "failure": "El detalle de ficha se vuelve inaccesible con teclado o pantallas estrechas.",
+      "prevention": "Usar dialog nativo, botones reales, cierre visible, foco devuelto y scroll para contenido extenso.",
+      "test": "Probar Enter, Escape y Tab a 320px en Chromium.",
+      "status": "NOT_RUN"
+    },
+    {
+      "componentIds": [
+        "C1",
+        "C2"
+      ],
+      "severity": "medium",
+      "failure": "La composición editorial puede perder contraste o producir desborde horizontal.",
+      "prevention": "Probar estilos con estilos fluidos, breakpoints y tamaños clamp, max-width y overflow-wrap.",
+      "test": "Medir document scrollWidth <= viewport a 320, 768, 1440.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "acceptance": [
+    {
+      "kind": "visual",
+      "criterion": "Portada, colección, fichas y navegación conservan sintaxis de marca, sin desbordes a 320, 768 y 1440.",
+      "oracle": "Capturas reales de Chromium y comparación humana de identidad transversal.",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "interactive",
+      "criterion": "Navegación por anclas, apertura y cierre de tres fichas, Escape, foco y menu móvil funcionan.",
+      "oracle": "Playwright o ensayo manual en navegador con teclado y puntero.",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "functional",
+      "criterion": "Página y assets de código se publican con enlaces que resuelven y créditos vinculados a licencias verificadas.",
+      "oracle": "Readback GitHub + HTTP final y comprobación de enlaces/media.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "licensing": "Marca, textos, CSS y JS originales ficticios. Fotografías usadas como referencias editoriales: Unsplash License, páginas individuales acreditadas, no son obra/productos del atelier inventado. No se reproduce identidad de marcas reales.",
+  "resources": "GitHub repo Experimentos en rama exclusiva, HTML5, CSS3, JS vanilla sin dependencias, Unsplash con fotos revisadas, Chromium local si está disponible.",
+  "environmentLimits": "Las imágenes remotas no están disponibles desde el contenedor local sin internet; la prueba con imágenes cargadas y su exacta coherencia cromática queda pendiente de navegador con red."
+}
