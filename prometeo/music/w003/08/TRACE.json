@@ -1,0 +1,149 @@
+{
+  "schema": "prometeo.music.visited-trace/v1",
+  "taskId": "music-w003-20261122-08",
+  "room": "music",
+  "batchId": "music-w003-20261122",
+  "flow": {
+    "version": "2.0.0",
+    "blobSha": "1423f13e08b743f418c42052613a6808b214d622",
+    "canonicalSha256": "6826ce13f4bd1e0d81b8a89bd7e6728668b85c44c68185b79426b00a36b8f05f",
+    "status": "FROZEN_CANDIDATE"
+  },
+  "claim": "Visited stages only; topology validator NOT_RUN; this does not assert verified audio/browser.",
+  "stages": [
+    {
+      "nodeId": "M00",
+      "status": "OBSERVED",
+      "decision": "Read launcher and W002/08 prior delivery",
+      "alternatives": [
+        "Reuse old artifact",
+        "New isolated wave"
+      ],
+      "evidence": [
+        "LAUNCH Git blob 5d7e6c",
+        "W002 README blob 571937"
+      ],
+      "result": "Identity locked"
+    },
+    {
+      "nodeId": "M01",
+      "status": "OBSERVED",
+      "decision": "Use original brief N08 unmodified",
+      "alternatives": [
+        "Alter 08 brief",
+        "Preserve 08"
+      ],
+      "evidence": [
+        "LAUNCH section 08"
+      ],
+      "result": "48 bars, three emotions"
+    },
+    {
+      "nodeId": "M02",
+      "status": "OBSERVED",
+      "decision": "Consult FMOD quantization and Wwise transition techniques",
+      "alternatives": [
+        "Ungated crossfade",
+        "Bar quantization"
+      ],
+      "evidence": [
+        "https://www.fmod.com/docs/2.04/studio/authoring-events.html",
+        "https://www.gamesounddesign.com/in-depth-creation-of-dynamic-music-in-a-video-game.html"
+      ],
+      "result": "Single transport"
+    },
+    {
+      "nodeId": "M03",
+      "status": "OBSERVED",
+      "decision": "Render deterministic PCM and contrast with real-time synthesis",
+      "alternatives": [
+        "Precomputed stems",
+        "Realtime instrument engine"
+      ],
+      "evidence": [
+        "score.mjs",
+        "PREPRODUCTION.deep-spec-v1.json"
+      ],
+      "result": "Multistem design"
+    },
+    {
+      "nodeId": "M04",
+      "status": "OBSERVED",
+      "decision": "Specify 48 bars/4 sections/chord map and stem roles",
+      "alternatives": [
+        "One 16-bar loop",
+        "Four-section motif transformations"
+      ],
+      "evidence": [
+        "score.mjs"
+      ],
+      "result": "Score encoded"
+    },
+    {
+      "nodeId": "M05",
+      "status": "OBSERVED",
+      "decision": "Test audio as PCM first article",
+      "alternatives": [
+        "Proceed from mockup",
+        "Render actual waveform"
+      ],
+      "evidence": [
+        "tests.mjs",
+        "QA.md"
+      ],
+      "result": "Digital first article validated, not listened"
+    },
+    {
+      "nodeId": "M06",
+      "status": "OBSERVED",
+      "decision": "Render master, stems and timed transition sequence locally",
+      "alternatives": [
+        "Static interface only",
+        "Actual WAV"
+      ],
+      "evidence": [
+        "render.mjs",
+        "QA.md"
+      ],
+      "result": "120s WAV local"
+    },
+    {
+      "nodeId": "M07",
+      "status": "NOT_RUN",
+      "reason": "Chromium local file/localhost ERR_BLOCKED_BY_ADMINISTRATOR",
+      "evidence": [
+        "QA.md"
+      ],
+      "result": "Browser audio not verified"
+    },
+    {
+      "nodeId": "M08",
+      "status": "OBSERVED",
+      "decision": "Run offline tests and ffprobe",
+      "alternatives": [
+        "Assume playback",
+        "Check PCM and timeline"
+      ],
+      "evidence": [
+        "tests.mjs",
+        "QA.md"
+      ],
+      "result": "Node PASS"
+    },
+    {
+      "nodeId": "M09",
+      "status": "NOT_RUN",
+      "reason": "Independent human critical listening unavailable",
+      "evidence": [
+        "QA.md"
+      ],
+      "result": "Artistic comparison pending"
+    }
+  ],
+  "metadata": {
+    "preparedAt": "2026-11-22T18:54:19Z",
+    "recordedAt": "2026-11-22T18:56:02.671Z",
+    "validatedWith": "NOT_RUN",
+    "humanApproved": false
+  }
+}
