@@ -1,0 +1,116 @@
+{
+  "schema": "prometeo.web.visited-trace-receipt/v1",
+  "note": "Registro autocontenido de etapas efectivamente atravesadas; validación con visited-trace-v1.mjs NOT_RUN. No se infiere el resto del DAG.",
+  "taskId": "web-w003-20261122-07",
+  "runRecordAt": "2026-11-22T19:19:23.763Z",
+  "repo": "JuanManuelPM/Experimentos",
+  "branch": "candidate/prometeo-web-w003-20261122-07",
+  "baseBranch": "gh-pages",
+  "flow": {
+    "version": "2.0.0",
+    "blobSha": "1a0e709beec9a84986fc33c5ce4ab0a162dccaf2",
+    "source": "JuanManuelPM/pruebas@candidate/prometeo-web-art-gate-w002-20261122/.../WEB_FACTORY_V2/FLOW.json",
+    "status": "SPEC_ONLY_CANDIDATE_NOT_PROMOTED",
+    "traceValidator": "NOT_RUN"
+  },
+  "visitedStages": [
+    {
+      "id": "S00",
+      "status": "OBSERVED",
+      "decision": "Resolver comando W003/07, verificar fuente/autoridad y crear rama exclusiva no colisionada.",
+      "output": "Rama candidate/prometeo-web-w003-20261122-07",
+      "evidence": "GitHub branch create + source readback"
+    },
+    {
+      "id": "S01",
+      "status": "OBSERVED",
+      "decision": "Conservar brief exacto de revista de géneros variados, experiencia 320-1440.",
+      "output": "index.html y ficha Book",
+      "evidence": "brief SHA bef87bf57c789d2b0605ca9ff81a5d3bbaab5e35"
+    },
+    {
+      "id": "S02",
+      "status": "OBSERVED",
+      "decision": "Textos propios, imágenes Commons acreditadas y SVG conceptual no estadístico.",
+      "output": "index.html con tres leyendas/licencias",
+      "evidence": "HTTP 200 de tres imágenes en navegador remoto"
+    },
+    {
+      "id": "S03",
+      "status": "OBSERVED",
+      "decision": "Archivo, búsqueda, ruta hash, tabs teclado, sin UI duplicada.",
+      "output": "app.js e index.html",
+      "evidence": "Chromium en 4 tamaños, conteos de resultados y estados"
+    },
+    {
+      "id": "S04",
+      "status": "PARTIAL",
+      "decision": "Benchmark editorial y auditoría W002; no se acredita navegación exhaustiva de todos los referentes.",
+      "output": "PREPRODUCTION.deep-spec-v1.json",
+      "evidence": "URLs y observaciones indicadas en Book"
+    },
+    {
+      "id": "S05",
+      "status": "OBSERVED",
+      "decision": "Rechazar tarjetas clonadas; contrastar foto editorial contra ilustración vectorial; elegir fotografía Commons.",
+      "output": "FIRST_ARTICLE.html y capturas",
+      "evidence": "foto original 429; cambio a URL directa 200"
+    },
+    {
+      "id": "S06",
+      "status": "OBSERVED",
+      "decision": "Composición tipográfica 390 y 1440; reparar masthead y nav móvil.",
+      "output": "styles.css",
+      "evidence": "evidence/first-frame-390.jpg y evidence/first-frame-1440.jpg"
+    },
+    {
+      "id": "S07",
+      "status": "OBSERVED",
+      "decision": "Elegir HTML/CSS/JS estático y rutas locales sin dependencias de construcción.",
+      "output": "index.html, styles.css, app.js",
+      "evidence": "Fuente JavaScript, CSS, HTML publicada"
+    },
+    {
+      "id": "S08",
+      "status": "OBSERVED",
+      "decision": "Primero hero de mayor riesgo, rectificar licencias y imagen; no multiplicar la técnica fallida.",
+      "output": "FIRST_ARTICLE.html",
+      "evidence": "HTTP 429→200 y captura Chromium"
+    },
+    {
+      "id": "S09",
+      "status": "OBSERVED",
+      "decision": "Construcción de seis lecturas, buscador real y láminas con tabs accesibles.",
+      "output": "index.html, styles.css, app.js",
+      "evidence": "GitHub blobs y ejecución Chromium del DOM"
+    },
+    {
+      "id": "S10",
+      "status": "OBSERVED_WITH_LIMITS",
+      "decision": "Primer pase encuentra overflow pie a 320 y lo repara, luego 28/28 vistas + 6 checks funcionales.",
+      "output": "QA.md",
+      "evidence": "Chromium setContent desde fuentes GitHub, no HTTP público"
+    },
+    {
+      "id": "S11",
+      "status": "PARTIAL_PUBLIC_HTTP_FAILED",
+      "decision": "Publicar por Github contents API en rama única y en ruta nueva gh-pages; readback correcto.",
+      "output": "GitHub sources y capturas",
+      "evidence": "GitHub API readback; GitHub Pages HTTP 404, PUBLIC_BROWSER_NOT_VERIFIED"
+    }
+  ],
+  "skipped": [
+    {
+      "stage": "S12",
+      "cause": "No se promovió método; aprendizaje registrado en QA y solo retorno ROOT acotado."
+    }
+  ],
+  "status": {
+    "source": "PASS",
+    "screenshots": "OBSERVED",
+    "browserInjected": "PASS",
+    "pagesHTTP": "FAIL_404",
+    "publicBrowser": "NOT_VERIFIED",
+    "humanApproved": false
+  }
+}
