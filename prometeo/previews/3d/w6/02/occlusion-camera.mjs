@@ -47,7 +47,7 @@ export class ArchitecturalOcclusion {
     mesh.material.opacity = 1;
     mesh.material.depthWrite = true;
     mesh.material.side = THREE.DoubleSide;
-    this.registry.push({mesh, kind, opacity: 1});
+    this.registry.push({mesh, kind, opacity: 1, shadow: mesh.castShadow});
     return mesh;
   }
   update(cameraPosition, subject, delta = 1/60) {
@@ -70,6 +70,7 @@ export class ArchitecturalOcclusion {
       if (Math.abs(o.opacity - wanted) < 0.008) o.opacity = wanted;
       o.mesh.material.opacity = o.opacity;
       o.mesh.material.depthWrite = o.opacity > 0.985;
+      o.mesh.castShadow = o.shadow && o.opacity > 0.5;
       o.mesh.visible = o.opacity > 0.02;
     }
   }
