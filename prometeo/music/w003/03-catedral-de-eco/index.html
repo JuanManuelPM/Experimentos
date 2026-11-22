@@ -2,7 +2,7 @@
 <title>Catedral de Eco · PROMETEO W003 / 03</title>
 <style>
 :root{color-scheme:dark}*{box-sizing:border-box}body{margin:0;background:#0d1015;color:#f0f0e8;font-family:system-ui,-apple-system,sans-serif}main{min-height:100svh;display:grid;place-items:center;padding:28px 22px}.surface{width:min(100%,760px);position:relative;padding:30px 0}small{color:#929d9e;letter-spacing:.18em;font-size:.73rem;text-transform:uppercase}h1{font-size:clamp(3.8rem,11vw,8.2rem);font-weight:300;letter-spacing:-.09em;line-height:.90;margin:55px 0 22px;max-width:610px}p{max-width:520px;color:#a9b1b5;line-height:1.55}p.lead{font-size:1.07rem}.line{height:1px;background:#43505a;margin:38px 0 25px}.transport{display:flex;align-items:center;gap:14px;flex-wrap:wrap}button{font:inherit;color:#dfe9e5;background:transparent;border:1px solid #576769;padding:16px 22px;min-height:54px;cursor:pointer}button.primary{background:#b5c9bd;color:#101718;border-color:#b5c9bd;font-weight:700}button:focus-visible{outline:3px solid #dcecd3;outline-offset:3px}button:disabled{opacity:.45;cursor:wait}.status{font-variant-numeric:tabular-nums;font-size:.85rem;min-width:130px;color:#a9b9ac}.foot{font-size:.75rem;margin-top:40px;color:#77888b}.meter{height:3px;background:#222d32;margin-top:14px;width:100%}.fill{width:0%;height:100%;background:#a7c5b6;transition:width .3s linear}@media(max-width:500px){h1{margin-top:70px}.transport{align-items:stretch}.transport button{flex:1}.status{width:100%}}@media(prefers-reduced-motion:reduce){*{transition:none!important}}
-</style></head><body><main><article class="surface"><small>Prometeo / Music / W003-03</small><h1>Catedral<br>de Eco</h1><p class="lead">Dub techno original. Acordes filtrados, dos profundidades de eco y un vacío en el centro de la pieza.</p><small>122 BPM · 88 compases · Re-síntesis interactiva</small><div class="line"></div><div class="transport"><button class="primary" id="play">▶ Escuchar</button><button id="stop" disabled>■ Detener</button><button id="export">↓ Exportar WAV</button><span class="status" id="status" aria-live="polite">00:00 / 02:57</span></div><div class="meter" aria-hidden="true"><div class="fill" id="fill"></div></div><p class="foot">Este reproductor interpreta el mismo mapa compositivo en Web Audio; no es idéntico al máster PCM incluido en el paquete descargable. Sí genera audio real sin librerías, samples ni servicios externos. Auriculares recomendados.</p></article></main>
+</style></head><body><main><article class="surface"><small>Prometeo / Music / W003-03</small><h1>Catedral<br>de Eco</h1><p class="lead">Dub techno original. Acordes filtrados, dos profundidades de eco y un vacío en el centro de la pieza.</p><small>122 BPM · 88 compases · Re-síntesis interactiva</small><div class="line"></div><div class="transport"><button class="primary" id="play" disabled>Preparando máster…</button><button id="stop" disabled>■ Detener</button><button id="export" disabled>↓ Descargar MP3</button><span class="status" id="status" aria-live="polite">00:00 / 02:57</span></div><div class="meter" aria-hidden="true"><div class="fill" id="fill"></div></div><p class="foot">Reproduce el máster original en MP3 (96 kbps) reconstruido de 24 fragmentos publicados. El paquete incluye el máster WAV de 24 bits y cinco stems. Si falla la descarga, se indica expresamente el modo alternativo de síntesis web. Auriculares recomendados.</p></article></main>
 <script>
 'use strict';
 const BPM=122,BEAT=60/BPM,BAR=4*BEAT,BARS=88,DURATION=BARS*BAR+4.4;
@@ -62,16 +62,21 @@ function build(ctx,from=0,to=BARS,only='all'){
   }
   return {master};
 }
-let ctx=null,started=0,ticker=null;
+let ctx=null,started=0,ticker=null,masterAudio=null,masterBlob=null,mode='LOADING';
 const $=id=>document.getElementById(id);const fmt=s=>`${String(Math.floor(s/60)).padStart(2,'0')}:${String(Math.floor(s%60)).padStart(2,'0')}`;
-function update(){const t=ctx?Math.min(DURATION,ctx.currentTime-started):0;$('status').textContent=`${fmt(t)} / 02:57`;$('fill').style.width=`${100*t/DURATION}%`;if(t>=DURATION)stop()}
-function stop(){if(ticker)clearInterval(ticker);ticker=null;if(ctx)ctx.close().catch(()=>{});ctx=null;$('play').disabled=false;$('stop').disabled=true;$('status').textContent='00:00 / 02:57';$('fill').style.width='0%'}
-$('play').addEventListener('click',async()=>{stop();ctx=new AudioContext();await ctx.resume();started=ctx.currentTime;build(ctx);$('play').disabled=true;$('stop').disabled=false;ticker=setInterval(update,250)});
+function update(){const t=mode==='MASTER'&&masterAudio?Math.min(DURATION,masterAudio.currentTime):ctx?Math.min(DURATION,ctx.currentTime-started):0;$('status').textContent=`${fmt(t)} / 02:57`;$('fill').style.width=`${100*t/DURATION}%`;if(t>=DURATION)stop()}
+function stop(){if(ticker)clearInterval(ticker);ticker=null;if(masterAudio){masterAudio.pause();masterAudio.currentTime=0}if(ctx)ctx.close().catch(()=>{});ctx=null;$('play').disabled=mode==='LOADING';$('stop').disabled=true;$('status').textContent='00:00 / 02:57';$('fill').style.width='0%'}
+async function loadMaster(){try{
+  const urls=Array.from({length:24},(_,i)=>`media/master.part-${String(i).padStart(2,'0')}.b64`);
+  const parts=await Promise.all(urls.map(async u=>{let r=await fetch(u,{cache:'default'});if(!r.ok)throw Error('part '+u+' '+r.status);return (await r.text()).trim()}));
+  const b64=parts.join('');if(b64.length!==2841344)throw Error('unexpected length '+b64.length);
+  const raw=atob(b64),bytes=new Uint8Array(raw.length);for(let i=0;i<raw.length;i++)bytes[i]=raw.charCodeAt(i);
+  masterBlob=new Blob([bytes],{type:'audio/mpeg'});if(masterBlob.size!==2131008)throw Error('unexpected bytes '+masterBlob.size);
+  masterAudio=new Audio(URL.createObjectURL(masterBlob));masterAudio.onended=stop;masterAudio.preload='metadata';
+  mode='MASTER';$('play').textContent='▶ Escuchar máster';$('play').disabled=false;$('export').disabled=false;$('status').textContent='Máster cargado';
+}catch(error){mode='FALLBACK';$('play').textContent='▶ Síntesis alternativa';$('play').disabled=false;$('status').textContent='Máster inaccesible';console.warn('PUBLIC_MASTER_NOT_LOADED',error.message)}}
+$('play').addEventListener('click',async()=>{try{if(ticker)clearInterval(ticker);if(mode==='MASTER'&&masterAudio){masterAudio.currentTime=0;await masterAudio.play()}else{ctx=new AudioContext();await ctx.resume();started=ctx.currentTime;build(ctx)}$('play').disabled=true;$('stop').disabled=false;ticker=setInterval(update,250)}catch(e){$('status').textContent='Error de reproducción';$('play').disabled=false;console.error(e)}});
 $('stop').addEventListener('click',stop);
-function wav(buffer){const n=buffer.length,c=buffer.numberOfChannels,bytes=n*c*2,a=new ArrayBuffer(bytes+44),v=new DataView(a);let p=0;
-  const str=s=>{for(let i=0;i<s.length;i++)v.setUint8(p++,s.charCodeAt(i))},u16=x=>{v.setUint16(p,x,true);p+=2},u32=x=>{v.setUint32(p,x,true);p+=4};
-  str('RIFF');u32(bytes+36);str('WAVEfmt ');u32(16);u16(1);u16(c);u32(buffer.sampleRate);u32(buffer.sampleRate*c*2);u16(c*2);u16(16);str('data');u32(bytes);
-  const d=Array.from({length:c},(_,i)=>buffer.getChannelData(i));for(let i=0;i<n;i++)for(let j=0;j<c;j++){let x=Math.max(-1,Math.min(1,d[j][i]));v.setInt16(p,Math.round(x<0?x*32768:x*32767),true);p+=2}return new Blob([a],{type:'audio/wav'})
-}
-$('export').addEventListener('click',async()=>{const btn=$('export');btn.disabled=true;btn.textContent='Renderizando…';try{let off=new OfflineAudioContext(2,Math.ceil(DURATION*44100),44100);build(off);const out=await off.startRendering(),blob=wav(out);const a=document.createElement('a'),u=URL.createObjectURL(blob);a.href=u;a.download='CATEDRAL_DE_ECO_browser_performance_44k.wav';a.click();setTimeout(()=>URL.revokeObjectURL(u),1200)}catch(e){alert('No se pudo exportar: '+e.message)}finally{btn.disabled=false;btn.textContent='↓ Exportar WAV'}});
+$('export').addEventListener('click',()=>{if(!masterBlob)return;const a=document.createElement('a'),u=URL.createObjectURL(masterBlob);a.href=u;a.download='CATEDRAL_DE_ECO_W003_03_MASTER_96kbps.mp3';a.click();setTimeout(()=>URL.revokeObjectURL(u),2500)});
+loadMaster();
 </script></body></html>
