@@ -88,5 +88,5 @@ export function buildDXF(raw={},segments=360){
  const p=normalize(raw),points=profile(p,segments),rows=['0','SECTION','2','ENTITIES','0','LWPOLYLINE','8','CAM_OUTLINE','90',String(points.length),'70','1'];
  for(const pt of points)rows.push('10',pt.x.toFixed(5),'20',pt.y.toFixed(5));
  rows.push('0','CIRCLE','8','AXLE_BORE','10','0','20','0','40','6','0','ENDSEC','0','EOF');
- return rows.join('\\n')+'\\n';
+ return rows.join('\n')+'\n';
 }
