@@ -1,6 +1,6 @@
 # PROMETEO · ESTUDIO DE VIDEO · TANDA W002 · NUEVA OLA CINEMATOGRÁFICA
 
-**Identidad inmutable:** `video-w002-20261122` · **10 trabajos numerados** · **Estado: PREPARED_FOR_ROOT_REVIEW (NO LANZAR)**.
+**Identidad inmutable:** `video-w002-20261122` · **10 trabajos numerados** · **Estado: PREPARED_PENDING_DEEP_SPEC (REVISIÓN ROOT; NO LANZAR)**.
 **Propietario de este lanzador candidato:** `JuanManuelPM/Experimentos@candidate/prometeo-nextwave-video-20261122`.
 **ÚNICO comando para cualquier trabajo:** `WORK · https://github.com/JuanManuelPM/Experimentos/blob/candidate/prometeo-nextwave-video-20261122/prometeo/launch/20261122/next/video/LAUNCH.md · N` (reemplazar únicamente N por un entero de 1 a 10). La URL, la rama del lanzador y la sintaxis NO cambian entre tareas.
 
@@ -14,6 +14,8 @@
 4. Antes de producir comparar al menos dos estrategias relevantes por ejecución, incluyendo `BUILD/REUSE/IMPORT`: montaje sobre medios reales/autorizados, técnicas de composición, motor de motion graphics, edición timeline, códecs, y límites del entorno. NO hacer que un HTML animado pase por MP4. Nunca inventar modelos, humanos, imágenes, recursos ni derechos; no apropiarse del flujo de 3D, Web, Música o Imágenes. La estilización minimalista solo cuando sea una elección artística defendible, no un reemplazo barato.
 5. Construir **obra audiovisual perceptible y reproducible**, con fuente/receta editable y **un componente reutilizable nuevo por número**, sin forzar una tecnología única. Verificar archivo real MP4 o WebM, pistas, duración, resolución, número de frames, audio y sincronía con herramientas disponibles (p. ej. ffprobe + reproducción); revisar arranque, parte central y cierre. Si no se puede renderizar/escuchar, conservar trabajo legítimo y declarar claramente `NOT_RUN` para export o QA, nunca `DELIVERED` por una preview estática.
 6. Evaluar `benchmark → decisión → artefacto → evidencia → brecha`. QA mecánico no sustituye observación artística externa; prohibido autoasignarse `HUMAN_APPROVED`. Guardar código, pruebas, licencias, recibo y retorno `room:video`, `batchId:video-w002-20261122`, `taskNumber:N`, `taskId:video-w002-20261122-NN`. La ejecución futura deberá usar rama exclusiva `candidate/prometeo-video-w002-NN-20261122`, comprobar colisión y preservar W001. Publicación ROOT sólo con verificación/condiciones autorizadas.
+
+**Gate operativo:** la conexión documental contrato → cinco lanzadores → validador está confirmada, pero la ejecución integrada de la ficha por un trabajador real de Video no está observada. Estado de preproducción para el lanzamiento global: **UNVERIFIED**, hasta prueba E2E y revisión ROOT. La calidad de obras futuras no puede aprobarse con tests lógicos del método.
 
 **Alcance temporal:** cada director elige duración **suficiente para demostrar su capacidad**, no hereda automáticamente 8–15 segundos de W001. Una pieza de 15–90 s puede ser adecuada; la duración se justifica en la ficha sin sacrificar continuidad, realismo ni exhaustividad. Para el editor N10 cuenta la funcionalidad comprobada y su video de prueba real.
 
