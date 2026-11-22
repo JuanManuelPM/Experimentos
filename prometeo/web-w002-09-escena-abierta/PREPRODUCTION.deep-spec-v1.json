@@ -1,0 +1,254 @@
+{
+  "version": "DEEP-SPEC-1",
+  "medium": "web",
+  "depth": "SISTEMA",
+  "taskId": "web-w002-20261122-09",
+  "batchId": "web-w002-20261122",
+  "taskNumber": 9,
+  "briefBlobSha": "cd88a07941ab62072f6de5ee69764308f1ec2387",
+  "qualityBarVersion": "QBAR-1",
+  "brief": "ESCENA ABIERTA: festival cultural ficticio con identidad tipográfica variable, fotografía autorizada, programación navegable, fichas, agenda local y comprobación de choques, filtros, rutas, tacto y reduced motion.",
+  "intent": {
+    "experience": "Una publicación cultural que enamore a primera vista, pero que permita decidir dónde estar y a qué hora sin sacrificar legibilidad.",
+    "distinctAbility": "Sistema editorial de programación cultural que unifica jerarquía tipográfica, filtros, deep-links, estados persistentes y detección de simultaneidad."
+  },
+  "references": [
+    {
+      "id": "sonar",
+      "url": "https://sonar.es/en/practical-info/sonarapp",
+      "status": "OBSERVED",
+      "observation": "Página oficial leída: permite explorar lineup por día, escenario, hora y artista; favoritos y soporte sin conexión. La interfaz inspira criterios de utilidad, no una copia visual."
+    },
+    {
+      "id": "unsound",
+      "url": "https://www.unsound.pl/en/about",
+      "status": "OBSERVED",
+      "observation": "La descripción oficial articula un hilo conceptual entre edición, programación artística y comunicación visual; se extrae la unidad editorial de la experiencia."
+    },
+    {
+      "id": "bergen",
+      "url": "https://2025.bergenassembly.no/en",
+      "status": "OBSERVED",
+      "observation": "Programa cultural con múltiples artistas, espacios y textos curatoriales de distintas densidades; se observa la necesidad de fichas extensas y contexto por obra."
+    },
+    {
+      "id": "font",
+      "url": "https://fontsource.org/fonts/space-grotesk/about",
+      "status": "OBSERVED",
+      "observation": "La familia Space Grotesk ofrece el eje variable de peso 300–700 y licencia abierta, apta para una identidad editorial realmente variable."
+    },
+    {
+      "id": "images",
+      "url": "https://unsplash.com/license",
+      "status": "OBSERVED",
+      "observation": "La licencia autoriza usar imágenes gratuitas inclusive en proyectos comerciales con límites sobre reventa y servicios competidores. Se usarán únicamente fotografías marcadas Free."
+    }
+  ],
+  "components": [
+    {
+      "id": "identity",
+      "role": "Sistema de identidad editorial con pesos variables, fotografía de atmósfera y retícula de lectura.",
+      "strategy": "Space Grotesk Variable y una composición tipográfica con jerarquías editoriales adaptativas.",
+      "constraints": "Debe mantener el contraste, saltos y lectura desde 320 a 1440 CSS px con reduced motion."
+    },
+    {
+      "id": "program",
+      "role": "Programa completo de actuaciones, escenarios, jornadas, horarios, filtros y fichas.",
+      "strategy": "Dataset original fijo con registros semánticos y renderer HTML progresivo.",
+      "constraints": "Filtros combinables y enlaces de evento siempre coherentes con sus datos y horario."
+    },
+    {
+      "id": "agenda",
+      "role": "Agenda individual con persistencia local y avisos de solapamiento verificables.",
+      "strategy": "Motor JS puro con intervalos absolutos, persistencia tolerante a fallas y exportación ICS.",
+      "constraints": "Nunca afirmar una reserva; soportar cruces entre escenarios y eventos que atraviesan medianoche."
+    },
+    {
+      "id": "qa",
+      "role": "Pruebas lógicas, de interacción, visuales y de licencias con recibos diferenciados.",
+      "strategy": "Casos reproducibles para filtros, choques, rutas, teclado, viewport y readback remoto.",
+      "constraints": "Distinguir código publicado de ejecución observada y aprobación humana independiente."
+    }
+  ],
+  "questions": [
+    {
+      "id": "q1",
+      "target": "program",
+      "question": "¿Cuál es el equilibrio correcto entre exploración por horario y descubrimiento editorial de artistas?",
+      "alternatives": [
+        "Retícula horaria como único acceso",
+        "Lista cronológica filtrable más contexto editorial"
+      ],
+      "evidenceRef": "sonar",
+      "finding": "Los usuarios necesitan filtros por día, escenario, horario y artista sin depender del efecto visual.",
+      "decisionImpact": "El programa tendrá controles semánticos combinables y fichas enlazables, evitando un timeline ornamental."
+    },
+    {
+      "id": "q2",
+      "target": "agenda",
+      "question": "¿Cómo avisar de actuaciones simultáneas sin impedir que una persona conserve opciones abiertas?",
+      "alternatives": [
+        "Bloquear nuevas selecciones al solaparse",
+        "Guardar ambas y señalar el choque con precisión"
+      ],
+      "evidenceRef": "sonar",
+      "finding": "Los favoritos son planificación, no reservas; permitir dudas preserva intención y deja visible el conflicto.",
+      "decisionImpact": "Motor de intervalos con detección cruzada y avisos claros en agenda y guardado."
+    },
+    {
+      "id": "q3",
+      "target": "identity",
+      "question": "¿Qué combinación gráfica aporta personalidad sin suplantar las fotografías por falsos retratos de artistas ficticios?",
+      "alternatives": [
+        "Atribuir fotos reales a intérpretes inventados",
+        "Usar fotografías de atmósfera con créditos y un sistema tipográfico original"
+      ],
+      "evidenceRef": "images",
+      "finding": "La licencia Unsplash permite uso libre, pero la ética de contenido impide presentar a una persona real como artista inventado.",
+      "decisionImpact": "Fotografía contextual acreditada, fichas guiadas por tipografía y elencos explícitamente ficticios."
+    },
+    {
+      "id": "q4",
+      "target": "qa",
+      "question": "¿Qué prueba valida el uso en el dispositivo, además de una ficha JSON estructuralmente correcta?",
+      "alternatives": [
+        "Sólo validador de esquema",
+        "Test de funciones más navegador real, viewport y lectura pública"
+      ],
+      "evidenceRef": "bergen",
+      "finding": "La densidad variable y el acceso directo necesitan probar navegación y layout, no solo validez documental.",
+      "decisionImpact": "Ensayo de filtros, deep links, estados de agenda, teclado, 320/768/1440 y reduced-motion."
+    }
+  ],
+  "relations": [
+    {
+      "from": "program",
+      "to": "agenda",
+      "invariant": "Todo elemento guardado existe en la fuente de programa y el horario mostrado coincide con el intervalo usado en conflictos.",
+      "failure": "Agenda da cruces falsos, guarda ítems retirados o muestra información de sesiones distintas.",
+      "test": "Comparación automatizada entre IDs, intervalos y texto de tarjetas."
+    },
+    {
+      "from": "identity",
+      "to": "program",
+      "invariant": "La misma escala y el contraste de tipografía sirven en el hero y en los controles táctiles pequeños.",
+      "failure": "Impacto visual a costa de filtros inaccesibles o información comprimida en móvil.",
+      "test": "Revisión en 320px y navegación con teclado sin pérdida de información."
+    },
+    {
+      "from": "program",
+      "to": "qa",
+      "invariant": "Toda tarjeta y ficha admite enlace profundo y conserva el estado filtrado después de cerrar su vista.",
+      "failure": "El historial del navegador o la búsqueda rompen la apertura de una ficha.",
+      "test": "Abrir hash directo y cerrar con Escape y botón explícito."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "d1",
+      "questionId": "q1",
+      "componentIds": [
+        "program"
+      ],
+      "choice": "Vista cronológica y filtros combinados por día, escenario, disciplina y búsqueda.",
+      "rejected": "Un escenario con tarjetas animadas que oculte el horario real.",
+      "productionChange": "Implementar programación completa con datos normalizados, controles nativos y resultados vacíos.",
+      "why": "La exploración temporal y el acceso táctil prevalecen sobre la espectacularidad sin utilidad."
+    },
+    {
+      "id": "d2",
+      "questionId": "q2",
+      "componentIds": [
+        "agenda"
+      ],
+      "choice": "Guardar favoritos y reportar conflictos en ambos eventos con intervalos start/end exactos.",
+      "rejected": "Prohibir los solapamientos o estimarlos por hora de inicio.",
+      "productionChange": "Desarrollar motor de agenda desacoplado con persistencia y exportación .ics.",
+      "why": "Una agenda es una herramienta de decisión y el público puede querer comparar opciones."
+    },
+    {
+      "id": "d3",
+      "questionId": "q3",
+      "componentIds": [
+        "identity"
+      ],
+      "choice": "Identidad visual tipográfica original y fotografías de atmósfera Unsplash libres con créditos.",
+      "rejected": "Suplantar identidad de intérpretes con retratos reales o collages geométricos vacíos.",
+      "productionChange": "Crear composición editorial responsive, crédito visible y mensajes de ficción.",
+      "why": "Se necesita calidad visual, honestidad editorial y permisos claros a la vez."
+    },
+    {
+      "id": "d4",
+      "questionId": "q4",
+      "componentIds": [
+        "qa",
+        "program"
+      ],
+      "choice": "Casos reproducibles y distinción explícita entre lógica, render e interacción observada.",
+      "rejected": "Marcar completado por existir un HTML que no se abrió.",
+      "productionChange": "Publicar README con matriz de QA y recibos de fallos reales.",
+      "why": "La verificación debe corresponder al tipo de afirmación para evitar falsos positivos."
+    }
+  ],
+  "risks": [
+    {
+      "componentIds": [
+        "identity"
+      ],
+      "severity": "medium",
+      "failure": "Las imágenes remotas pueden fallar en redes restrictivas o de baja conectividad.",
+      "prevention": "Usar layout íntegro con fondos y etiquetas alternativas, y acreditar origen y licencia.",
+      "test": "Inspeccionar con imágenes desactivadas y alt descriptivos.",
+      "status": "NOT_RUN"
+    },
+    {
+      "componentIds": [
+        "agenda"
+      ],
+      "severity": "medium",
+      "failure": "La persistencia puede estar bloqueada por políticas de almacenamiento del dispositivo.",
+      "prevention": "Capturar excepciones y mantener agenda de sesión con mensaje explícito de modo temporal.",
+      "test": "Simular localStorage inaccesible y verificar manejo de error.",
+      "status": "NOT_RUN"
+    },
+    {
+      "componentIds": [
+        "program"
+      ],
+      "severity": "medium",
+      "failure": "Los eventos que terminan después de medianoche dan errores de cálculo.",
+      "prevention": "Guardar inicio ISO con huso fijo del lugar y duración en minutos.",
+      "test": "Probar un choque entre 23:40 y 00:20 siguiente.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "acceptance": [
+    {
+      "kind": "logic",
+      "criterion": "Intervalos detectan choque estricto; dos eventos que se tocan sin superponerse no son conflicto.",
+      "oracle": "Pruebas automáticas de función pura con tres pares de eventos.",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "interactive",
+      "criterion": "Los cuatro filtros se combinan sin pérdida de acceso a fichas y favoritos.",
+      "oracle": "Navegador Playwright: filtrar, entrar a ficha, guardar, volver y limpiar.",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "visual",
+      "criterion": "La pieza mantiene composición y lectura en 320, 768 y 1440 CSS px.",
+      "oracle": "Capturas reales de Chromium por viewport con revisión manual.",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "functional",
+      "criterion": "Agenda sobrevive a recarga y permite exportar fechas sin falsas ventas.",
+      "oracle": "Navegador con almacenamiento real, reload y lectura del archivo .ics.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "licensing": "Las fotografías se seleccionan exclusivamente de páginas Unsplash con indicador Free to use, con crédito individual; Space Grotesk bajo SIL OFL 1.1. No fotografiar ni atribuir identidades a artistas ficticios.",
+  "resources": "HTML, CSS, ECMAScript sin framework; Google Fonts Space Grotesk variable; fotos libres de Unsplash con URL y crédito explícitos.",
+  "environmentLimits": "No hay garantía de disponibilidad de recursos CDN al primer acceso; el navegador y la publicación se evalúan separadamente y nunca se afirma autorización de artistas reales."
+}
