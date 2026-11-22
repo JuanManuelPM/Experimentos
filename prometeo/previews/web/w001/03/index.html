@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#f1f0e8">
+  <meta name="description" content="Una lección interactiva de escalas musicales. Escuchá, compará y poné a prueba lo aprendido.">
+  <title>Intervalo · Un mapa de siete notas</title>
+  <style>
+    :root{--paper:#f1f0e8;--ink:#252934;--muted:#6b6b6b;--line:#cecec4;--accent:#d45132;--rose:#f1d8cd;--purple:#44354e;--soft:#e6e2da;--success:#236347;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink);background:var(--paper);font-synthesis:none}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;min-width:280px}button,select{font:inherit}button{cursor:pointer}button:disabled{cursor:not-allowed;opacity:.5}button:focus-visible,select:focus-visible,a:focus-visible{outline:3px solid #1d6b93;outline-offset:4px}a{color:inherit}
+    .shell{max-width:1536px;margin:0 auto;padding:0 clamp(18px,4vw,68px)}.top{height:86px;display:flex;align-items:center;justify-content:space-between;gap:18px;border-bottom:1px solid var(--line)}.brand{display:flex;align-items:center;gap:11px;font-size:18px;letter-spacing:-.06em;font-weight:780}.brandicon{width:27px;height:27px;border:2px solid var(--ink);border-radius:50%;position:relative}.brandicon:before,.brandicon:after{content:"";position:absolute;border-radius:50%;background:var(--accent);width:8px;height:8px;top:8px}.brandicon:before{left:3px}.brandicon:after{right:3px}.topnote{text-transform:uppercase;letter-spacing:.13em;font-size:11px;color:var(--muted);font-weight:700}.topright{display:flex;align-items:center;gap:12px}.mini-progress{width:90px;height:3px;background:#d4d1ca}.mini-progress span{display:block;height:100%;background:var(--accent);width:0%;transition:width .25s}.count{font-size:12px;font-variant-numeric:tabular-nums;font-weight:650}
+    .grid{display:grid;grid-template-columns:minmax(270px,.89fr) minmax(0,1.35fr);gap:clamp(30px,5vw,100px);padding-top:clamp(40px,7vw,104px);padding-bottom:70px}.intro{align-self:start;position:sticky;top:30px}.eyebrow{font-size:11px;text-transform:uppercase;font-weight:750;letter-spacing:.19em;color:var(--accent);margin-bottom:22px}.intro h1{font:400 clamp(66px,7.9vw,138px)/.87 Georgia,"Times New Roman",serif;letter-spacing:-.092em;margin:0 0 36px -5px}.intro h1 em{font-weight:400;font-style:italic;color:var(--accent)}.intro .lead{font-size:clamp(17px,1.65vw,22px);line-height:1.49;max-width:390px;letter-spacing:-.025em}.sideinfo{border-top:1px solid var(--line);margin-top:clamp(32px,6vw,72px);padding-top:21px;display:flex;justify-content:space-between;gap:15px;font-size:12px;color:var(--muted);max-width:370px}.sideinfo strong{color:var(--ink);font-size:12px}
+    .workspace{min-width:0}.chapters{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border:1px solid var(--line);background:#eceae3;min-height:74px;margin-bottom:18px}.chapter{border:0;border-right:1px solid var(--line);background:transparent;padding:13px 11px;display:flex;align-items:center;justify-content:center;gap:10px;color:#5c5c58;font-size:12px;font-weight:710;letter-spacing:.02em;transition:background .15s}.chapter:last-child{border-right:0}.chapter[aria-selected=true]{background:var(--ink);color:#fff}.chapter .num{opacity:.65;font-variant-numeric:tabular-nums}.chapter:hover:not([aria-selected=true]){background:#dedbd1}
+    .panel{background:#faf9f3;border:1px solid var(--line);min-height:640px;overflow:hidden}.panelhead{padding:clamp(22px,3vw,38px);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:12px}.stamp{font-size:11px;letter-spacing:.13em;font-weight:750;color:var(--muted);text-transform:uppercase}.tag{border:1px solid var(--line);border-radius:50px;padding:8px 12px;font-size:11px;white-space:nowrap}.stage{padding:clamp(20px,3vw,38px)}.stage[hidden]{display:none!important}.stage h2{font:400 clamp(34px,3.55vw,56px)/1.03 Georgia,serif;letter-spacing:-.057em;margin:0 0 13px}.stage p{line-height:1.53;color:#5d5e5c;font-size:14px;max-width:570px;margin:0 0 24px}.piano-label{font-size:11px;font-weight:740;letter-spacing:.14em;text-transform:uppercase;margin:25px 0 13px}
+    .modebar{display:flex;flex-wrap:wrap;align-items:center;gap:9px;margin:20px 0 22px}.choice{min-height:43px;border:1px solid var(--line);background:transparent;border-radius:0;padding:10px 16px;font-weight:690;font-size:13px}.choice[aria-pressed=true]{color:#fff;background:var(--purple);border-color:var(--purple)}.guide{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted)}.guide .dot{width:6px;height:6px;background:var(--accent);border-radius:50%}
+    .degrees{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:5px;margin-bottom:24px}.degree{min-width:0;height:90px;padding:9px 2px;background:var(--soft);border:1px solid transparent;color:var(--ink);display:flex;flex-direction:column;align-items:center;justify-content:space-around;transition:background .15s,transform .15s}.degree .roman{font-size:10px;color:var(--muted)}.degree strong{font:400 clamp(15px,2.1vw,24px) Georgia,serif;letter-spacing:-.06em;white-space:nowrap}.degree.active,.degree:focus-visible{background:var(--rose);border-color:var(--accent)}.degree:hover{background:#e9d4ca}.octave{border-left:2px solid var(--accent)}
+    .intervals{display:flex;gap:5px;margin:-12px 0 23px}.interval{flex:1;min-width:0;text-align:center;display:flex;flex-direction:column;gap:5px;align-items:center;font-size:11px;color:var(--muted)}.interval b{height:3px;width:75%;background:var(--line);display:block}.interval.half b{width:36%;background:var(--accent)}
+    .actions{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-bottom:13px}.primary{min-height:51px;border:1px solid var(--ink);background:var(--ink);color:#fff;padding:12px 21px;font-size:13px;font-weight:760;display:inline-flex;align-items:center;gap:11px}.primary:hover{background:var(--purple)}.primary svg{width:16px;height:16px}.secondary{min-height:51px;border:1px solid var(--line);background:transparent;padding:12px 16px;color:var(--ink);font-size:13px;font-weight:700}.status{font-size:12px;color:var(--muted);min-height:20px;line-height:1.4}
+    .piano{display:flex;gap:4px;overflow-x:auto;scrollbar-color:#aaa transparent;scrollbar-width:thin;padding:0 0 13px}.pkey{flex:0 0 46px;height:85px;border:1px solid #bbb9b1;background:#fff;position:relative;display:flex;align-items:flex-end;justify-content:center;padding:9px 2px;font-size:11px;font-weight:700}.pkey.black{background:#3c3d45;color:#fff;border-color:#3c3d45;height:65px}.pkey.inscale{border-bottom:5px solid var(--accent)}.pkey:hover,.pkey:focus-visible{background:var(--rose);color:var(--ink)}.pkey.black:hover{background:var(--purple);color:#fff}
+    .lessonfoot{border-top:1px solid var(--line);margin-top:25px;padding-top:18px;font-size:12px;line-height:1.5;color:var(--muted)}.lessonfoot b{color:var(--ink)}.compare{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:21px 0}.scale-card{border:1px solid var(--line);padding:22px 16px;background:#f1efe8;text-align:left;min-height:166px;display:flex;flex-direction:column;align-items:start;gap:9px}.scale-card[aria-pressed=true]{border-color:var(--purple);background:#e7e0e9}.scale-card .sc-name{font:400 27px Georgia,serif;letter-spacing:-.05em}.scale-card .sc-sub{font-size:11px;color:var(--muted)}.scale-card .sc-notes{font-size:12px;font-weight:700;line-height:1.6}.explain{border-left:3px solid var(--accent);padding:12px 0 12px 18px;background:linear-gradient(90deg,#f0e6de,transparent);font-size:13px;line-height:1.55}.explain strong{display:block;margin-bottom:4px}.pattern{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px;margin:24px 0}.pattern span{min-width:0;border:1px solid var(--line);padding:16px 0;text-align:center;font-size:13px;font-weight:800}.pattern span.half{background:var(--rose);border-color:#e4ad9d}.legend{display:flex;gap:14px;flex-wrap:wrap;color:var(--muted);font-size:11px}.legend b{font-weight:760;color:var(--ink)}
+    .question{padding:18px 0 22px;border-bottom:1px solid var(--line)}.question:last-of-type{border-bottom:0}.questionhead{display:flex;gap:15px;align-items:baseline;margin-bottom:13px}.questionhead .qnum{font-size:12px;font-weight:760;color:var(--accent)}.questionhead h3{font:400 20px/1.3 Georgia,serif;letter-spacing:-.035em;margin:0}.answergrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}.answer{min-height:56px;background:#f0eee7;border:1px solid var(--line);font-size:12px;font-weight:700;padding:8px 10px;line-height:1.4}.answer[aria-pressed=true]{background:var(--purple);color:#fff}.feedback{margin-top:10px;font-size:12px;min-height:16px;color:var(--muted)}.feedback.good{color:var(--success)}.feedback.bad{color:#ab4934}.result{margin:25px 0;padding:19px;background:#e7e7da;border-left:3px solid var(--success);font-size:13px;line-height:1.5}.result[hidden]{display:none}.result strong{display:block;margin-bottom:5px}
+    .footer{border-top:1px solid var(--line);padding:25px 0 36px;display:flex;flex-wrap:wrap;justify-content:space-between;gap:15px;font-size:11px;color:var(--muted)}.footer strong{color:var(--ink)}.reset{background:none;border:0;border-bottom:1px solid currentColor;padding:0 0 2px;color:inherit;font-size:11px}.visually-hidden{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+    @media(min-width:1450px){.grid{grid-template-columns:.9fr 1.25fr}}@media(max-width:860px){.grid{display:block;padding-top:40px}.intro{position:static;display:grid;grid-template-columns:1fr 1fr;gap:10px 20px;margin-bottom:30px}.intro h1{grid-row:2;font-size:clamp(62px,11vw,110px);margin-bottom:12px}.eyebrow{grid-column:1/-1;margin-bottom:7px}.intro .lead{grid-column:2;grid-row:2;align-self:end;margin:0 0 18px}.sideinfo{grid-column:1/-1;max-width:none;margin-top:12px}.panel{min-height:0}}@media(max-width:570px){.top{height:67px}.topnote{display:none}.grid{padding-top:29px}.intro{display:block}.intro h1{font-size:clamp(64px,16vw,92px);margin-bottom:22px}.intro .lead{font-size:16px;margin:0;max-width:450px}.sideinfo{margin-top:24px}.chapters{min-height:65px}.chapter{padding:10px 6px;gap:5px;font-size:10px}.panelhead{padding:18px}.stage{padding:21px 16px}.stage h2{font-size:36px}.degrees{gap:3px}.degree{height:75px}.degree .roman{font-size:9px}.degree strong{font-size:16px}.compare{gap:8px}.scale-card{padding:16px 11px;min-height:155px}.scale-card .sc-name{font-size:24px}.scale-card .sc-notes{font-size:11px}.answergrid{grid-template-columns:1fr}.answer{min-height:45px}.sideinfo{font-size:11px}}
+    @media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
+  </style>
+</head>
+<body>
+  <header class="top shell">
+    <div class="brand"><span class="brandicon" aria-hidden="true"></span> intervalo<span style="color:var(--accent)">.</span></div>
+    <span class="topnote">Un laboratorio para escuchar música</span>
+    <div class="topright"><span class="count" id="progress-text">00 / 03</span><div class="mini-progress" role="progressbar" aria-label="Lecciones completadas" aria-valuemin="0" aria-valuemax="3" aria-valuenow="0" id="progressbar"><span id="progress-fill"></span></div></div>
+  </header>
+  <main class="shell grid">
+    <section class="intro" aria-label="Presentación">
+      <div class="eyebrow">01 / Teoría hecha sonido</div>
+      <h1>Siete<br>notas.<br><em>Un mapa.</em></h1>
+      <p class="lead">Una escala no es una lista para memorizar. Es una forma de recorrer distancias. Escuchala, comparala y descubrí por qué suena como suena.</p>
+      <div class="sideinfo"><span><strong>8 minutos</strong><br>Tu propio ritmo</span><span><strong>Sin cuenta</strong><br>Progreso en este dispositivo</span><span><strong>Audio real</strong><br>Activación con un toque</span></div>
+    </section>
+    <div class="workspace">
+      <nav class="chapters" aria-label="Capítulos de la lección">
+        <button type="button" class="chapter" data-tab="listen" aria-selected="true" aria-controls="step-listen"><span class="num">01</span> Escuchar</button>
+        <button type="button" class="chapter" data-tab="compare" aria-selected="false" aria-controls="step-compare"><span class="num">02</span> Comparar</button>
+        <button type="button" class="chapter" data-tab="practice" aria-selected="false" aria-controls="step-practice"><span class="num">03</span> Practicar</button>
+      </nav>
+      <div class="panel">
+        <div class="panelhead"><span class="stamp" id="panel-stamp">Capítulo 01 · Escuchar</span><span class="tag" id="panel-tag">DO MAYOR</span></div>
+        <section id="step-listen" class="stage" aria-labelledby="listen-title">
+          <h2 id="listen-title">Cada distancia cuenta.</h2>
+          <p>Una escala mayor avanza con siete saltos. Tocá cualquier nota o escuchá el recorrido completo. Las distancias pequeñas están marcadas en rojo.</p>
+          <div class="guide"><span class="dot"></span> Tocá las notas para escucharlas</div>
+          <div class="piano-label">Escala de Do mayor · ocho sonidos</div>
+          <div class="degrees" id="listen-degrees" aria-label="Notas de Do mayor"></div>
+          <div class="intervals" id="listen-intervals" aria-label="Distancias en semitonos"></div>
+          <div class="actions">
+            <button id="play-scale" type="button" class="primary"><svg aria-hidden="true" viewBox="0 0 20 20" fill="currentColor"><path d="M5 3.5v13l11-6.5z"/></svg><span id="play-label">Reproducir escala</span></button>
+            <button id="stop-scale" type="button" class="secondary" disabled>Detener</button>
+          </div>
+          <div id="audio-status" class="status" aria-live="polite">El sonido empieza cuando tocás reproducir o una nota.</div>
+          <div class="piano-label">Explorá el teclado cromático</div>
+          <div class="piano" id="piano" role="group" aria-label="Teclado de 13 notas cromáticas; desplazamiento horizontal disponible"></div>
+          <div class="lessonfoot"><b>Escuchá los dos lugares especiales:</b> entre Mi y Fa, y entre Si y Do, hay solo un semitono. En el resto de los pasos de esta escala hay dos.</div>
+        </section>
+        <section id="step-compare" class="stage" aria-labelledby="compare-title" hidden>
+          <h2 id="compare-title">La misma nota.<br>Otro carácter.</h2>
+          <p>Do mayor y Do menor natural parten de la misma nota. La diferencia está en el patrón de distancias. Elegí una y escuchá cómo cambia el recorrido.</p>
+          <div class="compare">
+            <button class="scale-card" id="major-card" type="button" data-mode="major" aria-pressed="true"><span class="sc-name">Do mayor</span><span class="sc-sub">Clara y abierta</span><span class="sc-notes">Do · Re · Mi · Fa · Sol · La · Si</span></button>
+            <button class="scale-card" id="minor-card" type="button" data-mode="minor" aria-pressed="false"><span class="sc-name">Do menor</span><span class="sc-sub">Más oscura e introspectiva</span><span class="sc-notes">Do · Re · Mi♭ · Fa · Sol · La♭ · Si♭</span></button>
+          </div>
+          <div class="piano-label">Patrón de intervalos · <span id="mode-name">Do mayor</span></div>
+          <div class="pattern" id="interval-pattern" aria-label="Patrón en semitonos"></div>
+          <div class="legend"><span><b>2</b> = tono entero</span><span><b>1</b> = semitono</span></div>
+          <div class="modebar">
+            <button type="button" id="play-selected" class="primary">▶ Escuchar Do mayor</button>
+            <button type="button" id="stop-compare" class="secondary" disabled>Detener</button>
+          </div>
+          <div class="status" id="compare-status" aria-live="polite">Elegí una escala y escuchá su patrón.</div>
+          <div class="explain" style="margin-top:25px"><strong>La clave</strong>En la escala menor natural bajan el III, VI y VII grado respecto de la mayor. No son notas al azar: cambia la estructura entera.</div>
+        </section>
+        <section id="step-practice" class="stage" aria-labelledby="practice-title" hidden>
+          <h2 id="practice-title">¿Ya lo tenés?</h2>
+          <p>Tres preguntas breves para comprobar lo esencial. Podés escuchar y comparar las veces que quieras. Nada se envía a un servidor.</p>
+          <div id="questions"></div>
+          <div id="quiz-result" class="result" hidden role="status"><strong>¡Recorrido completo!</strong>Reconocés el patrón de intervalos de las escalas mayor y menor natural.</div>
+          <div class="actions" style="margin-top:22px"><button type="button" id="restart-quiz" class="secondary">Volver a practicar</button><button type="button" id="back-to-listen" class="primary">↗ Volver a escuchar</button></div>
+        </section>
+      </div>
+    </div>
+  </main>
+  <footer class="shell footer"><div><strong>intervalo.</strong> · Lección original de teoría musical · Temperamento igual, La4 = 440 Hz</div><button type="button" class="reset" id="reset-progress">Borrar mi progreso</button></footer>
+  <script>
+  (() => {
+    'use strict';
+    const major={name:'Do mayor', notes:['Do','Re','Mi','Fa','Sol','La','Si','Do'], mids:[60,62,64,65,67,69,71,72],steps:[2,2,1,2,2,2,1]};
+    const minor={name:'Do menor natural',notes:['Do','Re','Mi♭','Fa','Sol','La♭','Si♭','Do'],mids:[60,62,63,65,67,68,70,72],steps:[2,1,2,2,1,2,2]};
+    const state={tab:'listen',mode:'major',progress:{heard:false,compared:false,quiz:false},answers:[null,null,null],playTimers:[],voices:[],audio:null,playing:false};
+    const $=id=>document.getElementById(id);
+    const q=(s)=>document.querySelector(s);
+    const storage='intervalo-web-w001-03-progress-v1';
+    try{const saved=JSON.parse(localStorage.getItem(storage)||'null');if(saved&&typeof saved==='object'){for(const key of Object.keys(state.progress))state.progress[key]=saved[key]===true;}}catch(_){}
+    const save=()=>{try{localStorage.setItem(storage,JSON.stringify(state.progress));}catch(_){}};
+    const mark=k=>{if(!state.progress[k]){state.progress[k]=true;save();updateProgress();}};
+    function updateProgress(){
+      const n=Object.values(state.progress).filter(Boolean).length;
+      $('progress-text').textContent=String(n).padStart(2,'0')+' / 03';
+      $('progress-fill').style.width=100*n/3+'%';
+      $('progressbar').setAttribute('aria-valuenow',String(n));
+    }
+    function show(tab){
+      stop();
+      state.tab=tab;
+      const data={listen:['01 · Escuchar','DO MAYOR'],compare:['02 · Comparar','DO MAYOR / MENOR'],practice:['03 · Practicar','3 PREGUNTAS']};
+      for(const name of Object.keys(data)){
+        $('step-'+name).hidden=name!==tab;
+        q('[data-tab="'+name+'"]').setAttribute('aria-selected',name===tab?'true':'false');
+      }
+      $('panel-stamp').textContent='Capítulo '+data[tab][0];
+      $('panel-tag').textContent=data[tab][1];
+    }
+    document.querySelectorAll('.chapter').forEach(btn=>btn.addEventListener('click',()=>show(btn.dataset.tab)));
+    function drawNotes(){
+      $('listen-degrees').innerHTML='';
+      major.notes.forEach((note,i)=>{
+        const b=document.createElement('button');b.type='button';b.className='degree'+(i===7?' octave':'');
+        b.innerHTML='<span class="roman">'+['I','II','III','IV','V','VI','VII','VIII'][i]+'</span><strong>'+note+'</strong>';
+        b.setAttribute('aria-label','Grado '+(i+1)+', nota '+note+', reproducir');
+        b.addEventListener('click',()=>playSingle(major.mids[i],b));
+        $('listen-degrees').append(b);
+      });
+      $('listen-intervals').innerHTML='';
+      major.steps.forEach(n=>{const d=document.createElement('div');d.className='interval'+(n===1?' half':'');d.innerHTML='<b aria-hidden="true"></b><span>'+n+' sem.</span>';$('listen-intervals').append(d);});
+      const names=['Do','Do♯','Re','Re♯','Mi','Fa','Fa♯','Sol','Sol♯','La','La♯','Si','Do'];
+      const black=new Set([1,3,6,8,10]);
+      $('piano').innerHTML='';
+      names.forEach((name,i)=>{
+        const k=document.createElement('button');k.type='button';
+        k.className='pkey'+(black.has(i)?' black':'')+(major.mids.includes(60+i)?' inscale':'');
+        k.textContent=name;k.setAttribute('aria-label','Reproducir '+name+(i===12?' agudo':''));
+        k.addEventListener('click',()=>playSingle(60+i,k));
+        $('piano').append(k);
+      });
+    }
+    function drawPattern(){
+      const s=state.mode==='major'?major:minor;
+      $('mode-name').textContent=s.name;
+      $('interval-pattern').innerHTML=s.steps.map(n=>'<span class="'+(n===1?'half':'')+'" aria-label="'+n+' semitonos">'+n+'</span>').join('');
+      ['major','minor'].forEach(m=>$(m+'-card').setAttribute('aria-pressed',m===state.mode?'true':'false'));
+      $('play-selected').textContent='▶ Escuchar '+(state.mode==='major'?'Do mayor':'Do menor');
+    }
+    document.querySelectorAll('.scale-card').forEach(card=>card.addEventListener('click',()=>{
+      stop();state.mode=card.dataset.mode;drawPattern();
+      if(state.mode==='minor')mark('compared');
+      $('compare-status').textContent='Seleccionaste '+(state.mode==='major'?'Do mayor.':'Do menor natural.')+' Escuchá los intervalos.';
+    }));
+    function context(){
+      if(!state.audio){const Audio=window.AudioContext||window.webkitAudioContext;if(!Audio)throw Error('Web Audio no disponible');state.audio=new Audio();}
+      return state.audio;
+    }
+    function tone(midi,at,seconds=.34){
+      const ctx=context();
+      const fundamental=440*Math.pow(2,(midi-69)/12);
+      const envelope=ctx.createGain();envelope.gain.setValueAtTime(.0001,at);
+      envelope.gain.exponentialRampToValueAtTime(.16,at+.014);
+      envelope.gain.exponentialRampToValueAtTime(.082,at+.12);
+      envelope.gain.exponentialRampToValueAtTime(.0001,at+seconds);
+      envelope.connect(ctx.destination);
+      const osc=ctx.createOscillator();osc.type='triangle';osc.frequency.setValueAtTime(fundamental,at);osc.connect(envelope);
+      osc.start(at);osc.stop(at+seconds+.02);state.voices.push(osc);
+      const overtone=ctx.createOscillator(),level=ctx.createGain();overtone.type='sine';overtone.frequency.value=fundamental*2;level.gain.value=.11;overtone.connect(level);level.connect(envelope);overtone.start(at);overtone.stop(at+seconds+.02);state.voices.push(overtone);
+    }
+    function stop(){
+      state.playTimers.forEach(clearTimeout);state.playTimers=[];
+      if(state.audio)state.voices.forEach(o=>{try{o.stop();}catch(_){}});
+      state.voices=[];state.playing=false;
+      document.querySelectorAll('.degree.active').forEach(e=>e.classList.remove('active'));
+      $('stop-scale').disabled=true;$('stop-compare').disabled=true;
+      $('play-scale').disabled=false;$('play-selected').disabled=false;
+      $('play-label').textContent='Reproducir escala';
+    }
+    async function playSingle(midi,element){
+      stop();
+      try{
+        const ctx=context();await ctx.resume();if(ctx.state!=='running')throw Error('Audio suspendido');
+        tone(midi,ctx.currentTime,.48);mark('heard');element.classList.add('active');
+        $('audio-status').textContent='Nota reproducida. Probá otras alturas.';
+        state.playTimers.push(setTimeout(()=>element.classList.remove('active'),500));
+      }catch(e){$('audio-status').textContent='No se pudo activar el audio. Revisá el volumen y los permisos del navegador.';}
+    }
+    async function playSequence(s,where){
+      stop();const btn=$(where==='listen'?'play-scale':'play-selected'),stopBtn=$(where==='listen'?'stop-scale':'stop-compare'),status=$(where==='listen'?'audio-status':'compare-status');
+      try{
+        const ctx=context();await ctx.resume();if(ctx.state!=='running')throw Error('Audio suspendido');
+        state.playing=true;btn.disabled=true;stopBtn.disabled=false;
+        if(where==='listen')$('play-label').textContent='Sonando…';
+        const start=ctx.currentTime+.035,step=.4;
+        s.mids.forEach((m,i)=>{
+          tone(m,start+step*i,.31);
+          if(where==='listen')state.playTimers.push(setTimeout(()=>{document.querySelectorAll('.degree').forEach((b,j)=>b.classList.toggle('active',j===i));},step*i*1000));
+        });
+        mark('heard');status.textContent='Sonando '+s.name+'. Podés detener o volver a empezar.';
+        state.playTimers.push(setTimeout(()=>{stop();status.textContent='Terminó '+s.name+'. Elegí otro recorrido cuando quieras.';},(step*8+.1)*1000));
+      }catch(e){stop();status.textContent='No se pudo activar el audio en este navegador. El contenido visual sigue disponible.';}
+    }
+    $('play-scale').addEventListener('click',()=>playSequence(major,'listen'));
+    $('play-selected').addEventListener('click',()=>playSequence(state.mode==='major'?major:minor,'compare'));
+    $('stop-scale').addEventListener('click',()=>{stop();$('audio-status').textContent='Reproducción detenida.';});
+    $('stop-compare').addEventListener('click',()=>{stop();$('compare-status').textContent='Reproducción detenida.';});
+    document.addEventListener('visibilitychange',()=>{if(document.hidden)stop();});
+    const quiz=[
+      {prompt:'En Do mayor, entre el III y el IV grado hay…',opts:['1 semitono','2 semitonos','3 semitonos'],correct:0,hint:'Mi y Fa están separados por un semitono.'},
+      {prompt:'¿Qué grados bajan en Do menor natural?',opts:['II, IV y V','III, VI y VII','I, IV y VIII'],correct:1,hint:'Mi, La y Si se transforman en sus variantes bemoles.'},
+      {prompt:'Desde Do hasta el Do siguiente hay…',opts:['7 semitonos','10 semitonos','12 semitonos'],correct:2,hint:'La octava equivale a doce semitonos en afinación temperada.'}
+    ];
+    function renderQuiz(){
+      $('questions').innerHTML='';
+      quiz.forEach((item,index)=>{
+        const wrap=document.createElement('section');wrap.className='question';
+        wrap.innerHTML='<div class="questionhead"><span class="qnum">0'+(index+1)+'</span><h3>'+item.prompt+'</h3></div>';
+        const options=document.createElement('div');options.className='answergrid';options.setAttribute('role','group');options.setAttribute('aria-label','Respuestas para pregunta '+(index+1));
+        const fb=document.createElement('div');fb.className='feedback';fb.setAttribute('aria-live','polite');
+        item.opts.forEach((option,j)=>{
+          const b=document.createElement('button');b.type='button';b.className='answer';b.textContent=option;b.setAttribute('aria-pressed',state.answers[index]===j?'true':'false');
+          b.addEventListener('click',()=>{
+            state.answers[index]=j;
+            options.querySelectorAll('button').forEach((v,k)=>v.setAttribute('aria-pressed',k===j?'true':'false'));
+            const correct=j===item.correct;fb.className='feedback '+(correct?'good':'bad');
+            fb.textContent=(correct?'Correcto. ':'Todavía no. ')+item.hint;
+            if(quiz.every((question,i)=>state.answers[i]===question.correct)){mark('quiz');$('quiz-result').hidden=false;}else{$('quiz-result').hidden=true;}
+          });
+          options.append(b);
+        });
+        wrap.append(options,fb);$('questions').append(wrap);
+      });
+      $('quiz-result').hidden=!quiz.every((question,i)=>state.answers[i]===question.correct);
+    }
+    $('restart-quiz').addEventListener('click',()=>{state.answers=[null,null,null];renderQuiz();});
+    $('back-to-listen').addEventListener('click',()=>show('listen'));
+    $('reset-progress').addEventListener('click',()=>{
+      state.progress={heard:false,compared:false,quiz:false};state.answers=[null,null,null];save();updateProgress();renderQuiz();show('listen');
+    });
+    drawNotes();drawPattern();renderQuiz();updateProgress();
+  })();
+  </script>
+</body>
+</html>
