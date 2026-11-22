@@ -74,7 +74,7 @@ const qa={schema:'prometeo.music.qa/v1',taskId:'music-w003-20261122-02',date:new
  sampleRateHz:sr,channels:2,bpm:BPM,bars:BARS,durationSec:duration,events:events.length,stems:TRACKS.length,
  masterSha256:sha('master.wav'),masterBytes:fs.statSync(master).size,
  samplePeak:peak,stemsToMasterFloatMaxError:parity,masterRmsLeft:stats(render.left).rms,masterRmsRight:stats(render.right).rms,
- abSameHarmonicNotes:evA.filter(e=>['bass','chords','motif'].includes(e.track)).map(e=>[e.track,e.note,e.bar,e.beat]).join('|')===evB.filter(e=>['bass','chords','motif'].includes(e.track)).map(e=>[e.track,e.note,e.bar,e.beat]).join('|'),
+ abSameHarmonicNotes:JSON.stringify(evA.filter(e=>['bass','chords','motif'].includes(e.track)).map(e=>[e.track,e.note,e.bar,e.beat].join(':')).sort())===JSON.stringify(evB.filter(e=>['bass','chords','motif'].includes(e.track)).map(e=>[e.track,e.note,e.bar,e.beat].join(':')).sort()),
  abLevelMatchGain:norm.rmsGain,abRmsDifferenceDb:20*Math.log10(stats(norm.A).rms/stats(norm.B).rms),perTrackOffsetsObserved:[...uniqueOffsets].slice(0,32),
  audioDecode:'PENDING_FFMPEG',headphoneListen:'NOT_RUN',criticalListening:'NOT_RUN',benchmarkTrackAudio:'NOT_RUN',humanApproved:false,
  caveat:'Metrics do not prove aesthetic quality; stereo is generated procedurally from original synthesis.'};
