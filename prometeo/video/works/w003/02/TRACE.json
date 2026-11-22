@@ -1,0 +1,82 @@
+{
+  "schema": "prometeo.work.visited-stages/v1",
+  "taskId": "video-w003-20261122-02",
+  "batchId": "video-w003-20261122",
+  "branch": "candidate/prometeo-video-w003-20261122-02",
+  "flowRef": "Q-LOOP/QBAR-1/DEEP-SPEC-1 + ART-DIRECTION-FIRST-ARTICLE-1",
+  "flowSha": "ART-1:dac224b390fc86982ce76eeb0135d4be59eb52ad",
+  "flowCompatibility": "SPECIALIZED_VIDEO_FLOW_SHA_NOT_RECOVERED; VISITED_TRACE_VALIDATION_NOT_RUN",
+  "states": {
+    "film": "LOCAL_VERIFIED_NOT_REMOTE_PUBLISHED",
+    "firstArticle": "LOCAL_VISUAL_OBSERVED_REMOTE_PROOF_MISSING",
+    "humanApproved": false
+  },
+  "visited": [
+    {
+      "stage": "BRIEF_LOCK",
+      "at": "2026-11-22T19:05:00Z",
+      "decision": "Lock 02 and immutable W003 LAUNCH blob",
+      "output": "taskId and old/new LAUNCH blob SHA",
+      "evidence": "GitHub fetch_file gh-pages 0cc574528594731a3d1cf0c15a0d0e5a37e775b7",
+      "status": "OBSERVED"
+    },
+    {
+      "stage": "QBAR_RESEARCH",
+      "at": "2026-11-22T19:07:00Z",
+      "decision": "One parametric hinge construction rather than collaged advertising stills",
+      "output": "Artemide/Dyson material and articulation benchmark",
+      "evidence": "Official product pages and inspected image results",
+      "status": "OBSERVED"
+    },
+    {
+      "stage": "FIRST_ARTICLE",
+      "at": "2026-11-22T19:08:00Z",
+      "decision": "Reject PBR+FXAA black frames; switch to Phong renderer",
+      "output": "Four first article PNG: folded, mid, open, hero",
+      "evidence": "Locally rendered PNGs; no remote first-article image binary",
+      "status": "OBSERVED_LOCAL"
+    },
+    {
+      "stage": "BUILD",
+      "at": "2026-11-22T19:09:00Z",
+      "decision": "Generate 384 real frames with one kinematics timeline and synthesized WAV",
+      "output": "FORM_01.mp4 16s 960x540 H264/AAC",
+      "evidence": "Local file SHA256 c144e87124968354e8be200a66e794dbf6ce6f375aba05097d5f83a47f5d1fb0",
+      "status": "OBSERVED_LOCAL"
+    },
+    {
+      "stage": "AV_QA",
+      "at": "2026-11-22T19:10:00Z",
+      "decision": "Probe format, decode eight timecoded frames, measure audio maximum",
+      "output": "QA.json plus CONTACT_SHEET.png",
+      "evidence": "ffprobe/ffmpeg actual output 16s, 24fps, audio -16.2dB max",
+      "status": "OBSERVED_LOCAL"
+    },
+    {
+      "stage": "PUBLICATION",
+      "at": "2026-11-22T19:12:00Z",
+      "decision": "Publish isolated source/QA branch, do not invent Pages URL for binary",
+      "output": "README, SHOT_SYSTEM, PREPRODUCTION, QA, TRACE",
+      "evidence": "GitHub candidate branch and commit readback",
+      "status": "PARTIAL"
+    }
+  ],
+  "notRun": [
+    {
+      "stage": "PUBLIC_BINARY_READBACK",
+      "reason": "No binary-upload bridge available to GitHub connector"
+    },
+    {
+      "stage": "ANDROID_PLAYBACK",
+      "reason": "No device control / browser emulation cannot prove actual device"
+    },
+    {
+      "stage": "HUMAN_APPROVAL",
+      "reason": "Human review not received"
+    },
+    {
+      "stage": "EXTERNAL_SOUND_LISTEN",
+      "reason": "No independent perceptual listener"
+    }
+  ]
+}
