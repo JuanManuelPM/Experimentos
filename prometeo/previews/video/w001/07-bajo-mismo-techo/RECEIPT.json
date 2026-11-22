@@ -4,7 +4,7 @@
   "room": "video",
   "batchId": "video-w001-20261122",
   "taskNumber": 7,
-  "status": "DELIVERED_WITH_LOCAL_MP4",
+  "status": "DELIVERED_WITH_GITHUB_MP4",
   "story": "Bajo el mismo techo",
   "shotCount": 3,
   "cutsSeconds": [
@@ -30,8 +30,10 @@
     "chromiumCanvasNoRuntimeErrors": "PASS",
     "threeShotBoundaries": "PASS",
     "visualContactSheetReviewed": "PASS",
-    "pagesHttp": "NOT_RUN",
-    "humanArtApproval": "PENDING"
+    "pagesHttp": "NOT_VERIFIED",
+    "humanArtApproval": "PENDING",
+    "githubBlobReadback": "PASS",
+    "githubPRMerge": "PASS (PR #16)"
   },
   "source": {
     "studioProjectSha": "fa110be05d4a4d4e5e9f8d19cc33540c3f0b41bf",
@@ -39,5 +41,11 @@
     "launchSha": "efc6259b5731950be1e84fda71c1fbaf6bdc57d3"
   },
   "originality": "All vector visuals and synthesized audio are original, procedural, no third-party media.",
-  "caveat": "MP4 generated and tested locally; GitHub binary upload remains separate from Pages preview until remote readback."
+  "caveat": "MP4 blob SHA 21abd9dec1d492133cf5b943c8cd22c1c7b3a456 is present on gh-pages; HTTP serving via GitHub Pages could not be independently checked; human art approval pending.",
+  "published": {
+    "repo": "JuanManuelPM/Experimentos",
+    "ref": "gh-pages",
+    "path": "prometeo/previews/video/w001/07-bajo-mismo-techo/bajo_el_mismo_techo.mp4",
+    "pullRequest": "https://github.com/JuanManuelPM/Experimentos/pull/16"
+  }
 }
