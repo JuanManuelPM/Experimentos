@@ -285,7 +285,7 @@ function setInspector(){
 }
 function editFilm(mutator){
  if(mode==='record')return;
- const before=film;const copy=structuredClone(film);
+ const before=film;const copy=JSON.parse(JSON.stringify(film));
  try{mutator(copy);const e=validateTimeline(copy);if(e.length)throw new Error(e.join('; '));film=copy;setInspector();applyAt(clock);setStatus('Edición aplicada al timeline');}
  catch(e){film=before;setStatus('Cambio rechazado: '+e.message)}
 }
