@@ -1,0 +1,10 @@
+import assert from 'node:assert/strict';
+import {PRODUCTS,cleanCart,changeQuantity,cartSummary} from './cart-core.js';
+assert.equal(Object.keys(PRODUCTS).length,3);
+assert.deepEqual(cleanCart({'natural':2,evil:999,arcilla:-8,grafito:1.2}),{natural:2});
+let cart={};cart=changeQuantity(cart,'natural',2);cart=changeQuantity(cart,'arcilla',3);assert.equal(cartSummary(cart).count,5);assert.equal(cartSummary(cart).total,2*189000+3*205000);
+cart=changeQuantity(cart,'natural',-1);assert.equal(cartSummary(cart).total,189000+3*205000);cart=changeQuantity(cart,'natural',-1);assert.equal(Object.keys(cart).length,1);
+cart=changeQuantity(cart,'arcilla',1000);assert.equal(cart.arcilla,99);cart=changeQuantity(cart,'arcilla',-1000);assert.equal(cartSummary(cart).total,0);
+assert.deepEqual(changeQuantity({},'invalid',1),{});
+assert.deepEqual(cleanCart(JSON.parse('{"natural":1,"other":3}')),{natural:1});
+console.log('cart-core: PASS (10 invariantes)');
