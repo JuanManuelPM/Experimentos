@@ -26,7 +26,13 @@ function renderBatch(block){
  const buttons=[];
  function show(next){
   index=(next+items.length)%items.length;selection.set(id,index);
-  for(let i=0;i<buttons.length;i++)buttons[i].setAttribute('aria-current',i===index?'true':'false');
+  for(let i=0;i<buttons.length;i++){
+   const b=buttons[i],item=items[i],f=flags(block,item);
+   b.setAttribute('aria-current',i===index?'true':'false');
+   b.dataset.copied=String(f[1]);b.dataset.delivered=String(f[3]);
+   b.title=(item.label||'Trabajo')+' · '+labels.filter((_,j)=>f[j]).join(' · ');
+   b.setAttribute('aria-label','Ver y copiar '+item.number+'. '+b.title);
+  }
   const item=items[index],f=flags(block,item);
   body.replaceChildren();
   const summary=el('div','p-batch-summary');
@@ -35,7 +41,8 @@ function renderBatch(block){
   const result=receipt(item);
   if(result){
    const response=document.createElement('prometeo-response');
-   response.setData(result,[]);
+   const enhanced=item.embedUrl?{...result,blocks:[{type:'scene',src:item.embedUrl,label:item.label},...(Array.isArray(result.blocks)?result.blocks:[]) ]}:result;
+   response.setData(enhanced,[]);
    body.append(response);
   }else{
    body.append(el('p','p-batch-pending','Sin entrega pública registrada.'));
