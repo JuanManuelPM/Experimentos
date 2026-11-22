@@ -20,7 +20,7 @@
 | 01 | Rostro, rig, actuación y diálogo ramificado | MetaHuman Animator; Blender Studio Spring (R1 R2) | Escena conversable; rig/retarget/lip-sync reutilizable | Muñeco de primitivas; boca sin fonemas; mezcla de clips rígida | Front/side/close-up, labios-audio, dos estados emocionales y elección |
 | 02 | Arquitectura y luz material | Unreal Interior Visualization; glTF PBR (R3 R4) | Casa explorable; oclusión inteligente por cámara | Paredes ocultando objeto; luces irreales; muebles sin escala | Recorrido de 3 ambientes en móvil, dos luces, sombra/contacto |
 | 03 | Jugabilidad espacial completa | Bruno Simon portfolio, experiencia y controles reales (R5 R6) | Planeta de autor; locomoción/gravedad/NPC/estado reutilizable | Planeta hueco decorativo, NPC que patinan, misión sin final | Completar ciclo; dos NPC; contacto y cámara en táctil |
-| 04 | Dirección y secuenciación cinematográfica | Blender Spring; Theatre.js Studio (documentación) (R2 R7) | Dos actores; timeline; secuenciador exportable | Timeline decorativa o MP4 inexistente | Cambio de planos; continuidad; playback y archivo real |
+| 04 | Dirección y secuenciación cinematográfica | Blender Spring; Theatre.js secuencias (documentación) (R2 R7) | Dos actores; timeline; secuenciador exportable | Timeline decorativa o MP4 inexistente | Cambio de planos; continuidad; playback y archivo real |
 | 05 | Física articulada y ensamblajes | Rapier joints; ingeniería de mecanismos (R8 R9) | Leva y seguidor; motor de constraints reusable | Engranajes girando sin interacción ni eje | Ciclo, bloqueo/reinicio, deformación y penetraciones |
 | 06 | Entorno natural y optimización | Blender Spring; Blender Geometry Nodes (R2 R10) | Bosque de estaciones; vegetación/LOD/clima | Cilindros como árboles, agua plana, recolor estacional | Dos estaciones y cambio de calidad con FPS/memoria observados |
 | 07 | Captura verídica y alineación | Polycam capture; PlayCanvas SuperSplat (R11 R12) | Espacio escaneado; visor y comparación foto/3D | Fotos proyectadas sobre cajas; splat presentado como mesh | Calibración de puntos y capturas iguales; derechos comprobados |
@@ -38,9 +38,9 @@ Las fuentes se consultaron durante la preparación mediante páginas indexadas/d
 - **R2** [Fuente](https://www.blender.org/press/spring-open-movie/). Spring (Blender Studio): corto original de producción 3D; referencia de actuación, ambiente, composición y materiales.
 - **R3** [Fuente](https://dev.epicgames.com/community/learning/tutorials/DdRE/unreal-engine-real-time-interior-visualization-starter-guide). Guía oficial de visualización arquitectónica, no prueba de Unreal instalado.
 - **R4** [Fuente](https://www.khronos.org/gltf/pbr). Khronos glTF PBR: metalness/roughness y relaciones de luz y material, benchmark técnico.
-- **R5** [Fuente](https://bruno-simon.com/). Portfolio interactivo de Bruno Simon: exploración con vehículo, controles táctiles, referencias a Three.js y Rapier y fuentes 공개/autor; calidad artística no inspeccionada en sesión GPU.
+- **R5** [Fuente](https://bruno-simon.com/). Portfolio interactivo de Bruno Simon: exploración con vehículo, controles táctiles, referencias a Three.js y Rapier y código, recursos y atribuciones declarados por el autor; calidad artística no inspeccionada en sesión GPU.
 - **R6** [Fuente](https://threejs.org/examples/). Ejemplos Three.js: render, animación, retargeting, interacción, materiales; capacidad de librería, no resultado artístico automático.
-- **R7** [Fuente](https://www.theatrejs.com/docs/latest/manual/studio). Theatre.js Studio: secuenciación, edición keyframes y control de valores. La página de documentación presentó error al abrir; se conserva como referencia de búsqueda, no estudio técnico completo.
+- **R7** [Fuente](https://www.theatrejs.com/docs/latest/manual/sequences). Theatre.js: documentación de secuenciación, edición de keyframes y playback; integración y export reales en FORJA todavía no comprobados.
 - **R8** [Fuente](https://rapier.rs/docs/user_guides/javascript/joints/). Rapier 3D: fixed/prismatic/revolute/spherical y constraints, documentación técnica inspeccionada.
 - **R9** [Fuente](https://rapier.rs/docs/user_guides/javascript/rigid_bodies/). Rapier rigid bodies: contactos, fuerzas y cuerpos cinemáticos, documentación técnica.
 - **R10** [Fuente](https://docs.blender.org/manual/en/latest/modeling/geometry_nodes/introduction.html). Blender Geometry Nodes: composición procedural de vegetación/variantes, no arte 3D generado en esta preparación.
@@ -52,6 +52,28 @@ Las fuentes se consultaron durante la preparación mediante páginas indexadas/d
 - **R16** [Fuente](https://developers.google.com/ar/develop/webxr/model-viewer). model-viewer: visualización de GLB/glTF y AR condicionado a compatibilidad del dispositivo.
 - **R17** [Fuente](https://science.nasa.gov/3d-resources/). NASA 3D Resources: archivos reales para inspeccionar estándares de assets; cada archivo conserva su condición de uso.
 
+## Referentes profesionales complementarios por problema
+
+Estos son **ejemplos reales rastreables a las páginas de sus autores, estudios o distribuidores**, no un certificado de calidad ni reproducciones renderizadas aquí. La investigación de cada trabajador debe examinar los detalles pertinentes de 3–5 referencias antes de elegir estrategia, y no copiar assets ajenos.
+
+| Obra o sistema real | Lo diferenciador que interesa estudiar | Aplicación a W6 | Estado de observación en esta preparación |
+|---|---|---|---|
+| [Unity Enemies](https://unity.com/demos/enemies) | Ojos, piel, pelo, deformación y actuación digital en tiempo real | 01 | Ficha y documentación de autor consultada; demo GPU NOT_RUN |
+| [Unity The Heretic](https://unity.com/the-heretic) | Cortometraje de tiempo real con pipeline de ser humano digital y fotografía | 01, 04 | Fuente de estudio consultada; reproducción directa NOT_RUN |
+| [Unreal Archviz Interior Starter](https://dev.epicgames.com/community/learning/tutorials/DdRE/unreal-engine-real-time-interior-visualization-starter-guide) | Diseño interior, materialidad, iluminación y libre navegación | 02 | Guía oficial localizada; interior interactivo NOT_RUN |
+| [Bruno Simon, Bruno's](https://bruno-simon.com/) | Mundo original de vehículo con controles táctiles, físicas y puntos de interacción | 03 | Texto del sitio, controles y stack inspeccionados; gameplay propio NOT_RUN |
+| [Outer Wilds](https://annapurnainteractive.com/games/outer-wilds) | Sistema de mundos pequeños con aventura, causalidad y exploración | 03 | Ficha del distribuidor consultada; partida NOT_RUN |
+| [Blender Spring](https://www.blender.org/press/spring-open-movie/) | Dirección de personajes y ambiente en corto original | 04, 06 | Descripción y datos de producción consultados; reproducción NOT_RUN |
+| [Besiege](https://store.steampowered.com/app/346010/Besiege/) | Construcción de máquinas articuladas y pruebas físicas | 05 | Ficha del distribuidor consultada; simulación jugada NOT_RUN |
+| [Electric Dreams, Unreal](https://www.unrealengine.com/electric-dreams-environment) | Bosque y generación procedural con reglas, materiales y vegetación | 06 | Documentación de proyecto oficial consultada; render local NOT_RUN |
+| [Smithsonian 3D Digitization](https://3d.si.edu/explore/) | Escaneo/documentación de objetos reales y acceso a contenido 3D | 07 | Colecciones y filtros públicos encontrados; dataset del encargo NO SELECCIONADO |
+| [Google Earth](https://www.google.com/earth/about/versions/) | Relieve y navegación geográfica multi-escala con imágenes reales | 08 | Capacidades publicadas consultadas; navegación en vivo NOT_RUN |
+| [PlayCanvas SuperSplat](https://github.com/playcanvas/supersplat) | Edición, optimización, publicación y manejo de vistas de splats | 07, 09 | Repositorio/documentación leídos; integración NOT_RUN |
+| [Theatre.js Studio](https://www.theatrejs.com/docs/latest/manual/sequences) | Sequencer, keyframes y playback sobre objetos | 04, 09 | Manual indexado y estudiado; FORJA integrado NOT_RUN |
+| [Porsche Car Configurator](https://models.porsche.com/es-AR/model-start) | Variantes, configurador visual e identidad de producto | 10 | Página oficial localizada; funcionalidad de 3D no inspeccionada |
+| [LEGO Builder 3D](https://www.lego.com/en-ca/service/help-topics/article/how-to-download-building-instructions-online) | Secuencias de ensamblaje en 3D, zoom y rotación por pasos | 10 | Guía oficial consultada; app no instalada |
+
+**Confrontación:** ni la propiedad industrial de Porsche ni el motor de Unreal/Unity se trasladan a PROMETEO por citar una URL. Estas obras muestran expectativas de acabado, narrativa, navegación y mecanismos; se buscarán soluciones compatibles con el entorno y derechos reales. Si el producto no se puede observar con el dispositivo/herramientas disponibles, declarar la brecha en vez de reproducirlo con primitivas.
 ## Capacidad efectiva contra aspiración
 
 | Capacidad | Lo comprobado ahora | Condición antes del primer corte |
