@@ -39,7 +39,7 @@ jobs:
           const d=JSON.parse(fs.readFileSync('./prometeo/works/video/w003/09/PREPRODUCTION.deep-spec-v1.json'));
           const a=inspectArtDirection(d.artDirection), b=inspectDeepSpec(d);
           console.log('ART',a,'DEEP',b);
-          if (a.gate!=='SECOND_ARTICLE_REQUIRED' || b.gate!=='SPIKE_REQUIRED')process.exit(1);
+          if (a.gate!=='FIRST_ARTICLE_REQUIRED' || b.gate!=='SPIKE_REQUIRED')process.exit(1);
           JS
       - name: Generate observed volume-first article at maximal atmosphere change
         working-directory: prometeo/works/video/w003/09
