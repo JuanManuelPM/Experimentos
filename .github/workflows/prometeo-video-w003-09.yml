@@ -35,7 +35,7 @@ jobs:
           node --input-type=module <<'JS'
           import fs from 'node:fs';
           import {inspectDeepSpec} from './prometeo/launch/deep-spec-v1.mjs';
-          import {inspectArtDirection} from './prometeo/launch/art-direction-volume-article-v1.mjs';
+          import {inspectArtDirection} from './prometeo/launch/art-direction-first-article-v1.mjs';
           const d=JSON.parse(fs.readFileSync('./prometeo/works/video/w003/09/PREPRODUCTION.deep-spec-v1.json'));
           const a=inspectArtDirection(d.artDirection), b=inspectDeepSpec(d);
           console.log('ART',a,'DEEP',b);
