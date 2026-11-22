@@ -1,0 +1,192 @@
+{
+  "version": "DEEP-SPEC-1",
+  "medium": "music",
+  "depth": "SISTEMA",
+  "identity": {
+    "batchId": "music-w002-20261122",
+    "taskNumber": 7,
+    "taskId": "music-w002-20261122-07",
+    "launchBlobSha": "1045f4950c9f7ae11b455523ca664e087ec1b30d",
+    "qualityBarVersion": "QBAR-1"
+  },
+  "brief": "07 · CUERPO Y CIRCUITO: composición acústico-electrónica original con articulación humana, efecto reactivo, audio y sesión editable.",
+  "intent": {
+    "experience": "Una guitarra humana cercana inicia una conversación con un circuito que deja respirar cada frase.",
+    "distinctAbility": "Las intensidades y separaciones de ataques acústicos controlan ecos y respuestas electrónicas individuales."
+  },
+  "references": [
+    {
+      "id": "holden",
+      "status": "OBSERVED",
+      "url": "https://www.ableton.com/en/blog/james-holden-waclaw-zimpel/",
+      "observation": "Entrevista leída: clarinete con loopers y patches Benny, fraseo libre, procesado que nace de la interpretación."
+    },
+    {
+      "id": "tignor",
+      "status": "OBSERVED",
+      "url": "https://www.ableton.com/en/blog/input-output-christopher-tignor/",
+      "observation": "Entrevista leída: violín y Five Finger Discount generan capas desde articulaciones reales, sin backing fijo."
+    },
+    {
+      "id": "source",
+      "status": "OBSERVED",
+      "url": "https://github.com/facebookincubator/Meta-open-sound/blob/main/README.md",
+      "observation": "Repositorio recuperado: Meta Nylon Guitar incluye 348 notas individuales acústicas en OGG de varias intensidades, licencia CC0."
+    }
+  ],
+  "components": [
+    {
+      "id": "acoustic",
+      "role": "Capturar y conservar los ataques de guitarra humana grabada en notas originales.",
+      "strategy": "Notas reales CC0 renderizadas desde archivos OGG locales con origen individual.",
+      "constraints": "No atribuir una interpretación continua humana; reconocer que se trata de montaje de notas acústicas."
+    },
+    {
+      "id": "electronics",
+      "role": "Respuesta modular electrónica posterior al gesto, con resonancia, espacio y eco variable.",
+      "strategy": "Mapper reusable controlado por registro, energía, gap entre notas y densidad.",
+      "constraints": "Mantener el ataque seco por delante del procesamiento y evitar repetición de un loop."
+    },
+    {
+      "id": "delivery",
+      "role": "Reproductor de la composición completa, comparativa seca y exportación WAV y stems.",
+      "strategy": "WebAudio con AudioContext y OfflineAudioContext, sesión JSON versionada editable.",
+      "constraints": "Separar explícitamente archivos fuente de render final y no certificar escuchas no hechas."
+    }
+  ],
+  "questions": [
+    {
+      "id": "qa",
+      "target": "acoustic",
+      "question": "¿Qué instrumento real puede usarse con licencia comprobable sin sintetizar una guitarra falsa?",
+      "alternatives": [
+        "Oscilador físico sintetizado",
+        "Muestras grabadas de nylon CC0"
+      ],
+      "evidenceRef": "source",
+      "finding": "Meta Open Sound publica tomas individuales reales y licencia CC0 por colección.",
+      "decisionImpact": "Guardar OGG, procedencia y comparativa con fuente seca; admitir que no es una toma completa."
+    },
+    {
+      "id": "qe",
+      "target": "electronics",
+      "question": "¿Qué gestos y pausas deben transformar el circuito para que el procesamiento responda al músico?",
+      "alternatives": [
+        "Efecto constante sobre todo el bus",
+        "Respuestas dependientes de articulación y pausa"
+      ],
+      "evidenceRef": "tignor",
+      "finding": "Tignor demuestra software que extiende gestos reales y genera frases a partir de ellos.",
+      "decisionImpact": "El generador mapea intensidad, registro y proximidad de ataques a parámetros auditables."
+    },
+    {
+      "id": "qd",
+      "target": "delivery",
+      "question": "¿Cómo distinguir una sesión reproducible de un máster escuchado y probado cuando no hay navegador real?",
+      "alternatives": [
+        "Declarar salida master sin archivo",
+        "Escucha en página con WAV exportable y estado explícito"
+      ],
+      "evidenceRef": "holden",
+      "finding": "Las herramientas abiertas y patches de Holden permiten reconstruir procesos; la audición sigue siendo un gate separado.",
+      "decisionImpact": "Publicar motor, fuente, partitura y QA que mantenga NOT_RUN para reproducción no ejecutada."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "d0",
+      "questionId": "qa",
+      "componentIds": [
+        "acoustic"
+      ],
+      "choice": "Guitarra nylon de notas acústicas CC0",
+      "rejected": "Rechazar una salida estática que sólo simule musicalidad o entrega.",
+      "productionChange": "Implementar este componente de manera audible y editable con trazabilidad y control por evento.",
+      "why": "La referencia y la observación modifican explícitamente la elección técnica del trabajo."
+    },
+    {
+      "id": "d1",
+      "questionId": "qe",
+      "componentIds": [
+        "electronics"
+      ],
+      "choice": "Mapa reusable de gesto a resonancia y eco",
+      "rejected": "Rechazar una salida estática que sólo simule musicalidad o entrega.",
+      "productionChange": "Implementar este componente de manera audible y editable con trazabilidad y control por evento.",
+      "why": "La referencia y la observación modifican explícitamente la elección técnica del trabajo."
+    },
+    {
+      "id": "d2",
+      "questionId": "qd",
+      "componentIds": [
+        "delivery"
+      ],
+      "choice": "Página con render WAV a demanda y errores visibles",
+      "rejected": "Rechazar una salida estática que sólo simule musicalidad o entrega.",
+      "productionChange": "Implementar este componente de manera audible y editable con trazabilidad y control por evento.",
+      "why": "La referencia y la observación modifican explícitamente la elección técnica del trabajo."
+    }
+  ],
+  "relations": [
+    {
+      "from": "acoustic",
+      "to": "electronics",
+      "invariant": "El golpe acústico seco precede su respuesta electrónica y cada gesto modifica la intensidad y retardo.",
+      "failure": "Efectos homogéneos ocultan el instrumento y sus articulaciones.",
+      "test": "Inspeccionar mapeo y escuchar dry versus processed."
+    },
+    {
+      "from": "electronics",
+      "to": "delivery",
+      "invariant": "Los mismos eventos producen salida de escucha, render offline y export de stems.",
+      "failure": "Un render divergente anula la sesión editable.",
+      "test": "Exportar, reimportar y comparar eventos y audio."
+    }
+  ],
+  "risks": [
+    {
+      "componentIds": [
+        "acoustic"
+      ],
+      "severity": "high",
+      "failure": "Una grabación desconocida o no licenciada se presenta como interpretación del autor.",
+      "prevention": "Usar colección CC0 con archivos individuales reales, SHA y enlace original.",
+      "test": "Comprobar licencia y firmas OggS de los blobs reales.",
+      "status": "OBSERVED"
+    },
+    {
+      "componentIds": [
+        "electronics",
+        "delivery"
+      ],
+      "severity": "medium",
+      "failure": "Ecos tapan ataques o el navegador no puede exportar WAV.",
+      "prevention": "Ganancias conservadoras, silencios de frase y control de errores en la interfaz.",
+      "test": "Escucha A/B y exportación en navegador real, con pico y mono.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "acceptance": [
+    {
+      "kind": "logic",
+      "criterion": "Se puede modificar el mapeo y ver resultados diferentes en cada gesto.",
+      "oracle": "Test automático de eventos con diferentes valores de intensidad y separación.",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "functional",
+      "criterion": "La página responde al Play, Stop y crea WAV reales al exportar.",
+      "oracle": "Navegador con WebAudio, medición de archivo exportado y clics.",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "audio",
+      "criterion": "Guitarra y electrónica dialogan en una pieza completa sin perder ataques.",
+      "oracle": "Escucha auditiva del comienzo, quiebre, retorno y cola final.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "resources": "OGG acústicos de Meta Open Sound CC0; motor WebAudio original, código JS y JSON de sesión alojados en GitHub.",
+  "licensing": "Cada muestra de instrumento Meta Nylon Guitar publicada bajo CC0 1.0; atribución y fuente preservadas.",
+  "environmentLimits": "No hay reproducción acústica ni navegador controlado por este agente; el render final se ofrece desde OfflineAudioContext, no se declara ya escuchado."
+}
