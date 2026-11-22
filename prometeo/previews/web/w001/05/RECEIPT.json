@@ -7,7 +7,7 @@
   "createdAt": "2026-11-22T04:53:30.987Z",
   "title": "MARGEN CERO · exposición tipográfica digital",
   "brief": "Construí una micrositio original de una exposición tipográfica ficticia, con dirección editorial fuerte y animación con movimiento reducido alternativo.",
-  "state": "CODE_DELIVERED_PAGES_DEPLOY_PENDING",
+  "state": "DELIVERED_REMOTE_CONTENT_CONFIRMED_BROWSER_QA_PENDING",
   "source": {
     "owner": "JuanManuelPM/pruebas",
     "branch": "candidate/prometeo-web-w001-05-20261122",
@@ -29,8 +29,8 @@
     "commit": "de226fc761a2363f38349d57184aa68072c97006",
     "url": "https://juanmanuelpm.github.io/Experimentos/prometeo/previews/web/w001/05/",
     "sourceReadback": "PASS",
-    "liveFetch": "HTTP_404_AT_CHECK",
-    "pagesDeployment": "NEW_RUNS_PENDING_PREVIOUS_RUNS_CANCELLED_CONCURRENT_WRITES"
+    "liveFetch": "EXTERNAL_CONTENT_RETRIEVED_ON_2026-11-22_STATUS_CODE_NOT_EXPOSED",
+    "pagesDeployment": "EXTERNAL_CONTENT_VISIBLE_2026-11-22"
   },
   "functionality": [
     "Intro editorial y navegación por anclas",
@@ -57,9 +57,27 @@
     "browserInteraction": "NOT_RUN",
     "screenshots": "NOT_RUN",
     "physicalMobile": "NOT_RUN",
-    "httpPublication": "HTTP_404_AT_CHECK",
+    "httpPublication": "REMOTE_CONTENT_FETCH_PASS_HTTP_STATUS_UNOBSERVED",
     "humanArtApproval": "PENDING"
   },
   "rollback": "Eliminar solo la ruta /prometeo/previews/web/w001/05/ o revertir el commit correspondiente sin tocar otras obras.",
-  "note": "NO declarar PUBLIC_VERIFIED ni BROWSER_VERIFIED mientras no haya una lectura HTTP 200 y prueba real. El flujo maestro sigue siendo SPEC_ONLY. No se tocaron otras obras ni los flujos activos."
+  "note": "NO declarar PUBLIC_VERIFIED ni BROWSER_VERIFIED mientras no haya una lectura HTTP 200 y prueba real. El flujo maestro sigue siendo SPEC_ONLY. No se tocaron otras obras ni los flujos activos.",
+  "followUpVerification": {
+    "checkedAt": "2026-11-22T05:18:09.230Z",
+    "method": "Parallel web_fetch; allow_live_fetch=true",
+    "result": "CONTENT_RETRIEVED",
+    "observedTitle": "MARGEN CERO · Exposición tipográfica",
+    "observedText": [
+      "MARGEN CERO.",
+      "LAS SALAS.",
+      "RITMO.",
+      "LEER ES TAMBIÉN MIRAR."
+    ],
+    "httpStatus": "NOT_EXPOSED_BY_CHECK",
+    "interactionBrowser": "NOT_RUN",
+    "screenshots": "NOT_RUN",
+    "visualQA": "NOT_RUN",
+    "humanApproval": "PENDING",
+    "note": "This verifies remote content acquisition and source parity, not JavaScript interaction or a measured HTTP status. Previous 404 remains historical evidence."
+  }
 }
