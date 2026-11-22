@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>RELEVO | PROMETEO Video W001/07</title>
+<style>
+:root{color-scheme:dark;--ink:#080d16;--paper:#e8e6dc;--muted:#8493a5;--line:#263343;--warm:#f4bd71}*{box-sizing:border-box}body{margin:0;min-height:100vh;background:#080b11;color:var(--paper);font:14px/1.5 system-ui,-apple-system,Segoe UI,sans-serif;display:flex;align-items:center;justify-content:center}.app{width:min(1400px,100%);padding:clamp(12px,2.5vw,32px)}.mast{display:flex;align-items:baseline;justify-content:space-between;gap:16px;padding:0 0 14px}.mast strong{font-size:11px;letter-spacing:.28em;font-weight:700}.mast span{color:var(--muted);font-size:11px;letter-spacing:.12em}.screen{position:relative;aspect-ratio:16/9;border:1px solid #202b38;overflow:hidden;background:#07111d;box-shadow:0 24px 72px #0008}.screen canvas{width:100%;height:100%;display:block}.shot{position:absolute;top:18px;left:20px;font-size:10px;letter-spacing:.17em;color:#d2d8d9;opacity:.7;pointer-events:none}.controls{display:grid;grid-template-columns:auto minmax(90px,1fr) auto;align-items:center;gap:18px;padding:16px 0}.controls button,.export{border:1px solid #344153;background:#121d2a;color:#e7e7df;min-height:44px;padding:0 22px;border-radius:0;font:600 12px/1 system-ui;letter-spacing:.09em;cursor:pointer}.controls button:hover,.export:hover{background:#223145}.controls input{width:100%;accent-color:#f4bd71;cursor:pointer}.clock{font-variant-numeric:tabular-nums;color:#bdc7d0;min-width:89px;text-align:right;font-size:12px}.below{border-top:1px solid #26303c;display:flex;align-items:center;gap:18px;justify-content:space-between;flex-wrap:wrap;padding-top:15px}.below h1{font-weight:450;font-size:clamp(26px,4.2vw,46px);line-height:1;letter-spacing:-.065em;margin:0}.below p{font-size:12px;color:#8b99a9;margin:8px 0 0}.status{font-size:11px;color:#aebdcc;min-height:17px;margin-top:10px}.bottom{display:flex;gap:12px;align-items:center;flex-wrap:wrap}.bottom a.export{display:inline-flex;align-items:center;text-decoration:none}.export:disabled{opacity:.45;cursor:wait}.format{font-size:10px;color:#718295;letter-spacing:.05em}@media(max-width:590px){.app{padding:10px}.mast span{font-size:9px}.controls{gap:10px}.controls button,.export{padding:0 12px}.shot{top:10px;left:10px;font-size:8px}.below h1{font-size:29px}.below{align-items:flex-start}}
+</style>
+</head>
+<body><main class="app"><header class="mast"><strong>PROMETEO / ESTUDIO DE VIDEO</strong><span>W001 &nbsp; / &nbsp; 07 &nbsp; / &nbsp; OBRA ORIGINAL</span></header>
+<section class="screen" aria-label="Cortometraje de animación Relevo"><canvas id="scene" width="1280" height="720" role="img" aria-label="Un pequeño robot lleva su luz a un farol apagado en un callejón nocturno."></canvas><div class="shot" id="shot">01 / 03 · EL CALLEJÓN</div></section>
+<div class="controls"><button id="play" type="button" aria-label="Reproducir">▶ &nbsp; REPRODUCIR</button><input id="seek" aria-label="Posición del cortometraje" type="range" min="0" max="12" step="0.01" value="0"><span class="clock" id="clock">00:00 / 00:12</span></div>
+<footer class="below"><div><h1>RELEVO<span style="color:#e1a85e">.</span></h1><p>Tres planos · 12 segundos · Una pequeña historia sin palabras</p></div><div class="bottom"><a class="export" href="RELEVO.mp4" target="_blank" rel="noopener">VER MP4</a><button class="export" id="export" type="button">EXPORTAR WEBM</button><span class="format">1280 × 720 · 24 fps · sin audio</span></div></footer><div class="status" id="status" aria-live="polite">Vista previa procedimental. El archivo WebM se genera en este navegador.</div></main>
+<script>
+(()=>{'use strict';
+const canvas=document.getElementById('scene'),ctx=canvas.getContext('2d',{alpha:false}),play=document.getElementById('play'),seek=document.getElementById('seek'),clock=document.getElementById('clock'),shot=document.getElementById('shot'),status=document.getElementById('status'),exportBtn=document.getElementById('export');
+const W=1280,H=720,D=12,FPS=24;let current=0,running=false,last=0,exporting=false;
+const C={sky:'#071321',deep:'#070e18',steel:'#22354a',edge:'#33465a',amber:'#f4bf76',cream:'#fff3d9',robot:'#587080',shadow:'#1b2b3b'};
+const clamp=(v,a=0,b=1)=>Math.max(a,Math.min(b,v)),smooth=v=>{v=clamp(v);return v*v*(3-2*v)},mix=(a,b,k)=>a+(b-a)*k;
+function rounded(x,y,w,h,r,fill,stroke){ctx.beginPath();ctx.roundRect(x,y,w,h,r);if(fill){ctx.fillStyle=fill;ctx.fill()}if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=2;ctx.stroke()}}
+function circle(x,y,r,fill){ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fillStyle=fill;ctx.fill()}
+function line(x1,y1,x2,y2,color,w=1){ctx.strokeStyle=color;ctx.lineWidth=w;ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke()}
+function glow(x,y,r,alpha=1){let g=ctx.createRadialGradient(x,y,0,x,y,r);g.addColorStop(0,`rgba(255,220,154,${.75*alpha})`);g.addColorStop(.24,`rgba(239,163,82,${.27*alpha})`);g.addColorStop(1,'rgba(241,173,96,0)');ctx.fillStyle=g;ctx.fillRect(x-r,y-r,r*2,r*2)}
+function backdrop(t,lit=false,close=false){let grad=ctx.createLinearGradient(0,0,0,H);grad.addColorStop(0,'#06101d');grad.addColorStop(.61,'#112136');grad.addColorStop(1,'#0e1926');ctx.fillStyle=grad;ctx.fillRect(0,0,W,H);
+// Vertical architectural rhythm creates an unambiguous street axis in both wides.
+ctx.fillStyle='#0b1929';ctx.fillRect(0,85,244,530);ctx.fillRect(1020,50,260,590);ctx.fillStyle='#13263b';ctx.fillRect(215,180,105,432);ctx.fillRect(1002,145,45,480);
+for(let i=0;i<5;i++){let y=140+i*88;rounded(43,y,43,51,2,'#172a3d','#263a4f');rounded(120,y+16,48,45,2,'#14283a','#26384d');rounded(1092,y-32,48,55,2,'#162a3c','#283b4e');rounded(1181,y+3,45,46,2,'#142437','#27384d');line(65,y,65,y+51,'#253b50');line(1117,y-32,1117,y+23,'#2f4354')}
+ctx.fillStyle='#162435';ctx.beginPath();ctx.moveTo(0,604);ctx.lineTo(1280,604);ctx.lineTo(1280,720);ctx.lineTo(0,720);ctx.fill();line(0,603,W,603,'#53606a',3);ctx.fillStyle='#27394b';ctx.beginPath();ctx.moveTo(390,605);ctx.lineTo(465,720);ctx.lineTo(820,720);ctx.lineTo(885,605);ctx.fill();
+// Wet street geometry, restrained reflections.
+for(let i=0;i<20;i++){let x=306+(i*173)%664,y=616+(i*37)%94;line(x,y,x+13+(i%4)*10,y,'rgba(128,160,177,.19)',1.8)}
+let fog=ctx.createLinearGradient(0,430,0,680);fog.addColorStop(0,'rgba(68,99,120,0)');fog.addColorStop(1,'rgba(62,95,122,.1)');ctx.fillStyle=fog;ctx.fillRect(220,420,800,260);
+// Ground plant is only fully visible once the lamp ignites.
+if(lit){let a=smooth((t-8.45)/1.4);glow(945,615,100,a*.4);line(946,600,945,573,`rgba(106,149,113,${a})`,3);line(945,586,934,579,`rgba(110,158,125,${a})`,3);line(945,588,956,574,`rgba(110,158,125,${a})`,3);circle(946,571,6,`rgba(233,176,113,${a})`)}
+}
+function lamp(x,light=0,scale=1){ctx.save();ctx.translate(x,0);ctx.scale(scale,scale);let x0=0;line(x0,606,x0,202,'#050a10',16);line(x0-3,606,x0-3,202,'#3a4e60',5);rounded(-21,180,42,34,7,'#293b4d','#70808c');rounded(-27,176,54,12,4,'#3d5262');circle(0,201,12,light>0?'#f2cf93':'#27333b');if(light){glow(0,215,310,light*.85);ctx.beginPath();ctx.moveTo(-18,210);ctx.lineTo(-205,607);ctx.lineTo(205,607);ctx.lineTo(18,210);ctx.closePath();let g=ctx.createLinearGradient(0,205,0,625);g.addColorStop(0,`rgba(253,190,107,${.25*light})`);g.addColorStop(1,`rgba(242,184,112,${.035*light})`);ctx.fillStyle=g;ctx.fill();glow(0,202,70,light)}ctx.restore()}
+function robot(x,y,core=1,pose=0,scale=1,dimEyes=false){ctx.save();ctx.translate(x,y);ctx.scale(scale,scale);let bob=Math.sin(pose*9)*1.7;ctx.translate(0,bob);line(-22,21,-32,42,'#111d2a',10);line(22,21,31,42,'#111d2a',10);rounded(-43,-76,86,106,25,'#263747','#4a5b69');rounded(-34,-69,68,82,20,'#526879','#768995');rounded(-28,-57,56,33,11,'#101b2a');circle(-12,-41,4,dimEyes?'#25313b':'#a9e1da');circle(13,-41,4,dimEyes?'#25313b':'#a9e1da');rounded(-20,-9,40,29,8,'#2a3b47','#718390');if(core>0){glow(0,6,70,core*.75);circle(0,6,12,'#f4bb70');circle(0,6,5,'#fff4db')}else{circle(0,6,12,'#15212b');circle(0,6,5,'#35414a')}
+line(-40,-16,-51+pose*2,7-pose*8,'#526a7d',11);line(40,-16,52+pose*4,5-pose*15,'#526a7d',11);ctx.restore()}
+function grain(t){ctx.fillStyle='rgba(223,231,227,.035)';for(let i=0;i<130;i++){let x=((i*297+41)%1277),y=((i*131+17)%719);ctx.fillRect(x,y,1.4,1.4)}// Frame-safe vignette.
+let g=ctx.createRadialGradient(640,355,90,640,355,850);g.addColorStop(0,'transparent');g.addColorStop(1,'rgba(0,0,0,.37)');ctx.fillStyle=g;ctx.fillRect(0,0,W,H)}
+function draw(t){t=clamp(t,0,D);ctx.save();ctx.clearRect(0,0,W,H);
+if(t<4){backdrop(t);lamp(902);let x=mix(560,838,smooth(t/3.85));robot(x,563,1,.22+Math.sin(t*5)*.08,1); // A purposeful upward glance.
+if(t>3.25){glow(902,200,65,smooth((t-3.25)/.65)*.15)}}
+else if(t<8){let u=t-4;ctx.save();ctx.translate(-320,-150);ctx.scale(1.35,1.35);backdrop(t);lamp(903);let lift=smooth((u-.8)/2.65),bx=mix(670,900,lift),by=mix(541,201,lift);
+robot(670,562,1-smooth((u-.9)/1.75),smooth(u/3),1.15,u>2.5);
+if(u>.7){let a=smooth((u-.7)/.4)*(1-smooth((u-3.55)/.4));glow(bx,by,96,a);circle(bx,by,15,`rgba(255,227,165,${a})`);circle(bx,by,6,`rgba(255,251,235,${a})`)}
+ctx.restore()}
+else{let u=t-8;backdrop(t,true);let illumination=smooth((u-.15)/1.25);lamp(902,illumination);robot(834,562,0,0,1,true);
+// The core's light now belongs to the street; its reflection spreads toward the seedling.
+if(illumination){let g=ctx.createRadialGradient(902,620,5,902,620,260);g.addColorStop(0,`rgba(239,170,95,${illumination*.25})`);g.addColorStop(1,'rgba(239,170,95,0)');ctx.fillStyle=g;ctx.fillRect(600,460,600,260)}
+if(u>1.7){let a=smooth((u-1.7)/1.1);glow(835,536,50,a*.12)} }
+grain(t);ctx.restore();shot.textContent=t<4?'01 / 03 · EL CALLEJÓN':t<8?'02 / 03 · LA ENTREGA':'03 / 03 · EL RELEVO';clock.textContent=`00:${String(Math.floor(t)).padStart(2,'0')} / 00:12`;seek.value=t.toFixed(2)}
+function animate(now){if(running){if(!last)last=now;current=Math.min(D,current+(now-last)/1000);last=now;draw(current);if(current>=D){running=false;play.textContent='↺  REPETIR';last=0}}requestAnimationFrame(animate)}
+function toggle(){if(exporting)return;if(current>=D)current=0;running=!running;last=0;play.textContent=running?'Ⅱ  PAUSAR':'▶  REPRODUCIR';draw(current)}
+play.addEventListener('click',toggle);canvas.addEventListener('click',toggle);seek.addEventListener('input',e=>{if(exporting)return;current=+e.target.value;running=false;last=0;play.textContent='▶  REPRODUCIR';draw(current)});
+exportBtn.addEventListener('click',async()=>{if(exporting)return;if(!canvas.captureStream||!window.MediaRecorder){status.textContent='Este navegador no permite grabación WebM. El preview sigue disponible.';return}const type=['video/webm;codecs=vp9','video/webm;codecs=vp8','video/webm'].find(t=>MediaRecorder.isTypeSupported(t));if(!type){status.textContent='No hay codificador WebM compatible en este navegador.';return}
+exporting=true;running=false;play.disabled=true;exportBtn.disabled=true;const chunks=[];const stream=canvas.captureStream(0);const track=stream.getVideoTracks()[0];let rec;try{rec=new MediaRecorder(stream,{mimeType:type,videoBitsPerSecond:2100000})}catch(err){status.textContent='No se pudo iniciar la exportación: '+err.message;exporting=false;play.disabled=false;exportBtn.disabled=false;return}
+rec.ondataavailable=e=>{if(e.data.size)chunks.push(e.data)};rec.onstop=()=>{const b=new Blob(chunks,{type:'video/webm'});const link=document.createElement('a');const url=URL.createObjectURL(b);link.href=url;link.download='RELEVO_video_w001_07.webm';link.click();setTimeout(()=>URL.revokeObjectURL(url),60000);status.textContent=`WebM creado en el navegador (${(b.size/1024/1024).toFixed(2)} MB). Calidad visual pendiente de revisión humana.`;stream.getTracks().forEach(x=>x.stop());exporting=false;play.disabled=false;exportBtn.disabled=false;current=0;draw(0)};
+try{rec.start();status.textContent='Codificando 12 segundos a 24 fps…';for(let f=0;f<=D*FPS;f++){current=Math.min(D,f/FPS);draw(current);track.requestFrame();await new Promise(r=>setTimeout(r,1000/FPS))}rec.stop()}catch(err){try{rec.stop()}catch{}status.textContent='Error durante el export: '+err.message}
+});
+draw(0);requestAnimationFrame(animate);
+window.__relevo={render:draw,duration:D,fps:FPS};
+})();
+</script></body></html>
