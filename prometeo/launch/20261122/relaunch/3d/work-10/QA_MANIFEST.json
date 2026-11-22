@@ -14,14 +14,15 @@
   "checks": {
     "remoteSourceReadback": {
       "status": "OBSERVED",
-      "count": 6,
+      "count": 7,
       "files": [
         "index.html",
         "app.mjs",
         "mechanics.mjs",
         "mechanics.test.mjs",
         "spike.html",
-        "PREPRODUCTION.deep-spec-v1.json"
+        "PREPRODUCTION.deep-spec-v1.json",
+        "browser.test.mjs"
       ]
     },
     "staticIndependentChecks": {
@@ -89,7 +90,14 @@
     "manufacturingToleranceAndStrength": {
       "status": "NOT_CERTIFIED"
     },
-    "humanApproved": false
+    "humanApproved": false,
+    "browserRunner": {
+      "status": "SOURCE_PUBLISHED_RUN_NOT_VERIFIED",
+      "code": "browser.test.mjs",
+      "workflow": ".github/workflows/prometeo-3d-w7-10.yml",
+      "branch": "candidate/prometeo-3d-w7-20261122-10",
+      "detail": "Playwright screenshots, interaction, GLB export and WebGL draw calls defined; workflow execution and screenshots not independently checked."
+    }
   },
   "caution": "Static checks and source publication are not browser render, artistic approval, exhaustive interference test, or engineering certification.",
   "references": [
