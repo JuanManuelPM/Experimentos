@@ -1,0 +1,3 @@
+CASA MATERIAL / Original image assets
+
+This candidate branch publishes the four original photoreal concept renderings as embedded WebP data URIs inside ../index.html. Each is 627 x 627 pixels and comes from one generated 2x2 contact sheet. No photographic shoot or real fabricated products is claimed. Image names in the editable modular source: estudio-terracota.webp, cuenco-caliza.webp, vasija-arcilla.webp, bandeja-carbon.webp. The standalone index.html is the runnable source of truth and has no remote CDN dependencies. QA_CAPTURES.html embeds six genuine Chromium screenshot previews. To extract independent WebPs decode the four embedded data URLs.
