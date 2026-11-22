@@ -1,0 +1,239 @@
+{
+  "version": "DEEP-SPEC-1",
+  "medium": "images",
+  "depth": "SISTEMA",
+  "brief": "LÚMINA: campaña para marca ficticia de luminarias con fotografía hero raster y tres soportes editoriales.",
+  "intent": {
+    "experience": "Generar calma, tactilidad y reconocimiento de la lámpara sin repetir el logotipo como truco.",
+    "distinctAbility": "Transformar un raster original en composiciones de soportes diferentes con materialidad persistente."
+  },
+  "references": [
+    {
+      "id": "R1",
+      "status": "OBSERVED",
+      "url": "https://www.pentagram.com/work/royal-drawing-school",
+      "observation": "La fuente original muestra un sistema tipográfico flexible unido a fotografía de materiales, procesos y actos de crear; multisoporte explícito."
+    },
+    {
+      "id": "R2",
+      "status": "OBSERVED",
+      "url": "https://www.pentagram.com/work/the-meteor",
+      "observation": "La identidad pública integra tipos, fotografía y color como kit editorial que se extiende a diversos soportes; texto original examinado."
+    },
+    {
+      "id": "R3",
+      "status": "OBSERVED",
+      "url": "https://professional.flos.com/en/global/stories/stories-luce-sferica-and-luce-cilindrica/",
+      "observation": "La presentación original describe vidrio soplado, detalles de perfil lumínico y fotografía editorial acreditada, combinando función y emoción."
+    }
+  ],
+  "components": [
+    {
+      "id": "HERO",
+      "role": "Fotografía generada de la lámpara original BRUMA 01.",
+      "strategy": "Imagen raster singular con vidrio traslúcido, arcilla y fuente de luz cálida.",
+      "constraints": "Sombras, escala, materialidad y reflejos visualmente plausibles."
+    },
+    {
+      "id": "SYSTEM",
+      "role": "Sistema visual tipográfico, cromático y de espacios.",
+      "strategy": "Noto Serif Display y Noto Sans con crema, terracota, cobre y tinta.",
+      "constraints": "Reconocer la campaña aunque se oculte el logotipo."
+    },
+    {
+      "id": "LAYOUT",
+      "role": "Adaptaciones a afiche, cuadrado, banner web e historia vertical.",
+      "strategy": "Recomponer jerarquía y punto focal en cada relación de aspecto.",
+      "constraints": "Lámpara coherente y sin deformaciones geométricas en todos los recortes."
+    },
+    {
+      "id": "QA",
+      "role": "Evidencia técnica y perceptual sin aprobaciones inventadas.",
+      "strategy": "Manifiesto SHA256, inspección raster, lámina y límites de resolución.",
+      "constraints": "Diferenciar píxeles exportados de detalle óptico fotográfico original."
+    }
+  ],
+  "questions": [
+    {
+      "id": "Q1",
+      "target": "HERO",
+      "question": "¿Cómo obtener texturas y luz creíbles sin recurrir a un dibujo de primitivas presentado como fotografía premium?",
+      "alternatives": [
+        "Generación raster original",
+        "Render geométrico procedural simplificado"
+      ],
+      "finding": "Las referencias lumínicas privilegian la unión entre materiales creíbles y fotografía de calidad.",
+      "decisionImpact": "Utilizar una imagen generativa raster como protagonista y no un esquema vectorial.",
+      "evidenceRef": "R3"
+    },
+    {
+      "id": "Q2",
+      "target": "SYSTEM",
+      "question": "¿Qué mantiene reconocible la identidad sin repetir el logotipo del mismo tamaño en cada pieza?",
+      "alternatives": [
+        "Repetición del logo",
+        "Reglas de color, tipografía, luz y encuadre"
+      ],
+      "finding": "La referencia Pentagram construye identidad a través de materiales y lenguaje tipográfico adaptable.",
+      "decisionImpact": "Fijar paleta de cuatro tonos y serif/sans de contraste consistente.",
+      "evidenceRef": "R1"
+    },
+    {
+      "id": "Q3",
+      "target": "LAYOUT",
+      "question": "¿Cómo conservar figura y sentimiento cuando se pasa de panorámico a afiche y móvil vertical?",
+      "alternatives": [
+        "Escalar un diseño único",
+        "Recomponer pesos y recortes por soporte"
+      ],
+      "finding": "El sistema editorial de The Meteor liga foto, color y tipografía en módulos variables.",
+      "decisionImpact": "Diseñar cuatro composiciones con una imagen fuente y distintas jerarquías.",
+      "evidenceRef": "R2"
+    },
+    {
+      "id": "Q4",
+      "target": "QA",
+      "question": "¿Qué tamaño verdadero de información fotográfica puede atribuirse a un arte exportado grande?",
+      "alternatives": [
+        "Asumir 300 DPI ópticos por metadato",
+        "Declarar límites del raster nativo 1672 por 941"
+      ],
+      "finding": "El producto fuente es raster limitado y el aumento por interpolación no crea detalle físico nuevo.",
+      "decisionImpact": "Registrar tamaño nativo, hashes y pruebas de imprenta pendientes.",
+      "evidenceRef": "R3"
+    }
+  ],
+  "decisions": [
+    {
+      "id": "D1",
+      "questionId": "Q1",
+      "componentIds": [
+        "HERO"
+      ],
+      "choice": "Foto raster generada original.",
+      "rejected": "Primitivas vectoriales pobres.",
+      "productionChange": "Usar BRUMA 01 con vidrio cálido y arcilla sobre piedra de textura verosímil.",
+      "why": "La escena material necesita una resolución visual que el motor procedural no demostró."
+    },
+    {
+      "id": "D2",
+      "questionId": "Q2",
+      "componentIds": [
+        "SYSTEM"
+      ],
+      "choice": "Paleta terracota y dos fuentes Noto de uso editorial.",
+      "rejected": "Logo repetido sin sistema gráfico.",
+      "productionChange": "Jerarquizar titulares grandes y rótulos discretos sin depender del nombre de marca.",
+      "why": "La coherencia viene de relación entre materiales, espacio, luz y tipografía."
+    },
+    {
+      "id": "D3",
+      "questionId": "Q3",
+      "componentIds": [
+        "HERO",
+        "LAYOUT"
+      ],
+      "choice": "Recortes y recomposición reales por formato.",
+      "rejected": "Duplicar siempre el mismo cartel.",
+      "productionChange": "Afiche claro, cuadrado oscuro, banner panorámico y story con placa de papel.",
+      "why": "Cada soporte necesita un ritmo y tratamiento tipográfico distinto."
+    },
+    {
+      "id": "D4",
+      "questionId": "Q4",
+      "componentIds": [
+        "QA"
+      ],
+      "choice": "Auditoría de tamaño original y exportado.",
+      "rejected": "Llamar alta resolución óptica a una exportación interpolada.",
+      "productionChange": "Escribir límite nativo en el manifiesto y dejar prueba de imprenta NOT_RUN.",
+      "why": "El archivo grande por sí mismo no crea detalle."
+    }
+  ],
+  "relations": [
+    {
+      "from": "HERO",
+      "to": "LAYOUT",
+      "invariant": "Conservar la pantalla amorfa de vidrio y la base cerámica con anillos en los cuatro formatos.",
+      "failure": "Recortes que corten la parte alta o inventen otras formas.",
+      "test": "Abrir las cuatro piezas y cotejar el objeto con hero."
+    },
+    {
+      "from": "SYSTEM",
+      "to": "LAYOUT",
+      "invariant": "La familia tipográfica, contraste y temperatura cromática deben persistir.",
+      "failure": "Cuatro maquetas inconexas o cuatro copias del mismo archivo.",
+      "test": "Inspección comparativa en atlas de márgenes y jerarquía."
+    },
+    {
+      "from": "QA",
+      "to": "HERO",
+      "invariant": "Separar resolución nativa de fotografía respecto al tamaño de exportación.",
+      "failure": "Una exportación 2400x3200 anunciada como fotografía nativa en ese tamaño.",
+      "test": "Leer dimensiones fuente y destinos en manifest."
+    }
+  ],
+  "risks": [
+    {
+      "componentIds": [
+        "HERO",
+        "LAYOUT"
+      ],
+      "severity": "high",
+      "failure": "El crop vertical puede eliminar la parte alta de la lámpara.",
+      "prevention": "Revisar silhoueta completa en story y cabecera antes de cerrar.",
+      "test": "Spike de inspección visual y ajuste del foco vertical.",
+      "status": "OBSERVED"
+    },
+    {
+      "componentIds": [
+        "SYSTEM",
+        "LAYOUT"
+      ],
+      "severity": "medium",
+      "failure": "Texto pálido sobre cristales amarillos puede perder contraste.",
+      "prevention": "Reservar una zona oscura o papel claro para titulares y datos.",
+      "test": "Inspección visual de textos sobre todos los soportes.",
+      "status": "OBSERVED"
+    },
+    {
+      "componentIds": [
+        "QA"
+      ],
+      "severity": "medium",
+      "failure": "Escalado interpolado puede parecer detalle fotográfico nativo.",
+      "prevention": "Registrar los 1672 por 941 píxeles originales sin atribución falsa.",
+      "test": "Leer manifiesto y contrastar resoluciones.",
+      "status": "OBSERVED"
+    }
+  ],
+  "acceptance": [
+    {
+      "kind": "functional",
+      "criterion": "Los rasters existen, abren y tienen dimensiones distintas.",
+      "oracle": "Pillow abre cada archivo final y calcula SHA256 y dimensiones.",
+      "status": "OBSERVED"
+    },
+    {
+      "kind": "visual",
+      "criterion": "La lámpara y sus materiales se reconocen entre soportes.",
+      "oracle": "Observación local de las piezas generadas en esta sesión.",
+      "status": "OBSERVED"
+    },
+    {
+      "kind": "visual",
+      "criterion": "Lectores externos reconocen la identidad sin logo.",
+      "oracle": "Prueba ciega con una muestra humana independiente.",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "functional",
+      "criterion": "Impresión física mantiene legibilidad y detalle material.",
+      "oracle": "Impresión real del póster y observación editorial.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "licensing": "Arte principal generado para este caso; referencias consultadas sin copiar imágenes; fuentes Noto no redistribuidas.",
+  "resources": "Herramienta de imagen generativa, Pillow, fuentes Noto, hashes SHA256 y lámina de consistencia.",
+  "environmentLimits": "El enlace GitHub de esta rama contiene la ficha y recibo textuales, pero los PNG binarios quedan en el paquete local del chat y su publicación pública no está verificada."
+}
