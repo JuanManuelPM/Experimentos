@@ -85,7 +85,7 @@ export function diagnose(raw={},samples=90,vertices=720) {
  return {samples,vertices,minGap,maxGap,maxGapAngle,maxPressure,minRadius,minAxial,continuousContact: minAxial>=0&&minGap>-0.12&&maxGap<0.12, pressureOK:maxPressure<=30, machiningNote:'Radii/tolerancias orientativos; requiere revisión industrial y esfuerzos Hertz.'};
 }
 export function buildDXF(raw={},segments=360){
- const p=normalize(raw),points=profile(p,segments),rows=['0','SECTION','2','ENTITIES','0','LWPOLYLINE','8','CAM_OUTLINE','90',String(points.length),'70','1'];
+ const p=normalize(raw),points=profile(p,segments),rows=['0','SECTION','2','HEADER','9','$INSUNITS','70','4','9','$MEASUREMENT','70','1','0','ENDSEC','0','SECTION','2','ENTITIES','0','LWPOLYLINE','8','CAM_OUTLINE','90',String(points.length),'70','1'];
  for(const pt of points)rows.push('10',pt.x.toFixed(5),'20',pt.y.toFixed(5));
  rows.push('0','CIRCLE','8','AXLE_BORE','10','0','20','0','40','6','0','ENDSEC','0','EOF');
  return rows.join('\n')+'\n';
