@@ -233,7 +233,8 @@
       "failure": "Las dos generaciones independientes modifican objetos y número de arcos o intercambian protagonistas.",
       "prevention": "Primero hacer un corte piloto con anclas repetidas en ambas instrucciones y comparar con la matriz de escena.",
       "test": "Observación de los ocho hechos persistentes en ambos raster, seguida de corrección si el encuadre diverge.",
-      "status": "NOT_RUN"
+      "status": "OBSERVED",
+      "spikeEvidence": "Se produjeron dos raster RGB de 1536x1024 y se inspeccionaron visualmente: los hechos y el foco coinciden, pero la ilustración oculta parte de los arcos laterales. Es una observación parcial, no perfección geométrica ni aval humano."
     },
     {
       "componentIds": [
@@ -243,7 +244,8 @@
       "failure": "La fotorealidad puede inducir a tomar el suceso ficticio por noticia real.",
       "prevention": "Aviso inequívoco de síntesis ficticia fuera de imagen y metadatos de publicación.",
       "test": "Abrir visualizador y verificar un rótulo de origen claramente legible.",
-      "status": "NOT_RUN"
+      "status": "OBSERVED",
+      "spikeEvidence": "La imagen A está etiquetada en los documentos/visor como síntesis ficticia, no fotografía de un incidente."
     },
     {
       "componentIds": [
@@ -253,7 +255,8 @@
       "failure": "La ilustración podría ser solo una versión filtrada de la fotografía.",
       "prevention": "Generar una interpretación pictórica independiente, no transformar bytes ni mapear colores de la foto.",
       "test": "Cotejar bordes, trazos, simplificación de forma y materialidad sin recurrir al color.",
-      "status": "NOT_RUN"
+      "status": "OBSERVED",
+      "spikeEvidence": "B construida desde cero con Pillow, curvas y capas vectoriales rasterizadas; el script no abre los bytes de A. Contraste formal observacional."
     }
   ],
   "acceptance": [
@@ -261,19 +264,22 @@
       "kind": "visual",
       "criterion": "Dos raster reales en formato horizontal, inspeccionables a tamaño completo.",
       "oracle": "Lectura de bytes, PNG decode, tamaño en píxeles, inspección perceptual humana separada.",
-      "status": "NOT_RUN"
+      "status": "OBSERVED",
+      "evidence": "PNG A SHA256 073370f67f6daafc88d38c6ff63ae6cac54cc77d29b9bbb3da06614f65bee14a; PNG B SHA256 02b2414019d97dccb5410f938e4859ffac82d2fe9d3e311cb495732bf501378a; Pillow open/verify 1536x1024 RGB."
     },
     {
       "kind": "visual",
       "criterion": "Continuidad de la plaza, objetos y acción humana con al menos ocho anclas definidas.",
       "oracle": "Tabla por ancla a partir de las dos imágenes reales; contradicciones registradas.",
-      "status": "NOT_RUN"
+      "status": "FAILED",
+      "evidence": "Ocho anclas claras; arcos laterales del edificio dibujado parcialmente ocultos por protagonistas. Continuidad semántica mayoritaria, pero prueba de visibilidad estricta no pasa."
     },
     {
       "kind": "visual",
       "criterion": "Gráfica expresiva de lenguaje materialmente distinto de la fotografía sobria.",
       "oracle": "Comparación visual sin color de masas de forma, borde, ritmo y papel.",
-      "status": "NOT_RUN"
+      "status": "OBSERVED",
+      "evidence": "A: fotografía sintética con textura continua. B: raster de formas planas, tinta, manchas y trazo manual construido desde código independiente."
     },
     {
       "kind": "functional",
@@ -284,5 +290,13 @@
   ],
   "resources": "ImageGen para arte raster original, Pillow/Node para QA, GitHub para fuente, hashes y publicación aislada; sin usar imágenes ajenas como assets.",
   "licensing": "Arte visual original de proyecto ficticio generado con herramientas propias, sin importar fotografías de referencia ni copiar obra ajena; atribuir generación sintética y verificar permisos de publicación.",
-  "environmentLimits": "ImageGen no expone semillas ni condicionamiento espacial determinista por máscara; los dos resultados no pueden prometer continuidad pixel a pixel ni reproducción bit-exacta. Una prueba ciega con humanos sigue pendiente."
+  "environmentLimits": "ImageGen no expone semillas ni condicionamiento espacial determinista por máscara; los dos resultados no pueden prometer continuidad pixel a pixel ni reproducción bit-exacta. Una prueba ciega con humanos sigue pendiente.",
+  "production": {
+    "rasterA": "01_fotografia_editorial_sintetica.png",
+    "rasterB": "02_ilustracion_grafica_original.png",
+    "delivery": "CHAT_FILES_ONLY",
+    "githubBinaryPublication": "NOT_RUN",
+    "blindComparison": "PREPARED_NOT_RUN",
+    "humanApproved": false
+  }
 }
