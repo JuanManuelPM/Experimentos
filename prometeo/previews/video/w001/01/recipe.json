@@ -1,0 +1,94 @@
+{
+  "schema": "prometeo.video.recipe/v1",
+  "id": "video-w001-20261122-01",
+  "title": "ANDÉN CERO",
+  "subtitle": "Títulos originales de thriller nocturno",
+  "durationSeconds": 12,
+  "fps": 24,
+  "canvas": {
+    "width": 960,
+    "height": 540
+  },
+  "codecTarget": {
+    "video": "h264",
+    "audio": "aac",
+    "container": "mp4"
+  },
+  "visual": {
+    "palette": [
+      "#060a11",
+      "#f1f1ed",
+      "#ed354d"
+    ],
+    "type": "DejaVu Sans Condensed Bold (libre)",
+    "visualGrammar": [
+      "perspectiva de andén",
+      "señal roja aislada",
+      "reglas editoriales",
+      "textura analógica procedural"
+    ]
+  },
+  "scenes": [
+    {
+      "start": 0,
+      "end": 3.08,
+      "id": "last-service",
+      "titles": [
+        "ÚLTIMO SERVICIO",
+        "EL TREN QUE NUNCA LLEGÓ"
+      ],
+      "motion": "fade-in con oscurecimiento"
+    },
+    {
+      "start": 3.08,
+      "end": 6.18,
+      "id": "warning",
+      "titles": [
+        "NO MIRES",
+        "ATRÁS"
+      ],
+      "motion": "corte + destello breve"
+    },
+    {
+      "start": 6.18,
+      "end": 8.83,
+      "id": "empty-platform",
+      "titles": [
+        "EL ANDÉN ESTÁ VACÍO",
+        "PERO ALGUIEN RESPONDIÓ."
+      ],
+      "motion": "suspensión"
+    },
+    {
+      "start": 8.83,
+      "end": 12,
+      "id": "final-title",
+      "titles": [
+        "ANDÉN",
+        "CERO"
+      ],
+      "motion": "revelación tipográfica sostenida"
+    }
+  ],
+  "audio": {
+    "kind": "synthesis-original",
+    "channels": 1,
+    "rate": 22050,
+    "elements": [
+      "dron armónico 49 Hz",
+      "ruido de aire sintético",
+      "impactos originales sincronizados"
+    ],
+    "source": "render.py"
+  },
+  "rights": {
+    "images": "procedural-original",
+    "music": "procedural-original",
+    "footage": "none",
+    "voices": "none",
+    "fonts": "DejaVu open-source"
+  },
+  "renderer": "render.py",
+  "preview": "index.html",
+  "poster": "poster.svg"
+}
