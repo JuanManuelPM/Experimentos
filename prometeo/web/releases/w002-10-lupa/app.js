@@ -68,6 +68,7 @@
   }
   const clearPictures = () => {
     state.ready=false;
+    $('picture').classList.remove('ready');
     $('picture').style.display='none';
     $('blank').hidden=false;
     $('scrub').disabled=true;
@@ -142,7 +143,7 @@
   };
   const renderMode = () => {
     const picture=$('picture');
-    picture.className='picture '+state.mode;
+    picture.className='picture '+state.mode+(state.ready?' ready':'');
     document.querySelectorAll('.mode').forEach((b)=>b.setAttribute('aria-pressed',String(b.dataset.mode===state.mode)));
     $('scrubLabel').textContent=modes[state.mode];
     $('scrubValue').textContent=state.position+'%';
