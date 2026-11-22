@@ -23,7 +23,7 @@
 - `AUDIO_PEAK`: WAV sintético original 48 kHz estéreo, volumen máximo medido -7.3 dBFS; sin sample terceros.
 - `SCREEN_RECOMPOSITION`: 2 frames/canvas independientes, sin crop.
 - `FULL_AUDITORY_LISTEN`: NOT_RUN, no confundir análisis de señal con evaluación auditiva humana.
-- `EXTERNAL_PUBLIC_ASSET`: NOT_VERIFIED hasta lectura desde GitHub; no confundir commit de fuentes con vídeo público.
+- `EXTERNAL_PUBLIC_ASSET`: GITHUB_API_READBACK_VERIFIED para ambos MP4, WAV y CHECKSUMS.txt tras GitHub Actions run 45044560131 SUCCESS; reproducción en navegadores/telefonía NOT_RUN.
 - `HUMAN_ART_APPROVAL`: NOT_RUN.
 
 ### Defectos y próximos gates especializados
@@ -32,3 +32,7 @@
 - La semántica de 'negación' depende de un marco secundario y de sonido: test de comprensión sin explicación con espectadores externos, aún NO EJECUTADO.
 - El rigor sonoro es temporal, pero la expresividad de la mezcla necesita escucha crítica independiente.
 - Ninguna comparación con premios o estudios externos demuestra paridad de dirección artística.
+
+### GitHub Actions export y hashes independientes
+
+El CI de GitHub terminó SUCCESS; ambos MP4 H.264/AAC fueron decodificados en el job. Readback de los tres binarios confirmado en la rama candidata. Hashes SHA-256 **del render CI**: 16:9 `d2f59703a6eaa604876c0030024b2f162c3b075b65f91bef0cb7d01522cd59a9`, 9:16 `25726ba374c5b3de014ea8f2bad3e72a75eca5a376b1256b56988c17685b99b4`, WAV `9ea31bfb3dc2c113724c7e0ecc70e5d440afc85df566ed184b42dd1808e78272`. Se diferencian de los MP4 locales por entorno de codificación, no se afirma equivalencia byte a byte.
