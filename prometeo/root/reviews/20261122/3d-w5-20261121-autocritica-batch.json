@@ -1,0 +1,93 @@
+{
+  "schema": "prometeo.root.work-audit-receipt/v1",
+  "id": "3d-w5-20261121-autocritica-batch-20261122",
+  "date": "2026-11-22",
+  "room": "3d",
+  "review_of": "3d-w5-20261121",
+  "scope": "BATCH_NOT_INDIVIDUAL_CHAT",
+  "flow_id": "prometeo-3d-production",
+  "baseline_flow": "2.3.0",
+  "baseline_sha256": "53bc9e2e4b37c99e92d3494af8dfa4461cd4644b15f980e32497a8428b067b3f",
+  "public_index_source": "prometeo/root/BATCHES.json",
+  "outcomes": {
+    "registered_tasks": 10,
+    "github_html_inspected": 10,
+    "public_messages_found": 10,
+    "relative_scripts_resolved": 8,
+    "real_browser_render_tests": 0,
+    "physical_android_tests": 0,
+    "artistic_human_approval": 0,
+    "source_verified_gaps": 5,
+    "persisted_proposals": 5,
+    "logic_unit_tests_passed": 8,
+    "logic_unit_tests_total": 8,
+    "flow_candidate_files": 8,
+    "flow_promoted": 0,
+    "historical_artifacts_modified": 0
+  },
+  "findings": [
+    {
+      "id": "3dw5-qa-runtime-proof-01",
+      "category": "evidence_truth",
+      "affected": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ]
+    },
+    {
+      "id": "3dw5-camera-occlusion-02",
+      "category": "camera_framing_visual_gate",
+      "affected": [
+        1,
+        2,
+        7
+      ]
+    },
+    {
+      "id": "3dw5-editor-interaction-03",
+      "category": "editor_touch_and_import_roundtrip",
+      "affected": [
+        3,
+        4
+      ]
+    },
+    {
+      "id": "3dw5-character-media-04",
+      "category": "representation_and_character_QA",
+      "affected": [
+        6,
+        8
+      ]
+    },
+    {
+      "id": "3dw5-gameplay-state-05",
+      "category": "gameplay_cycle_and_restart",
+      "affected": [
+        9,
+        10
+      ]
+    }
+  ],
+  "evidence_limitations": [
+    "HTML and module readback inspected, not an interactive/browser render test",
+    "Public GitHub Pages HTTP was not verified",
+    "Scene aesthetics and gesture quality unobserved; no claim of five demonstrated visual bugs",
+    "Checks executed in V8, Node-native runner NOT_RUN"
+  ],
+  "private_proposal_reference": {
+    "repository": "JuanManuelPM/pruebas",
+    "branch": "candidate/audit-3d-w5-20261122-whisplash",
+    "last_commit": "99db3f30ad653819e973e4e85eb3e2ee1c631dd4",
+    "directory": "sistemas/metodo/inbox/prometeo-3d-production/3d-w5-20261121/batch/"
+  },
+  "status": "FLOW_CANDIDATE",
+  "next_step": "Root FLOW_REVIEW reads proposals and integrates when independently verified; no automated scheduling, no promotion."
+}
