@@ -49,17 +49,15 @@ SHOTS = [
 ]
 
 SCRIPT = (
- "Venecia fue construida mirando al agua. "
- "Pero la noche del doce de noviembre de dos mil diecinueve, "
- "el centro municipal de mareas midió ciento ochenta y siete centímetros "
- "en Punta della Salute. Era el segundo mayor registro desde mil ochocientos setenta y dos. "
- "Esa cifra no es la profundidad del agua en una calle. "
- "El viento de siroco y otras condiciones meteorológicas agravaron la crecida. "
- "La imagen satelital es del catorce, dos días después, no del momento del pico. "
- "En octubre de dos mil veinte, las barreras MOSE comenzaron a operar "
- "frente a mareas altas. Este esquema es una reconstrucción, no una filmación. "
- "Y los videos de contexto tampoco documentan aquella noche. "
- "Conocer el origen de cada imagen también es una manera de cuidar la ciudad."
+ "Venecia vive junto al agua. Pero el doce de noviembre de dos mil diecinueve "
+ "llegó una marea excepcional. El municipio registró ciento ochenta y siete "
+ "centímetros en Punta della Salute, a las veintidós cincuenta. "
+ "No es la profundidad del agua en una calle. El siroco agravó la crecida. "
+ "Esta imagen satelital fue tomada el catorce de noviembre, dos días después. "
+ "En octubre de dos mil veinte, las barreras MOSE comenzaron a funcionar "
+ "ante mareas altas. Este esquema es una reconstrucción. Los videos de contexto "
+ "tampoco muestran aquella noche. Documentar el origen de las imágenes "
+ "también es contar la historia."
 )
 
 def run(cmd, quiet=False):
