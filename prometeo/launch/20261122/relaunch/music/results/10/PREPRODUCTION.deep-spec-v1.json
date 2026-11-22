@@ -1,0 +1,61 @@
+{
+  "version": "DEEP-SPEC-1", "medium": "music", "depth": "OPERATIVO",
+  "brief": {"taskId":"music-w003-20261122-10","batchId":"music-w003-20261122","taskNumber":10,"briefSha":"5d7e6c2540cc49d998b7fe75fc1048d6f9cba80b","previousBriefSha":"1045f4950c9f7ae11b455523ca664e087ec1b30d"},
+  "intent":"Sala de Control: hacer audible una revisión técnicamente justificada de una misma obra multitrack sin premiar un aumento de volumen.",
+  "references": [
+    {"id":"r1","name":"ITU-R BS.1770-5","url":"https://www.itu.int/rec/R-REC-BS.1770/en","observed":"Página oficial: BS.1770-5 (11/2023) vigente, métricas de sonoridad y true-peak.","type":"TECHNICAL_SOURCE_READ"},
+    {"id":"r2","name":"FabFilter Pro-Q 4 stereo help","url":"https://www.fabfilter.com/help/pro-q/using/stereo","observed":"Documentación de ecualización M/S: criterio para ubicar grave y controlar canales; plugin no instalado.","type":"SEARCH_EXCERPT_NOT_FULL_AUDIO_OBSERVED"},
+    {"id":"r3","name":"Sonarworks, Mixing and Mastering with Reference Tracks","url":"https://www.sonarworks.com/blog/learn/mixing-and-mastering-with-reference-tracks","observed":"Fuente técnica localizada: igualar volumen antes de comparar; no se analizaron grabaciones profesionales.","type":"TECHNICAL_SOURCE_EXCERPT"}
+  ],
+  "components": [
+    {"id":"C1","name":"Fuentes originales","purpose":"Cinco stems sintetizados con MIDI/tiempo y semilla declarados"},
+    {"id":"C2","name":"Mezcla base A","purpose":"Versión intencionalmente sin corregir con enmascaramiento y disparidad L/R"},
+    {"id":"C3","name":"Revisión B","purpose":"Balance, EQ bajos medios, centro de graves, suavidad de hi hats"},
+    {"id":"C4","name":"Master C","purpose":"Compresión suave, control de picos, nivel final derivado de B"},
+    {"id":"C5","name":"Panel A/B","purpose":"Mismo cursor y nivelación con métricas verificadas"},
+    {"id":"C6","name":"Auditoría","purpose":"Medición ITU/EBU por FFmpeg, reversibilidad y límites declarados"}
+  ],
+  "questions": [
+    {"id":"Q1","target":"C3","question":"¿Una revisión de verdad altera problemas de espectro y campo estéreo a LUFS casi iguales?","options":["balance/EQ/mono bass por stems","compresión/master bus sola"],"evidence":"Métricas cuantitativas y render de A/B a -17.03 y -16.93 LUFS","answer":"Procesar por stems, sin normalizar ganancia como sustituto del cambio."},
+    {"id":"Q2","target":"C4","question":"¿Master final deriva exactamente de B y conserva headroom/crest?","options":["derivación determinista de B","master no relacionado"],"evidence":"render.py: master_revision(rev), master_raw a +3.4 dB; -2.35 dBTP","answer":"Master desde B con procesamiento suave y medición real."},
+    {"id":"Q3","target":"C5","question":"¿Se puede comparar sin sesgo de volumen ni reiniciar el punto de escucha?","options":["tres audios temporizados y Web Audio gain","simples enlaces de descarga"],"evidence":"Código panel index.html y diferencia de LUFS 0.10 antes de control","answer":"Panel conserva currentTime y compensa LUFS; browser funcional pendiente prueba interactiva."}
+  ],
+  "relations": ["C1 alimenta C2/C3, C3 alimenta C4", "A/B/C usan mismo arreglo musical y duración", "C5 no altera archivos fuente; solo monitorización", "C6 mide PCM generado, no decide calidad estética"],
+  "decisions": [
+    {"questionId":"Q1","componentIds":["C1","C2","C3"],"chosen":"Síntesis offline determinista, corrección selectiva por stem","rejected":"Mover el master fader y confundir con mejora","test":"LUFS pareados y energía/correlación de graves"},
+    {"questionId":"Q2","componentIds":["C3","C4"],"chosen":"Master derivado de revisión, sin brickwall excesivo","rejected":"Resample o master desconectado","test":"Peak 4x y origen de sumas"},
+    {"questionId":"Q3","componentIds":["C5","C6"],"chosen":"Panel de reproducción A/B/C con ganancia computada","rejected":"Portada sin reproducción o screenshot falso","test":"Código de playback, captura/escucha en navegador pendiente"}
+  ],
+  "risks": [
+    {"id":"R1","severity":"high","defect":"A/B preferido solo por volumen","prevention":"Mantener diferencia integrada < 0.25 LU e implementar monitor level match","test":"FFmpeg loudnorm input_i de PCM A/B","status":"OBSERVED_PASS"},
+    {"id":"R2","severity":"high","defect":"Archivo publicado sin audio audible o sin stems reales","prevention":"Render local de tres versiones y cinco stems, además de OGG 48 kHz","test":"sf.read/ffmpeg decode, subida GitHub y readback","status":"PARTIAL"},
+    {"id":"R3","severity":"medium","defect":"Navegador no reproduce/cambia estado o UI se tapa en móvil","prevention":"HTML semántico, controles accesibles y responsive","test":"Chrome 390/1440 y playback","status":"NOT_RUN"}
+  ],
+  "acceptance": [
+    {"type":"audio","criterion":"Tres archivos de la misma duración con A/B diferencia integrada <=0.25 LU","status":"OBSERVED_PASS"},
+    {"type":"functional","criterion":"Cinco stems originales distintos y fuente de síntesis editable","status":"OBSERVED_PASS"},
+    {"type":"audio","criterion":"Pico verdadero < -1 dBTP y sin cancelación total en mono","status":"OBSERVED_PASS"},
+    {"type":"interactive","criterion":"Panel reproducible, cambio sincronizado y visual 390/1440","status":"NOT_RUN"}
+  ],
+  "resources": ["Python 3", "NumPy/SciPy/soundfile", "FFmpeg con libopus", "HTML/CSS/JS WebAudio nativo", "Ningún sample, preset, plugin comercial ni grabación ajena"],
+  "licensing": "Todos los sonidos se sintetizaron para este experimento. Las fuentes musicales y herramientas de auditoría quedan incluidas bajo la rama propia, sin material de terceros.",
+  "environmentLimits": ["El asistente no realizó escucha estética independiente con oídos humanos", "Chromium headless no completó screenshots 390/1440 en este entorno", "Validación de interacción real y aprobación humana pendientes"],
+  "artDirection": {
+    "schema":"prometeo.art-direction.first-article/v1", "medium":"music", "taskId":"music-w003-20261122-10", "briefSha":"5d7e6c2540cc49d998b7fe75fc1048d6f9cba80b",
+    "flowRef":"music-studio/flows/production-v1 plus reproducible offline render.py; external specialized flow remains frozen",
+    "promise":{"subject":"Tres versiones audibles del mismo motivo, con entradas claras y realistas","intent":"Comparación A/B técnica a igual sonoridad con posibilidad de juicio humano"},
+    "benchmark":{"url":"https://www.itu.int/rec/R-REC-BS.1770/en","description":"Fuente oficial observada del estándar de loudness y true peak, referencia técnica y no producción musical escuchada.","status":"OBSERVED"},
+    "techniques":[
+      {"family":"offline multitrack DSP original","viability":"NumPy SciPy y FFmpeg disponibles, render reproducible y derechos propios","license":"Código original y síntesis libre de samples externos"},
+      {"family":"session with recorded human musicians in a DAW","viability":"Legalmente viable con tomas propias pero no disponible aquí sin sesión ni permisos","license":"Solamente grabaciones originales o autorizadas explícitamente"}
+    ],
+    "selectedTechnique":"offline multitrack DSP original",
+    "firstFrame":{"openingDescription":"Hero SALA DE CONTROL, waveform de señal real, play grande y A/B/C prominentes","focalSubject":"Reproductor y comparación de la obra sonora, no una portada decorativa","minimalUI":"Play y tres selecciones, nivelación y mono complementarios sin overlays","checks":[
+      {"criterion":"390: título y play visibles, sin overflow horizontal","oracle":"Captura real con navegador y comprobación de layout","viewport":"390"},
+      {"criterion":"1440: forma de onda visible junto a A/B/C","oracle":"Captura y verificación de elemento principal","viewport":"1440"},
+      {"criterion":"Reproducción real y cambio A/B sin reinicio","oracle":"Play y escucha con navegador","viewport":"both"}
+    ],"observations":[]},
+    "firstArticle":{"target":"Primer pasaje activo de dos compases con drums, bass, keys y melodía","rejectWhen":"No hay transitorios legibles, clip/mono cancelado o señal muda","switchTo":"session with recorded human musicians in a DAW","oracle":"WAV 48k 24bit decodifica, RMS positivo, truepeak 4x <=1, correlación y mono","resourceProof":"render.py make_track(6), corte 4-6, FIRST_ARTICLE_mix.wav y valores leídos con soundfile","status":"OBSERVED_PASS","evidence":{"url":"https://github.com/JuanManuelPM/Experimentos/tree/candidate/prometeo-music-w003-20261122-10/prometeo/launch/20261122/relaunch/music/results/10","description":"Evidencia técnica en qa/FIRST_ARTICLE_TEST.json, audio en qa/FIRST_ARTICLE_mix.ogg; audición perceptual externa NOT_RUN"}},
+    "humanApproved":false
+  }
+}
