@@ -5,49 +5,259 @@
   "taskId": "3d-w6-20261122-06",
   "batchId": "3d-w6-20261122",
   "taskNumber": 6,
-  "source": { "repository": "JuanManuelPM/Experimentos", "branch": "gh-pages", "path": "prometeo/launch/20261122/next/3d/LAUNCH.md", "blobSha": "942c3ba8b851137886e959d2790771556e2d9f5d" },
+  "source": {
+    "repository": "JuanManuelPM/Experimentos",
+    "branch": "gh-pages",
+    "path": "prometeo/launch/20261122/next/3d/LAUNCH.md",
+    "blobSha": "942c3ba8b851137886e959d2790771556e2d9f5d"
+  },
   "brief": "Bosque de cuatro estaciones: paisaje 3D transitable con especies vegetales reconocibles, relieve y rio, viento, lluvia, estaciones que afectan follaje, luz, terreno y atmosfera; instancias, LOD, clima y pruebas movil/calidad.",
-  "intent": { "experience": "Un paseo contemplativo y navegable por una reserva imaginaria de clima templado, con cambios estacionales perceptibles a nivel del suelo.", "distinctAbility": "Un bioma procedural reproducible en WebGL2 que sincroniza suelo, cobertura vegetal, rio, luz y precipitacion sin reemplazar el bosque por un decorado 2D." },
+  "intent": {
+    "experience": "Un paseo contemplativo y navegable por una reserva imaginaria de clima templado, con cambios estacionales perceptibles a nivel del suelo.",
+    "distinctAbility": "Un bioma procedural reproducible en WebGL2 que sincroniza suelo, cobertura vegetal, rio, luz y precipitacion sin reemplazar el bosque por un decorado 2D."
+  },
   "references": [
-    {"id":"R-WIND","status":"OBSERVED","url":"https://blog.playstation.com/2021/01/12/how-stunning-visual-effects-bring-ghost-of-tsushima-to-life/","observation":"El articulo del jefe de VFX de Sucker Punch documenta viento global coherente entre arboles, pasto y particulas; modula por terreno y utiliza dos frecuencias de rafagas."},
-    {"id":"R-FOLIAGE","status":"OBSERVED","url":"https://dev.epicgames.com/documentation/unreal-engine/foliage-mode-in-unreal-engine","observation":"Documentacion oficial de Unreal: las mallas de follaje se agrupan en lotes de hardware instancing; la densidad y los tipos vegetales se ajustan por superficie."},
-    {"id":"R-INSTANCE","status":"OBSERVED","url":"https://threejs.org/docs/pages/InstancedMesh.html","observation":"La documentacion de Three.js explica que instanciar geometria compartida reduce draw calls y especifica atributos por instancia; se adopta el principio sin depender de ese runtime."}
+    {
+      "id": "R-WIND",
+      "status": "OBSERVED",
+      "url": "https://blog.playstation.com/2021/01/12/how-stunning-visual-effects-bring-ghost-of-tsushima-to-life/",
+      "observation": "El articulo del jefe de VFX de Sucker Punch documenta viento global coherente entre arboles, pasto y particulas; modula por terreno y utiliza dos frecuencias de rafagas."
+    },
+    {
+      "id": "R-FOLIAGE",
+      "status": "OBSERVED",
+      "url": "https://dev.epicgames.com/documentation/unreal-engine/foliage-mode-in-unreal-engine",
+      "observation": "Documentacion oficial de Unreal: las mallas de follaje se agrupan en lotes de hardware instancing; la densidad y los tipos vegetales se ajustan por superficie."
+    },
+    {
+      "id": "R-INSTANCE",
+      "status": "OBSERVED",
+      "url": "https://threejs.org/docs/pages/InstancedMesh.html",
+      "observation": "La documentacion de Three.js explica que instanciar geometria compartida reduce draw calls y especifica atributos por instancia; se adopta el principio sin depender de ese runtime."
+    }
   ],
   "components": [
-    {"id":"world","role":"Relieve, cauce, suelo cambiante y rocas coherentes en unidades metricas.","strategy":"Malla indexada sobre heightfield determinista con canal fluvial y transicion de humedad en shaders.","constraints":"Reserva acotada 220 x 220 m; orillas no flotantes; no inventar geografia real."},
-    {"id":"flora","role":"Robles, abedules, arces y pinos; copas, ramas, sotobosque y cobertura variable.","strategy":"Arboles procedurales con siluetas diferenciadas; hojas/gramineas agrupadas para renderizar eficientemente.","constraints":"Troncos, corona y sombras de contacto comparten coordenadas; pinos perennes, caducifolias pierden hojas."},
-    {"id":"weather","role":"Clima y estaciones vinculadas con luz, niebla, agua, pasto, hojas y precipitacion.","strategy":"Un solo estado temporal compartido por los materiales y las particulas de lluvia.","constraints":"Cambios graduales; lluvia no es un filtro decorativo; el suelo gana humedad y las plantas reaccionan al viento."},
-    {"id":"navigation","role":"Paseo real con teclado y gestos tactiles, sendero y camara de altura humana.","strategy":"Camara 3D con direccion y colision basica contra troncos y margenes del mundo; ruta guiada opcional.","constraints":"Altura de ojos 1.65 m; evitar atravesar suelo o cortar bosques por aceleraciones incongruentes."},
-    {"id":"performance","role":"Calidad escalonada, LOD real, presupuesto de pixeles y medicion de FPS.","strategy":"Grupos de geometria compartida/instanciada, descarte por distancia/calidad, control de DPR y observabilidad.","constraints":"Los cambios de calidad deben alterar carga de render observable, no solamente texto en interfaz."}
+    {
+      "id": "world",
+      "role": "Relieve, cauce, suelo cambiante y rocas coherentes en unidades metricas.",
+      "strategy": "Malla indexada sobre heightfield determinista con canal fluvial y transicion de humedad en shaders.",
+      "constraints": "Reserva acotada 220 x 220 m; orillas no flotantes; no inventar geografia real."
+    },
+    {
+      "id": "flora",
+      "role": "Robles, abedules, arces y pinos; copas, ramas, sotobosque y cobertura variable.",
+      "strategy": "Arboles procedurales con siluetas diferenciadas; hojas/gramineas agrupadas para renderizar eficientemente.",
+      "constraints": "Troncos, corona y sombras de contacto comparten coordenadas; pinos perennes, caducifolias pierden hojas."
+    },
+    {
+      "id": "weather",
+      "role": "Clima y estaciones vinculadas con luz, niebla, agua, pasto, hojas y precipitacion.",
+      "strategy": "Un solo estado temporal compartido por los materiales y las particulas de lluvia.",
+      "constraints": "Cambios graduales; lluvia no es un filtro decorativo; el suelo gana humedad y las plantas reaccionan al viento."
+    },
+    {
+      "id": "navigation",
+      "role": "Paseo real con teclado y gestos tactiles, sendero y camara de altura humana.",
+      "strategy": "Camara 3D con direccion y colision basica contra troncos y margenes del mundo; ruta guiada opcional.",
+      "constraints": "Altura de ojos 1.65 m; evitar atravesar suelo o cortar bosques por aceleraciones incongruentes."
+    },
+    {
+      "id": "performance",
+      "role": "Calidad escalonada, LOD real, presupuesto de pixeles y medicion de FPS.",
+      "strategy": "Grupos de geometria compartida/instanciada, descarte por distancia/calidad, control de DPR y observabilidad.",
+      "constraints": "Los cambios de calidad deben alterar carga de render observable, no solamente texto en interfaz."
+    }
   ],
   "questions": [
-    {"id":"Q1","target":"flora","question":"Como evitar que la vegetacion del bosque parezca un racimo de primitivas intercambiables?","alternatives":["mallas de follaje genericas repetidas","siluetas botanicas por especie y follaje en capas diferenciadas"],"evidenceRef":"R-WIND","finding":"Follaje con movimiento multiescala y variedades de tronco/rama aporta credibilidad; no basta recolorear copas.","decisionImpact":"Separar mallas de copa, tronco y ramaje, incluida perdida de hojas en especies caducas."},
-    {"id":"Q2","target":"performance","question":"Como mantener densidad vegetal util en un movil sin una llamada de dibujo por cada hoja?","alternatives":["crear un objeto WebGL por hoja","almacenar geometria agrupada y culling mediante atributos"],"evidenceRef":"R-FOLIAGE","finding":"La documentacion oficial identifica el render por lotes/instancing como estrategia de costo inferior.","decisionImpact":"Dibujar follaje y pasto en lotes, con LOD por distancia y calidad ajustable."},
-    {"id":"Q3","target":"weather","question":"Como garantizar que lluvia, estaciones y viento afecten el paisaje y no sean simples filtros visuales?","alternatives":["aplicar filtros de pantalla","sincronizar parametros de material, caudal, cobertura, viento y atmosfera"],"evidenceRef":"R-WIND","finding":"El articulo describe un unico dato de viento alimentando follaje, hierbas y particulas, mas humedad contextual.","decisionImpact":"Unificar uniforms de estaciones y clima y demostrar efectos simultaneos en al menos cuatro subsistemas."},
-    {"id":"Q4","target":"navigation","question":"Que tipo de exploracion es comprobable en movil con area chica pero suficiente profundidad espacial?","alternatives":["orbita fija en un diorama","camara a nivel humano con gestos y ruta automatica"],"evidenceRef":"R-INSTANCE","finding":"El runtime WebGL soporta instancias estables mientras se mueve camara; desplazamiento real comprueba escala.","decisionImpact":"WASD/joystick y recorrido autopilot con camara a 1.65 m y limites de mundo."}
+    {
+      "id": "Q1",
+      "target": "flora",
+      "question": "Como evitar que la vegetacion del bosque parezca un racimo de primitivas intercambiables?",
+      "alternatives": [
+        "mallas de follaje genericas repetidas",
+        "siluetas botanicas por especie y follaje en capas diferenciadas"
+      ],
+      "evidenceRef": "R-WIND",
+      "finding": "Follaje con movimiento multiescala y variedades de tronco/rama aporta credibilidad; no basta recolorear copas.",
+      "decisionImpact": "Separar mallas de copa, tronco y ramaje, incluida perdida de hojas en especies caducas."
+    },
+    {
+      "id": "Q2",
+      "target": "performance",
+      "question": "Como mantener densidad vegetal util en un movil sin una llamada de dibujo por cada hoja?",
+      "alternatives": [
+        "crear un objeto WebGL por hoja",
+        "almacenar geometria agrupada y culling mediante atributos"
+      ],
+      "evidenceRef": "R-FOLIAGE",
+      "finding": "La documentacion oficial identifica el render por lotes/instancing como estrategia de costo inferior.",
+      "decisionImpact": "Dibujar follaje y pasto en lotes, con LOD por distancia y calidad ajustable."
+    },
+    {
+      "id": "Q3",
+      "target": "weather",
+      "question": "Como garantizar que lluvia, estaciones y viento afecten el paisaje y no sean simples filtros visuales?",
+      "alternatives": [
+        "aplicar filtros de pantalla",
+        "sincronizar parametros de material, caudal, cobertura, viento y atmosfera"
+      ],
+      "evidenceRef": "R-WIND",
+      "finding": "El articulo describe un unico dato de viento alimentando follaje, hierbas y particulas, mas humedad contextual.",
+      "decisionImpact": "Unificar uniforms de estaciones y clima y demostrar efectos simultaneos en al menos cuatro subsistemas."
+    },
+    {
+      "id": "Q4",
+      "target": "navigation",
+      "question": "Que tipo de exploracion es comprobable en movil con area chica pero suficiente profundidad espacial?",
+      "alternatives": [
+        "orbita fija en un diorama",
+        "camara a nivel humano con gestos y ruta automatica"
+      ],
+      "evidenceRef": "R-INSTANCE",
+      "finding": "El runtime WebGL soporta instancias estables mientras se mueve camara; desplazamiento real comprueba escala.",
+      "decisionImpact": "WASD/joystick y recorrido autopilot con camara a 1.65 m y limites de mundo."
+    }
   ],
   "relations": [
-    {"from":"world","to":"flora","invariant":"Cada planta apoya la base en la misma funcion de altura que la superficie visible.","failure":"Vegetacion flotante, enterrada o sobre el cauce del rio.","test":"Comparar diez plantas y registrar altura calculada con tolerancia inferior a 5 cm."},
-    {"from":"weather","to":"flora","invariant":"El mismo viento desplaza pastos y follaje con amplitudes diferentes; cada estacion afecta cobertura y pigmento.","failure":"La lluvia flota en un cielo fijo o todas las especies caducan igual que los pinos.","test":"Revisar cuatro estaciones y lluvia on/off en el mismo punto de observacion."},
-    {"from":"world","to":"navigation","invariant":"La camara permanece sobre relieve y no cruza troncos en modo paseo.","failure":"La camara atraviesa terreno, troncos o salta por cambios de LOD.","test":"Recorrer el sendero con teclado y control tactil, comprobar altura y colisiones."},
-    {"from":"performance","to":"flora","invariant":"La calidad baja reduce instancias visibles, distancia de detalle y resolucion sin cambiar identidad del bosque.","failure":"Solo cambia el indicador de calidad o desaparece toda la escena.","test":"Comparar conteos visibles, densidad de pixeles y FPS entre ECO y ALTA."}
+    {
+      "from": "world",
+      "to": "flora",
+      "invariant": "Cada planta apoya la base en la misma funcion de altura que la superficie visible.",
+      "failure": "Vegetacion flotante, enterrada o sobre el cauce del rio.",
+      "test": "Comparar diez plantas y registrar altura calculada con tolerancia inferior a 5 cm."
+    },
+    {
+      "from": "weather",
+      "to": "flora",
+      "invariant": "El mismo viento desplaza pastos y follaje con amplitudes diferentes; cada estacion afecta cobertura y pigmento.",
+      "failure": "La lluvia flota en un cielo fijo o todas las especies caducan igual que los pinos.",
+      "test": "Revisar cuatro estaciones y lluvia on/off en el mismo punto de observacion."
+    },
+    {
+      "from": "world",
+      "to": "navigation",
+      "invariant": "La camara permanece sobre relieve y no cruza troncos en modo paseo.",
+      "failure": "La camara atraviesa terreno, troncos o salta por cambios de LOD.",
+      "test": "Recorrer el sendero con teclado y control tactil, comprobar altura y colisiones."
+    },
+    {
+      "from": "performance",
+      "to": "flora",
+      "invariant": "La calidad baja reduce instancias visibles, distancia de detalle y resolucion sin cambiar identidad del bosque.",
+      "failure": "Solo cambia el indicador de calidad o desaparece toda la escena.",
+      "test": "Comparar conteos visibles, densidad de pixeles y FPS entre ECO y ALTA."
+    }
   ],
   "decisions": [
-    {"id":"D1","questionId":"Q1","componentIds":["flora","world"],"choice":"Morfologias distintas con tronco ramificado, aciculas y copas estacionales.","rejected":"Una sola esfera escalada por arbol como vegetacion final.","productionChange":"Generar diferentes arboles y grupos de hojas, con pigmentos y densidad segun caducidad.","why":"Cada especie necesita poder leerse por su silueta y conservar identidad en invierno."},
-    {"id":"D2","questionId":"Q2","componentIds":["performance","flora"],"choice":"Un lote GPU por familia y LOD alejado con descarte en vertice.","rejected":"Una draw call nueva para cada hoja o hierba.","productionChange":"Atributos de distancia y umbral de calidad por triangulo, mas contador de carga real.","why":"La limitacion del movil exige preservar geometria de primer plano sin saturar CPU."},
-    {"id":"D3","questionId":"Q3","componentIds":["weather","world","flora"],"choice":"Uniforms compartidos de etapa estacional, viento, lluvia y humedad.","rejected":"Recolorar solo la pantalla y usar lluvia en interfaz DOM.","productionChange":"Shaders de tierra, agua, hojas, cielo y atmosfera vinculados al mismo estado.","why":"Los cambios deben mostrar un ecosistema continuo y no un preset cosmetico."},
-    {"id":"D4","questionId":"Q4","componentIds":["navigation","world"],"choice":"Primera persona lenta mas ruta contemplativa automatica.","rejected":"Una escena 3D inmovil sin exploracion.","productionChange":"Camara con WASD, swipe, botones accesibles, terreno y colision, rutas reproducibles.","why":"El pedido requiere recorridos observables en movil, no un unico punto de camara."}
+    {
+      "id": "D1",
+      "questionId": "Q1",
+      "componentIds": [
+        "flora",
+        "world"
+      ],
+      "choice": "Morfologias distintas con tronco ramificado, aciculas y copas estacionales.",
+      "rejected": "Una sola esfera escalada por arbol como vegetacion final.",
+      "productionChange": "Generar diferentes arboles y grupos de hojas, con pigmentos y densidad segun caducidad.",
+      "why": "Cada especie necesita poder leerse por su silueta y conservar identidad en invierno."
+    },
+    {
+      "id": "D2",
+      "questionId": "Q2",
+      "componentIds": [
+        "performance",
+        "flora"
+      ],
+      "choice": "Un lote GPU por familia y LOD alejado con descarte en vertice.",
+      "rejected": "Una draw call nueva para cada hoja o hierba.",
+      "productionChange": "Atributos de distancia y umbral de calidad por triangulo, mas contador de carga real.",
+      "why": "La limitacion del movil exige preservar geometria de primer plano sin saturar CPU."
+    },
+    {
+      "id": "D3",
+      "questionId": "Q3",
+      "componentIds": [
+        "weather",
+        "world",
+        "flora"
+      ],
+      "choice": "Uniforms compartidos de etapa estacional, viento, lluvia y humedad.",
+      "rejected": "Recolorar solo la pantalla y usar lluvia en interfaz DOM.",
+      "productionChange": "Shaders de tierra, agua, hojas, cielo y atmosfera vinculados al mismo estado.",
+      "why": "Los cambios deben mostrar un ecosistema continuo y no un preset cosmetico."
+    },
+    {
+      "id": "D4",
+      "questionId": "Q4",
+      "componentIds": [
+        "navigation",
+        "world"
+      ],
+      "choice": "Primera persona lenta mas ruta contemplativa automatica.",
+      "rejected": "Una escena 3D inmovil sin exploracion.",
+      "productionChange": "Camara con WASD, swipe, botones accesibles, terreno y colision, rutas reproducibles.",
+      "why": "El pedido requiere recorridos observables en movil, no un unico punto de camara."
+    }
   ],
   "risks": [
-    {"componentIds":["performance"],"severity":"high","failure":"WebGL2 no disponible o shaders fallan y toda la obra queda en blanco.","prevention":"Primero verificar un cuadro WebGL2 con diagnosticos reales y fallback accesible.","test":"Abrir localmente en Chromium con WebGL2/SwiftShader, leer errores y capturar canvas.","status":"NOT_RUN"},
-    {"componentIds":["navigation","world"],"severity":"high","failure":"Matriz de camara incorrecta o z-fighting anula inmersion y dificulta exploracion.","prevention":"Probar camera view/projection y geometria basica antes del follaje.","test":"Captura de primer render y comprobacion automatica de pixeles no planos.","status":"NOT_RUN"},
-    {"componentIds":["flora","weather"],"severity":"medium","failure":"Cambio estacional borra la mitad del bosque y deja escenas desprovistas de masa.","prevention":"Persistir estructura de ramas y pinos, vegetacion baja diferenciada.","test":"Capturar misma vista en primavera y en invierno para comparar siluetas.","status":"NOT_RUN"}
+    {
+      "componentIds": [
+        "performance"
+      ],
+      "severity": "high",
+      "failure": "WebGL2 no disponible o shaders fallan y toda la obra queda en blanco.",
+      "prevention": "Primero verificar un cuadro WebGL2 con diagnosticos reales y fallback accesible.",
+      "test": "Abrir localmente en Chromium con WebGL2/SwiftShader, leer errores y capturar canvas.",
+      "status": "OBSERVED"
+    },
+    {
+      "componentIds": [
+        "navigation",
+        "world"
+      ],
+      "severity": "high",
+      "failure": "Matriz de camara incorrecta o z-fighting anula inmersion y dificulta exploracion.",
+      "prevention": "Probar camera view/projection y geometria basica antes del follaje.",
+      "test": "Captura de primer render y comprobacion automatica de pixeles no planos.",
+      "status": "OBSERVED"
+    },
+    {
+      "componentIds": [
+        "flora",
+        "weather"
+      ],
+      "severity": "medium",
+      "failure": "Cambio estacional borra la mitad del bosque y deja escenas desprovistas de masa.",
+      "prevention": "Persistir estructura de ramas y pinos, vegetacion baja diferenciada.",
+      "test": "Capturar misma vista en primavera y en invierno para comparar siluetas.",
+      "status": "NOT_RUN"
+    }
   ],
   "acceptance": [
-    {"kind":"functional","criterion":"Existe una aplicacion WebGL2 autocontenida y sin dependencias CDN.","oracle":"Chromium local con error de consola vacio y un canvas renderizado.","status":"NOT_RUN"},
-    {"kind":"visual","criterion":"La misma camara revela variaciones evidentes entre cuatro estaciones y lluvia.","oracle":"Capturas de render real por estado, inspeccion posterior por una persona.","status":"NOT_RUN"},
-    {"kind":"interactive","criterion":"Movimiento teclado y tactil modifica la posicion real de camara.","oracle":"Playwright y prueba humana en telefono, con coordenadas observables.","status":"NOT_RUN"},
-    {"kind":"functional","criterion":"Calidad ECO y ALTA alteran resolucion y cantidad de geometria efectiva.","oracle":"Captura de diagnostico FPS, DPR y geometria visible bajo ambas calidades.","status":"NOT_RUN"}
+    {
+      "kind": "functional",
+      "criterion": "Existe una aplicacion WebGL2 autocontenida y sin dependencias CDN.",
+      "oracle": "Chromium local con error de consola vacio y un canvas renderizado.",
+      "status": "OBSERVED"
+    },
+    {
+      "kind": "visual",
+      "criterion": "La misma camara revela variaciones evidentes entre cuatro estaciones y lluvia.",
+      "oracle": "Capturas de render real por estado, inspeccion posterior por una persona.",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "interactive",
+      "criterion": "Movimiento teclado y tactil modifica la posicion real de camara.",
+      "oracle": "Playwright y prueba humana en telefono, con coordenadas observables.",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "functional",
+      "criterion": "Calidad ECO y ALTA alteran resolucion y cantidad de geometria efectiva.",
+      "oracle": "Captura de diagnostico FPS, DPR y geometria visible bajo ambas calidades.",
+      "status": "OBSERVED"
+    }
   ],
   "resources": "WebGL2 puro, JS ES modules y shaders originales, sin assets externos ni motor CDN, con Node y Chromium disponibles para pruebas locales.",
   "licensing": "Codigo, geometria y materiales generados originalmente para este trabajo; fuentes externas solo para estudio sin copiar mallas, texturas o identidad de obras ajenas.",
