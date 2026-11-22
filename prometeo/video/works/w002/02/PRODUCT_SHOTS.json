@@ -1,0 +1,74 @@
+{
+  "taskId": "video-w002-20261122-02",
+  "product": "VÉRTICE L1",
+  "geometry": {
+    "baseRadiusCm": 7.2,
+    "baseHeightCm": 1.6,
+    "lowerArmCm": 17.0,
+    "upperArmCm": 18.0,
+    "lightHeadCm": 19.0,
+    "stemDiameterCm": 1.35,
+    "hingeDiameterCm": 3.5,
+    "headWidthCm": 2.2
+  },
+  "shots": [
+    {
+      "id": "S01",
+      "start": 0,
+      "end": 2.75,
+      "type": "SILHOUETTE",
+      "focus": "folded",
+      "focalMmEquivalent": 75
+    },
+    {
+      "id": "S02",
+      "start": 2.75,
+      "end": 5.1,
+      "type": "HINGE_MACRO",
+      "focus": "joint1",
+      "focalMmEquivalent": 110
+    },
+    {
+      "id": "S03",
+      "start": 5.1,
+      "end": 7.6,
+      "type": "MECHANISM",
+      "focus": "full",
+      "focalMmEquivalent": 50
+    },
+    {
+      "id": "S04",
+      "start": 7.6,
+      "end": 10.15,
+      "type": "LIGHT_REVEAL",
+      "focus": "full",
+      "focalMmEquivalent": 60
+    },
+    {
+      "id": "S05",
+      "start": 10.15,
+      "end": 12.5,
+      "type": "EMITTER_DETAIL",
+      "focus": "head",
+      "focalMmEquivalent": 110
+    },
+    {
+      "id": "S06",
+      "start": 12.5,
+      "end": 16,
+      "type": "HERO_END",
+      "focus": "full",
+      "focalMmEquivalent": 65
+    }
+  ],
+  "fps": 24,
+  "durationSeconds": 16,
+  "final": "VERTICE_L1_FILM.mp4",
+  "audio": {
+    "sampleRate": 48000,
+    "peakDbFS": -13.83,
+    "audioSources": "Procedural original foley and synthesis; no third-party recording"
+  },
+  "movement": "Three physical joints in one xz coordinate system: lower, upper, head",
+  "export": "ffmpeg / libx264 + AAC"
+}
