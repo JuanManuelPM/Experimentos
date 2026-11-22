@@ -1,0 +1,252 @@
+{
+  "version": "DEEP-SPEC-1",
+  "medium": "Imágenes / narración sin palabras",
+  "depth": "SISTEMA",
+  "brief": "LA ESTACIÓN VACÍA: narrar en seis ilustraciones raster originales cómo una viajera encuentra una señal de vida en una estación abandonada, sin texto explicativo, con continuidad de espacio, objetos, figura humana y cierre emocional.",
+  "identity": {
+    "batchId": "images-w002-20261122",
+    "taskNumber": 6,
+    "taskId": "images-w002-20261122-06",
+    "launchRef": "gh-pages",
+    "launchBlobSha": "2e0e5e8ca226d546005349dc44b31cd9abcf5dd1",
+    "qualityBarVersion": "QBAR-1"
+  },
+  "intent": {
+    "experience": "Transformar la soledad en ternura a través de una cadena de evidencias visuales y cambios de luz sin ninguna línea de narración.",
+    "distinctAbility": "Sostener coherencia entre seis planos, con una única viajera, estación, animal y objetos recurrentes en una trama visual causal."
+  },
+  "references": [
+    {
+      "id": "tan1",
+      "status": "OBSERVED",
+      "url": "https://www.shauntan.net/arrival-book",
+      "observation": "El autor describe cómo el relato sin texto modifica el ritmo de lectura y permite meditar sobre objetos y acciones; se incorpora ese principio, sin imitar su obra."
+    },
+    {
+      "id": "tan2",
+      "status": "OBSERVED",
+      "url": "https://www.shauntan.net/new-page-12",
+      "observation": "El ensayo describe información visual fragmentaria y reconocimiento de patrones entre escenas, útiles para establecer hitos recurrentes."
+    },
+    {
+      "id": "wiesner",
+      "status": "OBSERVED",
+      "url": "https://www.ala.org/winner/flotsam",
+      "observation": "La American Library Association documenta el reconocimiento de Flotsam por su narración muda de imágenes; sirve como aspiración perceptual, no licencia de reproducción."
+    },
+    {
+      "id": "loc",
+      "status": "OBSERVED",
+      "url": "https://www.loc.gov/static/managed-content/uploads/sites/22/2024/07/wiesner.pdf",
+      "observation": "La conversación del Library of Congress describe el descubrimiento de una cámara como motor de una historia visual sin voz narradora; inspira una progresión basada en pistas físicas."
+    }
+  ],
+  "components": [
+    {
+      "id": "space",
+      "role": "Localización ferroviaria consistente, reconocible de planos generales a primeros planos.",
+      "strategy": "Conservar cubierta metálica arqueada, reloj colgante, caseta de madera a la derecha, banco verde y vías a la izquierda.",
+      "constraints": "Mantener la misma geometría, desgaste, posición relativa de hitos y escala de la protagonista en todo el relato."
+    },
+    {
+      "id": "woman",
+      "role": "Protagonista con silueta y lenguaje corporal que conduzca la lectura emocional.",
+      "strategy": "Pelo oscuro corto y ondulado, impermeable amarillo mostaza, bufanda verde petróleo, botas marrones y valija roja.",
+      "constraints": "No regenerar un rostro ni un vestuario diferentes entre escenas; posturas deben tener lógica de movimiento."
+    },
+    {
+      "id": "trace",
+      "role": "Cadena de objetos y huellas que hace creíble el descubrimiento gradual del animal.",
+      "strategy": "Huellas húmedas, cuenco cerámico azul, ojos tras una puerta rota, perro mestizo pardo con pata blanca.",
+      "constraints": "La pista antecede al animal y cuenco/huellas permanecen vinculados al mismo banco y caseta."
+    },
+    {
+      "id": "light",
+      "role": "Luz y atmósfera como traducción perceptual de la evolución emocional.",
+      "strategy": "Azul gris de lluvia en apertura; un foco de luz dorada sobre el encuentro; luz cálida amplia en cierre.",
+      "constraints": "Conservar humedad, envejecimiento y la misma arquitectura durante el cambio tonal."
+    }
+  ],
+  "questions": [
+    {
+      "id": "q-space",
+      "target": "space",
+      "question": "¿Cómo podrá el lector reconocer un mismo lugar cuando la cámara pase de plano general a plano detalle sin carteles escritos?",
+      "alternatives": [
+        "fijar hitos arquitectónicos y su disposición",
+        "inventar seis perspectivas independientes de estaciones"
+      ],
+      "finding": "La cubierta, reloj, banco y caseta permanecen identificables desde planos amplios aunque los detalles oculten el resto.",
+      "decisionImpact": "Fijar un mapa de hitos y volver a establecerlos en el último panel.",
+      "evidenceRef": "tan2"
+    },
+    {
+      "id": "q-woman",
+      "target": "woman",
+      "question": "¿Qué técnica reduce mejor el cambio de identidad de la viajera entre seis imágenes realizadas con generación de imágenes?",
+      "alternatives": [
+        "seis generaciones independientes",
+        "plancha de seis escenas descritas como obra visual unificada"
+      ],
+      "finding": "Una única plancha favorece la continuidad perceptual de abrigo, rostro, bufanda, silueta y valija.",
+      "decisionImpact": "Generar composición conjunta, luego segmentar los seis raster sin regenerar cada personaje.",
+      "evidenceRef": "tan1"
+    },
+    {
+      "id": "q-trace",
+      "target": "trace",
+      "question": "¿Qué pista puede sugerir vida reciente de forma causal antes de mostrar al perro y sin añadir una narración verbal?",
+      "alternatives": [
+        "introducir el perro sin preparar el descubrimiento",
+        "introducir huellas, agua en cuenco y ojos en la sombra"
+      ],
+      "finding": "Una secuencia de rastros actuales permite inferir presencia y luego obtener confirmación en el encuentro.",
+      "decisionImpact": "Reservar planos 2 a 4 para huellas, cuenco y ojos antes de revelar el perro en plano 5.",
+      "evidenceRef": "loc"
+    },
+    {
+      "id": "q-light",
+      "target": "light",
+      "question": "¿Qué transformación visual traduce esperanza al final sin convertir la estación en un sitio distinto?",
+      "alternatives": [
+        "añadir símbolos o texto de esperanza",
+        "hacer pasar de lluvia fría a luz ámbar manteniendo el edificio"
+      ],
+      "finding": "La iluminación y el gesto contenido pueden cerrar el arco sin alterar arquitectura ni explicar el sentimiento.",
+      "decisionImpact": "Conservar el banco, techo y valija en el cierre bajo luz dorada.",
+      "evidenceRef": "tan1"
+    }
+  ],
+  "relations": [
+    {
+      "from": "woman",
+      "to": "space",
+      "invariant": "La valija roja y el abrigo amarillo deben permanecer asociados a una única viajera en la misma plataforma y caseta.",
+      "failure": "Cambio de protagonista, escala, vestuario o teletransporte entre imágenes.",
+      "test": "Cotejar hitos espaciales y vestuario de cada panel."
+    },
+    {
+      "from": "trace",
+      "to": "space",
+      "invariant": "Las huellas, cuenco, puerta y banco pertenecen a una ruta causal y físicamente contigua.",
+      "failure": "Las pistas llevan a otra habitación o se desconectan del perro revelado.",
+      "test": "Seguir la trayectoria de los objetos entre viñetas."
+    },
+    {
+      "from": "light",
+      "to": "space",
+      "invariant": "El techo roto y la boletería gastada siguen siendo el mismo sitio cuando cambia la dirección y temperatura de luz.",
+      "failure": "La última imagen parece un decorado restaurado y no una variación atmosférica.",
+      "test": "Comparar primer y último panel a tamaño completo."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "d-space",
+      "questionId": "q-space",
+      "componentIds": [
+        "space"
+      ],
+      "choice": "Topología única con referencias persistentes.",
+      "rejected": "Seis interiores arbitrarios independientes.",
+      "productionChange": "La cubierta, el reloj, el banco verde y la caseta se reutilizan entre apertura, encuentro y cierre.",
+      "why": "La continuidad convierte planos parciales en una única narración espacial."
+    },
+    {
+      "id": "d-woman",
+      "questionId": "q-woman",
+      "componentIds": [
+        "woman"
+      ],
+      "choice": "Una composición de seis paneles de origen único.",
+      "rejected": "Seis regeneraciones no condicionadas entre sí.",
+      "productionChange": "Se produce una plancha de 1536 × 1024 px y se recortan seis PNG independientes de 506 × 506.",
+      "why": "Favorece identidad visual a expensas de resolución nativa por cuadro."
+    },
+    {
+      "id": "d-trace",
+      "questionId": "q-trace",
+      "componentIds": [
+        "trace"
+      ],
+      "choice": "Huellas, agua, ojos, perro y contacto como cadena.",
+      "rejected": "Animal que aparece sin motivación en un plano aislado.",
+      "productionChange": "Los cuatro paneles centrales escalan de rastros a revelación y luego cuidado.",
+      "why": "El relato mudo tiene inferencia causal, no seis estampas inconexas."
+    },
+    {
+      "id": "d-light",
+      "questionId": "q-light",
+      "componentIds": [
+        "light"
+      ],
+      "choice": "Progresión de paleta fría a luz cálida.",
+      "rejected": "Textos narrativos que expliquen el final.",
+      "productionChange": "La última viñeta devuelve la composición amplia pero iluminada en dorado.",
+      "why": "La transformación perceptual queda dentro del medio visual."
+    }
+  ],
+  "risks": [
+    {
+      "componentIds": [
+        "woman",
+        "space",
+        "trace"
+      ],
+      "severity": "high",
+      "failure": "La generación de seis escenas no conserva identidad del personaje, perro o estación.",
+      "prevention": "Generar de forma conjunta con canon detallado y una sola composición visual.",
+      "test": "Spike: inspección visual del raster compuesto antes de aislar paneles.",
+      "status": "OBSERVED"
+    },
+    {
+      "componentIds": [
+        "trace"
+      ],
+      "severity": "medium",
+      "failure": "Personas externas no deducen que las huellas y el cuenco pertenecen al animal descubierto.",
+      "prevention": "Prueba ciega de lectura y ordenamiento con participantes ajenos al proyecto.",
+      "test": "Registrar ordenamiento y explicaciones de al menos tres lectores externos.",
+      "status": "NOT_RUN"
+    },
+    {
+      "componentIds": [
+        "light"
+      ],
+      "severity": "medium",
+      "failure": "El último panel cambia el decorado para conseguir una sensación cálida.",
+      "prevention": "Hacer persistir banco, techo, reloj y valija mientras cambia la luz.",
+      "test": "Inspección de la plancha comparando apertura y cierre.",
+      "status": "OBSERVED"
+    }
+  ],
+  "acceptance": [
+    {
+      "kind": "visual",
+      "criterion": "Seis ilustraciones raster originales y expresivas sin palabras explicativas.",
+      "oracle": "Inspección directa del PNG compuesto generado y de sus seis recortes.",
+      "status": "OBSERVED"
+    },
+    {
+      "kind": "logic",
+      "criterion": "Cada panel existe como PNG real y todos corresponden a la misma plancha.",
+      "oracle": "Pillow verificó la integridad de 6 PNG de 506 × 506 y un maestro 1536 × 1024.",
+      "status": "OBSERVED"
+    },
+    {
+      "kind": "visual",
+      "criterion": "Un lector externo ordena y comprende el arco narrativo sin guía.",
+      "oracle": "Reordenamiento ciego por lectores ajenos que reporten razones y dudas.",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "visual",
+      "criterion": "La calidad de dibujo, proporción y acabado supera una maqueta de storyboard.",
+      "oracle": "Evaluación perceptual independiente de detalles, perspectiva y lectura de las 6 imágenes.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "resources": "Herramienta de generación raster y Pillow para recorte/QA local; Node 22 para validar ficha; GitHub para versionado de documentación.",
+  "licensing": "Ilustraciones generadas originalmente para esta tarea, sin reproducción de recursos gráficos de terceros. Referentes enlazados para lectura de investigación, sin copiar assets.",
+  "environmentLimits": "La sesión no dispone de transporte de archivos PNG binarios del contenedor al conector GitHub. El producto visual existe y se entrega en ZIP local, pero no se acredita publicación de los seis raster en GitHub Pages."
+}
