@@ -1,5 +1,6 @@
 /* ROOT PORTAL v1.0.0 · datos anteriores intactos, prueba 3D desacoplada del shell */
 import './shared/v1/shell.js';
+import './shared/v1/response.js';
 const $ = id => document.getElementById(id);
 const FALLBACK = [
   {id:'direccion',label:'Dirección'},{id:'root',label:'ROOT'},
@@ -33,10 +34,27 @@ function updateContext(){const el=$('app-context');el.replaceChildren();if(state
   }
 }
 function messages(){const own=state.public.filter(e=>e&&e.room===state.room);const legacy=state.room==='root'?state.legacy.map(e=>({...e,room:'root'})):[];return [...own,...legacy].sort((a,b)=>String(b.publishedAt||'').localeCompare(String(a.publishedAt||'')));}
-function renderMessages(){const room=state.rooms.find(x=>x.id===state.room)||FALLBACK[0];$('space').textContent=room.label;const m=messages();const latest=m[0];$('date').textContent=latest?.publishedAt?new Date(latest.publishedAt).toLocaleDateString('es-AR',{day:'2-digit',month:'short'}):'';$('title').textContent=latest?.title||'';$('text').textContent=latest?.body||'';const key=state.room+'|'+(latest?.id||'base');const btn=$('copy');const isCopied=copied(key);btn.dataset.copied=isCopied?'true':'false';btn.textContent=isCopied?'Copiado':'Copiar';btn.onclick=copyCurrent;$('older').hidden=m.length<2;$('older').textContent=state.older?'Ocultar':'Anterior';const h=$('history');h.hidden=!state.older;h.replaceChildren();if(state.older)for(const entry of m.slice(1)){const a=document.createElement('article');a.className='item';const date=document.createElement('time');date.textContent=entry.publishedAt?new Date(entry.publishedAt).toLocaleDateString('es-AR',{day:'2-digit',month:'short'}):'';const title=document.createElement('h2');title.textContent=entry.title||'';const body=document.createElement('p');body.textContent=entry.body||'';a.append(date,title,body);h.append(a);}}
+function renderMessages(){
+  const room=state.rooms.find(x=>x.id===state.room)||FALLBACK[0],m=messages(),latest=m[0];
+  $('space').textContent=room.label;
+  const view=$('response');view.setData(latest||{},[{kind:'copy',label:'Copiar',value:promptFor(room)}]);
+  $('older').hidden=m.length<2;$('older').textContent=state.older?'Ocultar':'Anterior';
+  const history=$('history');history.hidden=!state.older;history.replaceChildren();
+  if(state.older)for(const entry of m.slice(1)){
+    const item=document.createElement('prometeo-response');
+    item.className='item';
+    item.setData(entry,[{kind:'copy',label:'Copiar',value:promptFor(room)}]);
+    history.append(item);
+  }
+}
 function render(){const scene=state.room==='3d'&&state.screen==='scene';$('scene').hidden=!scene;$('main').hidden=scene;document.title=(state.rooms.find(x=>x.id===state.room)?.label||'PROMETEO')+' · PROMETEO';renderMessages();updateContext();if(scene)drawScene();}
 let gl=null,ctx2d=null;
 function drawScene(){const canvas=$('scene-canvas');if(!$('scene').hidden){const ratio=Math.min(window.devicePixelRatio||1,2);canvas.width=Math.max(1,Math.round(innerWidth*ratio));canvas.height=Math.max(1,Math.round(innerHeight*ratio));if(!gl&&!ctx2d){gl=canvas.getContext('webgl2',{alpha:false,antialias:false})||canvas.getContext('webgl',{alpha:false,antialias:false});if(!gl)ctx2d=canvas.getContext('2d');}const hex=getComputedStyle(document.documentElement).getPropertyValue('--p-stage').trim();const color=/^#[0-9a-f]{6}$/i.test(hex)?[1,3,5].map(i=>parseInt(hex.slice(i,i+2),16)/255):[0.91,0.91,0.89];if(gl){gl.viewport(0,0,canvas.width,canvas.height);gl.clearColor(...color,1);gl.clear(gl.COLOR_BUFFER_BIT);}else if(ctx2d){ctx2d.fillStyle=hex||'#e8e8e5';ctx2d.fillRect(0,0,canvas.width,canvas.height);}}}
 $('older').addEventListener('click',()=>{state.older=!state.older;renderMessages();});shell.setRooms(FALLBACK);shell.addEventListener('prometeo:navigate',e=>{const id=e.detail.room;target(id,id==='3d'?'scene':'messages');});window.addEventListener('hashchange',()=>selectRoute(route()));window.addEventListener('resize',drawScene);if(window.matchMedia){matchMedia('(prefers-color-scheme: dark)').addEventListener('change',drawScene);}
-async function refresh(){const names=['ROOMS.json','ROOM_MESSAGES.json','REPLIES.json'];const results=await Promise.allSettled(names.map(get));for(let i=0;i<names.length;i++){const data=results[i].status==='fulfilled'?results[i].value:cached(names[i]);if(!data)continue;if(i===0&&Array.isArray(data.rooms)&&data.rooms.length){const rooms=data.rooms.filter(x=>x&&/^[a-z0-9-]+$/.test(x.id)&&typeof x.label==='string').slice(0,80);if(rooms.length){state.rooms=rooms;shell.setRooms(rooms);store(names[i],data);}}if(i===1&&Array.isArray(data.entries)){state.public=data.entries;store(names[i],data);}if(i===2&&Array.isArray(data.entries)){state.legacy=data.entries;store(names[i],data);}}selectRoute(route());}
-selectRoute(route());refresh();document.addEventListener('visibilitychange',()=>{if(!document.hidden)refresh();});setInterval(()=>{if(!document.hidden)refresh();},45000);
+async function refresh(){const names=['ROOMS.json','ROOM_MESSAGES.json','REPLIES.json'];const results=await Promise.allSettled(names.map(get));for(let i=0;i<names.length;i++){const data=results[i].status==='fulfilled'?results[i].value:cached(names[i]);if(!data)continue;if(i===0&&Array.isArray(data.rooms)&&data.rooms.length){const rooms=data.rooms.filter(x=>x&&/^[a-z0-9-]+$/.test(x.id)&&typeof x.label==='string').slice(0,80);if(rooms.length){state.rooms=rooms;shell.setRooms(rooms);store(names[i],data);}}if(i===1&&Array.isArray(data.entries)){state.public=data.entries;store(names[i],data);}if(i===2&&Array.isArray(data.entries)){state.legacy=data.entries;store(names[i],data);}}const fixture=new URLSearchParams(location.search).get('fixture');
+ if(fixture==='text'||fixture==='jobs'){
+   try{const sample=await get('fixtures/response-'+(fixture==='jobs'?'ten':'text')+'.json');state.public=[sample];state.legacy=[];}
+   catch(error){console.warn('Fixture unavailable',error);}
+ }
+ selectRoute(route());}
+selectRoute(route());refresh();document.addEventListener('prometeo:action',e=>{if(e.detail?.kind==='copy')toast(e.detail.success?'Copiado':'No se pudo copiar');});document.addEventListener('visibilitychange',()=>{if(!document.hidden)refresh();});setInterval(()=>{if(!document.hidden)refresh();},45000);

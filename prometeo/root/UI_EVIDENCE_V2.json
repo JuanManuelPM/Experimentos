@@ -1,0 +1,54 @@
+{
+  "schema": "prometeo.root.ui-evidence/v2",
+  "version": "1.1.0-candidate",
+  "date": "2026-11-21",
+  "private": {
+    "repo": "JuanManuelPM/pruebas",
+    "branch": "candidate/prometeo-ui-response-shared-20261121",
+    "commit": "c3004413dac97ce907d5efb4a2dc19308b1a1222"
+  },
+  "status": "SOURCE_AND_COMPONENT_LOCAL_QA;PUBLIC_BROWSER_PENDING",
+  "retained": [
+    "ROOMS.json",
+    "REPLIES.json",
+    "archivo-20261121.html",
+    "legacy ROOT messages",
+    "shell v1.0.1"
+  ],
+  "tested": {
+    "method": "Headless Chromium rendered standalone component using equivalent local modules and JSON fixtures (NOT deployed ROOT)",
+    "viewports": [
+      [
+        320,
+        568
+      ],
+      [
+        390,
+        844
+      ],
+      [
+        738,
+        332
+      ],
+      [
+        1440,
+        900
+      ]
+    ],
+    "passed": [
+      "text response",
+      "10 independent work rows",
+      "copy changes only local state",
+      "zero JS page errors",
+      "zero horizontal overflow"
+    ],
+    "notRun": [
+      "live ROOT browser validation",
+      "physical Android",
+      "end-to-end concurrent copy with remote launches",
+      "independent cross-app consumer",
+      "rollback exercise"
+    ]
+  },
+  "rollback": "Restore only index.html and portal-v1.js from public baseline commit db4a5c3381a6eec510e74d0c14c063e5b4bc2dfb; shared/v1 additions are compatible and remain inert."
+}

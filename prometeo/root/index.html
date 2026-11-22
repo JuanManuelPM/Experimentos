@@ -11,7 +11,7 @@
 </head>
 <body>
 <prometeo-shell id="shell" app-label="Dirección"><div id="app-context" slot="context" class="p-context"></div></prometeo-shell>
-<main class="main" id="main"><div id="space" class="space"></div><article id="letter" class="letter"><time id="date" class="date"></time><h1 id="title" class="title"></h1><div id="text" class="text"></div></article><div class="actions"><button type="button" class="act" id="copy">Copiar</button><button type="button" class="act more" id="older" hidden>Anterior</button></div><section class="history" id="history" hidden></section></main>
+<main class="main" id="main"><div id="space" class="space"></div><prometeo-response id="response"></prometeo-response><div class="actions"><button type="button" class="act more" id="older" hidden>Anterior</button></div><section class="history" id="history" hidden></section></main>
 <section id="scene" class="scene" hidden aria-label="Escena 3D vacía"><canvas id="scene-canvas" role="img" aria-label="Escena 3D vacía"></canvas></section>
 <div class="toast" id="toast" hidden role="status" aria-live="polite"></div>
 <script type="module" src="./portal-v1.js"></script>
