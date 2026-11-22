@@ -1,0 +1,243 @@
+{
+  "version": "DEEP-SPEC-1",
+  "medium": "video",
+  "depth": "SISTEMA",
+  "brief": "VIDEO W002 / 08 · LA CIFRA INVISIBLE: documental animado de datos públicos, fechados y verificables con compilador reutilizable.",
+  "intent": {
+    "experience": "Que un espectador pueda comprender la anomalía anual de temperatura global sin confundirla con grados absolutos ni con proyecciones.",
+    "distinctAbility": "Compilar un conjunto anual de cifras versionadas en planos de motion graphics cuya escala, leyendas y números sean calculados, no dibujados a mano."
+  },
+  "references": [
+    {
+      "id": "R-NASA",
+      "url": "https://data.giss.nasa.gov/gistemp/data_v4.html",
+      "status": "OBSERVED",
+      "observation": "NASA publica la serie Land-Ocean Temperature Index en anomalías relativas al promedio 1951-1980, con tablas globales anuales desde 1880 y notas sobre la unidad."
+    },
+    {
+      "id": "R-SVS",
+      "url": "https://svs.gsfc.nasa.gov/5603",
+      "status": "OBSERVED",
+      "observation": "NASA Scientific Visualization Studio presenta animaciones 1880-2025 y distingue explícitamente smoothing temporal y baseline, además de acreditar científicos y visualizadores."
+    },
+    {
+      "id": "R-FT",
+      "url": "https://github.com/Financial-Times/chart-doctor/blob/main/visual-vocabulary/README.md",
+      "status": "OBSERVED",
+      "observation": "El Visual Vocabulary del Financial Times propone elegir la simbología adecuada al mensaje y entrenar lectura de gráficos, no adornar visualizaciones."
+    },
+    {
+      "id": "R-IIB",
+      "url": "https://www.informationisbeautifulawards.com/showcase?page=173&pcategory=motion-infographic",
+      "status": "OBSERVED",
+      "observation": "El escaparate de trabajos de periodismo visual exhibe diversidad de representaciones y fuentes originales; su página por sí sola no permite evaluar el metraje completo."
+    }
+  ],
+  "components": [
+    {
+      "id": "C-DATA",
+      "role": "Dataset congelado con metadatos y cifras por año consecutivo.",
+      "strategy": "CSV versionado, metadatos de extracción y checks de anclas NASA.",
+      "constraints": "Excluir 2026 parcial y diferenciar snapshot de espejo del CSV oficial actual."
+    },
+    {
+      "id": "C-VISUAL",
+      "role": "Ejes lineales, trazado temporal y etiquetas que preservan el valor.",
+      "strategy": "Compilador Pillow basado en una sola función de mapeo Y a grados Celsius.",
+      "constraints": "Eje fijo -0.6 a +1.4; sin eje truncado, sin áreas falsas ni curvas inventadas."
+    },
+    {
+      "id": "C-NARRATIVE",
+      "role": "Narrativa de tres actos con fechas y explicación accesible.",
+      "strategy": "Animación temporal determinista, texto editorial y subtítulos.",
+      "constraints": "Distinguir anomalía de temperatura absoluta y mostrar baseline legible."
+    },
+    {
+      "id": "C-EXPORT",
+      "role": "Video real con pista de audio original y manifest QA.",
+      "strategy": "Frames raw RGB→FFmpeg H.264/AAC, ffprobe y decodificación completa.",
+      "constraints": "Verificar audiovisual real y no atribuir al diseño sonoro valores científicos."
+    }
+  ],
+  "questions": [
+    {
+      "id": "Q-DATA",
+      "target": "C-DATA",
+      "question": "¿Usar el año 2026 parcialmente informado o detenerse en 2025 completo?",
+      "alternatives": [
+        "Incluir 2026 con observaciones parciales marcadas",
+        "Detenerse en 2025 anual completo"
+      ],
+      "finding": "NASA separa J-D anual completo del 2026 incompleto, y publica corte oficial hasta 2025.",
+      "decisionImpact": "No se traza un valor anual de 2026 porque sería un dato artificial.",
+      "evidenceRef": "R-NASA"
+    },
+    {
+      "id": "Q-AXIS",
+      "target": "C-VISUAL",
+      "question": "¿Cómo contar la tendencia sin que la altura invente un aumento más grande?",
+      "alternatives": [
+        "Escalar el eje dinámicamente en cada año",
+        "Eje Y fijo y lineal en toda la película"
+      ],
+      "finding": "Los datos son anomalías con signo y baseline; variaciones del eje dramatizan sin informar.",
+      "decisionImpact": "La función Y única transforma toda la serie sobre el mismo rango y punto cero.",
+      "evidenceRef": "R-FT"
+    },
+    {
+      "id": "Q-STORY",
+      "target": "C-NARRATIVE",
+      "question": "¿Cómo impedir que +1.19 °C se lea como temperatura absoluta del planeta?",
+      "alternatives": [
+        "Mostrar solo la cifra enorme",
+        "Rotular diferencia, base 1951-1980 y origen"
+      ],
+      "finding": "NASA SVS usa la terminología de temperature anomalies y referencia explícita al promedio 1951-1980.",
+      "decisionImpact": "El último acto explica la base; el pie de fuente se mantiene visible.",
+      "evidenceRef": "R-SVS"
+    },
+    {
+      "id": "Q-EXPORT",
+      "target": "C-EXPORT",
+      "question": "¿Un canvas navegador basta o se exige película real reproducible?",
+      "alternatives": [
+        "Entregar visual interactivo sin archivo",
+        "Exportar MP4 audiovisual y probar con FFprobe"
+      ],
+      "finding": "El lanzador exige video binario y examen temporal; las imágenes de fotogramas no reemplazan el archivo.",
+      "decisionImpact": "La pipeline exporta H.264 y AAC y registra pruebas de decodificación.",
+      "evidenceRef": "R-IIB"
+    }
+  ],
+  "relations": [
+    {
+      "from": "C-DATA",
+      "to": "C-VISUAL",
+      "invariant": "Cada año y su etiqueta corresponden al valor CSV sin interpolación temporal de muestras.",
+      "failure": "Rango gráfico, interpolación o redondeo de años distorsionan cantidades.",
+      "test": "Test exacto de fuente, dominio fijo y monotonicidad del mapeo de coordenadas."
+    },
+    {
+      "from": "C-VISUAL",
+      "to": "C-NARRATIVE",
+      "invariant": "Texto y eje indican Celsius de anomalía frente a 1951-1980 durante todos los actos.",
+      "failure": "Se atribuiría 1.19 °C a una temperatura absoluta terrestre.",
+      "test": "Inspección de cuadros de inicio, medio y cierre para consistencia semántica."
+    },
+    {
+      "from": "C-NARRATIVE",
+      "to": "C-EXPORT",
+      "invariant": "El video, textos y pista musical conservan la misma duración y marcas de escena.",
+      "failure": "Deriva de audio, cortes o final prematuro hacen falsa la continuidad.",
+      "test": "FFprobe más decode completo y muestreo temporal por tres secciones."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "D1",
+      "questionId": "Q-DATA",
+      "componentIds": [
+        "C-DATA"
+      ],
+      "choice": "CSV de 146 años completos hasta 2025.",
+      "rejected": "2026 parcial presentado como anual.",
+      "productionChange": "Serie restringida a 1880-2025 y verificación automática de 146 años consecutivos.",
+      "why": "Un año incompleto no es comparable con años completos y sesgaría la narrativa."
+    },
+    {
+      "id": "D2",
+      "questionId": "Q-AXIS",
+      "componentIds": [
+        "C-VISUAL"
+      ],
+      "choice": "Escala fija en Celsius entre -0.6 y +1.4.",
+      "rejected": "Zoom vertical dinámico para exagerar variaciones.",
+      "productionChange": "Eje y marcas de referencia presentes durante toda la animación de la serie.",
+      "why": "Un eje común y lineal evita magnitudes engañosas sin impedir la lectura."
+    },
+    {
+      "id": "D3",
+      "questionId": "Q-STORY",
+      "componentIds": [
+        "C-NARRATIVE"
+      ],
+      "choice": "Tres escenas: título, trayectoria temporal y explicación metodológica.",
+      "rejected": "Cifra aislada y montaje sin denominador temporal.",
+      "productionChange": "Carteles permanentes en español sobre unidad, período y procedencia.",
+      "why": "El espectador necesita saber qué representa cada grado y cuál es el promedio base."
+    },
+    {
+      "id": "D4",
+      "questionId": "Q-EXPORT",
+      "componentIds": [
+        "C-EXPORT"
+      ],
+      "choice": "Archivo audiovisual H.264/AAC con música sintética original.",
+      "rejected": "Solo capturas de frames o video simulado por CSS.",
+      "productionChange": "Export FFmpeg, validación ffprobe, prueba de fotogramas y entrega del MP4.",
+      "why": "El medio solicitado es video, y las pistas requieren verificar decodificación y continuidad."
+    }
+  ],
+  "risks": [
+    {
+      "componentIds": [
+        "C-DATA",
+        "C-VISUAL"
+      ],
+      "severity": "high",
+      "failure": "Una medición truncada o una revisión de datos produce una gráfica factualmente incorrecta.",
+      "prevention": "Excluir 2026, versionar CSV, fijar baseline y conservar SHA de procedencia.",
+      "test": "Spike con datos NASA observados y coordenadas lineales; ejecutar test numérico.",
+      "status": "OBSERVED"
+    },
+    {
+      "componentIds": [
+        "C-EXPORT"
+      ],
+      "severity": "high",
+      "failure": "Ausencia de pista real, codecs no disponibles o MP4 corrupto.",
+      "prevention": "Comprobar ffmpeg, render y decodificar con ffprobe y FFmpeg.",
+      "test": "Spike de primer frame y pipeline FFmpeg local; completar export y medir.",
+      "status": "OBSERVED"
+    },
+    {
+      "componentIds": [
+        "C-NARRATIVE"
+      ],
+      "severity": "medium",
+      "failure": "Lectura errónea por tamaño de tipografía en pantalla de móvil.",
+      "prevention": "Alto contraste y textos de tamaño importante con leyenda persistente.",
+      "test": "Revisión de capturas en 960x540 y comprobación con reducción de escala.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "acceptance": [
+    {
+      "kind": "logic",
+      "criterion": "146 años completos 1880-2025; valores y eje Y exactamente trazables.",
+      "oracle": "Script de pruebas con casos límite y fuentes del NASA GISS.",
+      "status": "OBSERVED"
+    },
+    {
+      "kind": "visual",
+      "criterion": "Etiqueta y título legibles en tres regiones del metraje.",
+      "oracle": "Observación manual asistida por fotogramas extraídos del MP4.",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "audio",
+      "criterion": "Pista AAC presente sin desfasaje y sin señales con claims científicos falsos.",
+      "oracle": "FFprobe de pistas y reproducción/escucha de muestra, sin aprobación humana.",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "functional",
+      "criterion": "Un nuevo CSV conforme genera un nuevo MP4 sin ajustes manuales.",
+      "oracle": "Segunda ejecución de compilador sobre conjunto alternativo validado.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "resources": "Python 3, Pillow, NumPy, ffmpeg local verificados; fuentes tipográficas Lato ya instaladas. GitHub connector para branch dedicada.",
+  "licensing": "Cifras NASA GISTEMP v4 de acceso público, anotadas con URL y fecha; mirror GitHub usado como copia de referencia. Render, textos y sonido creados por el trabajador; sin metraje ajeno ni fonts distribuidas.",
+  "environmentLimits": "El contenedor no puede descargar vía DNS el CSV oficial; un espejo GitHub con SHA fijo alimenta el corte y se comprueban puntos representativos contra NASA TXT actual. GitHub connector admite texto, no upload local de MP4 binario directo."
+}
