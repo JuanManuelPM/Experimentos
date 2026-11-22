@@ -1,0 +1,185 @@
+{
+  "project": "MAQUINA IMPERFECTA",
+  "id": "music-w003-20261122-06",
+  "author": "PROMETEO / WORK 06",
+  "sourcePolicy": "All sound is synthesized from code; no third-party samples, presets or performances.",
+  "seed": 2026112206,
+  "bpm": 124,
+  "bars": 64,
+  "sampleRate": 44100,
+  "scale": "E Dorian; E - G - A - B - D",
+  "sections": [
+    {
+      "name": "ACTIVATION",
+      "startBar": 0,
+      "endBar": 8,
+      "density": 0.4,
+      "harmonicRoot": 40
+    },
+    {
+      "name": "CIRCUIT A",
+      "startBar": 8,
+      "endBar": 24,
+      "density": 0.8,
+      "harmonicRoot": 40
+    },
+    {
+      "name": "BROWNOUT",
+      "startBar": 24,
+      "endBar": 32,
+      "density": 0.37,
+      "harmonicRoot": 43
+    },
+    {
+      "name": "CIRCUIT B",
+      "startBar": 32,
+      "endBar": 48,
+      "density": 0.98,
+      "harmonicRoot": 45
+    },
+    {
+      "name": "GHOST SIGNAL",
+      "startBar": 48,
+      "endBar": 56,
+      "density": 0.52,
+      "harmonicRoot": 38
+    },
+    {
+      "name": "POWER DOWN",
+      "startBar": 56,
+      "endBar": 64,
+      "density": 0.34,
+      "harmonicRoot": 40
+    }
+  ],
+  "patches": {
+    "kick": {
+      "nodes": [
+        "pitch_decay_145_to_47_hz",
+        "sine_body",
+        "triangle_attack",
+        "tanh_saturator",
+        "decay_envelope"
+      ],
+      "drive": 1.36
+    },
+    "snare": {
+      "nodes": [
+        "seeded_noise_exciter",
+        "bandpass_550_7400",
+        "dual_detuned_190_197_hz",
+        "clap_microbursts",
+        "decay_envelope"
+      ]
+    },
+    "metal": {
+      "nodes": [
+        "inharmonic_partials",
+        "noise_highpass_5400_hz",
+        "frequency_mod",
+        "decay_gate"
+      ],
+      "partials": [
+        1,
+        1.41,
+        1.86,
+        2.91
+      ]
+    },
+    "bass": {
+      "nodes": [
+        "saw_oscillator_A",
+        "PWM_oscillator_B",
+        "sub_sine",
+        "AD_envelope",
+        "two_pole_dynamic_lowpass",
+        "step_cutoff_route",
+        "soft_clip"
+      ],
+      "detuneCents": 4.8,
+      "filterBaseHz": 180
+    },
+    "sequence": {
+      "nodes": [
+        "odd_partial_oscillator",
+        "FM_sideband",
+        "LPF_brightness_route",
+        "echo_3_4_beat",
+        "pan_LFO"
+      ]
+    },
+    "stabs": {
+      "nodes": [
+        "three_oscillator_polyphony",
+        "saw_synthesis",
+        "LPF",
+        "echo_1_1_2_beats"
+      ]
+    }
+  },
+  "modulationRoutes": [
+    {
+      "id": "bass_cutoff_bars",
+      "target": "bass.filterCutoffHz",
+      "kind": "triangle",
+      "frequency": 0.0625,
+      "depth": 110,
+      "phase": 0.11,
+      "offset": 290
+    },
+    {
+      "id": "bass_accent_per_eighth",
+      "target": "bass.filterEnvAmount",
+      "kind": "step",
+      "frequency": 2,
+      "depth": 0.3,
+      "phase": 0,
+      "offset": 0.63,
+      "steps": [
+        0.15,
+        0.7,
+        -0.35,
+        0.55,
+        0.6,
+        -0.2,
+        0.72,
+        -0.1
+      ]
+    },
+    {
+      "id": "sequence_pan",
+      "target": "sequence.pan",
+      "kind": "sine",
+      "frequency": 0.083333333333,
+      "depth": 0.54,
+      "phase": 0,
+      "offset": 0
+    },
+    {
+      "id": "sequence_brightness",
+      "target": "sequence.brightness",
+      "kind": "sample_hold",
+      "frequency": 0.5,
+      "depth": 0.19,
+      "phase": 0,
+      "offset": 0.61,
+      "seed": 12
+    }
+  ],
+  "mix": {
+    "kick": 0.81,
+    "snare": 0.64,
+    "metal": 0.36,
+    "bass": 0.64,
+    "sequence": 0.31,
+    "stabs": 0.3
+  },
+  "master": {
+    "peakTarget": 0.9,
+    "limiter": "none; uniform shared linear normalization only"
+  },
+  "licenses": {
+    "synthesis": "Original authored procedural synthesis; no external audio",
+    "source": "Original procedural source; distribution governed by repository owner. No external source copied."
+  }
+}
