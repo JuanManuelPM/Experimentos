@@ -18,8 +18,8 @@
 
 ## Pruebas y estado
 
-- **Código de UI y módulo:** implementado; sintaxis JavaScript y enlaces requieren prueba posterior en navegador.
-- **Modelo real:** identidad de activo enlazada y licencia externamente documentada; render del iframe **NOT_RUN**.
+- **Código de UI y módulo:** JavaScript compilado en prueba lógica in-memory; PhotoViewAligner pasó 4 pares con residual 0, exportación con pose, deshacer, reinicio, orden inválido y punto fuera de rango. Browser/API permanecen NOT_RUN.
+- **DEEP-SPEC-1:** validador oficial aplicado al JSON publicado → **SPIKE_REQUIRED** con 0 errores de estructura, por riesgo de integración GPU/API sin observar.\n- **Modelo real:** identidad de activo enlazada y licencia externamente documentada; render del iframe **NOT_RUN**.
 - **Captura de cámara, screenshot y render 3D:** **NOT_RUN** en esta sesión. Si proveedor bloquea API, el enlace de Sketchfab permite continuar.
 - **Geometría y escala:** NO se afirman métricas (sin coordenadas/referencia de escala original).
 - **Comparación:** el JSON distingue RMSE de coordenadas 2D normalizadas y **nunca** lo presenta como reproyección calibrada ni precisión física.
