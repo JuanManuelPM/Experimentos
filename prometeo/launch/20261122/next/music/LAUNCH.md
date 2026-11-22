@@ -38,7 +38,7 @@ Creá un tema dub techno original cuyos acordes, filtro, saturación y múltiple
 **Capacidad diferencial:** arquitectura espacial dependiente de la música. **Prueba:** escucha en auriculares/mono y control de acumulación de graves.
 
 ### 4 · AGUA EN MOVIMIENTO · Liquid drum and bass
-Compone una obra liquid drum and bass completa con breaks expresivos, ghost hits, bajo con fraseo y un desarrollo armónico delicado, evitando cortar un mismo break y repetirlo sin variación. Entregá máster y pistas editables; incorporá un editor reutilizable de slicing/variantes de break con registro de origen y licencias, y mostrá en render tres niveles de intensidad sin perder limpieza de subgrave ni continuidad rítmica.
+Componé una obra liquid drum and bass completa con breaks expresivos, ghost hits, bajo con fraseo y un desarrollo armónico delicado, evitando cortar un mismo break y repetirlo sin variación. Entregá máster y pistas editables; incorporá un editor reutilizable de slicing/variantes de break con registro de origen y licencias, y mostrá en render tres niveles de intensidad sin perder limpieza de subgrave ni continuidad rítmica.
 
 **Capacidad diferencial:** variación articulada de breaks y subgrave estable. **Prueba:** comparación por secciones, transitorios y procedencia de samples.
 
