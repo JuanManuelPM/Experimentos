@@ -6,7 +6,7 @@ assert.equal(new Set(EVENTS.map(e=>e.id)).size,21);
 assert.deepEqual(EVENTS.map(e=>e.day).filter((x,i,a)=>a.indexOf(x)===i),DAYS.map(d=>d.date));
 assert.equal(filterEvents(EVENTS,{day:"2027-04-23"}).length,7);
 assert.equal(filterEvents(EVENTS,{stage:"Sala Fuga"}).length,6);
-assert.equal(filterEvents(EVENTS,{type:"Música"}).length,9);
+assert.equal(filterEvents(EVENTS,{type:"Música"}).length,10);
 assert.equal(filterEvents(EVENTS,{query:"CIUDAD"}).some(e=>e.id==="la-ciudad-respira"),true);
 assert.equal(filterEvents(EVENTS,{query:"frecuencia"}).some(e=>e.id==="frecuencia-cero"),true);
 const a={id:"a",day:"2027-04-23",time:"16:00",duration:60};

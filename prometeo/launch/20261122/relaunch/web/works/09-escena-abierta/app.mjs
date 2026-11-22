@@ -1,7 +1,8 @@
 import {DAYS,STAGES,TYPES,PHOTOS,EVENTS} from "./data.mjs";
 import {filterEvents,conflicts,createAgenda,timeEnd,exportICS} from "./festival-core.mjs";
 const $=id=>document.getElementById(id),byId=new Map(EVENTS.map(e=>[e.id,e]));
-const agenda=createAgenda(globalThis.localStorage,undefined,EVENTS.map(e=>e.id));
+let localStore;try{localStore=globalThis.localStorage}catch{localStore={getItem(){throw Error("unavailable")},setItem(){throw Error("unavailable")}}}
+const agenda=createAgenda(localStore,undefined,EVENTS.map(e=>e.id));
 let day="",activeEvent=null,toastTimeout;
 const escapeHTML=s=>String(s).replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
 const chosen=()=>agenda.get();
@@ -47,7 +48,7 @@ function renderDetail(id){
  $("detailSave").setAttribute("aria-pressed",String(saved));
 }
 function fromHash(){
- const match=decodeURIComponent(location.hash).match(/^#evento\/([a-z0-9-]+)$/);
+ let match;try{match=decodeURIComponent(location.hash).match(/^#evento\/([a-z0-9-]+)$/)}catch{match=null}
  if(match&&byId.has(match[1])){
   renderDetail(match[1]);if(!$("detail").open)$("detail").showModal();
  }else if($("detail").open){$("detail").close()}
