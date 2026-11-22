@@ -24,20 +24,22 @@
   "deepSpec": "https://github.com/JuanManuelPM/Experimentos/blob/candidate/prometeo-music-w003-20261122-03/prometeo/music/w003/03-catedral-de-eco/PREPRODUCTION.deep-spec-v1.json",
   "trace": "https://github.com/JuanManuelPM/Experimentos/blob/candidate/prometeo-music-w003-20261122-03/prometeo/music/w003/03-catedral-de-eco/STAGE_TRACE.json",
   "stems": 5,
-  "mediaState": "ORIGINAL_MASTER_MP3_CHUNKS_GITHUB_READBACK_PENDING; local WAV and stems real; Pages HTTP NOT_RUN",
+  "mediaState": "REMOTE_GITHUB_CONTENT_READBACK_VERIFIED_24_OF_24; Pages HTTP NOT_VERIFIED; original 96kbps master 2131008 bytes",
   "qaStates": {
     "numeric": "OBSERVED_PASS",
     "browserLocal": "OBSERVED_PASS",
     "originalMp3MockedHttpPlayback": "OBSERVED_PASS",
     "remotePagesHttp": "NOT_RUN",
     "perceptualListening": "NOT_RUN",
-    "humanApproved": false
+    "humanApproved": false,
+    "remoteGitHubMasterChunkReadback": "OBSERVED_PASS_24_OF_24"
   },
   "comparisonW002": {
     "previous": "W002-03 master/stems only attached to previous chat; no public original master, 132.90sec",
     "current": "W003-03 original master MP3 96kbps in gh-pages parts, browser playback tested with page.route, 177.51sec, WAV and five stems in current chat, QA numerical",
     "perceptualImprovement": "NOT_VERIFIED",
-    "techniqueChanged": "Original bandlimited multidelays with low cuts on each repeat; exact old rack A/B NOT_RUN"
+    "techniqueChanged": "Original bandlimited multidelays with low cuts on each repeat; exact old rack A/B NOT_RUN",
+    "briefShaOldSameAsNew": "01d706d13f47d1a25a75b223e43be2c2a776f8fc45634831184b3e294bf4a132"
   },
   "limitations": [
     "GitHub Pages HTTP not verified",
