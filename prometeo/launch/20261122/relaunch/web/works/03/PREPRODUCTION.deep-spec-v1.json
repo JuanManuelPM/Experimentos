@@ -1,0 +1,280 @@
+{
+  "version": "DEEP-SPEC-1",
+  "medium": "web",
+  "depth": "SISTEMA",
+  "batchId": "web-w003-20261122",
+  "taskNumber": 3,
+  "taskId": "web-w003-20261122-03",
+  "brief": "Diseñar portfolio y archivo editorial de artista ficticia con obras originales/autorizadas de alta resolución, zoom, fichas, procedencia, filtros y deep links, usable por tacto y teclado.",
+  "briefSHA": "bef87bf57c789d2b0605ca9ff81a5d3bbaab5e35",
+  "oldBatchId": "web-w002-20261122",
+  "oldBriefSHA": "cd88a07941ab62072f6de5ee69764308f1ec2387",
+  "intent": {
+    "experience": "Abrir un archivo de artista imaginaria en el que la primera impresión sea arte y no interfaz, y explorar seis piezas con detalle y contexto.",
+    "distinctAbility": "Visor raster de alta resolución y catálogo con metadatos, filtros e historia de navegación accesibles en dispositivos táctiles y con teclado."
+  },
+  "references": [
+    {
+      "id": "rijks",
+      "url": "https://www.rijksmuseum.nl/en/about-collection-online",
+      "status": "OBSERVED",
+      "observation": "La página oficial consultada explica visualización de obras en alta resolución, acercamiento minucioso y comparador. Observación documental; no se afirma capturar su UI."
+    },
+    {
+      "id": "osd",
+      "url": "https://openseadragon.github.io/examples/ui-keyboard-navigation/",
+      "status": "OBSERVED",
+      "observation": "La documentación demostrativa describe navegación con teclado para zoom y desplazamiento; se traslada la capacidad, no la apariencia ni el código."
+    },
+    {
+      "id": "aic",
+      "url": "https://api.artic.edu/docs/",
+      "status": "OBSERVED",
+      "observation": "La API documenta separación entre registro de obra y recursos de imagen IIIF, así como restricciones de derechos para ciertos objetos."
+    }
+  ],
+  "components": [
+    {
+      "id": "collection",
+      "role": "Archivo editorial con portada artística, filtros, búsqueda y seis fichas originales.",
+      "strategy": "HTML semántico, CSS responsive y datos de obra declarativos en art.js.",
+      "constraints": "El usuario puede recuperar cualquier ficha desde enlace directo y filtrar sin perder elementos."
+    },
+    {
+      "id": "raster",
+      "role": "Motor de seis pinturas originales en cuatro familias materialmente diferentes.",
+      "strategy": "Canvas 2D con semillas estables, técnicas cyan/earth/architecture/gesture; render nativo 620/1600/2600px.",
+      "constraints": "No confundir generación raster original con digitalización de piezas ni con upscaling de una miniatura."
+    },
+    {
+      "id": "viewer",
+      "role": "Visor reusable con zoom, paneo, teclado, puntero, pinch y descarga raster.",
+      "strategy": "Clase independiente RasterZoomViewer con imagen completa, stage focalizable y límites de escala.",
+      "constraints": "Zoom 1 a 5, información de procedencia visible fuera del canvas y gesto táctil sin desplazamiento involuntario."
+    },
+    {
+      "id": "record",
+      "role": "Fichas y procedencia con autoría y ficción declaradas en cada obra.",
+      "strategy": "Datos en WORKS, dl accesible y panel contextual no superpuesto sobre imagen.",
+      "constraints": "No atribuir obras de terceros a artista ficticia; no declarar dimensiones como tamaños físicos medidos."
+    }
+  ],
+  "questions": [
+    {
+      "id": "q1",
+      "target": "raster",
+      "question": "¿Cómo evitar la colección homogénea de SVG de W002 sin introducir imágenes de terceros mal atribuidas?",
+      "alternatives": [
+        "Generar cuatro familias visuales originales raster con técnicas distintas",
+        "Usar IIIF público con atribución real, abandonando la ficción de artista única"
+      ],
+      "evidenceRef": "aic",
+      "finding": "La API contiene obras de diversas autorías y estados de derechos; para ficción de autor único se elige arte original generado y se explicita el proceso.",
+      "decisionImpact": "Cada composición usa la misma infraestructura pero familias gráficas diferentes, con resolución raster independiente de la miniatura."
+    },
+    {
+      "id": "q2",
+      "target": "viewer",
+      "question": "¿Cómo mantener el zoom utilizable desde móvil y teclado sin esconder el contexto de la obra?",
+      "alternatives": [
+        "Montar visor dependiente de librería externa y UI convencional",
+        "Diseñar visor independiente con eventos táctiles/teclado y ficha lateral o posterior"
+      ],
+      "evidenceRef": "osd",
+      "finding": "El referente evidencia la importancia de teclado, zoom y paneo además de gestos; un módulo propio limita dependencias y conserva metadatos.",
+      "decisionImpact": "Se extrae RasterZoomViewer como módulo, con stage enfocable, pan y zoom, y fichas accesibles en dialog."
+    },
+    {
+      "id": "q3",
+      "target": "collection",
+      "question": "¿Qué ve la persona en la primera pantalla y cómo se evita una portada vacía sin media?",
+      "alternatives": [
+        "Portada tipográfica genérica con tarjetas",
+        "Portada editorial con cianotipo original real como protagonista visual"
+      ],
+      "evidenceRef": "rijks",
+      "finding": "El referente de colección pone a las obras y a su detalle visual en el centro de la experiencia, no una arquitectura administrativa.",
+      "decisionImpact": "Hero dividido con obra cromáticamente dominante; archivo y búsqueda se descubren debajo de la primera vista."
+    }
+  ],
+  "relations": [
+    {
+      "from": "raster",
+      "to": "viewer",
+      "invariant": "Visor recibe raster nativo creado desde la misma semilla que el catálogo, no un estiramiento CSS de la miniatura.",
+      "failure": "Al ampliar aparece una miniatura borrosa disfrazada de high-res.",
+      "test": "Inspeccionar canvas ancho 2600 px y abrir zoom en navegador."
+    },
+    {
+      "from": "collection",
+      "to": "record",
+      "invariant": "Cada obra tiene ID estable, técnica, año, serie y procedencia visibles al abrir directamente su enlace.",
+      "failure": "El hash no resuelve a la ficha correcta o su procedencia es genérica.",
+      "test": "Abrir hash #obra=03, verificar ficha, cerrar y volver."
+    },
+    {
+      "from": "viewer",
+      "to": "record",
+      "invariant": "La ficha permanece alcanzable por teclado y scroll aunque el lienzo tenga capturas de puntero.",
+      "failure": "La imagen se explora pero la metadata queda oculta o el foco atrapado.",
+      "test": "Recorrer controles y ficha mediante Tab y Escape a 390/1440."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "d1",
+      "questionId": "q1",
+      "componentIds": [
+        "raster",
+        "record"
+      ],
+      "choice": "Generación original raster 2D con cuatro direcciones visuales y datos transparentes.",
+      "rejected": "Repetir ocho SVG de un mismo generador o usar fotografías de otros autores sin atribución.",
+      "productionChange": "art.js declara seis obras, cuatro implementaciones y renderArtwork(width) para miniatura y detalle.",
+      "why": "La auditoría WEB W002 señaló uniformidad de ocho SVG y falta de prueba raster; la técnica anterior no resuelve esa brecha."
+    },
+    {
+      "id": "d2",
+      "questionId": "q2",
+      "componentIds": [
+        "viewer",
+        "record"
+      ],
+      "choice": "Zoom accesible reusable sin dependencia externa y panel de ficha separado.",
+      "rejected": "Lightbox de imagen sin controles de teclado ni origen de cada obra.",
+      "productionChange": "viewer.js implementa pinch, scroll, teclas, reset; index y app.js conservan metadata y descarga.",
+      "why": "El detalle solo tiene sentido si la procedencia puede leerse en cualquier viewport y entrada."
+    },
+    {
+      "id": "d3",
+      "questionId": "q3",
+      "componentIds": [
+        "collection",
+        "raster"
+      ],
+      "choice": "Portada de cianotipo cromático original junto a títulos de gran formato.",
+      "rejected": "Hero de texto centrado y mosaico de tarjetas sin protagonista real.",
+      "productionChange": "index.html coloca canvas hero y contenido editorial; style.css fluye a 390px sin overlays invasivos.",
+      "why": "La primera pantalla debe exhibir un lenguaje visual claro antes de pedir interacciones."
+    }
+  ],
+  "risks": [
+    {
+      "componentIds": [
+        "raster"
+      ],
+      "severity": "high",
+      "failure": "El raster generado puede resultar plástico u homogéneo, o no representar detalle suficiente en zoom 5×.",
+      "prevention": "Primer artículo cyan de 1600px, contrastar cuatro medios gráficos y revisar primer frame en navegador.",
+      "test": "Captura real en 390/1440 y revisión a zoom 100/300% con obra de 2600px.",
+      "status": "NOT_RUN"
+    },
+    {
+      "componentIds": [
+        "viewer"
+      ],
+      "severity": "medium",
+      "failure": "Pinch táctil puede saltar al perder uno de los dedos, y controles podrían ser inaccesibles.",
+      "prevention": "Mantener stage con focus y punteros capturados; Escape nativo de diálogo.",
+      "test": "Probar pinch en dispositivo y navegación de teclado más profundidad de URL.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "acceptance": [
+    {
+      "kind": "visual",
+      "criterion": "Primer frame muestra una obra dominante y tipografía legible a 390/1440 sin scroll horizontal.",
+      "oracle": "Capturas reales de URL servida y revisión visual contra composición editorial.",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "functional",
+      "criterion": "Las seis obras renderizan a rasters nativos y el visor presenta 2600px de ancho al abrir escritorio.",
+      "oracle": "Inspección de canvas/img naturalWidth y captura ampliada en navegador.",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "interactive",
+      "criterion": "Filtros, búsqueda, enlaces hash, botones, pinch, teclas y cerrar modal funcionan sin trampas de foco.",
+      "oracle": "E2E de navegador en 390/1440, teclado y prueba táctil real.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "licensing": "El código y la composición digital son originales de este experimento; no se reutiliza ninguna fotografía, obra de museo, marca o textura de terceros. Artista, dimensiones y colección son ficción declarada.",
+  "resources": "Canvas 2D, módulos JavaScript ES, CSS responsive, fuente de sistema, GitHub Contents y GitHub Pages; sin CDN, API comercial, trackers ni binarios de terceros.",
+  "environmentLimits": "GitHub Contents y publicación de blobs verificados por readback. GitHub Pages devolvió HTTP 404 mientras el workflow de despliegue continuaba; captura de browser real y funcionamiento en dispositivo aún no demostrados.",
+  "artDirection": {
+    "schema": "prometeo.art-direction.first-article/v1",
+    "medium": "web",
+    "taskId": "web-w003-20261122-03",
+    "briefSha": "bef87bf57c789d2b0605ca9ff81a5d3bbaab5e35",
+    "flowRef": "JuanManuelPM/pruebas@candidate/prometeo-web-art-gate-w002-20261122:WEB_FACTORY_V2/FLOW.json sha=1a0e709beec9a84986fc33c5ce4ab0a162dccaf2; CANDIDATE_NOT_PROMOTED; base v2.0.0",
+    "promise": {
+      "subject": "Obra cianotipo azul de plantas imaginarias en primera pantalla.",
+      "intent": "Abrir y contemplar arte visual real sin overlays, luego examinar detalle y procedencia de cada pieza."
+    },
+    "benchmark": {
+      "url": "https://www.rijksmuseum.nl/en/about-collection-online",
+      "description": "Fuente oficial observada en texto: zoom de detalle y comparador por obra, valor de contexto. No se afirma screenshot del sitio.",
+      "status": "OBSERVED"
+    },
+    "techniques": [
+      {
+        "family": "Raster nativo por Canvas 2D original",
+        "viability": "El navegador renderiza geometrías complejas y textura nativa desde procesos propios a 1600/2600px.",
+        "license": "Autoría original; sin fuentes externas."
+      },
+      {
+        "family": "Ilustración digital autoral trazada manualmente en SVG",
+        "viability": "Contornos y manchas dibujadas con paths específicos, exportables a raster a resolución elegida.",
+        "license": "Trazos originales; no assets ajenos."
+      }
+    ],
+    "selectedTechnique": "Raster nativo por Canvas 2D original",
+    "firstFrame": {
+      "openingDescription": "Móvil: título serif con obra cyan visible enseguida. Escritorio: título a la izquierda y obra protagonista azul a la derecha.",
+      "focalSubject": "Cianotipo nocturno de plantas imaginarias con follaje y luces de grano.",
+      "minimalUI": "Sólo marca y dos enlaces nav; sin cards emergentes ni controles encima del arte.",
+      "checks": [
+        {
+          "criterion": "A 390 px el arte y titular tienen tamaño legible sin taparse",
+          "oracle": "Captura real de página cargada con canvas pintado",
+          "viewport": "390"
+        },
+        {
+          "criterion": "A 1440 px el protagonista ocupa parte mayoritaria de pantalla",
+          "oracle": "Captura real y medición del hero sin overlay",
+          "viewport": "1440"
+        },
+        {
+          "criterion": "No aparece scroll horizontal a 390/1440",
+          "oracle": "Medir scrollWidth <= innerWidth en browser",
+          "viewport": "both"
+        }
+      ],
+      "observations": []
+    },
+    "firstArticle": {
+      "target": "first-article.html renderizando en Canvas la obra 01 de 1600×2064px; archivo fuente art.js publicado.",
+      "rejectWhen": "Raster no aparece, carece de detalle visible o la composición deja media fuera de primera pantalla.",
+      "switchTo": "Ilustración digital autoral trazada manualmente en SVG",
+      "oracle": "Verificar canvas.width=1600, pantallas 390/1440 y screenshot auténtico de la obra.",
+      "resourceProof": "Código original publicado y lectura remota del archivo mediante GitHub Contents, Pages aún pendiente.",
+      "status": "NOT_RUN"
+    },
+    "humanApproved": false
+  },
+  "flow": {
+    "version": "2.0.0",
+    "sha": "1a0e709beec9a84986fc33c5ce4ab0a162dccaf2",
+    "status": "CANDIDATE_NOT_PROMOTED",
+    "reference": "JuanManuelPM/pruebas@candidate/prometeo-web-art-gate-w002-20261122"
+  },
+  "method": {
+    "deepSpecSHA": "7656a293b0182f81619bf0d27b90dffa771c2683",
+    "artDirectionSHA": "b1a1a012e90897200336cac6316c0511cb40c4c5",
+    "artValidatorSHA": "dac224b390fc86982ce76eeb0135d4be59eb52ad",
+    "sharedContractSHA": "7911ce780c6eb8fc08ba3e5621e4479bbe2e9757"
+  },
+  "warning": "Ficha compuesta en la ejecución junto con publicación, no prueba anticipación temporal anterior a todas las escrituras. Validadores de esquema, navegador, UX y aprobación humana pendientes."
+}
