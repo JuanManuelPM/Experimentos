@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>La cifra invisible · PROMETEO VIDEO 08</title>
+<meta name="description" content="Documental animado original sobre 146 observaciones anuales de la anomalía de temperatura global NASA GISTEMP v4, 1880–2025.">
+<style>
+:root{color-scheme:dark}*{box-sizing:border-box}body{margin:0;background:#081318;color:#f3f5f2;font-family:system-ui,-apple-system,Segoe UI,sans-serif}
+main{max-width:1120px;margin:0 auto;padding:clamp(22px,6vw,68px)}
+header{display:flex;gap:14px;justify-content:space-between;align-items:center;border-bottom:1px solid #3d5558;padding-bottom:17px;font-size:12px;letter-spacing:.13em;text-transform:uppercase;color:#94b3b7}
+h1{font-size:clamp(3rem,9vw,7rem);letter-spacing:-.08em;line-height:.9;margin:48px 0 26px;font-weight:850;max-width:1000px}
+h1 span{color:#ff8c70}
+.intro{max-width:690px;color:#bdced0;font-size:clamp(16px,2.2vw,20px);line-height:1.65;margin:0 0 30px}
+.film{margin:0;background:#071216;border:1px solid #2c4648;border-radius:3px;overflow:hidden}
+video{display:block;width:100%;aspect-ratio:16/9;background:#000}
+figcaption{color:#bbc8c8;padding:12px 18px;font-size:13px;line-height:1.6}
+.tags{display:flex;flex-wrap:wrap;gap:10px;margin:25px 0}.tag{padding:10px 14px;border:1px solid #3d585a;font-size:12px;letter-spacing:.04em;color:#cfe0e0}
+section{padding:25px 0;border-top:1px solid #2c4549;max-width:850px}section h2{font-size:23px;letter-spacing:-.025em}
+section p{line-height:1.7;color:#bbd1d0}a{color:#ff9b7e;text-decoration-thickness:1px;text-underline-offset:5px}
+footer{border-top:1px solid #3d5558;margin-top:42px;padding-top:25px;font-size:12px;color:#9cb4b7}
+</style>
+</head>
+<body><main>
+<header><strong>PROMETEO · ESTUDIO VIDEO</strong><span>W002 / TRABAJO 08</span></header>
+<h1>LA CIFRA<br><span>INVISIBLE</span></h1>
+<p class="intro">Una película de datos, no una cifra aislada. 146 observaciones anuales de la temperatura global, de 1880 a 2025, sobre un eje consistente. El movimiento cuenta lo que los datos realmente dicen.</p>
+<figure class="film">
+<video controls playsinline preload="metadata" poster="" aria-label="Documental La cifra invisible, gráfico animado de temperatura global NASA de 1880 a 2025">
+<source src="./LA_CIFRA_INVISIBLE.mp4" type="video/mp4">
+Tu navegador no puede reproducir el archivo MP4.
+</video>
+<figcaption>Película original de 22 segundos · H.264 / AAC · Datos NASA GISTEMP v4. Si la película no aparece, la publicación de MP4 todavía no terminó.</figcaption>
+</figure>
+<div class="tags"><span class="tag">1880–2025</span><span class="tag">146 años completos</span><span class="tag">Escala fija −0,6 a +1,4 °C</span><span class="tag">Base 1951–1980</span></div>
+<section><h2>Qué representa la línea</h2><p>Una anomalía de temperatura global, expresada en grados Celsius respecto del promedio de 1951–1980. No es la temperatura absoluta del planeta, ni una predicción. Se excluye 2026 porque sus datos anuales no estaban completos.</p><p>La tabla primaria de NASA se capturó el <strong>10 de noviembre de 2026</strong>. Para esa versión: 1880 fue −0,17 °C y 2025 fue +1,18 °C. NASA revisa las observaciones históricas; cifras de una descarga posterior pueden diferir en centésimas.</p></section>
+<section><h2>Procedencia abierta</h2><p><a href="https://data.giss.nasa.gov/gistemp/tabledata_v4/GLB.Ts+dSST.txt">Fuente NASA GISS, Land-Ocean Temperature Index (J-D)</a>. <a href="./annual_nasa_gistemp_1880_2025.csv">Descargar tabla versionada utilizada en la película</a>.</p><p><a href="./data_to_motion.py">Compilador DataToMotion</a> · <a href="./qa_tests.py">Pruebas numéricas y audiovisuales</a> · <a href="./QUALITY_REPORT.md">Informe de calidad y límites</a> · <a href="https://github.com/JuanManuelPM/Experimentos/tree/candidate/prometeo-video-w002-08-20261122/prometeo/works/video-w002-20261122/08">Rama exclusiva de producción</a>.</p></section>
+<footer>Material gráfico, secuencia y audio creados para PROMETEO. Estado editorial: entrega técnica verificada, sin aprobación artística humana.</footer>
+</main></body></html>
