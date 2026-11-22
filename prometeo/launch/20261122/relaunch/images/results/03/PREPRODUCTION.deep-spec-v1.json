@@ -1,0 +1,227 @@
+{
+  "version": "DEEP-SPEC-1",
+  "medium": "images",
+  "depth": "OPERATIVO",
+  "taskId": "images-w003-20261122-03",
+  "batchId": "images-w003-20261122",
+  "taskNumber": 3,
+  "briefSha": "a97b91ca103847ea75eeb9d1d2af10b6c9c0dddd",
+  "oldBriefSha": "2e0e5e8ca226d546005349dc44b31cd9abcf5dd1",
+  "brief": "Diseñá a Elena, restauradora ficticia de instrumentos científicos, como personaje original apto para producción visual: frente, perfil, tres cuartos, expresiones y detalle de vestuario/herramientas; entregar raster, canon e hitos anatómicos.",
+  "intent": {
+    "experience": "Elena debe reconocerse como restauradora individual, no un humano genérico.",
+    "distinctAbility": "Identidad multivista con rasgos, materiales y continuidad mensurables."
+  },
+  "references": [
+    {
+      "id": "BENCH",
+      "url": "https://www.behance.net/gallery/163563163/Character-sheet",
+      "status": "OBSERVED",
+      "observation": "Se observó imagen de model sheet con vistas de cuerpo y varias expresiones; los elementos faciales y la ropa permiten cotejar una misma identidad."
+    },
+    {
+      "id": "TECH",
+      "url": "https://www.disneyanimation.com/process/look-development/",
+      "status": "REFERENCE_RESEARCHED",
+      "observation": "Fuente institucional sobre diseño de materiales, pelo y vestuario integrados al personaje."
+    }
+  ],
+  "components": [
+    {
+      "id": "face",
+      "role": "Identidad facial y peinado reconocibles entre vistas.",
+      "strategy": "Generación en lámina única frente perfil y cotejo del rostro.",
+      "constraints": "Mechón gris lateral, mandíbula angular y ojos marrones cálidos persistentes."
+    },
+    {
+      "id": "costume",
+      "role": "Vestuario profesional y accesorios estables.",
+      "strategy": "Abrigo índigo, camisa berenjena, cuero y lupa de latón.",
+      "constraints": "Mangas, cinturón, lupa y herramienta deben respetar oclusiones reales."
+    },
+    {
+      "id": "views",
+      "role": "Vistas y lámina de verificación de identidad.",
+      "strategy": "Extraer crops declarados del raster maestro y superponer hitos.",
+      "constraints": "Nunca contar un crop como ángulo adicional ni sustituir medios ajenos."
+    }
+  ],
+  "questions": [
+    {
+      "id": "Q1",
+      "target": "face",
+      "question": "¿El frente y perfil muestran exactamente una identidad original y no dos regeneraciones distintas?",
+      "alternatives": [
+        "Generar ambas vistas juntas",
+        "Generar vistas independientes con referencias más fuertes"
+      ],
+      "evidenceRef": "BENCH",
+      "finding": "Primer master creó una mujer coherente en frente y perfil; intentos posteriores produjeron coliseos fuera de tema.",
+      "decisionImpact": "Aceptar únicamente la primera lámina válida; descartar tres imágenes fuera de encargo."
+    },
+    {
+      "id": "Q2",
+      "target": "views",
+      "question": "¿Se pueden entregar tres cuartos y expresiones sin inventar continuidad ni cambios de brazo?",
+      "alternatives": [
+        "Generar nuevos ángulos anclados a canon",
+        "Registrar alcance parcial en vez de engañar con crops"
+      ],
+      "evidenceRef": "BENCH",
+      "finding": "Sólo la lámina dual fue apta; no hay nuevo tres cuartos ni expresiones verificables.",
+      "decisionImpact": "Marcar cobertura incompleta y conservar raster verdadero en archivo local."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "D1",
+      "questionId": "Q1",
+      "componentIds": [
+        "face",
+        "costume"
+      ],
+      "choice": "Master genuino conjunto frente/perfil.",
+      "rejected": "Reutilizar los pósters de PROMETEO generados por error.",
+      "productionChange": "Fuente raster 1199x1312 y detalles del mismo master.",
+      "why": "La semántica y la continuidad son requisitos previos a cualquier acabado."
+    },
+    {
+      "id": "D2",
+      "questionId": "Q2",
+      "componentIds": [
+        "views"
+      ],
+      "choice": "No declarar turnaround completo.",
+      "rejected": "Crops duplicados como falsas tomas independientes.",
+      "productionChange": "Overlay y reporte de pendientes explícitos.",
+      "why": "Una sola imagen no puede demostrar expresiones y tercer ángulo."
+    }
+  ],
+  "relations": [
+    {
+      "from": "face",
+      "to": "views",
+      "invariant": "Rostro y altura de ojos con sentido consistente entre vistas.",
+      "failure": "Identidad cambia al rotar el rostro.",
+      "test": "Overlay de hitos y cotejo perceptual."
+    },
+    {
+      "from": "costume",
+      "to": "views",
+      "invariant": "Vestuario y herramientas idénticos salvo oclusión.",
+      "failure": "Desaparecen accesorios o se invierten los brazos.",
+      "test": "Comparación de ambas vistas y detalle."
+    }
+  ],
+  "risks": [
+    {
+      "componentIds": [
+        "face"
+      ],
+      "severity": "high",
+      "failure": "Imagen nueva fuera del encargo, no Elena.",
+      "prevention": "Bloqueo semántico previo a entrega.",
+      "test": "Examinar raster generado antes de escalar.",
+      "status": "OBSERVED"
+    },
+    {
+      "componentIds": [
+        "views"
+      ],
+      "severity": "high",
+      "failure": "Sin tres cuartos ni lámina de expresiones.",
+      "prevention": "No declarar cobertura que no existe.",
+      "test": "Presencia de nuevos ángulos y caras comparables.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "acceptance": [
+    {
+      "kind": "visual",
+      "criterion": "Rasgos y materiales similares en frente y perfil.",
+      "oracle": "Inspección del raster real y overlay manual.",
+      "status": "OBSERVED"
+    },
+    {
+      "kind": "functional",
+      "criterion": "PNG decodificable y trazable mediante hash de bytes.",
+      "oracle": "Pillow verify + SHA256 local de seis derivados.",
+      "status": "OBSERVED"
+    },
+    {
+      "kind": "visual",
+      "criterion": "Todas las vistas y expresiones requeridas.",
+      "oracle": "Inspección de tercio y caras de expresiones.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "resources": "ImageGen generó un master real; Pillow creó crops, overlay y detalles; Chromium 390/1440 mediante data URIs.",
+  "licensing": "Arte original de esta ejecución; benchmarks ajenos sólo consultados, nunca incorporados.",
+  "environmentLimits": "No se pudo transferir los bytes raster locales a GitHub; navegador bloqueó HTTP/file locales y se probó con set_content. Tres intentos adicionales generaron pósters fuera de tema.",
+  "artDirection": {
+    "schema": "prometeo.art-direction.first-article/v1",
+    "medium": "images",
+    "taskId": "images-w003-20261122-03",
+    "briefSha": "a97b91ca103847ea75eeb9d1d2af10b6c9c0dddd",
+    "flowRef": "JuanManuelPM/pruebas@candidate/prometeo-images-audit-w002-20261122:sistemas/imagenes/ART_DIRECTION_GATE_W002.md#a4b9451a57f1e064e16eb68cf937e441070775df",
+    "promise": {
+      "subject": "La misma Elena restauradora reconocible en ambas vistas.",
+      "intent": "La primera pantalla muestra el raster de la protagonista, no UI decorativa."
+    },
+    "benchmark": {
+      "url": "https://www.behance.net/gallery/163563163/Character-sheet",
+      "description": "Model sheet observado con dos vistas y expresiones consistentes.",
+      "status": "OBSERVED"
+    },
+    "techniques": [
+      {
+        "family": "multi-view generative painting",
+        "viability": "Una lámina real generada y revisada en local.",
+        "license": "Arte original sin referencia copiada."
+      },
+      {
+        "family": "manual raster registered retouch",
+        "viability": "Pillow viable para overlay y corrección, no añade perspectiva nueva.",
+        "license": "Sólo píxeles del master original."
+      }
+    ],
+    "selectedTechnique": "multi-view generative painting",
+    "firstFrame": {
+      "openingDescription": "Elena de cuerpo completo, frente y perfil sobre papel crudo, sin overlays.",
+      "focalSubject": "Misma Elena con lupa y cinturón de herramientas en dos vistas.",
+      "minimalUI": "Título sobrio fuera de las figuras; imagen es la protagonista.",
+      "checks": [
+        {
+          "criterion": "390 sin overflow lateral.",
+          "oracle": "Chromium screenshot y document.scrollWidth.",
+          "viewport": "390"
+        },
+        {
+          "criterion": "1440 con protagonista visible.",
+          "oracle": "Chromium screenshot y ancho de página.",
+          "viewport": "1440"
+        }
+      ],
+      "observations": []
+    },
+    "firstArticle": {
+      "target": "Un master frente-perfil realmente decodificable.",
+      "rejectWhen": "Coliseos o identidad equivocada; cambiar procedimiento.",
+      "switchTo": "manual raster registered retouch",
+      "oracle": "Ver píxeles y landmarks originales.",
+      "resourceProof": "Archivo PNG 1199x1312 SHA256 e25662d85f3d25f6a02e36e50a196493aa0ea82e96c9698fba04a8884b4d9fdc.",
+      "status": "NOT_RUN",
+      "localObservation": "Primer artículo generado e inspeccionado localmente; falta evidencia URL a raster verdadero para validador remoto."
+    },
+    "humanApproved": false
+  },
+  "comparability": {
+    "oldBatchId": "images-w002-20261122",
+    "newBatchId": "images-w003-20261122",
+    "flowBefore": "W002 con dos PNG locales, cambio de brazo reportado; raíz sin publicación",
+    "flowAfter": "DEEP-SPEC-1 + FIRST-ARTICLE-1 + gate IMAGES candidato, no promovido",
+    "strategyChange": "Un único master frente-perfil, descarte de 3 outputs fuera de tema",
+    "observableImprovement": "Observación de continuidad y screenshots 390/1440, aún sin tercera vista",
+    "humanJudgement": "NOT_RUN"
+  }
+}
