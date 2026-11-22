@@ -1,28 +1,19 @@
-# PUNTO DE RETORNO · MUSIC W003 · 09
+# PUNTO DE RETORNO · PROMETEO MUSIC W003 · 09
 
-**Estado:** obra AUDIO RENDERED LOCAL / código fuente en ZIP entregado en chat; máster remoto GitHub **NOT_PUBLISHED**. No declarar PUBLIC_LISTENABLE. 
+**Obra:** club progresivo original, 124 BPM, 208 compases, ocho secciones, 6:42.581. Arreglo con introducción y salida DJ de 32 compases, motivo que cambia de registro y reaparece después del clímax.
 
-**Identidad:** `music-w003-20261122-09`; branch `candidate/prometeo-music-w003-20261122-09`; brief de relanzamiento Git blob `5d7e6c2540cc49d998b7fe75fc1048d6f9cba80b`; flow candidato música v2.0.0 Git blob `1423f13e08b743f418c42052613a6808b214d622` SHA256 original declarado en W001 `6826ce13f4bd1e0d81b8a89bd7e6728668b85c44c68185b79426b00a36b8f05f`.
+## Audio publicado y entregado
+- En esta rama candidata existen ocho archivos binarios `audio/master.p00` a `master.p07` que son los **fragmentos exactos** del MP3 completo (7.111.715 bytes), archivados en commit `90f3790c16b6abdbe1bb3d3eb4039460d09527e4`.
+- Concatenarlos en orden reproduce `master.mp3` con SHA256 `37ba5bea97d1dcf48b36103cd6be9215bc535c05030c881f4f231be3020f8267`. `AUDIO_PARTS_MANIFEST.json` conserva los SHA Git de cada fragmento.
+- `audio/listening_excerpt.mp3` es un fragmento original de 58 segundos, no una recreación.
+- La página `index.html`, publicada además en `gh-pages`, descarga los fragmentos binarios desde el commit Git fijo, los reúne, verifica SHA-256 en el navegador y recién entonces reproduce el **máster original**. Si el remoto falla no se proclama escucha verificada.
+- Máster WAV PCM24 44.1k, seis stems FLAC editables, A/B nivelado y proyecto ZIP están adjuntos en la respuesta a WORK 09. No afirmar que los WAV/FLAC estén dentro de GitHub.
 
-## Obra
+## Fuentes y pruebas
+`render.py` sintetiza el arreglo sin grabaciones de terceros; `PROJECT.json` define partitura/timeline editable. `energy_map.py` mide, sobre audio PCM, RMS por compás, centroide, flux y cambios. `ENERGY_MAP.json` tiene datos de 208 compases. `qa.py`, `QA_RECEIPT.json`, `STAGE_TRACE.json`, `PREPRODUCTION.deep-spec-v1.json` y `FIRST_ARTICLE_QA.json` documentan decisiones, pruebas y límites.
 
-6:42.581, 124 BPM, re menor, 208 compases, 8 secciones (32 intro y 32 outro), 6 stems originales: kick, percussion, bass, harmony, motif, space. El motivo reaparece en octava baja después del clímax. Master WAV 24 bit/44,1k, MP3, seis FLAC PCM16, premix, AB_equal_level.wav y proyecto editable `PROJECT.json`. Todos los audios y el ejecutable `render.py` están disponibles en la descarga ZIP de la respuesta de este WORK; no en este repositorio. NO atribuir a este repositorio bytes que no alojó.
+QA técnica local: duración 402.581 s; 0 clipping; peak de muestra -5.87 dBFS, RMS general -23.28 dBFS (NO LUFS); seis stems de duración igual y suma coherente con el premix; first article real de ocho compases renderizado. Las secciones VACÍO (-29.19 dBFS RMS) y CUMBRE (-21.80) muestran contraste medido, no una certificación artística.
 
-El generador reutilizable `energy_map.py` del ZIP mide energía RMS, centroide espectral, proporción de subgrave, flux y transitorios sobre el **PCM real**. El archivo `PROJECT.json` aquí fija arreglo y partitura; `PREPRODUCTION.deep-spec-v1.json` conserva la dirección y los riesgos; `QA_RECEIPT.json` expone métricas reales, no un juicio artístico. Un HTML no sustituye el audio ni una escucha humana.
+**Límites:** HTTP GitHub Pages y reproducción remota NOT_VERIFIED; screenshot 390/1440 NOT_RUN; escucha humana y primer artículo artístico contrastado antes del render completo NOT_RUN; HUMAN_APPROVED=NO. No hubo promoción del flujo privado. El único flujo fijado sigue música v2.0.0 (Git blob `1423f13e08b743f418c42052613a6808b214d622`). Brief nuevo `5d7e6c2540cc49d998b7fe75fc1048d6f9cba80b`, oldBatchId `music-w002-20261122`, newBatchId `music-w003-20261122`.
 
-## QA y límites
-
-- Render y decodificación local WAV/FLAC: **PASS** (402.581 s; 44.1 kHz; 6 stems de igual duración; cero frames clip).
-- Máximo peak de muestra: **-5.87 dBFS**; RMS general **-23.28 dBFS**. No son LUFS ni true peak.
-- VACÍO -29.19 dBFS RMS vs CUMBRE -21.80 dBFS. Clímax sube principalmente por arreglo; no prueba percepción.
-- A/B de 6 extractos con RMS nivelado: **WAV exportado; escucha humana NOT_RUN**.
-- Primer artículo: 8 compases de intro con audio real, pero la comparación del riesgo artístico antes de full render **NO SE COMPLETÓ**; FIRST_ARTICLE_REQUIRED.
-- Chromium screenshot 390/1440: intento bloqueado por timeout, **NOT_RUN**.
-- HTTP readback de máster en GitHub Pages: **NOT_RUN** (no hay máster remoto).
-- HUMAN_APPROVED **NO**.
-
-### Comparación 
-
-oldBatchId=music-w002-20261122; newBatchId=music-w003-20261122. Mayor diferencia: 208 compases de audio real y 6 stems locales con detector calculado sobre bytes, no sólo score. La estrategia de assets es 100% síntesis original. No hay prueba causal de mejora artística vs W002 porque faltan escuchas comparativas.
-
-**Aprendizaje transferible:** agregar gate que compare cambio de timbre y forma audible en el primer artículo *antes* del full render, no solo existencia de un WAV de intro.
+**Preview:** https://juanmanuelpm.github.io/Experimentos/prometeo/works/20261122/music-w003-09/ (estado HTTP no comprobado).
