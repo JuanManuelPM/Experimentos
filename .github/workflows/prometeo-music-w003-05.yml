@@ -42,6 +42,8 @@ jobs:
       - name: Render four movement master and real stems
         working-directory: prometeo/works/20261122/music-w003-05
         run: python render.py --full --out master
+      - name: Install ffmpeg on bare Ubuntu runner
+        run: sudo apt-get update -qq && sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq ffmpeg
       - name: Convert original master to MP3
         working-directory: prometeo/works/20261122/music-w003-05
         run: ffmpeg -nostdin -y -hide_banner -loglevel error -i master/MASTER.flac -codec:a libmp3lame -q:a 2 MASTER.mp3
