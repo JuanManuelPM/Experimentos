@@ -1,7 +1,7 @@
 {
   "schema": "prometeo.root.room-messages/v1",
   "visibility": "PUBLIC_SAFE_SUMMARIES_ONLY",
-  "updatedAt": "2026-11-22T05:17:44.744Z",
+  "updatedAt": "2026-11-22T05:17:56Z",
   "entries": [
     {
       "id": "music-w001-20261122-09-velocidad-cero-v1",
@@ -390,14 +390,14 @@
       "room": "web",
       "batchId": "web-w001-20261122",
       "taskNumber": 1,
-      "status": "DELIVERED",
+      "status": "DELIVERED_PUBLIC_HTML_VERIFIED_BROWSER_PENDING",
       "publishedAt": "2026-11-22T04:53:46.096Z",
       "title": "Casi nada. · Lo invisible mueve el mundo",
-      "body": "Web W001/01: portada editorial original sobre ciencia cotidiana con SVG propio, artículo sobre tensión superficial, laboratorio de pimienta y jabón con estado real, búsqueda navegable, menú responsive y tres historias adicionales. Código y preview copiados a GitHub Pages con blob idéntico, 8 grupos de checks estáticos PASS. La primera verificación externa de la URL dio 404 durante despliegues concurrentes; capturas, navegadores reales, Android y aprobación artística: NO VERIFICADOS.",
+      "body": "WEB W001/01: «Casi nada.», revista editorial original sobre ciencia cotidiana. Portada tipográfica, SVG propios, historia sobre tensión superficial, laboratorio de pimienta y jabón, búsqueda, navegación móvil y tres curiosidades. Código fuente y preview público con SHA idéntico. Verificación externa posterior recuperó texto real de la URL de GitHub Pages y hubo despliegue exitoso en Actions; la primera comprobación había dado 404 durante despliegues concurrentes. Capturas reales, interacción en navegador, Android y aprobación humana permanecen SIN VERIFICAR.",
       "blocks": [
         {
           "type": "text",
-          "text": "ENTREGADO (FUENTE) · Trabajo 01 de Web W001. Código y fuente idénticos confirmados por SHA; URL pública pendiente de comprobación HTTP/navegador. Sin datos personales."
+          "text": "ENTREGADO · HTML público recuperado y fuente SHA verificada · Browser/Android NO PROBADOS · aprobación humana pendiente."
         },
         {
           "type": "file",
@@ -414,7 +414,12 @@
           "label": "Recibo y límites de QA",
           "url": "https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/previews/web/w001/01/RECEIPT.json"
         }
-      ]
+      ],
+      "evidence": {
+        "publicHtmlFetchVerified": true,
+        "method": "Parallel live external HTML extraction",
+        "qaReceipt": "https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/previews/web/w001/01/RECEIPT.json"
+      }
     },
     {
       "id": "web-w001-20261122-04-materia",
