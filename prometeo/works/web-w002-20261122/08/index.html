@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#f8f5ef"><meta name="description" content="SECUENCIA: editor visual para historias web autónomas, sin cuenta ni código.">
+<title>SECUENCIA / Estudio de historias</title><link rel="stylesheet" href="./editor.css"></head>
+<body>
+<header class="topbar"><div class="brand" aria-label="SECUENCIA">SECUENCIA<span>ESTUDIO / 01</span></div>
+<nav class="top-actions" aria-label="Herramientas de proyecto">
+<button type="button" class="btn" id="reset">↺ Demo</button>
+<button type="button" class="btn" id="saveJson">↓ Proyecto JSON</button>
+<button type="button" class="btn" id="loadJson">↑ Abrir JSON</button>
+<button type="button" class="btn accent" id="exportHtml">Exportar HTML ↗</button>
+<input class="hidden" type="file" accept=".json,application/json" id="jsonInput" aria-label="Cargar proyecto JSON"></nav></header>
+<div class="layout">
+<aside class="rail left" aria-label="Guion gráfico"><div class="section-head"><span class="overline">01 / Estructura</span><span id="count" class="count">0 escenas</span></div>
+<h2>Tu historia,<br>en capítulos.</h2>
+<div id="sceneList" class="scene-list" role="list" aria-label="Escenas reordenables"></div>
+<div class="add-grid" aria-label="Añadir escena">
+<button type="button" data-add="cover">＋ Portada</button><button type="button" data-add="image">＋ Imagen</button>
+<button type="button" data-add="text">＋ Texto</button><button type="button" data-add="video">＋ Video</button></div>
+<p class="rail-note">Arrastrá los capítulos para ordenar. También podés usar los botones <strong>↑ ↓</strong> del inspector. Todos los cambios se ven en la previsualización.</p></aside>
+<main class="workspace" id="workspace"><div class="workspace-bar"><div class="workspace-meta"><span class="overline">02 / Lienzo vivo</span>
+<strong>Previsualización <span aria-hidden="true">↗</span></strong></div><div class="device" role="group" aria-label="Tamaño de previsualización">
+<button type="button" class="active" data-device="desktop" aria-pressed="true">◫ Escritorio</button><button type="button" data-device="mobile" aria-pressed="false">▯ Móvil</button></div></div>
+<div class="stage"><div id="previewShell" class="preview-shell"><iframe title="Vista previa de la historia exportable" id="preview" sandbox="allow-scripts"></iframe></div></div>
+<div class="workspace-foot"><span id="saveState">Proyecto de demostración cargado</span><span>El archivo exportado usa este mismo renderer · sin bibliotecas externas</span></div></main>
+<aside class="rail right" aria-label="Inspector de escena"><div class="section-head"><span class="overline">03 / Dirección</span><span id="selectedLabel" class="count">Escena 01</span></div>
+<h2 class="inspector-title">Afiná cada<br>detalle.</h2>
+<div class="inspector">
+<div class="field"><label for="storyTitle">Título del proyecto</label><input id="storyTitle" maxlength="100" autocomplete="off"></div>
+<div class="field"><label for="type">Formato de la escena</label><select id="type"><option value="cover">Portada</option><option value="image">Imagen</option><option value="text">Texto</option><option value="video">Video</option></select></div>
+<div class="field"><label for="eyebrow">Volanta / capítulo</label><input id="eyebrow" maxlength="90"></div>
+<div class="field"><label for="title">Título</label><input id="title" maxlength="180"></div>
+<div class="field"><label for="bodyText">Texto editorial</label><textarea id="bodyText" rows="4" maxlength="1200"></textarea></div>
+<div class="pair"><div class="field"><label for="duration">Duración · segundos</label><input type="number" id="duration" min="2" max="30" step="1"></div>
+<div class="field"><label for="motion">Entrada</label><select id="motion"><option value="rise">Ascender</option><option value="fade">Fundido</option><option value="zoom">Acercar</option><option value="none">Sin movimiento</option></select></div></div>
+<div class="field"><label for="palette">Fondo / atmósfera</label><select id="palette"><option value="ink">Azul tinta</option><option value="cream">Papel</option><option value="rust">Terracota</option></select></div>
+<div class="field"><label for="caption">Pie de escena</label><input id="caption" maxlength="130"></div>
+<div class="asset-box" id="assetBox"><strong>Imagen o video autorizado</strong><p>Elegí un archivo propio o con licencia. Se incrusta dentro del HTML exportado y funciona sin conexión. Máximo 4 MB por archivo.</p><input type="file" id="mediaFile" accept="image/png,image/jpeg,image/webp,image/avif,image/gif,video/mp4,video/webm,video/ogg">
+<p id="mediaInfo">Sin archivo nuevo</p><button type="button" id="clearMedia">Quitar multimedia</button>
+<div class="field" style="margin-top:12px;margin-bottom:0"><label for="alt">Descripción accesible</label><input id="alt" maxlength="200" placeholder="Describí la imagen o el video"></div></div>
+<div class="inspect-actions"><button type="button" class="btn" id="moveUp">↑ Subir</button><button type="button" class="btn" id="moveDown">↓ Bajar</button>
+<button type="button" class="btn" id="duplicate">Duplicar</button><button type="button" class="btn" id="remove">Eliminar</button></div></div>
+<footer class="about">SECUENCIA · Web W002 / 08. Editor local sin cuenta. Guardado en este dispositivo cuando hay espacio. Los videos requieren reproducción iniciada por la persona.</footer>
+</aside></div>
+<div role="status" aria-live="polite" class="status hidden" id="status"></div>
+<script src="./engine.js"></script><script src="./editor.js"></script>
+</body></html>
