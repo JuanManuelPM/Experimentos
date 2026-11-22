@@ -17,3 +17,20 @@
 .p-work-group{grid-column:1/-1;font-size:12px;font-weight:600;letter-spacing:.035em;color:var(--p-muted);margin:20px 0 0}
 
 .p-startup-fallback{margin:0 0 30px}.p-startup-fallback h1{font-size:clamp(24px,4vw,43px);letter-spacing:-.05em;font-weight:500;margin:0 0 16px}.p-startup-fallback p{font-size:13px;line-height:1.6;color:var(--p-muted)}.p-startup-fallback nav{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin:28px 0}.p-startup-fallback a{border:1px solid var(--p-line);border-radius:var(--p-control-radius);padding:17px 13px;color:var(--p-fg);text-decoration:none}
+
+/* Shared minimal message navigation across studies; no second shell. */
+.p-messages{padding-top:clamp(96px,13vh,144px)}
+.p-message-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 clamp(30px,6vh,54px)}
+.p-message-head .p-space{margin:0}
+.p-message-head .p-older{width:44px;height:44px;margin:0;flex:0 0 44px;padding:0;display:flex;align-items:center;justify-content:center;border:1px solid var(--p-line);border-radius:var(--p-control-radius);color:var(--p-fg);background:transparent;text-align:center}
+.p-message-head .p-older[aria-expanded=true]{background:var(--p-hover)}
+.p-message-head .p-older svg{display:block}
+.p-history{max-height:min(48vh,520px);overflow-y:auto;border:1px solid var(--p-line);border-radius:var(--p-control-radius);padding:3px;margin:0 0 28px}
+.p-message-option{display:flex;align-items:center;justify-content:space-between;gap:16px;width:100%;min-height:46px;padding:9px 12px;text-align:left;border:0;border-bottom:1px solid var(--p-line);background:none;color:var(--p-fg);border-radius:0}
+.p-message-option:last-child{border-bottom:0}
+.p-message-option:hover,.p-message-option[aria-current=true]{background:var(--p-hover)}
+.p-message-option-title{font-size:13px;line-height:1.4;overflow-wrap:anywhere}
+.p-message-option-date{flex-shrink:0;font-size:11px;color:var(--p-muted)}
+.p-context-icon{display:flex;align-items:center;justify-content:flex-start;min-height:40px}
+.p-context-icon svg{display:block;width:24px;height:24px}
+@media(max-width:400px){.p-messages{padding-top:105px}.p-message-head{margin-bottom:30px}}
