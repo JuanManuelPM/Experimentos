@@ -1,0 +1,280 @@
+{
+  "version": "DEEP-SPEC-1",
+  "medium": "music",
+  "depth": "SISTEMA",
+  "taskId": "music-w003-20261122-05",
+  "batchId": "music-w003-20261122",
+  "taskNumber": 5,
+  "briefSha": "5d7e6c2540cc49d998b7fe75fc1048d6f9cba80b",
+  "brief": "Cartografía del sueño: pieza ambient narrativa original de varios movimientos con motivos que regresen transformados, texturas trazables, transiciones fluidas, escucha continua, versión editable y motor reusable.",
+  "intent": {
+    "experience": "Atraviesa cuatro paisajes sonoros con una memoria reconocible que cambia de altura, dirección y densidad sin batería.",
+    "distinctAbility": "Narrativa ambient sin beat y transformaciones auditables del mismo motivo en cuatro movimientos."
+  },
+  "references": [
+    {
+      "id": "ref1",
+      "url": "https://www.ableton.com/en/blog/jon-hopkins/",
+      "status": "OBSERVED",
+      "observation": "Entrevista textual sobre Ritual: una obra extensa concebida como unidad continua, con tratamiento del espacio por reverberación; no se escuchó audio de referencia."
+    },
+    {
+      "id": "ref2",
+      "url": "https://www.ableton.com/en/blog/composing-infinity-max-cooper-his-new-album/",
+      "status": "OBSERVED",
+      "observation": "Artículo observado: alterna capas largas con detalle microscópico para sostener un arco narrativo; no es un A/B escuchado."
+    },
+    {
+      "id": "ref3",
+      "url": "https://enoweb.co.uk/interviews/keyb81.html",
+      "status": "OBSERVED",
+      "observation": "Entrevista a Brian Eno observada en texto: música ambient capaz de dejar espacio a quien escucha; ningún sample importado."
+    }
+  ],
+  "components": [
+    {
+      "id": "motif",
+      "role": "Melodía recurrente reconocible a pesar de transformaciones no trivialmente decorativas.",
+      "strategy": "Frase editable de cuatro notas transformada por retrogradación, inversión, tiempo y transposición.",
+      "constraints": "Cada cambio queda registrado en score.json y usa eventos originales."
+    },
+    {
+      "id": "harmony",
+      "role": "Progresión de acordes extendidos que conduce cuatro escenas hacia un regreso.",
+      "strategy": "Síntesis aditiva coral de parciales evolutivos y voces panoramizadas con envelopes lentas.",
+      "constraints": "Transiciones superpuestas de acorde a acorde sin percusión ni cortes."
+    },
+    {
+      "id": "texture",
+      "role": "Aire granular y reflejos que cambian con la tensión y forman espacio.",
+      "strategy": "Ruido creado por semilla local, filtrado por bandas y granularizado con envolventes.",
+      "constraints": "Cero fuentes externas, picos por debajo de 0 dBFS y colas seguras."
+    },
+    {
+      "id": "surface",
+      "role": "Primera pantalla editorial que lleva directamente a la escucha y muestra la estructura.",
+      "strategy": "HTML estático y reproductor de audio nativo, sin controles duplicados.",
+      "constraints": "390 y 1440 sin desbordamiento; media requiere archivo MP3 real."
+    }
+  ],
+  "questions": [
+    {
+      "id": "q1",
+      "target": "motif",
+      "question": "¿Cómo hacer reconocible el regreso sin repetir literalmente un patrón de notas?",
+      "alternatives": [
+        "Transformaciones de eventos conservando el contorno y la rítmica interna",
+        "Un loop idéntico con filtro y ganancia variables"
+      ],
+      "evidenceRef": "ref1",
+      "finding": "Cuatro movimientos y tratamiento narrativo en obra larga; opté por cambios de pitch, orden y tiempo visibles en eventos.",
+      "decisionImpact": "El motor motif_transform.py cambia los eventos sin introducir muestras ajenas."
+    },
+    {
+      "id": "q2",
+      "target": "harmony",
+      "question": "¿Qué sostenimiento armónico produce evolución sin batería ni un único pad inmóvil?",
+      "alternatives": [
+        "Acordes extendidos con solape, modulación parcial y cambios de registro",
+        "Nota dron y ruido fijo durante toda la duración"
+      ],
+      "evidenceRef": "ref2",
+      "finding": "El artículo identifica alternancias de capas extensas y detalle; se crean 8 regiones armónicas y cuatro escenas.",
+      "decisionImpact": "Se distribuyeron dos acordes y distinta densidad en cada movimiento, con solape y articulaciones."
+    },
+    {
+      "id": "q3",
+      "target": "texture",
+      "question": "¿Cómo probar origen legal de textura sin pedir permisos sobre un archivo externo?",
+      "alternatives": [
+        "Generación propia determinista de aire y parciales",
+        "Descargar field recordings con licencias no verificadas"
+      ],
+      "evidenceRef": "ref3",
+      "finding": "Se evitó la dependencia de derechos externos y se compuso material granular determinista con semilla fija.",
+      "decisionImpact": "La función air_grain sintetiza, filtra y envuelve ruido propio, sin cargar assets protegidos."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "d1",
+      "questionId": "q1",
+      "componentIds": [
+        "motif"
+      ],
+      "choice": "Motivo inmutable en partitura y transformaciones puras como única variación.",
+      "rejected": "Copiar igual la frase en los cuatro movimientos.",
+      "productionChange": "Score editable y transformador con inversión, retrogradación, trasposición y dilatación temporal.",
+      "why": "Un arco largo sin ritmo debe tener señales de identidad y transformación observables."
+    },
+    {
+      "id": "d2",
+      "questionId": "q2",
+      "componentIds": [
+        "harmony",
+        "motif"
+      ],
+      "choice": "Cuatro armonías de sección, dos células por movimiento y registro cambiante.",
+      "rejected": "Pad idéntico durante tres minutos sin progresión.",
+      "productionChange": "Cambio de acorde cada 24 segundos, una pausa melódica significativa en la tercera sección.",
+      "why": "La forma se lee por relaciones armónicas y ausencia deliberada de capas, no por subir volumen."
+    },
+    {
+      "id": "d3",
+      "questionId": "q3",
+      "componentIds": [
+        "texture"
+      ],
+      "choice": "Aire original filtrado por bandas y reflejos estéreo de poca ganancia.",
+      "rejected": "Loops de grabaciones con permisos no comprobados.",
+      "productionChange": "Ruido generado con seed 2905, tres/cuatro/cinco granos por escena y colas menores a dos segundos.",
+      "why": "La procedencia queda verificable ejecutando código y no compromete derechos de terceros."
+    }
+  ],
+  "relations": [
+    {
+      "from": "motif",
+      "to": "harmony",
+      "invariant": "Los eventos del motivo permanecen en un registro compatible con los acordes subyacentes.",
+      "failure": "La inversión del motivo produce un registro extraño o antagoniza la resolución.",
+      "test": "A/B de segmentos musicalmente distantes y revisión de notas del score."
+    },
+    {
+      "from": "texture",
+      "to": "harmony",
+      "invariant": "Los granos se superponen por envolventes largas sin ocultar el motivo o saturar el estéreo.",
+      "failure": "Exceso de aire crea ruido permanente, transitorio o mascara la armonía.",
+      "test": "Niveles RMS por escena, decode y prueba del delta de muestra."
+    },
+    {
+      "from": "surface",
+      "to": "ENV",
+      "invariant": "El reproductor carga el máster real, no una duración ficticia ni un botón inerte.",
+      "failure": "Se abre el sitio con player 0:00 al faltar el MP3 en Pages.",
+      "test": "HTTP readback y reproducción real de MASTER.mp3, pendiente."
+    }
+  ],
+  "risks": [
+    {
+      "componentIds": [
+        "motif",
+        "harmony"
+      ],
+      "severity": "high",
+      "failure": "Una sola masa de pad se percibe estática y el motivo no crea narración.",
+      "prevention": "Primer artículo de 24s antes del render completo; otro movimiento con retrogradación.",
+      "test": "Render inicial decodificable y contraste de RMS por movimiento, escucha crítica pendiente.",
+      "status": "OBSERVED"
+    },
+    {
+      "componentIds": [
+        "surface"
+      ],
+      "severity": "medium",
+      "failure": "El reproductor queda vacío si el archivo no llegó a la rama Pages.",
+      "prevention": "Usar un MP3 real de la misma renderización y no ocultar el vínculo.",
+      "test": "Verificar URL remota, duración y audio decoding en navegador.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "acceptance": [
+    {
+      "kind": "audio",
+      "criterion": "Audio estéreo de 192 segundos decodificado sin clipping con cuatro movimientos.",
+      "oracle": "soundfile decodifica master FLAC y mide peak, RMS y duración.",
+      "status": "OBSERVED"
+    },
+    {
+      "kind": "functional",
+      "criterion": "La mezcla exportada coincide con la suma de sus cuatro stems.",
+      "oracle": "Diferencia de muestras menor a 1e-5 para archivos FLAC de 24 bits.",
+      "status": "OBSERVED"
+    },
+    {
+      "kind": "audio",
+      "criterion": "El motivo regresa audible y las transiciones no generan clics perceptibles.",
+      "oracle": "Delta de muestras por transición más escucha humana integral posterior.",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "visual",
+      "criterion": "Apertura a 390 y 1440 sin scroll horizontal ni overlay invasivo.",
+      "oracle": "Chromium set_content con dos screenshots locales, no prueba HTTP.",
+      "status": "OBSERVED"
+    },
+    {
+      "kind": "interactive",
+      "criterion": "El MP3 público reproduce de inicio a fin y permite descarga real.",
+      "oracle": "Comprobar red GitHub Pages, metadata y audio HTML5 en navegador.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "resources": "Python 3, NumPy, SciPy, SoundFile, ffmpeg y Chromium; biblioteca de síntesis procedimental original, no DAW externo ni samples terceros.",
+  "licensing": "100 por ciento fuente sintética original. El material de referencia solo se leyó, no se copió ni se sampleó.",
+  "environmentLimits": "Escucha crítica humana, audición independiente de benchmarks y playback HTTP desde Pages no realizados. Capturas locales con set_content observadas, no captura HTTP del sitio servido.",
+  "artDirection": {
+    "schema": "prometeo.art-direction.first-article/v1",
+    "medium": "music",
+    "taskId": "music-w003-20261122-05",
+    "briefSha": "5d7e6c2540cc49d998b7fe75fc1048d6f9cba80b",
+    "flowRef": "music-studio production-universal 2.0.0 Git blob 1423f13e08b743f418c42052613a6808b214d622",
+    "promise": {
+      "subject": "Motivo original que cruza cuatro movimientos de paisaje ambient",
+      "intent": "Reconocible al regresar pero transformado musicalmente en cada escena"
+    },
+    "benchmark": {
+      "url": "https://www.ableton.com/en/blog/jon-hopkins/",
+      "status": "OBSERVED",
+      "description": "Artículo y entrevista completos examinados; benchmark de arco/espacio, no audio escuchado."
+    },
+    "techniques": [
+      {
+        "family": "Sintesis aditiva multitrack renderizada offline",
+        "viability": "NumPy y SoundFile presentes; primer render WAV/FLAC decodificado.",
+        "license": "Ondas originales sin samples externos."
+      },
+      {
+        "family": "Granular espectral de eventos originalmente sintetizados",
+        "viability": "Recreación local sobre los mismos tonos sintéticos; alternativa ejecutable sin material de terceros.",
+        "license": "Sólo material generado para esta obra, sin reutilizar grabaciones protegidas."
+      }
+    ],
+    "selectedTechnique": "Sintesis aditiva multitrack renderizada offline",
+    "firstFrame": {
+      "openingDescription": "Titulación editorial en verde oscuro con audio nativo y cuatro marcas de movimiento.",
+      "focalSubject": "Nombre Cartografía del sueño y posibilidad de escuchar el master.",
+      "minimalUI": "Un solo audio HTML5 y enlace de descarga; sin overlay de diagnóstico.",
+      "checks": [
+        {
+          "viewport": "390",
+          "criterion": "Título y player en primera vista móvil sin desborde lateral.",
+          "oracle": "Chromium render set_content y screenshot opening_390.png."
+        },
+        {
+          "viewport": "1440",
+          "criterion": "Título protagonista y player legible en escritorio.",
+          "oracle": "Chromium render set_content y screenshot opening_1440.png."
+        },
+        {
+          "viewport": "both",
+          "criterion": "El reproductor anuncia fuente MP3 real y tiene controles nativos.",
+          "oracle": "HTML DOM source src y futura comprobación HTTP/metadata."
+        }
+      ],
+      "observations": []
+    },
+    "firstArticle": {
+      "target": "Pasaje inicial de 24 s con acorde extendido, frase-memoria y aire real generado.",
+      "rejectWhen": "Audio no decodifica, tiene transitorios abruptos o no deja desarrollo al resto.",
+      "switchTo": "Granular espectral de eventos originalmente sintetizados",
+      "oracle": "Decodificación real de FLAC, conteo de muestras, pico y delta máximo.",
+      "resourceProof": "Sólo ondas sintetizadas por render.py/score.json; dependencia externa de audio: ninguna.",
+      "status": "OBSERVED_PASS",
+      "evidence": {
+        "url": "https://github.com/JuanManuelPM/Experimentos/blob/candidate/prometeo-music-w003-20261122-05/prometeo/works/20261122/music-w003-05/QA.md",
+        "description": "Prueba técnica de audio de primer artículo y máster; no valoración artística."
+      }
+    },
+    "humanApproved": false
+  }
+}
