@@ -103,11 +103,12 @@ async function loadCatalog(){
         const m=await r.json();
         const slotId=slot.split('/').at(-2)?.toUpperCase();
         if(!/^W001-[0-9]{2}$/.test(slotId))return null;
-        if(m.schema!=='prometeo.music.release/v1'||m.status!=='PUBLISHED_VERIFIED'||m.waveJob!==slotId||!m.audioUrl||!m.projectUrl)return null;
+        if(m.schema!=='prometeo.music.release/v1'||!['PUBLISHED_VERIFIED','PUBLISHED_PROJECT_PLAYABLE'].includes(m.status)||m.waveJob!==slotId||!m.projectUrl)return null;
         const base=new URL(manifestUrl);
         const entry={id:m.waveJob,title:m.title,updatedAt:m.updatedAt,status:m.status,
-          audioUrl:safeUrl(new URL(m.audioUrl,base).href),projectUrl:safeUrl(new URL(m.projectUrl,base).href),
+          projectUrl:safeUrl(new URL(m.projectUrl,base).href),
           tracks:m.tracks,source:m.source,durationSeconds:m.durationSeconds};
+        if(m.audioUrl)entry.audioUrl=safeUrl(new URL(m.audioUrl,base).href);
         if(!Number.isFinite(Date.parse(entry.updatedAt)))return null;
         return entry;
       }catch{return null;}
