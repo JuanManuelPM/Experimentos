@@ -30,12 +30,12 @@
         "license": "Código y medios nuevos propios; reutilización con permiso de la implementación original W002 del mismo repositorio."
       },
       {
-        "family": "miniatura 3D con iluminación volumétrica renderizada por software",
-        "viability": "Escena geométrica nueva con raymarching NumPy y campos volumétricos, posible técnicamente en runner pero más costosa y no probada aquí.",
+        "family": "integración óptica de volumen 3D por raymarch",
+        "viability": "12 estratos de profundidad con NumPy, transmisión Beer-Lambert, dispersión y cortinas de lluvia, sin dependencias externas adicionales.",
         "license": "Geometría, shaders, texturas y sonido generados como obra original sin recursos de terceros."
       }
     ],
-    "selectedTechnique": "composición procedural 2.5D y óptica de profundidad",
+    "selectedTechnique": "integración óptica de volumen 3D por raymarch",
     "firstFrame": {
       "openingDescription": "Plano abierto del faro y espigón reconocibles, horizonte ocre-gris y nubes ya en movimiento; sin título incrustado.",
       "focalSubject": "Faro iluminado con horizonte, mar y cuerda cercana que anticipa escala y viento",
@@ -60,14 +60,20 @@
       "observations": []
     },
     "firstArticle": {
-      "target": "6 segundos de temporal entre t=7 y 13, con flash, trueno posterior, parallax y materiales mojados.",
-      "rejectWhen": "El espigón se ve inmóvil salvo lluvia, no hay profundidad o el sonido precede al flash.",
-      "switchTo": "miniatura 3D con iluminación volumétrica renderizada por software",
+      "target": "Segundo primer artículo de 6 s con atmósfera volumétrica y transmittancia en 12 slabs.",
+      "rejectWhen": "El nuevo efecto sigue siendo lluvia superpuesta o no logra profundidad y transición legibles.",
+      "switchTo": "composición procedural 2.5D y óptica de profundidad",
       "oracle": "MP4 decodificado con seis fotogramas de distintos instantes y análisis del contraste/onda sonora.",
-      "resourceProof": "Runner GitHub Actions existente de W002/09 ya codificó H264+AAC; todas las capas nuevas son procedurales y propias.",
+      "resourceProof": "Python NumPy/OpenCV/FFmpeg y decodificación H264/AAC ya comprobados por CI del primer artículo; el renderer volumétrico usa esas bibliotecas.",
       "status": "NOT_RUN"
     },
-    "humanApproved": false
+    "humanApproved": false,
+    "priorArticle": {
+      "status": "FAILED_PERCEPTUAL",
+      "url": "https://github.com/JuanManuelPM/Experimentos/blob/candidate/prometeo-video-w003-20261122-09/prometeo/works/video/w003/09/FIRST_ARTICLE.contact.png",
+      "blobSha": "66c51e1d8d989a59d15d6e683790c7f28dbfebcf",
+      "reason": "Seis cuadros reales revisados: persiste lluvia dominante y faro esquemático. Tests de decodificación PASS, arte NO."
+    }
   },
   "brief": "ANTES DE LA TORMENTA · escena de calma a tormenta en lugar reconocible con agua, lluvia, bruma, sombras, reflejos, vegetación y sonido acoplados temporalmente; video más compositor reutilizable.",
   "intent": {
@@ -211,6 +217,18 @@
       "rejected": "Corto mudo o efectos sin reloj ni origen claro.",
       "productionChange": "Primer artículo renderizado con recorte PCM sincronizado y lanzamiento final después del gate.",
       "why": "La prueba escucha y la presencia de AAC importan tanto como los fotogramas."
+    },
+    {
+      "id": "d4",
+      "questionId": "q2",
+      "componentIds": [
+        "climate",
+        "place"
+      ],
+      "choice": "Integración de 12 slabs de volumen óptico 3D y lluvia como profundidad.",
+      "rejected": "Retocar la densidad del overlay de gotas 2D.",
+      "productionChange": "Nuevo volume.py raymarch de densidad y scattering, sin finish() del renderer previo con miles de líneas.",
+      "why": "El resultado inspeccionado del primer artículo no justificaba continuar con la misma familia de representación."
     }
   ],
   "risks": [
@@ -265,5 +283,12 @@
   ],
   "resources": "Python NumPy, OpenCV, SciPy, Pillow y FFmpeg disponibles en workflow; motor original W002 autoría misma obra y código W003 nuevo.",
   "licensing": "Código, geometría y sonido procedurales propios; benchmarking sin copiar fotogramas ajenos ni audio externo.",
-  "environmentLimits": "No hay rodaje real ni evidencia de VFX fotorrealista; render 2.5D estilizado y revisión humana independiente pendiente."
+  "environmentLimits": "No hay rodaje real ni evidencia de VFX fotorrealista; render 2.5D estilizado y revisión humana independiente pendiente.",
+  "failedSpikes": [
+    {
+      "status": "FAILED_PERCEPTUAL",
+      "asset": "FIRST_ARTICLE_7-13.mp4",
+      "reason": "La lluvia oblicua domina la silueta y el ambiente es demasiado plano; se cambia familia de método."
+    }
+  ]
 }

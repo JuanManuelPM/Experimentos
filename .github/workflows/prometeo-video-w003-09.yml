@@ -1,4 +1,4 @@
-name: "PROMETEO Video W003/09 - first article"
+name: "PROMETEO Video W003/09 - volume-first article"
 on:
   push:
     branches: [candidate/prometeo-video-w003-20261122-09]
@@ -35,26 +35,26 @@ jobs:
           node --input-type=module <<'JS'
           import fs from 'node:fs';
           import {inspectDeepSpec} from './prometeo/launch/deep-spec-v1.mjs';
-          import {inspectArtDirection} from './prometeo/launch/art-direction-first-article-v1.mjs';
+          import {inspectArtDirection} from './prometeo/launch/art-direction-volume-article-v1.mjs';
           const d=JSON.parse(fs.readFileSync('./prometeo/works/video/w003/09/PREPRODUCTION.deep-spec-v1.json'));
           const a=inspectArtDirection(d.artDirection), b=inspectDeepSpec(d);
           console.log('ART',a,'DEEP',b);
-          if (a.gate!=='FIRST_ARTICLE_REQUIRED' || b.gate!=='SPIKE_REQUIRED')process.exit(1);
+          if (a.gate!=='SECOND_ARTICLE_REQUIRED' || b.gate!=='SPIKE_REQUIRED')process.exit(1);
           JS
-      - name: Generate observed first article at maximal atmosphere change
+      - name: Generate observed volume-first article at maximal atmosphere change
         working-directory: prometeo/works/video/w003/09
         run: |
-          python render.py --output FIRST_ARTICLE_7-13.mp4 --seconds 6 --article-start 7 --width 640 --fps 18
-          ffmpeg -hide_banner -loglevel error -i FIRST_ARTICLE_7-13.mp4 -f null -
-          ffprobe -v error -show_entries format=duration,size:stream=codec_type,codec_name,width,height,avg_frame_rate,sample_rate -of json FIRST_ARTICLE_7-13.mp4 > FIRST_ARTICLE.probe.json
+          python volume.py --output SECOND_ARTICLE_7-13.mp4 --seconds 6 --article-start 7 --width 640 --fps 18
+          ffmpeg -hide_banner -loglevel error -i SECOND_ARTICLE_7-13.mp4 -f null -
+          ffprobe -v error -show_entries format=duration,size:stream=codec_type,codec_name,width,height,avg_frame_rate,sample_rate -of json SECOND_ARTICLE_7-13.mp4 > SECOND_ARTICLE.probe.json
       - name: Export real observed frames and temporal tests
         working-directory: prometeo/works/video/w003/09
         run: |
           python - <<'PY'
           import subprocess, json, numpy as np
           from PIL import Image,ImageDraw,ImageChops,ImageStat
-          v="FIRST_ARTICLE_7-13.mp4"
-          q=json.load(open("FIRST_ARTICLE.probe.json"))
+          v="SECOND_ARTICLE_7-13.mp4"
+          q=json.load(open("SECOND_ARTICLE.probe.json"))
           assert abs(float(q["format"]["duration"])-6)<.1,q
           assert any(s.get("codec_type")=="audio" and s.get("codec_name")=="aac" for s in q["streams"]),q
           assert any(s.get("codec_type")=="video" and s.get("codec_name")=="h264" for s in q["streams"]),q
@@ -69,23 +69,23 @@ jobs:
           for i,im in enumerate(imgs):
               x=i%2*480;y=i//2*200;panel.paste(im.resize((480,270)).crop((0,32,480,200)),(x,y))
               d.text((x+12,y+175),f"t={samples[i]+7:.2f}s · FRAME REAL",fill=(250,231,198))
-          panel.save("FIRST_ARTICLE.contact.png",optimize=True)
-          with open("FIRST_ARTICLE.tests.json","w") as f:json.dump({"state":"CI_FIRST_ARTICLE_RENDERED_NOT_HUMAN_APPROVED","temporalDiffMean":contrasts,"samples":[x+7 for x in samples],"fullDecode":"PASS","audio":"AAC_PRESENT_LISTEN_NOT_RUN","viewport390":"NOT_RUN","viewport1440":"NOT_RUN"},f,indent=2)
+          panel.save("SECOND_ARTICLE.contact.png",optimize=True)
+          with open("SECOND_ARTICLE.tests.json","w") as f:json.dump({"state":"CI_SECOND_ARTICLE_RENDERED_NOT_HUMAN_APPROVED","temporalDiffMean":contrasts,"samples":[x+7 for x in samples],"fullDecode":"PASS","audio":"AAC_PRESENT_LISTEN_NOT_RUN","viewport390":"NOT_RUN","viewport1440":"NOT_RUN"},f,indent=2)
           print("FIRST ARTICLE PASS",contrasts)
           PY
       - uses: actions/upload-artifact@v4
         with:
-          name: video-w003-09-first-article
+          name: video-w003-09-volume-article
           path: |
-            prometeo/works/video/w003/09/FIRST_ARTICLE_7-13.mp4
-            prometeo/works/video/w003/09/FIRST_ARTICLE.contact.png
-            prometeo/works/video/w003/09/FIRST_ARTICLE.probe.json
-            prometeo/works/video/w003/09/FIRST_ARTICLE.tests.json
-      - name: Publish isolated first article to this candidate branch
+            prometeo/works/video/w003/09/SECOND_ARTICLE_7-13.mp4
+            prometeo/works/video/w003/09/SECOND_ARTICLE.contact.png
+            prometeo/works/video/w003/09/SECOND_ARTICLE.probe.json
+            prometeo/works/video/w003/09/SECOND_ARTICLE.tests.json
+      - name: Publish isolated volume-first article to this candidate branch
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add prometeo/works/video/w003/09/FIRST_ARTICLE_7-13.mp4 prometeo/works/video/w003/09/FIRST_ARTICLE.contact.png prometeo/works/video/w003/09/FIRST_ARTICLE.probe.json prometeo/works/video/w003/09/FIRST_ARTICLE.tests.json
-          git diff --cached --quiet || git commit -m "video W003/09: publish first-article proof and decode tests"
+          git add prometeo/works/video/w003/09/SECOND_ARTICLE_7-13.mp4 prometeo/works/video/w003/09/SECOND_ARTICLE.contact.png prometeo/works/video/w003/09/SECOND_ARTICLE.probe.json prometeo/works/video/w003/09/SECOND_ARTICLE.tests.json
+          git diff --cached --quiet || git commit -m "video W003/09: publish volume-article proof and decode tests"
           git pull --rebase origin candidate/prometeo-video-w003-20261122-09
           git push origin HEAD:candidate/prometeo-video-w003-20261122-09

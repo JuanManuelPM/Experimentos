@@ -20,3 +20,6 @@ Primera muestra crítica: `python render.py --output FIRST_ARTICLE_7-13.mp4 --se
 
 ## Integridad y límites
 Brief W003 blob `0cc574528594731a3d1cf0c15a0d0e5a37e775b7`; W002 blob `d7eebea6d36fc6e5aa3b72cba4e35dd149dc552d`. Contrato Q-LOOP/QBAR/DEEP-SPEC y ART-DIRECTION recuperados; flow de estudio en pruebas sigue con migración pendiente, no hay promoción fingida. Una ejecución estructural no mide calidad visual. Captura real del film, decodificación, escucha, navegador y juicio humano se reportan solamente tras observarse. Recursos visuales y sonido procedurales originales; ninguna licencia externa invocada para footage.
+
+## Primera prueba rechazada y técnica alternativa
+El primer artículo 7–13 s fue exportado y decodificado en CI, pero la inspección visual detectó lluvia dominante y faro esquemático. **FAILED_PERCEPTUAL**. La segunda técnica usa `volume.py`: integración óptica en 12 capas 3D, transmisión de Beer-Lambert, luz dispersada y lluvia en profundidad. No es un retoque de cantidad de partículas. La aprobación visual no se presupone.
