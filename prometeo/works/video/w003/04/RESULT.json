@@ -47,11 +47,22 @@
   "technicalEvidence": "GitHub Actions 2/2 ffprobe: 26.000s H264/AAC, 624 video frames each, 44100 Hz 2ch. Remote GitHub Contents binary readback SHA 2/2 confirmed.",
   "artDirectionFirstArticle": "OBSERVED_LOCAL_AND_FRAMES_REMOTE",
   "validationNotes": "Master CI renders differ SHA256 from local masters, as independent encoding; all listed remote SHA refer CI not local.",
-  "structuralValidator": "NOT_RUN",
+  "structuralValidator": "EQUIVALENT_JS_LOGIC_OBSERVED_PASS",
   "browserMediaRecorderQA": "NOT_RUN",
   "humanAudienceComprehension": "NOT_RUN",
   "independentCriticalListening": "NOT_RUN",
   "humanApproved": false,
   "sourceBranch": "candidate/prometeo-video-w003-20261122-04",
-  "nonInterference": "W001/W002 historical files unchanged; unique candidate branch and isolated gh-pages preview."
+  "nonInterference": "W001/W002 historical files unchanged; unique candidate branch and isolated gh-pages preview.",
+  "structuralResults": {
+    "deepSpec": {
+      "gate": "READY_FOR_FIRST_SLICE",
+      "errors": []
+    },
+    "firstArticle": {
+      "gate": "READY_TO_BUILD_NOT_ARTISTICALLY_APPROVED",
+      "errors": []
+    },
+    "limitations": "Source-equivalent JS logic executed against GitHub Book; standalone Node CLI NOT_RUN, not a perceptual QA."
+  }
 }
