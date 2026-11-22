@@ -1,0 +1,275 @@
+{
+  "schema": "video-continuity-kit/1",
+  "taskId": "video-w002-20261122-01",
+  "title": "ÚLTIMA GUARDIA",
+  "fps": 24,
+  "plannedSeconds": 48,
+  "spatial": {
+    "axis": "desk-to-door-214",
+    "cameraSide": "south",
+    "deskScreen": "left",
+    "doorScreen": "right",
+    "roomNumber": "214"
+  },
+  "character": {
+    "id": "INES",
+    "age": 42,
+    "costume": "uniforme azul marino y credencial SEC-07",
+    "hair": "rodete bajo negro",
+    "actionRule": "El eje mesa→puerta permanece constante; la mirada hacia 214 sale a derecha de pantalla"
+  },
+  "shots": [
+    {
+      "id": "S01",
+      "start": 0,
+      "end": 5,
+      "kind": "master",
+      "side": "south",
+      "gaze": "right",
+      "target": "door-214",
+      "lensMm": 35,
+      "action": "Inés revisa el libro de habitaciones junto al extremo izquierdo de un pasillo hospitalario; puerta 214 visible a la derecha.",
+      "performance": "Cansancio de rutina, mandíbula relajada, manos sin teatralidad",
+      "states": {
+        "ledger": "closed",
+        "door": "closed",
+        "badge": "worn"
+      },
+      "transitions": [],
+      "previousCut": "START"
+    },
+    {
+      "id": "S02",
+      "start": 5,
+      "end": 11,
+      "kind": "insert",
+      "side": "south",
+      "gaze": "none",
+      "target": "ledger",
+      "lensMm": 65,
+      "action": "Al abrir el libro vemos la fila 214 previamente vacía; aparece un renglón firmado mientras su mano permanece separada del papel.",
+      "performance": "La mano vacila y deja de pasar la página",
+      "states": {
+        "ledger": "altered",
+        "door": "closed",
+        "badge": "worn"
+      },
+      "transitions": [
+        {
+          "prop": "ledger",
+          "from": "closed",
+          "to": "altered"
+        }
+      ],
+      "previousCut": "detail"
+    },
+    {
+      "id": "S03",
+      "start": 11,
+      "end": 16,
+      "kind": "reaction",
+      "side": "south",
+      "gaze": "right",
+      "target": "door-214",
+      "lensMm": 85,
+      "action": "Reacciona al golpe seco que llega de la derecha. La mirada encuentra primero la puerta, después el picaporte.",
+      "performance": "Duda de 1 s, microfruncido; retrocede la respiración, nunca grita",
+      "states": {
+        "ledger": "altered",
+        "door": "closed",
+        "badge": "worn"
+      },
+      "transitions": [],
+      "previousCut": "reaction"
+    },
+    {
+      "id": "S04",
+      "start": 16,
+      "end": 23,
+      "kind": "over-shoulder",
+      "side": "south",
+      "gaze": "right",
+      "target": "door-214",
+      "lensMm": 40,
+      "action": "Inés avanza de izquierda a derecha hasta 214 y abre lentamente; se ve la mano sobre el picaporte y la puerta al fondo.",
+      "performance": "Peso en el pie trasero y hombro derecho rígido, movimiento económico",
+      "states": {
+        "ledger": "altered",
+        "door": "open",
+        "badge": "worn"
+      },
+      "transitions": [
+        {
+          "prop": "door",
+          "from": "closed",
+          "to": "open"
+        }
+      ],
+      "previousCut": "eyeline"
+    },
+    {
+      "id": "S05",
+      "start": 23,
+      "end": 29,
+      "kind": "pov",
+      "side": "south",
+      "gaze": "right",
+      "target": "empty-bed",
+      "lensMm": 35,
+      "action": "Haz de linterna ilumina la habitación: cama intacta, sin persona. Una huella húmeda se marca en el marco interior de la puerta.",
+      "performance": "Pulso visible en haz de linterna, avance contenido",
+      "states": {
+        "ledger": "altered",
+        "door": "open",
+        "badge": "worn"
+      },
+      "transitions": [],
+      "previousCut": "match-on-action"
+    },
+    {
+      "id": "S06",
+      "start": 29,
+      "end": 34,
+      "kind": "insert",
+      "side": "south",
+      "gaze": "none",
+      "target": "ledger",
+      "lensMm": 65,
+      "action": "De vuelta al mostrador: la firma nueva ahora muestra una huella idéntica a la del marco. Inés toca su propia mano para comprobar que está seca.",
+      "performance": "Pausa, prueba física, reconocimiento sin texto verbal",
+      "states": {
+        "ledger": "fingerprint",
+        "door": "open",
+        "badge": "worn"
+      },
+      "transitions": [
+        {
+          "prop": "ledger",
+          "from": "altered",
+          "to": "fingerprint"
+        }
+      ],
+      "previousCut": "sound-bridge"
+    },
+    {
+      "id": "S07",
+      "start": 34,
+      "end": 41,
+      "kind": "action",
+      "side": "south",
+      "gaze": "right",
+      "target": "door-214",
+      "lensMm": 50,
+      "action": "La guardia vuelve a 214, cierra la puerta, asegura el cerrojo desde fuera y lleva la radio al rostro para pedir apoyo sin palabras reconocibles.",
+      "performance": "La duda se convierte en decisión, manos firmes a pesar de respiración acelerada",
+      "states": {
+        "ledger": "fingerprint",
+        "door": "locked",
+        "badge": "worn"
+      },
+      "transitions": [
+        {
+          "prop": "door",
+          "from": "open",
+          "to": "locked"
+        }
+      ],
+      "previousCut": "cut-on-movement"
+    },
+    {
+      "id": "S08",
+      "start": 41,
+      "end": 48,
+      "kind": "reaction",
+      "side": "south",
+      "gaze": "right",
+      "target": "door-214",
+      "lensMm": 85,
+      "action": "Plano cerrado: después del cerrojo suena otro golpe desde dentro. Inés no huye; sostiene la radio en silencio, escucha y mira a la derecha. Corte a negro tras la exhalación.",
+      "performance": "Control sobre el miedo: ojos húmedos, mínima contracción, exhalación final",
+      "states": {
+        "ledger": "fingerprint",
+        "door": "locked",
+        "badge": "worn"
+      },
+      "transitions": [],
+      "previousCut": "sound-bridge"
+    }
+  ],
+  "audio": [
+    {
+      "id": "A01",
+      "start": 0,
+      "end": 48,
+      "source": "interior_pasillo",
+      "type": "ambience",
+      "description": "Fluorescente, ventilación y lluvia lateral con perspectiva fija"
+    },
+    {
+      "id": "A02",
+      "start": 5.4,
+      "end": 6.4,
+      "source": "S02",
+      "type": "foley",
+      "description": "Papel seco, uña, tinta"
+    },
+    {
+      "id": "A03",
+      "start": 13.2,
+      "end": 13.55,
+      "source": "door-214",
+      "type": "story-cue",
+      "anchorShotId": "S03",
+      "description": "Un golpe seco único a la derecha, audible antes de la reacción completa"
+    },
+    {
+      "id": "A04",
+      "start": 18.2,
+      "end": 20.3,
+      "source": "S04",
+      "type": "foley",
+      "description": "Pisadas en baldosa, respiración, picaporte metálico"
+    },
+    {
+      "id": "A05",
+      "start": 23,
+      "end": 29,
+      "source": "S05",
+      "type": "ambience",
+      "description": "Habitación vacía con reverberación mayor y silencio de fondo"
+    },
+    {
+      "id": "A06",
+      "start": 36.7,
+      "end": 38.8,
+      "source": "S07",
+      "type": "foley",
+      "description": "Puerta y cerrojo, clicks reales con coincidencia de acción"
+    },
+    {
+      "id": "A07",
+      "start": 42.2,
+      "end": 42.55,
+      "source": "door-214",
+      "type": "story-cue",
+      "anchorShotId": "S08",
+      "description": "Segundo golpe más apagado desde dentro de la puerta cerrada"
+    },
+    {
+      "id": "A08",
+      "start": 44,
+      "end": 47.7,
+      "source": "S08",
+      "type": "performance",
+      "description": "Una sola exhalación contenida, sin música ni susto prefabricado"
+    }
+  ],
+  "acceptance": {
+    "format": "MP4 H.264 + AAC",
+    "resolution": "1920x804",
+    "durationToleranceSeconds": 0.5,
+    "frameRate": 24,
+    "licensedFootageOnly": true,
+    "unbrokenStory": true
+  }
+}
