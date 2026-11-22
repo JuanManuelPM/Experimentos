@@ -1,0 +1,36 @@
+# PROMETEO · ROOT INTEGRAR Y RELANZAR · Recibo de integración
+Fecha: 2026-11-22. Estado: **INTEGRATED_SOURCE / NEXTWAVE_READY_CONDITIONAL / PERCEPTUAL_QA_NOT_RUN**.
+Ruta humana ROOT **inalterada**: https://juanmanuelpm.github.io/Experimentos/prometeo/root/
+
+## Cobertura real por auditoría
+| Estudio | Estado ROOT | Evidencia y límite | Informe |
+| --- | --- | --- | --- |
+| 3D W6 | PARTIAL | 9/10 retornos ROOT; N10 sin retorno; N01 cara collage y N02 pared ocluyente observados por humano, sin capturas propias de este integrador | [Informe 3D](https://github.com/JuanManuelPM/Experimentos/blob/candidate/prometeo-3d-autocritica-v2-20261122/prometeo/launch/20261122/repair/3d/AUDIT_10.md) |
+| Web W002 | PARTIAL | 10/10 fuentes recuperadas; capturas perceptuales del auditor 0/10; Chromium solo en fixture | [Informe Web](https://github.com/JuanManuelPM/Experimentos/blob/candidate/prometeo-web-audit-w002-20261122/prometeo/launch/20261122/repair/web/AUDIT_W002.md) |
+| Música W002 | PARTIAL | 10/10 fuentes/recibos; escucha independiente y media binaria NOT_RUN | [Informe Música](https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/launch/20261122/repair/music/AUDIT_W002_SUMMARY.md) |
+| Video W002 | PARTIAL | 5 MP4 públicos identificados; tres tareas con frames originales observados; película N01 no publicada | [Informe Video](https://github.com/JuanManuelPM/Experimentos/blob/candidate/prometeo-video-audit-v2-20261122/prometeo/launch/20261122/repair/video-audit-v2/AUDIT_W002.md) |
+| Imágenes W002 | PARTIAL | 9/10 retornos ROOT; N03 en rama sin retorno; tres JPEG de N09 vistos por auditor, otros raster NOT_RUN | [Informe Imágenes](https://github.com/JuanManuelPM/Experimentos/blob/candidate/prometeo-images-audit-w002-20261122/prometeo/launch/20261122/repair/images/IMAGE_STUDIO_AUDIT_W002.md) |
+
+**Ninguno de los cinco informes permite declarar AUDITED_VISUAL_10_OF_10 ni HUMAN_APPROVED.** Los candidatos especializados siguen sin promoción propia. El núcleo compartido sí fue integrado, sin modificar obras históricas.
+
+## Cambios verificables, propietarios y rollback
+- Núcleo [ART-DIRECTION / FIRST-ARTICLE](https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/launch/ART_DIRECTION_FIRST_ARTICLE.md) y [validador](https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/launch/art-direction-first-article-v1.mjs) publicados: 11/11 fixtures estructurales PASS; no capturas reales ni escucha. Commit base 8bb07e156c9ae8c0c948b20f0582e7b5977f4b34; documento final b17961280b7089f55cbc65dfe952ecfdf5cc93fe.
+- Contrato Q-LOOP / QBAR + DEEP-SPEC integrado en [pruebas prometeo/control](https://github.com/JuanManuelPM/pruebas/blob/prometeo/control/sistemas/metodo/CONTRATO_COMPARTIDO.md) (commit 54334cff85b4da459ac94873482a82a2c8aa5fac), [DEEP_SPEC](https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/launch/DEEP_SPEC.md) (9e477c85733d1479f02eeb5d68a969c41e1e3cc0) y [UNIVERSAL](https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/launch/20261122/UNIVERSAL.md) (ceae37fb3ffa3f3ccf6b5e8f4fcc4af501e273ba). Un solo Book, no formularios humanos adicionales.
+- [Visited Trace compatible](https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/launch/VISITED_TRACE.md) y [validador](https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/launch/visited-trace-v1.mjs) publicados, 11/11 fixtures PASS. Comprobar etapa, nodo, grafo, saltos, timestamp y hash/versión aportados. Compatibiliza v2.3.0 sin modificar el v1.4.0 histórico. Ningún STAGE_TRACE nuevo fue validado contra una obra real. Commit 412ffacce93b2da565a8c4d852d7b8d59bdbaa8f.
+- ROOT: [portal-v1.js](https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/root/portal-v1.js) commit 4eba405af2788a7dfe8cdbdde7ea607eb5e1d6f4, [CSS](https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/root/studio-unified.css) 545fbe785a1291ed3a1a2111da52b42b5665aa40 y [HTML](https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/root/index.html) 8e12207117d117600dd228492e1306d71ef0299b. Filtros 5 medios, tandas plegables, recencia por publishedAt, grilla compacta y preview publicado cuando se identifica media real; en otro caso placeholder neutro. Comprobación: sintaxis JS PASS y GitHub readback; navegador real, 320/390/1440, Android, carga de medios y captura de UI NOT_RUN.
+- [BATCHES.json](https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/root/BATCHES.json) actualizado por SHA/CAS y leído de regreso, commit c4ca18d94f34d4c8b62170ffb9a1c8e68cb36835: 10 tandas anteriores conservadas + 5 nuevas = 15, cincuenta nuevos taskIds. No se modificó ROOM_MESSAGES para fabricar entregas de los cincuenta nuevos.
+- [COMPARISON_BASELINE.json](https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/launch/20261122/repair/COMPARISON_BASELINE.json), commit 223910b3229917970086d11fb63ca1e2edc96e66: 50 SHA256 por brief iguales, 5/5 lanzadores leídos de regreso y 50/50 secciones idénticas. SHA256 auto-vectores conocidos 2/2 PASS. Evidencias futuras en PENDING.
+
+## Cinco nuevos lanzadores públicos
+- [3D W7](https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/launch/20261122/relaunch/3d/LAUNCH.md) commit 86acd920726452655b7b0b4a5dcf367677df1fad.
+- [Web W003](https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/launch/20261122/relaunch/web/LAUNCH.md) commit 80b08e35bc6ae4561d76ec045ffb5b7c772219a5.
+- [Música W003](https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/launch/20261122/relaunch/music/LAUNCH.md) commit 47e94249c1694b4a8eb7112fceeb8863bdf40a4e.
+- [Video W003](https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/launch/20261122/relaunch/video/LAUNCH.md) commit ee900ea42f02b715b3c02f5ed06baaeeb757ff03.
+- [Imágenes W003](https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/launch/20261122/relaunch/images/LAUNCH.md) commit 53a361a81b68f8b588ef26616079c1f12ec1c1cb.
+Todas tienen N=01..10 y tarea exclusiva por rama, STATUS READY_TO_DISPATCH_CONDITIONAL; no workers iniciados automáticamente.
+
+## Gates de admisión, riesgos y retorno
+- PASS documental: existencia/readback de rutas y briefs; SHA CAS BATCHES; 22 pruebas sintéticas de primer artículo y Visit Trace; 50/50 hashes equivalentes.
+- NOT_RUN: cortar primer artículo **real**, seleccionar otra técnica por resultado perceptual observado, browser/Android y pruebas de recursos públicos finales. Fixture o valor declarativo NO demuestra excelencia. **HUMAN_APPROVED=NO**.
+- Retornos: publicación de producto, artefactos, STAGE_TRACE realmente observado, captura/audio/frames y QA deben venir de cada nuevo WORK; comparar before/after por tarea en COMPARISON_BASELINE. Obras W6/W002 NO se reescriben.
+- Rollback: preservar métodos anteriores, flujos privados candidatos y LAUNCH históricos. Para revertir ROOT visual, restaurar los tres archivos UI con SHAs previos a esta actualización mediante un commit de recuperación; para cancelar W7/W003, retirar solo cinco nuevas entradas por CAS y mantener el informe y las obras previas. Para el gate, retirar su referencia de los lanzadores futuros, nunca borrar evidencia histórica.
