@@ -35,7 +35,7 @@
     {
       "id": "visual",
       "role": "Primer objeto hero y variante consistente entre portada y configurador",
-      "strategy": "Único símbolo SVG original en el documento con gradientes, trama y sombras; acabados como variables CSS heredadas",
+      "strategy": "Tres recortes WebP originales del mismo tríptico, embebidos como data URL y SVG parametrizable de respaldo; una sola forma y tres superficies.",
       "constraints": "El mismo cuerpo, ubicación de mando y geometría permanecen constantes entre las tres terminaciones."
     },
     {
@@ -67,8 +67,8 @@
         "Modelo ilustrado paramétrico con geometría estable"
       ],
       "evidenceRef": "R3",
-      "finding": "La foto generada se inspeccionó localmente pero no había una vía confiable para integrar el binario en el commit; un SVG original rasterizado mostró identidad y materiales constantes.",
-      "decisionImpact": "Producción final usa SVG reproducible y exporta tres vistas estáticas originales; no se anuncia fotografía real."
+      "finding": "El primer tríptico de estudio original mostró geometría constante en las tres variantes. El método de transferencia de texto permitió embeber las imágenes WebP en la obra publicada, con SVG como respaldo.",
+      "decisionImpact": "La fotografía conceptual toma el primer plano; la ilustración vectorial queda como fallback semántico y visual."
     },
     {
       "id": "Q2",
@@ -103,10 +103,10 @@
         "visual",
         "configurator"
       ],
-      "choice": "Ilustración de producto paramétrica, con materiales en CSS y vistas exportadas",
+      "choice": "Tres imágenes WebP originales del mismo tríptico maestro embebidas sin dependencias externas, más SVG fallback",
       "rejected": "Publicar tres fotos distintas sin prueba de identidad geométrica",
-      "productionChange": "Primer artículo SVG rasterizado 900×650 y tres variantes tiza/arcilla/noche comparadas en lámina.",
-      "why": "Garantiza geometría constante, autoría verificable y buena reproducción sin dependencias externas."
+      "productionChange": "Fotos Tiza, Arcilla y Noche rasterizadas 512×480 e integradas al HTML autónomo y a app.js; el símbolo SVG cubre fallos de carga.",
+      "why": "Materialidad fotográfica más rica, geometría conservada y recursos genuinos exportables dentro del documento."
     },
     {
       "id": "D2",
@@ -215,8 +215,8 @@
       "status": "NOT_RUN"
     }
   ],
-  "resources": "HTML/CSS/JS propios, CairoSVG local para rasterizar primer artículo y Node 22 para tests. Chromium disponible pero bloqueado por política administrativa.",
-  "licensing": "El objeto, texto, símbolo SVG, acabados y UI son creación original de este WORK. Referentes citados solo como investigación; no se reutilizan sus fotos ni marcas. Imagen exploratoria generada no publicada.",
+  "resources": "Tres WebP originales 512×480 de una generación propia, embebidos como base64; SVG fallback; módulos Node propios; Chromium local con URLBlocklist bloqueada.",
+  "licensing": "Fotografías conceptuales generadas originalmente para este trabajo, no capturas de un radio fabricado; SVG, textos y UI propios. No se usan assets de marcas reales.",
   "environmentLimits": "Chromium presenta URLBlocklist con net::ERR_BLOCKED_BY_ADMINISTRATOR incluso en localhost; captura en browser, navegación táctil y comprobación de Pages quedan NOT_RUN.",
   "artDirection": {
     "schema": "prometeo.art-direction.first-article/v1",
@@ -236,7 +236,7 @@
     "techniques": [
       {
         "family": "Fotografía conceptual generada",
-        "viability": "Imagen triptica original explorada en archivo local; integración del binario en GitHub no disponible mediante la ruta de publicación usada.",
+        "viability": "Tres recortes 512×480 del mismo original convertidos a WebP y embebidos directamente como data URI en el HTML y módulo publicados.",
         "license": "Imagen producida originalmente para este trabajo y sin fotografías de terceros."
       },
       {
@@ -245,7 +245,7 @@
         "license": "Formas y texturas creadas para este trabajo; no derivadas de un producto comercial concreto."
       }
     ],
-    "selectedTechnique": "Ilustración vectorial paramétrica",
+    "selectedTechnique": "Fotografía conceptual generada",
     "firstFrame": {
       "openingDescription": "En 390 aparece marca, promesa editorial y una radio protagonista en pantalla siguiente; en 1440, texto izquierdo y radio grande derecho.",
       "focalSubject": "Radio LENTO 01 en vista frontal ligeramente en perspectiva",
@@ -270,15 +270,15 @@
       "observations": []
     },
     "firstArticle": {
-      "target": "Una radio coherente, renderizada con geometría inmutable en tres acabados",
+      "target": "Tríptico original de una misma radio, recortado a tres vistas con dial, cuerpo, tejido y asa consistentes",
       "rejectWhen": "La silueta se desarma o tres acabados modifican la geometría, o no se puede publicar legalmente el recurso.",
-      "switchTo": "Fotografía conceptual generada",
-      "oracle": "Rasterizar mismo símbolo en tres gamas y mirar hoja de contacto; falla si no son reconocibles como un mismo objeto.",
-      "resourceProof": "Los SVG originales son fuente y asset, con raster local generado por CairoSVG; se publica la fuente autoral.",
+      "switchTo": "Ilustración vectorial paramétrica",
+      "oracle": "Comparar los tres recortes raster originales y verificar dial, asa y rejilla; reservar SVG de fallback cuando falle foto.",
+      "resourceProof": "Tres WebP originales de 512×480 visibles en el propio HTML publicado como data:image/webp; hoja de contacto inspeccionada localmente.",
       "status": "OBSERVED_PASS",
       "evidence": {
-        "url": "https://github.com/JuanManuelPM/Experimentos/blob/candidate/prometeo-web-w003-20261122-05/prometeo/works/web-w003-20261122/05/radio-tiza.svg",
-        "description": "Primer artículo SVG reproducible; render CairoSVG inspeccionado en el entorno local. No es screenshot de navegador."
+        "url": "https://github.com/JuanManuelPM/Experimentos/blob/candidate/prometeo-web-w003-20261122-05/prometeo/works/web-w003-20261122/05/LIVE_SINGLE_FILE.html",
+        "description": "HTML autónomo con las tres fotos WebP originales embebidas. Primera imagen y tríptico observados localmente; no hay screenshot de navegador."
       }
     },
     "humanApproved": false
