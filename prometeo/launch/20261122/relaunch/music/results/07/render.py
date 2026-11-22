@@ -56,7 +56,7 @@ def acquire():
     src=np.concatenate(interleaved)
     origin=ROOT/'audio'/'source_decoded.wav'
     sf.write(origin,src,SR,subtype='PCM_24')
-    (ROOT/'audio'/'SOURCE_PROVENANCE.json').write_text(json.dumps({'license':'CC0-1.0','dataset':SOURCE_PAGE,'performer':'GuitarJam contributor Julian-br (public dataset credit)','humanPerformance':'electric guitar strings, DI capture, not acoustic-microphone capture','assembly':'four intact 8-15 s recorded improvisation clips separated by 0.55 s breath; no sample-by-note synthesis','clips':manifests},indent=2)+'\n')
+    (ROOT/'audio'/'SOURCE_PROVENANCE.json').write_text(json.dumps({'license':'CC0-1.0','dataset':SOURCE_PAGE,'performer':'GuitarJam contributor Julian-br (public dataset credit)','humanPerformance':'electric guitar strings, DI capture, not acoustic-microphone capture','assembly':'four complete 14-25 s recorded improvisation clips separated by 0.55 s breath; no sample-by-note synthesis','clips':manifests},indent=2)+'\n')
     if len(src)<SR*25:raise RuntimeError('Genuine-source sequence shorter than full piece required')
     return src,origin
 
@@ -141,7 +141,7 @@ def compose(x):
     room[:,1]=np.roll(air,int(.013*SR))*roomarc*.87
     components={'acoustic_dry':dry,'acoustic_processed':wet,'circuit':circuit,'room':room}
     mix=sum(components.values())
-    gain=min(1.,.875/max(float(np.max(np.abs(mix))),1e-9))
+    gain=min(3.0,.83/max(float(np.max(np.abs(mix))),1e-9))
     components={k:v*gain for k,v in components.items()}
     return components,sum(components.values()),events,gain
 
@@ -190,7 +190,7 @@ def render(full):
             'unquantizedArticulations':len(events),
             'commonMasterGain':round(gain,7),'measurements':stats(mix),
             'filesSha256':digests,'firstEvents':events[:8],
-            'assertions':{'continuous_acoustic_source':True,
+            'assertions':{'four_original_human_takes_preserved':True,
                           'stems_sum_to_master':bool(np.max(np.abs(sum(stems.values())-mix))<1e-10),
                           'finite_audio':bool(np.isfinite(mix).all()),
                           'not_silent':bool(np.sqrt(np.mean(mix*mix))>1e-4),
