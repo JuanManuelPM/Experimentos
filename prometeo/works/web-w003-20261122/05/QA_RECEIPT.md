@@ -34,3 +34,10 @@
 - **Causa preventiva:** `stage=S08`; `cause=browser-URLBlocklist`; `preventive_gate=obtain-actual-browser-screenshots`; `test=first-frame-390+1440 and basket-reload`; `owner=web`; `counterexample=source-and-node-PASS-as-browser-PASS`.
 
 **Publicado en rama exclusiva** solo cuando GitHub readback lo confirme; ningún archivo histórico W002 o vecino se reemplaza.
+
+## Resultado de publicación remota
+
+- **gh-pages source:** `prometeo/works/web-w003-20261122/05/index.html` escrito mediante GitHub Contents API, blob `3007ed5532588578e3ea93636644b2ca03907cac`, lectura remota **PASS**. Es un HTML autónomo con CSS y módulos incorporados.
+- **GitHub Pages externo:** una lectura por Firecrawl de `https://juanmanuelpm.github.io/Experimentos/prometeo/works/web-w003-20261122/05/` devolvió **HTTP 404 / Page not found**, por lo que LIVE_HTTP **FAILED** y la vista pública no se declara operativa.
+- **Rama candidata:** guarda además `LIVE_SINGLE_FILE.html` con el mismo bundle. La publicación de fuente y su aplicación pública son hechos diferentes.
+- **Browser final:** sigue **NOT_RUN**. Ninguna captura válida 390/1440 de esta web fue obtenida.
