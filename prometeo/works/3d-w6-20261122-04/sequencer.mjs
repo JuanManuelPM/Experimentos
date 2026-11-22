@@ -59,7 +59,7 @@ export function evaluateTimeline(t,film){
 }
 /** Retimes the current shot and translates later boundaries without gaps. */
 export function retimeShot(film,id,seconds){
- const next=structuredClone(film);
+ const next=JSON.parse(JSON.stringify(film));
  const index=next.shots.findIndex(s=>s.id===id);
  if(index<0)throw new Error('Unknown shot');
  const shot=next.shots[index], length=clamp(seconds,1,15), delta=length-(shot.end-shot.start);
