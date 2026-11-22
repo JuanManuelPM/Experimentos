@@ -1,0 +1,198 @@
+{
+  "schema": "prometeo.flow.visited-trace/v1",
+  "taskId": "music-w003-20261122-09",
+  "flow": {
+    "version": "2.0.0",
+    "sha256Canonical": "6826ce13f4bd1e0d81b8a89bd7e6728668b85c44c68185b79426b00a36b8f05f",
+    "gitBlobSha": "1423f13e08b743f418c42052613a6808b214d622"
+  },
+  "humanApproved": false,
+  "events": [
+    {
+      "stage": "M00",
+      "status": "EXECUTED",
+      "timestamp": "2026-11-22T18:48:05Z",
+      "decision": "Leer contrato, brief y artefactos",
+      "outputRef": "CONTRATO_COMPARTIDO y LAUNCH sha fijados",
+      "alternativesConsidered": [
+        "iniciar una variante nueva",
+        "recuperar contrato fuente"
+      ],
+      "evidenceRefs": [
+        "Referencia a GitHub y contenido de método recuperado"
+      ],
+      "testStatus": "OBSERVED"
+    },
+    {
+      "stage": "M01",
+      "status": "EXECUTED",
+      "timestamp": "2026-11-22T18:48:35Z",
+      "decision": "Fijar tarea #09 sin alterar brief",
+      "outputRef": "PROJECT.json",
+      "alternativesConsidered": [
+        "techno estático",
+        "progresivo club extendido"
+      ],
+      "evidenceRefs": [
+        "Brief 09 y SHA del lanzador"
+      ],
+      "testStatus": "OBSERVED"
+    },
+    {
+      "stage": "M02",
+      "status": "EXECUTED",
+      "timestamp": "2026-11-22T18:49:10Z",
+      "decision": "Leer referencias técnicas de arreglo y entrevistas",
+      "outputRef": "PREPRODUCTION.deep-spec-v1.json",
+      "alternativesConsidered": [
+        "copiar track protegido",
+        "aprender función y contraste"
+      ],
+      "evidenceRefs": [
+        "Páginas de Ableton/Hopkins/Cooper leídas, NO música escuchada"
+      ],
+      "testStatus": "NOT_RUN"
+    },
+    {
+      "stage": "M03",
+      "status": "EXECUTED",
+      "timestamp": "2026-11-22T18:49:35Z",
+      "decision": "Elegir síntesis DSP propia y separar stems",
+      "outputRef": "render.py",
+      "alternativesConsidered": [
+        "bibliotecas no autorizadas",
+        "síntesis original"
+      ],
+      "evidenceRefs": [
+        "numpy/scipy/soundfile disponibles, ninguna muestra ajena"
+      ],
+      "testStatus": "OBSERVED"
+    },
+    {
+      "stage": "M04",
+      "status": "EXECUTED",
+      "timestamp": "2026-11-22T18:50:00Z",
+      "decision": "Diseñar 208 compases y ocho secciones",
+      "outputRef": "PROJECT.json",
+      "alternativesConsidered": [
+        "loop de 8 compases",
+        "ocho secciones con vacío y retorno"
+      ],
+      "evidenceRefs": [
+        "Secciones definidas con 32 compases de intro y salida"
+      ],
+      "testStatus": "OBSERVED"
+    },
+    {
+      "stage": "M05",
+      "status": "EXECUTED",
+      "timestamp": "2026-11-22T18:50:10Z",
+      "decision": "Construir base ritmo bajo armonía motivo",
+      "outputRef": "render.py",
+      "alternativesConsidered": [
+        "presets sin carácter",
+        "síntesis programada con articulación"
+      ],
+      "evidenceRefs": [
+        "Síntesis por seis grupos de stems y motivos MIDI"
+      ],
+      "testStatus": "OBSERVED"
+    },
+    {
+      "stage": "M06",
+      "status": "EXECUTED",
+      "timestamp": "2026-11-22T18:50:20Z",
+      "decision": "Integrar sidechain, timbres y eco musical",
+      "outputRef": "render.py",
+      "alternativesConsidered": [
+        "ruido ascendente",
+        "filtrado y contrapunto"
+      ],
+      "evidenceRefs": [
+        "Código y WAV fuente, sin escucha externa"
+      ],
+      "testStatus": "NOT_RUN"
+    },
+    {
+      "stage": "M07",
+      "status": "EXECUTED",
+      "timestamp": "2026-11-22T18:50:36Z",
+      "decision": "Render primer artículo intro 8 compases",
+      "outputRef": "first_article/first_article.wav",
+      "alternativesConsidered": [
+        "escalar sin prototipo",
+        "prototipo antes de obra larga"
+      ],
+      "evidenceRefs": [
+        "WAV de 15.484 s y metadatos decodificados; escucha del riesgo artístico NOT_RUN"
+      ],
+      "testStatus": "NOT_RUN"
+    },
+    {
+      "stage": "M08",
+      "status": "EXECUTED",
+      "timestamp": "2026-11-22T18:51:05Z",
+      "decision": "Extender composición a 208 compases",
+      "outputRef": "export/master.wav",
+      "alternativesConsidered": [
+        "loop extendido sin cambio",
+        "transiciones que retiran/agregan voces"
+      ],
+      "evidenceRefs": [
+        "402.581 s de audio PCM generados"
+      ],
+      "testStatus": "OBSERVED"
+    },
+    {
+      "stage": "M09",
+      "status": "EXECUTED",
+      "timestamp": "2026-11-22T18:51:21Z",
+      "decision": "Exportar master, premix, seis stems y MP3",
+      "outputRef": "export/master.mp3",
+      "alternativesConsidered": [
+        "un master sin fuentes",
+        "seis stem renders sincronizados"
+      ],
+      "evidenceRefs": [
+        "Stems FLAC reales, máster WAV 24-bit y MP3"
+      ],
+      "testStatus": "OBSERVED"
+    },
+    {
+      "stage": "M10",
+      "status": "EXECUTED",
+      "timestamp": "2026-11-22T18:54:50Z",
+      "decision": "Medir audio y A/B nivelado, añadir editor JSON",
+      "outputRef": "export/QA_RECEIPT.json",
+      "alternativesConsidered": [
+        "curva de energía inventada",
+        "features desde audio y proyecto editable"
+      ],
+      "evidenceRefs": [
+        "QA PCM PASS, escucha humana NOT_RUN; código extendido para PROJECT.json"
+      ],
+      "testStatus": "OBSERVED"
+    },
+    {
+      "stage": "M11",
+      "status": "EXECUTED",
+      "timestamp": "2026-11-22T18:59:50Z",
+      "decision": "Publicar fuentes y límites de entrega",
+      "outputRef": "prometeo/works/20261122/music-w003-09/",
+      "alternativesConsidered": [
+        "declarar master remoto falso",
+        "publicar fuente y explicitar entrega local"
+      ],
+      "evidenceRefs": [
+        "Readback parcial en branch y gh-pages; máster remoto no disponible"
+      ],
+      "testStatus": "OBSERVED"
+    }
+  ],
+  "limits": [
+    "No nodeId: original music flow has stages but no node/edge topology in source; validator must warn, not invent graph",
+    "Full master and stems local, not independently heard by human",
+    "No browser screenshot at 390/1440",
+    "Published source is not equivalent to remote master audible"
+  ]
+}
