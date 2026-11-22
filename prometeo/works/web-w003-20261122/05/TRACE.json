@@ -57,6 +57,16 @@
       "stage": "HUMAN_APPROVAL",
       "status": "NOT_RUN",
       "evidence": "No human artistic review claimed."
+    },
+    {
+      "stage": "GITHUB_SOURCE_PUBLISH",
+      "status": "OBSERVED_PASS",
+      "evidence": "Candidate multi-file source readback and gh-pages autonomous index.html readback, blob 3007ed5532588578e3ea93636644b2ca03907cac."
+    },
+    {
+      "stage": "PUBLIC_PAGES_HTTP",
+      "status": "FAILED",
+      "evidence": "Firecrawl network read of intended Pages URL returned HTTP 404 Page not found."
     }
   ],
   "statuses": {
@@ -64,7 +74,7 @@
     "logicTested": true,
     "svgArticleObserved": true,
     "browserQA": "NOT_RUN",
-    "livePages": "NOT_RUN",
+    "livePages": "HTTP_404_OBSERVED",
     "humanApproved": false
   }
 }
