@@ -1,0 +1,110 @@
+{
+  "schema": "PROMETEO-MUSIC-W002-RESULT-1",
+  "id": "music-w002-20261122-09",
+  "room": "music",
+  "batchId": "music-w002-20261122",
+  "taskNumber": 9,
+  "title": "PUNTO DE RETORNO",
+  "state": "DELIVERED_LOCAL_AUDIO_PARTIAL_PUBLICATION",
+  "publicAudio": false,
+  "statusDetail": "Full-length master and five stems rendered to local conversation artifacts; GitHub hosts preproduction, reusable analyzer, readme, and this result only. No public audio URL.",
+  "source": {
+    "launchBlobSha": "1045f4950c9f7ae11b455523ca664e087ec1b30d",
+    "qualityBarVersion": "QBAR-1",
+    "deepSpecVersion": "DEEP-SPEC-1",
+    "owner": "JuanManuelPM/pruebas",
+    "branch": "candidate/prometeo-music-w002-09-20261122",
+    "folderUrl": "https://github.com/JuanManuelPM/pruebas/tree/candidate/prometeo-music-w002-09-20261122/PROMETEO/spaces/music-studio/production-universal/waves/W002/runs/W002-09",
+    "readmeUrl": "https://github.com/JuanManuelPM/pruebas/tree/candidate/prometeo-music-w002-09-20261122/PROMETEO/spaces/music-studio/production-universal/waves/W002/runs/W002-09/README.md",
+    "specUrl": "https://github.com/JuanManuelPM/pruebas/tree/candidate/prometeo-music-w002-09-20261122/PROMETEO/spaces/music-studio/production-universal/waves/W002/runs/W002-09/PREPRODUCTION.deep-spec-v1.json",
+    "reusableAnalyzerUrl": "https://github.com/JuanManuelPM/pruebas/tree/candidate/prometeo-music-w002-09-20261122/PROMETEO/spaces/music-studio/production-universal/waves/W002/runs/W002-09/energy_map.py"
+  },
+  "piece": {
+    "durationSeconds": 365.7142857,
+    "bpm": 126,
+    "bars": 192,
+    "meter": "4/4",
+    "sampleRateHz": 32000,
+    "channels": 2,
+    "format": "WAV PCM24",
+    "stems": [
+      "drums",
+      "bass",
+      "harmony",
+      "melody",
+      "atmosphere"
+    ],
+    "harmonicPlan": "main Fm9 / Dbmaj9 / Abmaj9 / Ebadd9; climax Fm9 / Bbm9 / Dbmaj9 / C7b9",
+    "sectionCount": 12,
+    "djMixIntroBars": "0-32",
+    "djMixOutroBars": "176-192",
+    "climaxBars": "112-144",
+    "returnBars": "144-176",
+    "provenance": "entirely original synthesized PCM, no external samples"
+  },
+  "attachmentsInConversation": [
+    {
+      "filename": "PUNTO_DE_RETORNO_LISTEN.mp3",
+      "sha256": "524a2da5602f7ed6...",
+      "note": "verified complete length 365.760 s; local attachment, not an external URL"
+    },
+    {
+      "filename": "PUNTO_DE_RETORNO_MASTER.wav",
+      "sha256": "d5e46edac81bd4e8...",
+      "note": "local attachment; 32000 Hz, 24-bit, 2 channels"
+    },
+    {
+      "filename": "STEMS_AND_SESSION.zip",
+      "sha256": "33c6c19507aa55b3...",
+      "note": "local attachment; five FLAC stems and editable renderer/timeline"
+    },
+    {
+      "filename": "LEVEL_MATCHED_AB.zip",
+      "sha256": "7e48b8e319d07968...",
+      "note": "local attachment; intro/climax/return/outro equal-level samples"
+    }
+  ],
+  "verification": {
+    "masterFrameCount": 11702857,
+    "stemFrameCountEach": 11702857,
+    "peakSampleLinear": 0.9000000953674316,
+    "stemDecodeSumResidualRms": 9.215601876808052e-8,
+    "stemDecodeSumRelativeRms": 6.480054783041455e-7,
+    "noSampleClipping": true,
+    "mp3DurationSeconds": 365.76,
+    "audioMetrics": "OBSERVED",
+    "codeReadback": "PENDING",
+    "perceptualListening": "NOT_RUN",
+    "humanApproval": "NOT_RUN",
+    "professionalMastering": "NOT_CLAIMED",
+    "remoteAudioHttp": "NOT_RUN"
+  },
+  "energyMap": {
+    "method": "2-bar RMS dBFS and highband fraction; scored novelty",
+    "windows": 96,
+    "detectedEventsHighThreshold": 8,
+    "knownLimitation": "mostly catches the intermittent-break kick dropout; harmonic/arrangement transitions are missed; more sophisticated detector required"
+  },
+  "references": [
+    {
+      "url": "https://www.native-instruments.com/blogs/blog/progressive-house",
+      "type": "observed production article",
+      "insight": "DJ structure: percussive intro / builds and breaks / outro"
+    },
+    {
+      "url": "https://www.ableton.com/en/blog/composing-infinity-max-cooper-his-new-album/",
+      "type": "observed interview",
+      "insight": "narrative chapters and semi-generative elaboration"
+    },
+    {
+      "url": "https://www.smwltn.com/articles/jon-hopkins-interview/",
+      "type": "observed interview",
+      "insight": "intentional imperfection and meaningful long-form composition"
+    }
+  ],
+  "improvements": [
+    "stage=energy-analysis; cause=coarse detector; preventive_gate=compare boundary recall with score; test=audio-derived novelty cross-check; owner=music; counterexample=bar112 harmonic transition missed",
+    "stage=publication; cause=text connector cannot ingest local audio bytes; preventive_gate=HTTP readback before claiming public audio; test=verify binary metadata externally; owner=music+ROOT; counterexample=README without playable remote media"
+  ],
+  "claim": "Technical render achieved and exported locally. No auditory comparison to professional master has been performed. No automatic claim of release-ready quality."
+}
