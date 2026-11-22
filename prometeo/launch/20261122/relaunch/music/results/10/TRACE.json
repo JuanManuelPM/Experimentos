@@ -1,0 +1,13 @@
+{
+ "schema":"prometeo.visited-trace/v1","taskId":"music-w003-20261122-10","startTimeUtc":"2026-11-22T18:48:00Z","status":"WORK_IN_PROGRESS_AT_SNAPSHOT","methodValidator":"visited-trace-v1 NOT_RUN", "visited":[
+  {"node":"brief-locked","status":"OBSERVED","output":"LAUNCH Git blob 5d7e6c2540cc49d998b7fe75fc1048d6f9cba80b"},
+  {"node":"references-read","status":"OBSERVED","output":"ITU-R BS.1770 and public specialty documentation; technical not auditory benchmark"},
+  {"node":"preproduction","status":"IMPLEMENTED","output":"PREPRODUCTION.deep-spec-v1.json"},
+  {"node":"first-article-render","status":"OBSERVED","output":"FIRST_ARTICLE_mix.wav, 5.415s PCM"},
+  {"node":"first-article-technical-QA","status":"OBSERVED","output":"true peak 0.6573 linear; correlation 0.9543; mono RMS 0.1247"},
+  {"node":"full-render","status":"OBSERVED","output":"56.185s 48kHz 24bit 3 PCM mixes + 5 stems"},
+  {"node":"mix-revision","status":"OBSERVED","output":"base -17.03 LUFS; revised -16.93 LUFS; sub imbalance .31 to .00dB"},
+  {"node":"master","status":"OBSERVED","output":"master derived from revised -14.05 LUFS and -2.35 dBTP"},
+  {"node":"analyze-PCM","status":"OBSERVED","output":"qa/METRICS.json, FFmpeg loudnorm"},
+  {"node":"web-panel","status":"IMPLEMENTED_BUT_BROWSER_NOT_VALIDATED","output":"index.html Web Audio A/B"}
+ ],"skipped":[{"node":"critical-human-listening","reason":"No genuine auditory judgement available","status":"NOT_RUN"},{"node":"mobile-desktop-screenshot","reason":"Headless Chromium timed out in container","status":"NOT_RUN"}],"humanApproved":false}
