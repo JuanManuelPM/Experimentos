@@ -1,0 +1,78 @@
+{
+  "schema": "prometeo.video.qa/v1",
+  "taskId": "video-w003-20261122-02",
+  "testedAt": "2026-11-22T19:10:44Z",
+  "output": {
+    "name": "FORM_01.mp4",
+    "publication": "LOCAL_CHAT_ARTIFACT_ONLY",
+    "remoteBinary": "NOT_PUBLISHED",
+    "bytes": 641729,
+    "sha256": "c144e87124968354e8be200a66e794dbf6ce6f375aba05097d5f83a47f5d1fb0",
+    "durationSeconds": 16,
+    "videoCodec": "h264",
+    "videoSize": [
+      960,
+      540
+    ],
+    "fps": 24,
+    "audioCodec": "aac",
+    "audioSampleRate": 48000,
+    "audioChannels": 2
+  },
+  "tests": [
+    {
+      "name": "ffprobe format/streams",
+      "status": "OBSERVED_PASS",
+      "evidence": "local ffprobe JSON: 16.000 s, 24fps, video h264, stereo AAC 48k"
+    },
+    {
+      "name": "ffmpeg decode 8 frames",
+      "status": "OBSERVED_PASS",
+      "evidence": "8 timecoded video frames extracted into CONTACT_SHEET.png"
+    },
+    {
+      "name": "level check",
+      "status": "OBSERVED_PASS",
+      "evidence": "ffmpeg volumedetect mean -29.4dB, max -16.2dB"
+    },
+    {
+      "name": "first article (folded/mid/open/hero)",
+      "status": "OBSERVED_PASS_LOCAL",
+      "evidence": "4 real VTK frames rendered and examined"
+    },
+    {
+      "name": "offscreen PBR first attempt",
+      "status": "FAILED_CORRECTED",
+      "evidence": "PBR+FXAA output black; switched renderer to Phong and repeated first article"
+    },
+    {
+      "name": "remote binary readback",
+      "status": "NOT_RUN",
+      "evidence": "GitHub text-file connector cannot publish local MP4 bytes"
+    },
+    {
+      "name": "external headphone listening",
+      "status": "NOT_RUN"
+    },
+    {
+      "name": "Android playback and mobile screenshot",
+      "status": "NOT_RUN"
+    },
+    {
+      "name": "independent professional product quality",
+      "status": "NOT_RUN"
+    },
+    {
+      "name": "human approval",
+      "status": "NO"
+    }
+  ],
+  "knownLimitations": [
+    "CGI stylized, not photorealistic or demonstrably premium",
+    "No real PBR environment reflection, floor glow artistically simulated",
+    "Light power and reflection are not physically based",
+    "No public URL for MP4 at time of receipt"
+  ],
+  "previousBatch": "video-w002-20261122",
+  "comparison": "W002 reported 16s 640×360 local film; W003 16s 960×540 local film with checked audiovisual stream and 8 decoded frames. Artistic superiority not demonstrated."
+}
