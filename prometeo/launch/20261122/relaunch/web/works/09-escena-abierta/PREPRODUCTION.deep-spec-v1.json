@@ -1,0 +1,311 @@
+{
+  "version": "DEEP-SPEC-1",
+  "medium": "web",
+  "depth": "SISTEMA",
+  "taskId": "web-w003-20261122-09",
+  "batchId": "web-w003-20261122",
+  "taskNumber": 9,
+  "briefSha": "bef87bf57c789d2b0605ca9ff81a5d3bbaab5e35",
+  "oldBriefSha": "cd88a07941ab62072f6de5ee69764308f1ec2387",
+  "qualityBarVersion": "QBAR-1",
+  "brief": "ESCENA ABIERTA: sitio de festival cultural ficticio con identidad tipográfica variable, fotografías autorizadas, grilla filtrable, fichas y agenda personal persistente; probar conflictos, filtros, rutas y accesibilidad sin movimiento.",
+  "intent": {
+    "experience": "La primera pantalla debe sentirse como un acontecimiento cultural original y la programación debe poder usarse en un celular sin instrucciones.",
+    "distinctAbility": "Un sistema editorial de festival que conecta filtros multi-criterio, deep-links reales, agenda local y prevención de cruces temporales sin servidor."
+  },
+  "references": [
+    {
+      "id": "ref-sonar",
+      "url": "https://sonar.es/en/sonar-2026-novedades",
+      "status": "OBSERVED",
+      "observation": "La página oficial explica una experiencia de múltiples escenarios dentro de un mismo recinto y opciones de asistencia por día; inspira jerarquía inmediata de fechas y espacios."
+    },
+    {
+      "id": "ref-unsound",
+      "url": "https://www.unsound.pl/en/2026/warszawa-krakow/news/unsound-announces-third-wave-of-artists-for-2026-festival-unveils-schedule-and-new-website",
+      "status": "OBSERVED",
+      "observation": "El anuncio oficial conecta cartel artístico, disciplinas y el estreno de una navegación de horario actualizada; sirve como contraejemplo a una landing sin programa utilizable."
+    },
+    {
+      "id": "ref-bergen",
+      "url": "https://2025.bergenassembly.no/en/about",
+      "status": "OBSERVED",
+      "observation": "Bergen Assembly articula su encuentro cultural desde un proyecto editorial, no sólo una lista de actuaciones; se toma la distinción entre contexto cultural y logística operativa."
+    },
+    {
+      "id": "ref-unsplash",
+      "url": "https://unsplash.com/license",
+      "status": "OBSERVED",
+      "observation": "Licencia oficial permite uso de fotografías para esta obra; se eligieron imágenes del público y no retratos atribuidos a artistas ficticios."
+    }
+  ],
+  "components": [
+    {
+      "id": "C1",
+      "role": "Sistema editorial de identidad con tipografía Syne y Space Grotesk variable",
+      "strategy": "Portada tipográfica azul intenso y lima con collage fotográfico de ambiente acreditado",
+      "constraints": "Primer viewport 390 y 1440 sin clips, overflow ni CTA debajo de capas"
+    },
+    {
+      "id": "C2",
+      "role": "Grilla accesible con filtros por día, escenario, disciplina y búsqueda",
+      "strategy": "Eventos como datos independientes de la UI, filtros puros y tarjetas semánticas",
+      "constraints": "Misma información y acciones en 320, 390 y escritorio; sin tarjetas ocultas por CSS"
+    },
+    {
+      "id": "C3",
+      "role": "Agenda persistente y detección de encuentros temporalmente incompatibles",
+      "strategy": "Motor independiente, localStorage con fallback y exportación ICS explícita",
+      "constraints": "Los intervalos son estrictos, incluyen medianoche y horario Buenos Aires"
+    },
+    {
+      "id": "C4",
+      "role": "Fichas de actividades con rutas directas compartibles",
+      "strategy": "Hash routing nativo y diálogo modal accesible con cierre por Escape",
+      "constraints": "Carga directa en #evento/id y cierre preservan foco y navegación sin animaciones"
+    },
+    {
+      "id": "C5",
+      "role": "Créditos y manifiesto cultural original de un festival ficticio",
+      "strategy": "Fotografías de ambiente de Unsplash con autor y enlaces, separados de los artistas de ficción",
+      "constraints": "Nunca asociar persona fotografiada con intérprete ficticio, ni afirmar evento real"
+    }
+  ],
+  "questions": [
+    {
+      "id": "Q1",
+      "target": "C1",
+      "question": "¿La primera pantalla debe apoyar el nombre en tipografía protagonista o basarse en una fotografía genérica de festival?",
+      "alternatives": [
+        "Tipografía enorme + foto contextual acreditada",
+        "Portada fotográfica con logo superpuesto"
+      ],
+      "evidenceRef": "ref-bergen",
+      "finding": "La identidad editorial y la mediación cultural son tan importantes como las fotos de actuaciones.",
+      "decisionImpact": "La palabra ESCENA ABIERTA domina el primer viewport y la fotografía queda descrita como ambiente."
+    },
+    {
+      "id": "Q2",
+      "target": "C2",
+      "question": "¿Cómo conserva el lector el contexto al cruzar día, escenario, disciplina y texto desde móvil?",
+      "alternatives": [
+        "Estado combinado de filtros + contador + vacíos",
+        "Tres páginas separadas por escenario"
+      ],
+      "evidenceRef": "ref-sonar",
+      "finding": "Tres escenarios simultáneos y navegación por día requieren filtros combinables, no páginas independientes.",
+      "decisionImpact": "Se usa un único filtro puro sobre los 21 eventos y una interfaz reordenable con CSS."
+    },
+    {
+      "id": "Q3",
+      "target": "C3",
+      "question": "¿Es correcto guardar favoritos aunque haya dos actividades en horarios solapados en escenarios distintos?",
+      "alternatives": [
+        "Guardar con aviso de conflicto y exportable",
+        "Prohibir guardar la segunda actividad"
+      ],
+      "evidenceRef": "ref-unsound",
+      "finding": "El horario de festival es una decisión humana y la información completa precede a imponer elecciones.",
+      "decisionImpact": "Se guardan ambas actividades y se señalan pares de intervalos que se pisan."
+    },
+    {
+      "id": "Q4",
+      "target": "C5",
+      "question": "¿Se pueden atribuir retratos de asistentes reales a los artistas inventados de este festival?",
+      "alternatives": [
+        "Fotografías reales de atmósfera con crédito honesto",
+        "Retratos de stock con nombres de ficción"
+      ],
+      "evidenceRef": "ref-unsplash",
+      "finding": "La licencia de foto no certifica identidad de artistas ni derechos de imagen para atribuir personajes.",
+      "decisionImpact": "Todas las fotos muestran atmósferas de conciertos y llevan nota de contexto."
+    }
+  ],
+  "relations": [
+    {
+      "from": "C1",
+      "to": "C5",
+      "invariant": "La foto del primer viewport es ambiente acreditado, nunca el retrato de un artista ficticio.",
+      "failure": "La portada induce a creer que las personas de archivo participan en el festival.",
+      "test": "Revisión textual de foto, crédito, alt y aviso de ficción"
+    },
+    {
+      "from": "C2",
+      "to": "C3",
+      "invariant": "Cualquier evento filtrado se puede guardar y luego reaparecer en la agenda aun si otro filtro queda activo.",
+      "failure": "UI y motor quedan desincronizados cuando se usa el modo solo mi agenda.",
+      "test": "Persistencia tras recarga y cambio de filtros en navegador"
+    },
+    {
+      "from": "C3",
+      "to": "C4",
+      "invariant": "Una ficha por ruta directa permite guardar y quitar el mismo ID que aparece en la lista.",
+      "failure": "La ruta no abre, pierde información o guarda un ID ajeno.",
+      "test": "Abrir deep-link, guardar, cerrar, inspeccionar agenda y URL"
+    }
+  ],
+  "decisions": [
+    {
+      "id": "D1",
+      "questionId": "Q1",
+      "componentIds": [
+        "C1",
+        "C5"
+      ],
+      "choice": "Composición editorial tipográfica contrastada",
+      "rejected": "Hero genérico de stock con texto centrado",
+      "productionChange": "Primera pantalla de dos masas, nombre gigante y foto de atmósfera acreditada.",
+      "why": "Da identidad propia y evita presentar archivo ajeno como fotografía de artistas."
+    },
+    {
+      "id": "D2",
+      "questionId": "Q2",
+      "componentIds": [
+        "C2"
+      ],
+      "choice": "Grilla única con filtros ortogonales",
+      "rejected": "Páginas de escenario que duplican datos",
+      "productionChange": "Un array de eventos alimenta resultados, buscador con acentos y contador legible.",
+      "why": "El horario real se decide cruzando escenario, día y disciplina en la misma vista."
+    },
+    {
+      "id": "D3",
+      "questionId": "Q3",
+      "componentIds": [
+        "C3",
+        "C4"
+      ],
+      "choice": "Agenda local tolerante a cruces, con alertas",
+      "rejected": "No permitir conflictos o no informarlos",
+      "productionChange": "Motor de intervalos de extremos estrictos, fallbacks de storage, descarga ICS.",
+      "why": "El usuario conserva agencia y recibe información antes de elegir entre dos escenas."
+    }
+  ],
+  "risks": [
+    {
+      "componentIds": [
+        "C1"
+      ],
+      "severity": "medium",
+      "failure": "Tipografía gigantesca sobrepasa el ancho móvil y tapa controles.",
+      "prevention": "Primer artículo visual local en 390 y 1440 antes de multiplicar pantallas.",
+      "test": "Captura Chromium 390/1440 y prueba scrollWidth <= innerWidth",
+      "status": "OBSERVED"
+    },
+    {
+      "componentIds": [
+        "C3"
+      ],
+      "severity": "medium",
+      "failure": "Solapes contiguos o que cruzan medianoche producen falsos positivos o negativos.",
+      "prevention": "Intervalos absolutos con zona y comparación de extremos estrictos.",
+      "test": "Once comprobaciones JS de integridad, cruces, persistencia, ICS y filtros",
+      "status": "OBSERVED"
+    },
+    {
+      "componentIds": [
+        "C2",
+        "C4"
+      ],
+      "severity": "high",
+      "failure": "CSS o DOM final oculta botones y rompe deep links en un navegador real.",
+      "prevention": "Requerir E2E local completo con recarga y prueba táctil/teclado antes de certificar.",
+      "test": "Chromium final 320/390/1440, filtro, deep-link, agenda persistida y reduced-motion",
+      "status": "NOT_RUN"
+    }
+  ],
+  "acceptance": [
+    {
+      "kind": "visual",
+      "criterion": "Primer artículo tipográfico legible sin desborde horizontal a 390 y 1440.",
+      "oracle": "Capturas locales reales de prototipo; se leen título y guardado.",
+      "status": "OBSERVED"
+    },
+    {
+      "kind": "logic",
+      "criterion": "21 eventos y horarios con filtros, intervalos, estado local e ICS coherentes.",
+      "oracle": "Motor evaluado directamente en V8 con 11 comprobaciones, 11 PASS.",
+      "status": "OBSERVED"
+    },
+    {
+      "kind": "interactive",
+      "criterion": "Sitio final permite seleccionar día y escenario, abrir ficha, guardar y recargar.",
+      "oracle": "Chromium de la obra final, incluyendo navegación teclado y hash directo.",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "visual",
+      "criterion": "Fotografías finales cargan en navegador público sin ocultar los créditos.",
+      "oracle": "HTTP y decodificación efectiva de imágenes Unsplash en Pages.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "resources": "HTML semántico, CSS responsive original, ES Modules sin framework, pruebas V8, prototipo local capturado en Chromium y fotografías de ambiente Unsplash enlazadas externamente.",
+  "licensing": "Texto, programa y dirección gráfica originales. Fotografías bajo Unsplash License, con autores Lachy Spratt y Yoad Shejtman y créditos visibles; fuentes Google Fonts Syne y Space Grotesk con licencias abiertas, CDN pendiente de verificación de carga.",
+  "environmentLimits": "Chromium local sólo pudo inspeccionar el prototipo con set_content por bloqueo administrativo de file://; ese prototipo no contiene la aplicación final. Assets CDN, E2E final y Public Browser aún no comprobados. Flujo privado propietario vigente no verificado; rama WEB_ART_GATE es candidata SPEC_ONLY, no promovida.",
+  "artDirection": {
+    "schema": "prometeo.art-direction.first-article/v1",
+    "medium": "web",
+    "taskId": "web-w003-20261122-09",
+    "briefSha": "bef87bf57c789d2b0605ca9ff81a5d3bbaab5e35",
+    "flowRef": "pruebas@candidate/prometeo-web-art-gate-w002-20261122/WEB_FACTORY_V2/FLOW.json sha 1a0e709beec9a84986fc33c5ce4ab0a162dccaf2 SPEC_ONLY, no promoción verificada",
+    "promise": {
+      "subject": "Nombre ESCENA ABIERTA protagonista con grilla de programación utilizable.",
+      "intent": "Festival ficticio que se percibe como cultura viva y se programa desde un celular sin tutorial."
+    },
+    "benchmark": {
+      "url": "https://2025.bergenassembly.no/en/about",
+      "status": "OBSERVED",
+      "description": "Se observó contenido editorial oficial y el encuadre cultural de la edición; no screenshot comparativo del diseño web."
+    },
+    "techniques": [
+      {
+        "family": "Tipografía editorial con fotografía documental de ambiente",
+        "viability": "Composición responsive con fuentes web abiertas, imágenes de Unsplash y HTML semántico; las fotos se acreditan.",
+        "license": "Texto y CSS propios; Syne/Space Grotesk abiertas; fotos Unsplash License."
+      },
+      {
+        "family": "Sistema de carteles ilustrados y grabados tipográficos sin fotografía",
+        "viability": "Fallback autónomo si falla o no puede acreditarse un CDN; CSS y texto mantienen legibilidad.",
+        "license": "Gráfica original CSS/HTML sin material de terceros."
+      }
+    ],
+    "selectedTechnique": "Tipografía editorial con fotografía documental de ambiente",
+    "firstFrame": {
+      "openingDescription": "Desktop: masa cobalto con ESCENA ABIERTA a la izquierda y foto editorial a la derecha; móvil: apilado, controles grandes y foto después del nombre.",
+      "focalSubject": "Marca ESCENA ABIERTA y promesa de tres días con agenda utilizable.",
+      "minimalUI": "Barra con programa y mi agenda, CTA directo a grilla, cero overlays de producción.",
+      "checks": [
+        {
+          "viewport": "390",
+          "criterion": "Nombre y CTA legibles sin scroll horizontal.",
+          "oracle": "Inspección de captura real y documentElement.scrollWidth <= innerWidth."
+        },
+        {
+          "viewport": "1440",
+          "criterion": "Hero de dos masas con tipografía no recortada.",
+          "oracle": "Captura escritorio y lectura de título, controles y primera tarjeta."
+        },
+        {
+          "viewport": "both",
+          "criterion": "Guardar responde a clic y notifica estado.",
+          "oracle": "Click Chromium sobre primer artículo y estado visible."
+        }
+      ],
+      "observations": []
+    },
+    "firstArticle": {
+      "target": "Hero tipográfico y primera tarjeta de actividad con botón de guardar.",
+      "rejectWhen": "Desborde horizontal, tarjeta inutilizable o jerarquía que no permite identificar el festival.",
+      "switchTo": "Sistema de carteles ilustrados y grabados tipográficos sin fotografía",
+      "oracle": "Chromium 390 y 1440, screenshot full page y click real.",
+      "resourceProof": "HTML original local sin CDN obligatorio; fotografías licenciadas revisadas aparte.",
+      "status": "OBSERVED_PASS",
+      "evidence": {
+        "url": "https://github.com/JuanManuelPM/Experimentos/blob/candidate/prometeo-web-w003-20261122-09/prometeo/launch/20261122/relaunch/web/works/09-escena-abierta/FIRST_ARTICLE.md",
+        "description": "Recibo de capturas de prototipo local, sin bytes raster publicados ni afirmación de captura del producto final."
+      }
+    },
+    "humanApproved": false
+  }
+}
