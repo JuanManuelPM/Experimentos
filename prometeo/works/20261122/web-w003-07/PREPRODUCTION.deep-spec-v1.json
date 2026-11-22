@@ -1,0 +1,361 @@
+{
+  "version": "DEEP-SPEC-1",
+  "medium": "web",
+  "depth": "SISTEMA",
+  "taskId": "web-w003-20261122-07",
+  "batchId": "web-w003-20261122",
+  "taskNumber": 7,
+  "brief": "CONTRAPUNTO: revista digital original con formatos realmente distintos, columnas, entrevistas y especiales visuales, búsqueda, navegación temática, accesibilidad robusta de 320px a escritorio y sistema reutilizable.",
+  "briefSha": "bef87bf57c789d2b0605ca9ff81a5d3bbaab5e35",
+  "briefOldSha": "cd88a07941ab62072f6de5ee69764308f1ec2387",
+  "qualityBarVersion": "QBAR-1",
+  "contractSha": "7911ce780c6eb8fc08ba3e5621e4479bbe2e9757",
+  "deepSpecSha": "7656a293b0182f81619bf0d27b90dffa771c2683",
+  "artDirectionValidatorSha": "art-direction-first-article-v1.mjs/fetch-inspected-20261122",
+  "flowRef": "pruebas@candidate/prometeo-web-art-gate-w002-20261122:WEB_FACTORY_V2/FLOW.json#1a0e709beec9a84986fc33c5ce4ab0a162dccaf2",
+  "flowVersion": "2.0.0",
+  "flowPromotion": "SPEC_ONLY_CANDIDATE_NOT_PROMOTED",
+  "intent": {
+    "experience": "Abrir una edición con una portada reconocible, fotografías con derechos, textos sustanciales y seis lecturas diferentes sin un mosaico repetitivo de tarjetas.",
+    "distinctAbility": "Sostener variantes genuinas de longitud, densidad, visualización e interacción mediante un solo conjunto reutilizable de tokens y componentes accesibles."
+  },
+  "references": [
+    {
+      "id": "R1",
+      "url": "https://thecreativeindependent.com/interviews/",
+      "status": "OBSERVED",
+      "observation": "El índice exhibe entrevistas con una estructura de preguntas y protagonistas genuinos; orienta una separación clara de la forma de diálogo, aunque aquí el diálogo se identifica como ficción."
+    },
+    {
+      "id": "R2",
+      "url": "https://awards.journalists.org/entries/the-pudding-4/",
+      "status": "OBSERVED",
+      "observation": "Una descripción de premios documenta narración de ideas con ensayos visuales e interacción; es una observación de fuente secundaria, no render del sitio original."
+    },
+    {
+      "id": "R3",
+      "url": "https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/works/20261122/web-w002-07/QA.md",
+      "status": "OBSERVED",
+      "observation": "El QA previo documenta el bug de display:grid que se imponía sobre hidden, y pruebas locales inyectadas sin visita pública real."
+    },
+    {
+      "id": "R4",
+      "url": "https://commons.wikimedia.org/wiki/File:Diagonal_Sur_Buenos_Aires.jpg",
+      "status": "OBSERVED",
+      "observation": "Commons acredita una fotografía de Diagonal Sur, autor Sking, bajo CC BY-SA 3.0, apta para portada con atribución y nota de recorte."
+    },
+    {
+      "id": "R5",
+      "url": "https://commons.wikimedia.org/wiki/File:Buenos_Aires_streets.jpg",
+      "status": "OBSERVED",
+      "observation": "Commons describe fotografía de Christian Haugen en Avenida Santa Fe con licencia CC BY 2.0; su aparición en un ensayo es contextual, no prueba de escena narrada."
+    }
+  ],
+  "components": [
+    {
+      "id": "C1",
+      "role": "Masthead, hero editorial y retícula fluidos de 320 a 1440 píxeles",
+      "strategy": "Tipografía editorial con fuente real más respaldo local y fotografía documental CC para el protagonista.",
+      "constraints": "Móvil muestra título y porción de fotografía, sin scroll lateral ni controles flotantes."
+    },
+    {
+      "id": "C2",
+      "role": "Corpus original de seis publicaciones con formas de lectura diferenciadas",
+      "strategy": "Una sección semántica por obra, prosa real, diálogo ficticio señalado, columna, crónica, cuaderno y visual.",
+      "constraints": "Diferenciar los géneros también por estructura HTML; mantener texto disponible sin JavaScript."
+    },
+    {
+      "id": "C3",
+      "role": "Motor reutilizable de archivo, rutas hash, búsqueda y filtros",
+      "strategy": "JavaScript progresivo con índice por contenido, estados vacíos, hidden calculado y deep links.",
+      "constraints": "No falsear resultados, proteger accesibilidad mediante roles, foco y teclado real."
+    },
+    {
+      "id": "C4",
+      "role": "Especial visual de tres láminas y media de archivo con licencias",
+      "strategy": "SVG editorial original semántico en tres paneles tab accesibles; fotografías Commons con atribución.",
+      "constraints": "Las láminas son conceptuales, no gráficos de mediciones inventadas; imágenes no equivalen a fuentes periodísticas."
+    }
+  ],
+  "questions": [
+    {
+      "id": "Q1",
+      "target": "C1",
+      "question": "¿Cómo asegurar que el protagonista y la imagen real convivan dentro de la primera pantalla móvil?",
+      "alternatives": [
+        "Fotografía documental con retícula propia",
+        "Tipografía e ilustración original sin imágenes externas"
+      ],
+      "evidenceRef": "R4",
+      "finding": "El primer fotograma desbordó 6 px a 390; al reducir el masthead y usar URL directa, la captura nueva mostró imagen real y cero overflow.",
+      "decisionImpact": "Simplificar navegación móvil y jerarquía para que la fotografía asome antes de hacer scroll."
+    },
+    {
+      "id": "Q2",
+      "target": "C2",
+      "question": "¿Cómo demostrar que una entrevista y una columna no son la misma plantilla de tarjetas?",
+      "alternatives": [
+        "Un motor de tarjetas con variaciones cosméticas",
+        "Patrones editoriales semánticos independientes sobre tokens compartidos"
+      ],
+      "evidenceRef": "R1",
+      "finding": "El índice real de entrevistas y el anti-ejemplo W002 justifican un layout de diálogo con dl y una columna con composición propia.",
+      "decisionImpact": "Escribir y marcar claramente el diálogo como ficción y dar formas propias a los seis textos."
+    },
+    {
+      "id": "Q3",
+      "target": "C3",
+      "question": "¿Cómo evitar filtros aparentemente activos cuya regla display hace visibles resultados ocultos?",
+      "alternatives": [
+        "Revisar solamente atributos hidden",
+        "Medir visibilidad computada y resultados tras filtrar"
+      ],
+      "evidenceRef": "R3",
+      "finding": "El QA histórico halló y corrigió exactamente esta regresión; se convirtió en test por viewport y regla CSS [hidden]!important.",
+      "decisionImpact": "Probar cantidad visible, cero resultados y recuperación de seis entradas."
+    },
+    {
+      "id": "Q4",
+      "target": "C4",
+      "question": "¿Un especial visual tiene que ilustrar un relato o fingir datos para parecer interactivo?",
+      "alternatives": [
+        "Gráficas de números inventados",
+        "Tres composiciones conceptuales honestamente etiquetadas sin mediciones"
+      ],
+      "evidenceRef": "R2",
+      "finding": "El benchmark exige que la interacción sirva a una idea; una pieza visual original permite explorar tres relaciones sin falsificar series.",
+      "decisionImpact": "Crear tres láminas SVG distintas con descripciones, paneles y cambio de teclado."
+    }
+  ],
+  "relations": [
+    {
+      "from": "C1",
+      "to": "C4",
+      "invariant": "La imagen contextual usa pie con autor y licencia legible en cualquiera de los tamaños de la retícula.",
+      "failure": "Una fotografía luce decorativa pero oculta crédito o parece evidencia del relato.",
+      "test": "Inspección de captura 390/1440 más presencia de créditos en HTML."
+    },
+    {
+      "from": "C2",
+      "to": "C3",
+      "invariant": "Una publicación mantiene su título, lectura completa y enlace hash directo cuando se filtra o cambia de viewport.",
+      "failure": "Filtros ocultan artículos equivocados o rutas pierden el contenido.",
+      "test": "Interacción en Chromium: filtro, enlace, retroceso y visibilidad."
+    },
+    {
+      "from": "C3",
+      "to": "C4",
+      "invariant": "Las pestañas tienen un solo panel visible, foco y aria-selected acordes al panel mostrado.",
+      "failure": "Tres ilustraciones visibles a la vez o foco incompatible con el estado.",
+      "test": "ArrowRight con inspección de aria-selected y visibilidad real."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "D1",
+      "questionId": "Q1",
+      "componentIds": [
+        "C1",
+        "C4"
+      ],
+      "choice": "Portada con fotografía Commons acreditada, títulos editoriales y dos columnas fluidas.",
+      "rejected": "Hero genérico sin media auténtica o collage decorativo de gradientes.",
+      "productionChange": "Portada con Sking CC BY-SA, href de licencia y versión ajustada por capturas 390/1440.",
+      "why": "El sujeto editorial debe existir en el primer fotograma y la fotografía funciona como un documento de contexto verificable."
+    },
+    {
+      "id": "D2",
+      "questionId": "Q2",
+      "componentIds": [
+        "C2"
+      ],
+      "choice": "Seis piezas originales con cuatro estructuras de lectura más láminas interactivas y cuaderno.",
+      "rejected": "Seis tarjetas con la misma plantilla y texto de relleno.",
+      "productionChange": "HTML semántico distingue conversación, ensayo, columna, crónica, visual y notas con CSS propio.",
+      "why": "La variedad de forma es parte explícita del encargo, no sólo una opción estética."
+    },
+    {
+      "id": "D3",
+      "questionId": "Q3",
+      "componentIds": [
+        "C3"
+      ],
+      "choice": "Índice progresivo, filtro computado, búsqueda por cuerpo textual y enlaces hash.",
+      "rejected": "Búsqueda que solo simula estados con datos inventados o invisibilidad sin prueba.",
+      "productionChange": "app.js usa normalize acentos y textContent por obra, [hidden]!important y navegación por hash.",
+      "why": "El bug previo sólo se previene verificando contenido realmente visible y recuperable."
+    },
+    {
+      "id": "D4",
+      "questionId": "Q4",
+      "componentIds": [
+        "C4"
+      ],
+      "choice": "SVG conceptuales semánticos y tres paneles tab con teclado.",
+      "rejected": "Gráficos falsamente presentados como datos empíricos o ilustración indiferenciada.",
+      "productionChange": "Tres láminas propias con títulos, descripciones y paneles vinculados por aria-labelledby.",
+      "why": "La interacción tiene que cambiar la representación de la idea y funcionar sin inventar mediciones."
+    }
+  ],
+  "risks": [
+    {
+      "componentIds": [
+        "C1"
+      ],
+      "severity": "high",
+      "failure": "Cabecera se desborda y la primera foto queda ocultada o sin carga real.",
+      "prevention": "Primer artículo aislado con captura 390/1440, ajuste de masthead y URL de imagen directa.",
+      "test": "Chromium captura de 390 y 1440 con scrollWidth<=innerWidth y naturalWidth>0.",
+      "status": "OBSERVED"
+    },
+    {
+      "componentIds": [
+        "C3"
+      ],
+      "severity": "high",
+      "failure": "display:grid sobre hidden deja resultados filtrados visibles.",
+      "prevention": "Regla explícita [hidden]{display:none!important} y búsqueda real por contenido.",
+      "test": "Chromium prueba de visibilidad :visible para 6,2,1,0 entradas y estado vacío.",
+      "status": "OBSERVED"
+    },
+    {
+      "componentIds": [
+        "C4"
+      ],
+      "severity": "medium",
+      "failure": "El SVG carece de significado accesible o los tabs no responden a teclado.",
+      "prevention": "role tab, tabpanel, aria-labelledby, títulos SVG y descripción textual.",
+      "test": "Chromium ArrowRight actualiza foco y panel visible; lector de pantalla no se simuló.",
+      "status": "OBSERVED"
+    },
+    {
+      "componentIds": [
+        "C2"
+      ],
+      "severity": "medium",
+      "failure": "Un artículo profundo puede fallar en lectura con lector de pantalla real en Android.",
+      "prevention": "HTML semántico, contraste consistente y no depender de JS para acceder a textos.",
+      "test": "Auditoría WCAG completa con lector de pantalla humano en dispositivo físico.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "acceptance": [
+    {
+      "kind": "visual",
+      "criterion": "La portada 390 y 1440 muestra tipografía editorial y fotografía de autor sin desbordamiento lateral.",
+      "oracle": "Chromium, captura de primeras pantallas y naturalWidth positivo de imagen genuina.",
+      "status": "OBSERVED"
+    },
+    {
+      "kind": "functional",
+      "criterion": "El índice busca por contenido y no muestra resultados ocultos computados tras aplicar filtros.",
+      "oracle": "Playwright en sesión de navegador: visible count, cero resultados y limpieza, repetido en móvil.",
+      "status": "OBSERVED"
+    },
+    {
+      "kind": "interactive",
+      "criterion": "Enlace a especial abre su lectura y tabs con teclado muestran sólo el panel correspondiente.",
+      "oracle": "Chromium hash change + aria-selected verdadero y panel alternativo hidden.",
+      "status": "OBSERVED"
+    },
+    {
+      "kind": "functional",
+      "criterion": "La URL pública GitHub Pages sirve el HTML final sin error HTTP y ejecuta scripts externos.",
+      "oracle": "GET público de GitHub Pages y navegación de la URL real, no inyección de DOM.",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "interactive",
+      "criterion": "Auditoría de lector de pantalla y compatibilidad Android táctil real con lector asistivo.",
+      "oracle": "Uso físico con lector de pantalla, navegación al margen de las pruebas automatizadas.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "resources": "HTML5, CSS responsive, JavaScript nativo, Chromium Firecrawl; tres fotos Wikimedia Commons y tres diagramas SVG propios, sin APIs pagas ni secretos.",
+  "licensing": "Textos, CSS y gráficos SVG creados para este encargo; imágenes Sking CC BY-SA 3.0, Christian Haugen CC BY 2.0 y Luis Argerich CC BY 2.0, con enlace y atribución. La foto de Sking se recorta y ajusta cromáticamente para portada; respetar atribución y ShareAlike sobre adaptación fotográfica.",
+  "environmentLimits": "El navegador remoto sí pudo ejecutar la copia obtenida por GitHub API y capturar 390/1440; la URL pública Pages devolvió 404 durante la revisión, por lo cual PUBLIC_BROWSER_VERIFIED=NO. Capturas no equivalen a aprobación humana ni a auditoría Android.",
+  "processDeviation": "La ficha de PREPRODUCTION quedó persistida después de haber publicado el primer artículo y la obra, aunque la decisión y la prueba del primer artículo fueron anteriores a la obra completa; esto no cumple el orden estricto de escritura previa.",
+  "artDirection": {
+    "schema": "prometeo.art-direction.first-article/v1",
+    "medium": "web",
+    "taskId": "web-w003-20261122-07",
+    "briefSha": "bef87bf57c789d2b0605ca9ff81a5d3bbaab5e35",
+    "flowRef": "pruebas candidate WEB_FACTORY_V2 FLOW.json sha 1a0e709beec9a84986fc33c5ce4ab0a162dccaf2",
+    "promise": {
+      "subject": "Revista editorial de seis piezas genuinas con fotografía real",
+      "intent": "Una primera pantalla tipográfica inconfundible que anuncie una lectura y deje ver la imagen auténtica antes del primer desplazamiento."
+    },
+    "benchmark": {
+      "url": "https://thecreativeindependent.com/interviews/",
+      "description": "Se observó la densidad y distinción de la sección de entrevistas; se extrajo el principio de formato propio, no los textos ni estilos.",
+      "status": "OBSERVED"
+    },
+    "techniques": [
+      {
+        "family": "Fotografía documental licenciada y retícula tipográfica",
+        "viability": "Tres imágenes de Wikimedia Commons con autores y licencia visibles; URL directa en imagen y versión sin JavaScript.",
+        "license": "CC BY-SA 3.0 para Sking, CC BY 2.0 para otras, atribuciones en captions."
+      },
+      {
+        "family": "Ilustración vectorial tipográfica original sin fotografías",
+        "viability": "SVG autocontenido original y tipografía de sistema; sin dependencias de terceros.",
+        "license": "Gráfica y texto originales creados para esta obra, no se copian diseños."
+      }
+    ],
+    "selectedTechnique": "Fotografía documental licenciada y retícula tipográfica",
+    "firstFrame": {
+      "openingDescription": "Portada cálida sin banners ni paneles invasivos: marca editorial, titular y fotografía callejera auténtica.",
+      "focalSubject": "Titular de la ciudad y la foto de Diagonal Sur con crédito directo.",
+      "minimalUI": "Solo navegación editorial, enlace de entrada y archivo; búsqueda dentro del archivo.",
+      "checks": [
+        {
+          "viewport": "390",
+          "criterion": "La portada muestra título, primer fragmento de foto y navegación sin scroll horizontal.",
+          "oracle": "Captura real 390x844, scrollWidth <= 390 y foto naturalWidth > 0."
+        },
+        {
+          "viewport": "1440",
+          "criterion": "El gran titular y foto comparten retícula sin perder escala de lectura.",
+          "oracle": "Captura real 1440x900, scrollWidth <= 1440 y foto naturalWidth > 0."
+        },
+        {
+          "viewport": "both",
+          "criterion": "El primer enlace abre el artículo y no una página externa ficticia.",
+          "oracle": "Hash #nota-ciudad y sección visible en Chromium."
+        }
+      ],
+      "observations": [
+        {
+          "viewport": "390",
+          "status": "OBSERVED_PASS",
+          "evidence": {
+            "url": "https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/works/20261122/web-w003-07/evidence/first-frame-390.jpg",
+            "description": "Captura JPEG genuina de Chromium, 390x844, foto naturalWidth 1280 y sin overflow."
+          }
+        },
+        {
+          "viewport": "1440",
+          "status": "OBSERVED_PASS",
+          "evidence": {
+            "url": "https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/works/20261122/web-w003-07/evidence/first-frame-1440.jpg",
+            "description": "Captura JPEG genuina de Chromium, 1440x900, foto naturalWidth 1280 y sin overflow."
+          }
+        }
+      ]
+    },
+    "firstArticle": {
+      "target": "Cabecera y hero documental en FIRST_ARTICLE.html como corte representativo, antes de producir seis artículos.",
+      "rejectWhen": "La marca genera overflow en 390 o la fotografía no carga en sesión Chromium.",
+      "switchTo": "Ilustración vectorial tipográfica original sin fotografías",
+      "oracle": "Abrir HTML obtenido por GitHub API en Chromium y comparar captura móvil/escritorio y carga de imagen.",
+      "resourceProof": "Se investigaron licencias Wikimedia y un Special:FilePath inicialmente devolvió 429; se pasó a la URL thumb directa que respondió 200 y cargó 1280px en Chromium.",
+      "status": "OBSERVED_PASS",
+      "evidence": {
+        "url": "https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/works/20261122/web-w003-07/evidence/first-frame-390.jpg",
+        "description": "Captura final con imagen documental auténtica y jerarquía corregida después del spike inicial."
+      }
+    },
+    "humanApproved": false
+  },
+  "humanApproved": false
+}
