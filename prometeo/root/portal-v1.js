@@ -45,6 +45,7 @@ function messages(){
 function renderMessages(){
  $('space').textContent=state.rooms.find(x=>x.id===state.room)?.label||'PROMETEO';
  const list=messages(),last=list.find(e=>e.id===state.batchId)||list[0],view=$('response');
+ const fallback=$('startup-fallback');if(fallback)fallback.hidden=state.public.length>0&&state.batches.length>0;
  view.setData(last||{},last?.blocks?.some(b=>b.type==='batch')?[]:[{kind:'copy',label:'Copiar',value:promptFor(state.room)}]);
  const raw=sortedEntries([...ownedMessages().filter(e=>groupedIds().has(e.id)),...list.filter(e=>e.id!==last?.id)]);
  $('older').hidden=raw.length===0;$('older').textContent=state.older?'Ocultar historial':'Historial';
