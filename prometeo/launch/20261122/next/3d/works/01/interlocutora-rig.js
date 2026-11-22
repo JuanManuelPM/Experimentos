@@ -32,7 +32,7 @@ export function createInterlocutora(T) {
     for(const ring of rings){for(let j=0;j<N;j++){const a=2*Math.PI*j/N;verts.push(ring.x+ring.rx*Math.cos(a),ring.y,ring.z+ring.rz*Math.sin(a));}}
     for(let k=0;k<rings.length-1;k++)for(let j=0;j<N;j++){
       const a=k*N+j,b=k*N+(j+1)%N,c=(k+1)*N+j,d=(k+1)*N+(j+1)%N;
-      indices.push(a,b,c,b,d,c);
+      indices.push(a,c,b,b,c,d);
     }
     const g=new T.BufferGeometry();g.setAttribute('position',new T.Float32BufferAttribute(verts,3));g.setIndex(indices);g.computeVertexNormals();
     return addMesh(parent,g,material,name);
