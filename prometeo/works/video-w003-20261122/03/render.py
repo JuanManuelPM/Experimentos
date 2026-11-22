@@ -213,7 +213,7 @@ def generate_audio():
     soundtrack=HERE/"_soundtrack.m4a"
     # Atmosphere is designed audio, NOT a documentary field recording.
     fc=(
-       "[0:a]lowundefined=f=380,highpass=f=65,volume=0.095[water];"
+       "[0:a]lowpass=f=380,highpass=f=65,volume=0.095[water];"
        "[1:a]volume=0.012[drone];"
        "[2:a]volume=1.75,adelay=750|750,apad=pad_dur=48,atrim=0:48[voice];"
        "[water][drone][voice]amix=inputs=3:duration=first:normalize=0,"
