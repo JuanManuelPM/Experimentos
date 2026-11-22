@@ -28,3 +28,5 @@ A comparación de W002/08 (48s, 80 BPM, másters a 16 kHz en rama assets), W003/
 **Defecto de proceso observado:** aunque el diseño preventivo precedió la composición, la ficha JSON se persistió después del primer render; la prioridad de registrar el gate antes de producción no quedó demostrada por timestamps. La comparación futura debe medirlo.
 
 **Aprendizaje candidato:** `stage=M06 / cause=browser render without real playback oracle / preventive_gate=probe Web Audio in real browser / test=three slider changes + audio capture / owner=music-studio / counterexample=W002/08 published code with browser NOT_RUN`. No promoción automática del flow.
+
+**PREVIEW_AUDIO_PUBLISHED:** [escuchar.html](escuchar.html) incluye bytes reales Ogg Opus mono de 120.0065 s a 24 kb/s (fuente local ffprobe PASS). Publicación GitHub readback verificada; GitHub Pages HTTP y escucha externa NO_VERIFIED. Los masters/stems WAV originales permanecen entregados localmente, no en GitHub.
