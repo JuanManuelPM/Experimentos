@@ -1,0 +1,268 @@
+{
+  "version": "DEEP-SPEC-1",
+  "medium": "images",
+  "depth": "SISTEMA",
+  "batchId": "images-w003-20261122",
+  "taskNumber": 2,
+  "taskId": "images-w003-20261122-02",
+  "brief": "Three photorealistic views of the same winter courtyard from entry, diagonal and detail with shared geometry, light and materials; no crops falsely represented as distinct cameras.",
+  "briefLock": {
+    "launchBlobSha": "a97b91ca103847ea75eeb9d1d2af10b6c9c0dddd",
+    "oldLaunchBlobSha": "2e0e5e8ca226d546005349dc44b31cd9abcf5dd1"
+  },
+  "intent": {
+    "experience": "A single home-scale planted interior is recognized consistently across three distinct vantage points.",
+    "distinctAbility": "Testable geometric world continuity with explicit camera positions rather than cropped single output."
+  },
+  "references": [
+    {
+      "id": "ref1",
+      "url": "https://www.archdaily.com/1043006/beyond-the-courtyard-house-rcab-studio",
+      "status": "OBSERVED",
+      "observation": "Description directly relates the courtyard to daylight, ventilation and orientation; adapted as room-scale aperture strategy."
+    },
+    {
+      "id": "ref2",
+      "url": "https://www.archdaily.com/804630/canterbury-road-residence-be-architecture",
+      "status": "OBSERVED",
+      "observation": "Architectural project details natural material palette of travertine and timber in naturally lit courtyards."
+    },
+    {
+      "id": "ref3",
+      "url": "https://www.behance.net/gallery/149558945/Casa-Helios-Estudio-DSB-Arquitectura",
+      "status": "OBSERVED",
+      "observation": "Visual example inspected: planted interior atrium with raking daylight over pale floor tiles and vertical joinery."
+    }
+  ],
+  "components": [
+    {
+      "id": "world",
+      "role": "A fixed measurable 7.20 by 6.00 by 3.40 meter courtyard",
+      "strategy": "Procedural shared VTK 9.6 world coordinate system",
+      "constraints": "No independent room regeneration between the three camera viewpoints."
+    },
+    {
+      "id": "vegetation",
+      "role": "Single olive tree rooted inside a measured limestone planter",
+      "strategy": "Seeded branches and planting actors in shared world",
+      "constraints": "Root, planter curb, fern locations never translate with the camera."
+    },
+    {
+      "id": "camera",
+      "role": "Three independent camera poses on shared geometry in real meter space",
+      "strategy": "Single VTK renderer changes camera only between exports",
+      "constraints": "No crop is counted as a new view, room coordinates stay identical."
+    },
+    {
+      "id": "light",
+      "role": "Skylight-driven natural illumination and material continuity",
+      "strategy": "One explicitly measured roof aperture with a fixed sun rig",
+      "constraints": "Photometric accuracy and indirect lighting are not yet calibrated."
+    }
+  ],
+  "questions": [
+    {
+      "id": "qworld",
+      "target": "world",
+      "question": "What test proves these views share the same room rather than visually similar rooms?",
+      "alternatives": [
+        "Independent generated photo prompts",
+        "A single fixed-coordinate model and camera matrices"
+      ],
+      "finding": "Older W002/02 relied on crops and lacked a reprojectable scene.",
+      "decisionImpact": "Build a single fixed-size scene before rendering three camera locations.",
+      "evidenceRef": "ref1"
+    },
+    {
+      "id": "qmaterials",
+      "target": "light",
+      "question": "What daylight aperture and material language produces a credible architectural patio?",
+      "alternatives": [
+        "Random prompt-created glazing and sun direction",
+        "Skylight fixed in plan and one material/lighting rig"
+      ],
+      "finding": "Published courtyard precedents position light wells and timber junctions as architectural structure.",
+      "decisionImpact": "Fix the same skylight/wood/stone and east glazing in all renders.",
+      "evidenceRef": "ref2"
+    },
+    {
+      "id": "qplant",
+      "target": "vegetation",
+      "question": "Which visible fixed architectural objects expose a disguised change in camera versus a new scene?",
+      "alternatives": [
+        "Generic similar vegetation",
+        "Fixed planted olive, limestone curb, oak bench and north slats"
+      ],
+      "finding": "Observed courtyard photos preserve planted void, floor and structural landmarks.",
+      "decisionImpact": "Anchor physical landmarks at named metric coordinates for all views.",
+      "evidenceRef": "ref3"
+    }
+  ],
+  "decisions": [
+    {
+      "id": "dworld",
+      "questionId": "qworld",
+      "componentIds": [
+        "world",
+        "camera"
+      ],
+      "choice": "One dimensional world with three separate camera objects",
+      "rejected": "Crops and independently regenerated scenes",
+      "productionChange": "Three 1440×960 renders from one VTK world with cameras A/B/C",
+      "why": "Spatial continuity requires geometric reproducibility, not only color resemblance."
+    },
+    {
+      "id": "dlight",
+      "questionId": "qmaterials",
+      "componentIds": [
+        "light",
+        "world"
+      ],
+      "choice": "Explicit skylight with shared sunlight definition",
+      "rejected": "Three unrelated light simulations",
+      "productionChange": "Skylight footprint is x=2.2..5.45 and y=1.8..4.35 in source world",
+      "why": "Shared openings constrain plausible sun path and architectural scale."
+    },
+    {
+      "id": "dplant",
+      "questionId": "qplant",
+      "componentIds": [
+        "vegetation",
+        "world"
+      ],
+      "choice": "Measured single planter and olive root, seeded leaf distribution",
+      "rejected": "Scattered unanchored plants per view",
+      "productionChange": "Planter centered 3.65,3.05; olive root 3.64,3.02; bench west",
+      "why": "Persistent landmarks make impossible spatial changes more visible."
+    }
+  ],
+  "relations": [
+    {
+      "from": "world",
+      "to": "camera",
+      "invariant": "All camera views use the exact same floor, walls, openings and furniture objects.",
+      "failure": "One viewpoint silently creates a different room with similar surfaces.",
+      "test": "Single process scene render, distinct camera poses, constant scene manifest."
+    },
+    {
+      "from": "vegetation",
+      "to": "world",
+      "invariant": "Olive root, planter walls and fern distribution never change global coordinates.",
+      "failure": "Tree appears at a new place when viewpoint changes.",
+      "test": "Compare anchored positions and floorplan in all frames."
+    }
+  ],
+  "risks": [
+    {
+      "componentIds": [
+        "camera",
+        "light"
+      ],
+      "severity": "high",
+      "failure": "One generated picture cannot be projected into the model, while follow-up became unrelated art.",
+      "prevention": "Reject unrelated result; switch to an explicit metric world before multiplying views.",
+      "test": "Three photoreal cameras must render from one scene and preserve specific landmarks.",
+      "status": "FAILED"
+    }
+  ],
+  "acceptance": [
+    {
+      "kind": "visual",
+      "criterion": "A genuine architectural photo first article depicts patio, opening, grounded tree and natural material.",
+      "oracle": "Inspect actual 1536×1024 raster at original resolution.",
+      "status": "OBSERVED"
+    },
+    {
+      "kind": "functional",
+      "criterion": "Three different camera matrices all project a single fixed-coordinate model.",
+      "oracle": "Inspect plan and three independent VTK renderer camera outputs.",
+      "status": "OBSERVED"
+    },
+    {
+      "kind": "visual",
+      "criterion": "Three consistent photorealistic finished images from the same rig are delivered.",
+      "oracle": "Image inspection and geometric landmark projection across all photoreal cameras.",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "visual",
+      "criterion": "Opening mobile 390 and desktop 1440 screenshots show the art without intrusive UI.",
+      "oracle": "Actual browser screenshots at both widths with frame inspection.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "licensing": "Newly created photo and author-created procedural 3D; professional reference images used only for research.",
+  "resources": "Image generation first article; local Python3/Pillow and VTK 9.6 EGL for deterministic scene and three render previews.",
+  "environmentLimits": "Three photoreal independent cameras not achieved; source render stays CAD-like. Public asset upload from container to GitHub unavailable; original media downloadable in chat ZIP.",
+  "qualityBarVersion": "QBAR-1",
+  "artDirection": {
+    "schema": "prometeo.art-direction.first-article/v1",
+    "medium": "images",
+    "taskId": "images-w003-20261122-02",
+    "briefSha": "a97b91ca103847ea75eeb9d1d2af10b6c9c0dddd",
+    "flowRef": "Shared Q-LOOP QBAR-1 DEEP-SPEC-1, specialist private flow unverified",
+    "promise": {
+      "subject": "A single contemporary domestic patio photographed from three coherent angles",
+      "intent": "The human recognizes one serene real architectural space and one stable sun direction"
+    },
+    "benchmark": {
+      "url": "https://www.behance.net/gallery/149558945/Casa-Helios-Estudio-DSB-Arquitectura",
+      "description": "Observed original architecture photo; single planted void, timber and stone junctions and daylight footprint.",
+      "status": "OBSERVED"
+    },
+    "techniques": [
+      {
+        "family": "Image generation for architectural photography",
+        "viability": "First original raster exists; second generated raster failed the subject altogether.",
+        "license": "Newly generated original image, architectural reference pictures not copied."
+      },
+      {
+        "family": "Metric VTK 3D scene with independent cameras",
+        "viability": "Software and renderer executed three real camera images from one common model.",
+        "license": "Original procedural geometry and locally generated outputs."
+      }
+    ],
+    "selectedTechnique": "Image generation for architectural photography",
+    "firstFrame": {
+      "openingDescription": "Architecture is the content; full-bleed atrium with a living olive under rooflight.",
+      "focalSubject": "Olive tree and limestone inset planter, floor and glazing tell scale.",
+      "minimalUI": "No added UI controls on any image; QA kept separately.",
+      "checks": [
+        {
+          "criterion": "At 390 the tree and roof opening fit",
+          "oracle": "Actual mobile browser viewport capture",
+          "viewport": "390"
+        },
+        {
+          "criterion": "At 1440 lighting and scale remain legible",
+          "oracle": "Actual desktop browser viewport capture",
+          "viewport": "1440"
+        }
+      ],
+      "observations": []
+    },
+    "firstArticle": {
+      "target": "Genuine photo first article and a matching second camera perspective",
+      "rejectWhen": "A new image changes to an unrelated topic or cannot match its world",
+      "switchTo": "Metric VTK 3D scene with independent cameras",
+      "oracle": "Reject if the resulting image is not a matching architectural courtyard",
+      "resourceProof": "Original photo 1536×1024 and three VTK camera renders 1440×960 exist locally",
+      "status": "FAILED",
+      "reason": "Second generative output depicted the PROMETEO arena, not a courtyard."
+    },
+    "humanApproved": false
+  },
+  "createdAt": "2026-11-22T19:09:42Z",
+  "humanApproved": false,
+  "flow": {
+    "canonical": "Q-LOOP QBAR-1 DEEP-SPEC-1",
+    "specialistFlowVersion": "NOT_RECOVERED",
+    "traceValidation": "NOT_RUN"
+  },
+  "sourceSHAs": {
+    "sharedContract": "7911ce780c6eb8fc08ba3e5621e4479bbe2e9757",
+    "deepSpec": "7656a293b0182f81619bf0d27b90dffa771c2683",
+    "firstArticle": "b1a1a012e90897200336cac6316c0511cb40c4c5",
+    "firstArticleValidator": "dac224b390fc86982ce76eeb0135d4be59eb52ad"
+  }
+}
