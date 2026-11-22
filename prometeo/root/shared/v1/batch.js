@@ -3,7 +3,7 @@ import {registerBlockAdapter,renderBlock} from './adapters.js';
 import {copyValue,recordCopied,wasCopied,safeURL} from './actions.js';
 import './response.js';
 const selection=new Map();
-const stylesheet=new URL('./batch.css?v=20261122-feedback2',import.meta.url).href;
+const stylesheet=new URL('./batch.css?v=20261122-autoqa1',import.meta.url).href;
 const labels=['Preparado','Copiado localmente','Iniciado con evidencia','Entregado','Verificado'];
 const el=(tag,cls,text)=>{const node=document.createElement(tag);if(cls)node.className=cls;if(text!==undefined)node.textContent=String(text);return node;};
 function promptKey(batch,n){return String(batch.id)+'|'+String(batch.launchUrl)+'|'+String(n);}
@@ -34,6 +34,14 @@ function renderBatch(block){
  });
  const hint=el('p','p-batch-launch-help','Cada copia ya incluye el número correcto. Pegalo en un chat nuevo.');
  launch.append(title,launchCopy,hint);
+ const automated=el('button','p-batch-launch-review','Autoevaluar tanda');
+ automated.type='button';
+ automated.setAttribute('aria-label','Copiar un único trabajo para revisar automáticamente todos los resultados de esta tanda con dos voces');
+ automated.addEventListener('click',async()=>{
+  const reference='WORK · https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/root/AUTOCRITICA_WHISPLASH.md · '+encodeURIComponent(block.id);
+  const ok=await copyValue(reference);emit(host,ok,{id:id+'-auto-review'});
+ });
+ launch.append(automated);
  if(items.some(item=>receipt(item))){
   const review=el('button','p-batch-launch-review','Revisar toda la tanda');
   review.type='button';
