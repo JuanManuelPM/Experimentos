@@ -10,9 +10,19 @@ Estado: **Lanzadores publicados, no sesiones iniciadas ni resultados verificados
 
 Para **todos los nuevos WORK**, incluido cualquier estudio futuro, leer [la única especificación compartida](../DEEP_SPEC.md) junto a QBAR-1 y Q-LOOP. Antes de construir el primer corte, producir en el propietario de la tarea una ficha versionada de decisiones, componentes y relaciones, investigar lo que cambie elecciones y probar primero el riesgo alto. Usar el adaptador del medio que corresponda; **no** pedir un formulario al humano, cambiar los diez briefs, alterar hashes previos ni ejecutar tandas por esta modificación. Referencia común de los cinco lanzadores, sin duplicar el texto del método.
 
+## Prefijos visuales humanos · distinguen comandos, no cambian el contrato
+
+Para copiar mensajes desde el celular, los textos destinados al portapapeles comienzan con un **marcador visual** separado del comando real:
+
+- **Producción numerada:** `👷 🧊 WORK · <LAUNCH_3D> · N` / `👷 🌐 WORK · <LAUNCH_WEB> · N` / `👷 🎵 WORK · <LAUNCH_MUSIC> · N` / `👷 🎬 WORK · <LAUNCH_VIDEO> · N` / `👷 🎨 WORK · <LAUNCH_IMAGES> · N`.
+- El botón compartido «👷 Copiar prompt» copia exactamente `👷 <emoji-estudio> WORK · <LAUNCH> · `, **sin N**, para reutilizar en chats nuevos agregando solo 1..10 al final. Seleccionar el número en la página sirve para ver resultados, no cambia lo que copia el botón único. Copiar sin N no ejecuta ninguna tarea.
+- **Calibración:** `🛠️ CALIBRAR · ...` y **coordinación ROOT:** `🧭 ROOT · ...`. **Revisión:** `🔎 <emoji-estudio> ...`. Estos no usan número 1–10 salvo que el protocolo especial lo establezca explícitamente.
+
+**Interpretación:** los emojis iniciales son **solo etiquetas de reconocimiento**, no nombres nuevos de operaciones ni parte de URLs, IDs, hashes o selector N. Cuando el mensaje llegue al trabajador, ignorar los marcadores visuales y resolver el comando interior `WORK` / `CALIBRAR` / `ROOT` existente. Si un ejecutor técnico requiere coincidencia exacta al inicio de línea, quitar los emojis durante normalización antes del parseo; mantener el texto copiado legible. Esta norma aplica a futuras tandas sin modificar consignas ya publicadas.
+
 ## Copia única desde ROOT
 
-La interfaz compartida presenta **un solo botón «Copiar prompt universal» por tanda**, no uno por cada número. Copia `WORK · <enlace común> · ` (incluido el espacio final). El humano pega ese mismo texto en un chat nuevo por encargo y escribe solo el número **1 a N** al final. Cada número resuelve un brief independiente ya existente; **no hay que duplicar briefs ni cambiar enlaces**. Los números de ROOT sirven para consultar resultados, no para copiar instrucciones ni disparar ejecuciones. Copiar no equivale a STARTED.
+La interfaz compartida presenta **un solo botón «Copiar prompt universal» por tanda**, no uno por cada número. Copia `👷 <emoji-estudio> WORK · <enlace común> · ` (incluido el espacio final). El humano pega ese mismo texto en un chat nuevo por encargo y escribe solo el número **1 a N** al final. Cada número resuelve un brief independiente ya existente; **no hay que duplicar briefs ni cambiar enlaces**. Los números de ROOT sirven para consultar resultados, no para copiar instrucciones ni disparar ejecuciones. Copiar no equivale a STARTED.
 
 ## Resolver un WORK
 
