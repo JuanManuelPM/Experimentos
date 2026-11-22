@@ -10,7 +10,7 @@
 
 Al abrir el visor, la imagen aparece directamente. La variante móvil es una composición distinta, no un recorte ni una ampliación. Los enlaces de descarga quedan **después** de la imagen: nada invade el protagonista.
 
-**Fuente ejecutable:** [render_heat.py](render_heat.py) (Pillow y Inter local, salida predeterminada `/mnt/data`). **Pruebas:** [test_heat.py](test_heat.py), cuatro tests locales ejecutados. **Datos:** [PROCEDENCIA.csv](PROCEDENCIA.csv). **Expediente:** [PREPRODUCTION.deep-spec-v1.json](PREPRODUCTION.deep-spec-v1.json), [QA.md](QA.md), [STAGE_TRACE.json](STAGE_TRACE.json), [RESULT.json](RESULT.json).
+**Fuente ejecutable:** [render_heat.py](render_heat.py) (Pillow y Inter local, salida predeterminada junto al script; configurable con `PROMETEO_OUTPUT_DIR`). **Pruebas:** [test_heat.py](test_heat.py), cuatro tests locales ejecutados; [validate_book.mjs](validate_book.mjs) usa los validadores transversales publicados en `prometeo/launch`. **Datos:** [PROCEDENCIA.csv](PROCEDENCIA.csv). **Expediente:** [PREPRODUCTION.deep-spec-v1.json](PREPRODUCTION.deep-spec-v1.json), [QA.md](QA.md), [STAGE_TRACE.json](STAGE_TRACE.json), [RESULT.json](RESULT.json).
 
 ## Qué explica y qué NO
 
