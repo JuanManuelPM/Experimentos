@@ -7,6 +7,16 @@ Estos son lanzadores, NO trabajos iniciados. No limitan la cantidad de chats: pu
 **Método 3D:** https://github.com/JuanManuelPM/Experimentos/tree/gh-pages/prometeo/3d-flow/versions/2.3.0
 
 **En cada chat:** recuperar ROOT y el origen exacto; aplicar método compartido e investigación y prevención antes de producir; conservar briefs, ramas/versiones, assets legales y pruebas; construir un artefacto real, publicar de forma aislada, hacer readback y emitir INFORMAR/retorno con límites. La rama propia se crea sólo al comenzar, tras comprobar que no está ocupada. Nunca publicar material privado en Pages. Copiar no inicia ni demuestra éxito.
+## Contrato de WORK numérico · misma URL para toda la tanda
+
+Encargo humano: `WORK · https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/3d-flow/w5/LAUNCH.md · N`
+
+**Resolución obligatoria:** interpretar `N` como entero de 1 a 10, conservando cero inicial en el encabezado; `1` corresponde a `## 01-cocina-umbria`, `2` a `## 02-cocina-v2`, y así hasta `10` a `## 10-arcade`. La sección `NN-...` es el brief exacto, con propietario, fuente, rama exclusiva y destino de publicación. La identidad persistente de esta tanda es `3d-w5-20261121`. El registro público de tareas y asociación con mensajes anteriores está en `prometeo/root/BATCHES.json`; la pantalla de consulta es siempre `https://juanmanuelpm.github.io/Experimentos/prometeo/root/#3d/mensajes`.
+
+**Antes de ejecutar:** recuperar `PROMETEO/START_HERE.md` y `sistemas/metodo/CONTRATO_COMPARTIDO.md` de `JuanManuelPM/pruebas@prometeo/control`, el handoff ROOT y la sección correspondiente; comprobar que la rama/destino no esté ocupado ni tenga una entrega existente. La W5 original **ya fue iniciada**; no duplicar una entrega ni reiniciar el trabajo si el mensaje/artefacto ya existe. Ante una nueva tarea de continuación, prevalece la instrucción humana explícita.
+
+**Retorno público:** publicar sólo datos seguros con `room:"3d"`, identidad del mensaje única y `batchId:"3d-w5-20261121"`, `taskNumber:N`, referencias a obra y evidencia reales. Mantener los IDs históricos del registro y usar actualización condicionada por SHA con lectura/reintento; jamás hacer escritura a ciegas ni modificar mensajes de otros trabajadores. La copia local de este encargo no demuestra inicio; sólo un artefacto durable y su evidencia permiten entregar o verificar.
+
 ## 01-cocina-umbria
 
 **Cocina Umbría 001 · Cámara y uso**
