@@ -34,6 +34,8 @@ export function plotSeries(svg,city,metric,year){
  const L=54,R=574,T=24,B=221,dx=(R-L)/24,dy=(B-T)/(max-min);
  const x=i=>L+dx*i,y=v=>B-(v-min)*dy;
  svg.replaceChildren();
+ svg.appendChild(node("title",{id:"plot-title"},"Serie anual de temperatura"));
+ svg.appendChild(node("desc",{id:"plot-desc"},"La tabla también ofrece los 25 años con valores exactos."));
  for(let i=0;i<=4;i++){let gy=T+(B-T)*i/4,gval=max-(max-min)*i/4;svg.appendChild(node("line",{x1:L,y1:gy,x2:R,y2:gy,class:"plot-bg"}));svg.appendChild(node("text",{x:0,y:gy+4,class:"plot-label"},metric==="meanMax"?format(gval,1):format(gval,0)));}
  const d=vals.map((v,i)=>(i?"L":"M")+x(i).toFixed(2)+" "+y(v).toFixed(2)).join(" ");
  svg.appendChild(node("path",{d,class:"plot-line"}));
