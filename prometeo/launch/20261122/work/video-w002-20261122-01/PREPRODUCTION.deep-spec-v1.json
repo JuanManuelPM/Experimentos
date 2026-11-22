@@ -1,0 +1,282 @@
+{
+  "version": "DEEP-SPEC-1",
+  "medium": "video",
+  "depth": "SISTEMA",
+  "brief": "Cortometraje original ÚLTIMA GUARDIA: una guardia nocturna descubre que se ha alterado el registro de una habitación vacía; contar conflicto con actuación corporal y facial, cobertura cinematográfica, eje, sonido narrativo y resolución.",
+  "briefHash": {
+    "algorithm": "git-blob-sha1",
+    "value": "d7eebea6d36fc6e5aa3b72cba4e35dd149dc552d",
+    "note": "SHA del LAUNCH público leído, no hash exclusivo de la sección 01"
+  },
+  "task": {
+    "batchId": "video-w002-20261122",
+    "taskNumber": 1,
+    "taskId": "video-w002-20261122-01",
+    "owner": "JuanManuelPM/Experimentos",
+    "branch": "candidate/prometeo-video-w002-01-20261122"
+  },
+  "versions": {
+    "qualityBarVersion": "QBAR-1",
+    "deepSpecVersion": "DEEP-SPEC-1",
+    "sharedContractBlob": "8fa6052db2ee8c76984153dfd7771ac0550b0053"
+  },
+  "intent": {
+    "experience": "Sentir junto a una guardia nocturna el desplazamiento gradual desde una anomalía burocrática hacia una amenaza concreta sin recurrir a exposiciones escritas.",
+    "distinctAbility": "Construir actuación observacional y cobertura coherente con eje, eyeline y sonido fuera de campo verificables entre cortes."
+  },
+  "references": [
+    {
+      "id": "R1",
+      "url": "https://www.bfi.org.uk/sight-and-sound/features/alfred-hitchcock-my-own-methods",
+      "status": "OBSERVED",
+      "observation": "Lectura textual de ensayo original de Hitchcock: la alternancia entre detalles y primeros planos de reacción dirige atención y tensión; el metraje del artículo no fue reproducido.",
+      "type": "creative-director-text"
+    },
+    {
+      "id": "R2",
+      "url": "https://vimeo.com/82920243",
+      "status": "OBSERVED",
+      "observation": "Página pública oficial de Lights Out de David F. Sandberg indica autor, premios y cámara usada; el video no fue reproducido ni evaluado fotograma a fotograma.",
+      "type": "professional-short-page"
+    },
+    {
+      "id": "R3",
+      "url": "https://www.waltdisney.org/education/talks/behind-scenes-disney-and-pixars-sparkshorts-film-kitbull-2019-director-rosana",
+      "status": "OBSERVED",
+      "observation": "La ficha del evento describe cómo Rosana Sullivan planifica staging, blocking, expresión y cámara con dibujos para narrar emociones; no se reprodujo el cortometraje.",
+      "type": "storyboarding-process"
+    },
+    {
+      "id": "R4",
+      "url": "https://learnaboutfilm.com/film-language/sequence/180-degree-rule/",
+      "status": "OBSERVED",
+      "observation": "Guía observada de Tom Barrance distingue lado del eje, espacio para la mirada, cambios permitidos de eje y continuidad del movimiento, aplicada al pasillo.",
+      "type": "technique"
+    }
+  ],
+  "components": [
+    {
+      "id": "ACTOR",
+      "role": "Actuación con emociones legibles en primer plano y cuerpo completo.",
+      "strategy": "Plan de acciones y microactuación con una sola intérprete identificable en todos los planos.",
+      "constraints": "Edad, rodete, credencial, manos, vestuario y expresión persistentes, sin cambiar identidad entre tomas."
+    },
+    {
+      "id": "GEOGRAPHY",
+      "role": "Pasillo 214, mostrador, puerta y cama legibles espacialmente.",
+      "strategy": "Planta única con mesa a izquierda y habitación 214 a derecha desde semiplano sur.",
+      "constraints": "La puerta y la dirección de movimiento nunca cambian de lado a través de los cortes sin motivación visible."
+    },
+    {
+      "id": "LEDGER",
+      "role": "Objeto del conflicto visible en detalle sin carteles narrativos.",
+      "strategy": "Dos tomas insert A/B y utilería con renglón vacío, firma nueva y huella material.",
+      "constraints": "Identificación 214 constante, marcas y tinta persistentes, tamaño de prop físicamente compatible con mano."
+    },
+    {
+      "id": "EDITOR",
+      "role": "Montaje y kit de raccord con correspondencia entre miradas, acciones y sonido.",
+      "strategy": "Shotlist JSON de tiempos, estados de utilería, cortes y prueba automatizada de coherencia estructural.",
+      "constraints": "Los metadatos no sustituyen la revisión humana de fotogramas ni prueban por sí solos el raccord real."
+    },
+    {
+      "id": "SOUND",
+      "role": "Foley narrativo de habitación fuera de campo y ambiente coherente.",
+      "strategy": "Diseño sin música, golpes localizados, respiración y reverberación diferenciada para pasillo/habitación.",
+      "constraints": "Cues cronometrados al plano correcto y distancia sonora compatible con posición de puerta."
+    }
+  ],
+  "questions": [
+    {
+      "id": "Q1",
+      "target": "ACTOR",
+      "question": "¿Cómo se expresa el pasaje de duda a miedo sin transformar la actuación en gestos de stock ni carteles explicativos?",
+      "alternatives": [
+        "Microgestos con respiración y decisiones físicas observables",
+        "Sobreactuación y zooms como sustituto del cambio interno"
+      ],
+      "evidenceRef": "R1",
+      "finding": "El primer plano de reacción y el detalle deben construir progresión emocional con comportamiento, no efectos de edición.",
+      "decisionImpact": "Plano S03 y S08 requieren dos estados de actuación específicos y prueba de interpretación con espectador."
+    },
+    {
+      "id": "Q2",
+      "target": "GEOGRAPHY",
+      "question": "¿Cómo mantener la puerta 214 en la misma dirección entre plano general, contraplano, mirada y movimiento físico?",
+      "alternatives": [
+        "Cámara al sur del eje mesa-puerta con eje fijo",
+        "Cámaras simétricas que invierten arbitrariamente el sentido"
+      ],
+      "evidenceRef": "R4",
+      "finding": "La línea de acción permanece fija y la mirada a puerta sale a derecha; los cambios exigen restablecimiento espacial.",
+      "decisionImpact": "Shotlist exige cameraSide south y pruebas de eyeline, puerta y trayectoria en el mismo semiplano."
+    },
+    {
+      "id": "Q3",
+      "target": "SOUND",
+      "question": "¿Qué información recibe el espectador por sonido antes que la protagonista sin convertir el suspenso en golpe musical?",
+      "alternatives": [
+        "Dos golpes diegéticos con distancia y silencio medido",
+        "Riser sonoro constante y jump scare que sustituye puesta en escena"
+      ],
+      "evidenceRef": "R1",
+      "finding": "El sonido fuera de campo puede anticipar la reacción y mantener espacio acústico sin mostrar la amenaza.",
+      "decisionImpact": "Cues A03 y A07 anclados en reacciones y presencia espacial del marco 214."
+    },
+    {
+      "id": "Q4",
+      "target": "EDITOR",
+      "question": "¿Basta un video generativo multishot para demostrar consistencia y sincronía, o debe existir verificación externa y fuente editable?",
+      "alternatives": [
+        "Export real con ffprobe, revisión humana y QA de cada corte",
+        "Afirmar video completo a partir de prompt o mosaico de stills"
+      ],
+      "evidenceRef": "R3",
+      "finding": "La previsualización, el blocking y el guion técnico no son metraje: separar gates de estructura y observación audiovisual.",
+      "decisionImpact": "El kit reporta NOT_RUN sin archivo de video y rechaza declaraciones de salida no verificada."
+    }
+  ],
+  "relations": [
+    {
+      "from": "ACTOR",
+      "to": "GEOGRAPHY",
+      "invariant": "Miradas hacia 214 y movimiento del personaje mantienen dirección de pantalla a la derecha.",
+      "failure": "La guardia parece mirar otra puerta por inversión de eje.",
+      "test": "Comparar S01,S03,S04,S08 en montaje y revisar ejes manualmente."
+    },
+    {
+      "from": "LEDGER",
+      "to": "EDITOR",
+      "invariant": "La aparición de firma y huella evoluciona solo en los inserts con acción visible.",
+      "failure": "El libro cambia sin causalidad ni indicio perceptible.",
+      "test": "Validar transiciones declaradas y observar insert real A/B."
+    },
+    {
+      "from": "SOUND",
+      "to": "ACTOR",
+      "invariant": "Primer golpe precede al cambio facial y segundo confirma amenaza tras cerrojo.",
+      "failure": "Reacción se adelanta al sonido o golpe proviene del lado incorrecto.",
+      "test": "Auditar onset del golpe contra acción y percibir su localización."
+    },
+    {
+      "from": "EDITOR",
+      "to": "GEOGRAPHY",
+      "invariant": "Los ocho planos comparten lado del eje y continuidad temporal de la habitación.",
+      "failure": "Corte invierte pasillo, cambia puerta o pierde orientación.",
+      "test": "Chequeo de kit y reproducción plano a plano de metraje exportado."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "D1",
+      "questionId": "Q1",
+      "componentIds": [
+        "ACTOR",
+        "EDITOR"
+      ],
+      "choice": "Microactuación en reacción focal y body blocking medido",
+      "rejected": "Montaje de expresiones genéricas de actores no idénticos",
+      "why": "La lógica de descubrimiento requiere observar a la misma persona tomar decisiones en continuidad.",
+      "productionChange": "Anotar intención facial y gesto motor de cada plano, con eje y contexto persistentes."
+    },
+    {
+      "id": "D2",
+      "questionId": "Q2",
+      "componentIds": [
+        "GEOGRAPHY",
+        "EDITOR"
+      ],
+      "choice": "Mantener plano sur del eje mesa→habitación",
+      "rejected": "Cambiar lado entre coberturas para embellecer encuadres",
+      "why": "El enigma requiere comprensión instantánea de dónde está y de dónde surge el golpe.",
+      "productionChange": "Fijar south, doorScreen:right, gaze:right en shotlist y penalizar inversión de cámara."
+    },
+    {
+      "id": "D3",
+      "questionId": "Q3",
+      "componentIds": [
+        "SOUND",
+        "ACTOR"
+      ],
+      "choice": "Foley diegético espacial y silencio en dos golpes",
+      "rejected": "Música continua y subrayado de tráiler de terror",
+      "why": "El espectador debe asociar el golpe a la puerta y al miedo de Inés, no al efecto sonoro genérico.",
+      "productionChange": "Cronometrar golpes 13.2 y 42.2 s, comprobar sincronía frente a reacción."
+    },
+    {
+      "id": "D4",
+      "questionId": "Q4",
+      "componentIds": [
+        "EDITOR"
+      ],
+      "choice": "Evidencia por MP4/WebM auténtico y ffprobe si existe",
+      "rejected": "Declarar export exitoso a partir de prompt o JSON",
+      "why": "Los metadatos solo verifican la planificación, no la actuación o el audio montado.",
+      "productionChange": "Publicar validación estructural independiente de QA audiovisual y mantener NOT_RUN sin binario."
+    }
+  ],
+  "risks": [
+    {
+      "componentIds": [
+        "ACTOR",
+        "EDITOR"
+      ],
+      "severity": "high",
+      "failure": "Generador de video cinematográfico no disponible en el plan conectado; intento estimate_only rechazado antes de ejecutar un solo frame.",
+      "prevention": "No falsificar metraje ni sustituir actuación por una presentación de imágenes estáticas.",
+      "test": "Dos estimaciones de modelo Kling-3-Pro y Seedance-v2.5 rechazadas por plan pago.",
+      "status": "FAILED"
+    },
+    {
+      "componentIds": [
+        "GEOGRAPHY",
+        "EDITOR"
+      ],
+      "severity": "medium",
+      "failure": "Inversión de eyeline y ejes entre closeups y general.",
+      "prevention": "Plano sur declarado en cada shot, rastreo de doorScreen.",
+      "test": "Script estructural y revisión perceptual pendiente.",
+      "status": "NOT_RUN"
+    },
+    {
+      "componentIds": [
+        "SOUND",
+        "ACTOR"
+      ],
+      "severity": "medium",
+      "failure": "Golpe fuera de tiempo o de lado inconsistente.",
+      "prevention": "Cues marcados por segundo y habitación fuente única.",
+      "test": "Escucha del master en estéreo con fotograma exacto.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "acceptance": [
+    {
+      "kind": "logic",
+      "criterion": "Identidad, shotlist, estados y cambios de utilería verificables",
+      "oracle": "Prueba automatizada del kit más revisión por productor",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "visual",
+      "criterion": "Actriz estable y emociones creíbles en S03 y S08",
+      "oracle": "Revisión de planos exportados por humano",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "functional",
+      "criterion": "MP4 genuino con stream visual y duración de 48 s",
+      "oracle": "ffprobe contra criterios de resolución y fps",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "audio",
+      "criterion": "Golpes de puerta 214 y respiraciones sincronizados con acción",
+      "oracle": "Escucha del montaje final y onset por forma de onda",
+      "status": "NOT_RUN"
+    }
+  ],
+  "resources": "Guion técnico + kit Node.js y FFprobe existentes; el render cinematográfico requiere rodaje propio autorizado o servicio audiovisual accesible.",
+  "licensing": "Guion, notas y kit originales; ninguna imagen, voz, vídeo ni sonido ajeno reutilizados. Los referentes son citas de investigación, no assets.",
+  "environmentLimits": "El conector ElevenLabs rechaza incluso estimate_only de kling-3-pro y bytedance-seedance-v2.5 con motivo explícito de requerir un plan pago. No hay cámara, intérprete ni material audiovisual autorizado que cumpla el rol en este chat. Metraje final NOT_RUN."
+}
