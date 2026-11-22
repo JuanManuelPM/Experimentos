@@ -1,0 +1,77 @@
+name: PROMETEO Video W001 10 - two variants
+on:
+  push:
+    branches:
+      - candidate/prometeo-video-w001-10-20261122
+    paths:
+      - 'prometeo/previews/video/w001/10/**'
+      - '.github/workflows/prometeo-video-w001-10.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: prometeo-video-w001-10
+  cancel-in-progress: false
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install and inspect codec
+        run: |
+          python -m pip install Pillow
+          command -v ffmpeg
+          command -v ffprobe
+          ffmpeg -hide_banner -encoders | grep libx264
+      - name: Render both from one recipe
+        run: |
+          python prometeo/previews/video/w001/10/render.py --out-dir build/video10
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=json.loads(Path('build/video10/evidence.json').read_text())
+          assert len(p['rendered'])==2
+          assert {r['variant'] for r in p['rendered']}=={'nocturne','solstice'}
+          assert all(r['result']=='VIDEO_FILE_ENCODED_VERIFIED' for r in p['rendered'])
+          assert all(int(r['probe']['streams'][0]['nb_frames'])==288 for r in p['rendered'])
+          print('CHECK: 2 variants, 288 frames each, 12 s, H.264')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: video-w001-10-encoded
+          path: build/video10/*
+          retention-days: 30
+      - name: Publish authorized media and original recipe only
+        env:
+          TARGET: prometeo/previews/video/w001/10
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/tidal-publish
+          cp "$TARGET/index.html" "$TARGET/recipe.json" "$TARGET/render.py" "$TARGET/RECEIPT.md" /tmp/tidal-publish/
+          cp build/video10/* /tmp/tidal-publish/
+          git fetch origin gh-pages
+          git checkout -B video-w001-10-publish origin/gh-pages
+          mkdir -p "$TARGET"
+          cp /tmp/tidal-publish/* "$TARGET/"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- "$TARGET"
+          if git diff --cached --quiet; then
+            echo 'Already published'
+            exit 0
+          fi
+          git commit -m 'Publish Video W001/10 two verified 12-second variants'
+          for try in 1 2 3 4 5; do
+            git fetch origin gh-pages
+            git rebase origin/gh-pages
+            if git push origin HEAD:gh-pages; then exit 0; fi
+            sleep "$try"
+          done
+          echo 'PUBLISH_FAILED: video artifacts remain in workflow run'
+          exit 1
