@@ -191,6 +191,7 @@ function renderUniversalLibrary(){
   host.append(grid);return;
  }
  const defaultOpen=groups.find(x=>x.delivered.length>0)?.batch.id||groups[0]?.batch.id;
+ if(state.universalOpen===undefined){try{const stored=localStorage.getItem('prometeo:root:open-batch');if(groups.some(x=>x.batch.id===stored))state.universalOpen=stored;}catch{}}
  for(const group of groups){
   const d=document.createElement('details');d.className='p-univ-batch';d.open=state.universalOpen===undefined?group.batch.id===defaultOpen:state.universalOpen===group.batch.id;
   const summary=document.createElement('summary');summary.append(
@@ -198,7 +199,7 @@ function renderUniversalLibrary(){
    element('span','',group.delivered.length+' / '+group.tasks.length+' entregas · '+(group.last?formatted(group.last):'sin publicaciones'))
   );
   d.append(summary);
-  d.addEventListener('toggle',()=>{if(d.open){state.universalOpen=group.batch.id;}else if(state.universalOpen===group.batch.id){state.universalOpen='';}});
+  d.addEventListener('toggle',()=>{if(d.open){state.universalOpen=group.batch.id;try{localStorage.setItem('prometeo:root:open-batch',group.batch.id);}catch{}}else if(state.universalOpen===group.batch.id){state.universalOpen='';try{localStorage.removeItem('prometeo:root:open-batch');}catch{}}});
   const intro=element('div','p-univ-batch-tools');
   const launch=document.createElement('a');launch.href=group.batch.launchUrl;launch.target='_blank';launch.rel='noopener noreferrer';launch.textContent='Consignas '+group.tasks.length;
   const copyBtn=option('Copiar WORK',async()=>toast(await copy('👷 '+emoji[group.batch.room]+' WORK · '+group.batch.launchUrl+' · ')?'Copiado':'No se pudo copiar'));
@@ -311,7 +312,7 @@ function selectRoute(next){
  const studio=['3d','music','web','video','images'].includes(state.room);
  if(studio&&state.screen==='stage'&&!studioItems(state.room).some(x=>x.id===state.itemId))state.screen='library';
  shell.toggleAttribute('stage-mode',studio&&state.screen==='stage');
- $('messages').hidden=studio&&state.screen!=='messages';
+ $('messages').hidden=(studio||state.room==='root')&&state.screen!=='messages';
  $('library').hidden=!(studio||state.room==='root')||state.screen!=='library';
  $('stage').hidden=!studio||state.screen!=='stage';
  if((studio||state.room==='root')&&state.screen==='library')renderLibrary();
