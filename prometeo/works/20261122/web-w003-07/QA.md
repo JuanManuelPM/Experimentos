@@ -32,3 +32,5 @@ W002 comunicó 6 piezas/8 HTML, 3 fotos y Chromium inyectado con bug hidden repa
 
 ## Próximo gate objetivo
 Verificar el despliegue real de GitHub Pages, comprobar los mismos 28 estados bajo HTTP público, hacer revisión visual/editorial independiente (incluido Android) y test de lector de pantalla. No reportar `HUMAN_APPROVED` hasta aprobación humana real.
+
+**Secuencia final de revisión:** tras la última matriz 28/28 se agregaron únicamente hipervínculos explícitos de licencia y notas de recorte en captions, además de precisar la observación del benchmark en Book. La sesión de navegador externo agotó su cupo antes de poder repetir la matriz **sobre esos últimos bytes**. Por lo tanto `BROWSER_FINAL_AFTER_LICENSE_EDITS=NOT_RUN`; el PASS 28/28 corresponde al HTML inmediatamente anterior, idéntico en funciones/retícula pero no en textos de atribución. Fuente final y licencias fueron verificadas por GitHub readback.
