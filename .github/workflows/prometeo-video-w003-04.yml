@@ -1,0 +1,64 @@
+name: PROMETEO video W003 04 - render masters
+on:
+  push:
+    branches:
+      - candidate/prometeo-video-w003-20261122-04
+    paths:
+      - .github/workflows/prometeo-video-w003-04.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install independent renderer
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y ffmpeg
+          python -m pip install --disable-pip-version-check playwright numpy scipy
+          python -m playwright install --with-deps chromium
+      - name: Render real video and original synchronized audio
+        working-directory: prometeo/works/video/w003/04
+        run: |
+          python render.py
+          python score.py
+          for aspect in 16x9 9x16; do
+            ffmpeg -hide_banner -loglevel error -y \
+              -i "UNA_PALABRA_CAMBIA_TODO_${aspect}_SILENT.mp4" \
+              -i SCORE_ORIGINAL.wav \
+              -c:v libx264 -preset veryfast -crf 19 \
+              -c:a aac -b:a 160k -shortest -movflags +faststart \
+              "UNA_PALABRA_CAMBIA_TODO_${aspect}.mp4"
+            ffmpeg -v error -i "UNA_PALABRA_CAMBIA_TODO_${aspect}.mp4" -f null -
+            ffprobe -v error -show_entries format=duration -of default=nw=1 "UNA_PALABRA_CAMBIA_TODO_${aspect}.mp4"
+          done
+      - name: Capture remote binary QA evidence
+        working-directory: prometeo/works/video/w003/04
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import json,hashlib,datetime,subprocess
+          base=Path('.')
+          results=[]
+          for aspect in ['16x9','9x16']:
+            path=base/('UNA_PALABRA_CAMBIA_TODO_'+aspect+'.mp4')
+            data=json.loads(subprocess.check_output(['ffprobe','-v','error','-show_entries','format=duration,size:stream=codec_name,width,height,nb_frames,r_frame_rate,sample_rate,channels','-of','json',str(path)]))
+            results.append({'aspect':aspect,'file':path.name,'sha256':hashlib.sha256(path.read_bytes()).hexdigest(),'ffprobe':data})
+          evidence={'schema':'prometeo.video.remote-render/v1','taskId':'video-w003-20261122-04','generatedAt':datetime.datetime.now(datetime.timezone.utc).isoformat(),'results':results,'humanApproved':False,'perceptualListening':'NOT_RUN'}
+          Path('QA_CI.json').write_text(json.dumps(evidence,indent=2)+'\n')
+          PY
+      - name: Commit public binaries and contact frames exclusively to candidate branch
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add prometeo/works/video/w003/04/*.mp4 prometeo/works/video/w003/04/*.wav prometeo/works/video/w003/04/frame_*.png prometeo/works/video/w003/04/QA_CI.json
+          git commit -m 'video W003-04: publish H264 AAC masters and observed frames [skip ci]'
+          git push origin "HEAD:${GITHUB_REF_NAME}"
