@@ -43,8 +43,8 @@
     },
     {
       "stage": "PUBLIC_BINARY",
-      "status": "NOT_RUN",
-      "evidence": "Two MP4s delivered as conversation files; binary GitHub readback pending."
+      "status": "OBSERVED",
+      "evidence": "Public candidate GitHub branch has 2/2 MP4, original audio and contact frames, QA_CI.json SHA256, remote Git blob readback PASS."
     },
     {
       "stage": "BROWSER_INTERACTION",
@@ -60,6 +60,12 @@
       "stage": "HUMAN_APPROVED",
       "status": "NO",
       "evidence": "User has not assessed art."
+    },
+    {
+      "stage": "REMOTE_RENDER_CI",
+      "status": "OBSERVED",
+      "evidence": "GitHub Actions generated QA_CI.json 2026-11-22T19:16:35.820807+00:00. 2 master MP4s 26.000s H264/AAC 624 frames 24 fps plus contact frame PNGs, exact blob readback via GitHub Contents confirmed."
     }
-  ]
+  ],
+  "remoteReadbackAt": "2026-11-22T19:20:36.727Z"
 }
