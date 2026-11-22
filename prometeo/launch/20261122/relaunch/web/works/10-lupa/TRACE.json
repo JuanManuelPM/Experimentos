@@ -1,0 +1,58 @@
+{
+  "schema": "prometeo.flow.worker-trace/v1",
+  "taskId": "web-w003-20261122-10",
+  "at": "2026-11-22T19:14:45.125101+00:00",
+  "flow": {
+    "canonical": "Q-LOOP/QBAR-1/DEEP-SPEC-1 + WEB specialization",
+    "contractSha": "7911ce780c6eb8fc08ba3e5621e4479bbe2e9757",
+    "qualityBarSha": "5653704d3267c339fe7405f2b36b8488dbb44be9",
+    "deepSpecSha": "7656a293b0182f81619bf0d27b90dffa771c2683",
+    "artDirectionSha": "b1a1a012e90897200336cac6316c0511cb40c4c5",
+    "specializedVersion": "NOT_IDENTIFIED",
+    "specializedSha": "NOT_IDENTIFIED",
+    "visitedTraceV1Validation": "NOT_RUN_NO_COMPATIBLE_FLOW_GRAPH"
+  },
+  "humanApproved": false,
+  "events": [
+    {
+      "stage": "READ_BRIEF",
+      "status": "EXECUTED",
+      "output": "Locked launch SHA, taskNumber 10; consulted contract/benchmark/audit",
+      "evidence": "https://github.com/JuanManuelPM/Experimentos/blob/candidate/prometeo-web-w003-20261122-10/prometeo/launch/20261122/relaunch/web/works/10-lupa/PREPRODUCTION.deep-spec-v1.json",
+      "at": "2026-11-22T19:14:45.125101+00:00"
+    },
+    {
+      "stage": "FIRST_ARTICLE",
+      "status": "EXECUTED",
+      "output": "Local HTML page.set_content + Chromium screenshot of A/B 390 and 1440 + Pillow exact diff",
+      "evidence": "https://github.com/JuanManuelPM/Experimentos/blob/candidate/prometeo-web-w003-20261122-10/prometeo/launch/20261122/relaunch/web/works/10-lupa/evidence/lupa-capture.json",
+      "at": "2026-11-22T19:14:45.125101+00:00"
+    },
+    {
+      "stage": "BUILD",
+      "status": "EXECUTED",
+      "output": "Responsive 4-mode local pixel inspector, manifest loader, browser history code, runner",
+      "evidence": "https://github.com/JuanManuelPM/Experimentos/blob/candidate/prometeo-web-w003-20261122-10/prometeo/launch/20261122/relaunch/web/works/10-lupa/index.html",
+      "at": "2026-11-22T19:14:45.125101+00:00"
+    },
+    {
+      "stage": "BROWSER_LOCAL",
+      "status": "EXECUTED",
+      "output": "Set_content UI 390 and 1440, uploads, mismatch, modes, download events; no horizontal overflow",
+      "evidence": "https://github.com/JuanManuelPM/Experimentos/blob/candidate/prometeo-web-w003-20261122-10/prometeo/launch/20261122/relaunch/web/works/10-lupa/QA.md",
+      "at": "2026-11-22T19:14:45.125101+00:00"
+    },
+    {
+      "stage": "BROWSER_REAL_ORIGIN",
+      "status": "NOT_RUN",
+      "reason": "Navigation denied ERR_BLOCKED_BY_ADMINISTRATOR; IndexedDB reload and SHA WebCrypto remain unverified",
+      "at": "2026-11-22T19:14:45.125101+00:00"
+    },
+    {
+      "stage": "PUBLIC_BROWSER",
+      "status": "NOT_RUN",
+      "reason": "Candidate branch not automatically published via GitHub Pages",
+      "at": "2026-11-22T19:14:45.125101+00:00"
+    }
+  ]
+}

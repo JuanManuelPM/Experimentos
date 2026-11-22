@@ -1,0 +1,281 @@
+{
+  "version": "DEEP-SPEC-1",
+  "medium": "web",
+  "depth": "SISTEMA",
+  "brief": "LUPA · Compare two versions of a page with genuine captures, sliding A/B, overlay, history and viewport reproducibility.",
+  "briefSource": {
+    "repository": "JuanManuelPM/Experimentos",
+    "launchBlobSha": "bef87bf57c789d2b0605ca9ff81a5d3bbaab5e35",
+    "previousBatchBlobSha": "cd88a07941ab62072f6de5ee69764308f1ec2387",
+    "batchId": "web-w003-20261122",
+    "taskNumber": 10
+  },
+  "qualityBarVersion": "QBAR-1",
+  "intent": {
+    "experience": "Let a human see exactly which pixels changed without confusing visual comparison with screenshot origin proof.",
+    "distinctAbility": "Make local screenshot pairs, exact diffs, SHA integrity, offline capture manifests and IndexedDB history work in one editorial interface."
+  },
+  "references": [
+    {
+      "id": "R1",
+      "url": "https://github.com/garris/BackstopJS/blob/master/README.md",
+      "status": "OBSERVED",
+      "observation": "Official BackstopJS README describes reference/test separation, image diff, visual scrubber, reports and CI; reproduced ideas at behavior level only."
+    },
+    {
+      "id": "R2",
+      "url": "https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/launch/20261122/repair/web/AUDIT_W002.md",
+      "status": "OBSERVED",
+      "observation": "Auditor W002 found LUPA 10 captured fixtures but browser UI/IndexedDB E2E not observed; candidate gate for this run."
+    }
+  ],
+  "components": [
+    {
+      "id": "C_CAPTURE",
+      "role": "Authorized Chromium capture and locally reproducible viewport evidence",
+      "strategy": "Python Playwright page.screenshot with explicit dimensions, no fabricated screenshots",
+      "constraints": "URL hosts allowlisted by explicit arg; offline self-contained HTML mode; failure must be raised"
+    },
+    {
+      "id": "C_COMPARE",
+      "role": "Four-mode A/B visual comparator and pixel metrics within real raster dimensions",
+      "strategy": "Native Canvas ImageData RGB comparison and CSS image clipping; every image comes from chosen file",
+      "constraints": "No resizing dimension mismatches, no remote URL loading, large image limits and keyboard controls"
+    },
+    {
+      "id": "C_HISTORY",
+      "role": "Local comparison history and SHA provenance labels tied to originals",
+      "strategy": "IndexedDB Blob entries, SHA-256 WebCrypto, optional runner manifest verification",
+      "constraints": "Never imply unverified uploads are authenticated screenshots or that local storage persists across devices"
+    }
+  ],
+  "questions": [
+    {
+      "id": "Q1",
+      "target": "C_CAPTURE",
+      "question": "How can this runner obtain authentic screenshots if Chromium denies URL navigation in the execution environment?",
+      "alternatives": [
+        "HTTP(S) navigation with explicit host authorization",
+        "Chromium page.set_content for local original self-contained HTML"
+      ],
+      "finding": "Environment denied localhost URL as ERR_BLOCKED_BY_ADMINISTRATOR; set_content produced genuine screenshots of authored fixtures.",
+      "decisionImpact": "Runner supports both authorized URLs and self-contained HTML with source hashes, never claims HTML mode verified a hosted URL.",
+      "evidenceRef": "R2"
+    },
+    {
+      "id": "Q2",
+      "target": "C_COMPARE",
+      "question": "Which metric is actually observable without pretending perceptual or Lighthouse quality?",
+      "alternatives": [
+        "Actual per-pixel RGB max-channel threshold",
+        "Synthetic similarity percentage or performance estimate"
+      ],
+      "finding": "Python Pillow measured 8,712 and 21,802 changed pixels at threshold 32 for fixture pair.",
+      "decisionImpact": "Displayed percentage is only changed pixels / total; no Lighthouse or subjective quality claim.",
+      "evidenceRef": "R1"
+    },
+    {
+      "id": "Q3",
+      "target": "C_HISTORY",
+      "question": "How can users distinguish imported images from runner-sourced evidence?",
+      "alternatives": [
+        "Treat all uploaded filenames as verified captures",
+        "Match SHA-256, dimensions and manifest pair; label others unverified"
+      ],
+      "finding": "Unverified upload and manifest mismatch UI state observed in Chromium; secure WebCrypto manifest-match remains untested in this environment.",
+      "decisionImpact": "Use UNVERIFIED_UPLOAD by default; only label hash match when crypto.subtle can validate both files.",
+      "evidenceRef": "R2"
+    }
+  ],
+  "relations": [
+    {
+      "from": "C_CAPTURE",
+      "to": "C_COMPARE",
+      "invariant": "Capture raster dimensions must exactly match between both sides before any image diff is shown.",
+      "failure": "Silently scaling screenshots produces false positive or hides actual layout regressions.",
+      "test": "Mismatched PNG upload disables diff and shows explicit dimensions."
+    },
+    {
+      "from": "C_COMPARE",
+      "to": "C_HISTORY",
+      "invariant": "History stores the untouched source blobs and hashes, not a screenshot of the comparison UI.",
+      "failure": "Reopening saved history loses original evidence or mixes old diff with new images.",
+      "test": "Reload and restore same images in a secure-origin real browser, not run in current sandbox."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "D1",
+      "questionId": "Q1",
+      "componentIds": [
+        "C_CAPTURE"
+      ],
+      "choice": "Support genuine Chromium screenshots from local HTML when network route is blocked",
+      "rejected": "Pretend that navigation to localhost succeeded",
+      "productionChange": "Added --a-html/--b-html with SHA-256 of original HTML and explicit sourceType in manifest.",
+      "why": "No screenshot provenance claim is valid without actual rendered PNG bytes and an unambiguous source type."
+    },
+    {
+      "id": "D2",
+      "questionId": "Q2",
+      "componentIds": [
+        "C_COMPARE"
+      ],
+      "choice": "Exact channel-threshold pixel count from decoded PNG",
+      "rejected": "Invent perceptual or page-load scores",
+      "productionChange": "Canvas in app and Pillow in runner implement RGB max-diff threshold 32 and numbers.",
+      "why": "This calculation was actually exercised and can be reproduced under identical browser conditions."
+    },
+    {
+      "id": "D3",
+      "questionId": "Q3",
+      "componentIds": [
+        "C_HISTORY"
+      ],
+      "choice": "Local IndexedDB Blob records plus optional hash-verified runner metadata",
+      "rejected": "Mark every upload as an authorized capture",
+      "productionChange": "Explicit UNVERIFIED state and separate manifest matches; save/reload feature implemented but E2E not observed.",
+      "why": "Provenance is a verified relation between bytes and a runner report, never just a file name."
+    }
+  ],
+  "risks": [
+    {
+      "componentIds": [
+        "C_CAPTURE",
+        "C_COMPARE"
+      ],
+      "severity": "high",
+      "failure": "Rendering produced fake raster or no real changed pixels on first fixture.",
+      "prevention": "Perform original fixture A/B Chromium first article before building full UI and inspect byte hashes.",
+      "test": "Observe screenshot file bytes and run Pillow diff with threshold 32 for 390 and 1440.",
+      "status": "OBSERVED"
+    },
+    {
+      "componentIds": [
+        "C_HISTORY"
+      ],
+      "severity": "medium",
+      "failure": "IndexedDB persistence fails in deployed secure browser context despite source implementation.",
+      "prevention": "Keep export independent of storage; document untested E2E.",
+      "test": "Save, reload, restore and compare hash in real served browser.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "acceptance": [
+    {
+      "kind": "functional",
+      "criterion": "CLI creates PNG and manifest for two original HTML fixtures and measures changed pixels.",
+      "oracle": "File bytes, SHA-256 and RGB differences from real Chromium run in local sandbox.",
+      "status": "OBSERVED"
+    },
+    {
+      "kind": "interactive",
+      "criterion": "Browser local UI accepts true PNG, rejects mismatched dimensions, switches modes and exports diff PNG.",
+      "oracle": "Playwright page.set_content at 390 and 1440, all modes and download events.",
+      "status": "OBSERVED"
+    },
+    {
+      "kind": "visual",
+      "criterion": "First screen has distinctive visual protagonist without horizontal overflow at 390 and 1440.",
+      "oracle": "Inspect real Chromium screenshots for both viewports.",
+      "status": "OBSERVED"
+    },
+    {
+      "kind": "functional",
+      "criterion": "Secure-origin history survives a full page reload and verified manifest changes label.",
+      "oracle": "Playwright navigation to served domain and IndexedDB readback, secure WebCrypto hashes.",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "functional",
+      "criterion": "Public GitHub Pages serves identical bytes to candidate branch.",
+      "oracle": "External HTTP and real browser page load.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "licensing": "All fixtures and app authored for this task. Playwright Apache-2.0 and Pillow open source; no stock media, user data, or third-party protected screenshots included.",
+  "resources": "Local /usr/bin/chromium, Python Playwright, Pillow, JS Canvas, IndexedDB, WebCrypto; no network navigation in sandbox.",
+  "environmentLimits": "Chromium blocks direct localhost/file/data page.goto; screenshots created with Playwright set_content. No secure-origin history or SHA match E2E here; public Pages NOT_RUN, human approval false.",
+  "artDirection": {
+    "schema": "prometeo.art-direction.first-article/v1",
+    "medium": "web",
+    "taskId": "web-w003-20261122-10",
+    "briefSha": "bef87bf57c789d2b0605ca9ff81a5d3bbaab5e35",
+    "flowRef": "Q-LOOP contract blob 7911ce7 / QBAR-1 blob 5653704 / DEEP-SPEC-1 blob 7656a29; web adapted per worker 10",
+    "promise": {
+      "subject": "Two real screenshot rasters shown as a legible A/B comparison",
+      "intent": "Read differences rapidly without pretending that uploaded files prove capture provenance or design quality"
+    },
+    "benchmark": {
+      "url": "https://github.com/garris/BackstopJS/blob/master/README.md",
+      "description": "Inspected official README and its Backstop Features report: reference/test browser report, scrubber, filtering and approve workflow. This is a reference for behavior only, not an endorsement of this implementation.",
+      "status": "OBSERVED"
+    },
+    "techniques": [
+      {
+        "family": "Raster capture with Chromium, local Canvas pixel processing",
+        "viability": "Observed Chromium set_content and screenshot on original HTML at 390 and 1440; Python Playwright, Pillow and Canvas usable on environment",
+        "license": "Original HTML fixtures and interface; Playwright Apache-2.0, Pillow HPND; no third-party image works"
+      },
+      {
+        "family": "DOM tree and computed-style semantic difference explorer",
+        "viability": "Possible through authorized Playwright DOM snapshots, but does not replace exact screenshot comparison and is not implemented",
+        "license": "Own inspection code under original-authored policy; Playwright Apache-2.0; only authorized DOM sources"
+      }
+    ],
+    "selectedTechnique": "Raster capture with Chromium, local Canvas pixel processing",
+    "firstFrame": {
+      "openingDescription": "390: logo and compact editorial headline over a dark checkerboard comparison surface, immediately visible; 1440: upper masthead and inspector anchored beside upload rail",
+      "focalSubject": "Actual A/B inspection surface and expressive empty state without fake screenshot",
+      "minimalUI": "Two file controls, four comparison modes, one slider and an explicit data provenance label; no duplicate overlays",
+      "checks": [
+        {
+          "criterion": "At 390 CSS px the comparison surface is visible and no horizontal overflow",
+          "oracle": "Chromium screenshot inspected plus document.scrollWidth <= innerWidth",
+          "viewport": "390"
+        },
+        {
+          "criterion": "At 1440 CSS px the comparison area has priority over rails and text remains legible",
+          "oracle": "Chromium screenshot plus DOM full-width inspection",
+          "viewport": "1440"
+        },
+        {
+          "criterion": "Mismatch raster dimensions blocks diff rather than scaling silently",
+          "oracle": "Playwright upload A390/B1440 shows error and disabled save",
+          "viewport": "both"
+        }
+      ],
+      "observations": [
+        {
+          "viewport": "390",
+          "status": "OBSERVED_PASS",
+          "evidence": {
+            "url": "https://github.com/JuanManuelPM/Experimentos/blob/candidate/prometeo-web-w003-20261122-10/prometeo/launch/20261122/relaunch/web/works/10-lupa/evidence/app-empty-390.png",
+            "description": "Actual screenshot of LUPA first screen from Chromium set_content at 390x780; no horizontal overflow"
+          }
+        },
+        {
+          "viewport": "1440",
+          "status": "OBSERVED_PASS",
+          "evidence": {
+            "url": "https://github.com/JuanManuelPM/Experimentos/blob/candidate/prometeo-web-w003-20261122-10/prometeo/launch/20261122/relaunch/web/works/10-lupa/evidence/app-empty-1440.png",
+            "description": "Actual screenshot of LUPA first screen from Chromium set_content at 1440x900; no horizontal overflow"
+          }
+        }
+      ]
+    },
+    "firstArticle": {
+      "target": "Real A/B Chromium screenshots of original authored fixture HTML at 390x900 and 1440x900, and actual pixel difference report",
+      "rejectWhen": "Images do not decode, raster dimensions mismatch silently, screenshots are placeholders, or changedPixel count is zero despite changed fixture",
+      "switchTo": "DOM tree and computed-style semantic difference explorer",
+      "oracle": "Chromium PNG bytes SHA256 plus Pillow exact pixel diff and browser upload results 8,712 and 21,802 changed pixels",
+      "resourceProof": "playwright/Pillow and /usr/bin/chromium installed; genuine local PNG bytes captured; no external photos or unauthorized page scraping",
+      "status": "OBSERVED_PASS",
+      "evidence": {
+        "url": "https://github.com/JuanManuelPM/Experimentos/blob/candidate/prometeo-web-w003-20261122-10/prometeo/launch/20261122/relaunch/web/works/10-lupa/evidence/lupa-capture.json",
+        "description": "Runner output with real Chromium screenshot hashes, dimensions, exact RGB diff and HTML source SHA-256"
+      }
+    },
+    "humanApproved": false
+  }
+}
