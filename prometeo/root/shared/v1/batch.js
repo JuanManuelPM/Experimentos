@@ -3,7 +3,7 @@ import {registerBlockAdapter,renderBlock} from './adapters.js';
 import {copyValue,recordCopied,wasCopied,safeURL} from './actions.js';
 import './response.js';
 const selection=new Map();
-const stylesheet=new URL('./batch.css?v=20261122-universal-copy',import.meta.url).href;
+const stylesheet=new URL('./batch.css?v=20261122-feedback2',import.meta.url).href;
 const labels=['Preparado','Copiado localmente','Iniciado con evidencia','Entregado','Verificado'];
 const el=(tag,cls,text)=>{const node=document.createElement(tag);if(cls)node.className=cls;if(text!==undefined)node.textContent=String(text);return node;};
 function promptKey(batch,n){return String(batch.id)+'|'+String(batch.launchUrl)+'|'+String(n);}
