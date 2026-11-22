@@ -8,11 +8,11 @@ export function inspectEyelineAxis(film){
  for(const shot of film.shots){
   const {camera,actors}=shot;
   if([camera.from[2],camera.to[2]].some(z=>z<=axisZ+.15))
-   errors.push(shot.id+': camara cruza eje de accion o cae sobre el");
+   errors.push(shot.id+': camara cruza eje de accion o cae sobre el');
   if([actors.vera.head[0],actors.vera.head[1]].some(y=>y<-.02))
-   errors.push(shot.id+': Vera mira fuera del lado de Noe");
+   errors.push(shot.id+': Vera mira fuera del lado de Noe');
   if([actors.noe.head[0],actors.noe.head[1]].some(y=>y>.02))
-   errors.push(shot.id+': Noe mira fuera del lado de Vera");
+   errors.push(shot.id+': Noe mira fuera del lado de Vera');
  }
  return {ok:errors.length===0,errors,checkedShots:film.shots.length};
 }
