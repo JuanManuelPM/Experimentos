@@ -1,0 +1,39 @@
+name: PROMETEO 3D W6 source-based browser audit (candidate)
+on:
+  push:
+    branches:
+      - candidate/prometeo-3d-autocritica-v2-20261122
+    paths:
+      - prometeo/launch/20261122/repair/3d/**
+      - .github/workflows/prometeo-3d-audit-v2.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  visual-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install isolated browser test dependencies
+        run: |
+          npm install --no-save --ignore-scripts playwright@1.56.1 pngjs@7
+          npx playwright install --with-deps chromium
+      - name: Capture screenshots with real Chromium; failures preserved
+        id: capture
+        continue-on-error: true
+        run: node prometeo/launch/20261122/repair/3d/browser-audit.mjs
+      - name: Archive actual screenshots and QA manifest even on errors
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: prometeo-3d-w6-autocritica-v2-screens
+          path: QA/
+          if-no-files-found: warn
+          retention-days: 14
+      - name: Preserve failure state after evidence upload
+        if: steps.capture.outcome == 'failure'
+        run: exit 1
