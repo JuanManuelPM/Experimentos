@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>PROMETEO · Superficie de obra</title>
+<style>
+:root{color-scheme:dark;--ink:#ecece8;--muted:#a5abae;--line:#474b50;--back:#101315;--panel:#1b2024}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;font-family:system-ui,-apple-system,Segoe UI,sans-serif;color:var(--ink);background:var(--back);overflow:hidden}
+button,input,textarea{font:inherit}button{cursor:pointer;background:#2a3035;color:var(--ink);border:1px solid #566068;border-radius:5px;padding:8px 11px}button:hover{background:#3b444b}button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid #c0e3dc;outline-offset:2px}
+[hidden]{display:none!important}#surface{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;overflow:hidden}#surface.web{background:#fff}#surface.images{background:#181a1b}
+#image{max-width:100%;max-height:100%;object-fit:contain}#webview{width:100%;height:100%;border:0;background:#fff}#video{max-width:100%;max-height:100%;width:100%;height:100%;object-fit:contain;background:#090b0e}
+#sub{position:absolute;bottom:17%;max-width:82%;padding:5px 12px;background:#000b;font-size:clamp(16px,2.2vw,27px);text-align:center;pointer-events:none}
+#tools{position:fixed;bottom:12px;left:50%;transform:translateX(-50%);z-index:5;width:min(calc(100% - 24px),880px);background:#151a1fed;border:1px solid #54595c;border-radius:9px;padding:11px;box-shadow:0 12px 38px #0007;display:flex;flex-direction:column;gap:9px}
+#toolHead{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:12px}
+#toolHead strong{font-size:13px;flex:1;min-width:120px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#toolHead span{color:var(--muted)}.track{display:flex;align-items:center;gap:7px;min-height:30px;font-size:12px}.track>label:first-child{width:64px;flex-shrink:0;color:var(--muted)}
+input[type=range]{accent-color:#a8dad2;min-width:30px;flex:1}
+input[type=number]{width:68px;padding:6px;color:var(--ink);background:#20262a;border:1px solid var(--line);border-radius:3px}
+input[type=text]{min-width:80px;flex:1;padding:6px 8px;color:var(--ink);background:#20262a;border:1px solid var(--line);border-radius:3px}
+#sourceEditor{position:absolute;inset:12px 12px 195px;z-index:3;border:1px solid var(--line);background:#131719;color:#f0f1eb;padding:18px;font:13px/1.6 ui-monospace,monospace;resize:none}
+#sourceActions{position:fixed;bottom:12px;left:12px;z-index:6;display:flex;gap:8px}
+#canvas{display:none}
+#notice{position:fixed;top:18px;left:18px;font-size:12px;max-width:calc(100% - 110px);padding:8px 12px;background:#111a;color:#eee;border-radius:5px;pointer-events:none}
+@media(max-width:650px){#tools{font-size:11px;bottom:7px;max-height:51vh;overflow:auto}#sourceEditor{inset:12px 12px 170px}#video{object-fit:contain}.track>label:first-child{width:43px}#toolHead{gap:5px}button{padding:7px}#sub{bottom:38%}}
+</style></head>
+<body><div id="surface"><video id="video" controls playsinline hidden></video><img id="image" alt="Obra abierta" hidden><iframe id="webview" sandbox="allow-scripts allow-forms allow-modals" title="Vista de la obra web" hidden></iframe><canvas id="canvas"></canvas><div id="sub" hidden></div></div>
+<input id="fileInput" type="file" hidden><input id="audioInput" type="file" accept="audio/*" hidden>
+<div id="tools" hidden><div id="toolHead"><strong id="title"></strong><span id="format"></span><button id="hide">Ocultar herramientas</button></div>
+<div id="videoTools" hidden>
+ <div class="track"><label>Video</label><input id="seek" type="range" min="0" max="1000" value="0"><output id="time">0:00</output></div>
+ <div class="track"><label>Corte</label><span>Desde</span><input id="start" type="number" min="0" step=".1" value="0"><span>Hasta</span><input id="end" type="number" min="0" step=".1" value="0"></div>
+ <div class="track"><label>Audio</label><input id="audioSeek" type="range" min="0" max="1000" value="0" disabled><button id="addAudio">+ Audio</button><audio id="audio"></audio></div>
+ <div class="track"><label>Subtítulo</label><input id="caption" type="text" placeholder="Texto visible en previsualización"></div>
+</div>
+<div id="imageTools" hidden><div class="track"><label>Luz</label><input id="bright" type="range" min="30" max="180" value="100"><output id="brightValue">100%</output></div>
+<div class="track"><label>Contraste</label><input id="contrast" type="range" min="30" max="180" value="100"><output id="contrastValue">100%</output><button id="compare">Original</button></div></div>
+<div id="webTools" hidden><button id="editHtml">Editar código</button><button id="applyHtml">Aplicar vista</button><span style="font-size:11px;color:var(--muted)">Previsualización aislada</span></div>
+<div id="toolHead"><button id="save">Exportar archivo / proyecto</button><span id="hint">Trabajo local; no se publica automáticamente</span></div></div>
+<textarea id="sourceEditor" spellcheck="false" aria-label="Código fuente HTML" hidden></textarea>
+<div id="notice" hidden role="status"></div>
+<script>
+(()=>{'use strict';
+ const $=id=>document.getElementById(id),params=new URLSearchParams(location.search);
+ const mode=['video','web','images'].includes(params.get('mode'))?params.get('mode'):'web';
+ $('surface').classList.add(mode);
+ $('fileInput').accept=mode==='video'?'video/*':mode==='web'?'.html,.htm,text/html':'image/*';
+ let blobURL='',audioURL='',filename='',html='',photo=null,showOriginal=false,duration=0;
+ const f=$('fileInput'),v=$('video'),a=$('audio');
+ function notice(s){const n=$('notice');n.textContent=s;n.hidden=false;clearTimeout(notice.t);notice.t=setTimeout(()=>n.hidden=true,2600)}
+ function download(name,data,mime){const u=URL.createObjectURL(new Blob([data],{type:mime}));const link=document.createElement('a');link.href=u;link.download=name;link.click();setTimeout(()=>URL.revokeObjectURL(u),20000)}
+ function showTools(on=true){$('tools').hidden=!on;if(!on)$('sourceEditor').hidden=true}
+ function loadFile(file){
+  if(!file)return;
+  if(blobURL)URL.revokeObjectURL(blobURL);blobURL=URL.createObjectURL(file);filename=file.name;
+  $('title').textContent=filename;$('format').textContent=mode.toUpperCase();showTools();
+  if(mode==='video'){
+   v.hidden=false;v.src=blobURL;v.load();$('videoTools').hidden=false;$('webview').hidden=true;$('image').hidden=true;
+  }else if(mode==='images'){
+   const im=new Image();im.onload=()=>{photo=im;$('image').src=blobURL;$('image').hidden=false;$('imageTools').hidden=false;$('webview').hidden=true;v.hidden=true;applyImage()};im.src=blobURL;
+  }else{
+   file.text().then(t=>{html=t;$('sourceEditor').value=t;applyWeb();$('webTools').hidden=false;});
+  }
+ }
+ function applyWeb(){$('webview').hidden=false;$('webview').srcdoc=html;v.hidden=true;$('image').hidden=true}
+ function applyImage(){if(!photo)return;const css='brightness('+$('bright').value+'%) contrast('+$('contrast').value+'%)';$('image').style.filter=showOriginal?'none':css;$('brightValue').textContent=$('bright').value+'%';$('contrastValue').textContent=$('contrast').value+'%'}
+ f.onchange=()=>{loadFile(f.files?.[0]);f.value=''};
+ $('audioInput').onchange=()=>{const file=$('audioInput').files?.[0];if(!file)return;if(audioURL)URL.revokeObjectURL(audioURL);audioURL=URL.createObjectURL(file);a.src=audioURL;a.load();$('audioSeek').disabled=false;notice('Pista de audio importada; preescucha sincronizada')};
+ $('addAudio').onclick=()=>$('audioInput').click();
+ v.addEventListener('loadedmetadata',()=>{duration=Number.isFinite(v.duration)?v.duration:0;$('end').value=duration.toFixed(1);updateTime()});
+ function clock(s){return Math.floor(s/60)+':'+String(Math.floor(s%60)).padStart(2,'0')}
+ function updateTime(){const d=duration||1;const value=Math.max(0,Math.min(1000,Math.floor((v.currentTime||0)/d*1000)));$('seek').value=value;$('time').textContent=clock(v.currentTime||0)+' / '+clock(duration);$('audioSeek').value=value;}
+ v.addEventListener('timeupdate',()=>{updateTime();const end=Number($('end').value);if(end>0&&v.currentTime>=end){v.pause();a.pause();v.currentTime=Number($('start').value)||0}});
+ v.addEventListener('play',()=>{if(audioURL){a.currentTime=Math.max(0,v.currentTime);a.play().catch(()=>{})}});
+ v.addEventListener('pause',()=>a.pause());v.addEventListener('seeked',()=>{if(audioURL)a.currentTime=Math.min(a.duration||Infinity,v.currentTime)});
+ $('seek').oninput=()=>{if(duration)v.currentTime=duration*Number($('seek').value)/1000;updateTime()};
+ $('audioSeek').oninput=()=>{if(audioURL)a.currentTime=(a.duration||duration||0)*Number($('audioSeek').value)/1000};
+ $('start').onchange=()=>{const t=Math.max(0,Number($('start').value)||0);$('start').value=t.toFixed(1);if(v.currentTime<t)v.currentTime=t};
+ $('end').onchange=()=>{const t=Math.min(duration||Infinity,Math.max(Number($('start').value)||0,Number($('end').value)||0));$('end').value=t.toFixed(1)};
+ $('caption').oninput=()=>{$('sub').textContent=$('caption').value;$('sub').hidden=!$('caption').value};
+ for(const id of ['bright','contrast'])$(id).oninput=applyImage;
+ $('compare').onclick=()=>{showOriginal=!showOriginal;$('compare').textContent=showOriginal?'Editado':'Original';applyImage()};
+ $('editHtml').onclick=()=>{$('sourceEditor').hidden=!$('sourceEditor').hidden};
+ $('applyHtml').onclick=()=>{html=$('sourceEditor').value;applyWeb();$('sourceEditor').hidden=true};
+ $('hide').onclick=()=>showTools(false);
+ $('save').onclick=()=>{
+  const stem=(filename||'obra').replace(/\.[^.]+$/,'');
+  if(mode==='web'){html=$('sourceEditor').value||html;download(stem+'-editado.html',html,'text/html;charset=utf-8');return}
+  if(mode==='video'){
+   const project={schema:'prometeo.video.local-edl/v1',source:filename,sourceSize:f.files?.[0]?.size||null,in:Math.max(0,Number($('start').value)),out:Math.max(0,Number($('end').value)),subtitle:$('caption').value,audioTrack:audioURL?'local-imported':'none',export:'EDL_JSON_NOT_ENCODED_VIDEO'};
+   download(stem+'.edl.json',JSON.stringify(project,null,2),'application/json');notice('Exportada lista de edición JSON; no se generó MP4');return;
+  }
+  if(photo){const canvas=$('canvas');canvas.width=photo.naturalWidth;canvas.height=photo.naturalHeight;const ctx=canvas.getContext('2d');ctx.filter=showOriginal?'none':'brightness('+$('bright').value+'%) contrast('+$('contrast').value+'%)';ctx.drawImage(photo,0,0);canvas.toBlob(blob=>{if(!blob){notice('No se pudo exportar PNG');return}const u=URL.createObjectURL(blob),l=document.createElement('a');l.href=u;l.download=stem+'-version.png';l.click();setTimeout(()=>URL.revokeObjectURL(u),20000)},'image/png')}
+ };
+ window.PROMETEO_WORKSPACE={
+  mode,open(){f.click()},tools(){showTools(true)},save(){$('save').click()},
+  edit(){showTools(true);if(mode==='web')$('sourceEditor').hidden=false},
+  compare(){if(mode==='images')$('compare').click()},
+  getState(){return{mode,filename,loaded:!!filename,export:mode==='video'?'EDL_JSON_ONLY':mode==='images'?'PNG':'HTML'}}
+ };
+})();
+</script></body></html>
