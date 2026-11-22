@@ -15,6 +15,20 @@ export function renderBlock(block){
  if(!block||typeof block!=='object')return null;
  if(extensions.has(block.type)){const n=extensions.get(block.type)(block);return n instanceof Node?n:null;}
  switch(block.type){
+ case 'scene':{
+  const url=safeURL(block.src);
+  if(!url||new URL(url).origin!==location.origin)return null;
+  const box=el('div','p-scene-wrap'),toggle=el('button','p-scene-toggle','Ver escena aquí');
+  toggle.type='button';
+  toggle.addEventListener('click',()=>{
+   const frame=box.querySelector('iframe');
+   if(frame){frame.remove();toggle.textContent='Ver escena aquí';return;}
+   const iframe=el('iframe','p-scene-frame');iframe.src=url;iframe.title=String(block.label||'Escena interactiva');
+   iframe.loading='lazy';iframe.allowFullscreen=true;iframe.referrerPolicy='strict-origin-when-cross-origin';
+   box.append(iframe);toggle.textContent='Cerrar escena';
+  });
+  box.append(toggle);return box;
+ }
  case 'text':return el('p','p-prose',block.text||'');
  case 'heading':return el('h3','p-subhead',block.text||'');
  case 'image':case 'diagram':return resource(block,'img');
