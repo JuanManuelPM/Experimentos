@@ -37,3 +37,7 @@ SHA completos y condiciones de prueba en [QA_BROWSER_SPIKE.json](QA_BROWSER_SPIK
 3. **comparison / dimensiones distintas / bloquear el diff y mostrar tamaños / propietario web:** nunca fabricar correspondencia escalando capturas diferentes.
 
 **Criterio de cierre:** artefacto observable y código leído tras escritura; no confundir con `HUMAN_APPROVED`.
+
+## Verificación HTTP externa posterior a publicación
+
+Un fetch externo de la portada respondió **HTTP 503** y el de `fixtures/a.html` respondió **HTTP 404**, a pesar del readback correcto de los 10 archivos en `gh-pages`. Por lo tanto, **disponibilidad pública NO VERIFICADA**; no atribuir estos códigos a un bug de la interfaz sin una prueba de navegador/hosting adicional. El servicio de navegador interactivo conectado no pudo ejecutar la prueba (sin créditos). Se mantienen `browserInteraction=NOT_RUN` y `humanApproved=false`.
