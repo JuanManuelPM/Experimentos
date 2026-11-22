@@ -1,0 +1,222 @@
+{
+  "version": "DEEP-SPEC-1",
+  "medium": "WEB",
+  "depth": "SISTEMA",
+  "identity": {
+    "batchId": "web-w002-20261122",
+    "taskNumber": 6,
+    "taskId": "web-w002-20261122-06",
+    "launchBlobSha": "cd88a07941ab62072f6de5ee69764308f1ec2387",
+    "sourceEvidenceBlobSha": "dc5d2270024b28e513ae53e5abfd8c012f3ab0e5",
+    "qualityBarVersion": "QBAR-1"
+  },
+  "brief": "MAPA DEL CALOR: ensayo periodístico interactivo de calor urbano con series públicas verificables, unidades, incertidumbres y datos consultables; entregar scrollytelling y anotaciones reutilizables.",
+  "intent": {
+    "experience": "Una lectura periodística serena, dramática pero rigurosa, capaz de mostrar y contextualizar episodios de calor mediante interacción útil desde el teléfono.",
+    "distinctAbility": "Transformar datos meteorológicos rastreables en una narrativa con gráficas conectadas al scroll, consulta exacta y exportación legible de sus resultados."
+  },
+  "references": [
+    {
+      "id": "REF1",
+      "status": "OBSERVED",
+      "url": "https://pudding.cool/process/how-to-make-dope-shit-part-3/",
+      "observation": "El artículo original de proceso describe explícitamente cómo un solo gráfico sticky cambia por pasos de scroll, y advierte sobre estados finales y móvil."
+    },
+    {
+      "id": "REF2",
+      "status": "OBSERVED",
+      "url": "https://climate.copernicus.eu/reuters-launches-climate-monitor-tool-powered-copernicus-climate-change-service-data",
+      "observation": "Copernicus describe la comparación histórica de temperaturas locales en Reuters Climate Monitor, con referencia al conjunto C3S/ECMWF."
+    },
+    {
+      "id": "REF3",
+      "status": "OBSERVED",
+      "url": "https://open-meteo.com/en/docs/historical-weather-api",
+      "observation": "La documentación de Open-Meteo identifica ERA5-Land de 0.1 grados, unidad de máximas y mínimas a 2 m y ruta /v1/archive para series históricas."
+    },
+    {
+      "id": "REF4",
+      "status": "OBSERVED",
+      "url": "https://www.epa.gov/heatislands/measuring-heat-islands",
+      "observation": "EPA define mediciones de isla de calor como comparación urbana contra entorno rural, distinta de visualizar tendencias temporales dentro de ciudades."
+    }
+  ],
+  "components": [
+    {
+      "id": "DATA",
+      "role": "Una base derivada de registros diarios documentados con metadatos y código de agregación reproducible.",
+      "strategy": "Descargar valores diarios de fuente abierta, agrupar por año civil y verificar conteos antes de publicar.",
+      "constraints": "Sin números ficticios, sin inferir temperaturas de calles; conservar fuente, coordenadas, modelo y umbrales."
+    },
+    {
+      "id": "GRAPH",
+      "role": "Gráfico SVG interactivo y semántico de evolución de extremos urbanos con anotaciones y tabla.",
+      "strategy": "Un solo render parametrizado que sostiene varios indicadores y ciudades, y permite inspección por teclado.",
+      "constraints": "Etiquetas reales, unidades, estados accesibles, tooltip en foco y descarga CSV."
+    },
+    {
+      "id": "STORY",
+      "role": "Sistema de capítulos de scrollytelling que cambia la métrica sin romper la lectura lineal.",
+      "strategy": "IntersectionObserver como progresivo con controles explícitos; CSS sticky y reduced-motion.",
+      "constraints": "No ocultar relato si falla JavaScript; navegación visible y no depender del scroll para cambiar a mano."
+    },
+    {
+      "id": "QA",
+      "role": "Pruebas reproducibles de consistencia editorial y comportamiento visual en diferentes anchos.",
+      "strategy": "Aserciones de datos y capturas reales cuando haya navegador disponible; evidenciar pruebas no ejecutadas.",
+      "constraints": "No certificar accesibilidad integral ni calidad visual por validación lógica."
+    }
+  ],
+  "questions": [
+    {
+      "id": "Q1",
+      "target": "DATA",
+      "question": "¿Puede una grilla ERA5-Land en el centro de una ciudad medir por sí misma la isla de calor urbana?",
+      "alternatives": [
+        "presentar datos como isla de calor",
+        "narrar exposición térmica regional y explicitar el límite de comparación"
+      ],
+      "finding": "La EPA requiere contraste urbano-rural, mientras la grilla de reanálisis describe la zona; no sostiene una atribución urbana causal.",
+      "decisionImpact": "Prohibir el término medido isla de calor y explicar claramente el marco de tendencias de calor en ciudades.",
+      "evidenceRef": "REF4"
+    },
+    {
+      "id": "Q2",
+      "target": "GRAPH",
+      "question": "¿El indicador por defecto debe privilegiar grados absolutos o frecuencia verificable de días muy calurosos?",
+      "alternatives": [
+        "serie uniforme de máximas medias",
+        "tres indicadores seleccionables de máximas, días >=35 y noches >=24"
+      ],
+      "finding": "Los datos diarios ofrecen temperatura máxima y mínima en grados Celsius, suficientes para conteo con umbral explícito.",
+      "decisionImpact": "Crear visual principal de conteos con acceso alternativo a temperaturas y noches cálidas; calcular desde días reales.",
+      "evidenceRef": "REF3"
+    },
+    {
+      "id": "Q3",
+      "target": "STORY",
+      "question": "¿Cómo conservar sentido y control al avanzar hacia atrás o entrar directamente a mitad del relato?",
+      "alternatives": [
+        "transiciones CSS por porcentaje de scroll sin estado",
+        "observador de capítulo con render completamente determinado por estado y controles de capítulos"
+      ],
+      "finding": "The Pudding advierte que los pasos pueden saltarse y exige declarar el estado visual íntegro al entrar a cada paso.",
+      "decisionImpact": "Escena pura derivada de ciudad, métrica y año; capítulo cambia con observador, pero también por botones accesibles.",
+      "evidenceRef": "REF1"
+    }
+  ],
+  "decisions": [
+    {
+      "id": "D1",
+      "questionId": "Q1",
+      "componentIds": [
+        "DATA",
+        "STORY"
+      ],
+      "choice": "Enmarcar el relato como evolución del calor en tres ciudades, no mapa de isla de calor certificada.",
+      "rejected": "Atribución causal de densidad urbana o contrastes térmicos calle a calle.",
+      "productionChange": "Incluir una nota metodológica visible en portada y fuente por cada indicador, con escala de grilla y límites.",
+      "why": "La reanálisis espacial relativamente gruesa no es termometría de calle ni comparación con entorno rural."
+    },
+    {
+      "id": "D2",
+      "questionId": "Q2",
+      "componentIds": [
+        "DATA",
+        "GRAPH"
+      ],
+      "choice": "Mostrar 3 indicadores con selectores, tabla y descarga de agregados anuales.",
+      "rejected": "Ilustrar con cifras extraídas del aire o series no rastreables.",
+      "productionChange": "Persistir registros anuales con sourceURLs por ciudad, y comprobar agrupación y 365/366 días antes de pintar.",
+      "why": "La capacidad distintiva es rastrear un punto concreto del gráfico a datos calculados y unidades."
+    },
+    {
+      "id": "D3",
+      "questionId": "Q3",
+      "componentIds": [
+        "STORY",
+        "GRAPH"
+      ],
+      "choice": "Scroll narrativo de tres capítulos con control manual de ciudad, métrica y año.",
+      "rejected": "Animación sincronizada sin fallback ni manejo de navegación inversa.",
+      "productionChange": "Implementar IntersectionObserver, saltos por ancla, foco de puntos y transición deshabilitable por preferencia.",
+      "why": "Los lectores deben poder deshacer la interacción, consultar números y leer sin animaciones."
+    }
+  ],
+  "relations": [
+    {
+      "from": "DATA",
+      "to": "GRAPH",
+      "invariant": "Todo número mostrado sale de una fila JSON y usa la unidad del campo fuente.",
+      "failure": "El texto editorial diverge del dato, o el eje usa la unidad incorrecta.",
+      "test": "Automatizar reconciliación de filas y etiquetas en HTML."
+    },
+    {
+      "from": "STORY",
+      "to": "GRAPH",
+      "invariant": "Cada capítulo produce un estado de visualización completo e idempotente.",
+      "failure": "Retroceder por scroll deja resaltados de otro paso.",
+      "test": "Recorrer capítulos en ambos sentidos y volver al primero."
+    },
+    {
+      "from": "DATA",
+      "to": "QA",
+      "invariant": "Años civiles completos deben contener 365 o 366 registros según calendario, sin datos nulos.",
+      "failure": "Un año incompleto parece un descenso de episodios cálidos.",
+      "test": "Contar cada entrada diaria y bloquear si hay faltantes."
+    }
+  ],
+  "risks": [
+    {
+      "componentIds": [
+        "DATA"
+      ],
+      "severity": "high",
+      "failure": "Las peticiones de archivo remoto pueden fallar, retornar cortes o generar mezclas de modelo y año.",
+      "prevention": "Un spike focal obtendrá JSON desde la API real, validará tamaño, rango, modelo, tiempo y años completos antes de agregación.",
+      "test": "Descargar serie diaria de una ciudad y contar 9131 días entre 2001 y 2025.",
+      "status": "OBSERVED",
+      "observation": "El API remoto devolvió JSON legible con 9131 días de Buenos Aires desde 2001-01-01 hasta 2025-12-31."
+    },
+    {
+      "componentIds": [
+        "GRAPH",
+        "STORY"
+      ],
+      "severity": "medium",
+      "failure": "Scroll sticky podría tapar textos o dificultar foco en pantallas pequeñas.",
+      "prevention": "Poner el gráfico encima del relato en móvil y permitir navegación alternativa sin sticky.",
+      "test": "Evaluar 320/768/1440 px y preferencia reduced-motion en un navegador real.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "acceptance": [
+    {
+      "kind": "logic",
+      "criterion": "Todas las cifras corresponden a agregados del conjunto y a unidades declaradas.",
+      "oracle": "Aserciones de código sobre entradas y sumas por año con muestreo manual.",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "functional",
+      "criterion": "Los 75 registros anuales están visibles por teclado o tabla y exportables como CSV.",
+      "oracle": "Abrir la web y descargar CSV; comparar cantidad de filas con JSON.",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "interactive",
+      "criterion": "Cambiar ciudad y capítulo conserva la lectura y los puntos tienen valores concretos.",
+      "oracle": "Probar botones y teclas con navegador a 320, 768 y 1440 píxeles.",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "visual",
+      "criterion": "La composición responsive es editorial y los gráficos son legibles con movimiento reducido.",
+      "oracle": "Inspeccionar capturas reales de los tres tamaños y reduced-motion.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "licensing": "Datos Open-Meteo API CC BY 4.0 con atribución, fuente ECMWF ERA5-Land; ensayo, SVG y código originales.",
+  "resources": "HTML, CSS, JavaScript estándar, SVG original y JSON agregado; fuente remota Open-Meteo vía fetch público verificado externamente.",
+  "environmentLimits": "No se dispone de navegador gráfico conectado en este paso; el QA de píxeles se realizará solo si hay herramienta comprobada."
+}
