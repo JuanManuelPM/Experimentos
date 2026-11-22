@@ -1,0 +1,91 @@
+name: "PROMETEO Video W003/09 - first article"
+on:
+  push:
+    branches: [candidate/prometeo-video-w003-20261122-09]
+    paths:
+      - "prometeo/works/video/w003/09/render.py"
+      - "prometeo/works/video/w003/09/PREPRODUCTION.deep-spec-v1.json"
+      - ".github/workflows/prometeo-video-w003-09.yml"
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: prometeo-video-w003-09
+  cancel-in-progress: false
+jobs:
+  article:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+          fetch-depth: 1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install optical and video dependencies
+        run: |
+          pip install --quiet "numpy<3" opencv-python-headless Pillow scipy
+          sudo apt-get update -qq
+          sudo apt-get install -y ffmpeg
+      - name: Preproduction is still a spike, NOT an approval
+        run: |
+          node --input-type=module <<'JS'
+          import fs from 'node:fs';
+          import {inspectDeepSpec} from './prometeo/launch/deep-spec-v1.mjs';
+          import {inspectArtDirection} from './prometeo/launch/art-direction-first-article-v1.mjs';
+          const d=JSON.parse(fs.readFileSync('./prometeo/works/video/w003/09/PREPRODUCTION.deep-spec-v1.json'));
+          const a=inspectArtDirection(d.artDirection), b=inspectDeepSpec(d);
+          console.log('ART',a,'DEEP',b);
+          if (a.gate!=='FIRST_ARTICLE_REQUIRED' || b.gate!=='SPIKE_REQUIRED')process.exit(1);
+          JS
+      - name: Generate observed first article at maximal atmosphere change
+        working-directory: prometeo/works/video/w003/09
+        run: |
+          python render.py --output FIRST_ARTICLE_7-13.mp4 --seconds 6 --article-start 7 --width 640 --fps 18
+          ffmpeg -hide_banner -loglevel error -i FIRST_ARTICLE_7-13.mp4 -f null -
+          ffprobe -v error -show_entries format=duration,size:stream=codec_type,codec_name,width,height,avg_frame_rate,sample_rate -of json FIRST_ARTICLE_7-13.mp4 > FIRST_ARTICLE.probe.json
+      - name: Export real observed frames and temporal tests
+        working-directory: prometeo/works/video/w003/09
+        run: |
+          python - <<'PY'
+          import subprocess, json, numpy as np
+          from PIL import Image,ImageDraw,ImageChops,ImageStat
+          v="FIRST_ARTICLE_7-13.mp4"
+          q=json.load(open("FIRST_ARTICLE.probe.json"))
+          assert abs(float(q["format"]["duration"])-6)<.1,q
+          assert any(s.get("codec_type")=="audio" and s.get("codec_name")=="aac" for s in q["streams"]),q
+          assert any(s.get("codec_type")=="video" and s.get("codec_name")=="h264" for s in q["streams"]),q
+          samples=[.5,2,3.35,4.3,5.5,5.9];imgs=[]
+          for i,t in enumerate(samples):
+              f=f"article-{i}.png"
+              subprocess.run(["ffmpeg","-hide_banner","-loglevel","error","-y","-ss",str(t),"-i",v,"-frames:v","1",f],check=True)
+              imgs.append(Image.open(f).convert("RGB"))
+          contrasts=[float(np.mean(np.abs(np.asarray(imgs[i],dtype=float)-np.asarray(imgs[i+1],dtype=float)))) for i in range(len(imgs)-1)]
+          assert min(contrasts)>1.4,contrasts
+          panel=Image.new("RGB",(960,600),(11,19,24));d=ImageDraw.Draw(panel)
+          for i,im in enumerate(imgs):
+              x=i%2*480;y=i//2*200;panel.paste(im.resize((480,270)).crop((0,32,480,200)),(x,y))
+              d.text((x+12,y+175),f"t={samples[i]+7:.2f}s · FRAME REAL",fill=(250,231,198))
+          panel.save("FIRST_ARTICLE.contact.png",optimize=True)
+          with open("FIRST_ARTICLE.tests.json","w") as f:json.dump({"state":"CI_FIRST_ARTICLE_RENDERED_NOT_HUMAN_APPROVED","temporalDiffMean":contrasts,"samples":[x+7 for x in samples],"fullDecode":"PASS","audio":"AAC_PRESENT_LISTEN_NOT_RUN","viewport390":"NOT_RUN","viewport1440":"NOT_RUN"},f,indent=2)
+          print("FIRST ARTICLE PASS",contrasts)
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: video-w003-09-first-article
+          path: |
+            prometeo/works/video/w003/09/FIRST_ARTICLE_7-13.mp4
+            prometeo/works/video/w003/09/FIRST_ARTICLE.contact.png
+            prometeo/works/video/w003/09/FIRST_ARTICLE.probe.json
+            prometeo/works/video/w003/09/FIRST_ARTICLE.tests.json
+      - name: Publish isolated first article to this candidate branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add prometeo/works/video/w003/09/FIRST_ARTICLE_7-13.mp4 prometeo/works/video/w003/09/FIRST_ARTICLE.contact.png prometeo/works/video/w003/09/FIRST_ARTICLE.probe.json prometeo/works/video/w003/09/FIRST_ARTICLE.tests.json
+          git diff --cached --quiet || git commit -m "video W003/09: publish first-article proof and decode tests"
+          git pull --rebase origin candidate/prometeo-video-w003-20261122-09
+          git push origin HEAD:candidate/prometeo-video-w003-20261122-09
