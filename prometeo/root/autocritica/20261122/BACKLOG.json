@@ -3,7 +3,9 @@
   "source": {
     "batchesBlobSha": "11ecc72f856764301a77a1b7120f6d50761e0f18",
     "messagesBlobSha": "13d4f53c89d0002dd77dc2b66fe58b2725b45e44",
-    "baselineMessagesBlobSha": "d66c0f053108ee1bfe053552450323e107151fa7"
+    "baselineMessagesBlobSha": "d66c0f053108ee1bfe053552450323e107151fa7",
+    "currentMessagesBlobSha": "13d4f53c89d0002dd77dc2b66fe58b2725b45e44",
+    "note": "The message index changed since baseline, but the registered task/result-ID set did not; source text revisions require separate hash comparison."
   },
   "method": "AUTOCRITICA_WHISPLASH.md",
   "summary": {
@@ -11,7 +13,8 @@
     "withResult": 38,
     "newResultTasks": 0,
     "blockedNoResult": 12,
-    "mediaInspected": 0
+    "mediaInspected": 0,
+    "metadataAudited": 1
   },
   "entries": [
     {
@@ -307,12 +310,12 @@
         "music-w001-20261122-06-lluvias-largas-audio-20261122"
       ],
       "newResultIds": [],
-      "auditStatus": "BACKLOG_NOT_INSPECTED",
+      "auditStatus": "METADATA_AUDITED_MEDIA_NOT_INSPECTED",
       "artifactInspection": "NOT_INSPECTED",
-      "reason": "No hay recibo de inspección del medio en esta ronda",
-      "flowPin": null,
-      "artifactIdentity": null,
-      "reviewReceipt": null
+      "reason": "Metadatos de manifest, QA_RECEIPT y SONGPROJECT auditados; reproducción, bytes WAV, escucha y WebAudio sin ejecutar",
+      "flowPin": "6826ce13f4bd1e0d81b8a89bd7e6728668b85c44c68185b79426b00a36b8f05f",
+      "artifactIdentity": "manifest-gitblob:9449bdbb8212525f2b740bce0b727f4dfe6bc5dd",
+      "reviewReceipt": "prometeo/root/autocritica/20261122/music-w001-06-audit.json"
     },
     {
       "batchId": "music-w001-20261122",
