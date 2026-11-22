@@ -1,0 +1,40 @@
+name: PROMETEO W7 3D 10 F20 browser checks
+on:
+  push:
+    branches:
+      - candidate/prometeo-3d-w7-20261122-10
+    paths:
+      - 'prometeo/launch/20261122/relaunch/3d/work-10/**'
+      - '.github/workflows/prometeo-3d-w7-10.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  browser:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: prometeo/launch/20261122/relaunch/3d/work-10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Mechanical logic and syntax
+        run: |
+          node mechanics.test.mjs
+          node --check app.mjs
+          node --check browser.test.mjs
+          node --check mechanics.mjs
+      - name: Playwright installation
+        working-directory: .
+        run: npm install --no-save playwright@1.57.0
+      - name: Render and screenshot 390 / 1440
+        run: node browser.test.mjs
+      - name: Preserve browser QA evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: f20-w7-10-webgl-evidence
+          path: prometeo/launch/20261122/relaunch/3d/work-10/qa/*.png
+          if-no-files-found: ignore
