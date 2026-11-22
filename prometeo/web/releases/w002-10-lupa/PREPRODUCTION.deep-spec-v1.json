@@ -1,0 +1,257 @@
+{
+  "version": "DEEP-SPEC-1",
+  "medium": "web",
+  "depth": "SISTEMA",
+  "brief": "LUPA: comparar capturas auténticas de dos versiones de una página con superposición, división A/B, historial, evidencia por viewport y pipeline de capturas repetibles; prohibido inventar capturas o métricas.",
+  "briefSource": {
+    "url": "https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/launch/20261122/next/web/LAUNCH.md",
+    "blobSha": "cd88a07941ab62072f6de5ee69764308f1ec2387",
+    "batchId": "web-w002-20261122",
+    "taskNumber": 10,
+    "taskId": "web-w002-20261122-10"
+  },
+  "qualityBarVersion": "QBAR-1",
+  "intent": {
+    "experience": "Inspección visual cuidadosa con modos A/B, lectura clara de cambios, historial fiable y estados honestos incluso sin fotos.",
+    "distinctAbility": "Convertir pares de PNG auténticos capturados de forma controlada en comparaciones reutilizables, exportables y verificables por viewport."
+  },
+  "references": [
+    {
+      "id": "playwright",
+      "url": "https://playwright.dev/docs/test-snapshots",
+      "status": "OBSERVED",
+      "observation": "Documentación oficial describe expect(page).toHaveScreenshot, umbrales por píxel y comparación contra capturas de referencia. Herramienta de control, no imágenes reutilizables."
+    },
+    {
+      "id": "page-api",
+      "url": "https://playwright.dev/docs/api/class-page",
+      "status": "OBSERVED",
+      "observation": "La API screenshot devuelve un buffer, permite desactivar animaciones, capturar viewport o fullPage y definir escala CSS reproducible."
+    },
+    {
+      "id": "backstop",
+      "url": "https://github.com/garris/BackstopJS/blob/master/README.md",
+      "status": "OBSERVED",
+      "observation": "BackstopJS separa reference/test y compara capturas por escenarios; recomienda contenedores para reducir divergencias de entorno."
+    },
+    {
+      "id": "pixelmatch",
+      "url": "https://github.com/mapbox/pixelmatch/blob/main/README.md",
+      "status": "OBSERVED",
+      "observation": "La biblioteca compara arreglos de píxeles con umbral configurable y distinción de antialias; no convierte diferencias en causalidad."
+    },
+    {
+      "id": "chromatic",
+      "url": "https://www.chromatic.com/docs/playwright/",
+      "status": "OBSERVED",
+      "observation": "Chromatic integra snapshots después de recorridos E2E y un flujo de revisión de diferencias; no exige usar su servicio externo."
+    }
+  ],
+  "components": [
+    {
+      "id": "capture",
+      "role": "Runner autorizado y reproducible de capturas PNG reales en Chromium.",
+      "strategy": "Playwright local con URLs permitidas, viewport, escala CSS, reduced motion, opciones y manifiesto SHA-256.",
+      "constraints": "Rechaza objetivos ajenos sin allowlist; no captura cross-origin desde el navegador de la UI."
+    },
+    {
+      "id": "compare",
+      "role": "Motor de comparación y presentación que opera solo con dos imágenes reales.",
+      "strategy": "Canvas analiza píxeles con umbral RGB explícito; slider, mezcla, diferencia y control por teclado.",
+      "constraints": "Requiere dimensiones iguales y nunca interpola imágenes para maquillar una discrepancia de viewport."
+    },
+    {
+      "id": "archive",
+      "role": "Historial persistente y exportación de evidencia verificable por viewport.",
+      "strategy": "IndexedDB guarda PNG originales y metadatos; exportación del PNG diff y manifiesto JSON.",
+      "constraints": "La evidencia incluye el origen declarado, hashes y el algoritmo; no mide ni inventa Lighthouse."
+    },
+    {
+      "id": "interface",
+      "role": "Dirección visual editorial, legible, táctil y accesible a distintas escalas.",
+      "strategy": "Panel oscuro de inspección, tipografía de sistema, focos visibles, responsive y reduced-motion.",
+      "constraints": "Mantener tamaño táctil mínimo, nombres accesibles, vista útil a 320, 768 y 1440 píxeles."
+    }
+  ],
+  "questions": [
+    {
+      "id": "q1",
+      "target": "capture",
+      "question": "¿Cómo evitar falsas capturas cross-origin o métricas irreproducibles en una web estática?",
+      "alternatives": [
+        "Runner local con lista explícita de hosts permitidos y manifiesto",
+        "Capturar URLs arbitrarias en canvas dentro de GitHub Pages"
+      ],
+      "finding": "El API screenshot documentado de Playwright funciona desde el navegador automatizado, no desde el DOM cross-origin de la web de comparación.",
+      "decisionImpact": "Exponer una herramienta de importación de archivos y un CLI separado, sin botón fraudulento de capturar sitios remotos.",
+      "evidenceRef": "page-api"
+    },
+    {
+      "id": "q2",
+      "target": "compare",
+      "question": "¿Cómo evitar que imágenes de tamaños diferentes generen una falsa lectura visual?",
+      "alternatives": [
+        "Exigir dimensiones iguales y reportar error",
+        "Escalarlas sin advertencia para que aparenten coincidir"
+      ],
+      "finding": "El flujo de referencias visuales requiere escenarios y viewports consistentes antes de comparar píxeles.",
+      "decisionImpact": "Bloquear comparaciones con dimensión desigual y mostrar ambos tamaños concretos.",
+      "evidenceRef": "backstop"
+    },
+    {
+      "id": "q3",
+      "target": "archive",
+      "question": "¿Cómo garantizar una comparación reabrible si el usuario recarga sin servidor ni cuentas?",
+      "alternatives": [
+        "Guardar blobs PNG y metadatos en IndexedDB",
+        "Recordar solo nombres o porcentajes en localStorage"
+      ],
+      "finding": "El sistema de baselines revisables observado requiere conservar imágenes y contexto, no solo un resultado numérico.",
+      "decisionImpact": "Guardar pares PNG como blobs con hashes y viewport, admitir reabrir/borrar y exportar evidencia.",
+      "evidenceRef": "chromatic"
+    },
+    {
+      "id": "q4",
+      "target": "interface",
+      "question": "¿Qué interacción permite una inspección rápida y también por teclado y móvil?",
+      "alternatives": [
+        "Separador arrastrable con rango nativo y modos overlay/diff",
+        "Únicamente dos imágenes estáticas lado a lado"
+      ],
+      "finding": "Los sistemas de revisión distinguen baseline/test y muestran cambios de modo inspeccionable, no dos cajas decorativas.",
+      "decisionImpact": "Incluir control de rango operable por teclado y deslizamiento táctil, mezcla y diff real.",
+      "evidenceRef": "playwright"
+    }
+  ],
+  "relations": [
+    {
+      "from": "capture",
+      "to": "compare",
+      "invariant": "Cada captura documenta escala CSS, viewport y dimensiones PNG idénticas para el par.",
+      "failure": "Un recorte distinto produce falsas diferencias en toda la pantalla.",
+      "test": "Verificar dimensiones de PNG A/B y manifiesto en cada escenario."
+    },
+    {
+      "from": "compare",
+      "to": "archive",
+      "invariant": "El historial conserva bytes originales y parámetros que determinan la diferencia calculada.",
+      "failure": "Reabrir la entrada muestra un resultado distinto o pierde las imágenes originales.",
+      "test": "Guardar, recargar el navegador, recuperar hashes y recomparar."
+    },
+    {
+      "from": "interface",
+      "to": "compare",
+      "invariant": "Cada modo ofrece exactamente los mismos píxeles A/B y no suprime la navegación de teclado.",
+      "failure": "El deslizador visual funciona con mouse pero no en pantallas táctiles o teclado.",
+      "test": "Probar arrow keys y cambios de modo en 320 y 1440 px."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "d1",
+      "questionId": "q1",
+      "componentIds": [
+        "capture"
+      ],
+      "choice": "Runner Playwright opt-in local con allowlist",
+      "rejected": "Pseudocaptura de URL remota con iframe/canvas",
+      "productionChange": "Crear script capture.mjs con argumentos A/B, viewports y manifiestos con SHA-256 y origen.",
+      "why": "Las capturas reales deben producirse desde un agente con permiso del sitio, no fingir el acceso cross-origin."
+    },
+    {
+      "id": "d2",
+      "questionId": "q2",
+      "componentIds": [
+        "compare"
+      ],
+      "choice": "Rechazo explícito de dimensiones discrepantes",
+      "rejected": "Interpolar/rasterizar a misma medida ocultando el error",
+      "productionChange": "La UI bloquea el análisis, informa tamaños y permite reemplazar los archivos.",
+      "why": "La alineación de píxeles es condición para que el porcentaje de diferencia tenga significado."
+    },
+    {
+      "id": "d3",
+      "questionId": "q3",
+      "componentIds": [
+        "archive"
+      ],
+      "choice": "IndexedDB con blobs de capturas",
+      "rejected": "Lista en memoria que desaparece con reload",
+      "productionChange": "Historial almacena PNG A/B reales y recupera comparaciones sin recargar archivos manualmente.",
+      "why": "Una evaluación de regresión necesita persistencia y evidencia verificable, no solo una sesión efímera."
+    },
+    {
+      "id": "d4",
+      "questionId": "q4",
+      "componentIds": [
+        "interface",
+        "compare"
+      ],
+      "choice": "Cortina A/B + overlay + mapa de cambio + teclado",
+      "rejected": "Vista únicamente decorativa lado a lado",
+      "productionChange": "El inspector cambia modos sin perder capturas e incluye range input accesible y descarga del mapa diff.",
+      "why": "La comparación perceptual es interactiva y debe ser inclusiva con touch, mouse y teclado."
+    }
+  ],
+  "risks": [
+    {
+      "componentIds": [
+        "capture"
+      ],
+      "severity": "high",
+      "failure": "Runner no logra capturar una página real o se confunde foto de ejemplo con evidencia.",
+      "prevention": "Probar Chromium local con dos URLs locales autorizadas y hashes de PNG producidos.",
+      "test": "Capturar fixture A/B en tres viewports y comprobar PNG decode y SHA.",
+      "status": "NOT_RUN"
+    },
+    {
+      "componentIds": [
+        "archive"
+      ],
+      "severity": "medium",
+      "failure": "IndexedDB puede estar bloqueado por privacidad, cuota o modo incógnito.",
+      "prevention": "Mostrar estado de error y mantener comparación efímera sin declarar persistencia.",
+      "test": "Simular operación fallida y comprobar que la UI mantiene la sesión.",
+      "status": "NOT_RUN"
+    },
+    {
+      "componentIds": [
+        "compare"
+      ],
+      "severity": "medium",
+      "failure": "Píxeles cambiados por antialias o animaciones causan falsos positivos.",
+      "prevention": "Fijar parámetros de navegador y mostrar threshold; nunca atribuir causas automáticamente.",
+      "test": "Comparar capturas idénticas y capturas con cambio de color verificable.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "acceptance": [
+    {
+      "kind": "functional",
+      "criterion": "El CLI produce PNG reales y manifiestos con hashes por cada viewport.",
+      "oracle": "Invocación Playwright autorizada y lectura de archivos PNG/JSON reales.",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "interactive",
+      "criterion": "Separador A/B y modos overlay/diff operan con teclado, mouse y táctil.",
+      "oracle": "Pruebas Chromium a 320, 768 y 1440 y evidencia visual observada.",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "functional",
+      "criterion": "Se reabre una comparación tras recargar con sus imágenes originales.",
+      "oracle": "Prueba E2E de almacenamiento con recarga y comparación de SHA.",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "visual",
+      "criterion": "Jerarquía de interfaz y contenido útil a los tres viewports sin overflow.",
+      "oracle": "Capturas propias de la interfaz a 320, 768 y 1440 px.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "licensing": "Interfaz, fixtures y scripts originales; el operador solo captura sitios propios o expresamente autorizados, manteniendo su responsabilidad sobre contenidos.",
+  "resources": "HTML/CSS/JS estático, IndexedDB, Web Crypto, Canvas, Node.js 20+, Playwright, Chromium local; sin cuentas ni backend ni dependencias de pago.",
+  "environmentLimits": "La publicación GitHub Pages no otorga acceso a páginas remotas ni permisos de captura cross-origin. Validación visual y de persistencia debe correrse con navegador real."
+}
