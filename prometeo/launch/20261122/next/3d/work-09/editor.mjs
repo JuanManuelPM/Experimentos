@@ -252,7 +252,7 @@ async function loadDocument(input,{record=true}={}){
     $('project-name').value=projectName;
     duration=input.duration;
     $('duration').value=String(duration);$('scrub').max=String(duration);$('end-time').textContent=duration+' s';
-    pause();time=0;seek(fn(input.time));
+    pause();time=clamp(fn(input.time),0,duration);updateTimeUI();
     drawTree();showInspector();setBusy(false);
     if(record)commit('PROYECTO ABIERTO · '+countNodes()+' NODOS');
     else status('ESCENA RESTAURADA · '+countNodes()+' NODOS');
@@ -264,7 +264,7 @@ async function loadDocument(input,{record=true}={}){
   }
 }
 function newProject(){
-  pause();setSelected(null);world.clear();tracks.clear();assets.clear();
+  pause();setSelected(null);world.clear();tracks.clear();
   projectName='Escena sin título';$('project-name').value=projectName;
   duration=8;$('duration').value='8';$('scrub').max='8';$('end-time').textContent='8 s';seek(0);drawTree();commit('NUEVA ESCENA VACÍA');
 }
@@ -416,6 +416,7 @@ async function migrateLegacy(old){
       const bytes=await r.arrayBuffer();
       data=encode(bytes);newAssets[key]=data;
     }
+    newAssets[key]=data;
     const glb=await parseGLB(data);
     const box=new THREE.Box3().setFromObject(glb),dim=new THREE.Vector3(),center=new THREE.Vector3();
     box.getSize(dim);box.getCenter(center);
@@ -433,10 +434,10 @@ async function migrateLegacy(old){
     status('IMPORTANDO FORJA V1 · '+(i+1)+' / '+old.items.length);
   }
   const nodes=staged.children.map(captureNode);
-  return {schema:SCHEMA,name:String(old.name||'FORJA v1 migrada').slice(0,64),duration:8,time:0,assets:{...Object.fromEntries(assets),...newAssets},nodes,tracks:[],source:{editor:'FORJA Escena 09',migratedFrom:'prometeo.forja.scene/v1',catalogueCommit:SOURCE_SHA,limitation:'Clips originales GLB no se convierten a tracks de keyframes nuevos'}};
+  return {schema:SCHEMA,name:String(old.name||'FORJA v1 migrada').slice(0,64),duration:8,time:0,assets:newAssets,nodes,tracks:[],source:{editor:'FORJA Escena 09',migratedFrom:'prometeo.forja.scene/v1',catalogueCommit:SOURCE_SHA,limitation:'Clips originales GLB no se convierten a tracks de keyframes nuevos'}};
 }
 function buildDemo(){
-  pause();assets.clear();tracks.clear();world.clear();setSelected(null);
+  pause();tracks.clear();world.clear();setSelected(null);
   projectName='SALA DE RESONANCIA';$('project-name').value=projectName;
   duration=8;$('duration').value='8';$('scrub').max='8';$('end-time').textContent='8 s';
   const group=makeNode('group','01 · Resonador / ensamblaje');
