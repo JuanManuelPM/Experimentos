@@ -1,0 +1,240 @@
+{
+  "version": "DEEP-SPEC-1",
+  "medium": "music",
+  "depth": "OPERATIVO",
+  "taskId": "music-w003-20261122-02",
+  "brief": "DESPLAZAMIENTO: UK garage nocturno, swing asimétrico por pista, ghost notes, bajo melódico, silencios, stems y MIDI editable; prueba A/B nivelada.",
+  "briefSha": "5d7e6c2540cc49d998b7fe75fc1048d6f9cba80b",
+  "flow": {
+    "name": "prometeo-music-universal",
+    "version": "2.0.0",
+    "status": "FROZEN_CANDIDATE",
+    "blobSha": "1423f13e08b743f418c42052613a6808b214d622"
+  },
+  "method": {
+    "universalSha": "0377d79b2aeb0a642a97687be49c5ba965593bf5",
+    "deepSpecSha": "7656a293b0182f81619bf0d27b90dffa771c2683"
+  },
+  "intent": {
+    "experience": "Garage nocturno con batería humana en sus desplazamientos, bajo respondón y espacio entre frases, no loop indiscriminado.",
+    "distinctAbility": "Motor de interpretación por pista con offsets editables en ms y velocidades variables más prueba A/B de notas idénticas."
+  },
+  "references": [
+    {
+      "id": "R1",
+      "status": "OBSERVED",
+      "url": "https://www.ableton.com/en/live-manual/12/using-grooves/",
+      "observation": "Se leyó la sección 14.3.1 sobre aplicar groove diferente a cada voz separada de Drum Rack y los parámetros Timing/Velocity."
+    },
+    {
+      "id": "R2",
+      "status": "OBSERVED",
+      "url": "https://www.ableton.com/en/blog/flava-d-evolution-of-a-producer-interview/",
+      "observation": "Entrevista textual realmente examinada sobre Flava D y la producción UKG con capas de bajo. Música del artista NO escuchada."
+    },
+    {
+      "id": "R3",
+      "status": "OBSERVED",
+      "url": "https://www.ableton.com/en/blog/freshly-chopped-program-modern-uk-beats-in-live/",
+      "observation": "Tutorial textual examinado sobre shuffled hats, choke y síntesis de percusión de UK beats. Video incrustado NO escuchado."
+    }
+  ],
+  "components": [
+    {
+      "id": "D",
+      "role": "Batería 2-step sintética con ghost notes y silencios de respuesta.",
+      "strategy": "Síntesis original determinista y eventos separados de kick, snare, hats y ghosts.",
+      "constraints": "Tiempo y acentos independientes por pista sin swing global compartido."
+    },
+    {
+      "id": "B",
+      "role": "Bajo melódico con cuatro contornos y respuesta rítmica.",
+      "strategy": "Voz de síntesis con armónicos y envolvente, acordes de cuatro pasos.",
+      "constraints": "Evitar conflicto continuo con ataque del bombo; mantener diferencias entre secciones."
+    },
+    {
+      "id": "P",
+      "role": "Obra real y A/B en un reproductor móvil y desktop.",
+      "strategy": "HTMLAudioElement que lee exactamente los WAV generados y auditables.",
+      "constraints": "Título y audio protagonistas a 390/1440; sin overlays ni promesas de reproducción sin binarios."
+    }
+  ],
+  "questions": [
+    {
+      "id": "Q1",
+      "target": "D",
+      "question": "¿Cómo lograr variación asimétrica en cada instrumento sin mover todas las pistas a la vez?",
+      "alternatives": [
+        "mapas ms y velocity por voz",
+        "swing porcentual global"
+      ],
+      "evidenceRef": "R1",
+      "finding": "Ableton recomienda extraer la voz para aplicar su groove independiente.",
+      "decisionImpact": "Almacenar ocho mapas por pista y exportar cada nota con offset real."
+    },
+    {
+      "id": "Q2",
+      "target": "P",
+      "question": "¿Se reproducirá el máster exportado real, distinto del alternativo HTML sintetizado en W002?",
+      "alternatives": [
+        "WAV real con ruta publicada",
+        "WebAudio alternativo sin máster externo"
+      ],
+      "evidenceRef": "R2",
+      "finding": "La auditoría anterior confirmó que W002 publicaba player pero no el máster original.",
+      "decisionImpact": "Exportar binarios desde Actions y exigir lectura remota antes de afirmar playable."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "C1",
+      "questionId": "Q1",
+      "componentIds": [
+        "D",
+        "B"
+      ],
+      "choice": "Mapas por pista con offsets y velocity de ocho pasos.",
+      "rejected": "Aplicar un único swing a todas las voces.",
+      "productionChange": "engine.mjs y EVENTS.json codifican interpretación distinta por voz, comprobable en MIDI.",
+      "why": "La pulsación estable convive con diferencias de ataque y silencio."
+    },
+    {
+      "id": "C2",
+      "questionId": "Q2",
+      "componentIds": [
+        "P"
+      ],
+      "choice": "Publicar exactamente master.wav exportado por el motor.",
+      "rejected": "Sustituirlo por reproductor WebAudio no equivalente.",
+      "productionChange": "GitHub Actions produce WAV PCM y lo publica aislado en gh-pages.",
+      "why": "El usuario necesita audio verificable y editable, no una simulación."
+    }
+  ],
+  "relations": [
+    {
+      "from": "D",
+      "to": "B",
+      "invariant": "El bajo se desplaza respecto de caja y hats sin perder referencia al bombo.",
+      "failure": "Swing global hace coincidir offsets o bajo tapa las pausas.",
+      "test": "Comparar offsets por pista y escucha A/B a igual nivel."
+    },
+    {
+      "from": "D",
+      "to": "P",
+      "invariant": "El sonido de master.wav es exactamente la mezcla procedente de los stems.",
+      "failure": "Una vista previa alternativa no corresponde al binario del trabajo.",
+      "test": "Calcular error PCM suma de ocho stems y verificar WAV exportado."
+    }
+  ],
+  "risks": [
+    {
+      "componentIds": [
+        "D",
+        "B"
+      ],
+      "severity": "high",
+      "failure": "Bombo demasiado alto cancela presencia de caja/bajo en primer artículo.",
+      "prevention": "RMS por instrumento en primer slice, reequilibrio antes del tema completo.",
+      "test": "4 compases PCM y mediciones de rms y picos antes de export total.",
+      "status": "OBSERVED"
+    },
+    {
+      "componentIds": [
+        "P"
+      ],
+      "severity": "medium",
+      "failure": "Master o stems no publicados o sin lectura en navegador.",
+      "prevention": "Export real con readback de GitHub y URLs sin reutilizar la edición W002.",
+      "test": "Readback PCM y navegador en 390/1440 con playback real.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "acceptance": [
+    {
+      "kind": "functional",
+      "criterion": "Dos realizaciones comparten notas, progresión y forma; sólo cambia interpretación.",
+      "oracle": "Tuplas canónicas de notas igualadas y offsets diferentes por pista.",
+      "status": "OBSERVED"
+    },
+    {
+      "kind": "audio",
+      "criterion": "Máster estéreo 44.1k y ocho stems realmente decodificables.",
+      "oracle": "Inspector de archivos PCM más suma de stems; escucha humana adicional.",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "visual",
+      "criterion": "Primer cuadro sin controles invasivos ni overflow móvil.",
+      "oracle": "Captura real de la página a 390 y 1440 píxeles.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "resources": "GitHub Actions con Node y sintetizador original sin dependencias; motor y eventos bajo rama aislada.",
+  "licensing": "Todas las grabaciones generadas son síntesis original, no se usan terceros ni samples con copyright.",
+  "environmentLimits": "Las entrevistas y manuales se leyeron, pero no existe escucha comparativa de los temas profesionales ni prueba visual de browser en esta conversación.",
+  "artDirection": {
+    "schema": "prometeo.art-direction.first-article/v1",
+    "medium": "music",
+    "taskId": "music-w003-20261122-02",
+    "briefSha": "5d7e6c2540cc49d998b7fe75fc1048d6f9cba80b",
+    "flowRef": "MUSIC FLOW 2.0.0 SHA 1423f13e08b743f418c42052613a6808b214d622",
+    "promise": {
+      "subject": "Interpretación UKG de 2-step y bajo musical con silencio.",
+      "intent": "Percibir desfasajes por voz y desarrollo de forma con pulso estable."
+    },
+    "benchmark": {
+      "url": "https://www.ableton.com/en/blog/flava-d-evolution-of-a-producer-interview/",
+      "description": "Se observó texto de entrevista sobre diseño de bajo UKG, NO se escuchó audio comparativo.",
+      "status": "OBSERVED"
+    },
+    "techniques": [
+      {
+        "family": "Síntesis algorítmica offline de transitorios",
+        "viability": "Primeros cuatro compases WAV reales publicados con SHA y motor original.",
+        "license": "Código propio sin grabaciones ajenas."
+      },
+      {
+        "family": "Modelado físico de cuerpos resonantes",
+        "viability": "Ruta técnica alternativa original sin dependencia de muestras externas.",
+        "license": "Sistemas excitación-resonador construibles en código propio."
+      }
+    ],
+    "selectedTechnique": "Síntesis algorítmica offline de transitorios",
+    "firstFrame": {
+      "openingDescription": "Gran título DESPLAZAMIENTO, descripción musical y player de WAV real al abrir.",
+      "focalSubject": "Audio maestro descargable y escuchable como pieza protagonista.",
+      "minimalUI": "Un player principal y dos players A/B secundarios, sin overlays.",
+      "checks": [
+        {
+          "criterion": "390 px: título y audio sin scroll horizontal ni controles duplicados.",
+          "oracle": "Screenshot Chromium y medidas de overflow.",
+          "viewport": "390"
+        },
+        {
+          "criterion": "1440 px: legibilidad y jerarquía del reproductor respecto del título.",
+          "oracle": "Screenshot Chromium del primer cuadro.",
+          "viewport": "1440"
+        },
+        {
+          "criterion": "Play utiliza WAV verdadero, no sonido generado por navegador.",
+          "oracle": "HTTP readback y canplay de elemento audio.",
+          "viewport": "both"
+        }
+      ],
+      "observations": []
+    },
+    "firstArticle": {
+      "target": "Cuatro compases de alta densidad, ghost notes, timbre y mezcla de bajo.",
+      "rejectWhen": "Kick domina totalmente, offsets no varían o primera frase no funciona.",
+      "switchTo": "Modelado físico de cuerpos resonantes",
+      "oracle": "WAV 4 compases PCM más métricas RMS y A/B con armonía fija.",
+      "resourceProof": "Motor real en engine.mjs; sample original first-slice-groove.wav confirmado Git blob.",
+      "status": "OBSERVED_PASS",
+      "evidence": {
+        "url": "https://github.com/JuanManuelPM/Experimentos/blob/candidate/prometeo-music-w003-20261122-02/prometeo/music/w003/02/first-slice-groove.wav",
+        "description": "Primer artículo PCM 44.1k de 724876 bytes, primer balance corregido; escucha artística NOT_RUN."
+      }
+    },
+    "humanApproved": false
+  }
+}
