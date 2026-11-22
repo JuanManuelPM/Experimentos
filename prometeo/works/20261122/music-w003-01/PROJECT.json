@@ -1,0 +1,50 @@
+{
+  "schema": "prometeo.music.song-project/v1",
+  "taskId": "music-w003-20261122-01",
+  "title": "CÁMARA DE PRESIÓN",
+  "bpm": 126,
+  "bars": 80,
+  "sampleRate": 44100,
+  "channels": 1,
+  "durationSeconds": 152.38095238,
+  "bitDepth": 16,
+  "engine": "render.js",
+  "material": "Síntesis propia original",
+  "licenses": "No external samples",
+  "blocks": [
+    {
+      "bar": 0,
+      "end": 16,
+      "role": "DJ_IN"
+    },
+    {
+      "bar": 16,
+      "end": 32,
+      "role": "MOTOR"
+    },
+    {
+      "bar": 32,
+      "end": 48,
+      "role": "PRESSURE/VOID"
+    },
+    {
+      "bar": 48,
+      "end": 64,
+      "role": "CLIMAX"
+    },
+    {
+      "bar": 64,
+      "end": 80,
+      "role": "DJ_OUT"
+    }
+  ],
+  "stemGains": {
+    "kick": 0.88,
+    "bass": 0.62,
+    "percussion": 0.76,
+    "chords": 0.72,
+    "atmosphere": 0.86
+  },
+  "downloads": "Generated in browser or Node, not static hosted files; first article WAV is published",
+  "cliExample": "import {renderTechno,wavBytes} from './render.js'; import {writeFileSync} from 'node:fs'; const r=renderTechno();writeFileSync('MASTER.wav',wavBytes(r.master,44100)); for(const [k,v] of Object.entries(r.stems))writeFileSync(k+'.wav',wavBytes(v,44100));"
+}
