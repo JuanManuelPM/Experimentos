@@ -43,8 +43,8 @@ La posición **0** es de marcha, con ejes x = −0,49 m y x = +0,53 m, radio 0,2
 |---|---|---|
 | `node --check app.js` / `node --check assembly.mjs` | OBSERVED | Sintaxis ES modules válida |
 | `node test-assembly.mjs` | OBSERVED | BOM, falta simulada, exclusión de modos, pliegue 0→1→0 y retorno exacto: PASS |
-| `node deep-spec-v1.mjs PREPRODUCTION.deep-spec-v1.json` | Por ejecutar | Validador común de estructura DEEP-SPEC-1 |
-| Captura render del navegador real | NOT_RUN | No sustituir por HTML válido |
+| `node deep-spec-v1.mjs PREPRODUCTION.deep-spec-v1.json` | OBSERVED | `READY_FOR_FIRST_SLICE`, `errors=[]`, validador común aplicado localmente |
+| Captura render del navegador real | NOT_RUN | El navegador local bloqueó `localhost` y `file://` (`ERR_BLOCKED_BY_ADMINISTRATOR`); no sustituir por HTML válido |
 | Experiencia Android táctil y WebGL | NOT_RUN | Falta dispositivo de prueba directo |
 | Interferencias con CAD y cargas mecánicas | NOT_RUN | Modelo sólo conceptual |
 | Referencia visual profesional y aprobación humana | NOT_RUN | Decisión reservada a revisión humana |
