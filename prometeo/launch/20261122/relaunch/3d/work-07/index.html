@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>UNA HABITACIÓN VERDADERA · Captura 07</title>
+<meta name="description" content="Navegación de una captura interior real por Gaussian splatting. Alineación foto-vista opcional; evidencia y licencias explícitas.">
+<style>
+:root{color-scheme:dark;--ink:#eae8e4;--muted:#aaa9a5;--line:#ffffff30;--bg:#131414;font-family:Arial,Helvetica,sans-serif}
+*{box-sizing:border-box}
+html,body{width:100%;height:100%;margin:0;overflow:hidden;background:var(--bg);color:var(--ink)}
+canvas{display:block;touch-action:none}
+#photo{position:fixed;inset:0;width:100%;height:100%;object-fit:contain;pointer-events:none;z-index:3;display:none;transform-origin:center center}
+#veil{position:fixed;inset:0;z-index:6;background:#131414;display:grid;place-items:center;transition:opacity .4s}
+#veil.hidden{opacity:0;pointer-events:none}
+#veilContent{width:min(440px,86vw);text-align:center}
+#veil .mark{font-size:clamp(48px,9vw,96px);font-weight:700;line-height:.92;letter-spacing:-.08em;margin-bottom:20px}
+#veil p{font-size:13px;line-height:1.6;color:#b7b7b4}
+#progress{height:2px;background:#3f403f;margin:26px auto 13px;width:100%}
+#fill{height:100%;width:0%;background:#e7e5df;transition:width .18s}
+#retry{display:none;border:1px solid #a3a39d;background:transparent;color:#fff;padding:10px 16px;cursor:pointer}
+#head{position:fixed;top:max(17px,env(safe-area-inset-top));left:22px;z-index:5;pointer-events:none;text-shadow:0 2px 16px #0009}
+#head .eyebrow{font-size:10px;letter-spacing:.2em;color:#e9e7e2a8}
+#head .title{font-size:clamp(21px,2.7vw,34px);font-weight:600;letter-spacing:-.055em;margin-top:7px}
+#head .credit{margin-top:7px;font-size:11px;color:#d0cfc9}
+#head .credit a{color:inherit;pointer-events:auto;text-decoration:underline;text-underline-offset:4px}
+#status{position:fixed;right:20px;top:max(18px,env(safe-area-inset-top));z-index:5;font-size:10px;letter-spacing:.1em;color:#d7d6d0;background:#111a;padding:7px 10px;border:1px solid #ffffff20}
+#bar{position:fixed;bottom:max(16px,env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);z-index:5;display:flex;gap:6px;background:#171817d4;backdrop-filter:blur(12px);padding:5px;border:1px solid #ffffff2d;max-width:calc(100vw - 20px)}
+button{font:inherit;cursor:pointer;border:0;border-radius:0;color:#ddd;white-space:nowrap;background:transparent;padding:11px 14px;font-size:12px}
+button:hover,button:focus-visible{background:#ffffff26;outline:0}
+button[aria-pressed=true]{background:#edeae0;color:#161716}
+#panel{display:none;position:fixed;right:15px;bottom:80px;z-index:5;max-height:calc(100vh - 145px);overflow-y:auto;width:min(320px,calc(100vw - 30px));background:#151615e8;border:1px solid #ffffff35;padding:17px;box-shadow:0 18px 38px #0006}
+#panel.open{display:block}
+#panel h2{font-size:14px;font-weight:600;margin:0 0 14px}
+#panel p{font-size:11px;color:#c8c6c1;line-height:1.5;margin:0 0 15px}
+#panel label{font-size:11px;color:#d5d4cb;display:block;margin:11px 0 4px}
+#panel input[type=range]{width:100%;accent-color:#e6e4dc}
+#panel input[type=file]{width:100%;font-size:11px;color:#e4e2dc}
+#panel button{border:1px solid var(--line);width:100%;margin-top:8px;text-align:left}
+#note{font-size:10px;color:#b7b3ab}
+@media(max-width:520px){
+#head{left:16px;top:max(16px,env(safe-area-inset-top))}
+#head .title{font-size:25px}#head .credit{max-width:230px;line-height:1.5}
+#status{right:12px;top:max(17px,env(safe-area-inset-top));font-size:9px}
+#bar{width:calc(100% - 24px);justify-content:center;bottom:max(9px,env(safe-area-inset-bottom))}
+#bar button{flex:1;padding:13px 7px;font-size:11px}
+#panel{bottom:73px}
+}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<img id="photo" alt="Foto original aportada localmente para alineación manual">
+<div id="head"><div class="eyebrow">PROMETEO / CAPTURA REAL 07</div><div class="title">UNA HABITACIÓN<br>VERDADERA</div><div class="credit">Oficina escaneada por <a href="https://github.com/Ahmedn1/roomsplat" target="_blank" rel="noopener">Ahmedn1 / roomsplat</a> · MIT</div></div>
+<div id="status" role="status" aria-live="polite">INICIANDO</div>
+<div id="bar" role="toolbar" aria-label="Vistas y comparación">
+<button type="button" id="poseA" aria-pressed="true">01 · Cámara A</button>
+<button type="button" id="poseB" aria-pressed="false">02 · Cámara B</button>
+<button type="button" id="compare" aria-pressed="false">Comparar foto</button>
+</div>
+<aside id="panel" aria-label="Herramienta de alineación manual">
+<h2>Alineación foto / vista</h2>
+<p>La escena es un escaneo real con poses de cámara recuperadas. Las fotografías fuente no están redistribuidas: para una comparación <strong>foto original vs. render</strong>, cargá un fotograma autorizado de esta misma captura. Una foto diferente no es evidencia de precisión.</p>
+<label for="upload">Fotograma original autorizado (se usa localmente)</label>
+<input id="upload" type="file" accept="image/*">
+<label for="opacity">Transparencia de foto</label><input type="range" id="opacity" min="0" max="1" value="0.55" step="0.05">
+<label for="zoom">Escala aproximada</label><input type="range" id="zoom" min=".6" max="2.2" value="1" step=".01">
+<label for="dx">Desplazamiento horizontal</label><input type="range" id="dx" min="-45" max="45" value="0" step=".5">
+<label for="dy">Desplazamiento vertical</label><input type="range" id="dy" min="-45" max="45" value="0" step=".5">
+<button id="export" type="button">Exportar registro de alineación (.json)</button>
+<p id="note">Sin intrínsecos ni fotos correspondientes no hay reproyección métrica verificable. Este ajuste es manual y bidimensional.</p>
+</aside>
+<div id="veil"><div id="veilContent"><div class="mark">HABITACIÓN<br>VERDADERA.</div><p id="message">Cargando una captura real, no un escenario fabricado.</p><div id="progress"><div id="fill"></div></div><p id="detail">Fuente: roomsplat, escaneo de oficina · 11 MB</p><button id="retry" type="button">Reintentar carga</button></div></div>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
+<script type="module">
+import * as Splats from "https://cdn.jsdelivr.net/npm/@mkkellogg/gaussian-splats-3d@0.4.6/build/gaussian-splats-3d.module.js";
+import {normalisePose,setCapturedView,createAlignmentSession} from "./photo-view-aligner.js";
+
+const SRC="https://raw.githubusercontent.com/Ahmedn1/roomsplat/9cee329a1cea3d6faaffb569eb826cca131b9359/docs/";
+const scene=SRC+"scene.splat",cameraJSON=SRC+"cameras.json";
+const el=id=>document.getElementById(id),a=el("poseA"),b=el("poseB"),compare=el("compare"),panel=el("panel");
+const session=createAlignmentSession(),image=el("photo");
+const fallback=[
+{name:"frame_00866.jpg",pos:[0.14600559413396408,-0.5952184609777733,-2.304801777135432],forward:[-0.6361445986678801,0.1970487577580074,-0.7459838045505467],up:[-0.10849418056483856,-0.9800775143424925,-0.166364295038948]},
+{name:"frame_01902.jpg",pos:[-0.14095296674578947,-0.6631620972279234,-1.2362610240976888],forward:[0.9098172588695297,0.151783466494913,-0.3862568248745448],up:[0.10834696795393578,-0.985313209227179,-0.13198035557020743]}
+];
+let views=fallback,viewer=null,photoObjectUrl=null;
+function setStatus(s){el("status").textContent=s}
+function choose(i){
+ if(!viewer)return;
+ const cam=normalisePose(views[i]);setCapturedView(viewer.camera,viewer.controls,cam);session.selectView(cam.name);
+ a.setAttribute("aria-pressed",String(i===0));b.setAttribute("aria-pressed",String(i===1));
+ setStatus("VISTA "+String(i+1).padStart(2,"0")+" · ESCANEO REAL");
+}
+a.addEventListener("click",()=>choose(0));b.addEventListener("click",()=>choose(1));
+compare.addEventListener("click",()=>{
+ const open=!panel.classList.contains("open");panel.classList.toggle("open",open);compare.setAttribute("aria-pressed",String(open));
+ if(!open){image.style.display="none";}else if(photoObjectUrl){image.style.display="block";}
+});
+function drawOverlay(){session.setOpacity(el("opacity").value);session.setZoom(el("zoom").value);
+ session.state.offsetX=Number(el("dx").value);session.state.offsetY=Number(el("dy").value);
+ image.style.opacity=session.state.opacity;image.style.transform="translate("+session.state.offsetX+"%,"+session.state.offsetY+"%) scale("+session.state.zoom+")";
+}
+for(const id of ["opacity","zoom","dx","dy"])el(id).addEventListener("input",drawOverlay);
+el("upload").addEventListener("change",ev=>{
+ const file=ev.target.files?.[0];if(!file)return;if(!file.type.startsWith("image/")){el("note").textContent="Archivo no admitido";return;}
+ if(photoObjectUrl)URL.revokeObjectURL(photoObjectUrl);
+ photoObjectUrl=URL.createObjectURL(file);image.src=photoObjectUrl;image.style.display="block";
+ session.loadImage(file.name);drawOverlay();el("note").textContent="Foto cargada solo en este dispositivo. Superposición manual, NO calibración métrica.";
+});
+el("export").addEventListener("click",()=>{
+ const data=JSON.stringify({taskId:"3d-w7-20261122-07",source:"Ahmedn1/roomsplat@9cee329",...session.report(),timestamp:new Date().toISOString()},null,2);
+ const u=URL.createObjectURL(new Blob([data],{type:"application/json"})),link=document.createElement("a");
+ link.href=u;link.download="foto-vista-registro.json";link.click();setTimeout(()=>URL.revokeObjectURL(u),500);
+});
+document.addEventListener("keydown",e=>{if(e.target.tagName==="INPUT")return;if(e.key==="1")choose(0);if(e.key==="2")choose(1);});
+async function load(){
+ try{
+   let cd=await fetch(cameraJSON,{mode:"cors"}).then(r=>{if(!r.ok)throw Error("camera poses HTTP "+r.status);return r.json();});
+   if(Array.isArray(cd.cameras)&&cd.cameras.length>30){views=[normalisePose(cd.cameras[0]),normalisePose(cd.cameras[Math.floor(cd.cameras.length*.55)])];}
+ }catch(e){el("detail").textContent="Usando dos poses originales fijadas en el código; lista remota no disponible."}
+ try{
+  const viewerOpts={cameraUp:[0,-1,0],selfDrivenMode:true,useBuiltInControls:true,renderMode:Splats.RenderMode.OnChange,
+    initialCameraPosition:views[0].pos,initialCameraLookAt:views[0].pos.map((v,i)=>v+views[0].forward[i])};
+  viewer=new Splats.Viewer(viewerOpts);
+  await viewer.addSplatScene(scene,{splatAlphaRemovalThreshold:5,showLoadingUI:false,onProgress:pct=>{
+   el("fill").style.width=Math.max(0,Math.min(100,pct))+"%";
+   el("detail").textContent="Escaneo original · "+Math.round(pct)+"% · "+(pct===100?"decodificando":"descargando");
+  }});
+  viewer.start();choose(0);
+  el("veil").classList.add("hidden");setStatus("ESCANEO REAL · SIN CALIBRACIÓN MÉTRICA");
+ }catch(e){
+  setStatus("ERROR DE CARGA");el("message").textContent="No se pudo decodificar el escaneo. La geometría no se reemplaza por una escena inventada.";
+  el("detail").textContent=String(e.message||e).slice(0,160);
+  el("retry").style.display="inline-block";el("retry").onclick=()=>location.reload();
+  console.error("Real scan loading failed",e);
+ }
+}
+load();
+</script>
+</body>
+</html>
