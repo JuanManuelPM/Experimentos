@@ -1,0 +1,101 @@
+{
+  "schema": "prometeo.video.w003.work-receipt/v1",
+  "room": "video",
+  "batchId": "video-w003-20261122",
+  "taskNumber": 3,
+  "taskId": "video-w003-20261122-03",
+  "publishedAt": "2026-11-22T19:15:40.556Z",
+  "recordedAt": "2026-11-22T19:16:59.615Z",
+  "branch": "candidate/prometeo-video-w003-20261122-03",
+  "workRun": {
+    "url": "https://github.com/JuanManuelPM/Experimentos/actions/runs/45059566745",
+    "runId": 45059566745,
+    "conclusion": "success",
+    "ghPagesPush": "f9413951",
+    "failedAttempts": [
+      {
+        "runId": 45059272281,
+        "defect": "52.49-second narration exceeded 46-second fit gate"
+      },
+      {
+        "runId": 45059335446,
+        "defect": "FFmpeg invalid lowundefined filter"
+      },
+      {
+        "runId": 45059445818,
+        "defect": "FFmpeg invalid lowundefined filter persisted until explicit patch"
+      }
+    ]
+  },
+  "output": {
+    "video": "VENECIA-EL-AGUA-TIENE-FECHA.mp4",
+    "durationSeconds": 48,
+    "frames": 1152,
+    "fps": 24,
+    "width": 1280,
+    "height": 720,
+    "codecVideo": "h264",
+    "codecAudio": "aac",
+    "narratorSeconds": 43.093515,
+    "realFootage": true,
+    "segments": 8,
+    "firstArticle": "first_article.mp4",
+    "sourceCode": "https://github.com/JuanManuelPM/Experimentos/blob/candidate/prometeo-video-w003-20261122-03/prometeo/works/video-w003-20261122/03/render.py",
+    "provenance": "PROVENANCE.json",
+    "probe": "PROBE.json",
+    "artifactGithubUrl": "https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/previews/video/w003/03/VENECIA-EL-AGUA-TIENE-FECHA.mp4",
+    "pagesUrl": "https://juanmanuelpm.github.io/Experimentos/prometeo/previews/video/w003/03/"
+  },
+  "qa": {
+    "encode": "PASS",
+    "fullDecode": "PASS",
+    "frameCount": "PASS",
+    "provenanceLedger": "PASS",
+    "sourceFileRetrieval": "PASS",
+    "githubAction": "PASS",
+    "githubRepoFileReadback": "PASS",
+    "githubBlobHTTP": 200,
+    "githubPagesHTTP": "HTTP_404_AT_LAST_CHECK_DEPLOYMENT_NOT_VERIFIED",
+    "firstArticleFile": "PUBLISHED",
+    "firstArticleVisual": "NOT_RUN",
+    "firstFrame390": "NOT_RUN",
+    "firstFrame1440": "NOT_RUN",
+    "fullCriticalListening": "NOT_RUN",
+    "independentEditorialReview": "NOT_RUN",
+    "humanApproved": false
+  },
+  "comparative": {
+    "oldBatchId": "video-w002-20261122",
+    "newBatchId": "video-w003-20261122",
+    "oldBriefSha": "d7eebea6d36fc6e5aa3b72cba4e35dd149dc552d",
+    "newBriefSha": "0cc574528594731a3d1cf0c15a0d0e5a37e775b7",
+    "flowBefore": "W002 8 segments with large top/bottom overlays and full page data graph",
+    "flowAfter": "W003 seven authentic archive shots and one explicitly illustrative MOSE diagram, less intrusive credits and documented context labels",
+    "qualityConclusion": "No claim of higher artistic quality without real perceptual testing"
+  },
+  "flowSHA": {
+    "shared": "7911ce780c6eb8fc08ba3e5621e4479bbe2e9757",
+    "deepSpec": "7656a293b0182f81619bf0d27b90dffa771c2683",
+    "qualityBar": "5653704d3267c339fe7405f2b36b8488dbb44be9",
+    "artDirection": "b1a1a012e90897200336cac6316c0511cb40c4c5"
+  },
+  "trace": {
+    "stages": [
+      "BRIEF_LOCK",
+      "PRIMARY_RESEARCH",
+      "REPRESENTATION_CHOICE",
+      "SOURCE_BUILD",
+      "FIRST_ARTICLE_TECHNICAL",
+      "MEDIA_DOWNLOAD",
+      "EIGHT_SHOT_RENDER",
+      "AUDIO_SYNTHESIS",
+      "FULL_MP4_EXPORT",
+      "PROVENANCE_LEDGER_CHECK",
+      "COMPLETE_VIDEO_DECODE",
+      "GITHUB_ARTIFACT_SAVE",
+      "GITHUB_PUBLICATION"
+    ],
+    "topologyValidation": "NOT_RUN: specialized flow node IDs not validated",
+    "evidence": "https://github.com/JuanManuelPM/Experimentos/actions/runs/45059566745"
+  }
+}
