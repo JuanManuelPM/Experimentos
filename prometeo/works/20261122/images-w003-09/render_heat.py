@@ -1,14 +1,10 @@
 from PIL import Image,ImageDraw,ImageFont
 import math, hashlib, csv, json, os
-OUT='/mnt/data'
+OUT=os.environ.get("PROMETEO_OUTPUT_DIR", os.path.dirname(os.path.abspath(__file__)))
 F='/usr/share/fonts/opentype/inter/InterDisplay-Bold.otf'
-if not os.path.exists(F):
- import glob
- F=glob.glob('/usr/share/fonts/opentype/inter/*Bold*')[0]
+if not os.path.exists(F): F='/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf'
 R='/usr/share/fonts/opentype/inter/Inter-Regular.otf'
-if not os.path.exists(R):
- import glob
- R=glob.glob('/usr/share/fonts/opentype/inter/*Regular*')[0]
+if not os.path.exists(R): R='/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf'
 C={'paper':'#F5EFE1','dark':'#143C35','ink':'#19382F','green':'#47785C','mint':'#CEE3B9','sun':'#F3BD6B','rust':'#B86443','white':'#FFF9EF','muted':'#65786B','sky':'#DCE4DB'}
 S=2
 f_cache={}
