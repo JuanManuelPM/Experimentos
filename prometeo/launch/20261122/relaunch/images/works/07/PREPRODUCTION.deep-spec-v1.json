@@ -1,0 +1,194 @@
+{
+  "version": "DEEP-SPEC-1",
+  "medium": "images",
+  "depth": "OPERATIVO",
+  "brief": "07 · EL BOSQUE RESPIRA · bosque templado húmedo post lluvia, panorámica y dos detalles coherentes",
+  "briefBlobSha": "a97b91ca103847ea75eeb9d1d2af10b6c9c0dddd",
+  "intent": {
+    "experience": "Abrir a pantalla completa un bosque húmedo con un arroyo, tronco caído y luz entre hojas, sin controles.",
+    "distinctAbility": "Aprovechar un primer artículo raster real y recortes de píxel nativo con canon y sin fingir vistas distintas."
+  },
+  "references": [
+    {
+      "id": "r1",
+      "status": "OBSERVED",
+      "url": "https://www.nature.org/es-us/que-hacemos/nuestras-prioridades/hacer-frente-al-cambio-climatico/carbono-forestal-chile-reserva-costera-valdiviana/",
+      "observation": "Fotografía observada de río boscoso sobre piedras mojadas y musgo; benchmark para la relación agua superficie y sombra."
+    },
+    {
+      "id": "r2",
+      "status": "OBSERVED",
+      "url": "https://www.chile.travel/blog/bano-bosques/",
+      "observation": "Fotografía observada de bosque lluvioso con ramas musgosas y agua; benchmark para bruma ligera y densidad de copas."
+    }
+  ],
+  "components": [
+    {
+      "id": "C1",
+      "role": "Imagen principal de bosque y arroyo con luz lateral",
+      "strategy": "Generar máster raster original y verificar sujeto, materiales y atmósfera.",
+      "constraints": "Sol superior derecho, sustrato y agua visibles; no selva tropical estereotipada."
+    },
+    {
+      "id": "C2",
+      "role": "Dos detalles atmosféricos vinculados al máster",
+      "strategy": "Recortar imágenes a coordenadas nativas exactas tras fallos de regeneración.",
+      "constraints": "No llamar nuevas cámaras a dos ventanas del máster; no ampliar artificialmente."
+    }
+  ],
+  "questions": [
+    {
+      "id": "Q1",
+      "target": "C1",
+      "question": "¿Puede la síntesis raster sostener un escenario ecológicamente plausible y luz de entrada clara?",
+      "alternatives": [
+        "Raster original con dirección de arte",
+        "Pintura ilustrativa procedural por capas"
+      ],
+      "evidenceRef": "r1",
+      "finding": "La primera pieza es legible y el arroyo conserva reflejos y capas, pero las especies no están certificadas.",
+      "decisionImpact": "Conservar imagen original como primer artículo y registrar pendiente de botánica."
+    },
+    {
+      "id": "Q2",
+      "target": "C2",
+      "question": "¿Se pueden crear dos imágenes nuevas sin que desaparezca el mismo tronco y el mismo arroyo?",
+      "alternatives": [
+        "Nuevas cámaras generativas",
+        "Recorte nativo explícito de la misma escena"
+      ],
+      "evidenceRef": "r2",
+      "finding": "Dos generaciones suplementarias fueron afiches ajenos al brief, por lo que fueron descartadas.",
+      "decisionImpact": "Usar dos detalles de la escena base y no mentir sobre variedad de cámaras."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "D1",
+      "questionId": "Q1",
+      "componentIds": [
+        "C1"
+      ],
+      "choice": "Usar primero la imagen raster generada",
+      "rejected": "Sustituto geométrico genérico",
+      "productionChange": "Crear master PNG con raíces, tronco, arroyo y haces de luz desde arriba a la derecha.",
+      "why": "El primer artículo observado sostiene composición y materialidad básica."
+    },
+    {
+      "id": "D2",
+      "questionId": "Q2",
+      "componentIds": [
+        "C2"
+      ],
+      "choice": "Recortes exactos como detalles",
+      "rejected": "Presentar imágenes off-brief como nuevas tomas",
+      "productionChange": "Documentar coordenadas nativas, hashes SHA y prueba de igualdad de píxeles.",
+      "why": "La continuidad real es preferible a reivindicar tomas inexistentes."
+    }
+  ],
+  "relations": [
+    {
+      "from": "C1",
+      "to": "C2",
+      "invariant": "Cada detalle procede de la imagen maestra y comparte luz, materialidad y los mismos píxeles.",
+      "failure": "Reinventar el lugar en otra vista o falsear la resolución óptica.",
+      "test": "Pillow igualdad de bytes recortados y dimensiones nativas originales."
+    }
+  ],
+  "risks": [
+    {
+      "componentIds": [
+        "C1",
+        "C2"
+      ],
+      "severity": "high",
+      "failure": "Generación posterior devuelve afiches en lugar de vegetación.",
+      "prevention": "Inspección del primer artículo y descarte semántico real.",
+      "test": "Revisar tema y sujetos por inspección directa; documentar fallos.",
+      "status": "OBSERVED"
+    }
+  ],
+  "acceptance": [
+    {
+      "kind": "visual",
+      "criterion": "Raster del primer bosque visible sin neblina tapando el arroyo.",
+      "oracle": "Inspección del PNG generado auténtico por el trabajador.",
+      "status": "OBSERVED"
+    },
+    {
+      "kind": "functional",
+      "criterion": "PNG nativos decodifican y crops son exactamente idénticos.",
+      "oracle": "Pillow decodifica 4/4 y compara píxeles 3/3.",
+      "status": "OBSERVED"
+    },
+    {
+      "kind": "interactive",
+      "criterion": "Apertura en Chromium a 390 y 1440 sin UI invasiva.",
+      "oracle": "Playwright real bloqueado; simulaciones PIL no sustituyen capturas.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "licensing": "La imagen final fue generada originalmente para este encargo, sin copiar fotografías de referencias externas.",
+  "resources": "Herramienta de generación de imagen, Python y Pillow operativos; binarios locales no transferibles por conector GitHub.",
+  "environmentLimits": "Chromium bloqueó file:// y localhost; no capturas reales ni HTTP Pages. Publicación binaria desde archivos locales mediante GitHub connector no disponible.",
+  "artDirection": {
+    "schema": "prometeo.art-direction.first-article/v1",
+    "medium": "images",
+    "taskId": "images-w003-20261122-07",
+    "briefSha": "a97b91ca103847ea75eeb9d1d2af10b6c9c0dddd",
+    "flowRef": "Shared DEEP-SPEC-1/ART-DIRECTION-1; private specialized flow not recovered",
+    "promise": {
+      "subject": "Bosque templado húmedo inspirado en ecosistemas valdivianos",
+      "intent": "Arroyo, tronco nodriza y árbol grande tras la lluvia, luz superior derecha"
+    },
+    "benchmark": {
+      "status": "OBSERVED",
+      "url": "https://www.nature.org/es-us/que-hacemos/nuestras-prioridades/hacer-frente-al-cambio-climatico/carbono-forestal-chile-reserva-costera-valdiviana/",
+      "description": "Río musgoso real, luz-material observada en imagen de referencia."
+    },
+    "techniques": [
+      {
+        "family": "Síntesis raster fotorealista",
+        "viability": "Primer artículo generado y observado localmente, detalles extra fallaron.",
+        "license": "Generación original sin copia de recursos ajenos."
+      },
+      {
+        "family": "Ilustración original por capas",
+        "viability": "Pillow disponible para nueva representación manual, no ensayada.",
+        "license": "Colores y formas originales sin terceros."
+      }
+    ],
+    "selectedTechnique": "Síntesis raster fotorealista",
+    "firstFrame": {
+      "openingDescription": "La primera pantalla es solo la imagen full-bleed de bosque húmedo.",
+      "focalSubject": "Tronco mojado, árbol de raíces expuestas y agua que atraviesa primer plano.",
+      "minimalUI": "Sin controles, cartas ni overlays sobre la imagen.",
+      "checks": [
+        {
+          "criterion": "En ancho 390 se reconoce raíz con reflejo y agua.",
+          "oracle": "Captura Chromium real pendiente, simulación PIL no equivale.",
+          "viewport": "390"
+        },
+        {
+          "criterion": "En ancho 1440 el bosque muestra profundidad, tronco y luz.",
+          "oracle": "Captura Chromium real pendiente; simulación PIL disponible.",
+          "viewport": "1440"
+        }
+      ],
+      "observations": []
+    },
+    "firstArticle": {
+      "target": "Raster nativo de agua con atmósfera creíble, sustrato y luz direccional.",
+      "rejectWhen": "Selva tropical, ramas sin escala, niebla plana o desplazamiento a otro tema.",
+      "switchTo": "Ilustración original por capas",
+      "oracle": "Inspección visual de PNG local y canon botánico no acreditado.",
+      "resourceProof": "PNG original 1536 por 1024 y hashes en ZIP local.",
+      "status": "OBSERVED_PASS",
+      "evidence": {
+        "url": "https://github.com/JuanManuelPM/Experimentos/blob/candidate/prometeo-images-w003-20261122-07/prometeo/launch/20261122/relaunch/images/works/07/QA.md",
+        "description": "Informe de muestra original inspeccionada localmente; el binario aún no fue hospedado."
+      }
+    },
+    "humanApproved": false
+  }
+}
