@@ -1,5 +1,5 @@
 # QA · UNA PALABRA CAMBIA TODO · W003-04
-**Estado local:** `REAL_MP4_RENDERED_AND_PROBED`; publicación de binarios en GitHub `PENDING_CI` hasta lectura remota; `HUMAN_APPROVED=NO`.
+**Estado local:** `REAL_MP4_RENDERED_AND_PROBED`; **CI remoto:** `REAL_MP4_2_OF_2_REMOTE_READBACK_PASS`, GH Actions publicó H264/AAC y PNG auténticos con `QA_CI.json`; `HUMAN_APPROVED=NO`.
 
 ## Entregables observados localmente (22/11/2026)
 | Master | Duración | Video | Audio | Tamaño | SHA-256 |
@@ -30,8 +30,10 @@ Los hashes son de los archivos locales renderizados en esta conversación; un re
 6. Navegador con interacción de Play/Pause/seek y WebM MediaRecorder: **NOT_RUN** (motor de frames comprobado, controles no E2E).
 7. URL GitHub Pages por HTTP: **NOT_VERIFIED** en este entorno.
 8. Validadores `deep-spec-v1.mjs` y `art-direction-first-article-v1.mjs`: **NOT_RUN**, no se adjudica gate formal.
-9. Binary GitHub readback: **NOT_RUN** hasta que se confirme workflow.
+9. Binary GitHub readback: **OBSERVED_PASS** para 2/2 MP4 y frame vertical. Se cotejó SHA Git blob de los archivos; `QA_CI.json` publicado describe streams, tamaños y SHA256 remoto. El render remoto produjo hashes diferentes que los archivos locales, ambos masters fueron exportados independientemente.
 10. HUMAN_APPROVED: **NO**.
+
+**Evidencia GitHub Actions remota:** [QA_CI.json](QA_CI.json) reporta 26.000 s, H264/AAC, 624 frames 24fps por aspecto, 44.1 kHz estéreo y SHA256 propios: horizontal `dc603988740f37aae24b76888a3ffa4f6627b2367806a795ded5749783e1fd16`, vertical `20d79f732ffcff471d197cc47c3e3cc785c1a89e5e70701fed797edfdadfb85f`. Se abrió GitHub Contents de ambos binarios y se verificó el SHA de cada blob. El primer artículo se revisó localmente a 390 px y 1440 px a partir de PNG verdaderos publicados.
 
 **Límite artístico:** calidad de la pieza no fue certificada por audiencia ni comparada en visionado integral con W002. Los hechos de codec, duración y layout no prueban el sentido emocional para un tercero.
 
