@@ -42,6 +42,7 @@ function renderWav(solo=-1,sampleRate=22050){
  const hz=n=>440*Math.pow(2,(n-69)/12),TAU=2*Math.PI;
  for(let j=0;j<project.tracks.length;j++){
   if(solo!==-1&&j!==solo)continue;
+  seed=(0x83b4af22 ^ Math.imul(j+1,0x9e3779b1))>>>0; /* ruido independiente por pista: paridad */
   let tr=project.tracks[j];
   for(const e of tr.events){
    const k0=Math.round(e.time*sr),v=e.vel/127;
