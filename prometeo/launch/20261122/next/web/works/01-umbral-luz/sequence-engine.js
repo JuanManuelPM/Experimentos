@@ -68,6 +68,9 @@ export class SequenceDirector {
       if (distance < chosenDist) { chosen = step; chosenDist = distance; }
       const progress = Math.max(0, Math.min(1, (marker - rect.top) / Math.max(1, rect.height)));
       step.style.setProperty("--chapter-progress", progress.toFixed(4));
+      // Scroll-linked photographic drift, fully disabled by user or system reduced-motion.
+      const offset = document.documentElement.classList.contains("motion-off") ? 0 : Math.round((0.5 - progress) * 38);
+      step.style.setProperty("--photo-offset", offset + "px");
     }
     const id = chosen.id;
     if (id !== this.activeId) {
