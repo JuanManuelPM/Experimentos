@@ -1,7 +1,7 @@
 /**
  * PROMETEO · Cinematic Sequence Kernel v1
  * Deterministic, engine-independent keyframe evaluator.
- * Author: 3d-w6-20261122-04. MIT.
+ * Author: 3d-w6-20261122-04. Original work for PROMETEO.
  */
 const EPS = 1e-7;
 export const clamp = (x,a,b) => Math.min(b,Math.max(a,Number(x)||0));
