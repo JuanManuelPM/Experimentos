@@ -1,0 +1,12 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import {evidenceFlags} from './evidence-policy.mjs';
+const source={repo:'JuanManuelPM/Experimentos',ref:'gh-pages',path:'prometeo/root/ROOM_MESSAGES.json',sha:'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'};
+test('preparado sin despacho',()=>assert.deepEqual(evidenceFlags({}),[true,false,false,false,false]));
+test('copiar no implica inicio',()=>assert.deepEqual(evidenceFlags({},true),[true,true,false,false,false]));
+test('respuesta pública entrega, pero no prueba inicio',()=>assert.deepEqual(evidenceFlags({result:{id:'one',body:'Publicado'}}),[true,false,false,true,false]));
+test('el string de verificación viejo no acredita nada',()=>assert.deepEqual(evidenceFlags({result:{id:'i',body:'ok'},evidence:{verified:'PASS'}}),[true,false,false,true,false]));
+test('inicio exige prueba tipada con SHA',()=>assert.deepEqual(evidenceFlags({evidence:{started:{status:'STARTED_EVIDENCED',source}}}),[true,false,true,false,false]));
+test('solo GitHub readback no certifica medio real',()=>assert.deepEqual(evidenceFlags({result:{id:'i',body:'ok'},evidence:{verified:{status:'VERIFIED',source,checks:[{kind:'SOURCE_READBACK',result:'PASS',evidenceRef:'https://example.com'}]}}}),[true,false,false,true,false]));
+test('QA de navegador con recibo puede marcar verificado',()=>assert.deepEqual(evidenceFlags({result:{id:'i',body:'ok'},evidence:{verified:{status:'VERIFIED',source,checks:[{kind:'BROWSER_UI',result:'PASS',evidenceRef:'https://example.com'}]}}}),[true,false,false,true,true]));
+test('SHA inválido no habilita inicio',()=>assert.deepEqual(evidenceFlags({evidence:{started:{status:'STARTED_EVIDENCED',source:{...source,sha:'foo'}}}}),[true,false,false,false,false]));
