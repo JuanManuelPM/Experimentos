@@ -160,7 +160,7 @@ function rebuildCam(){
  if(camBody){camPivot.remove(camBody);camBody.geometry.dispose();}
  const pts=profile(opts,420),shape=new THREE.Shape();
  shape.moveTo(pts[0].x,pts[0].y);for(let i=1;i<pts.length;i++)shape.lineTo(pts[i].x,pts[i].y);
- shape.closePath();const axleHole=new THREE.Path();axleHole.absarc(0,0,6,0,Math.PI*2,true);shape.holes.push(axleHole);camBody=new THREE.Mesh(new THREE.ExtrudeGeometry(shape,{depth:12,steps:1,bevelEnabled:true,bevelSegments:2,bevelThickness:1.2,bevelSize:1.2,curveSegments:6}),metal);
+ shape.closePath();const axleHole=new THREE.Path();axleHole.absarc(0,0,6,0,Math.PI*2,false);shape.holes.push(axleHole);camBody=new THREE.Mesh(new THREE.ExtrudeGeometry(shape,{depth:12,steps:1,bevelEnabled:true,bevelSegments:2,bevelThickness:1.2,bevelSize:1.2,curveSegments:6}),metal);
  camPivot.add(camBody);
 }
 rebuildCam();
@@ -177,7 +177,7 @@ for(const x of [camX-13,camX+13])screw(x,84,45,follower);
 const springMat=new THREE.LineBasicMaterial({color:0xe7c18d});
 const springVerts=new Float32Array(3*460),springGeom=new THREE.BufferGeometry();
 springGeom.setAttribute('position',new THREE.BufferAttribute(springVerts,3));
-const spring=mesh(springGeom,springMat);spring.frustumCulled=false;
+const spring=new THREE.Line(springGeom,springMat);body.add(spring);spring.frustumCulled=false;
 function updateSpring(y){
  const bottom=y+91,top=175,turns=11,points=springVerts.length/3;
  for(let i=0;i<points;i++){const t=i/(points-1),a=t*Math.PI*2*turns;springVerts[i*3]=camX+12*Math.cos(a);springVerts[i*3+1]=bottom+(top-bottom)*t;springVerts[i*3+2]=37+12*Math.sin(a)}
