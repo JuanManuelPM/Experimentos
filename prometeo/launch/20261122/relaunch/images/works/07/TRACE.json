@@ -1,0 +1,67 @@
+{
+  "schema": "prometeo.images.stage-trace/v1",
+  "taskId": "images-w003-20261122-07",
+  "flow": {
+    "shared": "DEEP-SPEC-1 + ART-DIRECTION-1",
+    "contractBlob": "7911ce780c6eb8fc08ba3e5621e4479bbe2e9757",
+    "launchBlob": "a97b91ca103847ea75eeb9d1d2af10b6c9c0dddd",
+    "flowOwnerSpecialty": "images-owner-not-promoted",
+    "flowValidator": "NOT_RUN"
+  },
+  "humanApproved": false,
+  "events": [
+    {
+      "stage": "BRIEF_LOCK",
+      "status": "EXECUTED",
+      "at": "2026-11-22T19:02:00Z",
+      "decision": "Only 07",
+      "evidence": "LAUNCH SHA"
+    },
+    {
+      "stage": "BENCHMARK",
+      "status": "EXECUTED",
+      "at": "2026-11-22T19:04:00Z",
+      "decision": "Valdivian eco-inspired, no copied assets",
+      "evidence": "TNC, Chile Travel, official ecosystem"
+    },
+    {
+      "stage": "FIRST_ARTICLE",
+      "status": "EXECUTED",
+      "at": "2026-11-22T19:05:00Z",
+      "decision": "Generate master",
+      "evidence": "Original PNG local genId 4614a488-0130-4add-baf8-1975b48f86eb"
+    },
+    {
+      "stage": "DETAILS",
+      "status": "EXECUTED",
+      "at": "2026-11-22T19:06:00Z",
+      "decision": "Discard two off-brief generations; derive native crops",
+      "evidence": "Local pixels / assets manifest"
+    },
+    {
+      "stage": "PIXEL_QA",
+      "status": "EXECUTED",
+      "at": "2026-11-22T19:08:00Z",
+      "decision": "3 exact crops PASS",
+      "evidence": "Pillow QA.json in local zip"
+    },
+    {
+      "stage": "BROWSER_QA",
+      "status": "NOT_RUN",
+      "at": "2026-11-22T19:08:00Z",
+      "reason": "ERR_BLOCKED_BY_ADMINISTRATOR"
+    },
+    {
+      "stage": "PUBLISH_BINARY",
+      "status": "NOT_RUN",
+      "at": "2026-11-22T19:10:00Z",
+      "reason": "No local binary upload path in GitHub connector"
+    },
+    {
+      "stage": "HUMAN_APPROVAL",
+      "status": "NOT_RUN",
+      "at": "2026-11-22T19:10:00Z",
+      "reason": "Requires independent human review"
+    }
+  ]
+}
