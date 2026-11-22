@@ -1,0 +1,85 @@
+{
+  "schema": "prometeo.3d.work-qa/v2",
+  "taskId": "3d-w7-20261122-04",
+  "room": "3d",
+  "batchId": "3d-w7-20261122",
+  "taskNumber": 4,
+  "evaluatedAt": "2026-11-22T18:52:19.277Z",
+  "status": "SOURCE_PUBLISHED__FIRST_ARTICLE_REQUIRED__NOT_ARTISTICALLY_APPROVED",
+  "humanApproved": false,
+  "gates": {
+    "deepSpec": "SPIKE_REQUIRED (errors [])",
+    "artDirection": "FIRST_ARTICLE_REQUIRED (errors [])",
+    "logic": "OBSERVED_CHECKS",
+    "firstArticleRender": "NOT_RUN",
+    "screen390": "NOT_RUN",
+    "screen1440": "NOT_RUN",
+    "androidInteraction": "NOT_RUN",
+    "audioListening": "NOT_RUN",
+    "videoExport": "NOT_RUN",
+    "videoDecode": "NOT_RUN",
+    "human": "NOT_RUN"
+  },
+  "files": [
+    "index.html",
+    "main.js",
+    "sound.mjs",
+    "sequencer.mjs",
+    "timeline.json",
+    "continuity.mjs",
+    "test-continuity.mjs",
+    "PREPRODUCTION.deep-spec-v1.json",
+    "STAGE_TRACE.json",
+    "README.md",
+    "RESULT.md"
+  ],
+  "checks": [
+    {
+      "id": "js_syntax",
+      "status": "OBSERVED",
+      "details": "V8 Function syntax parser accepted main.js, sequencer.mjs, continuity.mjs after ES module headers stripped; test harness uses import.meta and must run natively via Node."
+    },
+    {
+      "id": "json_timeline",
+      "status": "OBSERVED",
+      "details": "W6 full 5-shot source, W7 isolated copy: validateTimeline([]) and firstArticleCut 2 shots at 0..1.6..3.2 validateTimeline([])."
+    },
+    {
+      "id": "eyeline",
+      "status": "OBSERVED",
+      "details": "Camera z remains forward of action X-axis, Vera yaw positive and Noe yaw negative across full and two-shot timelines. This checks numeric signs, not perceived eye continuity."
+    },
+    {
+      "id": "deterministic",
+      "status": "OBSERVED",
+      "details": "64 comparison samples across JSON roundtrip had diffAt=0, exact first article cut boundary at t=1.600."
+    },
+    {
+      "id": "invalid_mutation",
+      "status": "OBSERVED",
+      "details": "Synthesized negative camera crossing flagged by inspectEyelineAxis. Logic-only, not render."
+    },
+    {
+      "id": "presentation",
+      "status": "NOT_RUN",
+      "details": "No browser screenshot. First-article preview exists in code; no pixel inspection despite 390/1440 plans."
+    },
+    {
+      "id": "external_three",
+      "status": "NOT_RUN",
+      "details": "Three.js CDN network request and WebGL renderer were not executed in this session."
+    },
+    {
+      "id": "video_file",
+      "status": "NOT_RUN",
+      "details": "MediaRecorder pathway provided, no .webm or .mp4 file generated, metadata and audio not inspected."
+    }
+  ],
+  "limitations": "The public Pages URL is written from verified repository path, but live HTTP rendering and actual 3D imagery remain unverified. Firecrawl screenshot service returned insufficient credits. Do not infer art improvement from source changes.",
+  "source": {
+    "branch": "candidate/prometeo-3d-w7-20261122-04",
+    "launchSha": "58de659e2aa01c0746d59ca6f95c36bdc59f3030",
+    "legacyW6SourceSha": "42a048c9add5b6ef29e86eaaad0f49989796d9d9",
+    "firstArticlePreview": "https://juanmanuelpm.github.io/Experimentos/prometeo/works/3d-w7-20261122-04/?first=1"
+  }
+}
