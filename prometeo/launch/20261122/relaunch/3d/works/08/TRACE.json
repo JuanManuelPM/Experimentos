@@ -1,0 +1,183 @@
+{
+  "schema": "prometeo.flow.visited-trace/v1",
+  "taskId": "3d-w7-20261122-08",
+  "flow": {
+    "version": "2.3.0",
+    "sha256Canonical": "53bc9e2e4b37c99e92d3494af8dfa4461cd4644b15f980e32497a8428b067b3f"
+  },
+  "events": [
+    {
+      "stage": "scope",
+      "status": "EXECUTED",
+      "timestamp": "2026-11-22T18:58:32.374Z",
+      "decision": "Fijó identidad, número, brief y SHA original.",
+      "alternativesConsidered": [
+        "Datos auténticos y validación explícita",
+        "Visualización sintética sin procedencia"
+      ],
+      "outputRef": "LAUNCH.md",
+      "evidenceRefs": [
+        "LAUNCH.md"
+      ],
+      "testStatus": "NOT_RUN"
+    },
+    {
+      "stage": "recovery",
+      "status": "EXECUTED",
+      "timestamp": "2026-11-22T18:58:32.375Z",
+      "decision": "Recuperó flujo 2.3.0, contrato compartido y auditoría W6.",
+      "alternativesConsidered": [
+        "Datos auténticos y validación explícita",
+        "Visualización sintética sin procedencia"
+      ],
+      "outputRef": "PREPRODUCTION.deep-spec-v1.json",
+      "evidenceRefs": [
+        "PREPRODUCTION.deep-spec-v1.json"
+      ],
+      "testStatus": "NOT_RUN"
+    },
+    {
+      "stage": "planning",
+      "status": "EXECUTED",
+      "timestamp": "2026-11-22T18:58:32.376Z",
+      "decision": "Anticipó tests 390/1440, DEM real y dos capas geográficas.",
+      "alternativesConsidered": [
+        "Datos auténticos y validación explícita",
+        "Visualización sintética sin procedencia"
+      ],
+      "outputRef": "PREPRODUCTION.deep-spec-v1.json",
+      "evidenceRefs": [
+        "PREPRODUCTION.deep-spec-v1.json"
+      ],
+      "testStatus": "NOT_RUN"
+    },
+    {
+      "stage": "acquisition",
+      "status": "EXECUTED",
+      "timestamp": "2026-11-22T18:58:32.377Z",
+      "decision": "Examinó registros públicos AWS, USGS WBD y 3DHP; sin descargas de datos.",
+      "alternativesConsidered": [
+        "Datos auténticos y validación explícita",
+        "Visualización sintética sin procedencia"
+      ],
+      "outputRef": "PREPRODUCTION.deep-spec-v1.json",
+      "evidenceRefs": [
+        "PREPRODUCTION.deep-spec-v1.json"
+      ],
+      "testStatus": "NOT_RUN"
+    },
+    {
+      "stage": "classification",
+      "status": "EXECUTED",
+      "timestamp": "2026-11-22T18:58:32.378Z",
+      "decision": "Separó DEM, WBD HUC8, 3DHP y carta base de USGS.",
+      "alternativesConsidered": [
+        "Datos auténticos y validación explícita",
+        "Visualización sintética sin procedencia"
+      ],
+      "outputRef": "geo-loader.mjs",
+      "evidenceRefs": [
+        "geo-loader.mjs"
+      ],
+      "testStatus": "NOT_RUN"
+    },
+    {
+      "stage": "environment",
+      "status": "EXECUTED",
+      "timestamp": "2026-11-22T18:58:32.379Z",
+      "decision": "Implementó raster-dem y sombreado sobre terreno real si las teselas responden.",
+      "alternativesConsidered": [
+        "Datos auténticos y validación explícita",
+        "Visualización sintética sin procedencia"
+      ],
+      "outputRef": "atlas.mjs",
+      "evidenceRefs": [
+        "atlas.mjs"
+      ],
+      "testStatus": "NOT_RUN"
+    },
+    {
+      "stage": "assembly",
+      "status": "EXECUTED",
+      "timestamp": "2026-11-22T18:58:32.380Z",
+      "decision": "Montó la navegación, miradores, panel secundario y estados de red.",
+      "alternativesConsidered": [
+        "Datos auténticos y validación explícita",
+        "Visualización sintética sin procedencia"
+      ],
+      "outputRef": "index.html",
+      "evidenceRefs": [
+        "index.html"
+      ],
+      "testStatus": "NOT_RUN"
+    },
+    {
+      "stage": "orientation",
+      "status": "EXECUTED",
+      "timestamp": "2026-11-22T18:58:32.381Z",
+      "decision": "Conservó WGS84/EPSG3857, cámara regional/detalle y escala gráfica.",
+      "alternativesConsidered": [
+        "Datos auténticos y validación explícita",
+        "Visualización sintética sin procedencia"
+      ],
+      "outputRef": "atlas.mjs",
+      "evidenceRefs": [
+        "atlas.mjs"
+      ],
+      "testStatus": "NOT_RUN"
+    },
+    {
+      "stage": "qa",
+      "status": "EXECUTED",
+      "timestamp": "2026-11-22T18:58:32.382Z",
+      "decision": "Ejecutó 10 tests locales y QA de shell a 390/1440, sin WebGL.",
+      "alternativesConsidered": [
+        "Datos auténticos y validación explícita",
+        "Visualización sintética sin procedencia"
+      ],
+      "outputRef": "QA.md",
+      "evidenceRefs": [
+        "QA.md"
+      ],
+      "testStatus": "OBSERVED"
+    },
+    {
+      "stage": "persistence",
+      "status": "EXECUTED",
+      "timestamp": "2026-11-22T18:58:32.383Z",
+      "decision": "Persistió código, fichas y pruebas en ruta aislada de número 08.",
+      "alternativesConsidered": [
+        "Datos auténticos y validación explícita",
+        "Visualización sintética sin procedencia"
+      ],
+      "outputRef": "RESULT.md",
+      "evidenceRefs": [
+        "RESULT.md"
+      ],
+      "testStatus": "NOT_RUN"
+    },
+    {
+      "stage": "publish",
+      "status": "EXECUTED",
+      "timestamp": "2026-11-22T18:58:32.384Z",
+      "decision": "Publicó obra aislada en gh-pages y rama candidata; lectura remota verificada en GitHub.",
+      "alternativesConsidered": [
+        "Datos auténticos y validación explícita",
+        "Visualización sintética sin procedencia"
+      ],
+      "outputRef": "RESULT.md",
+      "evidenceRefs": [
+        "RESULT.md"
+      ],
+      "testStatus": "NOT_RUN"
+    },
+    {
+      "stage": "qa",
+      "status": "NOT_RUN",
+      "timestamp": "2026-11-22T18:58:32.474Z",
+      "reason": "La descarga de servicios y el render real no pueden verificarse con la red bloqueada."
+    }
+  ],
+  "graphValidator": "NOT_RUN (no se reconstruyen nodos ni aristas inexistentes)",
+  "humanApproved": false
+}
