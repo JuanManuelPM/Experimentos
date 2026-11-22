@@ -77,7 +77,7 @@ function renderWav(solo=-1,sampleRate=22050){
  let peak=0,sum=0;
  for(let i=0;i<N;i++){
   let t=i/sr,gain=Math.min(1,t/1.4)*Math.min(1,Math.max(0,(seconds-t)/2.8));
-  let y=Math.tanh(pcm[i]*1.72)*.82*gain;
+  let y=pcm[i]*1.1*gain; /* bus lineal: suma de stems ~= master; margen verificado */
   if(!Number.isFinite(y))throw Error("Sample no finito");
   pcm[i]=y;peak=Math.max(peak,Math.abs(y));sum+=y*y;
  }
