@@ -1,0 +1,289 @@
+{
+  "version": "DEEP-SPEC-1",
+  "medium": "3d",
+  "depth": "SISTEMA",
+  "taskId": "3d-w7-20261122-10",
+  "batchId": "3d-w7-20261122",
+  "taskNumber": 10,
+  "briefSha": "58de659e2aa01c0746d59ca6f95c36bdc59f3030",
+  "brief": "Diseñá una bicicleta plegable original de alta fidelidad con cuadro, uniones, frenos y transmisión; configurador, despiece, plegado y módulo reutilizable, con pruebas de encastre y BOM.",
+  "intent": {
+    "experience": "Al abrir se ve una bicicleta original como protagonista sobre un estudio oscuro, no paneles ni modelos de stock.",
+    "distinctAbility": "Bisagra excéntrica vinculada al cuadro, despiece indexado por BOM y dos transformaciones de plegado observables."
+  },
+  "references": [
+    {
+      "id": "R1",
+      "url": "https://www.ternbicycles.com/en/bikes/472/verge-x11",
+      "status": "OBSERVED",
+      "observation": "Página oficial y descripción de sistema de bisagra OCL+, refuerzos y piezas de rendimiento examinadas en texto; no se examinó CAD, juego ni tienda interactiva."
+    },
+    {
+      "id": "R2",
+      "url": "https://www.brompton.com/stories/guides/folding-bike-buyers-guide",
+      "status": "OBSERVED",
+      "observation": "Guía publicada: plegado como operación compacta, bisagras sujetas con clamps y dimensiones de referencia del modelo C Line; no se copió mecanismo propietario."
+    },
+    {
+      "id": "R3",
+      "url": "https://threejs.org/manual/pages/fundamentals.html",
+      "status": "OBSERVED",
+      "observation": "Documentación oficial de módulos y flujo de render Three.js; solo API examinada, sin reproducción visual del resultado en esta sesión."
+    }
+  ],
+  "components": [
+    {
+      "id": "H",
+      "role": "Bisagra central con eje vertical desplazado respecto del plano de ambas ruedas.",
+      "strategy": "Malla paramétrica y eje rotatorio jerárquico propio en metros.",
+      "constraints": "Al abrir ambos ejes de rueda tienen z=0; al cerrar, centros de rueda se separan lateralmente al menos 120 mm."
+    },
+    {
+      "id": "W",
+      "role": "Dos ruedas completas, neumáticos, llantas, bujes, radios y frenos de disco.",
+      "strategy": "Tori, cilindros, radios y discos construidos en conjuntos independientes.",
+      "constraints": "Ruedas mismo radio 276 mm; neumáticos y rotores acompañan su subgrupo; distancia entre ejes 1130 mm."
+    },
+    {
+      "id": "A",
+      "role": "Conjunto cuadro trasero y delantero, componentes de cockpit, transmisión y sillín.",
+      "strategy": "Subensambles originales en escena tridimensional coherente y editable.",
+      "constraints": "Transmisión permanece en semicuadro trasero; manillar pliega hacia el costado; sillín se retrae."
+    },
+    {
+      "id": "UI",
+      "role": "Presentación editorial sobria con controles táctiles directos y lista de partes.",
+      "strategy": "Vista WebGL protagonista y controles DOM compactos accesibles.",
+      "constraints": "Primer viewport 390 conserva controles; viewport 1440 no llena plano con UI; lista sólo en despiece."
+    }
+  ],
+  "questions": [
+    {
+      "id": "Q1",
+      "target": "H",
+      "question": "¿Un eje de bisagra desplazado deja los neumáticos paralelos y separados al plegar exactamente 180 grados?",
+      "alternatives": [
+        "Eje vertical excéntrico con plegado frontal en Y",
+        "Bisagra simple en centro de tubo sin offset"
+      ],
+      "evidenceRef": "R1",
+      "finding": "Bisagras robustas con topología explícita son decisivas; el centro excéntrico propio genera 180 mm laterales al cerrar.",
+      "decisionImpact": "Cambiar pivot del modelo y añadir pruebas geométricas antes de escribir las animaciones."
+    },
+    {
+      "id": "Q2",
+      "target": "A",
+      "question": "¿La transmisión completa puede conservarse en la mitad trasera sin cortar cadenas al plegar la mitad delantera?",
+      "alternatives": [
+        "Bielas, piñón y cadena sólo en subcuadro trasero",
+        "Cadena compartida entre ambos semicuadros"
+      ],
+      "evidenceRef": "R2",
+      "finding": "La continuidad de transmisión exige que toda la cadena siga el basculante trasero; se preservó esa jerarquía.",
+      "decisionImpact": "Transmisión y pedalera se modelan como conjuntos fijos bajo chassis trasero."
+    },
+    {
+      "id": "Q3",
+      "target": "UI",
+      "question": "¿El producto debe estar visible al abrir tanto en 390 como en 1440 sin una interfaz que oculte cuadro o ruedas?",
+      "alternatives": [
+        "Lienzo WebGL continuo con controles inferiores",
+        "Dashboard grande con fichas delante de la bicicleta"
+      ],
+      "evidenceRef": "R3",
+      "finding": "Los ejemplos Three permiten canvas a pantalla completa; se elige superficie visual y DOM con controles compactos.",
+      "decisionImpact": "La primera vista abre modo armado, cámara tres cuartos y panel de BOM oculto."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "D1",
+      "questionId": "Q1",
+      "componentIds": [
+        "H",
+        "W"
+      ],
+      "choice": "Bisagra vertical de eje excéntrico a z=-90mm.",
+      "rejected": "Giro 180 sin eje descentrado que superpone ruedas.",
+      "productionChange": "Ubicar pivot en [0.02,0.545,-0.09] m; transformar semicuadro completo y comparar separación en posiciones final/inicial.",
+      "why": "Con pivote excéntrico se colocan los dos planos de neumático a 180 mm sin desplazar arbitrariamente una rueda."
+    },
+    {
+      "id": "D2",
+      "questionId": "Q2",
+      "componentIds": [
+        "A"
+      ],
+      "choice": "Cadena, pedalera, sprockets y piñón sobre grupo trasero.",
+      "rejected": "Transmisión repartida entre partes de plegado diferentes.",
+      "productionChange": "Implementar grupos de transmisión como hijos de rear y mantener rig fijo durante rotación de frontPivot.",
+      "why": "Evita que el plegado rompa el tramo recto de cadena y mantiene la transmisión legible."
+    },
+    {
+      "id": "D3",
+      "questionId": "Q3",
+      "componentIds": [
+        "UI",
+        "A"
+      ],
+      "choice": "Escena de producto en estudio oscuro con modos directos y opciones compactas.",
+      "rejected": "UI pesada con sidebar permanente y protagonista pequeño.",
+      "productionChange": "Crear canvas full-bleed, controles inferiores, BOM contextual, orbit táctil y dos variantes reconstruibles.",
+      "why": "Hace visible el objeto completo desde la apertura en lugar de exhibir solo controles genéricos."
+    }
+  ],
+  "relations": [
+    {
+      "from": "H",
+      "to": "W",
+      "invariant": "La rueda delantera mantiene radio y transformada del grupo frontal durante todo el plegado.",
+      "failure": "Rueda flotante o separación lateral cero en posición final.",
+      "test": "Barrido de 101 muestras de cinemática de centros."
+    },
+    {
+      "from": "A",
+      "to": "H",
+      "invariant": "La bisagra rotatoria mueve todas las piezas delanteras sin perder la transmisión trasera.",
+      "failure": "Cuadro se corta, bielas siguen rueda delantera o pivot se traslada.",
+      "test": "Verificar pertenencia de BOM y posición del origen."
+    },
+    {
+      "from": "UI",
+      "to": "A",
+      "invariant": "Una sola fuente BOM define 14 grupos de escena y texto del despiece.",
+      "failure": "Listado de piezas no coincide con la escena publicada.",
+      "test": "Assert existencia de 14 id únicos y grupos montados."
+    },
+    {
+      "from": "W",
+      "to": "ENV",
+      "invariant": "Ambas ruedas apoyan sobre y=0 con radio 0.276 metros y altura de centro 0.276 metros.",
+      "failure": "Rueda enterrada o flotando sobre plano.",
+      "test": "Comparar centro y radio sin error numérico."
+    }
+  ],
+  "risks": [
+    {
+      "componentIds": [
+        "H",
+        "W"
+      ],
+      "severity": "high",
+      "failure": "La bicicleta puede parecer plegable pero los tubos, neumáticos o frenos penetran entre sí en un punto intermedio.",
+      "prevention": "Primer artículo WebGL aislado de bisagra y ruedas antes del ensamblaje entero; alternativas de representación si falla.",
+      "test": "Inspección navegador 390/1440 y sweep mesh-mesh; herramientas externas de capturas no disponibles.",
+      "status": "NOT_RUN"
+    },
+    {
+      "componentIds": [
+        "UI"
+      ],
+      "severity": "high",
+      "failure": "El canvas no muestra objeto en la apertura por import externo o falla WebGL en Android.",
+      "prevention": "Fallback visible si no inicia WebGL y endpoint del primer artículo en Pages.",
+      "test": "Captura real GPU y gesto táctil en 390 y 1440.",
+      "status": "NOT_RUN"
+    },
+    {
+      "componentIds": [
+        "A"
+      ],
+      "severity": "medium",
+      "failure": "Un cambio de variante modifica las etiquetas pero no la geometría real.",
+      "prevention": "Reconstrucción completa del modelo y ancho de manillar/cubierta por variante.",
+      "test": "Conmutar entre CIUDAD y VELOZ con inspección DOM/escena.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "acceptance": [
+    {
+      "kind": "logic",
+      "criterion": "Distancia entre ejes 1130 mm, 180 mm de diferencia lateral entre centros al cerrar.",
+      "oracle": "Node mechanics.test.mjs, validación de funciones puras.",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "visual",
+      "criterion": "En 390 y 1440 la bicicleta es protagonista completa sin objetos que tapen la toma inicial.",
+      "oracle": "Captura Chromium real en ambos tamaños y examen perceptual.",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "interactive",
+      "criterion": "Plegado, despiece y paletas alteran escena, 14 partes corresponden al BOM.",
+      "oracle": "Gesto táctil / inspección de escena en browser WebGL.",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "functional",
+      "criterion": "Cambiar a 2 variantes reconstruye ancho de neumático y manillar sin perder grupos.",
+      "oracle": "Inspección WebGL del diseño y scroll/uso Android.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "licensing": "Modelo geométrico, textos y código de autoría original; referencias solo como benchmark, sin reutilizar marcas, CAD ni medios ajenos. Three.js disponible bajo MIT desde CDN público.",
+  "resources": "JavaScript/ESM editable + Three.js @0.170.0; repo GitHub conectado. Captura remota de navegador bloqueada por créditos del servicio de captura; Chromium local no accede a GitHub/CDN.",
+  "environmentLimits": "Este entorno no logró ejecutar navegador remoto para comprobar el render WebGL: la herramienta de screenshots devolvió insuficiencia de créditos; Web no expone el contenido Pages. Sin manufactura o ensayo mecánico.",
+  "artDirection": {
+    "schema": "prometeo.art-direction.first-article/v1",
+    "medium": "3d",
+    "taskId": "3d-w7-20261122-10",
+    "briefSha": "58de659e2aa01c0746d59ca6f95c36bdc59f3030",
+    "flowRef": "prometeo/3d-flow/versions/2.3.0/flow.json#sha256=53bc9e2e4b37c99e92d3494af8dfa4461cd4644b15f980e32497a8428b067b3f",
+    "promise": {
+      "subject": "Bicicleta plegable completa F/20 en acabado grafito, plano de tres cuartos y detalles de bisagra.",
+      "intent": "Mostrar ingeniería visual y plegado creíble desde la primera pantalla, sin cajas vacías ni controles superpuestos."
+    },
+    "benchmark": {
+      "url": "https://www.ternbicycles.com/en/bikes/472/verge-x11",
+      "description": "Ficha de producto oficial revisada en contenido textual: detalle de bisagra OCL+ y construcción; demostración interactiva propia no inspeccionada.",
+      "status": "OBSERVED"
+    },
+    "techniques": [
+      {
+        "family": "Modelado procedural paramétrico original",
+        "viability": "Ejecutable como Three.js modular con escenas propias en metros, sin assets de terceros.",
+        "license": "Autoría de geometría propia y Three.js MIT."
+      },
+      {
+        "family": "CAD sólido y GLB de autor exportado",
+        "viability": "Alternativa legal con Blender/Fusion FreeCAD propios, pero no hay runtime CAD aquí para exportación.",
+        "license": "Geometría CAD original, sin CAD propietario ni assets de terceros."
+      }
+    ],
+    "selectedTechnique": "Modelado procedural paramétrico original",
+    "firstFrame": {
+      "openingDescription": "En 390 y 1440 F/20 aparece centrada en tres cuartos sobre fondo de estudio, en modo ARMADA.",
+      "focalSubject": "Bicicleta real de dos ruedas con doble cuadro y bisagra visible.",
+      "minimalUI": "Tres botones ARMADA/PLEGADA/DESPIECE abajo, acabados compactos; BOM oculta de inicio.",
+      "checks": [
+        {
+          "criterion": "Se ven las dos ruedas enteras con cuadro sin recorte.",
+          "oracle": "Screenshot 390 real y examen por visión.",
+          "viewport": "390"
+        },
+        {
+          "criterion": "La bisagra y el cuadro tienen composición protagonista clara.",
+          "oracle": "Screenshot 1440 real y examen por visión.",
+          "viewport": "1440"
+        },
+        {
+          "criterion": "Los controles no cubren la rueda ni se superponen con la BOM.",
+          "oracle": "Comparación de área cubierta 390 y 1440.",
+          "viewport": "both"
+        }
+      ],
+      "observations": []
+    },
+    "firstArticle": {
+      "target": "Bisagra de eje excéntrico + dos ruedas y sus grupos rotatorios, en WebGL a escala.",
+      "rejectWhen": "Plegado sin separación lateral, intersección visible de neumáticos o primer frame negro.",
+      "switchTo": "CAD sólido y GLB de autor exportado",
+      "oracle": "Captura real del spike y giro 180 grados con comprobación de centros de ejes.",
+      "resourceProof": "https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/launch/20261122/relaunch/3d/work-10/spike.html",
+      "status": "NOT_RUN"
+    },
+    "humanApproved": false
+  },
+  "sourceCreatedAt": "2026-11-22T18:53:15.211Z"
+}
