@@ -1,0 +1,74 @@
+{
+  "schema": "prometeo.work.result/v1",
+  "room": "web",
+  "batchId": "web-w003-20261122",
+  "taskNumber": 3,
+  "taskId": "web-w003-20261122-03",
+  "title": "ARCHIVO ABIERTO · Nadia Arocena",
+  "publishedAt": "2026-11-22T19:14:39.055Z",
+  "branch": "candidate/prometeo-web-w003-20261122-03",
+  "sourceBranch": "gh-pages",
+  "status": "SOURCE_PUBLISHED_QA_PENDING_DEPLOY",
+  "briefSHA": "bef87bf57c789d2b0605ca9ff81a5d3bbaab5e35",
+  "oldBatchId": "web-w002-20261122",
+  "oldBriefSHA": "cd88a07941ab62072f6de5ee69764308f1ec2387",
+  "flow": {
+    "version": "2.0.0",
+    "gitBlobSHA": "1a0e709beec9a84986fc33c5ce4ab0a162dccaf2",
+    "status": "CANDIDATE_NOT_PROMOTED",
+    "flowAfter": "UNCHANGED"
+  },
+  "media": {
+    "type": "Canvas2D native digital raster, generated client-side",
+    "original": true,
+    "staticRasterStored": false,
+    "works": 6,
+    "visualFamilies": 4,
+    "maxRasterWidthDesktop": 2600,
+    "maxRasterWidthMobile": 2100,
+    "firstArticleRasterWidth": 1600,
+    "provenance": "Artista y obras ficticias. Composición y código originales, no fotos de terceros."
+  },
+  "components": [
+    "art.js",
+    "viewer.js",
+    "app.js",
+    "style.css",
+    "index.html",
+    "first-article.html",
+    "qa-tests.html"
+  ],
+  "checks": {
+    "githubSourceReadback": "PASS",
+    "deepSpecValidator": "SPIKE_REQUIRED_NO_STRUCTURAL_ERRORS",
+    "artDirectionValidator": "FIRST_ARTICLE_REQUIRED_NO_STRUCTURAL_ERRORS",
+    "localBrowser": "NOT_RUN",
+    "publicPagesHTTP": "404_WHILE_DEPLOY_PENDING",
+    "screenshots390": "NOT_RUN",
+    "screenshots1440": "NOT_RUN",
+    "firstArticleImageInspection": "NOT_RUN",
+    "touchPinch": "NOT_RUN",
+    "humanApproved": false
+  },
+  "urls": {
+    "page": "https://juanmanuelpm.github.io/Experimentos/prometeo/launch/20261122/relaunch/web/works/03/",
+    "source": "https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/launch/20261122/relaunch/web/works/03/index.html",
+    "firstArticle": "https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/launch/20261122/relaunch/web/works/03/first-article.html",
+    "qa": "https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/launch/20261122/relaunch/web/works/03/QA.md",
+    "tests": "https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/launch/20261122/relaunch/web/works/03/qa-tests.html",
+    "book": "https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/launch/20261122/relaunch/web/works/03/PREPRODUCTION.deep-spec-v1.json",
+    "trace": "https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/launch/20261122/relaunch/web/works/03/TRACE.json",
+    "viewer": "https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/launch/20261122/relaunch/web/works/03/viewer.js",
+    "art": "https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/launch/20261122/relaunch/web/works/03/art.js"
+  },
+  "comparison": {
+    "old": "8 piezas SVG generadas con técnica relativamente uniforme; navegador local reportado por autor W002.",
+    "new": "6 piezas por 4 técnicas originales basadas en canvas raster, visor y test de primer artículo; browser público sin comprobar.",
+    "claim": "TECHNIQUE_CHANGED; SUPERIOR_ARTISTIC_QUALITY_NOT_DEMONSTRATED"
+  },
+  "limitations": [
+    "Raster final generado a demanda, no binarios PNG/JPEG archivados de forma estática.",
+    "Public Pages devolvió 404 durante el despliegue; no usar esta URL como prueba de acceso hasta HTTP 200.",
+    "La evaluación visual y de interacción no fue realizada y aprobación humana permanece NO."
+  ]
+}
