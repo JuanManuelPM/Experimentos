@@ -1,0 +1,279 @@
+{
+  "version": "DEEP-SPEC-1",
+  "medium": "video",
+  "depth": "SISTEMA",
+  "taskId": "video-w002-20261122-02",
+  "batchId": "video-w002-20261122",
+  "taskNumber": 2,
+  "qualityBarVersion": "QBAR-1",
+  "sourceLaunchSha": "d7eebea6d36fc6e5aa3b72cba4e35dd149dc552d",
+  "briefSha256": "5c783647169dd26c1e07f83497152ddfcbe9e44e3d8c625ae327652ce2947678",
+  "brief": "Dirigí un anuncio premium para una luminaria plegable original y ficticia, revelando función, mecanismo y materiales mediante macrofotografía o renders de producto realmente adecuados, composición, reflejos, iluminación coherente y sonido táctil. La cámara debe vender un objeto consistente desde todos los ángulos sin geometría improvisada ni imágenes incompatibles; entregá película real, recursos/receta editables y un sistema reutilizable de planos de producto, con revisión de escala, continuidad y color.",
+  "intent": {
+    "experience": "Ver nacer la luz desde un objeto articulado, con peso, precisión táctil y promesa de utilidad real.",
+    "distinctAbility": "ProductShotSystem exportable: una misma geometría paramétrica gobierna seis cámaras, tres articulaciones, luz y sonido."
+  },
+  "references": [
+    {
+      "id": "R1",
+      "url": "https://www.yakoubgr.com/portfolio/mophie-gallery/",
+      "observation": "Estudio de caso y proceso abiertos: el lanzamiento separa precisión técnica y exhibición del objeto en fases narrativas; cierra luces y cámara antes de render pesado, no se observaron fotogramas completos reproducidos.",
+      "status": "OBSERVED",
+      "observedMedium": "PUBLIC_PAGE_TEXT_NOT_FULL_FILM"
+    },
+    {
+      "id": "R2",
+      "url": "https://aputure.com/en-US/case-studies/building-a-beauty-editorial-with-projection-lighting",
+      "observation": "Case study fotográfico abierto: fuente suave de base y proyección recortada para definir volúmenes; conserva continuidad lumínica con ajustes pequeños de proyección.",
+      "status": "OBSERVED",
+      "observedMedium": "PUBLIC_PAGE_TEXT_NOT_FULL_FILM"
+    },
+    {
+      "id": "R3",
+      "url": "https://quincemedia.com/2026/09/10/apple-3d-product-launch-videos/",
+      "observation": "Análisis externo abierto: materiales con microdetalle, luz rasante para perfiles, mismo modelo 3D para distintas vistas; no es fuente oficial de Apple ni aprobación artística.",
+      "status": "OBSERVED",
+      "observedMedium": "PUBLIC_PAGE_TEXT_NOT_FULL_FILM"
+    }
+  ],
+  "components": [
+    {
+      "id": "C1",
+      "role": "Modelo de base, vástagos, articulaciones y cabeza bajo geometría única",
+      "strategy": "Construir una fuente VTK paramétrica con longitudes fijas en centímetros y dos brazos acoplados por bisagras reales",
+      "constraints": "La identidad y las longitudes no cambian cuando gira la cámara ni varían los poses."
+    },
+    {
+      "id": "C2",
+      "role": "Sistema de seis planos y cámara con objetivos geométricos",
+      "strategy": "Cámaras ancladas en p1/p2 y plano hero, ángulos de visión específicos y movimientos continuos por segmento",
+      "constraints": "Ningún plano altera las dimensiones ni introduce variantes falsas del producto."
+    },
+    {
+      "id": "C3",
+      "role": "Luz y superficies: aluminio satinado, difusor y escena",
+      "strategy": "Utilizar luces separadas frontal/contra/ambiental con zona iluminada vinculada al encendido y materiales Phong ajustados",
+      "constraints": "El LED y el pool se encienden dentro de 0,65 segundos en un mismo reloj narrativo."
+    },
+    {
+      "id": "C4",
+      "role": "Foley táctil sincronizado y mezcla estéreo propia",
+      "strategy": "Síntesis determinista de clicks amortiguados, fricción y encendido; export WAV y multiplexado AAC",
+      "constraints": "Los clicks coinciden con el inicio y el cierre de cada giro físico visible."
+    },
+    {
+      "id": "C5",
+      "role": "Exportación cinematográfica y verificación observable",
+      "strategy": "Capturar VTK y codificar libx264 a 24fps, mux FFmpeg, verificar duración, fps y audio",
+      "constraints": "El MP4 contiene video real con imagen cambiante y pista de audio de 48 kHz."
+    }
+  ],
+  "questions": [
+    {
+      "id": "Q1",
+      "target": "C1",
+      "question": "¿Cómo conservar la misma luminaria y el mismo encadenamiento de piezas en acercamientos y vistas de producto sin metamorfosis?",
+      "alternatives": [
+        "Generar imágenes independientes por toma",
+        "Modelar una sola cinemática con tres bisagras y compartir el objeto entre todas las cámaras"
+      ],
+      "finding": "El análisis de Quince Creative describe valor del mismo modelo de producto entre planos; los seis renders de previsualización verificaron posición de bisagras compartida.",
+      "decisionImpact": "La cámara se mueve alrededor de un modelo de fuente única y los posePoints nacen siempre de las mismas longitudes.",
+      "evidenceRef": "R3"
+    },
+    {
+      "id": "Q2",
+      "target": "C3",
+      "question": "¿Qué ilumina realmente la silueta metálica sin quemar reflejos ni producir sombras y brillo incompatibles al cambiar de plano?",
+      "alternatives": [
+        "Iluminación plana frontal sin control",
+        "Tres fuentes de estudio constantes más señal cálida local ligada al emisor"
+      ],
+      "finding": "El caso de Aputure usa una fuente suave de fundamento y fuentes de acento para separar siluetas con continuidad de luz.",
+      "decisionImpact": "Mantener el mismo estudio y mismas fuentes durante seis planos; ligar emisor y pool al mismo factor de luminancia.",
+      "evidenceRef": "R2"
+    },
+    {
+      "id": "Q3",
+      "target": "C2",
+      "question": "¿Cómo hacer evidente que el producto se pliega mediante una secuencia de planos, no seis tomas de exhibición inconexas?",
+      "alternatives": [
+        "Escenas hero desconectadas",
+        "Silencio inicial, macro de rótula, plano de despliegue, encendido y hero final"
+      ],
+      "finding": "El proceso de Mophie Gallery fundamenta pasar de ingeniería a experiencia artística como argumento; el producto VÉRTICE comparte progreso de apertura.",
+      "decisionImpact": "Ordenar seis planos con macro mecánico antes del movimiento final y el encendido después del despliegue.",
+      "evidenceRef": "R1"
+    },
+    {
+      "id": "Q4",
+      "target": "C4",
+      "question": "¿Cómo fabricar un entorno sonoro táctil sin licencias ajenas y con hits conectados al movimiento y encendido?",
+      "alternatives": [
+        "Música libre genérica sin relación con acciones",
+        "Síntesis procedimental estéreo de rótula y relay sincronizada con hit timestamps"
+      ],
+      "finding": "La continuidad mecánica observable permite fijar cinco clicks del 2.98 al 7.94 segundo; el foley se produce con sintetizadores originales offline.",
+      "decisionImpact": "Entregar FOLEY.wav como fuente y realizar prueba de paridad de timeline y duración MP4.",
+      "evidenceRef": "R1"
+    },
+    {
+      "id": "Q5",
+      "target": "C5",
+      "question": "¿Qué salida es realmente reproducible sin depender del navegador, derechos de biblioteca musical ni video generativo de costo externo?",
+      "alternatives": [
+        "Propuesta visual sin binario MP4",
+        "Render offline VTK y encode H.264/AAC con QA ffprobe y extracción de frames"
+      ],
+      "finding": "Un spike de seis frames VTK 960x540 se produjo y se inspeccionó visualmente; FFmpeg y VTK están disponibles localmente.",
+      "decisionImpact": "Export MP4 offline con frames reales y evidencia de stream, más fuentes reproducibles.",
+      "evidenceRef": "R3"
+    }
+  ],
+  "decisions": [
+    {
+      "id": "D1",
+      "questionId": "Q1",
+      "componentIds": [
+        "C1"
+      ],
+      "choice": "Cinemática común de tres juntas",
+      "rejected": "Composición independiente por fotograma",
+      "productionChange": "Tres ángulos y una identidad de dimensiones, observables desde todas las cámaras",
+      "why": "El análisis de Quince Creative describe valor del mismo modelo de producto entre planos; los seis renders de previsualización verificaron posición de bisagras compartida."
+    },
+    {
+      "id": "D2",
+      "questionId": "Q2",
+      "componentIds": [
+        "C3"
+      ],
+      "choice": "Estudio fijo con tres fuentes y pool coherente",
+      "rejected": "Luces arbitrarias cambiantes entre planos",
+      "productionChange": "Reflejos de metal y encendido coinciden con el mismo reloj del producto",
+      "why": "El caso de Aputure usa una fuente suave de fundamento y fuentes de acento para separar siluetas con continuidad de luz."
+    },
+    {
+      "id": "D3",
+      "questionId": "Q3",
+      "componentIds": [
+        "C2"
+      ],
+      "choice": "Seis escenas con dramaturgia del despliegue",
+      "rejected": "Plenos hero repetidos",
+      "productionChange": "Macro bisagra, despliegue, encendido y hero enlazados por el movimiento",
+      "why": "El proceso de Mophie Gallery fundamenta pasar de ingeniería a experiencia artística como argumento; el producto VÉRTICE comparte progreso de apertura."
+    },
+    {
+      "id": "D4",
+      "questionId": "Q4",
+      "componentIds": [
+        "C4"
+      ],
+      "choice": "Foley original con eventos temporales",
+      "rejected": "Música genérica ajena",
+      "productionChange": "Clicks originales sobre tiempos anotados y mezcla exportada sin muestras externas",
+      "why": "La continuidad mecánica observable permite fijar cinco clicks del 2.98 al 7.94 segundo; el foley se produce con sintetizadores originales offline."
+    },
+    {
+      "id": "D5",
+      "questionId": "Q5",
+      "componentIds": [
+        "C5"
+      ],
+      "choice": "VTK + FFmpeg local y readback",
+      "rejected": "Pieza estática con promesa de export",
+      "productionChange": "Capturar, encode, mux, ffprobe, comprobar fotogramas 3 zonas",
+      "why": "Un spike de seis frames VTK 960x540 se produjo y se inspeccionó visualmente; FFmpeg y VTK están disponibles localmente."
+    }
+  ],
+  "relations": [
+    {
+      "from": "C1",
+      "to": "C2",
+      "invariant": "La cámara y los segmentos referencian siempre los mismos tres puntos articulados y longitudes en centímetros.",
+      "failure": "Un plano macro muestra un mecanismo más corto o en una dirección imposible que el plano general.",
+      "test": "Comparar seis fotogramas de muestra y medir las posiciones de los tres puntos."
+    },
+    {
+      "from": "C3",
+      "to": "C4",
+      "invariant": "El encendido visual de 7.9 s coincide con click eléctrico de 7.94 s y su sustain audible.",
+      "failure": "El LED se activa antes del sonido o el ambiente suena como si el objeto ya estuviera encendido.",
+      "test": "Verificar timing de anim_state y matriz de eventos de foley, contrastar audio en vídeo."
+    },
+    {
+      "from": "C2",
+      "to": "C5",
+      "invariant": "El total de seis planos cubre exactamente 16 s y 384 frames a 24 fps.",
+      "failure": "El export recorta la mitad del anuncio o duplicó la cabecera con audio corrido.",
+      "test": "Examinar ffprobe y muestras de frames en arranque, centro y final."
+    }
+  ],
+  "risks": [
+    {
+      "componentIds": [
+        "C1",
+        "C2"
+      ],
+      "severity": "high",
+      "failure": "La base vertical por eje implícito Y hace que parezca una medialuna y destruye escala creíble.",
+      "prevention": "Convertir todos los discos de base y glow al eje Z antes del render final.",
+      "test": "Seis imágenes de preview corregidas con base plana y cinemática idéntica.",
+      "status": "OBSERVED",
+      "spikeEvidence": "Primer preview reveló semicírculo vertical; se corrigió cylinder_z y se inspeccionó frame-14.30."
+    },
+    {
+      "componentIds": [
+        "C1",
+        "C2"
+      ],
+      "severity": "high",
+      "failure": "El renderer falla en entorno sin GPU y ninguna toma se exporta.",
+      "prevention": "Realizar spike VTK offscreen antes de render 384 cuadros.",
+      "test": "Se generaron seis previsualizaciones VTK a 960x540 y se revisaron visualmente.",
+      "status": "OBSERVED",
+      "spikeEvidence": "Se generaron preview-1.30 a preview-14.30 en modo offscreen Mesa."
+    },
+    {
+      "componentIds": [
+        "C4",
+        "C5"
+      ],
+      "severity": "medium",
+      "failure": "Audio multiplexado desfasado, clipping o pista ausente.",
+      "prevention": "Render WAV propio a 48 kHz, mux AAC, escuchar y medir picos.",
+      "test": "ffprobe presencia A/V y RMS pico, revisión auditiva humana pendiente.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "acceptance": [
+    {
+      "kind": "visual",
+      "criterion": "El mismo modelo mecánico aparece plegado, en apertura y desplegado en seis vistas coherentes.",
+      "oracle": "Comparación humana de capturas a 1.3, 3.6, 5.85, 8.9, 11.1, 14.3 segundos.",
+      "status": "OBSERVED"
+    },
+    {
+      "kind": "audio",
+      "criterion": "Los clicks coinciden perceptualmente con los movimientos y el encendido, sin clipping.",
+      "oracle": "Escucha real del MP4 final sobre timeline y pico digital medido.",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "functional",
+      "criterion": "El archivo final tiene 16 segundos, H.264, AAC y frames cambiantes decodificables.",
+      "oracle": "FFprobe, decodificación ffmpeg y comparación de capturas en tres regiones.",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "visual",
+      "criterion": "Materiales y reflejos resisten macro; dirección de fotografía se acerca al benchmark.",
+      "oracle": "Evaluación por dirección artística humana en pantalla real, no por validador.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "resources": "VTK 9.6 y render software EGL, NumPy, SciPy, Pillow, FFmpeg local libx264/AAC, fuentes Clear Sans del sistema; cero archivos ajenos incorporados.",
+  "licensing": "Modelo, animación y sonido producidos desde cero; referencias usadas solamente para estudiar y citar, sin material/brand de terceros incorporado.",
+  "environmentLimits": "El renderer VTK es de acabado técnico/estilizado, no un path-tracer comercial con HDRI ni microtexturas PBR y no se declara fotorealismo de estudio ni aprobación artística. Sin acceso directo desde este contenedor a GitHub para subir el MP4 binario."
+}
