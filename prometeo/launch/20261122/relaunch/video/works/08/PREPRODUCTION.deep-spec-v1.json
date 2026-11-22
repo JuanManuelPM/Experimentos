@@ -1,0 +1,320 @@
+{
+  "version": "DEEP-SPEC-1",
+  "medium": "video",
+  "depth": "OPERATIVO",
+  "taskId": "video-w003-20261122-08",
+  "batchId": "video-w003-20261122",
+  "taskNumber": 8,
+  "briefSha": "0cc574528594731a3d1cf0c15a0d0e5a37e775b7",
+  "oldBriefSha": "d7eebea6d36fc6e5aa3b72cba4e35dd149dc552d",
+  "qualityBarVersion": "QBAR-1",
+  "flowRef": "JuanManuelPM/pruebas@candidate/prometeo-video-fabrica-acertijos-20261116:cloud-lab/flow-studio-v3/experiments/semilla-parallel-launchpad/launcher-workspace-v4/prometeo/learning/video-studio/PROJECT_BOOTSTRAP.md#c1ea01fe4475c43e4affe6fbf4f475f93fc3d365",
+  "flowStatus": "DISCOVERED_SOURCE_NOT_PROMOTED_AS_PRODUCTION_ENGINE",
+  "brief": "LA CIFRA INVISIBLE: documental animado con datos contemporáneos públicos, fechados, verificables, escala fiel, fuente visible, película real y compilador reutilizable.",
+  "intent": {
+    "experience": "Una persona entiende en 24 segundos que la anomalía térmica es una diferencia contra una referencia, no temperatura absoluta, y puede leer los valores de 2024 y 2025 sin cambiar el eje.",
+    "distinctAbility": "Compilar una serie NASA versionada a dos masters MP4 con animación legible, escala invariante y auditoría numérica y de códec."
+  },
+  "references": [
+    {
+      "id": "nasa",
+      "status": "OBSERVED",
+      "url": "https://data.giss.nasa.gov/gistemp/data_v4.html",
+      "observation": "Página primaria NASA GISTEMP v4: índice combinado tierra-océano, serie anual y anomalía respecto de 1951–1980. CSV congelado previo W002 con Git blob exacto y 146 datos."
+    },
+    {
+      "id": "svs",
+      "status": "OBSERVED",
+      "url": "https://svs.gsfc.nasa.gov/5603/",
+      "observation": "Página NASA SVS 5603 describe visualización temporal de las anomalías globales 1880–2025, la cadena GHCN/ERSST y el valor del contexto temporal. Película íntegra NOT_RUN."
+    },
+    {
+      "id": "ft",
+      "status": "OBSERVED",
+      "url": "https://github.com/Financial-Times/chart-doctor",
+      "observation": "Documentación de FT chart-doctor/Visual Vocabulary organiza tipos de gráfico según relaciones, incluida la serie temporal. Adopción de línea cronológica con eje fijo y cero visible, no copia visual."
+    }
+  ],
+  "components": [
+    {
+      "id": "data",
+      "role": "Datos anuales versionados con semántica y baseline NASA explícitos.",
+      "strategy": "Importar CSV snapshot con comprobación de consecutividad y anclas.",
+      "constraints": "No introducir 2026 parcial, no promediar, no suavizar, no cambiar anomalía por temperatura absoluta."
+    },
+    {
+      "id": "geometry",
+      "role": "Gráfico de línea directo, escala cuantitativa común y marcadores clave.",
+      "strategy": "Render por Pillow con transformación afín de valores reales a dominio vertical fijo.",
+      "constraints": "Mismo dominio [-0.6,+1.4] y coordenadas lineales tanto en 16:9 como en 9:16."
+    },
+    {
+      "id": "editorial",
+      "role": "Jerarquía narrativa de apertura, referencia, revelación y conclusión.",
+      "strategy": "Dos encuadres compuestos nativamente, timeline de cinco secciones y títulos grandes.",
+      "constraints": "Todas las frases respaldadas por serie y visible fuente NASA; en 390 px sin recorte ni superposición."
+    },
+    {
+      "id": "sound-export",
+      "role": "Música original discreta, export H264/AAC y legibilidad temporal.",
+      "strategy": "Síntesis senoidal original y FFmpeg con decodificación de cada master.",
+      "constraints": "No simular sonificación numérica, no insertar metraje ajeno, audio muxado y pista declarada."
+    }
+  ],
+  "questions": [
+    {
+      "id": "q-scale",
+      "target": "geometry",
+      "question": "¿Qué representación muestra el cambio de 146 años sin exagerar 2024–2025 mediante truncar el cero o recalibrar el eje?",
+      "alternatives": [
+        "eje vertical fijo y línea anual directa",
+        "eje dinámico/zoom con reescalamiento"
+      ],
+      "evidenceRef": "nasa",
+      "finding": "NASA define la unidad como anomalía respecto de la base 1951–1980 y la serie contiene valores negativos, positivos y extremos recientes.",
+      "decisionImpact": "Fijar el rango [-0.6,+1.4], mostrar cero y °C en todos los frames y prohibir reescalado dinámico."
+    },
+    {
+      "id": "q-mobile",
+      "target": "editorial",
+      "question": "¿Cómo conservar una tesis científica y fuente legibles a 390 px sin recortar la película de escritorio ni ocultar datos?",
+      "alternatives": [
+        "master vertical nativo con composición y títulos propios",
+        "crop automático de master horizontal con tipografías cortadas"
+      ],
+      "evidenceRef": "ft",
+      "finding": "La prueba de primer artículo mostró recorte en títulos y colisión final al reducir el 16:9; el 9:16 remaquetado se inspeccionó en raster de 390 px.",
+      "decisionImpact": "Renderizar segunda secuencia de 540x960 con título en dos líneas, frases partidas y fuente abajo."
+    },
+    {
+      "id": "q-fidelity",
+      "target": "sound-export",
+      "question": "¿Es válido atribuir al espectador un cambio medido si el audio o la interpolación crea un pico de temperatura que no existe en NASA?",
+      "alternatives": [
+        "audio editorial no correlacionado y revelación de datos discretos",
+        "sonificación que insinúa valores no calculados"
+      ],
+      "evidenceRef": "svs",
+      "finding": "La representación de la serie NASA debe separar mediciones científicas de diseño sonoro y distinguir el proceso de dibujo de la estadística.",
+      "decisionImpact": "Usar línea de cada año sin interpolar cifras inventadas y describir la música como acompañamiento original."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "d1",
+      "questionId": "q-scale",
+      "componentIds": [
+        "data",
+        "geometry"
+      ],
+      "choice": "Escala vertical global fija y observaciones sin smoothing.",
+      "rejected": "Reescalar por capítulo para dramatizar picos.",
+      "why": "El cero debe ser una referencia estable para interpretar la unidad.",
+      "productionChange": "Todas las escenas llaman al mismo mapeo lineal en °C y muestran el baseline en pantalla."
+    },
+    {
+      "id": "d2",
+      "questionId": "q-mobile",
+      "componentIds": [
+        "editorial",
+        "geometry"
+      ],
+      "choice": "Segundo master vertical realmente recompuesto.",
+      "rejected": "Escalar o recortar automáticamente el horizontal.",
+      "why": "Primer artículo 390 px falló por clipping de tipografía y footer.",
+      "productionChange": "Se implementaron subtítulos editoriales en dos líneas, reordenamiento de cifras y márgenes propios 9:16."
+    },
+    {
+      "id": "d3",
+      "questionId": "q-fidelity",
+      "componentIds": [
+        "sound-export",
+        "data"
+      ],
+      "choice": "Música incidental original separada de los números.",
+      "rejected": "Audio presentado como medición térmica.",
+      "why": "Evita transformar fluctuaciones científicas en sonidos sugerentes que aparenten observaciones.",
+      "productionChange": "Eventos de audio marcan transiciones de guion, sin correspondencia 1:1 con temperaturas ni años."
+    }
+  ],
+  "relations": [
+    {
+      "from": "data",
+      "to": "geometry",
+      "invariant": "Para cada año, la coordenada del punto se obtiene exclusivamente de la anomalía en °C con eje fijo.",
+      "failure": "Una curva smoothed o un eje truncado falsean la información.",
+      "test": "Chequear anclas 1880/2024/2025, cada año y dominio constante."
+    },
+    {
+      "from": "geometry",
+      "to": "editorial",
+      "invariant": "El título, baseline y fuente no deben cubrir los picos 2024/2025 ni truncarse a 390 px.",
+      "failure": "Clip móvil o anotaciones ilegibles destruyen la comprensión.",
+      "test": "Inspeccionar pósters 390 y 1440, revisar ancho textual automático."
+    },
+    {
+      "from": "editorial",
+      "to": "sound-export",
+      "invariant": "La duración de 24 segundos y los cambios de acto corresponden a fotogramas y pista de audio reales.",
+      "failure": "Banda muda, track desincronizado o export solo HTML.",
+      "test": "FFprobe streams H264/AAC y decodificación completa de ambos masters."
+    }
+  ],
+  "risks": [
+    {
+      "componentIds": [
+        "editorial",
+        "geometry"
+      ],
+      "severity": "high",
+      "failure": "Reutilizar una película horizontal dentro de una pantalla 390 recorta el título y su explicación.",
+      "prevention": "Hacer primer artículo en tamaños 390 y 1440 y componer un master vertical nativo si falla.",
+      "test": "Comparar capturas y anchos tipográficos; revisar punto final y footer.",
+      "status": "OBSERVED"
+    },
+    {
+      "componentIds": [
+        "data",
+        "geometry"
+      ],
+      "severity": "high",
+      "failure": "Un eje variable exagera años recientes o cambia el significado del cero.",
+      "prevention": "Definir dominio de °C y baseline en JSON/motor antes del render.",
+      "test": "Test lineal de orden, observaciones consecutivas y anclas NASA.",
+      "status": "OBSERVED"
+    },
+    {
+      "componentIds": [
+        "sound-export"
+      ],
+      "severity": "medium",
+      "failure": "MP4 inexistente o audio sin codificar presentado como documental completo.",
+      "prevention": "Export binario por FFmpeg y validar tracks y duración.",
+      "test": "FFprobe y decodificación FFmpeg -f null de ambos masters.",
+      "status": "OBSERVED"
+    }
+  ],
+  "acceptance": [
+    {
+      "kind": "logic",
+      "criterion": "146 años reales consecutivos 1880–2025 con anclas y eje numérico invariantes.",
+      "oracle": "Python qa_tests.py con verificaciones de valores, dominio y mapeo.",
+      "status": "OBSERVED"
+    },
+    {
+      "kind": "visual",
+      "criterion": "Poster real a 390 y 1440 sin cortes ni superposición en el momento de cifras ancla.",
+      "oracle": "Imagen raster renderizada y examinada, comparada con ancho de texto programático; no prueba navegador.",
+      "status": "OBSERVED"
+    },
+    {
+      "kind": "functional",
+      "criterion": "Dos MP4 24s H264/AAC decodificables, con frames y dimensiones exactas.",
+      "oracle": "FFprobe JSON y FFmpeg decode completo sin errores.",
+      "status": "OBSERVED"
+    },
+    {
+      "kind": "audio",
+      "criterion": "Escucha humana comprueba mezcla y nivel en altavoces y teléfono.",
+      "oracle": "Audición externa con evaluación estética y de accesibilidad.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "licensing": "Solo datos públicos NASA atribuidos, obra visual y banda sonora originales del worker, sin imagen, voz, música o tipografía redistribuida de terceros.",
+  "resources": "Python 3, Pillow, NumPy, FFmpeg y fuentes sistema Lato/DejaVu; export local real y publicación Git blobs mediante API.",
+  "environmentLimits": "No se ejecutó una revisión editorial independiente, escucha subjetiva ni ensayo en dispositivo Android físico; tampoco se certifica una mejora artística respecto de W002.",
+  "artDirection": {
+    "schema": "prometeo.art-direction.first-article/v1",
+    "medium": "video",
+    "taskId": "video-w003-20261122-08",
+    "briefSha": "0cc574528594731a3d1cf0c15a0d0e5a37e775b7",
+    "flowRef": "JuanManuelPM/pruebas@candidate/prometeo-video-fabrica-acertijos-20261116:cloud-lab/flow-studio-v3/experiments/semilla-parallel-launchpad/launcher-workspace-v4/prometeo/learning/video-studio/PROJECT_BOOTSTRAP.md#c1ea01fe4475c43e4affe6fbf4f475f93fc3d365",
+    "promise": {
+      "subject": "146 puntos anuales NASA dibujados con evidencia y escala fija.",
+      "intent": "La primera pantalla presenta una idea sobre unidad, eje y duración, no un panel con decoraciones."
+    },
+    "benchmark": {
+      "url": "https://svs.gsfc.nasa.gov/5603/",
+      "description": "Observada la página/documentación del proyecto NASA SVS 5603, no el metraje íntegro.",
+      "status": "OBSERVED"
+    },
+    "techniques": [
+      {
+        "family": "raster-film-two-native-aspects",
+        "viability": "Pillow/NumPy/FFmpeg instalados, prueba real de render y decodificación en ambos tamaños.",
+        "license": "Gráficos y música generados originalmente sobre datos públicos NASA con atribución."
+      },
+      {
+        "family": "accessible-html-data-cards",
+        "viability": "HTML/CSS/Canvas para cartelas y gráficos semánticos, con export navegador pendiente de ensayo.",
+        "license": "Código original, CSV NASA atribuido; no usa footage, tipografías ni assets de terceros."
+      }
+    ],
+    "selectedTechnique": "raster-film-two-native-aspects",
+    "firstFrame": {
+      "openingDescription": "Título editorial grande y serie temporal naciente bajo eje vertical fijo y fuente visible.",
+      "focalSubject": "La línea anual NASA y su referencia cero con 146 puntos en dominio estable.",
+      "minimalUI": "Ningún overlay en el fotograma; el reproductor web usa controles nativos fuera del media.",
+      "checks": [
+        {
+          "viewport": "390",
+          "criterion": "Título y dos líneas móviles dentro del ancho del encuadre, sin texto cortado.",
+          "oracle": "Poster real 390 px inspeccionado tras reconstruir layout 9:16."
+        },
+        {
+          "viewport": "1440",
+          "criterion": "Serie, baseline, cifras 2024/2025 y fuente visibles con ancho 1440.",
+          "oracle": "Poster 1440 px interpolado desde master 960×540 inspeccionado."
+        },
+        {
+          "viewport": "both",
+          "criterion": "Línea anclada a dominio fijo y títulos no cubren picos.",
+          "oracle": "Capturas de primer artículo y anclas numéricas en el código."
+        }
+      ],
+      "observations": [
+        {
+          "viewport": "390",
+          "status": "OBSERVED_PASS",
+          "evidence": {
+            "url": "https://github.com/JuanManuelPM/Experimentos/blob/candidate/prometeo-video-w003-20261122-08/prometeo/launch/20261122/relaunch/video/works/08/poster_mobile_390.jpg",
+            "description": "Fotograma posterior a la corrección: 390 px de ancho con título dos líneas, trazado visible, baseline y fuente."
+          }
+        },
+        {
+          "viewport": "1440",
+          "status": "OBSERVED_PASS",
+          "evidence": {
+            "url": "https://github.com/JuanManuelPM/Experimentos/blob/candidate/prometeo-video-w003-20261122-08/prometeo/launch/20261122/relaunch/video/works/08/poster_desktop_1440.jpg",
+            "description": "Fotograma real de master H264 960 reescalado a 1440, revisado en su composición para presentación."
+          }
+        }
+      ]
+    },
+    "firstArticle": {
+      "target": "Primer frame de esquema NASA y acto final con picos 2024/2025 en 390/1440 px.",
+      "rejectWhen": "Clipping de título, ejes alterados, fuente ilegible o película no decodificable.",
+      "switchTo": "accessible-html-data-cards",
+      "oracle": "Inspección del raster y prueba de texto 390, controles de integridad de FFmpeg.",
+      "resourceProof": "Pillow y FFmpeg locales verificados; MP4 y pósters publicados como blobs reales.",
+      "status": "OBSERVED_PASS",
+      "evidence": {
+        "url": "https://github.com/JuanManuelPM/Experimentos/blob/candidate/prometeo-video-w003-20261122-08/prometeo/launch/20261122/relaunch/video/works/08/QA.md",
+        "description": "QA documenta primera falla horizontal y su corrección mediante nueva composición 9:16, con pruebas locales."
+      },
+      "attempts": [
+        {
+          "representation": "cropped-landscape-only",
+          "result": "FAILED",
+          "cause": "Título cortado y footer superpuesto en raster de 390 px."
+        },
+        {
+          "representation": "native-portrait-layout",
+          "result": "OBSERVED_PASS",
+          "cause": "Nueva disposición del título y fuentes verificada en imagen real de 390 px."
+        }
+      ]
+    },
+    "humanApproved": false
+  }
+}
