@@ -1,0 +1,286 @@
+{
+  "version": "DEEP-SPEC-1",
+  "medium": "3d",
+  "depth": "SISTEMA",
+  "taskId": "3d-w7-20261122-08",
+  "batchId": "3d-w7-20261122",
+  "taskNumber": 8,
+  "briefSha": "58de659e2aa01c0746d59ca6f95c36bdc59f3030",
+  "brief": "Construí un atlas 3D navegable de una cuenca geográfica real con relieve, hidrografía y por lo menos dos capas de datos auténticos, con fecha, escala, proyección y atribuciones visibles. Entregá un terreno multiescala ejecutable y un componente reutilizable de carga de teselas/datos; probá puntos de referencia, superposición correcta de capas, lectura desde vista regional a detalle y funcionamiento sin claves privadas incrustadas.",
+  "intent": {
+    "experience": "Sobrevolar la subcuenca Grand Canyon con relieve auténtico sin una interfaz que tape el paisaje.",
+    "distinctAbility": "Capas federales georreferenciadas y terrain DEM reales, con estados de red honestos."
+  },
+  "flow": {
+    "version": "2.3.0",
+    "sha256Canonical": "53bc9e2e4b37c99e92d3494af8dfa4461cd4644b15f980e32497a8428b067b3f",
+    "flowBlobSha": "d3a9fd3b455aaad093998f81e4e694eafb3bddb0"
+  },
+  "references": [
+    {
+      "id": "r-wbd",
+      "status": "OBSERVED",
+      "url": "https://hydro.nationalmap.gov/arcgis/rest/services/wbd/FeatureServer/4",
+      "observation": "La capa oficial WBD HUC8 y los campos de consulta fueron examinados; GeoJSON de datos reales no descargado."
+    },
+    {
+      "id": "r-flow",
+      "status": "OBSERVED",
+      "url": "https://3dhp.nationalmap.gov/arcgis/rest/services/usgs_3dhp_all/FeatureServer/50",
+      "observation": "La capa USGS 3DHP Flowline se confirmó mediante metadatos de servicio; geometrías no descargadas."
+    },
+    {
+      "id": "r-dem",
+      "status": "OBSERVED",
+      "url": "https://registry.opendata.aws/terrain-tiles/",
+      "observation": "Registro oficial de Mapzen Terrain Tiles y codificación Terrarium examinados; no existe raster descargado en esta sesión."
+    }
+  ],
+  "components": [
+    {
+      "id": "dem",
+      "role": "Generar topografía tridimensional real y multiescala.",
+      "strategy": "MapLibre raster-dem Terrarium con sombreado de terreno.",
+      "constraints": "No sustituir altitudes reales por noise procedural ni confundir un URL con DEM leído."
+    },
+    {
+      "id": "vectors",
+      "role": "Delimitar cuenca y cursos fluviales oficiales.",
+      "strategy": "USGS WBD HUC8 más 3DHP Flowline como GeoJSON por consulta segura.",
+      "constraints": "Reproyectar EPSG4326 a representación EPSG3857 sin desplazar la geometría."
+    },
+    {
+      "id": "camera",
+      "role": "Permitir lectura desde región a miradores locales.",
+      "strategy": "Escena de pantalla completa con cámara 3D/2D y rutas de observación.",
+      "constraints": "No ocultar terreno con paneles en 390 ni 1440; conservar escala gráfica dinámica."
+    },
+    {
+      "id": "loader",
+      "role": "Reutilizar solicitudes geoespaciales entre escenas.",
+      "strategy": "Módulo geo-loader con teselas XYZ, paginación, caché LRU y AbortController.",
+      "constraints": "Validar respuestas reales, evitar claves privadas y conservar fallos de red visibles."
+    }
+  ],
+  "questions": [
+    {
+      "id": "q1",
+      "target": "dem",
+      "question": "¿Cómo representar topografía real sin inventar los datos de elevación?",
+      "alternatives": [
+        "Raster-dem público con Terrarium",
+        "Malla original esculpida sin metadatos"
+      ],
+      "evidenceRef": "r-dem",
+      "finding": "La fuente Terrarium ofrece elevación pública y proyección XYZ, pero su red requiere comprobación.",
+      "decisionImpact": "Usar terreno DEM real y declarar fallo cuando no pueda descargarse la tesela."
+    },
+    {
+      "id": "q2",
+      "target": "vectors",
+      "question": "¿Cómo evitar confundir el parque nacional con la subcuenca real?",
+      "alternatives": [
+        "HUC8 USGS comprobado en GeoJSON",
+        "Borde decorativo alrededor de miradores"
+      ],
+      "evidenceRef": "r-wbd",
+      "finding": "WBD HUC8 permite validar código y geometría de subcuenca, separado de límites del parque.",
+      "decisionImpact": "Verificar code 15010002 y mantener líneas de ríos independientes de WBD."
+    },
+    {
+      "id": "q3",
+      "target": "camera",
+      "question": "¿Cómo se percibe el atlas al abrir el proyecto en móvil y escritorio?",
+      "alternatives": [
+        "Geografía protagonista con ficha desplegable",
+        "Panel geotécnico ocupando pantalla"
+      ],
+      "evidenceRef": "r-dem",
+      "finding": "El contenido protagonista es el relieve observado, no controles ni listados de parámetros.",
+      "decisionImpact": "Mantener UI mínima y probar scrollWidth en 390 y 1440 antes del render final."
+    },
+    {
+      "id": "q4",
+      "target": "loader",
+      "question": "¿Qué sucede con las capas si un servicio externo falla o llega tarde?",
+      "alternatives": [
+        "Cancelar solicitudes y mostrar estado real",
+        "Dibujar formas aproximadas de reemplazo"
+      ],
+      "evidenceRef": "r-flow",
+      "finding": "La URL del servicio no garantiza HTTP 200, CORS ni geometría; se requieren estados runtime.",
+      "decisionImpact": "AbortController, LRU y pruebas de red para no fingir éxito del mapa."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "d1",
+      "questionId": "q1",
+      "componentIds": [
+        "dem"
+      ],
+      "choice": "Terrarium original con DEM multiescala",
+      "rejected": "Relieve pseudoaleatorio sin datos reales",
+      "productionChange": "Fuente raster-dem MapLibre, tile XYZ y probe de imagen decodificada 256×256.",
+      "why": "El propósito central es una cuenca auténtica y georreferenciada."
+    },
+    {
+      "id": "d2",
+      "questionId": "q2",
+      "componentIds": [
+        "vectors"
+      ],
+      "choice": "WBD HUC8 y 3DHP como dos capas",
+      "rejected": "Límites del parque y ríos inventados",
+      "productionChange": "Se consultan fuentes federales independientes y se valida polígono HUC8 15010002.",
+      "why": "Necesidad de capas temáticas reales y una delimitación correcta."
+    },
+    {
+      "id": "d3",
+      "questionId": "q3",
+      "componentIds": [
+        "camera"
+      ],
+      "choice": "Mapa a pantalla completa, ficha secundaria",
+      "rejected": "Panel y controles persistentes superpuestos",
+      "productionChange": "Primera pantalla editorial en 390/1440, navegación por tres miradores y capas ocultas por demanda.",
+      "why": "La obra principal es la geografía y debe verse al primer acceso."
+    },
+    {
+      "id": "d4",
+      "questionId": "q4",
+      "componentIds": [
+        "loader"
+      ],
+      "choice": "Recurso externo con QA explícito",
+      "rejected": "Datos sintéticos en silencio si falla la red",
+      "productionChange": "Módulo de errores, diagnósticos, caché y cancelación antes de aceptar una capa como cargada.",
+      "why": "La auditoría anterior detectó ausencia de observación real de servicios."
+    }
+  ],
+  "relations": [
+    {
+      "from": "dem",
+      "to": "vectors",
+      "invariant": "Las capas y el relieve usan coordenadas y proyección compatibles en todas las escalas.",
+      "failure": "Ríos, márgenes y terreno no coinciden espacialmente.",
+      "test": "Verificar vértices HUC8, ríos y miradores a dos zooms con raster real."
+    },
+    {
+      "from": "camera",
+      "to": "loader",
+      "invariant": "La extensión vigente de cámara gobierna las consultas y cancela respuestas antiguas.",
+      "failure": "Cursos de agua fuera de vista o superpuestos en una extensión caducada.",
+      "test": "Navegar entre los miradores y comprobar bbox, cancelación y actualización de la capa."
+    }
+  ],
+  "risks": [
+    {
+      "componentIds": [
+        "dem",
+        "vectors"
+      ],
+      "severity": "high",
+      "failure": "No se pudo descargar DEM ni respuestas GeoJSON por bloqueo de red del entorno.",
+      "prevention": "Separar tests locales de datos realmente descargados y no declarar visual QA.",
+      "test": "Decodificar Terrarium 256x256, obtener dos GeoJSON y capturar terreno WebGL.",
+      "status": "NOT_RUN"
+    },
+    {
+      "componentIds": [
+        "camera"
+      ],
+      "severity": "medium",
+      "failure": "En móvil aparece scroll horizontal o un panel que tapa el mapa.",
+      "prevention": "Definir primera pantalla sin overlay antes de probar render cartográfico.",
+      "test": "Captura del shell y métricas CSS a 390 y 1440 píxeles.",
+      "status": "OBSERVED"
+    }
+  ],
+  "acceptance": [
+    {
+      "kind": "logic",
+      "criterion": "Parser GeoJSON, XYZ tiles, CRS, cache, y errores de red controlados.",
+      "oracle": "Diez pruebas locales con datos mock explícitos y node --check.",
+      "status": "OBSERVED"
+    },
+    {
+      "kind": "visual",
+      "criterion": "Relieve real junto a límite HUC8 y red 3DHP correctamente superpuestos.",
+      "oracle": "Inspección de WebGL con servicios reales cargados y captura 390/1440.",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "interactive",
+      "criterion": "Navegación móvil regional, detalle y miradores sin oclusión.",
+      "oracle": "Prueba táctil directa en navegador con terreno cargado.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "licensing": "Fuentes USGS y AWS Mapzen de acceso público con atribuciones; MapLibre BSD-3-Clause; no redistribuir mosaicos de terceros.",
+  "resources": "MapLibre GL 6.19.0, ES modules locales, DEM Terrarium AWS, GeoJSON ArcGIS WBD/3DHP y basemap USGS.",
+  "environmentLimits": "Los navegadores de prueba no acceden a CDN ni endpoints cartográficos; únicamente se vio la estructura HTML sin raster DEM.",
+  "artDirection": {
+    "schema": "prometeo.art-direction.first-article/v1",
+    "medium": "3d",
+    "taskId": "3d-w7-20261122-08",
+    "briefSha": "58de659e2aa01c0746d59ca6f95c36bdc59f3030",
+    "flowRef": "prometeo/3d-flow/versions/2.3.0/flow.json@d3a9fd3b",
+    "promise": {
+      "subject": "Geografía Grand Canyon real en relieve oblicuo.",
+      "intent": "Terreno protagonista con datos verificables y pocas superposiciones."
+    },
+    "benchmark": {
+      "status": "NOT_RUN",
+      "url": "https://www.nps.gov/grca/planyourvisit/maps.htm",
+      "description": "Referencia cartográfica oficial localizada; render perceptual no observado en este entorno."
+    },
+    "techniques": [
+      {
+        "family": "MapLibre raster-dem Terrarium",
+        "viability": "Código implementado; visual remoto WebGL sin poder observar.",
+        "license": "MapLibre BSD-3 y fuentes Mapzen con atribución."
+      },
+      {
+        "family": "Cesium mesh terrain",
+        "viability": "Vía alternativa genuina, pero exige probar un terreno autorizado.",
+        "license": "Motor abierto, tiles y permisos por validar antes de adoptar."
+      }
+    ],
+    "selectedTechnique": "MapLibre raster-dem Terrarium",
+    "firstFrame": {
+      "openingDescription": "Vista geográfica oblicua a pantalla completa, título editorial sin panel permanente.",
+      "focalSubject": "Cañón del Colorado y límite real de subcuenca.",
+      "minimalUI": "Miradores, botón 3D/2D y ficha opcional de fuentes.",
+      "checks": [
+        {
+          "criterion": "Abrir paisaje auténtico en 390 píxeles.",
+          "oracle": "Captura WebGL con DEM real visible.",
+          "viewport": "390"
+        },
+        {
+          "criterion": "No aparece desbordamiento horizontal en 390 y 1440.",
+          "oracle": "Métrica scrollWidth===innerWidth de HTML.",
+          "viewport": "both"
+        },
+        {
+          "criterion": "Datos auténticos alineados en dos zooms.",
+          "oracle": "Capturas regional y detalle con capas cargadas.",
+          "viewport": "1440"
+        }
+      ],
+      "observations": []
+    },
+    "firstArticle": {
+      "target": "Una tesela Terrarium real y dos capas USGS sobrepuestas en cámara oblicua.",
+      "rejectWhen": "Falla descarga real, capas o primera pantalla de terreno.",
+      "switchTo": "Cesium mesh terrain",
+      "oracle": "DEM decodificado, dos GeoJSON auténticos y captura WebGL.",
+      "resourceProof": "Metadatos oficiales observados; bytes remotos no descargados.",
+      "status": "BLOCKED"
+    },
+    "humanApproved": false
+  },
+  "humanApproved": false,
+  "documentedAt": "2026-11-22T18:57:27.074Z"
+}
