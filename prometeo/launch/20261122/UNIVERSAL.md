@@ -10,6 +10,10 @@ Estado: **Lanzadores publicados, no sesiones iniciadas ni resultados verificados
 
 Para **todos los nuevos WORK**, incluido cualquier estudio futuro, leer [la única especificación compartida](../DEEP_SPEC.md) junto a QBAR-1 y Q-LOOP. Antes de construir el primer corte, producir en el propietario de la tarea una ficha versionada de decisiones, componentes y relaciones, investigar lo que cambie elecciones y probar primero el riesgo alto. Usar el adaptador del medio que corresponda; **no** pedir un formulario al humano, cambiar los diez briefs, alterar hashes previos ni ejecutar tandas por esta modificación. Referencia común de los cinco lanzadores, sin duplicar el texto del método.
 
+## Integración preventiva para futuras W7/W003 (22/11/2026)
+
+Aplicar [ART-DIRECTION / FIRST-ARTICLE-1](../ART_DIRECTION_FIRST_ARTICLE.md) después de QBAR y dentro de DEEP-SPEC: primer frame definido y primer componente observado ANTES de construir el resto; ante defecto de representación cambiar técnica y re-probar, no maquillar. El worker persiste Book, artefacto de prueba y Trace de los nodos verdaderamente recorridos; estados NOT_RUN nunca son aprobación. La validación de campos no sustituye imagen, render, audio, navegador o video real. Mantener mismo enlace humano ROOT, 10 números por lanzador, 1 trabajo por chat y briefs históricos intactos.
+
 ## Prefijos visuales humanos · distinguen comandos, no cambian el contrato
 
 Para copiar mensajes desde el celular, los textos destinados al portapapeles comienzan con un **marcador visual** separado del comando real:
