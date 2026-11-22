@@ -1,0 +1,163 @@
+{
+  "schema": "prometeo.images.shared-scene/v1",
+  "taskId": "images-w003-20261122-02",
+  "units": "m",
+  "referenceSystem": "X east, Y north, Z up",
+  "room": {
+    "width": 7.2,
+    "depth": 6,
+    "height": 3.4,
+    "floorTileModule": 0.6
+  },
+  "openings": [
+    {
+      "id": "skylight",
+      "xMin": 2.2,
+      "xMax": 5.45,
+      "yMin": 1.8,
+      "yMax": 4.35,
+      "z": 3.48,
+      "material": "glass / dark bronze"
+    },
+    {
+      "id": "east_glazing",
+      "x": 7.17,
+      "yMin": 0,
+      "yMax": 6,
+      "zMin": 0,
+      "zMax": 3.3,
+      "material": "bronze frames / glass"
+    }
+  ],
+  "anchors": [
+    {
+      "id": "planter",
+      "center": [
+        3.65,
+        3.05,
+        0.2
+      ],
+      "size": [
+        2.68,
+        1.41,
+        0.32
+      ],
+      "material": "limestone curb / gravel"
+    },
+    {
+      "id": "olive_root",
+      "center": [
+        3.64,
+        3.02,
+        0.24
+      ],
+      "species": "Olea europaea, procedural simplified geometry"
+    },
+    {
+      "id": "bench",
+      "center": [
+        0.46,
+        3,
+        0.46
+      ],
+      "size": [
+        0.74,
+        3.55,
+        0.105
+      ],
+      "material": "oak"
+    },
+    {
+      "id": "north_slats",
+      "center": [
+        4.3,
+        6,
+        1.65
+      ],
+      "size": [
+        2.5,
+        0.052,
+        3.29
+      ],
+      "material": "oak"
+    },
+    {
+      "id": "lounge_chair",
+      "center": [
+        6.1,
+        4.4,
+        0.43
+      ],
+      "material": "timber / linen"
+    }
+  ],
+  "cameras": [
+    {
+      "id": "A_ingreso",
+      "position": [
+        1.25,
+        0.58,
+        1.63
+      ],
+      "target": [
+        3.75,
+        3.2,
+        1.49
+      ],
+      "verticalFovDeg": 75
+    },
+    {
+      "id": "B_diagonal",
+      "position": [
+        6.24,
+        1.18,
+        1.61
+      ],
+      "target": [
+        2.55,
+        3.88,
+        1.38
+      ],
+      "verticalFovDeg": 74
+    },
+    {
+      "id": "C_detalle",
+      "position": [
+        5.11,
+        3.12,
+        1.13
+      ],
+      "target": [
+        3.62,
+        3.09,
+        0.47
+      ],
+      "verticalFovDeg": 62
+    }
+  ],
+  "method": {
+    "geometry": "VTK 9.6 PBR primitives; fixed seed 220211",
+    "renderResolution": [
+      1440,
+      960
+    ],
+    "firstPhotoResolution": [
+      1536,
+      1024
+    ],
+    "photoDerivedFromScene": false
+  },
+  "invariants": [
+    "One room and material palette shared by all camera renders",
+    "No camera-specific actor or environmental regeneration",
+    "No crop counted as independent camera",
+    "All anchored furniture and roots contact ground"
+  ],
+  "observed": "geometry three distinct camera frames passed local observation",
+  "notObserved": [
+    "Three photo-grade renders from this single shared 3D world",
+    "Physically calibrated global illumination",
+    "Public raster escrow",
+    "Browser viewport screenshots 390/1440"
+  ]
+}
