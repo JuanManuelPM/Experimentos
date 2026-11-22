@@ -12,7 +12,7 @@
 - **SOURCE_READBACK_PASS:** árbol publicado en gh-pages, index.html leído de nuevo (blob e15877fb142063fc910b76e19ddf0f8de58829c7).
 - **PAGES_HTTP_NOT_VERIFIED:** el servicio web externo no fue accesible desde el instrumento de verificación; no confundir commit publicado con HTTP observable.
 - **SCREENREADER_NOT_RUN / HUMAN_APPROVED_NO.**
-- **DEEP-SPEC-1:** ficha estructurada en la rama de obra; la secuencia preventiva se aplicó tardíamente, error de orden documentado. Validación formal de CLI pendiente.
+- **DEEP-SPEC-1:** ficha estructurada en la rama de obra; la secuencia preventiva se aplicó tardíamente, error de orden documentado. Se ejecutó en Node la lógica del validador canónico: **READY_FOR_FIRST_SLICE**, sin errores estructurales.
 
 ## Enlaces
 
