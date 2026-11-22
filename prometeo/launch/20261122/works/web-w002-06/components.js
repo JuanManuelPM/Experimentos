@@ -72,7 +72,7 @@ export class SeriesChart {
     root.append(E("path",{d,fill:"none",stroke:"#be5438","stroke-width":"3.2","stroke-linejoin":"round","stroke-linecap":"round"}));
     for(let i=0;i<series.length;i++){
       const r=series[i],p=points[i],active=r.year===selectedYear,point=E("circle",{cx:p[0],cy:p[1],r:active?7:4,stroke:active?"#fff6e7":"#b94f34","stroke-width":active?"3":"1.5",fill:active?"#be5438":"#efeae0",tabindex:"0",role:"button","aria-label":r.year+": "+formatValue(r[field],field==="meanMax"?2:0)+" "+unit});
-      point.append(E("title")).textContent=r.year+": "+formatValue(r[field],field==="meanMax"?2:0)+" "+unit;
+      const title=E("title");title.textContent=r.year+": "+formatValue(r[field],field==="meanMax"?2:0)+" "+unit;point.append(title);
       const choose=()=>onSelect(r.year);
       point.addEventListener("click",choose);
       point.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();choose()}});
