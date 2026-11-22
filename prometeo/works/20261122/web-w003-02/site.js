@@ -33,9 +33,9 @@ function openPiece(id,{push=true,source=null}={}){
  if(source)trigger=source;
  if(!dialog.open)dialog.showModal();
  closeButton.focus();
- if(push){const u=new URL(window.location.href);u.searchParams.set('pieza',id);history.pushState({piece:id},'',u);}
+ if(push){const u=new URL(window.location.href);u.searchParams.set('pieza',id);try{history.pushState({piece:id},'',u);}catch(_){/* Offline file origin can disallow URL history; dialog remains usable. */}}
 }
-function clearQuery(){const u=new URL(window.location.href);if(u.searchParams.has('pieza')){u.searchParams.delete('pieza');history.replaceState({},'',u);}}
+function clearQuery(){const u=new URL(window.location.href);if(u.searchParams.has('pieza')){u.searchParams.delete('pieza');try{history.replaceState({},'',u);}catch(_){/* Keep offline dialog usable. */}}}
 function closePiece({updateUrl=true}={}){if(dialog.open)dialog.close();if(updateUrl)clearQuery();if(trigger?.isConnected)trigger.focus();trigger=null;}
 document.querySelectorAll('[data-piece]').forEach(button=>button.addEventListener('click',()=>openPiece(button.dataset.piece,{source:button})));
 closeButton.addEventListener('click',()=>closePiece());
