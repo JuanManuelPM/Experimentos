@@ -13,3 +13,7 @@ En el inventario consultado, 3D W5 registra diez retornos, sin equivaler a diez 
 **No cambiaron** `prometeo/control`, `FLOW_INDEX.json`, versiones antiguas de los flujos, briefs de tanda ni la publicación de las obras. El método privado permanece en rama candidata independiente. La próxima ola debe usar sus mismos briefs, con un cambio de versión solo si está verificado y autorizado.
 
 [Regresar a ROOT](https://juanmanuelpm.github.io/Experimentos/prometeo/root/)
+
+## Entradas existentes para las tandas
+
+No se creó una nueva W002. Las referencias actuales, que mantienen intactos sus encargos originales, son: [3D W5](https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/3d-flow/w5/LAUNCH.md), [Música W001](https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/launch/20261122/music/LAUNCH.md), [Video W001](https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/launch/20261122/video/LAUNCH.md), [Web W001](https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/launch/20261122/web/LAUNCH.md) e [Imágenes W001](https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/launch/20261122/images/LAUNCH.md). Que existan esas entradas no equivale a lanzar trabajadores.
