@@ -7,6 +7,10 @@
 
 **Otros modos para un chat coordinador, no necesarios para revisar una obra:** sustituir `ESTE_CHAT` por un `batchId` exacto, `music`, `video`, `web`, `images`, `3d` o `ALL`. En esos modos hay que identificar cada artefacto y no fingir que se visitaron chats ajenos.
 
+## Referencia de calidad obligatoria · QBAR-1
+
+Al evaluar una obra/tanda existente, **leer [QBAR-1](../launch/QUALITY_BAR.md)** y contrastar su dirección artística, técnica y experiencia con referencias profesionales reales pertinentes. La autocrítica que solo compara con el gusto de la propia IA es insuficiente. Para cada trabajo con evidencias, documentar la brecha concreta `referente observado → capacidad exigible → observación de la obra → causa/gate preventivo`. No cambiar retroactivamente briefs/SHAs de W001/W5, no fingir que la referencia fue abierta ni declarar calidad equivalente sin pruebas. Defectos de selección de objetivos se asignan a la etapa de **preparación C2**, no a quien solo ejecutó C1.
+
 ## Operación autónoma dentro de una única respuesta (no programada)
 
 1. **Sin feedback humano** es la ruta NORMAL: al pegar solo el comando, iniciar inmediatamente la crítica independiente de la obra producida en este chat. Si el humano añade audio o texto, incorporar también sus observaciones separadas de las detectadas automáticamente. **No pedir críticas adicionales, aprobaciones intermedias, ni otro mensaje para seguir.**
