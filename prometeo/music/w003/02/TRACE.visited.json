@@ -1,0 +1,175 @@
+{
+  "schema": "prometeo.music.visited-trace/v1",
+  "taskId": "music-w003-20261122-02",
+  "batchId": "music-w003-20261122",
+  "taskNumber": 2,
+  "flowVersion": "2.0.0",
+  "flowBlobSha": "1423f13e08b743f418c42052613a6808b214d622",
+  "briefBlobSha": "5d7e6c2540cc49d998b7fe75fc1048d6f9cba80b",
+  "createdAt": "2026-11-22T18:57:39.797Z",
+  "actionsRun": "https://github.com/JuanManuelPM/Experimentos/actions/runs/45057712069",
+  "visited": [
+    {
+      "stage": "M00",
+      "status": "OBSERVED_SOURCE",
+      "decision": "Fijar W003 y leer W002, contrato y flujo 2.0.0 sin modificar anteriores.",
+      "alternatives": [],
+      "evidence": "Flow SHA 1423f13e; LAUNCH SHA 5d7e6c",
+      "at": "2026-11-22",
+      "limits": null
+    },
+    {
+      "stage": "M01",
+      "status": "OBSERVED_SOURCE",
+      "decision": "Fijar encargo 02: UK garage nocturno de swing por pista.",
+      "alternatives": [],
+      "evidence": "Brief idéntico a W002, nuevo batchId",
+      "at": "2026-11-22",
+      "limits": null
+    },
+    {
+      "stage": "M02",
+      "status": "OBSERVED_TEXT_ONLY",
+      "decision": "Examinar manual Ableton, Flava D y UK beat tutorial; audio profesional NO escuchado.",
+      "alternatives": [],
+      "evidence": "Tres URLs observadas en Book",
+      "at": "2026-11-22",
+      "limits": "Aprobación perceptual humana NO_RUN; prueba HTTP navegador NOT_RUN"
+    },
+    {
+      "stage": "M03",
+      "status": "IMPLEMENTED",
+      "decision": "Contrastar síntesis algorítmica y modelado físico original; elegir fuente sin muestras externas.",
+      "alternatives": [],
+      "evidence": "engine.mjs y Book artDirection",
+      "at": "2026-11-22",
+      "limits": null
+    },
+    {
+      "stage": "M04",
+      "status": "IMPLEMENTED",
+      "decision": "Construir forma de 32 compases en seis secciones con silencios de respuesta.",
+      "alternatives": [],
+      "evidence": "EVENTS.json secciones 0-3,4-11,12-15,16-23,24-27,28-31",
+      "at": "2026-11-22",
+      "limits": null
+    },
+    {
+      "stage": "M05",
+      "status": "IMPLEMENTED",
+      "decision": "Programar 724 eventos y offsets/velocity por voz en ocho tracks.",
+      "alternatives": [],
+      "evidence": "engine.mjs y EVENTS.json",
+      "at": "2026-11-22",
+      "limits": null
+    },
+    {
+      "stage": "M06",
+      "status": "OBSERVED_TECHNICAL",
+      "decision": "Identificar kick dominante en primer corte y rebalancear buses antes de full render.",
+      "alternatives": [],
+      "evidence": "Commit cfbb92c; no escucha artística",
+      "at": "2026-11-22",
+      "limits": null
+    },
+    {
+      "stage": "M07",
+      "status": "OBSERVED_TECHNICAL",
+      "decision": "Renderizar WAV A/B de cuatro compases de alta densidad; registros y RMS legibles.",
+      "alternatives": [
+        "No extender sin primer audio",
+        "Extender antes de comprobar"
+      ],
+      "evidence": "first-slice-groove.wav blob 78cc9c3 y straight blob 43fdc2b",
+      "at": "2026-11-22",
+      "limits": "Aprobación perceptual humana NO_RUN; prueba HTTP navegador NOT_RUN"
+    },
+    {
+      "stage": "M08",
+      "status": "OBSERVED_TECHNICAL",
+      "decision": "Renderizar obra 32 compases, 63.744s, 133 BPM.",
+      "alternatives": [],
+      "evidence": "GitHub Actions run 45057712069, paso render success",
+      "at": "2026-11-22",
+      "limits": null
+    },
+    {
+      "stage": "M09",
+      "status": "OBSERVED_TECHNICAL",
+      "decision": "Escribir master 44.1kHz estéreo, ocho stems WAV, MIDI y proyecto JSON.",
+      "alternatives": [],
+      "evidence": "11 archivos PCM verificados por cabecera/tamaño, FFmpeg no disponible",
+      "at": "2026-11-22",
+      "limits": null
+    },
+    {
+      "stage": "M10",
+      "status": "OBSERVED_TECHNICAL",
+      "decision": "Demostrar identidad armónica A/B, igualdad RMS, suma float de stems a master.",
+      "alternatives": [],
+      "evidence": "0.000000000603 dB RMS delta; stem parity 1.0466e-7; escucha humana NOT_RUN",
+      "at": "2026-11-22",
+      "limits": "Aprobación perceptual humana NO_RUN; prueba HTTP navegador NOT_RUN"
+    },
+    {
+      "stage": "M11",
+      "status": "PARTIAL_PUBLIC",
+      "decision": "Audio/metadata en rama exclusiva con readback; página ligera gh-pages creada.",
+      "alternatives": [],
+      "evidence": "PUSH pesado gh-pages rechazado por updates concurrentes; HTML enlaza master crudo desde candidato",
+      "at": "2026-11-22",
+      "limits": "Aprobación perceptual humana NO_RUN; prueba HTTP navegador NOT_RUN"
+    }
+  ],
+  "technicalMetrics": {
+    "bars": 32,
+    "bpm": 133,
+    "durationSec": 63.74437641723356,
+    "events": 724,
+    "stems": 8,
+    "masterSha256": "03b58e70fd520af5b1c0ae08c6077f87157864c6388eb461ad36b92610f8b394",
+    "masterBytes": 11244552,
+    "abSameHarmonicNotes": true,
+    "abRmsDifferenceDb": 6.029611776809793e-10,
+    "stemsFloatParityMaxError": 1.046573743224144e-7,
+    "pcmHeaderReadback": 11
+  },
+  "gates": {
+    "deepSpec": "READY_FOR_FIRST_SLICE",
+    "firstArticle": "FIRST_FRAME_CAPTURE_REQUIRED",
+    "audioBinary": "CANDIDATE_GITHUB_READBACK",
+    "ghPagesHtml": "SOURCE_PUBLISHED",
+    "ghPagesPlayback": "NOT_RUN",
+    "humanApproved": false
+  },
+  "failures": [
+    {
+      "at": "2026-11-22T18:53:25Z",
+      "cause": "AB comparaba array de eventos en orden de timing y faltó FFmpeg",
+      "fix": "Comparación de notas ordenadas por identidad y auditoría WAV PCM en Node"
+    },
+    {
+      "at": "2026-11-22T18:55:48Z",
+      "cause": "GitHub Pages gh-pages recibía pushes simultáneos de otros workers",
+      "fix": "Player mínimo en gh-pages con URL a archivos master de la rama candidata; HTTP real no probado"
+    }
+  ],
+  "source": {
+    "master": "https://github.com/JuanManuelPM/Experimentos/blob/candidate/prometeo-music-w003-20261122-02/prometeo/music/w003/02/master.wav",
+    "qa": "https://github.com/JuanManuelPM/Experimentos/blob/candidate/prometeo-music-w003-20261122-02/prometeo/music/w003/02/QA.json",
+    "score": "https://github.com/JuanManuelPM/Experimentos/blob/candidate/prometeo-music-w003-20261122-02/prometeo/music/w003/02/EVENTS.json",
+    "engine": "https://github.com/JuanManuelPM/Experimentos/blob/candidate/prometeo-music-w003-20261122-02/prometeo/music/w003/02/engine.mjs"
+  },
+  "priorComparison": {
+    "oldBatchId": "music-w002-20261122",
+    "newBatchId": "music-w003-20261122",
+    "oldBriefBlobSha": "1045f4950c9f7ae11b455523ca664e087ec1b30d",
+    "newBriefBlobSha": "5d7e6c2540cc49d998b7fe75fc1048d6f9cba80b",
+    "flowBefore": "2.0.0",
+    "flowAfter": "2.0.0",
+    "newStrategy": "Mismo tipo de síntesis procedural legal, pero publicación del master/stems binarios realmente remota y panel apuntando al master original.",
+    "priorResult": "W002 máster descargable únicamente en chat, página WebAudio alternativa",
+    "newResult": "W003 master WAV 44.1k y ocho stems WAV en GitHub + Pages HTML liviana",
+    "perceptualImprovement": "UNVERIFIED"
+  }
+}
