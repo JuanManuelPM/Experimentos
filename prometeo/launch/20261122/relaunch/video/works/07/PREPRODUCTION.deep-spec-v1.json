@@ -1,0 +1,303 @@
+{
+  "version": "DEEP-SPEC-1",
+  "medium": "video",
+  "depth": "SISTEMA",
+  "batchId": "video-w003-20261122",
+  "taskNumber": 7,
+  "taskId": "video-w003-20261122-07",
+  "briefSha": "0cc574528594731a3d1cf0c15a0d0e5a37e775b7",
+  "oldBatchId": "video-w002-20261122",
+  "oldBriefSha": "d7eebea6d36fc6e5aa3b72cba4e35dd149dc552d",
+  "brief": "EL RELEVO: historia emocional sin palabras, 5+ planos con continuidad espacial, transferencia de significado y motor reutilizable de raccord.",
+  "intent": {
+    "experience": "A red origami bird changes from a guarded memory to a gift of warmth and ultimately an emblem of belonging.",
+    "distinctAbility": "Cross-shot causal acting, hand-to-object contact and reliable prop-owner transitions in a self-contained playable video renderer."
+  },
+  "references": [
+    {
+      "id": "R1",
+      "url": "https://www.pixar.com/bao",
+      "status": "OBSERVED",
+      "observation": "Official Pixar image frame was inspected: the close-up of fingers, object and surface demonstrates readable physical contact and scale. The entire short was NOT watched."
+    },
+    {
+      "id": "R2",
+      "url": "https://www.disneyplus.com/browse/entity-a257e161-96eb-4e54-995f-0ead0bc65cdd",
+      "status": "DOCUMENTATION_ONLY",
+      "observation": "Official premise of Paperman researched; full film not observed, and no Disney frames copied."
+    },
+    {
+      "id": "R3",
+      "url": "https://github.com/JuanManuelPM/Experimentos/blob/candidate/prometeo-video-audit-v2-20261122/prometeo/launch/20261122/repair/video-audit-v2/AUDIT_W002.md",
+      "status": "OBSERVED",
+      "observation": "W002/07 candidate audit was read. It records flat figures and acting not demonstrated by the single still; it is a diagnostic, not independent comparative scoring."
+    }
+  ],
+  "components": [
+    {
+      "id": "ACT",
+      "role": "Distinct elderly woman, teenager and child with brow, gaze, breath, posture and emotional changes.",
+      "strategy": "Original authored layered 2D drawing with per-frame animated expressions and gestures.",
+      "constraints": "Continuity of hair, clothing, face orientation and emotional arc across all eight shots."
+    },
+    {
+      "id": "PROP",
+      "role": "Single vermilion origami bird moving between owner hands twice in close-up.",
+      "strategy": "Original vector fold design animated via one world-coordinate prop with shot-specific transforms.",
+      "constraints": "Exactly one visible recognisable bird, no arbitrary duplicates or transfer without contact."
+    },
+    {
+      "id": "CAM",
+      "role": "Eight deliberately distinct shots across same bus-stop axis, wide, medium, close and reverses.",
+      "strategy": "One procedural camera/environment renderer with matching horizontal screen ordering.",
+      "constraints": "Old woman left, teen center/right, child right; maintain axis between close-up and wide."
+    },
+    {
+      "id": "AUD",
+      "role": "Original rain, folded-paper tactile hits, notes and vehicle atmosphere synchronised to story.",
+      "strategy": "Deterministic original PCM synthesis encoded to Opus/AAC with the canvas export.",
+      "constraints": "No borrowed music or stock samples; hits near 10.85, 12.64, 20.98, 23.02 seconds."
+    },
+    {
+      "id": "PUB",
+      "role": "Clean film player and authentic exported 960x540 video plus reusable graph schema.",
+      "strategy": "HTML Canvas and Web Audio MediaRecorder in browser; FFmpeg local MP4 transcode and FFprobe.",
+      "constraints": "No pseudo-video cards; real decodable video stream plus actual audio stream."
+    }
+  ],
+  "questions": [
+    {
+      "id": "Q1",
+      "target": "ACT",
+      "question": "Can stylized drawing communicate offered care through gaze and hand acting rather than a caption?",
+      "alternatives": [
+        "Layered original drawings with keyed brow, head turn and palm contact",
+        "Realistic captured performance footage with own actors"
+      ],
+      "evidenceRef": "R1",
+      "finding": "The observed Pixar still separates finger silhouette, object and contact; high fidelity remains an aspirational gap.",
+      "decisionImpact": "Use enlarged continuous handoff shots and restrained eye-expression keyframes; no explanatory title cards."
+    },
+    {
+      "id": "Q2",
+      "target": "PROP",
+      "question": "Does the red prop remain recognisable and belong to exactly one character after each cut?",
+      "alternatives": [
+        "One stable object design with ownership graph",
+        "Independent hand-drawn per-shot replicas"
+      ],
+      "evidenceRef": "R3",
+      "finding": "Prior audited cutout style had insufficient acting evidence; a single prop identity makes causal comprehension testable.",
+      "decisionImpact": "Fix the two handoff instants at 12.05 and 22.35 seconds in a linked temporal graph."
+    },
+    {
+      "id": "Q3",
+      "target": "PUB",
+      "question": "Will an exported real video contain synchronised sound and frames, rather than a browser mock preview?",
+      "alternatives": [
+        "Browser canvas captureStream plus MediaRecorder and FFmpeg",
+        "Static sequences or non-exportable HTML animation"
+      ],
+      "evidenceRef": "R3",
+      "finding": "Video W002 audit stresses that a source or still is not proof of published binary or playback.",
+      "decisionImpact": "Render WebM, transcode to MP4, run FFprobe and full decode, keep binary local status explicit."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "D1",
+      "questionId": "Q1",
+      "componentIds": [
+        "ACT",
+        "CAM"
+      ],
+      "choice": "Original illustrated acting with continuous keyed gestures",
+      "rejected": "Static geometric placeholders and text explanation",
+      "productionChange": "Eight cinematic cuts include eyebrow, gaze, posture, palm contact, physical space and reaction shots.",
+      "why": "Conveys the intended silent emotional beat with legally original human-made drawings."
+    },
+    {
+      "id": "D2",
+      "questionId": "Q2",
+      "componentIds": [
+        "PROP",
+        "CAM"
+      ],
+      "choice": "Single vermilion origami object with two explicit owner changes",
+      "rejected": "Implicit owner teleport across unrelated frames",
+      "productionChange": "RACCORD_GRAPH captures the exact before and after owner for every shot, contiguous times and transfer edges.",
+      "why": "Object continuity is the dramatic spine and a reusable testable invariant."
+    },
+    {
+      "id": "D3",
+      "questionId": "Q3",
+      "componentIds": [
+        "AUD",
+        "PUB"
+      ],
+      "choice": "Browser generated film, recorded WebM and FFmpeg MP4 transcode",
+      "rejected": "Slides masquerading as exported cinema",
+      "productionChange": "Produced a 557-frame H264+AAC MP4 and VP9+Opus WebM, validated by FFprobe.",
+      "why": "Only a decodable audiovisual file supports claims about exported video."
+    }
+  ],
+  "relations": [
+    {
+      "from": "ACT",
+      "to": "PROP",
+      "invariant": "Visible hand contact motivates prop owner change on S04 and S07; never two simultaneous owners.",
+      "failure": "The paper bird floats or changes hands when no acting cue is visible.",
+      "test": "Inspect frame samples before, during and after both handoffs."
+    },
+    {
+      "from": "CAM",
+      "to": "ACT",
+      "invariant": "Actor left/right ordering remains stable from station wide shots to hand close-ups.",
+      "failure": "A reversed screen axis scrambles giver and recipient.",
+      "test": "Check graph shot order and two handoff screen positions."
+    },
+    {
+      "from": "AUD",
+      "to": "PROP",
+      "invariant": "Paper rustle event aligns with each close-up hand contact.",
+      "failure": "Sound suggests handling at an unrelated frame.",
+      "test": "Compare cue timestamps to handoff intervals."
+    }
+  ],
+  "risks": [
+    {
+      "componentIds": [
+        "ACT",
+        "PROP"
+      ],
+      "severity": "high",
+      "failure": "Flat drawn hands and faces could still feel like cutouts, not credible performance.",
+      "prevention": "Isolate first high-risk transfer scene, inspect three temporal poses and shift to a rigged or captured alternative if causal silhouette fails.",
+      "test": "Actual rendered frames at 10.85, 11.83 and 12.64 seconds, plus human blind comprehension test.",
+      "status": "OBSERVED",
+      "note": "Local contact visible and prop remains legible, but professional-quality facial performance and blind test NOT_RUN."
+    },
+    {
+      "componentIds": [
+        "CAM"
+      ],
+      "severity": "medium",
+      "failure": "Bus window in closing shot could cover foreground actors and hide payoff.",
+      "prevention": "Place bus behind actors and clip its rider to the window.",
+      "test": "Chromium screenshot after layering correction at t=26.2.",
+      "status": "OBSERVED"
+    },
+    {
+      "componentIds": [
+        "AUD",
+        "PUB"
+      ],
+      "severity": "medium",
+      "failure": "Video may decode without sound, or audio may be clipped or delayed.",
+      "prevention": "Decode audio/video streams and test signal peak/RMS and frame count.",
+      "test": "FFprobe, full FFmpeg decoding and sample analysis.",
+      "status": "OBSERVED"
+    }
+  ],
+  "acceptance": [
+    {
+      "kind": "functional",
+      "criterion": "Eight connected segments form a 28-second timeline and two legal owner transitions.",
+      "oracle": "Automated RACCORD_GRAPH validator establishes continuity and no ownership jump.",
+      "status": "OBSERVED"
+    },
+    {
+      "kind": "visual",
+      "criterion": "First transfer is visible with three poses; 390 and 1440 layout has no overflow.",
+      "oracle": "Local Chromium screenshots and manual frame inspection, not external human evaluation.",
+      "status": "OBSERVED"
+    },
+    {
+      "kind": "audio",
+      "criterion": "Output includes a non-silent synchronised soundtrack without licensed samples.",
+      "oracle": "FFprobe verifies Opus/AAC; PCM RMS and peak measured with FFmpeg.",
+      "status": "OBSERVED"
+    },
+    {
+      "kind": "interactive",
+      "criterion": "Independent viewers understand owners, motive and emotional shift with no explanatory text.",
+      "oracle": "Blind test with 3 or more uninformed human viewers, with notes about confusion.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "resources": "Canvas 2D, Web Audio, MediaRecorder, Chromium headless, FFmpeg/FFprobe, Node and Python3; no paid video AI, external footage or unverified rights.",
+  "licensing": "Every character, bird, drawing, foley synthesis and note is authored for this task. Outside references are benchmarks only; no copyrighted images, footage or audio redistributed.",
+  "environmentLimits": "No consenting actor/camera footage was available, no independent human viewer pool, external Pages HTTP and mobile playback were not verified, and remote MP4 binary upload via this connector was unavailable. The MP4 belongs to the conversation output, while the public project contains the real in-browser video renderer and native WebM exporter.",
+  "artDirection": {
+    "schema": "prometeo.art-direction.first-article/v1",
+    "medium": "video",
+    "taskId": "video-w003-20261122-07",
+    "briefSha": "0cc574528594731a3d1cf0c15a0d0e5a37e775b7",
+    "flowRef": "https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/launch/DEEP_SPEC.md",
+    "promise": {
+      "subject": "One fragile red paper bird changes hands twice, within one coherent rainy bus shelter.",
+      "intent": "An emotion is shown by glance, release and receipt, not explained by text."
+    },
+    "benchmark": {
+      "url": "https://www.pixar.com/bao",
+      "description": "Official still of hands and a small tactile object visually inspected; the full Pixar short was NOT viewed.",
+      "status": "OBSERVED"
+    },
+    "techniques": [
+      {
+        "family": "Layered authored 2D illustration",
+        "viability": "All canvas assets authored and actually rendered; available local Chromium and FFmpeg tested.",
+        "license": "Original drawing and synthesised soundtrack, no third-party media."
+      },
+      {
+        "family": "Original rigged WebGL 3D performance",
+        "viability": "A browser-based rig is technically possible without licensed assets, but skin/hand quality untested; fallback NOT_RUN.",
+        "license": "Original authored mesh and materials only, no licensed footage."
+      }
+    ],
+    "selectedTechnique": "Layered authored 2D illustration",
+    "firstFrame": {
+      "openingDescription": "Wide rainy evening bus shelter with older woman holding bird at screen-left and teenager waiting to the right.",
+      "focalSubject": "Small vermilion paper bird visible against muted slate station palette.",
+      "minimalUI": "No controls on artwork; one external play button, scrubber and export action under the frame.",
+      "checks": [
+        {
+          "criterion": "At 390px document width, no horizontal scrolling and the movie remains visible.",
+          "oracle": "Chromium viewport screenshot and scrollWidth <= clientWidth.",
+          "viewport": "390"
+        },
+        {
+          "criterion": "At 1440px, protagonist and bird remain visible in first frame.",
+          "oracle": "Chromium screenshot at 1440 width and manual pixel check.",
+          "viewport": "1440"
+        },
+        {
+          "criterion": "The object appears before any transfer and remains identical in 8 shots.",
+          "oracle": "Eight time-sampled canvas frames inspected.",
+          "viewport": "both"
+        }
+      ],
+      "observations": [],
+      "localCaptures": [
+        "first_article_390.png",
+        "first_article_1440.png"
+      ]
+    },
+    "firstArticle": {
+      "target": "S04: exact hand contact, one recognisable bird and overlapping release/acceptance of two hands.",
+      "rejectWhen": "The bird disappears, duplicates, changes direction or hand contact is not legible in three temporal samples.",
+      "switchTo": "Original rigged WebGL 3D performance",
+      "oracle": "Rendered samples at 10.85/11.83/12.64 sec plus temporal order of ownership; human acting judgement separate.",
+      "resourceProof": "Original vector drawing code in publicly readable index.html and generated local film, FFmpeg/Chromium tested.",
+      "status": "OBSERVED_PASS",
+      "evidence": {
+        "url": "https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/launch/20261122/relaunch/video/works/07/index.html",
+        "description": "Source permits reproducing the first-article animation; real local screenshots were inspected, but not independently archived online."
+      }
+    },
+    "humanApproved": false,
+    "remoteFirstFrameCapture": "NOT_RUN",
+    "qualitativeActingJudgement": "NOT_APPROVED",
+    "structuralGateExpected": "FIRST_FRAME_CAPTURE_REQUIRED"
+  }
+}
