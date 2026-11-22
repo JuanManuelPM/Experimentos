@@ -1,0 +1,301 @@
+{
+  "version": "DEEP-SPEC-1",
+  "medium": "3d",
+  "depth": "SISTEMA",
+  "batchId": "3d-w7-20261122",
+  "taskId": "3d-w7-20261122-06",
+  "taskNumber": 6,
+  "briefSha": "58de659e2aa01c0746d59ca6f95c36bdc59f3030",
+  "oldBatchId": "3d-w6-20261122",
+  "oldBriefSha": "942c3ba8b851137886e959d2790771556e2d9f5d",
+  "brief": "Creá un bosque transitable con especies vegetales reconocibles y coherentes, relieve, río, viento, lluvia y transición entre estaciones que afecte realmente follaje, luz, terreno y atmósfera, no solo el color del cielo. Entregá un paisaje 3D de autor y un sistema reutilizable de instancias, niveles de detalle y clima, con recorridos observables en móvil que muestren continuidad ambiental, reflejos y sombras plausibles y comportamiento medido al cambiar calidad.",
+  "intent": {
+    "experience": "Caminar junto a un río donde las estaciones y el viento afecten de modo reconocible el ecosistema y no únicamente la interfaz.",
+    "distinctAbility": "Reconstruir siluetas botánicas por especie y compactar de verdad las instancias GPU sin sacrificar un paseo navegable."
+  },
+  "references": [
+    {
+      "id": "R1",
+      "status": "OBSERVED",
+      "url": "https://blog.playstation.com/2020/07/09/crafting-the-world-of-tsushima/",
+      "observation": "La directora de arte describe biomas con paleta controlada, viento global que responde en follaje y creación procedural que admite iteración artística. Se examinó texto y ejemplos publicados; el nivel de producción excede esta demostración."
+    },
+    {
+      "id": "R2",
+      "status": "OBSERVED",
+      "url": "https://blog.playstation.com/2021/01/12/how-stunning-visual-effects-bring-ghost-of-tsushima-to-life/",
+      "observation": "El equipo distingue movimiento de árboles, hierba y hojas y emplea el mismo viento para sistemas distintos; la caída de hojas requiere relación con terreno y agua. No se copian sus recursos."
+    },
+    {
+      "id": "R3",
+      "status": "OBSERVED",
+      "url": "https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/works/3d-w6-20261122/06/QA.md",
+      "observation": "QA W6 declara 245 árboles y 29.581 instancias, 5 FPS en SwiftShader escritorio, copas low-poly y Android no comprobado. Se inspeccionaron código y recibo, no se reprodujo render W6."
+    }
+  ],
+  "components": [
+    {
+      "id": "botany",
+      "role": "Jerarquía propia de troncos, bifurcaciones, ramillas, copas y especies reconocibles.",
+      "strategy": "Generación determinista por semilla y especie con racimos vinculados a estructura leñosa.",
+      "constraints": "No confundir número de hojas con credibilidad botánica; cinco especies, escala en metros."
+    },
+    {
+      "id": "lod",
+      "role": "Culling espacial y geometría instanciada con recuento enviado a GPU medible.",
+      "strategy": "SelectInstances compone Float32Array según distancia y calidad y actualiza bufferSubData.",
+      "constraints": "Selección temporalmente estable, no ocultar hojas en el shader mientras se siguen enviando."
+    },
+    {
+      "id": "climate",
+      "role": "Transiciones de cuatro estaciones, follaje, lluvias, terreno, luz y niebla.",
+      "strategy": "Reutilizar motor WebGL2 W6 y su interpolación estacional, con nuevos datos de copa.",
+      "constraints": "La pérdida de hojas caducas no debe eliminar el pino; viento y lluvia responden."
+    },
+    {
+      "id": "terrain",
+      "role": "Relieve de valle continuo con agua y vegetación de ribera.",
+      "strategy": "Heightfield y río paramétrico reutilizados de W6 con exclusión botánica validable.",
+      "constraints": "Raíces sobre suelo y árboles fuera de cauce; reflexiones de agua no equivalen a raytracing."
+    },
+    {
+      "id": "camera",
+      "role": "Travesía a escala humana y controles en escritorio y móvil.",
+      "strategy": "Conservar cámara de 1.67 m, colisiones y joystick W6, reducir UI superpuesta.",
+      "constraints": "No declarar Android probado por viewport; no tapar vegetación con menús."
+    }
+  ],
+  "questions": [
+    {
+      "id": "Q1",
+      "target": "botany",
+      "question": "¿Las cinco especies tienen siluetas estructuralmente distintas antes de instanciar miles de hojas?",
+      "alternatives": [
+        "Hojas repartidas por elipsoide",
+        "Ramas divergentes con racimos dependientes de cada especie"
+      ],
+      "finding": "La proyección CPU inicial de árboles con poco follaje quedó rala; una segunda con racimos, ramas y colgantes produjo hábitos mejor diferenciables, aunque no acredita render WebGL.",
+      "decisionImpact": "Nuevo módulo botany.mjs y primer artículo proyectado con geometría real.",
+      "evidenceRef": "R3"
+    },
+    {
+      "id": "Q2",
+      "target": "lod",
+      "question": "¿El modo ECO reduce las instancias realmente dibujadas o solo cambia el tamaño final del framebuffer?",
+      "alternatives": [
+        "Descartar en shader manteniendo instancia enviada",
+        "Compactar instancias visibles en CPU y enviar buffers GPU"
+      ],
+      "finding": "Tests sobre código W7: 187 instancias ECO y 591 ALTA en fixture de 1000 con los presupuestos publicados; no son FPS Android.",
+      "decisionImpact": "Se agrega selectInstances y gl.bufferSubData con cifras diagnosticables.",
+      "evidenceRef": "R1"
+    },
+    {
+      "id": "Q3",
+      "target": "climate",
+      "question": "¿La comparación estacional conserva una misma cámara y diferencia el caducifolio del perennifolio?",
+      "alternatives": [
+        "Cambiar solo skybox",
+        "Cambiar follaje, cubierta de suelo, niebla, lluvia y cielo"
+      ],
+      "finding": "El motor W6 incluye interpolación de clima y el núcleo computa pérdida en invierno; la matriz visual nueva en WebGL quedó sin ejecutar.",
+      "decisionImpact": "Se conserva sistema climático real del motor y se exige captura 4x por cámara antes de VERIFIED.",
+      "evidenceRef": "R2"
+    }
+  ],
+  "decisions": [
+    {
+      "id": "D1",
+      "questionId": "Q1",
+      "componentIds": [
+        "botany"
+      ],
+      "choice": "Arquitectura de ramas con racimos botánicos de autor",
+      "rejected": "Copas esféricas uniformes de hojas sueltas",
+      "productionChange": "Sustituir generador caducifolio W6 por buildBroadleaf con hábitos de roble, abedul, arce y sauce.",
+      "why": "La estructura vegetal debe preceder al volumen de hojas para conseguir una especie identificable."
+    },
+    {
+      "id": "D2",
+      "questionId": "Q2",
+      "componentIds": [
+        "lod"
+      ],
+      "choice": "Compacción CPU en intervalos de desplazamiento de 1.6 m",
+      "rejected": "Poner hojas a tamaño cero al pasar distancia sin reducir draw",
+      "productionChange": "Seleccionar por distancia y calidad y actualizar VBO dinámico con gl.bufferSubData.",
+      "why": "Es una reducción real de trabajo enviado a la GPU y produce diagnósticos comprobables."
+    },
+    {
+      "id": "D3",
+      "questionId": "Q3",
+      "componentIds": [
+        "climate",
+        "terrain",
+        "camera"
+      ],
+      "choice": "Mantener motor W6 autorizado y corregir técnica botánica/LOD sin rehacer clima",
+      "rejected": "Nuevo skybox estacional sin impacto sobre vegetación",
+      "productionChange": "Trasladar WebGL2 W6 a ruta W7 nueva, integrar botany, conservar estación, viento, lluvia, agua y recorrido.",
+      "why": "La mayor deficiencia registrada era la representación botánica y el costo GPU, no la falta de controles."
+    }
+  ],
+  "relations": [
+    {
+      "from": "botany",
+      "to": "terrain",
+      "invariant": "Base de cada tronco coincide con terreno y ningún árbol invade el cauce.",
+      "failure": "Árboles flotantes o creciendo en el agua.",
+      "test": "validateTrees cuenta floating y riverIntrusion."
+    },
+    {
+      "from": "botany",
+      "to": "lod",
+      "invariant": "Al variar nivel de detalle se preserva fuente geométrica y se cambia número de instancias emitidas.",
+      "failure": "FPS percibidos peores porque el shader descarta pero los vértices aún procesan.",
+      "test": "Fixture ECO vs ALTA, comprobar bufferSubData y conteo instanciado."
+    },
+    {
+      "from": "camera",
+      "to": "climate",
+      "invariant": "Comparar cuatro estaciones desde la misma pose sin perder la cámara ni controles.",
+      "failure": "Comparación engañosa entre posiciones o solo cambia el color de cielo.",
+      "test": "Capturas 390/1440 misma cámara y estación en WebGL real pendientes."
+    }
+  ],
+  "risks": [
+    {
+      "componentIds": [
+        "botany"
+      ],
+      "severity": "medium",
+      "failure": "Racimos se leen como collage triangular, no árboles botánicamente plausibles.",
+      "prevention": "Primer artículo estructural de tres especies con dos iteraciones reales.",
+      "test": "Proyección CPU de árbol con ramas y hojas; comparación de siluetas.",
+      "status": "OBSERVED"
+    },
+    {
+      "componentIds": [
+        "camera",
+        "climate",
+        "lod"
+      ],
+      "severity": "high",
+      "failure": "El WebGL2 final no se pudo renderizar en este entorno y Android no fue probado.",
+      "prevention": "Conservar el estado de verificación parcial y exigir screenshot/recorrido real antes de VERIFIED.",
+      "test": "Playwright WebGL2 a 390 y 1440, verano e invierno, lluvia y control móvil en dispositivo.",
+      "status": "NOT_RUN"
+    },
+    {
+      "componentIds": [
+        "lod"
+      ],
+      "severity": "medium",
+      "failure": "La compacción podría introducir saltos, coste CPU o ramas transparentes.",
+      "prevention": "Recompactar por desplazamiento y cambio de preset, no cada fotograma.",
+      "test": "FPS y comparación en dispositivo antes de afirmar aumento.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "acceptance": [
+    {
+      "kind": "logic",
+      "criterion": "Las cinco especies apoyan raíces sobre terreno y no invaden el río.",
+      "oracle": "Test de generateTrees y validateTrees realmente ejecutado sobre fuentes de GitHub.",
+      "status": "OBSERVED"
+    },
+    {
+      "kind": "logic",
+      "criterion": "La distancia y calidad modifican el recuento real de instancias.",
+      "oracle": "Fixture V8 de mil instancias, ECO menor que ALTA y source íntegro.",
+      "status": "OBSERVED"
+    },
+    {
+      "kind": "visual",
+      "criterion": "Primer cuadro 390 y 1440 muestra bosque protagonista sin UI invasiva.",
+      "oracle": "Captura WebGL2 real y examen de siluetas al abrir URL publicada.",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "interactive",
+      "criterion": "Caminar con dedo o teclas entre árboles y pasar por estaciones y lluvia.",
+      "oracle": "Sesión navegador y teléfono con screenshots de cuatro estaciones.",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "functional",
+      "criterion": "ECO, EQUILIBRADA y ALTA muestran cambio de rendimiento medido en móvil.",
+      "oracle": "Medición FPS sobre ruta idéntica en GPU móvil, no estimación CPU.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "resources": "HTML/JS originales propios, WebGL2 y GPU instancing nativo; módulo botany.mjs y forest-core.mjs sin dependencias ni red de terceros.",
+  "licensing": "Código y geometría originales o reutilizados de trabajo propio W6; no se incorporan texturas, escaneos ni fotos de terceros.",
+  "environmentLimits": "Chromium de este entorno bloquea navegación local y getContext('webgl2') devuelve null también con SwiftShader; la proyección CPU se observó pero NO equivale a render WebGL2 ni a uso Android.",
+  "artDirection": {
+    "schema": "prometeo.art-direction.first-article/v1",
+    "medium": "3d",
+    "taskId": "3d-w7-20261122-06",
+    "briefSha": "58de659e2aa01c0746d59ca6f95c36bdc59f3030",
+    "flowRef": "DEEP-SPEC-1@7656a293b0182f81619bf0d27b90dffa771c2683 + ART-DIRECTION@b1a1a012e90897200336cac6316c0511cb40c4c5; specialized current flow SHA NOT_VERIFIED",
+    "promise": {
+      "subject": "Valle mixto transitable de cinco especies y río que cambia con cuatro estaciones.",
+      "intent": "El protagonista es la naturaleza, no una pantalla de mandos ni un skybox estacional."
+    },
+    "benchmark": {
+      "url": "https://blog.playstation.com/2020/07/09/crafting-the-world-of-tsushima/",
+      "status": "OBSERVED",
+      "description": "Dirección ambiental de biomas diferenciados, viento y paletas coherentes, técnica observada en artículo del equipo."
+    },
+    "techniques": [
+      {
+        "family": "malla de ramas y racimos botánicos generados por especie",
+        "viability": "Sin servidor externo, WebGL2 existente de W6 y prueba lógica local V8 ejecutada.",
+        "license": "Geometría y algoritmo original, sin fotos ni modelos ajenos."
+      },
+      {
+        "family": "impostores vegetales con atlas de hojas procedurales originales",
+        "viability": "Técnica alternativa viable con dibujos SVG propios o alpha cards, no ejecutada en W7.",
+        "license": "Atlas puede generarse original sin recursos de terceros."
+      }
+    ],
+    "selectedTechnique": "malla de ramas y racimos botánicos generados por especie",
+    "firstFrame": {
+      "openingDescription": "Paseo por el valle, vegetación y río dominantes, sin portada gigante ni panel de QA.",
+      "focalSubject": "Copas y troncos de varias especies junto al corredor del río.",
+      "minimalUI": "Selector de cuatro estaciones y clima en una franja baja; paseo con botón y joystick.",
+      "checks": [
+        {
+          "criterion": "Bosque y agua ocupan el encuadre antes que botones o textos.",
+          "oracle": "Captura de canvas y control 390 px en navegador WebGL2 auténtico.",
+          "viewport": "390"
+        },
+        {
+          "criterion": "Siluetas de roble, pino y sauce diferenciables en un mismo cuadro.",
+          "oracle": "Captura 1440 px y comparación con artículo de especies.",
+          "viewport": "1440"
+        },
+        {
+          "criterion": "Invierno modifica follaje y material, no solo el cielo.",
+          "oracle": "Misma cámara estacional con diferencia de pixel y juicio visual.",
+          "viewport": "both"
+        }
+      ],
+      "observations": []
+    },
+    "firstArticle": {
+      "target": "Silueta botánica de 3 especies antes de instanciar el bosque entero.",
+      "rejectWhen": "Las copas aparecen vacías, redondas genéricas o sin ramas funcionales.",
+      "switchTo": "impostores vegetales con atlas de hojas procedurales originales",
+      "oracle": "Comparar roble ancho, abedul estrecho y sauce colgante en igual cámara, misma fuente de geometría.",
+      "resourceProof": "Se generó y proyectó la fuente original de botany.mjs sin datos ni texturas externos.",
+      "status": "OBSERVED_PASS",
+      "evidence": {
+        "url": "https://github.com/JuanManuelPM/Experimentos/blob/candidate/prometeo-3d-w7-20261122-06/prometeo/works/3d-w7-20261122/06/first-article.svg",
+        "description": "Primer artículo en SVG por proyección CPU del mismo generador (cuatro estaciones); NO es captura WebGL2, que permanece NOT_RUN."
+      }
+    },
+    "humanApproved": false
+  },
+  "producedAt": "2026-11-22T18:57:26.156Z"
+}
