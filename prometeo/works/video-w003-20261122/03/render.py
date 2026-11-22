@@ -269,7 +269,9 @@ def spike(inputs):
     spec["risks"][0]["spikeEvidence"]="Downloaded licensed files; one-second H264+AAC encoded and probed in GitHub Actions."
     spec["environmentLimits"]="Remote-download and ffmpeg compatibility spike observed on this GitHub Actions runner; aesthetic listening and human approval remain NOT_RUN."
     p.write_text(json.dumps(spec,ensure_ascii=False,indent=2)+"\n",encoding="utf8")
-    run(["node",HERE.parents[3]/"launch"/"deep-spec-v1.mjs",p])
+    run(["node",HERE.parents[2]/"launch"/"deep-spec-v1.mjs",p])
+    run(["ffmpeg","-hide_banner","-loglevel","error","-y","-ss","0.45","-i",out,"-frames:v","1",HERE/"first_article.jpg"],quiet=True)
+    (HERE/"first_article.mp4").write_bytes(out.read_bytes())
     out.unlink(missing_ok=True)
 
 def finish(slides,soundtrack,voiceSecs):
