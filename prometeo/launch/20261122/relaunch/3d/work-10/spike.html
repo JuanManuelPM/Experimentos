@@ -1,0 +1,22 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>F/20 · Primera pieza</title><style>html,body{height:100%;margin:0;background:#131b21}canvas{display:block;width:100%;height:100%}aside{position:fixed;top:28px;left:28px;color:#e8dfcc;font:12px system-ui;letter-spacing:.19em;pointer-events:none}small{display:block;color:#a9adac;letter-spacing:.06em;margin-top:9px}</style><script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js"}}</script></head><body><aside>F/20 · TEST DE BISAGRA<small>PRIMER ARTÍCULO · 1:1 METROS</small></aside><script type="module">
+import * as T from 'three';
+const scene=new T.Scene();scene.background=new T.Color('#131b21');
+const camera=new T.PerspectiveCamera(38,innerWidth/innerHeight,.02,15);
+camera.position.set(1.4,1.25,2.4);camera.lookAt(0,.52,0);
+const r=new T.WebGLRenderer({antialias:true});r.setSize(innerWidth,innerHeight);r.setPixelRatio(Math.min(devicePixelRatio,2));r.outputColorSpace=T.SRGBColorSpace;r.toneMapping=T.ACESFilmicToneMapping;document.body.append(r.domElement);
+scene.add(new T.HemisphereLight(0xd9e9ff,0x202020,2.2));const sun=new T.DirectionalLight(0xffecd5,3.4);sun.position.set(-2,4,3);scene.add(sun);
+const metal=new T.MeshStandardMaterial({color:0x325164,metalness:.76,roughness:.26}),steel=new T.MeshStandardMaterial({color:0xc6b58e,metalness:.72,roughness:.3}),rubber=new T.MeshStandardMaterial({color:0x121417,roughness:.87});
+function bar(parent,a,b,radius,mat){const p=new T.Vector3(...a),q=new T.Vector3(...b),d=new T.Vector3().subVectors(q,p);const m=new T.Mesh(new T.CylinderGeometry(radius,radius,d.length(),16),mat);m.position.copy(p).add(q).multiplyScalar(.5);m.quaternion.setFromUnitVectors(new T.Vector3(0,1,0),d.normalize());parent.add(m);return m}
+const rear=new T.Group(),rotor=new T.Group();scene.add(rear,rotor);rotor.position.set(.02,.545,-.09);
+const front=new T.Group();rotor.add(front);front.position.set(-.02,-.545,.09);
+bar(rear,[-.55,.276,0],[-.24,.80,0],.023,metal);bar(rear,[-.24,.8,0],[.02,.545,0],.026,metal);bar(rear,[-.22,.37,0],[.02,.545,0],.023,metal);
+bar(front,[.02,.545,0],[.37,.80,0],.027,metal);bar(front,[.02,.545,0],[.41,.60,0],.027,metal);
+bar(rear,[.02,.545,0],[.02,.545,-.09],.025,steel);bar(front,[.02,.545,0],[.02,.545,-.09],.019,steel);
+const drum=new T.Mesh(new T.CylinderGeometry(.042,.042,.11,32),steel);drum.rotation.x=Math.PI/2;drum.position.set(.02,.545,-.09);rear.add(drum);
+function wheel(parent,x){const g=new T.Group();g.position.set(x,.276,0);parent.add(g);for(const [rad,t,ma] of [[.256,.02,rubber],[.235,.008,steel]])g.add(new T.Mesh(new T.TorusGeometry(rad,t,10,80),ma));for(let i=0;i<24;i++){const a=i*Math.PI/12;bar(g,[0,0,0],[.235*Math.cos(a),.235*Math.sin(a),0],.0014,steel)}}
+wheel(rear,-.55);wheel(front,.58);
+const ground=new T.Mesh(new T.PlaneGeometry(100,100),new T.MeshStandardMaterial({color:0x181f23,roughness:1}));ground.rotation.x=-Math.PI/2;ground.position.y=-.012;scene.add(ground);
+let t=0;function tick(){t+=.004;rotor.rotation.y=(Math.sin(t)*.5+.5)*Math.PI;r.render(scene,camera);requestAnimationFrame(tick)}tick();
+addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();r.setSize(innerWidth,innerHeight)});
+window.__FIRST_ARTICLE={ready:true,hinge:[.02,.545,-.09],metres:true,frontAndRearAssembly:true,webgl:r.capabilities.isWebGL2};
+</script></body></html>
