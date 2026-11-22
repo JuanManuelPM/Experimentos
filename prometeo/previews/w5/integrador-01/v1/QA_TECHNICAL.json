@@ -1,0 +1,75 @@
+{
+  "schema": "prometeo.3d.qa-technical/v1",
+  "projectId": "respawn-desk",
+  "version": "W5-01",
+  "method": "2.3.0",
+  "verifiedAt": "2026-11-22T01:59:00Z",
+  "source": "GitHub gh-pages readback and JavaScript V8 isolate checks",
+  "checks": {
+    "filesReadback": {
+      "state": "PASS",
+      "files": [
+        "index.html",
+        "scene.mjs",
+        "assets/ivo-rig.mjs",
+        "timeline.mjs",
+        "SCENE_RELEASE.json"
+      ]
+    },
+    "syntax": {
+      "state": "PASS",
+      "files": [
+        "scene.mjs",
+        "assets/ivo-rig.mjs",
+        "timeline.mjs",
+        "camera/world-to-scene-rails.mjs"
+      ]
+    },
+    "rail": {
+      "state": "PASS",
+      "shots": 7,
+      "seconds": 36,
+      "errors": []
+    },
+    "window": {
+      "state": "PASS_MATH_SAMPLE",
+      "t": 13.1,
+      "point": [
+        0.05541753386773331,
+        2.1651401962894568,
+        3.993294629138102
+      ],
+      "apertureXRange": [
+        -0.7,
+        0.7
+      ],
+      "apertureYRange": [
+        0.93,
+        3.17
+      ]
+    },
+    "actor": {
+      "state": "PASS_MATH_SAMPLE",
+      "sampleTimes": [
+        16.5,
+        19,
+        24.2,
+        28.7,
+        35.2
+      ],
+      "triangleCountMin": 6048,
+      "triangleCountMax": 6272,
+      "finiteCoordinates": true
+    },
+    "webglRender": "NOT_RUN",
+    "realBrowser": "NOT_RUN",
+    "androidPhysical": "NOT_RUN",
+    "humanArtApproval": "NOT_REVIEWED"
+  },
+  "claimsExcluded": [
+    "browser screenshot",
+    "physically observed camera composition",
+    "device performance",
+    "approved visual quality"
+  ]
+}
