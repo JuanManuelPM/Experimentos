@@ -1,0 +1,90 @@
+{
+  "schema": "prometeo.music.visited-trace/v1",
+  "batchId": "music-w003-20261122",
+  "taskId": "music-w003-20261122-07",
+  "publishedAt": "2026-11-22T19:03:44.740Z",
+  "flowRef": {
+    "version": "2.0.0",
+    "shaGitBlob": "1423f13e08b743f418c42052613a6808b214d622",
+    "status": "FROZEN_CANDIDATE"
+  },
+  "stages": [
+    {
+      "id": "M00",
+      "status": "SOURCE_READ",
+      "result": "Recovered W003 launch and immutable candidate flow"
+    },
+    {
+      "id": "M01",
+      "status": "SOURCE_READ",
+      "result": "Task 07 subject locked; no brief edits"
+    },
+    {
+      "id": "M02",
+      "status": "SOURCE_READ",
+      "result": "Read Holden/Zimpel, Tignor and GuitarJam documentation, no referenced audio listening"
+    },
+    {
+      "id": "M03",
+      "status": "IMPLEMENTED",
+      "result": "Authored motif/response concept and four human improvised phrases"
+    },
+    {
+      "id": "M04",
+      "status": "IMPLEMENTED",
+      "result": "Detected real attacks and stored unquantized 130-event map"
+    },
+    {
+      "id": "M05",
+      "status": "IMPLEMENTED",
+      "result": "Built original electronic voice and temporal response mapping"
+    },
+    {
+      "id": "M06",
+      "status": "IMPLEMENTED",
+      "result": "Four acoustic takes, echoes, circuit and room stems"
+    },
+    {
+      "id": "M07",
+      "status": "IMPLEMENTED",
+      "result": "85.114 s master and actual individual stems"
+    },
+    {
+      "id": "M08",
+      "status": "TECHNICAL_OBSERVED",
+      "result": "WAV/OGG exports, peak/RMS numbers, ffprobe and source hashes"
+    },
+    {
+      "id": "M09",
+      "status": "TECHNICAL_OBSERVED",
+      "result": "First article produced, quiet-master technical correction applied; listening perceptual NOT_RUN"
+    },
+    {
+      "id": "M10",
+      "status": "NOT_RUN",
+      "result": "No independent mastering LUFS, reference ear comparison or studio headphones judgment"
+    },
+    {
+      "id": "M11",
+      "status": "PREPARED_ROOT_RETURN",
+      "result": "Receipt prepared; no self-promotion or human approval"
+    }
+  ],
+  "issues": [
+    {
+      "stage": "M00",
+      "cause": "Wikimedia returned HTTP 429; runner ffmpeg initially missing",
+      "preventiveGate": "source acquisition before first article",
+      "test": "GitHub Actions blocked download then successful alternate CC0 source",
+      "owner": "music-w003-07"
+    },
+    {
+      "stage": "M09",
+      "cause": "First full mix peak below -11 dBFS",
+      "preventiveGate": "inspect actual peak before handoff",
+      "test": "Rerender with bounded max +9.54 dB gain and report new peak",
+      "owner": "music-w003-07"
+    }
+  ],
+  "humanApproved": false
+}
