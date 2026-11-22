@@ -15,3 +15,5 @@ Al entrar aparece la bicicleta armada. El usuario rota con arrastre, hace zoom c
 **Benchmark observado como texto, no CAD inspeccionado:** Tern Verge X11 (bisagra OCL+), guía de plegables Brompton (compactación y clamps), manual oficial de Three.js (módulos/rendimiento). Sin reutilización de modelos ni logos de esas marcas. Geometría propia creada en JS; Three.js bajo MIT.
 
 Identidad: `3d-w7-20261122-10`; launch blob `58de659e2aa01c0746d59ca6f95c36bdc59f3030`; flujo 3D `2.3.0` SHA256 `53bc9e2e4b37c99e92d3494af8dfa4461cd4644b15f980e32497a8428b067b3f`; estado `SOURCE_PUBLISHED · VISUAL_QA_NOT_RUN · HUMAN_APPROVED=NO`.
+
+**Browser regression:** `browser.test.mjs` defines screenshots at 390/1440, fold/explode controls, GLB magic-byte export; scoped Actions workflow `.github/workflows/prometeo-3d-w7-10.yml` on candidate. Execution result is **NOT_RUN / NOT_OBSERVED** here.
