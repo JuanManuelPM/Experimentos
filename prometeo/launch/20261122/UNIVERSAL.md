@@ -6,6 +6,10 @@ Estado: **Lanzadores publicados, no sesiones iniciadas ni resultados verificados
 
 **Antes de producir cualquier N**, leer [QUALITY_BAR.md](../../launch/QUALITY_BAR.md) y aplicar `QBAR-1` a la consigna original **sin alterarla**: investigar referentes excepcionales reales del mismo medio, extraer capacidades que elevan el resultado, rechazar sustituciones mediocres, producir un artefacto completo y compararlo con criterios perceptuales y funcionales. El benchmark es objetivo aspiracional, no promesa ni certificación. `QUALITY_BAR.md` es un único control transversal; cada estudio conserva su técnica especializada. Esta condición no cambia trabajos con SHA ya fijado ni promueve automáticamente los flujos privados.
 
+## ESPECIFICACIÓN PROFUNDA · DEEP-SPEC-1
+
+Para **todos los nuevos WORK**, incluido cualquier estudio futuro, leer [la única especificación compartida](../../DEEP_SPEC.md) junto a QBAR-1 y Q-LOOP. Antes de construir el primer corte, producir en el propietario de la tarea una ficha versionada de decisiones, componentes y relaciones, investigar lo que cambie elecciones y probar primero el riesgo alto. Usar el adaptador del medio que corresponda; **no** pedir un formulario al humano, cambiar los diez briefs, alterar hashes previos ni ejecutar tandas por esta modificación. Referencia común de los cinco lanzadores, sin duplicar el texto del método.
+
 ## Copia única desde ROOT
 
 La interfaz compartida presenta **un solo botón «Copiar prompt universal» por tanda**, no uno por cada número. Copia `WORK · <enlace común> · ` (incluido el espacio final). El humano pega ese mismo texto en un chat nuevo por encargo y escribe solo el número **1 a N** al final. Cada número resuelve un brief independiente ya existente; **no hay que duplicar briefs ni cambiar enlaces**. Los números de ROOT sirven para consultar resultados, no para copiar instrucciones ni disparar ejecuciones. Copiar no equivale a STARTED.
