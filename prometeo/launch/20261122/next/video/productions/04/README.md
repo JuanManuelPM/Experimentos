@@ -15,7 +15,7 @@ Secuencia: `portada 0–2` · `alivio 2–6.5` · `negación 6.5–11` · `amena
 - [Eventos sonoros](SOUND_EVENTS.json): tiempos en segundos de las acciones principales.
 - [Informe de QA](QA_REPORT.md): evidencia, límites y resultados medibles.
 
-Los masters locales entregados en la conversación son `UNA_PALABRA_CAMBIA_TODO_16x9.mp4` (1280×720) y `UNA_PALABRA_CAMBIA_TODO_9x16.mp4` (720×1280), ambos H.264/AAC, 23 s. **La presencia de fuentes en esta rama no significa que los MP4 ya estén alojados aquí**. Si están disponibles luego de CI, verificarlos con los comandos de QA; nunca inferirlos por un README.
+Los masters locales entregados en la conversación son `UNA_PALABRA_CAMBIA_TODO_16x9.mp4` (1280×720) y `UNA_PALABRA_CAMBIA_TODO_9x16.mp4` (720×1280), ambos H.264/AAC, 23 s. **PUBLIC MEDIA VERIFIED:** la ejecución GitHub Actions [#45044560131](https://github.com/JuanManuelPM/Experimentos/actions/runs/45044560131) terminó SUCCESS y publicó [MP4 horizontal](UNA_PALABRA_CAMBIA_TODO_16x9.mp4), [MP4 vertical](UNA_PALABRA_CAMBIA_TODO_9x16.mp4), [WAV original](ORIGINAL_SOUND.wav) y [hashes de CI](CHECKSUMS.txt) en esta rama. Los dos MP4 y el WAV recibieron readback por la API de GitHub. Los archivos CI tienen hashes de MP4 propios, diferentes de los archivos del contenedor local, y sonido WAV con el mismo SHA-256.
 
 ## Reproducción / regeneración
 
@@ -42,4 +42,4 @@ Validar la ficha con el validador canónico: `node ../../../../../deep-spec-v1.m
 
 ## Estado
 
-`LOCAL_VIDEO_ENCODED` + `AUDIO_PRESENT` + `FRAME_QA_OBSERVED` + `SOURCE_PUBLISHED_IN_CANDIDATE`. `HUMAN_APPROVED=NOT_RUN`, `PUBLIC_MP4=NOT_VERIFIED` hasta comprobar un enlace externo real. No sobrescribir W001 ni otros números. Esta rama es exclusivamente el encargo 04.
+`LOCAL_VIDEO_ENCODED` + `AUDIO_PRESENT` + `FRAME_QA_OBSERVED` + `SOURCE_PUBLISHED_IN_CANDIDATE`. `HUMAN_APPROVED=NOT_RUN`, `PUBLIC_MP4=GITHUB_READBACK_VERIFIED`, `GITHUB_CI=SUCCESS`. La reproducción en dispositivo humano sigue NOT_RUN. No sobrescribir W001 ni otros números. Esta rama es exclusivamente el encargo 04.
