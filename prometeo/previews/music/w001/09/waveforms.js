@@ -1,0 +1,1 @@
+window.PROMETEO_WAVES={};
