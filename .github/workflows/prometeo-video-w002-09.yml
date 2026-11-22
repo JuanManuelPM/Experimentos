@@ -1,0 +1,110 @@
+name: "PROMETEO · Video W002 / 09 · Antes de la tormenta"
+on:
+  push:
+    branches:
+      - candidate/prometeo-video-w002-09-20261122
+    paths:
+      - prometeo/works/video/w002/09/render.py
+      - prometeo/works/video/w002/09/PREPRODUCTION.deep-spec-v1.json
+      - .github/workflows/prometeo-video-w002-09.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: video-w002-09-storm
+  cancel-in-progress: false
+
+jobs:
+  render:
+    # Avoid a loop when GitHub Actions commits the finished movie.
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+          fetch-depth: 1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install "numpy<3" opencv-python-headless Pillow scipy
+          sudo apt-get update -qq
+          sudo apt-get install -y ffmpeg
+          ffmpeg -hide_banner -version | head -1
+      - name: Structural preproduction gate
+        run: |
+          node prometeo/launch/deep-spec-v1.mjs prometeo/works/video/w002/09/PREPRODUCTION.deep-spec-v1.json
+      - name: Render true video and audio
+        working-directory: prometeo/works/video/w002/09
+        run: |
+          python render.py --output ANTES-DE-LA-TORMENTA-009.mp4 --seconds 14 --width 800 --fps 24
+      - name: Decode entire film and inspect media
+        working-directory: prometeo/works/video/w002/09
+        run: |
+          ffmpeg -hide_banner -loglevel error -i ANTES-DE-LA-TORMENTA-009.mp4 -f null -
+          ffprobe -v error -show_entries format=duration,size:stream=codec_type,codec_name,width,height,avg_frame_rate,sample_rate -of json ANTES-DE-LA-TORMENTA-009.mp4 > probe.json
+          python - <<'PY'
+          import json
+          d=json.load(open('probe.json'))
+          assert abs(float(d['format']['duration'])-14)<0.05,d
+          streams=d['streams']
+          assert any(x.get('codec_type')=='video' and x['codec_name']=='h264' and x.get('width')==800 and x.get('height')==450 for x in streams),d
+          assert any(x.get('codec_type')=='audio' and x['codec_name']=='aac' and int(x.get('sample_rate',0))==48000 for x in streams),d
+          print('PASS: MP4 14s, video 800x450 H264 24fps, AAC 48kHz')
+          PY
+      - name: Export four real observation frames
+        working-directory: prometeo/works/video/w002/09
+        run: |
+          for t in 1 6 10.4 13; do
+            ffmpeg -hide_banner -loglevel error -y -ss "$t" -i ANTES-DE-LA-TORMENTA-009.mp4 -frames:v 1 "frame-$t.png"
+          done
+          python - <<'PY'
+          from PIL import Image, ImageDraw
+          frames=['frame-1.png','frame-6.png','frame-10.4.png','frame-13.png']
+          sheet=Image.new('RGB',(800,480),(18,20,23));d=ImageDraw.Draw(sheet)
+          for i,f in enumerate(frames):
+              im=Image.open(f).resize((400,225))
+              x=i%2*400;y=i//2*240
+              sheet.paste(im,(x,y))
+              d.text((x+8,y+226),f,fill='white')
+          sheet.save('contact.png')
+          PY
+      - name: Save CI verification without claiming artistic approval
+        working-directory: prometeo/works/video/w002/09
+        run: |
+          python - <<'PY'
+          import json,hashlib
+          p='QA.json';q=json.load(open(p))
+          q['status']='PUBLIC_BINARY_BUILT_CI_PENDING_HUMAN_REVIEW'
+          q['ciVideoSha256']=hashlib.sha256(open('ANTES-DE-LA-TORMENTA-009.mp4','rb').read()).hexdigest()
+          for check in q.get('checks',[]):
+              if check['name'] in ('full-frame decodability check','CI mp4 public binary readback'):
+                  check['status']='OBSERVED_CI' if check['name']=='full-frame decodability check' else 'PENDING_REMOTE_READBACK'
+          with open(p,'w') as f:json.dump(q,f,indent=2,ensure_ascii=False)
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: antes-de-la-tormenta-video-w002-09
+          path: |
+            prometeo/works/video/w002/09/ANTES-DE-LA-TORMENTA-009.mp4
+            prometeo/works/video/w002/09/contact.png
+            prometeo/works/video/w002/09/probe.json
+          if-no-files-found: error
+      - name: Publish isolated files back to this branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add prometeo/works/video/w002/09/ANTES-DE-LA-TORMENTA-009.mp4
+          git add prometeo/works/video/w002/09/contact.png
+          git add prometeo/works/video/w002/09/probe.json
+          git add prometeo/works/video/w002/09/QA.json
+          git diff --cached --quiet || git commit -m "video W002/09: publish decoded cinematic MP4 and frame QA"
+          # A different writer may have added only isolated metadata during rendering.
+          git pull --rebase origin candidate/prometeo-video-w002-09-20261122
+          git push origin HEAD:candidate/prometeo-video-w002-09-20261122

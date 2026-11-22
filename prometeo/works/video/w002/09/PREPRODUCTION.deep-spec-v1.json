@@ -1,0 +1,223 @@
+{
+  "version": "DEEP-SPEC-1",
+  "medium": "Video / cinematografía atmosférica",
+  "depth": "SISTEMA",
+  "taskId": "video-w002-20261122-09",
+  "batchId": "video-w002-20261122",
+  "taskNumber": 9,
+  "briefBlobSha": "e6d8075d33c342767dd249593256ca7667a20041",
+  "qualityBarVersion": "QBAR-1",
+  "brief": "ANTES DE LA TORMENTA: una escena audiovisual original de un faro costero pasando de calma a tormenta con viento, niebla, lluvia, reflejos, sombras y ambiente sonoro acoplados, y compositor reutilizable.",
+  "intent": {
+    "experience": "Experimentar una calma costera densa que se deteriora en un temporal con un mismo lugar reconocible y sucesión de causas claras.",
+    "distinctAbility": "Acoplar campos de viento, nubes, lluvia, agua, bruma, fotometría y sonido a un reloj causal compartido y exportar video real."
+  },
+  "references": [
+    {
+      "id": "r1",
+      "url": "https://theasc.com/article/stormy-isle-the-lighthouse/",
+      "status": "OBSERVED",
+      "observation": "El artículo técnico de la ASC describe ópticas, filtros y diseño de fotografía seleccionados alrededor del faro como lugar dramático; la atmósfera se diseña con lógica formal, no como preset."
+    },
+    {
+      "id": "r2",
+      "url": "https://tribecafilm.com/news/the-revenant-interview-cinematographer-emmanuel-lubezki-alejandro-gonzalez-inarritu-leonardo-dicaprio",
+      "status": "OBSERVED",
+      "observation": "Lubezki expone cómo su decisión de trabajar con luz natural altera las condiciones de exposición y rodaje; el paisaje debe orientar iluminación y puesta en escena."
+    },
+    {
+      "id": "r3",
+      "url": "https://www.filmmakersacademy.com/blog-lighting-shadows-darkness/",
+      "status": "OBSERVED",
+      "observation": "El análisis de Dan Laustsen relaciona movimiento del viento con variación de luz y uso de lluvia práctica para construir el cambio atmosférico creíble."
+    }
+  ],
+  "components": [
+    {
+      "id": "world",
+      "role": "Geografía persistente del faro, muelle, mar y vegetación, con profundidad y composición legible.",
+      "strategy": "Escena original 2.5D con geometría arquitectónica de faro, isla y muelle consistente entre cuadros.",
+      "constraints": "El faro y el horizonte comparten coordenadas durante todos los cuadros; no se sustituyen fotogramas sueltos."
+    },
+    {
+      "id": "weather",
+      "role": "Condiciones atmosféricas causales que gobiernan luz, mar, viento, lluvia, niebla y reflejos.",
+      "strategy": "Campo climate(t) con cloud advection, tormenta progresiva, lluvia estratificada y flash de relámpago.",
+      "constraints": "Gotas, vegetación y nubes comparten dirección y curva del viento; el agua responde a la exposición del cielo."
+    },
+    {
+      "id": "sound",
+      "role": "Audio ambiental estéreo original de oleaje, ráfagas, lluvia y truenos con respuesta temporal.",
+      "strategy": "Ruido de síntesis filtrado y modulado por las mismas envolventes físicas con retardo entre relámpago y trueno.",
+      "constraints": "Se genera PCM a 48000 Hz y mezcla estéreo de igual duración que los cuadros de imagen."
+    },
+    {
+      "id": "export",
+      "role": "Pipeline reproducible que mezcla imagen y audio en un archivo real inspeccionable.",
+      "strategy": "FFmpeg/libx264/AAC produce MP4 y ffprobe verifica streams, dimensiones y duración.",
+      "constraints": "336 cuadros a 24 fps para 14 segundos; el gate estructural no se interpreta como aprobación artística."
+    }
+  ],
+  "questions": [
+    {
+      "id": "q1",
+      "target": "world",
+      "question": "¿Qué lugar conserva identidad cuando cambian niebla, exposición y velocidad del temporal sin tener que cortar el espacio?",
+      "alternatives": [
+        "Faro en espigón de geometría fija",
+        "Montaje de vistas paisajísticas sin raccord"
+      ],
+      "evidenceRef": "r1",
+      "finding": "Una figura de faro y líneas de fuga de un espigón permiten observar los efectos del clima sobre una geografía que permanece reconocible.",
+      "decisionImpact": "Se conserva una cámara casi fija y faro de arquitectura constante mientras se modifican todas las capas físicas."
+    },
+    {
+      "id": "q2",
+      "target": "weather",
+      "question": "¿Cómo se evita que las gotas parezcan un overlay sin influencia sobre agua, sombra, niebla y vegetación?",
+      "alternatives": [
+        "Gotas independientes sobre imagen estática",
+        "Reloj atmosférico y parámetros compartidos"
+      ],
+      "evidenceRef": "r3",
+      "finding": "Viento y dirección luminosa no pueden variar sin consecuencias compartidas; el compositor necesita un reloj y relaciones entre fenómenos.",
+      "decisionImpact": "Clima(t) parametriza nubes, cañas, lluvia en profundidad, oleaje, luz y mezclas sonoras; se prueban cuadros temporales."
+    },
+    {
+      "id": "q3",
+      "target": "sound",
+      "question": "¿Qué síntesis sonora sostiene la llegada del temporal sin recurrir a voz ni material de terceros y mantiene causalidad del trueno?",
+      "alternatives": [
+        "Bibliotecas de efectos con licencias inciertas",
+        "Oleaje, viento y lluvia sintetizados con retardo de trueno"
+      ],
+      "evidenceRef": "r2",
+      "finding": "La atmósfera del paisaje debe ser continua en imagen y audio y la descarga audible no debe preceder al destello remoto.",
+      "decisionImpact": "Se generan pistas estéreo originales con exposición del clima y pulso de trueno desfasado respecto del relámpago."
+    }
+  ],
+  "relations": [
+    {
+      "from": "weather",
+      "to": "world",
+      "invariant": "Viento, oblicuidad de gotas, advección de nubes y respuesta de vegetación dependen de climate(t) durante toda la toma.",
+      "failure": "Las gotas se mueven pero el cielo y la vegetación no cambian en la transición.",
+      "test": "Contact sheet a t=1, 6, 10.4 y 13 segundos con progreso visual."
+    },
+    {
+      "from": "weather",
+      "to": "sound",
+      "invariant": "Ráfagas y lluvia controlan niveles de sonido en el mismo reloj, con trueno retrasado tras el relámpago.",
+      "failure": "Sonido desfasado o lluvia audible antes del evento visual principal.",
+      "test": "Comprobar muestras PCM de eventos y revisar audio del MP4."
+    },
+    {
+      "from": "world",
+      "to": "export",
+      "invariant": "Los 336 cuadros y el sonido representan la misma escena sin cambio de identidad ni cortes espaciales.",
+      "failure": "Fotograma negro, pérdida de continuidad de faro o pista sonora ausente.",
+      "test": "ffprobe y extracción de cuatro fotogramas del video final."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "d1",
+      "questionId": "q1",
+      "componentIds": [
+        "world",
+        "weather"
+      ],
+      "choice": "Faro y muelle como geografía original persistente.",
+      "rejected": "Slideshow atmosférico de cinco paisajes distintos.",
+      "productionChange": "La silueta del faro y las líneas del muelle permanecen con coordenadas consistentes entre todos los cuadros.",
+      "why": "El clima debe afectar un mismo mundo para que se perciba una historia ambiental."
+    },
+    {
+      "id": "d2",
+      "questionId": "q2",
+      "componentIds": [
+        "weather",
+        "world"
+      ],
+      "choice": "Sistema de fenómenos acoplados con curvas temporales.",
+      "rejected": "Solo partículas de lluvia frente a una imagen inmóvil.",
+      "productionChange": "Se animan nubes, agua, juncos y lluvia; niebla, relámpagos y reflejos varían con la misma exposición.",
+      "why": "Los vínculos causales visibles son el objetivo diferencial del encargo."
+    },
+    {
+      "id": "d3",
+      "questionId": "q3",
+      "componentIds": [
+        "sound",
+        "export"
+      ],
+      "choice": "Audio diegético original con respuesta climática y retardo de tormenta.",
+      "rejected": "Archivo MP4 mudo o efectos de origen dudoso.",
+      "productionChange": "Síntesis estéreo PCM a 48 kHz multiplexada en AAC con FFmpeg y duración coincidente con video.",
+      "why": "El sonido debe ser parte del mismo mundo y tener derechos verificables."
+    }
+  ],
+  "risks": [
+    {
+      "componentIds": [
+        "weather",
+        "world"
+      ],
+      "severity": "high",
+      "failure": "Las capas avanzan desconectadas y todo parece lluvia sobre fondo estático.",
+      "prevention": "Spike audiovisual de 12 cuadros y muestreo de región tranquila, transición, relámpago y temporal.",
+      "test": "Render y revisión del contacto 1 / 6 / 10.4 / 13 s y observación de identidad del faro.",
+      "status": "OBSERVED"
+    },
+    {
+      "componentIds": [
+        "sound",
+        "export"
+      ],
+      "severity": "medium",
+      "failure": "Audio ausente o metadatos incorrectos en el archivo exportado.",
+      "prevention": "Síntesis propia y render real con ffmpeg seguidos de prueba ffprobe.",
+      "test": "H.264 a 24 fps, AAC 48000 Hz, duración 14.0s.",
+      "status": "OBSERVED"
+    },
+    {
+      "componentIds": [
+        "world"
+      ],
+      "severity": "medium",
+      "failure": "El escenario se percibe como ilustración digital simple en lugar de rodaje profesional.",
+      "prevention": "Registrar explícitamente la brecha perceptual, no falsificar realismo cinematográfico.",
+      "test": "Crítica cinematográfica independiente sobre todo el metraje.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "acceptance": [
+    {
+      "kind": "functional",
+      "criterion": "MP4 14.00 s, 336 cuadros H264 y pista AAC 48 kHz presentes.",
+      "oracle": "ffprobe aplicado al archivo binario local final.",
+      "status": "OBSERVED"
+    },
+    {
+      "kind": "visual",
+      "criterion": "La transición altera cielo, mar, vegetación, ambiente lumínico y visibilidad; faro legible.",
+      "oracle": "Contacto de fotogramas reales a 1, 6, 10.4 y 13 segundos.",
+      "status": "OBSERVED"
+    },
+    {
+      "kind": "audio",
+      "criterion": "El sonido de viento y lluvia progresa y el trueno llega después de la luz.",
+      "oracle": "Audición independiente y comparación del waveform en el timeline.",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "visual",
+      "criterion": "Calidad perceptual competitiva con referentes cinematográficos estudiados.",
+      "oracle": "Evaluación humana y comparación a pantalla completa.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "resources": "Python 3, NumPy, OpenCV, Pillow, SciPy, FFmpeg H.264/AAC y semillas deterministas; ningún asset ajeno.",
+  "licensing": "Imagen y sonido íntegramente originales, generados por código propio; las obras citadas solo se usaron como referencias de investigación.",
+  "environmentLimits": "No se contó con cámara de rodaje, VFX volumétrico fotorrealista ni evaluación perceptual independiente; resultado digital estilizado, no live action."
+}

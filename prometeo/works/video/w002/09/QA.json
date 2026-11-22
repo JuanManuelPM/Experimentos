@@ -1,0 +1,58 @@
+{
+  "taskId": "video-w002-20261122-09",
+  "sourceSha": "879042545a9a1fc98f32a126a48830aff743218b",
+  "status": "PUBLIC_BINARY_BUILT_CI_PENDING_HUMAN_REVIEW",
+  "localVideo": {
+    "name": "ANTES-DE-LA-TORMENTA-009.mp4",
+    "sha256": "04492201e1d157c737b32d58941226eb521cebd6721ed4035c42b755d3f6ff5d",
+    "sizeBytes": 9097657,
+    "durationSeconds": 14,
+    "frames": 336,
+    "fps": 24,
+    "width": 800,
+    "height": 450,
+    "videoCodec": "h264",
+    "audioCodec": "aac",
+    "audioSampleRate": 48000
+  },
+  "checks": [
+    {
+      "name": "source blob exact match",
+      "status": "OBSERVED"
+    },
+    {
+      "name": "ffprobe H264 AAC real tracks",
+      "status": "OBSERVED"
+    },
+    {
+      "name": "first middle late keyframes extracted",
+      "status": "OBSERVED"
+    },
+    {
+      "name": "full-frame decodability check",
+      "status": "OBSERVED_CI"
+    },
+    {
+      "name": "CI mp4 public binary readback",
+      "status": "PENDING_REMOTE_READBACK"
+    },
+    {
+      "name": "second variant reusable parameterization",
+      "status": "NOT_RUN"
+    },
+    {
+      "name": "independent audio QA",
+      "status": "NOT_RUN"
+    },
+    {
+      "name": "expert / human cinematic quality review",
+      "status": "NOT_RUN"
+    }
+  ],
+  "limits": [
+    "Stylized digital scene, not live footage or photoreal VFX",
+    "No claim that a structural gate proves exceptional cinematic quality",
+    "ROOT return must not mark VERIFIED until public binary and tested links exist"
+  ],
+  "ciVideoSha256": "fb887cd3cf4b1ead65d3b60bc9370de422e13866da84a2a3c3aae22d8b71ef1f"
+}
