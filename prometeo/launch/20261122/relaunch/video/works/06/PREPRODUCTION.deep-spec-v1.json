@@ -1,0 +1,309 @@
+{
+  "version": "DEEP-SPEC-1",
+  "medium": "video",
+  "depth": "SISTEMA",
+  "taskId": "video-w003-20261122-06",
+  "batchId": "video-w003-20261122",
+  "taskNumber": 6,
+  "brief": "PULSO EN LA MATERIA: videoclip con música original autorizada, evolución audiovisual por frases y silencios, mezcla exportada y planificador reutilizable.",
+  "briefSha": "0cc574528594731a3d1cf0c15a0d0e5a37e775b7",
+  "intent": {
+    "experience": "Una membrana material se forma, sufre fricción, se rompe, queda suspendida y vuelve transformada en consonancia con la música.",
+    "distinctAbility": "Montar cambios visuales por arquitectura de frases y contraste de densidad musical, preservando el silencio como acontecimiento."
+  },
+  "references": [
+    {
+      "id": "R1",
+      "status": "OBSERVED",
+      "url": "https://www.metalocus.es/en/news/endless-sprawl-repetition-max-cooper",
+      "observation": "Se inspeccionaron fotogramas publicados del videoclip Repetition: estructuras repetidas, escala que se multiplica y composición radial; no se reprodujo su banda sonora completa."
+    },
+    {
+      "id": "R2",
+      "status": "RESEARCHED_NOT_FULLY_WATCHED",
+      "url": "https://www.ryojiikeda.com/project/testpattern/",
+      "observation": "La descripción oficial vincula los datos de sonido con patrón audiovisual sincronizado; no se realizó reproducción audiovisual de la instalación."
+    },
+    {
+      "id": "R3",
+      "status": "RESEARCHED_NOT_FULLY_WATCHED",
+      "url": "https://www.maxcooper.net/maps",
+      "observation": "El relato del artista describe mapping entre música, danza y cine; no se apropia ni copia material audiovisual."
+    }
+  ],
+  "components": [
+    {
+      "id": "SCORE",
+      "role": "Partitura original secuenciada de 24 segundos y mezcla en estéreo.",
+      "strategy": "Síntesis original mediante Python/numpy para MP4, y WebAudio para la interpretación navegable.",
+      "constraints": "100 BPM, 10 compases de 2,4 s, cinco secciones; sin fuentes de terceros."
+    },
+    {
+      "id": "SURFACE",
+      "role": "Cinco vocabularios visuales con motivos materiales reconocibles.",
+      "strategy": "Shaders y composición RGB de fotogramas genuinos, capas de polvo y deformaciones; sistema navegador separado.",
+      "constraints": "640x360, 16 fps para master; membrana, pliegues, fractura, vacío y resonancia."
+    },
+    {
+      "id": "EDIT",
+      "role": "Montaje temporal reutilizable y cortes justificados por estructura.",
+      "strategy": "Mapa de secciones, puntos de interés, decisiones de corte y gráfico RMS en línea temporal.",
+      "constraints": "Once hitos de edición; se evita imponer un corte por cada golpe; pausa 17.72-17.94."
+    },
+    {
+      "id": "EXPORT",
+      "role": "Máster audiovisual decodificable y versión interactiva editable.",
+      "strategy": "FFmpeg H264/AAC con WAV fuente y HTML Canvas/WebAudio en rama candidata.",
+      "constraints": "Máster MP4 local y reproductor autónomo en GitHub; no declarar media binaria alojada remotamente."
+    }
+  ],
+  "questions": [
+    {
+      "id": "Q1",
+      "target": "SCORE",
+      "question": "¿Qué estructura musical puede crear contraste dramático sin convertirse en una sucesión plana de percusión?",
+      "alternatives": [
+        "Diez compases con igual intensidad y corte por beat",
+        "Cinco movimientos con cambio de instrumentación, densidad y una pausa real"
+      ],
+      "evidenceRef": "R3",
+      "finding": "La articulación formal musical puede modelar distintas familias visuales y no depender de cuantizar todo a BPM.",
+      "decisionImpact": "Componer cinco movimientos, densificar la fractura y vaciar el cuarto, conservando un motivo de retorno."
+    },
+    {
+      "id": "Q2",
+      "target": "SURFACE",
+      "question": "¿Puede una misma membrana circular repetida durante todo el video representar claramente fricción, fractura y vacío?",
+      "alternatives": [
+        "Solo membrana circular con variaciones de color",
+        "Tratar cada movimiento como una distinta familia visual dentro del mismo material"
+      ],
+      "evidenceRef": "R1",
+      "finding": "El contacto visual inicial mostró diez tomas casi idénticas de un disco; una variación cromática no articula secciones.",
+      "decisionImpact": "Se sustituyó el monolito repetido por macros de pliegues, fractura con bordes, una sola línea sonora y recomposición."
+    },
+    {
+      "id": "Q3",
+      "target": "EXPORT",
+      "question": "¿Qué evidencia distingue un archivo audiovisual realmente generado de una página que solo afirma haber exportado un video?",
+      "alternatives": [
+        "Autodeclaración en README o captura del reproductor",
+        "Verificación ffprobe y decodificación íntegra de H264/AAC, más hashes y fuente"
+      ],
+      "evidenceRef": "R2",
+      "finding": "La auditoría de la entrega anterior identificó binarios no publicados; esta ejecución comprueba localmente 384 cuadros y ambas duraciones de 24s.",
+      "decisionImpact": "Se generó archivo MP4 auténtico y WAV; el HTML publicado se etiqueta como interpretación editable, no como el MP4 original."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "D1",
+      "questionId": "Q1",
+      "componentIds": [
+        "SCORE",
+        "EDIT"
+      ],
+      "choice": "Cinco movimientos de 4,8s con ostinato y silencio dramático.",
+      "rejected": "Grilla homogénea con variaciones de percusión y cortes a negra.",
+      "why": "El vacío intencional altera la experiencia, hace perceptible la transformación y requiere una gramática de montaje.",
+      "productionChange": "Se compusieron 10 compases con cambios de instrumentación y RMS de 0.189 a 0.036 en el paso fractura/vacío."
+    },
+    {
+      "id": "D2",
+      "questionId": "Q2",
+      "componentIds": [
+        "SURFACE",
+        "EDIT"
+      ],
+      "choice": "Representación material multimodo por sección.",
+      "rejected": "Diez variaciones visuales de un mismo disco de contorno rugoso.",
+      "why": "El primer contacto de prueba mostró que la composición mantenía apariencia casi idéntica entre partes.",
+      "productionChange": "Se rehízo la sección fricción como pliegues longitudinales y el vacío como filamento resonante sobre un campo negro."
+    },
+    {
+      "id": "D3",
+      "questionId": "Q3",
+      "componentIds": [
+        "EXPORT",
+        "SCORE"
+      ],
+      "choice": "Máster MP4 local con prueba real de streams y render web alternativo en GitHub.",
+      "rejected": "Marcar video publicado con una ruta remota que no contenga bytes de la película.",
+      "why": "No hay una ruta binaria de subida a GitHub disponible desde este entorno conectado; la honestidad de publicación es parte del gate.",
+      "productionChange": "El reporte separa LOCAL_AV_MASTER_VERIFIED de BROWSER_SOURCE_PUBLISHED y REMOTE_MP4_MISSING."
+    }
+  ],
+  "relations": [
+    {
+      "from": "SCORE",
+      "to": "EDIT",
+      "invariant": "Los cambios visuales coinciden con límites de frase, eventos de densidad y suspensión, pero no con cada ataque de batería.",
+      "failure": "Montaje uniformemente cuantizado a golpes, sin progresión ni silencio legible.",
+      "test": "Superponer puntos de corte y energía RMS por sección en gráfico temporal."
+    },
+    {
+      "from": "SURFACE",
+      "to": "EDIT",
+      "invariant": "La membrana, los pliegues y la línea aparecen en secciones estables con sentido audiovisual.",
+      "failure": "Los cinco movimientos se leen como el mismo efecto procedural repetido.",
+      "test": "Contacto de diez fotogramas inspeccionado, con nuevas representaciones de material."
+    },
+    {
+      "from": "SCORE",
+      "to": "EXPORT",
+      "invariant": "Duraciones de audio y video alineadas a 24 segundos sin recorte ni frames perdidos.",
+      "failure": "Diferencia de duración o silencio accidental por mala multiplexación.",
+      "test": "ffprobe y decodificación completa con ffmpeg -f null."
+    }
+  ],
+  "risks": [
+    {
+      "componentIds": [
+        "SURFACE",
+        "EDIT"
+      ],
+      "severity": "high",
+      "failure": "Clip visual monótono con la misma forma durante cada sección; se vuelve rejilla de efectos.",
+      "prevention": "Primer artículo más contacto de secciones antes de exportar completo.",
+      "test": "Contact sheet 10 tiempos y prueba de representación alternativa registrada.",
+      "status": "OBSERVED"
+    },
+    {
+      "componentIds": [
+        "SCORE",
+        "EXPORT"
+      ],
+      "severity": "high",
+      "failure": "Un supuesto videoclip sin audio real o sin stream H264/AAC decodificable.",
+      "prevention": "Generación WAV antes de codificar, multiplexado explícito y ffprobe.",
+      "test": "FFmpeg decode integral y duraciones exactas de streams.",
+      "status": "OBSERVED"
+    },
+    {
+      "componentIds": [
+        "EXPORT"
+      ],
+      "severity": "medium",
+      "failure": "Confundir el reproductor navegador en GitHub con el mismo MP4 de bytes idénticos.",
+      "prevention": "Etiquetar cada derivado y registrar URL/archivo/hash de forma separada.",
+      "test": "Verificar fuente remota y señalar binario MP4 remoto como MISSING.",
+      "status": "OBSERVED"
+    }
+  ],
+  "acceptance": [
+    {
+      "kind": "functional",
+      "criterion": "Archivo MP4 original H264/AAC de 24s con 384 frames.",
+      "oracle": "ffprobe: H264 640x360 a 16fps, 384 frames, y AAC ambos 24.0s.",
+      "status": "OBSERVED"
+    },
+    {
+      "kind": "audio",
+      "criterion": "La mezcla auténtica tiene contraste entre fractura y vacío y no presenta clipping digital.",
+      "oracle": "RMS: fractura 0.1889, vacío 0.03646, pausa 0.00486; pico 0.7281.",
+      "status": "OBSERVED"
+    },
+    {
+      "kind": "visual",
+      "criterion": "El contacto temporal demuestra identidad de material y cambio de vocabulario visual por sección.",
+      "oracle": "Contacto de 10 fotogramas genuinos inspeccionado; no sustituye reproducción humana a tiempo real.",
+      "status": "OBSERVED"
+    },
+    {
+      "kind": "interactive",
+      "criterion": "El reproductor GitHub toca y exporta WebM en navegador Android físico.",
+      "oracle": "Prueba end-to-end navegador y Android, que no se ejecutó para esta publicación.",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "audio",
+      "criterion": "La emoción musical y el contraste entre secciones se comprenden en escucha independiente.",
+      "oracle": "Escucha crítica por terceros con auriculares reales y devolución humana.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "resources": "Python3 numpy Pillow matplotlib, ffmpeg/ffprobe locales; HTML Canvas y WebAudio como derivado accesible en GitHub.",
+  "licensing": "Sin muestras de terceros, sin footage ajeno, sin modelos externos: audio y pixels sintetizados originalmente en esta ejecución. Código y materiales nuevos dedicados a CC0-1.0, dentro de los derechos disponibles.",
+  "environmentLimits": "MP4 de 1.824.556 bytes accesible en el paquete de conversación pero no transferido como binario GitHub desde esta herramienta. La ruta de código en rama no equivale a MP4 público, y prueba navegador real/Android/escucha externa no ejecutadas.",
+  "artDirection": {
+    "schema": "prometeo.art-direction.first-article/v1",
+    "medium": "video",
+    "taskId": "video-w003-20261122-06",
+    "briefSha": "0cc574528594731a3d1cf0c15a0d0e5a37e775b7",
+    "flowRef": "CONTRATO_COMPARTIDO 7911ce78 + DEEP-SPEC-1 7656a293 + ART-1 b1a1a012",
+    "promise": {
+      "subject": "Membrana material como protagonista audiovisual no figurativo.",
+      "intent": "El motivo pasa por nacimiento, fricción, fractura, interrupción y retorno; la imagen sigue la frase, no el metrónomo."
+    },
+    "benchmark": {
+      "status": "OBSERVED",
+      "url": "https://www.metalocus.es/en/news/endless-sprawl-repetition-max-cooper",
+      "description": "Fotogramas publicados observados con ciclos compositivos, escala variable y motivo radial; no se vio ni escuchó el video completo."
+    },
+    "techniques": [
+      {
+        "family": "Disco radial único",
+        "viability": "Render procedural local reproducible y autorizado; probado primer contacto, pero variedad expresiva insuficiente.",
+        "license": "Material 100% generado por código original, sin footage externo."
+      },
+      {
+        "family": "Cinco vocabularios de materia",
+        "viability": "Render local y browser shaders procedurales con motivos específicos por frase musical, inspectados en contacto temporal.",
+        "license": "Procedimientos gráficos y sonido propios, sin recursos ajenos."
+      }
+    ],
+    "selectedTechnique": "Cinco vocabularios de materia",
+    "firstFrame": {
+      "openingDescription": "Plano negro casi mineral con membrana metálica iluminada lateralmente que comienza a respirar.",
+      "focalSubject": "La membrana granular, sin texto sobre la superficie.",
+      "minimalUI": "Canvas 16:9 sin indicadores invasivos; reproducir y exportar en controles inferiores.",
+      "checks": [
+        {
+          "criterion": "El protagonista entra visible en apertura 390px sin texto que lo tape.",
+          "oracle": "Fotograma reescalado a 390px generado localmente y revisión de percepción de contraste.",
+          "viewport": "390"
+        },
+        {
+          "criterion": "El protagonista ocupa una composición útil en pantalla desktop de 1440px.",
+          "oracle": "Captura real del player a 1440px en Chromium por ejecutar.",
+          "viewport": "1440"
+        },
+        {
+          "criterion": "La ruptura de sección produce una gramática visual nueva, no cambio de tintes.",
+          "oracle": "Contact sheet de diez tiempos a lo largo de los cinco movimientos.",
+          "viewport": "both"
+        }
+      ],
+      "observations": []
+    },
+    "firstArticle": {
+      "target": "2,4 segundos reales con sonido, codificados en MP4 H264/AAC y tres fotogramas; contraste de sección completado después.",
+      "rejectWhen": "La repetición del mismo círculo sea indistinguible entre cinco secciones.",
+      "switchTo": "Disco radial único",
+      "oracle": "Inspección directa de primer artículo y después 10 fotogramas por secciones más reproducción ffmpeg.",
+      "resourceProof": "ffmpeg/ffprobe, Python/PIL/numpy ejecutados y material original; no recursos de terceros.",
+      "status": "OBSERVED_PASS",
+      "evidence": {
+        "url": "https://github.com/JuanManuelPM/Experimentos/blob/candidate/prometeo-video-w003-20261122-06/prometeo/launch/20261122/relaunch/video/works/06/README.md",
+        "description": "Recibo público de la prueba local y hashes; el MP4 de primer artículo se adjunta solo al chat, no en esta URL."
+      }
+    },
+    "humanApproved": false
+  },
+  "flowLock": {
+    "contractSHA": "7911ce780c6eb8fc08ba3e5621e4479bbe2e9757",
+    "universalSHA": "0377d79b2aeb0a642a97687be49c5ba965593bf5",
+    "deepSpecSHA": "7656a293b0182f81619bf0d27b90dffa771c2683",
+    "artDirectionSHA": "b1a1a012e90897200336cac6316c0511cb40c4c5",
+    "validatorSHA": "dac224b390fc86982ce76eeb0135d4be59eb52ad"
+  },
+  "comparison": {
+    "oldBatchId": "video-w002-20261122",
+    "newBatchId": "video-w003-20261122",
+    "oldBriefSHA": "d7eebea6d36fc6e5aa3b72cba4e35dd149dc552d",
+    "newBriefSHA": "0cc574528594731a3d1cf0c15a0d0e5a37e775b7",
+    "oldFinding": "W002/06 fuente y QA, MP4 remoto faltante en auditoría; video local reportado 32s sin evidencia de escucha.",
+    "newFinding": "W003/06 MP4 genuino 24s construido y decodificado localmente; HTML audiovisual alternativo publicado como fuente. MP4 público aún MISSING.",
+    "assetStrategyChange": "De disco único a materia con cinco representaciones; partitura original propia, no samples."
+  }
+}
