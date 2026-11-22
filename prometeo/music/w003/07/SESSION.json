@@ -1,0 +1,52 @@
+{
+  "schema": "prometeo.music.editable-session/v1",
+  "taskId": "music-w003-20261122-07",
+  "title": "CUERPO Y CIRCUITO",
+  "medium": "music",
+  "sampleRate": 44100,
+  "renderer": "render.py",
+  "source": {
+    "archive": "https://huggingface.co/datasets/Julian-br/GuitarJam",
+    "license": "CC0-1.0",
+    "timbre": "human-played electric guitar, direct input, not an acoustic microphone capture",
+    "clips": [
+      "026.wav",
+      "059.wav",
+      "135.wav",
+      "226.wav"
+    ],
+    "bridgeSilenceSeconds": 0.55,
+    "edgeRampSeconds": 0.09,
+    "timingQuantization": false
+  },
+  "articulationToEffects": {
+    "analysisHopFrames": 256,
+    "onsetRMSWindowFrames": 1536,
+    "minPeakSeparationSeconds": 0.24,
+    "pitchEstimateHzRange": [
+      110,
+      1180
+    ],
+    "electronicResponseDelaySecondsFormula": "0.14 + 0.18 / (0.25 + articulation)",
+    "electronicDurationSecondsFormula": "0.45 + min(1.7, 1.1 / (0.30 + articulation))",
+    "electronicPitchHzFormula": "clamp(observedPitchHz * 0.5, 80, 760)",
+    "delayTapsSeconds": [
+      0.19,
+      0.47,
+      0.91,
+      1.64,
+      2.71
+    ],
+    "note": "render.py is the authoritative patch graph. Change constants there and re-render. SESSION.json is the readable mapping, not yet a GUI DAW."
+  },
+  "stems": [
+    "acoustic_dry",
+    "acoustic_processed",
+    "circuit",
+    "room"
+  ],
+  "master": "audio/master.wav",
+  "webPreview": "audio/master.ogg",
+  "humanApproved": false,
+  "listeningQA": "NOT_RUN"
+}

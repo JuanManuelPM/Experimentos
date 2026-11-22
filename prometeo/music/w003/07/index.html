@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>CUERPO Y CIRCUITO | PROMETEO · 07</title>
+<style>
+:root{--bg:#12110f;--fg:#eae3d6;--muted:#a8a093;--line:#585046;--copper:#c89569}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:var(--bg);color:var(--fg)}
+body{font-family:Arial,Helvetica,sans-serif;line-height:1.45;overflow-x:hidden}a{color:inherit;text-underline-offset:.22em}a:hover,a:focus-visible{color:var(--copper)}
+main{min-height:100dvh;padding:clamp(22px,4vw,70px) clamp(22px,6.5vw,120px);display:flex;flex-direction:column;justify-content:space-between;gap:2rem}
+.eyebrow,.meta,.number{font-size:clamp(10px,.9vw,13px);text-transform:uppercase;letter-spacing:.17em;color:var(--muted);font-weight:600}
+header{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.hero{margin-top:clamp(48px,7vw,100px)}
+h1{font-family:Georgia,'Times New Roman',serif;font-weight:400;line-height:.93;letter-spacing:-.052em;font-size:clamp(64px,12.5vw,204px);margin:0;max-width:12ch}
+h1 span{display:block}h1 span:last-child{font-style:italic;color:var(--copper);margin-left:clamp(10px,6vw,96px)}
+.subtitle{max-width:570px;margin:clamp(32px,4vw,66px) 0 0;font-size:clamp(15px,1.3vw,20px);line-height:1.53;font-weight:400;color:var(--fg)}
+.player{border-top:1px solid var(--line);padding-top:22px;display:grid;grid-template-columns:minmax(0,1fr) minmax(240px,570px);gap:25px;align-items:center}
+audio{display:block;width:100%;height:54px;accent-color:var(--copper);border-radius:2px}
+.micro{font-size:12px;color:var(--muted)}
+footer{border-top:1px solid var(--line);padding-top:20px;display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:16px;font-size:12px;color:var(--muted)}
+footer p{margin:0;max-width:700px}footer nav{display:flex;gap:16px;flex-wrap:wrap}
+.second{background:#1b1916;border-top:1px solid var(--line);padding:clamp(30px,5vw,80px) clamp(22px,6.5vw,120px) clamp(45px,6vw,90px)}
+.second h2{font-size:clamp(24px,3vw,46px);font-weight:400;font-family:Georgia,serif;margin:14px 0 18px}
+.article{max-width:680px;color:#c9c0b2;font-size:14px;line-height:1.7}
+details{border-top:1px solid var(--line);margin-top:30px;padding-top:18px;max-width:760px}summary{cursor:pointer;letter-spacing:.02em;font-size:14px;list-style:revert}
+.ab{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px;padding-top:18px}.ab label{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:10px}
+.vis{height:110px;max-width:1000px;width:100%;display:block;margin:32px 0 12px;border-bottom:1px solid #39342f}
+@media(max-width:760px){main{min-height:100svh}.player{grid-template-columns:1fr}.player .micro{order:2}h1{font-size:clamp(60px,16vw,118px)}h1 span:last-child{margin-left:9px}.subtitle{margin-top:32px}.hero{margin-top:42px}.ab{grid-template-columns:1fr}.eyebrow{font-size:10px}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<main>
+ <header><span class="eyebrow">PROMETEO / ESTUDIO MUSICAL</span><span class="number">07 / W003 / 2026</span></header>
+ <section class="hero" aria-labelledby="title"><h1 id="title"><span>CUERPO</span><span>Y CIRCUITO</span></h1><p class="subtitle">Cuatro frases de guitarra tocadas por una persona. Sus ataques y vacilaciones provocan respuestas electrónicas, ecos y silencios. Los circuitos no reemplazan los dedos.</p></section>
+ <section class="player" aria-label="Escuchar la obra"><div><p class="eyebrow">01 / LA OBRA · máster estéreo</p><p class="micro">Guitarra humana CC0 · respuesta electrónica original · aproximadamente 85 segundos</p></div><audio controls preload="metadata" src="./audio/master.ogg" aria-label="Reproducir Cuerpo y circuito, máster completo">Tu navegador no admite este audio. <a href="./audio/master.wav">Escuchá o descargá el WAV.</a></audio></section>
+ <footer><p>Interpretaciones de guitarra: GuitarJam, Julian-br, <a href="https://huggingface.co/datasets/Julian-br/GuitarJam">CC0 1.0</a>. Composición electrónica y procesamiento: PROMETEO · W003/07. Las tomas son guitarra eléctrica por entrada directa, no microfonía de sala.</p><nav><a href="./audio/master.wav">WAV sin pérdida</a><a href="./audio/QA.json">Datos técnicos</a><a href="./README.md">Proyecto</a></nav></footer>
+</main>
+<section class="second" aria-labelledby="dialogo"><span class="eyebrow">02 / DETRÁS DE LA RESPUESTA</span><h2 id="dialogo">Las manos llevan el tiempo.</h2><p class="article">En lugar de convertir cada cuerda en una nota MIDI rectificada, el sistema detecta aumentos de energía y pitch aproximado, conserva el tiempo de cada ataque y envía una respuesta con duración, intensidad y panorámica variables. Cuatro tomas completas se separan con respiraciones de 0,55 segundos. No se presenta como una única actuación sin cortes.</p>
+<canvas class="vis" id="gesture" aria-label="Distribución de ataques analizados en los 85 segundos de música" role="img"></canvas><p class="micro" id="gestureText">Cargando mapa real de articulaciones…</p>
+<details><summary>Comparar toma seca y procesada a nivel similar</summary><div class="ab"><div><label for="dry">A · Sólo guitarra, seca</label><audio id="dry" controls preload="none" src="./audio/ab_dry.wav"></audio></div><div><label for="wet">B · Respuesta electrónica y mezcla nivelada</label><audio id="wet" controls preload="none" src="./audio/ab_processed_level_matched.wav"></audio></div></div><p class="micro">La igualación es por RMS, no una afirmación de superioridad artística ni una prueba auditiva independiente.</p></details>
+<details><summary>Tomas originales, cuatro stems y sesión editable</summary><p class="article">Los archivos de grabación, mapa de gestos, receta de síntesis, stems separados, SHA256 y script de render están en el <a href="./README.md">recibo de producción</a>. El sistema requiere Python, numpy, scipy y soundfile; no es un proyecto DAW propietario.</p><p><a href="./audio/SOURCE_PROVENANCE.json">Licencia y hashes</a> · <a href="./audio/articulation_map.json">Mapa de ataques</a> · <a href="./SESSION.json">Parámetros de sesión</a></p></details>
+</section>
+<script>
+(async()=>{const canvas=document.getElementById('gesture'),txt=document.getElementById('gestureText');try{const [r,qa]=await Promise.all([fetch('./audio/articulation_map.json'),fetch('./audio/QA.json')]);if(!r.ok||!qa.ok)throw Error('Archivos de articulación no disponibles');const e=await r.json(),q=await qa.json();const d=q.measurements.duration_s;function paint(){const ratio=window.devicePixelRatio||1;const w=canvas.clientWidth,h=canvas.clientHeight;canvas.width=Math.max(1,Math.round(w*ratio));canvas.height=Math.max(1,Math.round(h*ratio));const g=canvas.getContext('2d');g.scale(ratio,ratio);g.fillStyle='#c89569';for(const v of e){const x=(v.time/d)*w;const a=Math.min(.95,.13+(v.articulation||0)*.37);g.globalAlpha=a;g.fillRect(x,h-9-Math.max(5,(v.articulation||0)*55),Math.max(1.2,w/500),Math.max(5,(v.articulation||0)*55));}g.globalAlpha=1;}paint();window.addEventListener('resize',paint,{passive:true});txt.textContent=e.length+' ataques detectados; tiempos humanos sin cuantizar.';}catch(error){txt.textContent='Mapa gráfico no disponible en este servidor. Descargá el JSON para inspeccionarlo.';canvas.hidden=true;}})();
+const aa=[...document.querySelectorAll('audio')];aa.forEach(a=>a.addEventListener('play',()=>aa.filter(b=>b!==a).forEach(b=>b.pause())));
+</script>
+</body></html>
