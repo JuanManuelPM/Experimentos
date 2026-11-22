@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#121917">
+<title>LEVA / 05 — Laboratorio de máquinas</title>
+<style>
+:root{color-scheme:dark;--bg:#121917;--panel:#1b2421;--line:#40534c;--fg:#f0eee4;--muted:#a5b5ad;--accent:#d9ff65;--steel:#bac9c2}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.45 system-ui,-apple-system,Segoe UI,sans-serif}
+button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+a{color:var(--accent)}.mono{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-variant-numeric:tabular-nums}
+header{min-height:68px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:16px;padding:13px clamp(16px,3vw,42px)}
+.brand{display:flex;gap:16px;align-items:center}.seal{width:40px;height:40px;border:1px solid var(--accent);border-radius:50%;display:grid;place-items:center;color:var(--accent);font-weight:800}
+.kicker{text-transform:uppercase;letter-spacing:.16em;font-size:10px;color:var(--accent)}h1{font-size:19px;letter-spacing:-.04em;margin:3px 0 0;line-height:1.1;font-weight:650}.topmeta{display:flex;align-items:center;gap:14px;color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.09em}
+main{display:grid;grid-template-columns:minmax(0,1fr) 342px;min-height:calc(100vh - 68px)}.workspace{min-width:0;display:flex;flex-direction:column}
+.viewer{position:relative;min-height:440px;height:clamp(480px,69vh,830px);background:radial-gradient(circle at 50% 30%,#2c3832 0%,#18211e 53%,#111a18 100%);overflow:hidden;isolation:isolate}
+#scene{width:100%;height:100%;display:block;touch-action:none}
+.corner{position:absolute;pointer-events:none;color:#e1e8db;font-size:11px;letter-spacing:.12em}.top-left{top:21px;left:24px}.top-right{right:23px;top:20px;text-align:right}.bottom-left{left:24px;bottom:19px}.bottom-right{right:24px;bottom:19px;text-align:right}
+.view-control{position:absolute;top:67px;right:18px;display:grid;gap:7px}.chip{background:#1b2924da;border:1px solid #71827866;padding:9px 11px;color:var(--fg);font-size:11px;letter-spacing:.04em}.chip[aria-pressed=true]{background:var(--accent);color:#182018}
+.viewer:before,.viewer:after{content:"";position:absolute;pointer-events:none;width:24px;height:24px;border-color:#aabbb048;border-style:solid}.viewer:before{left:15px;top:15px;border-width:1px 0 0 1px}.viewer:after{right:15px;bottom:15px;border-width:0 1px 1px 0}
+#fatal{position:absolute;inset:0;display:none;place-items:center;padding:35px;text-align:center;background:#121917ee;color:#ffccaa}
+.detail-strip{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-bottom:1px solid var(--line);background:#151d1a}
+.metric{padding:16px 20px;border-right:1px solid var(--line)}.metric:last-child{border-right:0}.metric label{display:block;color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.14em}.metric strong{display:block;margin-top:4px;font-size:27px;letter-spacing:-.06em;font-weight:560}.metric small{color:var(--muted);font-size:12px;font-weight:400;margin-left:3px}
+.analysis{padding:26px clamp(18px,3vw,42px);display:grid;grid-template-columns:1.4fr 1fr;gap:24px}
+.title-row{display:flex;justify-content:space-between;gap:20px;align-items:baseline}.section-title{font-size:12px;color:var(--fg);letter-spacing:.1em;text-transform:uppercase;font-weight:650}.mini{font-size:11px;color:var(--muted)}#chart{width:100%;height:160px;display:block;margin-top:14px;background:#1a2320;border:1px solid #35493e}#trace{fill:none;stroke:var(--accent);stroke-width:2.5;vector-effect:non-scaling-stroke}#dot{fill:#f5f0e3;stroke:#111a18;stroke-width:2}.graticule{stroke:#506257;stroke-width:.65;opacity:.6}
+.legend{display:flex;flex-wrap:wrap;gap:13px;margin-top:12px;color:var(--muted);font-size:11px}.swatch{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--accent);margin-right:5px}.swatch.blue{background:#72b3ae}.swatch.orange{background:#f4ae72}
+.diagnostic{border-left:1px solid var(--line);padding-left:24px}.diagnostic .ok{color:var(--accent)}.diagnostic .warn{color:#ffd38b}.row-d{display:flex;justify-content:space-between;gap:15px;border-bottom:1px solid #36453e;padding:9px 0;font-size:12px}.row-d span:first-child{color:var(--muted)}
+.sidebar{border-left:1px solid var(--line);background:#19221e;padding:26px 23px;display:flex;flex-direction:column;gap:27px}.sidebar-title{font-size:11px;color:var(--accent);letter-spacing:.18em;text-transform:uppercase;margin:0 0 10px}
+.description{font-size:13px;color:var(--muted);margin:0}.description b{color:var(--fg);font-weight:550}
+.actions{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px}.btn{min-height:43px;background:transparent;color:var(--fg);border:1px solid #526258;padding:8px 9px;font-size:12px}.btn:hover{border-color:var(--accent)}.btn.primary{background:var(--accent);border-color:var(--accent);color:#19231b;font-weight:750}.params{display:grid;gap:24px}.control label{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-size:13px;margin-bottom:9px}.control output{color:var(--accent);font:13px ui-monospace,monospace}input[type=range]{appearance:none;width:100%;height:3px;border-radius:2px;background:#68786e;accent-color:var(--accent)}input[type=range]::-webkit-slider-thumb{appearance:none;width:17px;height:17px;border:3px solid #19221e;border-radius:50%;background:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+.ends{display:flex;justify-content:space-between;color:#7e9185;font-size:10px;margin-top:9px}.explain{border-top:1px solid var(--line);padding-top:19px;font-size:12px;color:var(--muted)}.explain b{color:var(--fg)}
+.export{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+#status{border:1px solid #45564d;padding:12px 14px;color:var(--muted);min-height:50px;font-size:11px}
+.bottom{padding:17px 25px;border-top:1px solid var(--line);color:#8fa095;font-size:11px;display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap}
+@media(max-width:980px){main{grid-template-columns:minmax(0,1fr)}.sidebar{border-left:0;border-top:1px solid var(--line);display:grid;grid-template-columns:1fr 1fr;gap:22px}.sidebar>section:nth-child(2){grid-row:span 2}}
+@media(max-width:650px){header{padding:12px 15px}.topmeta .desktop{display:none}.viewer{height:53vh;min-height:340px}.detail-strip{grid-template-columns:repeat(2,1fr)}.metric{border-bottom:1px solid var(--line);padding:12px 16px}.metric strong{font-size:24px}.analysis{grid-template-columns:1fr;padding:22px 16px}.diagnostic{border-left:0;border-top:1px solid var(--line);padding-left:0;padding-top:16px}.sidebar{display:flex;padding:21px 17px}.top-left{left:17px;top:20px}.bottom-left{left:17px;bottom:15px}.bottom-right{right:17px;bottom:15px}.view-control{top:61px;right:12px}.chip{padding:8px}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto}}
+</style>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
+</head>
+<body>
+<header><div class="brand"><div class="seal mono">05</div><div><div class="kicker">Prometeo / Ingeniería en movimiento</div><h1>Máquina de leva <span style="font-weight:300;color:#9caea2">/ Laboratorio</span></h1></div></div><div class="topmeta mono"><span class="desktop">Cinemática de contacto</span><span>W6 · 2026</span></div></header>
+<main>
+<div class="workspace">
+<section class="viewer" aria-label="Visor 3D interactivo de leva y seguidor">
+<canvas id="scene" aria-label="Máquina 3D, arrastrá para girar la vista, pellizcá para acercar"></canvas>
+<div class="corner top-left mono">FIG. 05 / TRANSMISIÓN Y SEGUIDOR</div>
+<div class="corner top-right mono">UNIDADES: mm · N · °<div style="color:#a3b4a7;margin-top:5px">ARRASTRAR · ORBITAR / PELLIZCAR · ZOOM</div></div>
+<div class="view-control"><button class="chip" id="front" aria-label="Ver de frente">FRENTE</button><button class="chip" id="angle" aria-label="Ver en perspectiva">OBLICUA</button><button class="chip" id="parts" aria-pressed="false">GUÍAS</button></div>
+<div class="corner bottom-left mono" id="phase">FASE 000° · REPOSO INFERIOR</div><div class="corner bottom-right mono">MOTOR → CORREA → LEVA → RODILLO → VÁSTAGO</div>
+<div id="fatal" role="alert"></div>
+</section>
+<div class="detail-strip" aria-live="off">
+<div class="metric"><label>Posición del seguidor</label><strong class="mono"><span id="pos">0.00</span><small>mm</small></strong></div>
+<div class="metric"><label>Ángulo de presión</label><strong class="mono"><span id="pressure">0.0</span><small>°</small></strong></div>
+<div class="metric"><label>Normal de contacto</label><strong class="mono"><span id="force">0.0</span><small>N</small></strong></div>
+<div class="metric"><label>Velocidad lineal</label><strong class="mono"><span id="velocity">0.0</span><small>mm/s</small></strong></div>
+</div>
+<div class="analysis">
+<div><div class="title-row"><span class="section-title">01 / Diagrama de alzada</span><span class="mini mono">DESPLAZAMIENTO / CICLO 360°</span></div>
+<svg id="chart" viewBox="0 0 640 160" preserveAspectRatio="none" aria-label="Curva de desplazamiento del seguidor según el ángulo">
+<path class="graticule" d="M30 16V140H622 M30 48H622 M30 88H622 M30 124H622"/>
+<path id="trace"/><circle id="dot" r="5" cx="30" cy="124"/><text x="30" y="153" fill="#9cac9f" font-size="11">0°</text><text x="594" y="153" fill="#9cac9f" font-size="11">360°</text>
+<text id="maxlabel" x="36" y="13" fill="#d9ff65" font-size="11">16 mm</text></svg>
+<div class="legend"><span><i class="swatch"></i>Alzada programada</span><span><i class="swatch blue"></i>Guía prismática</span><span><i class="swatch orange"></i>Par de contacto ideal</span></div>
+</div>
+<div class="diagnostic"><div class="title-row"><span class="section-title">02 / Diagnóstico</span><span id="health" class="mini mono ok">VERIFICANDO</span></div>
+<div class="row-d"><span>Contacto geométrico</span><strong class="mono" id="contact">—</strong></div>
+<div class="row-d"><span>Presión máxima</span><strong class="mono" id="maxpress">—</strong></div>
+<div class="row-d"><span>Radio mínimo perfil</span><strong class="mono" id="radius">—</strong></div>
+<div class="row-d"><span>Fuerza lateral</span><strong class="mono" id="lateral">—</strong></div>
+<p class="mini" style="margin-top:14px">Diagnóstico idealizado: no sustituye tolerancias, análisis de tensiones, fricción, fatiga ni homologación para fabricar.</p>
+</div></div>
+<div class="bottom"><span>MODELADO ORIGINAL / SIN ASSETS DE TERCEROS</span><span>FUENTE REUTILIZABLE · mechanics.mjs · GLB / DXF orientativos</span></div>
+</div>
+<aside class="sidebar">
+<section><h2 class="sidebar-title">01 / Banco de pruebas</h2><p class="description">Un <b>volante</b> transmite el giro mediante una <b>correa plana</b> al eje de la leva. La leva eleva un <b>rodillo</b> guiado y comprime un resorte. Cada posición deriva de la misma geometría, no de animaciones independientes.</p></section>
+<section><h2 class="sidebar-title">02 / Conducir</h2><div class="actions"><button id="play" class="btn primary">❚❚ Pausar</button><button id="step" class="btn">+ 15°</button><button id="reset" class="btn">↺ Inicio</button></div>
+<p class="mini" style="margin-bottom:0">La pausa congela todas las piezas. Al avanzar se respeta la misma relación de transmisión 1:1.</p></section>
+<section><h2 class="sidebar-title">03 / Configurar</h2>
+<div class="params">
+<div class="control"><label for="lift">Carrera del seguidor <output id="liftOut">16 mm</output></label><input id="lift" type="range" min="6" max="25" step="1" value="16"><div class="ends mono"><span>6 mm</span><span>25 mm</span></div></div>
+<div class="control"><label for="rise">Duración de subida <output id="riseOut">130°</output></label><input id="rise" type="range" min="100" max="155" step="5" value="130"><div class="ends mono"><span>100°</span><span>155°</span></div></div>
+<div class="control"><label for="topDwell">Meseta superior <output id="dwellOut">60°</output></label><input id="topDwell" type="range" min="30" max="85" step="5" value="60"><div class="ends mono"><span>30°</span><span>85°</span></div></div>
+<div class="control"><label for="rpm">Velocidad del motor <output id="rpmOut">42 RPM</output></label><input id="rpm" type="range" min="5" max="120" step="1" value="42"><div class="ends mono"><span>5 RPM</span><span>120 RPM</span></div></div>
+</div></section>
+<section><h2 class="sidebar-title">04 / Piezas y datos</h2><div class="export"><button id="glb" class="btn">Modelo .GLB</button><button id="dxf" class="btn">Perfil .DXF</button><button id="json" class="btn">Diseño .JSON</button><button id="png" class="btn">Captura .PNG</button></div>
+<div class="explain"><b>Nota de ingeniería.</b> El GLB contiene las mallas de la posición actual, no juntas CAD editables ni simulación dinámica. El DXF contiene el perfil y taladro de eje nominal de referencia; requiere revisar herramientas, holguras y manufacturabilidad.</div></section>
+<div id="status" role="status" aria-live="polite">Cargando laboratorio 3D…</div>
+</aside>
+</main>
+<script type="module">
+import * as THREE from 'three';
+import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
+import {GLTFExporter} from 'three/addons/exporters/GLTFExporter.js';
+import {DEFAULTS,TAU,normalize,motion,profile,state,diagnose,buildDXF} from './mechanics.mjs';
+const $=id=>document.getElementById(id), mm=n=>Number(n).toFixed(2);
+const opts={...DEFAULTS}, controls=['lift','rise','topDwell','rpm'];
+const notify=(msg,alert=false)=>{ $('status').textContent=msg;$('status').style.color=alert?'#ffd38b':'#bcd1c0';};
+let running=!matchMedia('(prefers-reduced-motion: reduce)').matches,theta=0,guideVisible=true,diagnostic=null;
+$('play').textContent=running?'❚❚ Pausar':'▶ Iniciar';
+const canvas=$('scene'),viewer=canvas.parentElement,renderer=new THREE.WebGLRenderer({canvas,antialias:true,preserveDrawingBuffer:true,alpha:true,powerPreference:'high-performance'});
+renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.8));renderer.setSize(viewer.clientWidth,viewer.clientHeight,false);
+renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.45;
+const scene=new THREE.Scene(),camera=new THREE.PerspectiveCamera(37,viewer.clientWidth/viewer.clientHeight,1,1800);
+camera.position.set(115,100,590);const target=new THREE.Vector3(-30,37,0),orbit=new OrbitControls(camera,canvas);
+orbit.target.copy(target);orbit.enableDamping=true;orbit.dampingFactor=.08;orbit.minDistance=335;orbit.maxDistance=900;orbit.maxPolarAngle=2.2;orbit.minPolarAngle=.7;orbit.maxAzimuthAngle=.63;orbit.minAzimuthAngle=-.63;orbit.update();
+scene.add(new THREE.HemisphereLight(0xe9f9e8,0x273c34,2.5));
+const key=new THREE.DirectionalLight(0xffffff,3.4);key.position.set(-155,230,260);scene.add(key);
+const fill=new THREE.DirectionalLight(0x87b8c3,1.5);fill.position.set(230,-70,190);scene.add(fill);
+const rim=new THREE.DirectionalLight(0xc6fd96,1.1);rim.position.set(-145,125,-80);scene.add(rim);
+const mat=(color,metalness=.65,roughness=.38)=>new THREE.MeshStandardMaterial({color,metalness,roughness});
+const graphite=mat('#263630'),metal=mat('#abbcb5',.83,.28),black=mat('#111b19',.3,.78),brass=mat('#dab36a',.84,.25),green=mat('#dcff72',.46,.38),blue=mat('#82bfc0',.5,.3),orange=mat('#efac76',.46,.35);
+const body=new THREE.Group();scene.add(body);
+function mesh(geo,material,parent=body,x=0,y=0,z=0){const o=new THREE.Mesh(geo,material);o.position.set(x,y,z);parent.add(o);return o;}
+function box(w,h,d,material,x,y,z,parent=body){return mesh(new THREE.BoxGeometry(w,h,d),material,parent,x,y,z)}
+function disk(r,depth,material,x,y,z,parent=body,segments=72){const o=mesh(new THREE.CylinderGeometry(r,r,depth,segments),material,parent,x,y,z);o.rotation.x=Math.PI/2;return o}
+function torus(r,tube,material,x,y,z,parent=body){return mesh(new THREE.TorusGeometry(r,tube,10,90),material,parent,x,y,z)}
+function roundRod(radius,height,material,x,y,z,parent=body){return mesh(new THREE.CylinderGeometry(radius,radius,height,24),material,parent,x,y,z)}
+function screw(x,y,z,parent=body){disk(3.4,3.3,metal,x,y,z,parent,12); const slit=box(4,.6,.55,black,x,y,z+2.1,parent);slit.rotation.z=Math.PI/4}
+box(464,315,11,graphite,-32,26,-30);box(452,303,3,black,-32,26,-22);
+for(let y of [-119,168]){box(443,6,12,metal,-32,y,-18);for(let x of [-237,173])screw(x,y,-8)}
+for(let x of [-241,181]){box(8,285,14,graphite,x,25,-17);for(let y of [-105,152])screw(x,y,-6)}
+// Carriles mecanizados; tornillos en posiciones congruentes.
+box(118,11,16,metal,52,154,-2);
+box(112,7,19,graphite,52,145,10);
+for(const x of [1,103])screw(x,154,9);
+box(22,60,22,metal,52,126,14);
+box(12,54,25,black,52,126,28);
+const guideFace=box(30,66,3,blue,52,126,39);guideFace.material.transparent=true;guideFace.material.opacity=.5;
+for(const y of [102,152])screw(52,y,42);
+box(150,14,19,graphite,-127,-88,0);
+box(152,4,19,metal,-127,-98,0);
+for(const x of [-192,-60])screw(x,-87,12);
+// Transmisión por correa de poleas iguales (mismo sentido y relación angular 1:1).
+const motorX=-132,camX=52,axisY=-42,rPulley=26;
+const motorGroup=new THREE.Group();motorGroup.position.set(motorX,axisY,0);body.add(motorGroup);
+const camPulleyGroup=new THREE.Group();camPulleyGroup.position.set(camX,axisY,0);body.add(camPulleyGroup);
+for(const g of [motorGroup,camPulleyGroup]){
+ disk(rPulley,14,metal,0,0,0,g);
+ for(const z of [-10,10])torus(rPulley,2.8,brass,0,0,z,g);
+ disk(11,18,graphite,0,0,0,g);disk(5,20,brass,0,0,13,g);
+ for(let i=0;i<8;i++){const a=i*TAU/8;disk(2.7,7,black,17*Math.cos(a),17*Math.sin(a),12,g,12)}
+}
+const flywheel=disk(39,4,graphite,0,0,21,motorGroup);torus(36,3,brass,0,0,24,motorGroup);
+for(let i=0;i<6;i++){const a=i*TAU/6;disk(5,3,metal,28*Math.cos(a),28*Math.sin(a),27,motorGroup,24)}
+// Correa: dos tramos tangentes y arcos de 180°, con marcadores que circulan.
+const beltPoints=[];const n=80;
+for(let i=0;i<=n;i++)beltPoints.push(new THREE.Vector3(motorX+(camX-motorX)*i/n,axisY+rPulley,0));
+for(let i=0;i<=n;i++){let a=Math.PI/2-Math.PI*i/n;beltPoints.push(new THREE.Vector3(camX+rPulley*Math.cos(a),axisY+rPulley*Math.sin(a),0))}
+for(let i=0;i<=n;i++)beltPoints.push(new THREE.Vector3(camX-(camX-motorX)*i/n,axisY-rPulley,0));
+for(let i=0;i<=n;i++){let a=-Math.PI/2-Math.PI*i/n;beltPoints.push(new THREE.Vector3(motorX+rPulley*Math.cos(a),axisY+rPulley*Math.sin(a),0))}
+const beltPath=new THREE.CatmullRomCurve3(beltPoints,true,'centripetal');
+mesh(new THREE.TubeGeometry(beltPath,350,2.7,6,true),black);
+const beltMarks=Array.from({length:24},()=>mesh(new THREE.SphereGeometry(2.15,9,6),green));
+// Leva frontal a z mayor que la transmisión.
+const camPivot=new THREE.Group();camPivot.position.set(camX,axisY,21);body.add(camPivot);
+let camBody;
+function rebuildCam(){
+ if(camBody){camPivot.remove(camBody);camBody.geometry.dispose();}
+ const pts=profile(opts,420),shape=new THREE.Shape();
+ shape.moveTo(pts[0].x,pts[0].y);for(let i=1;i<pts.length;i++)shape.lineTo(pts[i].x,pts[i].y);
+ shape.closePath();camBody=new THREE.Mesh(new THREE.ExtrudeGeometry(shape,{depth:12,steps:1,bevelEnabled:true,bevelSegments:2,bevelThickness:1.2,bevelSize:1.2,curveSegments:6}),metal);
+ camPivot.add(camBody);
+}
+rebuildCam();
+disk(17,16,graphite,0,0,16,camPivot);torus(15,1.8,brass,0,0,27,camPivot);disk(6,20,brass,0,0,24,camPivot);
+for(let i=0;i<5;i++){const a=i*TAU/5;disk(3.7,2.4,graphite,26*Math.cos(a),26*Math.sin(a),36,camPivot,15)}
+// Guía deslizante y rodillo: todas las piezas dependen del MISMO estado.
+const follower=new THREE.Group();body.add(follower);
+const roller=disk(opts.roller,19,metal,camX,0,29,follower);
+const rollerRing=torus(opts.roller-1.5,1.1,black,camX,0,40,follower);
+disk(4.8,22,brass,camX,0,30,follower);
+const stem=roundRod(4.5,121,metal,camX,60,35,follower);
+const baseCollar=box(36,9,18,blue,camX,84,34,follower);
+for(const x of [camX-13,camX+13])screw(x,84,45,follower);
+const springMat=new THREE.LineBasicMaterial({color:0xe7c18d});
+const springVerts=new Float32Array(3*460),springGeom=new THREE.BufferGeometry();
+springGeom.setAttribute('position',new THREE.BufferAttribute(springVerts,3));
+const spring=mesh(springGeom,springMat);spring.frustumCulled=false;
+function updateSpring(y){
+ const bottom=y+91,top=175,turns=11,points=springVerts.length/3;
+ for(let i=0;i<points;i++){const t=i/(points-1),a=t*Math.PI*2*turns;springVerts[i*3]=camX+12*Math.cos(a);springVerts[i*3+1]=bottom+(top-bottom)*t;springVerts[i*3+2]=37+12*Math.sin(a)}
+ springGeom.attributes.position.needsUpdate=true;
+}
+box(37,6,19,metal,camX,175,36);for(const x of [camX-14,camX+14])screw(x,175,48);
+const contactDot=mesh(new THREE.SphereGeometry(2.2,14,10),orange,body,0,0,43);
+const forceStem=box(3,38,3,orange,camX+32,35,38);forceStem.material.transparent=true;forceStem.material.opacity=.82;
+const annotation=new THREE.Group();body.add(annotation);
+// Máquina abierta: ningún elemento móvil depende de un reloj independiente.
+function applyPose(){
+ const st=state(theta,opts);
+ motorGroup.rotation.z=theta;camPulleyGroup.rotation.z=theta;camPivot.rotation.z=theta;
+ follower.position.y=axisY+st.rollerY;
+ updateSpring(follower.position.y);
+ const q=st.contact;
+ contactDot.position.set(camX+q.x*Math.cos(theta)-q.y*Math.sin(theta),axisY+q.x*Math.sin(theta)+q.y*Math.cos(theta),43);
+ forceStem.position.y=follower.position.y+17;forceStem.scale.y=.45+Math.max(0,st.normal)/95;
+ const beltPhase=(theta*rPulley)/(Math.PI*2*rPulley+(camX-motorX)*2);
+ beltMarks.forEach((b,i)=>{const q=beltPath.getPointAt(((i/beltMarks.length+beltPhase)%1+1)%1);b.position.copy(q);b.position.z=2;});
+ $('pos').textContent=mm(st.s);$('pressure').textContent=st.pressureDeg.toFixed(1);
+ $('force').textContent=st.normal.toFixed(1);$('velocity').textContent=(st.ds*st.omega).toFixed(1);
+ $('phase').textContent='FASE '+String(Math.floor(st.deg)).padStart(3,'0')+'° · '+st.event.toUpperCase();
+ $('lateral').textContent=st.side.toFixed(1)+' N';
+ const x=30+592*st.deg/360,y=124-106*st.s/opts.lift;
+ $('dot').setAttribute('cx',x.toFixed(2));$('dot').setAttribute('cy',y.toFixed(2));
+ return st;
+}
+function rebuildChart(){
+ const pts=[];for(let i=0;i<=360;i++)pts.push((i===0?'M':'L')+(30+592*i/360).toFixed(2)+','+(124-106*motion(i*Math.PI/180,opts).s/opts.lift).toFixed(2));
+ $('trace').setAttribute('d',pts.join(' '));$('maxlabel').textContent=opts.lift+' mm';
+}
+function check(){
+ diagnostic=diagnose(opts,90,540);
+ const good=diagnostic.continuousContact&&diagnostic.pressureOK;
+ $('contact').textContent=diagnostic.continuousContact?'CONTACTO OK':'REVISAR';
+ $('maxpress').textContent=diagnostic.maxPressure.toFixed(1)+'°';
+ $('radius').textContent=diagnostic.minRadius.toFixed(1)+' mm';
+ $('health').textContent=good?'GEOMETRÍA CONSISTENTE':'ALERTA DE DISEÑO';
+ $('health').className=good?'mini mono ok':'mini mono warn';
+ $('contact').style.color=diagnostic.continuousContact?'var(--accent)':'#ffd38b';
+ notify(good?'Parámetros comprobados con barrido de contacto geométrico.':'Advertencia: parámetros fuera del umbral ideal de presión o contacto.',!good);
+}
+function configure(){
+ for(const k of controls)opts[k]=Number($(k).value);
+ normalize(opts);$('liftOut').textContent=opts.lift+' mm';$('riseOut').textContent=opts.rise+'°';
+ $('dwellOut').textContent=opts.topDwell+'°';$('rpmOut').textContent=opts.rpm+' RPM';
+ rebuildCam();rebuildChart();check();applyPose();
+}
+controls.forEach(k=>$(k).addEventListener('input',configure));
+$('play').onclick=()=>{running=!running;$('play').textContent=running?'❚❚ Pausar':'▶ Iniciar';$('play').classList.toggle('primary',running);notify(running?'Motor iniciado.':'Motor detenido.');};
+$('step').onclick=()=>{running=false;$('play').textContent='▶ Iniciar';$('play').classList.remove('primary');theta=(theta+Math.PI/12)%TAU;applyPose();notify('Fase adelantada 15°.');};
+$('reset').onclick=()=>{running=false;$('play').textContent='▶ Iniciar';$('play').classList.remove('primary');theta=0;applyPose();notify('Máquina reiniciada en origen.');};
+function cameraTo(x,y,z){camera.position.set(x,y,z);orbit.target.set(-30,37,0);orbit.update();}
+$('front').onclick=()=>cameraTo(-30,37,620);$('angle').onclick=()=>cameraTo(115,100,590);
+$('parts').onclick=()=>{guideVisible=!guideVisible;guideFace.visible=guideVisible;$('parts').setAttribute('aria-pressed',String(guideVisible));$('parts').textContent=guideVisible?'GUÍAS':'SIN GUÍAS';};
+function download(data,name,mime){const blob=data instanceof Blob?data:new Blob([data],{type:mime});const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);}
+$('json').onclick=()=>{download(JSON.stringify({schema:'prometeo.cam-assembly/v1',units:'mm',params:opts,phase:theta,driveRatio:1,diagnostic},null,2),'maquina-leva-05.json','application/json');notify('Parámetros y diagnóstico exportados a JSON.');};
+$('dxf').onclick=()=>{download(buildDXF(opts),'maquina-leva-perfil-05.dxf','application/dxf');notify('Perfil DXF nominal exportado. Requiere revisión para fabricación.');};
+$('png').onclick=()=>{renderer.render(scene,camera);canvas.toBlob(blob=>{if(blob){download(blob,'maquina-leva-05.png','image/png');notify('Captura del visor generada.');}else notify('La captura no pudo generarse.',true)},'image/png')};
+$('glb').onclick=async()=>{try{notify('Generando GLB de las piezas visibles…');const exporter=new GLTFExporter();const bytes=await exporter.parseAsync(body,{binary:true,onlyVisible:true});download(bytes,'maquina-leva-05.glb','model/gltf-binary');notify('GLB exportado: mallas editables por objeto; no restricciones dinámicas.')}catch(e){notify('No se pudo exportar GLB: '+e.message,true)}};
+const resize=new ResizeObserver(()=>{const w=viewer.clientWidth,h=viewer.clientHeight;camera.aspect=w/h;camera.updateProjectionMatrix();renderer.setSize(w,h,false)});resize.observe(viewer);
+let prev=performance.now(),lastReadout=0;
+function frame(now){requestAnimationFrame(frame);const dt=Math.min((now-prev)/1000,.05);prev=now;
+ if(document.visibilityState!=='hidden'&&running){theta=(theta+dt*opts.rpm*TAU/60)%TAU;}
+ orbit.update();
+ // El cómputo de diagnóstico se ejecuta solo al cambiar parámetros.
+ if(now-lastReadout>40){applyPose();lastReadout=now}
+ renderer.render(scene,camera);
+}
+rebuildChart();check();applyPose();requestAnimationFrame(frame);$('parts').setAttribute('aria-pressed','true');
+window.addEventListener('error',e=>{if(/WebGL|module|Failed to fetch/i.test(e.message)){$('fatal').style.display='grid';$('fatal').textContent='Este navegador no pudo iniciar WebGL o descargar Three.js. Revisá la conexión y el soporte gráfico.'}});
+</script>
+</body></html>
