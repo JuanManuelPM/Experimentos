@@ -1,0 +1,10 @@
+import test from 'node:test';import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';import {auditTimeline} from '../src/continuity-kit.mjs';
+const base=JSON.parse(readFileSync(new URL('../SHOTLIST.json',import.meta.url),'utf8'));
+const clone=()=>structuredClone(base);
+test('plan válido, 8 planos, 48 segundos',()=>{const r=auditTimeline(base);assert.equal(r.ok,true,r.errors.join(';'));assert.equal(r.duration,48);});
+test('detecta eje invertido',()=>{const d=clone();d.shots[3].side='north';assert.equal(auditTimeline(d).ok,false);});
+test('detecta salto de utilería',()=>{const d=clone();d.shots[5].transitions=[];assert.equal(auditTimeline(d).ok,false);});
+test('detecta mirada contraria a puerta',()=>{const d=clone();d.shots[2].gaze='left';assert.equal(auditTimeline(d).ok,false);});
+test('detecta cue desplazado',()=>{const d=clone();d.audio.find(a=>a.id==='A07').start=38;assert.equal(auditTimeline(d).ok,false);});
+test('detecta un corte con hueco',()=>{const d=clone();d.shots[2].start=12;assert.equal(auditTimeline(d).ok,false);});
