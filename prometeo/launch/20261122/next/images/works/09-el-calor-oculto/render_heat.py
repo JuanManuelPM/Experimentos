@@ -138,7 +138,11 @@ def make_print(art,out):
     text(d,(m,2940),'FUENTES [1] U.S. EPA · Environmental Benefits of Green Infrastructure  [2] Cruz y col. · Montevideo, 2024  [3] NASA · Land Surface Temperature',24,MUTED,'med')
     printpath=out/'el_calor_oculto_A4_300dpi.png'
     # A4 at 300ppi uses 2480x3508. Resample exactly; no misleading DPI claim.
-    target=im.resize((2480,3508),Image.Resampling.LANCZOS)
+    # Preserve geometry: center-fit the portrait in an exact A4 canvas, with paper-colored side gutters.
+    sheet=(2480,3508)
+    scaled=im.resize((round(im.width*sheet[1]/im.height),sheet[1]),Image.Resampling.LANCZOS)
+    target=Image.new('RGB',sheet,PAPER)
+    target.paste(scaled,((sheet[0]-scaled.width)//2,0))
     target.save(printpath,dpi=(300,300),optimize=True)
     im.save(out/'el_calor_oculto_master.png',optimize=True)
     return printpath
