@@ -35,13 +35,13 @@ def synth(kind,note,velocity,dur):
     ti=np.arange(n,dtype=np.float32)/SR
     amp=velocity/127
     if kind=='techkick':
-        n=round(.53*SR);ti=ti[:n]
+        n=round(.53*SR);ti=np.arange(n,dtype=np.float32)/SR
         phase=2*np.pi*(46*ti+(.028*95)*(1-np.exp(-ti/.028)))
         body=np.sin(phase)*np.exp(-ti*11.6)
         transient=filt(RNG.standard_normal(n).astype(np.float32),hi=1900)*np.exp(-ti*105)*.035
         return (body+transient)*.82*amp
     if kind=='techrumble':
-        n=round(.40*SR);ti=ti[:n]
+        n=round(.40*SR);ti=np.arange(n,dtype=np.float32)/SR
         pulse=np.sin(2*np.pi*46*ti+1.6*np.sin(2*np.pi*17*ti))*np.exp(-ti*7.8)
         noise=filt(RNG.standard_normal(n).astype(np.float32),hi=180)*np.exp(-ti*9)
         x=(pulse*.78+noise*.27)*envelope(n,.016,.085)
@@ -52,26 +52,26 @@ def synth(kind,note,velocity,dur):
         x=(np.sin(phase)+.12*np.sin(phase*2))*envelope(n,.032,.19,.22)
         return np.tanh(x*.82).astype(np.float32)*.47*amp
     if kind=='velsilkhat':
-        n=round(.14*SR);ti=ti[:n]
+        n=round(.14*SR);ti=np.arange(n,dtype=np.float32)/SR
         x=filt(RNG.standard_normal(n).astype(np.float32),lo=900,hi=4200)
         return x*envelope(n,.012,.023,26)*.07*amp
     if kind=='velbrush':
-        n=round(.24*SR);ti=ti[:n]
+        n=round(.24*SR);ti=np.arange(n,dtype=np.float32)/SR
         x=filt(RNG.standard_normal(n).astype(np.float32),lo=260,hi=1900)
         return x*envelope(n,.021,.035,15)*.12*amp
     if kind=='velwood':
-        n=round(.32*SR);ti=ti[:n]
+        n=round(.32*SR);ti=np.arange(n,dtype=np.float32)/SR
         x=(.62*np.sin(2*np.pi*154*ti)+.27*np.sin(2*np.pi*231*ti)+.16*np.sin(2*np.pi*382*ti))
         x*=envelope(n,.014,.06,13)
         breath=filt(RNG.standard_normal(n).astype(np.float32),hi=900)*envelope(n,.014,.04,18)
         return (x+breath*.14)*.23*amp
     if kind=='velhush':
-        n=round(SR*min(4.4,dur+.35));ti=ti[:n]
+        n=round(SR*min(4.4,dur+.35));ti=np.arange(n,dtype=np.float32)/SR
         x=filt(RNG.standard_normal(n).astype(np.float32),hi=420)
         slow=np.sin(np.pi*np.clip(ti/max(dur,.2),0,1))**2
         return (x*.48+np.sin(2*np.pi*57*ti)*.20)*slow*envelope(n,.2,.25)*.11*amp
     if kind=='velsweep':
-        n=round(SR*min(4.4,dur+.35));ti=ti[:n]
+        n=round(SR*min(4.4,dur+.35));ti=np.arange(n,dtype=np.float32)/SR
         x=filt(RNG.standard_normal(n).astype(np.float32),lo=125,hi=900)
         slow=np.sin(np.pi*np.clip(ti/max(dur,.2),0,1))**2
         return x*slow*envelope(n,.2,.28)*.14*amp
