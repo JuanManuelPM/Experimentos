@@ -1,0 +1,268 @@
+{
+  "version": "DEEP-SPEC-1",
+  "medium": "images",
+  "depth": "SISTEMA",
+  "identity": {
+    "batchId": "images-w002-20261122",
+    "taskNumber": 5,
+    "taskId": "images-w002-20261122-05",
+    "launchBlobSha": "2e0e5e8ca226d546005349dc44b31cd9abcf5dd1",
+    "qualityBarVersion": "QBAR-1",
+    "studioFlow": "candidate/prometeo-image-studio-unificado-20261117",
+    "owner": "JuanManuelPM/Experimentos@candidate/prometeo-images-w002-05-20261122"
+  },
+  "brief": "MAREA DE VIDRIO: identidad original para álbum electrónico ficticio con tapa, contratapa, funda física y dos piezas promocionales raster, sistema compositivo reusable, prueba de miniatura y revisión de impresión.",
+  "intent": {
+    "experience": "Un objeto musical táctil y silenciosamente inquietante: la marea solidificada conserva una línea de luz ámbar entre la oscuridad mineral.",
+    "distinctAbility": "Una única materia visual reconocible se reencuadra sin repetirse mecánicamente en cinco formatos, con tipografía controlable y reproducción editorial."
+  },
+  "references": [
+    {
+      "id": "R1",
+      "url": "https://www.bedow.se/work/more-than-human/",
+      "status": "OBSERVED",
+      "observation": "El estudio documenta cartón negro, tipografía estampada, área en bajo relieve y sticker brillante: variación de obras sin perder gramática de envase físico."
+    },
+    {
+      "id": "R2",
+      "url": "https://www.monotype.com/resources/expertise/hugh-miller-istd",
+      "status": "OBSERVED",
+      "observation": "Monotype describe cómo el diseñador liga imágenes orgánicas, tratamiento experimental de letras y acabados de foil/relieve al sentido material del disco."
+    },
+    {
+      "id": "R3",
+      "url": "https://maimon.fr/en/case-studies/dag-album-art-direction/",
+      "status": "OBSERVED",
+      "observation": "El estudio explica su proceso de grabado, escaneado de alta calidad y transformación del gesto físico a funda, folleto y tipografía coherente."
+    },
+    {
+      "id": "R4",
+      "url": "https://pressonvinyl.com/artwork/",
+      "status": "OBSERVED",
+      "observation": "La imprenta establece CMYK 300 dpi, plantilla real para fundas de 12 pulgadas y sangrado mínimo de 5 mm; la cifra es criterio técnico no un aval creativo."
+    }
+  ],
+  "components": [
+    {
+      "id": "ART",
+      "role": "Marea escultórica de vidrio ahumado en un plano de agua oscuro y reflejos materiales.",
+      "strategy": "Crear fotografía artística raster original; no importar artwork de referentes; recortar del mismo máster visual.",
+      "constraints": "Centro focal y gesto reconocible a 96 px; una sola corriente de luz ámbar y sin glitches ornamentales."
+    },
+    {
+      "id": "TYPE",
+      "role": "Dúo tipográfico de título monumental y metadatos técnicos de lectura nítida.",
+      "strategy": "Componer con fuentes libres instaladas Inter/Lato, rasterizar a resolución final con coordenadas relativas.",
+      "constraints": "Texto verdadero no generado en la imagen; sistema de márgenes y contraste coherente entre cinco formatos."
+    },
+    {
+      "id": "PRINT",
+      "role": "Tapa, contratapa y funda interiores de un lanzamiento físico conceptual de vinilo.",
+      "strategy": "Separar archivo CMYK y prueba RGB; definir sangrado y zona segura, sin inventar plantilla de fábrica.",
+      "constraints": "300 ppi declarado solo a tamaño final, marcar limitación si el máster de imagen tiene menos detalle nativo."
+    },
+    {
+      "id": "PROMO",
+      "role": "Dos adaptaciones editoriales, afiche vertical y banner horizontal, con jerarquías propias.",
+      "strategy": "Recortar y desplazar el máster visual según retícula y contraste, manteniendo una sola identidad.",
+      "constraints": "No duplicar una portada sin reencuadre; preservar volumen vítreo y línea de marea."
+    },
+    {
+      "id": "QA",
+      "role": "Pruebas de lectura miniatura, revisiones de cortes, bordes y procedencia de archivos.",
+      "strategy": "Exportar pruebas a 96 y 320 px, tablas de medidas y contacto con composición completa.",
+      "constraints": "Diferenciar inspección automática y juicio humano; nunca afirmar aprobación estética externa."
+    }
+  ],
+  "questions": [
+    {
+      "id": "Q1",
+      "target": "ART",
+      "question": "¿Qué imagen material puede sintetizar agua, vidrio y electrónica sin recurrir al glitch genérico?",
+      "alternatives": [
+        "Fragmento escultórico único con horizonte real y refracción ámbar",
+        "Collage de fractales y ruido luminoso"
+      ],
+      "evidenceRef": "R2",
+      "finding": "El oficio y la relación orgánico-material en la funda de referencia sostienen privilegiar un solo gesto fuerte.",
+      "decisionImpact": "Encargar una escena visual principal sin textos, con vidrio y luz como elementos narrativos."
+    },
+    {
+      "id": "Q2",
+      "target": "TYPE",
+      "question": "¿Cómo mantener título y artista reconocibles a 96 píxeles sin dominar el objeto fotografiado?",
+      "alternatives": [
+        "Título grande a dos líneas y metadatos subordinados",
+        "Bloque completo de texto pequeño uniforme"
+      ],
+      "evidenceRef": "R2",
+      "finding": "El experimento local PIL a 1000 px, reducido a 96 px, mantiene las dos líneas principales pero pierde microtexto.",
+      "decisionImpact": "Mantener el título dentro de zona segura, evitar tipo fino como único identificador en miniatura."
+    },
+    {
+      "id": "Q3",
+      "target": "PRINT",
+      "question": "¿Qué tiene que cambiar al trasladar la identidad digital a funda física sin simular una impresión certificada?",
+      "alternatives": [
+        "Artes a medida y prueba de CMYK/bleed según ficha de imprenta",
+        "Un mockup RGB ampliado sin dimensiones"
+      ],
+      "evidenceRef": "R4",
+      "finding": "La imprenta solicita 300 ppi, CMYK y 5 mm de sangrado para fundas de 12 pulgadas.",
+      "decisionImpact": "Exportar raster con metadatos de ppi y sangrado nominal, distinguir prueba de fábrica no ejecutada."
+    },
+    {
+      "id": "Q4",
+      "target": "PROMO",
+      "question": "¿Cómo evitar cinco tapas iguales y construir un universo que siga siendo reconocible?",
+      "alternatives": [
+        "Múltiples recortes disciplinados, línea-tensión y tipografía compartida",
+        "Clonar cover con fondos aleatorios"
+      ],
+      "evidenceRef": "R1",
+      "finding": "El proyecto de Bedow separa gramática editorial de obra variable, sosteniendo identidad del conjunto.",
+      "decisionImpact": "Crear dos composiciones independientes con jerarquías y encuadres específicos."
+    }
+  ],
+  "relations": [
+    {
+      "from": "ART",
+      "to": "TYPE",
+      "invariant": "La imagen puede cambiar de recorte sin invadir los bloques de texto del título o de los metadatos.",
+      "failure": "Una cresta brillante vuelve ilegible el título o la portada pierde foco.",
+      "test": "Medir contraste local y examinar portada 96 px."
+    },
+    {
+      "from": "ART",
+      "to": "PROMO",
+      "invariant": "La misma curvatura y marca ámbar permanecen identificables en piezas con proporciones diferentes.",
+      "failure": "Las promociones muestran otra imagen sin relación visual o sólo duplican el cuadrado.",
+      "test": "Ver contact sheet de cinco piezas a tamaño comparable."
+    },
+    {
+      "from": "TYPE",
+      "to": "PRINT",
+      "invariant": "Los textos tienen zona segura suficiente y la tinta no se corta en el borde de guillotina.",
+      "failure": "Tracks cortados por sangrado o minúsculos en impresión física.",
+      "test": "Verificar márgenes nominales y previsualización de recorte."
+    },
+    {
+      "from": "QA",
+      "to": "PRINT",
+      "invariant": "Resolución y espacio cromático de cada archivo coinciden con lo afirmado en el manifiesto.",
+      "failure": "Archivo RGB reetiquetado CMYK o imagen de baja definición proclamada 300 dpi real.",
+      "test": "Pillow image.info, bands, tamaño y resolución nativa de máster."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "D1",
+      "questionId": "Q1",
+      "componentIds": [
+        "ART"
+      ],
+      "choice": "Un pliegue de vidrio suspendido como marea detenida.",
+      "rejected": "Texturas abstractas aditivas y glitches genéricos.",
+      "why": "Un objeto material fuerte se reconoce en miniatura, y su refracción tiene función metafórica.",
+      "productionChange": "Crear un máster original mediante generador visual sin tipografía y sin assets de terceros."
+    },
+    {
+      "id": "D2",
+      "questionId": "Q2",
+      "componentIds": [
+        "TYPE",
+        "QA"
+      ],
+      "choice": "Tapa: título en dos líneas y nombre SILTE en menor jerarquía.",
+      "rejected": "Título manuscrito incrustado en un generador de imagen.",
+      "why": "La tipografía tiene que ser precisa, reproducible y testeable mediante rasterización.",
+      "productionChange": "Aplicar render tipográfico por PIL y exportar reducción de la tapa a 96 px."
+    },
+    {
+      "id": "D3",
+      "questionId": "Q3",
+      "componentIds": [
+        "PRINT",
+        "QA"
+      ],
+      "choice": "Master print nominal de 12 pulgadas más sangrado con separación CMYK de prueba.",
+      "rejected": "Proclamar un mockup de escena como plantilla de imprenta certificada.",
+      "why": "Las especificaciones verificadas son medibles y la fábrica tiene sus propias plantillas.",
+      "productionChange": "Exportar artes nominales de alta definición y marcar prueba de fábrica pendiente."
+    },
+    {
+      "id": "D4",
+      "questionId": "Q4",
+      "componentIds": [
+        "PROMO",
+        "ART"
+      ],
+      "choice": "Variar escala y vacío, conservar gesto/onda y tono cobre.",
+      "rejected": "Cinco fondos independientes sin relación entre sí.",
+      "why": "La continuidad editorial puede ser más potente que repetir un logo.",
+      "productionChange": "Crear afiche vertical, banner horizontal y funda con recortes distintos del mismo máster."
+    }
+  ],
+  "risks": [
+    {
+      "componentIds": [
+        "TYPE",
+        "QA"
+      ],
+      "severity": "high",
+      "failure": "El título se vuelve ilegible al reducir la portada a 96px.",
+      "prevention": "Probar jerarquía y escalas con una pieza raster piloto y texto exacto.",
+      "test": "Spike Pillow a 1000 px y reducción a 96 px, inspección de texto principal visible.",
+      "status": "OBSERVED"
+    },
+    {
+      "componentIds": [
+        "ART"
+      ],
+      "severity": "medium",
+      "failure": "El render principal se parece a fondo genérico de arte generativo y no tiene forma memorable.",
+      "prevention": "Anclar art direction a un gesto escultórico específico, descartar glitches y revisar la cresta.",
+      "test": "Inspección visual del render completo y de su silueta en miniatura.",
+      "status": "NOT_RUN"
+    },
+    {
+      "componentIds": [
+        "PRINT"
+      ],
+      "severity": "medium",
+      "failure": "La imagen generada no aporta detalle suficiente para las dimensiones nominales de impresión.",
+      "prevention": "Registrar dimensiones reales del render fuente, no confundir upscale y detalle nativo.",
+      "test": "Inspección de crop 100% y comparación técnica con especificaciones de imprenta.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "acceptance": [
+    {
+      "kind": "visual",
+      "criterion": "Portada reconocible y título legible a 96 píxeles con objeto central único.",
+      "oracle": "Inspección visual y archivo de thumbnail de 96px guardado.",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "visual",
+      "criterion": "Cinco piezas muestran parentesco sin repetir exactamente el encuadre.",
+      "oracle": "Contacto visual cotejable, una imagen principal y cinco adaptaciones reales.",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "logic",
+      "criterion": "Arte final raster con tamaños y metadatos medidos; conversión CMYK como prueba de impresión.",
+      "oracle": "Script de QA que abre cada archivo y comprueba bandas, dimensiones, integridad y zona segura.",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "functional",
+      "criterion": "Arte de tapa, contratapa, funda y promociones se produce de manera reproducible.",
+      "oracle": "Script fuente corre localmente desde un máster y escribe resultados con hashes.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "resources": "ImageGen para máster visual original; Python Pillow y fuentes libres disponibles para tipografía, cortes, versiones RGB/CMYK y QA.",
+  "licensing": "Los textos, nombres y composición son ficción original; referencias observadas sólo para estudio, sin copiar imágenes. Fuentes abiertas Inter y Lato. No usar marcas reales ni fotografías privadas.",
+  "environmentLimits": "El generador visual no garantiza consistencia espacial de varias vistas; la salida se construye como recortes de un solo máster. El detalle nativo de impresión, perfil ICC de la imprenta, prueba física y aprobación humana deberán comprobarse por separado."
+}
