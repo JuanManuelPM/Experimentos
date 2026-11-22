@@ -1,0 +1,137 @@
+{
+  "schema": "prometeo.3d.production-receipt/v2",
+  "id": "3d-w7-20261122-03",
+  "room": "3d",
+  "batchId": "3d-w7-20261122",
+  "taskNumber": 3,
+  "title": "Asteroide Jardín · segunda siembra",
+  "recordedAt": "2026-11-22T18:54:26.902Z",
+  "sourceLocks": {
+    "launchBlobSHA": "58de659e2aa01c0746d59ca6f95c36bdc59f3030",
+    "oldLaunchBlobSHA": "942c3ba8b851137886e959d2790771556e2d9f5d",
+    "flowVersion": "2.3.0",
+    "flowIndexBlobSHA": "cb809bc55a66791680f9c6c76969e154e67023b6",
+    "flowBlobSHA": "d3a9fd3b455aaad093998f81e4e694eafb3bddb0",
+    "flowSHA256Canonical": "53bc9e2e4b37c99e92d3494af8dfa4461cd4644b15f980e32497a8428b067b3f",
+    "flowStatus": "CURRENT_CANDIDATE_NOT_PROMOTED"
+  },
+  "urls": {
+    "candidate": "https://github.com/JuanManuelPM/Experimentos/tree/candidate/prometeo-3d-w7-20261122-03/prometeo/launch/20261122/relaunch/3d/work-03",
+    "publishedSource": "https://github.com/JuanManuelPM/Experimentos/tree/gh-pages/prometeo/launch/20261122/relaunch/3d/work-03",
+    "preview": "https://juanmanuelpm.github.io/Experimentos/prometeo/launch/20261122/relaunch/3d/work-03/"
+  },
+  "sourceReadback": [
+    {
+      "name": "index.html",
+      "blobSHA": "b0aad538977828e849e9e3009b34db4b550164f0",
+      "identicalCandidateAndGhPages": true
+    },
+    {
+      "name": "planet-motion.mjs",
+      "blobSHA": "36bb99f3838a0030740555cb5342cf01ff1d43ff",
+      "identicalCandidateAndGhPages": true
+    },
+    {
+      "name": "quest-state.mjs",
+      "blobSHA": "69f289eb6aa9cfd670c9cc01d1f10430f7e481d9",
+      "identicalCandidateAndGhPages": true
+    },
+    {
+      "name": "garden-flora.mjs",
+      "blobSHA": "a083a2fe8a7fa361e7640b17a566dcabc1b67d95",
+      "identicalCandidateAndGhPages": true
+    },
+    {
+      "name": "test-logic.mjs",
+      "blobSHA": "43328e999b195e6dd1bf2307c9554ccedc1eadf2",
+      "identicalCandidateAndGhPages": true
+    }
+  ],
+  "implemented": [
+    "On-sphere movement, swept collision and radial jump physics",
+    "Two independent NPC patrols gathering at final beacon",
+    "Quest reducer with 3 unique collectible dew drops, Nima, Boro, finale and save/restart",
+    "Curved botanical grove component and wind, latent flower blooms and restored beacon",
+    "Pointer joystick, mobile jump/interact, swipe camera, keyboard controls, minimal HUD",
+    "Read-only diagnostics bridge for future runtime browser testing"
+  ],
+  "verification": {
+    "syntax": {
+      "status": "OBSERVED",
+      "method": "JavaScript V8 parser over 4 fetched GitHub source modules",
+      "result": "4/4 PASS"
+    },
+    "logic": {
+      "status": "OBSERVED",
+      "method": "13 checks on live V8 using fetched quest-state.mjs and planet-motion.mjs plus UI wiring",
+      "result": "13/13 PASS"
+    },
+    "repeatableNodeTest": {
+      "status": "CREATED_NOT_RUN",
+      "script": "test-logic.mjs",
+      "reason": "No Node execution in actual checked-out branch"
+    },
+    "readback": {
+      "status": "OBSERVED",
+      "result": "5/5 candidate and gh-pages blob SHAs identical"
+    },
+    "deepSpec": {
+      "status": "OBSERVED",
+      "result": "SPIKE_REQUIRED",
+      "reason": "High-impact first botanical article not seen through WebGL"
+    },
+    "artDirection": {
+      "status": "OBSERVED",
+      "result": "FIRST_ARTICLE_REQUIRED",
+      "reason": "First article and 390/1440 screenshots NOT_RUN"
+    },
+    "trace": {
+      "status": "OBSERVED",
+      "result": "STRUCTURE_PASS_MEDIA_NOT_VERIFIED",
+      "note": "No claims of verified node-level graph"
+    },
+    "browserRender": {
+      "status": "NOT_RUN",
+      "reason": "Remote live browser denied execution for exhausted tool account credits"
+    },
+    "publicHTTP": {
+      "status": "NOT_VERIFIED",
+      "reason": "Public web fetch unavailable, though source committed to gh-pages and read back"
+    },
+    "firstFrame390": {
+      "status": "NOT_RUN"
+    },
+    "firstFrame1440": {
+      "status": "NOT_RUN"
+    },
+    "mobileTouch": {
+      "status": "NOT_RUN"
+    },
+    "visualQuestEndToEnd": {
+      "status": "NOT_RUN"
+    },
+    "humanApproval": {
+      "status": "NO"
+    }
+  },
+  "comparison": {
+    "oldBatchId": "3d-w6-20261122",
+    "newBatchId": "3d-w7-20261122",
+    "oldSourceBlob": "63022ca61244e6ae02d9e89a1df7abf15223803c",
+    "newSourceBlob": "b0aad538977828e849e9e3009b34db4b550164f0",
+    "flowBefore": "2.3.0",
+    "flowAfter": "2.3.0",
+    "differentTechnique": "Authored paper-botanical grove families instead of repeated foliage/stone assembly; art-first rule embedded in Book.",
+    "measuredChange": "Logical mission and gravity testability improved; perceptual quality difference NOT_VERIFIED"
+  },
+  "learning": {
+    "stage": "first_article_and_qa",
+    "cause": "Source/logic tests can pass without a browser screenshot or mobile interaction.",
+    "preventiveGate": "Do not promote visual/complete-game success without actual frame 390/1440 and touch playtest.",
+    "test": "Capture real rendered grove and finish mission using joystick, two NPCs and beacon.",
+    "owner": "3D specialty candidate",
+    "counterexample": "13 state/math checks cannot detect ugly silhouettes, frame drops or hidden controls."
+  },
+  "overall": "SOURCE_PUBLISHED_LOGIC_VERIFIED_VISUAL_NOT_RUN",
+  "humanApproved": false
+}
