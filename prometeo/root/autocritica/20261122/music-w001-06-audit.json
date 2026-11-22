@@ -1,0 +1,101 @@
+{
+  "schema": "prometeo.autocritica.audit/v1",
+  "id": "music-w001-06-audit-20261122-r1",
+  "batchId": "music-w001-20261122",
+  "taskNumber": 6,
+  "resultId": "music-w001-20261122-06-lluvias-largas-audio-20261122",
+  "source": {
+    "flowSha256": "6826ce13f4bd1e0d81b8a89bd7e6728668b85c44c68185b79426b00a36b8f05f",
+    "briefSha256": "93713bfe1ae4571eaa6c69ebf3eb3969efdbfd81da2c1ae19808faf68a42001d",
+    "manifestBlobSha": "9449bdbb8212525f2b740bce0b727f4dfe6bc5dd",
+    "songProjectBlobSha": "aba0f06f9d19763e53ff1840d2ba138156bcadcb",
+    "qaReceiptBlobSha": "a130bd299e06ab4d919ce4ec3d3ad1230a549265",
+    "messageIndexBlobSha": "13d4f53c89d0002dd77dc2b66fe58b2725b45e44"
+  },
+  "status": "METADATA_AUDITED_MEDIA_NOT_INSPECTED",
+  "observed": {
+    "projectDurationSeconds": 132.413793,
+    "masterDurationSeconds": 132.414,
+    "bpm": 174,
+    "bars": 96,
+    "declaredSegments": 12,
+    "declaredFramesPerSegment": 176552,
+    "declaredTotalFrames": 2118624,
+    "computedFrames": 2118624,
+    "declaredAssembledBytes": 4237292,
+    "computedAssembledBytes": 4237292,
+    "declaredFormat": "PCM16 mono 16000Hz",
+    "previewDistinctFromMaster": true
+  },
+  "tests": [
+    {
+      "name": "12 * 176552 frames == 2118624",
+      "result": "PASS_STATIC_METADATA"
+    },
+    {
+      "name": "12 WAV headers removed plus one header == 4237292 bytes",
+      "result": "PASS_STATIC_METADATA"
+    },
+    {
+      "name": "96 bars at 174 BPM 4/4 == ~132.413793 s",
+      "result": "PASS_STATIC_METADATA"
+    },
+    {
+      "name": "Browser playback and download",
+      "result": "NOT_RUN"
+    },
+    {
+      "name": "Media bytes decode and audio listening",
+      "result": "NOT_RUN"
+    },
+    {
+      "name": "Studio V2 parity",
+      "result": "NOT_VERIFIED"
+    }
+  ],
+  "dialogue": [
+    {
+      "role": "AUTOR",
+      "claim": "Publicó un máster original completo dividido en 12 WAV con score editable y hash de flujo fijado; el formato segmentado evita el límite de carga de un WAV monolítico.",
+      "evidence": "manifest, QA_RECEIPT y SONGPROJECT leídos desde GitHub; no se reprodujo el audio"
+    },
+    {
+      "role": "CRITICO",
+      "claim": "La integridad matemática de los metadatos no demuestra que el reproductor descargue, concatene y reproduzca sin huecos, ni que la edición suene igual al máster.",
+      "evidence": "QA_RECEIPT declara browserPlayback NOT_RUN y studioExportParity NOT_VERIFIED"
+    },
+    {
+      "role": "AUTOR",
+      "claim": "Propone verificar cabeceras WAV reales, SHA de cada parte, frames PCM, primer y último frame, continuidad en bordes, seek/export en navegador y un test de edición-exportación.",
+      "evidence": "propuesta, no ejecución"
+    },
+    {
+      "role": "CRITICO",
+      "claim": "¿Qué etapa permitió publicar una entrega con pruebas de reproducción sin ejecutar? ¿Cómo impedir repetirlo en otra obra?",
+      "evidence": "el estado publicado no oculta límites, pero no impone puerta previa al sello de reproducible"
+    },
+    {
+      "role": "AUTOR",
+      "claim": "Gate obligatorio de medios con oráculo por tipo y matriz de estados independientes: metadata, decode, playback, export, parity, human artistic review.",
+      "evidence": "candidato transversal, no promovido"
+    }
+  ],
+  "preventiveFlowCandidate": {
+    "owner": "music-studio/production-universal",
+    "stage": "M11/RELEASE_QA",
+    "failureTrigger": "Publicar audio segmentado sin prueba de decode/assembly/playback",
+    "gate": "Validar bytes WAV, PCM y frames, bordes, reproducción y exportación; marcar NOT_RUN si no hay navegador",
+    "measurableTest": "2 canciones con diferentes cantidades de segmentos y un contraejemplo de cabecera incorrecta",
+    "counterexample": "Un JSON matemáticamente consistente puede referir a bytes corruptos o a un reproductor que no soporta segmentos",
+    "rollback": "No tocar masters originales ni flujo 2.0.0; retirar gate candidato si rompe release sin ofrecer estado explícito",
+    "status": "FLOW_CANDIDATE_NOT_PROMOTED"
+  },
+  "limits": [
+    "No se descargaron ni escucharon WAV binarios",
+    "No se abrió navegador real",
+    "No se inspeccionó arte audiovisual de otras obras",
+    "No se escribió en repo privado"
+  ],
+  "creativeApproval": "NOT_APPROVED",
+  "humanApproval": "NOT_REQUESTED"
+}
