@@ -1,0 +1,81 @@
+{
+  "schema": "prometeo.video.stage-trace/v1",
+  "taskId": "video-w003-20261122-06",
+  "humanApproved": false,
+  "validatedFlowGraph": "NOT_RUN_SPECIALIZED_FLOW_NOT_RECOVERED",
+  "flow": {
+    "sharedContractSHA": "7911ce780c6eb8fc08ba3e5621e4479bbe2e9757",
+    "deepSpecSHA": "7656a293b0182f81619bf0d27b90dffa771c2683",
+    "artDirectionSHA": "b1a1a012e90897200336cac6316c0511cb40c4c5",
+    "version": "Q-LOOP+QBAR-1+DEEP-SPEC-1+ART-1",
+    "specialistVideo": "NOT_RECOVERED"
+  },
+  "events": [
+    {
+      "stage": "BRIEF_LOCK",
+      "status": "EXECUTED",
+      "decision": "Only task 06; W003 brief SHA fixed.",
+      "alternative": "Overwrite W002",
+      "output": "Exclusive candidate branch",
+      "evidence": "LAUNCH blob 0cc574528594...",
+      "timestamp": "2026-11-22T19:15:01.432Z"
+    },
+    {
+      "stage": "REFERENCE",
+      "status": "EXECUTED",
+      "decision": "Use observed Repetition stills as visual reference; author independent work.",
+      "alternative": "Copy assets or claim full film viewed",
+      "output": "Book references R1-R3",
+      "evidence": "Metalocus images plus Ikeda and Cooper process pages",
+      "timestamp": "2026-11-22T19:15:01.432Z"
+    },
+    {
+      "stage": "FIRST_ARTICLE",
+      "status": "EXECUTED",
+      "decision": "Render actual 2.4s H264/AAC first.",
+      "alternative": "Only storyboard/HTML",
+      "output": "FIRST_ARTICLE_2_4s.mp4",
+      "evidence": "2dcc7cc49a4e68625f2156e2ed781adf5d34ba6616e4774423814bc7017159cb",
+      "timestamp": "2026-11-22T19:15:01.432Z"
+    },
+    {
+      "stage": "REPRESENTATION_SWITCH",
+      "status": "EXECUTED",
+      "decision": "Original contact sheet too repetitive; use five distinct materials.",
+      "alternative": "More filters on one circle",
+      "output": "Friction ribbons and void single filament",
+      "evidence": "CONTACT_v0.png vs CONTACT_final.png (local package)",
+      "timestamp": "2026-11-22T19:15:01.432Z"
+    },
+    {
+      "stage": "MIX_RENDER_QA",
+      "status": "EXECUTED",
+      "decision": "Original 24s mix, 384 frame render and mux.",
+      "alternative": "Claim without streams",
+      "output": "MP4 and WAV attachments",
+      "evidence": "ffprobe 24s both streams; ffmpeg full decode PASS; 83c0041a32966e02bb6c57f9c03f7c755eff7184cb6eb6b2712ee2a2a4c853b2",
+      "timestamp": "2026-11-22T19:15:01.432Z"
+    },
+    {
+      "stage": "SOURCE_PUBLICATION",
+      "status": "EXECUTED",
+      "decision": "Publish WebAudio Canvas interpretation and project book on candidate branch.",
+      "alternative": "Mislabel player as hosted original MP4",
+      "output": "index.html, cut_planner.mjs, PREPRODUCTION, QA",
+      "evidence": "GitHub readback of source; MP4 remote MISSING",
+      "timestamp": "2026-11-22T19:15:01.432Z"
+    },
+    {
+      "stage": "BROWSER_QA",
+      "status": "NOT_RUN",
+      "reason": "No actual browser runtime/screenshots at both viewports in this connector.",
+      "timestamp": "2026-11-22T19:15:01.432Z"
+    },
+    {
+      "stage": "HUMAN_REVIEW",
+      "status": "NOT_RUN",
+      "reason": "No independent artistic listening, video review or authorization; HUMAN_APPROVED=NO.",
+      "timestamp": "2026-11-22T19:15:01.432Z"
+    }
+  ]
+}
