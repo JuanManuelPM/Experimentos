@@ -1,0 +1,116 @@
+{
+  "schema": "prometeo.video.w003-07.qa/v1",
+  "taskId": "video-w003-20261122-07",
+  "medium": "video",
+  "createdAt": "2026-11-22T19:16:47.747Z",
+  "sources": {
+    "source": "https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/launch/20261122/relaunch/video/works/07/index.html",
+    "candidate": "https://github.com/JuanManuelPM/Experimentos/tree/candidate/prometeo-video-w003-20261122-07/prometeo/launch/20261122/relaunch/video/works/07/",
+    "firstSliceLocal": [
+      "first_article_390.png",
+      "first_article_1440.png",
+      "shot_11.83.png"
+    ],
+    "benchmarks": [
+      "https://www.pixar.com/bao",
+      "https://www.disneyplus.com/browse/entity-a257e161-96eb-4e54-995f-0ead0bc65cdd"
+    ]
+  },
+  "artifact": {
+    "mp4": {
+      "name": "EL_RELEVO_W003_07.mp4",
+      "access": "CONVERSATION_SANDBOX_ONLY",
+      "sha256": "8f8a16e66f9f3d879fe846b41db221dcf3dcd001aa65086a2207eb81a2e534ea",
+      "sizeBytes": 1142078,
+      "container": "H264/AAC",
+      "width": 960,
+      "height": 540,
+      "durationSeconds": 27.85,
+      "frames": 557
+    },
+    "webm": {
+      "name": "EL_RELEVO_W003_07.webm",
+      "access": "CONVERSATION_SANDBOX_ONLY",
+      "container": "VP9/Opus",
+      "sizeBytes": 5789075
+    },
+    "publicPlayer": {
+      "url": "https://juanmanuelpm.github.io/Experimentos/prometeo/launch/20261122/relaunch/video/works/07/",
+      "status": "GITHUB_SOURCE_READBACK_PASS_PAGES_HTTP_NOT_TESTED",
+      "runtime": "HTML Canvas animated film, live WebAudio PCM synthesis, browser real WebM export"
+    }
+  },
+  "qa": [
+    {
+      "test": "FFPROBE_VIDEO_AUDIO_STREAMS",
+      "status": "PASS",
+      "observation": "H264 960x540, 557 frames, AAC 27.85s, MP4 SHA256 exact"
+    },
+    {
+      "test": "FFMPEG_FULL_DECODE",
+      "status": "PASS",
+      "observation": "Full decode -f null returned 0 after revised S08"
+    },
+    {
+      "test": "AUDIO_SIGNAL",
+      "status": "PASS",
+      "observation": "Decoded stereo 24k PCM RMS 0.01355, peak 0.10071; non-silent and below clipping"
+    },
+    {
+      "test": "RACCORD_8_SHOTS_2_OWNER_TRANSFERS",
+      "status": "PASS",
+      "observation": "No graph gap, uncaused owner switch or split prop; S04 ELSA->INA, S07 INA->LEO",
+      "errors": []
+    },
+    {
+      "test": "CHROMIUM_JS_LAYOUT",
+      "status": "PASS",
+      "observation": "Headless Chromium 1440x900 and 390x844: no JS page errors and scrollWidth equals clientWidth"
+    },
+    {
+      "test": "FIRST_HANDOFF_THREE_TIME_SAMPLES",
+      "status": "OBSERVED_LOCAL",
+      "observation": "At t=10.85,11.83,12.64 the paper bird stays a single object between illustrated palms; anatomy still stylized"
+    },
+    {
+      "test": "FINAL_BUS_DEPTH_LAYER_FIX",
+      "status": "OBSERVED_LOCAL",
+      "observation": "S08 bus was masking child in first candidate; corrected to render behind foreground actors with clipped passenger window, sampled at t=26.2"
+    },
+    {
+      "test": "PUBLIC_HTML_SOURCE_CANDIDATE_AND_GH_PAGES",
+      "status": "PASS",
+      "observation": "Same script present via GitHub contents on candidate and gh-pages (blob 381552a26991d29607876fce80e6cf54e414cde4)"
+    },
+    {
+      "test": "PUBLIC_MP4_BINARY",
+      "status": "NOT_RUN",
+      "observation": "MP4 is supplied through the current conversation; not asserted to be published on GitHub"
+    },
+    {
+      "test": "PUBLIC_PAGES_HTTP_AND_ANDROID_PLAYBACK",
+      "status": "NOT_RUN",
+      "observation": "Cannot infer website HTTP/playback from GitHub source readback"
+    },
+    {
+      "test": "INDEPENDENT_BLIND_VIEWER_STORY_COMPREHENSION",
+      "status": "NOT_RUN",
+      "observation": "No independently tested uninformed viewer; cannot claim acting conveys plot to an audience"
+    },
+    {
+      "test": "ARTISTIC_EXCELLENCE_OR_HUMAN_APPROVAL",
+      "status": "NOT_RUN",
+      "observation": "Stylized illustration remains well below Pixar benchmark; HUMAN_APPROVED=false"
+    }
+  ],
+  "status": "TECHNICAL_MP4_PASS_VISUAL_LOCAL_OBSERVED_BLIND_VIEWER_NOT_RUN",
+  "humanApproved": false,
+  "learning": {
+    "stage": "FIRST_ARTICLE",
+    "cause": "Geometrically simple hands can preserve causality while still lacking expressive anatomical shading.",
+    "preventive_gate": "Observe 3 temporal samples and viewer comprehension before multiplying illustrated acting.",
+    "test": "Blind audience retelling plus close-up hand contact and reaction comparison.",
+    "owner": "video-speciality-candidate",
+    "counterexample": "W002/07 audited static cutout and W003 first final-bus occlusion were not acceptable proof of emotionally credible acting."
+  }
+}
