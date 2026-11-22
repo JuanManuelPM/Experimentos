@@ -1,0 +1,280 @@
+{
+  "version": "DEEP-SPEC-1",
+  "medium": "Video y aplicación web para edición audiovisual",
+  "depth": "SISTEMA",
+  "brief": "Video W002 N10 SALA DE MONTAJE: editor web multipista real con importación, recorte y movimiento, preview sincronizada y export binario WebM, proyecto editable y pruebas.",
+  "briefSha": "d7eebea6d36fc6e5aa3b72cba4e35dd149dc552d",
+  "batchId": "video-w002-20261122",
+  "taskNumber": 10,
+  "intent": {
+    "experience": "Un usuario abre clips propios, organiza video y audio en cuatro pistas, ve la composición y exporta exactamente su edición.",
+    "distinctAbility": "Un núcleo temporal con un mismo estado para preview, edición de tiempos, mezcla de audio y grabación final."
+  },
+  "references": [
+    {
+      "id": "R-DAVINCI",
+      "url": "https://www.blackmagicdesign.com/products/davinciresolve/edit",
+      "status": "OBSERVED",
+      "observation": "La página oficial documenta recortes en varios clips, edición por pistas, capas superiores, transiciones y sincronización de montajes."
+    },
+    {
+      "id": "R-SHOTCUT",
+      "url": "https://forum.shotcut.org/t/about-the-timeline/12952",
+      "status": "OBSERVED",
+      "observation": "La documentación describe la timeline como centro de edición, desplazamiento de clips y transición mediante solapamiento de contenidos."
+    },
+    {
+      "id": "R-MDN",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/API/HTMLCanvasElement/captureStream",
+      "status": "OBSERVED",
+      "observation": "La especificación de MDN describe la extracción de un MediaStream con video en tiempo real desde el canvas, que requiere codificación aparte."
+    },
+    {
+      "id": "R-MEDIARECORDER",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/API/MediaRecorder",
+      "status": "OBSERVED",
+      "observation": "API de grabación de MediaStream; dependiente de soporte de formatos del navegador. Observada mediante spike local VP8 y Opus."
+    }
+  ],
+  "components": [
+    {
+      "id": "C-CORE",
+      "role": "Modelo temporal de proyecto, medios y clips de pista",
+      "strategy": "Estado JSON único más operaciones de recorte, movimiento, división y undo",
+      "constraints": "Separar tiempos de medio (in,out) de posición de timeline (start); clamps en todas las ediciones."
+    },
+    {
+      "id": "C-PLAYER",
+      "role": "Previsualización compuesta de varias pistas de video y audio",
+      "strategy": "Canvas bidimensional, elementos multimedia por clip y mezcla Web Audio de ganancias",
+      "constraints": "Los elementos se sincronizan al mismo reloj AudioContext y nunca se sustituyen por una imagen falsa."
+    },
+    {
+      "id": "C-EXPORT",
+      "role": "Exportación binaria reproducible de la composición vigente",
+      "strategy": "Canvas.captureStream y MediaRecorder con Web Audio MediaStreamDestination",
+      "constraints": "Export en tiempo real con VP8+Opus/WebM cuando el navegador lo soporte; MP4 se codifica offline."
+    },
+    {
+      "id": "C-ASSET",
+      "role": "Ingesta local y persistencia de material autorizado",
+      "strategy": "File API y Blob en IndexedDB, sesiones legibles JSON con vinculación por nombre",
+      "constraints": "El material queda local; el JSON no contiene bytes de medios y requiere adjuntar fuentes en un paquete portable."
+    },
+    {
+      "id": "C-UX",
+      "role": "Controles visibles y sensibles a cambios de montaje",
+      "strategy": "Timeline con handles puntero, inspector, cabezal, controles de reproducción y teclado",
+      "constraints": "Móviles con scroll de timeline sin scroll horizontal involuntario de la página; feedback de operaciones."
+    }
+  ],
+  "questions": [
+    {
+      "id": "Q-CLOCK",
+      "target": "C-PLAYER",
+      "question": "¿Cómo minimizar la deriva temporal de pistas al reproducir medios independientes y pasar a grabación?",
+      "alternatives": [
+        "Calcular tiempos desde performance.now para todas las pistas",
+        "Tomar AudioContext.currentTime como reloj y corregir drift por clip"
+      ],
+      "evidenceRef": "R-MDN",
+      "finding": "El navegador dispone de un reloj de audio y elementos de video cuya posición se puede corregir; el drift final precisa medición adicional.",
+      "decisionImpact": "El renderer y el export comparten el reloj audio y realizan búsqueda cuando se desvían más de 220 ms."
+    },
+    {
+      "id": "Q-EXPORT",
+      "target": "C-EXPORT",
+      "question": "¿Qué formato real puede producirse sin backend ni afirmar falsamente soporte universal de MP4?",
+      "alternatives": [
+        "MediaRecorder WebM local con selección de MIME soportado",
+        "Procesamiento externo FFmpeg para todos los usuarios"
+      ],
+      "evidenceRef": "R-MEDIARECORDER",
+      "finding": "Chromium grabó pista real VP8+Opus en el spike de .55s y en export E2E de más de seis segundos.",
+      "decisionImpact": "Se exporta WebM desde el navegador y un MP4 solo se produce mediante una conversión offline claramente separada."
+    },
+    {
+      "id": "Q-TIMELINE",
+      "target": "C-CORE",
+      "question": "¿Cómo conservar el media in/out al arrastrar, recortar y dividir sin alterar el reloj del montaje?",
+      "alternatives": [
+        "Tratar cada clip como objeto con start,in,out independientes",
+        "Concatenar elementos en secuencia lineal sin persistencia de cortes"
+      ],
+      "evidenceRef": "R-SHOTCUT",
+      "finding": "El flujo profesional exige recorte y posicionamiento independientes; el estado mínimo conserva start,in,out y trackId.",
+      "decisionImpact": "La interfaz modifica datos de corte por handles y la exportación lee el mismo JSON que el monitor."
+    },
+    {
+      "id": "Q-PERSIST",
+      "target": "C-ASSET",
+      "question": "¿Cómo conservar medios del usuario y sesión editable sin publicarlos ni pedir servidor remoto?",
+      "alternatives": [
+        "IndexedDB para bytes y JSON para decisiones",
+        "Incrustar media base64 dentro de localStorage y JSON"
+      ],
+      "evidenceRef": "R-DAVINCI",
+      "finding": "Separar medios y decisiones evita aumentar JSON con archivos; implica reimportación por nombre al portar una sesión.",
+      "decisionImpact": "Se guardan blobs por ID en el navegador y los archivos se adjuntan al ZIP de demostración."
+    }
+  ],
+  "relations": [
+    {
+      "from": "C-CORE",
+      "to": "C-PLAYER",
+      "invariant": "La composición visual responde a cada modificación del mismo estado de tracks, start e in/out del proyecto.",
+      "failure": "Mostrar en preview algo distinto de lo que los cortes definen.",
+      "test": "Cambiar entrada y posición, comprobar cuadros anteriores y posteriores."
+    },
+    {
+      "from": "C-PLAYER",
+      "to": "C-EXPORT",
+      "invariant": "La salida final se captura del mismo canvas de monitor y las mismas ganancias Web Audio que escucha el editor.",
+      "failure": "Archivo exportado de muestra estático o sin canal de sonido.",
+      "test": "Descodificar fotogramas a 1, 3 y 5 segundos y medir pista Opus."
+    },
+    {
+      "from": "C-ASSET",
+      "to": "C-CORE",
+      "invariant": "Una sesión importada referencia los mismos medios por ID y puede reconectarlos por nombre con permiso del usuario.",
+      "failure": "Pérdida silenciosa de medios o cambio de duración al abrir proyecto.",
+      "test": "Nueva sesión, reimportación de fuentes con nombres iguales, reexportación comparada."
+    },
+    {
+      "from": "C-UX",
+      "to": "C-CORE",
+      "invariant": "Los handles nunca permiten duración menor que 150 ms, y la edición no cambia involuntariamente de tipo de pista.",
+      "failure": "Clips negativos, borrados por arrastre o audio en track de video.",
+      "test": "Arrastre de borde y movimiento entre filas; revisar JSON final."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "D-EXPORT",
+      "questionId": "Q-EXPORT",
+      "componentIds": [
+        "C-EXPORT",
+        "C-PLAYER"
+      ],
+      "choice": "MediaRecorder WebM con canvas y AudioContext en primer corte",
+      "rejected": "Fingir salida MP4 desde navegador sin encoder ni backend",
+      "productionChange": "El botón export crea un Blob WebM descargable real y ffprobe confirma video y audio.",
+      "why": "Prueba directa de formato operativo sin un servicio pago ni copiar contenidos de terceros."
+    },
+    {
+      "id": "D-CLOCK",
+      "questionId": "Q-CLOCK",
+      "componentIds": [
+        "C-PLAYER",
+        "C-EXPORT"
+      ],
+      "choice": "Reloj de AudioContext como fuente y corrección de drift",
+      "rejected": "Animación por pasos manuales sin referencia al reloj de audio",
+      "productionChange": "Los clips activos se ubican con tiempo de proyecto y las pistas comparten audio de salida.",
+      "why": "Una composición sincronizada requiere reloj uniforme y corrección observable de desvíos."
+    },
+    {
+      "id": "D-CLIPS",
+      "questionId": "Q-TIMELINE",
+      "componentIds": [
+        "C-CORE",
+        "C-UX"
+      ],
+      "choice": "start, in, out, trackId, fades y volumen por clip",
+      "rejected": "Secuencia inmutable y exportación precalculada de demo",
+      "productionChange": "Mover o recortar altera el mismo modelo que exporta; split genera dos clips con in/out complementarios.",
+      "why": "Solo con estado temporal separado es posible reexportar después de editar una decisión."
+    },
+    {
+      "id": "D-STORAGE",
+      "questionId": "Q-PERSIST",
+      "componentIds": [
+        "C-ASSET",
+        "C-UX"
+      ],
+      "choice": "JSON de sesión más blob local IndexedDB y reimportación por nombre",
+      "rejected": "Subir medios de usuarios a la nube automáticamente",
+      "productionChange": "La web funciona sin subida y la muestra descargable incluye fuentes autorizadas.",
+      "why": "Respeta privacidad y derechos, mantiene separación entre datos temporales y archivos."
+    }
+  ],
+  "risks": [
+    {
+      "componentIds": [
+        "C-EXPORT",
+        "C-PLAYER"
+      ],
+      "severity": "high",
+      "failure": "El botón genera un WebM sin pista de audio o un archivo no decodificable.",
+      "prevention": "Spike de captura A/V y prueba de export completa; fallback BLOCKED cuando MIME no existe.",
+      "test": "MediaRecorder local + ffprobe verifican VP8/Opus y extracción de tres fotogramas.",
+      "status": "OBSERVED"
+    },
+    {
+      "componentIds": [
+        "C-CORE",
+        "C-UX"
+      ],
+      "severity": "medium",
+      "failure": "Un clip movido o dividido rompe las reglas de límites y mezcla.",
+      "prevention": "Recorte limitado a 150ms e inspector con clamps y undo.",
+      "test": "Arrastrar handles y dividir antes y después del cabezal y comprobar JSON.",
+      "status": "NOT_RUN"
+    },
+    {
+      "componentIds": [
+        "C-ASSET"
+      ],
+      "severity": "medium",
+      "failure": "Un navegador restringido rechaza IndexedDB y se pierden medios tras recargar.",
+      "prevention": "Mostrar mensaje de error; ofrecer sesión JSON y reimportación de fuentes.",
+      "test": "Test de persistencia sin mocks en navegador estándar y segundo dispositivo.",
+      "status": "NOT_RUN"
+    },
+    {
+      "componentIds": [
+        "C-PLAYER"
+      ],
+      "severity": "medium",
+      "failure": "Se producen discontinuidades de audio o negros al cambiar de clip en equipos lentos.",
+      "prevention": "Precalentar los videos activos y corregir desvío temporal durante playback.",
+      "test": "Inspección auditiva y visual en cortes en dispositivos distintos.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "acceptance": [
+    {
+      "kind": "functional",
+      "criterion": "La captura E2E del lienzo incluye video VP8 640x360 y audio Opus, no un placeholder sin medios.",
+      "oracle": "ffprobe local y extracción/inspección de fotogramas 1s 3s 5s.",
+      "status": "OBSERVED"
+    },
+    {
+      "kind": "audio",
+      "criterion": "El archivo resultante contiene señal de audio no muda audible en pista Opus.",
+      "oracle": "ffmpeg volumedetect de export local (-39.8 dB media).",
+      "status": "OBSERVED"
+    },
+    {
+      "kind": "interactive",
+      "criterion": "Movimiento por puntero, recorte por borde, división y undo funcionan en navegador real.",
+      "oracle": "E2E con Playwright sobre localhost y dispositivos móviles.",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "functional",
+      "criterion": "Una sesión se puede guardar, recuperar con sus medios y exportar nuevamente después del cambio.",
+      "oracle": "Test con IndexedDB real + comparar dos exportaciones.",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "visual",
+      "criterion": "Monitor y línea de tiempo se ven claramente en escritorio y móvil.",
+      "oracle": "Captura 1360px en Chromium, vista de 390px por revisar.",
+      "status": "OBSERVED"
+    }
+  ],
+  "licensing": "Los tres clips de demo, sus tonos y gráficos se generan por código original. Importaciones del usuario son solo locales y requieren derechos propios; referencias no son assets.",
+  "resources": "HTML CSS JavaScript estándar, File API, IndexedDB, Canvas, Web Audio, MediaRecorder; Chromium headless y FFmpeg local para QA/MP4.",
+  "environmentLimits": "Los E2E locales usan un shim de almacenamiento porque las políticas del Chromium automatizado bloquean navegación a localhost; la persistencia real aún no se validó. Audio/imagen sí se codificaron y analizaron en ffprobe."
+}
