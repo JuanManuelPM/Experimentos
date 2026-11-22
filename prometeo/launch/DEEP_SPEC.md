@@ -1,6 +1,6 @@
 # PROMETEO · ESPECIFICACIÓN PROFUNDA universal · DEEP-SPEC-1
 
-**Propietario y única definición ejecutable del método:** este archivo, junto con [deep-spec-v1.mjs](deep-spec-v1.mjs). Se carga desde QBAR-1 y UNIVERSAL, **antes** de producir en 3D, Web, Música, Video, Imágenes y nuevos estudios. Los lanzadores apuntan aquí, no copian reglas. Estado: versión candidata hasta promoción y readback de las cinco entradas. La intención humana puede tener dos líneas; toda la preproducción la resuelve el trabajador. Nunca exigir este formulario al humano.
+**Propietario y única definición ejecutable del método:** este archivo, junto con [deep-spec-v1.mjs](deep-spec-v1.mjs). Se carga desde QBAR-1 y UNIVERSAL, **antes** de producir en 3D, Web, Música, Video, Imágenes y nuevos estudios. Los lanzadores apuntan aquí, no copian reglas. Estado: **VIGENTE para nuevos WORK que recuperan gh-pages**, promovido tras 28 pruebas lógicas y readback de los cinco lanzadores. No se aplica retroactivamente a tareas históricas ni actualiza automáticamente plugins o flujos fijados fuera de estos lanzadores. La intención humana puede tener dos líneas; toda la preproducción la resuelve el trabajador. Nunca exigir este formulario al humano.
 
 ## Posición exacta dentro del flujo existente
 
