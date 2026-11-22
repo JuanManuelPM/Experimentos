@@ -9,4 +9,4 @@
 - Chequeos verificados localmente: ES module syntax / Node, BOM 10 grupos y movimientos reversibles.
 - Render GPU/WebGL en navegador público, control móvil y evaluación estética: `NOT_RUN` hasta observación real.
 - Física de plegado y tolerancias: `NOT_RUN`, conceptual, jamás manufacturable acreditado.
-- Estado: `IMPLEMENTED`, publicación y readback por verificar; `HUMAN_APPROVED=false`.
+- Estado: `IMPLEMENTED` + `SOURCE_PUBLISHED` (PR #20 fusionado, commit `91423f5303f8a134b074e17b82b7f212826a7fd0`, archivos releídos en GitHub). `DEEP_SPEC=READY_FOR_FIRST_SLICE`, 0 errores. Publicación GitHub Pages / WebGL en navegador no verificada: `NOT_RUN`. `HUMAN_APPROVED=false`.\n- Fuente pública de código: https://github.com/JuanManuelPM/Experimentos/tree/gh-pages/prometeo/launch/20261122/works/3d-w6-10\n- URL prevista en Pages (accesibilidad no comprobada): https://juanmanuelpm.github.io/Experimentos/prometeo/launch/20261122/works/3d-w6-10/
