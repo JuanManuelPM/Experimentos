@@ -1,0 +1,88 @@
+{
+  "schema": "prometeo.music.visited-trace.local/v1",
+  "taskId": "music-w003-20261122-06",
+  "flowVersion": "2.0.0",
+  "flowBlobSHA": "1423f13e08b743f418c42052613a6808b214d622",
+  "traceValidator": "NOT_RUN: cannot claim structural verified trace 1.4.0/2.3.0",
+  "nodes": [
+    {
+      "nodeId": "M00",
+      "decision": "Recuperar SHA launch/flow",
+      "evidence": "LAUNCH.md, FLOW.json",
+      "status": "OBSERVED_WITH_LIMITS"
+    },
+    {
+      "nodeId": "M01",
+      "decision": "Mantener brief 06 original",
+      "evidence": "PREPRODUCTION.deep-spec-v1.json",
+      "status": "OBSERVED_WITH_LIMITS"
+    },
+    {
+      "nodeId": "M02",
+      "decision": "Leer referentes técnicos, no audio ajeno",
+      "evidence": "README.md",
+      "status": "OBSERVED_WITH_LIMITS"
+    },
+    {
+      "nodeId": "M03",
+      "decision": "Elegir DSP offline y alternativa WebAudio",
+      "evidence": "PREPRODUCTION.deep-spec-v1.json",
+      "status": "OBSERVED_WITH_LIMITS"
+    },
+    {
+      "nodeId": "M04",
+      "decision": "Planificar seis movimientos",
+      "evidence": "project.json",
+      "status": "OBSERVED_WITH_LIMITS"
+    },
+    {
+      "nodeId": "M05",
+      "decision": "Componer motifs, pads, bajo y batería",
+      "evidence": "synth.py",
+      "status": "OBSERVED_WITH_LIMITS"
+    },
+    {
+      "nodeId": "M06",
+      "decision": "Crear patch graph y control A/B",
+      "evidence": "modulation.py, project.json",
+      "status": "OBSERVED_WITH_LIMITS"
+    },
+    {
+      "nodeId": "M07",
+      "decision": "Render primer artículo ANTES de master",
+      "evidence": "FIRST_ARTICLE.wav local",
+      "status": "OBSERVED_WITH_LIMITS"
+    },
+    {
+      "nodeId": "M08",
+      "decision": "Construir 64 compases",
+      "evidence": "MASTER.wav local",
+      "status": "OBSERVED_WITH_LIMITS"
+    },
+    {
+      "nodeId": "M09",
+      "decision": "Export seis stems alineados 24-bit",
+      "evidence": "stems FLAC24 local",
+      "status": "OBSERVED_WITH_LIMITS"
+    },
+    {
+      "nodeId": "M10",
+      "decision": "Pruebas 6 PASS, Chromium bloqueado",
+      "evidence": "QA.md",
+      "status": "PARTIAL"
+    },
+    {
+      "nodeId": "M11",
+      "decision": "Persistir fuente en rama exclusiva y local ZIP",
+      "evidence": "README.md, QA.md",
+      "status": "SOURCE_PUBLISHED_LOCAL_AUDIO"
+    }
+  ],
+  "untested": [
+    "audio listening",
+    "browser screenshots",
+    "published binary audio",
+    "human approval"
+  ],
+  "humanApproved": false
+}
