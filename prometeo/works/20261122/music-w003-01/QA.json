@@ -1,0 +1,67 @@
+{
+  "schema": "prometeo.music.qa/v1",
+  "taskId": "music-w003-20261122-01",
+  "firstArticle": {
+    "status": "AUDIO_RENDER+PCM_NUMERIC_PASS",
+    "file": "FIRST_ARTICLE.wav",
+    "startBar": 16,
+    "bars": 8,
+    "durationSeconds": 15.238095,
+    "peak": 0.8596016440836045,
+    "rms": 0.18832272891521198,
+    "blobSha": "4ab4a6565c23b2c0faeb897ced2f5a572c00101a"
+  },
+  "fullRender": {
+    "status": "AUDIO_SYNTH_CALCULATED_NOT_STATIC_PUBLISHED",
+    "barCount": 80,
+    "seconds": 152.38095238095238,
+    "sampleRate": 44100,
+    "peak": 0.8938858208375718,
+    "rms": 0.18539325986760113,
+    "parityMax": 2.942979326903128e-8
+  },
+  "sectionWindows": [
+    {
+      "name": "DJ_IN",
+      "bar": 0,
+      "rms": 0.1758199777301681
+    },
+    {
+      "name": "MOTOR",
+      "bar": 20,
+      "rms": 0.18824117959585407
+    },
+    {
+      "name": "VACIO",
+      "bar": 40,
+      "rms": 0.18594517945362277
+    },
+    {
+      "name": "CLIMAX",
+      "bar": 52,
+      "rms": 0.1932703074963571
+    },
+    {
+      "name": "DJ_OUT",
+      "bar": 72,
+      "rms": 0.17585414338087388
+    }
+  ],
+  "tests": {
+    "preproduction": "SOURCE_PUBLISHED",
+    "firstArticleAudio": "PCM_RENDERED",
+    "fullPCM": "CALCULATED_IN_WORKER_MEMORY",
+    "masterStaticDownload": "NOT_PUBLISHED",
+    "stemsStaticDownload": "NOT_PUBLISHED",
+    "browserPlayback": "NOT_RUN",
+    "listen": "NOT_RUN",
+    "firstFrame390": "NOT_RUN",
+    "firstFrame1440": "NOT_RUN",
+    "humanApproved": "NO"
+  },
+  "limits": [
+    "Browser must synthesize audio via JS; generation from scratch takes CPU/memory on device.",
+    "Independent audition, screenshot and hosted static complete WAV are not verified.",
+    "Level-equalized perceptual A/B not run; RMS metrics are not listening."
+  ]
+}
