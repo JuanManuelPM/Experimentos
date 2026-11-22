@@ -1,0 +1,22 @@
+import assert from "node:assert/strict";
+import {AXES,TAGS,PRESETS,clampAxis,normalizeAxes,fontSettings,interpolateAxes,createAxisEngine,motionAt} from "./engine.mjs";
+const tests=[];
+function test(name,fn){fn();tests.push(name)}
+test("4 axes exactly",()=>assert.deepEqual(TAGS,["wght","opsz","SOFT","WONK"]));
+test("real documented axis bounds",()=>assert.deepEqual(TAGS.map(x=>[AXES[x].min,AXES[x].max]),[[100,900],[9,144],[0,100],[0,1]]));
+test("clamp min and max for each tag",()=>{for(const t of TAGS){assert.equal(clampAxis(t,-900),AXES[t].min);assert.equal(clampAxis(t,999999),AXES[t].max)}});
+test("NaN and infinities to defaults",()=>{assert.equal(clampAxis("wght","invalid"),720);assert.equal(clampAxis("SOFT",Infinity),70)});
+test("WONK discrete",()=>{assert.equal(clampAxis("WONK",0.24),0);assert.equal(clampAxis("WONK",0.73),1)});
+test("reject unknown axis injection",()=>assert.throws(()=>clampAxis("EVIL",200),RangeError));
+test("safe CSS serializer",()=>assert.equal(fontSettings(PRESETS.pulso),'"wght" 720, "opsz" 120, "SOFT" 70, "WONK" 1'));
+test("no extra CSS from user input",()=>assert.equal(fontSettings({wght:"99);color:red;("}),fontSettings(PRESETS.pulso)));
+test("normalize accepts missing keys",()=>assert.deepEqual(normalizeAxes({wght:100}),{wght:100,opsz:120,SOFT:70,WONK:1}));
+test("interpolate at both endpoints",()=>{assert.deepEqual(interpolateAxes(PRESETS.filo,PRESETS.neblina,0),PRESETS.filo);assert.deepEqual(interpolateAxes(PRESETS.filo,PRESETS.neblina,1),PRESETS.neblina)});
+test("interpolation always bounded",()=>{for(const n of [-100,-1,0,.3,.8,1,4,NaN]){let a=interpolateAxes(PRESETS.neblina,PRESETS.filo,n);for(const t of TAGS)assert.ok(a[t]>=AXES[t].min&&a[t]<=AXES[t].max)}});
+test("subscribe and unsubscribe",()=>{const x=createAxisEngine(),vals=[],off=x.subscribe(v=>vals.push(v.wght));x.setAxis("wght",800);off();x.setAxis("wght",700);assert.deepEqual(vals,[800])});
+test("engine snapshots are defensive",()=>{const x=createAxisEngine(),v=x.get();v.wght=100;assert.equal(x.get().wght,720)});
+test("engine setAll resets missing axes",()=>{const x=createAxisEngine();x.setAll({wght:555});assert.equal(x.get().SOFT,70)});
+test("motion endpoints",()=>{assert.deepEqual(motionAt(0).axes,PRESETS.pulso);assert.deepEqual(motionAt(1).axes,PRESETS.pulso)});
+test("motion uses distinct frames",()=>assert.notDeepEqual(motionAt(.34).axes,motionAt(.68).axes));
+test("motion handles nonnumeric positions",()=>assert.deepEqual(motionAt(NaN).axes,PRESETS.pulso));
+console.log(JSON.stringify({status:"PASS",passed:tests.length,tests},null,2));
