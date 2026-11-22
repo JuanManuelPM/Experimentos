@@ -1,0 +1,297 @@
+{
+  "version": "DEEP-SPEC-1",
+  "medium": "images",
+  "depth": "OPERATIVO",
+  "batchId": "images-w003-20261122",
+  "taskId": "images-w003-20261122-09",
+  "brief": "Diseñá una infografía editorial precisa sobre por qué una calle arbolada y una calle sin sombra experimentan condiciones térmicas diferentes, usando datos y mecanismos físicos atribuidos a fuentes científicas verificables, sin inventar cifras.",
+  "launchSHA": "a97b91ca103847ea75eeb9d1d2af10b6c9c0dddd",
+  "oldLaunchSHA": "2e0e5e8ca226d546005349dc44b31cd9abcf5dd1",
+  "methodSHA": {
+    "universal": "0377d79b2aeb0a642a97687be49c5ba965593bf5",
+    "deepSpec": "7656a293b0182f81619bf0d27b90dffa771c2683",
+    "artDirection": "b1a1a012e90897200336cac6316c0511cb40c4c5",
+    "imagesOwnerReadme": "5726f13f840884f6c4984d88fa27e89f0be9e2bb"
+  },
+  "intent": {
+    "experience": "Percibir rápidamente por qué la sombra altera la sensación térmica sin confundir medición y dibujo conceptual.",
+    "distinctAbility": "La comparación de las dos calles conserva un solo escenario geométrico y separa variables con números atribuidos."
+  },
+  "references": [
+    {
+      "id": "EPA",
+      "status": "OBSERVED",
+      "url": "https://www.epa.gov/heatislands/benefits-trees-and-vegetation",
+      "observation": "La EPA explica sombra y evapotranspiración; una revisión de 308 estudios informa bosques urbanos 1,6 °C más frescos en promedio que zonas no verdes."
+    },
+    {
+      "id": "MVD",
+      "status": "OBSERVED",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11233938/",
+      "observation": "Estudio 2024: tres calles de Montevideo muestreadas en verano 2018-2019; más del doble declaró confort bajo árboles frente a sectores sin árboles."
+    },
+    {
+      "id": "SCMP",
+      "status": "OBSERVED",
+      "url": "https://multimedia.scmp.com/culture/article/SCMP-printed-graphics-memory/lonelyGraphics/202309A328.html",
+      "observation": "Se observó imagen de The hottest summer ever: jerarquía editorial, axonometría urbana, gráficas térmicas etiquetadas y anotaciones de múltiples escalas; no copiar assets."
+    }
+  ],
+  "components": [
+    {
+      "id": "GEOMETRY",
+      "role": "Dos calles comparables construidas desde una base idéntica de perspectiva y fachadas.",
+      "strategy": "Pillow genera base_scene() una vez y la reutiliza, luego tree_scene() agrega árbol y sombra.",
+      "constraints": "El sol, edificios, ventanas, persona, perspectiva y escala permanecen idénticos entre imágenes."
+    },
+    {
+      "id": "EVIDENCE",
+      "role": "Cifras y atribuciones con variables explícitas y límites de interpretación.",
+      "strategy": "Dos paneles separados: promedio EPA y confort declarado Montevideo, fuentes en CSV.",
+      "constraints": "No convertir >2× en °C ni atribuir 1,6 °C a la calle dibujada."
+    },
+    {
+      "id": "MEDIA",
+      "role": "Arte de apertura limpio y entregas raster distintas para móvil y A4.",
+      "strategy": "Pillow y tipografía local Inter generan PNG y WebP genuinos; <picture> solo cambia soporte.",
+      "constraints": "Ancho 390/1440 sin overflow; no controles sobre el protagonista y sin upscale de origen."
+    }
+  ],
+  "questions": [
+    {
+      "id": "QG",
+      "target": "GEOMETRY",
+      "question": "¿Qué representación conserva la arquitectura del contraste incluso tras añadir el árbol?",
+      "alternatives": [
+        "Generación independiente por modelo de imagen",
+        "Ilustración de una sola escena raster paramétrica"
+      ],
+      "evidenceRef": "MVD",
+      "finding": "El primer artículo generado alteró el entorno y la auditoría anterior identificó este defecto; dibujar ambos desde base_scene() conserva fondo.",
+      "decisionImpact": "Descartar imagen de AI y producir con Pillow desde fuente geométrica común."
+    },
+    {
+      "id": "QE",
+      "target": "EVIDENCE",
+      "question": "¿Qué datos pueden compararse sin inventar temperatura de la calle o confundir confort con aire?",
+      "alternatives": [
+        "Inventar dos temperaturas locales",
+        "Citar estudios con variable, alcance y límite separados"
+      ],
+      "evidenceRef": "EPA",
+      "finding": "EPA reporta diferencia promedio de 1,6 °C entre ambientes, Montevideo reporta >2× proporción de personas con confort declarado.",
+      "decisionImpact": "Mostrar dos tarjetas no comparables numéricamente y dos fuentes independientes."
+    },
+    {
+      "id": "QM",
+      "target": "MEDIA",
+      "question": "¿Cómo conservar tipografía legible y escala física sin un mero upscale?",
+      "alternatives": [
+        "Ampliar arte de 1024 píxeles",
+        "Componer cada formato nativamente con Pillow y fuentes vectoriales"
+      ],
+      "evidenceRef": "SCMP",
+      "finding": "El referente editorial usa jerarquía por escala, y el medio requiere texto legible tanto en retina móvil como A4.",
+      "decisionImpact": "Generar 2480x3508 y 780x4100 en composiciones separadas, no recortes."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "D1",
+      "questionId": "QG",
+      "componentIds": [
+        "GEOMETRY"
+      ],
+      "choice": "Raster paramétrico con fondo único",
+      "rejected": "Dos paisajes regenerados por IA",
+      "productionChange": "Ambas tomas usan el mismo base_scene() sin cambiar fachadas ni sol; tree_scene() sólo suma árbol y sombra.",
+      "why": "Cierra el defecto causal de comparación visto en W002 sin falsa medición termográfica."
+    },
+    {
+      "id": "D2",
+      "questionId": "QE",
+      "componentIds": [
+        "EVIDENCE"
+      ],
+      "choice": "Datos de alcance distinto en tarjetas distintas",
+      "rejected": "Escala ficticia de temperatura local",
+      "productionChange": "Las tarjetas indican unidades, universo, lugar, época y limitación; escena sin termómetros.",
+      "why": "La evidencia contiene efectos reales pero de variables y diseños de estudio diferentes."
+    },
+    {
+      "id": "D3",
+      "questionId": "QM",
+      "componentIds": [
+        "MEDIA"
+      ],
+      "choice": "Composición raster a tamaño nativo",
+      "rejected": "Ampliación de un raster base insuficiente",
+      "productionChange": "Dos pinturas nuevas con Pillow; WebP remoto y PNG sin pérdida local; navegador usa picture responsivo.",
+      "why": "Evita infografías ilegibles en móvil e impresión y conserva calidad de texto."
+    }
+  ],
+  "relations": [
+    {
+      "from": "GEOMETRY",
+      "to": "EVIDENCE",
+      "invariant": "Las escenas no exhiben números supuestos ni representan una medición controlada.",
+      "failure": "Leer la imagen comparativa como cuantificación causal de 1,6 °C.",
+      "test": "Inspeccionar titulares y verificar ausencia de termómetros en ambos paneles."
+    },
+    {
+      "from": "EVIDENCE",
+      "to": "MEDIA",
+      "invariant": "El signo de unidades °C y >2× siempre tienen etiquetas de variable y contexto.",
+      "failure": "En el formato móvil queda un número sin su alcance científico.",
+      "test": "Abrir ambos raster y verificar los dos textos a 390 px y A4."
+    }
+  ],
+  "risks": [
+    {
+      "componentIds": [
+        "GEOMETRY"
+      ],
+      "severity": "high",
+      "failure": "Perspectivas y arquitectura cambiantes disfrazadas de efecto de un árbol.",
+      "prevention": "Descartar primer intento generado y usar un solo base_scene para ambos paneles.",
+      "test": "Comparación técnica de código + inspección de raster de ambas escenas.",
+      "status": "OBSERVED"
+    },
+    {
+      "componentIds": [
+        "EVIDENCE"
+      ],
+      "severity": "medium",
+      "failure": "Convertir una proporción de confort a grados Celsius o presentar estudios como medición local.",
+      "prevention": "Separar cifras y contextos en tarjetas y CSV de procedencia.",
+      "test": "Cotejar EPA y artículo de Montevideo antes y después de maquetar.",
+      "status": "OBSERVED"
+    },
+    {
+      "componentIds": [
+        "MEDIA"
+      ],
+      "severity": "medium",
+      "failure": "Corte de títulos, barras horizontales o primera pantalla sin obra.",
+      "prevention": "Composiciones móviles y A4 distintas, control Chromium 390/1440.",
+      "test": "Capturar viewport y comprobar naturalWidth y document.scrollWidth.",
+      "status": "OBSERVED"
+    }
+  ],
+  "acceptance": [
+    {
+      "kind": "visual",
+      "criterion": "Mismo fondo para las dos calles y una sola diferencia arbórea.",
+      "oracle": "Código base_scene() y dos PNG inspeccionados visualmente.",
+      "status": "OBSERVED"
+    },
+    {
+      "kind": "functional",
+      "criterion": "Ráster remoto con tamaño y SHA verificables y primera pantalla sin overflow.",
+      "oracle": "GitHub metadata WEBP con tamaños 313858/177452 y Chromium local 390/1440.",
+      "status": "OBSERVED"
+    },
+    {
+      "kind": "logic",
+      "criterion": "Valores científicos, unidades y causalidad acotadas a fuentes.",
+      "oracle": "EPA 308 estudios 1,6 °C; Montevideo 3 calles >2 veces confort declarado.",
+      "status": "OBSERVED"
+    },
+    {
+      "kind": "visual",
+      "criterion": "Prueba física A4 con perfil CMYK y lectura en impresión real.",
+      "oracle": "Impresión física y prueba independiente de preprensa.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "licensing": "Arte, composiciones, escenas y código originales producidos localmente; Pillow código abierto y tipografía Inter del sistema bajo SIL OFL; SCMP es solo referencia visual, no se reutilizan archivos de terceros.",
+  "resources": "Python 3.13 con Pillow 12.3 y tipografía Inter instalada; Chromium headless con fuentes locales; herramientas sin costo ni claves, media en WebP/PNG.",
+  "environmentLimits": "No hubo impresión física ni contraste ciego con lectores; versión propietaria especializada en rama candidata y no promovida, con sha de README anclado.",
+  "artDirection": {
+    "schema": "prometeo.art-direction.first-article/v1",
+    "medium": "images",
+    "taskId": "images-w003-20261122-09",
+    "briefSha": "a97b91ca103847ea75eeb9d1d2af10b6c9c0dddd",
+    "flowRef": "JuanManuelPM/pruebas@candidate/prometeo-image-studio-unificado-20261117:sistemas/imagenes/README.md blob 5726f13f840884f6c4984d88fa27e89f0be9e2bb",
+    "promise": {
+      "subject": "Una sola calle ilustrada con y sin árbol, geometría estrictamente coincidente.",
+      "intent": "El lector entiende el mecanismo térmico sin creer que ilustración y estudios son el mismo experimento."
+    },
+    "benchmark": {
+      "url": "https://multimedia.scmp.com/culture/article/SCMP-printed-graphics-memory/lonelyGraphics/202309A328.html",
+      "description": "Infografía periodística The hottest summer ever vista como imagen: visualiza calle, fuentes y números en jerarquías distintas; benchmark de claridad, no obra copiada.",
+      "status": "OBSERVED"
+    },
+    "techniques": [
+      {
+        "family": "generación ilustrativa sin control geométrico",
+        "viability": "Primer artículo probado y fallido, no se usarán sus píxeles en el producto.",
+        "license": "Ilustración generada de forma original; no dependía de material protegido."
+      },
+      {
+        "family": "dibujo raster paramétrico con Pillow",
+        "viability": "Implementado y renderizado en PNG y WEBP nativos con geometría compartida.",
+        "license": "Código propio, Pillow abierto, fuente Inter del sistema."
+      },
+      {
+        "family": "composición editorial vectorial SVG",
+        "viability": "Alternativa legal de reserva si falla el raster; requiere construir otra escena.",
+        "license": "Se usaría geometría original y tipografías abiertas del sistema."
+      }
+    ],
+    "selectedTechnique": "dibujo raster paramétrico con Pillow",
+    "firstFrame": {
+      "openingDescription": "Título principal, primera vista arbolada y comparación en el scroll; sin overlay, sin UI de navegación integrada.",
+      "focalSubject": "La misma calle urbana con y sin árbol bajo el mismo sol.",
+      "minimalUI": "Cero botones sobre obra; solo enlaces de archivos al pie.",
+      "checks": [
+        {
+          "viewport": "390",
+          "criterion": "Hero ocupa primera pantalla sin desplazamiento horizontal y tipografía legible.",
+          "oracle": "Chromium viewport 390, screenshot y scrollWidth=390."
+        },
+        {
+          "viewport": "1440",
+          "criterion": "A4 aparece centrado sin cortar el protagonista ni el título.",
+          "oracle": "Chromium viewport 1440, screenshot y scrollWidth=1440."
+        },
+        {
+          "viewport": "both",
+          "criterion": "Las dos cifras no se interpretan como grados de la escena ficticia.",
+          "oracle": "Inspección visual y tabla de procedencia."
+        }
+      ],
+      "observations": [
+        {
+          "viewport": "390",
+          "status": "OBSERVED_PASS",
+          "evidence": {
+            "url": "https://github.com/JuanManuelPM/Experimentos/blob/candidate/prometeo-images-w003-20261122-09/prometeo/works/20261122/images-w003-09/QA_browser_390.webp",
+            "description": "Captura real Chromium local 390×844 con raster móvil embebido; naturalWidth=780, scrollWidth=390."
+          }
+        },
+        {
+          "viewport": "1440",
+          "status": "OBSERVED_PASS",
+          "evidence": {
+            "url": "https://github.com/JuanManuelPM/Experimentos/blob/candidate/prometeo-images-w003-20261122-09/prometeo/works/20261122/images-w003-09/QA_browser_1440.webp",
+            "description": "Captura real Chromium local 1440×900 con raster A4 embebido; naturalWidth=2480, scrollWidth=1440."
+          }
+        }
+      ]
+    },
+    "firstArticle": {
+      "target": "Comparación visual de escena sin alterar las fachadas ni la perspectiva.",
+      "rejectWhen": "Se modifican edificios, sol, persona o fuga entre versiones.",
+      "switchTo": "composición editorial vectorial SVG",
+      "oracle": "Inspección de PNG maestro, comprobación del base_scene() compartido y screenshot Chromium.",
+      "resourceProof": "render_heat.py original produce base_scene() y tree_scene(); GitHub tiene WebP reales de ambos soportes.",
+      "status": "OBSERVED_PASS",
+      "evidence": {
+        "url": "https://github.com/JuanManuelPM/Experimentos/blob/candidate/prometeo-images-w003-20261122-09/prometeo/works/20261122/images-w003-09/el_calor_oculto_A4_300dpi.webp",
+        "description": "Raster maestro con geometría controlada observado; metadata GitHub sha ba143b..."
+      }
+    },
+    "humanApproved": false
+  }
+}

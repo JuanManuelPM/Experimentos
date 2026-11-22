@@ -1,0 +1,87 @@
+{
+  "schema": "prometeo.execution-trace/w003-09",
+  "taskId": "images-w003-20261122-09",
+  "batchId": "images-w003-20261122",
+  "room": "images",
+  "recordedAt": "2026-11-22T19:21:19.653Z",
+  "lockedInput": {
+    "launchUrl": "https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/launch/20261122/relaunch/images/LAUNCH.md",
+    "launchSha": "a97b91ca103847ea75eeb9d1d2af10b6c9c0dddd",
+    "briefTextPreservedFromW002": true,
+    "priorLaunchSha": "2e0e5e8ca226d546005349dc44b31cd9abcf5dd1"
+  },
+  "ownerFlow": {
+    "branch": "JuanManuelPM/pruebas@candidate/prometeo-image-studio-unificado-20261117",
+    "readmeBlobSha": "5726f13f840884f6c4984d88fa27e89f0be9e2bb",
+    "promoted": false,
+    "privateWorkflowNodeTopologyVerified": false
+  },
+  "events": [
+    {
+      "stage": "BRIEF_LOCK",
+      "status": "OBSERVED",
+      "evidence": "GitHub LAUNCH.md readback exact SHA."
+    },
+    {
+      "stage": "QBAR_RESEARCH",
+      "status": "OBSERVED",
+      "evidence": "EPA page, Montevideo field study and visual SCMP graphic read."
+    },
+    {
+      "stage": "FIRST_ARTICLE_INDEPENDENT_GENERATION",
+      "status": "FAILED",
+      "evidence": "Initial graphic rejected because buildings and perspective varied between versions."
+    },
+    {
+      "stage": "SWITCH_REPRESENTATION",
+      "status": "OBSERVED",
+      "evidence": "Switched to Pillow base_scene() + tree_scene() with a single shared building."
+    },
+    {
+      "stage": "DRAW_REAL_MEDIA",
+      "status": "OBSERVED",
+      "evidence": "PNG and WebP raster generated and decoded locally at A4/mobile native sizes."
+    },
+    {
+      "stage": "BROWSER_390",
+      "status": "OBSERVED",
+      "evidence": "https://github.com/JuanManuelPM/Experimentos/blob/candidate/prometeo-images-w003-20261122-09/prometeo/works/20261122/images-w003-09/QA_browser_390.webp",
+      "notes": "Chromium local with data-URI identical media; scrollWidth=innerWidth=390."
+    },
+    {
+      "stage": "BROWSER_1440",
+      "status": "OBSERVED",
+      "evidence": "https://github.com/JuanManuelPM/Experimentos/blob/candidate/prometeo-images-w003-20261122-09/prometeo/works/20261122/images-w003-09/QA_browser_1440.webp",
+      "notes": "Chromium local with data-URI identical media; scrollWidth=innerWidth=1440."
+    },
+    {
+      "stage": "GITHUB_READBACK",
+      "status": "OBSERVED",
+      "evidence": "https://github.com/JuanManuelPM/Experimentos/blob/candidate/prometeo-images-w003-20261122-09/prometeo/works/20261122/images-w003-09/el_calor_oculto_A4_300dpi.webp",
+      "notes": "Metadata bytes and blob SHA of real WebP confirmed in branch; remote binary decoder via GitHub connector unsupported."
+    },
+    {
+      "stage": "SCIENTIFIC_REVISION",
+      "status": "OBSERVED",
+      "evidence": "The >2x figure was relabeled as ratio of participants in comfort, not number of people."
+    },
+    {
+      "stage": "ART_INDEPENDENT_REVIEW",
+      "status": "NOT_RUN",
+      "reason": "No independent artistic evaluator or human approval."
+    },
+    {
+      "stage": "PHYSICAL_PRINT",
+      "status": "NOT_RUN",
+      "reason": "No physical print or ICC color evaluation."
+    }
+  ],
+  "visitedTraceValidator": {
+    "state": "NOT_RUN",
+    "why": "Owner flow private-node IDs/edges and topology not verified; stages are real observed events, not fictional node IDs."
+  },
+  "artDirectionFirstArticle": {
+    "state": "OBSERVED_PASS_LOCAL",
+    "why": "Switched after failed first image-generation approach, tested identical geometry and responsive first frames; no implied human approval."
+  }
+}
