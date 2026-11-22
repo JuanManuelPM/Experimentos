@@ -1,0 +1,214 @@
+{
+  "version": "DEEP-SPEC-1",
+  "medium": "images",
+  "depth": "SISTEMA",
+  "brief": "Desarrollá el arte conceptual de un puerto ficticio asentado en acantilados volcánicos: una vista magistral, dos estudios de zonas y láminas de arquitectura/vehículos, con infraestructura, rutas, escala humana, función económica e historia material consistentes.",
+  "intent": {
+    "experience": "Reconocer un asentamiento de comercio habitable, construido de basalto y sujeto al clima del litoral.",
+    "distinctAbility": "Crear un sistema de mundo consistente en distintas escalas con piezas artísticas raster y canon modular."
+  },
+  "references": [
+    {
+      "id": "FZD",
+      "url": "https://dez2f0znn0qfp.cloudfront.net/blog_posts/form-follow-function-examples-part-02",
+      "status": "OBSERVED",
+      "observation": "Feng Zhu prioriza forma guiada por función y proporciones; referencia útil para anclar edificios y recorridos antes de decorarlos."
+    },
+    {
+      "id": "MCQ",
+      "url": "https://www.starwars.com/news/how-to-spot-a-ralph-mcquarrie",
+      "status": "OBSERVED",
+      "observation": "El archivo de biblia visual vincula lugares y objetos, que no se diseñan como imágenes independientes sin reglas."
+    },
+    {
+      "id": "IAN",
+      "url": "https://reactormag.com/concept-artists-weatherbeaten-ships-ply-oceans-of-air/",
+      "status": "OBSERVED",
+      "observation": "Ian McQue construye barcos ficticios observando barcos reparados y materiales reales, con marcas claras de uso."
+    }
+  ],
+  "components": [
+    {
+      "id": "terrain",
+      "role": "Topografía y zonas de altura coherentes del mismo acantilado volcánico.",
+      "strategy": "Un solo litoral: muelles, horneado y viviendas por terrazas.",
+      "constraints": "Basalto y mar coherentes, sin lava activa irracionalmente próxima al puerto."
+    },
+    {
+      "id": "logistics",
+      "role": "Ruta de carga desde dársena hasta talleres y mercado en las alturas.",
+      "strategy": "Dársena a estiba, montacargas anclado y terrazas industriales.",
+      "constraints": "Cada carga debe pasar por conexiones plausibles y legibles visualmente."
+    },
+    {
+      "id": "architecture",
+      "role": "Módulos de viviendas, hornos, faro y ascensores compartidos.",
+      "strategy": "Basamentos de basalto, revoque blanco y techumbre rojo óxido.",
+      "constraints": "Aberturas, soportes y caminos accesibles de proporciones útiles."
+    },
+    {
+      "id": "vehicles",
+      "role": "Barcazas con grúa funcional y botes de servicio identificables.",
+      "strategy": "Casco bajo con defensas y pluma sobre cubierta de carga.",
+      "constraints": "Cabina, calado y puntos de estiba deben conversar con la bahía."
+    },
+    {
+      "id": "visual",
+      "role": "Luz costera y materialidad narrativa reconocibles entre zonas.",
+      "strategy": "Amanecer lateral frío con puntos cálidos en hornos encendidos.",
+      "constraints": "No esconder fallas de escalas y conexión con bruma decorativa."
+    }
+  ],
+  "questions": [
+    {
+      "id": "Q1",
+      "target": "logistics",
+      "question": "¿Cómo atraviesa la carga un desnivel grande desde la barcaza hasta los hornos sin una rampa impracticable?",
+      "alternatives": [
+        "rampa continua",
+        "montacargas por terrazas"
+      ],
+      "finding": "La vista maestra contiene un elevador vertical y accesos al frente de hornos. El diagrama local expresa esa red.",
+      "decisionImpact": "Fija los puntos de transbordo y el trazado entre muelle, estiba y hornos.",
+      "evidenceRef": "FZD"
+    },
+    {
+      "id": "Q2",
+      "target": "architecture",
+      "question": "¿Cómo se reconoce el mismo asentamiento a distintas escalas sin regenerar edificios diferentes en cada estudio?",
+      "alternatives": [
+        "arquitectura individual por viñeta",
+        "familias modulares con hitos invariantes"
+      ],
+      "finding": "Las viviendas claras, hornos gemelos y faro comparten relaciones visuales en el master; vistas independientes no probadas.",
+      "decisionImpact": "Se fijan faro, hornos, elevador, basalto y techos rojizos como canon repetible.",
+      "evidenceRef": "MCQ"
+    },
+    {
+      "id": "Q3",
+      "target": "vehicles",
+      "question": "¿Qué detalles hacen creíble el oficio de las barcazas y cómo se reconocen desde cerca y lejos?",
+      "alternatives": [
+        "embarcaciones ornamentales",
+        "botes industriales con grúa y defensas"
+      ],
+      "finding": "Se ven dos perfiles industriales bajos con plumas y cabinas; el uso naval real no se ha probado.",
+      "decisionImpact": "La biblioteca describe casco, defensas, cabina y operación de estiba, sin afirmar medidas.",
+      "evidenceRef": "IAN"
+    }
+  ],
+  "relations": [
+    {
+      "from": "terrain",
+      "to": "logistics",
+      "invariant": "La ruta de mercancía muelle-estiba-montacargas-hornos mantiene continuidad topológica en todas las piezas.",
+      "failure": "Carga flotante sin contacto entre niveles del acantilado.",
+      "test": "Contrastar hitos del master con diagrama de flujos."
+    },
+    {
+      "from": "vehicles",
+      "to": "logistics",
+      "invariant": "La pluma de la barcaza alcanza la zona de trabajo del muelle y su descarga no atraviesa roca.",
+      "failure": "Barco decorativo desconectado de estiba o grúa inútil.",
+      "test": "Inspeccionar detalle de embarcaciones y muelle."
+    },
+    {
+      "from": "architecture",
+      "to": "visual",
+      "invariant": "Materiales y siluetas se reconocen con una misma luz y paleta en el arte maestro y recortes.",
+      "failure": "Viviendas y hornos parecen de mundos contradictorios.",
+      "test": "Comparar recortes amplios y detalles con los hitos del master."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "D1",
+      "questionId": "Q1",
+      "componentIds": [
+        "terrain",
+        "logistics"
+      ],
+      "choice": "montacargas más estiba junto al muelle",
+      "rejected": "rampa inverosímil como único acceso",
+      "productionChange": "Dibujar y registrar la ruta funcional en la biblioteca y en el diagrama topológico.",
+      "why": "La geografía manda sobre las formas espectaculares."
+    },
+    {
+      "id": "D2",
+      "questionId": "Q2",
+      "componentIds": [
+        "architecture",
+        "visual"
+      ],
+      "choice": "canon de cinco módulos y materiales escasos",
+      "rejected": "edificios arbitrarios por cada nueva vista",
+      "productionChange": "Una lámina de detalles raster y WORLD_RULES.json documentan estructuras y hitos.",
+      "why": "La coherencia material permite reconocer un mundo más allá de una composición."
+    },
+    {
+      "id": "D3",
+      "questionId": "Q3",
+      "componentIds": [
+        "vehicles",
+        "logistics"
+      ],
+      "choice": "barcaza portuaria baja con izado y bote auxiliar",
+      "rejected": "vehículos fabulosos sin calado ni descarga",
+      "productionChange": "Lámina de dos embarcaciones extraídas de la vista principal y reglas funcionales.",
+      "why": "El barco explica el comercio del lugar y la escala de su puerto."
+    }
+  ],
+  "risks": [
+    {
+      "componentIds": [
+        "architecture",
+        "vehicles"
+      ],
+      "severity": "high",
+      "failure": "Nuevas cámaras independientes reinventan hitos y barcos del arte inicial.",
+      "prevention": "Probar una segunda cámara condicionada por la vista y mapa compartidos.",
+      "test": "Un spike con render nuevo y cotejo de cuatro hitos persistentes.",
+      "status": "NOT_RUN"
+    },
+    {
+      "componentIds": [
+        "terrain",
+        "logistics"
+      ],
+      "severity": "medium",
+      "failure": "La topología ilustrada no demuestra geometría ni pendientes constructivas.",
+      "prevention": "No atribuir medidas a las conexiones del dibujo y exigir planta métrica antes de producción.",
+      "test": "Auditoría geométrica con modelo de distancias no ejecutada.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "acceptance": [
+    {
+      "kind": "visual",
+      "criterion": "Arte maestro raster con detalle material y lectura de economía portuaria.",
+      "oracle": "Inspección visual de PNG original de 1672 por 941 píxeles.",
+      "status": "OBSERVED"
+    },
+    {
+      "kind": "visual",
+      "criterion": "Dos vistas adicionales autónomas del mismo lugar sin reinventar edificios.",
+      "oracle": "Comparar cuatro hitos desde cámaras independientes y lectura por un tercero.",
+      "status": "NOT_RUN"
+    },
+    {
+      "kind": "logic",
+      "criterion": "Biblioteca reusable de cinco módulos y circuito de mercancías.",
+      "oracle": "Parseo JSON de WORLD_RULES y confrontación de los conceptos documentados.",
+      "status": "OBSERVED"
+    },
+    {
+      "kind": "functional",
+      "criterion": "Rasters originales publicados permanentemente y accesibles por URL pública.",
+      "oracle": "Recuperar el binario PNG desde ruta pública y validar su firma.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "licensing": "Raster principal original generado para esta obra; las referencias se estudiaron pero nunca se copiaron sus medios.",
+  "resources": "Modelo generativo de imagen para la vista maestra; Pillow para recortes, láminas e inspección de archivos; biblioteca JSON para reglas.",
+  "environmentLimits": "No hubo generación satisfactoria de segundas cámaras independientes; el paquete local contiene recortes explícitos del único arte maestro, y los binarios no están publicados en GitHub."
+}
