@@ -36,6 +36,8 @@ jobs:
       - name: Compress playback preview and verify decoders
         run: |
           cd prometeo/launch/20261122/relaunch/music/results/07
+          python3 -m json.tool audio/SOURCE_PROVENANCE.json > /dev/null
+          python3 -m json.tool audio/QA.json > /dev/null
           ffmpeg -hide_banner -loglevel error -y -i audio/master.wav -c:a libvorbis -qscale:a 5 audio/master.ogg
           ffprobe -v error -show_entries stream=codec_name,sample_rate,channels -of json audio/master.ogg
           for f in audio/stems/*.wav audio/ab_*.wav first-article/master.wav; do
@@ -48,5 +50,7 @@ jobs:
           git add prometeo/launch/20261122/relaunch/music/results/07/audio prometeo/launch/20261122/relaunch/music/results/07/first-article
           if ! git diff --cached --quiet; then
             git commit -m "music-w003-07: licensed acoustic recording, audible master, stems and technical QA"
+            git fetch origin candidate/prometeo-music-w003-20261122-07
+            git rebase origin/candidate/prometeo-music-w003-20261122-07
             git push origin HEAD:candidate/prometeo-music-w003-20261122-07
           fi

@@ -56,7 +56,7 @@ def acquire():
     src=np.concatenate(interleaved)
     origin=ROOT/'audio'/'source_decoded.wav'
     sf.write(origin,src,SR,subtype='PCM_24')
-    (ROOT/'audio'/'SOURCE_PROVENANCE.json').write_text(json.dumps({'license':'CC0-1.0','dataset':SOURCE_PAGE,'performer':'GuitarJam contributor Julian-br (public dataset credit)','humanPerformance':'electric guitar strings, DI capture, not acoustic-microphone capture','assembly':'four intact 8-15 s recorded improvisation clips separated by 0.55 s breath; no sample-by-note synthesis','clips':manifests},indent=2)+'\\n')
+    (ROOT/'audio'/'SOURCE_PROVENANCE.json').write_text(json.dumps({'license':'CC0-1.0','dataset':SOURCE_PAGE,'performer':'GuitarJam contributor Julian-br (public dataset credit)','humanPerformance':'electric guitar strings, DI capture, not acoustic-microphone capture','assembly':'four intact 8-15 s recorded improvisation clips separated by 0.55 s breath; no sample-by-note synthesis','clips':manifests},indent=2)+'\n')
     if len(src)<SR*25:raise RuntimeError('Genuine-source sequence shorter than full piece required')
     return src,origin
 
