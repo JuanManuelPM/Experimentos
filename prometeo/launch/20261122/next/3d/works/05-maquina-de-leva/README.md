@@ -23,7 +23,8 @@ El contacto es una **restricción cinemática determinista**, no una simulación
 ## Evidencia y brechas
 - **OBSERVED:** documentación de geometría consultada; spike matemático independiente con 720 fases, error de tangencia radial ~1.78×10⁻¹⁴ mm y presión máxima 13.43° en la configuración base. Esto no es ejecución del módulo entregado.
 - **IMPLEMENTED:** código fuente del visor y de exports, sistema de diagnóstico, piezas y controles.
-- **NOT_RUN en esta entrega:** render GPU, pruebas móviles reales, importación externa GLB, DXF en software CAD, ejecución de Node del archivo publicado y análisis perceptual humano. No declarar `HUMAN_APPROVED`.
+- **OBSERVED en runtime V8:** se ejecutó el código matemático recuperado desde el módulo publicado (sin marcadores ES export), con 8 grupos de pruebas PASS: 720 fases de tangencia, presión y curvatura, DXF multilínea y 24 variantes.
+- **NOT_RUN en esta entrega:** render GPU, pruebas móviles reales, importación externa GLB, DXF en software CAD, ejecución del archivo test.mjs con Node y análisis perceptual humano. No declarar `HUMAN_APPROVED`.
 - **Riesgos remanentes:** condiciones extremas pueden sobrepasar recomendaciones de presión; geometría puede exigir radio de herramienta específico y tolerancias no modeladas. La correa no considera deslizamiento; el modelo prescinde de deformación, fuerza real de motor y certificación.
 
 ## Referentes examinados
