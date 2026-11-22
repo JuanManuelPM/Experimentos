@@ -1,0 +1,17 @@
+import assert from 'node:assert/strict';
+import {architecturalScene} from './scene.js';
+import {mat} from './engine.js';
+import {ArchitectureCamera,PRESETS,coverage,resolveOcclusion,segmentAABB,walkable} from './camera-controller.js';
+const objects=architecturalScene.objects;const cases=[];
+const check=(name,fn)=>{try{fn();cases.push({name,status:'PASS'})}catch(e){cases.push({name,status:'FAIL',message:e.message});process.exitCode=1}};
+check('Model matrices finite',()=>assert.ok(objects.length>250&&objects.every(o=>o.model.length===16&&Array.from(o.model).every(Number.isFinite))));
+check('Three rooms two patios',()=>{assert.equal(Object.keys(architecturalScene.dimensions.rooms).length,3);assert.equal(architecturalScene.dimensions.courtyards,2)});
+check('Plausible ceiling dimensions',()=>assert.equal(architecturalScene.dimensions.ceiling,3.12));
+check('Solid bounds present',()=>assert.ok(objects.filter(o=>o.solid).every(o=>o.bounds&&o.bounds.min.every((v,i)=>v<o.bounds.max[i]))));
+check('Nine-viewpoint rays detect blocking',()=>assert.ok(coverage([0,1.6,3],[0,1.4,-3],{min:[-.2,0,-.2],max:[.2,3,.2]},390)>.44));
+check('Occlusion excludes behind-subject wall',()=>{let w=[{id:'wall',occluder:true,bounds:{min:[-3,0,-.15],max:[3,3,.15]}}];assert.ok(resolveOcclusion([0,1.6,3],[0,1.6,-3],w,390).has('wall'));assert.ok(!resolveOcclusion([0,1.6,-3],[0,1.6,-6],w,390).has('wall'))});
+check('Collision outside wall, patio open',()=>{assert.equal(walkable([-8.38,1.62,1.6],objects),false);assert.equal(walkable([-2.2,1.62,.6],objects),true)});
+check('Camera pitch clamp',()=>{let c=new ArchitectureCamera(objects);c.turn(0,15);assert.ok(c.pitch<=.74);c.turn(0,-15);assert.ok(c.pitch>=-.91)});
+check('Waypoints distinct',()=>assert.equal(new Set(Object.values(PRESETS).map(x=>x.pos.join(','))).size,4));
+check('Walkthrough reaches endpoint',()=>{let c=new ArchitectureCamera(objects);c.go('estudio');for(let i=0;i<1100;i++)c.tick(.016);assert.equal(c.moving,false);assert.ok(Math.hypot(...c.pos.map((v,i)=>v-PRESETS.estudio.pos[i]))<.01)});
+console.log(JSON.stringify({pass:cases.filter(x=>x.status==='PASS').length,total:cases.length,cases},null,2));
