@@ -1,0 +1,55 @@
+name: PROMETEO video W001-01 encode
+on:
+  push:
+    branches:
+      - gh-pages
+    paths:
+      - "prometeo/previews/video/w001/01/render.py"
+      - ".github/workflows/prometeo-video-w001-01.yml"
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install Pillow
+        run: python -m pip install 'Pillow>=10,<13'
+      - name: Encode original video
+        run: |
+          command -v ffmpeg
+          python prometeo/previews/video/w001/01/render.py
+      - name: Verify codec duration frame count and audio
+        run: |
+          python - <<'PY'
+          import json,subprocess
+          p='prometeo/previews/video/w001/01/film.mp4'
+          d=json.loads(subprocess.check_output(['ffprobe','-v','error','-show_streams','-show_format','-of','json',p]))
+          vs=[x for x in d['streams'] if x['codec_type']=='video'];au=[x for x in d['streams'] if x['codec_type']=='audio']
+          assert len(vs)==1 and vs[0]['codec_name']=='h264'
+          assert vs[0]['width']==960 and vs[0]['height']==540 and int(vs[0]['nb_frames'])==288
+          assert len(au)==1 and au[0]['codec_name']=='aac'
+          assert abs(float(d['format']['duration'])-12)<.05
+          print('VIDEO_FILE_ENCODED PASS 12.0s H264 AAC 288 frames 960x540')
+          PY
+      - name: Commit encoded media to Pages
+        run: |
+          set -e
+          git config user.name "prometeo-video-encoder"
+          git config user.email "actions@users.noreply.github.com"
+          git add prometeo/previews/video/w001/01/film.mp4 prometeo/previews/video/w001/01/poster.png
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "video W001/01: publish encoded 12-second H264/AAC media [skip ci]"
+          for attempt in 1 2 3 4; do
+            git pull --rebase origin gh-pages
+            if git push origin HEAD:gh-pages; then exit 0; fi
+            sleep 2
+          done
+          exit 1
