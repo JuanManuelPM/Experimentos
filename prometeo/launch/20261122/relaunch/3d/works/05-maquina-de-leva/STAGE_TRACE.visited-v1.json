@@ -1,0 +1,185 @@
+{
+  "schema": "prometeo.flow.visited-trace/v1",
+  "taskId": "3d-w7-20261122-05",
+  "flow": {
+    "version": "2.3.0",
+    "sha256Canonical": "53bc9e2e4b37c99e92d3494af8dfa4461cd4644b15f980e32497a8428b067b3f",
+    "flowBlobSHA": "d3a9fd3b455aaad093998f81e4e694eafb3bddb0"
+  },
+  "humanApproved": false,
+  "traceRecordedAt": "2026-11-22T18:57:31.939Z",
+  "events": [
+    {
+      "stage": "scope",
+      "status": "EXECUTED",
+      "timestamp": "2026-11-22T18:57:31.939Z",
+      "timestampSemantics": "recibo de etapa registrado al finalizar la ejecución; sin afirmación de reloj de inicio real",
+      "decision": "Se eligió exclusivamente el brief 05 original sin cambiar las diez consignas.",
+      "outputRef": "https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/launch/20261122/relaunch/3d/LAUNCH.md",
+      "alternativesConsidered": [
+        "Trabajar 05",
+        "Generar otro encargo"
+      ],
+      "evidenceRefs": [
+        "https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/launch/20261122/relaunch/3d/LAUNCH.md"
+      ],
+      "testStatus": "OBSERVED"
+    },
+    {
+      "stage": "recovery",
+      "status": "EXECUTED",
+      "timestamp": "2026-11-22T18:57:31.939Z",
+      "timestampSemantics": "recibo de etapa registrado al finalizar la ejecución; sin afirmación de reloj de inicio real",
+      "decision": "Se revisó W6 y su autocrítica; contacto visual y export 3D no estaban comprobados.",
+      "outputRef": "https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/launch/20261122/relaunch/3d/works/05-maquina-de-leva/README.md",
+      "alternativesConsidered": [
+        "Rehacer máquina sin comparar",
+        "Reusar núcleo geométrico y atacar brecha visual/QA"
+      ],
+      "evidenceRefs": [
+        "https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/launch/20261122/relaunch/3d/works/05-maquina-de-leva/README.md"
+      ],
+      "testStatus": "OBSERVED"
+    },
+    {
+      "stage": "planning",
+      "status": "EXECUTED",
+      "timestamp": "2026-11-22T18:57:31.939Z",
+      "timestampSemantics": "recibo de etapa registrado al finalizar la ejecución; sin afirmación de reloj de inicio real",
+      "decision": "Se eligió corte SVG preventivo de primer artículo y se documentó alternativa CAD.",
+      "outputRef": "https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/launch/20261122/relaunch/3d/works/05-maquina-de-leva/PREPRODUCTION.deep-spec-v1.json",
+      "alternativesConsidered": [
+        "Three.js parametrizado con sección",
+        "CAD sólido y glTF"
+      ],
+      "evidenceRefs": [
+        "https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/launch/20261122/relaunch/3d/works/05-maquina-de-leva/PREPRODUCTION.deep-spec-v1.json"
+      ],
+      "testStatus": "OBSERVED"
+    },
+    {
+      "stage": "props",
+      "status": "EXECUTED",
+      "timestamp": "2026-11-22T18:57:31.939Z",
+      "timestampSemantics": "recibo de etapa registrado al finalizar la ejecución; sin afirmación de reloj de inicio real",
+      "decision": "Se recuperó el núcleo matemático y se ensayó contacto analítico y DXF métrico.",
+      "outputRef": "https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/launch/20261122/relaunch/3d/works/05-maquina-de-leva/mechanics.mjs",
+      "alternativesConsidered": [
+        "Envolvente analítica conjugada",
+        "Leva decorativa y seguidor independiente"
+      ],
+      "evidenceRefs": [
+        "https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/launch/20261122/relaunch/3d/works/05-maquina-de-leva/mechanics.mjs",
+        "https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/launch/20261122/relaunch/3d/works/05-maquina-de-leva/test.mjs"
+      ],
+      "testStatus": "OBSERVED"
+    },
+    {
+      "stage": "assembly",
+      "status": "EXECUTED",
+      "timestamp": "2026-11-22T18:57:31.939Z",
+      "timestampSemantics": "recibo de etapa registrado al finalizar la ejecución; sin afirmación de reloj de inicio real",
+      "decision": "Se ensambló ruta W7 independiente con visor Three y sección SVG sin CDN.",
+      "outputRef": "https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/launch/20261122/relaunch/3d/works/05-maquina-de-leva/index.html",
+      "alternativesConsidered": [
+        "Un solo render 3D sin inspección de contacto",
+        "Visor Three + sección paramétrica"
+      ],
+      "evidenceRefs": [
+        "https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/launch/20261122/relaunch/3d/works/05-maquina-de-leva/index.html",
+        "https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/launch/20261122/relaunch/3d/works/05-maquina-de-leva/section.html"
+      ],
+      "testStatus": "OBSERVED"
+    },
+    {
+      "stage": "qa",
+      "status": "EXECUTED",
+      "timestamp": "2026-11-22T18:57:31.939Z",
+      "timestampSemantics": "recibo de etapa registrado al finalizar la ejecución; sin afirmación de reloj de inicio real",
+      "decision": "Se ejecutaron barridos numéricos en V8 y capturas locales de la sección a 390/1440; WebGL/Android/GLB en navegador NO se probaron.",
+      "outputRef": "https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/launch/20261122/relaunch/3d/works/05-maquina-de-leva/QA_RECEIPT.json",
+      "alternativesConsidered": [
+        "Inferir que el código ya prueba render",
+        "Declarar render y export NOT_RUN"
+      ],
+      "evidenceRefs": [
+        "https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/launch/20261122/relaunch/3d/works/05-maquina-de-leva/QA_RECEIPT.json",
+        "https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/launch/20261122/relaunch/3d/works/05-maquina-de-leva/section.html"
+      ],
+      "testStatus": "OBSERVED"
+    },
+    {
+      "stage": "persistence",
+      "status": "EXECUTED",
+      "timestamp": "2026-11-22T18:57:31.939Z",
+      "timestampSemantics": "recibo de etapa registrado al finalizar la ejecución; sin afirmación de reloj de inicio real",
+      "decision": "Se crearon rama aislada, Book, fuente y recibos con lectura posterior en GitHub.",
+      "outputRef": "https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/launch/20261122/relaunch/3d/works/05-maquina-de-leva/README.md",
+      "alternativesConsidered": [
+        "Sobrescribir W6",
+        "Conservar los dos batches y publicar W7 en ruta nueva"
+      ],
+      "evidenceRefs": [
+        "https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/launch/20261122/relaunch/3d/works/05-maquina-de-leva/README.md",
+        "https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/launch/20261122/relaunch/3d/works/05-maquina-de-leva/QA_RECEIPT.json"
+      ],
+      "testStatus": "OBSERVED"
+    },
+    {
+      "stage": "publish",
+      "status": "EXECUTED",
+      "timestamp": "2026-11-22T18:57:31.939Z",
+      "timestampSemantics": "recibo de etapa registrado al finalizar la ejecución; sin afirmación de reloj de inicio real",
+      "decision": "Se escribieron siete archivos aislados en gh-pages y se comprobaron por fetch_file.",
+      "outputRef": "https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/launch/20261122/relaunch/3d/works/05-maquina-de-leva/index.html",
+      "alternativesConsidered": [
+        "Enviar solo rama candidata",
+        "Publicar en gh-pages con protección de historia y reintentos de CAS"
+      ],
+      "evidenceRefs": [
+        "https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/launch/20261122/relaunch/3d/works/05-maquina-de-leva/index.html",
+        "https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/launch/20261122/relaunch/3d/works/05-maquina-de-leva/README.md"
+      ],
+      "testStatus": "OBSERVED"
+    }
+  ],
+  "skipped": [
+    {
+      "stage": "humanoid",
+      "status": "SKIPPED",
+      "reason": "El brief mecánico no tiene personajes humanos."
+    },
+    {
+      "stage": "acting",
+      "status": "SKIPPED",
+      "reason": "No requiere animación de actuación de personaje."
+    },
+    {
+      "stage": "cinema",
+      "status": "SKIPPED",
+      "reason": "No se solicitó cortometraje."
+    }
+  ],
+  "qualityEvidence": {
+    "geometry": "OBSERVED_V8",
+    "firstArticleSVG": "OBSERVED_LOCAL_CHROMIUM_390_1440",
+    "full3d": "NOT_RUN",
+    "android": "NOT_RUN",
+    "glbRoundtrip": "NOT_RUN",
+    "human": "NO"
+  },
+  "validatorResult": {
+    "status": "STRUCTURE_PASS_MEDIA_NOT_VERIFIED",
+    "errors": [],
+    "warnings": [
+      "EVENT_0_NODE_TRACE_NOT_OBSERVED",
+      "EVENT_1_NODE_TRACE_NOT_OBSERVED",
+      "EVENT_2_NODE_TRACE_NOT_OBSERVED",
+      "EVENT_3_NODE_TRACE_NOT_OBSERVED",
+      "EVENT_4_NODE_TRACE_NOT_OBSERVED",
+      "EVENT_5_NODE_TRACE_NOT_OBSERVED",
+      "EVENT_6_NODE_TRACE_NOT_OBSERVED",
+      "EVENT_7_NODE_TRACE_NOT_OBSERVED"
+    ]
+  }
+}
