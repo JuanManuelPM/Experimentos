@@ -11,7 +11,7 @@ export const PRESETS={
  sala:{pos:[-4.34,1.62,3.45],look:[-.73,1.38,-.58],name:'Sala',detail:'Estar · 31 m²'},
  patio:{pos:[-.25,1.62,1.65],look:[.45,1.32,-2.45],name:'Patio',detail:'Agua y sombra · 22 m²'},
  comedor:{pos:[5.85,1.62,3.50],look:[1.95,1.4,.2],name:'Comedor',detail:'Mesa · 27 m²'},
- estudio:{pos:[-.3,1.62,-6.55],look:[.0,1.43,-3.12],name:'Estudio',detail:'Trabajo · 19 m²'}
+ estudio:{pos:[-1.35,1.62,-4.05],look:[.55,1.18,-6.75],name:'Estudio',detail:'Trabajo · 19 m²'}
 };
 export function anglesFrom(pos,target){let d=sub(target,pos);return {yaw:Math.atan2(d[0],-d[2]),pitch:Math.atan2(d[1],Math.hypot(d[0],d[2]))}}
 export class ArchitectureCamera{
@@ -19,6 +19,6 @@ export class ArchitectureCamera{
  target(){return [this.pos[0]+Math.sin(this.yaw)*Math.cos(this.pitch)*6,this.pos[1]+Math.sin(this.pitch)*6,this.pos[2]-Math.cos(this.yaw)*Math.cos(this.pitch)*6]}
  turn(dx,dy){this.yaw+=dx;this.pitch=clamp(this.pitch+dy,-.91,.74);this.route=[]}
  move(forward,side,dt){this.route=[];const s=Math.min(.12,dt)*2.2,f=scale([Math.sin(this.yaw),0,-Math.cos(this.yaw)],forward*s),r=scale([Math.cos(this.yaw),0,Math.sin(this.yaw)],side*s);let p=add(this.pos,add(f,r));if(walkable(p,this.walls))this.pos=p;else{let x=[p[0],this.pos[1],this.pos[2]],z=[this.pos[0],this.pos[1],p[2]];if(walkable(x,this.walls))this.pos=x;if(walkable(z,this.walls))this.pos=z;}return this.pos}
- go(key){const to=PRESETS[key];if(!to)return;this.scene=key;let steps=[];if(key==='sala')steps=[[-1.8,1.62,0],[-2.9,1.62,.5],to.pos];else if(key==='comedor')steps=[[1.8,1.62,0],[2.95,1.62,.5],to.pos];else if(key==='estudio')steps=[[0,1.62,-2.7],[0,1.62,-3.55],to.pos];else steps=[to.pos];this.route=steps.map((pos,i)=>({pos,look:i===steps.length-1?to.look:[0,1.45,0]}));this.moving=true;}
- tick(dt){if(!this.route.length){this.moving=false;return}let waypoint=this.route[0],delta=sub(waypoint.pos,this.pos),dist=Math.hypot(...delta),speed=Math.min(dist,dt*3.35);if(dist>.04)this.pos=add(this.pos,scale(delta,speed/Math.max(dist,.01)));else{this.pos=[...waypoint.pos];this.route.shift()}const a=anglesFrom(this.pos,waypoint.look);let deltaYaw=((a.yaw-this.yaw+Math.PI*3)%(Math.PI*2))-Math.PI;this.yaw+=clamp(deltaYaw,-dt*2.2,dt*2.2);this.pitch+=clamp(a.pitch-this.pitch,-dt*1.5,dt*1.5);this.moving=this.route.length>0;}
+ go(key){const to=PRESETS[key];if(!to)return;this.scene=key;this.focus=[...to.look];let steps=[];if(key==='sala')steps=[[-1.8,1.62,0],[-2.9,1.62,.5],to.pos];else if(key==='comedor')steps=[[1.8,1.62,0],[2.95,1.62,.5],to.pos];else if(key==='estudio')steps=[[0,1.62,-2.7],[0,1.62,-3.55],to.pos];else steps=[to.pos];this.route=steps.map((pos,i)=>({pos,look:i===steps.length-1?to.look:[0,1.45,0]}));this.moving=true;}
+ tick(dt){if(!this.route.length){this.moving=false;return}let waypoint=this.route[0];this.focus=[...waypoint.look];let delta=sub(waypoint.pos,this.pos),dist=Math.hypot(...delta),speed=Math.min(dist,dt*3.35);if(dist>.04)this.pos=add(this.pos,scale(delta,speed/Math.max(dist,.01)));else this.pos=[...waypoint.pos];const a=anglesFrom(this.pos,waypoint.look);let deltaYaw=((a.yaw-this.yaw+Math.PI*3)%(Math.PI*2))-Math.PI;this.yaw+=clamp(deltaYaw,-dt*2.2,dt*2.2);this.pitch+=clamp(a.pitch-this.pitch,-dt*1.5,dt*1.5);let remainingYaw=((a.yaw-this.yaw+Math.PI*3)%(Math.PI*2))-Math.PI;if(dist<=.04&&Math.abs(remainingYaw)<.015&&Math.abs(a.pitch-this.pitch)<.015)this.route.shift();this.moving=this.route.length>0;}
 }

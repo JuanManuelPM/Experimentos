@@ -178,14 +178,14 @@
   "acceptance": [
     {
       "kind": "logic",
-      "criterion": "Diez tests de matrices, escala, colisiones y oclusión deben aprobar.",
-      "oracle": "node test.mjs debe informar 10 PASS y ningún error.",
+      "criterion": "Doce tests de matrices, escala, trayectorias, focal, colisiones y oclusión deben aprobar.",
+      "oracle": "node test.mjs debe informar 12 PASS y ningún error.",
       "status": "OBSERVED"
     },
     {
       "kind": "visual",
-      "criterion": "La primera pantalla presenta patio protagonista y un ambiente, sin techo delante.",
-      "oracle": "Inspección de capturas raster reales de 390 y 1440.",
+      "criterion": "La primera pantalla tiene patio protagonista y el estudio, comedor y sala son legibles en día y noche.",
+      "oracle": "Inspección de raster real 390/1440 y seis imágenes de sala/comedor/estudio con doble luz.",
       "status": "OBSERVED"
     },
     {
@@ -259,7 +259,7 @@
           "status": "OBSERVED_PASS",
           "evidence": {
             "url": "https://github.com/JuanManuelPM/Experimentos/blob/candidate/prometeo-3d-w7-20261122-02/prometeo/launch/20261122/relaunch/3d/work-02/QA.md",
-            "description": "QA.md registra captura local 390x844 y SHA256, no almacena la captura binaria en GitHub."
+            "description": "Captura WebGL real a 390x844 en firstframe-mobile-final.png, inspeccionada localmente."
           }
         },
         {
@@ -267,7 +267,7 @@
           "status": "OBSERVED_PASS",
           "evidence": {
             "url": "https://github.com/JuanManuelPM/Experimentos/blob/candidate/prometeo-3d-w7-20261122-02/prometeo/launch/20261122/relaunch/3d/work-02/QA.md",
-            "description": "QA.md registra captura local 1100x720; prueba 1440 original precedente y SHA de imagen de esta iteración."
+            "description": "Captura WebGL real a 1440x900 en firstframe-1440-final.png, con SHA256 en QA y media local en paquete."
           }
         }
       ]
