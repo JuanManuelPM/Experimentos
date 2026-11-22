@@ -4,6 +4,10 @@
 
 **Estado de esta entrada:** preparada para integración a pedido. Ejecutar DESPUÉS de que los chats productores hayan guardado autocríticas mediante `AUTOCRITICA_WHISPLASH.md · ESTE_CHAT` o feedback humano. **No requiere que el humano haya escuchado, visto o criticado cada obra**. La ausencia de una revisión se registra como pendiente, no se sustituye por un dictamen inventado. No inicia trabajos por publicar el archivo; no crear automatizaciones programadas.
 
+## Nuevo control de dirección artística · QBAR-1
+
+Leer [QUALITY_BAR.md](../QUALITY_BAR.md) y considerar el mismo estándar al agrupar revisiones. **No basta** con reparar publicación, sintaxis y QA mecánico: analizar la falla de selección de referentes y ambición del brief en la etapa de preparación. Proponer que futuras tandas incorporen este control compartido, conservando los diez encargos originales de W001/W5 y los hashes de las obras existentes. La publicación del contrato en lanzadores de gh-pages no equivale a promoción de un método privado canónico: verificar autoridad y regresiones antes de actualizar `prometeo/control`.
+
 ## Resolver
 
 1. Recuperar `JuanManuelPM/pruebas@prometeo/control:PROMETEO/START_HERE.md`, `PROMETEO/system/CANON.md`, `sistemas/metodo/CONTRATO_COMPARTIDO.md`, `PROMETEO/system/commands/CALIBRAR.md`, `PROMETEO/system/commands/INFORMAR.md`, `PROMETEO/system/commands/ORGANIZAR.md` y el sistema de coordinación existente. Leer la propuesta candidata `candidate/prometeo-ui-response-shared-20261121:sistemas/metodo/CALIBRACION_ACUMULATIVA.md` sin tratarla como canon aprobado.
