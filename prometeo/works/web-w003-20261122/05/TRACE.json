@@ -67,6 +67,11 @@
       "stage": "PUBLIC_PAGES_HTTP",
       "status": "FAILED",
       "evidence": "Firecrawl network read of intended Pages URL returned HTTP 404 Page not found."
+    },
+    {
+      "stage": "MEDIA_SOURCE_REPUBLISHED",
+      "status": "SOURCE_READBACK_PASS",
+      "evidence": "Original three WebP data URLs embedded: candidate index 2, app.js 3 and standalone 5. Browser decoding not tested."
     }
   ],
   "statuses": {
@@ -75,6 +80,7 @@
     "svgArticleObserved": true,
     "browserQA": "NOT_RUN",
     "livePages": "HTTP_404_OBSERVED",
-    "humanApproved": false
+    "humanApproved": false,
+    "photoAssets": "EMBEDDED_SOURCE_READBACK_PASS"
   }
 }
