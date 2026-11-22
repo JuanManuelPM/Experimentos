@@ -54,9 +54,15 @@
     },
     {
       "stage": "GITHUB_BINARY_PUBLICATION",
-      "status": "BLOBS_CREATED_PENDING_TREE_READBACK",
-      "output": "Five JPEG real Git blobs created; awaiting candidate branch commit and file readback",
-      "decision": "Use Git tree to publish media with Book/Trace and preserve earlier work"
+      "status": "REMOTE_READBACK_PASS",
+      "output": "5 JPEG real Git blobs read back with matching SHA in candidate and gh-pages; 15 files published",
+      "decision": "Publish binary media and source, keep standalone page free from extra UI"
+    },
+    {
+      "stage": "PAGES_HTTP_FIRST_FRAME",
+      "status": "NOT_RUN",
+      "output": "HTTP fetch inaccessible to web tool; Chromium local navigation blocked",
+      "decision": "No false screenshots or Page live-verified claim"
     }
   ],
   "skipped": [

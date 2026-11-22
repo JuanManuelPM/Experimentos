@@ -1,10 +1,10 @@
 # LÚMINA / SAVIA · IMAGES W003 · 01
 
-**Estado:** obra original raster producida y publicada como JPEG en rama candidata; QA de bytes y visual local verificada. Capturas de navegador y aprobación humana pendientes. `HUMAN_APPROVED=NO`.
+**Estado:** obra original raster producida y publicada como JPEG en rama candidata **y `gh-pages`**; QA de bytes remotos y visual local verificada. Capturas de navegador y aprobación humana pendientes. `HUMAN_APPROVED=NO`.
 
 **Brief original:** campaña editorial para marca ficticia de luminarias artesanales. Una imagen protagonista y tres piezas adaptadas (editorial, afiche, social) en raster; sistema de encuadres/jerarquías y comparación de consistencia.
 
-## Obra
+**Galería Pages (HTTP no verificado en este entorno):** https://juanmanuelpm.github.io/Experimentos/prometeo/works/20261122/images-w003-01/\n\n## Obra
 
 - `hero_original.png` 1536×1024: imagen protagonista generada especialmente para este encargo. Es una **imagen ilustrativa de diseño imaginario**, no una foto de un producto real a la venta.
 - `00_hero_original.jpg` 1536×1024: copia JPG de distribución del mismo arte, sin fingir resolución nativa adicional.
