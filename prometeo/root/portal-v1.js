@@ -1,6 +1,6 @@
 /* PROMETEO ROOT · universal shell, real project library and typed batch results. */
 import './shared/v1/shell.js';
-import {createFocusMap} from './focus-map.mjs';
+import {createFocusMap} from './focus-map.mjs?v=20261123-focus2';
 import './shared/v1/response.js';
 import './shared/v1/batch.js?v=20261122-emojiworker1';
 import './shared/v1/launch-hub.js';
@@ -20,6 +20,7 @@ function readCache(path){try{return JSON.parse(localStorage.getItem(cacheKey(pat
 const FEEDBACK_ROUTER='https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/root/FEEDBACK_ROUTER.md';
 function promptFor(room,resource=''){return 'CONTINUAR · PROMETEO · '+FEEDBACK_ROUTER+' · '+PUBLIC+'root/#'+String(room||'root')+(resource?'/'+resource:'');}
 function currentReference(){
+ if(state.room==='root'&&location.hash.startsWith('#root/plano/'))return promptFor('root','plano/'+encodeURIComponent(state.nodeId));
  if(state.screen==='stage'&&state.itemId)return promptFor(state.room,'obra/'+encodeURIComponent(state.itemId));
  if(state.screen==='messages'){
   const id=state.batchId||messages()[0]?.id;
@@ -293,10 +294,9 @@ function updateContext(){
   }
   c.append(option('Comentar ROOT',()=>closeCopy(currentReference()),false,true));
  }
- const bootstrap=['https://github.com/JuanManuelPM/pruebas/blob/prometeo/control/PROMETEO/START_HERE.md','https://github.com/JuanManuelPM/pruebas/blob/prometeo/control/PROMETEO/system/CONTINUIDAD_FOCO_Y_PLANES.md'];
  c.append(option('SEGUIR',()=>go('#root/plano/'+(state.nodeId||'mobiliario')),false,true));
- c.append(option('IDEA',()=>closeCopy(['PROMETEO · IDEA','Leer con GitHub autorizado:',...bootstrap,'Capturar una sola idea en su dueño. No desplazar ACTIVE ni lanzar trabajadores.','MI IDEA:'].join('\n')),false,true));
- c.append(option('TRABAJAR',()=>closeCopy(['👷 WORK · PROMETEO · FOCO PROTEGIDO','Leer con GitHub autorizado:',...bootstrap,'Continuar ACTIVE: integrar visor ROOT, biblioteca, despacho y planos contextuales en el shell existente. Recuperar fuentes de silla/mesa/comedor antes de crear assets; fijar criterios, ejecutar y verificar dentro del turno. Persistir sólo en propietarios; no exponer contexto privado, ni abrir QA serial. Entregar URLs y commits reales.','Nodo seleccionado: '+(state.nodeId||'mobiliario')].join('\n')),false,true));
+ c.append(option('IDEA',()=>closeCopy(focusMap.ideaPrompt(state.nodeId)),false,true));
+ c.append(option('TRABAJAR',()=>closeCopy(focusMap.workPrompt(state.nodeId)),false,true));
  const ver=document.createElement('a');ver.href=PUBLIC+'root/';ver.textContent='VER';ver.className='p-context-small';c.append(ver);
 }
 function renderStage(){
