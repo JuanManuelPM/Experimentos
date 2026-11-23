@@ -3,7 +3,7 @@
 <meta name="theme-color" content="#ddd1c2"><title>ARC CHAIR · PROMETEO</title>
 <style>
 *{box-sizing:border-box}html,body{width:100%;height:100%;margin:0;overflow:hidden}
-body{background:#ddd1c2;color:#241e18;font:14px system-ui,Segoe UI,sans-serif}
+body{background:#ddd1c2;color:#241e18;font:14px system-ui,Segoe UI,sans-serif}#technical-preview{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;pointer-events:none}
 #stage{position:absolute;inset:0;touch-action:none;outline:none;cursor:grab}
 #stage:active{cursor:grabbing}canvas{display:block;width:100%;height:100%}
 #state{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
@@ -25,7 +25,7 @@ button:hover,button[aria-pressed=true]{background:#ffffff24}
 #hint.show{opacity:1}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
 </style></head><body>
-<main id="stage" tabindex="0" aria-label="Silla procedural 3D a pantalla completa. La cámara gira automáticamente. Tocá para controles o arrastrá para mover la cámara."></main>
+<img id="technical-preview" src="./evidence/three-quarter.svg" alt="Proyección técnica del modelo procedural de silla, no captura WebGL" aria-hidden="true"><main id="stage" tabindex="0" aria-label="Silla procedural 3D a pantalla completa. La cámara gira automáticamente. Tocá para controles o arrastrá para mover la cámara."></main>
 <div id="state" role="status">Preparando modelo procedural…</div>
 <div id="hint" role="status" aria-live="polite"></div>
 <div id="overlay" aria-hidden="true"><nav id="controls" aria-label="Acciones del objeto">
