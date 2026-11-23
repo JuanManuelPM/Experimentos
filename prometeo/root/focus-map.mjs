@@ -28,12 +28,6 @@ function evidence(n,ctx){
 }
 export function createFocusMap({copy,toast,go}){
  const host=elt('section','p-focus');host.id='focus-map';host.setAttribute('aria-label','Plano contextual por nodo');
- const header=elt('div','p-focus-header'),heading=elt('div');
- heading.append(elt('span','p-focus-overline','ACTIVE · FOCO PROTEGIDO'),elt('h2','','ROOT / integración de obras'));
- header.append(heading,elt('span','p-focus-hint','Fuente real, no duplicado'));
- const layout=elt('div','p-focus-layout'),tree=elt('nav','p-focus-tree'),plan=elt('article','p-focus-plan');
- tree.setAttribute('aria-label','Jerarquía de contexto');plan.setAttribute('aria-label','Detalle contextual');
- layout.append(tree,plan);host.append(header,layout);
  let mounted=false;
  const bootstrap=[CONTROL+'START_HERE.md',CONTROL+'system/CONTINUIDAD_FOCO_Y_PLANES.md'];
  const selected=id=>BY_ID.get(id)||BY_ID.get('mobiliario');
@@ -60,61 +54,75 @@ export function createFocusMap({copy,toast,go}){
    'No divulgar contexto humano privado. El nodo elegido no cambia el objetivo ACTIVE.',
    ...contextOf(n)].join('\n');
  }
- function mount(){if(mounted)return;const lib=document.getElementById('library');lib.querySelector('.p-library-top').insertAdjacentElement('afterend',host);mounted=true;}
- function render({room,nodeId,chair,cocina,items}){
-  mount();host.hidden=!['root','3d'].includes(room);if(host.hidden)return;
-  const n=BY_ID.get(nodeId)||BY_ID.get('mobiliario'),context={chair,cocina};
-  tree.replaceChildren();plan.replaceChildren();
-  for(const item of NODES){
-   const depth=chain(item).length-1;
-   const b=button(item.title,()=>go('#root/plano/'+item.id));
-   b.classList.add('p-focus-tree-item');b.style.setProperty('--depth',depth);
-   b.setAttribute('aria-current',String(item.id===n.id));b.setAttribute('aria-label',item.type+' · '+item.title);
-   tree.append(b);
+ function mount(){
+  if(mounted)return;
+  const lib=document.getElementById('library');
+  lib.querySelector('.p-library-top').insertAdjacentElement('afterend',host);
+  mounted=true;
+ }
+ function render({active=false,nodeId,chair,cocina,items}){
+  mount();host.hidden=!active;if(!active)return;
+  const n=selected(nodeId),ev=evidence(n,{chair,cocina});
+  host.replaceChildren();host.dataset.node=n.id;
+  const root=n.id==='root',collection=n.id==='mobiliario',model=['arc-chair','respaldo'].includes(n.id),scene=['mesa','comedor'].includes(n.id);
+  const primary=root?'#root/obras':scene?(n.id==='mesa'?PUB+'3d-composition-previs-001/':PUB+'cocina-umbria-001/'):'#3d/obra/arc-chair-01';
+  const action=root?'Ver obras':scene?'Explorar escena':'Explorar silla';
+  function open(target){
+   if(target.startsWith('#')){
+    const id=target.split('/').pop();
+    if(target.includes('/obra/')&&!(items||[]).some(x=>x.id===id)){
+     window.location.assign(id==='arc-chair-01'?(chair?.publicUrl||PUB+'asset-lab/chair-01/'):PUB+'cocina-umbria-001/');
+    }else go(target);
+   }else window.location.assign(target);
   }
-  const breadcrumbs=elt('div','p-focus-crumb');
-  for(const ancestor of chain(n)){
-   const b=button(ancestor.title,()=>go('#root/plano/'+ancestor.id));breadcrumbs.append(b);
-  }plan.append(breadcrumbs);
-  const mobileBack=button('← Volver',()=>go('#root/plano/'+(n.parent||'root')));
-  mobileBack.classList.add('p-focus-back');mobileBack.disabled=!n.parent;plan.append(mobileBack);
-  plan.append(elt('div','p-focus-type',n.type),elt('h3','',n.title));
-  const small=elt('div','p-focus-summary');
-  small.append(elt('strong','','Para qué'),elt('p','',n.goal));plan.append(small);
-  const children=NODES.filter(x=>x.parent===n.id);
-  if(children.length){
-   const group=elt('div','p-focus-children');
-   group.append(elt('strong','','Dentro de este nodo'));
-   for(const child of children)group.append(button(child.title,()=>go('#root/plano/'+child.id)));
-   plan.append(group);
+  const head=elt('div','p-focus-visual-head');
+  if(n.parent){const back=button('← '+(BY_ID.get(n.parent)?.title||'Volver'),()=>go('#root/plano/'+n.parent));back.classList.add('p-focus-parent');head.append(back);}
+  head.append(
+   elt('span','p-focus-overline',root?'PROMETEO':collection?'ESTUDIO 3D':'MOBILIARIO'),
+   elt('h1','p-focus-title',root?'Obras':n.title),
+   elt('p','p-focus-lede',root?'Explorá los trabajos publicados.':collection?'Una silla. Una mesa. Un espacio.':model?'Modelo 3D procedural.':'Abrí la escena y explorala.')
+  );
+  host.append(head);
+  if(!root){
+   const art=elt('div','p-focus-art');
+   if(!scene){
+    const picture=document.createElement('img');
+    picture.src=PUB+'asset-lab/chair-01/evidence/three-quarter.svg';
+    picture.alt='Proyección real de la geometría publicada de ARC CHAIR';picture.loading='eager';picture.decoding='async';art.append(picture);
+   }else{
+    art.classList.add('p-focus-art--scene');
+    art.append(elt('span','p-focus-scene-icon','◫'),elt('span','p-focus-scene-caption','ESCENA 3D'));
+   }
+   const hit=button(collection?'Abrir silla 3D':action,()=>open(primary));
+   hit.classList.add('p-focus-art-hit');hit.setAttribute('aria-label',action);
+   art.append(hit);host.append(art);
   }
-  const ev=evidence(n,context),status=elt('div','p-focus-state');
-  status.append(elt('span','','Estado según fuentes'),elt('strong','',ev.status));
-  plan.append(status);
-  const now=elt('div','p-focus-now');now.append(elt('span','','Hecho / conocido'),elt('p','',ev.done),elt('span','','Pendiente / desconocido'),elt('p','',ev.missing));plan.append(now);
-  const next=elt('div','p-focus-next');next.append(elt('strong','','Siguiente acción'),elt('p','',n.next));plan.append(next);
-  const actions=elt('div','p-focus-actions');
-  if(n.view){
-    const target=(items||[]).find(x=>n.view.endsWith('/'+x.id));
-    if(!n.view.includes('/obra/')||target){actions.append(button(n.view.includes('/obra/')?'Ver obra':'Abrir sección',()=>go(n.view)));}
-    else{const sourceLink=n.id==='arc-chair'||n.id==='respaldo'?(chair?.publicUrl||PUB+'asset-lab/chair-01/'):n.id==='mesa'?PUB+'3d-composition-previs-001/':PUB+'cocina-umbria-001/';
-      actions.append(link(sourceLink,'Ver fuente publicada'));
-    }
+  const controls=elt('div','p-focus-main-actions');
+  const main=button(action+' ↗',()=>open(primary));main.classList.add('p-focus-primary');controls.append(main);
+  if(collection){
+   const other=button('Ver escena',()=>open(PUB+'cocina-umbria-001/'));other.classList.add('p-focus-secondary');controls.append(other);
+  }else if(!root){
+   const back=button('Volver a mobiliario',()=>go('#root/plano/mobiliario'));back.classList.add('p-focus-secondary');controls.append(back);
   }
-  actions.append(button('Copiar IDEA vinculada',async()=>{
-   toast(await copy(ideaPrompt(n.id))?'IDEA copiada; aún no guardada':'No se pudo copiar');}));
-  actions.append(button('Copiar comentario',async()=>{
-   const body=['PROMETEO · COMENTARIO DE OBRA','Nodo: '+n.id,'Fuente: '+n.source,'Estado: '+ev.status,'Objetivo ACTIVE: integración ROOT, biblioteca y despacho','Observación humana: '].join('\n');
-   toast(await copy(body)?'Comentario copiado; no enviado':'No se pudo copiar');}));
-  actions.append(button('Copiar WORK',async()=>{
-   toast(await copy(workPrompt(n.id))?'WORK copiado; no despachado':'No se pudo copiar');}));
-  plan.append(actions);
-  const details=elt('details','p-focus-more'),summary=elt('summary','','Por qué · fuentes · límites');details.append(summary);
-  const intro=elt('p','',n.why);details.append(intro);
-  const links=elt('div','p-focus-sources');links.append(link(n.source,'Fuente propietaria'));if(n.qa)links.append(link(n.qa,'Evidencia QA'));if(n.extra)links.append(link(n.extra,'Fuente relacionada'));details.append(links);
-  details.append(elt('p','p-focus-warning','Los enlaces señalan fuentes existentes. No equivalen a aprobación humana ni a ejecución de WORK. Las anotaciones se copian localmente y deben enviarse explícitamente.'));
-  plan.append(details);
-  host.dataset.node=n.id;
+  host.append(controls);
+  if(root||collection){
+   const nav=elt('nav','p-focus-mininav');nav.setAttribute('aria-label','Explorar proyecto');
+   const children=root?[{id:'3d',title:'3D'},{id:'mobiliario',title:'Mobiliario'}]:[{id:'arc-chair',title:'Silla'},{id:'mesa',title:'Mesa'},{id:'comedor',title:'Espacio'}];
+   for(const child of children){nav.append(button(child.title,()=>go('#root/plano/'+child.id)));}
+   host.append(nav);
+  }
+  const details=elt('details','p-focus-more');details.append(elt('summary','','Plano y fuentes'));
+  const info=elt('div','p-focus-more-body');
+  info.append(elt('p','',n.goal),elt('p','',n.why),elt('p','p-focus-source-status',ev.done),elt('p','p-focus-source-status','Límites: '+ev.missing));
+  info.append(link(n.source,'Fuente original'));if(n.extra)info.append(link(n.extra,'Fuente relacionada'));
+  const technical=elt('div','p-focus-technical');
+  technical.append(button('Copiar IDEA',async()=>toast(await copy(ideaPrompt(n.id))?'IDEA copiada':'No se pudo copiar')));
+  technical.append(button('Copiar comentario',async()=>{
+   const msg=['PROMETEO · COMENTARIO DE OBRA','Nodo: '+n.id,'Fuente: '+n.source,'Observación: '].join('\n');
+   toast(await copy(msg)?'Comentario copiado':'No se pudo copiar');
+  }));
+  technical.append(button('Copiar WORK',async()=>toast(await copy(workPrompt(n.id))?'WORK copiado':'No se pudo copiar')));
+  info.append(technical);details.append(info);host.append(details);
  }
  return {render,ideaPrompt,workPrompt,ids:new Set(BY_ID.keys())};
 }
