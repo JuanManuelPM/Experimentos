@@ -24,7 +24,7 @@ function frame(time){const dt=Math.min((time-last)/1000,.05);last=time;
  position();renderer.render(scene,camera);raf=requestAnimationFrame(frame);}
 let lastVariant=performance.now();
 toggle.onclick=()=>{pause=!pause;toggle.textContent=pause?"▶":"Ⅱ";toast(pause?"Pausado":"Demo automática");controls();};
-document.querySelector("#variant").onclick=change;heart.onclick=like;
+document.querySelector("#variant").onclick=()=>change(false);heart.onclick=like;
 document.querySelector("#obj").onclick=()=>{chair?.downloadOBJ();toast("OBJ geométrico descargado");controls();};
 document.querySelector("#copy").onclick=async()=>{const note="PROMETEO · Objeto a revisar/guardar\nID: "+ASSET_ID+
  "\nVersión: 0.1.0\nURL: "+location.href.split("?")[0]+
@@ -47,7 +47,7 @@ try{
  renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.6));renderer.outputColorSpace=THREE.SRGBColorSpace;
  renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.48;
  renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
- renderer.domElement.setAttribute("aria-hidden","true");stage.append(renderer.domElement);document.querySelector("#technical-preview").hidden=true;
+ renderer.domElement.setAttribute("aria-hidden","true");stage.append(renderer.domElement);
  scene=new THREE.Scene();scene.background=new THREE.Color(0xddd1c2);
  camera=new THREE.PerspectiveCamera(40,1,.04,30);
  const ambient=new THREE.HemisphereLight(0xf9eee1,0x776e66,2.4);scene.add(ambient);
@@ -58,9 +58,9 @@ try{
  const floor=new THREE.Mesh(new THREE.PlaneGeometry(20,20),new THREE.MeshStandardMaterial({color:0xddd1c2,roughness:.97}));
  floor.rotation.x=-Math.PI/2;floor.position.y=-.003;floor.receiveShadow=true;scene.add(floor);
  chair=createChair(THREE);scene.add(chair.root);position();resize();
- new ResizeObserver(resize).observe(stage);state.hidden=true;
+ new ResizeObserver(resize).observe(stage);state.hidden=true;document.querySelector("#technical-preview").hidden=true;
  window.__PROMETEO_ASSET_QA__={assetId:ASSET_ID,geometry:()=>chair.qa,
   renderCalls:()=>renderer.info.render.calls,variant:()=>variant,hasCanvas:()=>!!renderer.domElement};
  raf=requestAnimationFrame(frame);
-}catch(e){state.hidden=true;toast("WebGL no disponible: vista técnica");console.warn("PROMETEO 3D unavailable",e);
+}catch(e){state.hidden=false;state.textContent="Vista técnica disponible · No se pudo iniciar WebGL";toast("WebGL no disponible: vista técnica");console.warn("PROMETEO 3D unavailable",e);
  document.body.dataset.runtime="ERROR";}
