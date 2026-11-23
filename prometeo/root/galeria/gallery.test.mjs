@@ -1,0 +1,12 @@
+import assert from "node:assert/strict";
+import {getBatchesForStudio,getResults,copyBase,bestImage,bestLink} from "./model.mjs";
+const batches=[{id:"old",room:"3d",createdAt:"2026-01-01T00:00:00Z",taskCount:10,tasks:Array.from({length:10},(_,i)=>({number:i+1,label:"A"+i}))},{id:"new",room:"3d",createdAt:"2026-02-01T00:00:00Z",taskCount:10,launchUrl:"https://github.com/example",tasks:Array.from({length:10},(_,i)=>({number:i+1,label:"B"+i}))}];
+assert.equal(getBatchesForStudio(batches,"3d")[0].id,"new");
+assert.equal(getResults(batches[1],[]).length,10);
+const msg={batchId:"new",taskNumber:1,publishedAt:"2026-02-03T00:00:00Z",blocks:[{type:"file",label:"Obra",url:"https://juanmanuelpm.github.io/Experimentos/demo/"},{type:"file",label:"QA",url:"https://github.com/foo/bar/blob/main/QA.md"}]};
+assert.equal(getResults(batches[1],[msg])[0].href,"https://juanmanuelpm.github.io/Experimentos/demo/");
+assert.equal(bestImage(msg),"");
+assert.equal(bestLink(msg),"https://juanmanuelpm.github.io/Experimentos/demo/");
+assert.ok(copyBase(batches[1],"3d").endsWith(" · "));
+assert.ok(!bestLink({blocks:[{url:"javascript:alert(1)"}]}));
+console.log("PASS: latest-first, ten cards, source-grounded links, one prompt base, unsafe schemes rejected");
