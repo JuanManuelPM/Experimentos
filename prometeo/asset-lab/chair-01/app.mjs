@@ -47,7 +47,7 @@ try{
  renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.6));renderer.outputColorSpace=THREE.SRGBColorSpace;
  renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.48;
  renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
- renderer.domElement.setAttribute("aria-hidden","true");stage.append(renderer.domElement);
+ renderer.domElement.setAttribute("aria-hidden","true");stage.append(renderer.domElement);document.querySelector("#technical-preview").hidden=true;
  scene=new THREE.Scene();scene.background=new THREE.Color(0xddd1c2);
  camera=new THREE.PerspectiveCamera(40,1,.04,30);
  const ambient=new THREE.HemisphereLight(0xf9eee1,0x776e66,2.4);scene.add(ambient);
@@ -62,5 +62,5 @@ try{
  window.__PROMETEO_ASSET_QA__={assetId:ASSET_ID,geometry:()=>chair.qa,
   renderCalls:()=>renderer.info.render.calls,variant:()=>variant,hasCanvas:()=>!!renderer.domElement};
  raf=requestAnimationFrame(frame);
-}catch(e){state.hidden=false;state.textContent="No se pudo iniciar la escena 3D: "+String(e.message||e).slice(0,150);
+}catch(e){state.hidden=true;toast("WebGL no disponible: vista técnica");console.warn("PROMETEO 3D unavailable",e);
  document.body.dataset.runtime="ERROR";}
