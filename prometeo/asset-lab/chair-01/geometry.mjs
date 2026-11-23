@@ -56,10 +56,10 @@ export function generateChair({width=.52,seatHeight=.45,backHeight=.82}={}){
  for(const sign of [-1,1]){
   const x=sign*h*.79,lr=sign<0?"left":"right";
   parts.push(sweep("front-leg-"+lr,"wood",[
-   ring([x*1.09,0,.246],.015,.019),ring([x*1.06,.09,.23],.017,.021),
+   ring([x*1.09,.005,.246],.015,.019),ring([x*1.06,.09,.23],.017,.021),
    ring([x,.26,.194],.022,.025),ring([x*.96,seatHeight-.027,.163],.027,.03)]));
   parts.push(sweep("rear-leg-"+lr,"wood",[
-   ring([x*1.06,0,-.272],.017,.02),ring([x*1.04,.1,-.253],.018,.022),
+   ring([x*1.06,.005,-.272],.017,.02),ring([x*1.04,.1,-.253],.018,.022),
    ring([x*.98,.29,-.207],.023,.025),ring([x*.96,seatHeight-.018,-.164],.026,.03),
    ring([x*.97,seatHeight+.18,-.213],.021,.026),ring([x*.96,backHeight-.025,-.27],.016,.022)]));
   parts.push(sweep("side-rail-"+lr,"wood",[
