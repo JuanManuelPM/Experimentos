@@ -27,10 +27,11 @@
   "humanApproved": false,
   "qa": {
     "source": "PUBLISHED",
-    "geometry": "PASS_THREE_VARIANTS",
+    "geometry": "PASS_14_PARTS_2312_VERTICES_4568_TRIANGLES",
     "webgl": "NOT_RUN",
     "android": "NOT_RUN",
-    "artistic": "NOT_RUN"
+    "artistic": "NOT_RUN",
+    "cpuProjection": "OBSERVED_AND_REVISED"
   },
   "stageTrace": {
     "sourceDecision": "custom loft/sweep and indexed shells, Three.js for mesh rendering",
@@ -40,5 +41,12 @@
     ],
     "why": "preserve editable shape and varied proportions while avoiding primitive stacks",
     "observed": "buffers structurally checked, visual frame not inspected"
-  }
+  },
+  "version": "0.1.0-iterated-candidate",
+  "technicalEvidence": [
+    "evidence/three-quarter.svg",
+    "evidence/side.svg",
+    "evidence/rear.svg"
+  ],
+  "artisticQuality": "UNAPPROVED_DESPITE_SOURCE_BASED_PREVIEW"
 }
