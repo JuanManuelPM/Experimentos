@@ -50,9 +50,22 @@ export function generateChair({width=.52,seatHeight=.45,backHeight=.82}={}){
   const edge=Math.abs(2*u-1)**6,y=seatHeight+.014*edge-.018*(1-edge)*Math.sin(v*Math.PI)**2-.011*v;
   return[x,y,z];};
  parts.push(shell("seat-contoured","leather",24,20,seat,.034));
- const back=(u,v)=>{const t=2*u-1,w=h*(.77+.20*Math.sin(Math.PI*v));
- return[t*w,seatHeight+.072+v*(backHeight-seatHeight-.08),-.207-.062*v+.025*t*t+.012*Math.sin(v*Math.PI)]};
- parts.push(shell("backrest-sculpted","wood",28,22,back,.023));
+ // Steam-bent open back: one continuous sculpted crest instead of a flat rectangular slab.
+ const arch=[];
+ for(let i=0;i<=28;i++){
+  const t=2*i/28-1,q=Math.abs(t);
+  arch.push(ring([t*h*.95,backHeight-.17*Math.pow(q,2.25),-.265+.075*Math.pow(q,1.4)],.024,.030));
+ }
+ parts.push(sweep("steam-bent-crest","wood",arch,18));
+ // Curved splats rise continuously from the rear frame into the crest.
+ for(const t of [-.45,0,.45]){
+  const rings=[];
+  for(let i=0;i<=9;i++){const s=i/9,x=t*h*(.6+.35*s),y=seatHeight+.028+s*(backHeight-seatHeight-.04-.17*Math.pow(Math.abs(t),2.25));
+   const z=-.176-.098*s+.013*Math.sin(s*Math.PI);
+   rings.push(ring([x,y,z],.010+.006*Math.sin(s*Math.PI),.016+.006*Math.sin(s*Math.PI)));
+  }
+  parts.push(sweep("lumbar-splat-"+(t<0?"left":t>0?"right":"centre"),"wood",rings,12));
+ }
  for(const sign of [-1,1]){
   const x=sign*h*.79,lr=sign<0?"left":"right";
   parts.push(sweep("front-leg-"+lr,"wood",[
@@ -61,7 +74,7 @@ export function generateChair({width=.52,seatHeight=.45,backHeight=.82}={}){
   parts.push(sweep("rear-leg-"+lr,"wood",[
    ring([x*1.06,.005,-.272],.017,.02),ring([x*1.04,.1,-.253],.018,.022),
    ring([x*.98,.29,-.207],.023,.025),ring([x*.96,seatHeight-.018,-.164],.026,.03),
-   ring([x*.97,seatHeight+.18,-.213],.021,.026),ring([x*.96,backHeight-.025,-.27],.016,.022)]));
+   ring([x*.97,backHeight-.17,-.195],.021,.026)]));
   parts.push(sweep("side-rail-"+lr,"wood",[
    ring([x*.96,seatHeight-.085,-.156],.012,.012),ring([x*.96,seatHeight-.092,-.012],.012,.012),
    ring([x*.96,seatHeight-.082,.158],.012,.012)],10));
