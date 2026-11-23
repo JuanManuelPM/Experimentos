@@ -14,13 +14,13 @@ function controls(){overlay.classList.add("show");overlay.setAttribute("aria-hid
  clearTimeout(hideTimer);hideTimer=setTimeout(()=>{if(!drag){overlay.classList.remove("show");overlay.setAttribute("aria-hidden","true")}},4100);}
 function like(){const now=!liked();localStorage.setItem(favoriteKey,String(now));heart.textContent=now?"♥":"♡";
  heart.setAttribute("aria-pressed",String(now));toast(now?"Favorito local guardado":"Favorito local retirado");}
-function change(){variant=(variant+1)%VARIANTS.length;chair?.variant(variant);toast(VARIANTS[variant].title);controls();}
+function change(automatic=false){variant=(variant+1)%VARIANTS.length;chair?.variant(variant);if(!automatic){toast(VARIANTS[variant].title);controls();}}
 function resize(){if(!renderer)return;const w=stage.clientWidth,h=stage.clientHeight;
  camera.aspect=w/h;camera.fov=w/h>1.5?34:42;camera.updateProjectionMatrix();renderer.setSize(w,h,false);}
 function position(){const r=1.78;camera.position.set(Math.sin(angle)*r,.91+Math.sin(tilt)*.32,Math.cos(angle)*r);
  camera.lookAt(0,.42,-.03);}
 function frame(time){const dt=Math.min((time-last)/1000,.05);last=time;
- if(!pause&&!reduce&&time>manualUntil){angle+=dt*.18;if(time-lastVariant>11000){lastVariant=time;change();}}
+ if(!pause&&!reduce&&time>manualUntil){angle+=dt*.18;if(time-lastVariant>11000){lastVariant=time;change(true);}}
  position();renderer.render(scene,camera);raf=requestAnimationFrame(frame);}
 let lastVariant=performance.now();
 toggle.onclick=()=>{pause=!pause;toggle.textContent=pause?"▶":"Ⅱ";toast(pause?"Pausado":"Demo automática");controls();};
