@@ -1,5 +1,6 @@
 /* PROMETEO ROOT · universal shell, real project library and typed batch results. */
 import './shared/v1/shell.js';
+import {createFocusMap} from './focus-map.mjs';
 import './shared/v1/response.js';
 import './shared/v1/batch.js?v=20261122-emojiworker1';
 import './shared/v1/launch-hub.js';
@@ -7,8 +8,9 @@ const $=id=>document.getElementById(id);
 const FALLBACK=[{id:'direccion',label:'Dirección'},{id:'root',label:'ROOT'},{id:'3d',label:'3D'},{id:'music',label:'Música'},{id:'web',label:'Web'},{id:'video',label:'Video'},{id:'images',label:'Imágenes'}];
 const ROOT_REF='https://github.com/JuanManuelPM/pruebas/blob/candidate/prometeo-portal-unico-base-20261121/PROMETEO/system/PORTAL_BASE_HANDOFF.md#';
 const PUBLIC='https://juanmanuelpm.github.io/Experimentos/prometeo/';
-const state={universalFilter:'all',universalView:'batches',universalOpen:undefined,rooms:FALLBACK,room:'direccion',screen:'messages',itemId:'',public:[],legacy:[],batches:[],projects:[],w4:[],catalog:null,older:false,items:[],workspaces:[],ready:false,batchId:''};
+const state={universalFilter:'all',universalView:'batches',universalOpen:undefined,rooms:FALLBACK,room:'direccion',screen:'messages',itemId:'',public:[],legacy:[],batches:[],projects:[],w4:[],catalog:null,chair:null,cocina:null,nodeId:'mobiliario',older:false,items:[],workspaces:[],ready:false,batchId:''};
 const shell=$('shell');
+const focusMap=createFocusMap({copy,toast,go});
 let timer;
 function toast(text){const n=$('toast');n.textContent=text;n.hidden=false;clearTimeout(timer);timer=setTimeout(()=>n.hidden=true,1800);}
 async function get(path){const r=await fetch(path+(path.includes('?')?'&':'?')+'t='+Date.now(),{cache:'no-store'});if(!r.ok)throw Error('HTTP '+r.status);return r.json();}
@@ -93,6 +95,7 @@ function buildLibrary(){
   const kind=w.series==='personajes'?'Personaje':w.series==='videojuegos'?'Juego':'Escena';
   addItem(map,{id:w.projectId,title:titleCase(w.projectId),kind,url:w.preview.url,version:w.version||'W4',source:'W4',description:''},20);
  }
+ if(state.chair?.publicUrl)addItem(map,{id:'arc-chair-01',title:'ARC CHAIR 01',kind:'Mobiliario',url:state.chair.publicUrl,version:state.chair.version||'0.1.0',source:'prometeo/asset-lab/chair-01/ASSET.json',description:state.chair.status||'Prototipo sin aprobación'},30);
  const canonical={1:'cocina-umbria-001',2:'cocina-umbria-002',6:'3d-npc-civilian-v1',7:'respawn-desk',8:'retrato-expresivo',9:'investigacion-noir',10:'arcade-objetivos'};
  for(const b of state.batches.filter(b=>b.room==='3d'))for(const t of b.tasks||[]){
   const id=canonical[Number(t.number)];if(!id)continue;
@@ -237,6 +240,7 @@ function parseRoute(){
  if(['capturas','ronda','calibrar','ajustes'].includes(raw)){location.replace('./archivo-20261121.html#'+raw);return null;}
  if(raw==='mensajes')return {room:'root',screen:'messages'};
  const parts=raw.split('/'),room=!raw?'root':state.rooms.some(r=>r.id===parts[0])?parts[0]:'root';
+ if(room==='root'&&parts[1]==='plano')return {room,screen:'library',nodeId:parts[2]||'mobiliario'};
  if(room==='root'&&(parts.length===1||['obras','biblioteca','recientes'].includes(parts[1]))){if(parts[1]==='recientes')state.universalView='recent';return {room,screen:'library'};}
  if(!['3d','music','web','video','images'].includes(room))return {room,screen:'messages',batchId:(parts[1]==='mensaje'||parts[1]==='tanda')?(parts[2]||''):''};
  if(parts[1]==='tanda')return {room,screen:'messages',batchId:parts[2]||''};
@@ -289,6 +293,11 @@ function updateContext(){
   }
   c.append(option('Comentar ROOT',()=>closeCopy(currentReference()),false,true));
  }
+ const bootstrap=['https://github.com/JuanManuelPM/pruebas/blob/prometeo/control/PROMETEO/START_HERE.md','https://github.com/JuanManuelPM/pruebas/blob/prometeo/control/PROMETEO/system/CONTINUIDAD_FOCO_Y_PLANES.md'];
+ c.append(option('SEGUIR',()=>go('#root/plano/'+(state.nodeId||'mobiliario')),false,true));
+ c.append(option('IDEA',()=>closeCopy(['PROMETEO · IDEA','Leer con GitHub autorizado:',...bootstrap,'Capturar una sola idea en su dueño. No desplazar ACTIVE ni lanzar trabajadores.','MI IDEA:'].join('\n')),false,true));
+ c.append(option('TRABAJAR',()=>closeCopy(['👷 WORK · PROMETEO · FOCO PROTEGIDO','Leer con GitHub autorizado:',...bootstrap,'Continuar ACTIVE: integrar visor ROOT, biblioteca, despacho y planos contextuales en el shell existente. Recuperar fuentes de silla/mesa/comedor antes de crear assets; fijar criterios, ejecutar y verificar dentro del turno. Persistir sólo en propietarios; no exponer contexto privado, ni abrir QA serial. Entregar URLs y commits reales.','Nodo seleccionado: '+(state.nodeId||'mobiliario')].join('\n')),false,true));
+ const ver=document.createElement('a');ver.href=PUBLIC+'root/';ver.textContent='VER';ver.className='p-context-small';c.append(ver);
 }
 function renderStage(){
  const item=studioItems(state.room).find(x=>x.id===state.itemId);
@@ -307,7 +316,7 @@ function renderStage(){
 }
 function selectRoute(next){
  if(!next)return;
- state.room=next.room;state.screen=next.screen;state.itemId=next.itemId||'';state.batchId=next.batchId||'';
+ state.room=next.room;state.screen=next.screen;state.itemId=next.itemId||'';state.batchId=next.batchId||'';if(next.nodeId)state.nodeId=focusMap.ids.has(next.nodeId)?next.nodeId:'mobiliario';
  shell.setRoom(state.room);shell.setAttribute('app-label',state.rooms.find(r=>r.id===state.room)?.label||'PROMETEO');
  const studio=['3d','music','web','video','images'].includes(state.room);
  if(studio&&state.screen==='stage'&&!studioItems(state.room).some(x=>x.id===state.itemId))state.screen='library';
@@ -319,12 +328,13 @@ function selectRoute(next){
  if(studio&&state.screen==='stage')renderStage();
  else{const host=$('stage-visual');if(host.dataset.url){host.replaceChildren();delete host.dataset.url;}}
  if(state.screen==='messages')renderMessages();
+ focusMap.render({room:state.room,nodeId:state.nodeId,chair:state.chair,cocina:state.cocina,items:state.items});
  updateContext();document.title=(state.rooms.find(r=>r.id===state.room)?.label||'PROMETEO')+' · PROMETEO';
 }
 async function refresh(){
  const files={
   rooms:'./ROOMS.json',messages:'./ROOM_MESSAGES.json',legacy:'./REPLIES.json',batches:'./BATCHES.json',
-  works:'./WORKS.json',projects:'../project-explorer/projects.json',w4:'../previews/w5/library/v1/REGISTRY.json',catalog:'../estudios/3d/catalog.json'
+  works:'./WORKS.json',chair:'../asset-lab/chair-01/ASSET.json',cocina:'../cocina-umbria-001/RESULT.json',projects:'../project-explorer/projects.json',w4:'../previews/w5/library/v1/REGISTRY.json',catalog:'../estudios/3d/catalog.json'
  };
  const keys=Object.keys(files),values=await Promise.all(keys.map(async k=>{const p=files[k];try{const d=await get(p);cache(p,d);return d;}catch{return readCache(p);}}));
  const d=Object.fromEntries(keys.map((k,i)=>[k,values[i]]));
@@ -337,6 +347,8 @@ async function refresh(){
  if(Array.isArray(d.projects?.projects))state.projects=d.projects.projects;
  if(Array.isArray(d.w4?.records))state.w4=d.w4.records;
  if(d.catalog?.schema)state.catalog=d.catalog;
+ if(d.chair?.schema==='prometeo.asset.prototype/v1')state.chair=d.chair;
+ if(d.cocina?.schema)state.cocina=d.cocina;
  buildLibrary();state.ready=true;selectRoute(parseRoute());
 }
 $('older').addEventListener('click',()=>{state.older=!state.older;renderMessages();});
