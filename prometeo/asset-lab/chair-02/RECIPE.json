@@ -1,0 +1,44 @@
+{
+  "schema": "prometeo.threejs.procedural-asset/v0.2",
+  "assetId": "prometeo/prop/helix-chair@0.2.0",
+  "name": "Hélice / ARC CHAIR 02",
+  "category": "manufactured-chair",
+  "source": "geometry.mjs",
+  "engine": "Three.js 0.181.0",
+  "units": "metre",
+  "parameters": {"width": 0.524, "depth": 0.472, "seatHeight": 0.457, "backHeight": 0.860, "legSplay": 0.034},
+  "strategies": [
+    "rounded-superellipse profile, concentric rings and closed contoured saddle",
+    "dual UV surfaces and closed curved lumbar shell",
+    "variable elliptical sweep for continuous structural legs and rails",
+    "named assembly with typed load-bearing and mortise-tenon joins"
+  ],
+  "geometricFamilies": {
+    "seat": "indexable BufferGeometry with top/bottom and perimeter, leather insert separate",
+    "backrest": "curved closed BufferGeometry skin, 26mm thick, true bilateral surface",
+    "legs": "tapered elliptical sweeps, rear posts continuous above the seat",
+    "frame": "front/rear aprons and bilateral side rails, fitted into posts"
+  },
+  "structuralRoles": {
+    "saddle-shell": "seated load and contour",
+    "saddle-inlay": "replaceable upholstery",
+    "floating-lumbar-shell": "rigid sculpted lumbar surface",
+    "front-leg-L/R": "forward feet and seat bearing",
+    "rear-leg-and-stile-L/R": "rear feet continuous into back stiles",
+    "front-apron": "front transverse support",
+    "rear-apron": "rear transverse support",
+    "side-rail-L/R": "fore/aft underframe support",
+    "side-tenon-L/R": "visible joinery pins"
+  },
+  "jointTypes": {"bearing": "saddle touches upper leg", "mortise-tenon": "rails insert into posts", "recessed-edge": "back shell captured by rear stile", "laminated-seat": "leather is embedded in the saddle"},
+  "constraints": ["four feet ground at y≈0", "front side and three-quarter identifiable", "closed finite mesh surfaces", "no unanchored backrest", "fixed original v0.1.0 untouched"],
+  "referenceViewIds": ["front", "profile", "three"],
+  "visualDecisions": {"primary": "warm oak", "secondary": "cognac leather", "accent": "muted brass", "lighting": "bright neutral studio for legibility", "noBorrowedAssets": true},
+  "provenance": {
+    "priorVersion": "https://juanmanuelpm.github.io/Experimentos/prometeo/asset-lab/chair-01/",
+    "research": ["T008_THREEJS_PROCEDURAL_MODELING.md", "T004_RETRO_PROPS_UV.md", "Arcade Retro 1.4.0 QUALITY_TRANSFER"],
+    "difference": "solid suspended lumbar back shell replaces three open splats and crest; reshaped saddle with true inset, measured frame, feet and join sockets",
+    "license": "Original authored source. No external meshes or textures"
+  },
+  "reviewStatus": "GEOMETRY_INSPECTED_ART_NOT_ACCEPTED"
+}

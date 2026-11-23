@@ -1,0 +1,10 @@
+import {generateChair,inspectChair,ASSET_ID} from './geometry.mjs';
+import assert from 'node:assert/strict';
+const c=generateChair();const r=inspectChair(c);
+console.log(JSON.stringify({asset:ASSET_ID,inspection:r},null,2));
+assert.equal(r.ok,true,'mesh constraints');
+assert.equal(r.stats.feet,4);
+assert.equal(c.referenceViews.length,3);
+assert.equal(new Set(c.parts.map(x=>x.name)).size,c.parts.length);
+assert.deepEqual(generateChair(),c,'generator must be deterministic');
+assert.throws(()=>generateChair({width:5}),/INVALID_DIMENSIONS/);

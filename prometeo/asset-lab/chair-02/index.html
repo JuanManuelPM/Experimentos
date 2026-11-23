@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#d6cbbb"><title>HÉLICE · Silla original en Three.js · PROMETEO</title>
+<style>
+:root{color-scheme:light;--ink:#2d231d;--cream:#d6cbbb;--dark:#302820}*{box-sizing:border-box}
+html,body{margin:0;height:100%;overflow:hidden;background:var(--cream);font-family:ui-sans-serif,system-ui,-apple-system,'Segoe UI',sans-serif;color:var(--ink)}
+#stage{position:absolute;inset:0;cursor:grab;touch-action:none;outline:none}#stage:active{cursor:grabbing}
+#stage canvas{width:100%;height:100%;display:block}
+header{position:absolute;top:max(18px,env(safe-area-inset-top));left:clamp(20px,4vw,60px);pointer-events:none}
+.eyebrow{font-size:11px;letter-spacing:.21em;font-weight:650;opacity:.62}.title{font:400 clamp(39px,5vw,78px)/.98 Georgia,'Times New Roman',serif;letter-spacing:-.055em;margin:14px 0 8px}
+.sub{max-width:260px;font-size:12px;line-height:1.65;opacity:.73}
+nav{position:absolute;bottom:max(21px,env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:4px;background:#2d241ede;padding:6px;border-radius:999px;max-width:calc(100vw - 20px);box-shadow:0 16px 50px #33201239}
+button{font:550 12px/1 system-ui,sans-serif;letter-spacing:.015em;min-width:55px;min-height:48px;background:none;border:0;color:#fffaf2;border-radius:100px;padding:12px 13px;cursor:pointer;white-space:nowrap}
+button[aria-pressed=true],button:hover{background:#efe2cb;color:#2d241d}button:focus-visible{outline:2px solid white;outline-offset:2px}
+#status{position:absolute;bottom:88px;left:50%;transform:translateX(-50%);text-align:center;font-size:10px;font-weight:600;letter-spacing:.13em;text-transform:uppercase;color:#392e2988;white-space:nowrap;pointer-events:none}
+#details{position:absolute;right:clamp(16px,3vw,40px);top:max(19px,env(safe-area-inset-top));z-index:3;border:1px solid #382e2737;background:#eee5d995;color:#382d22;min-width:44px;min-height:44px;backdrop-filter:blur(7px)}
+#recipe{position:absolute;right:clamp(16px,3vw,40px);top:78px;max-width:min(310px,85vw);background:#efe7dbf0;border:1px solid #8a735e48;border-radius:16px;padding:20px;box-shadow:0 15px 50px #3a271b2c;font-size:13px;line-height:1.75;z-index:2}#recipe[hidden],#error[hidden]{display:none}
+#recipe strong{font:400 23px Georgia,serif;display:block;margin-bottom:10px}#recipe a{color:inherit;font-weight:700}
+#error{position:absolute;top:48%;left:50%;transform:translate(-50%,-50%);max-width:min(500px,85vw);background:#eee4d8;border:1px solid #ac9281;border-radius:14px;padding:22px;line-height:1.7;font-size:14px;text-align:center}
+@media(max-width:600px){header{top:22px;left:22px}.title{font-size:49px}.sub{max-width:200px}nav{gap:1px}button{font-size:11px;min-width:53px;padding:12px 11px}#status{bottom:88px}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
+</style></head><body>
+<main id="stage" tabindex="0" aria-label="Visor Three.js. Arrastrá para inspeccionar la silla, elegí frente, perfil o tres cuartos."></main>
+<header><div class="eyebrow">PROMETEO / PRIMER ARTÍCULO / 02</div><h1 class="title">Hélice.</h1><div class="sub">Una silla original. Madera curvada, respaldo suspendido y ensamble a la vista.</div></header>
+<button id="details" aria-expanded="false" aria-controls="recipe" title="Detalles técnicos">i</button>
+<aside id="recipe" hidden><strong>Hélice 02</strong>Modelo original generado en Three.js a partir de superficies curvas y perfiles variables.<p>13 piezas reales · 15 uniones semánticas · 4 apoyos · metros · fuente editable.</p>
+<p>La versión ARC CHAIR 01 permanece intacta. Esta pieza es candidata: el juicio artístico humano sigue pendiente.</p>
+<a href="./RECIPE.json" target="_blank" rel="noopener">Receta de forma y uniones</a> · <a href="./geometry.mjs" target="_blank" rel="noopener">Geometría</a></aside>
+<div id="error" role="alert" hidden></div><div id="status" aria-live="polite">Preparando Three.js…</div>
+<nav aria-label="Vistas de inspección"><button data-view="three" aria-pressed="false">¾</button><button data-view="front" aria-pressed="false">Frente</button><button data-view="profile" aria-pressed="false">Perfil</button><button data-view="rear" aria-pressed="false">Dorso</button><button id="turn" aria-pressed="true">Pausar</button></nav>
+<script type="module" src="./app.mjs"></script></body></html>
