@@ -1,0 +1,44 @@
+{
+  "schema": "prometeo.asset.prototype/v1",
+  "id": "prometeo/prop/arc-chair@0.1.0",
+  "owner": "studio-3d",
+  "kind": "procedural-chair",
+  "status": "PROTOTYPE_NOT_ARTISTICALLY_APPROVED",
+  "publicUrl": "https://juanmanuelpm.github.io/Experimentos/prometeo/asset-lab/chair-01/",
+  "code": "geometry.mjs",
+  "renderer": "three@0.181.0",
+  "supportedUnits": "metre",
+  "artifacts": [
+    "index.html",
+    "geometry.mjs",
+    "chair.mjs",
+    "app.mjs",
+    "test.mjs"
+  ],
+  "automaticDemonstration": true,
+  "fullscreenDefault": true,
+  "uiMode": "ON_DEMAND_ONLY",
+  "materialVariants": [
+    "walnut-leather",
+    "oak-linen",
+    "ebony-graphite"
+  ],
+  "localLikeOnly": true,
+  "humanApproved": false,
+  "qa": {
+    "source": "PUBLISHED",
+    "geometry": "PASS_THREE_VARIANTS",
+    "webgl": "NOT_RUN",
+    "android": "NOT_RUN",
+    "artistic": "NOT_RUN"
+  },
+  "stageTrace": {
+    "sourceDecision": "custom loft/sweep and indexed shells, Three.js for mesh rendering",
+    "alternatives": [
+      "primitive blockout",
+      "downloaded generic chair GLB"
+    ],
+    "why": "preserve editable shape and varied proportions while avoiding primitive stacks",
+    "observed": "buffers structurally checked, visual frame not inspected"
+  }
+}

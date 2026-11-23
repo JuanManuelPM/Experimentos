@@ -1,0 +1,39 @@
+<!doctype html><html lang="es"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#ddd1c2"><title>ARC CHAIR · PROMETEO</title>
+<style>
+*{box-sizing:border-box}html,body{width:100%;height:100%;margin:0;overflow:hidden}
+body{background:#ddd1c2;color:#241e18;font:14px system-ui,Segoe UI,sans-serif}
+#stage{position:absolute;inset:0;touch-action:none;outline:none;cursor:grab}
+#stage:active{cursor:grabbing}canvas{display:block;width:100%;height:100%}
+#state{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+ background:#f7efe5ee;color:#2b241e;border-radius:14px;padding:16px 22px;text-align:center;max-width:85vw}
+#state[hidden]{display:none}
+#overlay{position:fixed;bottom:max(15px,env(safe-area-inset-bottom));left:0;right:0;
+ display:flex;justify-content:center;opacity:0;pointer-events:none;transform:translateY(8px);
+ transition:opacity .23s,transform .23s}
+#overlay.show{opacity:1;transform:none;pointer-events:auto}
+#controls{display:flex;align-items:center;gap:3px;padding:6px;background:#221b18d9;
+ border-radius:18px;backdrop-filter:blur(20px);box-shadow:0 10px 30px #38291f38}
+button{border:0;background:none;color:#fff;border-radius:12px;min-width:44px;min-height:44px;
+ font:13px system-ui,Segoe UI,sans-serif;padding:10px;cursor:pointer}
+button:focus-visible{outline:2px solid white}
+button:hover,button[aria-pressed=true]{background:#ffffff24}
+#hint{position:fixed;top:14px;left:50%;transform:translateX(-50%);
+ padding:9px 13px;border-radius:9px;background:#f6ede3de;color:#362820;
+ opacity:0;pointer-events:none;transition:opacity .2s;white-space:nowrap;max-width:95vw;overflow:hidden;text-overflow:ellipsis}
+#hint.show{opacity:1}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style></head><body>
+<main id="stage" tabindex="0" aria-label="Silla procedural 3D a pantalla completa. La cámara gira automáticamente. Tocá para controles o arrastrá para mover la cámara."></main>
+<div id="state" role="status">Preparando modelo procedural…</div>
+<div id="hint" role="status" aria-live="polite"></div>
+<div id="overlay" aria-hidden="true"><nav id="controls" aria-label="Acciones del objeto">
+<button id="toggle" title="Pausar/reanudar" aria-label="Pausar o reanudar demostración">Ⅱ</button>
+<button id="variant" title="Cambiar acabado">Acabado</button>
+<button id="heart" title="Favorito local" aria-label="Marcar como favorito local" aria-pressed="false">♡</button>
+<button id="obj" title="Exportar geometría OBJ">OBJ</button>
+<button id="copy" title="Copiar ficha para PROMETEO">Copiar</button>
+</nav></div>
+<script type="module" src="./app.mjs"></script>
+</body></html>
