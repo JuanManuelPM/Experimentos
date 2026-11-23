@@ -56,6 +56,13 @@ export function createFocusMap({copy,toast,go}){
   plan.append(elt('div','p-focus-type',n.type),elt('h3','',n.title));
   const small=elt('div','p-focus-summary');
   small.append(elt('strong','','Para qué'),elt('p','',n.goal));plan.append(small);
+  const children=NODES.filter(x=>x.parent===n.id);
+  if(children.length){
+   const group=elt('div','p-focus-children');
+   group.append(elt('strong','','Dentro de este nodo'));
+   for(const child of children)group.append(button(child.title,()=>go('#root/plano/'+child.id)));
+   plan.append(group);
+  }
   const ev=evidence(n,context),status=elt('div','p-focus-state');
   status.append(elt('span','','Estado verificado'),elt('strong','',ev.status));
   plan.append(status);
