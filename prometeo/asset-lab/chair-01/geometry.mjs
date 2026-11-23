@@ -54,14 +54,14 @@ export function generateChair({width=.52,seatHeight=.45,backHeight=.82}={}){
  const arch=[];
  for(let i=0;i<=28;i++){
   const t=2*i/28-1,q=Math.abs(t);
-  arch.push(ring([t*h*.95,backHeight-.17*Math.pow(q,2.25),-.265+.075*Math.pow(q,1.4)],.024,.030));
+  arch.push(ring([t*h*.82,backHeight-.17*Math.pow(q,2.25),-.265+.075*Math.pow(q,1.4)],.024,.030));
  }
  parts.push(sweep("steam-bent-crest","wood",arch,18));
  // Curved splats rise continuously from the rear frame into the crest.
  for(const t of [-.45,0,.45]){
   const rings=[];
-  for(let i=0;i<=9;i++){const s=i/9,x=t*h*(.6+.35*s),y=seatHeight+.028+s*(backHeight-seatHeight-.04-.17*Math.pow(Math.abs(t),2.25));
-   const z=-.176-.098*s+.013*Math.sin(s*Math.PI);
+  for(let i=0;i<=9;i++){const s=i/9,x=t*h*(.6+.22*s),y=seatHeight+.028+s*(backHeight-.17*Math.pow(Math.abs(t),2.25)-(seatHeight+.028));
+   const crestZ=-.265+.075*Math.pow(Math.abs(t),1.4);const z=-.176+(crestZ+.176)*s+.013*Math.sin(s*Math.PI);
    rings.push(ring([x,y,z],.010+.006*Math.sin(s*Math.PI),.016+.006*Math.sin(s*Math.PI)));
   }
   parts.push(sweep("lumbar-splat-"+(t<0?"left":t>0?"right":"centre"),"wood",rings,12));
