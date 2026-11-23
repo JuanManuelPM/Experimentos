@@ -3,8 +3,8 @@ import {ASSET_ID,generateChair,validateChair,serializeOBJ} from "./geometry.mjs"
 assert.equal(ASSET_ID,"prometeo/prop/arc-chair@0.1.0");
 for(const parameters of [{},{width:.59,seatHeight:.46,backHeight:.88},{width:.48,seatHeight:.42,backHeight:.79}]){
  const g=generateChair(parameters),v=validateChair(g);
- assert.ok(v.pass,v.errors.join(","));assert.equal(v.stats.partCount,11);
- assert.ok(v.stats.vertices>2000);assert.ok(v.stats.triangles>3000);assert.equal(v.stats.degenerate,0);
+ assert.ok(v.pass,v.errors.join(","));assert.equal(v.stats.partCount,14);
+ assert.ok(v.stats.vertices>2200);assert.ok(v.stats.triangles>4500);assert.equal(v.stats.degenerate,0);
  assert.ok(v.stats.bounds.min[1]>=-.001);assert.ok(v.stats.bounds.max[1]>.7);
  assert.ok(serializeOBJ(g).includes("o backrest-sculpted"));
 }
