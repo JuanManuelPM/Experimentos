@@ -35,6 +35,31 @@ export function createFocusMap({copy,toast,go}){
  tree.setAttribute('aria-label','Jerarquía de contexto');plan.setAttribute('aria-label','Detalle contextual');
  layout.append(tree,plan);host.append(header,layout);
  let mounted=false;
+ const bootstrap=[CONTROL+'START_HERE.md',CONTROL+'system/CONTINUIDAD_FOCO_Y_PLANES.md'];
+ const selected=id=>BY_ID.get(id)||BY_ID.get('mobiliario');
+ function contextOf(n){
+  const chainName=chain(n).map(x=>x.title).join(' / ');
+  const owner=n.id==='root'?'prometeo-root':'studio-3d';
+  return ['Nodo contextual (no cambia ACTIVE): '+chainName,'ID: '+n.id,'Propietario de referencia: '+owner,'Fuente original: '+n.source];
+ }
+ function ideaPrompt(nodeId){
+  const n=selected(nodeId);
+  return ['PROMETEO · IDEA','Leer con GitHub autorizado:',...bootstrap,
+   'La idea nueva se captura una sola vez en el dueño que corresponda, aunque sea distinto del nodo contextual. No lanzar WORK ni desplazar el ACTIVE salvo giro humano explícito.',
+   'El nodo seleccionado solo brinda contexto; verificar el dueño real antes de guardar.',
+   ...contextOf(n),'Responder con dónde quedamos y el menú SEGUIR · IDEA · TRABAJAR · VER.',
+   'MI IDEA:'].join('\n');
+ }
+ function workPrompt(nodeId){
+  const n=selected(nodeId);
+  return ['👷 WORK · PROMETEO · FOCO PROTEGIDO','Leer con GitHub autorizado:',...bootstrap,
+   'ACTIVE: integrar el visor, la biblioteca y el despacho de ROOT con el shell compartido EXISTENTE.',
+   'Recuperar primero los artefactos de silla, mesa y comedor; no inventar una mesa autónoma ni declarar aprobado un comedor.',
+   'Fijar criterios críticos antes de producir, construir y comprobar dentro de esta ejecución; sin nueva QA serial.',
+   'Guardar únicamente en propietarios y entregar URL y commits exactos. Copiar este mensaje NO ejecuta otro chat.',
+   'No divulgar contexto humano privado. El nodo elegido no cambia el objetivo ACTIVE.',
+   ...contextOf(n)].join('\n');
+ }
  function mount(){if(mounted)return;const lib=document.getElementById('library');lib.querySelector('.p-library-top').insertAdjacentElement('afterend',host);mounted=true;}
  function render({room,nodeId,chair,cocina,items}){
   mount();host.hidden=!['root','3d'].includes(room);if(host.hidden)return;
@@ -64,7 +89,7 @@ export function createFocusMap({copy,toast,go}){
    plan.append(group);
   }
   const ev=evidence(n,context),status=elt('div','p-focus-state');
-  status.append(elt('span','','Estado verificado'),elt('strong','',ev.status));
+  status.append(elt('span','','Estado según fuentes'),elt('strong','',ev.status));
   plan.append(status);
   const now=elt('div','p-focus-now');now.append(elt('span','','Hecho / conocido'),elt('p','',ev.done),elt('span','','Pendiente / desconocido'),elt('p','',ev.missing));plan.append(now);
   const next=elt('div','p-focus-next');next.append(elt('strong','','Siguiente acción'),elt('p','',n.next));plan.append(next);
@@ -76,12 +101,13 @@ export function createFocusMap({copy,toast,go}){
       actions.append(link(sourceLink,'Ver fuente publicada'));
     }
   }
+  actions.append(button('Copiar IDEA vinculada',async()=>{
+   toast(await copy(ideaPrompt(n.id))?'IDEA copiada; aún no guardada':'No se pudo copiar');}));
   actions.append(button('Copiar comentario',async()=>{
    const body=['PROMETEO · COMENTARIO DE OBRA','Nodo: '+n.id,'Fuente: '+n.source,'Estado: '+ev.status,'Objetivo ACTIVE: integración ROOT, biblioteca y despacho','Observación humana: '].join('\n');
    toast(await copy(body)?'Comentario copiado; no enviado':'No se pudo copiar');}));
   actions.append(button('Copiar WORK',async()=>{
-   const msg=['👷 WORK · PROMETEO · FOCO PROTEGIDO','Leer con GitHub autorizado:',CONTROL+'START_HERE.md',CONTROL+'system/CONTINUIDAD_FOCO_Y_PLANES.md','Nodo: '+n.id,'Fuente de propietario: '+n.source,'Continuar ACTIVE sin recrear obra. Recuperar evidencia existente, fijar criterios antes de actuar, implementar y verificar en esta ejecución. Guardar solo en dueño, no divulgar contexto privado, no QA serial. Entregar commits/URLs exactos.'].join('\n');
-   toast(await copy(msg)?'WORK copiado; no despachado':'No se pudo copiar');}));
+   toast(await copy(workPrompt(n.id))?'WORK copiado; no despachado':'No se pudo copiar');}));
   plan.append(actions);
   const details=elt('details','p-focus-more'),summary=elt('summary','','Por qué · fuentes · límites');details.append(summary);
   const intro=elt('p','',n.why);details.append(intro);
@@ -90,5 +116,5 @@ export function createFocusMap({copy,toast,go}){
   plan.append(details);
   host.dataset.node=n.id;
  }
- return {render,ids:new Set(BY_ID.keys())};
+ return {render,ideaPrompt,workPrompt,ids:new Set(BY_ID.keys())};
 }
