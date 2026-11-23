@@ -23,7 +23,10 @@ export function bestLink(message){
 export function bestImage(message){
  const links=(message?.blocks||[]).filter(x=>x.url&&validUrl(x.url)&&/\.(png|jpe?g|webp|svg)(?:\?.*)?$/i.test(x.url));
  const first=links.find(x=>x.url.startsWith("https://juanmanuelpm.github.io/Experimentos/")||x.url.startsWith("https://raw.githubusercontent.com/"));
- return first?.url||""; // A GitHub blob URL serves HTML, never pretend it is a raster thumbnail.
+ if(first)return first.url;
+ // Public gh-pages image files can be served from raw.githubusercontent.com instead of a GitHub HTML blob page.
+ const publicBlob=links.find(x=>x.url.startsWith("https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/"));
+ return publicBlob?publicBlob.url.replace("https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/","https://raw.githubusercontent.com/JuanManuelPM/Experimentos/gh-pages/"):"";
 }
 export function copyBase(batch,studio){
  const emoji=STUDIOS.find(x=>x.id===studio)?.emoji||"👷";
