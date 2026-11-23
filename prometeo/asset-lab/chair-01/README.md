@@ -24,3 +24,7 @@ Estados: SOURCE_PUBLISHED, GEOMETRY_VALIDATED, ART_REVIEW_NOT_RUN, HUMAN_APPROVE
 ## Criterios de revisión de la primera pieza
 
 Comparar silueta 3/4, lateral y posterior; espesor real del asiento y respaldo, uniones limpias, pies apoyados, escalas, veta y material, luz/sombra, contacto con el suelo y encuadre móvil. Si se ve como un ensamblaje barato, mejorar la técnica antes de clonar la silla en habitaciones.
+
+## Observación de primera pantalla y revisión del modelo
+
+La primera proyección CPU mostró un respaldo macizo y demasiado genérico. Antes de promocionar el objeto se rehizo la silueta con un arco continuo y tres soportes curvos; las tres proyecciones actuales son de la **nueva geometría** y no se confunden con renders GPU. Las comprobaciones de malla sobre tres dimensiones pasaron: 14 piezas, 2.312 vértices, 4.568 triángulos, 0 degenerados. Render WebGL real, prueba en Android y criterio humano de acabado continúan NOT_RUN. Si la calidad no alcanza el mínimo buscado, esta versión sigue siendo prototipo; ninguna variante debe catalogarse como recurso aprobado.
