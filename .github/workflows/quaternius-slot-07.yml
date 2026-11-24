@@ -1,0 +1,138 @@
+name: Quaternius slot 07 isolated import
+on:
+  push:
+    branches: [candidate/quaternius-complete-20261124-07]
+    paths: ['.github/workflows/quaternius-slot-07.yml']
+permissions:
+  contents: write
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          filter: blob:none
+          sparse-checkout: |
+            prometeo-assets/catalog.json
+            prometeo-assets/packs/15-ultimate-modular-ruins-pack
+            prometeo-assets/packs/19-farm-buildings-pack
+            prometeo-assets/packs/68-buildings-pack
+            prometeo-assets/packs/69-simple-buildings-pack
+            prometeo-assets/packs/70-modular-dungeon-pack
+            prometeo-assets/packs/71-furniture-pack
+          sparse-checkout-cone-mode: false
+      - name: Retrieve and verify six assigned CC0 packs
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import hashlib,json,pathlib,struct,urllib.request,urllib.parse,concurrent.futures
+          root=pathlib.Path('prometeo-assets')
+          assert pathlib.Path('.git').exists()
+          mirror='https://raw.githubusercontent.com/Papyszoo/CC0-Public-Domain-Models/77343cac874f06b73d16ad0063339df7c9ca254c/'
+          showcase='https://raw.githubusercontent.com/trebeljahr/quaternius-showcase/0128ca510d653bb04d6d1e4885bd8890b5050b4f/'
+          specs=[
+           (15,'Ultimate Modular Ruins Pack','15-ultimate-modular-ruins-pack','ultimatemodularruins','quaternius-ultimate-modular-ruins',90,None),
+           (19,'Farm Buildings Pack','19-farm-buildings-pack','farmbuildings','quaternius-farm-buildings',13,None),
+           (68,'Buildings Pack','68-buildings-pack','buildings','quaternius-buildings',9,'buildings_pack_2'),
+           (69,'Simple Buildings Pack','69-simple-buildings-pack','simplebuildings','quaternius-simplebuildings',10,None),
+           (70,'Modular Dungeon Pack','70-modular-dungeon-pack','medievaldungeon','quaternius-medievaldungeon',41,'modular_dungeon_pack'),
+           (71,'Furniture Pack','71-furniture-pack','furniture','quaternius-furniture',23,None)]
+          def get(u):
+            req=urllib.request.Request(u,headers={'User-Agent':'PROMETEO-CC0-import'})
+            with urllib.request.urlopen(req,timeout=35) as f:
+              data=f.read(95*1024*1024+1)
+            if len(data)>95*1024*1024: raise ValueError('file over limit')
+            return data
+          def inspect(data):
+            if len(data)<20 or struct.unpack_from('<III',data)!=(0x46546c67,2,len(data)): raise ValueError('GLB header')
+            pos=12; j=None; b=0
+            while pos<len(data):
+              n,t=struct.unpack_from('<II',data,pos); pos+=8
+              if n%4 or pos+n>len(data): raise ValueError('chunk boundary')
+              if t==0x4e4f534a: j=json.loads(data[pos:pos+n])
+              elif t==0x004e4942: b=n
+              pos+=n
+            if not j or not j.get('meshes'): raise ValueError('mesh missing')
+            for x in j.get('buffers',[])+j.get('images',[]):
+              if x.get('uri') and not x['uri'].startswith('data:'): raise ValueError('external dependency')
+            for x in j.get('buffers',[]):
+              if not x.get('uri') and x['byteLength']>b: raise ValueError('binary buffer truncated')
+            for x in j.get('bufferViews',[]):
+              if x.get('byteOffset',0)+x['byteLength']>j['buffers'][x['buffer']]['byteLength']: raise ValueError('bufferView bounds')
+            for x in j.get('images',[]):
+              if 'bufferView' not in x and not x.get('uri'): raise ValueError('image missing')
+            return {k:len(j.get(k,[])) for k in ['meshes','materials','textures','animations','skins']}
+          existing=json.loads((root/'catalog.json').read_text())
+          hashes={x['sha256']:(r['id'],x['path']) for r in existing['results'] for x in r.get('files',[]) if x.get('sha256')}
+          results=[]
+          for ident,name,folder,slug,mslug,expected,old in specs:
+            dest=root/'packs'/folder; dest.mkdir(parents=True,exist_ok=True)
+            official='https://quaternius.com/packs/'+slug+'.html'
+            errors=[]; files=[]; tasks=[]
+            source={'repo':'https://github.com/Papyszoo/CC0-Public-Domain-Models','commit':'77343cac874f06b73d16ad0063339df7c9ca254c','path':'packs/'+mslug,'edition':'converted CC0 GLB mirror'}
+            try:
+              if old:
+                source={'repo':'https://github.com/trebeljahr/quaternius-showcase','commit':'0128ca510d653bb04d6d1e4885bd8890b5050b4f','path':'public/glb/'+old,'edition':'converted CC0 GLB mirror'}
+                url='https://api.github.com/repos/trebeljahr/quaternius-showcase/contents/public/glb/'+old+'?ref='+source['commit']
+                listing=json.loads(get(url))
+                tasks=[(x['name'],showcase+urllib.parse.quote(x['path']),x['size'],x['sha']) for x in listing if x['name'].endswith('.glb')]
+              else:
+                manifest=json.loads(get(mirror+'packs/'+mslug+'/store-manifest.json'))
+                if manifest.get('creator')!='Quaternius' or manifest.get('license')!='CC0' or manifest.get('website')!=official: raise ValueError('source metadata mismatch')
+                for item in manifest['items']:
+                  for f in item['files']:
+                    if f.get('role')=='Mesh' and f['path'].endswith('.glb'):
+                      rel=f['path'].removeprefix('packs/'+mslug+'/')
+                      tasks.append((rel,mirror+urllib.parse.quote(f['path']),None,None))
+            except Exception as e: errors.append({'source':str(e)})
+            def load(t):
+              path,url,size,blob=t
+              p=pathlib.PurePosixPath(path)
+              if p.is_absolute() or '..' in p.parts: raise ValueError('unsafe path')
+              q=dest/path
+              if q.exists():
+                data=q.read_bytes()
+                if blob and hashlib.sha1(('blob '+str(len(data))+'\0').encode()+data).hexdigest()!=blob: raise ValueError('existing file differs')
+              else: data=get(url)
+              if size is not None and len(data)!=size: raise ValueError('source size mismatch')
+              sha=hashlib.sha256(data).hexdigest()
+              gitsha=hashlib.sha1(('blob '+str(len(data))+'\0').encode()+data).hexdigest()
+              if blob and gitsha!=blob: raise ValueError('source git blob mismatch')
+              counts=inspect(data)
+              if sha in hashes and hashes[sha][0]!=ident: return {'duplicate':path,'existing':hashes[sha]}
+              q.parent.mkdir(parents=True,exist_ok=True)
+              if not q.exists(): q.write_bytes(data)
+              if hashlib.sha256(q.read_bytes()).hexdigest()!=sha: raise ValueError('write checksum mismatch')
+              return {'path':path,'bytes':len(data),'sha256':sha,'blob':gitsha,**counts}
+            with concurrent.futures.ThreadPoolExecutor(max_workers=8) as ex:
+              futures={ex.submit(load,t):t[0] for t in tasks}
+              for f in concurrent.futures.as_completed(futures):
+                try:
+                  row=f.result()
+                  if 'duplicate' in row: errors.append(row)
+                  else: files.append(row)
+                except Exception as e: errors.append({'path':futures[f],'error':str(e)})
+            files.sort(key=lambda x:x['path'])
+            for f in files: hashes[f['sha256']]=(ident,f['path'])
+            if ident==15 and not any(f['animations'] and f['skins'] for f in files): errors.append({'error':'animated character rig/clips not verified'})
+            coverage='mirror model count matches official count' if len(files)==expected and not errors else 'mirror subset or validation failures'
+            status='IMPORTED' if len(files)==expected and not errors else ('PARTIAL' if files else 'FAILED')
+            row={'id':ident,'name':name,'status':status,'folder':'packs/'+folder,'official':official,'license':'CC0-1.0','source':source,'coverage':coverage,'expected':expected,'models':len(files),'bytes':sum(f['bytes'] for f in files),'files':files,'errors':errors,'render':'NOT_RUN','formats':['.glb']}
+            if files:
+              (dest/'PROVENANCE.json').write_text(json.dumps(row,indent=2)+'\n')
+              (dest/'LICENSE.txt').write_text('Quaternius — CC0 1.0 Universal\n'+official+'\nhttps://creativecommons.org/publicdomain/zero/1.0/\n')
+            results.append(row)
+            print(ident,status,len(files),expected,flush=True)
+          (root/'SLOT-07-RESULT.json').write_text(json.dumps({'missionId':'quaternius-complete-20261124','missionVersion':'9267bf25a42b2241727d8a717998305dca914d11','slot':7,'taskId':'P-quaternius-20261124-07','results':results,'render':'NOT_RUN'},indent=2)+'\n')
+          PY
+      - name: Preserve isolated slot results
+        run: |
+          git config user.name "prometeo-assets"
+          git config user.email "prometeo-assets@users.noreply.github.com"
+          git add prometeo-assets/SLOT-07-RESULT.json
+          for p in 15-ultimate-modular-ruins-pack 19-farm-buildings-pack 68-buildings-pack 69-simple-buildings-pack 70-modular-dungeon-pack 71-furniture-pack; do
+            if [ -d "prometeo-assets/packs/$p" ]; then git add "prometeo-assets/packs/$p"; fi
+          done
+          git commit -m "Import and statically verify slot 07 CC0 GLBs"
+          git push origin HEAD:candidate/quaternius-complete-20261124-07
