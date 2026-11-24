@@ -2,7 +2,9 @@
 
 Real 3D files. Free CC0 packs only. Mirror coverage may differ from current editions; FBX/OBJ remain source formats when GLB/glTF unavailable.
 
-Imported: 34/50; models: 1928; bytes: 1858456825
+Imported: 34/53; models: 1943; bytes: 1858941842
+
+PARTIAL rows are preserved as usable subsets but not listed by the existing gallery's IMPORTED filter.
 
 - 01 Universal Base Characters: IMPORTED (18 models) 
 - 02 Modular Character Outfits - Fantasy: IMPORTED (24 models) 
@@ -30,7 +32,7 @@ Imported: 34/50; models: 1928; bytes: 1858456825
 - 24 Ultimate Food Pack: FAILED (0 models) no usable free archive link
 - 25 Ultimate Crops Pack: IMPORTED (102 models) 
 - 26 Survival Pack: IMPORTED (53 models) 
-- 27 Sushi Restaurant Kit: FAILED (0 models) no usable free archive link
+- 27 Sushi Restaurant Kit: PARTIAL (5 models) 
 - 28 Ultimate RPG Pack: IMPORTED (106 models) 
 - 29 Cyberpunk Game Kit: IMPORTED (71 models) 
 - 30 Sci-Fi Essentials Kit: IMPORTED (37 models) 
@@ -54,5 +56,6 @@ Imported: 34/50; models: 1928; bytes: 1858456825
 - 48 Ships Pack: IMPORTED (6 models) 
 - 49 Ultimate Spaceships Pack: IMPORTED (11 models) 
 - 50 Zombie Apocalypse Kit: FAILED (0 models) no usable free archive link
-
-Existing pack repair: [WC10 evidence and legacy references](packs/01-universal-base-characters/REPAIR-20261124-10.json). Legacy references 81–84 remain on gh-pages without copying binaries. Static path/size audit is not a render test.
+- 65 Platformer Game Kit: PARTIAL (5 models) 
+- 66 3D Card Kit - Fantasy: FAILED (0 models) official archive download unavailable (container DNS); no verified binary mirror found
+- 67 Modular Platformer Pack: PARTIAL (5 models) 
