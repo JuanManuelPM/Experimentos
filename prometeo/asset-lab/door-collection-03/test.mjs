@@ -1,0 +1,1 @@
+import {catalog,buildDoor,diagnose,sweepCheck} from './models.mjs';for(const d of catalog){const m=buildDoor(d.id);console.log(JSON.stringify({id:d.id,parts:m.parts.length,assembly:diagnose(m),sweep:sweepCheck(m)}));}
