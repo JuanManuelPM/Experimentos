@@ -2,7 +2,7 @@
 
 Real 3D files. Free CC0 packs only. Mirror coverage may differ from current editions; FBX/OBJ remain source formats when GLB/glTF unavailable.
 
-Imported: 43/68; models: 2548; bytes: 2011272993
+Imported: 43/71; models: 2554; bytes: 2013923905
 
 PARTIAL rows are preserved as usable subsets but not listed by the existing gallery's IMPORTED filter.
 
@@ -41,10 +41,10 @@ PARTIAL rows are preserved as usable subsets but not listed by the existing gall
 - 33 Animated Fish Pack: IMPORTED (7 models) 
 - 34 Animated Cute Fish Pack: IMPORTED (52 models) 
 - 35 Animated Dinosaur Pack: IMPORTED (6 models) 
-- 36 Ultimate Monsters: FAILED (0 models) no usable free archive link
+- 36 Ultimate Monsters: PARTIAL (2 models) 
 - 37 Cute Animated Monsters Pack: IMPORTED (21 models) 
 - 38 Easy Enemy Pack: IMPORTED (6 models) 
-- 39 Animated Robot Pack: FAILED (0 models) no usable free archive link
+- 39 Animated Robot Pack: PARTIAL (1 models) 
 - 40 Animated Mech Pack: IMPORTED (4 models) 
 - 41 Stylized Nature MegaKit: IMPORTED (117 models) 
 - 42 Ultimate Stylized Nature Pack: IMPORTED (36 models) 
@@ -63,6 +63,9 @@ PARTIAL rows are preserved as usable subsets but not listed by the existing gall
 - 55 Animated Women Pack: FAILED (0 models) Official direct download unavailable: DNS blocked in runtime. No exact provenance-verified transferable mirror found.
 - 56 Animated Man Pack: FAILED (0 models) Official direct download unavailable: DNS blocked in runtime. No exact provenance-verified transferable mirror found.
 - 57 Animated Woman Pack: FAILED (0 models) Official direct download unavailable: DNS blocked in runtime. No exact provenance-verified transferable mirror found.
+- 58 Animated Alien Pack: PARTIAL (1 models) 
+- 59 Animated Monster Pack: PARTIAL (2 models) 
+- 60 Animated Zombie Pack: FAILED (0 models) Official download unavailable (container DNS); alternative Hugging Face binary not accessible.
 - 61 Pirate Kit: PARTIAL (72 models) 
 - 62 Cube World Kit: PARTIAL (107 models) 
 - 63 Ultimate Space Kit: IMPORTED (92 models) 
