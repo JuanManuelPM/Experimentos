@@ -14,12 +14,13 @@ const isPage=s=>/\/(?:[?#].*)?$|\.html?(?:[?#]|$)/i.test(s);
 const stamp=m=>Date.parse(m?.publishedAt||"")||0;
 export function findResult(batch,task,messages){
  const n=Number(task.number),ids=Array.isArray(task.messageIds)?task.messageIds:[];
- return messages.filter(m=>m?.room===batch.room&&((m.batchId===batch.id&&Number(m.taskNumber)===n)||(!m.batchId&&ids.includes(m.id)))).sort((a,b)=>stamp(b)-stamp(a))[0]||null;
+ return messages.filter(m=>m?.room===batch.room&&(!m.taskId||m.taskId===task.id)&&(!m.batchId||m.batchId===batch.id)&&(m.taskNumber==null||Number(m.taskNumber)===n)&&((m.taskId===task.id)||(m.batchId===batch.id&&Number(m.taskNumber)===n)||(!m.batchId&&ids.includes(m.id)))).sort((a,b)=>stamp(b)-stamp(a))[0]||null;
 }
 export function getResults(batch,messages){
  return (Array.isArray(batch.tasks)?batch.tasks:[]).map(task=>{
   const m=findResult(batch,task,messages);
-  return {number:Number(task.number),label:task.label||m?.title||"Sin título",message:m,href:bestLink(m),image:bestImage(m)};
+  const explicit=publicUrl(task.evidence?.publicUrl), reported=bestLink(m); const href=explicit||reported;
+  return {number:Number(task.number),label:task.label||m?.title||"Sin título",message:m,href,image:bestImage(m),linkStatus:explicit?"TASK_EVIDENCE_REPORTED":reported?"RETURN_LINK_UNVERIFIED":"NO_LINK"};
  }).sort((a,b)=>a.number-b.number);
 }
 export function bestLink(message){
