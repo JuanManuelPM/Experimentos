@@ -2,7 +2,7 @@
 
 Real 3D files. Free CC0 packs only. Mirror coverage may differ from current editions; FBX/OBJ remain source formats when GLB/glTF unavailable.
 
-Imported: 38/62; models: 2409; bytes: 1976765293
+Imported: 38/64; models: 2427; bytes: 1991005833
 
 PARTIAL rows are preserved as usable subsets but not listed by the existing gallery's IMPORTED filter.
 
@@ -12,8 +12,8 @@ PARTIAL rows are preserved as usable subsets but not listed by the existing gall
 - 04 Universal Animation Library 2: IMPORTED (3 models) 
 - 05 Ultimate Modular Men Pack: IMPORTED (11 models) 
 - 06 Ultimate Modular Women Pack: IMPORTED (10 models) 
-- 07 Ultimate Animated Character Pack: FAILED (0 models) no usable free archive link
-- 08 RPG Character Pack: FAILED (0 models) no usable free archive link
+- 07 Ultimate Animated Character Pack: PARTIAL (18 models) 
+- 08 RPG Character Pack: FAILED (0 models) Official download DNS unavailable; five CC0 mirror GLBs >1 MiB; connector returned empty binary / rejected fetch.
 - 09 Animated Men Pack: PARTIAL (1 models) 
 - 10 Background Posed Humans Pack: PARTIAL (20 models) 
 - 11 Downtown City MegaKit: IMPORTED (153 models) 
@@ -58,6 +58,8 @@ PARTIAL rows are preserved as usable subsets but not listed by the existing gall
 - 50 Zombie Apocalypse Kit: PARTIAL (64 models) 
 - 51 Spaceships Pack: IMPORTED (5 models) 
 - 52 Animated Tanks Pack: PARTIAL (3 models) 
+- 53 Characters - Fantasy Races: FAILED (0 models) QAL section 3(a) prohibits standalone redistribution; public CC0 library scope excludes these assets.
+- 54 Bestiary - Dungeon Monsters Kit: FAILED (0 models) QAL section 3(a) prohibits standalone redistribution; public CC0 library scope excludes these assets.
 - 55 Animated Women Pack: FAILED (0 models) Official direct download unavailable: DNS blocked in runtime. No exact provenance-verified transferable mirror found.
 - 56 Animated Man Pack: FAILED (0 models) Official direct download unavailable: DNS blocked in runtime. No exact provenance-verified transferable mirror found.
 - 57 Animated Woman Pack: FAILED (0 models) Official direct download unavailable: DNS blocked in runtime. No exact provenance-verified transferable mirror found.
