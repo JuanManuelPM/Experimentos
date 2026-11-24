@@ -13,7 +13,7 @@
     "Keep historic negatives untouched; protect seat and back faces; residual checks nonblocking",
     "HÉLICE 02 baseline 13 parts, 6232 triangles; detail ambition not aesthetic proof"
   ],
-  "notes": "No canonical promotion or artistic approval. GLB and JSON controls are implemented, browser execution pending.",
+  "notes": "No canonical promotion or artistic approval. GLB and JSON controls are implemented, browser execution pending. Public gallery is a candidate preview, not canonical approval. Source model ESTRIBO unchanged.",
   "constructed": 10,
   "execution": "V8 isolate, exact fetched module bodies with ES import/export bindings adapted, not browser/Node",
   "tests": [
@@ -346,8 +346,8 @@
     },
     {
       "name": "PRISMA 10",
-      "parts": 27,
-      "triangles": 14704,
+      "parts": 29,
+      "triangles": 14896,
       "degenerate": 0,
       "open": 0,
       "nonfinite": 0,
@@ -356,73 +356,26 @@
         "min": [
           -0.31542271899761287,
           0,
-          -0.32372
+          -0.3527084246699294
         ],
         "max": [
           0.31542271899761287,
-          0.8845308224788141,
+          0.8838277236672066,
           0.2788216330797481
         ]
       },
       "geometry": "PASS",
       "protectedFaces": 13,
-      "surfacePairs": 46,
-      "disjointPairs": 292,
-      "surfaces": "FAIL_PARTIAL",
-      "surfaceIssues": [
-        {
-          "host": "seat-slat-0",
-          "guest": "back-stile-L",
-          "ok": false,
-          "hits": [
-            {
-              "surface": "visible",
-              "point": [
-                -0.2117143,
-                0.4602857,
-                -0.218
-              ]
-            },
-            {
-              "surface": "visible",
-              "point": [
-                -0.2117143,
-                0.4602857,
-                -0.2219965
-              ]
-            }
-          ]
-        },
-        {
-          "host": "seat-slat-0",
-          "guest": "back-stile-R",
-          "ok": false,
-          "hits": [
-            {
-              "surface": "visible",
-              "point": [
-                0.2117143,
-                0.4602857,
-                -0.218
-              ]
-            },
-            {
-              "surface": "visible",
-              "point": [
-                0.2117143,
-                0.4602857,
-                -0.2219873
-              ]
-            }
-          ]
-        }
-      ],
+      "surfacePairs": 44,
+      "disjointPairs": 320,
+      "surfaces": "NOT_RUN_REMAINDER",
+      "surfaceIssues": [],
       "render": "NOT_RUN",
       "android": "NOT_RUN",
       "art": "NOT_RUN",
       "id": "10",
-      "surfaceBudget": 10,
-      "surfaceSkippedBudget": 36
+      "surfaceBudget": 12,
+      "surfaceSkippedBudget": 32
     },
     {
       "name": "ÓRBITA 11",
@@ -780,84 +733,37 @@
     },
     {
       "name": "VELA 14",
-      "parts": 13,
-      "triangles": 28864,
+      "parts": 17,
+      "triangles": 30528,
       "degenerate": 0,
       "open": 0,
       "nonfinite": 0,
       "invalid": 0,
       "bounds": {
         "min": [
-          -0.29100000000000004,
+          -0.331,
           -0.0019999999999999983,
           -0.3569067715007345
         ],
         "max": [
-          0.29100000000000004,
+          0.331,
           0.9119839278190732,
           0.26828195653129455
         ]
       },
       "geometry": "PASS",
       "protectedFaces": 1,
-      "surfacePairs": 4,
-      "disjointPairs": 8,
-      "surfaces": "FAIL",
-      "surfaceIssues": [
-        {
-          "host": "suspended-canvas",
-          "guest": "triangular-frame-L",
-          "ok": false,
-          "hits": [
-            {
-              "surface": "visible",
-              "point": [
-                -0.2585588,
-                0.4512232,
-                0.107387
-              ]
-            },
-            {
-              "surface": "visible",
-              "point": [
-                -0.2593485,
-                0.45251,
-                0.1200135
-              ]
-            }
-          ]
-        },
-        {
-          "host": "suspended-canvas",
-          "guest": "triangular-frame-R",
-          "ok": false,
-          "hits": [
-            {
-              "surface": "visible",
-              "point": [
-                0.2507167,
-                0.4507948,
-                0.1108086
-              ]
-            },
-            {
-              "surface": "visible",
-              "point": [
-                0.2515455,
-                0.4510747,
-                0.1128141
-              ]
-            }
-          ]
-        }
-      ],
+      "surfacePairs": 6,
+      "disjointPairs": 10,
+      "surfaces": "PASS_PARTIAL_PAIRED_FACE",
+      "surfaceIssues": [],
       "render": "NOT_RUN",
       "android": "NOT_RUN",
       "art": "NOT_RUN",
       "id": "14",
-      "surfaceBudget": 10,
+      "surfaceBudget": 12,
       "surfaceSkippedBudget": 0
     }
   ],
-  "surfaceScope": "Recovered paired-face surfaceGate, up to ten overlapping host/guest pairs per model; no claim for untested remainder, intentional upholstery/weave contacts may be flagged; not global visibility."
+  "surfaceScope": "Recovered paired-face surfaceGate, up to ten overlapping host/guest pairs per model; no claim for untested remainder, intentional upholstery/weave contacts may be flagged; not global visibility. PRISMA and VELA were locally revised and retested with up to twelve overlapping pairs; remaining defects are not blocked."
 }

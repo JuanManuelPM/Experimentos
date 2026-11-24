@@ -61,12 +61,13 @@ function collection(builder){
  const pts=path(seg,40),center=t=>{const k=Math.min(pts.length-2,Math.floor(t*(pts.length-1)));return pts[k].map((v,i)=>mix(v,pts[k+1][i],t*(pts.length-1)-k));};
  const shape=(u,v)=>{const x=2*u-1,p=center(v),a=center(Math.max(0,v-.008)),b=center(Math.min(1,v+.008)),dy=b[1]-a[1],dz=b[2]-a[2],l=Math.hypot(dy,dz);const n=[0,-dz/l,dy/l];const edge=w*(1-(vela?.10:.16)*Math.sin(pi*v)**2);const lift=(vela?.028:.018)*x*x*Math.sin(pi*v);return {p:[x*edge,p[1]+n[1]*lift,p[2]+n[2]*lift],n};};
  surface(vela?"suspended-canvas":"laminated-ribbon",vela?"canvas":"birch","seat-back",48,80,shape,vela?.012:.035);
- for(const s of sides){const L=s<0?"L":"R",x=s*(w+.004);
+ for(const s of sides){const L=s<0?"L":"R",x=s*(w+(vela?.044:.004));
  if(vela){
  const edge=Array.from({length:81},(_,i)=>{const p=shape(s<0?0:1,i/80);return [p.p[0]+s*.010,p.p[1]-p.n[1]*.013,p.p[2]-p.n[2]*.013];});
  line("canvas-edge-"+L,"teal","structure",edge,.012,.012,24);
  curve("triangular-frame-"+L,"teal","structure",[[P(x,.012,.25),P(x,.05,.24),P(x,.24,.17),P(x,.46,.10)],[P(x,.46,.10),P(x,.55,.06),P(x,.30,-.20),P(x,.015,-.34)]],.019,.019,22,24);
  rail("floor-tie-"+L,"teal",P(x,.017,-.34),P(x,.017,.25),.019);
+ for(const [v,y,z] of [[.24,.43,.10],[.68,.48,-.19]]){const q=shape(s<0?0:1,v);const end=[q.p[0]+s*.012,q.p[1]-q.n[1]*.015,q.p[2]-q.n[2]*.015];curve("outboard-bracket-"+L+v,"teal","structure",[[P(x,y,z),P(x,y,z-.03),P(x,end[1],end[2]),end]],.008,.008,12,16);}
  for(const z of [-.33,.24])foot("glide-"+L+z,x,z,"rubber",.023);
  } else {
  curve("sled-"+L,"graphite","structure",[[P(s*.22,.022,-.30),P(s*.22,.022,-.10),P(s*.22,.022,.18),P(s*.22,.03,.26)],[P(s*.22,.03,.26),P(s*.22,.12,.25),P(s*.19,.33,.13),P(s*.17,.416,.11)]],.022,.014,24,28);
@@ -87,8 +88,9 @@ function collection(builder){
  for(const s of sides){const L=s<0?"L":"R";
  const x=s*.21;line("front-trestle-"+L,"walnut","leg",[P(s*.28,.018,.25),P(x,.25,.18),P(s*.16,.414,.09)],.037,.030,8);
  line("rear-trestle-"+L,"walnut","leg",[P(s*.28,.018,-.28),P(x,.22,-.18),P(s*.16,.414,-.09)],.037,.030,8);
- line("back-stile-"+L,"walnut","stile",[P(s*.205,.398,-.18),P(s*.22,.63,-.25),P(s*.205,.88,-.30)],.031,.023,8);
+ line("back-stile-"+L,"walnut","stile",[P(s*.205,.398,-.265),P(s*.22,.63,-.29),P(s*.205,.88,-.33)],.031,.023,8);
  rail("under-side-"+L,"walnut",P(s*.18,.401,-.21),P(s*.18,.401,.21),.027);
+ rail("stile-socket-"+L,"walnut",P(s*.18,.395,-.185),P(s*.205,.398,-.265),.022);
  for(const z of [-.28,.25])foot("pad-"+L+z,s*.28,z,"rubber",.025);
  }
  for(const z of [-.16,.16])rail("tie-"+z,"walnut",P(-.22,.398,z),P(.22,.398,z),.025);
