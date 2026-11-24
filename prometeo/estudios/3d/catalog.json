@@ -1,8 +1,8 @@
 {
   "schema": "prometeo.studio-3d.library-overrides/v1",
-  "version": "1.1.0-minimal",
+  "version": "1.2.0-collections",
   "updated": "2026-11-20",
-  "note": "Etiquetas de presentación; proyectos y publicaciones provienen del registro público. No se inventan capturas de escenas.",
+  "note": "Etiquetas y colecciones con recibos públicos. No inferir aprobación por existencia de fuente.",
   "overrides": {
     "3d-flow": {
       "kind": "tool",
@@ -63,5 +63,143 @@
     "url": "https://juanmanuelpm.github.io/Experimentos/prometeo/previews/cocina-umbria-002/",
     "previewSourceCommit": "9ebd8f789a7cd5b3e8f6d4d3b0e0393673c143bb",
     "releaseState": "PREVIEW_ONLY_NOT_FINAL"
-  }
+  },
+  "collections": [
+    {
+      "id": "asset-lab/chair-collection-10",
+      "title": "Diez sillas · Colección 05–14",
+      "kind": "object",
+      "updatedAt": "2026-11-24T02:48:36Z",
+      "description": "Diez diseños candidatos distintos. Galería original de esta tanda; no HÉLICE 02.",
+      "qa": "10/10 construidas; geometría PASS según recibo; quedan intrusiones o pares pendientes. Render, Android y arte NOT_RUN.",
+      "status": "10/10 CONSTRUIDAS · QA VISUAL PENDIENTE",
+      "glyph": "◇",
+      "snapshotCommit": "fac369baa7c86329b66f55a26f70589e0d60db57",
+      "publication": {
+        "repo": "JuanManuelPM/Experimentos",
+        "ref": "gh-pages",
+        "path": "prometeo/asset-lab/chair-collection-10/index.html",
+        "pageBlob": "053161c8199a1a92fc5c4a84f02bba91245dc729",
+        "receiptPath": "prometeo/asset-lab/chair-collection-10/BUILD_RECEIPT.json",
+        "receiptBlob": "45cf4944952fbe1dc587af84961893f21935e970",
+        "verification": "SOURCE_READBACK_ONLY"
+      },
+      "collection": {
+        "requested": 10,
+        "built": 10,
+        "items": [
+          {
+            "id": "05",
+            "title": "ESTRIBO 05",
+            "status": "PASS · NOT_RUN_REMAINDER"
+          },
+          {
+            "id": "06",
+            "title": "MAREA 06",
+            "status": "PASS · PASS_PARTIAL_PAIRED_FACE"
+          },
+          {
+            "id": "07",
+            "title": "TELAR 07",
+            "status": "PASS · NOT_APPLICABLE_WEAVE"
+          },
+          {
+            "id": "08",
+            "title": "DUNA 08",
+            "status": "PASS · PASS_PARTIAL_PAIRED_FACE"
+          },
+          {
+            "id": "09",
+            "title": "NIDO 09",
+            "status": "PASS · FAIL_PARTIAL"
+          },
+          {
+            "id": "10",
+            "title": "PRISMA 10",
+            "status": "PASS · NOT_RUN_REMAINDER"
+          },
+          {
+            "id": "11",
+            "title": "ÓRBITA 11",
+            "status": "PASS · PASS_PARTIAL_PAIRED_FACE"
+          },
+          {
+            "id": "12",
+            "title": "BRUMA 12",
+            "status": "PASS · FAIL_PARTIAL"
+          },
+          {
+            "id": "13",
+            "title": "QUILLA 13",
+            "status": "PASS · FAIL_PARTIAL"
+          },
+          {
+            "id": "14",
+            "title": "VELA 14",
+            "status": "PASS · PASS_PARTIAL_PAIRED_FACE"
+          }
+        ],
+        "visual": "NOT_RUN"
+      }
+    },
+    {
+      "id": "character-system-v2",
+      "title": "Character System V2 · Corrección",
+      "kind": "character",
+      "updatedAt": "2026-11-24T11:52:09Z",
+      "description": "Cinco recetas corregidas, cinco originales conservados y un perfil nuevo.",
+      "qa": "5/10 recetas corregidas; 6 construcciones de recetas con pruebas CPU según recibo; 5 adaptadores de originales sin ejecución real. Ropa, visual y Android pendientes.",
+      "status": "CORRECCIÓN PARCIAL · 5/10",
+      "glyph": "♙",
+      "snapshotCommit": "fac369baa7c86329b66f55a26f70589e0d60db57",
+      "publication": {
+        "repo": "JuanManuelPM/Experimentos",
+        "ref": "gh-pages",
+        "path": "prometeo/character-system-v2/index.html",
+        "pageBlob": "ba124d67cccf09f5762a095e2eb3fdcf7c9903c7",
+        "receiptPath": "prometeo/character-system-v2/BUILD_RECEIPT.json",
+        "receiptBlob": "0e7d028156f063a1e6a227cad79876a7f80e19f0",
+        "verification": "SOURCE_READBACK_ONLY"
+      },
+      "collection": {
+        "requested": 10,
+        "corrected": 5,
+        "preserved": 5,
+        "newProfile": 1,
+        "items": [
+          {
+            "id": "BRASA",
+            "title": "BRASA",
+            "status": "Estructura PASS · Visual NOT_RUN"
+          },
+          {
+            "id": "GUARDIA",
+            "title": "GUARDIA",
+            "status": "Estructura PASS · Visual NOT_RUN"
+          },
+          {
+            "id": "ORBITAL",
+            "title": "ORBITAL",
+            "status": "Estructura PASS · Visual NOT_RUN"
+          },
+          {
+            "id": "SENDA",
+            "title": "SENDA",
+            "status": "Estructura PASS · Visual NOT_RUN"
+          },
+          {
+            "id": "LLUVIA",
+            "title": "LLUVIA",
+            "status": "Estructura PASS · Visual NOT_RUN"
+          },
+          {
+            "id": "CARTOGRAFA",
+            "title": "CARTOGRAFA",
+            "status": "Estructura PASS · Visual NOT_RUN"
+          }
+        ],
+        "visual": "NOT_RUN"
+      }
+    }
+  ]
 }
