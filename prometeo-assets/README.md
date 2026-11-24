@@ -2,7 +2,7 @@
 
 Real 3D files. Free CC0 packs only. Mirror coverage may differ from current editions; FBX/OBJ remain source formats when GLB/glTF unavailable.
 
-Imported: 34/53; models: 1943; bytes: 1858941842
+Imported: 35/53; models: 1964; bytes: 1870138260
 
 PARTIAL rows are preserved as usable subsets but not listed by the existing gallery's IMPORTED filter.
 
@@ -42,7 +42,7 @@ PARTIAL rows are preserved as usable subsets but not listed by the existing gall
 - 34 Animated Cute Fish Pack: IMPORTED (52 models) 
 - 35 Animated Dinosaur Pack: IMPORTED (6 models) 
 - 36 Ultimate Monsters: FAILED (0 models) no usable free archive link
-- 37 Cute Animated Monsters Pack: FAILED (0 models) no usable free archive link
+- 37 Cute Animated Monsters Pack: IMPORTED (21 models) 
 - 38 Easy Enemy Pack: IMPORTED (6 models) 
 - 39 Animated Robot Pack: FAILED (0 models) no usable free archive link
 - 40 Animated Mech Pack: IMPORTED (4 models) 
