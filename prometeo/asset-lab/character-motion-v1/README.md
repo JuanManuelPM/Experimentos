@@ -1,0 +1,5 @@
+# Character Motion V1 — candidato
+
+Cinco escenas sin interfaz; abrir 01.html a 05.html por HTTP. Runtime Three.js 0.181.0 del Estudio 3D. Modelo y animaciones CC0 de Kay Lousberg, fijados por commit y blob en MANIFEST.json. No se redistribuyen binarios no inspeccionados. Los perfiles son variantes de la misma referencia, no retarget independiente. La corrección de apoyo es una aproximación planar acotada; no es IK. El código registra nombres de clips faltantes, mapeo, matrices, pesos, triángulos, FPS y p95 en window.__motion en ejecución real. No se atribuye ninguna medición a Android. No declarar READY. Las cinco secuencias reciben cambios antes de que terminen acciones previas; las transiciones conservan pesos, velocidad y yaw.
+
+Fuentes de método: Three.js GLTFLoader y SkeletonUtils; documentación de animación modular Unreal; Khronos Procedural Animation IK. Aprendizaje Estudio 3D: no usar proxy de primitivas como arte final ni inferir apariencia de tests de conexión. Superficies/poses no inspeccionadas por falta de render.
