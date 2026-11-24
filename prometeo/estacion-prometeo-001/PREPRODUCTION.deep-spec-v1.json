@@ -1,0 +1,50 @@
+{
+  "schema": "station001.preproduction/v1",
+  "note": "Retrospective record of decisions taken in this run; not a pre-execution validator receipt.",
+  "brief": "world-studio-v2 slot 5",
+  "choices": [
+    {
+      "question": "Model by hand or reuse modular kits?",
+      "alternatives": [
+        "procedural placeholders",
+        "pinned real Q17/Q18"
+      ],
+      "chosen": "Q17/Q18 real meshes; inspect GLB node transforms and accessor bounds",
+      "evidence": "17 glTF/GLB metadata reads; Q18 floor 2m, wall 4m x 4.43m; Q17 platform 4m",
+      "test": "manifest and source readback"
+    },
+    {
+      "question": "Two floors or reliable single deck?",
+      "alternatives": [
+        "stairs with untested vertical collisions",
+        "single connected deck"
+      ],
+      "chosen": "single deck, six rooms and five doors; vertical traversal deferred",
+      "test": "continuous 2D radius collision and BFS"
+    },
+    {
+      "question": "How avoid missing textures?",
+      "alternatives": [
+        "copy textures into each model folder",
+        "resolve original textures via LoadingManager URL modifier"
+      ],
+      "chosen": "original shared texture path; explicit fallback real Q18 if Q17 fails",
+      "evidence": "sibling texture 404, original Textures path found; two texture contents returned zero bytes in connector, not verified by browser"
+    },
+    {
+      "question": "Clone every mesh or batch rigid originals?",
+      "alternatives": [
+        "261 scene clones",
+        "InstancedMesh per source mesh/material"
+      ],
+      "chosen": "batch rigid original meshes, no animated props; no motor shared duplication",
+      "test": "syntax only; GPU unmeasured"
+    }
+  ],
+  "referenceResearch": "Inspected existing FORJA import map and actual catalog/model metadata. No external artistic reference rendered due environment; artistic verification pending.",
+  "limitations": [
+    "First article WebGL not run; no perceptual certification",
+    "No physical Android test",
+    "No canonical publication binding"
+  ]
+}
