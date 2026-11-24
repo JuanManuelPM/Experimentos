@@ -1,0 +1,77 @@
+{
+  "schema": "prometeo.world-runtime.receipt/v1",
+  "id": "world-studio-v2-20261124-04",
+  "owner": "studio-3d",
+  "missionId": "world-studio-v2-20261124",
+  "missionVersion": "89252fd67fb3a9b4c765143c5c091c2c1d8a5ebf",
+  "slot": 4,
+  "taskId": "P-worldstudio-20261124-04",
+  "status": "PARTIAL",
+  "counts": {
+    "requested": 2,
+    "built": 2,
+    "sourceAccessible": 2,
+    "verifiedExecutable": 0
+  },
+  "artifacts": [
+    {
+      "artifactId": "world-studio-chunk-runtime-v1",
+      "repo": "JuanManuelPM/Experimentos",
+      "ref": "candidate/world-studio-v2-20261124-04",
+      "path": "prometeo/world-runtime/runtime.mjs",
+      "commit": "cc8b77fe040d7c08a39781a8766ad37f25fecfdd",
+      "blob": "a447341b8e20983856accc846bd2e6c4dc830edf",
+      "url": "https://github.com/JuanManuelPM/Experimentos/blob/cc8b77fe040d7c08a39781a8766ad37f25fecfdd/prometeo/world-runtime/runtime.mjs",
+      "publication": "SOURCE_READBACK_ONLY"
+    },
+    {
+      "artifactId": "world-studio-chunk-demo-v1",
+      "repo": "JuanManuelPM/Experimentos",
+      "ref": "candidate/world-studio-v2-20261124-04",
+      "path": "prometeo/world-runtime/index.html",
+      "commit": "cc8b77fe040d7c08a39781a8766ad37f25fecfdd",
+      "blob": "ec0585dd38cd2f841c873156a0ac1dc75096722a",
+      "url": "https://github.com/JuanManuelPM/Experimentos/blob/cc8b77fe040d7c08a39781a8766ad37f25fecfdd/prometeo/world-runtime/index.html",
+      "publication": "SOURCE_READBACK_ONLY"
+    }
+  ],
+  "files": {
+    "runtime.mjs": "a447341b8e20983856accc846bd2e6c4dc830edf",
+    "viewer.mjs": "581e066886fba695ffdea5fdf43fcec7f88c3f73",
+    "index.html": "ec0585dd38cd2f841c873156a0ac1dc75096722a",
+    "scene.json": "5210156419d483f0b286a13e394582e707f3c4f2",
+    "test.mjs": "2bc8a45dbab63fd889140a43f0093103d73efce1",
+    "demo-test.mjs": "e613e75c94f80e7d8b47db6d608990e62e6fbd90",
+    "LOGIC_TESTS.json": "e599c557a10aa8b5c65cd83b9b99e44b3d025f21",
+    "DEMO_TESTS.json": "1fca0d57131e4a2b3d8589230dada90159ca2927",
+    "README.md": "e04bc0db0ea1ec44336834b87cef629e48274f04"
+  },
+  "base": "708e003f45b77642574402067998ed4b4e56cf59",
+  "assetCommit": "4529f6f58e3a08a907e7766c958705a0c1d9830f",
+  "tests": {
+    "logic": "14/14 PASS, exact source V8 with abort fixture",
+    "manifest": "25/25 visited, 1667 simulation steps, peak 12 sectors, 83 unloads before close, 9 cache evictions, 0 live after close",
+    "sourceAssetHeaders": "9/9 GLB JSON header reads, source CC0 and no external URI",
+    "syntax": "PASS V8 parse of viewer and index inline module",
+    "browser": "BLOCKED: EGL failed; Chromium WebGL2=false and CDN ERR_BLOCKED_BY_ADMINISTRATOR",
+    "desktopTouchResize": "NOT_RUN",
+    "android": "NOT_RUN",
+    "actualGpuMemoryFps": "NOT_RUN",
+    "gltfExternalDependency": "NOT_RUN",
+    "stationInterop": "NOT_RUN",
+    "http": "NOT_RUN"
+  },
+  "prevention": {
+    "cause": "eager load and non-disposing sector groups in prior Orbital",
+    "implemented": "lease counting, cancel stale async builds, template dispose, instanced static geometry, collision gate, strict budget and immutable references",
+    "demonstrated": "logical fake adapter only"
+  },
+  "limits": [
+    "No canonical promotion; candidate only. No authorized canonical publication binding and no verified browser QA.",
+    "Model GLB JSON inspected through connector, not full render or SHA256 recomputation. GPU disposal and real browser touch not observed.",
+    "External glTF subrequests not reliably abortable once started; no guarantee of compressed extensions. Count bounds not byte-level GPU cap.",
+    "Q-LOOP and QBAR guessed filenames not found; DEEP_SPEC retrieved, questions and before/after documented in README; formal validators not executed."
+  ],
+  "next": "Coordinator verify actual WebGL2 preview and merge via authorized route; test Estacion manifest compatibility before claiming integration.",
+  "focusEffect": "SIN_CAMBIO"
+}
