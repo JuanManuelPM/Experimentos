@@ -45,3 +45,4 @@ export function matches(i,f){const hay=norm([i.name,i.pack.name,i.pack.category,
 export function pageOf(items,page,size=24){const pages=Math.max(1,Math.ceil(items.length/size));page=Math.max(1,Math.min(pages,page));return {pages,page,items:items.slice((page-1)*size,page*size)}}
 
 export function makeGate(){let generation=0;return {next:()=>++generation,current:n=>n===generation,cancel:()=>++generation}}
+export function makeLatestRunner(){let active=false,pending=null;async function drain(job){active=true;try{job.resolve(await job.run())}catch(e){job.reject(e)}finally{active=false;if(pending){const next=pending;pending=null;void drain(next)}}}return {submit:run=>new Promise((resolve,reject)=>{const job={run,resolve,reject};if(active){pending?.resolve(null);pending=job}else void drain(job)}),cancel:()=>{pending?.resolve(null);pending=null}}}

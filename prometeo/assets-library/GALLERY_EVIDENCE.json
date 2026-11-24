@@ -55,6 +55,26 @@
     {
       "name": "unique group IDs",
       "status": "PASS"
+    },
+    {
+      "name": "syntax gallery-core.mjs",
+      "status": "PASS"
+    },
+    {
+      "name": "syntax gallery-v2.mjs",
+      "status": "PASS"
+    },
+    {
+      "name": "syntax gallery-viewer.mjs",
+      "status": "PASS"
+    },
+    {
+      "name": "latest-only runner: 1 active + 1 pending, 2 superseded",
+      "status": "PASS"
+    },
+    {
+      "name": "pending cancellation",
+      "status": "PASS"
     }
   ],
   "counts": {
@@ -80,6 +100,60 @@
   "notes": [
     "Tests ejecutados en V8 sobre catálogo real y fixtures; no es ejecución DOM/GPU.",
     "OBJ sin MTL no se declara compatible; FBX usa loader, materiales externos no garantizados.",
-    "Atlas separado: no se afirma equivalencia exacta entre fuentes. Los grupos por ruta son aproximación conservadora, no censo geométrico."
-  ]
+    "Atlas separado: no se afirma equivalencia exacta entre fuentes. Los grupos por ruta son aproximación conservadora, no censo geométrico.",
+    "Network from local chromium environment fails DNS for raw.githubusercontent.com; no browser render, screenshot or HTTP preview verified.",
+    "No claims of physical Android, GPU memory or actual dependency error handling; tests of race gates and queue are logical."
+  ],
+  "samples": [
+    {
+      "pack": 65,
+      "asset": "Arrow.glb",
+      "blob": "2c93124ab8d4b3033b04b54afcb6a14e18332441",
+      "bytes": 4640,
+      "mesh": 1,
+      "clips": 0,
+      "header": "PASS"
+    },
+    {
+      "pack": 9,
+      "asset": "quaternius_male_casual.glb",
+      "blob": "20adcaf1a937d311b2348d20c70461104cd277b9",
+      "bytes": 268728,
+      "mesh": 1,
+      "clips": 1,
+      "header": "PASS"
+    },
+    {
+      "pack": 23,
+      "asset": "Stool.fbx",
+      "blob": "d32a2e43694d0e173d66715abad22d66a5b9511b",
+      "bytes": 16316,
+      "header": "PASS FBX binary magic"
+    },
+    {
+      "pack": 27,
+      "asset": "FoodIngredient_Avocado.gltf",
+      "blob": "02c7ad10b7f3ae89596fc7a180a04bddf8e02952",
+      "mesh": 1,
+      "clips": 0,
+      "externalDependencies": 0
+    },
+    {
+      "pack": 1,
+      "asset": "Hair_Buzzed.gltf",
+      "blob": "41b3436160b05c669ffe5d0bdfd822a0dd5d8a05",
+      "mesh": 1,
+      "externalDependencies": 3,
+      "dependencyVerification": "NOT_RUN binary response unsupported via fetch"
+    }
+  ],
+  "corrections": [
+    "Bound concurrent loader requests to one in flight plus latest pending; stale selection still rejected by generation.",
+    "Explicit hidden canvas, focus retention on rerender, source error and bfcache reset."
+  ],
+  "preflight": {
+    "status": "BOUND",
+    "negative": "DENIED outside assets-library",
+    "source": "mission pinned; executable preflightOwnerWrite ran for this corrective commit"
+  }
 }
