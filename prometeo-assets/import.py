@@ -4,6 +4,11 @@ P=pathlib.Path(__file__).resolve().parent
 ROOT=P/'packs'; ROOT.mkdir(exist_ok=True)
 TMP=pathlib.Path(tempfile.mkdtemp(prefix='quaternius-'))
 SELECTION=json.loads((P/'selection.json').read_text())
+PREVIOUS=json.loads((P/'catalog.json').read_text()).get('results',[]) if (P/'catalog.json').exists() else []
+DONE=[r for r in PREVIOUS if r['status']=='IMPORTED' and (P/r['folder']).is_dir()]
+DONE_IDS={r['id'] for r in DONE}
+SELECTION=[x for x in SELECTION if x['id'] not in DONE_IDS]
+REQUESTED=len(SELECTION)+len(DONE)
 BASE='https://quaternius.com/'
 UA={'User-Agent':'PROMETEO asset importer (public CC0 packs)'}
 def get(url):
@@ -80,8 +85,12 @@ def download_official(x,url,soup,dst):
     for u in dict.fromkeys(urls):
         try:
             if 'drive.google.com' in u:
-                if '/folders/' in u: gdown.download_folder(url=u,output=str(dst),quiet=True,remaining_ok=True)
-                else: gdown.download(url=u,output=str(dst/'source.zip'),quiet=True,fuzzy=True)
+                if '/folders/' in u: gdown.download_folder(url=u,output=str(dst),quiet=True)
+                else:
+                    match=re.search(r'/d/([^/]+)',u)
+                    file_id=match.group(1) if match else urllib.parse.parse_qs(urllib.parse.urlparse(u).query).get('id',[None])[0]
+                    if file_id: gdown.download(id=file_id,output=str(dst/'source.zip'),quiet=True)
+                    else: gdown.download(url=u,output=str(dst/'source.zip'),quiet=True)
                 if any(p.is_file() for p in dst.rglob('*')): return u
             elif urllib.parse.urlparse(u).path.lower().endswith('.zip') and urllib.parse.urlparse(u).scheme=='https':
                 with requests.get(u,stream=True,timeout=(15,90),headers=UA) as r:
@@ -135,6 +144,16 @@ def run(x):
         if src is None and x['mirror2'] and 'm2' in mirrors:
             root,sha,repo=mirrors['m2']; candidate=root/'quaternius'/x['mirror2']
             if candidate.is_dir(): src=candidate; item['source']={'repo':repo,'commit':sha,'path':str(src.relative_to(root)),'edition':'mirror; coverage not asserted'}
+        if src is None and x['id']==1:
+            try:
+                root=TMP/'base-standard'; repo='https://github.com/NafisRayan/Animate-Rigged-Humanoid-No-Blender.git'
+                subprocess.run(['git','clone','--depth','1','--filter=blob:none','--sparse',repo,str(root)],check=True,timeout=240)
+                folder='Universal Base Characters[Standard]'
+                subprocess.run(['git','-C',str(root),'sparse-checkout','set',folder],check=True,timeout=300)
+                candidate=root/folder
+                if candidate.is_dir():
+                    src=candidate; item['source']={'repo':repo,'commit':subprocess.check_output(['git','-C',str(root),'rev-parse','HEAD'],text=True).strip(),'path':folder,'edition':'public Standard mirror'}
+            except Exception as e: print('base mirror:',str(e),flush=True)
         if src is None:
             d=TMP/slug; d.mkdir(exist_ok=True)
             u=download_official(x,url,soup,d)
@@ -152,9 +171,9 @@ def run(x):
         item['error']=str(e)
     print(x['id'],x['name'],item['status'],item.get('models'),item.get('error',''),flush=True)
     return item
-results=[]
+results=list(DONE)
 def save():
-    data={'requested':len(SELECTION),'imported':sum(r['status']=='IMPORTED' for r in results),'models':sum(r.get('models',0) for r in results),'bytes':sum(r.get('bytes',0) for r in results),'results':sorted(results,key=lambda x:x['id'])}
+    data={'requested':REQUESTED,'imported':sum(r['status']=='IMPORTED' for r in results),'models':sum(r.get('models',0) for r in results),'bytes':sum(r.get('bytes',0) for r in results),'results':sorted(results,key=lambda x:x['id'])}
     (P/'catalog.json').write_text(json.dumps(data,indent=2,ensure_ascii=False))
     (P/'README.md').write_text('# PROMETEO — Quaternius assets\n\nReal 3D files. Free CC0 packs only. Mirror coverage may differ from current editions; FBX/OBJ remain source formats when GLB/glTF unavailable.\n\n'+f"Imported: {data['imported']}/{data['requested']}; models: {data['models']}; bytes: {data['bytes']}\n\n"+'\n'.join(f"- {r['id']:02d} {r['name']}: {r['status']} ({r.get('models',0)} models) {r.get('error','')}" for r in sorted(results,key=lambda x:x['id']))+'\n')
 with concurrent.futures.ThreadPoolExecutor(max_workers=10) as ex:
