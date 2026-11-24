@@ -3,11 +3,14 @@ import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
 import {TransformControls} from 'three/addons/controls/TransformControls.js';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 import * as SkeletonUtils from 'three/addons/utils/SkeletonUtils.js';
+import {loadCatalog,normalizeTransform} from './catalog-v2.mjs';
 
 const SOURCE_SHA='3ddcc695adbba9fb918cf31b7c139b3f95b76910';
 const ROOT='https://raw.githubusercontent.com/Hidencod/tge-assets/'+SOURCE_SHA+'/';
 const STORAGE='prometeo.forja.scene.v1';
-const SCHEMA='prometeo.forja.scene/v1';
+const SCHEMA='prometeo.forja.scene/v2';
+const OLD_SCHEMA='prometeo.forja.scene/v1';
+const pendingTemplates=new Map();
 const $=id=>document.getElementById(id);
 const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
 const finite=(v,def=0)=>Number.isFinite(Number(v))?Number(v):def;
@@ -41,7 +44,7 @@ function normItem(v){
  const seq=/^obj-(\d+)$/.exec(importedUid||'');if(seq)idCounter=Math.max(idCounter,Number(seq[1]));
  return {uid:importedUid||'obj-'+(++idCounter),
   id:v.id,p:[clamp(finite(p[0]),-250,250),clamp(finite(p[1]),-80,150),clamp(finite(p[2]),-250,250)],
-  r:clamp(finite(v.r),-Math.PI*8,Math.PI*8),s:(Array.isArray(v.s)?v.s:[v.s,v.s,v.s]).map(x=>clamp(finite(x,1),.05,20)),
+  ...normalizeTransform(v),
   h:clamp(finite(v.h,2),.02,90),clip:typeof v.clip==='string'?v.clip.slice(0,120):null,clipTime:clamp(finite(v.clipTime),0,3600)};
 }
 function defaultHeight(asset){
@@ -55,7 +58,7 @@ function defaultHeight(asset){
 }
 function itemOf(e){
  return {uid:e.uid,id:e.asset.id,p:e.root.position.toArray().map(x=>Number(x.toFixed(4))),
-  r:Number(e.root.rotation.y.toFixed(5)),s:e.root.scale.toArray().map(x=>Number((x/e.baseScale).toFixed(5))),h:e.h,clip:e.clipName||null,clipTime:Number((e.mixer?.time||0).toFixed(3))};
+  r3:e.root.rotation.toArray().slice(0,3).map(x=>Number(x.toFixed(5))),s:e.root.scale.toArray().map(x=>Number((x/e.baseScale).toFixed(5))),h:e.h,clip:e.clipName||null,clipTime:Number((e.mixer?.time||0).toFixed(3))};
 }
 function snapshot(){return {schema:SCHEMA,name:state.sceneName,items:state.objects.map(itemOf)}}
 function saveLocal(){
@@ -170,17 +173,21 @@ function ray(x,y){
 }
 async function modelTemplate(asset){
  if(state.loadedModels.has(asset.id))return state.loadedModels.get(asset.id);
- const uri=ROOT+asset.file;
+ const uri=asset.url;
  const promise=gltfLoader.loadAsync(uri).catch(e=>{state.loadedModels.delete(asset.id);throw e});
  state.loadedModels.set(asset.id,promise);return promise;
 }
 async function addAsset(asset,opts={},silent=false){
+ if(!asset){toast('MODELO NO DISPONIBLE');return null}
+ const generation=state.request;if(state.objects.length>=150){toast('LÍMITE DE 150 INSTANCIAS');return null}
  if(!state.webgl){toast('NO HAY WEBGL2: ABRÍ EN NAVEGADOR COMPATIBLE');return null}
  if(state.busy&&!silent)return null;
  const h=clamp(finite(opts.h,defaultHeight(asset)),.02,90);
  status('CARGANDO '+short(asset.id).toUpperCase());
  try{
+  pendingTemplates.set(asset.id,(pendingTemplates.get(asset.id)||0)+1);
   const data=await modelTemplate(asset);
+  if(generation!==state.request)return null;
   const model=SkeletonUtils.clone(data.scene);
   const box=new THREE.Box3().setFromObject(model),dims=new THREE.Vector3(),center=new THREE.Vector3();
   box.getSize(dims);box.getCenter(center);
@@ -192,8 +199,8 @@ async function addAsset(asset,opts={},silent=false){
   root.add(model);const baseScale=h/dims.y;
   const p=opts.p||[0,0,0];
   root.position.set(finite(p[0]),finite(p[1]),finite(p[2]));
-  root.rotation.y=finite(opts.r);
-  const components=Array.isArray(opts.s)?opts.s:[opts.s,opts.s,opts.s];
+  root.rotation.set(...normalizeTransform(opts).r3);
+  const components=normalizeTransform(opts).s;
   root.scale.set(...components.map(x=>baseScale*clamp(finite(x,1),.05,20)));
   const mixer=data.animations.length?new THREE.AnimationMixer(model):null;
   const activeClip=mixer?(data.animations.find(x=>x.name===opts.clip)||data.animations.find(x=>/idle|walk|run/i.test(x.name))||data.animations[0]):null;
@@ -203,7 +210,14 @@ async function addAsset(asset,opts={},silent=false){
   if(!silent){select(uid);historyPush();status('MODELO AÑADIDO · '+short(asset.id));toast('AÑADIDO: '+short(asset.id))}
   metrics();renderObjects();return entry;
  }catch(e){state.failed++;status('FALLÓ LA CARGA DE '+short(asset.id));toast('No se pudo cargar '+short(asset.id));console.warn('FORJA MODEL',asset.id,e);return null}
+ finally{unpin(asset.id);trimTemplates()}
 }
+function unpin(id){const n=(pendingTemplates.get(id)||1)-1;if(n)pendingTemplates.set(id,n);else pendingTemplates.delete(id)}
+function trimTemplates(){
+ const used=new Set(state.objects.map(e=>e.asset.id));
+ for(const [id,promise] of state.loadedModels){if(state.loadedModels.size<=32)break;if(used.has(id)||pendingTemplates.has(id))continue;state.loadedModels.delete(id);promise.then(data=>{const resources=new Set();data.scene.traverse(x=>{if(x.geometry)resources.add(x.geometry);for(const m of Array.isArray(x.material)?x.material:[x.material])if(m){resources.add(m);for(const v of Object.values(m))if(v?.isTexture)resources.add(v)}});resources.forEach(x=>x.dispose?.())}).catch(()=>{});}
+}
+function releaseEntry(e){e.mixer?.stopAllAction();e.mixer?.uncacheRoot(e.root.children[0]);e.root.traverse(x=>{if(x.isSkinnedMesh)x.skeleton?.dispose()});}
 function select(uid){
  const e=state.objects.find(x=>x.uid===uid)||null;
  state.selected=e?.uid||null;
@@ -256,7 +270,7 @@ function updateProperty(){
 function removeSelected(){
  if(!state.selected)return;const at=state.objects.findIndex(x=>x.uid===state.selected);
  if(at<0)return;state.transform.detach();const [e]=state.objects.splice(at,1);
- state.world.remove(e.root);e.mixer?.stopAllAction();state.selected=null;
+ state.world.remove(e.root);releaseEntry(e);trimTemplates();state.selected=null;
  renderObjects();updateInspector();metrics();historyPush();
 }
 async function duplicateSelected(){
@@ -300,7 +314,7 @@ function snap(){
 }
 function validateProject(input){
  if(!input||!Array.isArray(input.items)||input.items.length>150)throw Error('PROYECTO INVÁLIDO O DEMASIADO GRANDE');
- if(input.schema!==SCHEMA)throw Error('ESQUEMA NO COMPATIBLE');
+ if(![SCHEMA,OLD_SCHEMA].includes(input.schema))throw Error('ESQUEMA NO COMPATIBLE');
  const seen=new Set();
  const out=input.items.map(v=>{
   const n=normItem(v);if(!n)throw Error('MODELO NO EXISTE EN EL CATÁLOGO: '+String(v?.id));
@@ -315,11 +329,11 @@ async function replaceScene(data,{remember=true}={}){
  let safe;
  try{safe=validateProject(data)}catch(e){toast(e.message);return false}
  state.request++;setBusy(true);setLoading(true,'PREPARANDO ESCENA',0);
- const previous=snapshot();
+ const previous=snapshot();const oldEntries=state.objects.slice();
  const oldName=state.sceneName;
  try{
   state.transform?.detach();state.selected=null;
-  for(const e of state.objects){state.world.remove(e.root);e.mixer?.stopAllAction()}
+  for(const e of state.objects){state.world.remove(e.root);pendingTemplates.set(e.asset.id,(pendingTemplates.get(e.asset.id)||0)+1)}
   state.objects=[];state.sceneName=safe.name;$('scene-name').value=safe.name;
   renderObjects();updateInspector();
   let done=0;
@@ -332,6 +346,8 @@ async function replaceScene(data,{remember=true}={}){
    }
   });await Promise.all(tasks);
   const loaded=state.objects.length;
+  if(loaded!==safe.items.length)throw Error('MODELOS FALTANTES: '+(safe.items.length-loaded));
+  oldEntries.forEach(releaseEntry);
   metrics();renderObjects();resetCamera();
   if(remember){state.busy=false;historyPush();state.busy=true}else saveLocal();
   toast('ESCENA LISTA: '+loaded+' / '+safe.items.length+' OBJETOS');
@@ -339,11 +355,12 @@ async function replaceScene(data,{remember=true}={}){
   else status('ESCENA EDITABLE · '+loaded+' OBJETOS');
   return true;
  }catch(e){console.error(e);toast('ERROR AL ABRIR ESCENA');
-  for(const prior of state.objects){state.world.remove(prior.root);prior.mixer?.stopAllAction()}
-  state.objects=[];state.selected=null;state.sceneName=oldName;$('scene-name').value=oldName;
-  for(const item of previous.items){const asset=state.byId.get(item.id);if(asset)await addAsset(asset,item,true)}
+  for(const prior of state.objects){state.world.remove(prior.root);releaseEntry(prior)}
+  state.objects=oldEntries;state.selected=null;state.sceneName=oldName;$('scene-name').value=oldName;
+  for(const entry of oldEntries)state.world.add(entry.root);
+  status('ESCENA ANTERIOR CONSERVADA · '+e.message);
   metrics();renderObjects();updateInspector();return false;
- }finally{setBusy(false);setLoading(false);historyButtons()}
+ }finally{oldEntries.forEach(e=>unpin(e.asset.id));trimTemplates();setBusy(false);setLoading(false);historyButtons()}
 }
 const PRESETS={
  barrio:{name:'El barrio que no duerme',items:[
@@ -368,7 +385,7 @@ const PRESETS={
 };
 function makePreset(key){
  const p=PRESETS[key];if(!p)return;
- const items=p.items.filter(x=>state.byId.has(x[0])).map(([id,x,y,z,h,r],i)=>({uid:'preset-'+i+'-'+key,id,p:[x,y,z],h,r,s:1}));
+ const items=p.items.map(([id,x,y,z,h,r],i)=>({uid:'preset-'+i+'-'+key,id,p:[x,y,z],h,r,s:1}));
  return {schema:SCHEMA,name:p.name,items};
 }
 function download(content,name,mime){
@@ -378,7 +395,7 @@ function download(content,name,mime){
  setTimeout(()=>URL.revokeObjectURL(url),12000);
 }
 function exportJSON(){
- const out={...snapshot(),source:{repo:'Hidencod/tge-assets',commit:SOURCE_SHA,license:'CC0'},savedAt:new Date().toISOString()};
+ const out={...snapshot(),sources:[...new Map(state.objects.map(e=>[e.asset.source,{source:e.asset.source,commit:e.asset.sourceCommit,license:e.asset.license}])).values()],savedAt:new Date().toISOString()};
  download(JSON.stringify(out,null,2),'prometeo-forja-'+Date.now()+'.json','application/json');toast('PROYECTO JSON GUARDADO');
 }
 async function exportGLB(){
@@ -405,10 +422,10 @@ function renderLibrary(){
  for(const m of matches.slice(0,pageSize)){
   const b=document.createElement('button');b.type='button';b.className='asset';
   b.draggable=true;b.title='Agregar '+m.name+' al mundo';b.dataset.assetId=m.id;
-  const img=document.createElement('img');img.loading='lazy';img.alt='';img.src=ROOT+m.thumb;
+  const img=document.createElement('img');img.loading='lazy';img.alt='';if(m.thumbUrl)img.src=m.thumbUrl;else{img.alt='Sin miniatura';img.style.background='#394f43'}
   img.onerror=()=>{img.onerror=null;img.removeAttribute('src');img.style.background='#394f43'};
   const t=document.createElement('strong');t.textContent=m.name;
-  const meta=document.createElement('small');meta.textContent=m.packName;
+  const meta=document.createElement('small');meta.textContent=m.packName+' · '+m.format.toUpperCase()+(m.availability==='partial'?' · PARCIAL':'');
   const plus=document.createElement('span');plus.className='add-symbol';plus.textContent='+';
   b.append(img,t,meta,plus);
   b.addEventListener('click',async()=>{await addAsset(m,{p:[(state.objects.length%5-2)*1.5,0,3]});
@@ -421,28 +438,25 @@ function renderLibrary(){
  $('more-assets').textContent=matches.length>pageSize?'VER MÁS ('+Math.min(pageSize,matches.length)+' / '+matches.length+')':'TODOS LOS RESULTADOS';
 }
 async function initCatalog(){
- status('RECUPERANDO 1.883 MODELOS');init3D();
+ status('RECUPERANDO CATÁLOGOS');init3D();
  try{
-  const res=await fetch(ROOT+'catalog.json',{cache:'force-cache'});
-  if(!res.ok)throw Error('HTTP_'+res.status);
-  const raw=await res.json();
-  if(!Array.isArray(raw.packs))throw Error('CATÁLOGO INVÁLIDO');
-  state.catalog=raw.packs.flatMap(pack=>(pack.models||[]).map(m=>({...m,pack:pack.id,packName:pack.name})));
-  if(state.catalog.length!==1883)throw Error('CONTEO INESPERADO: '+state.catalog.length);
-  state.byId=new Map(state.catalog.map(m=>[m.id,m]));
-  for(const p of raw.packs){
-   const o=document.createElement('option');o.value=p.id;o.textContent=p.name+' ('+p.models.length+')';$('pack').append(o);
-  }
-  $('model-total').textContent='1.883 GLB · 19 COLECCIONES';
-  renderLibrary();status(state.webgl?'CATÁLOGO REAL · 1.883 RECURSOS':'CATÁLOGO 2D · WEBGL2 NO DISPONIBLE');
+  const data=await loadCatalog();state.catalog=data.models;state.byId=new Map(state.catalog.map(m=>[m.id,m]));
+  for(const [alias,id] of data.aliases)state.byId.set(alias,state.byId.get(id));
+  const packs=new Map();for(const m of state.catalog){const p=packs.get(m.pack)||{name:m.packName,n:0};p.n++;packs.set(m.pack,p)}
+  for(const [id,p] of packs){const o=document.createElement('option');o.value=id;o.textContent=p.name+' ('+p.n+')';$('pack').append(o)}
+  $('model-total').textContent=state.catalog.length.toLocaleString('es-AR')+' REFERENCIAS · '+packs.size+' COLECCIONES';
+  $('catalog-state').textContent='Atlas: '+data.sources.atlas+' · Quaternius: '+data.sources.quaternius+' · '+data.stats.duplicates+' GLB idénticos · '+data.stats.unsupported+' formatos no compatibles';
+  state.catalogInfo=data;renderLibrary();
+  status(state.catalog.length?(state.webgl?'CATÁLOGOS · '+state.catalog.length+' REFERENCIAS':'CATÁLOGO 2D · WEBGL2 NO DISPONIBLE'):'CATÁLOGO NO DISPONIBLE · REINTENTÁ RECARGANDO');
   let prev=null;try{prev=JSON.parse(localStorage.getItem(STORAGE)||'null')}catch{}
-  if(prev?.schema===SCHEMA&&prev.items?.length){
-   await replaceScene(prev,{remember:false});
-   state.history=[snapshot()];state.cursor=0;historyButtons();
-  }else{state.history=[snapshot()];state.cursor=0;historyButtons()}
+  if([SCHEMA,OLD_SCHEMA].includes(prev?.schema)&&prev.items?.length){
+   const ok=await replaceScene(prev,{remember:false});if(!ok)status('AUTO-GUARDADO CONSERVADO · FALTAN RECURSOS');
+  }
+  state.history=[snapshot()];state.cursor=0;historyButtons();
  }catch(e){status('FALLÓ EL CATÁLOGO · '+e.message);toast('NO PUDO LEER EL CATÁLOGO');console.error(e)}
 }
 function wire(){
+ $('mixed-preset').addEventListener('click',async()=>{try{const res=await fetch('./scene-mixed.json');if(!res.ok)throw Error('HTTP '+res.status);await replaceScene(await res.json())}catch(e){toast('ERROR EJEMPLO · '+e.message)}});
  $('search').addEventListener('input',()=>{pageSize=12;renderLibrary()});
  $('pack').addEventListener('change',()=>{pageSize=12;renderLibrary()});
  $('more-assets').addEventListener('click',()=>{pageSize+=12;renderLibrary()});
@@ -456,8 +470,8 @@ function wire(){
  $('clip-time').addEventListener('change',historyPush);
  $('scene-name').addEventListener('change',e=>{state.sceneName=(e.target.value.trim()||'Escena sin título').slice(0,64);historyPush();metrics()});
  for(const id of ['pos-x','pos-y','pos-z','rot','scale'])$(id).addEventListener('change',updateProperty);
- $('undo').addEventListener('click',async()=>{if(state.busy||state.cursor<=0)return;state.cursor--;await replaceScene(state.history[state.cursor],{remember:false});historyButtons()});
- $('redo').addEventListener('click',async()=>{if(state.busy||state.cursor>=state.history.length-1)return;state.cursor++;await replaceScene(state.history[state.cursor],{remember:false});historyButtons()});
+ $('undo').addEventListener('click',async()=>{if(state.busy||state.cursor<=0)return;const next=state.cursor-1;if(await replaceScene(state.history[next],{remember:false}))state.cursor=next;historyButtons()});
+ $('redo').addEventListener('click',async()=>{if(state.busy||state.cursor>=state.history.length-1)return;const next=state.cursor+1;if(await replaceScene(state.history[next],{remember:false}))state.cursor=next;historyButtons()});
  $('delete').addEventListener('click',removeSelected);
  $('duplicate').addEventListener('click',duplicateSelected);
  $('focus').addEventListener('click',focus);
@@ -490,6 +504,6 @@ function wire(){
 }
 wire();initCatalog();
 window.__FORJA__={
- diagnostic:()=>({schema:'prometeo.forja.diagnostic/v1',webgl2:state.webgl,catalog:state.catalog.length,loadedTemplates:state.loadedModels.size,instances:state.objects.length,clips:state.objects.reduce((n,e)=>n+e.clips.length,0),failed:state.failed,sourceCommit:SOURCE_SHA,saved:!!localStorage.getItem(STORAGE),note:'No sustituye validación visual en navegador con GPU'}),
+ diagnostic:()=>({schema:'prometeo.forja.diagnostic/v1',webgl2:state.webgl,catalog:state.catalog.length,loadedTemplates:state.loadedModels.size,instances:state.objects.length,clips:state.objects.reduce((n,e)=>n+e.clips.length,0),failed:state.failed,sourceCommit:SOURCE_SHA,catalogSources:state.catalogInfo?.sources,rendererMemory:state.renderer?.info.memory,renderCalls:state.renderer?.info.render.calls,saved:!!localStorage.getItem(STORAGE),note:'No sustituye validación visual en navegador con GPU'}),
  snapshot,loadPreset:async name=>replaceScene(makePreset(name)),add:async id=>addAsset(state.byId.get(id)),export:exportJSON
 };

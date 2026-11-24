@@ -1,0 +1,41 @@
+{
+  "status": "CANDIDATE_SOURCE_ONLY",
+  "base": "708e003f45b77642574402067998ed4b4e56cf59",
+  "assetCommit": "4529f6f58e3a08a907e7766c958705a0c1d9830f",
+  "counts": {
+    "legacy": 1883,
+    "quaternius": 2523,
+    "duplicates": 1,
+    "unsupported": 70,
+    "partial": 338,
+    "rejected": 60
+  },
+  "canonicalReferences": 4406,
+  "tests": {
+    "executedInV8": [
+      "all legacy IDs",
+      "unique IDs",
+      "partial assets",
+      "pinned Quaternius SHA",
+      "identical GLB alias; keep glTF dependencies distinct",
+      "unsafe and unsupported",
+      "v1 migration",
+      "XYZ persisted",
+      "offline cached metadata",
+      "cold offline explicit",
+      "Alpaca ID",
+      "mixed scene IDs present"
+    ],
+    "browser": "NOT_RUN",
+    "webgl": "NOT_RUN",
+    "mobile": "NOT_RUN",
+    "export": "NOT_RUN",
+    "memory": "NOT_RUN"
+  },
+  "limitations": [
+    "Dedup exact GLB within same pack only; no cross-source content hash available.",
+    "Pinned catalogue snapshot; update commit explicitly.",
+    "No FBX/OBJ; export without timeline; model dependencies not individually verified."
+  ],
+  "artifact": "world-studio-forja-catalog-v2"
+}
