@@ -60,7 +60,7 @@
   });
   // Same-origin backend: browser never obtains the GitHub credential.
   $('oauth-start').addEventListener('click',()=>location.assign('/auth/start'));
-  window.PrometeoViewer.connectSession().catch(()=>{});
+  if(location.hash.startsWith('#share=')){const fragment=location.hash;history.replaceState(null,'',location.pathname+location.search);workspace();$('toggle-sidebar').hidden=true;window.PrometeoViewer.openShared(fragment).catch(()=>{});}else window.PrometeoViewer.connectSession().catch(()=>{});
   $('disconnect').addEventListener('click',()=>{
     $('account-avatar').textContent='G';
     closeAuth();
