@@ -5,6 +5,8 @@ const $files = $('files'), $preview = $('preview'), $status = $('status');
 let token = ''; // legacy PAT disabled in this candidate
 let serverSession = false;
 let sessionEpoch = 0;
+let disposeModel = null;
+let modelMount = null;
 let owner = '', repository = '', branch = '', folder = '';
 let activePath = '', activeId = '', activeRoot = '', lastOpened = '';
 let fileCache = new Map(), moduleCache = new Map(), busy = false;
@@ -44,7 +46,9 @@ function bytesB64(bytes) {
   return btoa(str);
 }
 async function github(path) {
-  const privateRead = serverSession && !(owner === 'JuanManuelPM' && repository === 'Experimentos');
+  const publicDemo = owner === 'JuanManuelPM' && repository === 'Experimentos';
+  if(!serverSession && !publicDemo) throw Error('Acceso privado requerido');
+  const privateRead = serverSession && !publicDemo;
   const response = await fetch(privateRead ? '/api/github?path='+encodeURIComponent(path) : 'https://api.github.com' + path, {
     headers: {'Accept':'application/vnd.github+json'},
     credentials: privateRead ? 'same-origin' : 'omit',
@@ -147,6 +151,8 @@ async function prepareHtml(path) {
   const html = await getText(path);
   const doc = new DOMParser().parseFromString(html, 'text/html');
   if(serverSession && !(owner === 'JuanManuelPM' && repository === 'Experimentos')) {
+    // Candidate supports trusted, authored fixture documents only; not hostile arbitrary HTML.
+    for(const el of doc.querySelectorAll('meta[http-equiv],form,iframe,object,embed'))el.remove();
     const csp=doc.createElement('meta'); csp.httpEquiv='Content-Security-Policy'; csp.content="default-src 'none'; script-src 'unsafe-inline' data: blob:; style-src 'unsafe-inline' data:; img-src data: blob:; media-src data: blob:; font-src data: blob:; connect-src 'none'; frame-src 'none'; form-action 'none'; object-src 'none'; base-uri https://prometeo-viewer.invalid";
     doc.head.prepend(csp);
   }
@@ -196,7 +202,7 @@ async function prepareHtml(path) {
   return '<!doctype html>\n' + doc.documentElement.outerHTML;
 }
 function clearFrame() {
-  sessionEpoch++; activePath = ''; activeId=''; activeRoot=''; lastOpened='';
+  sessionEpoch++; if(disposeModel){disposeModel();disposeModel=null;} if(modelMount){modelMount.remove();modelMount=null;} activePath = ''; activeId=''; activeRoot=''; lastOpened='';
   $preview.hidden = true; $preview.removeAttribute('srcdoc');
   $('welcome').hidden = false;
   $('reload').disabled = true; $('fullscreen').disabled = true;
@@ -206,11 +212,20 @@ function clearFrame() {
 async function openFile(path) {
   if (busy) return;
   busy = true;
+  clearFrame(); const epoch=sessionEpoch;
   try {
     status('Preparando vista privada…');
     const type = mime(path);
     let documentHtml;
-    if (type === 'text/html') documentHtml = await prepareHtml(path);
+    if (type === 'model/gltf-binary') {
+      const bytes=await fetchBytes(path); if(epoch!==sessionEpoch)return;
+      const {mountGLB}=await import('./model-adapter.mjs'); if(epoch!==sessionEpoch)return;
+      modelMount=document.createElement('div'); modelMount.style.cssText='position:absolute;inset:0'; $('stage').append(modelMount);
+      const currentMount=modelMount; const dispose=await mountGLB(currentMount,bytes);
+      if(epoch!==sessionEpoch){dispose();currentMount.remove();return;}
+      disposeModel=dispose; $('welcome').hidden=true; $('reload').disabled=false; $('fullscreen').disabled=false;
+      $('title').textContent=path.split('/').pop(); $('subtitle').textContent='GLB autocontenido · Three.js'; lastOpened=path; status('Modelo cargado');return;
+    } else if (type === 'text/html') documentHtml = await prepareHtml(path);
     else {
       activePath=path;activeRoot=dirname(path);activeId=newSession();
       const url=await dataURL(path);
@@ -220,6 +235,7 @@ async function openFile(path) {
       else if (type === 'application/pdf') documentHtml = '<!doctype html><iframe style="position:fixed;inset:0;width:100%;height:100%;border:0" src="' + url + '"></iframe>';
       else documentHtml = '<!doctype html><pre style="white-space:pre-wrap;overflow-wrap:anywhere;padding:25px;color:#d9e8df;background:#101614;font:13px/1.55 monospace">' + escapeHtml(await getText(path)) + '</pre>';
     }
+    if(epoch!==sessionEpoch)return;
     $preview.srcdoc = documentHtml;
     $preview.hidden = false; $('welcome').hidden = true;
     $('reload').disabled = false; $('fullscreen').disabled = false;
@@ -227,7 +243,7 @@ async function openFile(path) {
     $('subtitle').textContent = owner + '/' + repository + ' · ' + branch + ' · ' + path;
     lastOpened = path;
     status('Vista preparada · ejecutándose en un marco aislado');
-  } catch (e) { console.error('Viewer:', e.message); status('Error: ' + e.message); }
+  } catch (e) { if(epoch===sessionEpoch){if(modelMount){modelMount.remove();modelMount=null;} status('Error: ' + e.message);} }
   finally { busy = false; }
 }
 function fileButton(label, icon, detail, onClick) {
@@ -315,4 +331,4 @@ $('fullscreen').addEventListener('click', () => {
 });
 window.addEventListener('pagehide',()=> { token=''; });
 status('Listo. Conectá GitHub o abrí la demo pública.');
-window.PrometeoViewer = { browse, openFile, async connectSession(){ const r=await fetch('/api/session',{cache:'no-store',credentials:'same-origin'}); if(!r.ok)return false; const x=await r.json(); if(!x.repo||!x.ref||!x.root)return false; serverSession=true; $('repository').value=x.repo; $('branch').value=x.ref; $('auth-state').textContent='Conectado · privado'; $('auth-state').classList.add('active'); await browse(x.root); return true; }, hasVisibleFile(name) { return Array.from($files.querySelectorAll('button.file')).some(x => x.textContent.includes(name)); } };
+window.PrometeoViewer = { browse, openFile, async connectSession(){ const epoch=sessionEpoch; const r=await fetch('/api/session',{cache:'no-store',credentials:'same-origin'}); if(epoch!==sessionEpoch||!r.ok)return false; const x=await r.json(); if(!x.repo||!x.ref||!x.root)return false; serverSession=true; $('repository').value=x.repo; $('branch').value=x.ref; $('auth-state').textContent='Conectado · privado'; $('auth-state').classList.add('active'); await browse(x.root); if(x.entry&&typeof x.entry==='string'&&x.entry.startsWith(x.root+'/')&&serverSession)await openFile(x.entry); return true; }, hasVisibleFile(name) { return Array.from($files.querySelectorAll('button.file')).some(x => x.textContent.includes(name)); } };
