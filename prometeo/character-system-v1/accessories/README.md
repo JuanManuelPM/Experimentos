@@ -1,0 +1,2 @@
+# Character Accessories V1 candidate
+15 original accessory GLBs and five direct accessory-only turntables. No five equipped bodies or animated fit verified. Prior NPC humanoid9 is not the new canonical rig. Surface prevention recovered but not applied as a full collision validator. Three.js r181 MIT; original geometry, no external meshes or textures included. Source and metrics included. No canonical promotion.
