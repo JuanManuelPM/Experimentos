@@ -1,0 +1,42 @@
+{
+  "schema": "prometeo.world-studio.integration/v1",
+  "status": "PREVIEW_SOURCE_AND_LOGIC_TESTED",
+  "base": "708e003f45b77642574402067998ed4b4e56cf59",
+  "sourceCommits": [
+    "dde675d4d393f7c3eacd7905bac5f963badb4eda",
+    "64e4e6bba91d640a877722c85fd84274d863e9be",
+    "9b35bbaf3189cb861270cc840d9727557af4c863",
+    "aab1e92573139dd5cb15b221f635b36276b70794",
+    "3fa581aed33229475a8d5cf42c703133b1455473"
+  ],
+  "tests": {
+    "originalStationRejected": true,
+    "normalizedStation": {
+      "valid": true,
+      "stationaryY": 0,
+      "visited": [
+        "hangar",
+        "corridor",
+        "control",
+        "maintenance",
+        "habitat",
+        "view"
+      ],
+      "samples": 1420,
+      "sectorCount": 10,
+      "colliders": 135
+    },
+    "runtimeViewerSyntax": "PASS",
+    "streamingInlineModuleSyntax": "PASS",
+    "menuSyntax": "PASS",
+    "webgl": "NOT_RUN",
+    "mobile": "NOT_RUN",
+    "http": "NOT_RUN_AT_BUILD"
+  },
+  "limitations": [
+    "One floor only; no claim of real rendered reachability",
+    "Local network DNS and GPU/browser evidence unavailable; not READY",
+    "FORJA pins catalog cut; gallery reads live sources",
+    "Preview preserves canonical routes; no binary asset copies"
+  ]
+}
