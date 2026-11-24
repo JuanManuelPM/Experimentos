@@ -20,8 +20,8 @@ export function surfaceGate(host,foreign,{faceVertices,normalOffset=0.001,window
    for(let j=0;j<ft.length;j++){if(!overlap(box,fb[j]))continue;const b=ft[j];
     for(const [a,c] of [[t,b],[b,t]])for(let i=0;i<3;i++){let o=a[i],d=sub(a[(i+1)%3],o),u=ray(o,d,c);if(u!==null&&u>=-eps&&u<=1+eps)record(add(o,mul(d,u)));}
    }
-   if(hits.length>=12)return {ok:false,host:host.name,foreign:foreign.name,examined,hits:hits.slice(0,12)};
+   if(hits.some(h=>h.surface==='visible')&&hits.some(h=>h.surface==='residual'))return {ok:false,host:host.name,foreign:foreign.name,examined,hits:[...hits.filter(h=>h.surface==='visible').slice(0,3),...hits.filter(h=>h.surface==='residual').slice(0,3)]};
   }
  }
- return {ok:hits.length===0,host:host.name,foreign:foreign.name,examined,hits};
+ return {ok:hits.length===0,host:host.name,foreign:foreign.name,examined,hits:hits.slice(0,12)};
 }
