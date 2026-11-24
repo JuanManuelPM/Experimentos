@@ -1,0 +1,769 @@
+{
+  "status": "CANDIDATE_GENERATED",
+  "requested": 10,
+  "sourceModelReused": "ESTRIBO 05 from candidate/prometeo-surface-gate-20261123 exact source",
+  "newModels": 9,
+  "geometry": "SEE_PER_MODEL",
+  "render": "NOT_RUN",
+  "android": "NOT_RUN",
+  "art": "NOT_RUN",
+  "criteria": [
+    "Ten different structures; no recolors",
+    "Use recovered constructor, physical closed shell/sweep meshes, metre scale, separate selectable components",
+    "Keep historic negatives untouched; protect seat and back faces; residual checks nonblocking",
+    "HÉLICE 02 baseline 13 parts, 6232 triangles; detail ambition not aesthetic proof"
+  ],
+  "notes": "No canonical promotion or artistic approval. GLB and JSON controls are implemented, browser execution pending. Public gallery is a candidate preview, not canonical approval. Source model ESTRIBO unchanged.",
+  "constructed": 10,
+  "execution": "V8 isolate, exact fetched module bodies with ES import/export bindings adapted, not browser/Node",
+  "tests": [
+    {
+      "name": "ESTRIBO 05",
+      "parts": 17,
+      "triangles": 25840,
+      "degenerate": 0,
+      "open": 0,
+      "nonfinite": 0,
+      "invalid": 0,
+      "bounds": {
+        "min": [
+          -0.28800000000000003,
+          0.002,
+          -0.35437081707669016
+        ],
+        "max": [
+          0.28800000000000003,
+          0.874,
+          0.271
+        ]
+      },
+      "geometry": "PASS",
+      "protectedFaces": 2,
+      "surfacePairs": 12,
+      "disjointPairs": 20,
+      "surfaces": "NOT_RUN_REMAINDER",
+      "surfaceIssues": [],
+      "render": "NOT_RUN",
+      "android": "NOT_RUN",
+      "art": "NOT_RUN",
+      "id": "05",
+      "surfaceBudget": 10,
+      "surfaceSkippedBudget": 2
+    },
+    {
+      "name": "MAREA 06",
+      "parts": 13,
+      "triangles": 22176,
+      "degenerate": 0,
+      "open": 0,
+      "nonfinite": 0,
+      "invalid": 0,
+      "bounds": {
+        "min": [
+          -0.25,
+          0,
+          -0.358
+        ],
+        "max": [
+          0.25,
+          0.9,
+          0.30071312380329596
+        ]
+      },
+      "geometry": "PASS",
+      "protectedFaces": 2,
+      "surfacePairs": 9,
+      "disjointPairs": 15,
+      "surfaces": "PASS_PARTIAL_PAIRED_FACE",
+      "surfaceIssues": [],
+      "render": "NOT_RUN",
+      "android": "NOT_RUN",
+      "art": "NOT_RUN",
+      "id": "06",
+      "surfaceBudget": 10,
+      "surfaceSkippedBudget": 0
+    },
+    {
+      "name": "TELAR 07",
+      "parts": 105,
+      "triangles": 94832,
+      "degenerate": 0,
+      "open": 0,
+      "nonfinite": 0,
+      "invalid": 0,
+      "bounds": {
+        "min": [
+          -0.27873184472817386,
+          0,
+          -0.3355837712143438
+        ],
+        "max": [
+          0.27873184472817386,
+          0.9146302720705781,
+          0.2729442453458482
+        ]
+      },
+      "geometry": "PASS",
+      "protectedFaces": 0,
+      "surfacePairs": 0,
+      "disjointPairs": 0,
+      "surfaces": "NOT_APPLICABLE_WEAVE",
+      "surfaceIssues": [],
+      "render": "NOT_RUN",
+      "android": "NOT_RUN",
+      "art": "NOT_RUN",
+      "id": "07",
+      "surfaceBudget": 10,
+      "surfaceSkippedBudget": 0
+    },
+    {
+      "name": "DUNA 08",
+      "parts": 11,
+      "triangles": 23888,
+      "degenerate": 0,
+      "open": 0,
+      "nonfinite": 0,
+      "invalid": 0,
+      "bounds": {
+        "min": [
+          -0.258,
+          0,
+          -0.33537835455295223
+        ],
+        "max": [
+          0.258,
+          0.9181539520242188,
+          0.2719516625001203
+        ]
+      },
+      "geometry": "PASS",
+      "protectedFaces": 1,
+      "surfacePairs": 6,
+      "disjointPairs": 4,
+      "surfaces": "PASS_PARTIAL_PAIRED_FACE",
+      "surfaceIssues": [],
+      "render": "NOT_RUN",
+      "android": "NOT_RUN",
+      "art": "NOT_RUN",
+      "id": "08",
+      "surfaceBudget": 10,
+      "surfaceSkippedBudget": 0
+    },
+    {
+      "name": "NIDO 09",
+      "parts": 9,
+      "triangles": 23284,
+      "degenerate": 0,
+      "open": 0,
+      "nonfinite": 0,
+      "invalid": 0,
+      "bounds": {
+        "min": [
+          -0.36499488069031977,
+          0,
+          -0.392
+        ],
+        "max": [
+          0.36499488069031977,
+          0.7709476414179837,
+          0.27
+        ]
+      },
+      "geometry": "PASS",
+      "protectedFaces": 2,
+      "surfacePairs": 11,
+      "disjointPairs": 5,
+      "surfaces": "FAIL_PARTIAL",
+      "surfaceIssues": [
+        {
+          "host": "bucket-cushion",
+          "guest": "felt-barrel",
+          "ok": false,
+          "hits": [
+            {
+              "surface": "visible",
+              "point": [
+                -0.2849969,
+                0.4264147,
+                0.0956167
+              ]
+            },
+            {
+              "surface": "visible",
+              "point": [
+                -0.2820632,
+                0.4261289,
+                0.1023468
+              ]
+            }
+          ]
+        },
+        {
+          "host": "bucket-cushion",
+          "guest": "rim--1",
+          "ok": false,
+          "hits": [
+            {
+              "surface": "visible",
+              "point": [
+                -0.2849617,
+                0.4267924,
+                0.1265625
+              ]
+            },
+            {
+              "surface": "visible",
+              "point": [
+                -0.2848383,
+                0.4267794,
+                0.1266999
+              ]
+            }
+          ]
+        },
+        {
+          "host": "bucket-cushion",
+          "guest": "rim-1",
+          "ok": false,
+          "hits": [
+            {
+              "surface": "visible",
+              "point": [
+                0.2849617,
+                0.4267924,
+                0.1265625
+              ]
+            },
+            {
+              "surface": "visible",
+              "point": [
+                0.2837904,
+                0.4266481,
+                0.1265625
+              ]
+            }
+          ]
+        },
+        {
+          "host": "felt-barrel",
+          "guest": "bucket-cushion",
+          "ok": false,
+          "hits": [
+            {
+              "surface": "visible",
+              "point": [
+                -0.2747419,
+                0.365,
+                0.1054457
+              ]
+            },
+            {
+              "surface": "visible",
+              "point": [
+                -0.2810773,
+                0.365,
+                0.0914083
+              ]
+            }
+          ]
+        },
+        {
+          "host": "felt-barrel",
+          "guest": "rim--1",
+          "ok": false,
+          "hits": [
+            {
+              "surface": "visible",
+              "point": [
+                -0.2747419,
+                0.365,
+                0.1054457
+              ]
+            },
+            {
+              "surface": "visible",
+              "point": [
+                -0.2751473,
+                0.37,
+                0.1056412
+              ]
+            }
+          ]
+        },
+        {
+          "host": "felt-barrel",
+          "guest": "rim-1",
+          "ok": false,
+          "hits": [
+            {
+              "surface": "visible",
+              "point": [
+                0.2814105,
+                0.3653026,
+                0.090626
+              ]
+            },
+            {
+              "surface": "visible",
+              "point": [
+                0.2813979,
+                0.3651153,
+                0.0906162
+              ]
+            }
+          ]
+        },
+        {
+          "host": "felt-barrel",
+          "guest": "bound-upper-edge",
+          "ok": false,
+          "hits": [
+            {
+              "surface": "visible",
+              "point": [
+                -0.2924221,
+                0.5613044,
+                0.108595
+              ]
+            },
+            {
+              "surface": "visible",
+              "point": [
+                -0.2916291,
+                0.5601442,
+                0.1103403
+              ]
+            }
+          ]
+        }
+      ],
+      "render": "NOT_RUN",
+      "android": "NOT_RUN",
+      "art": "NOT_RUN",
+      "id": "09",
+      "surfaceBudget": 10,
+      "surfaceSkippedBudget": 1
+    },
+    {
+      "name": "PRISMA 10",
+      "parts": 29,
+      "triangles": 14896,
+      "degenerate": 0,
+      "open": 0,
+      "nonfinite": 0,
+      "invalid": 0,
+      "bounds": {
+        "min": [
+          -0.31542271899761287,
+          0,
+          -0.3527084246699294
+        ],
+        "max": [
+          0.31542271899761287,
+          0.8838277236672066,
+          0.2788216330797481
+        ]
+      },
+      "geometry": "PASS",
+      "protectedFaces": 13,
+      "surfacePairs": 44,
+      "disjointPairs": 320,
+      "surfaces": "NOT_RUN_REMAINDER",
+      "surfaceIssues": [],
+      "render": "NOT_RUN",
+      "android": "NOT_RUN",
+      "art": "NOT_RUN",
+      "id": "10",
+      "surfaceBudget": 12,
+      "surfaceSkippedBudget": 32
+    },
+    {
+      "name": "ÓRBITA 11",
+      "parts": 20,
+      "triangles": 21776,
+      "degenerate": 0,
+      "open": 0,
+      "nonfinite": 0,
+      "invalid": 0,
+      "bounds": {
+        "min": [
+          -0.2586149283687348,
+          0,
+          -0.3293735607402538
+        ],
+        "max": [
+          0.314,
+          0.88,
+          0.29980638972559454
+        ]
+      },
+      "geometry": "PASS",
+      "protectedFaces": 2,
+      "surfacePairs": 5,
+      "disjointPairs": 33,
+      "surfaces": "PASS_PARTIAL_PAIRED_FACE",
+      "surfaceIssues": [],
+      "render": "NOT_RUN",
+      "android": "NOT_RUN",
+      "art": "NOT_RUN",
+      "id": "11",
+      "surfaceBudget": 10,
+      "surfaceSkippedBudget": 0
+    },
+    {
+      "name": "BRUMA 12",
+      "parts": 20,
+      "triangles": 38400,
+      "degenerate": 0,
+      "open": 0,
+      "nonfinite": 0,
+      "invalid": 0,
+      "bounds": {
+        "min": [
+          -0.37400000000000005,
+          0,
+          -0.455
+        ],
+        "max": [
+          0.37400000000000005,
+          0.8500000000000001,
+          0.305
+        ]
+      },
+      "geometry": "PASS",
+      "protectedFaces": 6,
+      "surfacePairs": 42,
+      "disjointPairs": 72,
+      "surfaces": "FAIL_PARTIAL",
+      "surfaceIssues": [
+        {
+          "host": "base-upholstery",
+          "guest": "loose-seat",
+          "ok": false,
+          "hits": [
+            {
+              "surface": "visible",
+              "point": [
+                -0.1354072,
+                0.3523458,
+                0.2846875
+              ]
+            },
+            {
+              "surface": "visible",
+              "point": [
+                -0.1382068,
+                0.3525264,
+                0.2885289
+              ]
+            }
+          ]
+        },
+        {
+          "host": "base-upholstery",
+          "guest": "back-body",
+          "ok": false,
+          "hits": [
+            {
+              "surface": "visible",
+              "point": [
+                -0.3029365,
+                0.3582225,
+                -0.26375
+              ]
+            },
+            {
+              "surface": "visible",
+              "point": [
+                -0.3030931,
+                0.3581972,
+                -0.2616795
+              ]
+            }
+          ]
+        },
+        {
+          "host": "base-upholstery",
+          "guest": "arm-panel-L",
+          "ok": false,
+          "hits": [
+            {
+              "surface": "visible",
+              "point": [
+                -0.316,
+                0.3611111,
+                0.2884749
+              ]
+            },
+            {
+              "surface": "visible",
+              "point": [
+                -0.316,
+                0.3612072,
+                0.29
+              ]
+            }
+          ]
+        },
+        {
+          "host": "base-upholstery",
+          "guest": "arm-panel-R",
+          "ok": false,
+          "hits": [
+            {
+              "surface": "visible",
+              "point": [
+                0.2200368,
+                0.3554958,
+                0.2846875
+              ]
+            },
+            {
+              "surface": "visible",
+              "point": [
+                0.211,
+                0.3550954,
+                0.2846875
+              ]
+            }
+          ]
+        },
+        {
+          "host": "loose-seat",
+          "guest": "arm-panel-L",
+          "ok": false,
+          "hits": [
+            {
+              "surface": "visible",
+              "point": [
+                -0.2491869,
+                0.4574258,
+                0.278125
+              ]
+            },
+            {
+              "surface": "visible",
+              "point": [
+                -0.2332748,
+                0.4568376,
+                0.29
+              ]
+            }
+          ]
+        }
+      ],
+      "render": "NOT_RUN",
+      "android": "NOT_RUN",
+      "art": "NOT_RUN",
+      "id": "12",
+      "surfaceBudget": 10,
+      "surfaceSkippedBudget": 32
+    },
+    {
+      "name": "QUILLA 13",
+      "parts": 27,
+      "triangles": 34592,
+      "degenerate": 0,
+      "open": 0,
+      "nonfinite": 0,
+      "invalid": 0,
+      "bounds": {
+        "min": [
+          -0.3224983311644781,
+          3.469446951953614e-18,
+          -0.4407794849230583
+        ],
+        "max": [
+          0.3224983311644781,
+          1.0277471310238082,
+          0.4407794849230583
+        ]
+      },
+      "geometry": "PASS",
+      "protectedFaces": 1,
+      "surfacePairs": 17,
+      "disjointPairs": 9,
+      "surfaces": "FAIL_PARTIAL",
+      "surfaceIssues": [
+        {
+          "host": "sculpted-seat",
+          "guest": "rear-stile-L",
+          "ok": false,
+          "hits": [
+            {
+              "surface": "visible",
+              "point": [
+                -0.2177975,
+                0.4451569,
+                -0.1875
+              ]
+            },
+            {
+              "surface": "visible",
+              "point": [
+                -0.2190661,
+                0.4449407,
+                -0.1772289
+              ]
+            }
+          ]
+        },
+        {
+          "host": "sculpted-seat",
+          "guest": "arm-support-L",
+          "ok": false,
+          "hits": [
+            {
+              "surface": "visible",
+              "point": [
+                -0.2325834,
+                0.4464554,
+                0.171875
+              ]
+            },
+            {
+              "surface": "visible",
+              "point": [
+                -0.2372936,
+                0.447088,
+                0.171875
+              ]
+            }
+          ]
+        },
+        {
+          "host": "sculpted-seat",
+          "guest": "rear-stile-R",
+          "ok": false,
+          "hits": [
+            {
+              "surface": "visible",
+              "point": [
+                0.1905728,
+                0.4420069,
+                -0.1875
+              ]
+            },
+            {
+              "surface": "visible",
+              "point": [
+                0.1831366,
+                0.4412325,
+                -0.1875
+              ]
+            }
+          ]
+        },
+        {
+          "host": "sculpted-seat",
+          "guest": "arm-support-R",
+          "ok": false,
+          "hits": [
+            {
+              "surface": "visible",
+              "point": [
+                0.2052206,
+                0.4430954,
+                0.171875
+              ]
+            },
+            {
+              "surface": "visible",
+              "point": [
+                0.1982648,
+                0.4423214,
+                0.171875
+              ]
+            }
+          ]
+        },
+        {
+          "host": "sculpted-seat",
+          "guest": "turned-spindle-0",
+          "ok": false,
+          "hits": [
+            {
+              "surface": "visible",
+              "point": [
+                -0.1888439,
+                0.4424786,
+                -0.203125
+              ]
+            },
+            {
+              "surface": "visible",
+              "point": [
+                -0.1911773,
+                0.4427419,
+                -0.203125
+              ]
+            }
+          ]
+        },
+        {
+          "host": "sculpted-seat",
+          "guest": "turned-spindle-1",
+          "ok": false,
+          "hits": [
+            {
+              "surface": "visible",
+              "point": [
+                -0.1460217,
+                0.4382384,
+                -0.2001213
+              ]
+            },
+            {
+              "surface": "visible",
+              "point": [
+                -0.1459538,
+                0.4382127,
+                -0.1995771
+              ]
+            }
+          ]
+        }
+      ],
+      "render": "NOT_RUN",
+      "android": "NOT_RUN",
+      "art": "NOT_RUN",
+      "id": "13",
+      "surfaceBudget": 10,
+      "surfaceSkippedBudget": 7
+    },
+    {
+      "name": "VELA 14",
+      "parts": 17,
+      "triangles": 30528,
+      "degenerate": 0,
+      "open": 0,
+      "nonfinite": 0,
+      "invalid": 0,
+      "bounds": {
+        "min": [
+          -0.331,
+          -0.0019999999999999983,
+          -0.3569067715007345
+        ],
+        "max": [
+          0.331,
+          0.9119839278190732,
+          0.26828195653129455
+        ]
+      },
+      "geometry": "PASS",
+      "protectedFaces": 1,
+      "surfacePairs": 6,
+      "disjointPairs": 10,
+      "surfaces": "PASS_PARTIAL_PAIRED_FACE",
+      "surfaceIssues": [],
+      "render": "NOT_RUN",
+      "android": "NOT_RUN",
+      "art": "NOT_RUN",
+      "id": "14",
+      "surfaceBudget": 12,
+      "surfaceSkippedBudget": 0
+    }
+  ],
+  "surfaceScope": "Recovered paired-face surfaceGate, up to ten overlapping host/guest pairs per model; no claim for untested remainder, intentional upholstery/weave contacts may be flagged; not global visibility. PRISMA and VELA were locally revised and retested with up to twelve overlapping pairs; remaining defects are not blocked."
+}
