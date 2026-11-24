@@ -58,11 +58,11 @@ function windowLibrary(B){
    // 3 mm operating clearance; hinge pin and leaves bridge it.
    const mx=x1-.003, a0=.038,sy0=y0+.003,sy1=y1-.003,z=.015;
    const q=sash("casement",a0,mx,sy0,sy1,z,.066,.055,"casement",true);
-   m.motions.push({id:"casement",kind:"rotate",axis:"y",pivot:[x1,0,.058],max:Math.PI*.55,label:"Abrir hoja"});
-   for(const yy of [sy0+.17,sy1-.17]){let k="hinge-"+yy,plate=box(k+"-fixed","hardware","hinge leaf",x1,x1+.026,yy-.043,yy+.043,.048,.056);tie(plate,f.r);
-    let moving=box(k+"-moving","hardware","hinge leaf",mx-.028,mx,yy-.043,yy+.043,.048,.056,"casement");tie(moving,q.r);
-    let pin=rod(k+"-pin","hardware","hinge pin",[x1,yy-.052,.058],[x1,yy+.052,.058],.0055);tie(pin,plate);tie(moving,pin,"Hinge knuckle attachment");
-    for(const dy of [-.027,.027]){fastener(k+"-f-"+dy,x1+.013,yy+dy,.056,1,plate);fastener(k+"-m-"+dy,mx-.014,yy+dy,.056,1,moving,"casement");}
+   m.motions.push({id:"casement",kind:"rotate",axis:"y",pivot:[x1,0,.086],max:Math.PI*.55,label:"Abrir hoja"});
+   for(const yy of [sy0+.17,sy1-.17]){let k="hinge-"+yy,plate=box(k+"-fixed","hardware","hinge leaf",x1,x1+.026,yy-.043,yy+.043,.080,.084);tie(plate,f.r);
+    let moving=box(k+"-moving","hardware","hinge leaf",mx-.028,mx,yy-.043,yy+.043,.080,.084,"casement");let offset=box(k+"-offset","hardware","offset hinge bracket",mx-.028,mx,yy-.035,yy+.035,.048,.080,"casement");tie(offset,q.r);tie(moving,offset);
+    let pin=rod(k+"-pin","hardware","hinge pin",[x1,yy-.052,.086],[x1,yy+.052,.086],.0055);tie(pin,plate);tie(moving,pin,"Hinge knuckle attachment");
+    for(const dy of [-.027,.027]){fastener(k+"-f-"+dy,x1+.013,yy+dy,.084,1,plate);fastener(k+"-m-"+dy,mx-.014,yy+dy,.084,1,moving,"casement");}
    }
    handle("casement-handle",a0+.028,(sy0+sy1)/2,z+.033,q.l,"casement",false);
    let strike=box("strike","hardware","latch strike",.029,.035,h/2-.035,h/2+.035,.035,.056);tie(strike,center);

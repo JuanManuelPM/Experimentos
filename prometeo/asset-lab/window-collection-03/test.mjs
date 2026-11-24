@@ -1,6 +1,16 @@
 import * as B from '../surface-gate/constructor.mjs';
 import * as G from '../surface-gate/surface-gate.mjs';
 import * as api from './models.mjs';
+function checkClearAperture(api,m){
+ const box=m.parts.map(p=>({p,...api.bounds(p)})),problems=[],panes=box.filter(x=>x.p.role==="glazing");
+ for(const host of panes){
+  const lo=host.lo.slice(),hi=host.hi.slice(),margin=.008;lo[0]+=margin;hi[0]-=margin;lo[1]+=margin;hi[1]-=margin;
+  // conservative exclusion of *any* non-glazing mesh AABB penetrating the transparent
+  // interior volume, excluding neither seal nor hardware by name.
+  for(const g of box){if(g.p===host.p||g.p.role==="glazing")continue;const overlap=[0,1,2].every(k=>Math.min(hi[k],g.hi[k])-Math.max(lo[k],g.lo[k])>1e-6);if(overlap)problems.push({host:host.p.name,guest:g.p.name});}
+ }
+ return {status:problems.length?"FAIL":"PASS",checked:panes.length,marginMetres:.008,problems,scope:"closed pose; transparent interior only, 8 mm perimeter reserved for real glazing edges; conservative AABB overlap"};
+}
 function runTests(api,B,G){
  const rows=[];
  for(const [id] of api.designs){try{
@@ -12,7 +22,7 @@ function runTests(api,B,G){
   }
   let asm=B.inspectAssembly(m,{gate:G.surfaceGate});
   let motion=m.motions.every(q=>q.max>0&&m.parts.some(p=>p.motion===q.id)&&q.pivot.every(Number.isFinite));
-  rows.push({id,name:m.name,parts:m.parts.length,triangles,glazing:m.parts.filter(p=>p.role==="glazing").length,motions:m.motions.length,geometry:deg||invalid||open?"FAIL":"PASS",degenerate:deg,invalid,openEdges:open,assembly:asm.status,relations:m.relations.length,passingRelations:asm.relations.filter(r=>r.ok).length,issues:asm.issues,surfacePairs:asm.surfaces.length,surfaceFailures:asm.surfaces.filter(x=>x.status==="FAIL").length,motionMetadata:motion?"PASS":"FAIL",motionCollision:"NOT_RUN",render:"NOT_RUN",android:"NOT_RUN",art:"NOT_RUN"});
+  rows.push({id,name:m.name,parts:m.parts.length,triangles,glazing:m.parts.filter(p=>p.role==="glazing").length,motions:m.motions.length,geometry:deg||invalid||open?"FAIL":"PASS",degenerate:deg,invalid,openEdges:open,assembly:asm.status,relations:m.relations.length,passingRelations:asm.relations.filter(r=>r.ok).length,issues:asm.issues,surfacePairs:asm.surfaces.length,surfaceFailures:asm.surfaces.filter(x=>x.status==="FAIL").length,clearAperture:checkClearAperture(api,m),motionMetadata:motion?"PASS":"FAIL",motionCollision:"NOT_RUN",render:"NOT_RUN",android:"NOT_RUN",art:"NOT_RUN"});
  }catch(e){rows.push({id,error:String(e)});}}
  return rows;
 }
