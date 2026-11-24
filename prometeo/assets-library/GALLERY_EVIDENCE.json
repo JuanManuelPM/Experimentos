@@ -75,6 +75,34 @@
     {
       "name": "pending cancellation",
       "status": "PASS"
+    },
+    {
+      "name": "readback packs",
+      "status": "PASS"
+    },
+    {
+      "name": "readback partials",
+      "status": "PASS"
+    },
+    {
+      "name": "readback missing packs",
+      "status": "PASS"
+    },
+    {
+      "name": "readback atlas",
+      "status": "PASS"
+    },
+    {
+      "name": "readback global sci-fi",
+      "status": "PASS"
+    },
+    {
+      "name": "readback 24 cards maximum",
+      "status": "PASS"
+    },
+    {
+      "name": "readback unique IDs",
+      "status": "PASS"
     }
   ],
   "counts": {
@@ -83,7 +111,8 @@
     "unavailableRows": 10,
     "variants": 2654,
     "atlas": 1883,
-    "skipped": 0
+    "skipped": 0,
+    "note": "2654 entradas de archivo normalizadas; no se afirma número de diseños geométricamente únicos, ni se suma el atlas. El agrupamiento por ruta y variantes no detecta equivalencia geométrica entre rutas distintas."
   },
   "sources": {
     "quaternius": {
@@ -144,7 +173,23 @@
       "blob": "41b3436160b05c669ffe5d0bdfd822a0dd5d8a05",
       "mesh": 1,
       "externalDependencies": 3,
-      "dependencyVerification": "NOT_RUN binary response unsupported via fetch"
+      "dependencyVerification": {
+        "directoryMetadata": "PASS 3/3 present, nonzero",
+        "binaryReadback": "PASS BIN 33372 bytes; PNG bodies not returned by connector",
+        "textures": [
+          {
+            "path": "T_Hair_1_BaseColor.png",
+            "blob": "c398ca7d10a12d0a1c3fb19d459280bde868594b",
+            "bytes": 1570376
+          },
+          {
+            "path": "T_Hair_1_Normal.png",
+            "blob": "5aa652eded3befcd3cab03950309c715de42c297",
+            "bytes": 4326126
+          }
+        ],
+        "browserLoad": "NOT_RUN"
+      }
     }
   ],
   "corrections": [
