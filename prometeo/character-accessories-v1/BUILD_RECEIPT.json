@@ -1,0 +1,103 @@
+{
+  "schema": "prometeo/character-accessory-candidate/v1",
+  "date": "2026-11-24",
+  "owner": "studio-3d",
+  "status": "CANDIDATE_PARTIAL",
+  "requested": {
+    "families": 5,
+    "minimumPieces": 15,
+    "bodyProfiles": 5,
+    "fitPairs": 75
+  },
+  "constructed": {
+    "families": 5,
+    "proceduralAccessoryRecipes": 15,
+    "provisionalProfileDefinitions": 5,
+    "sceneRoutes": 5,
+    "exporter": "runtime GLTFExporter.parseAsync; export not run"
+  },
+  "families": [
+    [
+      "safari",
+      "cap",
+      "helmet"
+    ],
+    [
+      "spectacles",
+      "visor",
+      "respirator"
+    ],
+    [
+      "rucksack",
+      "satchel",
+      "fieldpack"
+    ],
+    [
+      "torch",
+      "mug",
+      "spanner"
+    ],
+    [
+      "belt",
+      "holster",
+      "pockets"
+    ]
+  ],
+  "source": {
+    "repo": "JuanManuelPM/Experimentos",
+    "branch": "candidate/prometeo-character-accessories-v1-20261124",
+    "commit": "fe0f5020890e81bb61465bad66ae8e37e38230c6",
+    "blob": "349ae0d1132d96cd9f208c92ea47be8b64ed0674",
+    "path": "prometeo/character-accessories-v1/index.html",
+    "publicCommit": "a38a73312881b71989c4c661082eea9ae061c03f",
+    "publicBlobMatch": true
+  },
+  "bodySource": {
+    "url": "https://github.com/LuanDucate/Ducz.CharacterCreator/tree/fcd215b58eec5c9ed97d0ba5f696d0e7dc085e08/public/models/Male",
+    "license": "CC0 1.0",
+    "licenseSource": "https://github.com/LuanDucate/Ducz.CharacterCreator/blob/fcd215b58eec5c9ed97d0ba5f696d0e7dc085e08/public/models/LICENSE-Quaternius.txt",
+    "models": [
+      "Adventurer",
+      "Casual_2",
+      "Farmer",
+      "Punk",
+      "Worker"
+    ],
+    "qualification": "Five source outfits and provisional scale profiles, not five independently sculpted anatomies; source binary load not verified in this execution."
+  },
+  "references": [
+    "https://github.com/JuanManuelPM/pruebas/blob/prometeo/control/PROMETEO/START_HERE.md",
+    "https://github.com/JuanManuelPM/pruebas/blob/prometeo/control/PROMETEO/spaces/studio-3d/PROJECT.md",
+    "https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/3d-npc-civilian-v1/README.md",
+    "https://threejs.org/docs/pages/GLTFLoader.html",
+    "https://threejs.org/docs/pages/module-SkeletonUtils.html",
+    "https://dev.epicgames.com/documentation/unreal-engine/working-with-modular-characters-in-unreal-engine"
+  ],
+  "tests": {
+    "v8Syntax": "PASS (module imports removed for async function parse; not execution)",
+    "sourceReadback": "PASS",
+    "publicBlobReadback": "PASS",
+    "familiesCount": "PASS_SOURCE",
+    "uiOverlayAbsent": "PASS_SOURCE",
+    "fitPairsExecuted": 0,
+    "fitPairsPlanned": 75,
+    "actualGLBLoad": "NOT_RUN",
+    "canonicalRigMapping": "NOT_RUN",
+    "exportGLB": "NOT_RUN",
+    "animatedTransfer": "NOT_RUN",
+    "skinWeights": "NOT_RUN",
+    "collisionAndSurfaceRegression": "NOT_RUN",
+    "multiview": "NOT_RUN",
+    "humanArt": "NOT_RUN",
+    "androidFPS": "NOT_RUN",
+    "http": "UNVERIFIED: all five routes inaccessible to web verifier; local DNS unavailable"
+  },
+  "limits": [
+    "Proxy fit only, not mesh collision or nose/ear/finger contact proof.",
+    "Outfit and hair exclusions not calibrated, hand grasp and full canonical skeleton not certified.",
+    "Shoulder deformation procedural, no independent garment skinning or cloth solver.",
+    "Source geometry is reusable via recipe and exporter, no actual new GLB binary or verified clips produced.",
+    "No existing work modified, no canonical promotion."
+  ],
+  "returnTo": "PROMETEO"
+}
