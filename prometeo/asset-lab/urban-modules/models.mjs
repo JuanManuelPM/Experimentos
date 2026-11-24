@@ -22,8 +22,8 @@ export function build(id){
  const rheight=z=>{let c=idx===1?8.9:idx===2?12:5.4;return .18-.155*Math.max(0,1-Math.max(0,Math.abs(z-c)-.85)/1.05)};
  const walk=(x,z)=>lerp(rheight(z),.18,clamp((Math.abs(x)-3.7)/1.7,0,1));
  const structural=(name,mat,role,x0,x1,z0,z1,h,nx=1,nz=1)=>{
-   const p=rect(name,mat,role,x0,x1,z0,z1,h,.38,nx,nz),x=(x0+x1)/2,z=(z0+z1)/2;
-   relation(p,slab,x,z,h(x,z)-.38,D,'ENCASTRE',[-.17,-.035]);return p;
+   const p=rect(name,mat,role,x0,x1,z0,z1,h,.46,nx,nz),x=(x0+x1)/2,z=(z0+z1)/2;
+   relation(p,slab,x,z,h(x,z)-.46,D,'ENCASTRE',[-.37,-.025]);return p;
  };
  const coverX=[.70,1.46],coverZ=[8.0,8.76],xs=[-3.12,-1.7,0,.70,1.46,3.12],zs=[0,3,6,8,8.76,12,15,18];
  let roadParts=[];
@@ -33,7 +33,7 @@ export function build(id){
    const p=structural('road-'+i+'-'+j,mat,'carriageway',xs[i],xs[i+1],zs[j],zs[j+1],road,3,Math.ceil((zs[j+1]-zs[j])/.5));
    roadParts.push({p,x0:xs[i],x1:xs[i+1],z0:zs[j],z1:zs[j+1]});
  }
- const hostRoad=(x,z)=>roadParts.find(q=>x>q.x0-1e-7&&x<q.x1+1e-7&&z>q.z0-1e-7&&z<q.z1+1e-7)?.p;
+ const hostRoad=(x,z)=>roadParts.find(q=>x>q.x0-1e-7&&x<q.x1+1e-7&&z>q.z0-1e-7&&z<q.z1+1e-7);
  // Square service recess, split cast frame surrounding actual circular lid.
  const cx=1.08,cz=8.38,R=.305,outer=.38,hy=road(cx,cz),bottom=structural('service-well','dark','utility-well',...coverX,...coverZ,()=>hy-.085);
  const disk=(name,mat,role,x,z,y0,y1,r,sides=48)=>keep(sweep(name,mat,role,[[x,y0,z],[x,y1,z]],()=>[r,r],sides));
@@ -77,8 +77,8 @@ export function build(id){
        // Solid joint bedding, top slightly below tile edges; not a floating slab.
        structural('walk-joint-'+side+j+'-'+k,'mortar','walk-bedding',...X(3.7,6),a,b,(x,z)=>walk(x,z)-.012,3,2);
        const under=byName.get('walk-joint-'+side+j+'-'+k);
-       for(let l=0;l<(idx===1?4:2);l++){
-         const count=idx===1?4:2,x0=3.7+2.3*l/count+(l?gap/2:0),x1=3.7+2.3*(l+1)/count-(l<count-1?gap/2:0);
+       for(let l=0;l<((a===0||b===18||idx===1)?4:2);l++){
+         const count=(a===0||b===18||idx===1)?4:2,x0=3.7+2.3*l/count+(l?gap/2:0),x1=3.7+2.3*(l+1)/count-(l<count-1?gap/2:0);
          let mat=idx===1?(l===0?'graniteBand':(k+l)%4===0?'paverWarm':'paver'):idx===2?(rand()>.68?'concreteDark':'concrete'):'concrete';
          let p=rect('walk-tile-'+side+j+'-'+k+'-'+l,mat,'sidewalk',...X(x0,x1),aa,bb,walk,.012,3,2);
          relation(p,under,s*(x0+x1)/2,(aa+bb)/2,walk(s*(x0+x1)/2,(aa+bb)/2)-.012,D,'JUNTA_VISIBLE',[-.008,.008],'Tile bed follows ramp profile');
@@ -118,14 +118,14 @@ export function build(id){
    const w=Math.min(.22+rand()*.43,x-q.x0-.012,q.x1-x-.012),l=Math.min(.22+rand()*.9,z-q.z0-.012,q.z1-z-.012);if(w<.05||l<.05)continue;
    const mat=idx===2?(k%2?'patchOld':'patch'):'patch';
    let p=keep(shell('repair-'+k,mat,'repair-patch',6,6,(u,v)=>{let a=(2*u-1)*w,b=(1-2*v)*l;let xx=x+a*(.9+.1*Math.sin(v*13+k)),zz=z+b*(.94+.06*Math.sin(u*15));return {p:[xx,road(xx,zz)+.002,zz],n:U}},.002));
-   relation(p,q,x,z,road(x,z),D,'JUNTA_VISIBLE',[-.015,.015],'Surface repair film');
+   relation(p,q.p,x,z,road(x,z),D,'JUNTA_VISIBLE',[-.015,.015],'Surface repair film');
  }
  if(idx===2)for(let k=0;k<35;k++){
    let x=(rand()-.5)*5.6,z=.6+rand()*16.8,q=hostRoad(x,z);if(!q)continue;
-   let pts=[];for(let j=0;j<6;j++){let xx=clamp(x+(rand()-.5)*.24,q.x0+.02,q.x1-.02),zz=clamp(z+j*.09,q.z0+.02,q.z1-.02);pts.push([xx,road(xx,zz)+.002,zz]);}
+   let za=clamp(z,q.z0+.02,q.z1-.12),zb=Math.min(za+.45,q.z1-.02);if(zb-za<.08)continue;let pts=[];for(let j=0;j<6;j++){let xx=clamp(x+(rand()-.5)*.24,q.x0+.02,q.x1-.02),zz=lerp(za,zb,j/5);pts.push([xx,road(xx,zz)+.002,zz]);}
    if(Math.hypot(pts[0][0]-pts.at(-1)[0],pts[0][2]-pts.at(-1)[2])<.08)continue;
    const p=keep(shell('crack-'+k,'crack','surface-fissure',1,5,(u,v)=>{let j=Math.round(v*5),a=pts[j],xx=clamp(a[0]+(u-.5)*(.008+.012*Math.sin(j*Math.PI/5)),q.x0+.001,q.x1-.001);return {p:[xx,road(xx,a[2])+.003,a[2]],n:U}},.001));
-   relation(p,q,pts[2][0],pts[2][2],pts[2][1],D,'JUNTA_VISIBLE',[-.02,.02],'Fissure visual ribbon, not structural simulation');
+   relation(p,q.p,pts[2][0],pts[2][2],pts[2][1],D,'JUNTA_VISIBLE',[-.02,.02],'Fissure visual ribbon, not structural simulation');
  }
  return m;
 }
