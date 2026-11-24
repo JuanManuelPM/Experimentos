@@ -1,0 +1,127 @@
+name: Quaternius slot 05 isolated import
+on:
+  push:
+    branches: [candidate/quaternius-complete-20261124-05]
+    paths: ['.github/workflows/prometeo-quaternius-slot05.yml']
+permissions:
+  contents: write
+concurrency:
+  group: quaternius-slot05
+  cancel-in-progress: false
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch pinned CC0 glTF mirrors and validate
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import base64, hashlib, json, pathlib, shutil, subprocess, tempfile, urllib.parse
+          from concurrent.futures import ThreadPoolExecutor
+          root = pathlib.Path('prometeo-assets/packs').resolve()
+          a=('https://github.com/agentkaerf/FreeModels.git','db3df04d1e4714298a09510b26fb6de6645138a2')
+          b=('https://github.com/MarcoPaoletta/xogot---toon-shooter.git','8fa50c491549a981ad3a2037fdb9843ec2d8bd6c')
+          specs=[
+          (50,'Zombie Apocalypse Kit','50-zombie-apocalypse-kit','zombieapocalypsekit','Zombie Apocalypse Kit - March 2024',a,60),
+          (61,'Pirate Kit','61-pirate-kit','piratekit','Pirate Kit - Nov 2023',a,71),
+          (62,'Cube World Kit','62-cube-world-kit','cubeworldkit','Cube World - Aug 2023',a,108),
+          (63,'Ultimate Space Kit','63-ultimate-space-kit','ultimatespacekit','Ultimate Space Kit - March 2023',a,92),
+          (64,'Toon Shooter Game Kit','64-toon-shooter-game-kit','toonshootergamekit','assets/Toon Shooter Game Kit - Dec 2022',b,74)]
+          def git(cwd,*args):
+              return subprocess.check_output(['git','-C',str(cwd),*args],text=True).strip()
+          with tempfile.TemporaryDirectory() as tmp:
+              def checkout(source):
+                  url,sha=source
+                  d=pathlib.Path(tmp)/sha[:12];d.mkdir()
+                  git(d,'init');git(d,'remote','add','origin',url)
+                  git(d,'sparse-checkout','init','--cone')
+                  git(d,'sparse-checkout','set',*[s[4] for s in specs if s[5]==source])
+                  git(d,'fetch','--depth','1','--filter=blob:none','origin',sha)
+                  git(d,'checkout','--detach','FETCH_HEAD')
+                  assert git(d,'rev-parse','HEAD')==sha
+                  return d
+              sources={}
+              with ThreadPoolExecutor(max_workers=2) as ex:
+                  fs={source:ex.submit(checkout,source) for source in [a,b]}
+                  for source,f in fs.items():
+                      try:sources[source]=f.result()
+                      except Exception as e:print('SOURCE FAILED',source,str(e),flush=True)
+              def verify(model,src):
+                  data=model.read_bytes()
+                  j=json.loads(data)
+                  assert j['asset']['version']=='2.0' and j.get('meshes'), 'missing meshes'
+                  files={model}
+                  def uri_data(uri):
+                      if uri.startswith('data:'):
+                          head,content=uri.split(',',1)
+                          assert ';base64' in head
+                          return base64.b64decode(content,validate=True)
+                      u=urllib.parse.urlsplit(uri)
+                      assert not (u.scheme or u.netloc or u.query or u.fragment), 'unsafe URI'
+                      path=urllib.parse.unquote(u.path)
+                      assert '\\' not in path and not pathlib.Path(path).is_absolute()
+                      rel=model.parent/path
+                      assert not rel.is_symlink()
+                      p=rel.resolve()
+                      assert p.is_relative_to(src) and p.is_file(), f'missing dependency {uri}'
+                      files.add(p)
+                      return p.read_bytes()
+                  for buf in j.get('buffers',[]):
+                      assert len(uri_data(buf['uri']))==buf['byteLength'], 'buffer length'
+                  for view in j.get('bufferViews',[]):
+                      assert view.get('byteOffset',0)+view['byteLength']<=j['buffers'][view['buffer']]['byteLength']
+                  for img in j.get('images',[]):
+                      if 'uri' in img: assert uri_data(img['uri'])
+                      else: assert 0<=img['bufferView']<len(j['bufferViews'])
+                  for p in files:
+                      assert p.is_file() and not p.is_symlink() and 0<p.stat().st_size<100*1024*1024
+                      assert not p.read_bytes().startswith(b'version https://git-lfs.github.com/spec/v1')
+                  return files,{'path':model.relative_to(src).as_posix(),'meshes':len(j['meshes']),'skins':len(j.get('skins',[])),'animations':len(j.get('animations',[])),'materials':len(j.get('materials',[])),'images':len(j.get('images',[]))}
+              for id,name,slug,page,folder,source,expected in specs:
+                  try:
+                      if source not in sources: raise RuntimeError('mirror checkout failed')
+                      src=(sources[source]/folder).resolve()
+                      assert src.is_dir()
+                      dst=root/slug;dst.mkdir(parents=True,exist_ok=True)
+                      models=sorted(src.rglob('*.gltf'))
+                      valid={}; details=[]; failures=[]
+                      for model in models:
+                          try:
+                              assert not model.is_symlink()
+                              files,info=verify(model,src)
+                              # No mutation of any original, no conflict with seed files.
+                              for p in files:
+                                  q=dst/p.relative_to(src)
+                                  if q.exists(): assert q.read_bytes()==p.read_bytes(),f'existing bytes differ: {q}'
+                              for p in files:
+                                  rel=p.relative_to(src).as_posix()
+                                  valid[rel]=p
+                              details.append(info)
+                          except Exception as e: failures.append({'path':model.relative_to(src).as_posix(),'error':str(e)})
+                      if not details:raise RuntimeError('no valid glTF')
+                      inventory=[]
+                      for rel,p in sorted(valid.items()):
+                          data=p.read_bytes();q=dst/rel;q.parent.mkdir(parents=True,exist_ok=True)
+                          if not q.exists():shutil.copyfile(p,q)
+                          assert q.read_bytes()==data
+                          inventory.append({'path':rel,'bytes':len(data),'sha256':hashlib.sha256(data).hexdigest(),'gitBlob':hashlib.sha1(f'blob {len(data)}'.encode()+b'\0'+data).hexdigest()})
+                      official='https://quaternius.com/packs/'+page+'.html'
+                      # Do not claim official completeness based only on mirror count.
+                      result={'id':id,'name':name,'folder':'packs/'+slug,'status':'PARTIAL' if failures or len(details)!=expected else 'IMPORTED','official':official,'license':'CC0-1.0','coverage':'pinned CC0 mirror glTF edition; official archive identity not asserted','officialModelCount':expected,'mirrorModelCount':len(models),'models':len(details),'bytes':sum(f['bytes'] for f in inventory),'formats':['gltf'],'source':{'repo':source[0],'commit':source[1],'path':folder,'edition':'CC0 mirror glTF'},'files':inventory,'modelDetails':details,'missingModels':failures,'verification':{'sourceBytes':'PASS','dependencyURIs':'PASS for listed models','render':'NOT_RUN'}}
+                      (dst/'PROVENANCE.json').write_text(json.dumps(result,indent=2)+'\n')
+                      (dst/'LICENSE.txt').write_text('Quaternius - CC0 1.0 Universal\n'+official+'\nhttps://creativecommons.org/publicdomain/zero/1.0/\nMirror: '+source[0]+' @ '+source[1]+'\n')
+                      print(id,len(details),len(models),result['bytes'],len(failures),flush=True)
+                  except Exception as e: print('PACK FAILED',id,str(e),flush=True)
+          PY
+      - name: Commit disjoint slot 05 packs only
+        shell: bash
+        run: |
+          git config user.name "prometeo-assets"
+          git config user.email "prometeo-assets@users.noreply.github.com"
+          git add -- prometeo-assets/packs/50-zombie-apocalypse-kit prometeo-assets/packs/61-pirate-kit prometeo-assets/packs/62-cube-world-kit prometeo-assets/packs/63-ultimate-space-kit prometeo-assets/packs/64-toon-shooter-game-kit
+          if ! git diff --cached --quiet; then
+            git commit -m "Slot 05: import pinned CC0 glTF mirror assets with validation"
+            git push origin HEAD:candidate/quaternius-complete-20261124-05
+          fi
