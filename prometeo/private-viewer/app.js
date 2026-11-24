@@ -2,7 +2,9 @@
 /* PROMETEO Viewer V1: public client, private GitHub content. No credential persistence. */
 const $ = id => document.getElementById(id);
 const $files = $('files'), $preview = $('preview'), $status = $('status');
-let token = '';
+let token = ''; // legacy PAT disabled in this candidate
+let serverSession = false;
+let sessionEpoch = 0;
 let owner = '', repository = '', branch = '', folder = '';
 let activePath = '', activeId = '', activeRoot = '', lastOpened = '';
 let fileCache = new Map(), moduleCache = new Map(), busy = false;
@@ -42,8 +44,10 @@ function bytesB64(bytes) {
   return btoa(str);
 }
 async function github(path) {
-  const response = await fetch('https://api.github.com' + path, {
-    headers: Object.assign({'Accept':'application/vnd.github+json'}, token ? {'Authorization':'Bearer ' + token} : {}),
+  const privateRead = serverSession && !(owner === 'JuanManuelPM' && repository === 'Experimentos');
+  const response = await fetch(privateRead ? '/api/github?path='+encodeURIComponent(path) : 'https://api.github.com' + path, {
+    headers: {'Accept':'application/vnd.github+json'},
+    credentials: privateRead ? 'same-origin' : 'omit',
     cache: 'no-store',
     referrerPolicy: 'no-referrer'
   });
@@ -79,7 +83,7 @@ async function fetchBytes(path) {
 async function getText(path) { return decoder.decode(await fetchBytes(path)); }
 async function dataURL(path) { return 'data:' + mime(path) + ';base64,' + bytesB64(await fetchBytes(path)); }
 function isRelative(url) { return /^(?:\.{1,2}\/|[^/#.:?][^:]*$)/.test(url) && !url.startsWith('//'); }
-function withinRoot(path) { return !activeRoot || path === activeRoot || path.startsWith(activeRoot + '/'); }
+function withinRoot(path) { return !!activeRoot && (path === activeRoot || path.startsWith(activeRoot + '/')); }
 function assertAsset(path) {
   path = normalizePath(path);
   if (!withinRoot(path)) throw Error('Recurso fuera de la carpeta abierta: ' + path);
@@ -142,6 +146,10 @@ async function prepareHtml(path) {
   moduleCache.clear();
   const html = await getText(path);
   const doc = new DOMParser().parseFromString(html, 'text/html');
+  if(serverSession && !(owner === 'JuanManuelPM' && repository === 'Experimentos')) {
+    const csp=doc.createElement('meta'); csp.httpEquiv='Content-Security-Policy'; csp.content="default-src 'none'; script-src 'unsafe-inline' data: blob:; style-src 'unsafe-inline' data:; img-src data: blob:; media-src data: blob:; font-src data: blob:; connect-src 'none'; frame-src 'none'; form-action 'none'; object-src 'none'; base-uri https://prometeo-viewer.invalid";
+    doc.head.prepend(csp);
+  }
   for (const base of doc.querySelectorAll('base')) base.remove();
   // Relative Request() URLs in WebGL loaders resolve against a synthetic base.
   const virtualBase = doc.createElement('base');
@@ -183,11 +191,12 @@ async function prepareHtml(path) {
   }
   const shim = doc.createElement('script');
   shim.textContent = bridgeSource(activeId, activeRoot ? activeRoot + '/' : '');
-  doc.head.insertBefore(shim, doc.head.firstChild);
+  const firstPolicy=doc.head.querySelector('meta[http-equiv="Content-Security-Policy"]');
+  if(firstPolicy) { doc.head.prepend(firstPolicy); firstPolicy.after(shim); } else doc.head.prepend(shim);
   return '<!doctype html>\n' + doc.documentElement.outerHTML;
 }
 function clearFrame() {
-  activePath = ''; activeId=''; activeRoot=''; lastOpened='';
+  sessionEpoch++; activePath = ''; activeId=''; activeRoot=''; lastOpened='';
   $preview.hidden = true; $preview.removeAttribute('srcdoc');
   $('welcome').hidden = false;
   $('reload').disabled = true; $('fullscreen').disabled = true;
@@ -259,19 +268,23 @@ async function browse(initialFolder='') {
 window.addEventListener('message', async e => {
   const data = e.data;
   if (e.source !== $preview.contentWindow || !data || data.kind !== 'pv:fetch' || data.id !== activeId || !activeId) return;
-  const reply = {kind:'pv:result',id:activeId,n:data.n};
+  if(e.origin !== 'null' || !Number.isSafeInteger(data.n) || typeof data.path !== 'string') return;
+  const epoch=sessionEpoch, id=activeId;
+  const reply = {kind:'pv:result',id,n:data.n};
   try {
     const path = assertAsset(data.path);
     const bytes = await fetchBytes(path);
+    if(epoch !== sessionEpoch || id !== activeId || e.source !== $preview.contentWindow) return;
     reply.mime = mime(path);reply.bytes = bytes.slice().buffer;
     e.source.postMessage(reply,'*',[reply.bytes]);
   } catch(error) {
+    if(epoch !== sessionEpoch || id !== activeId) return;
     reply.error = String(error.message||error);
     e.source.postMessage(reply,'*');
   }
 });
 $('connect').addEventListener('click', async () => {
-  const candidate = $('token').value.trim();
+  const candidate = ''; // no token accepted by candidate
   $('token').value = '';
   if (!candidate) { status('Pegá un token de solo lectura o usá la demo pública.');return; }
   token=candidate;fileCache.clear();moduleCache.clear();
@@ -283,6 +296,7 @@ $('connect').addEventListener('click', async () => {
   } catch(e) { token='';$('auth-state').textContent='Sin conectar';$('auth-state').classList.remove('active');status('Conexión fallida: '+e.message); }
 });
 $('disconnect').addEventListener('click', () => {
+  serverSession=false; fetch('/auth/logout',{method:'POST',credentials:'same-origin'}).catch(()=>{});
   token='';fileCache.clear();moduleCache.clear();clearFrame();
   $('auth-state').textContent='Sin conectar';$('auth-state').classList.remove('active');
   status('Credencial eliminada de memoria. Cerrá la pestaña para completar el cierre.');
@@ -301,4 +315,4 @@ $('fullscreen').addEventListener('click', () => {
 });
 window.addEventListener('pagehide',()=> { token=''; });
 status('Listo. Conectá GitHub o abrí la demo pública.');
-window.PrometeoViewer = { browse, openFile, hasVisibleFile(name) { return Array.from($files.querySelectorAll('button.file')).some(x => x.textContent.includes(name)); } };
+window.PrometeoViewer = { browse, openFile, async connectSession(){ const r=await fetch('/api/session',{cache:'no-store',credentials:'same-origin'}); if(!r.ok)return false; const x=await r.json(); if(!x.repo||!x.ref||!x.root)return false; serverSession=true; $('repository').value=x.repo; $('branch').value=x.ref; $('auth-state').textContent='Conectado · privado'; $('auth-state').classList.add('active'); await browse(x.root); return true; }, hasVisibleFile(name) { return Array.from($files.querySelectorAll('button.file')).some(x => x.textContent.includes(name)); } };
