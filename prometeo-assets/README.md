@@ -2,7 +2,7 @@
 
 Real 3D files. Free CC0 packs only. Mirror coverage may differ from current editions; FBX/OBJ remain source formats when GLB/glTF unavailable.
 
-Imported: 35/56; partial: 5; models: 1985; bytes: 1872279780
+Imported: 35/60; models: 1995; bytes: 1873282795
 
 PARTIAL rows are preserved as usable subsets but not listed by the existing gallery's IMPORTED filter.
 
@@ -14,6 +14,8 @@ PARTIAL rows are preserved as usable subsets but not listed by the existing gall
 - 06 Ultimate Modular Women Pack: IMPORTED (10 models) 
 - 07 Ultimate Animated Character Pack: FAILED (0 models) no usable free archive link
 - 08 RPG Character Pack: FAILED (0 models) no usable free archive link
+- 09 Animated Men Pack: PARTIAL (1 models) 
+- 10 Background Posed Humans Pack: PARTIAL (20 models) 
 - 11 Downtown City MegaKit: IMPORTED (153 models) 
 - 12 Medieval Village MegaKit: IMPORTED (176 models) 
 - 13 Modular Streets Pack: IMPORTED (25 models) 
@@ -53,13 +55,14 @@ PARTIAL rows are preserved as usable subsets but not listed by the existing gall
 - 47 Modular Train Pack: FAILED (0 models) no usable free archive link
 - 48 Ships Pack: IMPORTED (6 models) 
 - 49 Ultimate Spaceships Pack: IMPORTED (11 models) 
-- 50 Zombie Apocalypse Kit: FAILED (0 models) no usable free archive link
-- 65 Platformer Game Kit: PARTIAL (5 models) 
-- 66 3D Card Kit - Fantasy: FAILED (0 models) official archive download unavailable (container DNS); no verified binary mirror found
-- 67 Modular Platformer Pack: PARTIAL (5 models) 
-
-- 09 Animated Men Pack: PARTIAL (1 models) one of four official characters; modified materials with embedded palette; only one clip; not full animation edition
-- 10 Background Posed Humans Pack: PARTIAL (20 models) 20 mirror figures, 8 separate hairstyles absent
+- 50 Zombie Apocalypse Kit: PARTIAL (2 models) 
 - 55 Animated Women Pack: FAILED (0 models) Official direct download unavailable: DNS blocked in runtime. No exact provenance-verified transferable mirror found.
 - 56 Animated Man Pack: FAILED (0 models) Official direct download unavailable: DNS blocked in runtime. No exact provenance-verified transferable mirror found.
 - 57 Animated Woman Pack: FAILED (0 models) Official direct download unavailable: DNS blocked in runtime. No exact provenance-verified transferable mirror found.
+- 61 Pirate Kit: PARTIAL (2 models) 
+- 62 Cube World Kit: PARTIAL (2 models) 
+- 63 Ultimate Space Kit: PARTIAL (2 models) 
+- 64 Toon Shooter Game Kit: PARTIAL (2 models) 
+- 65 Platformer Game Kit: PARTIAL (5 models) 
+- 66 3D Card Kit - Fantasy: FAILED (0 models) official archive download unavailable (container DNS); no verified binary mirror found
+- 67 Modular Platformer Pack: PARTIAL (5 models) 
