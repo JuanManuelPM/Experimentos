@@ -89,32 +89,51 @@ def mega_import():
                 out=modelroot.joinpath(*p.parts);out.parent.mkdir(parents=True,exist_ok=True)
                 with archive.open(str(p)) as f,out.open("wb") as d: shutil.copyfileobj(f,d)
         models=[p for p in modelroot.rglob("*") if p.suffix.lower() in (".gltf",".glb")]
-        # Resolve shared textures from the original archive by basename, preserving original bytes.
+        # Resolve shared textures from the archive. Keep independent valid models even if the vendor omitted a resource.
         from urllib.parse import unquote
+        import re
+        missing=[]; good=[]
         with zipfile.ZipFile(z) as archive:
             byname={}
             for member in archive.infolist():
                 if not member.is_dir():
                     byname.setdefault(pathlib.PurePosixPath(member.filename).name.casefold(),[]).append(member)
             for p in models:
-                if p.suffix.lower()!=".gltf": continue
-                j=json.loads(p.read_text())
-                for entry in j.get("buffers",[])+j.get("images",[]):
-                    u=entry.get("uri")
-                    if not u or u.startswith("data:"): continue
-                    dest=p.parent/unquote(u)
-                    if dest.is_file(): continue
-                    if not dest.resolve().is_relative_to(modelroot.resolve()): raise ValueError("Unsafe resource path "+u)
-                    candidates=byname.get(dest.name.casefold(),[])
-                    if not candidates: raise ValueError("Missing resource: "+u)
-                    contents=[archive.read(c) for c in candidates]
-                    if len({hashlib.sha256(c).hexdigest() for c in contents})!=1:
-                        preferred=[c for c in candidates if "/gltf/" in c.filename.casefold()]
-                        if len(preferred)!=1: raise ValueError("Ambiguous resource "+u)
-                        data=archive.read(preferred[0])
-                    else: data=contents[0]
-                    dest.parent.mkdir(parents=True,exist_ok=True);dest.write_bytes(data)
-        receipt=finalize(folder,name,official,url,models,"Official free Standard edition; not paid Pro/Source")
+                try:
+                    if p.suffix.lower()==".gltf":
+                        j=json.loads(p.read_text())
+                        for entry in j.get("buffers",[])+j.get("images",[]):
+                            u=entry.get("uri")
+                            if not u or u.startswith("data:"): continue
+                            dest=p.parent/unquote(u)
+                            if dest.is_file(): continue
+                            if not dest.resolve().is_relative_to(modelroot.resolve()): raise ValueError("Unsafe resource path "+u)
+                            candidates=byname.get(dest.name.casefold(),[])
+                            if not candidates and dest.suffix.lower()==".bin":
+                                stem=re.sub(r"[_ .][0-9]{3}$","",dest.stem.casefold())
+                                candidates=[c for vs in byname.values() for c in vs if pathlib.PurePosixPath(c.filename).suffix.lower()==".bin" and re.sub(r"[_ .][0-9]{3}$","",pathlib.PurePosixPath(c.filename).stem.casefold())==stem and c.file_size==entry.get("byteLength")]
+                                # Do not substitute different geometry based on size alone.
+                                candidates=[c for c in candidates if pathlib.PurePosixPath(c.filename).parent.name==p.parent.name]
+                            if not candidates: raise ValueError("Missing resource: "+u)
+                            contents=[archive.read(c) for c in candidates]
+                            if len({hashlib.sha256(c).hexdigest() for c in contents})!=1:
+                                preferred=[c for c in candidates if "/gltf/" in c.filename.casefold()]
+                                if len(preferred)!=1: raise ValueError("Ambiguous resource "+u)
+                                data=archive.read(preferred[0])
+                            else: data=contents[0]
+                            if dest.suffix.lower()==".bin" and entry.get("byteLength")!=len(data): raise ValueError("Buffer size mismatch "+u)
+                            dest.parent.mkdir(parents=True,exist_ok=True);dest.write_bytes(data)
+                    validate(p);good.append(p)
+                except Exception as e:
+                    missing.append({"model":p.relative_to(folder).as_posix(),"error":str(e)})
+        for row in missing:
+            print("Skipped source model:",json.dumps(row),flush=True)
+            (folder/row["model"]).unlink()
+        (folder/"source-issues.json").write_text(json.dumps(missing,indent=2))
+        receipt=finalize(folder,name,official,url,good,"Official free Standard edition; not paid Pro/Source")
+        receipt["source_models"]=len(models)
+        receipt["skipped"]=len(missing)
+        receipt["issues"]=missing
         target=ROOT/slug
         if target.exists(): raise ValueError("Destination exists")
         shutil.move(folder,target)
