@@ -1,4 +1,4 @@
-import {STUDIOS,getBatchesForStudio,getResults,copyBase} from "./model.mjs";
+import {STUDIOS,getBatchesForStudio,getResults,copyBase} from "./model.mjs?v=20261123-mobile2";
 let studio=new URL(location.href).searchParams.get("studio")||"3d";
 if(!STUDIOS.some(x=>x.id===studio))studio="3d";
 const labels={ "3d":"🧊","web":"🌐","music":"🎵","video":"🎬","images":"🎨"};
@@ -36,10 +36,13 @@ function render(batches,messages){
    summary.textContent=old.title;details.append(summary,gridFor(old,messages));section.append(details);}body.append(section);}
  status.textContent="Miniaturas reales cuando están disponibles. Un resultado publicado no implica QA aprobada.";
 }
+const retry=document.querySelector("#retry");
 async function init(){
- try{const [br,mr]=await Promise.all([fetch("../BATCHES.json",{cache:"no-store"}),fetch("../ROOM_MESSAGES.json",{cache:"no-store"})]);
+ retry.hidden=true;status.textContent="Leyendo obras publicadas…";
+ try{const [br,mr]=await Promise.all([fetch("../BATCHES.json",{cache:"no-store",signal:AbortSignal.timeout(12000)}),fetch("../ROOM_MESSAGES.json",{cache:"no-store",signal:AbortSignal.timeout(12000)})]);
   if(!br.ok||!mr.ok)throw Error("HTTP "+br.status+"/"+mr.status);
   const batches=await br.json(),messages=await mr.json();
+  if(!Array.isArray(batches.batches)||!Array.isArray(messages.entries))throw Error("Índices inválidos");
   render(batches.batches,messages.entries);
- }catch(e){status.textContent="No se pudieron cargar los índices: "+e.message;}
-}init();
+ }catch(e){status.textContent="No se pudieron cargar las obras. Comprobá la conexión y reintentá.";retry.hidden=false;}
+}retry.addEventListener("click",init);init();
