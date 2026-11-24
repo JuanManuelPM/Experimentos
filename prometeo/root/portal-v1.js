@@ -58,7 +58,8 @@ function messages(){
 function renderMessages(){
  $('space').textContent=state.rooms.find(x=>x.id===state.room)?.label||'PROMETEO';
  const list=messages(),last=list.find(e=>e.id===state.batchId)||list[0],view=$('response');
- const fallback=$('startup-fallback');if(fallback){fallback.hidden=state.ready;}
+ const fallback=$('startup-fallback');if(fallback){fallback.hidden=!!last||!state.indexUnavailable;if(!fallback.hidden)fallback.querySelector('p').textContent='No se pudieron recuperar los índices. Podés abrir la galería o recargar.';}
+ view.hidden=!last;
  view.setData(last||{},last?.blocks?.some(b=>b.type==='batch')?[]:[{kind:'copy',label:'Copiar referencia',value:promptFor(state.room,last?.id?'mensaje/'+encodeURIComponent(last.id):'')}]);
  const raw=list.filter(e=>e.id!==last?.id);
  const toggle=$('older');toggle.hidden=raw.length===0;toggle.setAttribute('aria-expanded',String(state.older));toggle.setAttribute('aria-label','Mensajes · '+list.length);toggle.title='Mensajes ('+list.length+')';
@@ -176,7 +177,7 @@ function renderUniversalLibrary(){
  flat.sort((a,b)=>validDate(b.x.result)-validDate(a.x.result)||String(a.group.batch.id).localeCompare(String(b.group.batch.id))||Number(a.x.task.number)-Number(b.x.task.number));
  if(state.universalView==='recent'){
   const grid=element('section','p-univ-grid');grid.setAttribute('aria-label','Obras ordenadas por publicación real');
-  if(!flat.length)grid.append(element('p','p-univ-empty','Todavía no hay entregas con enlaces registradas.'));
+  if(!flat.length)grid.append(element('p','p-univ-empty',state.indexUnavailable?'No se pudieron recuperar los índices. Recargá cuando vuelva la conexión.':'Todavía no hay entregas registradas para esta selección.'));
   else for(const item of flat)grid.append(card(item.group,item.x));
   host.append(grid);return;
  }
@@ -329,6 +330,7 @@ async function refresh(){
  const keys=Object.keys(files),values=await Promise.all(keys.map(async k=>{const p=files[k];try{const d=await get(p);cache(p,d);return d;}catch{return readCache(p);}}));
  const d=Object.fromEntries(keys.map((k,i)=>[k,values[i]]));
  if(Array.isArray(d.rooms?.rooms)&&d.rooms.rooms.length){state.rooms=d.rooms.rooms.filter(x=>x&&/^[a-z0-9-]+$/.test(x.id)&&typeof x.label==='string');shell.setRooms(state.rooms);}
+ state.indexUnavailable=!Array.isArray(d.messages?.entries)||!Array.isArray(d.batches?.batches);
  if(Array.isArray(d.messages?.entries))state.public=d.messages.entries;
  if(Array.isArray(d.legacy?.entries))state.legacy=d.legacy.entries;
  if(Array.isArray(d.batches?.batches))state.batches=d.batches.batches.filter(b=>b&&/^[a-z0-9-]+$/.test(b.id)&&Array.isArray(b.tasks));
