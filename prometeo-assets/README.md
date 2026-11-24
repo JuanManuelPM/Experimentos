@@ -2,9 +2,9 @@
 
 Real 3D files. Free CC0 packs only. Mirror coverage may differ from current editions; FBX/OBJ remain source formats when GLB/glTF unavailable.
 
-Imported: 33/50; models: 1910; bytes: 1730430318
+Imported: 34/50; models: 1928; bytes: 1858456837
 
-- 01 Universal Base Characters: FAILED (0 models) no usable free archive link
+- 01 Universal Base Characters: IMPORTED (18 models) 
 - 02 Modular Character Outfits - Fantasy: IMPORTED (24 models) 
 - 03 Universal Animation Library: IMPORTED (2 models) 
 - 04 Universal Animation Library 2: IMPORTED (3 models) 
