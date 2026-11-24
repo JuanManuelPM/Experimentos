@@ -1,0 +1,1 @@
+import {readFileSync} from 'node:fs';import {test} from './navigation.mjs';const scene=JSON.parse(readFileSync(new URL('./scene.json',import.meta.url)));const r=test(scene);console.log(JSON.stringify(r,null,2));if(r.some(t=>t.status!=='PASS'))process.exitCode=1;
