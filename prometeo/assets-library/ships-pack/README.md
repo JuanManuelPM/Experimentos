@@ -1,0 +1,2 @@
+# Ships Pack
+6 GLB from https://github.com/trebeljahr/quaternius-showcase/tree/main/public/glb/ships_pack, verified by Git SHA. CC0: https://quaternius.com/packs/ships.html. Full mirror directory; not the original ZIP.
