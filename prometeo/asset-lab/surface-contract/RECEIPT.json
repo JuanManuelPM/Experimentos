@@ -1,0 +1,258 @@
+{
+  "status": "CANDIDATE_GEOMETRY_DEMONSTRATED",
+  "base": "6e69c6d937120f6ee8b23899fc637ea64838917f",
+  "fixtureBlobs": [
+    "78bc4d4659484b4516a4ca486ee9e82eb13e07c8",
+    "4519cf5fcbe271da83f48081151f93114ea416cc",
+    "b4f960d32149d928f683c9bce600dc6b25ba3cc3"
+  ],
+  "execution": "V8 isolate, actual fetched source and exact module bodies; ES module import syntax not executed by Node",
+  "tests": [
+    {
+      "name": "ARC original structural baseline",
+      "pass": true,
+      "detail": 14
+    },
+    {
+      "name": "HÉLICE original structural baseline",
+      "pass": true,
+      "detail": 13
+    },
+    {
+      "name": "rail original negative, actual producer rejected",
+      "pass": true,
+      "detail": [
+        {
+          "surface": "visible",
+          "host": "back-band",
+          "guest": "left-sled",
+          "triangle": 4,
+          "kind": "surface",
+          "point": [
+            -0.219996,
+            0.6591680000000001,
+            -0.21717
+          ]
+        },
+        {
+          "surface": "visible",
+          "host": "back-band",
+          "guest": "left-sled",
+          "triangle": 4,
+          "kind": "residual",
+          "point": [
+            -0.22028494744832366,
+            0.6589310273996388,
+            -0.2180975523482722
+          ]
+        },
+        {
+          "surface": "visible",
+          "host": "back-band",
+          "guest": "right-sled",
+          "triangle": 140,
+          "kind": "surface",
+          "point": [
+            0.195552,
+            0.6603920000000001,
+            -0.22448
+          ]
+        },
+        {
+          "surface": "visible",
+          "host": "back-band",
+          "guest": "right-sled",
+          "triangle": 140,
+          "kind": "residual",
+          "point": [
+            0.19579954247273162,
+            0.6601748426843872,
+            -0.22542422742200688
+          ]
+        }
+      ]
+    },
+    {
+      "name": "petal original negative, actual producer rejected",
+      "pass": true,
+      "detail": [
+        {
+          "surface": "visible",
+          "host": "continuous-shell",
+          "guest": "mount",
+          "triangle": 2961,
+          "kind": "residual",
+          "point": [
+            -0.03152275192356637,
+            0.43683856083045525,
+            0.051010722199734404
+          ]
+        },
+        {
+          "surface": "visible",
+          "host": "continuous-shell",
+          "guest": "mount",
+          "triangle": 3149,
+          "kind": "surface",
+          "point": [
+            -0.04157978076305092,
+            0.43683139063642845,
+            0.03639968221454471
+          ]
+        }
+      ]
+    },
+    {
+      "name": "contact no penetration",
+      "pass": true,
+      "detail": {
+        "ok": true,
+        "errors": [],
+        "hits": []
+      }
+    },
+    {
+      "name": "hidden joint with residual",
+      "pass": true,
+      "detail": {
+        "ok": true,
+        "errors": [],
+        "hits": []
+      }
+    },
+    {
+      "name": "intentional through joint bounded",
+      "pass": true,
+      "detail": {
+        "ok": true,
+        "errors": [],
+        "hits": []
+      }
+    },
+    {
+      "name": "out-of-zone pass rejected",
+      "pass": true,
+      "detail": [
+        "JOINT_OUTSIDE_ZONE",
+        "PROTECTED_SURFACE_INTRUSION",
+        "PROTECTED_SURFACE_INTRUSION",
+        "PASS_NOT_DEMONSTRATED"
+      ]
+    },
+    {
+      "name": "residual-only intrusion",
+      "pass": true,
+      "detail": [
+        {
+          "surface": "top",
+          "host": "host",
+          "guest": "guest",
+          "triangle": 2,
+          "kind": "residual",
+          "point": [
+            0.46,
+            0.095,
+            0.46
+          ]
+        }
+      ]
+    },
+    {
+      "name": "narrow crossing between host vertices",
+      "pass": true,
+      "detail": [
+        {
+          "surface": "top",
+          "host": "host",
+          "guest": "guest",
+          "triangle": 3,
+          "kind": "surface",
+          "point": [
+            0.3709,
+            0.1,
+            0.4999
+          ]
+        },
+        {
+          "surface": "top",
+          "host": "host",
+          "guest": "guest",
+          "triangle": 3,
+          "kind": "residual",
+          "point": [
+            0.3709,
+            0.095,
+            0.4999
+          ]
+        }
+      ]
+    },
+    {
+      "name": "oblique local surface",
+      "pass": true,
+      "detail": [
+        {
+          "surface": "top",
+          "host": "host",
+          "guest": "guest",
+          "triangle": 2,
+          "kind": "surface",
+          "point": [
+            0.46,
+            -0.2545584412271571,
+            0.3959797974644667
+          ]
+        },
+        {
+          "surface": "top",
+          "host": "host",
+          "guest": "guest",
+          "triangle": 2,
+          "kind": "residual",
+          "point": [
+            0.46,
+            -0.25809397513308985,
+            0.39244426355853396
+          ]
+        }
+      ]
+    },
+    {
+      "name": "missing contract blocks producer",
+      "pass": true,
+      "detail": {
+        "ok": false,
+        "errors": [
+          {
+            "code": "INVALID_CONTRACT_OR_MESH",
+            "message": "MISSING_SURFACE_CONTRACT"
+          }
+        ],
+        "hits": []
+      }
+    },
+    {
+      "name": "contact with penetration rejected",
+      "pass": true,
+      "detail": [
+        "CONTACT_MISSING",
+        "CONTACT_PENETRATION"
+      ]
+    },
+    {
+      "name": "unclassified guest blocked",
+      "pass": true,
+      "detail": [
+        {
+          "code": "INVALID_CONTRACT_OR_MESH",
+          "message": "UNCLASSIFIED_PART:guest"
+        }
+      ]
+    }
+  ],
+  "render": "NOT_RUN",
+  "android": "NOT_RUN",
+  "human": "NOT_RUN",
+  "originalsChanged": false,
+  "scope": "Explicit protected triangulated patches; no global arbitrary mesh visibility guarantee. No new chair."
+}
