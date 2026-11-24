@@ -1,0 +1,89 @@
+{
+  "schema": "prometeo.work.result/v1",
+  "missionId": "world-studio-v2-20261124",
+  "missionVersion": "89252fd67fb3a9b4c765143c5c091c2c1d8a5ebf",
+  "missionSlot": 5,
+  "slot": 5,
+  "taskId": "P-worldstudio-20261124-05",
+  "owner": "studio-3d",
+  "artifactId": "world-studio-estacion-001",
+  "status": "PARTIAL_SOURCE_CANDIDATE",
+  "repo": "JuanManuelPM/Experimentos",
+  "ref": "candidate/world-studio-v2-20261124-05",
+  "path": "prometeo/estacion-prometeo-001/",
+  "sourceCommit": "30cff5a1bbe62a1ba403f418b470386c315c7a17",
+  "base": "708e003f45b77642574402067998ed4b4e56cf59",
+  "files": {
+    "index.html": {
+      "blob": "cdbfef076aad72090974fd8007454371508aa1ae",
+      "bytes": 6122
+    },
+    "viewer.mjs": {
+      "blob": "92964e559346ed25d4c1c3c26a896881b86e7c6d",
+      "bytes": 11311
+    },
+    "scene.json": {
+      "blob": "38349d788a2f965911869225644ee521959a3a77",
+      "bytes": 121652
+    },
+    "navigation.mjs": {
+      "blob": "af659e6738ff3816697904db5e959230e33672d3",
+      "bytes": 3255
+    },
+    "tests.mjs": {
+      "blob": "b227eb2ff02ce7621fbc9497a645199a11eae5a9",
+      "bytes": 263
+    },
+    "TEST-LOG.json": {
+      "blob": "6147659dcf0b2296e81f4d22639be4a09f3236b6",
+      "bytes": 5549
+    }
+  },
+  "counts": {
+    "requested": 1,
+    "builtSource": 1,
+    "verifiedPlayableAccessible": 0,
+    "zones": 6,
+    "sectors": 10,
+    "instances": 261,
+    "colliders": 68,
+    "distinctAssetRefs": 17,
+    "logicalTestsPassed": 10,
+    "logicalTestsTotal": 10
+  },
+  "sources": {
+    "assetCommit": "4529f6f58e3a08a907e7766c958705a0c1d9830f",
+    "catalogBlob": "c72c67cc9bdf6fb0b847e1769b44a137573fe99c",
+    "packs": [
+      17,
+      18
+    ]
+  },
+  "tests": {
+    "manifestAndNavigation": "PASS 10/10 exact source in V8; 1103 reachability samples",
+    "defectsCorrected": 3,
+    "viewerSyntax": "PASS V8 after import removal",
+    "browser": "NOT_RUN; WebGL2 false and network administrator block",
+    "physicalAndroid": "NOT_RUN",
+    "gpuMetrics": "NOT_RUN",
+    "visualQuality": "NOT_RUN",
+    "publicHttp": "NOT_RUN"
+  },
+  "publication": "No external canonical binding for this candidate; no gh-pages merge or false preview URL",
+  "nextIntegration": "Coordinator verifies Q17 texture resolution, browser render, mobile controls, station/slot4 manifest runtime integration and safe deployment.",
+  "activeEffect": "NONE",
+  "scopeComparison": [
+    "prometeo/estacion-prometeo-001/TEST-LOG.json",
+    "prometeo/estacion-prometeo-001/index.html",
+    "prometeo/estacion-prometeo-001/navigation.mjs",
+    "prometeo/estacion-prometeo-001/scene.json",
+    "prometeo/estacion-prometeo-001/tests.mjs",
+    "prometeo/estacion-prometeo-001/viewer.mjs"
+  ],
+  "limitations": [
+    "One floor only; no verified vertical collision",
+    "No animated robot; no clips inspected",
+    "Pack 17 texture URL remapping not browser-tested; original geometry fallback to Q18 explicit",
+    "Candidate source is not verified playable"
+  ]
+}
