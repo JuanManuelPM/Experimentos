@@ -50,6 +50,11 @@ def finalize(folder,name,official,source,models,edition):
     return dict(slug=folder.name,name=name,count=len(rows),bytes=sum(p.stat().st_size for p in folder.rglob("*") if p.is_file()),status="imported",edition=edition)
 def mirror_import(mirror,record):
     source,slug,name,official=record
+    target=ROOT/slug
+    if target.exists():
+        cat=json.loads((target/"catalog.json").read_text())
+        assert all(blobsha(target/m["file"])==m["sha"] for m in cat["models"])
+        return dict(slug=slug,name=name,count=len(cat["models"]),bytes=sum(p.stat().st_size for p in target.rglob("*") if p.is_file()),status="imported",edition=cat["edition"])
     check_license(official)
     original=mirror/"public/glb"/source
     with tempfile.TemporaryDirectory(dir=ROOT) as tmp:
@@ -84,6 +89,31 @@ def mega_import():
                 out=modelroot.joinpath(*p.parts);out.parent.mkdir(parents=True,exist_ok=True)
                 with archive.open(str(p)) as f,out.open("wb") as d: shutil.copyfileobj(f,d)
         models=[p for p in modelroot.rglob("*") if p.suffix.lower() in (".gltf",".glb")]
+        # Resolve shared textures from the original archive by basename, preserving original bytes.
+        from urllib.parse import unquote
+        with zipfile.ZipFile(z) as archive:
+            byname={}
+            for member in archive.infolist():
+                if not member.is_dir():
+                    byname.setdefault(pathlib.PurePosixPath(member.filename).name.casefold(),[]).append(member)
+            for p in models:
+                if p.suffix.lower()!=".gltf": continue
+                j=json.loads(p.read_text())
+                for entry in j.get("buffers",[])+j.get("images",[]):
+                    u=entry.get("uri")
+                    if not u or u.startswith("data:"): continue
+                    dest=p.parent/unquote(u)
+                    if dest.is_file(): continue
+                    if not dest.resolve().is_relative_to(modelroot.resolve()): raise ValueError("Unsafe resource path "+u)
+                    candidates=byname.get(dest.name.casefold(),[])
+                    if not candidates: raise ValueError("Missing resource: "+u)
+                    contents=[archive.read(c) for c in candidates]
+                    if len({hashlib.sha256(c).hexdigest() for c in contents})!=1:
+                        preferred=[c for c in candidates if "/gltf/" in c.filename.casefold()]
+                        if len(preferred)!=1: raise ValueError("Ambiguous resource "+u)
+                        data=archive.read(preferred[0])
+                    else: data=contents[0]
+                    dest.parent.mkdir(parents=True,exist_ok=True);dest.write_bytes(data)
         receipt=finalize(folder,name,official,url,models,"Official free Standard edition; not paid Pro/Source")
         target=ROOT/slug
         if target.exists(): raise ValueError("Destination exists")
