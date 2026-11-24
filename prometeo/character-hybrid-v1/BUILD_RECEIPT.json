@@ -15,18 +15,38 @@
     "one provisional body reused, not five original meshes",
     "external GLBs not vendored",
     "no physical Android or visual approval",
-    "no slope mesh, stair only",
     "blink only if morph exists",
     "hair and strap line proxies; no complete deformable outfit",
     "collision checks simplified; no complete mesh-surface validation",
     "no LOD mesh or KTX2 conversion",
-    "no proof of rig compatibility"
+    "no proof of rig compatibility",
+    "ramp added; ankle grade correction and terrain contact not visually tested",
+    "one shared scene module with five entry queries",
+    "no confirmed finger closure or object collision prevention",
+    "stationary camera after intro; no visual inspection",
+    "GLB byte sizes, FPS and triangle counts not independently measured; runtime telemetry instrumented"
   ],
   "tests": {
     "browser": "NOT_RUN",
     "android": "NOT_RUN",
     "art": "NOT_RUN",
     "interop": "NOT_RUN",
-    "syntax": "PASS_PARSE_ONLY"
-  }
+    "syntax": "PASS_PARSE_ONLY",
+    "sourceReadback": "PASS",
+    "http": "NOT_VERIFIED (five URL retrievals inaccessible via web tool)",
+    "terrainHeight": {
+      "status": "PASS",
+      "cases": 7,
+      "scope": "pure height function only; no mesh collision or foot test"
+    }
+  },
+  "sourceBlob": "7e53306e70b2b1a65d22527cb354e8c389b86e5d",
+  "publicBlob": "7e53306e70b2b1a65d22527cb354e8c389b86e5d",
+  "publicSourceCommit": "b63d5ec7fb306eeb6d7dc186f74c71dfa7be9453",
+  "antecedents": [
+    "PROMETEO/START_HERE.md @ prometeo/control blob 19f259cf64eefa38aee3a3a86c262d56b65aeab0",
+    "PROMETEO/spaces/studio-3d/PROJECT.md; visible-surface gate is partial and not applicable unchanged to deforming skins",
+    "Cocina Umbría scene.mjs Three.js 0.181.0; prior actor Soldier not reused",
+    "PROJECT_BOOTSTRAP.md character-motion factory: forward axis and foot support require measurements, not camera tricks"
+  ]
 }
