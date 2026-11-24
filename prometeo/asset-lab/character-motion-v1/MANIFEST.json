@@ -1,0 +1,56 @@
+{
+  "schema": "prometeo.character-motion.candidate/v1",
+  "status": "CANDIDATE_NOT_RENDERED",
+  "requested": 5,
+  "implementedScenes": 5,
+  "rig": "KayKit Rig_Medium provisional; same skeleton profiles, not proven canonical retarget; no articulated fingers guaranteed",
+  "source": "https://github.com/NoLimitNexus/game-models/tree/d188ebf93ceb3c4b95ba9bc6b1856cd1fd34915d",
+  "license": "Kay Lousberg, KayKit Character Animations free pack, CC0 1.0; https://kaylousberg.itch.io/kaykit-character-animations",
+  "assets": [
+    [
+      "tools/reference/Mannequin_Medium.glb",
+      "c15d93a623acde4c08862290f4465bb994506fd8",
+      420044
+    ],
+    [
+      "library/animations/Rig_Medium_General.glb",
+      "d533ee025e2b87413994bb2bcccb781f4ca22532",
+      400960
+    ],
+    [
+      "library/animations/Rig_Medium_MovementBasic.glb",
+      "08b16c9239fd020b7f503238a7bccdf10a57ea30",
+      253320
+    ],
+    [
+      "library/animations/Rig_Medium_MovementAdvanced.glb",
+      "7a5a7c8a40f912743d1456efc10e55ed4a201561",
+      287088
+    ],
+    [
+      "library/animations/Rig_Medium_Simulation.glb",
+      "5b1de5d40a0854cb17b1823bed3b6fee781e5629",
+      415024
+    ]
+  ],
+  "tests": {
+    "sourceTree": "READ",
+    "binary": "NOT_RUN: connector UTF-8 rejects GLB; local DNS blocked",
+    "render": "NOT_RUN",
+    "android": "NOT_RUN",
+    "retarget": "NOT_RUN",
+    "footContact": "runtime measurement instrumentation, NOT_RUN",
+    "surface": "NOT_RUN",
+    "pose": "NOT_RUN"
+  },
+  "limitations": [
+    "Remote GLBs pinned, not vendored",
+    "Provisional stylized mannequin with scale/material profiles, not five independent final bodies",
+    "No exact contact/seat/grasp IK, no guarantee of slide-free motion",
+    "Missing named clips are recorded; idle fallback visible; quality not approved",
+    "No verified canonical rig, finger map, source facing, meshopt/KTX2 or LOD",
+    "Deposit uses pickup clip forward, not authored deposit reversal; carrying uses locomotion and arm offset",
+    "Camera follows smooth character translation; no camera cuts",
+    "Actual browser metrics available only on window.__motion"
+  ]
+}
