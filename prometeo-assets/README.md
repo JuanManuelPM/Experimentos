@@ -2,7 +2,7 @@
 
 Real 3D files. Free CC0 packs only. Mirror coverage may differ from current editions; FBX/OBJ remain source formats when GLB/glTF unavailable.
 
-Imported: 38/64; models: 2427; bytes: 1991005833
+Imported: 43/68; models: 2548; bytes: 2011272993
 
 PARTIAL rows are preserved as usable subsets but not listed by the existing gallery's IMPORTED filter.
 
@@ -20,11 +20,11 @@ PARTIAL rows are preserved as usable subsets but not listed by the existing gall
 - 12 Medieval Village MegaKit: IMPORTED (176 models) 
 - 13 Modular Streets Pack: IMPORTED (25 models) 
 - 14 Ultimate Buildings Pack: IMPORTED (26 models) 
-- 15 Ultimate Modular Ruins Pack: FAILED (0 models) no usable free archive link
+- 15 Ultimate Modular Ruins Pack: PARTIAL (25 models) 
 - 16 Modular Dungeons Pack: IMPORTED (48 models) 
 - 17 Modular Sci-Fi Megakit: IMPORTED (190 models) 
 - 18 Ultimate Modular Sci-Fi Pack: IMPORTED (91 models) 
-- 19 Farm Buildings Pack: FAILED (0 models) no usable free archive link
+- 19 Farm Buildings Pack: IMPORTED (13 models) 
 - 20 Ultimate Fantasy RTS: IMPORTED (128 models) 
 - 21 Fantasy Props MegaKit: IMPORTED (94 models) 
 - 22 Ultimate House Interior Pack: IMPORTED (123 models) 
@@ -70,3 +70,7 @@ PARTIAL rows are preserved as usable subsets but not listed by the existing gall
 - 65 Platformer Game Kit: PARTIAL (5 models) 
 - 66 3D Card Kit - Fantasy: FAILED (0 models) official archive download unavailable (container DNS); no verified binary mirror found
 - 67 Modular Platformer Pack: PARTIAL (5 models) 
+- 68 Buildings Pack: IMPORTED (9 models) 
+- 69 Simple Buildings Pack: IMPORTED (10 models) 
+- 70 Modular Dungeon Pack: IMPORTED (41 models) 
+- 71 Furniture Pack: IMPORTED (23 models) 
