@@ -46,9 +46,9 @@ export function taskLamp(){
  relation(m,arm,collar,'ENCASTRE',-.045,-.001,[probe([.325,.45,0],X,.08)]);
  const shade=part(m,shell('opal-shade','cream','shade',32,16,(u,v)=>{const a=(u-.5)*Math.PI*1.8,r=.037+.089*v;return {p:[.35+r*Math.sin(a),.43-.12*v,r*Math.cos(a)],n:[Math.sin(a),.742,Math.cos(a)].map(x=>x/Math.hypot(1,.742))};},.004));
  // The open shade uses a separately declared attachment lip; verify at front meridian.
- const lip=part(m,form.metalTube('shade-lip','bronze',[[.35,.431,.024],[.35,.431,.036]],.005));
- relation(m,lip,collar,'ENCASTRE',-.011,-.005,[probe([.35,.431,.032],[0,0,-1])]);
- relation(m,lip,shade,'JUNTA_VISIBLE',-.012,.003,[probe([.35,.43,.035],[0,0,1],.03)],'Borde de sujeción visible');
+ const lip=part(m,form.metalTube('shade-lip','bronze',[[.35,.425,.024],[.35,.425,.044]],.005));
+ relation(m,lip,collar,'ENCASTRE',-.011,-.005,[probe([.35,.425,.032],[0,0,-1])]);
+ relation(m,lip,shade,'JUNTA_VISIBLE',-.012,.003,[probe([.35,.425,.039],[0,0,1],.03)],'Borde de sujeción visible');
  // A detached floor-level display accessory, deliberately separate, not a support.
  const remote=part(m,form.fabricPanel('felt-pad','felt',{width:.085,depth:.075,y:.012,sag:.002,thickness:.004}));
  // relocate the accessory without changing primitive geometry.
