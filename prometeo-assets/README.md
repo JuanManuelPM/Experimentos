@@ -2,7 +2,7 @@
 
 Real 3D files. Free CC0 packs only. Mirror coverage may differ from current editions; FBX/OBJ remain source formats when GLB/glTF unavailable.
 
-Imported: 43/71; models: 2554; bytes: 2013923905
+Imported: 43/74; models: 2654; bytes: 2028912148
 
 PARTIAL rows are preserved as usable subsets but not listed by the existing gallery's IMPORTED filter.
 
@@ -29,7 +29,7 @@ PARTIAL rows are preserved as usable subsets but not listed by the existing gall
 - 21 Fantasy Props MegaKit: IMPORTED (94 models) 
 - 22 Ultimate House Interior Pack: IMPORTED (123 models) 
 - 23 Ultimate Furniture Pack: IMPORTED (23 models) 
-- 24 Ultimate Food Pack: FAILED (0 models) no usable free archive link
+- 24 Ultimate Food Pack: PARTIAL (15 models) 
 - 25 Ultimate Crops Pack: IMPORTED (102 models) 
 - 26 Survival Pack: IMPORTED (53 models) 
 - 27 Sushi Restaurant Kit: PARTIAL (5 models) 
@@ -49,7 +49,7 @@ PARTIAL rows are preserved as usable subsets but not listed by the existing gall
 - 41 Stylized Nature MegaKit: IMPORTED (117 models) 
 - 42 Ultimate Stylized Nature Pack: IMPORTED (36 models) 
 - 43 Ultimate Nature Pack: IMPORTED (150 models) 
-- 44 Stylized Tree Pack: FAILED (0 models) no usable free archive link
+- 44 Stylized Tree Pack: PARTIAL (45 models) 
 - 45 Cars Pack: PARTIAL (7 models) 
 - 46 Public Transport Pack: FAILED (0 models) no usable free archive link
 - 47 Modular Train Pack: FAILED (0 models) no usable free archive link
@@ -77,3 +77,6 @@ PARTIAL rows are preserved as usable subsets but not listed by the existing gall
 - 69 Simple Buildings Pack: IMPORTED (10 models) 
 - 70 Modular Dungeon Pack: IMPORTED (41 models) 
 - 71 Furniture Pack: IMPORTED (23 models) 
+- 72 Texture Fantasy Nature Pack: PARTIAL (11 models) 
+- 73 Junk Food Pack: PARTIAL (16 models) 
+- 74 RPG Essentials Pack: PARTIAL (13 models) 
