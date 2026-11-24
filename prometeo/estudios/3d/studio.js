@@ -1,143 +1,54 @@
 (()=>{'use strict';
-const $=s=>document.querySelector(s),root=new URL('../../',location.href);
-const path=(s)=>new URL(s,root).href;
-const state={all:[],records:new Map(),selected:null,filter:'creations',query:'',tab:'summary',previousFocus:null,meta:{}};
-const create=(name,cls,txt)=>{const el=document.createElement(name);if(cls)el.className=cls;if(txt!==undefined)el.textContent=txt;return el};
-const kindName={world:'Mundo 3D',animation:'Animación',character:'Personaje',object:'Objetos',tool:'Herramienta'};
-const kindFromFolder={personajes:'character',escenarios:'world',videos:'animation',herramientas:'tool',pruebas:'animation'};
-const safeURL=url=>{try{const u=new URL(url,location.href);return u.protocol==='https:'&&(['juanmanuelpm.github.io','github.com'].includes(u.hostname))?u.href:null}catch{return null}};
-function setEmpty(message){const grid=$('#grid');grid.replaceChildren(create('p','empty',message))}
-function sort(a,b){return (Date.parse(b.updatedAt)||0)-(Date.parse(a.updatedAt)||0)||a.title.localeCompare(b.title,'es')}
-async function read(url){const r=await fetch(url,{cache:'no-store'});if(!r.ok)throw Error('HTTP '+r.status);return r.json()}
-function mergeCollections(existing,collections){
- const out=[...existing],ids=new Set();
- for(const e of Array.isArray(collections)?collections:[]){
-  if(!e||typeof e.id!=='string'||!/^([a-z0-9][a-z0-9_-]*\/)*[a-z0-9][a-z0-9_-]*$/.test(e.id)||ids.has(e.id))continue;
-  const p=e.publication;if(!p||p.repo!=='JuanManuelPM/Experimentos'||p.ref!=='gh-pages'||p.path!=='prometeo/'+e.id+'/index.html'||p.receiptPath!=='prometeo/'+e.id+'/BUILD_RECEIPT.json'||!(/^[a-f0-9]{40}$/).test(p.pageBlob)||!(/^[a-f0-9]{40}$/).test(p.receiptBlob)||typeof e.title!=='string'||!e.collection||!Array.isArray(e.collection.items)||!(/^[a-f0-9]{40}$/).test(e.snapshotCommit))continue;
-  const url=path(e.id+'/'),sourceUrl='https://github.com/'+p.repo+'/blob/'+e.snapshotCommit+'/'+p.receiptPath;
-  if(!safeURL(url)||!safeURL(sourceUrl))continue;
-  const same=out.findIndex(x=>x.id===e.id);
-  if(same>=0&&out[same].url&&out[same].url!==url)continue;
-  const row={...e,url,sourceUrl,creation:state.records.get(e.id)||null,thumbnail:null};
-  ids.add(e.id);
-  if(same>=0)out[same]={...out[same],...row};else if(!out.some(x=>x.url===url))out.push(row);
- }
- return out.sort(sort);
+const $=s=>document.querySelector(s), BASE=new URL('../../',location.href), PUB='https://juanmanuelpm.github.io/Experimentos/prometeo/', kinds={world:'Mundo',object:'Objetos',character:'Personajes',animation:'Animación',tool:'Herramienta'}, folders={escenarios:'world',personajes:'character',videos:'animation',herramientas:'tool',pruebas:'animation'};
+const S={all:[],view:'worlds',query:'',kind:'all',availability:'all',selected:null,returnFocus:null,load:0,detail:0};
+const el=(tag,cls,txt)=>{const n=document.createElement(tag);if(cls)n.className=cls;if(txt!=null)n.textContent=txt;return n};
+const arr=x=>Array.isArray(x)?x:[],fold=x=>String(x||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+const idOK=x=>typeof x==='string'&&/^[a-z0-9_-]+(?:\/[a-z0-9_-]+)*$/.test(x);
+const link=x=>{try{const u=new URL(x,location.href);return u.protocol==='https:'&&((u.hostname==='juanmanuelpm.github.io'&&u.pathname.startsWith('/Experimentos/prometeo/'))||(u.hostname==='github.com'&&u.pathname.startsWith('/JuanManuelPM/')))?u.href:null}catch{return null}};
+const page=x=>{const u=link(x);return u&&u.startsWith(PUB)?u:null};
+const image=x=>{if(!x)return null;try{const u=new URL(x,location.href);return u.protocol==='https:'&&((u.hostname==='raw.githubusercontent.com'&&u.pathname.startsWith('/JuanManuelPM/Experimentos/'))||(u.hostname==='juanmanuelpm.github.io'&&u.pathname.startsWith('/Experimentos/prometeo/')))?u.href:null}catch{return null}};
+const sha=x=>typeof x==='string'&&/^[a-f0-9]{40}$/.test(x);
+const add=(map,p)=>{if(!idOK(p.id)||typeof p.title!=='string'||!p.title.trim())return;const old=map.get(p.id);if(old&&old.url&&p.url&&old.url!==p.url)return;map.set(p.id,{...old,...p})};
+function merge(p,c,m){
+ const rows=new Map(), records=new Map(arr(c.records).filter(r=>r&&idOK(r.id)).map(r=>[r.id,r]));
+ for(const r of arr(p.projects)){if(!r||!page(r.url))continue;const x=m.overrides?.[r.id]||{};add(rows,{...r,...x,id:r.id,title:r.title,url:page(r.url),kind:x.kind||folders[r.folder]||'animation',status:x.status||'REGISTRADO · QA VARIABLE',creation:records.get(r.id),thumbnail:image(x.thumbnail)})}
+ for(const r of arr(m.collections)){if(!r||!idOK(r.id))continue;const q=r.publication;if(!q||q.repo!=='JuanManuelPM/Experimentos'||q.ref!=='gh-pages'||q.path!=='prometeo/'+r.id+'/index.html'||q.receiptPath!=='prometeo/'+r.id+'/BUILD_RECEIPT.json'||!sha(q.pageBlob)||!sha(q.receiptBlob)||!sha(r.snapshotCommit)||!Array.isArray(r.collection?.items))continue;
+ add(rows,{...r,url:page(PUB+r.id+'/'),sourceUrl:link('https://github.com/'+q.repo+'/blob/'+r.snapshotCommit+'/'+q.receiptPath),thumbnail:image(r.thumbnail),creation:records.get(r.id)})}
+ const r=m.candidate;if(r&&idOK(r.id)){add(rows,{...r,url:page(r.url),sourceUrl:link(r.sourceUrl),thumbnail:image(r.thumbnail),creation:records.get(r.id)})}
+ for(const r of records.values()){if(rows.has(r.id)||!r.title)continue;const u=page(r.url);const q=r.source;const sourceUrl=q&&q.repo==='JuanManuelPM/Experimentos'&&q.path&&q.ref?link('https://github.com/'+q.repo+'/blob/'+q.ref+'/'+q.path):null;add(rows,{id:r.id,title:r.title,kind:r.kind==='scene'||r.kind==='candidate-scene'?'world':'tool',status:r.status||'REGISTRADO',url:u,sourceUrl,creation:r})}
+ return [...rows.values()].sort((a,b)=>(Date.parse(b.updatedAt)||0)-(Date.parse(a.updatedAt)||0)||a.title.localeCompare(b.title,'es'));
 }
-async function boot(){
- try{
-  const sources=await Promise.allSettled([read(path('project-explorer/projects.json')),read(path('3d-flow/CREATIONS.json')),read('./catalog.json')]);
-  const [p,c,m]=sources.map((x,i)=>x.status==='fulfilled'?x.value:(i===0?{projects:[]}:i===1?{records:[]}:{}));
-  if(!Array.isArray(p.projects)||!Array.isArray(c.records))throw Error('Registro de proyectos no válido');
-  if(sources.every(x=>x.status==='rejected'))throw Error('Fuentes no disponibles');
-  state.records=new Map(c.records.map(r=>[r.id,r]));state.meta=m;
-  const overrides=m.overrides||{};
-  state.all=p.projects.filter(r=>/^[a-z0-9_/-]+$/.test(r.id)&&!r.id.includes('..')&&safeURL(r.url)).map(r=>{
-   const extra=overrides[r.id]||{};
-   return {...r,kind:extra.kind||kindFromFolder[r.folder]||'animation',status:extra.status||'PUBLICADO · QA VARIABLE',glyph:extra.glyph||'◇',thumbnail:extra.thumbnail||null,creation:state.records.get(r.id)||null};
-  }).sort(sort);
-  state.all=mergeCollections(state.all,m.collections);
-  if(m.candidate&&m.candidate.id){const item=m.candidate;
-   if(!state.all.some(x=>x.id===item.id)){state.all.push({...item,glyph:'⌂',creation:state.records.get(item.id)||null});state.all.sort(sort);const latest=$('#latest');latest.hidden=false;$('#latest-title').textContent=item.title;$('#latest-desc').textContent=item.description;$('#latest-open').onclick=()=>open(item);}
-  }
-  render();if(sources.some(x=>x.status==='rejected'))$('#updated').textContent='Catálogo parcial: una o más fuentes no respondieron. No equivale a ausencia de obras.';discoverReleases();const id=new URL(location.href).searchParams.get('obra');if(id){const candidate=m.candidate?.id===id?m.candidate:null;const p=state.all.find(x=>x.id===id)||candidate;if(p)open(p,false)}
- }catch(err){setEmpty('No se pudo recuperar el catálogo. Abrí la biblioteca clásica mientras se restablece el registro.');$('#updated').replaceChildren(create('a',null,'Biblioteca clásica ↗'));$('#updated').firstChild.href=path('project-explorer/');console.warn('PROMETEO: catálogo no disponible',err)}
-}
-async function discoverReleases(){
- // Read-only GitHub page discovery; publishing another scene does not require editing UI code.
- try{
-  const controller=new AbortController();const timeout=setTimeout(()=>controller.abort(),6500);
-  let response;
-  try{response=await fetch('https://api.github.com/repos/JuanManuelPM/Experimentos/git/trees/gh-pages?recursive=1',{signal:controller.signal,cache:'no-store',headers:{Accept:'application/vnd.github+json'}})}
-  finally{clearTimeout(timeout)}
-  if(!response.ok)return;
-  const listing=await response.json();if(!Array.isArray(listing.tree)||listing.truncated)return;
-  const known=new Set(state.all.map(p=>p.id));const fresh=[];let promoted=false;
-  for(const item of listing.tree){
-   if(item.type!=='blob')continue;
-   const match=/^prometeo\/([a-z0-9-]+)\/index\.html$/.exec(item.path);
-   if(!match)continue;
-   const id=match[1];if(['project-explorer','3d-flow','forja','asset-atlas'].includes(id))continue;
-   if(known.has(id)){const existing=state.all.find(x=>x.id===id);if(existing&&!existing.url){existing.url=path(id+'/');existing.status='PUBLICADO · QA POR REVISAR';existing.thumbnail=null;$('#latest').hidden=true;promoted=true}continue;}
-   known.add(id);
-   fresh.push({id,title:id.replace(/-/g,' ').replace(/\b\w/g,c=>c.toUpperCase()),description:'Nueva página pública. Revisión artística sin registrar.',kind:'animation',status:'PUBLICADO · SIN QA REGISTRADA',glyph:'▤',url:path(id+'/'),updatedAt:null,creation:state.records.get(id)||null});
-  }
-  if(!fresh.length&&!promoted)return;
-  state.all.push(...fresh);state.all.sort(sort);render();
-  $('#updated').textContent='Proyectos nuevos detectados desde GitHub Pages. La falta de QA no es aprobación.';
-  if(fresh.some(x=>x.id===state.meta.candidate?.id)||promoted)$('#latest').hidden=true;
- }catch(e){console.info('Detección de nuevas publicaciones no disponible',e)}
-}
+const viewRows=()=>S.all.filter(p=>(S.view==='history'||S.view==='worlds'&&p.kind==='world'||S.view==='assets'&&['object','character'].includes(p.kind))&&(S.kind==='all'||p.kind===S.kind)&&(S.availability==='all'||(S.availability==='linked'?!!p.url:!p.url))&&fold([p.id,p.title,p.description,p.status,kinds[p.kind]].join(' ')).includes(S.query));
+function cover(p){const n=el('div','cover'),fallback=el('span','missing','Sin miniatura real registrada');n.append(fallback);if(p.thumbnail){const img=el('img');img.alt='Captura de '+p.title;img.loading='lazy';img.decoding='async';img.addEventListener('load',()=>{fallback.hidden=true;n.append(el('span','caption','Captura de fuente · no certifica QA'))},{once:true});img.addEventListener('error',()=>img.remove(),{once:true});img.src=p.thumbnail;n.append(img)}return n}
+function anchor(label,url,cls){const a=el('a',cls,label);a.href=url;return a}
+function button(label,fn,cls){const b=el('button',cls,label);b.type='button';b.addEventListener('click',fn);return b}
+function card(p){const b=button('',()=>open(p),'card');b.setAttribute('aria-label','Detalles de '+p.title);const body=el('div','card-body');body.append(el('span','card-meta',p.status||'REGISTRADO'),el('span','card-title',p.title),el('p','card-desc',p.description||kinds[p.kind]||'Proyecto registrado'));const foot=el('div','card-bottom');foot.append(el('span',null,p.url?'Enlace registrado':'Sin visor registrado'),el('span',null,'↗'));body.append(foot);b.append(cover(p),body);return b}
+function shortcut(label,desc,url){const a=anchor('',url,'shortcut');a.append(el('strong',null,label+' ↗'),el('small',null,desc));return a}
 function render(){
- const filtered=state.all.filter(p=>(state.filter==='all'||state.filter==='creations'&&p.kind!=='tool'||p.kind===state.filter)&&((p.title+' '+(p.description||'')).toLocaleLowerCase('es').includes(state.query)));
- $('#count').textContent=filtered.length+' proyectos';
- const grid=$('#grid');grid.replaceChildren();
- if(!filtered.length){setEmpty('No hay proyectos para ese filtro.');return}
- for(const p of filtered){
-  const btn=create('button','card');btn.type='button';btn.setAttribute('aria-label','Abrir '+p.title);
-  const cover=create('div','cover cover-'+p.kind);
-  if(p.thumbnail){const img=create('img');img.src=new URL(p.thumbnail,location.href).href;img.alt='Captura real de '+p.title;img.loading='lazy';img.onerror=()=>{img.remove();cover.append(create('span','cover-note','Sin captura disponible'))};cover.append(img)}
-  else{cover.append(create('span','cover-symbol',p.glyph),create('span','cover-note','Abrir proyecto para ver'))}
-  cover.append(create('span','cover-index',kindName[p.kind]||'Proyecto'));
-  const body=create('div','card-body');body.append(create('div','card-kicker',p.status),create('div','card-title',p.title),create('p','card-desc',p.description||'Proyecto 3D registrado.'));
-  const bottom=create('div','card-bottom');bottom.append(create('span',null,'Ver detalles'),create('span','arrow','↗'));body.append(bottom);btn.append(cover,body);btn.onclick=()=>open(p);grid.append(btn)
- }
+ const names={worlds:['01 / EXPLORAR','Mundos'],assets:['02 / RECURSOS','Colecciones'],history:['04 / ARCHIVO','Todos los proyectos']};$('#section-kicker').textContent=names[S.view][0];$('#section-title').textContent=names[S.view][1];
+ document.querySelectorAll('[data-view]').forEach(b=>{if(b.dataset.view===S.view)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current')});
+ const f=$('#feature');f.replaceChildren();f.hidden=true;const featured=S.all.find(p=>p.id==='cocina-umbria-002'&&p.kind==='world'&&p.url);
+ if(S.view==='worlds'&&featured&&!S.query&&S.kind==='all'&&S.availability==='all'){f.hidden=false;const fc=el('article','feature-card'),body=el('div','feature-body');body.append(el('p','eyebrow','DESTACADO / VISTA PREVIA'),el('h2',null,featured.title),el('p',null,featured.status),button('Explorar escena ↗',()=>open(featured),'primary'));fc.append(cover(featured),body);f.append(fc)}
+ const sh=$('#shortcuts');sh.replaceChildren();sh.hidden=S.view==='worlds';if(!sh.hidden){const g=el('div','shortcut-grid');if(S.view==='assets')g.append(shortcut('Biblioteca de assets','Packs y modelos originales',new URL('assets-library/',BASE).href),shortcut('Atlas anterior','Conservado, sin duplicar recursos',new URL('asset-atlas/',BASE).href));else g.append(shortcut('Ola 001','Versiones y fallos',new URL('./ola001/',location.href).href),shortcut('Ola 002','Diez previews registradas',new URL('./ola002/',location.href).href),shortcut('Flujo 3D','Errores y métodos',new URL('3d-flow/',BASE).href));sh.append(g)}
+ const rows=viewRows();$('#count').textContent=rows.length+' proyectos';$('#grid').replaceChildren(...rows.map(card));if(!rows.length&&!S.loading)$('#grid').append(el('p',null,'No hay coincidencias. Probá otro filtro o consultá Historial.'));
 }
-function changeTab(tab){state.tab=tab;document.querySelectorAll('.detail-tabs button').forEach(b=>{const on=b.dataset.tab===tab;b.classList.toggle('on',on);b.setAttribute('aria-selected',String(on))});renderDetailTab()}
-function para(parent,s){parent.append(create('p',null,s))}
-function renderDetailTab(){
- const p=state.selected;if(!p)return;const dest=$('#detail-content');dest.replaceChildren();const r=p.creation;
- if(state.tab==='summary'){
-  para(dest,p.description||'Proyecto de estudio 3D.');
-  if(p.qa)para(dest,p.qa);
-  if(p.collection){const ul=create('ul');for(const item of p.collection.items)ul.append(create('li',null,item.title+' · '+item.status));dest.append(ul);const link=create('a',null,'Recibo de esta colección ↗');link.href=safeURL(p.sourceUrl)||'#';link.rel='noopener';dest.append(link);}
-  if(p.snapshotCommit)para(dest,'Estado registrado en commit '+p.snapshotCommit.slice(0,9)+'. Los avances pueden ser posteriores.');
-  if(p.url)para(dest,p.id==='cocina-umbria-002'?'Vista previa interactiva. La obra final todavía no fue aprobada.':'Visor público. La publicación no implica aprobación artística.');
-  else para(dest,'Obra todavía no publicada como resultado final.');
- } else if(state.tab==='issues'){
-  const issues=[...(r?.issues||[]),...(r?.pendingDetailed||[])];if(issues.length){const ul=create('ul');issues.forEach(s=>ul.append(create('li',null,s)));dest.append(ul)}
-  else if(p.id==='cocina-umbria-002'){para(dest,'Pendientes conocidos: encuadre móvil, continuidad de pies, contacto real con objetos y guardado completo desde FORJA. El recibo de QA sigue siendo candidato.')}
-  else para(dest,'No hay errores asociados en el registro del flujo. Esto no certifica que la obra esté libre de problemas.');
- } else{
-  if(r?.flowVersionUsed){para(dest,'Producido con el flujo universal v'+r.flowVersionUsed+'.')}
-  else if(r?.flowVersionPlanned){para(dest,'Flujo previsto v'+r.flowVersionPlanned+'. No consta una ejecución histórica completa.')}
-  else if(p.flowVersion){para(dest,'Flujo anclado v'+p.flowVersion+' en recibo candidato.')}
-  else para(dest,'No existe una versión histórica del flujo asignada a esta creación. Conservamos el origen sin inventar una versión.');
-  if(r?.attribution)para(dest,'Registro: '+r.attribution.replaceAll('_',' '));
-  if(r?.source?.sourceBlob)para(dest,'Blob de fuente: '+r.source.sourceBlob);
- }
+function setView(v,push=true){if(!['worlds','assets','history'].includes(v))v='worlds';S.view=v;S.kind='all';$('#kind').value='all';if(push){const u=new URL(location.href);u.searchParams.set('vista',v);u.searchParams.delete('obra');history.pushState({},'',u)}render()}
+async function read(url){const ctl=new AbortController(),t=setTimeout(()=>ctl.abort(),8000);try{const r=await fetch(url,{signal:ctl.signal,cache:'no-store'});if(!r.ok)throw Error('HTTP '+r.status);return await r.json()}finally{clearTimeout(t)}}
+async function boot(){const n=++S.load;S.loading=true;$('#message').textContent='Recuperando el catálogo existente…';$('#retry').hidden=true;
+ const inputs=await Promise.allSettled([read(new URL('project-explorer/projects.json',BASE)),read(new URL('3d-flow/CREATIONS.json',BASE)),read(new URL('./catalog.json',location.href))]);if(n!==S.load)return;
+ const schemas=[x=>Array.isArray(x?.projects),x=>Array.isArray(x?.records),x=>x&&typeof x==='object'&&!Array.isArray(x)&&('overrides'in x||'collections'in x||'candidate'in x)];const good=inputs.map((x,i)=>x.status==='fulfilled'&&schemas[i](x.value));const [p,c,m]=inputs.map((x,i)=>good[i]?x.value:{});S.all=merge(p,c,m);S.loading=false;const ok=good.filter(Boolean).length;$('#message').textContent=ok===3?'Fuentes recuperadas. Un enlace registrado no implica render ni aprobación.':ok?'Catálogo parcial: '+ok+'/3 fuentes respondieron. No equivale a ausencia de obras.':'No se pudieron recuperar las fuentes. Reintentá o abrí el explorador clásico.';$('#retry').hidden=ok===3;setView(new URL(location.href).searchParams.get('vista'),false);restore();
 }
-function setViewer(p){
- const holder=$('#viewer');holder.replaceChildren();
- const url=safeURL(p.url);
- if(url){
-  const frame=create('iframe');frame.src=url;frame.title='Obra 3D · '+p.title;
-  frame.loading='eager';frame.allow='fullscreen';holder.append(frame);return;
- }
- const empty=create('div','viewer-idle');
- empty.append(create('div','viewer-mark','◇'),create('p',null,'Sin visor publicado'));
- if(p.sourceUrl){const link=create('a',null,'Ver fuente ↗');link.href=safeURL(p.sourceUrl)||'#';link.target='_blank';link.rel='noopener';empty.append(link)}
- holder.append(empty);
+function line(parent,t){parent.append(el('p',null,t))}
+function open(p,push=true){const d=$('#detail'),token=++S.detail;S.selected=p;if(!d.open){S.returnFocus=document.activeElement;d.showModal()}$('#detail-kind').textContent=kinds[p.kind]||'Proyecto';$('#detail-title').textContent=p.title;$('#detail-desc').textContent=p.description||'Proyecto registrado';$('#detail-cover').replaceChildren(cover(p));$('#detail-links').replaceChildren();$('#viewer').replaceChildren();$('#preview').hidden=true;d.querySelectorAll('details').forEach(x=>x.open=false);const u=page(p.url),src=link(p.sourceUrl),issues=$('#issues'),versions=$('#versions');issues.replaceChildren();versions.replaceChildren();const r=p.creation;
+ line(issues,p.qa||'QA no certificada.');for(const i of [...arr(r?.issues),...arr(r?.pendingDetailed)])line(issues,typeof i==='string'?i:JSON.stringify(i));if(!r?.issues?.length)line(issues,'No hay más errores registrados; no prueba ausencia de defectos.');
+ if(p.snapshotCommit)line(versions,'Commit registrado: '+p.snapshotCommit);if(r?.flowVersionUsed||p.flowVersion)line(versions,'Flujo: '+(r?.flowVersionUsed||p.flowVersion));if(r?.source?.sourceBlob)line(versions,'Blob: '+r.source.sourceBlob);if(r?.attribution)line(versions,r.attribution);if(!versions.childNodes.length)line(versions,'Sin versión de flujo certificada.');for(const i of arr(p.collection?.items))line(versions,i.title+' · '+i.status);if(src)versions.append(anchor('Ver fuente registrada ↗',src));if(link(p.qaReport))issues.append(anchor('Informe QA ↗',link(p.qaReport)));versions.append(anchor('Flujo y versiones ↗',new URL('3d-flow/?project='+encodeURIComponent(p.id),BASE).href));
+ $('#detail-status').textContent=u?'Comprobando respuesta del enlace…':'Sin visor publicado en el registro.';if(src)$('#detail-links').append(anchor('Fuente ↗',src,'action'));
+ if(u){const go=anchor('Abrir enlace registrado ↗',u,'primary');$('#detail-links').prepend(go);const ctl=new AbortController(),t=setTimeout(()=>ctl.abort(),5000);
+ fetch(u,{method:'HEAD',cache:'no-store',signal:ctl.signal}).then(res=>{if(token!==S.detail)return;if(!res.ok||!page(res.url||u)){go.remove();$('#detail-status').textContent='Enlace no disponible (HTTP '+res.status+').';return}go.textContent='Abrir obra ↗';$('#detail-status').textContent='HTTP '+res.status+' · render no comprobado.';$('#preview').hidden=false;$('#preview').onclick=()=>{if(token!==S.detail)return;const frame=el('iframe');frame.title=p.title;frame.src=u;frame.allow='fullscreen';$('#viewer').replaceChildren(frame);$('#preview').hidden=true}}).catch(()=>{if(token===S.detail)$('#detail-status').textContent='No se pudo verificar HTTP. Enlace registrado, disponibilidad desconocida.'}).finally(()=>clearTimeout(t))}
+ if(push){const u=new URL(location.href);u.searchParams.set('obra',p.id);history.pushState({studioDetail:true},'',u)}$('#close').focus()
 }
-function open(p,historyEntry=true){
- state.previousFocus=document.activeElement;state.selected=p;state.tab='summary';
- $('#detail-title').textContent=p.title;$('#compact-title').textContent=p.title;$('#detail-desc').textContent=p.description||'';
- $('#detail-extras').hidden=true;$('#details-toggle').setAttribute('aria-expanded','false');
- $('#detail-meta').textContent=(kindName[p.kind]||'Proyecto')+' · '+(p.status||'REGISTRADO');
- const url=safeURL(p.url);$('#detail-visit').hidden=!url;if(url)$('#detail-visit').href=url;
- const flow=path('3d-flow/?project='+encodeURIComponent(p.id));$('#detail-flow').href=flow;
- setViewer(p);changeTab('summary');$('#overlay').hidden=false;document.body.style.overflow='hidden';
- if(historyEntry){const u=new URL(location.href);u.searchParams.set('obra',p.id);history.pushState({obra:p.id},'',u)}
- $('#close').focus();
-}
-function close(fromHistory=false){$('#overlay').hidden=true;$('#viewer').replaceChildren();state.selected=null;document.body.style.overflow='';if(!fromHistory){const u=new URL(location.href);u.searchParams.delete('obra');history.replaceState(null,'',u)}state.previousFocus?.focus?.()}
-$('#close').onclick=()=>close();$('#detail-close').onclick=()=>close();$('#shade').onclick=()=>close();
-$('#details-toggle').onclick=()=>{const p=$('#detail-extras');p.hidden=!p.hidden;$('#details-toggle').setAttribute('aria-expanded',String(!p.hidden))};
-$('#filter-toggle').onclick=()=>{const p=$('#filters-panel');p.hidden=!p.hidden;$('#filter-toggle').setAttribute('aria-expanded',String(!p.hidden));if(!p.hidden)$('#search').focus()};
-document.querySelectorAll('.detail-tabs button').forEach(b=>b.addEventListener('click',()=>changeTab(b.dataset.tab)));
-document.querySelectorAll('#filters button').forEach(b=>b.addEventListener('click',()=>{state.filter=b.dataset.kind;document.querySelectorAll('#filters button').forEach(x=>{const on=x===b;x.classList.toggle('selected',on);x.setAttribute('aria-pressed',String(on))});render()}));
-$('#search').addEventListener('input',e=>{state.query=e.target.value.trim().toLocaleLowerCase('es');render()});
-document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#overlay').hidden){e.preventDefault();close()}});
-window.addEventListener('popstate',()=>{const id=new URL(location.href).searchParams.get('obra');if(!id){if(!$('#overlay').hidden)close(true)}else{const p=state.all.find(x=>x.id===id)||((state.meta.candidate?.id===id)?state.meta.candidate:null);if(p)open(p,false)}});
-boot();
+function hide(){++S.detail;S.selected=null;$('#viewer').replaceChildren();if($('#detail').open)$('#detail').close();S.returnFocus?.focus?.()}
+function close(){if(history.state?.studioDetail){hide();history.back()}else{const u=new URL(location.href);u.searchParams.delete('obra');history.replaceState({},'',u);hide()}}
+function restore(){const id=new URL(location.href).searchParams.get('obra'),p=S.all.find(x=>x.id===id);if(p)open(p,false);else{hide();if(id)$('#message').textContent+=' Proyecto no encontrado en las fuentes recuperadas.'}}
+ document.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>setView(b.dataset.view));$('#search').oninput=e=>{S.query=fold(e.target.value.trim());render()};$('#kind').onchange=e=>{S.kind=e.target.value;render()};$('#availability').onchange=e=>{S.availability=e.target.value;render()};$('#retry').onclick=boot;$('#close').onclick=close;$('#detail').addEventListener('cancel',e=>{e.preventDefault();close()});window.addEventListener('popstate',()=>{const v=new URL(location.href).searchParams.get('vista')||'worlds';if(v!==S.view)setView(v,false);restore()});boot();
 })();

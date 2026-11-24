@@ -1,0 +1,59 @@
+{
+  "version": "1",
+  "medium": "web",
+  "depth": "OPERATIVO",
+  "intent": "Rediseñar entrada existente; primero mundos, después recursos e historial",
+  "decisions": [
+    {
+      "question": "¿Portal paralelo o entrada existente?",
+      "chosen": "Entrada existente",
+      "reason": "Preserva URLs y propietario"
+    },
+    {
+      "question": "¿Visores automáticos o bajo demanda?",
+      "chosen": "Bajo demanda",
+      "reason": "Evita cargar escenas pesadas en la lista"
+    },
+    {
+      "question": "¿Descubrir páginas por nombre o consumir registros?",
+      "chosen": "Registros tipados",
+      "reason": "La búsqueda de index.html clasificaba páginas ajenas como 3D"
+    }
+  ],
+  "references": [
+    {
+      "path": "prometeo/estudios/3d/index.html",
+      "blob": "5496521bf0ea61543473510abcc307ab88bc2877"
+    },
+    {
+      "path": "prometeo/project-explorer/projects.json",
+      "blob": "e8ac11d68f516e1a75236e9d779dab373f7fc9ec"
+    },
+    {
+      "path": "prometeo/3d-flow/CREATIONS.json",
+      "blob": "47762d50e1ada30606d8550a1361cd8f564ec139"
+    },
+    {
+      "path": "prometeo/estudios/3d/catalog.json",
+      "blob": "1c7ef7729c60277faa23248460095010777f7b88"
+    }
+  ],
+  "risks": [
+    "Fuentes caídas",
+    "URLs sin HTTP",
+    "Clasificación errónea",
+    "Historial y foco",
+    "Pantalla estrecha"
+  ],
+  "negativeFixtures": [
+    "candidato sin enlace",
+    "respuesta HTTP 404",
+    "colección con SHA inválido",
+    "catálogo vacío",
+    "miniatura caída"
+  ],
+  "limits": [
+    "No promoción canónica ni publicación Pages desde rama candidata",
+    "No evidencia artística nueva"
+  ]
+}
