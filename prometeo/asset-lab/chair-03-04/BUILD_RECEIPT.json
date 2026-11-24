@@ -1,0 +1,252 @@
+{
+  "schema": "prometeo.3d.work-result/v1",
+  "createdAt": "2026-11-23",
+  "status": "PRODUCIDO_GEOMETRY_PASS_ART_PENDING",
+  "results": {
+    "rail": {
+      "ok": true,
+      "errors": [],
+      "stats": {
+        "parts": 5,
+        "triangles": 18632,
+        "vertices": 9326,
+        "groundedSupports": 2,
+        "verifiedJoints": 8
+      },
+      "bounds": {
+        "min": [
+          -0.255,
+          -3.469446951953614e-18,
+          -0.30100000000000005
+        ],
+        "max": [
+          0.255,
+          0.8,
+          0.2529993804004572
+        ]
+      },
+      "jointResults": [
+        {
+          "from": "seat",
+          "to": "left-sled",
+          "point": [
+            -0.205,
+            0.443,
+            0.167
+          ],
+          "type": "front socket",
+          "insideFrom": true,
+          "insideTo": true
+        },
+        {
+          "from": "seat",
+          "to": "left-sled",
+          "point": [
+            -0.205,
+            0.443,
+            -0.18
+          ],
+          "type": "rear socket",
+          "insideFrom": true,
+          "insideTo": true
+        },
+        {
+          "from": "back-band",
+          "to": "left-sled",
+          "point": [
+            -0.205,
+            0.737,
+            -0.249
+          ],
+          "type": "back socket",
+          "insideFrom": true,
+          "insideTo": true
+        },
+        {
+          "from": "seat",
+          "to": "right-sled",
+          "point": [
+            0.205,
+            0.443,
+            0.167
+          ],
+          "type": "front socket",
+          "insideFrom": true,
+          "insideTo": true
+        },
+        {
+          "from": "seat",
+          "to": "right-sled",
+          "point": [
+            0.205,
+            0.443,
+            -0.18
+          ],
+          "type": "rear socket",
+          "insideFrom": true,
+          "insideTo": true
+        },
+        {
+          "from": "back-band",
+          "to": "right-sled",
+          "point": [
+            0.205,
+            0.737,
+            -0.249
+          ],
+          "type": "back socket",
+          "insideFrom": true,
+          "insideTo": true
+        },
+        {
+          "from": "cross-brace",
+          "to": "left-sled",
+          "point": [
+            -0.202,
+            0.335,
+            -0.193
+          ],
+          "type": "weld",
+          "insideFrom": true,
+          "insideTo": true
+        },
+        {
+          "from": "cross-brace",
+          "to": "right-sled",
+          "point": [
+            0.202,
+            0.335,
+            -0.193
+          ],
+          "type": "weld",
+          "insideFrom": true,
+          "insideTo": true
+        }
+      ],
+      "connectedParts": 5,
+      "deterministic": true,
+      "dimensions": {
+        "width": 0.51,
+        "seatHeight": 0.461,
+        "backHeight": 0.8,
+        "seatThickness": 0.038,
+        "backThickness": 0.024
+      }
+    },
+    "petal": {
+      "ok": true,
+      "errors": [],
+      "stats": {
+        "parts": 7,
+        "triangles": 20704,
+        "vertices": 10366,
+        "groundedSupports": 4,
+        "verifiedJoints": 6
+      },
+      "bounds": {
+        "min": [
+          -0.262094980294489,
+          -0.0017586727838935657,
+          -0.31724524445277547
+        ],
+        "max": [
+          0.262094980294489,
+          0.8346859420344197,
+          0.24252861293613026
+        ]
+      },
+      "jointResults": [
+        {
+          "from": "mount",
+          "to": "column",
+          "point": [
+            0,
+            0.408,
+            0
+          ],
+          "type": "flanged socket",
+          "insideFrom": true,
+          "insideTo": true
+        },
+        {
+          "from": "continuous-shell",
+          "to": "mount",
+          "point": [
+            0,
+            0.431,
+            0
+          ],
+          "type": "seat bearing",
+          "insideFrom": true,
+          "insideTo": true
+        },
+        {
+          "from": "column",
+          "to": "radial-foot-0",
+          "point": [
+            0.024748737341529166,
+            0.079,
+            0.024748737341529162
+          ],
+          "type": "radial socket",
+          "insideFrom": true,
+          "insideTo": true
+        },
+        {
+          "from": "column",
+          "to": "radial-foot-1",
+          "point": [
+            -0.024748737341529162,
+            0.079,
+            0.024748737341529166
+          ],
+          "type": "radial socket",
+          "insideFrom": true,
+          "insideTo": true
+        },
+        {
+          "from": "column",
+          "to": "radial-foot-2",
+          "point": [
+            -0.024748737341529173,
+            0.079,
+            -0.024748737341529162
+          ],
+          "type": "radial socket",
+          "insideFrom": true,
+          "insideTo": true
+        },
+        {
+          "from": "column",
+          "to": "radial-foot-3",
+          "point": [
+            0.02474873734152916,
+            0.079,
+            -0.024748737341529173
+          ],
+          "type": "radial socket",
+          "insideFrom": true,
+          "insideTo": true
+        }
+      ],
+      "connectedParts": 7,
+      "deterministic": true,
+      "dimensions": {
+        "width": 0.51,
+        "seatHeight": 0.468,
+        "backHeight": 0.825,
+        "shellThickness": 0.028
+      }
+    }
+  },
+  "renderWebGL": "NOT_RUN",
+  "android": "NOT_RUN",
+  "humanApproval": "NOT_RUN",
+  "reason": "Chromium exists in execution container but Three.js dependency not present and external CDN DNS unavailable; connector JS executed exact geometry source functions. No screenshots fabricated.",
+  "comparison": "Geometry topology changed: HÉLICE has four independent feet and detached back; RIEL two continuous sleds with open band; PÉTALO single seat/back shell on radial pedestal. Joint test strengthened from AABB proximity to shared interior point plus graph connectivity. Visual superiority not verified.",
+  "priorUnchanged": [
+    "chair-01",
+    "chair-02"
+  ],
+  "rootUnchanged": true
+}

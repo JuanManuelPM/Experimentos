@@ -1,0 +1,67 @@
+{
+  "schema": "prometeo.threejs.procedural-asset/v0.3",
+  "version": "0.3.0",
+  "owner": "studio-3d",
+  "units": "metre",
+  "axes": "Y up, +Z front",
+  "engine": "Three.js 0.181.0",
+  "source": "geometry.mjs",
+  "assets": [
+    {
+      "id": "prometeo/prop/riel-chair@0.3.0",
+      "query": "rail",
+      "structure": "continuous bent tube sleds + cross-brace",
+      "back": "independent curved band, open lower back",
+      "parameters": {
+        "width": 0.51,
+        "seatHeight": 0.461,
+        "backHeight": 0.8,
+        "seatThickness": 0.038,
+        "backThickness": 0.024
+      }
+    },
+    {
+      "id": "prometeo/prop/petalo-chair@0.4.0",
+      "query": "petal",
+      "structure": "central column + mounting plate + 4 radial spokes",
+      "back": "continuous closed seat-back shell, normal offset",
+      "parameters": {
+        "width": 0.51,
+        "seatHeight": 0.468,
+        "backHeight": 0.825,
+        "shellThickness": 0.028
+      }
+    }
+  ],
+  "criteriaBeforeBuild": [
+    "physical seat/support and back joints sharing interior points",
+    "closed, oriented and nondegenerate meshes; plausible 24–38 mm shell/seat thickness and ground contacts",
+    "recognizable silhouette in front/profile/three-quarter; no claim without real render",
+    "neutral lighting, fixed common orthographic camera, material-neutral option"
+  ],
+  "reusableRecipe": [
+    "Choose structural topology before material or decoration.",
+    "Define semantic pieces and centreline/profile in metres. Use piecewise cubic curves and sampled grids; transport sweep frame and cap rings.",
+    "Create paired surfaces with finite thickness, close boundary walls, enforce consistent winding and UV per surface.",
+    "Put an explicit anchor inside both participating solid meshes and verify with odd/even triangle intersection. Check graph reaches all parts, manifold edges and ground.",
+    "Keep material and camera independent from geometry; same fixed scale when comparing with prior version."
+  ],
+  "reuse": {
+    "prior": "../chair-02/geometry.mjs",
+    "adapted": [
+      "closed indexed shell and UV grid from ARC/HÉLICE",
+      "continuous variable radius capped sweep, refined with transported normal",
+      "named parts and typed joins"
+    ],
+    "T008": "manufactured profiles and sweeps",
+    "T004": "measured parts, UV, separate roles",
+    "ArcadeRetro": "authored texture, material hierarchy, neutral readable camera"
+  },
+  "limitations": [
+    "Analytic ground tolerance 9 mm; PÉTALO lowest sample about -1.76 mm, viewer floor at -4 mm.",
+    "Closed individual mesh does not imply boolean-fused or certified structural assembly.",
+    "No load-bearing, ergonomics, UV stretching, self-intersection sweep or manufacturing validation.",
+    "No real render, Android or artistic review performed."
+  ],
+  "license": "Original source, no external model or texture assets"
+}
