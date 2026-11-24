@@ -1,29 +1,16 @@
-# PROMETEO VIEWER · V2
+# Private Viewer · candidate V2 infrastructure
 
-Visor público minimalista para explorar y previsualizar archivos provenientes de repositorios GitHub privados, sin publicar esas obras.
+Status: CANDIDATE, NOT DEPLOYED. The published gh-pages viewer is unchanged. This branch starts from the preserved V2 shell; it is not a second portal. Earlier auth-worker.mjs and auth.json are historical prototypes and are not used by this candidate. Manual PAT is disabled.
 
-## Interfaz
+## Run only on an isolated fixture
+Node 22+, npm install (pinned Three.js 0.181.0; lockfile and dependency review pending), serve with HTTPS at a dedicated origin. Set VIEWER_ORIGIN, GH_CLIENT_ID, GH_CLIENT_SECRET, FIXTURE_REPO, FIXTURE_COMMIT (40 hex), FIXTURE_ROOT, optional FIXTURE_ENTRY, ALLOWED_LOGIN in the hosting environment. Register a read-only GitHub App for a dedicated private test repository only. Never install on the broad control or production repositories. Set callback to origin/auth/callback. Do not commit secrets. The server binds loopback; a trusted HTTPS reverse proxy is required. No provider or billing is configured.
 
-Pantalla inicial: marca, una acción Continuar con GitHub, demostración pública. Explorador y configuraciones solo después de entrar en el espacio de trabajo. Modo visual oscuro y visor a pantalla completa. La entrada por PAT está oculta en Acceso alternativo.
+Session is process-local and expires within one hour; refresh, durable session storage and restart recovery are not implemented. Auth requests pin a Git tree and reject symlinks, out-of-scope files and unissued blobs. The browser receives no GitHub token. This is a single-fixture pilot, not a multi-tenant authorization system. Private HTML is limited to authored, trusted test artifacts; arbitrary hostile JavaScript is not certified safe. GLB viewer accepts self-contained models with no external resources or required extensions. Browser/render and real OAuth are NOT_RUN (local Chromium navigation was blocked by environment policy).
 
-## Autenticación real
+## Sharing lane
+publishSingle() in share-publisher.mjs writes a new immutable directory containing only descriptor and ciphertext, returns a fragment credential in memory. SHARE_DIR is a separately managed trusted directory; no original asset or key belongs there. This pilot supports a single non-sensitive GLB, descriptor metadata is visible, keys are per publication, no persistent key storage, rotation or actual revocation. The link can be re-shared, and copying decrypted data cannot be prevented. The viewer drops the fragment from browser history before loading; reload needs the original link. Do not deploy for sensitive content. No published share or public link was created here.
 
-El inicio automático con GitHub está preparado en shell.js y auth-worker.mjs, pero NO operativo hasta registrar una GitHub App de solo lectura, instalarla en los repositorios autorizados, desplegar el callback gratuito y configurar auth.json. La sesión de github.com no puede ser compartida directamente con un sitio github.io. Google tampoco concede permiso sobre repositorios privados de GitHub.
+## Local tests
+Place an authorized, non-sensitive synthetic fixture.glb next to tests (not included in public branch). node --test *.test.mjs. 10 tests passed with Node 22, including local HTTP and simulated upstream OAuth, and anonymous HTTP through the actual candidate server. Tests do not certify browser behavior or live GitHub auth. Source blobs tested: session-server.mjs 7cd6273b2832eafe03279a1f5ec0f8e0e8bf4c37; session-server.test.mjs f77cd4d31a346a5e55fa1495076a6e339c32f71e; delivery-core.mjs e03477d2c58b61bc6f3b59e94849d16b5ac7f8d3; share.test.mjs 681cbc4d08fe1fa612bcbacaa441fd2f798a005a.
 
-El archivo AUTH_SETUP.md contiene los pasos humanos únicos. Nunca subir client secret, tokens, cookies ni credenciales a GitHub. El callback entrega token temporal a la ventana originadora por postMessage y verificación de state y origin. El frontend lo conserva solo en memoria.
-
-## Estado de calidad
-
-Controles de UI y sintaxis: pruebas estáticas satisfactorias. QA Chrome Android y autenticación real: NOT_RUN. Login automático: NOT_CONFIGURED. Ver QA_RECEIPT.json.
-
-## Demo
-
-Ver demostración carga una candidata pública 3D de Cocina Umbría 002. Es una prueba de compatibilidad, no una garantía de que WebGL y todos los recursos funcionen en Chrome Android. El script del visor se ejecuta en iframe sin allow-same-origin para aislar credenciales. El motor de módulos no cubre importaciones circulares, import.meta.url y todas las estrategias de cargas dinámicas.
-
-## Uso actual sin GitHub App
-
-Acceso alternativo: usar un fine-grained personal access token limitado a solo Contents: Read-only del repositorio deseado. No se guarda entre recargas, no se pega en chats, enlaces ni commits.
-
-## Dueño
-
-Ideas · Gobierno de PROMETEO. Rama candidata candidate/prometeo-private-viewer-v2-minimal-auth-20261120. Publicación única en prometeo/private-viewer/; sin cambios en otros estudios o publicaciones.
+A stable latest pointer was tested separately using real Git version conflicts and restore; the server still pins a configured commit, not an integrated multi-work resolver. Global adoption, migration, live browser verification, performance, durable session, permissions, quotas and deployment remain pending.
