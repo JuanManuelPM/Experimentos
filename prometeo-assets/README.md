@@ -2,7 +2,7 @@
 
 Real 3D files. Free CC0 packs only. Mirror coverage may differ from current editions; FBX/OBJ remain source formats when GLB/glTF unavailable.
 
-Imported: 34/50; models: 1928; bytes: 1858456837
+Imported: 34/50; models: 1928; bytes: 1858456825
 
 - 01 Universal Base Characters: IMPORTED (18 models) 
 - 02 Modular Character Outfits - Fantasy: IMPORTED (24 models) 
@@ -54,3 +54,5 @@ Imported: 34/50; models: 1928; bytes: 1858456837
 - 48 Ships Pack: IMPORTED (6 models) 
 - 49 Ultimate Spaceships Pack: IMPORTED (11 models) 
 - 50 Zombie Apocalypse Kit: FAILED (0 models) no usable free archive link
+
+Existing pack repair: [WC10 evidence and legacy references](packs/01-universal-base-characters/REPAIR-20261124-10.json). Legacy references 81–84 remain on gh-pages without copying binaries. Static path/size audit is not a render test.
