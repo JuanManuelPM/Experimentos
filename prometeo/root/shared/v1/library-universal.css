@@ -41,3 +41,10 @@ body.u-library{margin:0;background:var(--u-bg);color:var(--u-ink);height:100dvh;
 @media(max-width:650px){:root{--u-rail:58px;--u-pad:8px;--u-gap:8px}.u-library .u-rail{padding:8px 4px;gap:4px}.u-library .u-rail nav{gap:4px}.u-library .u-rail .u-icon{width:44px;height:44px;min-height:44px}.u-library .grid{grid-template-columns:repeat(2,minmax(0,1fr))}.u-library .u-icon svg{width:23px;height:23px}}
 @media(max-height:500px) and (min-width:651px){:root{--u-rail:58px;--u-pad:8px;--u-gap:8px}.u-library .u-rail{padding:5px;gap:2px}.u-library .u-rail nav{gap:2px}.u-library .u-rail .u-icon{width:44px;height:44px;min-height:44px}.u-library .grid{grid-template-columns:repeat(auto-fill,minmax(120px,1fr))}}
 @media(prefers-reduced-motion:reduce){.u-library *{transition:none!important;scroll-behavior:auto!important}}
+
+/* Keep the original dark 3D viewer and technical information accessible. */
+.u-library .overlay{color:#efeee7;color-scheme:dark}
+.u-library.u-info .bottom-note{display:block!important;color:#625f59;margin:12px 0;font-size:13px}
+.u-library.u-info .bottom-note a{text-decoration:underline}
+.u-library #content>section:first-child>.heading .copy{display:none}
+.u-library .u-icon:disabled{opacity:.35;cursor:not-allowed}
