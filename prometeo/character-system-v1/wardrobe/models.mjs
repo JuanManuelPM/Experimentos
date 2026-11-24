@@ -187,7 +187,7 @@ export function build(p,o){
  function pt(u,t,ex=0){let center=t<.53?lerp(a,el,t/.53):lerp(el,d,(t-.53)/.47),rr=p.arm*(1.05-.33*t)+c+.003*Math.sin(t*49+u*18)*Math.sin(Math.PI*t),ang=tau*u;return add(center,add(mul(axis,(rr+ex)*Math.cos(ang)),[0,0,(rr*.91+ex)*Math.sin(ang)]))}
  function wf(v,u,t){let a=sm(t/.19);return t<.19?weights([["chest",1-a],["upperArm_"+side,a]]):lw(side,t,true)}
  grid(m,24,32,pt,wf,true,.005);
- if(band)for(let [j,t0,t1] of band.ranges.entries()){let b=mesh(name+"-band-"+j,slot,band.color,.56);grid(b,4,32,(u,t)=>pt(u,mix(t0,t1,t),.004),(v,u,t)=>wf(v,u,mix(t0,t1,t)))}return m}
+ if(band)for(let [j,[t0,t1]] of band.ranges.entries()){let b=mesh(name+"-band-"+j,slot,band.color,.56);grid(b,4,32,(u,t)=>pt(u,mix(t0,t1,t),.004),(v,u,t)=>wf(v,u,mix(t0,t1,t)))}return m}
  function pants(name,slot,col,c,rough,top=.99,bottom=.075,band=null){let m=mesh(name,slot,col,rough),N=40,H=N/2,hip=p.hip*.52,wa=[],pe=[];
  for(let i=0;i<N;i++){let a=tau*i/N,x=Math.sin(a),z=Math.cos(a);wa.push(vertex(m,[(p.waist+c)*x,top*S,(p.depth+c)*z],rigid("pelvis")(),i/N,1));pe.push(vertex(m,[(p.hip+c)*x,.855*S,(p.depth*.88+c)*z],weights([["pelvis",.7],["upperLeg_L",.3*sm((x+1)/2)],["upperLeg_R",.3*(1-sm((x+1)/2))]]),i/N,.83))}
  for(let i=0;i<N;i++)quad(m,wa[i],wa[(i+1)%N],pe[(i+1)%N],pe[i]);
