@@ -1,10 +1,8 @@
 # PROMETEO — Quaternius assets
 
-Real 3D files. Free CC0 packs only. Mirror coverage may differ from current editions; FBX/OBJ remain source formats when GLB/glTF unavailable.
+Real 3D files. Free CC0 packs only. Mirror coverage may differ from current editions; FBX/OBJ remain source formats when GLB/glTF unavailable. Partial packs contain verified subsets, not complete editions.
 
-Imported: 35/60; models: 1995; bytes: 1873282795
-
-PARTIAL rows are preserved as usable subsets but not listed by the existing gallery's IMPORTED filter.
+Imported: 36/62; models: 2010; bytes: 1877272815
 
 - 01 Universal Base Characters: IMPORTED (18 models) 
 - 02 Modular Character Outfits - Fantasy: IMPORTED (24 models) 
@@ -50,12 +48,14 @@ PARTIAL rows are preserved as usable subsets but not listed by the existing gall
 - 42 Ultimate Stylized Nature Pack: IMPORTED (36 models) 
 - 43 Ultimate Nature Pack: IMPORTED (150 models) 
 - 44 Stylized Tree Pack: FAILED (0 models) no usable free archive link
-- 45 Cars Pack: FAILED (0 models) no usable free archive link
+- 45 Cars Pack: PARTIAL (7 models) 
 - 46 Public Transport Pack: FAILED (0 models) no usable free archive link
 - 47 Modular Train Pack: FAILED (0 models) no usable free archive link
 - 48 Ships Pack: IMPORTED (6 models) 
 - 49 Ultimate Spaceships Pack: IMPORTED (11 models) 
 - 50 Zombie Apocalypse Kit: PARTIAL (2 models) 
+- 51 Spaceships Pack: IMPORTED (5 models) 
+- 52 Animated Tanks Pack: PARTIAL (3 models) 
 - 55 Animated Women Pack: FAILED (0 models) Official direct download unavailable: DNS blocked in runtime. No exact provenance-verified transferable mirror found.
 - 56 Animated Man Pack: FAILED (0 models) Official direct download unavailable: DNS blocked in runtime. No exact provenance-verified transferable mirror found.
 - 57 Animated Woman Pack: FAILED (0 models) Official direct download unavailable: DNS blocked in runtime. No exact provenance-verified transferable mirror found.
