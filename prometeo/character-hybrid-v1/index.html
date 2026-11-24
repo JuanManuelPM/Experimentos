@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Prometeo · Character Hybrid V1</title>
+<style>html,body{margin:0;height:100%;overflow:hidden;background:#d8d4cb}canvas{display:block;width:100%;height:100%}</style>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.181.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.181.0/examples/jsm/"}}</script></head><body>
+<script type="module">
+import * as T from 'three';
+import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
+const mode=Math.max(1,Math.min(5,Number(new URLSearchParams(location.search).get('scene'))||1));
+const V=(x=0,y=0,z=0)=>new T.Vector3(x,y,z), Q=()=>new T.Quaternion(), Y=V(0,1,0), clamp=T.MathUtils.clamp, lerp=T.MathUtils.lerp, damp=(a,b,k,dt)=>lerp(a,b,1-Math.exp(-k*dt)), smooth=x=>{x=clamp(x,0,1);return x*x*(3-2*x)}, wrap=x=>Math.atan2(Math.sin(x),Math.cos(x));
+const assetRef='aa02a4e6d8337a0604d2da131bcbbeb1f01badf0';
+const dir='https://raw.githubusercontent.com/Seyamalam/blood-league-kickoff/'+assetRef+'/public/assets/vendor/quaternius/';
+const receipt={schema:'prometeo.character-hybrid.v1',mode,three:T.REVISION,assetRef,license:'CC0-1.0',status:'LOADING',frames:0,steps:0,grabs:0,releases:0,errors:[],samples:[],rest:{},anchors:{},clips:[],triangles:0,drawCalls:0,frameMs:0,contactError:null,reachError:null,visibilityPaused:0,android:'NOT_RUN'};
+window.__PROMETEO_QA__=()=>JSON.parse(JSON.stringify(receipt));
+const scene=new T.Scene();scene.background=new T.Color(0xd8d4cb);
+const camera=new T.PerspectiveCamera(37,innerWidth/innerHeight,.05,60);
+const renderer=new T.WebGLRenderer({antialias:true,powerPreference:'high-performance'});renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));renderer.setSize(innerWidth,innerHeight);renderer.outputColorSpace=T.SRGBColorSpace;renderer.toneMapping=T.ACESFilmicToneMapping;renderer.toneMappingExposure=1.08;renderer.shadowMap.enabled=true;renderer.shadowMap.type=T.PCFSoftShadowMap;document.body.appendChild(renderer.domElement);
+addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)});
+scene.add(new T.HemisphereLight(0xfff7e9,0x8a929a,2.3));
+const sun=new T.DirectionalLight(0xffe8ca,3);sun.position.set(4,7,3);sun.castShadow=true;sun.shadow.mapSize.set(1024,1024);Object.assign(sun.shadow.camera,{left:-5,right:5,top:5,bottom:-5,near:.1,far:20});sun.shadow.normalBias=.035;scene.add(sun);
+const rim=new T.DirectionalLight(0xd9ecff,1.5);rim.position.set(-4,3,-4);scene.add(rim);
+const mat=(c,r=.8,m=0)=>new T.MeshStandardMaterial({color:c,roughness:r,metalness:m});
+const floorM=mat(0xa7a7a1), stepM=mat(0x8c9b99), metal=mat(0x3c4e50,.45,.45), gold=mat(0xd99b43,.42,.15), fabric=mat(0x476b6a,.92);
+function mesh(g,m,x=0,y=0,z=0,parent=scene){const a=new T.Mesh(g,m);a.position.set(x,y,z);a.castShadow=true;a.receiveShadow=true;parent.add(a);return a}
+function box(w,h,d,m,x,y,z,p=scene){return mesh(new T.BoxGeometry(w,h,d),m,x,y,z,p)}
+const floor=box(18,.12,18,floorM,0,-.08,0);floor.castShadow=false;
+function marker(r=.085,m=gold){return mesh(new T.SphereGeometry(r,20,12),m)}
+const actor=new T.Group();scene.add(actor);
+const bones={},rest={},feet={},hands={};let model,mixer,idle,walk,run,scale=1,sole={},height=1.75,heading=0,speed=0,velocity=V(),distance=0,pelvisOffset=0,clock=0,sim=0,phaseTime=0,wasMoving=false;
+const get=n=>bones[n.toLowerCase()];const pos=b=>b.getWorldPosition(V());
+const facing=()=>V(Math.sin(heading),0,Math.cos(heading)), side=()=>V(Math.cos(heading),0,-Math.sin(heading));
+function worldDelta(b,d,w=1){const p=b.parent.getWorldQuaternion(Q());const local=p.clone().invert().multiply(d).multiply(p);b.quaternion.premultiply(Q().slerp(local,w)).normalize();b.updateMatrixWorld(true)}
+function rotateToward(b,from,to,w=1,max=Math.PI){if(from.lengthSq()<1e-9||to.lengthSq()<1e-9)return;const q=Q().setFromUnitVectors(from.normalize(),to.normalize());const a=2*Math.acos(clamp(Math.abs(q.w),0,1));worldDelta(b,q,w*Math.min(1,max/Math.max(a,1e-6)))}
+// Analytic two-bone IK: reach clamp, explicit pole, elbow/knee flexion bound, no scale changes.
+function solve(a,b,c,target,pole,weight=1,minFlex=.10,maxFlex=2.65){
+ const A=pos(a),B=pos(b),C=pos(c),l=A.distanceTo(B),r=B.distanceTo(C),delta=target.clone().sub(A);if(l<.001||r<.001||delta.length()<.001)return Infinity;
+ const reach=f=>Math.sqrt(l*l+r*r+2*l*r*Math.cos(f));
+ const d=clamp(delta.length(),Math.max(Math.abs(l-r)+.001,reach(maxFlex)),Math.min(l+r-.001,reach(minFlex)));const axis=delta.normalize(), goal=A.clone().addScaledVector(axis,d);
+ let bend=pole.clone().sub(A);bend.addScaledVector(axis,-bend.dot(axis));if(bend.lengthSq()<1e-7){bend=B.clone().sub(A);bend.addScaledVector(axis,-bend.dot(axis))}if(bend.lengthSq()<1e-7)bend=V(0,0,1).cross(axis);if(bend.lengthSq()<1e-7)bend=V(1,0,0).cross(axis);bend.normalize();
+ const along=(l*l+d*d-r*r)/(2*d),knee=A.clone().addScaledVector(axis,along).addScaledVector(bend,Math.sqrt(Math.max(0,l*l-along*along)));
+ rotateToward(a,B.sub(A),knee.clone().sub(A),weight);const b1=pos(b),c1=pos(c);rotateToward(b,c1.sub(b1),goal.sub(b1),weight);return pos(c).distanceTo(target)
+}
+function localOffset(b,v){return b.worldToLocal(v.clone())}
+function socket(b,local){const s=new T.Object3D();s.position.copy(local);b.add(s);return s}
+const loader=new GLTFLoader();
+function terrain(x,z){if(mode!==1)return 0;if(Math.abs(x)>.68)return 0;return z<-.9?0:z<-.3?.10:z<.3?.20:z<.9?.30:z<1.5?.20:z<2.1?.10:0}
+if(mode===1){for(let i=0;i<5;i++){let z=-.6+i*.6,h=[.10,.20,.30,.20,.10][i];box(1.36,h,.6,stepM,0,h/2,z)}}
+const target=marker();target.visible=mode===2||mode===3;
+const obstacles=[];if(mode===2){for(const [x,z] of [[-.5,.35],[.8,-.6],[-1,-1]]){const o=mesh(new T.CylinderGeometry(.24,.29,.48,24),stepM,x,.24,z);obstacles.push(o)}}
+const props=[];let held=false,grip=null,heldPos=null,objectState='reach',objectTimer=0,objectStart=V(),objectEnd=V(),object=null;
+if(mode===4){for(const x of [-.51,.51]){box(.46,.84,.46,metal,x,.42,.65);box(.50,.035,.50,stepM,x,.8575,.65)}object=mesh(new T.CylinderGeometry(.065,.065,.17,24),gold,-.51,.96,.65);objectStart.copy(object.position);objectEnd.set(.51,.96,.65)}
+let cape=null,capeNodes=[],capePins=[],strap=null,strapNodes=[],backpack=null,hair=[],lastAnchor=null;
+function makeDynamics(){
+ const p=pos(get('spine_03')),back=p.clone().add(V(0,.05,-.22));const chest=get('spine_03');const packSocket=socket(chest,localOffset(chest,back));backpack=box(.29,.35,.16,metal,0,0,0,packSocket); // rigid equipment, not anatomy
+ const rows=9,cols=7;const g=new T.PlaneGeometry(.48,.60,cols-1,rows-1);const a=g.attributes.position;
+ for(let i=0;i<a.count;i++){const c=i%cols,r=Math.floor(i/cols);const p0=back.clone().add(V((c/(cols-1)-.5)*.48,-r/(rows-1)*.60,-.10));capeNodes.push({p:p0.clone(),v:V(),rest:p0.clone()});if(r===0)capePins.push(localOffset(chest,p0))}
+ const cm=fabric.clone();cm.side=T.DoubleSide;cape=mesh(g,cm);cape.frustumCulled=false;
+ const sg=new T.BufferGeometry();sg.setAttribute('position',new T.BufferAttribute(new Float32Array(9*3),3));strap=new T.Line(sg,new T.LineBasicMaterial({color:0xc38b4e}));scene.add(strap);for(let i=0;i<9;i++)strapNodes.push({p:back.clone(),v:V()});
+ const head=get('head');for(let i=0;i<3;i++){const h=pos(head).add(V((i-1)*.055,.16,-.095));const geom=new T.BufferGeometry();geom.setAttribute('position',new T.BufferAttribute(new Float32Array(5*3),3));const line=new T.Line(geom,new T.LineBasicMaterial({color:0x403a35}));scene.add(line);hair.push({line,pin:localOffset(head,h),nodes:Array.from({length:5},(_,j)=>({p:h.clone().add(V(0,-j*.03,-j*.014)),v:V()}))})}
+}
+function spring(n,want,dt,k=65,d=13){n.v.addScaledVector(want.clone().sub(n.p),k*dt).multiplyScalar(Math.exp(-d*dt));n.p.addScaledVector(n.v,dt)}
+function dynamics(dt,t){if(!cape)return;const ch=get('spine_03'),front=facing(),right=side(),back=pos(ch).addScaledVector(front,-.23).add(V(0,.05,0));const wind=.08*Math.sin(t*2.1)+.025*Math.sin(t*5.1);for(let i=0;i<capeNodes.length;i++){const n=capeNodes[i],r=Math.floor(i/7),c=i%7;const want=back.clone().addScaledVector(right,(c/6-.5)*.48).add(V(0,-r/8*.60,0)).addScaledVector(front,-.10-r/8*(.08+speed*.16+wind));if(r===0){n.p.copy(ch.localToWorld(capePins[c].clone()));n.v.set(0,0,0)}else{spring(n,want,dt);const local=n.p.clone().sub(back);const dot=local.dot(front);if(dot>-.04)n.p.addScaledVector(front,-.04-dot)}}
+ for(let k=0;k<3;k++)for(let r=1;r<9;r++)for(let c=0;c<7;c++){const n=capeNodes[r*7+c];for(const j of [((r-1)*7+c),...(c?[r*7+c-1]:[])]){const q=capeNodes[j],d=n.p.clone().sub(q.p),len=d.length();const restLen=j===((r-1)*7+c)?.075:.08;if(len>.0001)n.p.addScaledVector(d,-.55*(len-restLen)/len)}}
+ const a=cape.geometry.attributes.position;capeNodes.forEach((n,i)=>a.setXYZ(i,n.p.x,n.p.y,n.p.z));a.needsUpdate=true;cape.geometry.computeVertexNormals();
+ const st=strap.geometry.attributes.position;strapNodes.forEach((n,i)=>{const u=i/8,w=back.clone().addScaledVector(right,.19).add(V(0,.17-u*.36,0)).addScaledVector(front,.10*Math.sin(Math.PI*u));if(i===0||i===8)n.p.copy(w);else spring(n,w,dt,95,16);st.setXYZ(i,n.p.x,n.p.y,n.p.z)});st.needsUpdate=true;
+ for(const h of hair){const a=h.line.geometry.attributes.position,p=get('head').localToWorld(h.pin.clone());h.nodes.forEach((n,i)=>{const want=p.clone().add(V(0,-i*.026,0)).addScaledVector(front,-i*(.012+speed*.009+wind*.04));if(i===0)n.p.copy(p);else spring(n,want,dt,110,17);a.setXYZ(i,n.p.x,n.p.y,n.p.z)});a.needsUpdate=true}
+}
+const mapping={root:'root',pelvis:'pelvis',spine:'spine_01',chest:'spine_03',neck:'neck_01',head:'Head'};for(const s of ['l','r'])Object.assign(mapping,{['clavicle_'+s]:'clavicle_'+s,['upperArm_'+s]:'upperarm_'+s,['lowerArm_'+s]:'lowerarm_'+s,['hand_'+s]:'hand_'+s,['upperLeg_'+s]:'thigh_'+s,['lowerLeg_'+s]:'calf_'+s,['foot_'+s]:'foot_'+s,['toes_'+s]:'ball_'+s});
+const clipFind=(a,n)=>a.find(x=>x.name===n)||a.find(x=>x.name.toLowerCase().includes(n.toLowerCase()));
+function setWeight(a,w){if(a)a.setEffectiveWeight(w)}
+function footPlan(s,dt,moving){const f=feet[s],hip=get('thigh_'+s),knee=get('calf_'+s),ankle=get('foot_'+s),base=pos(ankle),front=facing(),right=side();
+ const cycle=(distance/.78+(s==='l'?0:.5))%1;const swing=moving&&cycle>.60;const nominal=actor.position.clone().addScaledVector(right,s==='l'?.12:-.12);
+ if(!f.initial){f.lock.copy(base);f.lock.y=terrain(base.x,base.z)+sole[s];f.initial=true;f.start.copy(f.lock);f.end.copy(f.lock)}
+ if(swing&&!f.swing){f.start.copy(f.lock);f.end.copy(nominal).addScaledVector(front,.28+speed*.13);f.end.y=terrain(f.end.x,f.end.z)+sole[s];receipt.steps++}
+ if(!swing&&f.swing)f.lock.copy(f.end);
+ let goal=f.lock.clone();if(swing){const u=smooth((cycle-.60)/.40);goal.lerpVectors(f.start,f.end,u);goal.y=Math.max(lerp(f.start.y,f.end.y,u)+.16*Math.sin(Math.PI*u),terrain(goal.x,goal.z)+sole[s])}
+ if(!moving&&goal.distanceTo(nominal)>.45){f.lock.lerp(nominal,1-Math.exp(-5*dt));f.lock.y=terrain(f.lock.x,f.lock.z)+sole[s];goal.copy(f.lock)}
+ f.swing=swing;f.goal=goal;const err=solve(hip,knee,ankle,goal,pos(hip).addScaledVector(front,.6),1,.08,2.5);if(!swing)receipt.contactError=Math.max(receipt.contactError||0,err);return err
+}
+function lookAtBone(b,target,w,max){const a=pos(b),front=facing(),to=target.clone().sub(a).normalize();if(to.dot(front)<-.25)to.lerp(front,.5).normalize();rotateToward(b,front,to,w,max)}
+function locomote(dt,t){let goal=V();if(mode===1)goal.set(0,0,1.65*Math.sin(t*.38));else if(mode===2){const points=[V(1.6,0,1.45),V(-1.55,0,1.2),V(-1.5,0,-1.65),V(1.55,0,-1.4)];goal=points[Math.floor(t/4)%points.length].clone();target.position.copy(goal).add(V(0,.13,0));for(let i=0;i<obstacles.length;i++){const o=obstacles[i];o.position.x=[-.5,.8,-1][i]+.17*Math.sin(t*.6+i)}}else if(mode===5)goal.set(.72*Math.sin(t*.65),0,.64*Math.cos(t*.65));else return false;
+ const delta=goal.sub(actor.position);delta.y=0;const d=delta.length();let want=delta.normalize().multiplyScalar(clamp(d*2,0,mode===1?.74:1.25));for(const o of obstacles){const away=actor.position.clone().sub(o.position);away.y=0;const l=away.length();if(l<.68&&l>.001)want.addScaledVector(away.normalize(),( .68-l)*4)}
+ velocity.lerp(want,1-Math.exp(-4*dt));speed=velocity.length();if(speed>.04){const newHeading=Math.atan2(velocity.x,velocity.z);heading+=clamp(wrap(newHeading-heading),-3*dt,3*dt);const forward=facing(),actual=forward.multiplyScalar(speed*clamp(Math.cos(wrap(newHeading-heading)),0,1));const next=actor.position.clone().addScaledVector(actual,dt);if(!obstacles.some(o=>Math.hypot(next.x-o.position.x,next.z-o.position.z)<.32)){actor.position.copy(next);distance+=actual.length()*dt}}
+ actor.rotation.y=heading;return speed>.12
+}
+function reach(dt,t){const b=get('hand_r'),a=get('upperarm_r'),e=get('lowerarm_r');if(!grip){grip=socket(b,localOffset(b,pos(b).addScaledVector(facing(),.055)));heldPos=V()}
+ objectTimer+=dt;const current=object.position.clone();if(objectState==='reach'){const i=Math.floor(t/11)%2;objectStart.set(i?.48:-.48,.96,.65+.07*Math.sin(t*.7));objectEnd.set(-objectStart.x,.96,.65);if(!held)object.position.lerp(objectStart,1-Math.exp(-5*dt))}
+ const carry=objectState==='carry';let desired=carry?objectEnd.clone().add(V(0,.05+ .25*Math.sin(Math.PI*smooth(objectTimer/2.7)),0)):object.position.clone();if(objectState==='return')desired=pos(b).add(V(0,-.015,0));
+ const palmOffset=grip.getWorldPosition(V()).sub(pos(b));const targetW=desired.clone().sub(palmOffset);receipt.reachError=solve(a,e,b,targetW,pos(a).addScaledVector(side(),.40).addScaledVector(facing(),-.1),objectState==='return'?0:1,.12,2.5);
+ const p=grip.getWorldPosition(V());if(objectState==='reach'&&p.distanceTo(object.position)<.075){held=true;objectState='carry';objectTimer=0;receipt.grabs++}if(held){object.position.copy(p);object.quaternion.slerp(b.getWorldQuaternion(Q()),1-Math.exp(-7*dt));if(objectTimer>2.7&&p.distanceTo(objectEnd)<.14){held=false;objectState='return';objectTimer=0;receipt.releases++}}
+ if(objectState==='return'&&objectTimer>1.4){objectState='reach';objectTimer=0}if(objectTimer>7&&objectState==='carry'){held=false;objectState='return';objectTimer=0;receipt.errors.push('reach timeout: dropped candidate object')}
+}
+function update(dt,t){const moving=locomote(dt,t);for(const [k,b] of Object.entries(bones)){b.position.copy(rest[k].p);b.quaternion.copy(rest[k].q);b.scale.copy(rest[k].s)}
+ const w=mode===1||mode===2||mode===5?clamp(speed/.7,0,1):0;setWeight(idle,1-w);setWeight(walk,w*(1-clamp((speed-.9)/.5,0,1)));setWeight(run,run?w*clamp((speed-.9)/.5,0,1):0);if(walk)walk.timeScale=clamp(speed/.85,.35,1.5);mixer.update(dt);actor.updateMatrixWorld(true);
+ if(mode===1||mode===2||mode===5){const p=get('pelvis'),ground=(terrain(actor.position.x,actor.position.z)+terrain(actor.position.x,actor.position.z+.16))/2;pelvisOffset=damp(pelvisOffset,ground-.045,7,dt);const worldP=pos(p).add(V(0,pelvisOffset,0));p.position.copy(p.parent.worldToLocal(worldP));actor.updateMatrixWorld(true);footPlan('l',dt,moving);footPlan('r',dt,moving)}
+ if(mode===3){target.position.set(.95*Math.sin(t*.73),1.44+.32*Math.sin(t*1.13),1.35+.32*Math.cos(t*.61));lookAtBone(get('spine_03'),target.position,.28,.42);lookAtBone(get('neck_01'),target.position,.30,.48);lookAtBone(get('head'),target.position,.58,.78);const breath=.012*Math.sin(t*2.1)+.004*Math.sin(t*3.37);get('spine_02').rotateX(breath);get('clavicle_l').rotateZ(.013*Math.sin(t*1.27));get('clavicle_r').rotateZ(-.013*Math.sin(t*1.31));for(const m of blinkMeshes){const i=m.morphTargetDictionary;const key=Object.keys(i).find(k=>/blink/i.test(k));if(key)m.morphTargetInfluences[i[key]]=Math.pow(Math.max(0,Math.cos(t*1.51+.4*Math.sin(t*.7))),110)}}
+ if(mode===4)reach(dt,t);if(mode===5)dynamics(dt,t);actor.updateMatrixWorld(true);
+}
+let blinkMeshes=[];
+async function main(){const [g,a]=await Promise.all([loader.loadAsync(dir+'night-striker.glb'),loader.loadAsync(dir+'universal-animation-library.glb')]);model=g.scene;actor.add(model);model.updateMatrixWorld(true);const bounds=new T.Box3().setFromObject(model);height=bounds.max.y-bounds.min.y;scale=1.75/height;model.scale.setScalar(scale);model.position.y=-bounds.min.y*scale;model.traverse(o=>{if(o.isBone)bones[o.name.toLowerCase()]=o;if(o.isMesh){o.castShadow=true;o.receiveShadow=true;receipt.triangles+=(o.geometry.index?.count||o.geometry.attributes.position.count)/3;if(o.morphTargetDictionary)blinkMeshes.push(o)}});actor.updateMatrixWorld(true);
+ for(const n of Object.values(mapping))if(!get(n))throw Error('missing bone '+n);for(const [k,b] of Object.entries(bones)){rest[k]={p:b.position.clone(),q:b.quaternion.clone(),s:b.scale.clone()};receipt.rest[k]={parent:b.parent.name,local:b.matrix.toArray(),world:b.matrixWorld.toArray()}}
+ for(const s of ['l','r']){sole[s]=Math.max(.025,pos(get('foot_'+s)).y);feet[s]={initial:false,swing:false,lock:V(),start:V(),end:V()}}
+ receipt.mapping=mapping;receipt.height=1.75;receipt.blinks=blinkMeshes.some(m=>Object.keys(m.morphTargetDictionary).some(k=>/blink/i.test(k)));receipt.anchors={head_top:['Head',0,.12,0],face:['Head',0,.04,.12],neck:['neck_01',0,0,0],chest:['spine_03',0,0,.12],back:['spine_03',0,0,-.16],waist:['pelvis',0,0,0],hand_L:['hand_l',0,0,0],hand_R:['hand_r',0,0,0],wrist_L:['hand_l',0,0,0],wrist_R:['hand_r',0,0,0],foot_L:['foot_l',0,0,0],foot_R:['foot_r',0,0,0]};receipt.anchorStatus='PROVISIONAL offsets in semantic frame; not fit-tested';
+ mixer=new T.AnimationMixer(model);const clips=a.animations;receipt.clips=clips.map(c=>c.name);const make=n=>{const c=clipFind(clips,n);if(!c)return null;const filtered=c.clone();filtered.tracks=filtered.tracks.filter(t=>!/^root\.(position|quaternion|scale)$/i.test(t.name));return mixer.clipAction(filtered).play()};idle=make('Idle_Loop');walk=make('Walk_Fwd_Loop')||make('Jog_Fwd_Loop');run=make('Sprint_Loop')||walk;if(!idle||!walk)throw Error('base clips unavailable');if(run===walk)run=null;setWeight(idle,1);setWeight(walk,0);setWeight(run,0);if(mode===5)makeDynamics();receipt.status='RUNNING';requestAnimationFrame(frame)}
+let last=0,acc=0,elapsed=0,view=V(0,1,0),cameraGoal=V(),frameCount=0;
+function frame(now){requestAnimationFrame(frame);if(document.hidden){last=now;acc=0;receipt.visibilityPaused++;return}const dt=last?Math.min(.05,(now-last)/1000):0;last=now;elapsed+=dt;const orbit=elapsed<8;const detail=elapsed>=8&&elapsed<10;const action=elapsed>=10;const targetView=actor.position.clone().add(V(0,.9,0));if(orbit){const a=elapsed/8*Math.PI*2;cameraGoal.set(3.5*Math.sin(a),1.65,3.5*Math.cos(a));cameraGoal.add(actor.position);view.copy(targetView)}else{const angle=.58;const dist=detail?2.65:(mode===1||mode===2?5.8:4.25);cameraGoal.set(Math.sin(angle)*dist,detail?1.6:2.25,Math.cos(angle)*dist);cameraGoal.add(actor.position.clone().multiplyScalar(mode===2?.1:.35));view.lerp(targetView,1-Math.exp(-3*dt))}
+ if(!frameCount)camera.position.copy(cameraGoal);else camera.position.lerp(cameraGoal,1-Math.exp(-4*dt));camera.lookAt(view);
+ acc+=dt;while(acc>=1/60){acc-=1/60;if(action){sim+=1/60;update(1/60,sim)}else{mixer.update(1/60);actor.updateMatrixWorld(true);if(mode===5)dynamics(1/60,sim)}}
+ renderer.render(scene,camera);frameCount++;receipt.frames=frameCount;receipt.drawCalls=renderer.info.render.calls;receipt.frameMs=damp(receipt.frameMs,dt*1000,2,dt);if(frameCount%120===0){receipt.samples.push({t:sim,position:actor.position.toArray(),target:mode===4?object.position.toArray():target.position.toArray(),speed,steps:receipt.steps,grabs:receipt.grabs,releases:receipt.releases,contactError:receipt.contactError,reachError:receipt.reachError});if(receipt.samples.length>120)receipt.samples.shift()}}
+main().catch(e=>{receipt.status='FAILED';receipt.errors.push(String(e));console.error(e)});
+</script></body></html>
