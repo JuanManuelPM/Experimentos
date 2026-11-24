@@ -1,8 +1,10 @@
 # PROMETEO — Quaternius assets
 
-Real 3D files. Free CC0 packs only. Mirror coverage may differ from current editions; FBX/OBJ remain source formats when GLB/glTF unavailable. Partial packs contain verified subsets, not complete editions.
+Real 3D files. Free CC0 packs only. Mirror coverage may differ from current editions; FBX/OBJ remain source formats when GLB/glTF unavailable.
 
-Imported: 36/62; models: 2010; bytes: 1877272815
+Imported: 38/62; models: 2409; bytes: 1976765293
+
+PARTIAL rows are preserved as usable subsets but not listed by the existing gallery's IMPORTED filter.
 
 - 01 Universal Base Characters: IMPORTED (18 models) 
 - 02 Modular Character Outfits - Fantasy: IMPORTED (24 models) 
@@ -53,16 +55,16 @@ Imported: 36/62; models: 2010; bytes: 1877272815
 - 47 Modular Train Pack: FAILED (0 models) no usable free archive link
 - 48 Ships Pack: IMPORTED (6 models) 
 - 49 Ultimate Spaceships Pack: IMPORTED (11 models) 
-- 50 Zombie Apocalypse Kit: PARTIAL (2 models) 
+- 50 Zombie Apocalypse Kit: PARTIAL (64 models) 
 - 51 Spaceships Pack: IMPORTED (5 models) 
 - 52 Animated Tanks Pack: PARTIAL (3 models) 
 - 55 Animated Women Pack: FAILED (0 models) Official direct download unavailable: DNS blocked in runtime. No exact provenance-verified transferable mirror found.
 - 56 Animated Man Pack: FAILED (0 models) Official direct download unavailable: DNS blocked in runtime. No exact provenance-verified transferable mirror found.
 - 57 Animated Woman Pack: FAILED (0 models) Official direct download unavailable: DNS blocked in runtime. No exact provenance-verified transferable mirror found.
-- 61 Pirate Kit: PARTIAL (2 models) 
-- 62 Cube World Kit: PARTIAL (2 models) 
-- 63 Ultimate Space Kit: PARTIAL (2 models) 
-- 64 Toon Shooter Game Kit: PARTIAL (2 models) 
+- 61 Pirate Kit: PARTIAL (72 models) 
+- 62 Cube World Kit: PARTIAL (107 models) 
+- 63 Ultimate Space Kit: IMPORTED (92 models) 
+- 64 Toon Shooter Game Kit: IMPORTED (74 models) 
 - 65 Platformer Game Kit: PARTIAL (5 models) 
 - 66 3D Card Kit - Fantasy: FAILED (0 models) official archive download unavailable (container DNS); no verified binary mirror found
 - 67 Modular Platformer Pack: PARTIAL (5 models) 
