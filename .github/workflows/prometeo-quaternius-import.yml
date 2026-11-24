@@ -1,0 +1,33 @@
+name: PROMETEO Quaternius import
+on:
+  push:
+    branches: [prometeo/assets-quaternius]
+    paths: ['prometeo-assets/import.py', 'prometeo-assets/selection.json', '.github/workflows/prometeo-quaternius-import.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: prometeo-quaternius-import
+  cancel-in-progress: false
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install requests beautifulsoup4 gdown itch-dl
+      - run: python prometeo-assets/import.py
+      - name: Commit imported assets and receipt
+        if: always()
+        run: |
+          git config user.name "prometeo-assets"
+          git config user.email "prometeo-assets@users.noreply.github.com"
+          git add prometeo-assets/
+          if ! git diff --cached --quiet; then
+            git commit -m "Import verified Quaternius CC0 models and receipt"
+            git pull --rebase origin prometeo/assets-quaternius
+            git push origin HEAD:prometeo/assets-quaternius
+          fi
