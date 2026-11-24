@@ -1,0 +1,496 @@
+{
+  "status": "CANDIDATE_IMPLEMENTED",
+  "base": "68fc0063ed02033a29304a82a2698a35519a76de",
+  "feedback": "551e2e45f7f6ab6b502634e4a4364269accb6e0b",
+  "branch": "candidate/prometeo-assembly-20261124",
+  "criteria": [
+    "Use existing constructor primitives, not another engine",
+    "Derive endpoints from actual triangles and oriented local probes",
+    "Record explicit semantic relation, tolerances, roots and deliberate exceptions",
+    "Detect historic disconnections and intrusions; accept valid positive relations",
+    "Produce independent real meshes before audit; do not block independent production"
+  ],
+  "sourceBlobs": {
+    "surface-gate/constructor.mjs": "6151a35b2f867bf4c1523e3e9feb2f9b15074146",
+    "surface-gate/surface-gate.mjs": "50b01e938551a99c8892569d918b3bf8a2295569",
+    "surface-gate/assembly-demos.mjs": "22b7571b8dcf81b793c0309383ba208280f0fcc1",
+    "surface-gate/assembly-test.mjs": "2558b90f47adb6120d2cd1d5c18ba3ea7e94fa68",
+    "chair-03-04/geometry.mjs": "b4f960d32149d928f683c9bce600dc6b25ba3cc3",
+    "chair-collection-10/models.mjs": "d286f6df946c5765f7016308890b739db684a169",
+    "surface-gate/assembly-viewer.mjs": "6a52ccd867c51ae0c6510b1aa0a814cebc80ead7",
+    "surface-gate/assembly-preview.html": "c5ba13b31fb1ffd9a5ea2097ffe635702d4431c7"
+  },
+  "historicReadback": [
+    {
+      "path": "surface-gate/surface-gate.mjs",
+      "candidate": "50b01e938551a99c8892569d918b3bf8a2295569",
+      "original": "50b01e938551a99c8892569d918b3bf8a2295569",
+      "identical": true
+    },
+    {
+      "path": "chair-03-04/geometry.mjs",
+      "candidate": "b4f960d32149d928f683c9bce600dc6b25ba3cc3",
+      "original": "b4f960d32149d928f683c9bce600dc6b25ba3cc3",
+      "identical": true
+    },
+    {
+      "path": "chair-collection-10/models.mjs",
+      "candidate": "d286f6df946c5765f7016308890b739db684a169",
+      "original": "d286f6df946c5765f7016308890b739db684a169",
+      "identical": true
+    }
+  ],
+  "execution": "Exact module bodies read back from candidate branch, executed in V8 isolate with static ES module imports/exports adapted to bindings. Not Node/browser execution.",
+  "tests": {
+    "total": 16,
+    "passed": 16,
+    "results": [
+      {
+        "name": "LÍNEA · consola de nogal y acero",
+        "pass": true,
+        "details": {
+          "parts": 11,
+          "bad": 0,
+          "triangles": 3632,
+          "relations": [
+            {
+              "id": "leg-LB→top",
+              "ok": true,
+              "gaps": [
+                -0.012000000000000007
+              ]
+            },
+            {
+              "id": "shoe-LB→leg-LB",
+              "ok": true,
+              "gaps": [
+                0
+              ]
+            },
+            {
+              "id": "leg-LF→top",
+              "ok": true,
+              "gaps": [
+                -0.012000000000000007
+              ]
+            },
+            {
+              "id": "shoe-LF→leg-LF",
+              "ok": true,
+              "gaps": [
+                0
+              ]
+            },
+            {
+              "id": "leg-RB→top",
+              "ok": true,
+              "gaps": [
+                -0.012000000000000007
+              ]
+            },
+            {
+              "id": "shoe-RB→leg-RB",
+              "ok": true,
+              "gaps": [
+                0
+              ]
+            },
+            {
+              "id": "leg-RF→top",
+              "ok": true,
+              "gaps": [
+                -0.012000000000000007
+              ]
+            },
+            {
+              "id": "shoe-RF→leg-RF",
+              "ok": true,
+              "gaps": [
+                0
+              ]
+            },
+            {
+              "id": "brace--0.145→leg-LB",
+              "ok": true,
+              "gaps": [
+                -0.006000000000000004
+              ]
+            },
+            {
+              "id": "brace--0.145→leg-RB",
+              "ok": true,
+              "gaps": [
+                -0.006000000000000003
+              ]
+            },
+            {
+              "id": "brace-0.145→leg-LF",
+              "ok": true,
+              "gaps": [
+                -0.006000000000000004
+              ]
+            },
+            {
+              "id": "brace-0.145→leg-RF",
+              "ok": true,
+              "gaps": [
+                -0.006000000000000003
+              ]
+            }
+          ],
+          "surfaces": [
+            {
+              "host": "top",
+              "guest": "leg-LB",
+              "status": "PASS_PARTIAL"
+            },
+            {
+              "host": "top",
+              "guest": "leg-LF",
+              "status": "PASS_PARTIAL"
+            },
+            {
+              "host": "top",
+              "guest": "leg-RB",
+              "status": "PASS_PARTIAL"
+            },
+            {
+              "host": "top",
+              "guest": "leg-RF",
+              "status": "PASS_PARTIAL"
+            }
+          ],
+          "issues": []
+        }
+      },
+      {
+        "name": "ÓPTICA · lámpara de brazo articulado",
+        "pass": true,
+        "details": {
+          "parts": 10,
+          "bad": 0,
+          "triangles": 6144,
+          "relations": [
+            {
+              "id": "stem→base",
+              "ok": true,
+              "gaps": [
+                -0.009999999999999997
+              ]
+            },
+            {
+              "id": "stem→pivot-lower",
+              "ok": true,
+              "gaps": [
+                -0.010000000000000004
+              ]
+            },
+            {
+              "id": "pivot-lower→pivot-upper",
+              "ok": true,
+              "gaps": [
+                0.008000000000000007,
+                0.008000000000000007
+              ]
+            },
+            {
+              "id": "pivot-pin→pivot-upper",
+              "ok": true,
+              "gaps": [
+                -0.02699999999999995
+              ]
+            },
+            {
+              "id": "pivot-pin→pivot-lower",
+              "ok": true,
+              "gaps": [
+                -0.015000000000000003
+              ]
+            },
+            {
+              "id": "arm→pivot-upper",
+              "ok": true,
+              "gaps": [
+                -0.011999999999999992
+              ]
+            },
+            {
+              "id": "arm→shade-collar",
+              "ok": true,
+              "gaps": [
+                -0.032000000000000015
+              ]
+            },
+            {
+              "id": "shade-lip→shade-collar",
+              "ok": true,
+              "gaps": [
+                -0.007999999999999998
+              ]
+            },
+            {
+              "id": "shade-lip→opal-shade",
+              "ok": true,
+              "gaps": [
+                -0.008271737947740344
+              ]
+            },
+            {
+              "id": "base→felt-pad",
+              "ok": true,
+              "gaps": [
+                0.04721764705882353
+              ]
+            }
+          ],
+          "surfaces": [],
+          "issues": []
+        }
+      },
+      {
+        "name": "VELA cross--0.32 / floor-tie-L",
+        "pass": true,
+        "details": {
+          "gap": 0.07050998342216291,
+          "issues": [
+            {
+              "code": "GAP_OR_OVERLAP",
+              "relation": "required"
+            },
+            {
+              "code": "DISCONNECTED_OR_UNDECLARED",
+              "part": "cross--0.32"
+            }
+          ]
+        }
+      },
+      {
+        "name": "VELA cross--0.32 / floor-tie-R",
+        "pass": true,
+        "details": {
+          "gap": 0.07050998342216291,
+          "issues": [
+            {
+              "code": "GAP_OR_OVERLAP",
+              "relation": "required"
+            },
+            {
+              "code": "DISCONNECTED_OR_UNDECLARED",
+              "part": "cross--0.32"
+            }
+          ]
+        }
+      },
+      {
+        "name": "VELA cross-0.23 / floor-tie-L",
+        "pass": true,
+        "details": {
+          "gap": 0.07050998342216291,
+          "issues": [
+            {
+              "code": "GAP_OR_OVERLAP",
+              "relation": "required"
+            },
+            {
+              "code": "DISCONNECTED_OR_UNDECLARED",
+              "part": "cross-0.23"
+            }
+          ]
+        }
+      },
+      {
+        "name": "VELA cross-0.23 / floor-tie-R",
+        "pass": true,
+        "details": {
+          "gap": 0.07050998342216291,
+          "issues": [
+            {
+              "code": "GAP_OR_OVERLAP",
+              "relation": "required"
+            },
+            {
+              "code": "DISCONNECTED_OR_UNDECLARED",
+              "part": "cross-0.23"
+            }
+          ]
+        }
+      },
+      {
+        "name": "rail/left-sled",
+        "pass": true,
+        "details": {
+          "surfaces": [
+            {
+              "status": "FAIL",
+              "hits": [
+                {
+                  "surface": "visible",
+                  "point": [
+                    -0.219996,
+                    0.659168,
+                    -0.21717
+                  ]
+                },
+                {
+                  "surface": "visible",
+                  "point": [
+                    -0.2201825,
+                    0.6591578,
+                    -0.2171093
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "name": "rail/right-sled",
+        "pass": true,
+        "details": {
+          "surfaces": [
+            {
+              "status": "FAIL",
+              "hits": [
+                {
+                  "surface": "visible",
+                  "point": [
+                    0.195552,
+                    0.660392,
+                    -0.22448
+                  ]
+                },
+                {
+                  "surface": "visible",
+                  "point": [
+                    0.18933,
+                    0.6606761,
+                    -0.2261765
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "name": "petal/mount",
+        "pass": true,
+        "details": {
+          "surfaces": [
+            {
+              "status": "FAIL",
+              "hits": [
+                {
+                  "surface": "visible",
+                  "point": [
+                    -0.0415798,
+                    0.4368314,
+                    0.0363997
+                  ]
+                },
+                {
+                  "surface": "visible",
+                  "point": [
+                    -0.041624,
+                    0.437,
+                    0.038043
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "name": "contact",
+        "pass": true,
+        "details": {
+          "status": "PASS_LOCAL",
+          "issues": [],
+          "gap": 0
+        }
+      },
+      {
+        "name": "embed",
+        "pass": true,
+        "details": {
+          "status": "PASS_LOCAL",
+          "issues": [],
+          "gap": -0.049999999999999975
+        }
+      },
+      {
+        "name": "unplanned intrusion",
+        "pass": true,
+        "details": {
+          "status": "FAIL",
+          "issues": [
+            {
+              "code": "PROTECTED_SURFACE_INTRUSION",
+              "host": "host",
+              "guest": "post"
+            }
+          ],
+          "gap": -0.15
+        }
+      },
+      {
+        "name": "intentional through",
+        "pass": true,
+        "details": {
+          "status": "PASS_LOCAL",
+          "issues": [],
+          "gap": -0.15
+        }
+      },
+      {
+        "name": "misplaced through window",
+        "pass": true,
+        "details": {
+          "status": "FAIL",
+          "issues": [
+            {
+              "code": "PROTECTED_SURFACE_INTRUSION",
+              "host": "host",
+              "guest": "post"
+            }
+          ],
+          "gap": -0.15
+        }
+      },
+      {
+        "name": "undeclared orphan",
+        "pass": true,
+        "details": [
+          {
+            "code": "DISCONNECTED_OR_UNDECLARED",
+            "part": "orphan"
+          }
+        ]
+      },
+      {
+        "name": "explicit intent required",
+        "pass": true,
+        "details": [
+          {
+            "code": "MISSING_INTENT",
+            "relation": "gap"
+          }
+        ]
+      }
+    ]
+  },
+  "renderWebGL": "NOT_RUN",
+  "android": "NOT_RUN",
+  "art": "NOT_RUN",
+  "viewerSyntax": "PASS_V8",
+  "limitations": [
+    "Probe evidence is local, not proof of global contact area or mechanical load",
+    "Surface checks are partial, only declared paired shell faces; no general collision solver",
+    "Articulation demonstrated as axial clearance and connected graph, not dynamic simulation",
+    "Material geometry recipes not aesthetic certification",
+    "Candidate preview source not deployed on GitHub Pages",
+    "No original chair source files modified"
+  ]
+}
