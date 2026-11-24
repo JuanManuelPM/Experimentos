@@ -3,10 +3,11 @@ import http from 'node:http';
 import { randomBytes, createHash, timingSafeEqual } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
 import { pathToFileURL } from 'node:url';
+import { join } from 'node:path';
 const rand=()=>randomBytes(32).toString('base64url');
 const sha=x=>createHash('sha256').update(x).digest('base64url');
 const safeEq=(a,b)=>typeof a==='string'&&typeof b==='string'&&/^[A-Za-z0-9_-]+$/.test(b)&&a.length===b.length&&timingSafeEqual(Buffer.from(a),Buffer.from(b));
-const files=new Map([['/','index.html'],['/index.html','index.html'],['/app.js','app.js'],['/shell.js','shell.js'],['/styles.css','styles.css'],['/model-adapter.mjs','model-adapter.mjs']]);
+const files=new Map([['/','index.html'],['/index.html','index.html'],['/app.js','app.js'],['/shell.js','shell.js'],['/styles.css','styles.css'],['/model-adapter.mjs','model-adapter.mjs'],['/share-reader.mjs','share-reader.mjs'],['/delivery-core.mjs','delivery-core.mjs']]);
 const types={html:'text/html; charset=utf-8',js:'text/javascript; charset=utf-8',mjs:'text/javascript; charset=utf-8',css:'text/css; charset=utf-8'};
 const json=(res,status,data)=>{res.writeHead(status,{'Content-Type':'application/json; charset=utf-8'});res.end(JSON.stringify(data))};
 const cookie=(name,value,maxAge)=>name+'='+value+'; Path=/; Secure; HttpOnly; SameSite=Lax; Max-Age='+maxAge;
@@ -62,6 +63,8 @@ export function createServer(env=process.env,upstream=fetch) {
         if(!/^(build|examples\/jsm)\/[A-Za-z0-9_.\/-]+\.js$/.test(name))return json(res,404,{error:'Not found'});
         const data=await readFile(new URL('node_modules/three/'+name,import.meta.url));res.writeHead(200,{'Content-Type':types.js});return res.end(data);
       }
+      const share=u.pathname.match(/^\/share\/([a-f0-9]{48})\/(descriptor\.json|payload\.bin)$/);
+      if(req.method==='GET'&&share){if(!env.SHARE_DIR)return json(res,404,{error:'Publication unavailable'});try{const bytes=await readFile(join(env.SHARE_DIR,share[1],share[2]));if(bytes.length>(share[2]==='descriptor.json'?8192:24*1024*1024+16))throw Error('Too large');res.writeHead(200,{'Content-Type':share[2]==='descriptor.json'?'application/json':'application/octet-stream'});return res.end(bytes);}catch{return json(res,404,{error:'Publication unavailable'});}}
       if(!cfg)return json(res,503,{error:'Authorization not configured'});
       if(req.method==='GET'&&u.pathname==='/auth/start'){
         if(pending.size>=200)return json(res,429,{error:'Try later'});
