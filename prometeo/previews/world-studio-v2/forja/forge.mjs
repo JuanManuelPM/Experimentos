@@ -7,7 +7,7 @@ import {loadCatalog,normalizeTransform} from './catalog-v2.mjs';
 
 const SOURCE_SHA='3ddcc695adbba9fb918cf31b7c139b3f95b76910';
 const OLD_STORAGE='prometeo.forja.scene.v1';
-const STORAGE='prometeo.forja.scene.v2';
+const STORAGE='prometeo.forja.scene.v2.preview';
 const SCHEMA='prometeo.forja.scene/v2';
 const OLD_SCHEMA='prometeo.forja.scene/v1';
 const pendingTemplates=new Map();
