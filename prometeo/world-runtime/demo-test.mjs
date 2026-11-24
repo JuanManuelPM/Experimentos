@@ -1,0 +1,12 @@
+import * as api from './runtime.mjs';
+import {readFile} from 'node:fs/promises';
+const m=JSON.parse(await readFile(new URL('./scene.json',import.meta.url),'utf8')),w=api.validate(m);let clock=0,live=0,peak=0,loads=0,disposed=0;
+const cache=new api.ModelCache({clock:()=>clock,limit:12,idleMs:1500,load:async a=>({url:a.url,n:++loads}),dispose:()=>disposed++});
+const adapter={async build(s,signal){let leases=[];try{for(const id of new Set(s.instances.map(i=>i.assetId)))leases.push(await cache.acquire(id,w.assets.get(id),signal));return {leases,count:s.instances.length}}catch(e){leases.forEach(l=>l.release());throw e}},attach(){live++;peak=Math.max(live,peak)},detach(){live--},destroy(v){v.leases.forEach(l=>l.release())}};
+const stream=new api.Streamer(w,adapter,{clock:()=>clock,sectorLimit:12,parallel:2});let p={x:6,y:0,z:10},steps=0;
+async function tick(dx=0,dz=0){clock+=50;stream.update(p.x,p.z,dx,dz);for(let i=0;i<40;i++)await Promise.resolve();if(stream.ready(stream.center))p=api.stepPlayer(w,p,dx,dz,.05,k=>stream.ready(k));stream.update(p.x,p.z,dx,dz);cache.trim();steps++;if(stream.live.size>12||stream.pending.size>2||cache.entries.size>12||Math.abs(p.y)>1e-5)throw Error("budget/floor");}
+async function goto(x,z){for(let i=0;i<1000;i++){let dx=x-p.x,dz=z-p.z,d=Math.hypot(dx,dz);if(d<.03)return;let a=Math.min(.24,d)/d;await tick(dx*a,dz*a)}throw Error("route blocked at "+JSON.stringify(p))}
+for(let i=0;i<10;i++)await tick();await goto(6,6);
+for(let row=0;row<5;row++){const z=-18+row*12;const x=row%2?30:-18;await goto(p.x,z);await goto(x,z);await goto(row%2?-18:30,z)}
+await goto(p.x,6);await goto(6,6);for(let i=0;i<40;i++)await tick();
+const stats={visited:stream.visited.size,steps,peakSectors:peak,peakBudget:stream.stats.peak,attached:stream.stats.attached,detached:stream.stats.detached,cache:{...cache.stats,entries:cache.entries.size},simulatedLoads:loads,simulatedDisposals:disposed,returned:p,errors:[...stream.errors]};stream.close();cache.close();stats.closed={live,entries:cache.entries.size,disposed};console.log(JSON.stringify(stats,null,2));if(stats.visited!==25||stats.closed.live!==0||stats.closed.entries!==0||!stats.detached||!stats.cache.evictions||stats.errors.length)process.exitCode=1;
