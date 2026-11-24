@@ -1,0 +1,124 @@
+{
+  "status": "CANDIDATE",
+  "requested": 3,
+  "generatedFactories": 3,
+  "base": "6ebdfe30fde33e3a570f683ac3bb93cfecfb38a3",
+  "chairCollection": "ace6d9f5e7edcdf9e9d08da5dedef35cd2ca88f0",
+  "assemblyReceipt": "6ebdfe30fde33e3a570f683ac3bb93cfecfb38a3",
+  "execution": "V8 isolate; fetched exact constructor and surface-gate module bodies, imports/exports adapted; not Node or browser",
+  "results": [
+    {
+      "kind": "wood",
+      "audit": {
+        "name": "01 · ROBLE / parquet",
+        "parts": 29,
+        "tiles": 25,
+        "triangles": 9344,
+        "degenerate": 0,
+        "open": 0,
+        "nonfinite": 0,
+        "invalid": 0,
+        "overlaps": 0,
+        "geometry": "PASS",
+        "assembly": "PASS_LOCAL",
+        "issues": [],
+        "surfacePairs": 131,
+        "surfaceFailures": 0,
+        "relations": 28,
+        "relationFailures": 0,
+        "surfaces": "LOCAL_PAIRED_FACE"
+      },
+      "seam": {
+        "kind": "wood",
+        "pass": true,
+        "unique": 80,
+        "assembled": 80,
+        "combined": 80,
+        "overlaps": 0,
+        "maxGapError": 6.643990912991171e-16,
+        "axes": [
+          "X",
+          "Z"
+        ],
+        "method": "2×2 identical world geometry vs four separately generated modules; no duplicate tile ownership"
+      }
+    },
+    {
+      "kind": "shop",
+      "audit": {
+        "name": "02 · FORJA / taller",
+        "parts": 8,
+        "tiles": 4,
+        "triangles": 2264,
+        "degenerate": 0,
+        "open": 0,
+        "nonfinite": 0,
+        "invalid": 0,
+        "overlaps": 0,
+        "geometry": "PASS",
+        "assembly": "PASS_LOCAL",
+        "issues": [],
+        "surfacePairs": 4,
+        "surfaceFailures": 0,
+        "relations": 7,
+        "relationFailures": 0,
+        "surfaces": "LOCAL_PAIRED_FACE"
+      },
+      "seam": {
+        "kind": "shop",
+        "pass": true,
+        "unique": 16,
+        "assembled": 16,
+        "combined": 16,
+        "overlaps": 0,
+        "maxGapError": 6.938893903907228e-18,
+        "axes": [
+          "X",
+          "Z"
+        ],
+        "method": "2×2 identical world geometry vs four separately generated modules; no duplicate tile ownership"
+      }
+    },
+    {
+      "kind": "stone",
+      "audit": {
+        "name": "03 · BASALTO / exterior",
+        "parts": 69,
+        "tiles": 65,
+        "triangles": 31544,
+        "degenerate": 0,
+        "open": 0,
+        "nonfinite": 0,
+        "invalid": 0,
+        "overlaps": 0,
+        "geometry": "PASS",
+        "assembly": "PASS_LOCAL",
+        "issues": [],
+        "surfacePairs": 65,
+        "surfaceFailures": 0,
+        "relations": 68,
+        "relationFailures": 0,
+        "surfaces": "LOCAL_PAIRED_FACE"
+      },
+      "seam": {
+        "kind": "stone",
+        "pass": true,
+        "unique": 240,
+        "assembled": 240,
+        "combined": 240,
+        "overlaps": 0,
+        "maxGapError": 2.2898349882893854e-16,
+        "axes": [
+          "X",
+          "Z"
+        ],
+        "method": "2×2 identical world geometry vs four separately generated modules; no duplicate tile ownership"
+      }
+    }
+  ],
+  "render": "NOT_RUN",
+  "android": "NOT_RUN",
+  "art": "NOT_RUN",
+  "multiview": "Controls implemented; visual inspection NOT_RUN",
+  "limitations": "Paired shell face gate is local; no global collision certification. Material quality and GLB browser export unverified."
+}
