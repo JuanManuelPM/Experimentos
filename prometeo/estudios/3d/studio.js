@@ -3,26 +3,44 @@ const $=s=>document.querySelector(s),root=new URL('../../',location.href);
 const path=(s)=>new URL(s,root).href;
 const state={all:[],records:new Map(),selected:null,filter:'creations',query:'',tab:'summary',previousFocus:null,meta:{}};
 const create=(name,cls,txt)=>{const el=document.createElement(name);if(cls)el.className=cls;if(txt!==undefined)el.textContent=txt;return el};
-const kindName={world:'Mundo 3D',animation:'Animación',character:'Personaje',tool:'Herramienta'};
+const kindName={world:'Mundo 3D',animation:'Animación',character:'Personaje',object:'Objetos',tool:'Herramienta'};
 const kindFromFolder={personajes:'character',escenarios:'world',videos:'animation',herramientas:'tool',pruebas:'animation'};
 const safeURL=url=>{try{const u=new URL(url,location.href);return u.protocol==='https:'&&(['juanmanuelpm.github.io','github.com'].includes(u.hostname))?u.href:null}catch{return null}};
 function setEmpty(message){const grid=$('#grid');grid.replaceChildren(create('p','empty',message))}
 function sort(a,b){return (Date.parse(b.updatedAt)||0)-(Date.parse(a.updatedAt)||0)||a.title.localeCompare(b.title,'es')}
 async function read(url){const r=await fetch(url,{cache:'no-store'});if(!r.ok)throw Error('HTTP '+r.status);return r.json()}
+function mergeCollections(existing,collections){
+ const out=[...existing],ids=new Set();
+ for(const e of Array.isArray(collections)?collections:[]){
+  if(!e||typeof e.id!=='string'||!/^([a-z0-9][a-z0-9_-]*\/)*[a-z0-9][a-z0-9_-]*$/.test(e.id)||ids.has(e.id))continue;
+  const p=e.publication;if(!p||p.repo!=='JuanManuelPM/Experimentos'||p.ref!=='gh-pages'||p.path!=='prometeo/'+e.id+'/index.html'||p.receiptPath!=='prometeo/'+e.id+'/BUILD_RECEIPT.json'||!(/^[a-f0-9]{40}$/).test(p.pageBlob)||!(/^[a-f0-9]{40}$/).test(p.receiptBlob)||typeof e.title!=='string'||!e.collection||!Array.isArray(e.collection.items)||!(/^[a-f0-9]{40}$/).test(e.snapshotCommit))continue;
+  const url=path(e.id+'/'),sourceUrl='https://github.com/'+p.repo+'/blob/'+e.snapshotCommit+'/'+p.receiptPath;
+  if(!safeURL(url)||!safeURL(sourceUrl))continue;
+  const same=out.findIndex(x=>x.id===e.id);
+  if(same>=0&&out[same].url&&out[same].url!==url)continue;
+  const row={...e,url,sourceUrl,creation:state.records.get(e.id)||null,thumbnail:null};
+  ids.add(e.id);
+  if(same>=0)out[same]={...out[same],...row};else if(!out.some(x=>x.url===url))out.push(row);
+ }
+ return out.sort(sort);
+}
 async function boot(){
  try{
-  const [p,c,m]=await Promise.all([read(path('project-explorer/projects.json')),read(path('3d-flow/CREATIONS.json')),read('./catalog.json')]);
+  const sources=await Promise.allSettled([read(path('project-explorer/projects.json')),read(path('3d-flow/CREATIONS.json')),read('./catalog.json')]);
+  const [p,c,m]=sources.map((x,i)=>x.status==='fulfilled'?x.value:(i===0?{projects:[]}:i===1?{records:[]}:{}));
   if(!Array.isArray(p.projects)||!Array.isArray(c.records))throw Error('Registro de proyectos no válido');
+  if(sources.every(x=>x.status==='rejected'))throw Error('Fuentes no disponibles');
   state.records=new Map(c.records.map(r=>[r.id,r]));state.meta=m;
   const overrides=m.overrides||{};
   state.all=p.projects.filter(r=>/^[a-z0-9_/-]+$/.test(r.id)&&!r.id.includes('..')&&safeURL(r.url)).map(r=>{
    const extra=overrides[r.id]||{};
    return {...r,kind:extra.kind||kindFromFolder[r.folder]||'animation',status:extra.status||'PUBLICADO · QA VARIABLE',glyph:extra.glyph||'◇',thumbnail:extra.thumbnail||null,creation:state.records.get(r.id)||null};
   }).sort(sort);
+  state.all=mergeCollections(state.all,m.collections);
   if(m.candidate&&m.candidate.id){const item=m.candidate;
    if(!state.all.some(x=>x.id===item.id)){state.all.push({...item,glyph:'⌂',creation:state.records.get(item.id)||null});state.all.sort(sort);const latest=$('#latest');latest.hidden=false;$('#latest-title').textContent=item.title;$('#latest-desc').textContent=item.description;$('#latest-open').onclick=()=>open(item);}
   }
-  render();discoverReleases();const id=new URL(location.href).searchParams.get('obra');if(id){const candidate=m.candidate?.id===id?m.candidate:null;const p=state.all.find(x=>x.id===id)||candidate;if(p)open(p,false)}
+  render();if(sources.some(x=>x.status==='rejected'))$('#updated').textContent='Catálogo parcial: una o más fuentes no respondieron. No equivale a ausencia de obras.';discoverReleases();const id=new URL(location.href).searchParams.get('obra');if(id){const candidate=m.candidate?.id===id?m.candidate:null;const p=state.all.find(x=>x.id===id)||candidate;if(p)open(p,false)}
  }catch(err){setEmpty('No se pudo recuperar el catálogo. Abrí la biblioteca clásica mientras se restablece el registro.');$('#updated').replaceChildren(create('a',null,'Biblioteca clásica ↗'));$('#updated').firstChild.href=path('project-explorer/');console.warn('PROMETEO: catálogo no disponible',err)}
 }
 async function discoverReleases(){
@@ -72,6 +90,7 @@ function renderDetailTab(){
  if(state.tab==='summary'){
   para(dest,p.description||'Proyecto de estudio 3D.');
   if(p.qa)para(dest,p.qa);
+  if(p.collection){const ul=create('ul');for(const item of p.collection.items)ul.append(create('li',null,item.title+' · '+item.status));dest.append(ul);const link=create('a',null,'Recibo de esta colección ↗');link.href=safeURL(p.sourceUrl)||'#';link.rel='noopener';dest.append(link);}
   if(p.snapshotCommit)para(dest,'Estado registrado en commit '+p.snapshotCommit.slice(0,9)+'. Los avances pueden ser posteriores.');
   if(p.url)para(dest,p.id==='cocina-umbria-002'?'Vista previa interactiva. La obra final todavía no fue aprobada.':'Visor público. La publicación no implica aprobación artística.');
   else para(dest,'Obra todavía no publicada como resultado final.');
