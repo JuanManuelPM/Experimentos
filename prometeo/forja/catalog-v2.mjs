@@ -10,9 +10,10 @@ export function reconcile(atlas,quat){
  for(const p of quat?.results||[]){
   if(!["IMPORTED","PARTIAL"].includes(p.status)||!/^CC0(?:-1\.0)?$/i.test(p.license||"")||!safePath(p.folder)||!Number.isInteger(p.id))continue;
   for(const f of [...(p.files||[])].sort((a,b)=>a.path<b.path?-1:a.path>b.path?1:0)){
-   if(!safePath(f.path)||!/^[a-f0-9]{64}$/i.test(f.sha256||"")){stats.rejected++;continue}
+   if(!safePath(f.path)){stats.rejected++;continue}
    const format=f.path.split(".").at(-1).toLowerCase();
    if(!["glb","gltf"].includes(format)){stats.unsupported++;continue}
+   if(!/^[a-f0-9]{64}$/i.test(f.sha256||"")){stats.rejected++;continue}
    const id="q:"+p.id+":"+f.path,key=p.id+":"+format+":"+f.sha256;
    if(seen.has(id)){stats.rejected++;continue}seen.add(id);
    if(format==="glb"&&hashes.has(key)){aliases.set(id,hashes.get(key));stats.duplicates++;continue}

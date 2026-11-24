@@ -6,8 +6,8 @@ import * as SkeletonUtils from 'three/addons/utils/SkeletonUtils.js';
 import {loadCatalog,normalizeTransform} from './catalog-v2.mjs';
 
 const SOURCE_SHA='3ddcc695adbba9fb918cf31b7c139b3f95b76910';
-const ROOT='https://raw.githubusercontent.com/Hidencod/tge-assets/'+SOURCE_SHA+'/';
-const STORAGE='prometeo.forja.scene.v1';
+const OLD_STORAGE='prometeo.forja.scene.v1';
+const STORAGE='prometeo.forja.scene.v2';
 const SCHEMA='prometeo.forja.scene/v2';
 const OLD_SCHEMA='prometeo.forja.scene/v1';
 const pendingTemplates=new Map();
@@ -57,8 +57,8 @@ function defaultHeight(asset){
  return 1.8;
 }
 function itemOf(e){
- return {uid:e.uid,id:e.asset.id,p:e.root.position.toArray().map(x=>Number(x.toFixed(4))),
-  r3:e.root.rotation.toArray().slice(0,3).map(x=>Number(x.toFixed(5))),s:e.root.scale.toArray().map(x=>Number((x/e.baseScale).toFixed(5))),h:e.h,clip:e.clipName||null,clipTime:Number((e.mixer?.time||0).toFixed(3))};
+ return {uid:e.uid,id:e.asset.id,sourceCommit:e.asset.sourceCommit,p:e.root.position.toArray().map(x=>Number(x.toFixed(4))),
+  r3:e.root.rotation.toArray().slice(0,3).map(x=>Number(x.toFixed(5))),s:e.root.scale.toArray().map(x=>Number((x/e.baseScale).toFixed(5))),h:e.h,clip:e.clipName||null,clipTime:Number((e.mixer&&e.clipName?e.mixer.existingAction(e.clips.find(c=>c.name===e.clipName))?.time||0:0).toFixed(3))};
 }
 function snapshot(){return {schema:SCHEMA,name:state.sceneName,items:state.objects.map(itemOf)}}
 function saveLocal(){
@@ -188,6 +188,7 @@ async function addAsset(asset,opts={},silent=false){
   pendingTemplates.set(asset.id,(pendingTemplates.get(asset.id)||0)+1);
   const data=await modelTemplate(asset);
   if(generation!==state.request)return null;
+  if(state.objects.length>=150)throw Error('LÍMITE DE 150 INSTANCIAS');
   const model=SkeletonUtils.clone(data.scene);
   const box=new THREE.Box3().setFromObject(model),dims=new THREE.Vector3(),center=new THREE.Vector3();
   box.getSize(dims);box.getCenter(center);
@@ -257,14 +258,14 @@ function scrubClip(value){
  state.playing=false;e.mixer.setTime(clamp(finite(value),0,clip.duration));
  $('clip-time-label').textContent=e.mixer.time.toFixed(2)+' s';metrics();
 }
-function updateProperty(){
+function updateProperty(changed){
  const e=state.objects.find(x=>x.uid===state.selected);if(!e)return;
  const old=[e.root.position.x,e.root.position.y,e.root.position.z,THREE.MathUtils.radToDeg(e.root.rotation.y),e.root.scale.x/e.baseScale];
  const ids=['pos-x','pos-y','pos-z','rot','scale'];
  const a=ids.map((id,i)=>finite($(id).value,old[i]));
  e.root.position.set(clamp(a[0],-250,250),clamp(a[1],-80,150),clamp(a[2],-250,250));
- e.root.rotation.y=THREE.MathUtils.degToRad(clamp(a[3],-1440,1440));
- e.root.scale.setScalar(e.baseScale*clamp(a[4],.05,20));
+ if(changed==='rot')e.root.rotation.y=THREE.MathUtils.degToRad(clamp(a[3],-1440,1440));
+ if(changed==='scale')e.root.scale.setScalar(e.baseScale*clamp(a[4],.05,20));
  historyPush();updateInspector();
 }
 function removeSelected(){
@@ -318,6 +319,7 @@ function validateProject(input){
  const seen=new Set();
  const out=input.items.map(v=>{
   const n=normItem(v);if(!n)throw Error('MODELO NO EXISTE EN EL CATÁLOGO: '+String(v?.id));
+  if(v.sourceCommit&&v.sourceCommit!==state.byId.get(v.id).sourceCommit)throw Error('VERSIÓN DE MODELO NO DISPONIBLE: '+v.id);
   if(seen.has(n.uid))n.uid='obj-'+(++idCounter);
   seen.add(n.uid);return n;
  });
@@ -329,7 +331,7 @@ async function replaceScene(data,{remember=true}={}){
  let safe;
  try{safe=validateProject(data)}catch(e){toast(e.message);return false}
  state.request++;setBusy(true);setLoading(true,'PREPARANDO ESCENA',0);
- const previous=snapshot();const oldEntries=state.objects.slice();
+ const oldEntries=state.objects.slice();
  const oldName=state.sceneName;
  try{
   state.transform?.detach();state.selected=null;
@@ -448,7 +450,7 @@ async function initCatalog(){
   $('catalog-state').textContent='Atlas: '+data.sources.atlas+' · Quaternius: '+data.sources.quaternius+' · '+data.stats.duplicates+' GLB idénticos · '+data.stats.unsupported+' formatos no compatibles';
   state.catalogInfo=data;renderLibrary();
   status(state.catalog.length?(state.webgl?'CATÁLOGOS · '+state.catalog.length+' REFERENCIAS':'CATÁLOGO 2D · WEBGL2 NO DISPONIBLE'):'CATÁLOGO NO DISPONIBLE · REINTENTÁ RECARGANDO');
-  let prev=null;try{prev=JSON.parse(localStorage.getItem(STORAGE)||'null')}catch{}
+  let prev=null;try{prev=JSON.parse(localStorage.getItem(STORAGE)||localStorage.getItem(OLD_STORAGE)||'null')}catch{}
   if([SCHEMA,OLD_SCHEMA].includes(prev?.schema)&&prev.items?.length){
    const ok=await replaceScene(prev,{remember:false});if(!ok)status('AUTO-GUARDADO CONSERVADO · FALTAN RECURSOS');
   }
@@ -469,7 +471,7 @@ function wire(){
  $('clip-time').addEventListener('input',e=>scrubClip(e.target.value));
  $('clip-time').addEventListener('change',historyPush);
  $('scene-name').addEventListener('change',e=>{state.sceneName=(e.target.value.trim()||'Escena sin título').slice(0,64);historyPush();metrics()});
- for(const id of ['pos-x','pos-y','pos-z','rot','scale'])$(id).addEventListener('change',updateProperty);
+ for(const id of ['pos-x','pos-y','pos-z','rot','scale'])$(id).addEventListener('change',()=>updateProperty(id));
  $('undo').addEventListener('click',async()=>{if(state.busy||state.cursor<=0)return;const next=state.cursor-1;if(await replaceScene(state.history[next],{remember:false}))state.cursor=next;historyButtons()});
  $('redo').addEventListener('click',async()=>{if(state.busy||state.cursor>=state.history.length-1)return;const next=state.cursor+1;if(await replaceScene(state.history[next],{remember:false}))state.cursor=next;historyButtons()});
  $('delete').addEventListener('click',removeSelected);
@@ -485,7 +487,7 @@ function wire(){
  $('new-scene').addEventListener('click',()=>{if(state.busy)return;replaceScene({schema:SCHEMA,name:'Escena sin título',items:[]})});
  $('clear-scene').addEventListener('click',()=>{if(state.busy)return;replaceScene({schema:SCHEMA,name:state.sceneName,items:[]})});
  $('reset-scene').addEventListener('click',()=>{
-  try{localStorage.removeItem(STORAGE);toast('AUTO-GUARDADO ELIMINADO; ESTA ESCENA SIGUE ABIERTA')}catch{toast('NO SE PUDO BORRAR')}
+  try{localStorage.removeItem(STORAGE);localStorage.setItem(STORAGE,JSON.stringify({schema:SCHEMA,name:'Escena sin título',items:[]}));toast('AUTO-GUARDADO V2 REINICIADO; V1 PRESERVADO')}catch{toast('NO SE PUDO BORRAR')}
  });
  $('toggle-library').addEventListener('click',()=>$('library-panel').classList.toggle('open'));
  $('close-library').addEventListener('click',()=>$('library-panel').classList.remove('open'));

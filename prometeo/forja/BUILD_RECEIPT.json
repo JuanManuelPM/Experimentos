@@ -6,9 +6,9 @@
     "legacy": 1883,
     "quaternius": 2523,
     "duplicates": 1,
-    "unsupported": 70,
+    "unsupported": 130,
     "partial": 338,
-    "rejected": 60
+    "rejected": 0
   },
   "canonicalReferences": 4406,
   "tests": {
@@ -30,12 +30,32 @@
     "webgl": "NOT_RUN",
     "mobile": "NOT_RUN",
     "export": "NOT_RUN",
-    "memory": "NOT_RUN"
+    "memory": "NOT_RUN",
+    "readbackV8": [
+      "actual editor parses",
+      "all 130 FBX explicitly unsupported",
+      "all compatible paths valid",
+      "same canonical total",
+      "candidate preflight bound",
+      "scope negative denied",
+      "legacy autosave key isolated",
+      "all required DOM IDs exist"
+    ]
   },
   "limitations": [
     "Dedup exact GLB within same pack only; no cross-source content hash available.",
     "Pinned catalogue snapshot; update commit explicitly.",
     "No FBX/OBJ; export without timeline; model dependencies not individually verified."
   ],
-  "artifact": "world-studio-forja-catalog-v2"
+  "artifact": "world-studio-forja-catalog-v2",
+  "preflight": {
+    "status": "BOUND",
+    "owner": "studio-3d",
+    "expectedHead": "8538f322eed99a8193aa9d916c039508496ac73e",
+    "bindingSource": {
+      "commit": "89252fd67fb3a9b4c765143c5c091c2c1d8a5ebf",
+      "blob": "5b5aa9bf93e16b2ef3b8196f9130b624271db3e6"
+    }
+  },
+  "correction": "Fixed wrong commit segment before first write; explicit FBX count, isolated v2 autosave, preserved nonuniform scale on position changes, clip time and source pin, scope check"
 }
