@@ -1,0 +1,85 @@
+{
+  "tests": [
+    {
+      "name": "real pack count",
+      "status": "PASS"
+    },
+    {
+      "name": "partial included",
+      "status": "PASS"
+    },
+    {
+      "name": "missing visible",
+      "status": "PASS"
+    },
+    {
+      "name": "atlas source",
+      "status": "PASS"
+    },
+    {
+      "name": "format variants grouped",
+      "status": "PASS"
+    },
+    {
+      "name": "distinct same names kept",
+      "status": "PASS"
+    },
+    {
+      "name": "unsafe path ignored",
+      "status": "PASS"
+    },
+    {
+      "name": "unsupported visible",
+      "status": "PASS"
+    },
+    {
+      "name": "global category search",
+      "status": "PASS"
+    },
+    {
+      "name": "animation and format combined",
+      "status": "PASS"
+    },
+    {
+      "name": "page bounded",
+      "status": "PASS"
+    },
+    {
+      "name": "race stale rejected",
+      "status": "PASS"
+    },
+    {
+      "name": "cancel rejected",
+      "status": "PASS"
+    },
+    {
+      "name": "unique group IDs",
+      "status": "PASS"
+    }
+  ],
+  "counts": {
+    "packs": 74,
+    "quaterniusGroups": 2654,
+    "unavailableRows": 10,
+    "variants": 2654,
+    "atlas": 1883,
+    "skipped": 0
+  },
+  "sources": {
+    "quaternius": {
+      "commit": "4529f6f58e3a08a907e7766c958705a0c1d9830f",
+      "blob": "c72c67cc9bdf6fb0b847e1769b44a137573fe99c"
+    },
+    "atlas": {
+      "commit": "3ddcc695adbba9fb918cf31b7c139b3f95b76910",
+      "blob": "b9821cf0e7064802ba29ec398d04f0fb68f70fb8"
+    }
+  },
+  "renderer": "NOT_RUN",
+  "browser": "NOT_RUN",
+  "notes": [
+    "Tests ejecutados en V8 sobre catálogo real y fixtures; no es ejecución DOM/GPU.",
+    "OBJ sin MTL no se declara compatible; FBX usa loader, materiales externos no garantizados.",
+    "Atlas separado: no se afirma equivalencia exacta entre fuentes. Los grupos por ruta son aproximación conservadora, no censo geométrico."
+  ]
+}
