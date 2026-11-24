@@ -35,7 +35,7 @@
       closeAuth();
       workspace();
       updateRepoLabel();
-      if (!$('files').children.length) $('browse').click();
+      // connectSession opens the authorized root; do not race it with a root browse.
     }
   });
   reconnect.observe($('auth-state'), {attributes: true, childList: true, subtree: true});
@@ -58,50 +58,9 @@
     const path='prometeo/cocina-umbria-002/index.html';
     if (window.PrometeoViewer.hasVisibleFile('index.html')) await window.PrometeoViewer.openFile(path);
   });
-  async function loadConfig() {
-    try {
-      const response = await fetch('./auth.json',{cache:'no-store'});
-      if (!response.ok) return;
-      const json = await response.json();
-      const url = new URL(json.callbackUrl || '',location.origin);
-      if (/^[a-zA-Z0-9_]+$/.test(json.clientId||'') && url.protocol==='https:' &&
-        Array.isArray(json.allowedOrigins) && json.allowedOrigins.includes(location.origin)) {
-        authConfig={clientId:json.clientId,callbackUrl:url.href};
-        configured=true;
-      }
-    } catch (e) { /* auth setup optional; public demo remains available */ }
-  }
-  const readiness = loadConfig();
-  function randomState() {
-    const bytes = new Uint8Array(24);
-    crypto.getRandomValues(bytes);
-    return Array.from(bytes,b=>b.toString(16).padStart(2,'0')).join('');
-  }
-  $('oauth-start').addEventListener('click', () => {
-    if (!configured) {
-      authMessage('La conexión automática todavía no está activada. Es necesario registrar una GitHub App de solo lectura una única vez. La demostración funciona sin iniciar sesión.');
-      return;
-    }
-    oauthState=randomState();
-    const url=new URL('https://github.com/login/oauth/authorize');
-    url.searchParams.set('client_id',authConfig.clientId);
-    url.searchParams.set('redirect_uri',authConfig.callbackUrl);
-    url.searchParams.set('state',oauthState);
-    oauthPopup=window.open(url.href,'prometeo_auth','width=490,height=700');
-    if (!oauthPopup) { authMessage('El navegador bloqueó la ventana. Permití ventanas emergentes para esta página.'); return; }
-    authMessage('Autorizá el acceso en la ventana de GitHub.');
-  });
-  window.addEventListener('message', e=>{
-    if (!configured || e.origin!==new URL(authConfig.callbackUrl).origin || e.source!==oauthPopup) return;
-    const data=e.data;
-    if (!data || data.type!=='prometeo:github-auth' || data.state!==oauthState) return;
-    oauthState='';
-    if (data.error) {authMessage(data.error);return;}
-    if (typeof data.token!=='string' || !/^[\w-]{15,600}$/.test(data.token)) {authMessage('La autorización no entregó una credencial válida.');return;}
-    $('token').value=data.token;
-    $('connect').click();
-    oauthPopup=null;
-  });
+  // Same-origin backend: browser never obtains the GitHub credential.
+  $('oauth-start').addEventListener('click',()=>location.assign('/auth/start'));
+  window.PrometeoViewer.connectSession().catch(()=>{});
   $('disconnect').addEventListener('click',()=>{
     $('account-avatar').textContent='G';
     closeAuth();
