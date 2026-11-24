@@ -1,0 +1,640 @@
+{
+  "status": "CANDIDATE_GENERATED",
+  "requested": 3,
+  "constructed": 3,
+  "criteria": [
+    "Three independent designs, metres, named geometry and explicit local joint relations",
+    "Use recovered constructor and gate without changes to chair sources",
+    "Physical spotlight and emissive switching, six inspection views, GLB and JSON controls",
+    "Retain candidates even if tests fail; no aesthetic approval inferred"
+  ],
+  "sources": {
+    "constructor": "6151a35b2f867bf4c1523e3e9feb2f9b15074146",
+    "surfaceGate": "50b01e938551a99c8892569d918b3bf8a2295569",
+    "assemblyBranch": "candidate/prometeo-assembly-20261124",
+    "assemblyCommit": "6ebdfe30fde33e3a570f683ac3bb93cfecfb38a3",
+    "chairs": "d286f6df946c5765f7016308890b739db684a169"
+  },
+  "execution": "V8 isolate, exact constructor and gate bodies with static module imports/exports adapted; not Node/browser",
+  "results": [
+    {
+      "id": "01",
+      "name": "UMBRAL · lámpara de pie",
+      "parts": 20,
+      "triangles": 18296,
+      "bounds": {
+        "min": [
+          -0.19,
+          -0.004,
+          -0.638
+        ],
+        "max": [
+          0.49,
+          1.465,
+          0.2
+        ]
+      },
+      "geometry": "PASS",
+      "bad": 0,
+      "open": 0,
+      "degenerate": 0,
+      "assembly": "PASS_LOCAL",
+      "issues": [],
+      "relations": [
+        {
+          "id": "rubber-foot→base",
+          "ok": true,
+          "gap": -0.001999999999999998
+        },
+        {
+          "id": "brass-socket→base",
+          "ok": true,
+          "gap": -0.005999999999999999
+        },
+        {
+          "id": "stem→brass-socket",
+          "ok": true,
+          "gap": -0.011999999999999988
+        },
+        {
+          "id": "stem→stem-cap",
+          "ok": true,
+          "gap": -0.015000000000000114
+        },
+        {
+          "id": "swept-arm→stem-cap",
+          "ok": true,
+          "gap": -0.01999999999999999
+        },
+        {
+          "id": "swept-arm→head-socket",
+          "ok": true,
+          "gap": -0.025999999999999995
+        },
+        {
+          "id": "spun-shade→head-socket",
+          "ok": true,
+          "gap": -0.004090471543202849
+        },
+        {
+          "id": "led-board→head-socket",
+          "ok": true,
+          "gap": -0.004
+        },
+        {
+          "id": "opal-diffuser→spun-shade",
+          "ok": true,
+          "gap": -0.0027655994967453043
+        },
+        {
+          "id": "socket-screw-0→brass-socket",
+          "ok": true,
+          "gap": -0.0030000000000000022
+        },
+        {
+          "id": "socket-screw-0-slot→socket-screw-0",
+          "ok": true,
+          "gap": -0.0016499999999999987
+        },
+        {
+          "id": "socket-screw-1→brass-socket",
+          "ok": true,
+          "gap": -0.0030000000000000027
+        },
+        {
+          "id": "socket-screw-1-slot→socket-screw-1",
+          "ok": true,
+          "gap": -0.0016499999999999985
+        },
+        {
+          "id": "socket-screw-2→brass-socket",
+          "ok": true,
+          "gap": -0.0030000000000000027
+        },
+        {
+          "id": "socket-screw-2-slot→socket-screw-2",
+          "ok": true,
+          "gap": -0.0016499999999999985
+        },
+        {
+          "id": "power-cable→base",
+          "ok": true,
+          "gap": -0.011999999999999993
+        },
+        {
+          "id": "power-cable→plug",
+          "ok": true,
+          "gap": -0.0060000000000000045
+        },
+        {
+          "id": "plug-pin-0.454→plug",
+          "ok": true,
+          "gap": -0.0030000000000000022
+        },
+        {
+          "id": "plug-pin-0.466→plug",
+          "ok": true,
+          "gap": -0.0030000000000000022
+        }
+      ],
+      "optical": [
+        {
+          "host": "opal-diffuser",
+          "guest": "led-board",
+          "status": "PASS_PARTIAL",
+          "examined": 0,
+          "hits": []
+        },
+        {
+          "host": "opal-diffuser",
+          "guest": "head-socket",
+          "status": "PASS_PARTIAL",
+          "examined": 0,
+          "hits": []
+        }
+      ],
+      "light": {
+        "position": [
+          0.29,
+          1.188,
+          0
+        ],
+        "target": [
+          0.29,
+          0.2,
+          0
+        ],
+        "lumens": 900,
+        "kelvin": 2700,
+        "angle": 0.85,
+        "distance": 4
+      }
+    },
+    {
+      "id": "02",
+      "name": "NÁCAR · colgante",
+      "parts": 32,
+      "triangles": 25320,
+      "bounds": {
+        "min": [
+          -0.26144993705521663,
+          1.7187384603547076,
+          -0.26
+        ],
+        "max": [
+          0.26144993705521663,
+          2.706,
+          0.26
+        ]
+      },
+      "geometry": "PASS",
+      "bad": 0,
+      "open": 0,
+      "degenerate": 0,
+      "assembly": "PASS_LOCAL",
+      "issues": [],
+      "relations": [
+        {
+          "id": "strain-relief→canopy",
+          "ok": true,
+          "gap": -0.019999999999999997
+        },
+        {
+          "id": "textile-cable→strain-relief",
+          "ok": true,
+          "gap": -0.01399999999999978
+        },
+        {
+          "id": "textile-cable→upper-cap",
+          "ok": true,
+          "gap": -0.01500000000000011
+        },
+        {
+          "id": "ceramic-neck→upper-cap",
+          "ok": true,
+          "gap": -0.009999999999999997
+        },
+        {
+          "id": "ribbed-opal-bell→ceramic-neck",
+          "ok": true,
+          "gap": -0.005880405805677584
+        },
+        {
+          "id": "led-module→ceramic-neck",
+          "ok": true,
+          "gap": -0.003999999999999999
+        },
+        {
+          "id": "lower-diffuser→ribbed-opal-bell",
+          "ok": true,
+          "gap": -0.003973850426857603
+        },
+        {
+          "id": "glass-flute-0→ribbed-opal-bell",
+          "ok": true,
+          "gap": -0.005441242045804568
+        },
+        {
+          "id": "glass-flute-1→ribbed-opal-bell",
+          "ok": true,
+          "gap": -0.005222766358715115
+        },
+        {
+          "id": "glass-flute-2→ribbed-opal-bell",
+          "ok": true,
+          "gap": -0.005224090775140928
+        },
+        {
+          "id": "glass-flute-3→ribbed-opal-bell",
+          "ok": true,
+          "gap": -0.0054391767721955735
+        },
+        {
+          "id": "glass-flute-4→ribbed-opal-bell",
+          "ok": true,
+          "gap": -0.005222970273079866
+        },
+        {
+          "id": "glass-flute-5→ribbed-opal-bell",
+          "ok": true,
+          "gap": -0.005222902020336029
+        },
+        {
+          "id": "glass-flute-6→ribbed-opal-bell",
+          "ok": true,
+          "gap": -0.005439172674091813
+        },
+        {
+          "id": "glass-flute-7→ribbed-opal-bell",
+          "ok": true,
+          "gap": -0.0052238983109398835
+        },
+        {
+          "id": "glass-flute-8→ribbed-opal-bell",
+          "ok": true,
+          "gap": -0.00522263973958767
+        },
+        {
+          "id": "glass-flute-9→ribbed-opal-bell",
+          "ok": true,
+          "gap": -0.0054412420458045665
+        },
+        {
+          "id": "glass-flute-10→ribbed-opal-bell",
+          "ok": true,
+          "gap": -0.005222766358715122
+        },
+        {
+          "id": "glass-flute-11→ribbed-opal-bell",
+          "ok": true,
+          "gap": -0.005224090775140931
+        },
+        {
+          "id": "glass-flute-12→ribbed-opal-bell",
+          "ok": true,
+          "gap": -0.005439176772195575
+        },
+        {
+          "id": "glass-flute-13→ribbed-opal-bell",
+          "ok": true,
+          "gap": -0.005222970273079858
+        },
+        {
+          "id": "glass-flute-14→ribbed-opal-bell",
+          "ok": true,
+          "gap": -0.005222902020336037
+        },
+        {
+          "id": "glass-flute-15→ribbed-opal-bell",
+          "ok": true,
+          "gap": -0.005439172674091805
+        },
+        {
+          "id": "glass-flute-16→ribbed-opal-bell",
+          "ok": true,
+          "gap": -0.005223898310939904
+        },
+        {
+          "id": "glass-flute-17→ribbed-opal-bell",
+          "ok": true,
+          "gap": -0.005222639739587664
+        },
+        {
+          "id": "canopy-screw-0→canopy",
+          "ok": true,
+          "gap": -0.0030000000000001133
+        },
+        {
+          "id": "canopy-screw-0-slot→canopy-screw-0",
+          "ok": true,
+          "gap": -0.001649999999999707
+        },
+        {
+          "id": "canopy-screw-1→canopy",
+          "ok": true,
+          "gap": -0.0030000000000001137
+        },
+        {
+          "id": "canopy-screw-1-slot→canopy-screw-1",
+          "ok": true,
+          "gap": -0.0016499999999997075
+        },
+        {
+          "id": "canopy-screw-2→canopy",
+          "ok": true,
+          "gap": -0.0030000000000001133
+        },
+        {
+          "id": "canopy-screw-2-slot→canopy-screw-2",
+          "ok": true,
+          "gap": -0.0016499999999997075
+        }
+      ],
+      "optical": [
+        {
+          "host": "lower-diffuser",
+          "guest": "led-module",
+          "status": "PASS_PARTIAL",
+          "examined": 0,
+          "hits": []
+        },
+        {
+          "host": "lower-diffuser",
+          "guest": "ceramic-neck",
+          "status": "PASS_PARTIAL",
+          "examined": 0,
+          "hits": []
+        }
+      ],
+      "light": {
+        "position": [
+          0,
+          1.717,
+          0
+        ],
+        "target": [
+          0,
+          0,
+          0
+        ],
+        "lumens": 1200,
+        "kelvin": 3000,
+        "angle": 1.04,
+        "distance": 5
+      }
+    },
+    {
+      "id": "03",
+      "name": "VÉRTICE · luminaria urbana",
+      "parts": 31,
+      "triangles": 9312,
+      "bounds": {
+        "min": [
+          -0.215,
+          0,
+          -0.215
+        ],
+        "max": [
+          1.1099999999999999,
+          3.715,
+          0.215
+        ]
+      },
+      "geometry": "PASS",
+      "bad": 0,
+      "open": 0,
+      "degenerate": 0,
+      "assembly": "PASS_LOCAL",
+      "issues": [],
+      "relations": [
+        {
+          "id": "tapered-pole→flange",
+          "ok": true,
+          "gap": -0.018999999999999972
+        },
+        {
+          "id": "anchor-bolt-0→flange",
+          "ok": true,
+          "gap": -0.0030000000000000022
+        },
+        {
+          "id": "anchor-bolt-0-slot→anchor-bolt-0",
+          "ok": true,
+          "gap": -0.003340000000000003
+        },
+        {
+          "id": "anchor-bolt-1→flange",
+          "ok": true,
+          "gap": -0.0030000000000000027
+        },
+        {
+          "id": "anchor-bolt-1-slot→anchor-bolt-1",
+          "ok": true,
+          "gap": -0.003340000000000003
+        },
+        {
+          "id": "anchor-bolt-2→flange",
+          "ok": true,
+          "gap": -0.0030000000000000022
+        },
+        {
+          "id": "anchor-bolt-2-slot→anchor-bolt-2",
+          "ok": true,
+          "gap": -0.003340000000000003
+        },
+        {
+          "id": "anchor-bolt-3→flange",
+          "ok": true,
+          "gap": -0.0030000000000000022
+        },
+        {
+          "id": "anchor-bolt-3-slot→anchor-bolt-3",
+          "ok": true,
+          "gap": -0.003340000000000003
+        },
+        {
+          "id": "pole-top→tapered-pole",
+          "ok": true,
+          "gap": -0.019999999999999997
+        },
+        {
+          "id": "curved-arm→pole-top",
+          "ok": true,
+          "gap": -0.027398679798827093
+        },
+        {
+          "id": "curved-arm→horizontal-spigot",
+          "ok": true,
+          "gap": -0.015000000000000005
+        },
+        {
+          "id": "horizontal-spigot→die-cast-housing",
+          "ok": true,
+          "gap": -0.07142857142857134
+        },
+        {
+          "id": "lens-bezel→die-cast-housing",
+          "ok": true,
+          "gap": -0.010000000000000217
+        },
+        {
+          "id": "sealed-optical-lens→lens-bezel",
+          "ok": true,
+          "gap": -0.0050000000000003375
+        },
+        {
+          "id": "cooling-fin-0→die-cast-housing",
+          "ok": true,
+          "gap": -0.03899999999999974
+        },
+        {
+          "id": "cooling-fin-1→die-cast-housing",
+          "ok": true,
+          "gap": -0.0389999999999997
+        },
+        {
+          "id": "cooling-fin-2→die-cast-housing",
+          "ok": true,
+          "gap": -0.0389999999999997
+        },
+        {
+          "id": "cooling-fin-3→die-cast-housing",
+          "ok": true,
+          "gap": -0.03899999999999973
+        },
+        {
+          "id": "cooling-fin-4→die-cast-housing",
+          "ok": true,
+          "gap": -0.0389999999999997
+        },
+        {
+          "id": "cooling-fin-5→die-cast-housing",
+          "ok": true,
+          "gap": -0.0389999999999997
+        },
+        {
+          "id": "cooling-fin-6→die-cast-housing",
+          "ok": true,
+          "gap": -0.0389999999999997
+        },
+        {
+          "id": "bezel-screw-0→lens-bezel",
+          "ok": true,
+          "gap": -0.007000000000000116
+        },
+        {
+          "id": "bezel-screw-1→lens-bezel",
+          "ok": true,
+          "gap": -0.007000000000000116
+        },
+        {
+          "id": "bezel-screw-2→lens-bezel",
+          "ok": true,
+          "gap": -0.007000000000000116
+        },
+        {
+          "id": "bezel-screw-3→lens-bezel",
+          "ok": true,
+          "gap": -0.007000000000000116
+        },
+        {
+          "id": "access-cover→tapered-pole",
+          "ok": true,
+          "gap": -0.04731132130724221
+        },
+        {
+          "id": "access-screw-0.48→access-cover",
+          "ok": true,
+          "gap": -0.010283891840157565
+        },
+        {
+          "id": "access-screw-0.75→access-cover",
+          "ok": true,
+          "gap": -0.0037384372947030344
+        },
+        {
+          "id": "internal-feed→die-cast-housing",
+          "ok": true,
+          "gap": -0.1814285714285713
+        }
+      ],
+      "optical": [
+        {
+          "host": "sealed-optical-lens",
+          "guest": "die-cast-housing",
+          "status": "PASS_PARTIAL",
+          "examined": 0,
+          "hits": []
+        },
+        {
+          "host": "sealed-optical-lens",
+          "guest": "horizontal-spigot",
+          "status": "PASS_PARTIAL",
+          "examined": 0,
+          "hits": []
+        },
+        {
+          "host": "sealed-optical-lens",
+          "guest": "internal-feed",
+          "status": "PASS_PARTIAL",
+          "examined": 80,
+          "hits": []
+        },
+        {
+          "host": "sealed-optical-lens",
+          "guest": "bezel-screw-0",
+          "status": "PASS_PARTIAL",
+          "examined": 0,
+          "hits": []
+        },
+        {
+          "host": "sealed-optical-lens",
+          "guest": "bezel-screw-1",
+          "status": "PASS_PARTIAL",
+          "examined": 0,
+          "hits": []
+        },
+        {
+          "host": "sealed-optical-lens",
+          "guest": "bezel-screw-2",
+          "status": "PASS_PARTIAL",
+          "examined": 0,
+          "hits": []
+        },
+        {
+          "host": "sealed-optical-lens",
+          "guest": "bezel-screw-3",
+          "status": "PASS_PARTIAL",
+          "examined": 0,
+          "hits": []
+        }
+      ],
+      "light": {
+        "position": [
+          0.82,
+          3.512,
+          0
+        ],
+        "target": [
+          0.98,
+          0,
+          0
+        ],
+        "lumens": 5800,
+        "kelvin": 4000,
+        "angle": 1.05,
+        "distance": 12
+      }
+    }
+  ],
+  "viewerSyntax": "PASS_V8_PARSE",
+  "renderWebGL": "NOT_RUN",
+  "android": "NOT_RUN",
+  "art": "NOT_RUN",
+  "limitations": [
+    "Optical face tests cover selected non-seat guests only, not full shade/edge or all pairs; local relation probes do not certify all collisions",
+    "Nominal lumen/color presets, not measured photometry; no electrical certification",
+    "GLB/JSON controls and switch implemented; browser execution not verified",
+    "No real weld simulation or load calculation; material/fastener detail is geometric representation"
+  ]
+}
