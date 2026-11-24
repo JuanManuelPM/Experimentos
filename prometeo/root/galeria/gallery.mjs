@@ -1,4 +1,4 @@
-import {STUDIOS,getBatchesForStudio,getResults,copyBase} from "./model.mjs?v=20261123-mobile2";
+import {STUDIOS,getBatchesForStudio,getResults,copyBase} from "./model.mjs?v=20261124-identity";
 let studio=new URL(location.href).searchParams.get("studio")||"3d";
 if(!STUDIOS.some(x=>x.id===studio))studio="3d";
 const labels={ "3d":"🧊","web":"🌐","music":"🎵","video":"🎬","images":"🎨"};
@@ -16,7 +16,7 @@ function gridFor(batch,messages){
  else{const p=document.createElement("div");p.className="type";p.textContent=labels[studio];art.append(p)}
  const no=document.createElement("span");no.textContent=String(item.number).padStart(2,"0");art.append(no);
  const label=document.createElement("b");label.append(safeText(item.label));
- const state=document.createElement("small");state.className="state";state.textContent=item.message?(item.href?"Ver obra / resultado":"Resultado sin enlace"):"Sin retorno publicado";
+ const state=document.createElement("small");state.className="state";state.textContent=item.href?(item.linkStatus==="TASK_EVIDENCE_REPORTED"?"Enlace asociado a tarea · abrir":"Enlace reportado · identidad por comprobar"):item.message?"Resultado sin enlace":"Sin retorno publicado";
  a.append(art,label,state);grid.append(a);}
  return grid;
 }
@@ -34,7 +34,7 @@ function render(batches,messages){
  if(groups.length>1){const section=document.createElement("section"),h=document.createElement("h2");h.textContent="Tandas anteriores";h.style.marginBottom="8px";section.append(h);
   for(const old of groups.slice(1)){const details=document.createElement("details"),summary=document.createElement("summary");
    summary.textContent=old.title;details.append(summary,gridFor(old,messages));section.append(details);}body.append(section);}
- status.textContent="Miniaturas reales cuando están disponibles. Un resultado publicado no implica QA aprobada.";
+ status.textContent="Los enlaces reportados no equivalen a identidad o QA comprobadas. Se conservan los lugares sin retorno."
 }
 const retry=document.querySelector("#retry");
 async function init(){
