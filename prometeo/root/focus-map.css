@@ -42,3 +42,10 @@
  .p-focus-more{margin-top:22px}
 }
 @media(prefers-reduced-motion:reduce){.p-focus-main-actions button:active{transform:none}}
+
+.p-focus-parent,.p-focus-mininav button,.p-focus-more>summary,.p-focus-technical button,.p-focus-more-body a{min-height:44px}
+.p-focus-mininav button,.p-focus-more,.p-focus-more-body p,.p-focus-more-body a,.p-focus-technical button{font-size:14px}
+.p-focus-more-body a{display:inline-flex;align-items:center}
+.p-focus-overline,.p-focus-scene-caption{font-size:12px}
+@media(max-width:550px){.p-focus-title{font-size:clamp(32px,10vw,42px);overflow-wrap:anywhere}.p-focus-main-actions button{font-size:14px}}
+@media(max-height:450px) and (orientation:landscape){.p-library.p-library--focus{padding-top:82px}.p-focus-art{height:55vh;min-height:170px}}
