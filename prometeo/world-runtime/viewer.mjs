@@ -16,8 +16,10 @@ async function loadOriginal(asset,signal){
   const u=new URL(raw,url);if(!u.href.startsWith(prefix)||u.search||u.hash||u.username||u.password)throw Error('Dependencia fuera de la fuente fijada');
   if(signal.aborted)throw cancelled();return u.href;
  });
- const response=await fetch(url.href,{signal,credentials:'omit',redirect:'error'});
+ const requestSignal=AbortSignal.any&&AbortSignal.timeout?AbortSignal.any([signal,AbortSignal.timeout(20000)]):signal;
+ const response=await fetch(url.href,{signal:requestSignal,credentials:'omit',redirect:'error'});
  if(!response.ok)throw Error('HTTP '+response.status+' · '+url.pathname.split('/').pop());
+ if(Number(response.headers.get('content-length'))>48*1024*1024)throw Error('Modelo supera 48 MiB');
  const bytes=await response.arrayBuffer();if(signal.aborted)throw cancelled();
  if(bytes.byteLength>48*1024*1024)throw Error('Modelo supera 48 MiB');
  const model=await new GLTFLoader(manager).parseAsync(bytes,new URL('.',url).href);
@@ -61,7 +63,7 @@ export function mountWorld(manifest,ui){
  const cache=new ModelCache({load:loadOriginal,dispose:disposeTemplate,limit:12,idleMs:1500}),stream=new Streamer(world,makeAdapter(scene,world,cache),{sectorLimit:12,parallel:2});
  let p,yaw,pitch=0,raf,last=performance.now(),fps=0,frames=0,seconds=0,report=0,dead=false,drag=null;
  const keys=new Set(),held=new Map(),events=new AbortController(),listen=(t,n,f,opts={})=>t.addEventListener(n,f,{...opts,signal:events.signal});
- const clear=()=>{keys.clear();held.clear();drag=null};
+ const clear=()=>{keys.clear();held.clear();drag=null;for(const b of ui.controls)b.classList.remove('held')};
  function reset(){const [x,y,z]=manifest.spawn.position;p={x,y,z,vy:0};yaw=manifest.spawn.yaw;pitch=0;clear();stream.update(x,z)}
  reset();
  const resize=()=>{let w=Math.max(1,ui.canvas.clientWidth),h=Math.max(1,ui.canvas.clientHeight);camera.aspect=w/h;camera.updateProjectionMatrix();renderer.setSize(w,h,false)};
@@ -99,6 +101,6 @@ export function mountWorld(manifest,ui){
   }
  }
  function stop(){if(dead)return;dead=true;cancelAnimationFrame(raf);events.abort();stream.close();cache.close();renderer.dispose()}
- listen(window,'pagehide',stop,{once:true});raf=requestAnimationFrame(frame);
+ listen(window,'pagehide',e=>{if(e.persisted)clear();else stop()});listen(window,'pageshow',resize);raf=requestAnimationFrame(frame);
  return {world,stream,cache,reset,stop,get player(){return {...p}}};
 }
