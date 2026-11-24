@@ -3,8 +3,8 @@ const PUB='https://juanmanuelpm.github.io/Experimentos/prometeo/';
 const GH='https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/';
 const CONTROL='https://github.com/JuanManuelPM/pruebas/blob/prometeo/control/PROMETEO/';
 const NODES=[
- {id:'root',parent:null,title:'ROOT',type:'Coordinación',goal:'Ver, continuar y despachar sin cambiar de portal',why:'Una entrada pública para obras; la coordinación y las escrituras siguen en sus propietarios',source:GH+'root/README.md',view:'#root/obras',next:'Seguir con la integración del mobiliario'},
- {id:'3d',parent:'root',title:'Estudio 3D',type:'Estudio',goal:'Construir y revisar escenas y geometría reutilizable',why:'El estudio conserva técnicas, modelos y versiones propios',source:GH+'3d-flow/README.md',view:'#3d/biblioteca',next:'Abrir la rama mobiliario'},
+ {id:'root',parent:null,title:'ROOT',type:'Coordinación',goal:'Ver, continuar y despachar sin cambiar de portal',why:'Una entrada pública para obras; la coordinación y las escrituras siguen en sus propietarios',source:GH+'root/README.md',view:'#root/obras',next:'Abrir biblioteca de obras'},
+ {id:'3d',parent:'root',title:'Estudio 3D',type:'Estudio',goal:'Construir y revisar escenas y geometría reutilizable',why:'El estudio conserva técnicas, modelos y versiones propios',source:GH+'3d-flow/README.md',view:'#3d/biblioteca',next:'Explorar las colecciones del estudio'},
  {id:'mobiliario',parent:'3d',title:'Mobiliario',type:'Colección vinculada',goal:'Recuperar silla, mesa y escena sin crear duplicados',why:'Vincular fuentes existentes antes de generar nuevos modelos',source:GH+'asset-lab/chair-01/ASSET.json',next:'Comprobar las fuentes de mesa independiente'},
  {id:'arc-chair',parent:'mobiliario',title:'ARC CHAIR 01',type:'Obra procedural',goal:'Inspeccionar silueta y unión de las piezas en tres vistas',why:'Primer artículo editable con geometría procedural, todavía sin aprobación artística',source:GH+'asset-lab/chair-01/geometry.mjs',qa:GH+'asset-lab/chair-01/QA_RECEIPT.json',view:'#3d/obra/arc-chair-01',next:'Revisar el render real antes de aceptar'},
  {id:'respaldo',parent:'arc-chair',title:'Respaldo curvo',type:'Subpieza',goal:'Conservar el arco y sus tres soportes conectados',why:'El primer respaldo resultaba genérico; se rehizo el perfil',source:GH+'asset-lab/chair-01/geometry.mjs',qa:GH+'asset-lab/chair-01/QA_RECEIPT.json',view:'#3d/obra/arc-chair-01',next:'Comprobar la unión en el render real'},
@@ -29,8 +29,8 @@ function evidence(n,ctx){
 export function createFocusMap({copy,toast,go}){
  const host=elt('section','p-focus');host.id='focus-map';host.setAttribute('aria-label','Plano contextual por nodo');
  let mounted=false;
- const bootstrap=[CONTROL+'START_HERE.md',CONTROL+'system/CONTINUIDAD_FOCO_Y_PLANES.md'];
- const selected=id=>BY_ID.get(id)||BY_ID.get('mobiliario');
+ const bootstrap=[CONTROL+'START_HERE.md',CONTROL+'system/registry/ENTRY.generated.json'];
+ const selected=id=>BY_ID.get(id)||BY_ID.get('root');
  function contextOf(n){
   const chainName=chain(n).map(x=>x.title).join(' / ');
   const owner=n.id==='root'?'prometeo-root':'studio-3d';
@@ -41,14 +41,14 @@ export function createFocusMap({copy,toast,go}){
   return ['PROMETEO · IDEA','Leer con GitHub autorizado:',...bootstrap,
    'La idea nueva se captura una sola vez en el dueño que corresponda, aunque sea distinto del nodo contextual. No lanzar WORK ni desplazar el ACTIVE salvo giro humano explícito.',
    'El nodo seleccionado solo brinda contexto; verificar el dueño real antes de guardar.',
-   ...contextOf(n),'Responder con dónde quedamos y el menú SEGUIR · IDEA · TRABAJAR · VER.',
+   ...contextOf(n),'Responder según START_HERE, sin confundir navegación contextual con foco global.',
    'MI IDEA:'].join('\n');
  }
  function workPrompt(nodeId){
   const n=selected(nodeId);
   return ['👷 WORK · PROMETEO · FOCO PROTEGIDO','Leer con GitHub autorizado:',...bootstrap,
-   'ACTIVE: integrar el visor, la biblioteca y el despacho de ROOT con el shell compartido EXISTENTE.',
-   'Recuperar primero los artefactos de silla, mesa y comedor; no inventar una mesa autónoma ni declarar aprobado un comedor.',
+   'Recuperar la dirección y el objetivo protegido desde las fuentes vigentes; este nodo es contexto, no una orden de cambiar ACTIVE.',
+   'Recuperar las fuentes del nodo y del encargo real; no inventar artefactos ni aprobación. Si no hay pedido explícito, esperar el pedido.',
    'Fijar criterios críticos antes de producir, construir y comprobar dentro de esta ejecución; sin nueva QA serial.',
    'Guardar únicamente en propietarios y entregar URL y commits exactos. Copiar este mensaje NO ejecuta otro chat.',
    'No divulgar contexto humano privado. El nodo elegido no cambia el objetivo ACTIVE.',
