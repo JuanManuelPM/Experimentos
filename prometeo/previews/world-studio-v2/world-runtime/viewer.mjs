@@ -13,7 +13,7 @@ async function loadOriginal(asset,signal){
  const manager=new T.LoadingManager();
  manager.setURLModifier(raw=>{
   if(raw.startsWith('blob:')||raw.startsWith('data:'))return raw;
-  const u=new URL(raw,url);if(!u.href.startsWith(prefix)||u.search||u.hash||u.username||u.password)throw Error('Dependencia fuera de la fuente fijada');
+  const requested=new URL(raw,url);const name=decodeURIComponent(requested.pathname.split('/').pop());const mapped=asset['station:dependencies']?.[name];const u=mapped?new URL(mapped):requested;if(!u.href.startsWith(prefix)||u.search||u.hash||u.username||u.password)throw Error('Dependencia fuera de la fuente fijada');
   if(signal.aborted)throw cancelled();return u.href;
  });
  const requestSignal=AbortSignal.any&&AbortSignal.timeout?AbortSignal.any([signal,AbortSignal.timeout(20000)]):signal;
@@ -35,18 +35,18 @@ function makeAdapter(scene,world,cache){
   try{
    const grouped=new Map();for(const i of sector.instances){if(!grouped.has(i.assetId))grouped.set(i.assetId,[]);grouped.get(i.assetId).push(i)}
    for(const [id,items] of grouped){
-    if(signal.aborted)throw cancelled();const lease=await cache.acquire(id,world.assets.get(id),signal);v.leases.push(lease);
+    if(signal.aborted)throw cancelled();let lease;let renderItems=items;try{lease=await cache.acquire(id,world.assets.get(id),signal)}catch(e){const fallback=items[0]['station:fallback'];if(signal.aborted||!fallback||!world.assets.has(fallback)||items.some(i=>i['station:fallback']!==fallback))throw e;lease=await cache.acquire(fallback,world.assets.get(fallback),signal);renderItems=items.map(i=>{const p=[...i.position];let scale=[...i.scale];if(id==='q17:platform'){p[1]-=.0934;scale=[2,1,2]}else if(id==='q17:crate'){p[1]-=.5;scale=[.81,1.295,1.30]}return {...i,position:p,scale}});v.fallbacks=(v.fallbacks||0)+items.length}v.leases.push(lease);
     if(signal.aborted)throw cancelled();
     const model=lease.value,meshes=[];let complex=model.animations.length>0;
     model.scene.traverse(o=>{if(o.isMesh){meshes.push(o);if(o.isSkinnedMesh||o.morphTargetInfluences||o.isInstancedMesh)complex=true}});
     if(!meshes.length)throw Error('Sin geometría: '+id);
-    if(!complex&&!items.some(i=>i.clip)&&items.length>1){
+    if(!complex&&!renderItems.some(i=>i.clip)&&renderItems.length>1){
      for(const mesh of meshes){
-      const batch=new T.InstancedMesh(mesh.geometry,mesh.material,items.length);
-      items.forEach((i,n)=>batch.setMatrixAt(n,transform(i).clone().multiply(mesh.matrixWorld)));
+      const batch=new T.InstancedMesh(mesh.geometry,mesh.material,renderItems.length);
+      renderItems.forEach((i,n)=>batch.setMatrixAt(n,transform(i).clone().multiply(mesh.matrixWorld)));
       batch.instanceMatrix.needsUpdate=true;batch.computeBoundingBox();batch.computeBoundingSphere();v.group.add(batch);
      }
-    }else for(const i of items){
+    }else for(const i of renderItems){
      const o=cloneSkeleton(model.scene),wrapper=new T.Group();wrapper.position.fromArray(i.position);wrapper.rotation.set(...i.rotation,'XYZ');wrapper.scale.fromArray(i.scale);wrapper.add(o);v.group.add(wrapper);
      if(i.clip){const clip=T.AnimationClip.findByName(model.animations,i.clip);if(!clip)throw Error('Clip inexistente: '+i.clip);const mixer=new T.AnimationMixer(o);mixer.clipAction(clip).play();v.mixers.push(mixer)}
     }
@@ -60,7 +60,8 @@ export function mountWorld(manifest,ui){
  const renderer=new T.WebGLRenderer({canvas:ui.canvas,antialias:true,powerPreference:'high-performance'});renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.6));renderer.outputColorSpace=T.SRGBColorSpace;renderer.toneMapping=T.ACESFilmicToneMapping;renderer.toneMappingExposure=1.2;
  const camera=new T.PerspectiveCamera(70,1,.07,72);camera.rotation.order='YXZ';
  scene.add(new T.HemisphereLight(0xe0f5ff,0x525c71,2.2));let sun=new T.DirectionalLight(0xffecd7,2.8);sun.position.set(-12,20,8);scene.add(sun);let lamp=new T.PointLight(0x8dd8f4,7,9,2);scene.add(lamp);
- const cache=new ModelCache({load:loadOriginal,dispose:disposeTemplate,limit:12,idleMs:1500}),stream=new Streamer(world,makeAdapter(scene,world,cache),{sectorLimit:12,parallel:2});
+ const zoneLayout=manifest['station:layout'];const visitedZones=new Set();if(zoneLayout){scene.background=new T.Color(0x07151e);scene.fog=new T.Fog(0x07151e,22,55);for(const z of zoneLayout.zones){const light=new T.PointLight(z.color,z.id==='hangar'?70:48,16,2);light.position.set(z.center[0],3.6,z.center[1]);scene.add(light);const c=document.createElement('canvas');c.width=512;c.height=128;const ctx=c.getContext('2d');ctx.fillStyle='#0a1d27';ctx.fillRect(0,0,512,128);ctx.fillStyle=z.color;ctx.fillRect(0,0,12,128);ctx.fillStyle='#e5f8f5';ctx.font='bold 35px system-ui';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(z.label,260,64,475);const t=new T.CanvasTexture(c);t.colorSpace=T.SRGBColorSpace;const label=new T.Sprite(new T.SpriteMaterial({map:t,depthWrite:false}));label.position.set(z.center[0],3.1,z.center[1]);label.scale.set(2.7,.675,1);scene.add(label)}}
+ const cache=new ModelCache({load:loadOriginal,dispose:disposeTemplate,limit:Math.min(32,Math.max(12,world.assets.size)),idleMs:1500}),stream=new Streamer(world,makeAdapter(scene,world,cache),{sectorLimit:12,parallel:2});
  let p,yaw,pitch=0,raf,last=performance.now(),fps=0,frames=0,seconds=0,report=0,dead=false,drag=null;
  const keys=new Set(),held=new Map(),events=new AbortController(),listen=(t,n,f,opts={})=>t.addEventListener(n,f,{...opts,signal:events.signal});
  const clear=()=>{keys.clear();held.clear();drag=null;for(const b of ui.controls)b.classList.remove('held')};
@@ -94,7 +95,7 @@ export function mountWorld(manifest,ui){
   for(const e of stream.live.values())if(e.status==='ready')for(const m of e.value.mixers)m.update(dt);
   renderer.render(scene,camera);frames++;seconds+=elapsed;report+=elapsed;
   if(seconds>=1){fps=Math.round(frames/seconds);frames=0;seconds=0}
-  if(report>=.2){report=0;let live=[...stream.live.values()].filter(e=>e.status==='ready'),instances=live.reduce((a,e)=>a+e.value.count,0);let state=stream.ready(stream.center)?'Sector listo':'Cargando sector actual';if(stream.errors.size)state+=' · '+[...stream.errors.values()][0].message+' · reintento automático';ui.status.textContent=state;
+  if(report>=.2){report=0;let live=[...stream.live.values()].filter(e=>e.status==='ready'),instances=live.reduce((a,e)=>a+e.value.count,0);let state=stream.ready(stream.center)?'Sector listo':'Cargando sector actual';if(stream.errors.size)state+=' · '+[...stream.errors.values()][0].message+' · reintento automático';if(zoneLayout&&ui.zone){const id=zoneLayout.cells[Math.floor(p.x/zoneLayout.cellSize)+','+Math.floor(p.z/zoneLayout.cellSize)];if(id)visitedZones.add(id);const z=zoneLayout.zones.find(x=>x.id===id);ui.zone.textContent=(z?.label||'Entre sectores')+' · '+visitedZones.size+'/'+zoneLayout.zones.length+' zonas';}const fb=live.reduce((n,e)=>n+(e.value.fallbacks||0),0);ui.status.textContent=state+(fb?' · '+fb+' instancias con fallback Q18':'');
    ui.metrics.textContent=stream.center+' · '+live.length+'/'+world.sectors.size+' sectores · '+instances+' instancias · '+(fps||'—')+' FPS';
    ui.detail.textContent='Caché '+cache.entries.size+'/'+cache.limit+' · altas '+stream.stats.attached+' · bajas '+stream.stats.detached+' · hits '+cache.stats.hits+' · descartes '+cache.stats.evictions+' · canceladas '+stream.stats.cancelled+' · GPU geometrías '+renderer.info.memory.geometries+' / texturas '+renderer.info.memory.textures+' · draw calls '+renderer.info.render.calls;
    for(const [k,cell] of ui.cells){cell.dataset.state=k===stream.center?'current':stream.ready(k)?'ready':stream.live.has(k)?'loading':stream.visited.has(k)?'visited':'idle'}
