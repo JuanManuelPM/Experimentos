@@ -1,0 +1,97 @@
+{
+  "schema": "prometeo.build-receipt/v1",
+  "missionId": "world-studio-v2-20261124",
+  "missionVersion": "89252fd67fb3a9b4c765143c5c091c2c1d8a5ebf",
+  "slot": 1,
+  "taskId": "P-worldstudio-20261124-01",
+  "artifactId": "world-studio-menu-v2",
+  "owner": "studio-3d",
+  "state": "CANDIDATE_SELF_CHECKED",
+  "base": "708e003f45b77642574402067998ed4b4e56cf59",
+  "commit": "2d30b8d31dc79f347c00c9388431668221fe71ea",
+  "branch": "candidate/world-studio-v2-20261124-01",
+  "files": {
+    "index.html": "9db7eff2d013d11ed79fbca27c21c3d5b7bb50b1",
+    "studio.js": "21a7566efc3c613b957f6e33e659401f2f28cbb6",
+    "studio.css": "c4d85887c48a4a10a33bacb0f1ec6fd3f67d1060"
+  },
+  "counts": {
+    "requested": 1,
+    "built": 1,
+    "accessibleLocal": 1,
+    "publishedLive": 0
+  },
+  "checks": {
+    "browser": {
+      "engine": "Chromium",
+      "result": "PASS",
+      "passed": 13,
+      "total": 13,
+      "rerunAfterCorrection": true,
+      "viewportWidths": [
+        320,
+        390,
+        768,
+        1440
+      ],
+      "mode": "actual browser rendered exact candidate code on about:blank with injected location/history/fetch and reduced source-derived catalog fixtures",
+      "cases": [
+        "worlds and feature",
+        "feature status",
+        "accent search and empty state",
+        "keyboard and dialog lifecycle",
+        "404 and errors",
+        "assets and collection versions",
+        "history and null URLs",
+        "responsive overflow and targets",
+        "emulated touch",
+        "deep link",
+        "partial and failed catalog retry",
+        "invalid metadata and unverified station",
+        "page exceptions"
+      ]
+    },
+    "sourcePaths": {
+      "result": "PASS",
+      "found": 27,
+      "checked": 27,
+      "method": "Git tree, path occurrences including repeats"
+    },
+    "thumbnailPaths": {
+      "result": "PASS_SOURCE_ONLY",
+      "found": 3,
+      "checked": 3
+    },
+    "liveHttp": {
+      "result": "NOT_RUN",
+      "reason": "net::ERR_BLOCKED_BY_ADMINISTRATOR; fetch fixtures do not prove real HTTP or image rendering"
+    },
+    "android": {
+      "result": "NOT_RUN",
+      "reason": "emulated touch only"
+    },
+    "production": {
+      "result": "NOT_PROMOTED",
+      "reason": "canonical route binding and live QA not established"
+    }
+  },
+  "localEvidence": {
+    "delivery": "chat attachment ZIP; evidence not uploaded to Git",
+    "reportSha256": "3f0e1632fdca496b7d0dfcc0db485fee4086576780ad050c97b25475e34ac5c6",
+    "testSha256": "84b241e14a2997bbb3710db66a95dbfc9875932d7ae56d07c21cb544320ee71c",
+    "screenshotsSha256": {
+      "desktop": "0a46bed37f883ab2fd1ebb7a6f5a4b60809899a487862edf3d7b9562774f3451",
+      "mobile320": "e48dd1e2bd459fde963474c86adfd62cab427532ce0b65e165b963a78f3fea82",
+      "mobile390": "7d239c56b7f16a341813454784d311504f2d37f6ba9b919266b90b33a75493c0"
+    },
+    "zipSha256": "946408944f98f93db3e452e3ce4e8af1a113cc40431bada3b1638fb6c6021dd7"
+  },
+  "changes": [
+    "reused existing catalog/explorer/creation registries and original menu path",
+    "restricted world classification to actual records",
+    "guarded null and unsafe URLs, HTTP HTML validation and station availability",
+    "lazy preview and honest missing thumbnails",
+    "mobile layout correction and featured card deduplication"
+  ],
+  "scope": "candidate only, no changes to gh-pages, ACTIVE, other workers or infrastructure"
+}
