@@ -7,3 +7,34 @@ test('exact scope and commit',()=>{assert.equal(allowRequest(p+'works/demo/index
 test('blob requires prior authorized file',()=>{const sha='b'.repeat(40),p='/repos/fixture/private/git/blobs/'+sha;assert.equal(allowRequest(p,c),null);assert.equal(allowRequest(p,c,new Set([sha])),p)});
 test('no configuration fails closed',async()=>{const server=createServer({});await new Promise(r=>server.listen(0,'127.0.0.1',r));try{const r=await fetch('http://127.0.0.1:'+server.address().port+'/api/session');assert.equal(r.status,503)}finally{server.close()}});
 test('no session denies, OAuth state cannot be invented',async()=>{const env={VIEWER_ORIGIN:'https://viewer.example',GH_CLIENT_ID:'fixture',GH_CLIENT_SECRET:'fixture',FIXTURE_REPO:c.repo,FIXTURE_COMMIT:c.ref,FIXTURE_ROOT:c.root,ALLOWED_LOGIN:'fixture'};const server=createServer(env,()=>{throw Error('Unexpected network')});await new Promise(r=>server.listen(0,'127.0.0.1',r));try{const url='http://127.0.0.1:'+server.address().port;assert.equal((await fetch(url+'/api/session')).status,401);assert.equal((await fetch(url+'/auth/callback?state=madeup&code=madeup')).status,403);const a=await fetch(url+'/auth/start',{redirect:'manual'});assert.equal(a.status,302);assert.equal(new URL(a.headers.get('location')).searchParams.get('code_challenge_method'),'S256');assert.match(a.headers.get('set-cookie'),/Secure; HttpOnly; SameSite=Lax/)}finally{server.close()}});
+test('complete simulated OAuth with real HTTP, restricted tree and logout',async()=>{
+  const sha='b'.repeat(40),tree='c'.repeat(40),dir='d'.repeat(40),bad='e'.repeat(40),token='synthetic-token-never-client';
+  const env={VIEWER_ORIGIN:'https://viewer.example',GH_CLIENT_ID:'fixture',GH_CLIENT_SECRET:'fixture-secret',FIXTURE_REPO:c.repo,FIXTURE_COMMIT:c.ref,FIXTURE_ROOT:c.root,FIXTURE_ENTRY:c.root+'/index.html',ALLOWED_LOGIN:'fixture'};
+  const calls=[];let challenge;
+  const upstream=async(url,opts)=>{calls.push(url);const u=new URL(url);if(u.host==='github.com'){const body=opts.body;assert.equal(body.get('client_secret'),'fixture-secret');const digest=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(body.get('code_verifier')));assert.equal(Buffer.from(digest).toString('base64url'),challenge);return Response.json({access_token:token,expires_in:300});}assert.equal(opts.headers.Authorization,'Bearer '+token);let out;
+    if(u.pathname==='/user')out={login:'fixture'};
+    else if(u.pathname==='/repos/'+c.repo)out={private:true,full_name:c.repo};
+    else if(u.pathname.endsWith('/git/commits/'+c.ref))out={tree:{sha:tree}};
+    else if(u.pathname.endsWith('/git/trees/'+tree))out={truncated:false,tree:[{path:c.root,type:'tree',mode:'040000',sha:dir},{path:c.root+'/index.html',type:'blob',mode:'100644',sha},{path:c.root+'/escape',type:'blob',mode:'120000',sha:bad}]};
+    else if(u.pathname.endsWith('/contents/'+c.root))out=[{path:c.root+'/index.html',name:'index.html',type:'file',sha,download_url:'https://example.invalid/secret'},{path:c.root+'/escape',name:'escape',type:'file',sha:bad}];
+    else if(u.pathname.endsWith('/contents/'+c.root+'/index.html'))out={path:c.root+'/index.html',type:'file',sha,content:'aGk=',encoding:'base64',download_url:'https://example.invalid/secret'};
+    else if(u.pathname.endsWith('/git/blobs/'+sha))out={sha,content:'aGk=',encoding:'base64'};else throw Error('Unexpected upstream '+url);
+    return Response.json(out);
+  };
+  const server=createServer(env,upstream);await new Promise(r=>server.listen(0,'127.0.0.1',r));try{
+    const root='http://127.0.0.1:'+server.address().port;
+    const a=await fetch(root+'/auth/start',{redirect:'manual'}),auth=new URL(a.headers.get('location'));challenge=auth.searchParams.get('code_challenge');const flow=a.headers.get('set-cookie').split(';')[0];
+    const callback=root+'/auth/callback?state='+auth.searchParams.get('state')+'&code=fixture-code';
+    const ok=await fetch(callback,{headers:{Cookie:flow},redirect:'manual'});assert.equal(ok.status,303);const cookie=ok.headers.getSetCookie().find(x=>x.startsWith('__Host-pv_session=')).split(';')[0];assert.ok(!cookie.includes(token));
+    assert.equal((await fetch(callback,{headers:{Cookie:flow},redirect:'manual'})).status,403);
+    const session=await fetch(root+'/api/session',{headers:{Cookie:cookie}});assert.equal(session.status,200);const body=await session.json();assert.equal(body.entry,c.root+'/index.html');assert.ok(!JSON.stringify(body).includes(token));
+    const get=path=>fetch(root+'/api/github?path='+encodeURIComponent(path),{headers:{Cookie:cookie}});
+    assert.equal((await get('/repos/'+c.repo+'/git/blobs/'+sha)).status,403);
+    const list=await (await get(p+c.root+q)).json();assert.equal(list.length,1);assert.ok(!('download_url' in list[0]));
+    assert.equal((await get(p+c.root+'/escape'+q)).status,403);
+    const file=await (await get(p+c.root+'/index.html'+q)).json();assert.equal(file.content,'aGk=');assert.ok(!('download_url' in file));assert.equal((await get('/repos/'+c.repo+'/git/blobs/'+sha)).status,200);
+    assert.equal((await fetch(root+'/auth/logout',{method:'POST',headers:{Cookie:cookie,Origin:'https://evil.example'}})).status,403);
+    assert.equal((await fetch(root+'/auth/logout',{method:'POST',headers:{Cookie:cookie,Origin:env.VIEWER_ORIGIN}})).status,200);
+    assert.equal((await fetch(root+'/api/session',{headers:{Cookie:cookie}})).status,401);
+  }finally{server.close()}
+});
