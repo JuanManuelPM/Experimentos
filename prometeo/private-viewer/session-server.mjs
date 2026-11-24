@@ -5,9 +5,9 @@ import { readFile } from 'node:fs/promises';
 import { pathToFileURL } from 'node:url';
 const rand=()=>randomBytes(32).toString('base64url');
 const sha=x=>createHash('sha256').update(x).digest('base64url');
-const safeEq=(a,b)=>typeof a==='string'&&typeof b==='string'&&a.length===b.length&&timingSafeEqual(Buffer.from(a),Buffer.from(b));
-const files=new Map([['/','index.html'],['/index.html','index.html'],['/app.js','app.js'],['/shell.js','shell.js'],['/styles.css','styles.css']]);
-const types={html:'text/html; charset=utf-8',js:'text/javascript; charset=utf-8',css:'text/css; charset=utf-8'};
+const safeEq=(a,b)=>typeof a==='string'&&typeof b==='string'&&/^[A-Za-z0-9_-]+$/.test(b)&&a.length===b.length&&timingSafeEqual(Buffer.from(a),Buffer.from(b));
+const files=new Map([['/','index.html'],['/index.html','index.html'],['/app.js','app.js'],['/shell.js','shell.js'],['/styles.css','styles.css'],['/model-adapter.mjs','model-adapter.mjs']]);
+const types={html:'text/html; charset=utf-8',js:'text/javascript; charset=utf-8',mjs:'text/javascript; charset=utf-8',css:'text/css; charset=utf-8'};
 const json=(res,status,data)=>{res.writeHead(status,{'Content-Type':'application/json; charset=utf-8'});res.end(JSON.stringify(data))};
 const cookie=(name,value,maxAge)=>name+'='+value+'; Path=/; Secure; HttpOnly; SameSite=Lax; Max-Age='+maxAge;
 const getCookie=(req,name)=>(req.headers.cookie||'').split(';').map(s=>s.trim()).find(s=>s.startsWith(name+'='))?.slice(name.length+1)||'';
@@ -34,7 +34,7 @@ function config(env) {
   const c={origin:env.VIEWER_ORIGIN,clientId:env.GH_CLIENT_ID,secret:env.GH_CLIENT_SECRET,repo:env.FIXTURE_REPO,ref:env.FIXTURE_COMMIT,root:env.FIXTURE_ROOT,login:env.ALLOWED_LOGIN};
   if(!Object.values(c).every(Boolean))return null;
   if(!/^https:\/\/[a-z0-9.-]+(?::\d+)?$/.test(c.origin)||!/^[-\w.]+\/[-\w.]+$/.test(c.repo)||c.repo.toLowerCase()==='juanmanuelpm/pruebas'||c.repo.toLowerCase()==='juanmanuelpm/experimentos'||!/^[a-f0-9]{40}$/.test(c.ref)||!/^[-\w]+$/.test(c.login))throw Error('Invalid config or broad repository denied');
-  cleanPath(c.root);return c;
+  cleanPath(c.root);if(env.FIXTURE_ENTRY){c.entry=cleanPath(env.FIXTURE_ENTRY);if(!c.entry.startsWith(c.root+'/'))throw Error('Entry outside scope');}return c;
 }
 export function createServer(env=process.env,upstream=fetch) {
   const cfg=config(env), pending=new Map(),sessions=new Map();
@@ -46,6 +46,7 @@ export function createServer(env=process.env,upstream=fetch) {
     try{while(true){const {value,done}=await reader.read();if(done)break;count+=value.byteLength;if(count>36*1024*1024)throw Error('Too large');chunks.push(Buffer.from(value))}}finally{await reader.cancel().catch(()=>{})}
     return JSON.parse(Buffer.concat(chunks).toString('utf8'));
   }
+  function safeTree(entries,cfg){const tree=new Map();for(const x of entries){if(!(x.path===cfg.root||x.path.startsWith(cfg.root+'/')))continue;if(x.type==='tree'&&x.mode==='040000'||x.type==='blob'&&['100644','100755'].includes(x.mode))tree.set(x.path,x);}if(tree.get(cfg.root)?.type!=='tree')throw Error('Fixture root absent');return tree;}
   function gc(map){for(const [k,v] of map)if(v.exp<=Date.now())map.delete(k)}
   return http.createServer(async(req,res)=>{
     res.setHeader('Cache-Control','no-store');res.setHeader('Referrer-Policy','no-referrer');res.setHeader('X-Content-Type-Options','nosniff');res.setHeader('X-Frame-Options','DENY');
@@ -54,7 +55,12 @@ export function createServer(env=process.env,upstream=fetch) {
     try {
       if(req.method==='GET'&&files.has(u.pathname)){
         const f=files.get(u.pathname);
-        res.writeHead(200,{'Content-Type':types[f.split('.').pop()]});return res.end(await readFile(new URL(f,import.meta.url)));
+        const data=await readFile(new URL(f,import.meta.url));res.writeHead(200,{'Content-Type':types[f.split('.').pop()]});return res.end(data);
+      }
+      if(req.method==='GET'&&u.pathname.startsWith('/vendor/')){
+        const name=cleanPath(u.pathname.slice('/vendor/'.length));
+        if(!/^(build|examples\/jsm)\/[A-Za-z0-9_.\/-]+\.js$/.test(name))return json(res,404,{error:'Not found'});
+        const data=await readFile(new URL('node_modules/three/'+name,import.meta.url));res.writeHead(200,{'Content-Type':types.js});return res.end(data);
       }
       if(!cfg)return json(res,503,{error:'Authorization not configured'});
       if(req.method==='GET'&&u.pathname==='/auth/start'){
@@ -75,10 +81,15 @@ export function createServer(env=process.env,upstream=fetch) {
         if(user.login?.toLowerCase()!==cfg.login.toLowerCase())return json(res,403,{error:'Account denied'});
         const meta=await github(t.access_token,'/repos/'+cfg.repo);
         if(meta.private!==true||meta.full_name.toLowerCase()!==cfg.repo.toLowerCase())return json(res,403,{error:'Private fixture required'});
+        const commit=await github(t.access_token,'/repos/'+cfg.repo+'/git/commits/'+cfg.ref);
+        if(!/^[a-f0-9]{40}$/.test(commit?.tree?.sha))throw Error('Invalid commit');
+        const rawTree=await github(t.access_token,'/repos/'+cfg.repo+'/git/trees/'+commit.tree.sha+'?recursive=1');
+        if(rawTree.truncated||!Array.isArray(rawTree.tree))throw Error('Incomplete tree');
+        const tree=safeTree(rawTree.tree,cfg);if(cfg.entry&&tree.get(cfg.entry)?.type!=='blob')throw Error('Entry absent');
         if(sessions.size>=100)return json(res,429,{error:'Session limit'});
         if(sid)sessions.delete(sid);
-        const id=rand(),seconds=Math.min(3600,Number(t.expires_in)||3600);
-        sessions.set(id,{token:t.access_token,exp:Date.now()+seconds*1000,blobs:new Set()});
+        const id=rand(),seconds=Math.min(3600,Math.floor(Number(t.expires_in)||3600));if(seconds<=0)throw Error('Expired token');
+        sessions.set(id,{token:t.access_token,exp:Date.now()+seconds*1000,blobs:new Set(),tree});
         res.writeHead(303,{Location:'/', 'Set-Cookie':[cookie('__Host-pv_session',id,seconds),cookie('__Host-pv_flow','',0)]});return res.end();
       }
       if(req.method==='POST'&&u.pathname==='/auth/logout'){
@@ -86,12 +97,26 @@ export function createServer(env=process.env,upstream=fetch) {
         sessions.delete(sid);res.setHeader('Set-Cookie',cookie('__Host-pv_session','',0));return json(res,200,{ok:true});
       }
       if(req.method!=='GET'||!s)return json(res,401,{error:'Access required'});
-      if(u.pathname==='/api/session')return json(res,200,{repo:cfg.repo,ref:cfg.ref,root:cfg.root});
+      if(u.pathname==='/api/session')return json(res,200,{repo:cfg.repo,ref:cfg.ref,root:cfg.root,entry:cfg.entry||null});
       if(u.pathname==='/api/github'){
         const path=allowRequest(u.searchParams.get('path'),cfg,s.blobs);if(!path)return json(res,403,{error:'Scope denied'});
+        const contentPrefix='/repos/'+cfg.repo+'/contents/';
+        const isContents=path.startsWith(contentPrefix);
+        const logical=isContents?path.slice(contentPrefix.length,path.indexOf('?')).split('/').map(decodeURIComponent).join('/'):null;
+        const entry=isContents?s.tree.get(logical):null;
+        if(isContents&&!entry)return json(res,403,{error:'Tree scope denied'});
         const out=await github(s.token,path);
-        if(out?.type==='file'&&/^[a-f0-9]{40}$/.test(out.sha)&&s.blobs.size<1024)s.blobs.add(out.sha);
-        return json(res,200,out);
+        if(path==='/repos/'+cfg.repo)return json(res,200,{full_name:cfg.repo,private:true});
+        const minimal=x=>({name:x.name,path:x.path,type:x.type,size:x.size,sha:x.sha,content:x.content,encoding:x.encoding});
+        if(isContents&&entry.type==='tree'){
+          if(!Array.isArray(out))throw Error('Tree mismatch');
+          return json(res,200,out.filter(x=>s.tree.get(x.path)?.sha===x.sha).map(minimal));
+        }
+        if(isContents){
+          if(out?.type!=='file'||out.sha!==entry.sha)throw Error('File mismatch');
+          if(s.blobs.size<1024)s.blobs.add(out.sha);
+        }else if(out.sha!==path.split('/').pop())throw Error('Blob mismatch');
+        return json(res,200,minimal(out));
       }
       return json(res,404,{error:'Not found'});
     }catch{return json(res,502,{error:'Request failed; no public fallback'})}
