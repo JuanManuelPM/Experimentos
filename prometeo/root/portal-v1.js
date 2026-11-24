@@ -1,7 +1,7 @@
 /* PROMETEO ROOT · universal shell, real project library and typed batch results. */
 import './shared/v1/shell.js';
 import {findResult,bestLink,bestImage} from './galeria/model.mjs?v=20261123-mobile2';
-import {createFocusMap} from './focus-map.mjs?v=20261123-visual1';
+import {createFocusMap} from './focus-map.mjs?v=20261124-state-live';
 import './shared/v1/response.js';
 import './shared/v1/batch.js?v=20261122-emojiworker1';
 import './shared/v1/launch-hub.js';
@@ -9,7 +9,7 @@ const $=id=>document.getElementById(id);
 const FALLBACK=[{id:'direccion',label:'Dirección'},{id:'root',label:'ROOT'},{id:'3d',label:'3D'},{id:'music',label:'Música'},{id:'web',label:'Web'},{id:'video',label:'Video'},{id:'images',label:'Imágenes'}];
 const ROOT_REF='https://github.com/JuanManuelPM/pruebas/blob/candidate/prometeo-portal-unico-base-20261121/PROMETEO/system/PORTAL_BASE_HANDOFF.md#';
 const PUBLIC='https://juanmanuelpm.github.io/Experimentos/prometeo/';
-const state={universalFilter:'all',universalView:'recent',universalOpen:undefined,rooms:FALLBACK,room:'direccion',screen:'messages',itemId:'',public:[],legacy:[],batches:[],projects:[],w4:[],catalog:null,chair:null,cocina:null,nodeId:'mobiliario',older:false,items:[],workspaces:[],ready:false,batchId:''};
+const state={universalFilter:'all',universalView:'recent',universalOpen:undefined,rooms:FALLBACK,room:'direccion',screen:'messages',itemId:'',public:[],legacy:[],batches:[],projects:[],w4:[],catalog:null,chair:null,cocina:null,nodeId:'root',older:false,items:[],workspaces:[],ready:false,batchId:''};
 const shell=$('shell');
 const focusMap=createFocusMap({copy,toast,go});
 let timer;
@@ -228,9 +228,9 @@ function parseRoute(){
  let raw='';try{raw=decodeURIComponent(location.hash.slice(1));}catch{}
  if(['capturas','ronda','calibrar','ajustes'].includes(raw)){location.replace('./archivo-20261121.html#'+raw);return null;}
  if(raw==='mensajes')return {room:'root',screen:'messages'};
-  if(!raw||raw==='root')return {room:'root',screen:'library',nodeId:'mobiliario',focus:true};
+  if(!raw||raw==='root')return {room:'root',screen:'library'};
  const parts=raw.split('/'),room=!raw?'root':state.rooms.some(r=>r.id===parts[0])?parts[0]:'root';
- if(room==='root'&&parts[1]==='plano')return {room,screen:'library',nodeId:parts[2]||'mobiliario',focus:true};
+ if(room==='root'&&parts[1]==='plano')return {room,screen:'library',nodeId:parts[2]||'root',focus:true};
  if(room==='root'&&(parts.length===1||['obras','biblioteca','recientes'].includes(parts[1]))){if(parts[1]==='recientes')state.universalView='recent';return {room,screen:'library'};}
  if(!['3d','music','web','video','images'].includes(room))return {room,screen:'messages',batchId:(parts[1]==='mensaje'||parts[1]==='tanda')?(parts[2]||''):''};
  if(parts[1]==='tanda')return {room,screen:'messages',batchId:parts[2]||''};
@@ -283,9 +283,9 @@ function updateContext(){
   }
   c.append(option('Comentar ROOT',()=>closeCopy(currentReference()),false,true));
  }
- if(state.room!=='root'||!['','#root'].includes(location.hash)&&!location.hash.startsWith('#root/plano/'))c.append(option('SEGUIR',()=>go('#root/plano/'+(state.nodeId||'mobiliario')),false,true));
+ if(state.room!=='root'||!['','#root'].includes(location.hash)&&!location.hash.startsWith('#root/plano/'))c.append(option('Plano',()=>go('#root/plano/'+(state.nodeId||'root')),false,true));
  c.append(option('IDEA',()=>closeCopy(focusMap.ideaPrompt(state.nodeId)),false,true));
- c.append(option('TRABAJAR',()=>closeCopy(focusMap.workPrompt(state.nodeId)),false,true));
+ c.append(option('Crear desde nodo',()=>closeCopy(focusMap.workPrompt(state.nodeId)),false,true));
  // Las obras se abren desde Obras/Proyectos o la acción contextual; no repetir ROOT como VER.
 }
 function renderStage(){
@@ -305,7 +305,7 @@ function renderStage(){
 }
 function selectRoute(next){
  if(!next||!state.ready)return;
- state.room=next.room;state.screen=next.screen;state.itemId=next.itemId||'';state.batchId=next.batchId||'';if(next.nodeId)state.nodeId=focusMap.ids.has(next.nodeId)?next.nodeId:'mobiliario';
+ state.room=next.room;state.screen=next.screen;state.itemId=next.itemId||'';state.batchId=next.batchId||'';if(next.nodeId)state.nodeId=focusMap.ids.has(next.nodeId)?next.nodeId:'root';
  shell.setRoom(state.room);shell.setAttribute('app-label',state.rooms.find(r=>r.id===state.room)?.label||'PROMETEO');
  const studio=['3d','music','web','video','images'].includes(state.room);
  if(studio&&state.screen==='stage'&&!studioItems(state.room).some(x=>x.id===state.itemId))state.screen='library';
