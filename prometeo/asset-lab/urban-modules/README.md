@@ -1,0 +1,3 @@
+# Urban modules · candidate
+
+Three original 12 × 18 m street sections, Y up, +Z longitudinal. Use build(id) for reusable mesh data or chain(ids) for exact 18 m translation. Physical grate openings, service recess, curb ramps, paving bedding and painted geometry. The gallery exports JSON and GLB on devices with WebGL. Source uses the existing constructor and relation probes from 6ebdfe30fde33e3a570f683ac3bb93cfecfb38a3. Render, Android and full surface gate are not certified. See BUILD_RECEIPT.json. No changes to original chairs or engine.
