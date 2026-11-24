@@ -130,9 +130,9 @@ jobs:
         run: |
           git config user.name "prometeo-assets"
           git config user.email "prometeo-assets@users.noreply.github.com"
-          git add prometeo-assets/SLOT-07-RESULT.json
+          git add --sparse prometeo-assets/SLOT-07-RESULT.json
           for p in 15-ultimate-modular-ruins-pack 19-farm-buildings-pack 68-buildings-pack 69-simple-buildings-pack 70-modular-dungeon-pack 71-furniture-pack; do
-            if [ -d "prometeo-assets/packs/$p" ]; then git add "prometeo-assets/packs/$p"; fi
+            if [ -d "prometeo-assets/packs/$p" ]; then git add --sparse "prometeo-assets/packs/$p"; fi
           done
           git commit -m "Import and statically verify slot 07 CC0 GLBs"
           git push origin HEAD:candidate/quaternius-complete-20261124-07
