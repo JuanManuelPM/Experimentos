@@ -5,7 +5,7 @@ const B=document.body, is3d=B.dataset.library==='3d', rail=document.querySelecto
 if(!rail||!main)return;
 const current=new URL(location.href), base=new URL(is3d?'../../':'../../',current);
 const from3d=new URL('estudios/3d/universal.html',base).href, fromGallery=new URL('root/galeria/universal.html',base).href;
-const icon={
+const icon={more:'<circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/>',
 close:'<path d="m5 5 14 14M19 5 5 19"/>',
 menu:'<path d="M5 9h14M5 15h14"/>',
 rotate:'<path d="M5 8V6a2 2 0 0 1 2-2h10l-3-3m3 3-3 3M19 16v2a2 2 0 0 1-2 2H7l3 3m-3-3 3-3M3 12h5m8 0h5"/>',
@@ -55,20 +55,31 @@ const controls=document.createElement('div');controls.className='u-controls';
 while(rail.firstChild)controls.append(rail.firstChild);
 const close=btn('close','Cerrar menú',()=>setCollapsed(true));close.classList.add('u-close');
 const open=btn('menu','Abrir menú',()=>setCollapsed(false));open.classList.add('u-open');
-const rotate=btn('rotate','Cambiar orientación',()=>{const effective=B.classList.contains('u-portrait')?'portrait':'landscape';desired=effective==='portrait'?'landscape':'portrait';save('orientation',desired);layout()});rotate.classList.add('u-rotate');
+const rotate=btn('rotate','Cambiar orientación',()=>{const effective=B.classList.contains('u-portrait')?'portrait':'landscape';desired=effective==='portrait'?'landscape':'portrait';save('orientation',desired);hideFly();layout()});rotate.classList.add('u-rotate');
 close.classList.add('u-anchor');open.classList.add('u-anchor');
 const mask=document.createElement('div');mask.className='u-mask';
 const panel=document.createElement('div');panel.className='u-panel';panel.id='u-panel';
-panel.append(controls,rotate);mask.append(panel);rail.append(mask,close,open);
+const track=document.createElement('div');track.className='u-track';
+const fly=document.createElement('div');fly.className='u-flyout';fly.id='u-flyout';fly.hidden=true;
+const activeStudio=is3d?'3d':(current.searchParams.get('studio')||'3d');
+const studiesButton=btn(studies.some(s=>s[0]===activeStudio)?activeStudio:'home','Cambiar de estudio',()=>toggleFly('studies'));
+const moreButton=btn('more','Más funciones',()=>toggleFly('more'));
+const groups=document.createElement('div');groups.append(nav,controls);fly.append(groups);
+for(const b of [studiesButton,moreButton]){b.setAttribute('aria-controls','u-flyout');b.setAttribute('aria-expanded','false')}
+let flyMode=null;
+function toggleFly(mode){if(flyMode===mode){hideFly();return}flyMode=mode;nav.hidden=mode!=='studies';controls.hidden=mode!=='more';fly.hidden=false;studiesButton.setAttribute('aria-expanded',String(mode==='studies'));moreButton.setAttribute('aria-expanded',String(mode==='more'))}
+function hideFly(){flyMode=null;fly.hidden=true;studiesButton.setAttribute('aria-expanded','false');moreButton.setAttribute('aria-expanded','false')}
+fly.addEventListener('click',e=>{if(e.target.closest('button,a'))hideFly()});
+panel.append(studiesButton,moreButton,rotate);track.append(panel);mask.append(track);rail.append(mask,close,open,fly);
 open.setAttribute('aria-controls','u-panel');close.setAttribute('aria-controls','u-panel');
 function load(k){try{return localStorage.getItem('prometeo:library:'+k)}catch{return null}}
 function save(k,v){try{localStorage.setItem('prometeo:library:'+k,v)}catch{}}
-function setCollapsed(on,focus=true){open.setAttribute('aria-expanded',String(!on));close.setAttribute('aria-expanded',String(!on));panel.inert=on;panel.setAttribute('aria-hidden',String(on));B.classList.toggle('u-collapsed',on);save('collapsed',on?'1':'0');if(on){const panel=document.querySelector('#filters-panel');if(panel&&!panel.hidden)document.querySelector('#filter-toggle')?.click()}if(focus)(on?open:close).focus()}
+function setCollapsed(on,focus=true){open.setAttribute('aria-expanded',String(!on));close.setAttribute('aria-expanded',String(!on));panel.inert=on;panel.setAttribute('aria-hidden',String(on));B.classList.toggle('u-collapsed',on);save('collapsed',on?'1':'0');if(on){hideFly();const panel=document.querySelector('#filters-panel');if(panel&&!panel.hidden)document.querySelector('#filter-toggle')?.click()}if(focus)(on?open:close).focus()}
 let desired=load('orientation');
 function layout(){const w=window.innerWidth,h=window.innerHeight,native=w>=h?'landscape':'portrait',effective=desired||native,rotated=effective!==native;const vw=rotated?h:w,vh=rotated?w:h;B.classList.toggle('u-portrait',effective==='portrait');B.classList.toggle('u-compact',vh<520);B.classList.toggle('u-rotated',rotated);B.style.setProperty('--u-w',vw+'px');B.style.setProperty('--u-h',vh+'px');rotate.setAttribute('aria-label',effective==='portrait'?'Ver en horizontal':'Ver en vertical');rotate.title=rotate.getAttribute('aria-label');}
 
 const corners=['tl','tr','bl','br'];
-function setCorner(c){if(!corners.includes(c))c='bl';panel.style.transition='none';B.dataset.corner=c;save('corner',c);void panel.offsetWidth;panel.style.removeProperty('transition')}
+function setCorner(c){if(!corners.includes(c))c='bl';panel.style.transition='none';mask.style.transition='none';B.dataset.corner=c;save('corner',c);void panel.offsetWidth;panel.style.removeProperty('transition');mask.style.removeProperty('transition')}
 function nearest(x,y,w,h){return (y<h/2?'t':'b')+(x<w/2?'l':'r')}
 function point(e){return B.classList.contains('u-rotated')?{x:e.clientY,y:window.innerWidth-e.clientX}:{x:e.clientX,y:e.clientY}}
 let drag=null,ignoreClick=false;
@@ -82,7 +93,7 @@ open.addEventListener('pointerup',e=>finish(e));open.addEventListener('pointerca
 open.addEventListener('keydown',e=>{const c=B.dataset.corner;if(!['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.key))return;e.preventDefault();setCorner(e.key==='ArrowLeft'?c[0]+'l':e.key==='ArrowRight'?c[0]+'r':e.key==='ArrowUp'?'t'+c[1]:'b'+c[1])});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!B.classList.contains('u-collapsed')&&(!is3d||document.querySelector('#overlay')?.hidden))setCollapsed(true)});
 main.addEventListener('click',e=>{if(B.classList.contains('u-collapsed')||e.target.closest('#filters-panel'))return;setCollapsed(true,false);e.preventDefault();e.stopImmediatePropagation()},true);
-panel.style.transition='none';setCollapsed(load('collapsed')!=='0',false);setCorner(load('corner')||'bl');layout();window.addEventListener('resize',layout);
+panel.style.transition='none';mask.style.transition='none';setCollapsed(load('collapsed')!=='0',false);setCorner(load('corner')||'bl');layout();window.addEventListener('resize',layout);
 
 
 })();

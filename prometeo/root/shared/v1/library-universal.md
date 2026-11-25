@@ -13,3 +13,6 @@ Canvas invariable a pantalla completa. Inferior izquierda/derecha: barra lateral
 
 ## V4 · movimiento universal
 Mapa circular BL→arriba, TL→derecha, TR→abajo, BR→izquierda. Una máscara fija recorta un panel rígido que contiene todos los iconos y el fondo; transform translate3d con 280 ms y easing centralizado. Sin animar dimensiones ni redistribuir la galería; no escalado ni stagger. El ancla queda fija, panel cerrado inert; respeta reduced motion. Se elimina el bloque acumulado V2/V3 de CSS en favor de un único bloque de layout/animación. Referencia: https://web.dev/articles/animations-guide y https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@media/prefers-reduced-motion. Sintaxis y reglas de los 4 bordes comprobadas; falta navegador y medición real de frames.
+
+## V5 · cápsula continua
+Una superficie única (clip-path inset redondeado) con diámetro --u-control idéntico a ancla y grosor. Longitud 4 diámetros: cierre + estudio + más funciones + rotación. Glifos de 20 px, zonas de toque 44/50 px. Panel rígido en una pista fija, recorte de superficie sincronizado con la traslación; sin separación entre botón y barra, sin cambio de grilla. Las opciones previas se conservan en dos menús secundarios, no se duplican motores. Cuatro direcciones preservadas. Pruebas de código/estructura PASS; navegador y Android no verificados.
