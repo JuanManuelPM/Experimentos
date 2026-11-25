@@ -1,0 +1,1 @@
+Minor final face pass, same geometry/eyes; tapered mouth opening, pigment accents and selectable atlas resolution. Candidate, not artistic acceptance.
