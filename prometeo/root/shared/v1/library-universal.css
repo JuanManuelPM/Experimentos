@@ -206,3 +206,12 @@ body.u-library{--u-bg:#f5f2ef;--u-card-radius:16px;--u-columns:4;--u-mobile-colu
 .u-library[data-u-theme="noir"],.u-library[data-u-theme="void"]{color-scheme:dark}
 .u-library.u-portrait[data-u-theme="monastic"],.u-library.u-portrait[data-u-theme="void"]{--u-theme-gap:18px;--u-theme-pad:24px}
 .u-library.u-compact[data-u-theme="monastic"],.u-library.u-compact[data-u-theme="void"]{--u-theme-gap:18px;--u-theme-pad:20px}
+
+/* V7 interaction refinements: compact, fully visible glyph; readable filters. */
+.u-library .u-rail .u-rotate svg{width:19px;height:19px}
+.u-library .u-rail .u-rotate svg path[stroke="none"]{stroke:none}
+.u-library #filters-panel .filter-chips button,.u-library #filters-panel input,.u-library #filters-panel .search{color:var(--u-nav-ink);background:color-mix(in srgb,var(--u-nav-ink) 8%,var(--u-surface));border-color:color-mix(in srgb,var(--u-nav-ink) 30%,transparent)}
+.u-library #filters-panel .filter-chips button.selected{background:var(--u-nav-ink);color:var(--u-surface)}
+.u-library[data-corner="tl"] .u-flyout.u-theme-open,.u-library[data-corner="br"] .u-flyout.u-theme-open{width:min(338px,calc(var(--u-w) - 2 * var(--u-edge)))}
+.u-library.u-compact .u-theme-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+.u-library .u-theme-choice span:last-child{overflow-wrap:anywhere}

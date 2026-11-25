@@ -9,7 +9,7 @@ const themes=[{"id":"original","name":"Original","desc":"Cálido, redondeado, ai
 const icon={theme:'<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 17.5h7m-3.5-3.5v7"/>',more:'<circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/>',
 close:'<path d="m5 5 14 14M19 5 5 19"/>',
 menu:'<path d="M5 9h14M5 15h14"/>',
-rotate:'<path d="M9 7h9v9M15.5 13.5 18 16l2.5-2.5M15 17H6V8m-2.5 2.5L6 8l2.5 2.5" stroke-width="2.1" stroke-linecap="square" stroke-linejoin="miter"/>',
+rotate:'<path d="M9 7.5h9v7M15 16.5H6v-7" stroke-width="2.2" stroke-linecap="square" stroke-linejoin="miter"/><path d="m14.6 13.8 3.4 3.5 3.4-3.5zM2.6 10.2 6 6.7l3.4 3.5z" fill="currentColor" stroke="none"/>',
 home:'<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>',
 '3d':'<path d="m12 3 9 5v8l-9 5-9-5V8zM3 8l9 5 9-5M12 13v8"/>',
 video:'<path d="M7 4.8v14.4L19 12z"/>',music:'<path d="M4 10v4m4-7v10m4-14v18m4-14v10m4-7v4"/>',
@@ -102,7 +102,7 @@ open.addEventListener('pointerup',e=>finish(e));open.addEventListener('pointerca
 open.addEventListener('keydown',e=>{const c=B.dataset.corner;if(!['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.key))return;e.preventDefault();setCorner(e.key==='ArrowLeft'?c[0]+'l':e.key==='ArrowRight'?c[0]+'r':e.key==='ArrowUp'?'t'+c[1]:'b'+c[1])});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!B.classList.contains('u-collapsed')&&(!is3d||document.querySelector('#overlay')?.hidden))setCollapsed(true)});
 main.addEventListener('click',e=>{if(B.classList.contains('u-collapsed')||e.target.closest('#filters-panel'))return;setCollapsed(true,false);e.preventDefault();e.stopImmediatePropagation()},true);
-applyTheme(load('theme')||'original');panel.style.transition='none';mask.style.transition='none';setCollapsed(load('collapsed')!=='0',false);setCorner(load('corner')||'bl');layout();window.addEventListener('resize',layout);
+applyTheme(load('theme')||'original');panel.style.transition='none';mask.style.transition='none';setCollapsed(load('collapsed')!=='0',false);setCorner(load('corner')||'bl');layout();if(current.searchParams.get('themes')==='1'){setCollapsed(false,false);toggleFly('themes')}window.addEventListener('resize',layout);
 
 
 })();
