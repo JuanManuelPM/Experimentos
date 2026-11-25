@@ -256,3 +256,9 @@ body.u-library{--u-cols:4;--u-mobile-cols:2;--u-ratio:1;--u-theme-pad:var(--u-pa
 /* Legacy detail metadata remains accessible, but navigation is in the floating shell. */
 .u-library #overlay:not([hidden]) .detail-bar #close,.u-library #overlay:not([hidden]) .detail-bar #detail-close{display:none}
 .u-library #overlay:not([hidden]) .detail-bar #detail-visit{display:none}
+
+/* Preserve the overlay during work viewing; native fullscreen is deliberately not requested. */
+.u-library #overlay:not([hidden]){z-index:50}
+.u-library #overlay:not([hidden]) .detail{inset:0;border:0;border-radius:0}
+.u-library .u-folder-link{border-left:1px solid color-mix(in srgb,var(--u-nav-ink) 25%,transparent);margin-left:6px}
+.u-library .u-rail .u-icon:active,.u-library .u-destination:active{text-decoration:none}
