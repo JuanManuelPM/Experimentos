@@ -262,3 +262,10 @@ body.u-library{--u-cols:4;--u-mobile-cols:2;--u-ratio:1;--u-theme-pad:var(--u-pa
 .u-library #overlay:not([hidden]) .detail{inset:0;border:0;border-radius:0}
 .u-library .u-folder-link{border-left:1px solid color-mix(in srgb,var(--u-nav-ink) 25%,transparent);margin-left:6px}
 .u-library .u-rail .u-icon:active,.u-library .u-destination:active{text-decoration:none}
+
+/* V12 curated folders use the same square card component. */
+.u-library .u-folder-tiles{margin:0 0 var(--u-theme-gap)}
+.u-library .u-folder-tiles[hidden]{display:none!important}
+.u-library .u-registry-tile{display:grid;place-items:center;color:var(--u-page-ink);text-decoration:none;text-align:center;padding:12%;font-family:var(--u-font,system-ui,sans-serif);font-weight:var(--u-weight,500);font-size:clamp(13px,1.4vw,18px)}
+body.u-library.u-folder-view #content>section:not(:has(.item:not(.u-outside-folder))){display:none}
+body.u-library.u-folder-view #status{display:none}

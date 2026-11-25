@@ -3,7 +3,28 @@
   "description": "Explicit user-approved folders; no automatic classification.",
   "memberIdentity": {
     "3d": "project.id",
-    "otherStudios": "batch.id or batch.launchUrl + # + item.number"
+    "otherStudios": "batch.id or batch.launchUrl + # + item.number",
+    "curated": "Explicit stable work ID, source owner retained; not a batch result"
   },
-  "folders": []
+  "folders": [
+    {
+      "id": "ui",
+      "label": "UI",
+      "studio": "web",
+      "owner": "web-design",
+      "members": [
+        "universal-library"
+      ],
+      "works": [
+        {
+          "id": "universal-library",
+          "title": "UI universal de PROMETEO",
+          "owner": "prometeo-root",
+          "path": "estudios/3d/universal.html",
+          "source": "https://github.com/JuanManuelPM/Experimentos/blob/gh-pages/prometeo/root/shared/v1/library-universal.md",
+          "mode": "direct"
+        }
+      ]
+    }
+  ]
 }
