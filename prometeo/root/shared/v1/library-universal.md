@@ -7,3 +7,6 @@ Future edit: change library-universal.css for layout/color/density, library-univ
 
 ## V2 visual correction
 Shared CSS/JS only; wider gutters and four desktop columns, two portrait columns. X collapses the entire rail into a round two-line button. Orientation icon switches the effective canvas, using CSS rotation when native orientation differs; it does not require OS rotation permissions. Both settings persist locally across studies. Original page entrypoints and engines remain untouched. Version query 2. Browser/device verification pending.
+
+## V3 · menú flotante
+Canvas invariable a pantalla completa. Inferior izquierda/derecha: barra lateral; superior izquierda/derecha: barra superior. Cruz anclada, rotación al otro extremo. Botón cerrado arrastrable y snap por cuadrantes; flechas de teclado; posición persistida. Toque fuera cierra sin activar obra. CSS/JS compartidos. Prueba sintáctica y cuatro cuadrantes PASS; navegador y Android pendientes.
