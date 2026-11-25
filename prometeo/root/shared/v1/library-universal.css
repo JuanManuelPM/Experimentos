@@ -222,3 +222,14 @@ body.u-library{--u-cols:4;--u-mobile-cols:2;--u-ratio:1;--u-theme-pad:var(--u-pa
 .u-library.u-compact .u-theme-list{grid-template-columns:repeat(2,minmax(0,1fr));max-height:min(220px,calc(var(--u-h) - 135px))}
 .u-library .u-flyout[data-mode=settings] .u-settings{min-width:0}
 .u-library .u-rail [hidden]{display:none!important}
+
+/* V10 compact bounds and focus. */
+.u-library.u-compact .u-flyout{width:min(var(--u-fly-width),calc(var(--u-w) - 2 * var(--u-edge) - 8px))}
+.u-library.u-compact .u-flyout[data-mode=settings]{--u-fly-width:calc(2 * var(--u-control) + 14px)}
+.u-library .u-flyout[data-mode=settings]{padding:5px;overflow:hidden;--u-fly-width:calc(2 * var(--u-control) + 14px)}
+.u-library .u-settings .u-icon{min-width:var(--u-control)}
+.u-library .u-pane-heading .u-icon svg{width:17px;height:17px}
+.u-library .u-theme-choice[aria-pressed=true] .u-theme-tick{background:var(--u-selection,currentColor)}
+.u-library[data-u-theme=swiss]{--u-selection:#ff6b60}
+.u-library[data-u-theme=rams]{--u-selection:#f2a367}
+.u-library .card:focus-visible,.u-library .item:focus-visible{outline:2px solid var(--u-page-ink);outline-offset:2px}

@@ -34,7 +34,7 @@ const destinations=document.createElement('div');destinations.className='u-desti
 const base=new URL('../../',current);
 const activeStudio=is3d?'3d':(current.searchParams.get('studio')||'3d');
 const studies=[['3d','3D'],['web','Web'],['music','Música'],['video','Video'],['images','Imágenes']];
-for(const [id,label] of studies){const a=document.createElement('a');a.className='u-destination';a.textContent=label;const url=new URL(id==='3d'?'estudios/3d/universal.html':'root/galeria/universal.html',base);url.searchParams.set('v','10');if(id!=='3d')url.searchParams.set('studio',id);a.href=url.href;if(id===activeStudio){a.setAttribute('aria-current','page');a.addEventListener('click',e=>{e.preventDefault();hideFly()})}destinations.append(a)}
+for(const [id,label] of studies){const a=document.createElement('a');a.className='u-destination';a.textContent=label;const url=new URL(id==='3d'?'estudios/3d/universal.html':'root/galeria/universal.html',base);url.searchParams.set('v','10');if(id!=='3d')url.searchParams.set('studio',id);a.href=url.href;if(id===activeStudio&&(id!=='3d'||is3d)){a.setAttribute('aria-current','page');a.addEventListener('click',e=>{e.preventDefault();hideFly()})}destinations.append(a)}
 fly.append(settings,themePane,destinations);fly.setAttribute('role','region');
 let flyMode=null;
 function applyTheme(id){if(!themes.some(t=>t.id===id))id='original';B.dataset.uTheme=id;document.documentElement.dataset.uTheme=id;const m=document.querySelector('meta[name="theme-color"]');if(m)m.content=getComputedStyle(B).getPropertyValue('--u-bg').trim();save('theme',id);for(const b of themeList.children)b.setAttribute('aria-pressed',String(b.dataset.themeChoice===id))}
