@@ -1,6 +1,6 @@
 {
   "version": "11.1",
-  "status": "CANDIDATE_AUTOMATED_PASS",
+  "status": "BLOCKED_VISUAL_AND_DEVICE",
   "source": "9a706b3e5574c9f02e5a253ee28a37607fbbaa21",
   "geometry": {
     "checks": 7,
@@ -11,7 +11,7 @@
     "triangles": 520
   },
   "browser": {
-    "status": "PASS",
+    "status": "PASS_AUTOMATED_NON_VISUAL",
     "checks": 7,
     "poseCases": 24,
     "cameraCases": 24,
@@ -19,13 +19,50 @@
     "persistentBuffers": 13,
     "glbHeadMorphs": 6,
     "glbBytes": 31500,
-    "medianCpuFrameMs": 2.1
+    "medianCpuFrameMs": 2.8
   },
-  "visual": "FAIL_CAPTURE: 0/6 non-background canvas images; direct WebGL framebuffer readback candidate",
+  "visual": {
+    "status": "FAIL_CAPTURE",
+    "testedCommit": "1e7b96c4a09f9cbf20400b10594bcf492d453cdd",
+    "renderedViews": 0,
+    "requestedViews": 6,
+    "drawCallsPerView": 14,
+    "submittedTriangles": [
+      1056,
+      1056,
+      1056,
+      1078,
+      1056,
+      1056
+    ],
+    "changedPixels": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "attempts": [
+      "canvas JPEG returned background",
+      "framebuffer readback returned black",
+      "independent browser screenshot timed out; subsequent session limit"
+    ],
+    "interpretation": "Cannot establish whether blank readback is renderer or test environment; no artistic approval."
+  },
   "physicalAndroid": "NOT_RUN",
   "remaining": [
     "Visual review of actual render",
     "Physical Android measurements",
     "Eye/lip surface overlays are not anatomical cavities; GLB tested head morphs only"
-  ]
+  ],
+  "nextStages": {
+    "v12": "NOT_STARTED: V11 gate incomplete",
+    "v13": "NOT_STARTED: V12 not passed"
+  },
+  "publication": {
+    "status": "CANDIDATE_DEPLOYED",
+    "workflow": "https://github.com/JuanManuelPM/Experimentos/actions/runs/45696101773",
+    "http": 200
+  }
 }
