@@ -62,7 +62,7 @@ function decorateCovers(){
   if(hasImage){existing?.remove();continue}
   if(existing)continue;
   const title=(card.querySelector('.card-title')?.textContent||card.querySelector('b')?.textContent||card.getAttribute('aria-label')?.replace(/^Abrir\s+/,'')||'Obra').trim();
-  const label=document.createElement('span');label.className='u-catalog-cover';label.textContent=title;label.setAttribute('aria-hidden','true');cover.append(label);
+  const label=document.createElement('div');label.className='u-catalog-cover';label.setAttribute('aria-hidden','true');const text=document.createElement('div');text.className='u-catalog-name';text.textContent=title;label.append(text);cover.append(label);
   card.title=title+' · sin captura registrada';
  }
 }
