@@ -8,7 +8,7 @@ const from3d=new URL('estudios/3d/universal.html',base).href, fromGallery=new UR
 const icon={more:'<circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/>',
 close:'<path d="m5 5 14 14M19 5 5 19"/>',
 menu:'<path d="M5 9h14M5 15h14"/>',
-rotate:'<path d="M5 8V6a2 2 0 0 1 2-2h10l-3-3m3 3-3 3M19 16v2a2 2 0 0 1-2 2H7l3 3m-3-3 3-3M3 12h5m8 0h5"/>',
+rotate:'<path d="M8 7.5h6a2 2 0 0 1 2 2V11m-2.5-2.5L16 11l2.5-2.5"/><rect x="7.5" y="12.5" width="9" height="5" rx="1.4"/>',
 home:'<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>',
 '3d':'<path d="m12 3 9 5v8l-9 5-9-5V8zM3 8l9 5 9-5M12 13v8"/>',
 video:'<path d="M7 4.8v14.4L19 12z"/>',music:'<path d="M4 10v4m4-7v10m4-14v18m4-14v10m4-7v4"/>',

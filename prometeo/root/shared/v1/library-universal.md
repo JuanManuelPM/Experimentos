@@ -16,3 +16,6 @@ Mapa circular BL→arriba, TL→derecha, TR→abajo, BR→izquierda. Una máscar
 
 ## V5 · cápsula continua
 Una superficie única (clip-path inset redondeado) con diámetro --u-control idéntico a ancla y grosor. Longitud 4 diámetros: cierre + estudio + más funciones + rotación. Glifos de 20 px, zonas de toque 44/50 px. Panel rígido en una pista fija, recorte de superficie sincronizado con la traslación; sin separación entre botón y barra, sin cambio de grilla. Las opciones previas se conservan en dos menús secundarios, no se duplican motores. Cuatro direcciones preservadas. Pruebas de código/estructura PASS; navegador y Android no verificados.
+
+## V6 · icono de orientación compacto
+Solo cambia el SVG de rotación: rectángulo y flecha corta, sin alterar área táctil, cápsula ni movimiento. JS versionado v6. Sintaxis comprobada; apariencia y toque real pendientes de navegador.
