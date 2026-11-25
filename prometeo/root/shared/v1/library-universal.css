@@ -289,3 +289,15 @@ html[data-u-theme="mono"],body.u-library[data-u-theme="mono"]{--u-bg:#111212;--u
 .u-library.u-portrait .u-catalog-title{font-size:clamp(11px,3vw,17px)}
 .u-library.u-portrait[data-u-theme=mono] .u-catalog-title{font-size:10px}
 @media(prefers-reduced-motion:reduce){.u-library .u-panel,.u-library .u-mask{transition:none!important}}
+
+/* Final pass: short landscape frames, tiny labels and picker safe scrolling. */
+.u-library .u-scroll{scrollbar-width:thin;overflow-anchor:auto}
+.u-library .u-flyout.u-theme-open{max-height:calc(var(--u-h) - 2 * var(--u-edge));overscroll-behavior:contain;scrollbar-width:thin}
+.u-library[data-corner=tl] .u-flyout.u-theme-open,.u-library[data-corner=br] .u-flyout.u-theme-open{max-height:calc(var(--u-h) - var(--u-control) - 2 * var(--u-edge) - 8px)}
+.u-library .u-catalog-title{overflow-wrap:anywhere}
+.u-library .u-catalog-mark{max-height:42%}
+.u-library.u-compact .u-catalog-kind{font-size:8px}
+.u-library.u-compact[data-u-theme=noir] .u-catalog-mark{width:18%;top:35%}
+.u-library.u-portrait[data-u-theme=swiss] .u-catalog-mark{width:19%}
+.u-library .detail-extras .detail-content p,.u-library .detail-extras .detail-content li{color:inherit}
+.u-library .u-rail .u-rotate svg{width:18px;height:18px}

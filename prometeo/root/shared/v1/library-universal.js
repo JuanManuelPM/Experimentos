@@ -72,7 +72,7 @@ const themeBack=document.createElement('button');themeBack.type='button';themeBa
 const themeGrid=document.createElement('div');themeGrid.className='u-theme-grid';themeList.append(themeGrid);
 for(const t of themes){const b=document.createElement('button');b.type='button';b.className='u-theme-choice';b.dataset.uThemeAction='1';b.dataset.themeChoice=t.id;b.setAttribute('aria-label',t.name+' · '+t.desc);b.title=t.desc;const preview=document.createElement('span');preview.className='u-theme-preview';preview.dataset.preview=t.id;preview.setAttribute('aria-hidden','true');for(let i=0;i<6;i++)preview.append(document.createElement('i'));const bar=document.createElement('em');preview.append(bar);const detail=document.createElement('small');detail.textContent=t.desc;detail.className='u-theme-description';const label=document.createElement('span');label.textContent=t.name;b.append(preview,label,detail);b.onclick=()=>applyTheme(t.id);themeGrid.append(b)}
 fly.append(themeList);
-function applyTheme(id){if(!themes.some(t=>t.id===id))id='original';B.dataset.uTheme=id;document.documentElement.dataset.uTheme=id;save('theme',id);for(const b of themeGrid.children)b.setAttribute('aria-pressed',String(b.dataset.themeChoice===id))}
+function applyTheme(id){if(!themes.some(t=>t.id===id))id='original';B.dataset.uTheme=id;document.documentElement.dataset.uTheme=id;const metaTheme=document.querySelector('meta[name="theme-color"]');if(metaTheme)metaTheme.content=getComputedStyle(B).getPropertyValue('--u-bg').trim();save('theme',id);for(const b of themeGrid.children)b.setAttribute('aria-pressed',String(b.dataset.themeChoice===id))}
 
 for(const b of [studiesButton,moreButton]){b.setAttribute('aria-controls','u-flyout');b.setAttribute('aria-expanded','false')}
 let flyMode=null;
@@ -120,7 +120,7 @@ function decorateCovers(){
   const title=(card.querySelector('.card-title,.item b')?.textContent||card.querySelector('b')?.textContent||card.getAttribute('aria-label')?.replace(/^Abrir\s+/,'')||'Obra').trim();
   let kind=Array.from(cover.classList).find(x=>x.startsWith('cover-'))?.slice(6)||activeStudio;
   const marker=cover.querySelector('.cover-index')?.textContent||kind;
-  if(existing){const n=existing.querySelector('.u-catalog-number');if(n)n.textContent=String(ordinal).padStart(2,'0');continue}
+  if(existing){const n=existing.querySelector('.u-catalog-number');if(n&&n.textContent!==String(ordinal).padStart(2,'0'))n.textContent=String(ordinal).padStart(2,'0');continue}
   const meta=document.createElement('div');meta.className='u-catalog-cover';meta.setAttribute('aria-hidden','true');
   const number=document.createElement('div');number.className='u-catalog-number';number.textContent=String(ordinal).padStart(2,'0');
   const mark=document.createElement('div');mark.className='u-catalog-mark';mark.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true">'+icon[kindIcons[kind]||'3d']+'</svg>';
