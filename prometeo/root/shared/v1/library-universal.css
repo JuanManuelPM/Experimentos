@@ -112,3 +112,8 @@ body.u-library{--u-left:0px;--u-edge:12px;--u-control:50px}
 .u-library.u-compact .u-rail,.u-library.u-portrait .u-rail{gap:4px}
 .u-library.u-compact .u-rail .u-controls{gap:4px}
 .u-library.u-collapsed .u-rail .u-close,.u-library.u-collapsed .u-rail .u-controls,.u-library.u-collapsed .u-rail .u-rotate{display:none}
+
+/* Anchor the same center before and after opening. */
+.u-library[data-corner="bl"] .u-rail .u-close,.u-library[data-corner="bl"] .u-rail .u-rotate{align-self:flex-start}
+.u-library[data-corner="br"] .u-rail .u-close,.u-library[data-corner="br"] .u-rail .u-rotate{align-self:flex-end}
+.u-library .u-rail .u-icon[hidden]{display:none!important}
