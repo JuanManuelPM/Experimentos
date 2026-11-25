@@ -1,6 +1,6 @@
 // V6 visual layer. V5 anatomy and expression engine is reused without copying or mutating its source.
 import * as T from 'three';
-import {FaceSystem,PRESETS,FIELDS,HAIR,recipe as anatomyRecipe} from '../v5/face-system.mjs';
+import {FaceSystem,PRESETS,FIELDS,HAIR,recipe as anatomyRecipe,weights as anatomyWeights} from '../v5/face-system.mjs';
 export {FIELDS,HAIR};
 export const STYLES={
  minimal:{label:'Escultura',planes:.7,graphic:.85,browMass:.82,hairMass:1,texture:.2,shadow:.65},
@@ -25,7 +25,7 @@ function materialMap(tex,kind){
  else if(kind==='skin'){for(let i=0;i<a.length;i+=4){let l=.2126*a[i]+.7152*a[i+1]+.0722*a[i+2];for(let k=0;k<3;k++)a[i+k]=Math.round(a[i+k]*.82+l*.18)}}
  else if(kind==='iris'){for(let i=0;i<a.length;i+=4){let l=.2126*a[i]+.7152*a[i+1]+.0722*a[i+2],v=30+205*smooth(14/255,165/255,l/255);a[i]=a[i+1]=a[i+2]=v}}
  ctx.putImageData(p,0,0);if(kind==='skin'){let d=document.createElement('canvas');d.width=c.width;d.height=c.height;let g=d.getContext('2d');g.filter='blur(1.1px)';g.drawImage(c,0,0);c=d}
- const out=tex.clone();out.image=c;out.needsUpdate=true;return out}catch(e){return tex}
+ const out=tex.clone();out.source=new T.Source(c);out.needsUpdate=true;return out}catch(e){return tex}
 }
 function saved(a){if(!a.userData.v6Original)a.userData.v6Original={map:a.map,normalMap:a.normalMap,roughnessMap:a.roughnessMap,metalnessMap:a.metalnessMap,aoMap:a.aoMap,roughness:a.roughness,metalness:a.metalness,opacity:a.opacity,alphaTest:a.alphaTest,visible:a.visible,compile:a.onBeforeCompile,key:a.customProgramCacheKey};return a.userData.v6Original}
 function stylizedLight(a,strength){a.onBeforeCompile=s=>{s.fragmentShader=s.fragmentShader.replace('#include <lights_fragment_end>',String.raw`#include <lights_fragment_end>
@@ -40,7 +40,7 @@ export class StyledFace extends FaceSystem{
  async load(){this.r=this.effective();await super.load();this.identity.hair=this.r.hair;this.refreshStyle(true);return this}
  async setRecipe(raw){this.identity=recipe(raw);await super.setRecipe(this.effective());this.identity.hair=this.r.hair;this.refreshStyle(true);return this.identity}
  setStyle(name,override){this.identity=recipe({...this.identity,style:name,styleProfile:override});this.r=this.effective();super.applyShape();this.refreshStyle(true);return this.identity}
- setFace(k,value,commit=true){this.identity.face[k]=clamp(value,-.75,.75);this.r=this.effective();super.applyShape();if(commit)this.refreshStyle(true);else this.refreshStyle(false)}
+ setFace(k,value,commit=true){this.identity.face[k]=clamp(value,-.75,.75);this.r=this.effective();let w=anatomyWeights(this.r);for(let m of [...this.parts,...this.hairParts])for(let [n,v] of Object.entries(w)){let i=m.morphTargetDictionary?.[n];if(i!==undefined)m.morphTargetInfluences[i]=v}if(commit)this.refreshStyle(true);else this.updateBrows()}
  refreshStyle(rebuild){const s=this.identity.styleProfile,base=this.identity.style==='base',stats={hiddenLashes:0,skinMapsSimplified:0,solidHair:0,graphicEyes:0,ribbonVertices:0};this.group.updateMatrixWorld(true);for(let m of this.parts)m.skeleton?.update();for(let m of [...this.parts,...this.hairParts]){
  m.visible=true;for(let a of matList(m)){let o=saved(a),n=a.name;
  Object.assign(a,{map:o.map,normalMap:o.normalMap,roughnessMap:o.roughnessMap,metalnessMap:o.metalnessMap,aoMap:o.aoMap,roughness:o.roughness,metalness:o.metalness,opacity:o.opacity,alphaTest:o.alphaTest,visible:o.visible,onBeforeCompile:o.compile,customProgramCacheKey:o.key});
@@ -54,7 +54,7 @@ export class StyledFace extends FaceSystem{
  }a.needsUpdate=true;
  }
  }
- if(rebuild)this.buildBrows();for(let b of this.ribbons)b.mesh.visible=!base&&!this.clayOn;let success=this.ribbons.length===2&&!base;for(let m of this.parts.filter(m=>has(m,'Eyebrow')))for(let a of matList(m))if(a.name==='Eyebrow')a.visible=!success;stats.ribbonVertices=this.ribbons.reduce((n,b)=>n+b.mesh.geometry.attributes.position.count,0);stats.brows=success?'surface-bound':'authored';this.styleStats=stats;
+ if(rebuild)this.buildBrows();for(let b of this.ribbons)b.mesh.visible=!base;let success=this.ribbons.length===2&&!base;for(let m of this.parts.filter(m=>has(m,'Eyebrow')))for(let a of matList(m))if(a.name==='Eyebrow')a.visible=!success;stats.ribbonVertices=this.ribbons.reduce((n,b)=>n+b.mesh.geometry.attributes.position.count,0);stats.brows=success?'surface-bound':'authored';this.styleStats=stats;
  if(this.clayOn)this.clay(true);this.updateBrows()
  }
  buildBrows(){for(let b of this.ribbons){b.mesh.removeFromParent();b.mesh.geometry.dispose();b.mesh.material.dispose()}this.ribbons=[];if(this.identity.style==='base'||this.identity.styleProfile.browMass<.4)return;
