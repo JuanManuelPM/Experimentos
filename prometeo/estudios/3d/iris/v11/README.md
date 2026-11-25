@@ -1,0 +1,2 @@
+# IRIS V11 · candidato de geometría limpia
+Base V10 fijada en 7a316f0e589571a43e451e0f2864115a122c9868. Reflejo de mitad derecha, 242 vértices y 468 triángulos, orejas bilaterales, cierre y orientación verificados. Normales híbridas/suaves/planas comparables, encuadre según bounding box, buffers de rasgos reutilizables, exportación de pose GLB. Los controles de expresión siguen siendo gráficos (no morphs anatómicos); no se certifica calidad visual ni Android. Ejecutar node test.mjs. V12/V13 dependen del cierre de gates, no se declara promoción.
