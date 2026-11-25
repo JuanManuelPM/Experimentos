@@ -19,3 +19,6 @@ Una superficie única (clip-path inset redondeado) con diámetro --u-control id�
 
 ## V6 · icono de orientación compacto
 Solo cambia el SVG de rotación: rectángulo y flecha corta, sin alterar área táctil, cápsula ni movimiento. JS versionado v6. Sintaxis comprobada; apariencia y toque real pendientes de navegador.
+
+## V7 · diez direcciones visuales
+Original + Industrial, Digital Brutalism, Shibui, Dieter Rams, Tech Noir, Monastic, Swiss Editorial, Voidcore, Monochrome Rice. Tres puntos → Temas · 10 estilos. Selector persistente y previews; modifica estructura de grilla, proporciones, márgenes, marcos, iconos, contraste y superficies sin tocar motores. Icono rotación redibujado siguiendo referencia de dos flechas opuestas; SVG compacto. V7 assets cache-busted. Verificación de código y navegador debe distinguirse.
