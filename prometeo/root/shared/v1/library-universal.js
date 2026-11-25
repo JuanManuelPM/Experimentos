@@ -6,6 +6,9 @@ if(!rail||!main)return;
 const current=new URL(location.href), base=new URL(is3d?'../../':'../../',current);
 const from3d=new URL('estudios/3d/universal.html',base).href, fromGallery=new URL('root/galeria/universal.html',base).href;
 const icon={
+close:'<path d="m5 5 14 14M19 5 5 19"/>',
+menu:'<path d="M5 9h14M5 15h14"/>',
+rotate:'<path d="M5 8V6a2 2 0 0 1 2-2h10l-3-3m3 3-3 3M19 16v2a2 2 0 0 1-2 2H7l3 3m-3-3 3-3M3 12h5m8 0h5"/>',
 home:'<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>',
 '3d':'<path d="m12 3 9 5v8l-9 5-9-5V8zM3 8l9 5 9-5M12 13v8"/>',
 video:'<path d="M7 4.8v14.4L19 12z"/>',music:'<path d="M4 10v4m4-7v10m4-14v18m4-14v10m4-7v4"/>',
@@ -48,4 +51,17 @@ if(is3d){
  sync();
 }
 rail.append(spacer(),info);
+const controls=document.createElement('div');controls.className='u-controls';
+while(rail.firstChild)controls.append(rail.firstChild);
+const close=btn('close','Cerrar menú',()=>setCollapsed(true));close.classList.add('u-close');
+const open=btn('menu','Abrir menú',()=>setCollapsed(false));open.classList.add('u-open');
+const rotate=btn('rotate','Cambiar orientación',()=>{const effective=B.classList.contains('u-portrait')?'portrait':'landscape';desired=effective==='portrait'?'landscape':'portrait';save('orientation',desired);layout()});rotate.classList.add('u-rotate');
+rail.append(close,open,controls,rotate);
+function load(k){try{return localStorage.getItem('prometeo:library:'+k)}catch{return null}}
+function save(k,v){try{localStorage.setItem('prometeo:library:'+k,v)}catch{}}
+function setCollapsed(on,focus=true){B.classList.toggle('u-collapsed',on);save('collapsed',on?'1':'0');if(on){const panel=document.querySelector('#filters-panel');if(panel&&!panel.hidden)document.querySelector('#filter-toggle')?.click()}if(focus)(on?open:close).focus()}
+let desired=load('orientation');
+function layout(){const w=window.innerWidth,h=window.innerHeight,native=w>=h?'landscape':'portrait',effective=desired||native,rotated=effective!==native;const vw=rotated?h:w,vh=rotated?w:h;B.classList.toggle('u-portrait',effective==='portrait');B.classList.toggle('u-compact',vh<520);B.classList.toggle('u-rotated',rotated);B.style.setProperty('--u-w',vw+'px');B.style.setProperty('--u-h',vh+'px');rotate.setAttribute('aria-label',effective==='portrait'?'Ver en horizontal':'Ver en vertical');rotate.title=rotate.getAttribute('aria-label');}
+setCollapsed(load('collapsed')==='1',false);layout();window.addEventListener('resize',layout);
+
 })();
