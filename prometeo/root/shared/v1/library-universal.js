@@ -90,7 +90,7 @@ function buildPrompt(c){return ['PROMETEO · TRABAJAR EN '+({study:'ESTUDIO',fol
 const live=document.createElement('div');live.className='u-copy-feedback';live.setAttribute('role','status');rail.append(live);
 let toastTimer;
 function notice(msg){live.textContent=msg;clearTimeout(toastTimer);toastTimer=setTimeout(()=>{live.textContent=''},1600)}
-async function copyContext(){const text=buildPrompt(scope());try{if(navigator.clipboard?.writeText){await navigator.clipboard.writeText(text);notice('Copiado');hideFly();return}}catch{}copyText.value=text;showFly('copy');copyText.focus();copyText.select();try{if(document.execCommand('copy')){notice('Copiado');hideFly();return}}catch{}notice('Copiá el texto seleccionado')}
+async function copyContext(){const q=new URL(location.href).searchParams;if((q.has('folder')&&!folder)||(q.has('context')&&!curatedContext&&!workOpen())){notice('Contexto todavía no disponible');return}const text=buildPrompt(scope());try{if(navigator.clipboard?.writeText){await navigator.clipboard.writeText(text);notice('Copiado');hideFly();return}}catch{}copyText.value=text;showFly('copy');copyText.focus();copyText.select();try{if(document.execCommand('copy')){notice('Copiado');hideFly();return}}catch{}notice('Copiá el texto seleccionado')}
 function showGalleryWork(card,historyMode=true){
  const u=safeWorkURL(card.href);if(!u)return;
  const id=card.dataset.uWorkId||u.href,title=card.querySelector('b')?.textContent||'Obra';
