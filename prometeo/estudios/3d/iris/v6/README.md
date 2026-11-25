@@ -1,0 +1,8 @@
+# IRIS V6 · Estilización reversible
+V5 es la única base anatómica; style-system.mjs importa su clase FaceSystem. No sustituye ni modifica GLB ni morphs. Los perfiles Escultura, Gráfico, Suave y Original son independientes de la identidad. Las recetas exportan style y styleProfile (planes, graphic, browMass, hairMass, texture, shadow). Soter puede cargar otra receta y estilo sin recalcular anatomía.
+
+- Cejas: cinta anclada a triángulos reales mediante coordenadas baricéntricas y relieve <=1.45 mm. Si faltan anclajes válidos, conserva ceja original; no recorta piel ni crea huecos. Actualiza con morphs.
+- Ojos: reduce pestañas, simplifica esclerótica e iris sin sustituir globo ni párpado. Piel: textura suavizada, elimina normal/roughness map y usa transiciones de luz suaves. Cabello: conserva geometría de autor y máscara alfa; reduce detalle cromático, no es nuevo casco rapado.
+- Identidad: se aplican morphs de autor y deltas de estilo acotados, nunca modifica la receta original. Los deslizadores actualizan forma; suelta para reconstruir anclajes. Original permite comparación; modo Arcilla conserva anatomía. Rendimiento: render por demanda, DPR máximo 1.35, texturas simplificadas. No se promete reducción de triángulos, memoria o FPS sin medir.
+- API: new StyledFace(scene); sys.identity=recipe({...}); await sys.load(); await sys.setRecipe(raw); sys.setStyle('minimal'); sys.setExpression({browL,lookX,blink}); sys.stats().
+- QA: comparar frente/perfil y blink, probar identidad distinta, observar las dos cejas con estilo original/reversible; no marcar calidad artística por conteo de morphs. No implementa rig de habla ni nuevo interior oral.
