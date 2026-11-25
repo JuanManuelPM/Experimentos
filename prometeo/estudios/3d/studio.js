@@ -74,7 +74,7 @@ function render(){
  const grid=$('#grid');grid.replaceChildren();
  if(!filtered.length){setEmpty('No hay proyectos para ese filtro.');return}
  for(const p of filtered){
-  const btn=create('button','card');btn.type='button';btn.setAttribute('aria-label','Abrir '+p.title);
+  const btn=create('button','card');btn.type='button';btn.dataset.uWorkId=p.id;btn.setAttribute('aria-label','Abrir '+p.title);
   const cover=create('div','cover cover-'+p.kind);
   if(p.thumbnail){const img=create('img');img.src=new URL(p.thumbnail,location.href).href;img.alt='Captura real de '+p.title;img.loading='lazy';img.onerror=()=>{img.remove();cover.append(create('span','cover-note','Sin captura disponible'))};cover.append(img)}
   else{cover.append(create('span','cover-symbol',p.glyph),create('span','cover-note','Abrir proyecto para ver'))}
@@ -120,7 +120,7 @@ function setViewer(p){
  holder.append(empty);
 }
 function open(p,historyEntry=true){
- state.previousFocus=document.activeElement;state.selected=p;state.tab='summary';
+ state.previousFocus=document.activeElement;state.selected=p;state.tab='summary';const context=$('#overlay');context.dataset.uWorkId=p.id;context.dataset.uWorkUrl=p.url||'';context.dataset.uWorkSource=p.sourceUrl||'';
  $('#detail-title').textContent=p.title;$('#compact-title').textContent=p.title;$('#detail-desc').textContent=p.description||'';
  $('#detail-extras').hidden=true;$('#details-toggle').setAttribute('aria-expanded','false');
  $('#detail-meta').textContent=(kindName[p.kind]||'Proyecto')+' · '+(p.status||'REGISTRADO');

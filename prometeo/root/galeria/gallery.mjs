@@ -8,7 +8,7 @@ function announce(text){toast.textContent=text;toast.classList.add("visible");se
 const safeText=x=>document.createTextNode(String(x||""));
 function gridFor(batch,messages){
  const grid=document.createElement("div");grid.className="grid";const items=getResults(batch,messages);
- for(const item of items){const a=document.createElement(item.href?"a":"div");a.className="item"+(item.message?"":" noresult");
+ for(const item of items){const a=document.createElement(item.href?"a":"div");a.className="item"+(item.message?"":" noresult");a.dataset.uWorkId=String(batch.id||batch.launchUrl)+"#"+String(item.number);
  if(item.href){a.href=item.href;a.target="_blank";a.rel="noopener noreferrer"}else a.setAttribute("aria-disabled","true");
  const art=document.createElement("div");art.className="art";
  if(item.image){const img=document.createElement("img");img.loading="lazy";img.alt="Miniatura auténtica de "+item.label;img.src=item.image;
