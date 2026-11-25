@@ -56,15 +56,19 @@ while(rail.firstChild)controls.append(rail.firstChild);
 const close=btn('close','Cerrar menú',()=>setCollapsed(true));close.classList.add('u-close');
 const open=btn('menu','Abrir menú',()=>setCollapsed(false));open.classList.add('u-open');
 const rotate=btn('rotate','Cambiar orientación',()=>{const effective=B.classList.contains('u-portrait')?'portrait':'landscape';desired=effective==='portrait'?'landscape':'portrait';save('orientation',desired);layout()});rotate.classList.add('u-rotate');
-rail.append(close,open,controls,rotate);
+close.classList.add('u-anchor');open.classList.add('u-anchor');
+const mask=document.createElement('div');mask.className='u-mask';
+const panel=document.createElement('div');panel.className='u-panel';panel.id='u-panel';
+panel.append(controls,rotate);mask.append(panel);rail.append(mask,close,open);
+open.setAttribute('aria-controls','u-panel');close.setAttribute('aria-controls','u-panel');
 function load(k){try{return localStorage.getItem('prometeo:library:'+k)}catch{return null}}
 function save(k,v){try{localStorage.setItem('prometeo:library:'+k,v)}catch{}}
-function setCollapsed(on,focus=true){open.setAttribute('aria-expanded',String(!on));B.classList.toggle('u-collapsed',on);save('collapsed',on?'1':'0');if(on){const panel=document.querySelector('#filters-panel');if(panel&&!panel.hidden)document.querySelector('#filter-toggle')?.click()}if(focus)(on?open:close).focus()}
+function setCollapsed(on,focus=true){open.setAttribute('aria-expanded',String(!on));close.setAttribute('aria-expanded',String(!on));panel.inert=on;panel.setAttribute('aria-hidden',String(on));B.classList.toggle('u-collapsed',on);save('collapsed',on?'1':'0');if(on){const panel=document.querySelector('#filters-panel');if(panel&&!panel.hidden)document.querySelector('#filter-toggle')?.click()}if(focus)(on?open:close).focus()}
 let desired=load('orientation');
 function layout(){const w=window.innerWidth,h=window.innerHeight,native=w>=h?'landscape':'portrait',effective=desired||native,rotated=effective!==native;const vw=rotated?h:w,vh=rotated?w:h;B.classList.toggle('u-portrait',effective==='portrait');B.classList.toggle('u-compact',vh<520);B.classList.toggle('u-rotated',rotated);B.style.setProperty('--u-w',vw+'px');B.style.setProperty('--u-h',vh+'px');rotate.setAttribute('aria-label',effective==='portrait'?'Ver en horizontal':'Ver en vertical');rotate.title=rotate.getAttribute('aria-label');}
 
 const corners=['tl','tr','bl','br'];
-function setCorner(c){if(!corners.includes(c))c='bl';B.dataset.corner=c;save('corner',c)}
+function setCorner(c){if(!corners.includes(c))c='bl';panel.style.transition='none';B.dataset.corner=c;save('corner',c);void panel.offsetWidth;panel.style.removeProperty('transition')}
 function nearest(x,y,w,h){return (y<h/2?'t':'b')+(x<w/2?'l':'r')}
 function point(e){return B.classList.contains('u-rotated')?{x:e.clientY,y:window.innerWidth-e.clientX}:{x:e.clientX,y:e.clientY}}
 let drag=null,ignoreClick=false;
@@ -78,7 +82,7 @@ open.addEventListener('pointerup',e=>finish(e));open.addEventListener('pointerca
 open.addEventListener('keydown',e=>{const c=B.dataset.corner;if(!['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.key))return;e.preventDefault();setCorner(e.key==='ArrowLeft'?c[0]+'l':e.key==='ArrowRight'?c[0]+'r':e.key==='ArrowUp'?'t'+c[1]:'b'+c[1])});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!B.classList.contains('u-collapsed')&&(!is3d||document.querySelector('#overlay')?.hidden))setCollapsed(true)});
 main.addEventListener('click',e=>{if(B.classList.contains('u-collapsed')||e.target.closest('#filters-panel'))return;setCollapsed(true,false);e.preventDefault();e.stopImmediatePropagation()},true);
-setCorner(load('corner')||'bl');setCollapsed(load('collapsed')!=='0',false);layout();window.addEventListener('resize',layout);
+panel.style.transition='none';setCollapsed(load('collapsed')!=='0',false);setCorner(load('corner')||'bl');layout();window.addEventListener('resize',layout);
 
 
 })();

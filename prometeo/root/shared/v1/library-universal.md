@@ -10,3 +10,6 @@ Shared CSS/JS only; wider gutters and four desktop columns, two portrait columns
 
 ## V3 · menú flotante
 Canvas invariable a pantalla completa. Inferior izquierda/derecha: barra lateral; superior izquierda/derecha: barra superior. Cruz anclada, rotación al otro extremo. Botón cerrado arrastrable y snap por cuadrantes; flechas de teclado; posición persistida. Toque fuera cierra sin activar obra. CSS/JS compartidos. Prueba sintáctica y cuatro cuadrantes PASS; navegador y Android pendientes.
+
+## V4 · movimiento universal
+Mapa circular BL→arriba, TL→derecha, TR→abajo, BR→izquierda. Una máscara fija recorta un panel rígido que contiene todos los iconos y el fondo; transform translate3d con 280 ms y easing centralizado. Sin animar dimensiones ni redistribuir la galería; no escalado ni stagger. El ancla queda fija, panel cerrado inert; respeta reduced motion. Se elimina el bloque acumulado V2/V3 de CSS en favor de un único bloque de layout/animación. Referencia: https://web.dev/articles/animations-guide y https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@media/prefers-reduced-motion. Sintaxis y reglas de los 4 bordes comprobadas; falta navegador y medición real de frames.
