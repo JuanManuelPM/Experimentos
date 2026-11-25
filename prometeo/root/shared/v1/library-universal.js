@@ -5,11 +5,11 @@ const B=document.body, is3d=B.dataset.library==='3d', rail=document.querySelecto
 if(!rail||!main)return;
 const current=new URL(location.href), base=new URL(is3d?'../../':'../../',current);
 const from3d=new URL('estudios/3d/universal.html',base).href, fromGallery=new URL('root/galeria/universal.html',base).href;
-const themes=[{"id":"original","name":"Original","desc":"Cálido, redondeado, aireado"},{"id":"industrial","name":"Industrial","desc":"Acero, hormigón, módulos precisos"},{"id":"brutal","name":"Digital Brutalism","desc":"Negro, blancos y cortes duros"},{"id":"shibui","name":"Shibui","desc":"Papel, madera, silencio visual"},{"id":"rams","name":"Dieter Rams","desc":"Instrumental, marcos y precisión"},{"id":"noir","name":"Tech Noir","desc":"Oscuridad cinematográfica"},{"id":"monastic","name":"Monastic","desc":"Galería austera, piezas aisladas"},{"id":"swiss","name":"Swiss Editorial","desc":"Grilla asimétrica y señal roja"},{"id":"void","name":"Voidcore","desc":"Obras flotantes sobre negro absoluto"},{"id":"mono","name":"Monochrome Rice","desc":"Grilla de precisión, tinta y píxeles"}];
+const themes=[{"id":"original","name":"Original","desc":"Galería de autor · marfil y curvas"},{"id":"industrial","name":"Industrial","desc":"Hormigón · acero · sistema modular"},{"id":"brutal","name":"Digital Brutalism","desc":"Tinta · bloques · contraste radical"},{"id":"shibui","name":"Shibui","desc":"Papel de arroz · tinta · quietud"},{"id":"rams","name":"Dieter Rams","desc":"Instrumento · precisión · naranja funcional"},{"id":"noir","name":"Tech Noir","desc":"Óptica · pantalla de cine · luz de precisión"},{"id":"monastic","name":"Monastic","desc":"Cal · piedra · espacio arquitectónico"},{"id":"swiss","name":"Swiss Editorial","desc":"Grilla editorial · blanco y negro · señal roja"},{"id":"void","name":"Voidcore","desc":"Negro absoluto · objetos suspendidos"},{"id":"mono","name":"Monochrome Rice","desc":"Tiling · terminal · trazo monocromo"}];
 const icon={theme:'<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 17.5h7m-3.5-3.5v7"/>',more:'<circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/>',
 close:'<path d="m5 5 14 14M19 5 5 19"/>',
 menu:'<path d="M5 9h14M5 15h14"/>',
-rotate:'<path d="M9 7.5h9v7M15 16.5H6v-7" stroke-width="2.2" stroke-linecap="square" stroke-linejoin="miter"/><path d="m14.6 13.8 3.4 3.5 3.4-3.5zM2.6 10.2 6 6.7l3.4 3.5z" fill="currentColor" stroke="none"/>',
+rotate:'<path d="M9 6.5h9.5v8.5M15 17.5H5.5V9" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter"/><path d="m14.5 13.5 4 4 4-4zM1.5 10.5l4-4 4 4z" fill="currentColor" stroke="none"/>',
 home:'<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>',
 '3d':'<path d="m12 3 9 5v8l-9 5-9-5V8zM3 8l9 5 9-5M12 13v8"/>',
 video:'<path d="M7 4.8v14.4L19 12z"/>',music:'<path d="M4 10v4m4-7v10m4-14v18m4-14v10m4-7v4"/>',
@@ -56,7 +56,7 @@ const controls=document.createElement('div');controls.className='u-controls';
 while(rail.firstChild)controls.append(rail.firstChild);
 const close=btn('close','Cerrar menú',()=>setCollapsed(true));close.classList.add('u-close');
 const open=btn('menu','Abrir menú',()=>setCollapsed(false));open.classList.add('u-open');
-const rotate=btn('rotate','Cambiar orientación',()=>{const effective=B.classList.contains('u-portrait')?'portrait':'landscape';desired=effective==='portrait'?'landscape':'portrait';save('orientation',desired);hideFly();layout()});rotate.classList.add('u-rotate');rotate.querySelector('svg').setAttribute('viewBox','2 2 20 20');
+const rotate=btn('rotate','Cambiar orientación',()=>{const effective=B.classList.contains('u-portrait')?'portrait':'landscape';desired=effective==='portrait'?'landscape':'portrait';save('orientation',desired);hideFly();layout()});rotate.classList.add('u-rotate');rotate.querySelector('svg').setAttribute('viewBox','0 0 24 24');
 close.classList.add('u-anchor');open.classList.add('u-anchor');
 const mask=document.createElement('div');mask.className='u-mask';
 const panel=document.createElement('div');panel.className='u-panel';panel.id='u-panel';
@@ -70,9 +70,9 @@ const themeEntry=document.createElement('button');themeEntry.type='button';theme
 const themeList=document.createElement('section');themeList.className='u-theme-list';themeList.hidden=true;themeList.setAttribute('aria-label','Elegir estilo visual');
 const themeBack=document.createElement('button');themeBack.type='button';themeBack.className='u-theme-back';themeBack.dataset.uThemeAction='1';themeBack.textContent='‹ Opciones';themeBack.onclick=()=>toggleFly('more');themeList.append(themeBack);
 const themeGrid=document.createElement('div');themeGrid.className='u-theme-grid';themeList.append(themeGrid);
-for(const t of themes){const b=document.createElement('button');b.type='button';b.className='u-theme-choice';b.dataset.uThemeAction='1';b.dataset.themeChoice=t.id;b.setAttribute('aria-label',t.name+' · '+t.desc);b.title=t.desc;const preview=document.createElement('span');preview.className='u-theme-preview';preview.dataset.preview=t.id;preview.setAttribute('aria-hidden','true');for(let i=0;i<6;i++)preview.append(document.createElement('i'));const bar=document.createElement('em');preview.append(bar);const label=document.createElement('span');label.textContent=t.name;b.append(preview,label);b.onclick=()=>applyTheme(t.id);themeGrid.append(b)}
+for(const t of themes){const b=document.createElement('button');b.type='button';b.className='u-theme-choice';b.dataset.uThemeAction='1';b.dataset.themeChoice=t.id;b.setAttribute('aria-label',t.name+' · '+t.desc);b.title=t.desc;const preview=document.createElement('span');preview.className='u-theme-preview';preview.dataset.preview=t.id;preview.setAttribute('aria-hidden','true');for(let i=0;i<6;i++)preview.append(document.createElement('i'));const bar=document.createElement('em');preview.append(bar);const detail=document.createElement('small');detail.textContent=t.desc;detail.className='u-theme-description';const label=document.createElement('span');label.textContent=t.name;b.append(preview,label,detail);b.onclick=()=>applyTheme(t.id);themeGrid.append(b)}
 fly.append(themeList);
-function applyTheme(id){if(!themes.some(t=>t.id===id))id='original';B.dataset.uTheme=id;save('theme',id);for(const b of themeGrid.children)b.setAttribute('aria-pressed',String(b.dataset.themeChoice===id))}
+function applyTheme(id){if(!themes.some(t=>t.id===id))id='original';B.dataset.uTheme=id;document.documentElement.dataset.uTheme=id;save('theme',id);for(const b of themeGrid.children)b.setAttribute('aria-pressed',String(b.dataset.themeChoice===id))}
 
 for(const b of [studiesButton,moreButton]){b.setAttribute('aria-controls','u-flyout');b.setAttribute('aria-expanded','false')}
 let flyMode=null;
@@ -102,6 +102,39 @@ open.addEventListener('pointerup',e=>finish(e));open.addEventListener('pointerca
 open.addEventListener('keydown',e=>{const c=B.dataset.corner;if(!['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.key))return;e.preventDefault();setCorner(e.key==='ArrowLeft'?c[0]+'l':e.key==='ArrowRight'?c[0]+'r':e.key==='ArrowUp'?'t'+c[1]:'b'+c[1])});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!B.classList.contains('u-collapsed')&&(!is3d||document.querySelector('#overlay')?.hidden))setCollapsed(true)});
 main.addEventListener('click',e=>{if(B.classList.contains('u-collapsed')||e.target.closest('#filters-panel'))return;setCollapsed(true,false);e.preventDefault();e.stopImmediatePropagation()},true);
+
+/* Presentation only. Use real images supplied by the engines; missing images are
+   explicit catalog covers, not fabricated artwork. Safe on asynchronous rerenders. */
+const kindIcons={world:'home',animation:'video',character:'3d',object:'3d',tool:'tools',video:'video',music:'music',images:'images',web:'web'};
+function decorateCovers(){
+ const cards=main.querySelectorAll('.grid > .card,.grid > .item');
+ let ordinal=0;
+ for(const card of cards){
+  ordinal++;
+  const cover=card.querySelector('.cover,.art');if(!cover)continue;
+  const image=cover.querySelector('img');const hasImage=!!image&&!(image.complete&&image.naturalWidth===0);
+  if(image&&!image.dataset.u8Watch){image.dataset.u8Watch='1';image.addEventListener('load',queueCovers,{once:true});image.addEventListener('error',queueCovers,{once:true})}
+  card.classList.toggle('u-has-image',hasImage);card.classList.toggle('u-no-image',!hasImage);
+  const existing=cover.querySelector('.u-catalog-cover');
+  if(hasImage){if(existing)existing.remove();continue}
+  const title=(card.querySelector('.card-title,.item b')?.textContent||card.querySelector('b')?.textContent||card.getAttribute('aria-label')?.replace(/^Abrir\s+/,'')||'Obra').trim();
+  let kind=Array.from(cover.classList).find(x=>x.startsWith('cover-'))?.slice(6)||activeStudio;
+  const marker=cover.querySelector('.cover-index')?.textContent||kind;
+  if(existing){const n=existing.querySelector('.u-catalog-number');if(n)n.textContent=String(ordinal).padStart(2,'0');continue}
+  const meta=document.createElement('div');meta.className='u-catalog-cover';meta.setAttribute('aria-hidden','true');
+  const number=document.createElement('div');number.className='u-catalog-number';number.textContent=String(ordinal).padStart(2,'0');
+  const mark=document.createElement('div');mark.className='u-catalog-mark';mark.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true">'+icon[kindIcons[kind]||'3d']+'</svg>';
+  const label=document.createElement('div');label.className='u-catalog-title';label.textContent=title;
+  const type=document.createElement('div');type.className='u-catalog-kind';type.textContent=marker;
+  meta.append(number,mark,label,type);cover.append(meta);
+  card.title=title+' · sin captura registrada';
+ }
+}
+let coverFrame=0;
+function queueCovers(){if(coverFrame)return;coverFrame=requestAnimationFrame(()=>{coverFrame=0;decorateCovers()})}
+new MutationObserver(queueCovers).observe(main,{childList:true,subtree:true});
+queueCovers();
+
 applyTheme(load('theme')||'original');panel.style.transition='none';mask.style.transition='none';setCollapsed(load('collapsed')!=='0',false);setCorner(load('corner')||'bl');layout();if(current.searchParams.get('themes')==='1'){setCollapsed(false,false);toggleFly('themes')}window.addEventListener('resize',layout);
 
 
