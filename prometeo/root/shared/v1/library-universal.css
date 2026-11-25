@@ -269,3 +269,9 @@ body.u-library{--u-cols:4;--u-mobile-cols:2;--u-ratio:1;--u-theme-pad:var(--u-pa
 .u-library .u-registry-tile{display:grid;place-items:center;color:var(--u-page-ink);text-decoration:none;text-align:center;padding:12%;font-family:var(--u-font,system-ui,sans-serif);font-weight:var(--u-weight,500);font-size:clamp(13px,1.4vw,18px)}
 body.u-library.u-folder-view #content>section:not(:has(.item:not(.u-outside-folder))){display:none}
 body.u-library.u-folder-view #status{display:none}
+
+/* V13 shared folder affordance: same grid cell, distinct folder silhouette. */
+.u-library .u-registry-tile[data-u-tile-kind=folder]{display:flex;flex-direction:column;justify-content:center;align-items:center;gap:12px;background:var(--u-art-bg);padding:12%}
+.u-library .u-folder-mark{display:block;width:clamp(32px,36%,72px);color:var(--u-page-ink);opacity:.86}
+.u-library .u-folder-mark svg{display:block;width:100%;height:auto}
+.u-library .u-tile-label{max-width:100%;overflow-wrap:anywhere}

@@ -39,3 +39,6 @@ V11 revisión: navegación futura de carpetas se deriva del registro (solo entra
 
 ## V12 · primera carpeta WebDev/UI
 Carpeta aprobada `web/ui`, dueño de clasificación `web-design`, miembro curado `universal-library`, dueño de implementación `prometeo-root`. La obra es una referencia a la misma candidata universal existente, no un lote ficticio ni una copia de código. Entrada directa evita iframe recursivo; parámetro `context=web/ui/universal-library` validado contra registro y ruta. Copia contextual conserva el dueño real y fuente de la obra; la carpeta tiene su propio prompt. Las tarjetas curadas comparten geometría y tokens. No se crean otras carpetas.
+
+## V13 · continuidad contextual
+WebDev/UI y su obra referencian una semilla privada y un contrato de lectura/escritura en el inbox existente. El prompt conserva el ámbito y dueño, agrega referencia de memoria y exige recuperar pedidos anteriores y registrar el actual con la misma clave, en rama exclusiva. La copia por sí sola no escribe ni detecta mensajes enviados en ChatGPT. La semilla contiene 13 resúmenes retrospectivos, no transcripciones, y refs a 11 ramas anteriores. Ningún historial privado se publica en Pages. La carpeta usa icono inequívoco de carpeta en la misma grilla y tokens de todos los temas.
