@@ -1,13 +1,31 @@
 {
   "version": "11.1",
-  "status": "CANDIDATE",
-  "gates": {
-    "geometry": "REQUIRES_RECHECK_AFTER_SUBDIVISION",
-    "runtime": "NOT_RUN",
-    "visual": "NOT_RUN",
-    "android": "NOT_RUN",
-    "glbRoundtrip": "NOT_RUN",
-    "morphs": "IMPLEMENTED_NOT_RUN"
+  "status": "CANDIDATE_AUTOMATED_PASS",
+  "source": "9a706b3e5574c9f02e5a253ee28a37607fbbaa21",
+  "geometry": {
+    "checks": 7,
+    "poseCombinations": 144,
+    "identityExtremes": 30,
+    "failures": 0,
+    "vertices": 268,
+    "triangles": 520
   },
-  "note": "Six genuine position morphs on head, eyes and lips still graphic surface layers. No anatomical eye sockets or oral cavity yet."
+  "browser": {
+    "status": "PASS",
+    "checks": 7,
+    "poseCases": 24,
+    "cameraCases": 24,
+    "maxTriangles": 1058,
+    "persistentBuffers": 13,
+    "glbHeadMorphs": 6,
+    "glbBytes": 31500,
+    "medianCpuFrameMs": 2.1
+  },
+  "visual": "NOT_RUN: previous screenshot cleared before read; montage fix pending deployment",
+  "physicalAndroid": "NOT_RUN",
+  "remaining": [
+    "Visual review of actual render",
+    "Physical Android measurements",
+    "Eye/lip surface overlays are not anatomical cavities; GLB tested head morphs only"
+  ]
 }
