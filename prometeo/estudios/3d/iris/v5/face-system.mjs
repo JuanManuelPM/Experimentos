@@ -1,0 +1,50 @@
+// PROMETEO · face-system 1.0. Original runtime; CC0 GLB anatomy, no upstream GPL runtime copied.
+import * as T from 'three';
+import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
+export const SOURCE_COMMIT='852e48f316b90a0937234886630e4fb4cdfd1f78';
+const ROOT='https://cdn.jsdelivr.net/gh/kblood/CharacterCreator@'+SOURCE_COMMIT+'/output/';
+const RAW='https://raw.githubusercontent.com/kblood/CharacterCreator/'+SOURCE_COMMIT+'/output/';
+export const FIELDS={nose_width:'Ancho de nariz',nose_length:'Longitud de nariz',nose_height:'Altura de nariz',jaw_width:'Mandíbula',chin:'Mentón',cheekbones:'Pómulos',eye_size:'Tamaño ocular',eye_spacing:'Separación ocular',eye_tilt:'Inclinación ocular',lips:'Labios',mouth_width:'Ancho de boca',ear_size:'Orejas',forehead:'Frente'};
+export const HAIR=['none','short02','short04','bob02','bob01','afro01','ponytail01','long01','braid01'];
+export const PRESETS={
+ iris:{name:'IRIS',gender:-1,face:{nose_width:.12,nose_length:.12,nose_height:.02,jaw_width:-.26,chin:-.04,cheekbones:.55,eye_size:-.25,eye_spacing:.08,eye_tilt:.24,lips:.60,mouth_width:.10,ear_size:-.12,forehead:.08},hair:'short04',skin:'#b4937c',hairColor:'#d3cdc1',browColor:'#a6a095',irisColor:'#394543',restBlink:.20,temperament:'skeptical'},
+ soter:{name:'SOTER',gender:1,face:{nose_width:.30,nose_length:.32,jaw_width:.55,chin:.37,cheekbones:.24,eye_size:-.24,eye_tilt:-.20,lips:-.35,mouth_width:.20,forehead:-.10},hair:'short02',skin:'#b6a18d',hairColor:'#3b3934',browColor:'#403d36',irisColor:'#68715d',restBlink:.04,temperament:'focused'},
+ nara:{name:'NARA',gender:-1,face:{nose_width:-.32,nose_length:-.28,jaw_width:-.35,chin:-.30,cheekbones:-.22,eye_size:.45,eye_spacing:.18,eye_tilt:-.08,lips:.24,mouth_width:-.13,forehead:.28},hair:'bob02',skin:'#c0a58d',hairColor:'#392e28',browColor:'#42372f',irisColor:'#62523e',restBlink:.02,temperament:'curious'}
+};
+const clamp=(x,a=-1,b=1)=>Math.max(a,Math.min(b,Number.isFinite(+x)?+x:0));
+export function recipe(raw={}){const p={...PRESETS.iris,...raw,face:{...PRESETS.iris.face,...raw.face}};p.gender=clamp(p.gender);for(const k of Object.keys(FIELDS))p.face[k]=clamp(p.face[k],-.75,.75);p.hair=HAIR.includes(p.hair)?p.hair:'none';for(const k of ['skin','hairColor','browColor','irisColor'])if(!/^#[0-9a-f]{6}$/i.test(p[k]))p[k]=PRESETS.iris[k];p.restBlink=clamp(p.restBlink,0,.45);return p}
+const mats=m=>[].concat(m.material||[]), role=m=>mats(m).map(x=>x.name||'').join(' ');
+const morph=(m,n,w)=>{let i=m.morphTargetDictionary?.[n];if(i!==undefined)m.morphTargetInfluences[i]=clamp(w,0,1)};
+function pair(out,a,b,v){out[a]=Math.max(0,-v);out[b]=Math.max(0,v)}
+export function weights(r){let o={};pair(o,'gender_female','gender_male',r.gender);for(let k of Object.keys(FIELDS)){let v=r.face[k]??0;if(k==='eye_size')v*=.7;if(k==='forehead')v*=.6;pair(o,'face_'+k+'_decr','face_'+k+'_incr',v)}return o}
+const loader=new GLTFLoader();
+async function asset(file){try{return await loader.loadAsync(ROOT+file)}catch(e){return await loader.loadAsync(RAW+file)}}
+function partsOf(root){let p=[];root.traverse(o=>{if(o.isMesh)p.push(o)});return p}
+function tint(m,c){m.color.set(c);let g=m.userData?.tint?.gain;if(Number.isFinite(g))m.color.multiplyScalar(g);else if(Array.isArray(g))m.color.multiply(new T.Color().fromArray(g));m.roughness=Math.max(.48,m.roughness??.72)}
+function localVector(m,x,y,z){return new T.Vector3(x,y,z).applyMatrix3(new T.Matrix3().setFromMatrix4(m.matrixWorld.clone().invert()))}
+function worldVertex(m,i,v){m.getVertexPosition(i,v);return v.applyMatrix4(m.matrixWorld)}
+function detach(root){root?.removeFromParent();root?.traverse(m=>{if(m.isMesh){m.geometry?.dispose();for(let a of mats(m))a.dispose()}})}
+export class FaceSystem {
+ constructor(scene){this.scene=scene;this.group=new T.Group();scene.add(this.group);this.r=recipe();this.parts=[];this.hairParts=[];this.hairToken=0;this.browCaps=[false,false];this.expression={blink:0,lookX:0,lookY:0,browL:0,browR:0};this.ready=false}
+ async load(){const g=await asset('base_body.glb');this.bodyRoot=g.scene;this.group.add(this.bodyRoot);this.parts=partsOf(this.bodyRoot);this.parts.forEach(m=>{m.frustumCulled=false;m.castShadow=false;m.receiveShadow=false;for(const a of mats(m))this.prepare(a)});this.body=this.parts.find(m=>/\bSkin\b/i.test(role(m))&&m.morphTargetDictionary)||this.parts.find(m=>m.isSkinnedMesh&&m.morphTargetDictionary);if(!this.body)throw Error('No se encontró malla anatómica con morphs');this.applyShape();this.group.updateMatrixWorld(true);this.parts.forEach(m=>m.skeleton?.update());this.makeBrowTargets();await this.setHair(this.r.hair);this.applyShape();this.setExpression(this.expression);this.ready=true;return this}
+ prepare(m){m.userData.originalColor=m.color?.clone();m.userData.originalMap=m.map;m.userData.originalNormal=m.normalMap;m.userData.originalRough=m.roughness;if(m.name==='Skin'){m.roughness=.72;m.metalness=0;m.normalScale?.set(.24,.24)}else if(m.name==='Iris'){m.roughness=.31}else if(/Eyebrow|Hair|Eyelash/.test(m.name)){m.roughness=.84}m.needsUpdate=true}
+ applyShape(){let w=weights(this.r);for(let m of [...this.parts,...this.hairParts]){for(let [n,x] of Object.entries(w))morph(m,n,x);for(let a of mats(m)){if(!a.color)continue;let n=a.name;if(n==='Skin')tint(a,this.r.skin);if(n==='Eyebrow')tint(a,this.r.browColor);if(n==='Iris')tint(a,this.r.irisColor);if(/^Hair/.test(n))tint(a,this.r.hairColor)}}}
+ async setRecipe(raw){let old=this.r.hair;this.r=recipe(raw);this.applyShape();if(old!==this.r.hair||(!this.hairRoot&&this.r.hair!=='none'))await this.setHair(this.r.hair);this.applyShape();this.setExpression(this.expression);return this.r}
+ async setHair(id){let token=++this.hairToken;if(id==='none'){detach(this.hairRoot);this.hairRoot=null;this.hairParts=[];return}let g=await asset('hair_'+id+'.glb');if(token!==this.hairToken){detach(g.scene);return}detach(this.hairRoot);this.hairRoot=g.scene;this.group.add(this.hairRoot);this.hairParts=partsOf(this.hairRoot);for(let m of this.hairParts){m.frustumCulled=false;for(let a of mats(m))this.prepare(a)}this.applyShape()}
+ makeBrowTargets(){
+  // Derive anchors from authored eyebrow meshes, not guessed eye positions. Bounded 3 mm translation.
+  let brows=this.parts.filter(m=>/Eyebrow/i.test(role(m)));if(!brows.length)return;
+  let boxes=[new T.Box3(),new T.Box3()],v=new T.Vector3();for(let m of brows){for(let i=0;i<m.geometry.attributes.position.count;i++){worldVertex(m,i,v);if(Number.isFinite(v.x+v.y+v.z))boxes[v.x<0?0:1].expandByPoint(v)}}
+  for(let side=0;side<2;side++){if(boxes[side].isEmpty())continue;let c=boxes[side].getCenter(new T.Vector3());let d=boxes[side].getSize(new T.Vector3());let name='prometeo_brow_'+(side===0?'L':'R');let added=0;
+   for(let m of [this.body,...brows]){if(!m.morphTargetDictionary||!m.geometry.morphTargetsRelative)continue;let geo=m.geometry,pos=geo.attributes.position,arr=new Float32Array(pos.count*3),dir=localVector(m,0,.0038,0),any=false;
+    for(let i=0;i<pos.count;i++){worldVertex(m,i,v);if((v.x<0?0:1)!==side)continue;let x=(v.x-c.x)/Math.max(.024,d.x*.8),y=(v.y-c.y)/Math.max(.011,d.y*.9),z=(v.z-c.z)/Math.max(.026,d.z*1.7);let w=Math.exp(-x*x*.75-y*y-z*z*.65);if(brows.includes(m))w=.95;if(w<.015)continue;arr[i*3]=dir.x*w;arr[i*3+1]=dir.y*w;arr[i*3+2]=dir.z*w;any=true}
+    if(!any)continue;let old={...m.morphTargetDictionary},inf=Array.from(m.morphTargetInfluences||[]),attr=new T.BufferAttribute(arr,3);attr.name=name;geo.morphAttributes.position.push(attr);if(geo.morphAttributes.normal){let n=new T.BufferAttribute(new Float32Array(pos.count*3),3);n.name=name;geo.morphAttributes.normal.push(n)}if(geo.morphAttributes.tangent){let n=new T.BufferAttribute(new Float32Array(pos.count*3),3);n.name=name;geo.morphAttributes.tangent.push(n)}m.updateMorphTargets();for(let k in old){let j=m.morphTargetDictionary[k];if(j!==undefined)m.morphTargetInfluences[j]=inf[old[k]]||0}added++}
+   this.browCaps[side]=added>=2;
+  }
+ }
+ setExpression(e={}){this.expression={...this.expression,...e};let p=this.expression,b=clamp(this.r.restBlink+(1-this.r.restBlink)*clamp(p.blink,0,1),0,1);for(let m of [...this.parts,...this.hairParts]){morph(m,'blink_left',b);morph(m,'blink_right',b);morph(m,'look_left',Math.max(0,p.lookX)*.58);morph(m,'look_right',Math.max(0,-p.lookX)*.58);morph(m,'look_up',Math.max(0,p.lookY)*.52);morph(m,'look_down',Math.max(0,-p.lookY)*.52);morph(m,'prometeo_brow_L',p.browL);morph(m,'prometeo_brow_R',p.browR)}}
+ clay(on){for(let m of [...this.parts,...this.hairParts])for(let a of mats(m)){if(!a.color)continue;if(on){a.userData.savedColor=a.color.clone();a.color.set('#bcb5a7');a.map=null;a.normalMap=null}else{a.map=a.userData.originalMap;a.normalMap=a.userData.originalNormal;if(a.userData.savedColor)a.color.copy(a.userData.savedColor)}a.needsUpdate=true}if(!on)this.applyShape()}
+ wire(on){for(let m of [...this.parts,...this.hairParts])for(let a of mats(m))a.wireframe=on}
+ frameBounds(){this.group.updateMatrixWorld(true);for(let m of this.parts)m.skeleton?.update();let b=new T.Box3(),v=new T.Vector3();let minY=1.34+(this.r.gender<0?-.035:0);for(let i=0;i<this.body.geometry.attributes.position.count;i++){worldVertex(this.body,i,v);if(v.y>minY&&Math.abs(v.x)<.23)b.expandByPoint(v)}return b}
+ capabilities(){let all=new Set(this.parts.flatMap(m=>Object.keys(m.morphTargetDictionary||{})));return{source:SOURCE_COMMIT,parts:this.parts.length,hairParts:this.hairParts.length,bodyVertices:this.body.geometry.attributes.position.count,faceMorphs:[...all].filter(n=>n.startsWith('face_')).length,blink:all.has('blink_left')&&all.has('blink_right'),gaze:all.has('look_left')&&all.has('look_right'),brow:this.browCaps,missing:Object.keys(weights(this.r)).filter(n=>!all.has(n))}}
+}
