@@ -37,5 +37,6 @@ export function motionSample(id,time){
  case "eat":arm("R",1.05*pulse,1.35*pulse);set("head",.19*pulse,0,0);fingers("R",.8*pulse);break;
  case "phone":arm("R",.8*S(u),1.9*S(u),.35*S(u));set("head",0,-.14*S(u),.18*S(u));fingers("R",.65*S(u));break;
  }
+ set("root",0,yaw,0);
  return {id,duration:clip.duration,rotations:r,pelvisDrop:drop,rootYaw:yaw};
 }

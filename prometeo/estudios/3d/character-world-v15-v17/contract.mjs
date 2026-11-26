@@ -1,5 +1,5 @@
 // Shared pure contract for the three stages. metres, +Y up, +Z forward.
-export const VERSION="character-world/0.2.0-candidate";
+export const VERSION="character-world/0.2.1-candidate";
 export const clamp=(x,a=0,b=1)=>Math.max(a,Math.min(b,x));
 export const ease=x=>{x=clamp(x);return x*x*(3-2*x)};
 export const mix=(a,b,t)=>a+(b-a)*t;

@@ -68,7 +68,7 @@ export class Actor{
  aimHand(target,side="R",grip=0){
   const hand=this.lookup["hand_"+side],shoulder=this.lookup["upperArm_"+side],elbow=this.lookup["lowerArm_"+side];
   const palm=new T.Vector3(side==="R"?-.026:.026,-.039,0),v=new T.Vector3(),w=new T.Vector3(),origin=new T.Vector3(),q=new T.Quaternion(),worldQ=new T.Quaternion(),parentQ=new T.Quaternion();
-  for(let j=0;j<12;j++)for(let b of [elbow,shoulder]){this.root.updateMatrixWorld(true);b.getWorldPosition(origin);hand.localToWorld(v.copy(palm)).sub(origin);w.copy(target).sub(origin);if(v.lengthSq()<1e-10||w.lengthSq()<1e-10)continue;q.setFromUnitVectors(v.normalize(),w.normalize());b.getWorldQuaternion(worldQ);b.parent.getWorldQuaternion(parentQ);b.quaternion.copy(parentQ.invert().multiply(q.multiply(worldQ)));this.root.updateMatrixWorld(true)}
+  for(let j=0;j<36;j++){if(j>0&&hand.localToWorld(v.copy(palm)).distanceTo(target)<.0001)break;for(let b of [elbow,shoulder]){this.root.updateMatrixWorld(true);b.getWorldPosition(origin);hand.localToWorld(v.copy(palm)).sub(origin);w.copy(target).sub(origin);if(v.lengthSq()<1e-10||w.lengthSq()<1e-10)continue;q.setFromUnitVectors(v.normalize(),w.normalize());b.getWorldQuaternion(worldQ);b.parent.getWorldQuaternion(parentQ);b.quaternion.copy(parentQ.invert().multiply(q.multiply(worldQ)));this.root.updateMatrixWorld(true)}}
   for(let i=0;i<5;i++)for(let j=1;j<=2;j++){let f=this.lookup["finger"+i+"_0"+j+"_"+side];if(f)f.rotation.x=(i===0?.45:1.05)*grip}
   this.root.updateMatrixWorld(true);return hand.localToWorld(palm).distanceTo(target);
  }
