@@ -1,5 +1,5 @@
 // Shared pure contract for the three stages. metres, +Y up, +Z forward.
-export const VERSION="character-world/0.1.0-candidate";
+export const VERSION="character-world/0.2.0-candidate";
 export const clamp=(x,a=0,b=1)=>Math.max(a,Math.min(b,x));
 export const ease=x=>{x=clamp(x);return x*x*(3-2*x)};
 export const mix=(a,b,t)=>a+(b-a)*t;
@@ -51,12 +51,13 @@ export const DEFAULT_ACTION={schema:"prometeo.character-world.action/v1",actor:"
 export function sampleAction(raw={},time=0,height=1.75){
  let r={...DEFAULT_ACTION,...raw},t=clamp(time,0,19),c=r.chair,yaw=r.yaw,forward=[Math.sin(yaw),0,Math.cos(yaw)],right=[Math.cos(yaw),0,-Math.sin(yaw)],local=(x,y,z)=>[c[0]+x*right[0]+z*forward[0],y,c[2]+x*right[2]+z*forward[2]];
  let root=t<1.4?vMix(local(.9,0,-.75),local(.9,0,.30),ease(t/1.4)):t<2.7?vMix(local(.9,0,.30),local(0,0,.30),ease((t-1.4)/1.3)):vMix(local(0,0,.30),local(0,0,0),ease((t-2.7)/.8));
- let facing=t<1.4?yaw:t<2.7?yaw-Math.PI/2:yaw-Math.PI/2*(1-ease((t-2.7)/.8));
+ let facing=yaw-Math.PI/2*ease((t-1.15)/.25)*(1-ease((t-2.7)/.8));
  let sit=ease((t-3.5)/1.5),shoulder=local(-.2,height*.69-.30*sit,0),mouth=local(-.035,height*.91-.30*sit,.15),origin=r.cup.slice(),reach=distance(shoulder,origin)<height*.36;
  let phase=t<3.5?"walk":t<5?"sit":t<6?"look":t<8?"reach":t<10?"lift":t<13?"drink":t<15?"return":t<16?"release":"idle";
  let lift=ease((t-8)/2),back=ease((t-13)/2),cup=reach?vMix(vMix(origin,mouth,lift),origin,back):origin;
  let held=reach&&t>=8&&t<15,aim=reach&&t>=6&&t<16,grip=held?1:reach&&t>=7.4&&t<8?ease((t-7.4)/.6):reach&&t>=15&&t<16?1-ease(t-15):0;
- return {time:t,root,yaw:facing,sit,phase:reach?phase:t>=6?"out_of_reach":phase,cup,held,support:held?"hand":"table",owner:held?r.actor:null,aim,grip,look:origin,reach,walk: t<3.5?1:0,result:t>=16?(reach?"COMPLETED":"OUT_OF_REACH"):"RUNNING"};
+ let reachWeight=aim?ease((t-6)/2)*(1-ease(t-15)):0,blendCup=reach?lift*(1-back):0,tilt=reach?-.55*ease((t-10.1)/1.2)*(1-ease((t-12.2)/.8)):0;
+ return {time:t,root,yaw:facing,cupYaw:yaw,origin,reachWeight,blendCup,tilt,sit,phase:reach?phase:t>=6?"out_of_reach":phase,cup,held,support:held?"hand":"table",owner:held?r.actor:null,aim,grip,look:origin,reach,walk: t<3.5?1:0,result:t>=16?(reach?"COMPLETED":"OUT_OF_REACH"):"RUNNING"};
 }
 export const CAFE={schema:"prometeo.character-world.scene/v1",id:"cafe-buenos-aires-pilot",duration:58,actors:[{identity:0,timeScale:2.5,offset:0,action:{...DEFAULT_ACTION,actor:"iris",chair:[.64,0,0],yaw:-Math.PI/2,cup:[.19,.84,-.25]}},{identity:2,timeScale:2.5,offset:5,action:{...DEFAULT_ACTION,actor:"nara",chair:[-.64,0,0],yaw:Math.PI/2,cup:[-.19,.84,.25]}}],dialogue:[{start:14,end:18,actor:0,text:"¿Tomamos un café?"},{start:21,end:26,actor:1,text:"Mi mamá toma mate, pero yo prefiero un cortado."},{start:49,end:54,actor:0,text:"Entonces brindemos por eso."}]};
 export function actorTime(a,t){return Math.max(0,(t-(a.offset||0))/(a.timeScale||1))}

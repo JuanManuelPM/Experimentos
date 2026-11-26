@@ -3,6 +3,7 @@ import {GLTFExporter} from "three/addons/exporters/GLTFExporter.js";
 import {GLTFLoader} from "three/addons/loaders/GLTFLoader.js";
 import {LowPolyFace} from "../iris/v11-3/clean.mjs";
 import {profiles,outfits,newProfile,build,pose,inspect} from "../../../character-system-v2/models.mjs";
+import {CLIPS,motionSample} from "./motions.mjs";
 import {createChair} from "../../../asset-lab/chair-01/chair.mjs";
 import {VERSION,actorRecipe,faceRecipe,canonicalUV,pigments,anchorPosition,IDENTITIES,NOSES,sampleAction,sampleScene,CAFE,DEFAULT_ACTION,ease,clamp} from "./contract.mjs";
 
@@ -60,6 +61,8 @@ export class Actor{
  edit(raw){this.recipe=actorRecipe({...this.recipe,...raw});this.face.setRecipe(faceRecipe(this.recipe));this.face.setExpression({browL:this.recipe.browL,browR:this.recipe.browR,blink:this.recipe.blink,lookX:this.recipe.lookX,lookY:this.recipe.lookY,mouth:this.recipe.mouth,smile:this.recipe.smile});addHair(this.face,this.recipe.hair,this.recipe.brow)}
  setClay(on){this.face.setClay(on);let h=this.face.group.getObjectByName("scalp-hair");if(h)h.visible=!on;for(let m of this.parts)m.material.color.set(on?0xbcb4a5:m.userData.originalColor)}
  apply(mode,t,blend=1){const p=pose(t,mode),idle=pose(t,"idle");for(let i=0;i<this.bones.length;i++){let b=this.bones[i],a=idle.rotations[b.name]||[0,0,0],r=p.rotations[b.name]||[0,0,0];b.rotation.set(...a.map((x,k)=>x+(r[k]-x)*blend));b.position.copy(this.rests[i])}this.lookup.pelvis.position.y-=(p.pelvisDrop*blend+idle.pelvisDrop*(1-blend));this.root.updateMatrixWorld(true)}
+ applyMotion(id,time){const p=motionSample(id,time);for(let i=0;i<this.bones.length;i++){let b=this.bones[i];b.rotation.set(...(p.rotations[b.name]||[0,0,0]));b.position.copy(this.rests[i])}this.lookup.pelvis.position.y-=p.pelvisDrop;this.root.updateMatrixWorld(true);return p}
+ clips(){return CLIPS.map(c=>{let frames=Math.ceil(c.duration*30),times=Array.from({length:frames+1},(_,i)=>c.duration*i/frames),samples=times.map(t=>motionSample(c.id,t)),tracks=[];for(let b of this.bones){let q=[];for(let s of samples)q.push(...new T.Quaternion().setFromEuler(new T.Euler(...(s.rotations[b.name]||[0,0,0]))).toArray());tracks.push(new T.QuaternionKeyframeTrack(b.name+".quaternion",times,q))}let p=[];for(let s of samples){let v=this.rests[this.bones.indexOf(this.lookup.pelvis)].clone();v.y-=s.pelvisDrop;p.push(...v.toArray())}tracks.push(new T.VectorKeyframeTrack("pelvis.position",times,p));return new T.AnimationClip(c.id,c.duration,tracks)})}
  lookAt(world){const local=this.root.worldToLocal(world.clone());const dx=local.x,dz=Math.max(.14,local.z),dy=local.y-this.profile.h*.80;this.lookup.head.rotation.y=clamp(Math.atan2(dx,dz),-.6,.6);this.lookup.head.rotation.x=clamp(-Math.atan2(dy,Math.hypot(dx,dz)),-.38,.38)}
  // Candidate CCD on the actual wrist chain; exposes residual rather than claiming contact.
  aimHand(target,side="R",grip=0){
@@ -72,10 +75,13 @@ export class Actor{
  action(a,t,prop){this.root.position.fromArray(a.root);this.root.rotation.y=a.yaw;
   if(a.walk)this.apply("walk",t*1.55,1);else this.apply("sit",t*.3,a.sit);
   this.lookAt(V(a.look));this.root.updateMatrixWorld(true);
-  let error=null;if(a.aim){let side=new T.Vector3(-.075,0,0).applyAxisAngle(new T.Vector3(0,1,0),a.yaw);let target=V(a.cup).add(side);error=this.aimHand(target,"R",a.grip)}
-  prop.position.fromArray(a.cup);prop.rotation.y=a.yaw;return error;
+  let error=null;
+  const mouthZ=this.face.surface(0,.365)??.31,mouth=this.face.group.localToWorld(new T.Vector3(0,.365,mouthZ)),forward=new T.Vector3(0,0,1).applyAxisAngle(new T.Vector3(0,1,0),a.cupYaw),center=mouth.clone().addScaledVector(forward,.044);center.y-=.043;
+  prop.position.copy(V(a.origin).lerp(center,a.blendCup));prop.rotation.set(a.tilt,a.cupYaw,0,"YXZ");
+  if(a.aim){const palm=new T.Vector3(-.026,-.039,0),rest=this.lookup.hand_R.localToWorld(palm),grip=new T.Vector3(-.063,.012,0).applyQuaternion(prop.quaternion).add(prop.position),target=rest.lerp(grip,a.reachWeight);error=this.aimHand(target,"R",a.grip)}
+  return error;
  }
- async exportGLB(){let temp=[];for(let m of this.face.pool.filter(m=>m.visible)){let g=m.geometry,copy=new T.BufferGeometry(),n=g.drawRange.count;for(let k of ["position","normal"]){let a=g.attributes[k];copy.setAttribute(k,new T.BufferAttribute(a.array.slice(0,n*3),3))}temp.push([m,g,copy]);m.geometry=copy}try{return await new GLTFExporter().parseAsync(this.root,{binary:true,onlyVisible:true})}finally{for(let [m,g,c] of temp){m.geometry=g;c.dispose()}}}
+ async exportGLB(){let temp=[];for(let m of this.face.pool.filter(m=>m.visible)){let g=m.geometry,copy=new T.BufferGeometry(),n=g.drawRange.count;for(let k of ["position","normal"]){let a=g.attributes[k];copy.setAttribute(k,new T.BufferAttribute(a.array.slice(0,n*3),3))}temp.push([m,g,copy]);m.geometry=copy}try{return await new GLTFExporter().parseAsync(this.root,{binary:true,onlyVisible:true,animations:this.clips()})}finally{for(let [m,g,c] of temp){m.geometry=g;c.dispose()}}}
  dispose(){this.face.dispose();for(let p of this.parts){p.geometry.dispose();p.material.dispose()}this.root.removeFromParent()}
 }
 export async function loadGLB(buffer){return new Promise((resolve,reject)=>new GLTFLoader().parse(buffer,"",resolve,reject))}
