@@ -1,0 +1,7831 @@
+{
+  "schema": "prometeo.character-world.cpu-runtime/v1",
+  "version": "character-world/0.2.0-candidate",
+  "sourceCommit": "285e966ff629c774b308f416460d20f5606c4c35",
+  "sourceBlobs": {
+    "three": "282d1087068fab752a7e59b65aaa61c8b0a4be8c",
+    "legacy": "d5cf3cbe3ea733f7925755876a7700c2a5fc0bb1",
+    "body": "5e07dea4a845d19e8cf776dd72c6ff0be4911143",
+    "face": "7c4b96d1cbf9202af8b88f4e0380c692aad7f206",
+    "contract": "149d24c3a4d3ed756c5e524f3a72bb436440049b",
+    "runtime": "f5f1a6d8a39647375932dd446ea2f36ae6aff2ad",
+    "motions": "d4818b1a3d4a3f848168be46b18ac3f4cbcedba4",
+    "head": "d437a833dd9bd9f0dd87784a4515682a6daa936b",
+    "app": "5e1652f088ea1b4c52be11dc05c50a531c9392e5"
+  },
+  "environment": "Actual Three.js r170 math, geometry, scene graph, SkinnedMesh, AnimationMixer in V8 isolate; stub canvas paint functions; no WebGL or pixel observation; no physical contact judgment.",
+  "summary": {
+    "actors": [
+      {
+        "id": "iris",
+        "joints": 42,
+        "meshCount": 19,
+        "faceFeatures": 13,
+        "bodyCheck": "PASS"
+      },
+      {
+        "id": "soter",
+        "joints": 42,
+        "meshCount": 19,
+        "faceFeatures": 13,
+        "bodyCheck": "PASS"
+      },
+      {
+        "id": "nara",
+        "joints": 42,
+        "meshCount": 19,
+        "faceFeatures": 13,
+        "bodyCheck": "PASS"
+      },
+      {
+        "id": "luz",
+        "joints": 42,
+        "meshCount": 19,
+        "faceFeatures": 13,
+        "bodyCheck": "PASS"
+      },
+      {
+        "id": "mauro",
+        "joints": 42,
+        "meshCount": 19,
+        "faceFeatures": 13,
+        "bodyCheck": "PASS"
+      },
+      {
+        "id": "ines",
+        "joints": 42,
+        "meshCount": 19,
+        "faceFeatures": 13,
+        "bodyCheck": "PASS"
+      }
+    ],
+    "clips": 144,
+    "clipPass": 126,
+    "clipFrames": 7698,
+    "motionFailures": [
+      {
+        "actor": "iris",
+        "clip": "idle",
+        "finite": true,
+        "changed": false,
+        "finished": true
+      },
+      {
+        "actor": "iris",
+        "clip": "nod",
+        "finite": true,
+        "changed": false,
+        "finished": true
+      },
+      {
+        "actor": "iris",
+        "clip": "shake",
+        "finite": true,
+        "changed": false,
+        "finished": true
+      },
+      {
+        "actor": "soter",
+        "clip": "idle",
+        "finite": true,
+        "changed": false,
+        "finished": true
+      },
+      {
+        "actor": "soter",
+        "clip": "nod",
+        "finite": true,
+        "changed": false,
+        "finished": true
+      },
+      {
+        "actor": "soter",
+        "clip": "shake",
+        "finite": true,
+        "changed": false,
+        "finished": true
+      },
+      {
+        "actor": "nara",
+        "clip": "idle",
+        "finite": true,
+        "changed": false,
+        "finished": true
+      },
+      {
+        "actor": "nara",
+        "clip": "nod",
+        "finite": true,
+        "changed": false,
+        "finished": true
+      },
+      {
+        "actor": "nara",
+        "clip": "shake",
+        "finite": true,
+        "changed": false,
+        "finished": true
+      },
+      {
+        "actor": "luz",
+        "clip": "idle",
+        "finite": true,
+        "changed": false,
+        "finished": true
+      },
+      {
+        "actor": "luz",
+        "clip": "nod",
+        "finite": true,
+        "changed": false,
+        "finished": true
+      },
+      {
+        "actor": "luz",
+        "clip": "shake",
+        "finite": true,
+        "changed": false,
+        "finished": true
+      },
+      {
+        "actor": "mauro",
+        "clip": "idle",
+        "finite": true,
+        "changed": false,
+        "finished": true
+      },
+      {
+        "actor": "mauro",
+        "clip": "nod",
+        "finite": true,
+        "changed": false,
+        "finished": true
+      },
+      {
+        "actor": "mauro",
+        "clip": "shake",
+        "finite": true,
+        "changed": false,
+        "finished": true
+      },
+      {
+        "actor": "ines",
+        "clip": "idle",
+        "finite": true,
+        "changed": false,
+        "finished": true
+      },
+      {
+        "actor": "ines",
+        "clip": "nod",
+        "finite": true,
+        "changed": false,
+        "finished": true
+      },
+      {
+        "actor": "ines",
+        "clip": "shake",
+        "finite": true,
+        "changed": false,
+        "finished": true
+      }
+    ],
+    "distinctSignaturePerActor": [
+      {
+        "id": "iris",
+        "distinct": 22
+      },
+      {
+        "id": "soter",
+        "distinct": 22
+      },
+      {
+        "id": "nara",
+        "distinct": 22
+      },
+      {
+        "id": "luz",
+        "distinct": 22
+      },
+      {
+        "id": "mauro",
+        "distinct": 22
+      },
+      {
+        "id": "ines",
+        "distinct": 22
+      }
+    ],
+    "actionMaxErrors": [
+      {
+        "actor": "iris",
+        "case": "nominal",
+        "heldMaxErrorM": 0.0005560835994353083,
+        "transitionGapM": 3.611951652748409e-11,
+        "result": "COMPLETED"
+      },
+      {
+        "actor": "iris",
+        "case": "shifted",
+        "heldMaxErrorM": 0.008102444545317335,
+        "transitionGapM": 3.690045259541273e-11,
+        "result": "COMPLETED"
+      },
+      {
+        "actor": "iris",
+        "case": "rotated",
+        "heldMaxErrorM": 0.0006758846010281154,
+        "transitionGapM": 3.886569251924792e-11,
+        "result": "COMPLETED"
+      },
+      {
+        "actor": "iris",
+        "case": "unreachable",
+        "heldMaxErrorM": null,
+        "transitionGapM": 0,
+        "result": "OUT_OF_REACH"
+      },
+      {
+        "actor": "soter",
+        "case": "nominal",
+        "heldMaxErrorM": 0.001568036240319534,
+        "transitionGapM": 4.366449026834957e-11,
+        "result": "COMPLETED"
+      },
+      {
+        "actor": "soter",
+        "case": "shifted",
+        "heldMaxErrorM": 0.016062212589763546,
+        "transitionGapM": 4.4089166676764956e-11,
+        "result": "COMPLETED"
+      },
+      {
+        "actor": "soter",
+        "case": "rotated",
+        "heldMaxErrorM": 0.0011967730203958744,
+        "transitionGapM": 4.5986904980533465e-11,
+        "result": "COMPLETED"
+      },
+      {
+        "actor": "soter",
+        "case": "unreachable",
+        "heldMaxErrorM": null,
+        "transitionGapM": 0,
+        "result": "OUT_OF_REACH"
+      },
+      {
+        "actor": "nara",
+        "case": "nominal",
+        "heldMaxErrorM": 0.00041881807067036594,
+        "transitionGapM": 3.000551659205104e-11,
+        "result": "COMPLETED"
+      },
+      {
+        "actor": "nara",
+        "case": "shifted",
+        "heldMaxErrorM": 0.006531318884578256,
+        "transitionGapM": 3.1221290637290897e-11,
+        "result": "COMPLETED"
+      },
+      {
+        "actor": "nara",
+        "case": "rotated",
+        "heldMaxErrorM": 0.0007104735928470312,
+        "transitionGapM": 3.323200497537923e-11,
+        "result": "COMPLETED"
+      },
+      {
+        "actor": "nara",
+        "case": "unreachable",
+        "heldMaxErrorM": null,
+        "transitionGapM": 0,
+        "result": "OUT_OF_REACH"
+      },
+      {
+        "actor": "luz",
+        "case": "nominal",
+        "heldMaxErrorM": 0.0004610781896393357,
+        "transitionGapM": 3.3634499181621795e-11,
+        "result": "COMPLETED"
+      },
+      {
+        "actor": "luz",
+        "case": "shifted",
+        "heldMaxErrorM": 0.007012559970434919,
+        "transitionGapM": 3.457002023553886e-11,
+        "result": "COMPLETED"
+      },
+      {
+        "actor": "luz",
+        "case": "rotated",
+        "heldMaxErrorM": 0.0006525158983365514,
+        "transitionGapM": 3.655720617247431e-11,
+        "result": "COMPLETED"
+      },
+      {
+        "actor": "luz",
+        "case": "unreachable",
+        "heldMaxErrorM": null,
+        "transitionGapM": 0,
+        "result": "OUT_OF_REACH"
+      },
+      {
+        "actor": "mauro",
+        "case": "nominal",
+        "heldMaxErrorM": 0.0011131165471874123,
+        "transitionGapM": 3.9807308359456246e-11,
+        "result": "COMPLETED"
+      },
+      {
+        "actor": "mauro",
+        "case": "shifted",
+        "heldMaxErrorM": 0.010832569877875535,
+        "transitionGapM": 4.0397476286798816e-11,
+        "result": "COMPLETED"
+      },
+      {
+        "actor": "mauro",
+        "case": "rotated",
+        "heldMaxErrorM": 0.0014512276231923445,
+        "transitionGapM": 4.232833037637013e-11,
+        "result": "COMPLETED"
+      },
+      {
+        "actor": "mauro",
+        "case": "unreachable",
+        "heldMaxErrorM": null,
+        "transitionGapM": 0,
+        "result": "OUT_OF_REACH"
+      },
+      {
+        "actor": "ines",
+        "case": "nominal",
+        "heldMaxErrorM": 0.0007511529176136737,
+        "transitionGapM": 3.767695802580659e-11,
+        "result": "COMPLETED"
+      },
+      {
+        "actor": "ines",
+        "case": "shifted",
+        "heldMaxErrorM": 0.009073531701342154,
+        "transitionGapM": 3.837293936729371e-11,
+        "result": "COMPLETED"
+      },
+      {
+        "actor": "ines",
+        "case": "rotated",
+        "heldMaxErrorM": 0.0009610607430993989,
+        "transitionGapM": 4.03234016086894e-11,
+        "result": "COMPLETED"
+      },
+      {
+        "actor": "ines",
+        "case": "unreachable",
+        "heldMaxErrorM": null,
+        "transitionGapM": 0,
+        "result": "OUT_OF_REACH"
+      }
+    ],
+    "nasalCases": 45
+  },
+  "clipChecks": [
+    {
+      "actor": "iris",
+      "clip": "idle",
+      "duration": 2.4,
+      "frames": 73,
+      "finite": true,
+      "changed": false,
+      "finished": true,
+      "tracks": 43,
+      "signature": 742.9071000000001
+    },
+    {
+      "actor": "iris",
+      "clip": "breath",
+      "duration": 3.2,
+      "frames": 97,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 742.3201000000001
+    },
+    {
+      "actor": "iris",
+      "clip": "weight",
+      "duration": 2.2,
+      "frames": 67,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 742.3944000000001
+    },
+    {
+      "actor": "iris",
+      "clip": "walk",
+      "duration": 1.15,
+      "frames": 36,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 741.1248
+    },
+    {
+      "actor": "iris",
+      "clip": "run",
+      "duration": 0.8,
+      "frames": 25,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 725.3304999999999
+    },
+    {
+      "actor": "iris",
+      "clip": "start",
+      "duration": 1.3,
+      "frames": 40,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 742.3811000000001
+    },
+    {
+      "actor": "iris",
+      "clip": "brake",
+      "duration": 1.2,
+      "frames": 37,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 741.4511000000002
+    },
+    {
+      "actor": "iris",
+      "clip": "turn",
+      "duration": 1.4,
+      "frames": 43,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 744.1554000000001
+    },
+    {
+      "actor": "iris",
+      "clip": "sit",
+      "duration": 1.8,
+      "frames": 55,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 734.9708000000004
+    },
+    {
+      "actor": "iris",
+      "clip": "stand",
+      "duration": 1.8,
+      "frames": 55,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 741.3662000000002
+    },
+    {
+      "actor": "iris",
+      "clip": "crouch",
+      "duration": 1.7,
+      "frames": 52,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 737.2951000000002
+    },
+    {
+      "actor": "iris",
+      "clip": "reach",
+      "duration": 1.35,
+      "frames": 42,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 731.2368000000001
+    },
+    {
+      "actor": "iris",
+      "clip": "grab",
+      "duration": 0.85,
+      "frames": 27,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 781.6735000000002
+    },
+    {
+      "actor": "iris",
+      "clip": "release",
+      "duration": 0.8,
+      "frames": 25,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 747.5369000000003
+    },
+    {
+      "actor": "iris",
+      "clip": "point",
+      "duration": 1.6,
+      "frames": 49,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 764.0715000000001
+    },
+    {
+      "actor": "iris",
+      "clip": "wave",
+      "duration": 2.5,
+      "frames": 76,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 734.6956
+    },
+    {
+      "actor": "iris",
+      "clip": "gesture",
+      "duration": 2.8,
+      "frames": 85,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 730.9064000000001
+    },
+    {
+      "actor": "iris",
+      "clip": "nod",
+      "duration": 1.25,
+      "frames": 39,
+      "finite": true,
+      "changed": false,
+      "finished": true,
+      "tracks": 43,
+      "signature": 742.9071000000001
+    },
+    {
+      "actor": "iris",
+      "clip": "shake",
+      "duration": 1.4,
+      "frames": 43,
+      "finite": true,
+      "changed": false,
+      "finished": true,
+      "tracks": 43,
+      "signature": 742.9071000000001
+    },
+    {
+      "actor": "iris",
+      "clip": "react",
+      "duration": 1.3,
+      "frames": 40,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 728.6041
+    },
+    {
+      "actor": "iris",
+      "clip": "lean",
+      "duration": 1.8,
+      "frames": 55,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 739.2844000000002
+    },
+    {
+      "actor": "iris",
+      "clip": "drink",
+      "duration": 2.8,
+      "frames": 85,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 756.8188
+    },
+    {
+      "actor": "iris",
+      "clip": "eat",
+      "duration": 2.1,
+      "frames": 64,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 755.6066000000001
+    },
+    {
+      "actor": "iris",
+      "clip": "phone",
+      "duration": 2.4,
+      "frames": 73,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 770.1581
+    },
+    {
+      "actor": "soter",
+      "clip": "idle",
+      "duration": 2.4,
+      "frames": 73,
+      "finite": true,
+      "changed": false,
+      "finished": true,
+      "tracks": 43,
+      "signature": 742.9071000000001
+    },
+    {
+      "actor": "soter",
+      "clip": "breath",
+      "duration": 3.2,
+      "frames": 97,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 742.3201000000001
+    },
+    {
+      "actor": "soter",
+      "clip": "weight",
+      "duration": 2.2,
+      "frames": 67,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 742.3944000000001
+    },
+    {
+      "actor": "soter",
+      "clip": "walk",
+      "duration": 1.15,
+      "frames": 36,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 741.1248
+    },
+    {
+      "actor": "soter",
+      "clip": "run",
+      "duration": 0.8,
+      "frames": 25,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 725.3304999999999
+    },
+    {
+      "actor": "soter",
+      "clip": "start",
+      "duration": 1.3,
+      "frames": 40,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 742.3811000000001
+    },
+    {
+      "actor": "soter",
+      "clip": "brake",
+      "duration": 1.2,
+      "frames": 37,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 741.4511000000002
+    },
+    {
+      "actor": "soter",
+      "clip": "turn",
+      "duration": 1.4,
+      "frames": 43,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 744.1554000000001
+    },
+    {
+      "actor": "soter",
+      "clip": "sit",
+      "duration": 1.8,
+      "frames": 55,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 734.9708000000004
+    },
+    {
+      "actor": "soter",
+      "clip": "stand",
+      "duration": 1.8,
+      "frames": 55,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 741.3662000000002
+    },
+    {
+      "actor": "soter",
+      "clip": "crouch",
+      "duration": 1.7,
+      "frames": 52,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 737.2951000000002
+    },
+    {
+      "actor": "soter",
+      "clip": "reach",
+      "duration": 1.35,
+      "frames": 42,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 731.2368000000001
+    },
+    {
+      "actor": "soter",
+      "clip": "grab",
+      "duration": 0.85,
+      "frames": 27,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 781.6735000000002
+    },
+    {
+      "actor": "soter",
+      "clip": "release",
+      "duration": 0.8,
+      "frames": 25,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 747.5369000000003
+    },
+    {
+      "actor": "soter",
+      "clip": "point",
+      "duration": 1.6,
+      "frames": 49,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 764.0715000000001
+    },
+    {
+      "actor": "soter",
+      "clip": "wave",
+      "duration": 2.5,
+      "frames": 76,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 734.6956
+    },
+    {
+      "actor": "soter",
+      "clip": "gesture",
+      "duration": 2.8,
+      "frames": 85,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 730.9064000000001
+    },
+    {
+      "actor": "soter",
+      "clip": "nod",
+      "duration": 1.25,
+      "frames": 39,
+      "finite": true,
+      "changed": false,
+      "finished": true,
+      "tracks": 43,
+      "signature": 742.9071000000001
+    },
+    {
+      "actor": "soter",
+      "clip": "shake",
+      "duration": 1.4,
+      "frames": 43,
+      "finite": true,
+      "changed": false,
+      "finished": true,
+      "tracks": 43,
+      "signature": 742.9071000000001
+    },
+    {
+      "actor": "soter",
+      "clip": "react",
+      "duration": 1.3,
+      "frames": 40,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 728.6041
+    },
+    {
+      "actor": "soter",
+      "clip": "lean",
+      "duration": 1.8,
+      "frames": 55,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 739.2844000000002
+    },
+    {
+      "actor": "soter",
+      "clip": "drink",
+      "duration": 2.8,
+      "frames": 85,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 756.8188
+    },
+    {
+      "actor": "soter",
+      "clip": "eat",
+      "duration": 2.1,
+      "frames": 64,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 755.6066000000001
+    },
+    {
+      "actor": "soter",
+      "clip": "phone",
+      "duration": 2.4,
+      "frames": 73,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 770.1581
+    },
+    {
+      "actor": "nara",
+      "clip": "idle",
+      "duration": 2.4,
+      "frames": 73,
+      "finite": true,
+      "changed": false,
+      "finished": true,
+      "tracks": 43,
+      "signature": 742.9071000000001
+    },
+    {
+      "actor": "nara",
+      "clip": "breath",
+      "duration": 3.2,
+      "frames": 97,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 742.3201000000001
+    },
+    {
+      "actor": "nara",
+      "clip": "weight",
+      "duration": 2.2,
+      "frames": 67,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 742.3944000000001
+    },
+    {
+      "actor": "nara",
+      "clip": "walk",
+      "duration": 1.15,
+      "frames": 36,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 741.1248
+    },
+    {
+      "actor": "nara",
+      "clip": "run",
+      "duration": 0.8,
+      "frames": 25,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 725.3304999999999
+    },
+    {
+      "actor": "nara",
+      "clip": "start",
+      "duration": 1.3,
+      "frames": 40,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 742.3811000000001
+    },
+    {
+      "actor": "nara",
+      "clip": "brake",
+      "duration": 1.2,
+      "frames": 37,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 741.4511000000002
+    },
+    {
+      "actor": "nara",
+      "clip": "turn",
+      "duration": 1.4,
+      "frames": 43,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 744.1554000000001
+    },
+    {
+      "actor": "nara",
+      "clip": "sit",
+      "duration": 1.8,
+      "frames": 55,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 734.9708000000004
+    },
+    {
+      "actor": "nara",
+      "clip": "stand",
+      "duration": 1.8,
+      "frames": 55,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 741.3662000000002
+    },
+    {
+      "actor": "nara",
+      "clip": "crouch",
+      "duration": 1.7,
+      "frames": 52,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 737.2951000000002
+    },
+    {
+      "actor": "nara",
+      "clip": "reach",
+      "duration": 1.35,
+      "frames": 42,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 731.2368000000001
+    },
+    {
+      "actor": "nara",
+      "clip": "grab",
+      "duration": 0.85,
+      "frames": 27,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 781.6735000000002
+    },
+    {
+      "actor": "nara",
+      "clip": "release",
+      "duration": 0.8,
+      "frames": 25,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 747.5369000000003
+    },
+    {
+      "actor": "nara",
+      "clip": "point",
+      "duration": 1.6,
+      "frames": 49,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 764.0715000000001
+    },
+    {
+      "actor": "nara",
+      "clip": "wave",
+      "duration": 2.5,
+      "frames": 76,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 734.6956
+    },
+    {
+      "actor": "nara",
+      "clip": "gesture",
+      "duration": 2.8,
+      "frames": 85,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 730.9064000000001
+    },
+    {
+      "actor": "nara",
+      "clip": "nod",
+      "duration": 1.25,
+      "frames": 39,
+      "finite": true,
+      "changed": false,
+      "finished": true,
+      "tracks": 43,
+      "signature": 742.9071000000001
+    },
+    {
+      "actor": "nara",
+      "clip": "shake",
+      "duration": 1.4,
+      "frames": 43,
+      "finite": true,
+      "changed": false,
+      "finished": true,
+      "tracks": 43,
+      "signature": 742.9071000000001
+    },
+    {
+      "actor": "nara",
+      "clip": "react",
+      "duration": 1.3,
+      "frames": 40,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 728.6041
+    },
+    {
+      "actor": "nara",
+      "clip": "lean",
+      "duration": 1.8,
+      "frames": 55,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 739.2844000000002
+    },
+    {
+      "actor": "nara",
+      "clip": "drink",
+      "duration": 2.8,
+      "frames": 85,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 756.8188
+    },
+    {
+      "actor": "nara",
+      "clip": "eat",
+      "duration": 2.1,
+      "frames": 64,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 755.6066000000001
+    },
+    {
+      "actor": "nara",
+      "clip": "phone",
+      "duration": 2.4,
+      "frames": 73,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 770.1581
+    },
+    {
+      "actor": "luz",
+      "clip": "idle",
+      "duration": 2.4,
+      "frames": 73,
+      "finite": true,
+      "changed": false,
+      "finished": true,
+      "tracks": 43,
+      "signature": 742.9071000000001
+    },
+    {
+      "actor": "luz",
+      "clip": "breath",
+      "duration": 3.2,
+      "frames": 97,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 742.3201000000001
+    },
+    {
+      "actor": "luz",
+      "clip": "weight",
+      "duration": 2.2,
+      "frames": 67,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 742.3944000000001
+    },
+    {
+      "actor": "luz",
+      "clip": "walk",
+      "duration": 1.15,
+      "frames": 36,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 741.1248
+    },
+    {
+      "actor": "luz",
+      "clip": "run",
+      "duration": 0.8,
+      "frames": 25,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 725.3304999999999
+    },
+    {
+      "actor": "luz",
+      "clip": "start",
+      "duration": 1.3,
+      "frames": 40,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 742.3811000000001
+    },
+    {
+      "actor": "luz",
+      "clip": "brake",
+      "duration": 1.2,
+      "frames": 37,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 741.4511000000002
+    },
+    {
+      "actor": "luz",
+      "clip": "turn",
+      "duration": 1.4,
+      "frames": 43,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 744.1554000000001
+    },
+    {
+      "actor": "luz",
+      "clip": "sit",
+      "duration": 1.8,
+      "frames": 55,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 734.9708000000004
+    },
+    {
+      "actor": "luz",
+      "clip": "stand",
+      "duration": 1.8,
+      "frames": 55,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 741.3662000000002
+    },
+    {
+      "actor": "luz",
+      "clip": "crouch",
+      "duration": 1.7,
+      "frames": 52,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 737.2951000000002
+    },
+    {
+      "actor": "luz",
+      "clip": "reach",
+      "duration": 1.35,
+      "frames": 42,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 731.2368000000001
+    },
+    {
+      "actor": "luz",
+      "clip": "grab",
+      "duration": 0.85,
+      "frames": 27,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 781.6735000000002
+    },
+    {
+      "actor": "luz",
+      "clip": "release",
+      "duration": 0.8,
+      "frames": 25,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 747.5369000000003
+    },
+    {
+      "actor": "luz",
+      "clip": "point",
+      "duration": 1.6,
+      "frames": 49,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 764.0715000000001
+    },
+    {
+      "actor": "luz",
+      "clip": "wave",
+      "duration": 2.5,
+      "frames": 76,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 734.6956
+    },
+    {
+      "actor": "luz",
+      "clip": "gesture",
+      "duration": 2.8,
+      "frames": 85,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 730.9064000000001
+    },
+    {
+      "actor": "luz",
+      "clip": "nod",
+      "duration": 1.25,
+      "frames": 39,
+      "finite": true,
+      "changed": false,
+      "finished": true,
+      "tracks": 43,
+      "signature": 742.9071000000001
+    },
+    {
+      "actor": "luz",
+      "clip": "shake",
+      "duration": 1.4,
+      "frames": 43,
+      "finite": true,
+      "changed": false,
+      "finished": true,
+      "tracks": 43,
+      "signature": 742.9071000000001
+    },
+    {
+      "actor": "luz",
+      "clip": "react",
+      "duration": 1.3,
+      "frames": 40,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 728.6041
+    },
+    {
+      "actor": "luz",
+      "clip": "lean",
+      "duration": 1.8,
+      "frames": 55,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 739.2844000000002
+    },
+    {
+      "actor": "luz",
+      "clip": "drink",
+      "duration": 2.8,
+      "frames": 85,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 756.8188
+    },
+    {
+      "actor": "luz",
+      "clip": "eat",
+      "duration": 2.1,
+      "frames": 64,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 755.6066000000001
+    },
+    {
+      "actor": "luz",
+      "clip": "phone",
+      "duration": 2.4,
+      "frames": 73,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 770.1581
+    },
+    {
+      "actor": "mauro",
+      "clip": "idle",
+      "duration": 2.4,
+      "frames": 73,
+      "finite": true,
+      "changed": false,
+      "finished": true,
+      "tracks": 43,
+      "signature": 742.9071000000001
+    },
+    {
+      "actor": "mauro",
+      "clip": "breath",
+      "duration": 3.2,
+      "frames": 97,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 742.3201000000001
+    },
+    {
+      "actor": "mauro",
+      "clip": "weight",
+      "duration": 2.2,
+      "frames": 67,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 742.3944000000001
+    },
+    {
+      "actor": "mauro",
+      "clip": "walk",
+      "duration": 1.15,
+      "frames": 36,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 741.1248
+    },
+    {
+      "actor": "mauro",
+      "clip": "run",
+      "duration": 0.8,
+      "frames": 25,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 725.3304999999999
+    },
+    {
+      "actor": "mauro",
+      "clip": "start",
+      "duration": 1.3,
+      "frames": 40,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 742.3811000000001
+    },
+    {
+      "actor": "mauro",
+      "clip": "brake",
+      "duration": 1.2,
+      "frames": 37,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 741.4511000000002
+    },
+    {
+      "actor": "mauro",
+      "clip": "turn",
+      "duration": 1.4,
+      "frames": 43,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 744.1554000000001
+    },
+    {
+      "actor": "mauro",
+      "clip": "sit",
+      "duration": 1.8,
+      "frames": 55,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 734.9708000000004
+    },
+    {
+      "actor": "mauro",
+      "clip": "stand",
+      "duration": 1.8,
+      "frames": 55,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 741.3662000000002
+    },
+    {
+      "actor": "mauro",
+      "clip": "crouch",
+      "duration": 1.7,
+      "frames": 52,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 737.2951000000002
+    },
+    {
+      "actor": "mauro",
+      "clip": "reach",
+      "duration": 1.35,
+      "frames": 42,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 731.2368000000001
+    },
+    {
+      "actor": "mauro",
+      "clip": "grab",
+      "duration": 0.85,
+      "frames": 27,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 781.6735000000002
+    },
+    {
+      "actor": "mauro",
+      "clip": "release",
+      "duration": 0.8,
+      "frames": 25,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 747.5369000000003
+    },
+    {
+      "actor": "mauro",
+      "clip": "point",
+      "duration": 1.6,
+      "frames": 49,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 764.0715000000001
+    },
+    {
+      "actor": "mauro",
+      "clip": "wave",
+      "duration": 2.5,
+      "frames": 76,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 734.6956
+    },
+    {
+      "actor": "mauro",
+      "clip": "gesture",
+      "duration": 2.8,
+      "frames": 85,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 730.9064000000001
+    },
+    {
+      "actor": "mauro",
+      "clip": "nod",
+      "duration": 1.25,
+      "frames": 39,
+      "finite": true,
+      "changed": false,
+      "finished": true,
+      "tracks": 43,
+      "signature": 742.9071000000001
+    },
+    {
+      "actor": "mauro",
+      "clip": "shake",
+      "duration": 1.4,
+      "frames": 43,
+      "finite": true,
+      "changed": false,
+      "finished": true,
+      "tracks": 43,
+      "signature": 742.9071000000001
+    },
+    {
+      "actor": "mauro",
+      "clip": "react",
+      "duration": 1.3,
+      "frames": 40,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 728.6041
+    },
+    {
+      "actor": "mauro",
+      "clip": "lean",
+      "duration": 1.8,
+      "frames": 55,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 739.2844000000002
+    },
+    {
+      "actor": "mauro",
+      "clip": "drink",
+      "duration": 2.8,
+      "frames": 85,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 756.8188
+    },
+    {
+      "actor": "mauro",
+      "clip": "eat",
+      "duration": 2.1,
+      "frames": 64,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 755.6066000000001
+    },
+    {
+      "actor": "mauro",
+      "clip": "phone",
+      "duration": 2.4,
+      "frames": 73,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 770.1581
+    },
+    {
+      "actor": "ines",
+      "clip": "idle",
+      "duration": 2.4,
+      "frames": 73,
+      "finite": true,
+      "changed": false,
+      "finished": true,
+      "tracks": 43,
+      "signature": 742.9071000000001
+    },
+    {
+      "actor": "ines",
+      "clip": "breath",
+      "duration": 3.2,
+      "frames": 97,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 742.3201000000001
+    },
+    {
+      "actor": "ines",
+      "clip": "weight",
+      "duration": 2.2,
+      "frames": 67,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 742.3944000000001
+    },
+    {
+      "actor": "ines",
+      "clip": "walk",
+      "duration": 1.15,
+      "frames": 36,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 741.1248
+    },
+    {
+      "actor": "ines",
+      "clip": "run",
+      "duration": 0.8,
+      "frames": 25,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 725.3304999999999
+    },
+    {
+      "actor": "ines",
+      "clip": "start",
+      "duration": 1.3,
+      "frames": 40,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 742.3811000000001
+    },
+    {
+      "actor": "ines",
+      "clip": "brake",
+      "duration": 1.2,
+      "frames": 37,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 741.4511000000002
+    },
+    {
+      "actor": "ines",
+      "clip": "turn",
+      "duration": 1.4,
+      "frames": 43,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 744.1554000000001
+    },
+    {
+      "actor": "ines",
+      "clip": "sit",
+      "duration": 1.8,
+      "frames": 55,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 734.9708000000004
+    },
+    {
+      "actor": "ines",
+      "clip": "stand",
+      "duration": 1.8,
+      "frames": 55,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 741.3662000000002
+    },
+    {
+      "actor": "ines",
+      "clip": "crouch",
+      "duration": 1.7,
+      "frames": 52,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 737.2951000000002
+    },
+    {
+      "actor": "ines",
+      "clip": "reach",
+      "duration": 1.35,
+      "frames": 42,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 731.2368000000001
+    },
+    {
+      "actor": "ines",
+      "clip": "grab",
+      "duration": 0.85,
+      "frames": 27,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 781.6735000000002
+    },
+    {
+      "actor": "ines",
+      "clip": "release",
+      "duration": 0.8,
+      "frames": 25,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 747.5369000000003
+    },
+    {
+      "actor": "ines",
+      "clip": "point",
+      "duration": 1.6,
+      "frames": 49,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 764.0715000000001
+    },
+    {
+      "actor": "ines",
+      "clip": "wave",
+      "duration": 2.5,
+      "frames": 76,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 734.6956
+    },
+    {
+      "actor": "ines",
+      "clip": "gesture",
+      "duration": 2.8,
+      "frames": 85,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 730.9064000000001
+    },
+    {
+      "actor": "ines",
+      "clip": "nod",
+      "duration": 1.25,
+      "frames": 39,
+      "finite": true,
+      "changed": false,
+      "finished": true,
+      "tracks": 43,
+      "signature": 742.9071000000001
+    },
+    {
+      "actor": "ines",
+      "clip": "shake",
+      "duration": 1.4,
+      "frames": 43,
+      "finite": true,
+      "changed": false,
+      "finished": true,
+      "tracks": 43,
+      "signature": 742.9071000000001
+    },
+    {
+      "actor": "ines",
+      "clip": "react",
+      "duration": 1.3,
+      "frames": 40,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 728.6041
+    },
+    {
+      "actor": "ines",
+      "clip": "lean",
+      "duration": 1.8,
+      "frames": 55,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 739.2844000000002
+    },
+    {
+      "actor": "ines",
+      "clip": "drink",
+      "duration": 2.8,
+      "frames": 85,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 756.8188
+    },
+    {
+      "actor": "ines",
+      "clip": "eat",
+      "duration": 2.1,
+      "frames": 64,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 755.6066000000001
+    },
+    {
+      "actor": "ines",
+      "clip": "phone",
+      "duration": 2.4,
+      "frames": 73,
+      "finite": true,
+      "changed": true,
+      "finished": true,
+      "tracks": 43,
+      "signature": 770.1581
+    }
+  ],
+  "actionChecks": [
+    {
+      "actor": "iris",
+      "case": "nominal",
+      "heldSamples": 9,
+      "heldMaxErrorM": 0.0005560835994353083,
+      "transitionGapM": 3.611951652748409e-11,
+      "result": "COMPLETED",
+      "samples": [
+        {
+          "t": 5,
+          "errorM": null,
+          "held": false,
+          "phase": "look",
+          "position": [
+            -0.25,
+            0.84,
+            0.39
+          ]
+        },
+        {
+          "t": 6,
+          "errorM": 1.5838319836915702e-16,
+          "held": false,
+          "phase": "reach",
+          "position": [
+            -0.25,
+            0.84,
+            0.39
+          ]
+        },
+        {
+          "t": 6.5,
+          "errorM": 0.021572260553404055,
+          "held": false,
+          "phase": "reach",
+          "position": [
+            -0.25,
+            0.84,
+            0.39
+          ]
+        },
+        {
+          "t": 7,
+          "errorM": 0.001215525376282383,
+          "held": false,
+          "phase": "reach",
+          "position": [
+            -0.25,
+            0.84,
+            0.39
+          ]
+        },
+        {
+          "t": 7.99,
+          "errorM": 0.00041369093661247923,
+          "held": false,
+          "phase": "reach",
+          "position": [
+            -0.25,
+            0.84,
+            0.39
+          ]
+        },
+        {
+          "t": 8,
+          "errorM": 0.0004171847704343394,
+          "held": true,
+          "phase": "lift",
+          "position": [
+            -0.25,
+            0.84,
+            0.39
+          ]
+        },
+        {
+          "t": 8.5,
+          "errorM": 0.000027369052285943873,
+          "held": true,
+          "phase": "lift",
+          "position": [
+            -0.2189033909619802,
+            0.9026212934145836,
+            0.36147392046530824
+          ]
+        },
+        {
+          "t": 9,
+          "errorM": 6.960417275910338e-8,
+          "held": true,
+          "phase": "lift",
+          "position": [
+            -0.14777500137698646,
+            1.0408795415253473,
+            0.29810095733913233
+          ]
+        },
+        {
+          "t": 10,
+          "errorM": 8.951395416686734e-8,
+          "held": true,
+          "phase": "drink",
+          "position": [
+            -0.05357974310496222,
+            1.240287237642875,
+            0.20800232257793377
+          ]
+        },
+        {
+          "t": 11,
+          "errorM": 7.501266785555556e-8,
+          "held": true,
+          "phase": "drink",
+          "position": [
+            -0.06151058692518244,
+            1.238719584672754,
+            0.20965836834308205
+          ]
+        },
+        {
+          "t": 12,
+          "errorM": 7.487437715084053e-8,
+          "held": true,
+          "phase": "drink",
+          "position": [
+            -0.048628937604468764,
+            1.2412085943952091,
+            0.20690654829319832
+          ]
+        },
+        {
+          "t": 13,
+          "errorM": 9.106198773139947e-8,
+          "held": true,
+          "phase": "return",
+          "position": [
+            -0.048628937604468736,
+            1.2412085943952091,
+            0.20690654829319832
+          ]
+        },
+        {
+          "t": 14,
+          "errorM": 2.9045039233920793e-8,
+          "held": true,
+          "phase": "return",
+          "position": [
+            -0.1557552934625912,
+            1.0393597923363769,
+            0.29982918417154103
+          ]
+        },
+        {
+          "t": 14.99,
+          "errorM": 0.0005560835994353083,
+          "held": true,
+          "phase": "return",
+          "position": [
+            -0.24998532940587806,
+            0.8400299192166845,
+            0.3899863982321227
+          ]
+        },
+        {
+          "t": 15,
+          "errorM": 0.0005621427199342118,
+          "held": false,
+          "phase": "release",
+          "position": [
+            -0.25,
+            0.84,
+            0.39
+          ]
+        },
+        {
+          "t": 15.5,
+          "errorM": 0.0013161531961446305,
+          "held": false,
+          "phase": "release",
+          "position": [
+            -0.25,
+            0.84,
+            0.39
+          ]
+        },
+        {
+          "t": 16,
+          "errorM": null,
+          "held": false,
+          "phase": "idle",
+          "position": [
+            -0.25,
+            0.84,
+            0.39
+          ]
+        },
+        {
+          "t": 19,
+          "errorM": null,
+          "held": false,
+          "phase": "idle",
+          "position": [
+            -0.25,
+            0.84,
+            0.39
+          ]
+        }
+      ]
+    },
+    {
+      "actor": "iris",
+      "case": "shifted",
+      "heldSamples": 9,
+      "heldMaxErrorM": 0.008102444545317335,
+      "transitionGapM": 3.690045259541273e-11,
+      "result": "COMPLETED",
+      "samples": [
+        {
+          "t": 5,
+          "errorM": null,
+          "held": false,
+          "phase": "look",
+          "position": [
+            -0.14,
+            0.84,
+            0.49
+          ]
+        },
+        {
+          "t": 6,
+          "errorM": 1.5838319836915702e-16,
+          "held": false,
+          "phase": "reach",
+          "position": [
+            -0.14,
+            0.84,
+            0.49
+          ]
+        },
+        {
+          "t": 6.5,
+          "errorM": 0.01816732294026078,
+          "held": false,
+          "phase": "reach",
+          "position": [
+            -0.14,
+            0.84,
+            0.49
+          ]
+        },
+        {
+          "t": 7,
+          "errorM": 0.0006076958754569291,
+          "held": false,
+          "phase": "reach",
+          "position": [
+            -0.14,
+            0.84,
+            0.49
+          ]
+        },
+        {
+          "t": 7.99,
+          "errorM": 0.006919178076757678,
+          "held": false,
+          "phase": "reach",
+          "position": [
+            -0.14,
+            0.84,
+            0.49
+          ]
+        },
+        {
+          "t": 8,
+          "errorM": 0.006952196296313284,
+          "held": true,
+          "phase": "lift",
+          "position": [
+            -0.14,
+            0.84,
+            0.49
+          ]
+        },
+        {
+          "t": 8.5,
+          "errorM": 0.0009060211928118016,
+          "held": true,
+          "phase": "lift",
+          "position": [
+            -0.12200657971605657,
+            0.9016645746745786,
+            0.44750446807719146
+          ]
+        },
+        {
+          "t": 9,
+          "errorM": 0.0000031119139205664142,
+          "held": true,
+          "phase": "lift",
+          "position": [
+            -0.07988468926054512,
+            1.0375715227035125,
+            0.35368265907398816
+          ]
+        },
+        {
+          "t": 10,
+          "errorM": 1.5410506948551524e-7,
+          "held": true,
+          "phase": "drink",
+          "position": [
+            -0.027275174513916353,
+            1.234405570746315,
+            0.2183226802618513
+          ]
+        },
+        {
+          "t": 11,
+          "errorM": 1.2369440158110957e-7,
+          "held": true,
+          "phase": "drink",
+          "position": [
+            -0.034730626477838436,
+            1.2335957657097203,
+            0.21912485209576837
+          ]
+        },
+        {
+          "t": 12,
+          "errorM": 1.2785091124815767e-7,
+          "held": true,
+          "phase": "drink",
+          "position": [
+            -0.022642535489964713,
+            1.2348700978761817,
+            0.21774926400415834
+          ]
+        },
+        {
+          "t": 13,
+          "errorM": 1.5902295050956177e-7,
+          "held": true,
+          "phase": "return",
+          "position": [
+            -0.02264253548996467,
+            1.2348700978761817,
+            0.21774926400415834
+          ]
+        },
+        {
+          "t": 14,
+          "errorM": 0.0000015503015622304315,
+          "held": true,
+          "phase": "return",
+          "position": [
+            -0.08736531323891922,
+            1.03679788285486,
+            0.3545624260478842
+          ]
+        },
+        {
+          "t": 14.99,
+          "errorM": 0.008102444545317335,
+          "held": true,
+          "phase": "return",
+          "position": [
+            -0.13999158489955613,
+            0.8400294806684844,
+            0.4899796934215791
+          ]
+        },
+        {
+          "t": 15,
+          "errorM": 0.008150887930815573,
+          "held": false,
+          "phase": "release",
+          "position": [
+            -0.14,
+            0.84,
+            0.49
+          ]
+        },
+        {
+          "t": 15.5,
+          "errorM": 0.00053672518542874,
+          "held": false,
+          "phase": "release",
+          "position": [
+            -0.14,
+            0.84,
+            0.49
+          ]
+        },
+        {
+          "t": 16,
+          "errorM": null,
+          "held": false,
+          "phase": "idle",
+          "position": [
+            -0.14,
+            0.84,
+            0.49
+          ]
+        },
+        {
+          "t": 19,
+          "errorM": null,
+          "held": false,
+          "phase": "idle",
+          "position": [
+            -0.14,
+            0.84,
+            0.49
+          ]
+        }
+      ]
+    },
+    {
+      "actor": "iris",
+      "case": "rotated",
+      "heldSamples": 9,
+      "heldMaxErrorM": 0.0006758846010281154,
+      "transitionGapM": 3.886569251924792e-11,
+      "result": "COMPLETED",
+      "samples": [
+        {
+          "t": 5,
+          "errorM": null,
+          "held": false,
+          "phase": "look",
+          "position": [
+            0.08,
+            0.84,
+            0.37
+          ]
+        },
+        {
+          "t": 6,
+          "errorM": 7.076311083754595e-17,
+          "held": false,
+          "phase": "reach",
+          "position": [
+            0.08,
+            0.84,
+            0.37
+          ]
+        },
+        {
+          "t": 6.5,
+          "errorM": 0.0210974947651384,
+          "held": false,
+          "phase": "reach",
+          "position": [
+            0.08,
+            0.84,
+            0.37
+          ]
+        },
+        {
+          "t": 7,
+          "errorM": 0.0015887906704579572,
+          "held": false,
+          "phase": "reach",
+          "position": [
+            0.08,
+            0.84,
+            0.37
+          ]
+        },
+        {
+          "t": 7.99,
+          "errorM": 0.000493908699556931,
+          "held": false,
+          "phase": "reach",
+          "position": [
+            0.08,
+            0.84,
+            0.37
+          ]
+        },
+        {
+          "t": 8,
+          "errorM": 0.0004982995397418539,
+          "held": true,
+          "phase": "lift",
+          "position": [
+            0.08,
+            0.84,
+            0.37
+          ]
+        },
+        {
+          "t": 8.5,
+          "errorM": 0.000019655625637348065,
+          "held": true,
+          "phase": "lift",
+          "position": [
+            0.10376791922289795,
+            0.9027519130423698,
+            0.32411216644711044
+          ]
+        },
+        {
+          "t": 9,
+          "errorM": 1.1818648110422487e-8,
+          "held": true,
+          "phase": "lift",
+          "position": [
+            0.15785008137718137,
+            1.0413205326730115,
+            0.22098932270955898
+          ]
+        },
+        {
+          "t": 10,
+          "errorM": 8.569270462137733e-8,
+          "held": true,
+          "phase": "drink",
+          "position": [
+            0.23038852793483605,
+            1.241100507343901,
+            0.07837768629086828
+          ]
+        },
+        {
+          "t": 11,
+          "errorM": 7.222290075660124e-8,
+          "held": true,
+          "phase": "drink",
+          "position": [
+            0.2250728068526356,
+            1.2394608955425326,
+            0.08460037392556541
+          ]
+        },
+        {
+          "t": 12,
+          "errorM": 7.180995327963927e-8,
+          "held": true,
+          "phase": "drink",
+          "position": [
+            0.2336715879944497,
+            1.2420647320884786,
+            0.07444369179116817
+          ]
+        },
+        {
+          "t": 13,
+          "errorM": 8.703082713312956e-8,
+          "held": true,
+          "phase": "return",
+          "position": [
+            0.2336715879944497,
+            1.2420647320884786,
+            0.07444369179116817
+          ]
+        },
+        {
+          "t": 14,
+          "errorM": 3.155008398412904e-9,
+          "held": true,
+          "phase": "return",
+          "position": [
+            0.1525364034263178,
+            1.0397304477712663,
+            0.2273001869627827
+          ]
+        },
+        {
+          "t": 14.99,
+          "errorM": 0.0006758846010281154,
+          "held": true,
+          "phase": "return",
+          "position": [
+            0.08001123367133543,
+            0.8400299799042791,
+            0.36997821057847874
+          ]
+        },
+        {
+          "t": 15,
+          "errorM": 0.0006837598048369943,
+          "held": false,
+          "phase": "release",
+          "position": [
+            0.08,
+            0.84,
+            0.37
+          ]
+        },
+        {
+          "t": 15.5,
+          "errorM": 0.0017626727629405097,
+          "held": false,
+          "phase": "release",
+          "position": [
+            0.08,
+            0.84,
+            0.37
+          ]
+        },
+        {
+          "t": 16,
+          "errorM": null,
+          "held": false,
+          "phase": "idle",
+          "position": [
+            0.08,
+            0.84,
+            0.37
+          ]
+        },
+        {
+          "t": 19,
+          "errorM": null,
+          "held": false,
+          "phase": "idle",
+          "position": [
+            0.08,
+            0.84,
+            0.37
+          ]
+        }
+      ]
+    },
+    {
+      "actor": "iris",
+      "case": "unreachable",
+      "heldSamples": 0,
+      "heldMaxErrorM": null,
+      "transitionGapM": 0,
+      "result": "OUT_OF_REACH",
+      "samples": [
+        {
+          "t": 5,
+          "errorM": null,
+          "held": false,
+          "phase": "look",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        },
+        {
+          "t": 6,
+          "errorM": null,
+          "held": false,
+          "phase": "out_of_reach",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        },
+        {
+          "t": 6.5,
+          "errorM": null,
+          "held": false,
+          "phase": "out_of_reach",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        },
+        {
+          "t": 7,
+          "errorM": null,
+          "held": false,
+          "phase": "out_of_reach",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        },
+        {
+          "t": 7.99,
+          "errorM": null,
+          "held": false,
+          "phase": "out_of_reach",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        },
+        {
+          "t": 8,
+          "errorM": null,
+          "held": false,
+          "phase": "out_of_reach",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        },
+        {
+          "t": 8.5,
+          "errorM": null,
+          "held": false,
+          "phase": "out_of_reach",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        },
+        {
+          "t": 9,
+          "errorM": null,
+          "held": false,
+          "phase": "out_of_reach",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        },
+        {
+          "t": 10,
+          "errorM": null,
+          "held": false,
+          "phase": "out_of_reach",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        },
+        {
+          "t": 11,
+          "errorM": null,
+          "held": false,
+          "phase": "out_of_reach",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        },
+        {
+          "t": 12,
+          "errorM": null,
+          "held": false,
+          "phase": "out_of_reach",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        },
+        {
+          "t": 13,
+          "errorM": null,
+          "held": false,
+          "phase": "out_of_reach",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        },
+        {
+          "t": 14,
+          "errorM": null,
+          "held": false,
+          "phase": "out_of_reach",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        },
+        {
+          "t": 14.99,
+          "errorM": null,
+          "held": false,
+          "phase": "out_of_reach",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        },
+        {
+          "t": 15,
+          "errorM": null,
+          "held": false,
+          "phase": "out_of_reach",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        },
+        {
+          "t": 15.5,
+          "errorM": null,
+          "held": false,
+          "phase": "out_of_reach",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        },
+        {
+          "t": 16,
+          "errorM": null,
+          "held": false,
+          "phase": "out_of_reach",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        },
+        {
+          "t": 19,
+          "errorM": null,
+          "held": false,
+          "phase": "out_of_reach",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        }
+      ]
+    },
+    {
+      "actor": "soter",
+      "case": "nominal",
+      "heldSamples": 9,
+      "heldMaxErrorM": 0.001568036240319534,
+      "transitionGapM": 4.366449026834957e-11,
+      "result": "COMPLETED",
+      "samples": [
+        {
+          "t": 5,
+          "errorM": null,
+          "held": false,
+          "phase": "look",
+          "position": [
+            -0.25,
+            0.84,
+            0.39
+          ]
+        },
+        {
+          "t": 6,
+          "errorM": 1.5874615564629044e-16,
+          "held": false,
+          "phase": "reach",
+          "position": [
+            -0.25,
+            0.84,
+            0.39
+          ]
+        },
+        {
+          "t": 6.5,
+          "errorM": 0.019259153509049675,
+          "held": false,
+          "phase": "reach",
+          "position": [
+            -0.25,
+            0.84,
+            0.39
+          ]
+        },
+        {
+          "t": 7,
+          "errorM": 0.0031837328515899915,
+          "held": false,
+          "phase": "reach",
+          "position": [
+            -0.25,
+            0.84,
+            0.39
+          ]
+        },
+        {
+          "t": 7.99,
+          "errorM": 0.001138516030941393,
+          "held": false,
+          "phase": "reach",
+          "position": [
+            -0.25,
+            0.84,
+            0.39
+          ]
+        },
+        {
+          "t": 8,
+          "errorM": 0.001148901085932959,
+          "held": true,
+          "phase": "lift",
+          "position": [
+            -0.25,
+            0.84,
+            0.39
+          ]
+        },
+        {
+          "t": 8.5,
+          "errorM": 0.00003297615918743552,
+          "held": true,
+          "phase": "lift",
+          "position": [
+            -0.2195239902364291,
+            0.9217859537994774,
+            0.3634948799104414
+          ]
+        },
+        {
+          "t": 9,
+          "errorM": 9.528943383970385e-9,
+          "held": true,
+          "phase": "lift",
+          "position": [
+            -0.14954138039345077,
+            1.1022446949035036,
+            0.30451995120622066
+          ]
+        },
+        {
+          "t": 10,
+          "errorM": 9.353077428661449e-8,
+          "held": true,
+          "phase": "drink",
+          "position": [
+            -0.057761640089809,
+            1.3629029214032247,
+            0.22098089854969682
+          ]
+        },
+        {
+          "t": 11,
+          "errorM": 7.656472810207139e-8,
+          "held": true,
+          "phase": "drink",
+          "position": [
+            -0.06633390399134681,
+            1.361212658692111,
+            0.2227661321590671
+          ]
+        },
+        {
+          "t": 12,
+          "errorM": 7.820209132955666e-8,
+          "held": true,
+          "phase": "drink",
+          "position": [
+            -0.0524105685537809,
+            1.363896092809703,
+            0.21979957373333447
+          ]
+        },
+        {
+          "t": 13,
+          "errorM": 9.600380899346372e-8,
+          "held": true,
+          "phase": "return",
+          "position": [
+            -0.05241056855378087,
+            1.363896092809703,
+            0.21979957373333447
+          ]
+        },
+        {
+          "t": 14,
+          "errorM": 4.374143090175109e-9,
+          "held": true,
+          "phase": "return",
+          "position": [
+            -0.1581669519956734,
+            1.1006063293460555,
+            0.3063830660795336
+          ]
+        },
+        {
+          "t": 14.99,
+          "errorM": 0.001568036240319534,
+          "held": true,
+          "phase": "return",
+          "position": [
+            -0.24998564295844813,
+            0.8400390845630877,
+            0.38998736858036626
+          ]
+        },
+        {
+          "t": 15,
+          "errorM": 0.0015863987653419232,
+          "held": false,
+          "phase": "release",
+          "position": [
+            -0.25,
+            0.84,
+            0.39
+          ]
+        },
+        {
+          "t": 15.5,
+          "errorM": 0.003037466147923593,
+          "held": false,
+          "phase": "release",
+          "position": [
+            -0.25,
+            0.84,
+            0.39
+          ]
+        },
+        {
+          "t": 16,
+          "errorM": null,
+          "held": false,
+          "phase": "idle",
+          "position": [
+            -0.25,
+            0.84,
+            0.39
+          ]
+        },
+        {
+          "t": 19,
+          "errorM": null,
+          "held": false,
+          "phase": "idle",
+          "position": [
+            -0.25,
+            0.84,
+            0.39
+          ]
+        }
+      ]
+    },
+    {
+      "actor": "soter",
+      "case": "shifted",
+      "heldSamples": 9,
+      "heldMaxErrorM": 0.016062212589763546,
+      "transitionGapM": 4.4089166676764956e-11,
+      "result": "COMPLETED",
+      "samples": [
+        {
+          "t": 5,
+          "errorM": null,
+          "held": false,
+          "phase": "look",
+          "position": [
+            -0.14,
+            0.84,
+            0.49
+          ]
+        },
+        {
+          "t": 6,
+          "errorM": 1.5874615564629044e-16,
+          "held": false,
+          "phase": "reach",
+          "position": [
+            -0.14,
+            0.84,
+            0.49
+          ]
+        },
+        {
+          "t": 6.5,
+          "errorM": 0.016676049586723526,
+          "held": false,
+          "phase": "reach",
+          "position": [
+            -0.14,
+            0.84,
+            0.49
+          ]
+        },
+        {
+          "t": 7,
+          "errorM": 0.0008772063125765501,
+          "held": false,
+          "phase": "reach",
+          "position": [
+            -0.14,
+            0.84,
+            0.49
+          ]
+        },
+        {
+          "t": 7.99,
+          "errorM": 0.013836686017338342,
+          "held": false,
+          "phase": "reach",
+          "position": [
+            -0.14,
+            0.84,
+            0.49
+          ]
+        },
+        {
+          "t": 8,
+          "errorM": 0.01389775835609543,
+          "held": true,
+          "phase": "lift",
+          "position": [
+            -0.14,
+            0.84,
+            0.49
+          ]
+        },
+        {
+          "t": 8.5,
+          "errorM": 0.0015838983495308318,
+          "held": true,
+          "phase": "lift",
+          "position": [
+            -0.12230839864751196,
+            0.9207545631968929,
+            0.4496546429527317
+          ]
+        },
+        {
+          "t": 9,
+          "errorM": 0.000002558529963264821,
+          "held": true,
+          "phase": "lift",
+          "position": [
+            -0.08064497988894309,
+            1.0986784853339127,
+            0.3605373045568294
+          ]
+        },
+        {
+          "t": 10,
+          "errorM": 1.9309518048723152e-7,
+          "held": true,
+          "phase": "drink",
+          "position": [
+            -0.02940400088468617,
+            1.3565621906210388,
+            0.23210675977244932
+          ]
+        },
+        {
+          "t": 11,
+          "errorM": 1.533481778421848e-7,
+          "held": true,
+          "phase": "drink",
+          "position": [
+            -0.037463768612972,
+            1.355688925846877,
+            0.23297147462156298
+          ]
+        },
+        {
+          "t": 12,
+          "errorM": 1.616844176813677e-7,
+          "held": true,
+          "phase": "drink",
+          "position": [
+            -0.024395928707028447,
+            1.3570628768697655,
+            0.23148856300798792
+          ]
+        },
+        {
+          "t": 13,
+          "errorM": 2.0066698222744165e-7,
+          "held": true,
+          "phase": "return",
+          "position": [
+            -0.02439592870702842,
+            1.3570628768697655,
+            0.23148856300798792
+          ]
+        },
+        {
+          "t": 14,
+          "errorM": 0.0000010737047501278438,
+          "held": true,
+          "phase": "return",
+          "position": [
+            -0.088731884306486,
+            1.0978444629234385,
+            0.3614857373107815
+          ]
+        },
+        {
+          "t": 14.99,
+          "errorM": 0.016062212589763546,
+          "held": true,
+          "phase": "return",
+          "position": [
+            -0.1399917449273549,
+            0.8400386117862166,
+            0.48998072388308145
+          ]
+        },
+        {
+          "t": 15,
+          "errorM": 0.016153003618664355,
+          "held": false,
+          "phase": "release",
+          "position": [
+            -0.14,
+            0.84,
+            0.49
+          ]
+        },
+        {
+          "t": 15.5,
+          "errorM": 0.00043084329195790846,
+          "held": false,
+          "phase": "release",
+          "position": [
+            -0.14,
+            0.84,
+            0.49
+          ]
+        },
+        {
+          "t": 16,
+          "errorM": null,
+          "held": false,
+          "phase": "idle",
+          "position": [
+            -0.14,
+            0.84,
+            0.49
+          ]
+        },
+        {
+          "t": 19,
+          "errorM": null,
+          "held": false,
+          "phase": "idle",
+          "position": [
+            -0.14,
+            0.84,
+            0.49
+          ]
+        }
+      ]
+    },
+    {
+      "actor": "soter",
+      "case": "rotated",
+      "heldSamples": 9,
+      "heldMaxErrorM": 0.0011967730203958744,
+      "transitionGapM": 4.5986904980533465e-11,
+      "result": "COMPLETED",
+      "samples": [
+        {
+          "t": 5,
+          "errorM": null,
+          "held": false,
+          "phase": "look",
+          "position": [
+            0.08,
+            0.84,
+            0.37
+          ]
+        },
+        {
+          "t": 6,
+          "errorM": 3.1031676915590914e-17,
+          "held": false,
+          "phase": "reach",
+          "position": [
+            0.08,
+            0.84,
+            0.37
+          ]
+        },
+        {
+          "t": 6.5,
+          "errorM": 0.018482030627837726,
+          "held": false,
+          "phase": "reach",
+          "position": [
+            0.08,
+            0.84,
+            0.37
+          ]
+        },
+        {
+          "t": 7,
+          "errorM": 0.004129391818312785,
+          "held": false,
+          "phase": "reach",
+          "position": [
+            0.08,
+            0.84,
+            0.37
+          ]
+        },
+        {
+          "t": 7.99,
+          "errorM": 0.0008095194425463252,
+          "held": false,
+          "phase": "reach",
+          "position": [
+            0.08,
+            0.84,
+            0.37
+          ]
+        },
+        {
+          "t": 8,
+          "errorM": 0.000818606125851628,
+          "held": true,
+          "phase": "lift",
+          "position": [
+            0.08,
+            0.84,
+            0.37
+          ]
+        },
+        {
+          "t": 8.5,
+          "errorM": 0.000006728809807638036,
+          "held": true,
+          "phase": "lift",
+          "position": [
+            0.10446235006574263,
+            0.921926768284423,
+            0.32610062598480205
+          ]
+        },
+        {
+          "t": 9,
+          "errorM": 1.961609039447282e-8,
+          "held": true,
+          "phase": "lift",
+          "position": [
+            0.1602181890869151,
+            1.102720105394074,
+            0.22717845233269937
+          ]
+        },
+        {
+          "t": 10,
+          "errorM": 8.78792898868471e-8,
+          "held": true,
+          "phase": "drink",
+          "position": [
+            0.23469236406023697,
+            1.3637796667745972,
+            0.09126901043195951
+          ]
+        },
+        {
+          "t": 11,
+          "errorM": 7.225523990102034e-8,
+          "held": true,
+          "phase": "drink",
+          "position": [
+            0.2289438643014331,
+            1.3620118288480958,
+            0.09799089277113104
+          ]
+        },
+        {
+          "t": 12,
+          "errorM": 7.352551868840896e-8,
+          "held": true,
+          "phase": "drink",
+          "position": [
+            0.23824268188802794,
+            1.364819052018542,
+            0.08701956222342822
+          ]
+        },
+        {
+          "t": 13,
+          "errorM": 9.006731688570428e-8,
+          "held": true,
+          "phase": "return",
+          "position": [
+            0.238242681888028,
+            1.364819052018542,
+            0.08701956222342816
+          ]
+        },
+        {
+          "t": 14,
+          "errorM": 1.139103021692464e-8,
+          "held": true,
+          "phase": "return",
+          "position": [
+            0.15447193215071658,
+            1.1010059144240478,
+            0.23399544638556552
+          ]
+        },
+        {
+          "t": 14.99,
+          "errorM": 0.0011967730203958744,
+          "held": true,
+          "phase": "return",
+          "position": [
+            0.0800115547423026,
+            0.840039149987347,
+            0.3699791749545455
+          ]
+        },
+        {
+          "t": 15,
+          "errorM": 0.0012137421848146994,
+          "held": false,
+          "phase": "release",
+          "position": [
+            0.08,
+            0.84,
+            0.37
+          ]
+        },
+        {
+          "t": 15.5,
+          "errorM": 0.004001428127069277,
+          "held": false,
+          "phase": "release",
+          "position": [
+            0.08,
+            0.84,
+            0.37
+          ]
+        },
+        {
+          "t": 16,
+          "errorM": null,
+          "held": false,
+          "phase": "idle",
+          "position": [
+            0.08,
+            0.84,
+            0.37
+          ]
+        },
+        {
+          "t": 19,
+          "errorM": null,
+          "held": false,
+          "phase": "idle",
+          "position": [
+            0.08,
+            0.84,
+            0.37
+          ]
+        }
+      ]
+    },
+    {
+      "actor": "soter",
+      "case": "unreachable",
+      "heldSamples": 0,
+      "heldMaxErrorM": null,
+      "transitionGapM": 0,
+      "result": "OUT_OF_REACH",
+      "samples": [
+        {
+          "t": 5,
+          "errorM": null,
+          "held": false,
+          "phase": "look",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        },
+        {
+          "t": 6,
+          "errorM": null,
+          "held": false,
+          "phase": "out_of_reach",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        },
+        {
+          "t": 6.5,
+          "errorM": null,
+          "held": false,
+          "phase": "out_of_reach",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        },
+        {
+          "t": 7,
+          "errorM": null,
+          "held": false,
+          "phase": "out_of_reach",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        },
+        {
+          "t": 7.99,
+          "errorM": null,
+          "held": false,
+          "phase": "out_of_reach",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        },
+        {
+          "t": 8,
+          "errorM": null,
+          "held": false,
+          "phase": "out_of_reach",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        },
+        {
+          "t": 8.5,
+          "errorM": null,
+          "held": false,
+          "phase": "out_of_reach",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        },
+        {
+          "t": 9,
+          "errorM": null,
+          "held": false,
+          "phase": "out_of_reach",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        },
+        {
+          "t": 10,
+          "errorM": null,
+          "held": false,
+          "phase": "out_of_reach",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        },
+        {
+          "t": 11,
+          "errorM": null,
+          "held": false,
+          "phase": "out_of_reach",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        },
+        {
+          "t": 12,
+          "errorM": null,
+          "held": false,
+          "phase": "out_of_reach",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        },
+        {
+          "t": 13,
+          "errorM": null,
+          "held": false,
+          "phase": "out_of_reach",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        },
+        {
+          "t": 14,
+          "errorM": null,
+          "held": false,
+          "phase": "out_of_reach",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        },
+        {
+          "t": 14.99,
+          "errorM": null,
+          "held": false,
+          "phase": "out_of_reach",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        },
+        {
+          "t": 15,
+          "errorM": null,
+          "held": false,
+          "phase": "out_of_reach",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        },
+        {
+          "t": 15.5,
+          "errorM": null,
+          "held": false,
+          "phase": "out_of_reach",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        },
+        {
+          "t": 16,
+          "errorM": null,
+          "held": false,
+          "phase": "out_of_reach",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        },
+        {
+          "t": 19,
+          "errorM": null,
+          "held": false,
+          "phase": "out_of_reach",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        }
+      ]
+    },
+    {
+      "actor": "nara",
+      "case": "nominal",
+      "heldSamples": 9,
+      "heldMaxErrorM": 0.00041881807067036594,
+      "transitionGapM": 3.000551659205104e-11,
+      "result": "COMPLETED",
+      "samples": [
+        {
+          "t": 5,
+          "errorM": null,
+          "held": false,
+          "phase": "look",
+          "position": [
+            -0.25,
+            0.84,
+            0.39
+          ]
+        },
+        {
+          "t": 6,
+          "errorM": 1.1211468303779313e-16,
+          "held": false,
+          "phase": "reach",
+          "position": [
+            -0.25,
+            0.84,
+            0.39
+          ]
+        },
+        {
+          "t": 6.5,
+          "errorM": 0.02073252185572345,
+          "held": false,
+          "phase": "reach",
+          "position": [
+            -0.25,
+            0.84,
+            0.39
+          ]
+        },
+        {
+          "t": 7,
+          "errorM": 0.0003500507140358982,
+          "held": false,
+          "phase": "reach",
+          "position": [
+            -0.25,
+            0.84,
+            0.39
+          ]
+        },
+        {
+          "t": 7.99,
+          "errorM": 0.00032450694871029697,
+          "held": false,
+          "phase": "reach",
+          "position": [
+            -0.25,
+            0.84,
+            0.39
+          ]
+        },
+        {
+          "t": 8,
+          "errorM": 0.00032692825150236796,
+          "held": true,
+          "phase": "lift",
+          "position": [
+            -0.25,
+            0.84,
+            0.39
+          ]
+        },
+        {
+          "t": 8.5,
+          "errorM": 0.00003846848311562673,
+          "held": true,
+          "phase": "lift",
+          "position": [
+            -0.2182990296453322,
+            0.8848465259223153,
+            0.3595603247733971
+          ]
+        },
+        {
+          "t": 9,
+          "errorM": 2.776671511739232e-7,
+          "held": true,
+          "phase": "lift",
+          "position": [
+            -0.14604107662719534,
+            0.9839629705325015,
+            0.29202406595356045
+          ]
+        },
+        {
+          "t": 10,
+          "errorM": 1.1427721165065618e-7,
+          "held": true,
+          "phase": "drink",
+          "position": [
+            -0.04952051114154274,
+            1.126565795978757,
+            0.1957121901457446
+          ]
+        },
+        {
+          "t": 11,
+          "errorM": 9.813703799177143e-8,
+          "held": true,
+          "phase": "drink",
+          "position": [
+            -0.05686746495562525,
+            1.1251167168215295,
+            0.19724272266660814
+          ]
+        },
+        {
+          "t": 12,
+          "errorM": 9.641059067585664e-8,
+          "held": true,
+          "phase": "drink",
+          "position": [
+            -0.04493430200122284,
+            1.1274172766973247,
+            0.19469941314496708
+          ]
+        },
+        {
+          "t": 13,
+          "errorM": 1.1549511274263655e-7,
+          "held": true,
+          "phase": "return",
+          "position": [
+            -0.04493430200122278,
+            1.1274172766973247,
+            0.19469941314496708
+          ]
+        },
+        {
+          "t": 14,
+          "errorM": 1.5400198654106835e-7,
+          "held": true,
+          "phase": "return",
+          "position": [
+            -0.1534337324778126,
+            0.9825583584107647,
+            0.2936213613333041
+          ]
+        },
+        {
+          "t": 14.99,
+          "errorM": 0.00041881807067036594,
+          "held": true,
+          "phase": "return",
+          "position": [
+            -0.2499850251079129,
+            0.8400214187097037,
+            0.3899854793508878
+          ]
+        },
+        {
+          "t": 15,
+          "errorM": 0.0004227554916321956,
+          "held": false,
+          "phase": "release",
+          "position": [
+            -0.25,
+            0.84,
+            0.39
+          ]
+        },
+        {
+          "t": 15.5,
+          "errorM": 0.0004101352064731298,
+          "held": false,
+          "phase": "release",
+          "position": [
+            -0.25,
+            0.84,
+            0.39
+          ]
+        },
+        {
+          "t": 16,
+          "errorM": null,
+          "held": false,
+          "phase": "idle",
+          "position": [
+            -0.25,
+            0.84,
+            0.39
+          ]
+        },
+        {
+          "t": 19,
+          "errorM": null,
+          "held": false,
+          "phase": "idle",
+          "position": [
+            -0.25,
+            0.84,
+            0.39
+          ]
+        }
+      ]
+    },
+    {
+      "actor": "nara",
+      "case": "shifted",
+      "heldSamples": 9,
+      "heldMaxErrorM": 0.006531318884578256,
+      "transitionGapM": 3.1221290637290897e-11,
+      "result": "COMPLETED",
+      "samples": [
+        {
+          "t": 5,
+          "errorM": null,
+          "held": false,
+          "phase": "look",
+          "position": [
+            -0.14,
+            0.84,
+            0.49
+          ]
+        },
+        {
+          "t": 6,
+          "errorM": 1.1211468303779313e-16,
+          "held": false,
+          "phase": "reach",
+          "position": [
+            -0.14,
+            0.84,
+            0.49
+          ]
+        },
+        {
+          "t": 6.5,
+          "errorM": 0.016844512169677882,
+          "held": false,
+          "phase": "reach",
+          "position": [
+            -0.14,
+            0.84,
+            0.49
+          ]
+        },
+        {
+          "t": 7,
+          "errorM": 0.00022275062371318103,
+          "held": false,
+          "phase": "reach",
+          "position": [
+            -0.14,
+            0.84,
+            0.49
+          ]
+        },
+        {
+          "t": 7.99,
+          "errorM": 0.005644796638245197,
+          "held": false,
+          "phase": "reach",
+          "position": [
+            -0.14,
+            0.84,
+            0.49
+          ]
+        },
+        {
+          "t": 8,
+          "errorM": 0.005670770115527431,
+          "held": true,
+          "phase": "lift",
+          "position": [
+            -0.14,
+            0.84,
+            0.49
+          ]
+        },
+        {
+          "t": 8.5,
+          "errorM": 0.0009472122164530931,
+          "held": true,
+          "phase": "lift",
+          "position": [
+            -0.12171164815396207,
+            0.8839622887409063,
+            0.4454654471519053
+          ]
+        },
+        {
+          "t": 9,
+          "errorM": 0.000006414019926925079,
+          "held": true,
+          "phase": "lift",
+          "position": [
+            -0.07912734192470332,
+            0.980905569107448,
+            0.3471828947745239
+          ]
+        },
+        {
+          "t": 10,
+          "errorM": 1.7251670561497668e-7,
+          "held": true,
+          "phase": "drink",
+          "position": [
+            -0.025208791702452674,
+            1.121129727528198,
+            0.2052506716324879
+          ]
+        },
+        {
+          "t": 11,
+          "errorM": 1.4064706588944982e-7,
+          "held": true,
+          "phase": "drink",
+          "position": [
+            -0.03211636961900069,
+            1.1203810813118729,
+            0.20599202019921842
+          ]
+        },
+        {
+          "t": 12,
+          "errorM": 1.4313449899131582e-7,
+          "held": true,
+          "phase": "drink",
+          "position": [
+            -0.02091664456455014,
+            1.1215589882976167,
+            0.20472067851604814
+          ]
+        },
+        {
+          "t": 13,
+          "errorM": 1.7699636314161324e-7,
+          "held": true,
+          "phase": "return",
+          "position": [
+            -0.020916644564550113,
+            1.1215589882976167,
+            0.20472067851604814
+          ]
+        },
+        {
+          "t": 14,
+          "errorM": 0.0000036627814109524903,
+          "held": true,
+          "phase": "return",
+          "position": [
+            -0.08605818480950035,
+            0.9801905406559364,
+            0.34799601009960923
+          ]
+        },
+        {
+          "t": 14.99,
+          "errorM": 0.006531318884578256,
+          "held": true,
+          "phase": "return",
+          "position": [
+            -0.13999142962311423,
+            0.8400210133861659,
+            0.48997871619035066
+          ]
+        },
+        {
+          "t": 15,
+          "errorM": 0.006567393668805484,
+          "held": false,
+          "phase": "release",
+          "position": [
+            -0.14,
+            0.84,
+            0.49
+          ]
+        },
+        {
+          "t": 15.5,
+          "errorM": 0.00021989104211187432,
+          "held": false,
+          "phase": "release",
+          "position": [
+            -0.14,
+            0.84,
+            0.49
+          ]
+        },
+        {
+          "t": 16,
+          "errorM": null,
+          "held": false,
+          "phase": "idle",
+          "position": [
+            -0.14,
+            0.84,
+            0.49
+          ]
+        },
+        {
+          "t": 19,
+          "errorM": null,
+          "held": false,
+          "phase": "idle",
+          "position": [
+            -0.14,
+            0.84,
+            0.49
+          ]
+        }
+      ]
+    },
+    {
+      "actor": "nara",
+      "case": "rotated",
+      "heldSamples": 9,
+      "heldMaxErrorM": 0.0007104735928470312,
+      "transitionGapM": 3.323200497537923e-11,
+      "result": "COMPLETED",
+      "samples": [
+        {
+          "t": 5,
+          "errorM": null,
+          "held": false,
+          "phase": "look",
+          "position": [
+            0.08,
+            0.84,
+            0.37
+          ]
+        },
+        {
+          "t": 6,
+          "errorM": 1.5515838457795457e-17,
+          "held": false,
+          "phase": "reach",
+          "position": [
+            0.08,
+            0.84,
+            0.37
+          ]
+        },
+        {
+          "t": 6.5,
+          "errorM": 0.020685774708899825,
+          "held": false,
+          "phase": "reach",
+          "position": [
+            0.08,
+            0.84,
+            0.37
+          ]
+        },
+        {
+          "t": 7,
+          "errorM": 0.0004856667402179997,
+          "held": false,
+          "phase": "reach",
+          "position": [
+            0.08,
+            0.84,
+            0.37
+          ]
+        },
+        {
+          "t": 7.99,
+          "errorM": 0.000547553704373839,
+          "held": false,
+          "phase": "reach",
+          "position": [
+            0.08,
+            0.84,
+            0.37
+          ]
+        },
+        {
+          "t": 8,
+          "errorM": 0.0005516885502370574,
+          "held": true,
+          "phase": "lift",
+          "position": [
+            0.08,
+            0.84,
+            0.37
+          ]
+        },
+        {
+          "t": 8.5,
+          "errorM": 0.00004725576350467428,
+          "held": true,
+          "phase": "lift",
+          "position": [
+            0.10312452245373933,
+            0.884967249732439,
+            0.3222191226025837
+          ]
+        },
+        {
+          "t": 9,
+          "errorM": 1.4248219694658676e-7,
+          "held": true,
+          "phase": "lift",
+          "position": [
+            0.15565993499145553,
+            0.9843705519387511,
+            0.21509247199919782
+          ]
+        },
+        {
+          "t": 10,
+          "errorM": 1.1081502895723672e-7,
+          "held": true,
+          "phase": "drink",
+          "position": [
+            0.2263971802727251,
+            1.1273174519023743,
+            0.06610949098538249
+          ]
+        },
+        {
+          "t": 11,
+          "errorM": 9.579017702715396e-8,
+          "held": true,
+          "phase": "drink",
+          "position": [
+            0.2214706530313742,
+            1.125801865556086,
+            0.071870965318243
+          ]
+        },
+        {
+          "t": 12,
+          "errorM": 9.375261146714546e-8,
+          "held": true,
+          "phase": "drink",
+          "position": [
+            0.2294398447604441,
+            1.12820855290959,
+            0.062467180823527035
+          ]
+        },
+        {
+          "t": 13,
+          "errorM": 1.1180868943154923e-7,
+          "held": true,
+          "phase": "return",
+          "position": [
+            0.2294398447604442,
+            1.12820855290959,
+            0.062467180823527035
+          ]
+        },
+        {
+          "t": 14,
+          "errorM": 7.90811458297093e-8,
+          "held": true,
+          "phase": "return",
+          "position": [
+            0.1507353265156871,
+            0.9829009327780429,
+            0.22093548265912147
+          ]
+        },
+        {
+          "t": 14.99,
+          "errorM": 0.0007104735928470312,
+          "held": true,
+          "phase": "return",
+          "position": [
+            0.08001093589442015,
+            0.8400214747995715,
+            0.3699772928379901
+          ]
+        },
+        {
+          "t": 15,
+          "errorM": 0.0007173659038406422,
+          "held": false,
+          "phase": "release",
+          "position": [
+            0.08,
+            0.84,
+            0.37
+          ]
+        },
+        {
+          "t": 15.5,
+          "errorM": 0.0005872714181745879,
+          "held": false,
+          "phase": "release",
+          "position": [
+            0.08,
+            0.84,
+            0.37
+          ]
+        },
+        {
+          "t": 16,
+          "errorM": null,
+          "held": false,
+          "phase": "idle",
+          "position": [
+            0.08,
+            0.84,
+            0.37
+          ]
+        },
+        {
+          "t": 19,
+          "errorM": null,
+          "held": false,
+          "phase": "idle",
+          "position": [
+            0.08,
+            0.84,
+            0.37
+          ]
+        }
+      ]
+    },
+    {
+      "actor": "nara",
+      "case": "unreachable",
+      "heldSamples": 0,
+      "heldMaxErrorM": null,
+      "transitionGapM": 0,
+      "result": "OUT_OF_REACH",
+      "samples": [
+        {
+          "t": 5,
+          "errorM": null,
+          "held": false,
+          "phase": "look",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        },
+        {
+          "t": 6,
+          "errorM": null,
+          "held": false,
+          "phase": "out_of_reach",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        },
+        {
+          "t": 6.5,
+          "errorM": null,
+          "held": false,
+          "phase": "out_of_reach",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        },
+        {
+          "t": 7,
+          "errorM": null,
+          "held": false,
+          "phase": "out_of_reach",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        },
+        {
+          "t": 7.99,
+          "errorM": null,
+          "held": false,
+          "phase": "out_of_reach",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        },
+        {
+          "t": 8,
+          "errorM": null,
+          "held": false,
+          "phase": "out_of_reach",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        },
+        {
+          "t": 8.5,
+          "errorM": null,
+          "held": false,
+          "phase": "out_of_reach",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        },
+        {
+          "t": 9,
+          "errorM": null,
+          "held": false,
+          "phase": "out_of_reach",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        },
+        {
+          "t": 10,
+          "errorM": null,
+          "held": false,
+          "phase": "out_of_reach",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        },
+        {
+          "t": 11,
+          "errorM": null,
+          "held": false,
+          "phase": "out_of_reach",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        },
+        {
+          "t": 12,
+          "errorM": null,
+          "held": false,
+          "phase": "out_of_reach",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        },
+        {
+          "t": 13,
+          "errorM": null,
+          "held": false,
+          "phase": "out_of_reach",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        },
+        {
+          "t": 14,
+          "errorM": null,
+          "held": false,
+          "phase": "out_of_reach",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        },
+        {
+          "t": 14.99,
+          "errorM": null,
+          "held": false,
+          "phase": "out_of_reach",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        },
+        {
+          "t": 15,
+          "errorM": null,
+          "held": false,
+          "phase": "out_of_reach",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        },
+        {
+          "t": 15.5,
+          "errorM": null,
+          "held": false,
+          "phase": "out_of_reach",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        },
+        {
+          "t": 16,
+          "errorM": null,
+          "held": false,
+          "phase": "out_of_reach",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        },
+        {
+          "t": 19,
+          "errorM": null,
+          "held": false,
+          "phase": "out_of_reach",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        }
+      ]
+    },
+    {
+      "actor": "luz",
+      "case": "nominal",
+      "heldSamples": 9,
+      "heldMaxErrorM": 0.0004610781896393357,
+      "transitionGapM": 3.3634499181621795e-11,
+      "result": "COMPLETED",
+      "samples": [
+        {
+          "t": 5,
+          "errorM": null,
+          "held": false,
+          "phase": "look",
+          "position": [
+            -0.25,
+            0.84,
+            0.39
+          ]
+        },
+        {
+          "t": 6,
+          "errorM": 5.640019284429067e-17,
+          "held": false,
+          "phase": "reach",
+          "position": [
+            -0.25,
+            0.84,
+            0.39
+          ]
+        },
+        {
+          "t": 6.5,
+          "errorM": 0.021608667786592674,
+          "held": false,
+          "phase": "reach",
+          "position": [
+            -0.25,
+            0.84,
+            0.39
+          ]
+        },
+        {
+          "t": 7,
+          "errorM": 0.0007797496885240528,
+          "held": false,
+          "phase": "reach",
+          "position": [
+            -0.25,
+            0.84,
+            0.39
+          ]
+        },
+        {
+          "t": 7.99,
+          "errorM": 0.00034857540445640777,
+          "held": false,
+          "phase": "reach",
+          "position": [
+            -0.25,
+            0.84,
+            0.39
+          ]
+        },
+        {
+          "t": 8,
+          "errorM": 0.0003513757338478584,
+          "held": true,
+          "phase": "lift",
+          "position": [
+            -0.25,
+            0.84,
+            0.39
+          ]
+        },
+        {
+          "t": 8.5,
+          "errorM": 0.000029569524961652017,
+          "held": true,
+          "phase": "lift",
+          "position": [
+            -0.21867883887146639,
+            0.8957789457500462,
+            0.3607483179280694
+          ]
+        },
+        {
+          "t": 9,
+          "errorM": 1.1738302469276741e-7,
+          "held": true,
+          "phase": "lift",
+          "position": [
+            -0.1471344450865515,
+            1.0189701847142714,
+            0.2957964036498193
+          ]
+        },
+        {
+          "t": 10,
+          "errorM": 9.489815903409377e-8,
+          "held": true,
+          "phase": "drink",
+          "position": [
+            -0.05206797484839859,
+            1.1965100060968357,
+            0.20334240402051845
+          ]
+        },
+        {
+          "t": 11,
+          "errorM": 8.032279044349638e-8,
+          "held": true,
+          "phase": "drink",
+          "position": [
+            -0.059770953387713016,
+            1.1949866313939213,
+            0.20495173610472456
+          ]
+        },
+        {
+          "t": 12,
+          "errorM": 7.959162060062296e-8,
+          "held": true,
+          "phase": "drink",
+          "position": [
+            -0.04725938826756515,
+            1.1974053842493826,
+            0.2022775519672066
+          ]
+        },
+        {
+          "t": 13,
+          "errorM": 9.625255789000359e-8,
+          "held": true,
+          "phase": "return",
+          "position": [
+            -0.04725938826756512,
+            1.1974053842493826,
+            0.2022775519672066
+          ]
+        },
+        {
+          "t": 14,
+          "errorM": 5.6706250804521044e-8,
+          "held": true,
+          "phase": "return",
+          "position": [
+            -0.1548854766938565,
+            1.0174933156969606,
+            0.29747586805236226
+          ]
+        },
+        {
+          "t": 14.99,
+          "errorM": 0.0004610781896393357,
+          "held": true,
+          "phase": "return",
+          "position": [
+            -0.24998521606162805,
+            0.8400266469322344,
+            0.3899860498310218
+          ]
+        },
+        {
+          "t": 15,
+          "errorM": 0.000465834629236478,
+          "held": false,
+          "phase": "release",
+          "position": [
+            -0.25,
+            0.84,
+            0.39
+          ]
+        },
+        {
+          "t": 15.5,
+          "errorM": 0.0008723009519457038,
+          "held": false,
+          "phase": "release",
+          "position": [
+            -0.25,
+            0.84,
+            0.39
+          ]
+        },
+        {
+          "t": 16,
+          "errorM": null,
+          "held": false,
+          "phase": "idle",
+          "position": [
+            -0.25,
+            0.84,
+            0.39
+          ]
+        },
+        {
+          "t": 19,
+          "errorM": null,
+          "held": false,
+          "phase": "idle",
+          "position": [
+            -0.25,
+            0.84,
+            0.39
+          ]
+        }
+      ]
+    },
+    {
+      "actor": "luz",
+      "case": "shifted",
+      "heldSamples": 9,
+      "heldMaxErrorM": 0.007012559970434919,
+      "transitionGapM": 3.457002023553886e-11,
+      "result": "COMPLETED",
+      "samples": [
+        {
+          "t": 5,
+          "errorM": null,
+          "held": false,
+          "phase": "look",
+          "position": [
+            -0.14,
+            0.84,
+            0.49
+          ]
+        },
+        {
+          "t": 6,
+          "errorM": 5.640019284429067e-17,
+          "held": false,
+          "phase": "reach",
+          "position": [
+            -0.14,
+            0.84,
+            0.49
+          ]
+        },
+        {
+          "t": 6.5,
+          "errorM": 0.017970451982954896,
+          "held": false,
+          "phase": "reach",
+          "position": [
+            -0.14,
+            0.84,
+            0.49
+          ]
+        },
+        {
+          "t": 7,
+          "errorM": 0.000434711355139021,
+          "held": false,
+          "phase": "reach",
+          "position": [
+            -0.14,
+            0.84,
+            0.49
+          ]
+        },
+        {
+          "t": 7.99,
+          "errorM": 0.006005146643686647,
+          "held": false,
+          "phase": "reach",
+          "position": [
+            -0.14,
+            0.84,
+            0.49
+          ]
+        },
+        {
+          "t": 8,
+          "errorM": 0.006033682289835332,
+          "held": true,
+          "phase": "lift",
+          "position": [
+            -0.14,
+            0.84,
+            0.49
+          ]
+        },
+        {
+          "t": 8.5,
+          "errorM": 0.0008575853534529342,
+          "held": true,
+          "phase": "lift",
+          "position": [
+            -0.12189726767212934,
+            0.8948492211115017,
+            0.4467321537757329
+          ]
+        },
+        {
+          "t": 9,
+          "errorM": 0.000003858277147363312,
+          "held": true,
+          "phase": "lift",
+          "position": [
+            -0.07960783692883686,
+            1.015755502619288,
+            0.3512206160237457
+          ]
+        },
+        {
+          "t": 10,
+          "errorM": 1.5408303583305345e-7,
+          "held": true,
+          "phase": "drink",
+          "position": [
+            -0.026505597419423835,
+            1.1907942921667256,
+            0.21337156976810356
+          ]
+        },
+        {
+          "t": 11,
+          "errorM": 1.2442713056297235e-7,
+          "held": true,
+          "phase": "drink",
+          "position": [
+            -0.03374659742389585,
+            1.1900073824943447,
+            0.21415112022592236
+          ]
+        },
+        {
+          "t": 12,
+          "errorM": 1.2771542114238613e-7,
+          "held": true,
+          "phase": "drink",
+          "position": [
+            -0.022006200154144395,
+            1.191245730279358,
+            0.21281433725601695
+          ]
+        },
+        {
+          "t": 13,
+          "errorM": 1.5859005269122894e-7,
+          "held": true,
+          "phase": "return",
+          "position": [
+            -0.022006200154144367,
+            1.191245730279358,
+            0.21281433725601695
+          ]
+        },
+        {
+          "t": 14,
+          "errorM": 0.0000020349512758723706,
+          "held": true,
+          "phase": "return",
+          "position": [
+            -0.08687329871194793,
+            1.0150036912471723,
+            0.35207556011296115
+          ]
+        },
+        {
+          "t": 14.99,
+          "errorM": 0.007012559970434919,
+          "held": true,
+          "phase": "return",
+          "position": [
+            -0.1399915270549697,
+            0.840026220757801,
+            0.48997932328935545
+          ]
+        },
+        {
+          "t": 15,
+          "errorM": 0.007053749490085015,
+          "held": false,
+          "phase": "release",
+          "position": [
+            -0.14,
+            0.84,
+            0.49
+          ]
+        },
+        {
+          "t": 15.5,
+          "errorM": 0.0004059392014608593,
+          "held": false,
+          "phase": "release",
+          "position": [
+            -0.14,
+            0.84,
+            0.49
+          ]
+        },
+        {
+          "t": 16,
+          "errorM": null,
+          "held": false,
+          "phase": "idle",
+          "position": [
+            -0.14,
+            0.84,
+            0.49
+          ]
+        },
+        {
+          "t": 19,
+          "errorM": null,
+          "held": false,
+          "phase": "idle",
+          "position": [
+            -0.14,
+            0.84,
+            0.49
+          ]
+        }
+      ]
+    },
+    {
+      "actor": "luz",
+      "case": "rotated",
+      "heldSamples": 9,
+      "heldMaxErrorM": 0.0006525158983365514,
+      "transitionGapM": 3.655720617247431e-11,
+      "result": "COMPLETED",
+      "samples": [
+        {
+          "t": 5,
+          "errorM": null,
+          "held": false,
+          "phase": "look",
+          "position": [
+            0.08,
+            0.84,
+            0.37
+          ]
+        },
+        {
+          "t": 6,
+          "errorM": 3.469446951953614e-17,
+          "held": false,
+          "phase": "reach",
+          "position": [
+            0.08,
+            0.84,
+            0.37
+          ]
+        },
+        {
+          "t": 6.5,
+          "errorM": 0.021278023272119247,
+          "held": false,
+          "phase": "reach",
+          "position": [
+            0.08,
+            0.84,
+            0.37
+          ]
+        },
+        {
+          "t": 7,
+          "errorM": 0.0010373480607373492,
+          "held": false,
+          "phase": "reach",
+          "position": [
+            0.08,
+            0.84,
+            0.37
+          ]
+        },
+        {
+          "t": 7.99,
+          "errorM": 0.0004881378404677919,
+          "held": false,
+          "phase": "reach",
+          "position": [
+            0.08,
+            0.84,
+            0.37
+          ]
+        },
+        {
+          "t": 8,
+          "errorM": 0.0004921732600210322,
+          "held": true,
+          "phase": "lift",
+          "position": [
+            0.08,
+            0.84,
+            0.37
+          ]
+        },
+        {
+          "t": 8.5,
+          "errorM": 0.000028154253687546524,
+          "held": true,
+          "phase": "lift",
+          "position": [
+            0.10352005651423643,
+            0.8959058799065044,
+            0.3233971739363278
+          ]
+        },
+        {
+          "t": 9,
+          "errorM": 3.973437758880557e-8,
+          "held": true,
+          "phase": "lift",
+          "position": [
+            0.15700524120348963,
+            1.0193987331666212,
+            0.21876340348695256
+          ]
+        },
+        {
+          "t": 10,
+          "errorM": 9.13762014205181e-8,
+          "held": true,
+          "phase": "drink",
+          "position": [
+            0.22885196889728193,
+            1.1973003291533506,
+            0.07374280961241442
+          ]
+        },
+        {
+          "t": 11,
+          "errorM": 7.781520293461601e-8,
+          "held": true,
+          "phase": "drink",
+          "position": [
+            0.22368949911251373,
+            1.1957070259588385,
+            0.07978745419950839
+          ]
+        },
+        {
+          "t": 12,
+          "errorM": 7.681073276384358e-8,
+          "held": true,
+          "phase": "drink",
+          "position": [
+            0.2320403847791911,
+            1.1982373657650947,
+            0.06992134903256486
+          ]
+        },
+        {
+          "t": 13,
+          "errorM": 9.252590635855744e-8,
+          "held": true,
+          "phase": "return",
+          "position": [
+            0.2320403847791911,
+            1.1982373657650947,
+            0.06992134903256486
+          ]
+        },
+        {
+          "t": 14,
+          "errorM": 1.830024013261188e-8,
+          "held": true,
+          "phase": "return",
+          "position": [
+            0.15184474955625687,
+            1.0178535129794193,
+            0.2248937270997542
+          ]
+        },
+        {
+          "t": 14.99,
+          "errorM": 0.0006525158983365514,
+          "held": true,
+          "phase": "return",
+          "position": [
+            0.08001111904046264,
+            0.8400267059075106,
+            0.3699778638540641
+          ]
+        },
+        {
+          "t": 15,
+          "errorM": 0.000659568649589227,
+          "held": false,
+          "phase": "release",
+          "position": [
+            0.08,
+            0.84,
+            0.37
+          ]
+        },
+        {
+          "t": 15.5,
+          "errorM": 0.0011925031664873703,
+          "held": false,
+          "phase": "release",
+          "position": [
+            0.08,
+            0.84,
+            0.37
+          ]
+        },
+        {
+          "t": 16,
+          "errorM": null,
+          "held": false,
+          "phase": "idle",
+          "position": [
+            0.08,
+            0.84,
+            0.37
+          ]
+        },
+        {
+          "t": 19,
+          "errorM": null,
+          "held": false,
+          "phase": "idle",
+          "position": [
+            0.08,
+            0.84,
+            0.37
+          ]
+        }
+      ]
+    },
+    {
+      "actor": "luz",
+      "case": "unreachable",
+      "heldSamples": 0,
+      "heldMaxErrorM": null,
+      "transitionGapM": 0,
+      "result": "OUT_OF_REACH",
+      "samples": [
+        {
+          "t": 5,
+          "errorM": null,
+          "held": false,
+          "phase": "look",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        },
+        {
+          "t": 6,
+          "errorM": null,
+          "held": false,
+          "phase": "out_of_reach",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        },
+        {
+          "t": 6.5,
+          "errorM": null,
+          "held": false,
+          "phase": "out_of_reach",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        },
+        {
+          "t": 7,
+          "errorM": null,
+          "held": false,
+          "phase": "out_of_reach",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        },
+        {
+          "t": 7.99,
+          "errorM": null,
+          "held": false,
+          "phase": "out_of_reach",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        },
+        {
+          "t": 8,
+          "errorM": null,
+          "held": false,
+          "phase": "out_of_reach",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        },
+        {
+          "t": 8.5,
+          "errorM": null,
+          "held": false,
+          "phase": "out_of_reach",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        },
+        {
+          "t": 9,
+          "errorM": null,
+          "held": false,
+          "phase": "out_of_reach",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        },
+        {
+          "t": 10,
+          "errorM": null,
+          "held": false,
+          "phase": "out_of_reach",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        },
+        {
+          "t": 11,
+          "errorM": null,
+          "held": false,
+          "phase": "out_of_reach",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        },
+        {
+          "t": 12,
+          "errorM": null,
+          "held": false,
+          "phase": "out_of_reach",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        },
+        {
+          "t": 13,
+          "errorM": null,
+          "held": false,
+          "phase": "out_of_reach",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        },
+        {
+          "t": 14,
+          "errorM": null,
+          "held": false,
+          "phase": "out_of_reach",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        },
+        {
+          "t": 14.99,
+          "errorM": null,
+          "held": false,
+          "phase": "out_of_reach",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        },
+        {
+          "t": 15,
+          "errorM": null,
+          "held": false,
+          "phase": "out_of_reach",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        },
+        {
+          "t": 15.5,
+          "errorM": null,
+          "held": false,
+          "phase": "out_of_reach",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        },
+        {
+          "t": 16,
+          "errorM": null,
+          "held": false,
+          "phase": "out_of_reach",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        },
+        {
+          "t": 19,
+          "errorM": null,
+          "held": false,
+          "phase": "out_of_reach",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        }
+      ]
+    },
+    {
+      "actor": "mauro",
+      "case": "nominal",
+      "heldSamples": 9,
+      "heldMaxErrorM": 0.0011131165471874123,
+      "transitionGapM": 3.9807308359456246e-11,
+      "result": "COMPLETED",
+      "samples": [
+        {
+          "t": 5,
+          "errorM": null,
+          "held": false,
+          "phase": "look",
+          "position": [
+            -0.25,
+            0.84,
+            0.39
+          ]
+        },
+        {
+          "t": 6,
+          "errorM": 1.2533302082415627e-16,
+          "held": false,
+          "phase": "reach",
+          "position": [
+            -0.25,
+            0.84,
+            0.39
+          ]
+        },
+        {
+          "t": 6.5,
+          "errorM": 0.020315774629461644,
+          "held": false,
+          "phase": "reach",
+          "position": [
+            -0.25,
+            0.84,
+            0.39
+          ]
+        },
+        {
+          "t": 7,
+          "errorM": 0.0021399053759895382,
+          "held": false,
+          "phase": "reach",
+          "position": [
+            -0.25,
+            0.84,
+            0.39
+          ]
+        },
+        {
+          "t": 7.99,
+          "errorM": 0.0008455220211155087,
+          "held": false,
+          "phase": "reach",
+          "position": [
+            -0.25,
+            0.84,
+            0.39
+          ]
+        },
+        {
+          "t": 8,
+          "errorM": 0.0008521537168448371,
+          "held": true,
+          "phase": "lift",
+          "position": [
+            -0.25,
+            0.84,
+            0.39
+          ]
+        },
+        {
+          "t": 8.5,
+          "errorM": 0.00003620061927569448,
+          "held": true,
+          "phase": "lift",
+          "position": [
+            -0.21920613501868544,
+            0.9122092689516447,
+            0.3624744507732207
+          ]
+        },
+        {
+          "t": 9,
+          "errorM": 2.4166744890113266e-8,
+          "held": true,
+          "phase": "lift",
+          "position": [
+            -0.14863298397610641,
+            1.0715796974699623,
+            0.30127914669259026
+          ]
+        },
+        {
+          "t": 10,
+          "errorM": 5.881194747534537e-8,
+          "held": true,
+          "phase": "drink",
+          "position": [
+            -0.05562334121666518,
+            1.3016316540874069,
+            0.2144274344394385
+          ]
+        },
+        {
+          "t": 11,
+          "errorM": 4.978605543331595e-8,
+          "held": true,
+          "phase": "drink",
+          "position": [
+            -0.06387804591353327,
+            1.3000039663095089,
+            0.21614658049624585
+          ]
+        },
+        {
+          "t": 12,
+          "errorM": 4.9173061886569986e-8,
+          "held": true,
+          "phase": "drink",
+          "position": [
+            -0.050470498578425116,
+            1.3025880598770858,
+            0.21328984175876525
+          ]
+        },
+        {
+          "t": 13,
+          "errorM": 5.9558452457931913e-8,
+          "held": true,
+          "phase": "return",
+          "position": [
+            -0.050470498578425116,
+            1.3025880598770858,
+            0.21328984175876525
+          ]
+        },
+        {
+          "t": 14,
+          "errorM": 5.981000971629331e-9,
+          "held": true,
+          "phase": "return",
+          "position": [
+            -0.15693902295676662,
+            1.0700019831547545,
+            0.3030732902481229
+          ]
+        },
+        {
+          "t": 14.99,
+          "errorM": 0.0011131165471874123,
+          "held": true,
+          "phase": "return",
+          "position": [
+            -0.24998548264732837,
+            0.8400345046258236,
+            0.38998687860681724
+          ]
+        },
+        {
+          "t": 15,
+          "errorM": 0.0011245706443905423,
+          "held": false,
+          "phase": "release",
+          "position": [
+            -0.25,
+            0.84,
+            0.39
+          ]
+        },
+        {
+          "t": 15.5,
+          "errorM": 0.0021790388244059,
+          "held": false,
+          "phase": "release",
+          "position": [
+            -0.25,
+            0.84,
+            0.39
+          ]
+        },
+        {
+          "t": 16,
+          "errorM": null,
+          "held": false,
+          "phase": "idle",
+          "position": [
+            -0.25,
+            0.84,
+            0.39
+          ]
+        },
+        {
+          "t": 19,
+          "errorM": null,
+          "held": false,
+          "phase": "idle",
+          "position": [
+            -0.25,
+            0.84,
+            0.39
+          ]
+        }
+      ]
+    },
+    {
+      "actor": "mauro",
+      "case": "shifted",
+      "heldSamples": 9,
+      "heldMaxErrorM": 0.010832569877875535,
+      "transitionGapM": 4.0397476286798816e-11,
+      "result": "COMPLETED",
+      "samples": [
+        {
+          "t": 5,
+          "errorM": null,
+          "held": false,
+          "phase": "look",
+          "position": [
+            -0.14,
+            0.84,
+            0.49
+          ]
+        },
+        {
+          "t": 6,
+          "errorM": 1.2533302082415627e-16,
+          "held": false,
+          "phase": "reach",
+          "position": [
+            -0.14,
+            0.84,
+            0.49
+          ]
+        },
+        {
+          "t": 6.5,
+          "errorM": 0.01763886322817475,
+          "held": false,
+          "phase": "reach",
+          "position": [
+            -0.14,
+            0.84,
+            0.49
+          ]
+        },
+        {
+          "t": 7,
+          "errorM": 0.000869572430659881,
+          "held": false,
+          "phase": "reach",
+          "position": [
+            -0.14,
+            0.84,
+            0.49
+          ]
+        },
+        {
+          "t": 7.99,
+          "errorM": 0.009384817773662742,
+          "held": false,
+          "phase": "reach",
+          "position": [
+            -0.14,
+            0.84,
+            0.49
+          ]
+        },
+        {
+          "t": 8,
+          "errorM": 0.009425238336533592,
+          "held": true,
+          "phase": "lift",
+          "position": [
+            -0.14,
+            0.84,
+            0.49
+          ]
+        },
+        {
+          "t": 8.5,
+          "errorM": 0.0010338282412052614,
+          "held": true,
+          "phase": "lift",
+          "position": [
+            -0.12215354305665377,
+            0.9112160597677292,
+            0.4485681430322676
+          ]
+        },
+        {
+          "t": 9,
+          "errorM": 0.0000018043813279122341,
+          "held": true,
+          "phase": "lift",
+          "position": [
+            -0.08025101930640786,
+            1.0681455066916001,
+            0.3570737414811342
+          ]
+        },
+        {
+          "t": 10,
+          "errorM": 9.594584972250989e-8,
+          "held": true,
+          "phase": "drink",
+          "position": [
+            -0.028315483628945412,
+            1.2955256530924182,
+            0.22514142341482452
+          ]
+        },
+        {
+          "t": 11,
+          "errorM": 7.770491324448629e-8,
+          "held": true,
+          "phase": "drink",
+          "position": [
+            -0.036076664432227595,
+            1.2946847185117933,
+            0.2259741277255442
+          ]
+        },
+        {
+          "t": 12,
+          "errorM": 7.939753532854987e-8,
+          "held": true,
+          "phase": "drink",
+          "position": [
+            -0.02349294273279698,
+            1.2960078052090513,
+            0.2245461121467091
+          ]
+        },
+        {
+          "t": 13,
+          "errorM": 9.854559568835082e-8,
+          "held": true,
+          "phase": "return",
+          "position": [
+            -0.02349294273279695,
+            1.2960078052090513,
+            0.2245461121467091
+          ]
+        },
+        {
+          "t": 14,
+          "errorM": 8.743240770062635e-7,
+          "held": true,
+          "phase": "return",
+          "position": [
+            -0.0880383322161138,
+            1.0673423592558966,
+            0.3579870638627721
+          ]
+        },
+        {
+          "t": 14.99,
+          "errorM": 0.010832569877875535,
+          "held": true,
+          "phase": "return",
+          "position": [
+            -0.13999166311693625,
+            0.8400340493508491,
+            0.48998020317225843
+          ]
+        },
+        {
+          "t": 15,
+          "errorM": 0.010892619140219512,
+          "held": false,
+          "phase": "release",
+          "position": [
+            -0.14,
+            0.84,
+            0.49
+          ]
+        },
+        {
+          "t": 15.5,
+          "errorM": 0.0006817057469414787,
+          "held": false,
+          "phase": "release",
+          "position": [
+            -0.14,
+            0.84,
+            0.49
+          ]
+        },
+        {
+          "t": 16,
+          "errorM": null,
+          "held": false,
+          "phase": "idle",
+          "position": [
+            -0.14,
+            0.84,
+            0.49
+          ]
+        },
+        {
+          "t": 19,
+          "errorM": null,
+          "held": false,
+          "phase": "idle",
+          "position": [
+            -0.14,
+            0.84,
+            0.49
+          ]
+        }
+      ]
+    },
+    {
+      "actor": "mauro",
+      "case": "rotated",
+      "heldSamples": 9,
+      "heldMaxErrorM": 0.0014512276231923445,
+      "transitionGapM": 4.232833037637013e-11,
+      "result": "COMPLETED",
+      "samples": [
+        {
+          "t": 5,
+          "errorM": null,
+          "held": false,
+          "phase": "look",
+          "position": [
+            0.08,
+            0.84,
+            0.37
+          ]
+        },
+        {
+          "t": 6,
+          "errorM": 2.7755575615628914e-17,
+          "held": false,
+          "phase": "reach",
+          "position": [
+            0.08,
+            0.84,
+            0.37
+          ]
+        },
+        {
+          "t": 6.5,
+          "errorM": 0.019376224553196247,
+          "held": false,
+          "phase": "reach",
+          "position": [
+            0.08,
+            0.84,
+            0.37
+          ]
+        },
+        {
+          "t": 7,
+          "errorM": 0.002655750471326792,
+          "held": false,
+          "phase": "reach",
+          "position": [
+            0.08,
+            0.84,
+            0.37
+          ]
+        },
+        {
+          "t": 7.99,
+          "errorM": 0.0010893005543607963,
+          "held": false,
+          "phase": "reach",
+          "position": [
+            0.08,
+            0.84,
+            0.37
+          ]
+        },
+        {
+          "t": 8,
+          "errorM": 0.0010981544805043464,
+          "held": true,
+          "phase": "lift",
+          "position": [
+            0.08,
+            0.84,
+            0.37
+          ]
+        },
+        {
+          "t": 8.5,
+          "errorM": 0.000026647189854210794,
+          "held": true,
+          "phase": "lift",
+          "position": [
+            0.10411551977772851,
+            0.912344870574663,
+            0.32509385750316766
+          ]
+        },
+        {
+          "t": 9,
+          "errorM": 9.078940603577032e-9,
+          "held": true,
+          "phase": "lift",
+          "position": [
+            0.1590365050852277,
+            1.072037508569056,
+            0.22404359500659093
+          ]
+        },
+        {
+          "t": 10,
+          "errorM": 5.6610064275537914e-8,
+          "held": true,
+          "phase": "drink",
+          "position": [
+            0.23254181011624653,
+            1.3024759429073947,
+            0.08474328070510873
+          ]
+        },
+        {
+          "t": 11,
+          "errorM": 4.8198102254290274e-8,
+          "held": true,
+          "phase": "drink",
+          "position": [
+            0.22700629126021282,
+            1.3007735516988332,
+            0.09121619095507472
+          ]
+        },
+        {
+          "t": 12,
+          "errorM": 4.742926898010282e-8,
+          "held": true,
+          "phase": "drink",
+          "position": [
+            0.2359605896076466,
+            1.3034768517279143,
+            0.0806512266422626
+          ]
+        },
+        {
+          "t": 13,
+          "errorM": 5.7237079648937544e-8,
+          "held": true,
+          "phase": "return",
+          "position": [
+            0.23596058960764665,
+            1.3034768517279143,
+            0.08065122664226254
+          ]
+        },
+        {
+          "t": 14,
+          "errorM": 7.565272119204231e-9,
+          "held": true,
+          "phase": "return",
+          "position": [
+            0.15350314563010642,
+            1.0703867758494165,
+            0.23060809547753736
+          ]
+        },
+        {
+          "t": 14.99,
+          "errorM": 0.0014512276231923445,
+          "held": true,
+          "phase": "return",
+          "position": [
+            0.08001139430375967,
+            0.8400345676281187,
+            0.3699786867823036
+          ]
+        },
+        {
+          "t": 15,
+          "errorM": 0.0014669138019586876,
+          "held": false,
+          "phase": "release",
+          "position": [
+            0.08,
+            0.84,
+            0.37
+          ]
+        },
+        {
+          "t": 15.5,
+          "errorM": 0.0027187896983965325,
+          "held": false,
+          "phase": "release",
+          "position": [
+            0.08,
+            0.84,
+            0.37
+          ]
+        },
+        {
+          "t": 16,
+          "errorM": null,
+          "held": false,
+          "phase": "idle",
+          "position": [
+            0.08,
+            0.84,
+            0.37
+          ]
+        },
+        {
+          "t": 19,
+          "errorM": null,
+          "held": false,
+          "phase": "idle",
+          "position": [
+            0.08,
+            0.84,
+            0.37
+          ]
+        }
+      ]
+    },
+    {
+      "actor": "mauro",
+      "case": "unreachable",
+      "heldSamples": 0,
+      "heldMaxErrorM": null,
+      "transitionGapM": 0,
+      "result": "OUT_OF_REACH",
+      "samples": [
+        {
+          "t": 5,
+          "errorM": null,
+          "held": false,
+          "phase": "look",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        },
+        {
+          "t": 6,
+          "errorM": null,
+          "held": false,
+          "phase": "out_of_reach",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        },
+        {
+          "t": 6.5,
+          "errorM": null,
+          "held": false,
+          "phase": "out_of_reach",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        },
+        {
+          "t": 7,
+          "errorM": null,
+          "held": false,
+          "phase": "out_of_reach",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        },
+        {
+          "t": 7.99,
+          "errorM": null,
+          "held": false,
+          "phase": "out_of_reach",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        },
+        {
+          "t": 8,
+          "errorM": null,
+          "held": false,
+          "phase": "out_of_reach",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        },
+        {
+          "t": 8.5,
+          "errorM": null,
+          "held": false,
+          "phase": "out_of_reach",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        },
+        {
+          "t": 9,
+          "errorM": null,
+          "held": false,
+          "phase": "out_of_reach",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        },
+        {
+          "t": 10,
+          "errorM": null,
+          "held": false,
+          "phase": "out_of_reach",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        },
+        {
+          "t": 11,
+          "errorM": null,
+          "held": false,
+          "phase": "out_of_reach",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        },
+        {
+          "t": 12,
+          "errorM": null,
+          "held": false,
+          "phase": "out_of_reach",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        },
+        {
+          "t": 13,
+          "errorM": null,
+          "held": false,
+          "phase": "out_of_reach",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        },
+        {
+          "t": 14,
+          "errorM": null,
+          "held": false,
+          "phase": "out_of_reach",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        },
+        {
+          "t": 14.99,
+          "errorM": null,
+          "held": false,
+          "phase": "out_of_reach",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        },
+        {
+          "t": 15,
+          "errorM": null,
+          "held": false,
+          "phase": "out_of_reach",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        },
+        {
+          "t": 15.5,
+          "errorM": null,
+          "held": false,
+          "phase": "out_of_reach",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        },
+        {
+          "t": 16,
+          "errorM": null,
+          "held": false,
+          "phase": "out_of_reach",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        },
+        {
+          "t": 19,
+          "errorM": null,
+          "held": false,
+          "phase": "out_of_reach",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        }
+      ]
+    },
+    {
+      "actor": "ines",
+      "case": "nominal",
+      "heldSamples": 9,
+      "heldMaxErrorM": 0.0007511529176136737,
+      "transitionGapM": 3.767695802580659e-11,
+      "result": "COMPLETED",
+      "samples": [
+        {
+          "t": 5,
+          "errorM": null,
+          "held": false,
+          "phase": "look",
+          "position": [
+            -0.25,
+            0.84,
+            0.39
+          ]
+        },
+        {
+          "t": 6,
+          "errorM": 2.267533093483919e-16,
+          "held": false,
+          "phase": "reach",
+          "position": [
+            -0.25,
+            0.84,
+            0.39
+          ]
+        },
+        {
+          "t": 6.5,
+          "errorM": 0.021117606901992783,
+          "held": false,
+          "phase": "reach",
+          "position": [
+            -0.25,
+            0.84,
+            0.39
+          ]
+        },
+        {
+          "t": 7,
+          "errorM": 0.001579956513531877,
+          "held": false,
+          "phase": "reach",
+          "position": [
+            -0.25,
+            0.84,
+            0.39
+          ]
+        },
+        {
+          "t": 7.99,
+          "errorM": 0.0005643811553139944,
+          "held": false,
+          "phase": "reach",
+          "position": [
+            -0.25,
+            0.84,
+            0.39
+          ]
+        },
+        {
+          "t": 8,
+          "errorM": 0.000568986013117903,
+          "held": true,
+          "phase": "lift",
+          "position": [
+            -0.25,
+            0.84,
+            0.39
+          ]
+        },
+        {
+          "t": 8.5,
+          "errorM": 0.00003097306804750093,
+          "held": true,
+          "phase": "lift",
+          "position": [
+            -0.21902975483857057,
+            0.906732953912894,
+            0.3618982635741397
+          ]
+        },
+        {
+          "t": 9,
+          "errorM": 4.706374338006755e-8,
+          "held": true,
+          "phase": "lift",
+          "position": [
+            -0.14813141992632112,
+            1.0540446236423715,
+            0.29944901818003755
+          ]
+        },
+        {
+          "t": 10,
+          "errorM": 7.267813213233568e-8,
+          "held": true,
+          "phase": "drink",
+          "position": [
+            -0.05443436619266795,
+            1.2665940808301073,
+            0.21072720228752456
+          ]
+        },
+        {
+          "t": 11,
+          "errorM": 6.128341914690262e-8,
+          "held": true,
+          "phase": "drink",
+          "position": [
+            -0.06250541855392666,
+            1.265001267422228,
+            0.21240962215006426
+          ]
+        },
+        {
+          "t": 12,
+          "errorM": 6.079641063032656e-8,
+          "held": true,
+          "phase": "drink",
+          "position": [
+            -0.049396120635290086,
+            1.2675300742350266,
+            0.20961393434315567
+          ]
+        },
+        {
+          "t": 13,
+          "errorM": 7.374212788172081e-8,
+          "held": true,
+          "phase": "return",
+          "position": [
+            -0.04939612063529003,
+            1.2675300742350266,
+            0.20961393434315567
+          ]
+        },
+        {
+          "t": 14,
+          "errorM": 1.779012934160439e-8,
+          "held": true,
+          "phase": "return",
+          "position": [
+            -0.15625270927696333,
+            1.052500633711114,
+            0.30120481107503216
+          ]
+        },
+        {
+          "t": 14.99,
+          "errorM": 0.0007511529176136737,
+          "held": true,
+          "phase": "return",
+          "position": [
+            -0.2499853934977987,
+            0.8400318856172505,
+            0.3899866019576893
+          ]
+        },
+        {
+          "t": 15,
+          "errorM": 0.0007591222957871396,
+          "held": false,
+          "phase": "release",
+          "position": [
+            -0.25,
+            0.84,
+            0.39
+          ]
+        },
+        {
+          "t": 15.5,
+          "errorM": 0.0016675744197091225,
+          "held": false,
+          "phase": "release",
+          "position": [
+            -0.25,
+            0.84,
+            0.39
+          ]
+        },
+        {
+          "t": 16,
+          "errorM": null,
+          "held": false,
+          "phase": "idle",
+          "position": [
+            -0.25,
+            0.84,
+            0.39
+          ]
+        },
+        {
+          "t": 19,
+          "errorM": null,
+          "held": false,
+          "phase": "idle",
+          "position": [
+            -0.25,
+            0.84,
+            0.39
+          ]
+        }
+      ]
+    },
+    {
+      "actor": "ines",
+      "case": "shifted",
+      "heldSamples": 9,
+      "heldMaxErrorM": 0.009073531701342154,
+      "transitionGapM": 3.837293936729371e-11,
+      "result": "COMPLETED",
+      "samples": [
+        {
+          "t": 5,
+          "errorM": null,
+          "held": false,
+          "phase": "look",
+          "position": [
+            -0.14,
+            0.84,
+            0.49
+          ]
+        },
+        {
+          "t": 6,
+          "errorM": 2.267533093483919e-16,
+          "held": false,
+          "phase": "reach",
+          "position": [
+            -0.14,
+            0.84,
+            0.49
+          ]
+        },
+        {
+          "t": 6.5,
+          "errorM": 0.018040004328646136,
+          "held": false,
+          "phase": "reach",
+          "position": [
+            -0.14,
+            0.84,
+            0.49
+          ]
+        },
+        {
+          "t": 7,
+          "errorM": 0.000728529527166228,
+          "held": false,
+          "phase": "reach",
+          "position": [
+            -0.14,
+            0.84,
+            0.49
+          ]
+        },
+        {
+          "t": 7.99,
+          "errorM": 0.007798589244815777,
+          "held": false,
+          "phase": "reach",
+          "position": [
+            -0.14,
+            0.84,
+            0.49
+          ]
+        },
+        {
+          "t": 8,
+          "errorM": 0.007834177134685915,
+          "held": true,
+          "phase": "lift",
+          "position": [
+            -0.14,
+            0.84,
+            0.49
+          ]
+        },
+        {
+          "t": 8.5,
+          "errorM": 0.0009400009784157565,
+          "held": true,
+          "phase": "lift",
+          "position": [
+            -0.12206779683221354,
+            0.9057609750414238,
+            0.44795521797952215
+          ]
+        },
+        {
+          "t": 9,
+          "errorM": 0.000002391057520926462,
+          "held": true,
+          "phase": "lift",
+          "position": [
+            -0.08003550103194387,
+            1.0506838403036525,
+            0.35511975078542124
+          ]
+        },
+        {
+          "t": 10,
+          "errorM": 1.210937695653354e-7,
+          "held": true,
+          "phase": "drink",
+          "position": [
+            -0.02771022687717857,
+            1.2606185984720928,
+            0.22121217472020605
+          ]
+        },
+        {
+          "t": 11,
+          "errorM": 9.769529979656868e-8,
+          "held": true,
+          "phase": "drink",
+          "position": [
+            -0.03529830464970046,
+            1.259795721042651,
+            0.22202710094501105
+          ]
+        },
+        {
+          "t": 12,
+          "errorM": 1.0032263755388597e-7,
+          "held": true,
+          "phase": "drink",
+          "position": [
+            -0.022995222707135818,
+            1.2610904755988075,
+            0.2206295966686947
+          ]
+        },
+        {
+          "t": 13,
+          "errorM": 1.246314229470572e-7,
+          "held": true,
+          "phase": "return",
+          "position": [
+            -0.022995222707135776,
+            1.2610904755988075,
+            0.2206295966686947
+          ]
+        },
+        {
+          "t": 14,
+          "errorM": 0.0000011819662321408408,
+          "held": true,
+          "phase": "return",
+          "position": [
+            -0.08764915232485024,
+            1.0498978605213254,
+            0.3560135504725055
+          ]
+        },
+        {
+          "t": 14.99,
+          "errorM": 0.009073531701342154,
+          "held": true,
+          "phase": "return",
+          "position": [
+            -0.1399916176167646,
+            0.8400314400739922,
+            0.4899799094320439
+          ]
+        },
+        {
+          "t": 15,
+          "errorM": 0.009126056659658769,
+          "held": false,
+          "phase": "release",
+          "position": [
+            -0.14,
+            0.84,
+            0.49
+          ]
+        },
+        {
+          "t": 15.5,
+          "errorM": 0.0006178700356559492,
+          "held": false,
+          "phase": "release",
+          "position": [
+            -0.14,
+            0.84,
+            0.49
+          ]
+        },
+        {
+          "t": 16,
+          "errorM": null,
+          "held": false,
+          "phase": "idle",
+          "position": [
+            -0.14,
+            0.84,
+            0.49
+          ]
+        },
+        {
+          "t": 19,
+          "errorM": null,
+          "held": false,
+          "phase": "idle",
+          "position": [
+            -0.14,
+            0.84,
+            0.49
+          ]
+        }
+      ]
+    },
+    {
+      "actor": "ines",
+      "case": "rotated",
+      "heldSamples": 9,
+      "heldMaxErrorM": 0.0009610607430993989,
+      "transitionGapM": 4.03234016086894e-11,
+      "result": "COMPLETED",
+      "samples": [
+        {
+          "t": 5,
+          "errorM": null,
+          "held": false,
+          "phase": "look",
+          "position": [
+            0.08,
+            0.84,
+            0.37
+          ]
+        },
+        {
+          "t": 6,
+          "errorM": 2.276126435504334e-16,
+          "held": false,
+          "phase": "reach",
+          "position": [
+            0.08,
+            0.84,
+            0.37
+          ]
+        },
+        {
+          "t": 6.5,
+          "errorM": 0.020417705077124704,
+          "held": false,
+          "phase": "reach",
+          "position": [
+            0.08,
+            0.84,
+            0.37
+          ]
+        },
+        {
+          "t": 7,
+          "errorM": 0.002019832119218981,
+          "held": false,
+          "phase": "reach",
+          "position": [
+            0.08,
+            0.84,
+            0.37
+          ]
+        },
+        {
+          "t": 7.99,
+          "errorM": 0.0007118282894550752,
+          "held": false,
+          "phase": "reach",
+          "position": [
+            0.08,
+            0.84,
+            0.37
+          ]
+        },
+        {
+          "t": 8,
+          "errorM": 0.0007178841509283239,
+          "held": true,
+          "phase": "lift",
+          "position": [
+            0.08,
+            0.84,
+            0.37
+          ]
+        },
+        {
+          "t": 8.5,
+          "errorM": 0.000023344645009943686,
+          "held": true,
+          "phase": "lift",
+          "position": [
+            0.10391706336154277,
+            0.9068656569875789,
+            0.32452727603895953
+          ]
+        },
+        {
+          "t": 9,
+          "errorM": 2.5731551212969865e-9,
+          "held": true,
+          "phase": "lift",
+          "position": [
+            0.1583596099596397,
+            1.0544926488143593,
+            0.2222802525641547
+          ]
+        },
+        {
+          "t": 10,
+          "errorM": 6.980846171855052e-8,
+          "held": true,
+          "phase": "drink",
+          "position": [
+            0.23131197404161968,
+            1.2674203225803211,
+            0.08106994190106115
+          ]
+        },
+        {
+          "t": 11,
+          "errorM": 5.920542957917216e-8,
+          "held": true,
+          "phase": "drink",
+          "position": [
+            0.22590052753155376,
+            1.2657544025626686,
+            0.08740014780773275
+          ]
+        },
+        {
+          "t": 12,
+          "errorM": 5.8512535397572546e-8,
+          "held": true,
+          "phase": "drink",
+          "position": [
+            0.2346541357710893,
+            1.2683998677429105,
+            0.0770680585933658
+          ]
+        },
+        {
+          "t": 13,
+          "errorM": 7.071510994050382e-8,
+          "held": true,
+          "phase": "return",
+          "position": [
+            0.2346541357710894,
+            1.2683998677429105,
+            0.07706805859336574
+          ]
+        },
+        {
+          "t": 14,
+          "errorM": 1.5646799548859634e-9,
+          "held": true,
+          "phase": "return",
+          "position": [
+            0.15295026376577692,
+            1.0528772012813343,
+            0.22870007390386635
+          ]
+        },
+        {
+          "t": 14.99,
+          "errorM": 0.0009610607430993989,
+          "held": true,
+          "phase": "return",
+          "position": [
+            0.08001130255721539,
+            0.8400319472728419,
+            0.3699784119859553
+          ]
+        },
+        {
+          "t": 15,
+          "errorM": 0.000971851862395977,
+          "held": false,
+          "phase": "release",
+          "position": [
+            0.08,
+            0.84,
+            0.37
+          ]
+        },
+        {
+          "t": 15.5,
+          "errorM": 0.0021668179300511994,
+          "held": false,
+          "phase": "release",
+          "position": [
+            0.08,
+            0.84,
+            0.37
+          ]
+        },
+        {
+          "t": 16,
+          "errorM": null,
+          "held": false,
+          "phase": "idle",
+          "position": [
+            0.08,
+            0.84,
+            0.37
+          ]
+        },
+        {
+          "t": 19,
+          "errorM": null,
+          "held": false,
+          "phase": "idle",
+          "position": [
+            0.08,
+            0.84,
+            0.37
+          ]
+        }
+      ]
+    },
+    {
+      "actor": "ines",
+      "case": "unreachable",
+      "heldSamples": 0,
+      "heldMaxErrorM": null,
+      "transitionGapM": 0,
+      "result": "OUT_OF_REACH",
+      "samples": [
+        {
+          "t": 5,
+          "errorM": null,
+          "held": false,
+          "phase": "look",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        },
+        {
+          "t": 6,
+          "errorM": null,
+          "held": false,
+          "phase": "out_of_reach",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        },
+        {
+          "t": 6.5,
+          "errorM": null,
+          "held": false,
+          "phase": "out_of_reach",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        },
+        {
+          "t": 7,
+          "errorM": null,
+          "held": false,
+          "phase": "out_of_reach",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        },
+        {
+          "t": 7.99,
+          "errorM": null,
+          "held": false,
+          "phase": "out_of_reach",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        },
+        {
+          "t": 8,
+          "errorM": null,
+          "held": false,
+          "phase": "out_of_reach",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        },
+        {
+          "t": 8.5,
+          "errorM": null,
+          "held": false,
+          "phase": "out_of_reach",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        },
+        {
+          "t": 9,
+          "errorM": null,
+          "held": false,
+          "phase": "out_of_reach",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        },
+        {
+          "t": 10,
+          "errorM": null,
+          "held": false,
+          "phase": "out_of_reach",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        },
+        {
+          "t": 11,
+          "errorM": null,
+          "held": false,
+          "phase": "out_of_reach",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        },
+        {
+          "t": 12,
+          "errorM": null,
+          "held": false,
+          "phase": "out_of_reach",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        },
+        {
+          "t": 13,
+          "errorM": null,
+          "held": false,
+          "phase": "out_of_reach",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        },
+        {
+          "t": 14,
+          "errorM": null,
+          "held": false,
+          "phase": "out_of_reach",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        },
+        {
+          "t": 14.99,
+          "errorM": null,
+          "held": false,
+          "phase": "out_of_reach",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        },
+        {
+          "t": 15,
+          "errorM": null,
+          "held": false,
+          "phase": "out_of_reach",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        },
+        {
+          "t": 15.5,
+          "errorM": null,
+          "held": false,
+          "phase": "out_of_reach",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        },
+        {
+          "t": 16,
+          "errorM": null,
+          "held": false,
+          "phase": "out_of_reach",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        },
+        {
+          "t": 19,
+          "errorM": null,
+          "held": false,
+          "phase": "out_of_reach",
+          "position": [
+            3,
+            0.84,
+            4
+          ]
+        }
+      ]
+    }
+  ],
+  "nasal": [
+    {
+      "actor": "iris",
+      "nose": 0,
+      "amount": -1,
+      "nostril": [
+        0.029119999249908324,
+        0.5185172853829059,
+        0.3544583737423058
+      ],
+      "floor": [
+        0.042583572459492715,
+        0.49436571277843777,
+        0.34826934613958765
+      ],
+      "uv": [
+        0.025827231649734606,
+        0.477
+      ]
+    },
+    {
+      "actor": "iris",
+      "nose": 0,
+      "amount": 0,
+      "nostril": [
+        0.029119999249908324,
+        0.4769999982378067,
+        0.3544583737423058
+      ],
+      "floor": [
+        0.042583572459492715,
+        0.4655446610509195,
+        0.34826934613958765
+      ],
+      "uv": [
+        0.025827231649734606,
+        0.477
+      ]
+    },
+    {
+      "actor": "iris",
+      "nose": 0,
+      "amount": 1,
+      "nostril": [
+        0.029119999249908324,
+        0.4354827198638784,
+        0.3544583737423058
+      ],
+      "floor": [
+        0.042583572459492715,
+        0.43672358722696253,
+        0.34826934613958765
+      ],
+      "uv": [
+        0.025827231649734606,
+        0.477
+      ]
+    },
+    {
+      "actor": "iris",
+      "nose": 1,
+      "amount": -1,
+      "nostril": [
+        0.03552584366109895,
+        0.5202471502062453,
+        0.3292789083042711
+      ],
+      "floor": [
+        0.0427640999454239,
+        0.4955665948795146,
+        0.328786821536799
+      ],
+      "uv": [
+        0.025827231649734606,
+        0.477
+      ]
+    },
+    {
+      "actor": "iris",
+      "nose": 1,
+      "amount": 0,
+      "nostril": [
+        0.03552584366109895,
+        0.5133275986420002,
+        0.3292789083042711
+      ],
+      "floor": [
+        0.0427640999454239,
+        0.49076310881737717,
+        0.328786821536799
+      ],
+      "uv": [
+        0.025827231649734606,
+        0.477
+      ]
+    },
+    {
+      "actor": "iris",
+      "nose": 1,
+      "amount": 1,
+      "nostril": [
+        0.03552584366109895,
+        0.47181033456462285,
+        0.3292789083042711
+      ],
+      "floor": [
+        0.0427640999454239,
+        0.4619420128969815,
+        0.328786821536799
+      ],
+      "uv": [
+        0.025827231649734606,
+        0.477
+      ]
+    },
+    {
+      "actor": "iris",
+      "nose": 2,
+      "amount": -1,
+      "nostril": [
+        0.024752379860744418,
+        0.48564943095851265,
+        0.3842159283398837
+      ],
+      "floor": [
+        0.04246048561087459,
+        0.4715490301394875,
+        0.37129417029169126
+      ],
+      "uv": [
+        0.025827231649734606,
+        0.477
+      ]
+    },
+    {
+      "actor": "iris",
+      "nose": 2,
+      "amount": 0,
+      "nostril": [
+        0.024752379860744418,
+        0.44413215931918487,
+        0.3842159283398837
+      ],
+      "floor": [
+        0.04246048561087459,
+        0.4427279563155305,
+        0.37129417029169126
+      ],
+      "uv": [
+        0.025827231649734606,
+        0.477
+      ]
+    },
+    {
+      "actor": "iris",
+      "nose": 2,
+      "amount": 1,
+      "nostril": [
+        0.024752379860744418,
+        0.4337528319728171,
+        0.3842159283398837
+      ],
+      "floor": [
+        0.04246048561087459,
+        0.43552270512588565,
+        0.37129417029169126
+      ],
+      "uv": [
+        0.025827231649734606,
+        0.477
+      ]
+    },
+    {
+      "actor": "iris",
+      "nose": 3,
+      "amount": -1,
+      "nostril": [
+        0.04018463821003758,
+        0.5202471502062453,
+        0.3578919392306182
+      ],
+      "floor": [
+        0.042895392599372466,
+        0.4955665948795146,
+        0.35092606458344894
+      ],
+      "uv": [
+        0.025827231649734606,
+        0.477
+      ]
+    },
+    {
+      "actor": "iris",
+      "nose": 3,
+      "amount": 0,
+      "nostril": [
+        0.04018463821003758,
+        0.4925689825227578,
+        0.3578919392306182
+      ],
+      "floor": [
+        0.042895392599372466,
+        0.47635256039450247,
+        0.35092606458344894
+      ],
+      "uv": [
+        0.025827231649734606,
+        0.477
+      ]
+    },
+    {
+      "actor": "iris",
+      "nose": 3,
+      "amount": 1,
+      "nostril": [
+        0.04018463821003758,
+        0.45105169537765866,
+        0.3578919392306182
+      ],
+      "floor": [
+        0.042895392599372466,
+        0.4475314874958992,
+        0.35092606458344894
+      ],
+      "uv": [
+        0.025827231649734606,
+        0.477
+      ]
+    },
+    {
+      "actor": "iris",
+      "nose": 4,
+      "amount": -1,
+      "nostril": [
+        0.02009358476360762,
+        0.5012184064722929,
+        0.36933715104109477
+      ],
+      "floor": [
+        0.042329192841256816,
+        0.48235692948307046,
+        0.35978175775296256
+      ],
+      "uv": [
+        0.025827231649734606,
+        0.477
+      ]
+    },
+    {
+      "actor": "iris",
+      "nose": 4,
+      "amount": 0,
+      "nostril": [
+        0.02009358476360762,
+        0.45970113483296515,
+        0.36933715104109477
+      ],
+      "floor": [
+        0.042329192841256816,
+        0.45353587868090595,
+        0.35978175775296256
+      ],
+      "uv": [
+        0.025827231649734606,
+        0.477
+      ]
+    },
+    {
+      "actor": "iris",
+      "nose": 4,
+      "amount": 1,
+      "nostril": [
+        0.02009358476360762,
+        0.4337528319728171,
+        0.36933715104109477
+      ],
+      "floor": [
+        0.042329192841256816,
+        0.43552270512588565,
+        0.35978175775296256
+      ],
+      "uv": [
+        0.025827231649734606,
+        0.477
+      ]
+    },
+    {
+      "actor": "nara",
+      "nose": 0,
+      "amount": -1,
+      "nostril": [
+        0.02131999969764933,
+        0.5185172853829059,
+        0.3544583737423058
+      ],
+      "floor": [
+        0.025529109550959314,
+        0.49284069547905074,
+        0.34826934613958765
+      ],
+      "uv": [
+        0.025827231649734606,
+        0.477
+      ]
+    },
+    {
+      "actor": "nara",
+      "nose": 0,
+      "amount": 0,
+      "nostril": [
+        0.02131999969764933,
+        0.4769999982378067,
+        0.3544583737423058
+      ],
+      "floor": [
+        0.025529109550959314,
+        0.4640196437515325,
+        0.34826934613958765
+      ],
+      "uv": [
+        0.025827231649734606,
+        0.477
+      ]
+    },
+    {
+      "actor": "nara",
+      "nose": 0,
+      "amount": 1,
+      "nostril": [
+        0.02131999969764933,
+        0.4354827198638784,
+        0.3544583737423058
+      ],
+      "floor": [
+        0.025529109550959314,
+        0.4351985708529292,
+        0.34826934613958765
+      ],
+      "uv": [
+        0.025827231649734606,
+        0.477
+      ]
+    },
+    {
+      "actor": "nara",
+      "nose": 1,
+      "amount": -1,
+      "nostril": [
+        0.026009991615561816,
+        0.5202471502062453,
+        0.3292789083042711
+      ],
+      "floor": [
+        0.02564931484813553,
+        0.4940415785054813,
+        0.328786821536799
+      ],
+      "uv": [
+        0.025827231649734606,
+        0.477
+      ]
+    },
+    {
+      "actor": "nara",
+      "nose": 1,
+      "amount": 0,
+      "nostril": [
+        0.026009991615561816,
+        0.5133275986420002,
+        0.3292789083042711
+      ],
+      "floor": [
+        0.02564931484813553,
+        0.48923809151799014,
+        0.328786821536799
+      ],
+      "uv": [
+        0.025827231649734606,
+        0.477
+      ]
+    },
+    {
+      "actor": "nara",
+      "nose": 1,
+      "amount": 1,
+      "nostril": [
+        0.026009991615561816,
+        0.47181033456462285,
+        0.3292789083042711
+      ],
+      "floor": [
+        0.02564931484813553,
+        0.46041699652294815,
+        0.328786821536799
+      ],
+      "uv": [
+        0.025827231649734606,
+        0.477
+      ]
+    },
+    {
+      "actor": "nara",
+      "nose": 2,
+      "amount": -1,
+      "nostril": [
+        0.0181222777974991,
+        0.48564943095851265,
+        0.3842159283398837
+      ],
+      "floor": [
+        0.025447151435855242,
+        0.4700240128401005,
+        0.37129417029169126
+      ],
+      "uv": [
+        0.025827231649734606,
+        0.477
+      ]
+    },
+    {
+      "actor": "nara",
+      "nose": 2,
+      "amount": 0,
+      "nostril": [
+        0.0181222777974991,
+        0.44413215931918487,
+        0.3842159283398837
+      ],
+      "floor": [
+        0.025447151435855242,
+        0.44120293994149723,
+        0.37129417029169126
+      ],
+      "uv": [
+        0.025827231649734606,
+        0.477
+      ]
+    },
+    {
+      "actor": "nara",
+      "nose": 2,
+      "amount": 1,
+      "nostril": [
+        0.0181222777974991,
+        0.4337528319728171,
+        0.3842159283398837
+      ],
+      "floor": [
+        0.025447151435855242,
+        0.43399768782649856,
+        0.37129417029169126
+      ],
+      "uv": [
+        0.025827231649734606,
+        0.477
+      ]
+    },
+    {
+      "actor": "nara",
+      "nose": 3,
+      "amount": -1,
+      "nostril": [
+        0.02942089622216284,
+        0.5202471502062453,
+        0.3578919392306182
+      ],
+      "floor": [
+        0.02573673682986859,
+        0.4940415785054813,
+        0.35092606458344894
+      ],
+      "uv": [
+        0.025827231649734606,
+        0.477
+      ]
+    },
+    {
+      "actor": "nara",
+      "nose": 3,
+      "amount": 0,
+      "nostril": [
+        0.02942089622216284,
+        0.4925689825227578,
+        0.3578919392306182
+      ],
+      "floor": [
+        0.02573673682986859,
+        0.4748275440204691,
+        0.35092606458344894
+      ],
+      "uv": [
+        0.025827231649734606,
+        0.477
+      ]
+    },
+    {
+      "actor": "nara",
+      "nose": 3,
+      "amount": 1,
+      "nostril": [
+        0.02942089622216284,
+        0.45105169537765866,
+        0.3578919392306182
+      ],
+      "floor": [
+        0.02573673682986859,
+        0.4460064701965122,
+        0.35092606458344894
+      ],
+      "uv": [
+        0.025827231649734606,
+        0.477
+      ]
+    },
+    {
+      "actor": "nara",
+      "nose": 4,
+      "amount": -1,
+      "nostril": [
+        0.014711374580921328,
+        0.5012184064722929,
+        0.36933715104109477
+      ],
+      "floor": [
+        0.025359729454122182,
+        0.4808319131090371,
+        0.35978175775296256
+      ],
+      "uv": [
+        0.025827231649734606,
+        0.477
+      ]
+    },
+    {
+      "actor": "nara",
+      "nose": 4,
+      "amount": 0,
+      "nostril": [
+        0.014711374580921328,
+        0.45970113483296515,
+        0.36933715104109477
+      ],
+      "floor": [
+        0.025359729454122182,
+        0.4520108613815189,
+        0.35978175775296256
+      ],
+      "uv": [
+        0.025827231649734606,
+        0.477
+      ]
+    },
+    {
+      "actor": "nara",
+      "nose": 4,
+      "amount": 1,
+      "nostril": [
+        0.014711374580921328,
+        0.4337528319728171,
+        0.36933715104109477
+      ],
+      "floor": [
+        0.025359729454122182,
+        0.43399768782649856,
+        0.35978175775296256
+      ],
+      "uv": [
+        0.025827231649734606,
+        0.477
+      ]
+    },
+    {
+      "actor": "mauro",
+      "nose": 0,
+      "amount": -1,
+      "nostril": [
+        0.022360000146323864,
+        0.5185172853829059,
+        0.3544583737423058
+      ],
+      "floor": [
+        0.031035314857085904,
+        0.49474696856707856,
+        0.34826934613958765
+      ],
+      "uv": [
+        0.025827231649734606,
+        0.477
+      ]
+    },
+    {
+      "actor": "mauro",
+      "nose": 0,
+      "amount": 0,
+      "nostril": [
+        0.022360000146323864,
+        0.4769999982378067,
+        0.3544583737423058
+      ],
+      "floor": [
+        0.031035314857085904,
+        0.4659259168395603,
+        0.34826934613958765
+      ],
+      "uv": [
+        0.025827231649734606,
+        0.477
+      ]
+    },
+    {
+      "actor": "mauro",
+      "nose": 0,
+      "amount": 1,
+      "nostril": [
+        0.022360000146323864,
+        0.4354827198638784,
+        0.3544583737423058
+      ],
+      "floor": [
+        0.031035314857085904,
+        0.4371048430156034,
+        0.34826934613958765
+      ],
+      "uv": [
+        0.025827231649734606,
+        0.477
+      ]
+    },
+    {
+      "actor": "mauro",
+      "nose": 1,
+      "amount": -1,
+      "nostril": [
+        0.027278773034261537,
+        0.5202471502062453,
+        0.3292789083042711
+      ],
+      "floor": [
+        0.031170411293114073,
+        0.4959478506681555,
+        0.328786821536799
+      ],
+      "uv": [
+        0.025827231649734606,
+        0.477
+      ]
+    },
+    {
+      "actor": "mauro",
+      "nose": 1,
+      "amount": 0,
+      "nostril": [
+        0.027278773034261537,
+        0.5133275986420002,
+        0.3292789083042711
+      ],
+      "floor": [
+        0.031170411293114073,
+        0.491144364606018,
+        0.328786821536799
+      ],
+      "uv": [
+        0.025827231649734606,
+        0.477
+      ]
+    },
+    {
+      "actor": "mauro",
+      "nose": 1,
+      "amount": 1,
+      "nostril": [
+        0.027278773034261537,
+        0.47181033456462285,
+        0.3292789083042711
+      ],
+      "floor": [
+        0.031170411293114073,
+        0.4623232686856223,
+        0.328786821536799
+      ],
+      "uv": [
+        0.025827231649734606,
+        0.477
+      ]
+    },
+    {
+      "actor": "mauro",
+      "nose": 2,
+      "amount": -1,
+      "nostril": [
+        0.019006291655875626,
+        0.48564943095851265,
+        0.3842159283398837
+      ],
+      "floor": [
+        0.030943203761114584,
+        0.4719302859281283,
+        0.37129417029169126
+      ],
+      "uv": [
+        0.025827231649734606,
+        0.477
+      ]
+    },
+    {
+      "actor": "mauro",
+      "nose": 2,
+      "amount": 0,
+      "nostril": [
+        0.019006291655875626,
+        0.44413215931918487,
+        0.3842159283398837
+      ],
+      "floor": [
+        0.030943203761114584,
+        0.4431092121041714,
+        0.37129417029169126
+      ],
+      "uv": [
+        0.025827231649734606,
+        0.477
+      ]
+    },
+    {
+      "actor": "mauro",
+      "nose": 2,
+      "amount": 1,
+      "nostril": [
+        0.019006291655875626,
+        0.4337528319728171,
+        0.3842159283398837
+      ],
+      "floor": [
+        0.030943203761114584,
+        0.4359039609145265,
+        0.37129417029169126
+      ],
+      "uv": [
+        0.025827231649734606,
+        0.477
+      ]
+    },
+    {
+      "actor": "mauro",
+      "nose": 3,
+      "amount": -1,
+      "nostril": [
+        0.030856062062004242,
+        0.5202471502062453,
+        0.3578919392306182
+      ],
+      "floor": [
+        0.03126866326761987,
+        0.4959478506681555,
+        0.35092606458344894
+      ],
+      "uv": [
+        0.025827231649734606,
+        0.477
+      ]
+    },
+    {
+      "actor": "mauro",
+      "nose": 3,
+      "amount": 0,
+      "nostril": [
+        0.030856062062004242,
+        0.4925689825227578,
+        0.3578919392306182
+      ],
+      "floor": [
+        0.03126866326761987,
+        0.47673381618314326,
+        0.35092606458344894
+      ],
+      "uv": [
+        0.025827231649734606,
+        0.477
+      ]
+    },
+    {
+      "actor": "mauro",
+      "nose": 3,
+      "amount": 1,
+      "nostril": [
+        0.030856062062004242,
+        0.45105169537765866,
+        0.3578919392306182
+      ],
+      "floor": [
+        0.03126866326761987,
+        0.44791274328454006,
+        0.35092606458344894
+      ],
+      "uv": [
+        0.025827231649734606,
+        0.477
+      ]
+    },
+    {
+      "actor": "mauro",
+      "nose": 4,
+      "amount": -1,
+      "nostril": [
+        0.015429003049045455,
+        0.5012184064722929,
+        0.36933715104109477
+      ],
+      "floor": [
+        0.030844951786608787,
+        0.482738186197065,
+        0.35978175775296256
+      ],
+      "uv": [
+        0.025827231649734606,
+        0.477
+      ]
+    },
+    {
+      "actor": "mauro",
+      "nose": 4,
+      "amount": 0,
+      "nostril": [
+        0.015429003049045455,
+        0.45970113483296515,
+        0.36933715104109477
+      ],
+      "floor": [
+        0.030844951786608787,
+        0.45391713446954673,
+        0.35978175775296256
+      ],
+      "uv": [
+        0.025827231649734606,
+        0.477
+      ]
+    },
+    {
+      "actor": "mauro",
+      "nose": 4,
+      "amount": 1,
+      "nostril": [
+        0.015429003049045455,
+        0.4337528319728171,
+        0.36933715104109477
+      ],
+      "floor": [
+        0.030844951786608787,
+        0.4359039609145265,
+        0.35978175775296256
+      ],
+      "uv": [
+        0.025827231649734606,
+        0.477
+      ]
+    }
+  ],
+  "limits": [
+    "No art gate, no skin/cloth intersection detector, no actual floor-contact detector, no actual GLB export/reimport, no independent agent, no Android, no real voice. Clip signatures are indicative, not artistic distinction. Palm error is target distance, not finger/contact proof."
+  ]
+}
