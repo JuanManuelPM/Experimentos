@@ -1,0 +1,210 @@
+{
+  "schema": "prometeo.character-world.gates/v1",
+  "version": "character-world/0.2.1-candidate",
+  "owner": "studio-3d",
+  "state": "CANDIDATE",
+  "sourceCommit": "89cc8daffe5e74ddc93e189039b304f2ebc8487a",
+  "evidenceCommit": "f29d359aae010a8fc45bb8e1c32c14817d19d8c5",
+  "V15": {
+    "state": "CANDIDATE",
+    "tests": [
+      {
+        "id": "actors7-cpu",
+        "version": "character-world/0.2.1-candidate",
+        "status": "PASS",
+        "observed": "Six preset actors and seventh recipe instantiated; 42 bones each.",
+        "evidence": "f29d359aae010a8fc45bb8e1c32c14817d19d8c5:prometeo/estudios/3d/character-world-v15-v17/CPU_RUNTIME_021.json#13aaa97caaf84ed5146dfc6bca60c0f9979a2f0c"
+      },
+      {
+        "id": "nose45-uv",
+        "version": "character-world/0.2.1-candidate",
+        "status": "PASS",
+        "observed": "45 runtime deformation cases preserve canonical UV.",
+        "evidence": "f29d359aae010a8fc45bb8e1c32c14817d19d8c5:prometeo/estudios/3d/character-world-v15-v17/CPU_RUNTIME_021.json#13aaa97caaf84ed5146dfc6bca60c0f9979a2f0c"
+      },
+      {
+        "id": "nose45-visual-shadow-cavity",
+        "version": "character-world/0.2.1-candidate",
+        "status": "NOT_RUN",
+        "observed": "No pixel or shadow review; true cavity missing.",
+        "evidence": ""
+      },
+      {
+        "id": "diversity-clay",
+        "version": "character-world/0.2.1-candidate",
+        "status": "NOT_RUN",
+        "observed": "Visual identity review pending.",
+        "evidence": ""
+      },
+      {
+        "id": "wardrobe-hand-lod",
+        "version": "character-world/0.2.1-candidate",
+        "status": "NOT_RUN",
+        "observed": "Prototype clothing; contact and detail gates incomplete.",
+        "evidence": ""
+      },
+      {
+        "id": "glb-roundtrip-face-animation",
+        "version": "character-world/0.2.1-candidate",
+        "status": "NOT_RUN",
+        "observed": "Exporter/importer code exists; actual download/reimport and persistent animated facial expression unverified.",
+        "evidence": ""
+      },
+      {
+        "id": "perf",
+        "version": "character-world/0.2.1-candidate",
+        "status": "NOT_RUN",
+        "observed": "No WebGL or physical Android.",
+        "evidence": ""
+      }
+    ]
+  },
+  "V16": {
+    "state": "CANDIDATE",
+    "tests": [
+      {
+        "id": "144-animation-cpu",
+        "version": "character-world/0.2.1-candidate",
+        "status": "PASS",
+        "observed": "144/144 actual AnimationMixer executions; 7698 frames; 24 signatures per actor; static negative rejected.",
+        "evidence": "f29d359aae010a8fc45bb8e1c32c14817d19d8c5:prometeo/estudios/3d/character-world-v15-v17/CPU_RUNTIME_021.json#13aaa97caaf84ed5146dfc6bca60c0f9979a2f0c"
+      },
+      {
+        "id": "cup-palm-point",
+        "version": "character-world/0.2.1-candidate",
+        "status": "PASS",
+        "observed": "24 cases incl unreachable; 1.649mm worst held point; transition continuity.",
+        "evidence": "f29d359aae010a8fc45bb8e1c32c14817d19d8c5:prometeo/estudios/3d/character-world-v15-v17/CPU_RUNTIME_021.json#13aaa97caaf84ed5146dfc6bca60c0f9979a2f0c"
+      },
+      {
+        "id": "feet-seat-fingers-visual-contact",
+        "version": "character-world/0.2.1-candidate",
+        "status": "NOT_RUN",
+        "observed": "No validated support, penetration, orientation or foot sliding.",
+        "evidence": ""
+      },
+      {
+        "id": "eight-actions-api-contention",
+        "version": "character-world/0.2.1-candidate",
+        "status": "NOT_RUN",
+        "observed": "Only integrated cup sequence; no complete semantic operations or contention recovery.",
+        "evidence": ""
+      },
+      {
+        "id": "four-labs",
+        "version": "character-world/0.2.1-candidate",
+        "status": "NOT_RUN",
+        "observed": "First action and motion preview only.",
+        "evidence": ""
+      },
+      {
+        "id": "audio-visemes",
+        "version": "character-world/0.2.1-candidate",
+        "status": "NOT_RUN",
+        "observed": "No real audio/phoneme timebase.",
+        "evidence": ""
+      },
+      {
+        "id": "independent-transfer",
+        "version": "character-world/0.2.1-candidate",
+        "status": "BLOCKED",
+        "observed": "No independent agent execution.",
+        "evidence": ""
+      },
+      {
+        "id": "perf-fps-invariance",
+        "version": "character-world/0.2.1-candidate",
+        "status": "NOT_RUN",
+        "observed": "No full 30/60/120 FPS run or performance evidence.",
+        "evidence": ""
+      }
+    ]
+  },
+  "V17": {
+    "state": "CANDIDATE",
+    "tests": [
+      {
+        "id": "cafe-first-slice",
+        "version": "character-world/0.2.1-candidate",
+        "status": "NOT_RUN",
+        "observed": "58-second scene source; actual whole scene WebGL playback not observed.",
+        "evidence": ""
+      },
+      {
+        "id": "other-scenes-assets",
+        "version": "character-world/0.2.1-candidate",
+        "status": "NOT_RUN",
+        "observed": "Street and vehicle scenes and asset counts incomplete.",
+        "evidence": ""
+      },
+      {
+        "id": "camera-timeline",
+        "version": "character-world/0.2.1-candidate",
+        "status": "NOT_RUN",
+        "observed": "Five camera presets and timeline code; clean browser proof and full continuity unverified.",
+        "evidence": ""
+      },
+      {
+        "id": "navigation-editor",
+        "version": "character-world/0.2.1-candidate",
+        "status": "NOT_RUN",
+        "observed": "Full authoring, routing, reservations and interruptions not complete.",
+        "evidence": ""
+      },
+      {
+        "id": "independent-transfer",
+        "version": "character-world/0.2.1-candidate",
+        "status": "BLOCKED",
+        "observed": "No independent agent execution.",
+        "evidence": ""
+      },
+      {
+        "id": "perf",
+        "version": "character-world/0.2.1-candidate",
+        "status": "NOT_RUN",
+        "observed": "No 100-character test.",
+        "evidence": ""
+      }
+    ]
+  },
+  "global": [
+    {
+      "id": "art-score",
+      "version": "character-world/0.2.1-candidate",
+      "status": "NOT_RUN",
+      "observed": "No observed rendering, cannot score.",
+      "evidence": ""
+    },
+    {
+      "id": "public-pages",
+      "version": "character-world/0.2.1-candidate",
+      "status": "BLOCKED",
+      "observed": "New path publication owner binding not independently verified; no canonical write or Pages URL claimed.",
+      "evidence": ""
+    },
+    {
+      "id": "browser-webgl",
+      "version": "character-world/0.2.1-candidate",
+      "status": "BLOCKED",
+      "observed": "V14 browser probe returned Error creating WebGL context; subsequent browser tool credit limit; candidate render unobserved.",
+      "evidence": ""
+    },
+    {
+      "id": "complete-historic-recovery",
+      "version": "character-world/0.2.1-candidate",
+      "status": "BLOCKED",
+      "observed": "Original private reference images unavailable; not all history recovered.",
+      "evidence": ""
+    }
+  ],
+  "provenance": {
+    "head": "IRIS V11.3 derived from Quaternius Casual GLB (CC0 metadata in source); original binary not revalidated.",
+    "body": "Existing Character System V2 + V1 wardrobe.",
+    "chair": "Existing ARC CHAIR; no third-party binary imported."
+  },
+  "limitations": [
+    "CPU execution does not certify rendered quality, actual pixel pigment, physical object contact or mobile performance.",
+    "Seventh recipe authored and tested by same agent, not independent transfer.",
+    "No full scene delivery or promotion."
+  ]
+}
