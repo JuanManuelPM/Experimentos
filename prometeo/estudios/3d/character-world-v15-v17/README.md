@@ -1,0 +1,4 @@
+# Character & World · studio-3d
+Candidate first slices, not READY. Open v15.html, v16.html, v17.html from a static server rooted at gh-pages; links are relative. Shared contract.mjs / runtime.mjs; body uses Character System V2, face uses IRIS V11.3 derived Quaternius CC0, chair uses existing ARC CHAIR. Three.js 0.170.0 importmap.
+
+The rest-space UV correction uses barycentric anchors for nose pigment; no modeled nostril cavity. Six recipes use actual anatomy parameters and six body profiles; diversity not reviewed. Urban clothes are a prototype, not a final tank top. V16 uses analytical timing and candidate CCD (not physically verified support). V17 contains the café first slice only; approximate lips and no real audio. No claims of 24 clips, other two scenes, external transfer, 45 rendered views, performance or readiness. Use LOGIC_RECEIPT.json for the seven executed pure checks. Browser and mobile checks are pending. No existing files overwritten.
