@@ -1,0 +1,8 @@
+# THE ROOT MACHINE · Cámara 01
+Version root-machine/0.1.0-candidate. Original editable 3D article: eight ceramic shell sectors around a recessed core, annular collar, seated swept flexible neck, five captive-style ribs, moving cuff and terminal. The core remains identical across flex poses. One structural edge only; no cross-dependency added in M07. State UNKNOWN, no live data or simulated worker activity. Flex is a manual inspection, not telemetry.
+
+Open `index.html` from a local HTTP server (e.g. `python -m http.server` in this directory) or use the generated single-file `preview.html` if present. No network is required for the vendored Three.js runtime. Horizontal drag orbits; vertical drag translates camera AND target; pinch/wheel zooms. Double tap toggles macro, tap in macro articulates. Keyboard arrows, +/- zoom, Enter macro, Space flex, Home reset, i status. No persistent UI. Error only if WebGL fails.
+
+Editable: `geometry.mjs` (IDs, parts, joint, graph and UNKNOWN contract), `camera.mjs`, `app.mjs`, `index.html`. Run `node test.mjs`, `node camera.test.mjs`. Source CPU evidence includes mesh topology and specific collar/neck and sampled ribs, not general collision certification. Browser/GPU, physical Android, artistic review and independent transfer NOT_RUN. Candidate only, not deployed.
+
+Dependencies: Three.js r181 MIT, vendor sources unchanged from official repository; full license in `vendor/LICENSE`. No external model, imagery, or texture. M08 may add a structural branch/cross-requires connection at `scene.root.exit` while preserving first increment and UNKNOWN/REPLAY honesty; independent producer required.
