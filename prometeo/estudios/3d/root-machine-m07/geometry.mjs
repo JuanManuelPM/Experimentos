@@ -56,26 +56,39 @@ function profile(t,spigot=SPEC.spigot){
  const flare=clamp(t/.07,0,1),r=spigot+(.18-spigot)*flare-.058*t+.006*Math.sin(20*Math.PI*t)*Math.sin(Math.PI*t);
  return [r,r*(1-.18*flare)];
 }
-export function joint(angle=0,{offset=0,spigot=SPEC.spigot,curvatureMultiplier=1}={}){
+function frameAt(t,angle,offset=0){
+ const C=neckCenter(t,angle,offset),T=unit(sub(neckCenter(t+.0001,angle,offset),neckCenter(t-.0001,angle,offset))),N=unit(sub([0,1,0],mul(T,dot([0,1,0],T)))),B=unit(cross(T,N));
+ return {C,T,N,B};
+}
+function surfaceRadius(t,phi,spigot){const [a,b]=profile(t,spigot);return 1/Math.sqrt((Math.cos(phi)/a)**2+(Math.sin(phi)/b)**2);}
+function cuff(angle,offset,spigot){
+ const P=[],I=[],sides=48,prof=[[.265,-.002],[.34,-.002],[.34,.012],[.326,.022],[.28,.022],[.265,.012]];
+ for(const [t,d] of prof){const F=frameAt(t,angle,offset),[a,b]=profile(t,spigot);for(let i=0;i<sides;i++){const phi=TAU*i/sides;P.push(...add(F.C,add(mul(F.N,(a+d)*Math.cos(phi)),mul(F.B,(b+d)*Math.sin(phi)))));}}
+ for(let k=0;k<prof.length;k++)for(let i=0;i<sides;i++)quad(I,k*sides+i,k*sides+(i+1)%sides,((k+1)%prof.length)*sides+i,((k+1)%prof.length)*sides+(i+1)%sides);
+ return make("scene.j.cuff","steel",P,I,"cuff",true);
+}
+export function joint(angle=0,{offset=0,spigot=SPEC.spigot,curvatureMultiplier=1,ribBow=.122}={}){
  if(!Number.isFinite(angle)||Math.abs(angle)>SPEC.angleLimit)throw Error("angle out of range");
  const a=angle*curvatureMultiplier,section=(t)=>{const p=neckCenter(t,a,offset),[r,b]=profile(t,spigot);return {p,a:r,b};};
  // Insertion is a single continuous closed mesh; flare starts outside the collar.
  const sections=[{p:[FRONT-SPEC.depth+offset,0,0],a:spigot,b:spigot},{p:[FRONT-.025+offset,0,0],a:spigot,b:spigot},...Array.from({length:43},(_,i)=>section(i/42))];
- const parts=[sweep("scene.j.neck","membrane",sections,40,"neck",true)];
+ const parts=[sweep("scene.j.neck","membrane",sections,40,"neck",true),cuff(a,offset,spigot)],ribSamples=[];
  // Five ribs have a deliberate seat at both ends and bow outside the flexible skin.
  for(let k=0;k<5;k++){
   const phi=TAU*k/5+.20;
   const rib=Array.from({length:21},(_,i)=>{
-   const u=i/20,t=Math.max(0,(.46*u-.035)/SPEC.rootLength),center=neckCenter(t,a,offset);
-   const radius=.244*(1-u)+.149*u+.122*Math.sin(Math.PI*u);
-   return {p:[FRONT-.035+.46*u+offset,center[1]+radius*Math.cos(phi),center[2]+radius*Math.sin(phi)],a:.019+.008*Math.sin(Math.PI*u),b:.016+.006*Math.sin(Math.PI*u)};
+   const u=i/20,t=Math.max(0,(.46*u-.035)/SPEC.rootLength),F=frameAt(t,a,offset),tipRadius=surfaceRadius((.46-.035)/SPEC.rootLength,phi,spigot)+.027;
+   const radius=.244*(1-u)+tipRadius*u+ribBow*Math.sin(Math.PI*u),ra=.019+.008*Math.sin(Math.PI*u),rb=.016+.006*Math.sin(Math.PI*u);
+   const center=u<.035/.46?[FRONT-.035+.46*u+offset,0,0]:F.C;
+   if(u>=.15&&u<=.85)ribSamples.push({id:k,u,gap:radius-surfaceRadius(t,phi,spigot)-Math.max(ra,rb)});
+   return {p:add(center,add(mul(F.N,radius*Math.cos(phi)),mul(F.B,radius*Math.sin(phi)))),a:ra,b:rb};
   });
   parts.push(sweep("scene.j.rib."+k,"steel",rib,12,"rib",true));
  }
  // Root-terminal socket is a deliberate future attachment interface, not a new graph edge.
  const end=neckCenter(1,a,offset),tip=neckCenter(.96,a,offset),dir=unit(sub(end,tip));
  const cap=sweep("scene.root.terminal","steel",[{p:add(end,mul(dir,-.026)),a:.13,b:.108},{p:add(end,mul(dir,.015)),a:.138,b:.112},{p:add(end,mul(dir,.047)),a:.118,b:.098},{p:add(end,mul(dir,.062)),a:.103,b:.085}],32,"terminal",true);
- parts.push(cap);return {parts,sections,angle,spigot,offset};
+ parts.push(cap);return {parts,sections,angle,spigot,offset,ribSamples};
 }
 export function build(angle=0,opts={}){
  const parts=Array.from({length:8},(_,k)=>shellSector(k));
@@ -83,7 +96,7 @@ export function build(angle=0,opts={}){
  const internal=Array.from({length:21},(_,i)=>{const t=i/20,x=-.80+1.59*t,r=.052+.72*Math.sin(Math.PI*t)**.85;return {p:[x,0,0],a:r,b:r*.98};});
  parts.push(sweep("scene.n.inner","inner",internal,40,"recessed-core"));
  parts.push(ring("scene.n.rear-rim","steel",[[-.96,.25],[-.96,.345],[-.90,.365],[-.85,.345],[-.85,.24],[-.92,.23]],48,"rear-rim"));
- parts.push(ring("scene.j.collar","steel",[[PORT_X,SPEC.bore],[FRONT,SPEC.bore],[FRONT,.254],[FRONT-.022,.272],[FRONT-.068,.272],[FRONT-.084,.225],[PORT_X+.085,.225],[PORT_X+.060,.271],[PORT_X+.015,.271],[PORT_X,.25]],64));
+ parts.push(ring("scene.j.collar","steel",[[PORT_X-.07,SPEC.bore],[FRONT,SPEC.bore],[FRONT,.254],[FRONT-.022,.272],[FRONT-.068,.272],[FRONT-.084,.225],[PORT_X+.085,.225],[PORT_X+.060,.271],[PORT_X+.015,.271],[PORT_X,.25],[PORT_X-.07,(PORT_X-.07)*SPEC.portRadius/PORT_X+.001]],64));
  const j=joint(angle,opts);parts.push(...j.parts);
  const end=neckCenter(1,angle,opts.offset??0);
  return {id:VERSION,parts,joint:j,ports:[{id:"scene.n.port",node:CORE_ID,position:[PORT_X,0,0],type:"structure"},{id:PORT_ID,node:JOINT_ID,position:end,type:"structure"}],graph:{nodes:[CORE_ID,JOINT_ID],edges:[{id:"scene.n-j",kind:"STRUCTURE",from:CORE_ID,to:JOINT_ID}]},data:{mode:"UNKNOWN",reason:"No authorized live source; flex is inspection only."}};
@@ -124,6 +137,7 @@ export function inspectJoint(j){
   if(twice>1e-9)minCurve=Math.min(minCurve,ab*bc*ca/(2*twice));
  }
  if(minCurve<.36)errs.push("CURVE_RADIUS");
- return {ok:!errs.length,errors:[...new Set(errs)],clearance,depth,protectedVertices,collarViolations,minCurve:Number.isFinite(minCurve)?minCurve:null};
+ const ribMidClearance=Math.min(...j.ribSamples.map(x=>x.gap));if(ribMidClearance<.005)errs.push("RIB_SKIN_OVERLAP");
+ return {ok:!errs.length,errors:[...new Set(errs)],clearance,depth,protectedVertices,collarViolations,ribMidClearance,minCurve:Number.isFinite(minCurve)?minCurve:null};
 }
 export function bounds(parts){const min=[Infinity,Infinity,Infinity],max=[-Infinity,-Infinity,-Infinity];for(const part of parts)for(let i=0;i<part.positions.length;i+=3)for(let j=0;j<3;j++){min[j]=Math.min(min[j],part.positions[i+j]);max[j]=Math.max(max[j],part.positions[i+j]);}return {min,max};}
