@@ -15,7 +15,6 @@ function solid(id,material,sections,F,sides=32,role="fork"){
  for(let i=0;i<sections.length-1;i++)for(let k=0;k<sides;k++){const a=i*sides+k,b=i*sides+(k+1)%sides,c=a+sides,d=b+sides;I.push(a,b,c,b,d,c);}
  for(const i of [0,sections.length-1]){const n=P.length/3;P.push(...F.world(sections[i].slice(0,3)));for(let k=0;k<sides;k++){const a=i*sides+k,b=i*sides+(k+1)%sides;if(i===0)I.push(n,b,a);else I.push(n,a,b);}}
  const part={id,material,positions:P,indices:I,role,dynamic:true};
- if(inspectMesh(part).errors.includes("VOLUME"))for(let i=0;i<I.length;i+=3)[I[i+1],I[i+2]]=[I[i+2],I[i+1]];
  return part;
 }
 function armSections(sign,spread){
@@ -47,9 +46,9 @@ export function extendedBuild(angle=0,spread=.70,opts={}){
  return {...base,id:VERSION,parts:[...base.parts,...f.parts],ports:[...base.ports,...f.ports],graph:{nodes:[...base.graph.nodes,...f.nodes],edges:[...base.graph.edges,...f.edges]},fork:f};
 }
 export function extendedJoint(angle,spread){return {parts:[...joint(angle).parts,...fork(angle,spread).parts]};}
-export function sweptBounds(){
- const all=build().parts.filter(p=>!p.dynamic);
- for(let i=0;i<=8;i++){const a=-SPEC.angleLimit+i*SPEC.angleLimit/4;all.push(...joint(a).parts,...fork(a,0).parts,...fork(a,1).parts);}
+export function sweptBounds(forkOnly=false){
+ const all=forkOnly?[]:build().parts.filter(p=>!p.dynamic);
+ for(let i=0;i<=8;i++){const a=-SPEC.angleLimit+i*SPEC.angleLimit/4;if(!forkOnly)all.push(...joint(a).parts);all.push(...fork(a,0).parts,...fork(a,1).parts);}
  const b=bounds(all);return {min:b.min.map(x=>x-.025),max:b.max.map(x=>x+.025)};
 }
 export function inspectFork(model){
