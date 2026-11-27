@@ -1,6 +1,6 @@
 import * as THREE from "./vendor/three.module.min.js";
 import {joint,FRONT,SPEC} from "./geometry.mjs";
-import {extendedBuild,fork,sweptBounds,VERSION} from "./fork.mjs";
+import {extendedBuild,fork,sweptBounds,protectPose,VERSION} from "./fork.mjs";
 import {CAMERA,initialView,drag,zoom,toggleMacro,pose} from "./camera.mjs";
 const stage=document.querySelector("#stage"),status=document.querySelector("#status"),error=document.querySelector("#error");
 let renderer,scene,camera,model,box,forkBox,view=initialView(),angle=0,aim=0,spread=.70,spreadAim=.70,forkFocus=false,animation=0,lastTap=null,statusTimer=0,tapTimer=0,pinchBase=0;
@@ -44,9 +44,8 @@ function focusOnFork(){if(!renderer||!model)return;if(forkFocus){clearFocus();vi
 spreadButton.addEventListener("click",spreadFork);focusButton.addEventListener("click",focusOnFork);flexButton.addEventListener("click",flex);
 function resize(){if(!renderer)return;const w=Math.max(1,stage.clientWidth),h=Math.max(1,stage.clientHeight);renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();draw();}
 function draw(){
- if(!renderer)return;const P=pose(forkFocus?{...view,macro:false}:view,camera.aspect,forkFocus?forkBox:box,FRONT);
- const position=[...P.position];let d=P.distance;const inside=p=>p.every((x,i)=>x>=forkBox.min[i]-.10&&x<=forkBox.max[i]+.10);for(let i=0;i<100&&inside(position);i++){d+=.06;for(let j=0;j<3;j++)position[j]=P.target[j]+P.basis.dir[j]*d;}
- camera.position.set(...position);camera.lookAt(...P.target);
+ if(!renderer)return;const P=protectPose(pose(forkFocus?{...view,macro:false}:view,camera.aspect,forkFocus?forkBox:box,FRONT),forkBox);
+ camera.position.set(...P.position);camera.lookAt(...P.target);
  renderer.render(scene,camera);document.body.dataset.render="FRAME_RETURNED";
 }
 function inspect(){clearFocus();view=toggleMacro(view);draw();tell(view.macro?"Inspección de la unión · tocá para articular":"Vista general · estado UNKNOWN");}
