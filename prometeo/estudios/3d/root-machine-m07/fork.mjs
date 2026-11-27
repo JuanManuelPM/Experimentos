@@ -51,11 +51,18 @@ export function sweptBounds(forkOnly=false){
  for(let i=0;i<=8;i++){const a=-SPEC.angleLimit+i*SPEC.angleLimit/4;if(!forkOnly)all.push(...joint(a).parts);all.push(...fork(a,0).parts,...fork(a,1).parts);}
  const b=bounds(all);return {min:b.min.map(x=>x-.025),max:b.max.map(x=>x+.025)};
 }
+export function protectPose(P,forkBox){
+ const position=[...P.position];let distance=P.distance;
+ const inside=p=>p.every((x,i)=>x>=forkBox.min[i]-.10&&x<=forkBox.max[i]+.10);
+ for(let i=0;i<100&&inside(position);i++){distance+=.06;for(let j=0;j<3;j++)position[j]=P.target[j]+P.basis.dir[j]*distance;}
+ return {...P,position,distance,safe:P.safe&&!inside(position)};
+}
 export function inspectFork(model){
  const f=model.fork,F=terminalFrame(f.angle),errs=[],base=model.parts.filter(p=>!p.id.startsWith(FORK_ID+".")),original=build(f.angle);
  if(JSON.stringify(base)!==JSON.stringify(original.parts))errs.push("BASE_CHANGED");
  if(new Set(model.parts.map(p=>p.id)).size!==model.parts.length||new Set(model.graph.edges.map(e=>e.id)).size!==model.graph.edges.length||new Set(model.graph.nodes).size!==model.graph.nodes.length||new Set(model.ports.map(p=>p.id)).size!==model.ports.length)errs.push("DUPLICATE_ID");
  const nodes=new Set(model.graph.nodes);
+ if(model.graph.nodes.length!==5||model.graph.edges.length!==4||model.ports.length!==4||JSON.stringify(model.graph.nodes.slice(0,2))!==JSON.stringify(original.graph.nodes)||JSON.stringify(model.graph.edges.slice(0,1))!==JSON.stringify(original.graph.edges)||JSON.stringify(model.ports.slice(0,2))!==JSON.stringify(original.ports)||f.nodes.some(n=>!nodes.has(n))||f.edges.some(e=>!model.graph.edges.some(m=>JSON.stringify(m)===JSON.stringify(e)))||f.ports.some(p=>!model.ports.some(m=>JSON.stringify(m)===JSON.stringify(p))))errs.push("GRAPH_INCOMPLETE");
  if(model.graph.edges.some(e=>!nodes.has(e.from)||!nodes.has(e.to))||f.edges[0].sourcePort!==PORT_ID||!model.ports.some(p=>p.id===PORT_ID&&p.node===JOINT_ID)||f.edges[0].from!==JOINT_ID||f.edges[0].to!==FORK_ID||f.edges.slice(1).some((e,i)=>e.from!==FORK_ID||e.to!==f.nodes[i+1]))errs.push("WRONG_PORT");
  let maxBaseAxial=-Infinity,minForkAxial=Infinity,seatVertices=0,seatViolation=0;
  for(const part of base)for(let i=0;i<part.positions.length;i+=3)maxBaseAxial=Math.max(maxBaseAxial,F.local(part.positions.slice(i,i+3))[0]);
@@ -70,6 +77,7 @@ export function inspectFork(model){
  for(const part of f.parts.filter(p=>p.role==="fork-arm"))for(let i=0;i<part.positions.length;i+=3){const [x,y,z]=F.local(part.positions.slice(i,i+3));if(x<=.36+1e-8){hidden++;const r=hubRadius(x);if(!r||(y/r[0])**2+(z/r[1])**2>1+1e-7)armViolation++;}}
  for(let i=0;i<f.arms[0].sections.length;i++){const a=f.arms[0].sections[i],b=f.arms[1].sections[i];minPairGap=Math.min(minPairGap,Math.abs(a[1]-b[1])-a[3]-b[3]);}
  if(!hidden||armViolation||minPairGap<=0)errs.push("FORK_SURFACE");
+ for(const arm of f.arms){const end=arm.sections.at(-1),tip=arm.tip[0];if(!(tip[0]<end[0]&&end[0]-tip[0]<=.011&&tip[1]===end[1]&&tip[2]===end[2]&&tip[3]>end[3]&&tip[4]>end[4]))errs.push("TIP_SEAT");}
  if(f.parts.some(p=>!inspectMesh(p).ok))errs.push("MESH");
  if(model.data.mode!=="UNKNOWN"||model.data.live)errs.push("DATA_MODE");
  return {ok:!errs.length,errors:errs,maxBaseAxial,minForkAxial,seatVertices,seatViolation,hidden,armViolation,minPairGap,scope:"axial seat + sampled elliptical cross sections; no general collision certification"};
